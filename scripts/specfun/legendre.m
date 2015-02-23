@@ -305,7 +305,7 @@ endfunction
 %! expected(:,:,2) = [1,0,-1;0,1.5,0;0,0,0;0,-15,0];
 %! assert (result, expected);
 
-%% Check correct invocation
+## Test input validation
 %!error legendre ()
 %!error legendre (1)
 %!error legendre (1,2,3,4)

@@ -114,7 +114,7 @@ function imwrite (varargin)
 
 endfunction
 
-%% Test input validation
+## Test input validation
 %!error imwrite ()                            # Wrong # of args
 %!error imwrite (1)                           # Wrong # of args
 %!error imwrite ({"cell"}, "filename.jpg")    # Wrong class for img
@@ -192,12 +192,12 @@ endfunction
 %! assert (a, alpha)
 
 %!testif HAVE_MAGICK
-%! gray   = repmat (uint8 (0:255), 100, 1);
+%! gray = repmat (uint8 (0:255), 100, 1);
 %! [g] = write_and_read (".jpeg", gray);
 %! assert (g, gray, 2)
 
 %!testif HAVE_MAGICK
-%! gray   = repmat (uint8 (0:255), 100, 1);
+%! gray = repmat (uint8 (0:255), 100, 1);
 %! [g] = write_and_read (".jpeg", gray, "quality", 100);
 %! assert (g, gray)
 

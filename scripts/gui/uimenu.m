@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} uimenu (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
-## Create a uimenu object and return a handle to it.  If @var{h} is omitted
-## then a top-level menu for the current figure is created.  If @var{h}
-## is given then a submenu relative to @var{h} is created.
+## @deftypefn  {Function File} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {@var{hui} =} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
+## Create a uimenu object and return a handle to it.
+##
+## If @var{h} is omitted then a top-level menu for the current figure is
+## created.  If @var{h} is given then a submenu relative to @var{h} is created.
 ##
 ## uimenu objects have the following specific properties:
 ##
@@ -80,7 +81,8 @@
 
 function hui = uimenu (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uimenu", varargin, {"figure", "uicontextmenu", "uimenu"});
+  [h, args] = __uiobject_split_args__ ("uimenu", varargin,
+                                       {"figure", "uicontextmenu", "uimenu"});
 
   tmp = __go_uimenu__ (h, args{:});
 
@@ -117,7 +119,7 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%% check for top level menus file, edit, and help
+## check for top level menus file, edit, and help
 %!testif HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");

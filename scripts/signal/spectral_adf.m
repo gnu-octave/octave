@@ -69,7 +69,7 @@ function retval = spectral_adf (c, win, b)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error spectral_adf ();
 %!error spectral_adf (1, 2, 3, 4);
 %!error spectral_adf (1, 2);

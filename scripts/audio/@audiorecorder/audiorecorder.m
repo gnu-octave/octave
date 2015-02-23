@@ -51,6 +51,7 @@ function recorder = audiorecorder (varargin)
 
 endfunction
 
+
 %!demo
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1);

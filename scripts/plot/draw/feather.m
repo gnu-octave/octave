@@ -127,7 +127,7 @@ endfunction
 %! axis tight;
 %! title ('feather plot');
 
-%% Test input validation
+## Test input validation
 %!error feather ()
 %!error feather (1,2,3,4)
 %!error feather (1, "-r", 2)

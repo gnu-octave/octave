@@ -102,7 +102,7 @@ endfunction
 %!assert (median (single ([1,2,3])), single (2))
 %!assert (median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN])
 
-%% Test multidimensional arrays (bug #35679)
+## Test multidimensional arrays (bug #35679)
 %!shared a, b, x, y
 %! rand ("seed", 2);
 %! a = rand (2,3,4,5);
@@ -112,7 +112,7 @@ endfunction
 %!assert (median (a, 4), x(:, :, :, 3));
 %!assert (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2);
 
-%% Test input validation
+## Test input validation
 %!error median ()
 %!error median (1, 2, 3)
 %!error median ({1:5})

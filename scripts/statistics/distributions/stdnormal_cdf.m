@@ -47,10 +47,10 @@ endfunction
 %! y = [0, 0.5, 1/2*(1+erf(1/sqrt(2))), 1];
 %!assert (stdnormal_cdf ([x, NaN]), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (stdnormal_cdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error stdnormal_cdf ()
 %!error stdnormal_cdf (1,2)
 %!error stdnormal_cdf (i)

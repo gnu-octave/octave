@@ -192,7 +192,7 @@ function vi = interp3 (varargin)
 endfunction
 
 
-%% FIXME: Need some demo blocks here to show off the function like interp2.m.
+## FIXME: Need some demo blocks here to show off the function like interp2.m.
 
 %!test  # basic test
 %! x = y = z = -1:1;  y = y + 2;
@@ -255,7 +255,7 @@ endfunction
 %! V(:,:,2) = V(:,:,1) + 2;
 %! V(:,:,3) = V(:,:,2) + 2;
 %! tol = 10 * eps;
-%! x=[-0.1,0,0.1]; y=x; z=x; 
+%! x=[-0.1,0,0.1]; y=x; z=x;
 %! assert(interp3(X,Y,Z,V,x,y,z,"spline"), [-0.2, 1.0, 2.2]',tol);
 %! assert(interp3(X,Y,Z,V,x,y,z,"linear"), [NA, 1.0, 2.2]',tol);
 %! assert(interp3(X,Y,Z,V,x,y,z,"spline", 0), [0, 1.0, 2.2]',tol);
@@ -280,7 +280,7 @@ endfunction
 %!assert (interp3 (z, "linear"), zout, tol)
 %!assert (interp3 (z, "spline"), zout, tol)
 
-%% Test input validation
+## Test input validation
 %!error interp3 ()
 %!error interp3 ({1})
 %!error <EXTRAPVAL must be a numeric scalar> interp3 (1,2,3,4,1,2,3,"linear", {1})

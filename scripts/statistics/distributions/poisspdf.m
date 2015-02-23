@@ -32,7 +32,7 @@ function pdf = poisspdf (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (lambda))
+  if (! isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("poisspdf: X and LAMBDA must be of common size or scalars");
@@ -70,11 +70,11 @@ endfunction
 %!assert (poisspdf (x, [1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)], eps)
 %!assert (poisspdf ([x, NaN], 1), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (poisspdf (single ([x, NaN]), 1), single ([y, NaN]), eps ("single"))
 %!assert (poisspdf ([x, NaN], single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error poisspdf ()
 %!error poisspdf (1)
 %!error poisspdf (1,2,3)

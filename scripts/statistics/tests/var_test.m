@@ -43,7 +43,7 @@
 
 function [pval, f, df_num, df_den] = var_test (x, y, alt)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -57,7 +57,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   cdf    = fcdf (f, df_num, df_den);
 
   if (nargin == 2)
-    alt  = "!=";
+    alt = "!=";
   endif
 
   if (! ischar (alt))

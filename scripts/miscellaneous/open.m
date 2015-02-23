@@ -72,7 +72,7 @@ function output = open (file)
 
 endfunction
 
-%% Test input validation
+## Test input validation
 %!error open
 %!error open (1)
 %!error output = open (1)

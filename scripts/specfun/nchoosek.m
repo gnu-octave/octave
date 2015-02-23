@@ -146,7 +146,7 @@ endfunction
 %!assert (nchoosek (1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
 %!assert (size (nchoosek (1:5,0)), [1 0])
 
-%% Test input validation
+## Test input validation
 %!error nchoosek ()
 %!error nchoosek (1)
 %!error nchoosek (1,2,3)

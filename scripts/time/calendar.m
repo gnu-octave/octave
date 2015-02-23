@@ -99,6 +99,6 @@ endfunction
 %!assert ((calendar(2000,2))'(2:31), [0:29])
 %!assert ((calendar(1957,10))'(2:33), [0:31])
 
-%% Test input validation
+## Test input validation
 %!error calendar (1,2,3)
 

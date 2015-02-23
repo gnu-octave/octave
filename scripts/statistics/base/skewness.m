@@ -91,7 +91,7 @@ function y = skewness (x, flag, dim)
   if (nargin < 2 || isempty (flag))
     flag = 1;  # default: do not use the "bias corrected" version
   else
-    if ((! isscalar (flag)) || (flag != 0 && flag != 1))
+    if (! isscalar (flag) || (flag != 0 && flag != 1))
       error ("skewness: FLAG must be 0 or 1");
     endif
   endif

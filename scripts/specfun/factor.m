@@ -107,7 +107,7 @@ endfunction
 %!   assert (all ([0,pf] != [pf,0]));
 %! endfor
 
-%% Test input validation
+## Test input validation
 %!error factor ()
 %!error factor (1,2)
 %!error <Q must be a real integer> factor (6i)

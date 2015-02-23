@@ -68,7 +68,7 @@
 ## [f, v, cdat] = isosurface (x, y, z, c, iso, y);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
-## isofinish (p); ## Call user function isofinish
+## isofinish (p);  # Call user function isofinish
 ##
 ## subplot (2,2,2); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
@@ -138,7 +138,7 @@ function varargout = isonormals (varargin)
   endif
   switch (nargout)
     case 0
-      if (!isempty (pa))
+      if (! isempty (pa))
         set (pa, "VertexNormals", normals);
       endif
     case 1

@@ -143,12 +143,12 @@ function h = colorbar (varargin)
       ## FIXME: No listener on location property so have to re-create
       ##        colorbar whenever an option changes.
       ##        re-instate this code if listener is developed.
-      # if (! isempty (loc))
-      #   set (hcb, "location", loc);
-      # endif
-      # if (! isempty (args))
-      #   set (hcb, args{:});
-      # endif
+      ## if (! isempty (loc))
+      ##   set (hcb, "location", loc);
+      ## endif
+      ## if (! isempty (args))
+      ##   set (hcb, args{:});
+      ## endif
       ax = get (get (hcb, "parent"), "currrentaxes");
     endif
   endif
@@ -163,7 +163,8 @@ function h = colorbar (varargin)
   showhiddenhandles = get (0, "showhiddenhandles");
   unwind_protect
     set (0, "showhiddenhandles", "on");
-    cax = findobj (get (ax, "parent"), "tag", "colorbar", "type", "axes", "axes", ax);
+    cax = findobj (get (ax, "parent"),
+                   "tag", "colorbar", "type", "axes", "axes", ax);
     if (! isempty (cax))
       delete (cax);
     endif
@@ -187,8 +188,8 @@ function h = colorbar (varargin)
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
 
-    [pos, cpos, vertical, mirror] =  ...
-        __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
+    [pos, cpos, vertical, mirror] = ...
+       __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "position", pos);
 
     cax = __go_axes__ (hpar, "tag", "colorbar",
@@ -260,7 +261,7 @@ function deletecolorbar (h, d, hc, orig_props)
     if (strcmp (get (hc, "beingdeleted"), "off"))
       delete (hc);
     endif
-    if (!isempty (ancestor (h, "axes"))
+    if (! isempty (ancestor (h, "axes"))
         && strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
       ax = ancestor (h, "axes");
       units = get (ax, "units");
@@ -340,8 +341,8 @@ function update_colorbar_axis (h, d, cax, orig_props)
     obj.__cbar_hax__ = h;
     obj.position = orig_props.position;
     obj.outerposition = orig_props.outerposition;
-    [pos, cpos, vertical, mirror] =  ...
-        __position_colorbox__ (loc, obj, ancestor (h, "figure"));
+    [pos, cpos, vertical, mirror] = ...
+       __position_colorbox__ (loc, obj, ancestor (h, "figure"));
 
     if (vertical)
       if (mirror)

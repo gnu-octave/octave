@@ -188,7 +188,7 @@ endfunction
 %! [x, y, z] = sombrero (10);
 %! surfnorm (x, y, z);
 
-%% Test input validation
+## Test input validation
 %!error surfnorm ()
 %!error surfnorm (1,2)
 %!error <X, Y, and Z must be 2-D real matrices> surfnorm (i)

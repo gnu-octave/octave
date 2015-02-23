@@ -40,7 +40,7 @@ function pdf = nbinpdf (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar (n) || !isscalar (p))
+  if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("nbinpdf: X, N, and P must be of common size or scalars");
@@ -83,12 +83,12 @@ endfunction
 %!assert (nbinpdf (x, 1, 0.5*[-1 NaN 4 1 1]), [NaN NaN NaN y(4:5)])
 %!assert (nbinpdf ([x, NaN], 1, 0.5), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (nbinpdf (single ([x, NaN]), 1, 0.5), single ([y, NaN]))
 %!assert (nbinpdf ([x, NaN], single (1), 0.5), single ([y, NaN]))
 %!assert (nbinpdf ([x, NaN], 1, single (0.5)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error nbinpdf ()
 %!error nbinpdf (1)
 %!error nbinpdf (1,2)

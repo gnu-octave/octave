@@ -42,7 +42,7 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
             for j = 1 : length (installed_pkgs_lst)
               if (strcmp (installed_pkgs_lst{j}.name, deps{k}.package))
                 if (! any (idx == j))
-                  tmplidx (end + 1) = j;
+                  tmplidx(end + 1) = j;
                   break;
                 endif
               endif

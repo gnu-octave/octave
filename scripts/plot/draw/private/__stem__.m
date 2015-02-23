@@ -424,7 +424,7 @@ function update_data (h, ~)
   y = get (h, "ydata");
   z = get (h, "zdata");
 
-  if (!isempty (z) && size_equal (x, y, z))
+  if (! isempty (z) && size_equal (x, y, z))
     sz = min ([size(x); size(y); size(z)]);
     x = x(1:sz(1),1:sz(2));
     y = y(1:sz(1),1:sz(2));

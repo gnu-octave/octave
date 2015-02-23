@@ -117,9 +117,9 @@ function dump_all_demos (directory, fid, fmt)
       fprintf (fid, "\ntry\n");
       ## First check if the file already exists, skip demo if found
       fprintf (fid, " if (! exist ('%s', 'file'))\n", fn);
-      ## Invoke the ancient, deprecated random seed
-      ## generators, but there is an initialization mismatch with the more modern
-      ## generators reported here (https://savannah.gnu.org/bugs/?42557).
+      ## Invoke the ancient, deprecated random seed generators, but there is an
+      ## initialization mismatch with the more modern generators reported
+      ## here (https://savannah.gnu.org/bugs/?42557).
       fprintf (fid, "  rand ('seed', 1);\n");
       fprintf (fid, "  tic ();\n");
       fprintf (fid, "  %s\n\n", demos{d});
@@ -133,7 +133,7 @@ function dump_all_demos (directory, fid, fmt)
       fprintf (fid, "      t_print = toc ();\n");
       fprintf (fid, "      fprintf ('[%%f %%f] done\\n',t_plot, t_print);\n");
       fprintf (fid, "  end\n");
-      # Temporary fix for cruft accumulating in figure window.
+      ## Temporary fix for cruft accumulating in figure window.
       fprintf (fid, "  close ('all');\n");
       fprintf (fid, " else\n");
       fprintf (fid, "   fprintf ('File ""%s"" already exists.\\n');\n", fn);

@@ -90,7 +90,7 @@ function playaudio (name, ext)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error playaudio ()
 %!error playaudio (1,2,3)
 %!error <X must be a vector> playaudio (magic (3))

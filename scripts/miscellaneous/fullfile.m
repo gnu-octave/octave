@@ -102,14 +102,14 @@ endfunction
 
 %!assert (fullfile ("x", "y", {"c", "d"}), {[xfsyfs "c"], [xfsyfs "d"]})
 
-%% Windows specific - drive letters and file sep type
+## Windows specific - drive letters and file sep type
 %!test
 %! if (ispc)
 %!   assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
 %!           ['A:\' xfsyfs]);
 %! endif
 
-%% Windows specific - drive letters and file sep type, cell array
+## Windows specific - drive letters and file sep type, cell array
 %!test
 %! if (ispc)
 %!  tmp = fullfile ({"\\\/B:\//", "A://c", "\\\C:/g/h/i/j\/"});

@@ -131,7 +131,7 @@ endfunction
 %! ret(:,:,2) = ppval (pp, breaks');
 %! assert (ppval (pp, [breaks',breaks']), ret)
 
-%% Test input validation
+## Test input validation
 %!error ppval ()
 %!error ppval (1)
 %!error ppval (1,2,3)

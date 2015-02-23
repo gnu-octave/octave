@@ -55,7 +55,8 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   endif
 
   if (! isempty (parent))
-    if (! isempty (parent_type) && isempty (find (strcmpi (get (parent, "type"), parent_type))))
+    if (! isempty (parent_type)
+        && isempty (find (strcmpi (get (parent, "type"), parent_type))))
       error ("%s: invalid parent, the parent type must be: %s", ...
              who, sprintf ("%s, ", parent_type{:})(1:end-2));
     endif

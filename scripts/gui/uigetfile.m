@@ -26,6 +26,7 @@
 ##
 ## Open a GUI dialog for selecting a file and return the filename @var{fname},
 ## the path to this file @var{fpath}, and the filter index @var{fltidx}.
+##
 ## @var{flt} contains a (list of) file filter string(s) in one of the following
 ## formats:
 ##
@@ -66,23 +67,17 @@
 
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
-  funcname = __get_funcname__ (mfilename ());
-
   if (nargin > 7)
     error ("uigetfile: number of input arguments must be less than eight");
   endif
 
-  defaultvals = {cell(0, 2),         # File Filter
-                 "Open File",        # Dialog Title
-                 "",                 # Default file name
-                 [240, 120],         # Dialog Position (pixel x/y)
-                 "off",              # MultiSelect on/off
-                 pwd};               # Default directory
-
-  outargs = cell (6, 1);
-  for i = 1 : 6
-    outargs{i} = defaultvals{i};
-  endfor
+  ## Preset default values
+  outargs = {cell(0, 2),         # File Filter
+             "Open File",        # Dialog Title
+             "",                 # Default file name
+             [240, 120],         # Dialog Position (pixel x/y)
+             "off",              # MultiSelect on/off
+             pwd};               # Default directory
 
   idx1 = idx2 = [];
   if (length (varargin) > 0)
@@ -150,7 +145,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   endif
 
   if (stridx)
-    ## we have string arguments ("position" or "multiselect")
+    ## string arguments ("position" or "multiselect")
 
     ## check for even number of remaining arguments, prop/value pair(s)
     if (rem (nargin - stridx + 1, 2))
@@ -181,6 +176,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   if (isguirunning ())
     [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
   else
+    funcname = __get_funcname__ (mfilename ());
     [retfile, retpath, retindex] = feval (funcname, outargs{:});
   endif
 

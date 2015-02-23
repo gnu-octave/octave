@@ -100,7 +100,7 @@ endfunction
 
 %!assert (powerset([]), {});  # always return a cell array
 
-%% Test input validation
+## Test input validation
 %!error powerset ()
 %!error powerset (1,2,3)
 %!error <expecting second argument to be "rows"> powerset (1, "cols")

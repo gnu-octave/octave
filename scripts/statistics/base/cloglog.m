@@ -51,7 +51,7 @@ endfunction
 %!assert (cloglog (1), Inf)
 %!assert (cloglog (1/e), 0)
 
-%% Test input validation
+## Test input validation
 %!error cloglog ()
 %!error cloglog (1, 2)
 

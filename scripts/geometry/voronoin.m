@@ -75,7 +75,7 @@ function [C, F] = voronoin (pts, options)
 endfunction
 
 
-%% FIXME: Need functional tests
+## FIXME: Need functional tests
 
 %!error voronoin ()
 %!error voronoin (1,2,3)

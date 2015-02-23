@@ -34,7 +34,7 @@
 ## of children.  This causes @var{hax} to be displayed on top of any other
 ## axes objects (Z-order stacking).
 ##
-## @seealso {gca, set, get}
+## @seealso{gca, set, get}
 ## @end deftypefn
 
 ## Author: jwe
@@ -61,7 +61,7 @@ function h = axes (varargin)
       hover = hax(idx);
       do_restack = true;
     endif
-    
+
     ## Create an axes object.
     htmp = __go_axes__ (cf, varargin{:});
     if (__is_handle_visible__ (htmp))

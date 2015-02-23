@@ -184,7 +184,7 @@ endfunction
 %!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
 %!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
 
-%% Test input validation
+## Test input validation
 %!error optimset ("1_Parameter")
 %!error <no defaults for function> optimset ("%NOT_A_REAL_FUNCTION_NAME%")
 %!warning <unrecognized option: foobar> optimset ("foobar", 13);

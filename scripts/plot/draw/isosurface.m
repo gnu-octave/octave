@@ -152,7 +152,8 @@ function varargout = isosurface (varargin)
     if (nargout == 2)
       warning ("isosurface: colors will be calculated, but no output argument to receive it.");
     endif
-    [fvc.faces, fvc.vertices, fvc.facevertexcdata] = __marching_cube__ (x, y, z, val, iso, colors);
+    [fvc.faces, fvc.vertices, fvc.facevertexcdata] = ...
+      __marching_cube__ (x, y, z, val, iso, colors);
   else
     [fvc.faces, fvc.vertices] = __marching_cube__ (x, y, z, val, iso);
   endif

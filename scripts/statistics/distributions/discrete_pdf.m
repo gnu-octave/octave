@@ -52,7 +52,7 @@ function pdf = discrete_pdf (x, v, p)
     pdf = NaN (size (x));
   endif
 
-  k = !isnan (x);
+  k = ! isnan (x);
   [vs, vi] = sort (v(:));
   pdf(k) = p([0 ; vi](lookup (vs, x(k), 'm') + 1) + 1);
 
@@ -66,12 +66,12 @@ endfunction
 %! y = [0 0.1 0.1 0.1 0];
 %!assert (discrete_pdf ([x, NaN], v, p), [y, NaN], 5*eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (discrete_pdf (single ([x, NaN]), v, p), single ([y, NaN]), 5*eps ("single"))
 %!assert (discrete_pdf ([x, NaN], single (v), p), single ([y, NaN]), 5*eps ("single"))
 %!assert (discrete_pdf ([x, NaN], v, single (p)), single ([y, NaN]), 5*eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error discrete_pdf ()
 %!error discrete_pdf (1)
 %!error discrete_pdf (1,2)

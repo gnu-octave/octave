@@ -103,7 +103,7 @@ endfunction
 %! [d, n, e] = fileparts (".ext");
 %! assert (strcmp (d, "") && strcmp (n, "") && strcmp (e, ".ext"));
 
-%% Test input validation
+## Test input validation
 %!error fileparts ()
 %!error fileparts (1,2)
 %!error <FILENAME must be a single string> fileparts (1)

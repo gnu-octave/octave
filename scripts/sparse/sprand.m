@@ -65,13 +65,13 @@ function s = sprand (m, n, d, rc)
 endfunction
 
 
-%% Test 3-input calling form
+## Test 3-input calling form
 %!test
 %! s = sprand (4, 10, 0.1);
 %! assert (size (s), [4, 10]);
 %! assert (nnz (s) / numel (s), 0.1);
 
-%% Test 4-input calling form
+## Test 4-input calling form
 %!test
 %! d = rand ();
 %! s1 = sprand (100, 100, d, 0.4);
@@ -84,7 +84,7 @@ endfunction
 %! assert (nnz (s2) / (100*100), d, 0.02);
 %! assert (svd (s3)', [5 4 3 2], sqrt (eps));
 
-%% Test 1-input calling form
+## Test 1-input calling form
 %!test
 %! s = sprand (sparse ([1 2 3], [3 2 3], [2 2 2]));
 %! [i, j, v] = find (s);
@@ -92,7 +92,11 @@ endfunction
 %! assert (sort (j), [2 3 3]');
 %! assert (all (v > 0 & v < 1));
 
-%% Test input validation
+## Test very large, very low density matrix doesn't fail
+%!test
+%! s = sprand (1e6, 1e6, 1e-7);
+
+## Test input validation
 %!error sprand ()
 %!error sprand (1, 2)
 %!error sprand (1, 2, 3, 4)
@@ -107,8 +111,4 @@ endfunction
 %!error <RC must be a scalar or vector> sprand (2, 2, 0.2, ones (3,3))
 %!error <RC must be between 0 and 1> sprand (2, 2, 0.2, -1)
 %!error <RC must be between 0 and 1> sprand (2, 2, 0.2, 2)
-
-%% Test very large, very low density matrix doesn't fail
-%!test
-%! s = sprand (1e6, 1e6, 1e-7);
 

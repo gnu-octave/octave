@@ -709,12 +709,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      && (columns (obj.cdata) == nc
                          && (rows (obj.cdata) == 1
                              || rows (obj.cdata) == 3)))
-                   ccol = cdat (:, i);
+                   ccol = cdat(:, i);
                  elseif (ndims (obj.cdata) == 2
                      && (rows (obj.cdata) == nc
                          && (columns (obj.cdata) == 1
                              || columns (obj.cdata) == 3)))
-                   ccol = cdat (i, :);
+                   ccol = cdat(i, :);
                  elseif (ndims (obj.cdata) == 3)
                    ccol = permute (cdat (:, i, :), [1, 3, 2]);
                  else
@@ -842,12 +842,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                    && (columns (obj.cdata) == nc
                        && (rows (obj.cdata) == 1
                            || rows (obj.cdata) == 3)))
-                 ccol = cdat (:, i);
+                 ccol = cdat(:, i);
                elseif (ndims (obj.cdata) == 2
                        && (rows (obj.cdata) == nc
                            && (columns (obj.cdata) == 1
                                || columns (obj.cdata) == 3)))
-                 ccol = cdat (i, :);
+                 ccol = cdat(i, :);
                elseif (ndims (obj.cdata) == 3)
                  ccol = permute (cdat (:, i, :), [1, 3, 2]);
                else
@@ -906,7 +906,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            if (isfield (obj, "linewidth"))
              lw = sprintf ("linewidth %f", obj.linewidth);
            else
-             lw  = "";
+             lw = "";
            endif
 
            [pt, pt2, obj] = gnuplot_pointtype (obj);
@@ -938,7 +938,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
            facesame = true;
            if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-               && !strcmp (obj.markerfacecolor, "none"))
+               && ! strcmp (obj.markerfacecolor, "none"))
              if (strcmp (obj.markerfacecolor, "auto")
                  || ! isnumeric (obj.markerfacecolor)
                  || (isnumeric (obj.markerfacecolor)
@@ -988,8 +988,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            endif
 
            if (isfield (obj, "markeredgecolor")
-               && !strcmp (obj.markeredgecolor, "none"))
-             if (facesame && !isempty (pt)
+               && ! strcmp (obj.markeredgecolor, "none"))
+             if (facesame && ! isempty (pt)
                  && (strcmp (obj.markeredgecolor, "auto")
                      || ! isnumeric (obj.markeredgecolor)
                      || (isnumeric (obj.markeredgecolor)
@@ -1013,7 +1013,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                                           colorspec);
                endif
              else
-               if (!isempty (style))
+               if (! isempty (style))
                  if (length (tmpwith) < sidx || isempty (tmpwith{sidx}))
                    tmpwith{sidx} = sprintf ("with %s %s %s %s",
                                             style, lw, lt,
@@ -1022,7 +1022,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  sidx ++;
                endif
 
-               if (!isempty (pt))
+               if (! isempty (pt))
                  if (! mono)
                    if (strcmp (obj.markeredgecolor, "auto"))
                      colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
@@ -1208,7 +1208,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           fputs (plot_stream, "set style increment default;\n");
           if (flat_interp_edge && facecolor_none_or_white)
             withpm3d = false;
-            withclause{data_idx} = sprintf ("with %s palette", style {1});
+            withclause{data_idx} = sprintf ("with %s palette", style{1});
             fputs (plot_stream, "unset pm3d\n");
             if (all (obj.facecolor == 1))
               hidden_removal = true;
@@ -1236,7 +1236,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             fprintf (plot_stream,
                      "set pm3d explicit at s %s %s corners2color c3;\n",
                      interp_str, dord);
-          elseif (!facecolor_none_or_white)
+          elseif (! facecolor_none_or_white)
             if (strcmp (obj.edgecolor, "none"))
               if (__gnuplot_has_feature__ ("transparent_surface")
                   && isscalar (obj.facealpha))
@@ -1404,7 +1404,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
   ## This is need to prevent warnings for rotations in 3D plots, while
   ## allowing colorbars with contours.
-  if (nd == 2 || (data_idx > 1 && !view_map))
+  if (nd == 2 || (data_idx > 1 && ! view_map))
     fputs (plot_stream, "set pm3d implicit;\n");
   else
     fputs (plot_stream, "set pm3d explicit;\n");
@@ -1776,12 +1776,13 @@ function x = flip (x)
 endfunction
 
 function spacing_spec = create_spacingspec (f, s, gp_term)
-  # The gnuplot default font size is 10, and default spacing is 1.25.
-  # gnuplot has a concept of a figure global font, and sizes everything
-  # appropriate to that, including the legend spacing.
-  #
-  # This means that if an alternative size is used, gnuplot will use an
-  # inappropriate spacing in the legend by default.
+  ## The gnuplot default font size is 10, and default spacing is 1.25.
+  ## gnuplot has a concept of a figure global font, and sizes everything
+  ## appropriate to that, including the legend spacing.
+  ##
+  ## This means that if an alternative size is used, gnuplot will use an
+  ## inappropriate spacing in the legend by default.
+  ##
   ## FIXME: Are fractional spacing specifications allowed?  Or should this
   ##        number be rounded?
   spc = s / 10 * 1.25;
@@ -1856,21 +1857,21 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
   sidx = 1;
   if (isempty (errbars))
     if (isempty (lt))
-      style {sidx} = "";
+      style{sidx} = "";
     else
-      style {sidx} = "lines";
+      style{sidx} = "lines";
     endif
 
     facesame = true;
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-        && !strcmp (obj.markerfacecolor, "none"))
+        && ! strcmp (obj.markerfacecolor, "none"))
       if (strcmp (obj.markerfacecolor, "auto")
           || ! isnumeric (obj.markerfacecolor)
           || (isnumeric (obj.markerfacecolor)
               && isequal (color, obj.markerfacecolor)))
         if (! isempty (pt2))
           fprintf (plot_stream, " pointtype %s", pt2);
-          style {sidx} = strcat (style{sidx}, "points");
+          style{sidx} = strcat (style{sidx}, "points");
         endif
         if (isfield (obj, "markersize"))
           fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
@@ -1881,7 +1882,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           fputs (plot_stream, " default");
         endif
         fputs (plot_stream, ";\n");
-        if (! isempty (style {sidx}))
+        if (! isempty (style{sidx}))
           sidx ++;
           idx ++;
         else
@@ -1894,7 +1895,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
                    round (255*obj.markerfacecolor));
         endif
         if (! isempty (pt2))
-          style {sidx} = "points";
+          style{sidx} = "points";
           fprintf (plot_stream, " pointtype %s", pt2);
         endif
         if (isfield (obj, "markersize"))
@@ -1903,16 +1904,16 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
       endif
     endif
     if (isfield (obj, "markeredgecolor")
-        && !strcmp (obj.markeredgecolor, "none"))
-      if (facesame && !isempty (pt)
+        && ! strcmp (obj.markeredgecolor, "none"))
+      if (facesame && ! isempty (pt)
           && (strcmp (obj.markeredgecolor, "auto")
               || ! isnumeric (obj.markeredgecolor)
               || (isnumeric (obj.markeredgecolor)
                   && isequal (color, obj.markeredgecolor))))
-        if (sidx == 1 && ((length (style {sidx}) == 5
-            && strncmp (style{sidx}, "lines", 5)) || isempty (style {sidx})))
+        if (sidx == 1 && ((length (style{sidx}) == 5
+            && strncmp (style{sidx}, "lines", 5)) || isempty (style{sidx})))
           if (! isempty (pt))
-            style {sidx} = strcat (style{sidx}, "points");
+            style{sidx} = strcat (style{sidx}, "points");
             fprintf (plot_stream, " pointtype %s", pt);
           endif
           if (isfield (obj, "markersize"))
@@ -1924,7 +1925,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           fputs (plot_stream, " default");
         endif
         fputs (plot_stream, ";\n");
-        if (!isempty (style {sidx}))
+        if (! isempty (style{sidx}))
           sidx ++;
           idx ++;
         else
@@ -1942,7 +1943,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           endif
         endif
         if (! isempty (pt))
-          style {sidx} = "points";
+          style{sidx} = "points";
           fprintf (plot_stream, " pointtype %s", pt);
         endif
         if (isfield (obj, "markersize"))
@@ -1955,7 +1956,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     fputs (plot_stream, " pointtype 0");
   endif
 
-  if (! found_style && isempty (style {1}))
+  if (! found_style && isempty (style{1}))
     fputs (plot_stream, " default");
   endif
 
@@ -2419,10 +2420,10 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
     endif
   endfor
 
-  ## Prepend @ to things  things like _0^x or _{-100}^{100} for
-  ## alignment But need to put the shorter of the two arguments first.
-  ## Carful of nested {} and unprinted characters when defining
-  ## shortest.. Don't have to worry about things like ^\theta as they
+  ## Prepend @ to things like _0^x or _{-100}^{100} for alignment.
+  ## But need to put the shorter of the two arguments first.
+  ## Careful of nested {} and unprinted characters when defining
+  ## shortest..  Don't have to worry about things like ^\theta as they
   ## are already converted to ^{/Symbol q}.
 
   ## FIXME: This is a mess... Is it worth it just for a "@" character?
@@ -2504,7 +2505,7 @@ endfunction
 function l = length_string (s)
   l = length (s) - length (strfind (s,'{')) - length (strfind (s,'}'));
   m = regexp (s, '/([\w-]+|[\w-]+=\d+)', 'matches');
-  if (!isempty (m))
+  if (! isempty (m))
     l = l - sum (cellfun ("length", m));
   endif
 endfunction
@@ -2542,7 +2543,7 @@ function sym = __setup_sym_table__ ()
   sym.lambda = '{/Symbol l}';
   sym.mu = '{/Symbol m}';
   sym.nu = '{/Symbol n}';
-  sym.o =  '{/Symbol o}';
+  sym.o = '{/Symbol o}';
   sym.pi = '{/Symbol p}';
   sym.theta = '{/Symbol q}';
   sym.rho = '{/Symbol r}';
@@ -2618,9 +2619,9 @@ function sym = __setup_sym_table__ ()
   sym.diamond = '{/Symbol \340}';          # Not in OpenGL
   sym.copyright = '{/Symbol \343}';
   sym.lfloor = '{/Symbol \353}';
-  sym.lceil  = '{/Symbol \351}';
+  sym.lceil = '{/Symbol \351}';
   sym.rfloor = '{/Symbol \373}';
-  sym.rceil  = '{/Symbol \371}';
+  sym.rceil = '{/Symbol \371}';
   sym.int = '{/Symbol \362}';
 endfunction
 

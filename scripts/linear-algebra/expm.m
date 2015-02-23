@@ -149,7 +149,7 @@ endfunction
 %!assert (full (expm (eye (3))), expm (full (eye (3))))
 %!assert (full (expm (10*eye (3))), expm (full (10*eye (3))), 8*eps)
 
-%% Test input validation
+## Test input validation
 %!error expm ()
 %!error expm (1, 2)
 %!error <expm: A must be a square matrix> expm ([1 0;0 1; 2 2])

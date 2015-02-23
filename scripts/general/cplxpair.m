@@ -92,7 +92,7 @@ function y = cplxpair (z, tol, dim)
   perm = [dim:nd, 1:dim-1];
   z = permute (z, perm);
   sz = size (z);
-  n = sz (1);
+  n = sz(1);
   m = prod (sz) / n;
   z = reshape (z, n, m);
 

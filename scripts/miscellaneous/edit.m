@@ -582,7 +582,7 @@ endfunction
 %! edit author none
 %! edit email none
 %! edit license none
-%! edit ("editinplace", !s.editinplace)
+%! edit ("editinplace", ! s.editinplace)
 %! if (s.mode(1) == "a")
 %!   edit mode sync
 %! else

@@ -111,12 +111,14 @@ function retval = __plt__ (caller, h, varargin)
           endif
           if (y_set)
             tmp = __plt2__ (h, x, y, options, properties);
-            [hlgnd, tlgnd, setlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
+            [hlgnd, tlgnd, setlgnd] = ...
+              __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
             properties = {};
             retval = [retval; tmp];
           else
             tmp = __plt1__ (h, x, options, properties);
-            [hlgnd, tlgnd, setlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
+            [hlgnd, tlgnd, setlgnd] = ...
+               __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
             properties = {};
             retval = [retval; tmp];
           endif
@@ -129,7 +131,8 @@ function retval = __plt__ (caller, h, varargin)
         if (y_set)
           options = __pltopt__ (caller, {""});
           tmp = __plt2__ (h, x, y, options, properties);
-          [hlgnd, tlgnd, setlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
+          [hlgnd, tlgnd, setlgnd] = ...
+            __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
           retval = [retval; tmp];
           x = next_arg;
           y_set = false;

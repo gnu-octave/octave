@@ -210,7 +210,7 @@ endfunction
 ## Exclusions in odd format
 %!assert (genvarname ("x", {"a", "b"; "x", "d"}), "x1")
 
-%% Test input validation
+## Test input validation
 %!error genvarname ()
 %!error genvarname (1,2,3)
 %!error <more than one STR is given, it must be a cellstr> genvarname (char ("a", "b", "c"))

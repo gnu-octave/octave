@@ -104,7 +104,8 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Description: Matlab style quantile function of a discrete/continuous distribution
+## Description: Matlab style quantile function of a discrete/continuous
+##              distribution.
 
 function q = quantile (x, p = [], dim, method = 5)
 
@@ -320,7 +321,7 @@ endfunction
 %! yexp = median (x, dim);
 %! assert (yobs, yexp);
 
-%% Test input validation
+## Test input validation
 %!error quantile ()
 %!error quantile (1, 2, 3, 4, 5)
 %!error quantile (['A'; 'B'], 10)

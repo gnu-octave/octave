@@ -162,7 +162,7 @@ endfunction
 %! b = ols (x, y);
 %! assert (b, [1.4, 2], 2*eps);
 
-%% Test input validation
+## Test input validation
 %!error ols ()
 %!error ols (1)
 %!error ols (1, 2, 3)

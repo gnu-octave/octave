@@ -74,7 +74,7 @@ endfunction
 %! assert (k, 12);
 %! assert (d, 1);
 
-%% Test input validation
+## Test input validation
 %!error unmkpp ()
 %!error unmkpp (1,2)
 %!error <piecewise polynomial structure> unmkpp (1)

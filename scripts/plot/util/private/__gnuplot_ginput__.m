@@ -117,7 +117,8 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
           endif
           fclear (istream);
         endwhile
-        [x(k), y(k), button(k), count] = sscanf (str{end}(8:end), "%f %f %d", "C");
+        [x(k), y(k), button(k), count] = ...
+          sscanf (str{end}(8:end), "%f %f %d", "C");
       endif
 
       if ([x(k), y(k), button(k)] == [0, 0, -1])

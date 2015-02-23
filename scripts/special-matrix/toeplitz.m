@@ -125,7 +125,7 @@ endfunction
 %!assert (toeplitz ([1, 2, 3], [1; -3; -5]), [1, -3, -5; 2, 1, -3; 3, 2, 1])
 %!assert (toeplitz ([1, 2, 3], [1; -3i; -5i]), [1, -3i, -5i; 2, 1, -3i; 3, 2, 1])
 
-%% Test input validation
+## Test input validation
 %!error toeplitz ()
 %!error toeplitz (1, 2, 3)
 %!error <C must be a vector> toeplitz ([1, 2; 3, 4])

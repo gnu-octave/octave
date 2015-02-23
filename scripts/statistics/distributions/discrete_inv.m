@@ -77,12 +77,12 @@ endfunction
 %! y = [NaN v(1) v(1) v(end/2) v(end) NaN];
 %!assert (discrete_inv ([x, NaN], v, p), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (discrete_inv (single ([x, NaN]), v, p), single ([y, NaN]), eps ("single"))
 %!assert (discrete_inv ([x, NaN], single (v), p), single ([y, NaN]), eps ("single"))
 %!assert (discrete_inv ([x, NaN], v, single (p)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error discrete_inv ()
 %!error discrete_inv (1)
 %!error discrete_inv (1,2)

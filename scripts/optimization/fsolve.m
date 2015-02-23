@@ -262,9 +262,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         ## FIXME: the original minpack used the following rescaling strategy:
         ##   dg = max (dg, jcn);
         ## but it seems not good if we start with a bad guess yielding Jacobian
-        ## columns with large norms that later decrease, because the corresponding
-        ## variable will still be overscaled. So instead, we only give the old
-        ## scaling a small momentum, but do not honor it.
+        ## columns with large norms that later decrease, because the
+        ## corresponding variable will still be overscaled. So instead, we only
+        ## give the old scaling a small momentum, but do not honor it.
 
         dg = max (0.1*dg, jcn);
       endif

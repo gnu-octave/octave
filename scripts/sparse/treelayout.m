@@ -32,7 +32,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
   if (nargin < 1 || nargin > 2 || nargout > 4)
     print_usage ();
   elseif (! isvector (tree) || rows (tree) != 1 || ! isnumeric (tree)
-          ||  any (tree > length (tree)) || any (tree < 0))
+          || any (tree > length (tree)) || any (tree < 0))
     error ("treelayout: the first input argument must be a vector of predecessors");
   else
     ## Make it a row vector.

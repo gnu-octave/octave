@@ -55,7 +55,7 @@
 
 function linkaxes (hax, optstr = "xy")
 
-  if  (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -78,7 +78,7 @@ function linkaxes (hax, optstr = "xy")
     endif
   endfor
 
-  switch  (optstr)
+  switch (optstr)
     case "x"
       hlink = linkprop (hax, "xlim");
     case "y"
@@ -160,7 +160,7 @@ endfunction
 %!   close ([hf1 hf2 hf3]);
 %!  end_unwind_protect
 
-%% Test input validation
+## Test input validation
 %!error linkaxes ()
 %!error linkaxes (1,2,3)
 %!error <HAX must be a vector of axes handles> linkaxes ([pi, e])

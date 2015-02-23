@@ -129,8 +129,8 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
       [output.data, output.fs] = wavread (fname);
     otherwise
       ## Assume the file is in ASCII format.
-      [output, delimiter, header_rows]  = ...
-          importdata_ascii (fname, delimiter, header_rows);
+      [output, delimiter, header_rows] = ...
+        importdata_ascii (fname, delimiter, header_rows);
   endswitch
 
   ## If there are any empty fields in the output structure, then remove them

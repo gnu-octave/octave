@@ -70,7 +70,7 @@ function retval = mahalanobis (x, y)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error mahalanobis ()
 %!error mahalanobis (1, 2, 3)
 %!error mahalanobis ('A', 'B')

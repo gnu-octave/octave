@@ -108,7 +108,7 @@ endfunction
 %!assert (ostrsplit (["a,bc";",de"], ",", true), {"a", "bc", "de "})
 %!assert (ostrsplit (["a,bc";",de"], ", ", true), {"a", "bc", "de"})
 
-%% Test input validation
+## Test input validation
 %!error ostrsplit ()
 %!error ostrsplit ("abc")
 %!error ostrsplit ("abc", "b", true, 4)

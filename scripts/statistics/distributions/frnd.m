@@ -44,7 +44,7 @@ function rnd = frnd (m, n, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (n))
+  if (! isscalar (m) || ! isscalar (n))
     [retval, m, n] = common_size (m, n);
     if (retval > 0)
       error ("frnd: M and N must be of common size or scalars");
@@ -66,13 +66,13 @@ function rnd = frnd (m, n, varargin)
       error ("frnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("frnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (m) && !isequal (size (m), sz))
+  if (! isscalar (m) && ! isequal (size (m), sz))
     error ("frnd: M and N must be scalar or of size SZ");
   endif
 
@@ -107,14 +107,14 @@ endfunction
 %!assert (size (frnd (1, 2, [4 1])), [4, 1])
 %!assert (size (frnd (1, 2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (frnd (1, 2)), "double")
 %!assert (class (frnd (single (1), 2)), "single")
 %!assert (class (frnd (single ([1 1]), 2)), "single")
 %!assert (class (frnd (1, single (2))), "single")
 %!assert (class (frnd (1, single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error frnd ()
 %!error frnd (1)
 %!error frnd (ones (3), ones (2))

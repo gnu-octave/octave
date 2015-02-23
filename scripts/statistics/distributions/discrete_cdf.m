@@ -48,7 +48,7 @@ function cdf = discrete_cdf (x, v, p)
     cdf = NaN (size (x));
   endif
 
-  k = !isnan (x);
+  k = ! isnan (x);
   [vs, vi] = sort (v);
   cdf(k) = [0 ; cumsum(p(vi))](lookup (vs, x(k)) + 1);
 
@@ -62,12 +62,12 @@ endfunction
 %! y = [0 0.1 0.6 1 1];
 %!assert (discrete_cdf ([x, NaN], v, p), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (discrete_cdf (single ([x, NaN]), v, p), single ([y, NaN]), 2*eps ("single"))
 %!assert (discrete_cdf ([x, NaN], single (v), p), single ([y, NaN]), 2*eps ("single"))
 %!assert (discrete_cdf ([x, NaN], v, single (p)), single ([y, NaN]), 2*eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error discrete_cdf ()
 %!error discrete_cdf (1)
 %!error discrete_cdf (1,2)

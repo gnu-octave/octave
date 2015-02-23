@@ -143,7 +143,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
         error ("mesh: X, C arguments must be real");
       endif
 
-      if (ismatrix (z) && !isvector (z) && !isscalar (z))
+      if (ismatrix (z) && ! isvector (z) && ! isscalar (z))
         [nr, nc] = size (z);
         x = 1:nc;
         y = (1:nr)';
@@ -159,7 +159,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
         error ("mesh: Z argument must be real");
       endif
 
-      if (ismatrix (z) && !isvector (z) && !isscalar (z))
+      if (ismatrix (z) && ! isvector (z) && ! isscalar (z))
         [nr, nc] = size (z);
         x = 1:nc;
         y = (1:nr)';

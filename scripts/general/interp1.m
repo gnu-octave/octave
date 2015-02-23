@@ -560,8 +560,8 @@ endfunction
 %!assert (isempty (interp1 (xp,yp,[],style)))
 %!assert (interp1 (xp,[yp',yp'],xi(:),style),...
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
-# %!assert (interp1 (xp,yp,xi,style),...
-# %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+#%!assert (interp1 (xp,yp,xi,style),...
+#%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
 %!error interp1 (1,1,1, style)
@@ -578,8 +578,8 @@ endfunction
 %!assert (isempty (interp1 (xp,yp,[],style)))
 %!assert (interp1 (xp,[yp',yp'],xi(:),style),...
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
-# %!assert (interp1 (xp,yp,xi,style),...
-# %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+#%!assert (interp1 (xp,yp,xi,style),...
+#%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
 %!error interp1 (1,1,1, style)
@@ -595,8 +595,8 @@ endfunction
 %!assert (isempty (interp1 (xp,yp,[],style)))
 %!assert (interp1 (xp,[yp',yp'],xi(:),style),...
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
-# %!assert (interp1 (xp,yp,xi,style),...
-# %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+#%!assert (interp1 (xp,yp,xi,style),...
+#%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
 %!error interp1 (1,1,1, style)
@@ -780,7 +780,7 @@ endfunction
 %!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "right"), [-2,0.5,4,3,1.5])
 %!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "left"), [-2,0.5,1,3,1.5])
 
-%% Test input validation
+## Test input validation
 %!error interp1 ()
 %!error interp1 (1,2,3,4,5,6,7)
 %!error <minimum of 2 points required> interp1 (1,1,1, "linear")

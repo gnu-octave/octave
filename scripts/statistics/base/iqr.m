@@ -85,10 +85,11 @@ endfunction
 %!assert (iqr (1:101), 50)
 %!assert (iqr (single (1:101)), single (50))
 
-%%!test
-%%! x = [1:100];
-%%! n = iqr (x, 0:10);
-%%! assert (n, [repmat(100, 1, 10), 1]);
+## FIXME: iqr throws horrible error when running across a dimension that is 1.
+%!test
+%! x = [1:100]';
+%! assert (iqr (x, 1), 50);
+%! assert (iqr (x', 2), 50);
 
 %!error iqr ()
 %!error iqr (1, 2, 3)

@@ -32,7 +32,7 @@ function pdf = exppdf (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (lambda))
+  if (! isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("exppdf: X and LAMBDA must be of common size or scalars");
@@ -69,11 +69,11 @@ endfunction
 %!assert (exppdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)])
 %!assert (exppdf ([x, NaN], 2), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (exppdf (single ([x, NaN]), 2), single ([y, NaN]))
 %!assert (exppdf ([x, NaN], single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error exppdf ()
 %!error exppdf (1)
 %!error exppdf (1,2,3)

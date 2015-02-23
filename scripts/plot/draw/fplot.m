@@ -208,7 +208,7 @@ endfunction
 %! assert (rows (x) == rows (y));
 %! assert (y, [cos(x), sin(x)], -2e-3);
 
-%% Test input validation
+## Test input validation
 %!error fplot (1)
 %!error fplot (1,2,3,4,5,6)
 %!error <FN must be a function handle> fplot (1, [0 1])

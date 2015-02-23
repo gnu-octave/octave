@@ -39,7 +39,7 @@ function inv = hygeinv (x, t, m, n)
     print_usage ();
   endif
 
-  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
+  if (! isscalar (t) || ! isscalar (m) || ! isscalar (n))
     [retval, x, t, m, n] = common_size (x, t, m, n);
     if (retval > 0)
       error ("hygeinv: X, T, M, and N must be of common size or scalars");
@@ -50,7 +50,8 @@ function inv = hygeinv (x, t, m, n)
     error ("hygeinv: X, T, M, and N must not be complex");
   endif
 
-  if (isa (x, "single") || isa (t, "single") || isa (m, "single") || isa (n, "single"))
+  if (isa (x, "single") || isa (t, "single")
+      || isa (m, "single") || isa (n, "single"))
     inv = NaN (size (x), "single");
   else
     inv = NaN (size (x));
@@ -91,14 +92,14 @@ endfunction
 %!assert (hygeinv (x, 4, 2, 5), [NaN NaN NaN NaN NaN])
 %!assert (hygeinv ([x(1:2) NaN x(4:5)], 4, 2, 2), [NaN 0 NaN 2 NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (hygeinv ([x, NaN], 4, 2, 2), [NaN 0 1 2 NaN NaN])
 %!assert (hygeinv (single ([x, NaN]), 4, 2, 2), single ([NaN 0 1 2 NaN NaN]))
 %!assert (hygeinv ([x, NaN], single (4), 2, 2), single ([NaN 0 1 2 NaN NaN]))
 %!assert (hygeinv ([x, NaN], 4, single (2), 2), single ([NaN 0 1 2 NaN NaN]))
 %!assert (hygeinv ([x, NaN], 4, 2, single (2)), single ([NaN 0 1 2 NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error hygeinv ()
 %!error hygeinv (1)
 %!error hygeinv (1,2)

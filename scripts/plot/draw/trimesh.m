@@ -109,7 +109,7 @@ endfunction
 %! tri = delaunay (x(:), y(:));
 %! trimesh (tri, x(:), y(:), z(:));
 
-%% Test input validation
+## Test input validation
 %!error trimesh ()
 %!error trimesh (1)
 %!error trimesh (1,2)

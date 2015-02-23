@@ -88,7 +88,7 @@ endfunction
 %!assert (isempty (magic (0)))
 %!assert (magic (1), 1)
 
-%% Test input validation
+## Test input validation
 %!error magic ()
 %!error magic (1, 2)
 %!error <N must be a positive integer not equal to 2> magic (1.5)

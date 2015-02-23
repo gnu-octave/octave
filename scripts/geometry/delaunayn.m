@@ -96,8 +96,8 @@ endfunction
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
 %! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)), [1,2,3,4;1,2,4,5])
 
-%% FIXME: Need tests for delaunayn
+## FIXME: Need tests for delaunayn
 
-%% Input validation tests
+## Input validation tests
 %!error delaunayn ()
 

@@ -163,7 +163,7 @@ function [q, err] = quadgk (f, a, b, varargin)
             elseif (strcmpi (str, "waypoints"))
               waypoints = varargin{idx++} (:);
               if (isreal (waypoints))
-                waypoints (waypoints < a | waypoints > b) = [];
+                waypoints(waypoints < a | waypoints > b) = [];
               endif
             elseif (strcmpi (str, "maxintervalcount"))
               maxint = varargin{idx++};

@@ -35,7 +35,7 @@ function inv = geoinv (x, p)
     print_usage ();
   endif
 
-  if (!isscalar (p))
+  if (! isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
       error ("geoinv: X and P must be of common size or scalars");
@@ -72,12 +72,12 @@ endfunction
 %!assert (geoinv (x, 0.5*[1 -1 NaN 4 1]), [NaN NaN NaN NaN NaN])
 %!assert (geoinv ([x(1:2) NaN x(4:5)], 0.5), [NaN 0 NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (geoinv ([x, NaN], 0.5), [NaN 0 1 Inf NaN NaN])
 %!assert (geoinv (single ([x, NaN]), 0.5), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (geoinv ([x, NaN], single (0.5)), single ([NaN 0 1 Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error geoinv ()
 %!error geoinv (1)
 %!error geoinv (1,2,3)

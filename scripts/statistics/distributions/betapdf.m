@@ -33,7 +33,7 @@ function pdf = betapdf (x, a, b)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("betapdf: X, A, and B must be of common size or scalars");
@@ -102,21 +102,21 @@ endfunction
 %!assert (betapdf (x, 1, 2*[0 NaN 1 1 1]), [NaN NaN y(3:5)])
 %!assert (betapdf ([x, NaN], 1, 2), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (betapdf (single ([x, NaN]), 1, 2), single ([y, NaN]))
 %!assert (betapdf ([x, NaN], single (1), 2), single ([y, NaN]))
 %!assert (betapdf ([x, NaN], 1, single (2)), single ([y, NaN]))
 
-%% Beta (1/2,1/2) == arcsine distribution
+## Beta (1/2,1/2) == arcsine distribution
 %!test
 %! x = rand (10,1);
 %! y = 1./(pi * sqrt (x.*(1-x)));
 %! assert (betapdf (x, 1/2, 1/2), y, 50*eps);
 
-%% Test large input values to betapdf
+## Test large input values to betapdf
 %!assert (betapdf (0.5, 1000, 1000), 35.678, 1e-3)
 
-%% Test input validation
+## Test input validation
 %!error betapdf ()
 %!error betapdf (1)
 %!error betapdf (1,2)

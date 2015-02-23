@@ -87,7 +87,7 @@ endfunction
 %! assert (shift (m, 1), [c; a; b]);
 %! assert (shift (m, -2), [c; a; b]);
 
-%% Test input validation
+## Test input validation
 %!error shift ()
 %!error shift (1, 2, 3, 4)
 %!error shift ([], 1)

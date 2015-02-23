@@ -575,7 +575,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
       if (! isempty(__code))
         try
           ## FIXME: Must check for embedded test functions, which cause
-          ## segfaults, until issues with subfunctions in functions are resolved.
+          ## segfaults, until issues with subfunctions in functions are fixed.
           embed_func = regexp (__code, '^\s*function ', 'once', 'lineanchors');
           if (isempty (embed_func))
             eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
@@ -820,7 +820,7 @@ endfunction
 %!test a = 3;             # assign to a shared variable
 %!test assert (a, 3)      # variable should equal 3
 %!shared b,c              # replace shared variables
-%!test assert (!exist ("a", "var"));  # a no longer exists
+%!test assert (! exist ("a", "var"));  # a no longer exists
 %!test assert (isempty (b));   # variables start off empty
 %!shared a,b,c            # recreate a shared variable
 %!test assert (isempty (a));   # value is empty even if it had a previous value
@@ -829,7 +829,7 @@ endfunction
 %!test c=6;               # update a value
 %!test assert ([a,b,c], [1,2,6]); # show that the update sticks
 %!shared                  # clear all shared variables
-%!test assert (!exist ("a", "var")) # show that they are cleared
+%!test assert (! exist ("a", "var")) # show that they are cleared
 %!shared a,b,c            # support for initializer shorthand
 %! a=1; b=2; c=4;
 %!shared                  # clear all shared variables for remainder of tests
@@ -889,7 +889,7 @@ endfunction
 %! and it stays as a comment even through continuation lines
 %! which means that it works well with commenting out whole tests
 
-%% Test test() input validation
+## Test test() input validation
 %!error <NAME must be a string> test (1)
 %!error <second argument must be a string> test ("ls", 1)
 %!error test ([], "normal")

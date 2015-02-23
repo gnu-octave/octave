@@ -115,7 +115,7 @@ endfunction
 %!assert (addtodate ([d;d+1], 1, "month"), [d+31;d+1+31])
 %!assert (addtodate ([d d+1], 1, "month"), [d+31 d+1+31])
 
-%% Test input validation
+## Test input validation
 %!error addtodate ()
 %!error addtodate (1)
 %!error addtodate (1,2)

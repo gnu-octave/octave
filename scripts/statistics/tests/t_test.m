@@ -43,7 +43,7 @@
 
 function [pval, t, df] = t_test (x, m, alt)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -60,7 +60,7 @@ function [pval, t, df] = t_test (x, m, alt)
   cdf = tcdf (t, df);
 
   if (nargin == 2)
-    alt  = "!=";
+    alt = "!=";
   endif
 
   if (! ischar (alt))

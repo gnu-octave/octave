@@ -35,7 +35,7 @@ function cdf = expcdf (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (lambda))
+  if (! isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("expcdf: X and LAMBDA must be of common size or scalars");
@@ -75,12 +75,12 @@ endfunction
 %!assert (expcdf (x, 2), y)
 %!assert (expcdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (expcdf ([x, NaN], 2), [y, NaN])
 %!assert (expcdf (single ([x, NaN]), 2), single ([y, NaN]))
 %!assert (expcdf ([x, NaN], single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error expcdf ()
 %!error expcdf (1)
 %!error expcdf (1,2,3)

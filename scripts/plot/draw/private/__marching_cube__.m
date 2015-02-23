@@ -98,12 +98,13 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     print_usage ();
   endif
 
-  if (!isnumeric (xx) || !isnumeric (yy) || !isnumeric (zz) || !isnumeric (c) || ...
-    ndims (xx) != 3 || ndims (yy) != 3 || ndims (zz) != 3 || ndims (c) != 3)
+  if (! isnumeric (xx) || ! isnumeric (yy) || ! isnumeric (zz)
+      || ! isnumeric (c) || ndims (xx) != 3 || ndims (yy) != 3
+      || ndims (zz) != 3 || ndims (c) != 3)
     error ("__marching_cube__: XX, YY, ZZ, C must be matrices of dim 3");
   endif
 
-  if (!size_equal (xx, yy, zz, c))
+  if (! size_equal (xx, yy, zz, c))
     error ("__marching_cube__: XX, YY, ZZ, C must be of equal size");
   endif
 
@@ -111,12 +112,12 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     error ("__marching_cube__: grid size must be at least 2x2x2");
   endif
 
-  if (!isscalar (iso))
+  if (! isscalar (iso))
     error ("__marching_cube__: ISO must be scalar value");
   endif
 
   if (nargin == 6)
-    if ( !isnumeric (colors) || ndims (colors) != 3 || size (colors) != size (c) )
+    if ( ! isnumeric (colors) || ndims (colors) != 3 || size (colors) != size (c) )
       error ( "COLORS must be a matrix of dim 3 and of same size as C" );
     endif
     calc_cols = true;
@@ -146,7 +147,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   endfor
 
   cedge = edge_table(cc+1); # assign the info about intersected edges
-  id =  find (cedge); # select only voxels which are intersected
+  id = find (cedge); # select only voxels which are intersected
   if (isempty (id))
     T = p = col = [];
     return;
@@ -184,7 +185,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   for jj=1:3:15
     id_ = find (tri(:, jj)>0);
     p = [id_, lindex*ones(rows (id_), 1),tri(id_, jj:jj+2)];
-    if (!isempty (p))
+    if (! isempty (p))
       p1 = sub2ind (size (pp), p(:,1), p(:,2), p(:,3));
       p2 = sub2ind (size (pp), p(:,1), p(:,2), p(:,4));
       p3 = sub2ind (size (pp), p(:,1), p(:,2), p(:,5));

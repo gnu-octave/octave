@@ -46,11 +46,11 @@ endfunction
 %! x = [-1 0 0.5 1 2];
 %!assert (stdnormal_inv (x), [NaN -Inf 0 Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (stdnormal_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN])
 %!assert (stdnormal_inv (single ([x, NaN])), single ([NaN -Inf 0 Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error stdnormal_inv ()
 %!error stdnormal_inv (1,2)
 %!error stdnormal_inv (i)

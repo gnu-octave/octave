@@ -98,7 +98,7 @@ endfunction
 %! [a,b] = bandwidth (ones (5,5));
 %! assert ([a,b] == [4,4]);
 
-%% Test input validation
+## Test input validation
 %!error bandwidth ()
 %!error bandwidth (1,2,3)
 %!error [a,b,c] = bandwidth (ones (2))

@@ -84,7 +84,7 @@ endfunction
 %! A = rand (10);
 %! assert (normest (A), norm (A), 1e-6);
 
-%% Test input validation
+## Test input validation
 %!error normest ()
 %!error normest (1, 2, 3)
 %!error normest ([true true])

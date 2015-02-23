@@ -83,7 +83,7 @@
 ##
 ## Example:
 ##
-## @example
+## @smallexample
 ## strsplit ("a foo b,bar c", ",|\\s|foo|bar", "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
@@ -120,7 +120,7 @@
 ##             [1,5] =
 ##             [1,6] = c
 ##           @}
-## @end example
+## @end smallexample
 ##
 ## @seealso{ostrsplit, strjoin, strtok, regexp}
 ## @end deftypefn
@@ -280,13 +280,13 @@ endfunction
 %! assert (s, {"hello", "world"});
 %! assert (m, {" \t "});
 
-%% Compatibility
+## Compatibility
 %! assert (strsplit ("", "a"), {""})
 %! assert (strsplit ("a", "a"), {"", ""})
 %! assert (strsplit ("aa", "a"), {"", ""})
 %! assert (strsplit ("aaa", "a"), {"", ""})
 
-%% Test input validation
+## Test input validation
 %!error strsplit ()
 %!error strsplit ("abc", "b", true, 4)
 %!error <S and DEL must be string values> strsplit (123, "b")

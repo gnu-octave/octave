@@ -118,12 +118,13 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     endif
   endif
 
-  if (! (isa (year, "double") && isa (month, "double") && isa (day, "double") &&
-         isa (hour, "double") && isa (minute, "double") && isa (second, "double")))
+  if (! (isa (year, "double") && isa (month, "double")
+         && isa (day, "double") && isa (hour, "double")
+         && isa (minute, "double") && isa (second, "double")))
     error ("datenum: all inputs must be of class double");
   endif
 
-  month(month<1) = 1;  # For compatibility.  Otherwise allow negative months.
+  month(month < 1) = 1;  # For compatibility.  Otherwise allow negative months.
 
   ## Treat fractional months, by converting the fraction to days
   if (floor (month) != month)
@@ -208,7 +209,7 @@ endfunction
 ## Test string input with format string
 %!assert (datenum ("5-19, 2001", "mm-dd, yyyy"), 730990)
 
-%% Test input validation
+## Test input validation
 %!error datenum ()
 %!error datenum (1,2,3,4,5,6,7)
 %!error <expected date vector containing> datenum ([1, 2])

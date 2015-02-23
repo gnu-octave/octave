@@ -526,8 +526,8 @@ endfunction
 %!
 %! N = 100;
 %! A = zeros (N, N);
-%! for i = 1 : N - 1 # form 1-D Laplacian matrix
-%!         A (i:i+1, i:i+1) = [2 -1; -1 2];
+%! for i = 1 : N - 1  # form 1-D Laplacian matrix
+%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
 %! endfor
 %! b = ones (N, 1);
 %! X = A \ b;  # X is the true solution

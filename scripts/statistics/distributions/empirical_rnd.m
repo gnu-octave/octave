@@ -57,13 +57,12 @@ endfunction
 %!assert (size (empirical_rnd (1:2, [4 1])), [4, 1])
 %!assert (size (empirical_rnd (1:2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (empirical_rnd (1:2, 1)), "double")
 %!assert (class (empirical_rnd (single (1:2), 1)), "single")
 
-%% Test input validation
+## Test input validation
 %!error empirical_rnd ()
 %!error empirical_rnd (ones (2), 1)
-%% test data verification
 %!error empirical_rnd (ones (2), 1, 1)
 

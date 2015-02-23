@@ -159,14 +159,14 @@ endfunction
 %! assert (size (s), [10, 10]);
 %! assert (nnz (s) / numel (s), 0.1, .01);
 
-%% Test 1-input calling form
+## Test 1-input calling form
 %!test
 %! s = sprandsym (sparse ([1 2 3], [3 2 3], [2 2 2]));
 %! [i, j] = find (s);
 %! assert (sort (i), [2 3]');
 %! assert (sort (j), [2 3]');
 
-%% Test input validation
+## Test input validation
 %!error sprandsym ()
 %!error sprandsym (1, 2, 3)
 %!error sprandsym (ones (3), 0.5)

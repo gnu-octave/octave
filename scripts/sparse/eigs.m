@@ -490,7 +490,7 @@ endfunction
 %!shared n, k, A, d0
 %! n = 20;
 %! k = 4;
-%! A =  sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
+%! A = sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
@@ -859,7 +859,7 @@ endfunction
 %!shared n, k, A, d0
 %! n = 20;
 %! k = 4;
-%! A =  full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]));
+%! A = full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]));
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);

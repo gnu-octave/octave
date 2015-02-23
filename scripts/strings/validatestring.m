@@ -151,7 +151,7 @@ endfunction
 %!error <DUMMY_TEST: DUMMY_VAR \(argument #5\) does> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR", 5)
 %!error <'abc' allows multiple unique matches> validatestring ("abc", strarray)
 
-%% Test input validation
+## Test input validation
 %!error validatestring ("xyz")
 %!error validatestring ("xyz", {"xyz"}, "3", "4", 5, 6)
 %!error <invalid number of character inputs> validatestring ("xyz", {"xyz"}, "3", "4", "5")

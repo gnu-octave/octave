@@ -93,7 +93,7 @@ endfunction
 %!assert (ranks (1e6*ones (1, 5)), 3*ones (1, 5))
 %!assert (ranks (rand (1, 5), 1), ones (1, 5))
 
-%% Test input validation
+## Test input validation
 %!error ranks ()
 %!error ranks (1, 2, 3)
 %!error ranks ({1, 2})

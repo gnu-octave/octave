@@ -122,7 +122,7 @@ function out = compare_versions (v1, v2, operator)
 
   if (isempty (v1n) && isempty (v1c))
     error ("compare_versions: version string V1 is not valid: %s", v1);
-  elseif  (isempty (v2n) && isempty (v2c))
+  elseif (isempty (v2n) && isempty (v2c))
     error ("compare_versions: version string V2 is not valid: %s", v2);
   endif
 
@@ -222,7 +222,7 @@ endfunction
 %!assert (compare_versions ("0.1", "0.1", "!="), false)
 %!assert (compare_versions ("0.1", "0.1", "~="), false)
 
-%% Test input validation
+## Test input validation
 %!error compare_versions ()
 %!error compare_versions (1)
 %!error compare_versions (1,2)

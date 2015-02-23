@@ -63,7 +63,7 @@ endfunction
 %!assert (cstrcat ("foo", "bar"), "foobar")
 %!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
-%% Test input validation
+## Test input validation
 %!error cstrcat ()
 %!error cstrcat (1, 2)
 

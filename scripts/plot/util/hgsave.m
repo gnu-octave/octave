@@ -121,7 +121,7 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%% Test input validation
+## Test input validation
 %!error hgsave ()
 %!error hgsave (1, 2, 3, 4)
 %!error hgsave ("abc", "def")

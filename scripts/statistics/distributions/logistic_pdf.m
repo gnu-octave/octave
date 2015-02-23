@@ -46,10 +46,10 @@ endfunction
 %! y = [0, 0.16, 1/4, 0.16, 0];
 %!assert (logistic_pdf ([x, NaN]), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (logistic_pdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error logistic_pdf ()
 %!error logistic_pdf (1,2)
 %!error logistic_pdf (i)

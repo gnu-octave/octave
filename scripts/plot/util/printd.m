@@ -53,8 +53,7 @@ function pr_out = printd (obj, filename)
   opt = lower (opt);
   switch (opt)
     case "pdf"
-      enscr = sprintf (
-                       "enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit",...
+      enscr = sprintf ("enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit", ...
                        tempf, tempf, tempf, tempf, tempf, filename);
       system (enscr);
       delete ([tempf ".ps"]);
@@ -62,8 +61,7 @@ function pr_out = printd (obj, filename)
       enscr = sprintf ("enscript --no-header -o %s %s ; exit", filename, tempf);
       system (enscr);
     case "eps"
-      enscr = sprintf (
-                       "enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit",...
+      enscr = sprintf ("enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit", ...
                        tempf, tempf, tempf, tempf, filename);
       system (enscr);
       delete ([tempf ".ps"]);
@@ -81,7 +79,7 @@ function pr_out = printd (obj, filename)
   endswitch
   fclose (pf);
   delete (tempf);
-  pr_out =  sprintf ("%s file %s written\n", opt, filename);
+  pr_out = sprintf ("%s file %s written\n", opt, filename);
 endfunction
 
 

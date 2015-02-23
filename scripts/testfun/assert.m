@@ -296,12 +296,14 @@ function assert (cond, varargin)
           ## Replace exceptional values already checked above by zero.
           A_null_real = real (A);
           B_null_real = real (B);
-          exclude = errseen | ! isfinite (A_null_real) & ! isfinite (B_null_real);
+          exclude = errseen ...
+                    | ! isfinite (A_null_real) & ! isfinite (B_null_real);
           A_null_real(exclude) = 0;
           B_null_real(exclude) = 0;
           A_null_imag = imag (A);
           B_null_imag = imag (B);
-          exclude = errseen | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+          exclude = errseen ...
+                    | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
           A_null_imag(exclude) = 0;
           B_null_imag(exclude) = 0;
           A_null = complex (A_null_real, A_null_imag);
@@ -625,10 +627,10 @@ endfunction
 %!   if (sum (errmsg () == "\n") != 6)
 %!     error ("Incorrect number of errors reported");
 %!   endif
-%!   assert (!isempty (regexp (errmsg, '\(1,2\).*Abs err 3 exceeds tol 0\>')));
-%!   assert (!isempty (regexp (errmsg, '\(2,2\).*Abs err 2 exceeds tol 0.3')));
-%!   assert (!isempty (regexp (errmsg, '\(1,1\).*Abs err 1 exceeds tol 0.1')));
-%!   assert (!isempty (regexp (errmsg, '\(2,1\).*Rel err 2 exceeds tol 0.2')));
+%!   assert (! isempty (regexp (errmsg, '\(1,2\).*Abs err 3 exceeds tol 0\>')));
+%!   assert (! isempty (regexp (errmsg, '\(2,2\).*Abs err 2 exceeds tol 0.3')));
+%!   assert (! isempty (regexp (errmsg, '\(1,1\).*Abs err 1 exceeds tol 0.1')));
+%!   assert (! isempty (regexp (errmsg, '\(2,1\).*Rel err 2 exceeds tol 0.2')));
 %! end_try_catch
 
 ## test input validation

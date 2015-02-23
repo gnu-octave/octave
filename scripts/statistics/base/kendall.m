@@ -124,7 +124,7 @@ endfunction
 %!assert (kendall (logical (1)), 1)
 %!assert (kendall (single (1)), single (1))
 
-%% Test input validation
+## Test input validation
 %!error kendall ()
 %!error kendall (1, 2, 3)
 %!error kendall (['A'; 'B'])

@@ -165,7 +165,7 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
     [V(:,restart_it+1), H(1:restart_it+1, restart_it)] = ...
         mgorth (tmp, V(:,1:restart_it));
 
-    Y = (H(1:restart_it+1, 1:restart_it) \ B (1:restart_it+1));
+    Y = (H(1:restart_it+1, 1:restart_it) \ B(1:restart_it+1));
 
     little_res = B(1:restart_it+1) - ...
         H(1:restart_it+1, 1:restart_it) * Y(1:restart_it);

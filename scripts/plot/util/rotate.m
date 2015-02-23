@@ -166,7 +166,7 @@ function rotate (h, direction, alpha, origin)
 
 endfunction
 
-%% Test input validation
+## Test input validation
 %!shared h1, h2, o1, o2, o3
 %! h1 = figure ("visible", "off");
 %! o1 = line ();

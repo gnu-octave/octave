@@ -17,21 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uicontrol ("Name", value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uicontrol (@var{parent}, "Name", value, @dots{})
-## @deftypefnx {Function File} {} uicontrol (@var{handle})
+## @deftypefn  {Function File} {@var{hui} =} uicontrol ("Name", value, @dots{})
+## @deftypefnx {Function File} {@var{hui} =} uicontrol (@var{parent}, "Name", value, @dots{})
+## @deftypefnx {Function File} {} uicontrol (@var{h})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uicontrol (varargin)
+function hui = uicontrol (varargin)
 
-  if (nargin == 1 && ishandle (varargin{1}) && strcmpi (get (varargin{1}, "type"), "uicontrol"))
+  if (nargin == 1 && ishandle (varargin{1})
+      && strcmpi (get (varargin{1}, "type"), "uicontrol"))
     error ("uicontrol focusing not implemented yet.");
-  else
-    [h, args] = __uiobject_split_args__ ("uicontrol", varargin, {"figure", "uipanel", "uibuttongroup"});
-    handle = __go_uicontrol__ (h, args{:});
   endif
+
+  [h, args] = __uiobject_split_args__ ("uicontrol", varargin,
+                                       {"figure", "uipanel", "uibuttongroup"});
+  hui = __go_uicontrol__ (h, args{:});
 
 endfunction
 

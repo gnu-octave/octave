@@ -190,7 +190,7 @@ endfunction
 %! close (h1);
 %! close (h2);
 
-%% Test input validation
+## Test input validation
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)
 %!error <FRAC must be between 0 and 1> waitbar (1.5)
 %!error <MSG must be a character string> waitbar (0.5, struct ())

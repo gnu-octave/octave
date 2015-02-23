@@ -79,6 +79,7 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
 
 endfunction
 
+
 %!demo
 %! subplot (1, 2, 1)
 %! rgbplot (cubehelix (256), "composite")

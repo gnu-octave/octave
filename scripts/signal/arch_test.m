@@ -74,8 +74,8 @@ function [pval, lm] = arch_test (y, x, p)
   if (! (isvector (y)))
     error ("arch_test: Y must be a vector");
   endif
-  T   = length (y);
-  y   = reshape (y, T, 1);
+  T = length (y);
+  y = reshape (y, T, 1);
   [rx, cx] = size (x);
   if ((rx == 1) && (cx == 1))
     x = autoreg_matrix (y, x);

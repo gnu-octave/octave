@@ -56,7 +56,7 @@ endfunction
 %!assert (range (magic (3), 2), [7; 4; 7])
 %!assert (range (2), 0)
 
-%% Test input validation
+## Test input validation
 %!error range ()
 %!error range (1, 2, 3)
 

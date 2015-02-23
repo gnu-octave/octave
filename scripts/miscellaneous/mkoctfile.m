@@ -148,7 +148,8 @@ function [output, status] = mkoctfile (varargin)
   bindir = octave_config_info ("bindir");
   ext = octave_config_info ("EXEEXT");
 
-  shell_script = fullfile (bindir, sprintf ("mkoctfile-%s%s", OCTAVE_VERSION, ext));
+  shell_script = fullfile (bindir,
+                           sprintf ("mkoctfile-%s%s", OCTAVE_VERSION, ext));
 
   if (! exist (shell_script, "file"))
     __gripe_missing_component__ ("mkoctfile", "mkoctfile");

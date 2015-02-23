@@ -49,12 +49,12 @@ endfunction
 %!assert (empirical_cdf (x, v), y, eps)
 %!assert (empirical_cdf ([x(1) NaN x(3:5)], v), [0 NaN 0.6 1 1], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (empirical_cdf ([x, NaN], v), [y, NaN], eps)
 %!assert (empirical_cdf (single ([x, NaN]), v), single ([y, NaN]), eps)
 %!assert (empirical_cdf ([x, NaN], single (v)), single ([y, NaN]), eps)
 
-%% Test input validation
+## Test input validation
 %!error empirical_cdf ()
 %!error empirical_cdf (1)
 %!error empirical_cdf (1,2,3)

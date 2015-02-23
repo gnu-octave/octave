@@ -271,7 +271,7 @@ endfunction
 %! set (h, 'ydata', sort (get (h, 'ydata')))
 %! title ('area() plot of sorted data');
 
-%% Test input validation
+## Test input validation
 %!error area ()
 %!error area (1,2,3,4)
 %!error <X and Y must be real vectors or matrices> area ({1})

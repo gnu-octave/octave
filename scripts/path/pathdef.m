@@ -76,7 +76,7 @@ function val = pathdef ()
 
 endfunction
 
-## Extact the path information from the script/function @var{file}, created by
+## Extract the path information from the script/function @var{file}, created by
 ## @file{savepath.m}.  If successful, @code{__extractpath__} returns the path
 ## specified in @var{file}.
 

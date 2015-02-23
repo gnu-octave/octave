@@ -35,7 +35,7 @@ function [count, value] = runlength (x)
     print_usage ();
   endif
 
-  if (!(isnumeric (x) || islogical (x)) || !isvector (x))
+  if (! (isnumeric (x) || islogical (x)) || ! isvector (x))
     error ("runlength: X must be a numeric vector");
   endif
 
@@ -59,7 +59,7 @@ endfunction
 %! assert (c, [2 1 3 1 4]);
 %! assert (v, [2 0 4 0 1]);
 
-%% Test input validation
+## Test input validation
 %!error runlength ()
 %!error runlength (1, 2)
 %!error runlength (['A'; 'B'])

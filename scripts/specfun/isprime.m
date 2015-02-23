@@ -164,7 +164,7 @@ endfunction
 %!assert (isprime (0), false)
 %!assert (isprime (magic (3)), logical ([0, 0, 0; 1, 1, 1; 0, 0, 1]))
 
-%% Test input validation
+## Test input validation
 %!error isprime ()
 %!error isprime (1, 2)
 %!error <X contains non-integer entries> isprime (0.5i)

@@ -43,7 +43,7 @@
 
 function [pval, z] = z_test (x, m, v, alt)
 
-  if ((nargin < 3) || (nargin > 4))
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 

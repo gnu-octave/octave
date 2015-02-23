@@ -358,7 +358,7 @@ endfunction
 
 ## ICHOLT tests
 
-%%!test
+#%!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
 %! opts.michol = "off";
@@ -371,7 +371,7 @@ endfunction
 %! L = ichol (A1, opts);
 %! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.2065, 1e-4);
 %!
-%%!test
+#%!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
 %! opts.michol = "on";
@@ -425,8 +425,7 @@ endfunction
 %! L = ichol (A5, opts);
 %! assert (norm (A5 - L*L', "fro") / norm (A5, "fro"), 0.3231, 1e-4);
 
-%% Input validation tests
-
+## Test input validation
 %!error <A must be a sparse square matrix> ichol ([])
 %!error <A must be a sparse square matrix> ichol (0)
 %!error <pivot equal to 0> ichol (sparse (0))

@@ -62,7 +62,7 @@ endfunction
 
 ## Functional test for hgload/hgsave pair is in hgsave.m
 
-%% Test input validation
+## Test input validation
 %!error hgload ()
 %!error hgload (1, 2)
 %!error <unable to locate file> hgload ("%%_A_REALLY_UNLIKELY_FILENAME_%%")

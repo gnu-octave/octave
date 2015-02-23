@@ -55,7 +55,7 @@ endfunction
 %!assert (istriu (triu (randn (10))))
 %!assert (! istriu (randn (10)))
 
-%% Test input validation
+## Test input validation
 %!error istriu ()
 %!error istriu (1,2)
 

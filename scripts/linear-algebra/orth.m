@@ -67,7 +67,7 @@ function retval = orth (A, tol)
     rank = sum (s > tol);
 
     if (rank > 0)
-      retval = -U (:, 1:rank);
+      retval = -U(:, 1:rank);
     else
       retval = zeros (rows, 0);
     endif

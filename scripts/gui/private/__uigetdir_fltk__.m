@@ -29,7 +29,8 @@ function dirname = __uigetdir_fltk__ (start_path, dialog_title)
     error ("uigetdir: fltk graphics toolkit required");
   endif
 
-  dirname = __fltk_uigetfile__ ("", dialog_title, start_path, [240, 120], "dir");
+  dirname = __fltk_uigetfile__ ("", dialog_title,
+                                start_path, [240, 120], "dir");
 
 endfunction
 

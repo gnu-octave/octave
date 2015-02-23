@@ -162,7 +162,7 @@ endfunction
 %!   close ([hf1 hf2 hf3]);
 %! end_unwind_protect
 
-%% Test input validation
+## Test input validation
 %!error linkprop ()
 %!error linkprop (1)
 %!error linkprop (1,2,3)

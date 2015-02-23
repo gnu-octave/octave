@@ -197,7 +197,7 @@ endfunction
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
 %! assert (sortrows (sort (delaunay (x, y, z), 2)), [1,2,3,4;1,2,4,5])
 
-%% Input validation tests
+## Input validation tests
 %!error delaunay ()
 %!error delaunay (1,2,3,4,5)
 %!error <X must be a matrix with 2 or 3 columns> delaunay (ones (2,4))

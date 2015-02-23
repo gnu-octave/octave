@@ -141,7 +141,7 @@ endfunction
 %! oo = setfield (oo,{1,2},"fd",{3},"b", {1,4}, 6);
 %! assert (oo(1,2).fd(3).b(1,4), 6);
 
-%% Test input validation
+## Test input validation
 %!error setfield ()
 %!error setfield (1)
 %!error setfield (1,2)

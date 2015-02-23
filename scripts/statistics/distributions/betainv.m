@@ -33,7 +33,7 @@ function inv = betainv (x, a, b)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("betainv: X, A, and B must be of common size or scalars");
@@ -58,7 +58,7 @@ function inv = betainv (x, a, b)
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
   if (any (k))
-    if (!isscalar (a) || !isscalar (b))
+    if (! isscalar (a) || ! isscalar (b))
       a = a(k);
       b = b(k);
       y = a ./ (a + b);
@@ -88,11 +88,11 @@ function inv = betainv (x, a, b)
       y_new = y_old - h;
       ind   = find (y_new <= myeps);
       if (any (ind))
-        y_new (ind) = y_old (ind) / 10;
+        y_new(ind) = y_old(ind) / 10;
       endif
       ind = find (y_new >= 1 - myeps);
       if (any (ind))
-        y_new (ind) = 1 - (1 - y_old (ind)) / 10;
+        y_new(ind) = 1 - (1 - y_old(ind)) / 10;
       endif
       h = y_old - y_new;
       if (max (abs (h)) < sqrt (myeps))
@@ -116,13 +116,13 @@ endfunction
 %!assert (betainv (x, 1, 2*[1 0 NaN 1 1]), [NaN NaN NaN 1 NaN])
 %!assert (betainv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 0 NaN 1 NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (betainv ([x, NaN], 1, 2), [NaN 0 0.5 1 NaN NaN])
 %!assert (betainv (single ([x, NaN]), 1, 2), single ([NaN 0 0.5 1 NaN NaN]))
 %!assert (betainv ([x, NaN], single (1), 2), single ([NaN 0 0.5 1 NaN NaN]))
 %!assert (betainv ([x, NaN], 1, single (2)), single ([NaN 0 0.5 1 NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error betainv ()
 %!error betainv (1)
 %!error betainv (1,2)

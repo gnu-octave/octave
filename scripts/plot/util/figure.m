@@ -121,6 +121,7 @@ function __add_default_mouse_modes__ (fig)
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

@@ -33,7 +33,7 @@ function cdf = betacdf (x, a, b)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("betacdf: X, A, and B must be of common size or scalars");
@@ -76,13 +76,13 @@ endfunction
 %!assert (betacdf (x, 1, 2*[0 1 NaN 1 1]), [NaN 0 NaN 1 1])
 %!assert (betacdf ([x(1:2) NaN x(4:5)], 1, 2), [y(1:2) NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (betacdf ([x, NaN], 1, 2), [y, NaN])
 %!assert (betacdf (single ([x, NaN]), 1, 2), single ([y, NaN]))
 %!assert (betacdf ([x, NaN], single (1), 2), single ([y, NaN]))
 %!assert (betacdf ([x, NaN], 1, single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error betacdf ()
 %!error betacdf (1)
 %!error betacdf (1,2)

@@ -173,7 +173,7 @@ endfunction
 %! qa = [0.1270; 0.2041; 0.6437; 0.6477; 0.9322];
 %! assert (q, qa, tol);
 
-%% Test input validation
+## Test input validation
 %!error prctile ()
 %!error prctile (1, 2, 3, 4)
 %!error prctile (['A'; 'B'], 10)

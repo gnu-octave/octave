@@ -44,7 +44,7 @@ function rnd = gamrnd (a, b, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, a, b] = common_size (a, b);
     if (retval > 0)
       error ("gamrnd: A and B must be of common size or scalars");
@@ -66,13 +66,13 @@ function rnd = gamrnd (a, b, varargin)
       error ("gamrnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("gamrnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (a) && !isequal (size (a), sz))
+  if (! isscalar (a) && ! isequal (size (a), sz))
     error ("gamrnd: A and B must be scalar or of size SZ");
   endif
 
@@ -107,14 +107,14 @@ endfunction
 %!assert (size (gamrnd (1, 2, [4 1])), [4, 1])
 %!assert (size (gamrnd (1, 2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (gamrnd (1, 2)), "double")
 %!assert (class (gamrnd (single (1), 2)), "single")
 %!assert (class (gamrnd (single ([1 1]), 2)), "single")
 %!assert (class (gamrnd (1, single (2))), "single")
 %!assert (class (gamrnd (1, single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error gamrnd ()
 %!error gamrnd (1)
 %!error gamrnd (ones (3), ones (2))

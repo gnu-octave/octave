@@ -49,7 +49,7 @@ function pdf = wblpdf (x, scale = 1, shape = 1)
     print_usage ();
   endif
 
-  if (!isscalar (scale) || !isscalar (shape))
+  if (! isscalar (scale) || ! isscalar (shape))
     [retval, x, scale, shape] = common_size (x, scale, shape);
     if (retval > 0)
       error ("wblpdf: X, SCALE, and SHAPE must be of common size or scalars");
@@ -95,12 +95,12 @@ endfunction
 %!assert (wblpdf (x, 1, [0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)])
 %!assert (wblpdf ([x, NaN], 1, 1), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (wblpdf (single ([x, NaN]), 1, 1), single ([y, NaN]))
 %!assert (wblpdf ([x, NaN], single (1), 1), single ([y, NaN]))
 %!assert (wblpdf ([x, NaN], 1, single (1)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error wblpdf ()
 %!error wblpdf (1,2,3,4)
 %!error wblpdf (ones (3), ones (2), ones (2))

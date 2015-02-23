@@ -28,8 +28,8 @@
 ## If called with no inputs:
 ##
 ## @itemize
-## @item If no output is requested, the dynamic and static classpaths are printed
-## to the standard output.
+## @item If no output is requested, the dynamic and static classpaths are
+## printed to the standard output.
 ##
 ## @item If one output value @var{dpath} is requested, the result is
 ## the dynamic classpath.
@@ -65,7 +65,8 @@ function [path1, path2] = javaclasspath (which)
   dynamic_path_list = ostrsplit (dynamic_path, pathsep ());
 
   ## static classpath
-  static_path = javaMethod ("getProperty", "java.lang.System", "java.class.path");
+  static_path = javaMethod ("getProperty",
+                            "java.lang.System", "java.class.path");
   static_path_list = ostrsplit (static_path, pathsep ());
   if (numel (static_path_list) > 1)
     ## remove first element (which is .../octave.jar)
@@ -98,7 +99,7 @@ function [path1, path2] = javaclasspath (which)
       path2 = cellstr (static_path_list);
     else
       switch (tolower (which))
-        case "-all",     path1 = cellstr ([static_path_list, dynamic_path_list]);
+        case "-all",     path1 = cellstr ([static_path_list,dynamic_path_list]);
         case "-dynamic", path1 = cellstr (dynamic_path_list);
         case "-static",  path1 = cellstr (static_path_list);
         otherwise

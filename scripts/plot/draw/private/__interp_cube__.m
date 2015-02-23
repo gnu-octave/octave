@@ -42,7 +42,7 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
   if (columns (v) != 3)
     error ( "V has to be Nx3 matrix");
   endif
-  ##if (!ischar (req))
+  ##if (! ischar (req))
   ## error ('__interp_cube__: Invalid request parameter use "values", "normals" or "normals8"');
   ##endif
   if (isempty (v))

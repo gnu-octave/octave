@@ -95,7 +95,7 @@ endfunction
 %! d = C0*v + C1*v*z;
 %! assert (norm (d), 0.0);
 
-%% Input validation tests
+## Test input validation
 %!error polyeig ()
 %!error [a,b,c] = polyeig (1)
 %!error <coefficients must be square matrices> polyeig (ones (3,2))

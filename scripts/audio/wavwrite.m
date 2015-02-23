@@ -168,7 +168,7 @@ endfunction
 %!   unlink (fname);
 %! end_unwind_protect
 
-%% Test input validation
+## Test input validation
 %!error wavwrite ()
 %!error wavwrite (1)
 %!error wavwrite (1,2,3,4,5)

@@ -59,7 +59,8 @@ function [R, G, B] = ind2rgb (x, map)
     if (ndims (x) == 2)
       R = reshape ([R(:); G(:); B(:)], [sz, 3]);
     elseif (ndims (x) == 4)
-      R = permute (reshape ([R(:); G(:); B(:)], [sz(1) sz(2) sz(4) 3]), [1 2 4 3]);
+      R = permute (reshape ([R(:); G(:); B(:)], [sz(1) sz(2) sz(4) 3]), ...
+                   [1 2 4 3]);
     else
       ## we should never reach here since ind2x() should filter them out
       error ("ind2rgb: an indexed image must have 2 or 4 dimensions.");
@@ -97,7 +98,7 @@ endfunction
 %! assert (rgb(:,1:2,:), zeros (1,2,3));
 %! assert (rgb(:,3,:), 1/63 * ones (1,1,3));
 
-%% Test input validation
+## Test input validation
 %!error ind2rgb ()
 %!error ind2rgb (1,2,3)
 %!error <X must be an indexed image> ind2rgb (ones (3,3,3), jet (64))

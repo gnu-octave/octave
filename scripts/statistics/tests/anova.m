@@ -46,7 +46,7 @@
 
 function [pval, f, df_b, df_w] = anova (y, g)
 
-  if ((nargin < 1) || (nargin > 2))
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   elseif (nargin == 1)
     if (isvector (y))

@@ -160,7 +160,9 @@ function h = slice (varargin)
 
       if (length (sy) > 0)
         for i = length (sy):-1:1
-          [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)), sy(i), squeeze (z(1,1,:)));
+          [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
+                                   sy(i),
+                                   squeeze (z(1,1,:)));
           vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
           htmp(sidx++) = surface (squeeze (xi),
                                   squeeze (sy(i) * ones (size (zi))),

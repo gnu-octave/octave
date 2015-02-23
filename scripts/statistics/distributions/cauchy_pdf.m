@@ -35,7 +35,7 @@ function pdf = cauchy_pdf (x, location = 0, scale = 1)
     print_usage ();
   endif
 
-  if (!isscalar (location) || !isscalar (scale))
+  if (! isscalar (location) || ! isscalar (scale))
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
       error ("cauchy_pdf: X, LOCATION, and SCALE must be of common size or scalars");
@@ -52,7 +52,7 @@ function pdf = cauchy_pdf (x, location = 0, scale = 1)
     pdf = NaN (size (x));
   endif
 
-  k = !isinf (location) & (scale > 0) & (scale < Inf);
+  k = ! isinf (location) & (scale > 0) & (scale < Inf);
   if (isscalar (location) && isscalar (scale))
     pdf = ((1 ./ (1 + ((x - location) / scale) .^ 2))
               / pi / scale);
@@ -74,17 +74,17 @@ endfunction
 %!assert (cauchy_pdf (x, 1, 2*[0 1 NaN 1 Inf]), [NaN y(2) NaN y(4) NaN])
 %!assert (cauchy_pdf ([x, NaN], 1, 2), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (cauchy_pdf (single ([x, NaN]), 1, 2), single ([y, NaN]), eps ("single"))
 %!assert (cauchy_pdf ([x, NaN], single (1), 2), single ([y, NaN]), eps ("single"))
 %!assert (cauchy_pdf ([x, NaN], 1, single (2)), single ([y, NaN]), eps ("single"))
 
-%% Cauchy (0,1) == Student's T distribution with 1 DOF
+## Cauchy (0,1) == Student's T distribution with 1 DOF
 %!test
 %! x = rand (10, 1);
 %! assert (cauchy_pdf (x, 0, 1), tpdf (x, 1), eps);
 
-%% Test input validation
+## Test input validation
 %!error cauchy_pdf ()
 %!error cauchy_pdf (1,2)
 %!error cauchy_pdf (1,2,3,4)

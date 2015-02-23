@@ -127,7 +127,7 @@ function h = clabel (c, varargin)
       set (htmp, varargin{:});
     endif
   else
-    htmp =  __clabel__ (c, v, hparent, label_spacing, [], varargin{:});
+    htmp = __clabel__ (c, v, hparent, label_spacing, [], varargin{:});
   endif
 
   if (nargout > 0)

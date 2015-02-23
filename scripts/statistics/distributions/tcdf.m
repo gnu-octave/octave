@@ -34,7 +34,7 @@ function cdf = tcdf (x, n)
     print_usage ();
   endif
 
-  if (!isscalar (n))
+  if (! isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
       error ("tcdf: X and N must be of common size or scalars");
@@ -51,7 +51,7 @@ function cdf = tcdf (x, n)
     cdf = zeros (size (x));
   endif
 
-  k = !isinf (x) & (n > 0);
+  k = ! isinf (x) & (n > 0);
 
   xx = x .^ 2;
   x_big_abs = (xx > n);
@@ -94,12 +94,12 @@ endfunction
 %!assert (tcdf (x, [0 1 NaN 1]), [NaN 1/2 NaN 1], eps)
 %!assert (tcdf ([x(1:2) NaN x(4)], 1), [y(1:2) NaN y(4)], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (tcdf ([x, NaN], 1), [y, NaN], eps)
 %!assert (tcdf (single ([x, NaN]), 1), single ([y, NaN]), eps ("single"))
 %!assert (tcdf ([x, NaN], single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error tcdf ()
 %!error tcdf (1)
 %!error tcdf (1,2,3)

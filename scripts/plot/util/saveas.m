@@ -61,9 +61,9 @@
 
 ## Author: Kai Habel
 
-function  saveas (h, filename, fmt = "pdf")
+function saveas (h, filename, fmt = "pdf")
 
-  if ((nargin != 2) && (nargin != 3))
+  if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
@@ -77,19 +77,19 @@ function  saveas (h, filename, fmt = "pdf")
     error ("saveas: first argument H must be a graphics handle");
   endif
 
-  if (!ischar (filename))
+  if (! ischar (filename))
     error ("saveas: FILENAME must be a string");
   endif
 
   if (nargin == 2)
     [~, ~, ext] = fileparts (filename);
-    if (!isempty (ext))
+    if (! isempty (ext))
       fmt = ext(2:end);
     endif
   endif
 
   if (nargin == 3)
-    if (!ischar (filename))
+    if (! ischar (filename))
       error ("saveas: EXT must be a string");
     endif
 

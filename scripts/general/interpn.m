@@ -181,7 +181,8 @@ function vi = interpn (varargin)
     endfor
     idx = cell (1,nd);
     for i = 1 : nd
-      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
+      idx{i} = yidx{i} ...
+               + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
     endfor
     vi = v(sub2ind (sz, idx{:}));
     idx = zeros (prod (yshape), 1);
@@ -338,6 +339,6 @@ endfunction
 %! assert (interpn (z, "linear"), zout, tol);
 %! assert (interpn (z, "spline"), zout, tol);
 
-%% Test input validation
+## Test input validation
 %!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");
 

@@ -94,8 +94,7 @@ endfunction
 %! assert (y, [1, 2, 3, 4, 5]);
 %! assert (y, sort ([a(ia), b(ib)]));
 
-
-%% Test common input validation for set routines contained in validsetargs
+## Test common input validation for set routines contained in validsetargs
 %!error <cell array of strings cannot be combined> union ({"a"}, 1)
 %!error <A and B must be arrays or cell arrays> union (@sin, 1)
 %!error <invalid option: columns> union (1, 2, "columns")

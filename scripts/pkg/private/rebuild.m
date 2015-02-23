@@ -93,7 +93,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
       endfor
     endfor
     if (! isempty (dup))
-      descriptions (dup) = [];
+      descriptions(dup) = [];
     endif
   endif
 endfunction

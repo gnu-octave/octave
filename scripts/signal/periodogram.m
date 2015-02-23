@@ -208,7 +208,7 @@ endfunction
 ## FIXME: Need some functional tests
 
 
-%% Test input validation
+## Test input validation
 %!error periodogram ()
 %!error periodogram (1,2,3,4,5,6)
 %!error <X must be a real or complex vector> periodogram (ones (2,2))

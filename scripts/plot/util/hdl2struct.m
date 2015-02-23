@@ -31,7 +31,7 @@
 
 function s = hdl2struct (h)
 
-  if (nargin != 1 || !ishandle (h))
+  if (nargin != 1 || ! ishandle (h))
     print_usage ();
   endif
 
@@ -43,8 +43,8 @@ function s = hdl2struct (h)
   ## main object
   main = get (h);
   s.handle = h;
-  s.type =  main.type;
-  s.properties  = getprops (h);
+  s.type = main.type;
+  s.properties = getprops (h);
   s.children = [];
   s.special = [];
 

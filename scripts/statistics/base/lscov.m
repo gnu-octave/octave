@@ -113,6 +113,7 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
   endif
 endfunction
 
+
 %!test
 %! ## Longley data from the NIST Statistical Reference Dataset
 %! Z = [  60323    83.0   234289   2356     1590    107608  1947

@@ -79,6 +79,6 @@ endfunction
 %! set (get (gca, ("children")), "markersize", 12);
 %! title ("gplot() of Binary Tree Adjacency matrix");
 
-%% Mark graphical function as tested by demo block
+## Mark graphical function as tested by demo block
 %!assert (1)
 

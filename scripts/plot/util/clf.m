@@ -76,7 +76,7 @@ function h = clf (varargin)
   else
     ## Select only the chilren with visible handles.
     delete (get (hfig, "children"));
-    
+
     ## Also delete the annotation axes
     hover = findall (hfig, "-depth", 1, "tag", "scribeoverlay");
     delete (hover);

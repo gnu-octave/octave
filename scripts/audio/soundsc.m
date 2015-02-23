@@ -50,7 +50,7 @@ function soundsc (y, fs, nbits, yrange)
 
   if (nargin < 2 || isempty (fs))
     fs = 8000;
-  elseif ((nargin == 2) && (numel (fs) > 1))
+  elseif (nargin == 2 && numel (fs) > 1)
     yrange = fs;
     fs = 8000;
   elseif (! (isscalar (fs) && (fs > 0)))
@@ -59,7 +59,7 @@ function soundsc (y, fs, nbits, yrange)
 
   if (nargin < 3 || isempty (nbits))
     nbits = 8;
-  elseif ((nargin == 3) && (numel (nbits) > 1))
+  elseif (nargin == 3 && numel (nbits) > 1)
     yrange = nbits;
     nbits = 8;
   elseif (! (isscalar (nbits) && (nbits == 8 || nbits == 16 || nbits == 24)))
@@ -92,7 +92,7 @@ endfunction
 
 ## Tests of soundsc must not actually play anything.
 
-%% Test input validation
+## Test input validation
 %!error soundsc ()
 %!error soundsc (1,2,3,4,5)
 %!error soundsc (1, -1)

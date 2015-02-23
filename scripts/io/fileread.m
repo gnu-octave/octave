@@ -56,7 +56,7 @@ endfunction
 %! unlink (fname);
 %! assert (str, [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
 
-%% Test input validation
+## Test input validation
 %!error fileread ()
 %!error fileread (1, 2)
 %!error <FILENAME argument must be a string> fileread (1)

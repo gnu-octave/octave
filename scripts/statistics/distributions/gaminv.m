@@ -33,7 +33,7 @@ function inv = gaminv (x, a, b)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("gaminv: X, A, and B must be of common size or scalars");
@@ -59,7 +59,7 @@ function inv = gaminv (x, a, b)
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (a < Inf) & (b > 0) & (b < Inf));
   if (any (k))
-    if (!isscalar (a) || !isscalar (b))
+    if (! isscalar (a) || ! isscalar (b))
       a = a(k);
       b = b(k);
       y = a .* b;
@@ -85,7 +85,7 @@ function inv = gaminv (x, a, b)
       y_new = y_old - h;
       ind   = find (y_new <= myeps);
       if (any (ind))
-        y_new (ind) = y_old (ind) / 10;
+        y_new(ind) = y_old(ind) / 10;
         h = y_old - y_new;
       endif
       if (max (abs (h)) < sqrt (myeps))
@@ -109,13 +109,13 @@ endfunction
 %!assert (gaminv (x, 1, [1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN])
 %!assert (gaminv ([x(1:2) NaN x(4:5)], 1, 1), [NaN 0 NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (gaminv ([x, NaN], 1, 1), [NaN 0 1 Inf NaN NaN], eps)
 %!assert (gaminv (single ([x, NaN]), 1, 1), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
 %!assert (gaminv ([x, NaN], single (1), 1), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
 %!assert (gaminv ([x, NaN], 1, single (1)), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error gaminv ()
 %!error gaminv (1)
 %!error gaminv (1,2)

@@ -93,7 +93,6 @@ endfunction
 %! ## Weekday of new millennium from datestr input
 %! [n, s] = weekday ("1-Jan-2000")
 
-# tests
 %!assert (weekday (728647), 2)
 ## Test vector inputs for both directions
 %!assert (weekday ([728647 728648]), [2 3])

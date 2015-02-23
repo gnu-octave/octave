@@ -94,7 +94,7 @@ endfunction
 ## Test XOR reduction
 %!assert (xor ([1 0], [1 1], [0 0]), logical ([0 1]))
 
-%% Test input validation
+## Test input validation
 %!error xor ()
 %!error xor (1)
 %!error <X and Y must be of compatible size> xor (ones (3,2), ones (2,3))

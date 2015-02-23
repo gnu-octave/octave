@@ -80,7 +80,8 @@ function __imwrite__ (img, varargin)
           error ("imwrite: value for %s must either be a scalar or the number of frames",
                  param_list{idx});
         endif
-        if (any (options.delaytime(:) < 0) || any (options.delaytime(:) > 65535))
+        if (any (options.delaytime(:) < 0)
+            || any (options.delaytime(:) > 65535))
           error ("imwrite: value for %s must be between 0 and 655.35 seconds",
                  param_list{idx});
         endif
@@ -96,14 +97,16 @@ function __imwrite__ (img, varargin)
         endif
         options.disposalmethod = tolower (options.disposalmethod);
         matches = ismember (options.disposalmethod,
-                            {"donotspecify", "leaveinplace", "restorebg", "restoreprevious"});
+                            {"donotspecify", "leaveinplace", ...
+                             "restorebg", "restoreprevious"});
         if (any (! matches))
           error ("imwrite: unknow method %s for option %s",
                  options.disposalmethod{find (! matches, 1)},
                  param_list{idx});
         endif
         if (isscalar (options.disposalmethod))
-          options.disposalmethod = repmat (options.disposalmethod, 1, size (img, 4));
+          options.disposalmethod = repmat (options.disposalmethod, ...
+                                           1, size (img, 4));
         elseif (numel (options.disposalmethod) != size (img, 4))
           error ("imwrite: if value %s is a cell array must have same length as number of frames",
                  param_list{idx});

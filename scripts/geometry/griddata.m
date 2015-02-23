@@ -89,7 +89,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
   elseif (strcmp (method, "nearest"))
     ## Search index of nearest point.
     idx = dsearch (x, y, tri, xi, yi);
-    valid = !isnan (idx);
+    valid = ! isnan (idx);
     zi(valid) = z(idx(valid));
 
   elseif (strcmp (method, "linear"))
@@ -97,7 +97,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
     tri_list = tsearch (x, y, tri, xi(:), yi(:));
 
     ## Only keep the points within triangles.
-    valid = !isnan (tri_list);
+    valid = ! isnan (tri_list);
     tri_list = tri_list(valid);
     nr_t = rows (tri_list);
 
@@ -187,7 +187,7 @@ endfunction
 %! zz2(isnan (zz)) = NaN;
 %! assert (zz, zz2, 100*eps);
 
-%% Test input validation
+## Test input validation
 %!error griddata ()
 %!error griddata (1)
 %!error griddata (1,2)

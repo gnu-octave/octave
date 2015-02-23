@@ -463,7 +463,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
 
     tst = sum (temp) == length (bargroup);
 
-    if (isscalar (bargroup) || !tst)
+    if (isscalar (bargroup) || ! tst)
       xdata = s.properties.xdata;
       ydata = s.properties.ydata;
 
@@ -484,7 +484,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
       tmp = struct ("handle", NaN, "type", "", "children", [], "special", []);
       for ii = 1:(nbar - 1)
         idx = find (p(1:2:end) == bargroup(ii)) * 2;
-        hdl = p (idx);
+        hdl = p(idx);
         xdata = [xdata get(hdl).xdata];
         ydata = [ydata get(hdl).ydata];
         tmp.children(ii) = hdl2struct (hdl);

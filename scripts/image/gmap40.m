@@ -48,6 +48,7 @@ function map = gmap40 (n = rows (colormap ()))
 
 endfunction
 
+
 %!demo
 %! ## Show the 'gmap40' colormap as an image
 %! image (1:6, linspace (0, 1, 6), repmat ((1:6)', 1, 6));

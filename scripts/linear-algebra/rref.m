@@ -65,7 +65,7 @@ function [A, k] = rref (A, tol)
       A(r:rows, c) = zeros (rows-r+1, 1);
     else
       ## keep track of bound variables
-      used (1, c) = 1;
+      used(1, c) = 1;
 
       ## Swap current row and pivot row
       A([pivot, r], c:cols) = A([r, pivot], c:cols);

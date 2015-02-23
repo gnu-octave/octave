@@ -17,16 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uitoolbar ("Name", value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uitoolbar (@var{parent}, "Name", value, @dots{})
+## @deftypefn  {Function File} {@var{hui} =} uitoolbar ("Name", value, @dots{})
+## @deftypefnx {Function File} {@var{hui} =} uitoolbar (@var{parent}, "Name", value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uitoolbar (varargin)
+function hui = uitoolbar (varargin)
 
   [h, args] = __uiobject_split_args__ ("uitoolbar", varargin, {"figure"});
-  handle = __go_uitoolbar__ (h, args{:});
+  hui = __go_uitoolbar__ (h, args{:});
 
 endfunction
 

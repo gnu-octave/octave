@@ -98,7 +98,8 @@ function compare_plot_demos (varargin)
         try
           eval (fcn_name);
         catch
-          printf ("Error running plot demos for ""%s"" toolkit\n", arg.toolkits{n});
+          printf ("Error running plot demos for ""%s"" toolkit\n",
+                  arg.toolkits{n});
           disp (lasterror);
         end_try_catch
       endif

@@ -89,7 +89,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%% Test input validation
+## Test input validation
 %!error delete ()
 %!error <first argument must be a filename> delete (struct ())
 

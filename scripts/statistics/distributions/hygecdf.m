@@ -39,7 +39,7 @@ function cdf = hygecdf (x, t, m, n)
     print_usage ();
   endif
 
-  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
+  if (! isscalar (t) || ! isscalar (m) || ! isscalar (n))
     [retval, x, t, m, n] = common_size (x, t, m, n);
     if (retval > 0)
       error ("hygecdf: X, T, M, and N must be of common size or scalars");
@@ -50,7 +50,8 @@ function cdf = hygecdf (x, t, m, n)
     error ("hygecdf: X, T, M, and N must not be complex");
   endif
 
-  if (isa (x, "single") || isa (t, "single") || isa (m, "single") || isa (n, "single"))
+  if (isa (x, "single") || isa (t, "single")
+      || isa (m, "single") || isa (n, "single"))
     cdf = NaN (size (x), "single");
   else
     cdf = NaN (size (x));
@@ -86,14 +87,14 @@ endfunction
 %!assert (hygecdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN])
 %!assert (hygecdf ([x(1:2) NaN x(4:5)], 4, 2, 2), [y(1:2) NaN y(4:5)], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (hygecdf ([x, NaN], 4, 2, 2), [y, NaN], eps)
 %!assert (hygecdf (single ([x, NaN]), 4, 2, 2), single ([y, NaN]), eps ("single"))
 %!assert (hygecdf ([x, NaN], single (4), 2, 2), single ([y, NaN]), eps ("single"))
 %!assert (hygecdf ([x, NaN], 4, single (2), 2), single ([y, NaN]), eps ("single"))
 %!assert (hygecdf ([x, NaN], 4, 2, single (2)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error hygecdf ()
 %!error hygecdf (1)
 %!error hygecdf (1,2)

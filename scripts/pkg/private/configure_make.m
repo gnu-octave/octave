@@ -29,8 +29,10 @@ function configure_make (desc, packdir, verbose)
     octave_bindir = octave_config_info ("bindir");
     ver = version ();
     ext = octave_config_info ("EXEEXT");
-    mkoctfile_program = fullfile (octave_bindir, sprintf ("mkoctfile-%s%s", ver, ext));
-    octave_config_program = fullfile (octave_bindir, sprintf ("octave-config-%s%s", ver, ext));
+    mkoctfile_program = fullfile (octave_bindir, ...
+                                  sprintf ("mkoctfile-%s%s", ver, ext));
+    octave_config_program = fullfile (octave_bindir, ...
+                                      sprintf ("octave-config-%s%s", ver, ext));
     octave_binary = fullfile (octave_bindir, sprintf ("octave-%s%s", ver, ext));
 
     if (! exist (mkoctfile_program, "file"))
@@ -82,7 +84,7 @@ function configure_make (desc, packdir, verbose)
     if (ispc ())
       jobs = 1;
     else
-      jobs =  nproc ("overridable");
+      jobs = nproc ("overridable");
     endif
 
     if (exist (fullfile (src, "Makefile"), "file"))
@@ -113,7 +115,7 @@ function configure_make (desc, packdir, verbose)
         filenames(end) = [];
       endif
       filenames = strtrim (ostrsplit (filenames, "\n"));
-      delete_idx =  [];
+      delete_idx = [];
       for i = 1:length (filenames)
         if (! all (isspace (filenames{i})))
           filenames{i} = fullfile (src, filenames{i});
@@ -138,8 +140,8 @@ function configure_make (desc, packdir, verbose)
     else
       idx = cellfun ("is_architecture_dependent", filenames);
     endif
-    archdependent = filenames (idx);
-    archindependent = filenames (!idx);
+    archdependent = filenames(idx);
+    archindependent = filenames(!idx);
 
     ## Copy the files.
     if (! all (isspace ([filenames{:}])))

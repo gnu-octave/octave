@@ -55,13 +55,13 @@ function rnd = chi2rnd (n, varargin)
       error ("chi2rnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 2)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("chi2rnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (n) && !isequal (size (n), sz))
+  if (! isscalar (n) && ! isequal (size (n), sz))
     error ("chi2rnd: N must be scalar or of size SZ");
   endif
 
@@ -98,12 +98,12 @@ endfunction
 %!assert (size (chi2rnd (1, [4 1])), [4, 1])
 %!assert (size (chi2rnd (1, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (chi2rnd (2)), "double")
 %!assert (class (chi2rnd (single (2))), "single")
 %!assert (class (chi2rnd (single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error chi2rnd ()
 %!error chi2rnd (ones (3), ones (2))
 %!error chi2rnd (ones (2), ones (3))

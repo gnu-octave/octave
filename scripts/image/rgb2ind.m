@@ -99,7 +99,7 @@ function [x, map] = rgb2ind (R, G, B)
 
 endfunction
 
-%% Test input validation
+## Test input validation
 %!error rgb2ind ()
 %!error rgb2ind (1,2,3,4,5,6,7)
 %!error <RGB> rgb2ind (rand (10, 10, 4))

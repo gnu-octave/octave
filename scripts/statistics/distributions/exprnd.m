@@ -55,13 +55,13 @@ function rnd = exprnd (lambda, varargin)
       error ("exprnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 2)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("exprnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (lambda) && !isequal (size (lambda), sz))
+  if (! isscalar (lambda) && ! isequal (size (lambda), sz))
     error ("exprnd: LAMBDA must be scalar or of size SZ");
   endif
 
@@ -98,12 +98,12 @@ endfunction
 %!assert (size (exprnd (1, [4 1])), [4, 1])
 %!assert (size (exprnd (1, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (exprnd (1)), "double")
 %!assert (class (exprnd (single (1))), "single")
 %!assert (class (exprnd (single ([1 1]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error exprnd ()
 %!error exprnd (1, -1)
 %!error exprnd (1, ones (2))

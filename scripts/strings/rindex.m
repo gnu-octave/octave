@@ -61,7 +61,7 @@ endfunction
 %! str = cellstr (str);
 %! assert (rindex (str, "o"), [5; 2; 3; 2]);
 
-%% Test input validation
+## Test input validation
 %!error rindex ()
 %!error rindex ("foo")
 %!error rindex ("foo", "bar", "last")

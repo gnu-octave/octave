@@ -34,7 +34,7 @@ function cdf = binocdf (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar (n) || !isscalar (p))
+  if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("binocdf: X, N, and P must be of common size or scalars");
@@ -78,13 +78,13 @@ endfunction
 %!assert (binocdf (x, 2, 0.5*[0 -1 NaN 3 1]), [0 NaN NaN NaN 1])
 %!assert (binocdf ([x(1:2) NaN x(4:5)], 2, 0.5), [y(1:2) NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (binocdf ([x, NaN], 2, 0.5), [y, NaN])
 %!assert (binocdf (single ([x, NaN]), 2, 0.5), single ([y, NaN]))
 %!assert (binocdf ([x, NaN], single (2), 0.5), single ([y, NaN]))
 %!assert (binocdf ([x, NaN], 2, single (0.5)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error binocdf ()
 %!error binocdf (1)
 %!error binocdf (1,2)

@@ -140,15 +140,15 @@ function D = del2 (M, varargin)
         idx1{i} = 1;
         idx2{i} = 2;
         idx3{i} = 3;
-        DD(idx1{:}) = (dx{i}(1) + dx{i}(2)) / dx{i}(2) * DD (idx2{:}) - ...
-            dx{i}(1) / dx{i}(2) * DD (idx3{:});
+        DD(idx1{:}) = (dx{i}(1) + dx{i}(2)) / dx{i}(2) * DD(idx2{:}) - ...
+            dx{i}(1) / dx{i}(2) * DD(idx3{:});
 
         idx1{i} = sz(i);
         idx2{i} = sz(i) - 1;
         idx3{i} = sz(i) - 2;
-        DD(idx1{:}) =  (dx{i}(sz(i) - 1) + dx{i}(sz(i) - 2)) / ...
-            dx{i}(sz(i) - 2) * DD (idx2{:}) - ...
-            dx{i}(sz(i) - 1) / dx{i}(sz(i) - 2) * DD (idx3{:});
+        DD(idx1{:}) = (dx{i}(sz(i) - 1) + dx{i}(sz(i) - 2)) / ...
+            dx{i}(sz(i) - 2) * DD(idx2{:}) - ...
+            dx{i}(sz(i) - 1) / dx{i}(sz(i) - 2) * DD(idx3{:});
       endif
 
       D += DD;

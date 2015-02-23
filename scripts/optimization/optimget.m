@@ -68,7 +68,7 @@ endfunction
 %!assert (optimget (opts, "TolFun"), [])
 %!assert (optimget (opts, "TolFun", 1e-3), 1e-3)
 
-%% Test input validation
+## Test input validation
 %!error optimget ()
 %!error optimget (1)
 %!error optimget (1,2,3,4,5)

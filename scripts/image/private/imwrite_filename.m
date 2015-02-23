@@ -34,7 +34,8 @@ function [filename, ext, cmap, options] = imwrite_filename (varargin)
   cmap = [];
   if (ischar (varargin{1}))
     filename_idx = 1;
-  elseif (numel (varargin) >= 2 && iscolormap (varargin{1}) && ischar (varargin{2}))
+  elseif (numel (varargin) >= 2
+          && iscolormap (varargin{1}) && ischar (varargin{2}))
     filename_idx = 2;
     cmap = varargin{1};
   else

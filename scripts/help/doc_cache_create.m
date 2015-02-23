@@ -124,7 +124,7 @@ function cache = gen_doc_cache_in_dir (directory)
   if (! iscell (directory))
     directory = {directory};
   endif
-  dirs_notpath = {directory{!dir_in_path}};
+  dirs_notpath = {directory{! dir_in_path}};
 
   ## add them
   if (! isempty (dirs_notpath))
@@ -155,7 +155,7 @@ function cache = gen_builtin_cache ()
 endfunction
 
 
-%% No true tests desirable for this function.
-%% Test input validation
+## No true tests desirable for this function.
+## Test input validation
 %!error doc_cache_create (1)
 

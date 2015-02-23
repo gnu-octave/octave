@@ -340,7 +340,7 @@ endfunction
 ## Test fractional millisecond time extension
 %!assert (datestr (testtime, "HH:MM:SS:FFF"), "02:33:17:382")
 
-%% Test input validation
+## Test input validation
 %!error datestr ()
 %!error datestr (1, 2, 3, 4)
 

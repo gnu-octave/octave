@@ -34,7 +34,7 @@
 
 function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
 
-  if (! ((nargin == 1) || (nargin == 3)))
+  if (nargin != 1 && nargin != 3)
     print_usage ();
   endif
 

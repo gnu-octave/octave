@@ -21,8 +21,10 @@
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## Open a GUI dialog for selecting a file.  @var{flt} contains a (list of) file
-## filter string(s) in one of the following formats:
+## Open a GUI dialog for selecting a file.
+##
+## @var{flt} contains a (list of) file filter string(s) in one of the following
+## formats:
 ##
 ## @table @asis
 ## @item @qcode{"/path/to/filename.ext"}
@@ -56,23 +58,17 @@
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
-  funcname = __get_funcname__ (mfilename ());
-
   if (nargin > 3)
     print_usage ();
   endif
 
-  defaultvals = {cell(0, 2),     # File Filter
-                 "Save File",    # Dialog Title
-                 "",             # Default file name
-                 [240, 120],     # Dialog Position (pixel x/y)
-                 "create",
-                 pwd};           # Default directory
-
-  outargs = cell (6, 1);
-  for i = 1 : 6
-    outargs{i} = defaultvals{i};
-  endfor
+  ## Preset default values
+  outargs = {cell(0, 2),     # File Filter
+             "Save File",    # Dialog Title
+             "",             # Default file name
+             [240, 120],     # Dialog Position (pixel x/y)
+             "create",
+             pwd};           # Default directory
 
   if (nargin > 0)
     file_filter = varargin{1};
@@ -114,17 +110,17 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
   if (isguirunning ())
     [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
   else
+    funcname = __get_funcname__ (mfilename ());
     [retfile, retpath, retindex] = feval (funcname, outargs{:});
   endif
 
-  # add extension to the name it isnt already added
-
-  if ischar (retfile)
+  ## Append extension to the name if it isn't already added.
+  if (ischar (retfile))
     ext = outargs{1}{retindex};
-    ext = strrep (ext, '*', '');
+    ext = strrep (ext, "*", "");
 
-    if length (retfile) >= length (ext)
-      if ! strcmp (retfile(end-length (ext)+1:end), ext)
+    if (length (retfile) >= length (ext))
+      if (! strcmp (retfile(end-length (ext)+1:end), ext))
         retfile = [retfile ext];
       endif
     endif

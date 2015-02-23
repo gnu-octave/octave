@@ -24,12 +24,10 @@
 ## @seealso{mkpp, ppval, ppint}
 ## @end deftypefn
 
-function ppd = ppder (pp, m)
+function ppd = ppder (pp, m = 1)
 
-  if ((nargin < 1) || (nargin > 2))
+  if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (nargin == 1)
-    m = 1;
   endif
 
   if (! (isstruct (pp) && strcmp (pp.form, "pp")))

@@ -253,7 +253,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   match = strcmpi (dev_list, arg_st.devopt);
   if (any (match))
-    default_suffix = suffixes {match};
+    default_suffix = suffixes{match};
   else
     default_suffix = arg_st.devopt;
   endif
@@ -345,7 +345,8 @@ function arg_st = __print_parse_opts__ (varargin)
       paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
     endif
     arg_st.canvas_size = paperposition(3:4);
-    if (strcmp (__graphics_toolkit__, "gnuplot") && ! arg_st.ghostscript.epscrop)
+    if (strcmp (__graphics_toolkit__, "gnuplot")
+        && ! arg_st.ghostscript.epscrop)
       arg_st.ghostscript.pageoffset = paperposition(1:2) - 50;
     else
       arg_st.ghostscript.pageoffset = paperposition(1:2);
@@ -482,10 +483,11 @@ function gs = __ghostscript_binary__ ()
     endif
     if (isunix ())
       ## Unix - Includes Mac OSX and Cygwin.
-      gs_binaries = horzcat (gs_binaries, {"gs", "gs.exe"});
+      gs_binaries = [gs_binaries, {"gs", "gs.exe"}];
     else
       ## pc - Includes Win32 and mingw.
-      gs_binaries = horzcat (gs_binaries, {"gs.exe", "gswin32c.exe", "gswin64c.exe", "mgs.exe"});
+      gs_binaries = [gs_binaries, ...
+                     {"gs.exe", "gswin32c.exe", "gswin64c.exe", "mgs.exe"}];
     endif
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))
@@ -581,7 +583,8 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
     paperposition = paperposition([2,1,4,3]);
   endif
 
-  if ((! strcmp (papertype, "<custom>")) && (strcmp (paperorientation, "portrait")))
+  if (! strcmp (papertype, "<custom>")
+      && (strcmp (paperorientation, "portrait")))
     ## For portrait use the ghostscript name
     papersize = papertype;
     papersize(papersize=="-") = "";
@@ -616,8 +619,8 @@ endfunction
 function device_list = gs_device_list ();
   ## Graphics formats/languages, not printers.
   device_list = {"bmp16"; "bmp16m"; "bmp256"; "bmp32b"; "bmpgray"; ...
-                 "epswrite"; "eps2write"; "jpeg"; "jpegcymk"; "jpeggray"; "pbm"; ...
-                 "pbmraw"; "pcx16"; "pcx24b"; "pcx256"; "pcx2up"; ...
+                 "epswrite"; "eps2write"; "jpeg"; "jpegcymk"; "jpeggray";
+                 "pbm"; "pbmraw"; "pcx16"; "pcx24b"; "pcx256"; "pcx2up"; ...
                  "pcxcmyk"; "pcxgray"; "pcxmono"; "pdfwrite"; "pgm"; ...
                  "pgmraw"; "pgnm"; "pgnmraw"; "png16"; "png16m"; ...
                  "png256"; "png48"; "pngalpha"; "pnggray"; "pngmono"; ...

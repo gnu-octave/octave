@@ -60,18 +60,16 @@
 
 function zoom (varargin)
 
-  hfig = NaN;
-
   nargs = nargin;
-
   if (nargs > 2)
     print_usage ();
   endif
 
-  if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
+  if (nargs == 1 && nargout > 0 && isfigure (varargin{1}))
     error ("zoom_object_handle = zoom (hfig): not implemented");
   endif
 
+  hfig = NaN;
   if (nargs == 2)
     hfig = varargin{1};
     if (isfigure (hfig))
@@ -176,6 +174,7 @@ function zoom (varargin)
 
 endfunction
 
+
 %!demo
 %! clf;
 %! sombrero ();
@@ -196,3 +195,4 @@ endfunction
 %! pause (1);
 %! %% return to zoom level set by last call to "zoom reset"
 %! zoom out;
+

@@ -109,7 +109,7 @@ function hsv_map = rgb2hsv (rgb)
 endfunction
 
 
-%% Test pure colors and gray
+## Test pure colors and gray
 %!assert (rgb2hsv ([1 0 0]), [0 1 1])
 %!assert (rgb2hsv ([0 1 0]), [1/3 1 1])
 %!assert (rgb2hsv ([0 0 1]), [2/3 1 1])
@@ -123,7 +123,7 @@ endfunction
 %! rgb_img = rand (64, 64, 3);
 %! assert (hsv2rgb (rgb2hsv (rgb_img)), rgb_img, 1e-6);
 
-%% Test input validation
+## Test input validation
 %!error rgb2hsv ()
 %!error rgb2hsv (1,2)
 %!error <invalid data type 'cell'> rgb2hsv ({1})

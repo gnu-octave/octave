@@ -57,7 +57,7 @@ endfunction
 %!assert (dec2hex (2748, 5), "00ABC")
 %!assert (dec2hex ({2748, 2746}), ["ABC"; "ABA"])
 
-%% Test input validation
+## Test input validation
 %!error dec2hex ()
 %!error dec2hex (1, 2, 3)
 

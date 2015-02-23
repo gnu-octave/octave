@@ -125,8 +125,10 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
       for k = 1:nd
         found = false;
         for l = 1:nfmt
-          [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (std_formats{l});
-          [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
+          [f, rY, ry, fy, fm, fd, fh, fmi, fs] = ...
+            __date_vfmt2sfmt__ (std_formats{l});
+          [found y(k) m(k) d(k) h(k) mi(k) s(k)] = ...
+            __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
           if (found)
             break;
           endif
@@ -139,7 +141,8 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
       ## Decipher the format string just once for speed.
       [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f);
       for k = 1:nd
-        [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
+        [found y(k) m(k) d(k) h(k) mi(k) s(k)] = ...
+          __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
         if (! found)
           error ("datevec: DATE not parsed correctly with given format");
         endif
@@ -335,7 +338,7 @@ endfunction
 %!assert (double (datevec (int64 (datenum ([2014 6 1])))), datevec (datenum ([2014 6 1])))
 %!assert (double (datevec (int64 (datenum ([2014 6 18])))), datevec (datenum ([2014 6 18])))
 
-%% Test input validation
+## Test input validation
 %!error datevec ()
 %!error datevec (1,2,3,4)
 %!error <none of the standard formats match> datevec ("foobar")

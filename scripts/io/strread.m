@@ -493,9 +493,10 @@ function varargout = strread (str, format = "%f", varargin)
 
       ## 1. Assess "period" in the split-up words array ( < num_words_per_line).
       ## Could be done using EndOfLine but that prohibits EndOfLine = "" option.
-      ## Alternative below goes by simply parsing a first grab of words
-      ## and matching fmt_words to words until the fmt_words array is exhausted.
-      ## iwrd: ptr to current analyzed word; iwrdp: ptr to pos before analyzed char
+      ## Alternative below goes by simply parsing a first grab of words and
+      ## matching fmt_words to words until the fmt_words array is exhausted.
+      ## iwrd: ptr to current analyzed word.
+      ## iwrdp: ptr to pos before analyzed char.
       iwrd = 1; iwrdp = 0; iwrdl = length (words{1});
       fwptr = zeros (1, numel (fmt_words));
       ii = 1;
@@ -601,29 +602,31 @@ function varargout = strread (str, format = "%f", varargin)
             e = s(1) + length (fmt_words{ii}) - 1;
           endif
           if (! strcmp (fmt_words{ii}, words{icol, 1}))
-            ## Column doesn't exactly match literal => split needed.  Insert a column
+            ## Column doesn't exactly match literal => split needed.
+            ## Insert a column
             words(icol+1:end+1, :) = words(icol:end, :);
             ## Watch out for empty cells
             jptr = find (! cellfun ("isempty", words(icol, :)));
 
             ## Distinguish leading or trailing literals
             if (! idg(ii) && ! isempty (s) && s(1) == 1)
-              ## Leading literal.  Assign literal to icol, paste rest in icol + 1
+              ## Leading literal.
+              ## Assign literal to icol, paste rest in icol + 1
               ## Apply only to those cells that do have something beyond literal
               jptr = find (cellfun ("length", words(icol+1, jptr), ...
                                     "UniformOutput", false) > e(1));
               words(icol+1, :) = {""};
-              words(icol+1, jptr) = cellfun ...
-                (@(x) substr (x, e(1)+1, length (x) - e(1)), words(icol, jptr), ...
+              words(icol+1, jptr) = cellfun (
+                @(x) substr (x, e(1)+1, length (x) - e(1)), words(icol, jptr),
                 "UniformOutput", false);
               words(icol, jptr) = fmt_words{ii};
               fwptr = [fwptr(1:ii) (++fwptr(ii+1:end))];
 
             else
               if (! idg(ii) && ! isempty (strfind (fmt_words{ii-1}, "%s")))
-                ## Trailing literal.  If preceding format == '%s' this is an error
-                warning ...
-                 ("strread: ambiguous '%s' specifier next to literal in column %d", icol);
+                ## Trailing literal.
+                ## If preceding format == '%s' this is an error.
+                warning ("strread: ambiguous '%s' specifier next to literal in column %d", icol);
               elseif (idg(ii))
                 ## Current field = fixed width. Strip into icol, rest in icol+1
                 sw = regexp (fmt_words{ii}, '\d', "once");
@@ -661,7 +664,8 @@ function varargout = strread (str, format = "%f", varargin)
           endif
 
         else
-          ## Conv. specifier.  Peek if next fmt_word needs split from current column
+          ## Conversion specifier.
+          ## Peek if next fmt_word needs split from current column.
           if (ii < num_words_per_line)
             if (fwptr(ii) == fwptr(ii+1))
               --icol;
@@ -672,7 +676,8 @@ function varargout = strread (str, format = "%f", varargin)
         ++ii; ++icol;
       endwhile
 
-      ## Done.  Reshape words back into 1 long vector and strip padded empty words
+      ## Done.
+      ## Reshape words back into one long vector and strip padded empty words
       words = reshape (words, 1, numel (words))(1 : end-num_words_padded);
 
     catch
@@ -800,7 +805,7 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
   out = ostrsplit (text, sep, mult_dlms_s1);
   if (index (sep, eol_char)); out = strrep (out, char (255), ''); endif
   ## In case of trailing delimiter, strip stray last empty word
-  if (!isempty (out) && any (sep == text(end)))
+  if (! isempty (out) && any (sep == text(end)))
     out(end) = [];
   endif
 
@@ -850,7 +855,7 @@ endfunction
 %!test
 %! assert (strread ("Hello World! // this is comment", "%s",...
 %! "commentstyle", "c++"), ...
-%! {"Hello"; "World!"}); 
+%! {"Hello"; "World!"});
 %! assert (strread ("Hello World! % this is comment", "%s",...
 %! "commentstyle", "matlab"), ...
 %! {"Hello"; "World!"});
@@ -923,7 +928,7 @@ endfunction
 %! assert (b(1:2), {"2"; "4"});
 %! assert (isempty (b{3}), true);
 
-%% MultipleDelimsAsOne
+## MultipleDelimsAsOne
 %!test
 %! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35";
 %! [a b c d] = strread (str, "%f %f %f %f", "delimiter", ",", "multipledelimsasone", 1, "endofline", "\n");
@@ -932,12 +937,12 @@ endfunction
 %! assert (c', [13, 24, 34]);
 %! assert (d', [15, 25, 35]);
 
-%% delimiter as sq_string and dq_string
+## delimiter as sq_string and dq_string
 %!test
 %! assert (strread ("1\n2\n3", "%d", "delimiter", "\n"),
 %!         strread ("1\n2\n3", "%d", "delimiter", '\n'))
 
-%% whitespace as sq_string and dq_string
+## whitespace as sq_string and dq_string
 %!test
 %! assert (strread ("1\b2\r3\b4\t5", "%d", "whitespace", "\b\r\n\t"),
 %!         strread ("1\b2\r3\b4\t5", "%d", "whitespace", '\b\r\n\t'))
@@ -946,7 +951,7 @@ endfunction
 %! str =  "0.31 0.86 0.94\n 0.60 0.72 0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", " ", "endofline", "\n", "whitespace", " "};
-%! [a, b, c] = strread (str, fmt, args {:});
+%! [a, b, c] = strread (str, fmt, args{:});
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
@@ -955,7 +960,7 @@ endfunction
 %! str =  "0.31,0.86,0.94\n0.60,0.72,0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
-%! [a, b, c] = strread (str, fmt, args {:});
+%! [a, b, c] = strread (str, fmt, args{:});
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
@@ -964,7 +969,7 @@ endfunction
 %! str =  "0.31 0.86 0.94\n 0.60 0.72 0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
-%! [a, b, c] = strread (str, fmt, args {:});
+%! [a, b, c] = strread (str, fmt, args{:});
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
@@ -973,7 +978,7 @@ endfunction
 %! str =  "0.31, 0.86, 0.94\n 0.60, 0.72, 0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
-%! [a, b, c] = strread (str, fmt, args {:});
+%! [a, b, c] = strread (str, fmt, args{:});
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
@@ -1001,39 +1006,39 @@ endfunction
 %! assert (a, [1; 2], 1e-15);
 %! assert (b, [1; 3], 1e-15);
 
-%% Test for no output arg (interactive use)
+## Test for no output arg (interactive use)
 %!test
 %! assert (strread (",2,,4\n5,,7,", "", "delimiter", ","), [NaN; 2; NaN; 4; 5; NaN; 7]);
 
-%% Test #1 bug #42609
+## Test #1 bug #42609
 %!test
 %! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", "%f %f %f\n");
 %! assert (a, [1; 4; 7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
-%% Test #2 bug #42609
+## Test #2 bug #42609
 %!test
 %! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", "%f %f\n%f");
 %! assert (a, [1;4;7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
-%% Test #3 bug #42609
+## Test #3 bug #42609
 %!test
 %! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", '%f %f %f\n');
 %! assert (a, [1; 4; 7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
-%% Test #3 bug #42609
+## Test #3 bug #42609
 %!test
 %! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", '%f %f\n%f');
 %! assert (a, [1;4;7]);
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
-%% Unsupported format specifiers
+## Unsupported format specifiers
 %!test
 %!error <format specifiers are not supported> strread ("a", "%c")
 %!error <format specifiers are not supported> strread ("a", "%*c %d")
@@ -1050,10 +1055,10 @@ endfunction
 %!error <format specifiers are not supported> strread ("a", "%u32")
 %!error <format specifiers are not supported> strread ("a", "%*u32 %d")
 
-%% Illegal format specifiers
+## Illegal format specifiers
 %!test
 %!error <no valid format conversion specifiers> strread ("1.0", "%z");
 
-%% Test for false positives in check for non-supported format specifiers
+## Test for false positives in check for non-supported format specifiers
 %!test
 %! assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5);

@@ -78,7 +78,7 @@ endfunction
 %!assert (regexptranslate ("wildcard", "/a*b?c."), "/a.*b.c\\.")
 %!assert (regexptranslate ("escape", '$.?[abc]'), '\$\.\?\[abc\]')
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to regexptranslate> regexptranslate ()
 %!error <Invalid call to regexptranslate> regexptranslate ("wildcard")
 %!error <Invalid call to regexptranslate> regexptranslate ("a", "b", "c")

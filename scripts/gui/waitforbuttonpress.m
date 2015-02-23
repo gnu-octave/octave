@@ -49,7 +49,7 @@ function b = waitforbuttonpress ()
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error waitforbuttonpress (1)
 %!error [a,b,c] = waitforbuttonpress ()
 

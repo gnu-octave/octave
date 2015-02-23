@@ -73,7 +73,7 @@ endfunction
 %!assert (i2g, 0:1/99:1, eps)
 %!assert (gray2ind (i2g, 100), uint8 (0:99))
 
-%% Test input validation
+## Test input validation
 %!error ind2gray ()
 %!error ind2gray (1)
 %!error ind2gray (1,2,3)

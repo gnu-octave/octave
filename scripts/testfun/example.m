@@ -110,7 +110,7 @@ endfunction
 %!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;\n x = sin (t);\n plot (t,x)");
 %! assert (idx, [1, 23, 73]);
 
-%% Test input validation
+## Test input validation
 %!error example ()
 %!error example ("example", 3, 5)
 %!error <N must be a scalar integer> example ("example", {1})

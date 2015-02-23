@@ -106,7 +106,7 @@ function rgb_map = hsv2rgb (hsv_map)
 endfunction
 
 
-%% Test pure colors
+## Test pure colors
 %!assert (hsv2rgb ([0 1 1]), [1 0 0])
 %!assert (hsv2rgb ([1 1 1]), [1 0 0])
 %!assert (hsv2rgb ([1/3 1 1]), [0 1 0])
@@ -120,7 +120,7 @@ endfunction
 %! hsv_img = rand (64, 64, 3);
 %! assert (rgb2hsv (hsv2rgb (hsv_img)), hsv_img, 1e-6);
 
-%% Test input validation
+## Test input validation
 %!error hsv2rgb ()
 %!error hsv2rgb (1,2)
 %!error <invalid data type> hsv2rgb ({1})

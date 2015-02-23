@@ -99,7 +99,7 @@ endfunction
 %! assert (nthroot (0, 2), 0);
 %! assert (lastwarn (), warnmsg);
 
-%% Test input validation
+## Test input validation
 %!error nthroot ()
 %!error nthroot (1)
 %!error nthroot (1,2,3)

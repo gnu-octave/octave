@@ -42,7 +42,7 @@ function retval = wienrnd (t, d, n)
     print_usage ();
   endif
 
-  if (!isscalar (t) || !isscalar (d) || !isscalar (n))
+  if (! isscalar (t) || ! isscalar (d) || ! isscalar (n))
     error ("wienrnd: T, D and N must all be positive integers");
   endif
 

@@ -78,7 +78,7 @@ endfunction
 %!assert (meansq (magic (4)), [94.5, 92.5, 92.5, 94.5])
 %!assert (meansq (magic (4), 2), [109.5; 77.5; 77.5; 109.5])
 
-%% Test input validation
+## Test input validation
 %!error meansq ()
 %!error meansq (1, 2, 3)
 %!error meansq (['A'; 'B'])

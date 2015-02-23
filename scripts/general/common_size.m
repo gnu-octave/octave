@@ -67,7 +67,7 @@ function [errorcode, varargout] = common_size (varargin)
     else
       errorcode = 0;
       if (nargout > 1)
-        scal = !nscal;
+        scal = ! nscal;
         varargout = varargin;
         if (any (nscal))
           dims = size (varargin{find (nscal, 1)});

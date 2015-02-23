@@ -64,7 +64,7 @@ endfunction
 
 %!assert (betaln (3,4), log (beta (3,4)), eps)
 
-%% Test input validation
+## Test input validation
 %!error betaln ()
 %!error betaln (1)
 %!error betaln (1,2,3)

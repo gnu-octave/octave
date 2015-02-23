@@ -68,7 +68,7 @@ endfunction
 %! assert (size (y{2}), [2, 4]);
 %! assert (y{2}, repmat ("line", 2, 1));
 
-%% Test input validation
+## Test input validation
 %!error strtrunc ()
 %!error strtrunc ("abcd")
 %!error strtrunc ("abcd", 4, 5)

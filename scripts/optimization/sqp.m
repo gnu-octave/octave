@@ -196,7 +196,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     print_usage ();
   endif
 
-  if (!isvector (x0))
+  if (! isvector (x0))
     error ("sqp: X0 must be a vector");
   endif
   if (rows (x0) == 1)
@@ -208,7 +208,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     switch (numel (objf))
       case 1
         obj_fun = objf{1};
-        obj_grd = @ (x) fd_obj_grd (x, obj_fun);
+        obj_grd = @(x) fd_obj_grd (x, obj_fun);
       case 2
         obj_fun = objf{1};
         obj_grd = objf{2};
@@ -222,7 +222,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     endswitch
   else
     obj_fun = objf;   # No cell array, only obj_fun set
-    obj_grd = @ (x) fd_obj_grd (x, obj_fun);
+    obj_grd = @(x) fd_obj_grd (x, obj_fun);
   endif
 
   ce_fun = @empty_cf;
@@ -232,7 +232,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       switch (numel (cef))
         case 1
           ce_fun = cef{1};
-          ce_grd = @ (x) fd_ce_jac (x, ce_fun);
+          ce_grd = @(x) fd_ce_jac (x, ce_fun);
         case 2
           ce_fun = cef{1};
           ce_grd = cef{2};
@@ -241,7 +241,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       endswitch
     elseif (! isempty (cef))
       ce_fun = cef;   # No cell array, only constraint equality function set
-      ce_grd = @ (x) fd_ce_jac (x, ce_fun);
+      ce_grd = @(x) fd_ce_jac (x, ce_fun);
     endif
   endif
 
@@ -262,7 +262,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     if (nargin < 5 || (nargin > 5 && isempty (lb) && isempty (ub)))
       ## constraint inequality function only without any bounds
-      ci_grd = @ (x) fd_ci_jac (x, globals.cifcn);
+      ci_grd = @(x) fd_ci_jac (x, globals.cifcn);
       if (iscell (cif))
         switch (length (cif))
           case 1
@@ -314,8 +314,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         error ("sqp: upper bound smaller than lower bound");
       endif
       bounds_grad = [lb_grad; ub_grad];
-      ci_fun = @ (x) cf_ub_lb (x, lb_idx, ub_idx, globals);
-      ci_grd = @ (x) cigrad_ub_lb (x, bounds_grad, globals);
+      ci_fun = @(x) cf_ub_lb (x, lb_idx, ub_idx, globals);
+      ci_grd = @(x) cigrad_ub_lb (x, bounds_grad, globals);
     endif
 
   endif   # if (nargin > 3)
@@ -704,7 +704,7 @@ endfunction
 
 function res = cigrad_ub_lb (x, bgrad, globals)
 
-  cigradfcn = @ (x) fd_ci_jac (x, globals.cifcn);
+  cigradfcn = @(x) fd_ci_jac (x, globals.cifcn);
 
   if (iscell (globals.cif) && length (globals.cif) > 1)
     cigradfcn = globals.cif{2};
@@ -718,7 +718,7 @@ function res = cigrad_ub_lb (x, bgrad, globals)
 
 endfunction
 
-# Utility function used to debug sqp
+## Utility function used to debug sqp
 function report (iter, qp_iter, alpha, nfun, obj)
 
   if (nargin == 0)
@@ -730,8 +730,8 @@ function report (iter, qp_iter, alpha, nfun, obj)
 endfunction
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Test Code
+################################################################################
+## Test Code
 
 %!function r = __g (x)
 %!  r = [sumsq(x)-10;
@@ -760,7 +760,7 @@ endfunction
 %! assert (x, x_opt, 8*sqrt (eps));
 %! assert (obj, obj_opt, sqrt (eps));
 
-%% Test input validation
+## Test input validation
 %!error sqp ()
 %!error sqp (1)
 %!error sqp (1,2,3,4,5,6,7,8,9)

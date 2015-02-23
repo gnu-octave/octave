@@ -338,6 +338,7 @@ function cls = replace_cl_group (cls, name, group)
   endif
 endfunction
 
+
 %!error <double> validateattributes (rand (5), {"uint8"}, {})
 %!error <single> validateattributes (uint8 (rand (5)), {"float"}, {})
 %!error <2d> validateattributes (rand (5, 5, 5), {}, {"2d"})

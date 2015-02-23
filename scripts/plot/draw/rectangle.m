@@ -103,7 +103,7 @@ function hg = __rectangle__ (hax, varargin)
       elseif (strcmpi (arg, "curvature"))
         curv2 = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
-        if (!isnumeric (curv2) || (numel (curv2) != 1 && numel (curv2) != 2))
+        if (! isnumeric (curv2) || (numel (curv2) != 1 && numel (curv2) != 2))
           error ("rectangle: curvature must be a 2-element vector or a scalar");
         endif
         if (any (curv2 < 0) || any (curv2 > 1))

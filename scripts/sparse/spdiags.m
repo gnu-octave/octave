@@ -169,7 +169,7 @@ endfunction
 %!assert (spdiags (zeros (0,1),1,1,1), sparse (0))
 %!assert (spdiags ([0.5 -1 0.5], 0:2, 1, 1), sparse (0.5))
 
-%% Test input validation
+## Test input validation
 %!error spdiags ()
 %!error spdiags (1,2,3,4,5)
 

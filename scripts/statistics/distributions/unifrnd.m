@@ -44,7 +44,7 @@ function rnd = unifrnd (a, b, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, a, b] = common_size (a, b);
     if (retval > 0)
       error ("unifrnd: A and B must be of common size or scalars");
@@ -66,13 +66,13 @@ function rnd = unifrnd (a, b, varargin)
       error ("unifrnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("unifrnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (a) && !isequal (size (a), sz))
+  if (! isscalar (a) && ! isequal (size (a), sz))
     error ("unifrnd: A and B must be scalar or of size SZ");
   endif
 
@@ -84,12 +84,12 @@ function rnd = unifrnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((-Inf < a) && (a < b) && (b < Inf))
-      rnd =  a + (b - a) * rand (sz, cls);
+      rnd = a + (b - a) * rand (sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd =  a + (b - a) .* rand (sz, cls);
+    rnd = a + (b - a) .* rand (sz, cls);
 
     k = !(-Inf < a) | !(a < b) | !(b < Inf);
     rnd(k) = NaN;
@@ -107,14 +107,14 @@ endfunction
 %!assert (size (unifrnd (1, 2, [4 1])), [4, 1])
 %!assert (size (unifrnd (1, 2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (unifrnd (1, 2)), "double")
 %!assert (class (unifrnd (single (1), 2)), "single")
 %!assert (class (unifrnd (single ([1 1]), 2)), "single")
 %!assert (class (unifrnd (1, single (2))), "single")
 %!assert (class (unifrnd (1, single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error unifrnd ()
 %!error unifrnd (1)
 %!error unifrnd (ones (3), ones (2))

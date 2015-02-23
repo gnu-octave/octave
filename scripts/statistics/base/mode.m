@@ -155,7 +155,7 @@ endfunction
 %! assert (c{2}, [1; 2; 3]);
 %! assert (c{3}, [1; 2; 3]);
 
-%% Test input validation
+## Test input validation
 %!error mode ()
 %!error mode (1, 2, 3)
 %!error mode ({1 2 3})

@@ -55,7 +55,7 @@ function [b, r] = deconv (y, a)
 
   if (ly > la)
     x = zeros (size (y) - size (a) + 1);
-    x (1) = 1;
+    x(1) = 1;
     b = filter (y, a, x);
   elseif (ly == la)
     b = filter (y, a, 1);

@@ -46,7 +46,7 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
     print_usage ();
   endif
 
-  if (!ischar (name))
+  if (! ischar (name))
     error ("get_first_help_sentence: NAME must be a string");
   endif
 
@@ -92,7 +92,8 @@ endfunction
 
 ## This function extracts the first sentence from a Texinfo help text.
 ## The function works by removing @def* from the texinfo text. After this, we
-## render the text to plain text using makeinfo, and then extract the first line.
+## render the text to plain text using makeinfo, and then extract the first
+## line.
 function [text, status] = first_sentence_texinfo (help_text, max_len)
   ## Lines ending with "@\n" are continuation lines, so they should be
   ## concatenated with the following line.
@@ -154,7 +155,7 @@ endfunction
 %!assert (get_first_help_sentence ('get_first_help_sentence'), ...
 %!        "Return the first sentence of a function's help text.")
 
-%% Test input validation
+## Test input validation
 %!error get_first_help_sentence ()
 %!error get_first_help_sentence (1, 2, 3)
 %!error <NAME must be a string> get_first_help_sentence (1)

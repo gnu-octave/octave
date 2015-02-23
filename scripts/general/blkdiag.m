@@ -76,7 +76,7 @@ endfunction
 ## tests involving sparse matrices
 %!assert (blkdiag (sparse ([1,2;3,4]),[5,6;7,8]), sparse ([1,2,0,0;3,4,0,0;0,0,5,6;0,0,7,8]))
 %!assert (blkdiag (sparse ([1,2;3,4]),[5,6]), sparse ([1,2,0,0;3,4,0,0;0,0,5,6]))
-# sanity checks
+## sanity checks
 %!test
 %! A = rand (round (rand (1, 2) * 10));
 %! assert (blkdiag (A), A);

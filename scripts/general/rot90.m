@@ -132,7 +132,7 @@ endfunction
 %! assert (rot90 (a, 2), rot90 (b, 1))
 %! assert (rot90 (a, 3), rot90 (b, 2))
 
-%% Test input validation
+## Test input validation
 %!error rot90 ()
 %!error rot90 (1, 2, 3)
 %!error rot90 (1, ones (2))

@@ -65,6 +65,7 @@ function [frame] = im2frame (x, map = [])
   frame = struct ("cdata", x, "colormap", map);
 endfunction
 
+
 %!function f = make_rgb_f ()
 %! f = randi ([0 255], 10, 20, 3);
 %!endfunction

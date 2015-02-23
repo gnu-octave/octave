@@ -104,7 +104,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                     endfor
 
                     if (! isempty (ll))
-                      if (!isempty (lm))
+                      if (! isempty (lm))
                         toberm = [toberm, line("xdata",[0,0],"ydata",[0,0], "color", get(lm,"color"), "linestyle", get(ll,"linestyle"), "marker", get(lm,"marker"), "markeredgecolor", get(lm,"markeredgecolor"), "markerfacecolor", get(lm,"markerfacecolor"), "markersize", get (lm, "markersize"), "displayname", displayname, "parent", kids(i))];
                       else
                         toberm = [toberm, line("xdata",[0,0],"ydata",[0,0], "color", get(ll,"color"), "linestyle", get(ll,"linestyle"), "marker", "none", "displayname", displayname, "parent", kids(i))];

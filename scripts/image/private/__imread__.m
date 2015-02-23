@@ -68,11 +68,12 @@ function varargout = __imread__ (filename, varargin)
 
   ## Check key/value options.
   indexes = cellfun ("isclass", varargin, "char");
-  indexes(indexes) &= ismember (tolower (varargin(indexes)), {"frames", "index"});
+  indexes(indexes) &= ismember (tolower (varargin(indexes)),
+                                {"frames", "index"});
   indexes = find (indexes);
   if (indexes)
     options.index = varargin{indexes+1};
-    if (! (is_valid_index_option (options.index)) &&
+    if (! is_valid_index_option (options.index) &&
         ! (ischar (options.index) && strcmpi (options.index, "all")))
       error ("imread: value for %s must be a vector or the string `all'");
     endif

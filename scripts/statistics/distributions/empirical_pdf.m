@@ -57,14 +57,14 @@ endfunction
 %! y = [0 0.1 0.1 0.1 0];
 %!assert (empirical_pdf (x, v), y)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (empirical_pdf (single (x), v), single (y))
 %!assert (empirical_pdf (x, single (v)), single (y))
 
-%% Test distribution with ties
+## Test distribution with ties
 %!assert (empirical_pdf (2, [1 2 3 2]), 0.5)
 
-%% Test input validation
+## Test input validation
 %!error empirical_pdf ()
 %!error empirical_pdf (1)
 %!error empirical_pdf (1,2,3)

@@ -35,7 +35,7 @@ function x = csvread (filename, varargin)
 endfunction
 
 
-%% Tests for csvread() are in csvwrite()
-%% Mark file as being tested
+## Tests for csvread() are in csvwrite()
+## Mark file as being tested
 %!assert (1)
 

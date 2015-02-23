@@ -33,7 +33,7 @@ function cdf = gamcdf (x, a, b)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("gamcdf: X, A, and B must be of common size or scalars");
@@ -73,11 +73,11 @@ endfunction
 %!assert (gamcdf (x, 1, [0 -Inf NaN Inf 1 1]), [NaN NaN NaN NaN y(5:6)])
 %!assert (gamcdf ([x(1:2) NaN x(4:6)], 1, 1), [y(1:2) NaN y(4:6)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (gamcdf ([x, NaN], 1, 1), [y, NaN])
 %!assert (gamcdf (single ([x, NaN]), 1, 1), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error gamcdf ()
 %!error gamcdf (1)
 %!error gamcdf (1,2)

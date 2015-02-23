@@ -478,7 +478,7 @@ endfunction
 %! opts.milu = "row";
 %! #fail ("ilu (a2, opts)");
 
-%% Tests for input validation
+## Tests for input validation
 %!shared A_tiny
 %! A_tiny = spconvert ([1 4 2 3 3 4 2 5; 1 1 2 3 4 4 5 5; 1 2 3 4 5 6 7 8]');
 

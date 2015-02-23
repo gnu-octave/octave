@@ -186,7 +186,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       w = wt / xi1;
       z = z / xi1;
 
-      delta1 = z' * y; ## If delta1 == 0, method fails.
+      delta1 = z' * y;   # If delta1 == 0, method fails.
 
       yt = M2m1x (y);
       zt = M1tm1x (z);
@@ -200,8 +200,8 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       endif
       pt = Ax (p);
 
-      eps0 = q' * pt; ## If eps0 == 0, method fails.
-      beta1 = eps0 / delta1; ## If beta1 == 0, method fails.
+      eps0 = q' * pt;          # If eps0 == 0, method fails.
+      beta1 = eps0 / delta1;   # If beta1 == 0, method fails.
       vt = pt - beta1 * v;
 
       y = M1m1x (vt);
@@ -211,7 +211,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
 
       xi1 = norm(z);
       theta1 = rho1 / (gamma0 * abs(beta1));
-      gamma1 = 1 / sqrt(1 + theta1^2); ## If gamma1 == 0, method fails.
+      gamma1 = 1 / sqrt(1 + theta1^2);   # If gamma1 == 0, method fails.
       eta1 = -eta0 * rho0 * gamma1^2 / (beta1 * gamma0^2);
 
       if (iter == 1)

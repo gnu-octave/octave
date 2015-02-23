@@ -40,7 +40,7 @@ function cdf = nbincdf (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar (n) || !isscalar (p))
+  if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("nbincdf: X, N, and P must be of common size or scalars");
@@ -85,13 +85,13 @@ endfunction
 %!assert (nbincdf (x, 1, 0.5*[-1 NaN 4 1 1]), [NaN NaN NaN y(4:5)])
 %!assert (nbincdf ([x(1:2) NaN x(4:5)], 1, 0.5), [y(1:2) NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (nbincdf ([x, NaN], 1, 0.5), [y, NaN])
 %!assert (nbincdf (single ([x, NaN]), 1, 0.5), single ([y, NaN]))
 %!assert (nbincdf ([x, NaN], single (1), 0.5), single ([y, NaN]))
 %!assert (nbincdf ([x, NaN], 1, single (0.5)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error nbincdf ()
 %!error nbincdf (1)
 %!error nbincdf (1,2)

@@ -21,20 +21,20 @@
 ## @deftypefnx {Built-in Function} {@var{ret} =} java_invoke (@var{obj}, @var{methodname}, @var{arg1}, @dots{})
 ## Invoke the method @var{methodname} on the Java object @var{obj} with the
 ## arguments @var{arg1}, @dots{}  For static methods, @var{obj} can be a
-## string representing the fully qualified name of the corresponding class. 
+## string representing the fully qualified name of the corresponding class.
 ## The function returns the result of the method invocation.
-## 
+##
 ## When @var{obj} is a regular Java object, structure-like indexing can be
 ## used as a shortcut syntax.  For instance, the two following statements are
 ## equivalent
-## 
+##
 ## @example
 ## @group
 ##   ret = java_invoke (x, "method1", 1.0, "a string")
 ##   ret = x.method1 (1.0, "a string")
 ## @end group
 ## @end example
-## 
+##
 ## @seealso{javaMethod, javaObject}
 ## @end deftypefn
 
@@ -46,7 +46,7 @@ function retval = java_invoke (obj, methodname, varargin)
     warning ("Octave:deprecated-function",
              "java_invoke is obsolete and will be removed from a future version of Octave, please use javaMethod instead");
   endif
-  
+
   if (nargin < 2)
     print_usage ();
   endif

@@ -63,7 +63,8 @@
 ##
 ## @item @var{iter} is the number of iterations performed.
 ##
-## @item @var{resvec} is a vector containing the relative residual at each iteration.
+## @item @var{resvec} is a vector containing the relative residual at each
+## iteration.
 ## @end itemize
 ##
 ## @seealso{bicgstab, cgs, gmres, pcg}

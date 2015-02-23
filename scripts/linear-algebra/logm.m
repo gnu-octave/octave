@@ -170,7 +170,7 @@ endfunction
 %!assert (full (logm (10*eye (3))), logm (full (10*eye (3))), 8*eps)
 %!assert (logm (expm ([0 1i; -1i 0])), [0 1i; -1i 0], 10 * eps)
 
-%% Test input validation
+## Test input validation
 %!error logm ()
 %!error logm (1, 2, 3)
 %!error <logm: A must be a square matrix> logm ([1 0;0 1; 2 2])

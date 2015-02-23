@@ -102,7 +102,7 @@ function [retval, errmsg] = license (cmd, feature, toogle)
         ## We ignore the toogle argument because... what's the point?  We
         ## don't need a license management system on Octave.  This function
         ## will return true, even if anyone tries to disabled a license.
-        switch tolower (toogle)
+        switch (tolower (toogle))
           case "enable"   # do nothing
           case "disable"  # do nothing
           otherwise       error ("license: TOOGLE must be enable or disable");
@@ -181,7 +181,7 @@ endfunction
 %! [s, e] = license ("checkout", "NOT_A_PACKAGE");
 %! assert (e, 'No package named "NOT_A_PACKAGE" installed');
 
-%% Test input validation
+## Test input validation
 %!error license ("not_inuse")
 %!error license ("not_test", "octave", "enable")
 %!error <TOOGLE must be enable or disable> license ("test", "octave", "invalid_toogle")

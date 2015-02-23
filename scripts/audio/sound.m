@@ -59,7 +59,7 @@ endfunction
 
 ## Tests of sound must not actually play anything.
 
-%% Test input validation
+## Test input validation
 %!error sound ()
 %!error sound (1,2,3,4)
 %!error sound (1, -1)

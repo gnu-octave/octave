@@ -68,7 +68,7 @@ function x = repmat (A, m, varargin)
     endif
   else
     if (nargin > 3)
-      # input check for m and varargin
+      ## input check for m and varargin
       if (isscalar (m) && all (cellfun ("numel", varargin) == 1))
         m = [m varargin{:}];
         n = [];
@@ -137,7 +137,7 @@ function x = repmat (A, m, varargin)
 endfunction
 
 
-# Tests for ML compatibility
+## Tests for ML compatibility
 %!shared x
 %! x = [1 2 3];
 %!assert (repmat (x, [3, 1]), repmat (x, 3, []))
@@ -152,7 +152,7 @@ endfunction
 %!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]));
 %!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]));
 
-# Test various methods of providing size parameters
+## Test various methods of providing size parameters
 %!shared x
 %! x = [1 2;3 4];
 %!assert (repmat (x, [1 1]), repmat (x, 1))
@@ -163,7 +163,7 @@ endfunction
 %!assert (repmat (x, [3 3]), repmat (x, 3, 3))
 %!assert (repmat (pi, [1,2,3,4]), repmat (pi, 1,2,3,4))
 
-# Tests for numel==1 case:
+## Tests for numel==1 case:
 %!shared x, r
 %! x = [ 65 ];
 %! r = kron (ones (2,2), x);
@@ -171,7 +171,7 @@ endfunction
 %!assert (char (r), repmat (char (x), [2 2]))
 %!assert (int8 (r), repmat (int8 (x), [2 2]))
 
-# Tests for ndims==2 case:
+## Tests for ndims==2 case:
 %!shared x, r
 %! x = [ 65 66 67 ];
 %! r = kron (ones (2,2), x);
@@ -179,7 +179,7 @@ endfunction
 %!assert (char (r), repmat (char (x), [2 2]))
 %!assert (int8 (r), repmat (int8 (x), [2 2]))
 
-# Tests for dim>2 case:
+## Tests for dim>2 case:
 %!shared x, r
 %! x = [ 65 66 67 ];
 %! r = kron (ones (2,2), x);
@@ -188,7 +188,7 @@ endfunction
 %!assert (char (r), repmat (char (x), [2 2 2]))
 %!assert (int8 (r), repmat (int8 (x), [2 2 2]))
 
-# Test that sparsity is kept
+## Test that sparsity is kept
 %!assert (sparse (4,4), repmat (sparse (2,2),[2 2]))
 
 %!assert (size (repmat (".", -1, 1)), [0, 1])

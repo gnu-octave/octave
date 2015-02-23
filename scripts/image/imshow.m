@@ -208,7 +208,8 @@ function h = imshow (im, varargin)
     htmp = imagesc (xdata, ydata, im, display_range);
     set (gca (), "clim", display_range);
   endif
-  set (gca (), "visible", "off", "view", [0, 90], "ydir", "reverse", "layer", "top");
+  set (gca (), "visible", "off", "view", [0, 90],
+               "ydir", "reverse", "layer", "top");
   axis ("image");
 
   if (nargout > 0)
@@ -255,7 +256,7 @@ endfunction
 %! imshow (rand (100, 100));
 %! colormap (jet (64));
 
-%% Test input validation
+## Test input validation
 %!error imshow ()
 %!error <IM must be an image> imshow ({"cell"})
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "uint32"))

@@ -314,11 +314,11 @@ function ZI = interp2 (varargin)
 
   endif
 
-  ## extrapolation 'extrap' 
+  ## extrapolation 'extrap'
   if (isempty (extrap))
     extrap = NA;
   endif
-  
+
   if (X(1) < X(end))
     if (Y(1) < Y(end))
       ZI(XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = extrap;
@@ -562,7 +562,7 @@ endfunction
 %!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], 10 * tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
 
-%% Test input validation
+## Test input validation
 %!error interp2 (1, 1, 1, 1, 1, 2)    #only 5 numeric inputs
 %!error interp2 (1, 1, 1, 1, 1, 2, 2) #only 5 numeric inputs
 %!error <Z must be a 2-D matrix> interp2 ({1})

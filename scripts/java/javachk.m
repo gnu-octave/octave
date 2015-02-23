@@ -146,6 +146,6 @@ endfunction
 %!testif HAVE_JAVA
 %! assert (javachk ("jvm"), "");
 
-%% Test input validation
+## Test input validation
 %!error <javachk: unrecognized feature 'foobar'> javachk ("foobar")
 

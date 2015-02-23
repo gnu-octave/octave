@@ -33,7 +33,7 @@ function pdf = fpdf (x, m, n)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (n))
+  if (! isscalar (m) || ! isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
       error ("fpdf: X, M, and N must be of common size or scalars");
@@ -69,7 +69,7 @@ function pdf = fpdf (x, m, n)
 endfunction
 
 
-%% F (x, 1, m) == T distribution (sqrt (x), m) / sqrt (x)
+## F (x, 1, m) == T distribution (sqrt (x), m) / sqrt (x)
 %!test
 %! x = rand (10,1);
 %! x = x(x > 0.1 & x < 0.9);
@@ -86,12 +86,12 @@ endfunction
 %!assert (fpdf (x, 2, [0 NaN Inf 2 2]), [NaN NaN NaN y(4:5)], eps)
 %!assert (fpdf ([x, NaN], 2, 2), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (fpdf (single ([x, NaN]), 2, 2), single ([y, NaN]), eps ("single"))
 %!assert (fpdf ([x, NaN], single (2), 2), single ([y, NaN]), eps ("single"))
 %!assert (fpdf ([x, NaN], 2, single (2)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error fpdf ()
 %!error fpdf (1)
 %!error fpdf (1,2)

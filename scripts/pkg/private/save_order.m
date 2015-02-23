@@ -28,7 +28,7 @@ function newdesc = save_order (desc)
     deps = desc{i}.depends;
     if (isempty (deps)
         || (length (deps) == 1 && strcmp (deps{1}.package, "octave")))
-      newdesc {end + 1} = desc{i};
+      newdesc{end + 1} = desc{i};
     else
       tmpdesc = {};
       for k = 1 : length (deps)
@@ -51,7 +51,7 @@ function newdesc = save_order (desc)
   for i = 1 : length (newdesc)
     for j = (i + 1) : length (newdesc)
       if (strcmp (newdesc{i}.name, newdesc{j}.name))
-        idx (end + 1) = j;
+        idx(end + 1) = j;
       endif
     endfor
   endfor

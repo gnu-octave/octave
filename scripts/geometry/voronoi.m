@@ -203,7 +203,7 @@ endfunction
 %! assert (vx, [-0.7; 1.7], eps);
 %! assert (vy, [-0.7; 1.7], eps);
 
-%% Input validation tests
+## Input validation tests
 %!error voronoi ()
 %!error voronoi (ones (3,1))
 %!error voronoi (ones (3,1), ones (3,1), "bogus1", "bogus2", "bogus3")

@@ -82,7 +82,7 @@ function [beta, v, r] = gls (y, x, o)
   if (rx != ry)
     error ("gls: number of rows of X and Y must be equal");
   endif
-  if (!issquare (o) || ro != ry*cy)
+  if (! issquare (o) || ro != ry*cy)
     error ("gls: matrix O must be square matrix with rows = rows (Y) * cols (Y)");
   endif
 
@@ -129,7 +129,7 @@ endfunction
 %! o = diag (ones (5,1));
 %! assert (gls (y,x,o), [3; 2], 50*eps);
 
-%% Test input validation
+## Test input validation
 %!error gls ()
 %!error gls (1)
 %!error gls (1, 2)

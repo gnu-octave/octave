@@ -44,7 +44,7 @@ function rnd = wblrnd (scale, shape, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (scale) || !isscalar (shape))
+  if (! isscalar (scale) || ! isscalar (shape))
     [retval, scale, shape] = common_size (scale, shape);
     if (retval > 0)
       error ("wblrnd: SCALE and SHAPE must be of common size or scalars");
@@ -66,13 +66,13 @@ function rnd = wblrnd (scale, shape, varargin)
       error ("wblrnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("wblrnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (scale) && !isequal (size (scale), sz))
+  if (! isscalar (scale) && ! isequal (size (scale), sz))
     error ("wblrnd: SCALE and SHAPE must be scalar or of size SZ");
   endif
 
@@ -107,14 +107,14 @@ endfunction
 %!assert (size (wblrnd (1, 2, [4 1])), [4, 1])
 %!assert (size (wblrnd (1, 2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (wblrnd (1, 2)), "double")
 %!assert (class (wblrnd (single (1), 2)), "single")
 %!assert (class (wblrnd (single ([1 1]), 2)), "single")
 %!assert (class (wblrnd (1, single (2))), "single")
 %!assert (class (wblrnd (1, single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error wblrnd ()
 %!error wblrnd (1)
 %!error wblrnd (ones (3), ones (2))

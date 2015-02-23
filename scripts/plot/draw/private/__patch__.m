@@ -168,7 +168,7 @@ function [h, failed] = __patch__ (p, varargin)
       elseif (ischar (c) && rem (nargin - iarg, 2) == 0)
         ## Assume any additional argument over an even number is a color string.
         args{7} = "facecolor";
-        args{8} =  tolower (c);
+        args{8} = tolower (c);
         args{9} = "cdata";
         args{10} = [];
       else
@@ -184,7 +184,7 @@ function [h, failed] = __patch__ (p, varargin)
     args = varargin;
   endif
 
-  if (!failed)
+  if (! failed)
     h = __go_patch__ (p, args{:});
   endif
 endfunction

@@ -65,7 +65,7 @@ function retval = null (A, tol)
     rank = sum (s > tol);
 
     if (rank < cols)
-      retval = V (:, rank+1:cols);
+      retval = V(:, rank+1:cols);
       if (isa (A, "single"))
         retval (abs (retval) < eps ("single")) = 0;
       else
@@ -79,7 +79,7 @@ function retval = null (A, tol)
 endfunction
 
 
-%% FIXME: Need some tests for 'single' variables as well
+## FIXME: Need some tests for 'single' variables as well
 
 %!test
 %! A = 0;

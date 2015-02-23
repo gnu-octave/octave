@@ -87,7 +87,7 @@ endfunction
 %! assert (skewness (x, [], 2), s(:,8), eps);
 %! assert (kurtosis (x, [], 2), s(:,9), eps);
 
-%% Test input validation
+## Test input validation
 %!error statistics ()
 %!error statistics (1, 2, 3)
 %!error statistics (['A'; 'B'])

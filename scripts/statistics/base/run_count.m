@@ -98,7 +98,7 @@ endfunction
 %!assert (run_count (5:-1:1, 5), [5, 0, 0, 0, 0])
 %!assert (run_count (ones (3), 4), [0,0,0;0,0,0;1,1,1;0,0,0])
 
-%% Test input validation
+## Test input validation
 %!error run_count ()
 %!error run_count (1)
 %!error run_count (1, 2, 3, 4)

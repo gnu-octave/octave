@@ -35,7 +35,7 @@ function cdf = cauchy_cdf (x, location = 0, scale = 1)
     print_usage ();
   endif
 
-  if (!isscalar (location) || !isscalar (scale))
+  if (! isscalar (location) || ! isscalar (scale))
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
       error ("cauchy_cdf: X, LOCATION, and SCALE must be of common size or scalars");
@@ -52,7 +52,7 @@ function cdf = cauchy_cdf (x, location = 0, scale = 1)
     cdf = NaN (size (x));
   endif
 
-  k = !isinf (location) & (scale > 0) & (scale < Inf);
+  k = ! isinf (location) & (scale > 0) & (scale < Inf);
   if (isscalar (location) && isscalar (scale))
     cdf = 0.5 + atan ((x - location) / scale) / pi;
   else
@@ -72,13 +72,13 @@ endfunction
 %!assert (cauchy_cdf (x, 1, 2*[0 1 NaN 1 Inf]), [NaN y(2) NaN y(4) NaN])
 %!assert (cauchy_cdf ([x(1:2) NaN x(4:5)], 1, 2), [y(1:2) NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (cauchy_cdf ([x, NaN], 1, 2), [y, NaN])
 %!assert (cauchy_cdf (single ([x, NaN]), 1, 2), single ([y, NaN]), eps ("single"))
 %!assert (cauchy_cdf ([x, NaN], single (1), 2), single ([y, NaN]), eps ("single"))
 %!assert (cauchy_cdf ([x, NaN], 1, single (2)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error cauchy_cdf ()
 %!error cauchy_cdf (1,2)
 %!error cauchy_cdf (1,2,3,4)

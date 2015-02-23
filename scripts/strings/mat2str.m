@@ -143,7 +143,7 @@ endfunction
 %!assert (mat2str (false), "false")
 %!assert (mat2str (logical (eye (2))), "[true false;false true]")
 
-%% Test input validation
+## Test input validation
 %!error mat2str ()
 %!error mat2str (1,2,3,4)
 %!error mat2str (["Hello"])

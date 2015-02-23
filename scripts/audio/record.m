@@ -62,7 +62,7 @@ endfunction
 
 %!assert (isempty (record (0)))
 
-%% Test input validation
+## Test input validation
 %!error record ()
 %!error record (1,2,3)
 %!error record (-1)

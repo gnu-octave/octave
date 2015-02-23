@@ -483,7 +483,7 @@ function cmd = epstool (opts, filein, fileout)
       epsdevice = "eps2write";
     endif
   endif
-  
+
   dos_shell = (ispc () && ! isunix ());
 
   cleanup = "";
@@ -509,9 +509,9 @@ function cmd = epstool (opts, filein, fileout)
     pipeout = true;
     fileout = [tempname() ".eps"];
     if (dos_shell)
-      cleanup = horzcat (cleanup, sprintf ("& del %s ", strrep (fileout, '/', '\')));
+      cleanup = [cleanup, sprintf("& del %s ", strrep (fileout, '/', '\'))];
     else
-      cleanup = horzcat (cleanup, sprintf ("; rm %s ", fileout));
+      cleanup = [cleanup, sprintf("; rm %s ", fileout)];
     endif
   else
     pipeout = false;
@@ -625,7 +625,7 @@ endfunction
 
 function cmd = fig2dev (opts, devopt)
   if (nargin < 2)
-    devopt =  opts.devopt;
+    devopt = opts.devopt;
   endif
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.fig2dev_binary))
@@ -701,7 +701,7 @@ endfunction
 
 function cmd = lpr (opts)
   if (nargin < 2)
-    devopt =  opts.devopt;
+    devopt = opts.devopt;
   endif
   if (! isempty (opts.lpr_binary))
     cmd = opts.lpr_binary;
@@ -721,7 +721,7 @@ endfunction
 
 function cmd = pstoedit (opts, devopt)
   if (nargin < 2)
-    devopt =  opts.devopt;
+    devopt = opts.devopt;
   endif
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.pstoedit_binary))

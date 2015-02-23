@@ -55,7 +55,7 @@ endfunction
 %!assert (istril (tril (randn (10))))
 %!assert (! istril (randn (10)))
 
-%% Test input validation
+## Test input validation
 %!error istril ()
 %!error istril (1,2)
 

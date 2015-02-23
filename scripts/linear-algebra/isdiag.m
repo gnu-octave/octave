@@ -50,7 +50,7 @@ endfunction
 %!assert (isdiag (speye (1000000)))
 %!assert (isdiag (logical (eye (10))))
 
-%% Test input validation
+## Test input validation
 %!error isdiag ()
 %!error isdiag (1,2)
 

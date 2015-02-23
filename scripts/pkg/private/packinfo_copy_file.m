@@ -24,7 +24,7 @@
 
 function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, octfiledir)
   filepath = fullfile (packdir, filename);
-  if (!exist (filepath, "file") && strcmpi (requirement, "optional"))
+  if (! exist (filepath, "file") && strcmpi (requirement, "optional"))
     ## do nothing, it's still OK
   else
     [status, output] = copyfile (filepath, packinfo);

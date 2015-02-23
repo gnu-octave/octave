@@ -72,14 +72,14 @@ function y = prepad (x, l, c, dim)
     sz(nd+1:dim) = 1;
   endif
 
-  d = sz (dim);
+  d = sz(dim);
 
   if (d >= l)
     idx = repmat ({':'}, nd, 1);
     idx{dim} = d-l+1:d;
     y = x(idx{:});
   else
-    sz (dim) = l - d;
+    sz(dim) = l - d;
     y = cat (dim, c(ones (sz)), x);
   endif
 

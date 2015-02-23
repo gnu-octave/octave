@@ -74,7 +74,7 @@ endfunction
 %! assert (! isbanded (A,0,1))
 %! assert (! isbanded (A,1,0))
 
-%% Test input validation
+## Test input validation
 %!error isbanded ()
 %!error isbanded (1)
 %!error isbanded (1,2)

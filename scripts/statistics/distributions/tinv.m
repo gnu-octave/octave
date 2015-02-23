@@ -38,7 +38,7 @@ function inv = tinv (x, n)
     print_usage ();
   endif
 
-  if (!isscalar (n))
+  if (! isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
       error ("tinv: X and N must be of common size or scalars");
@@ -92,12 +92,12 @@ endfunction
 %!assert (tinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN], eps)
 %!assert (tinv ([x(1:2) NaN x(4:5)], 1), [NaN -Inf NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (tinv ([x, NaN], 1), [NaN -Inf 0 Inf NaN NaN], eps)
 %!assert (tinv (single ([x, NaN]), 1), single ([NaN -Inf 0 Inf NaN NaN]), eps ("single"))
 %!assert (tinv ([x, NaN], single (1)), single ([NaN -Inf 0 Inf NaN NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error tinv ()
 %!error tinv (1)
 %!error tinv (1,2,3)

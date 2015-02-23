@@ -120,19 +120,19 @@ endfunction
 %!assert (interpft (y', n), y', 20*eps);
 %!assert (interpft ([y,y],n), [y,y], 20*eps);
 
-%% Test case with complex input from bug #39566
+## Test case with complex input from bug #39566
 %!test
 %! x = (1 + j) * [1:4]';
 %! y = ifft ([15 + 15*j; -6; -1.5 - 1.5*j; 0; -1.5 - 1.5*j; -6*j]);
 %! assert (interpft (x, 6), y, 10*eps);
 
-%% Test for correct spectral symmetry with even/odd lengths
+## Test for correct spectral symmetry with even/odd lengths
 %!assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps);
 %!assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps);
 %!assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps);
 %!assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps);
 
-%% Test input validation
+## Test input validation
 %!error interpft ()
 %!error interpft (1)
 %!error interpft (1,2,3)

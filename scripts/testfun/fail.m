@@ -142,15 +142,15 @@ endfunction
 %!fail ("fail ('[1,2]*[2,3]', 'usage:')", "expected error <usage:>\nbut got.*nonconformant")
 %!fail ("warning ('test warning')", "warning", "test warning");
 
-##% !fail ("warning ('next test')",'warning','next test');  ## only allowed one warning test?!?
+#%!fail ("warning ('next test')",'warning','next test');  # only allowed one warning test?!?
 
-%% Test that fail() itself will generate an error
+## Test that fail() itself will generate an error
 %!error <expected error> fail ("1")
 %!error <'a' undefined> fail ("a*[2;3]", "nonconformant")
 %!error <expected error .usage:>  fail ("a*[2,3]", "usage:")
 %!error <warning failure> fail ("warning ('warning failure')", "warning", "success")
 
-%% Test input validation
+## Test input validation
 %!error fail ()
 %!error fail (1,2,3,4)
 

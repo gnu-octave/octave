@@ -90,7 +90,7 @@ function k = commutation_matrix (m, n)
   k = zeros (m * n, m * n);
   for i = 1 : m
     for j = 1 : n
-      k ((i - 1) * n + j, (j - 1) * m + i) = 1;
+      k((i - 1) * n + j, (j - 1) * m + i) = 1;
     endfor
   endfor
 

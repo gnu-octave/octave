@@ -38,7 +38,7 @@ function pdf = lognpdf (x, mu = 0, sigma = 1)
     print_usage ();
   endif
 
-  if (!isscalar (mu) || !isscalar (sigma))
+  if (! isscalar (mu) || ! isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
       error ("lognpdf: X, MU, and SIGMA must be of common size or scalars");
@@ -78,12 +78,12 @@ endfunction
 %!assert (lognpdf (x, 0, [0 NaN Inf 1]), [NaN NaN NaN y(4)], eps)
 %!assert (lognpdf ([x, NaN], 0, 1), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (lognpdf (single ([x, NaN]), 0, 1), single ([y, NaN]), eps ("single"))
 %!assert (lognpdf ([x, NaN], single (0), 1), single ([y, NaN]), eps ("single"))
 %!assert (lognpdf ([x, NaN], 0, single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error lognpdf ()
 %!error lognpdf (1,2)
 %!error lognpdf (1,2,3,4)

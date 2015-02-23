@@ -45,11 +45,9 @@
 ## Additional toolkit description can be added to the column header
 ## with a parameter named equal to the toolkit.  For example:
 ##
-## @example
-## @group
-##   @code{html_compare_plot_demos ({"gnuplot", "fltk"}, "gnuplot", " 4.6 patchlevel 5")}
-## @end group
-## @end example
+## @smallexample
+## @code{html_compare_plot_demos ({"gnuplot", "fltk"}, "gnuplot", " 4.6 patchlevel 5")}
+## @end smallexample
 ##
 ## @seealso{compare_plot_demos, dump_demos, demo}
 ## @end deftypefn
@@ -99,7 +97,8 @@ function html_compare_plot_demos (toolkits, varargin)
       if (isfield (in, toolkits{t}))
         column_header = strcat (column_header, in.(toolkits{t}));
       endif
-      fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', column_header, toolkits{t});
+      fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', ...
+                    column_header, toolkits{t});
     endfor
     fprintf (fid, "</tr>\n");
 
@@ -111,7 +110,8 @@ function html_compare_plot_demos (toolkits, varargin)
         ffn = fullfile (k{:}, fn);
         fprintf (fid, "  <td>%s<br>", ffn);
         if (exist (ffn, "file"))
-          fprintf (fid, "<img src='%s' style='width: %dpx;'>", ffn, in.column_width);
+          fprintf (fid, "<img src='%s' style='width: %dpx;'>", ...
+                        ffn, in.column_width);
         else
           err_fn = regexprep(ffn, ".png", ".err");
           if (! exist (err_fn, "file"))

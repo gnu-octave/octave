@@ -105,7 +105,9 @@ function [img, varargout] = imread (filename, varargin)
     error ("imread: FILENAME must be a string");
   endif
 
-  [img, varargout{1:nargout-1}] = imageIO ("imread", @__imread__, "read", filename, varargin{:});
+  [img, varargout{1:nargout-1}] = ...
+    imageIO ("imread", @__imread__, "read", filename, varargin{:});
+
 endfunction
 
 

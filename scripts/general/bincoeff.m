@@ -112,7 +112,7 @@ endfunction
 
 %!assert (bincoeff ([4 NaN 4], [-1, 2, 2.5]), NaN (1, 3))
 
-%% Test input validation
+## Test input validation
 %!error bincoeff ()
 %!error bincoeff (1, 2, 3)
 %!error bincoeff (ones (3),ones (2))

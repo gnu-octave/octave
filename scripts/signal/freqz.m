@@ -228,6 +228,6 @@ endfunction
 %! [h3,f3] = freqz (b,a,32,"whole",320);
 %! assert (f3,[0:31]'*10,10*eps);
 
-%% Test input validation
-## FIXME: Need to put tests here and simplify the input validation in the main code.
+## Test input validation
+## FIXME: Need to put tests here and simplify input validation in the main code.
 

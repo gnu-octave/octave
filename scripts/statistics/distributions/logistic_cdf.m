@@ -46,10 +46,10 @@ endfunction
 %! y = [0, 1/4, 1/2, 3/4, 1];
 %!assert (logistic_cdf ([x, NaN]), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (logistic_cdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error logistic_cdf ()
 %!error logistic_cdf (1,2)
 %!error logistic_cdf (i)

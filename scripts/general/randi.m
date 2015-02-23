@@ -129,7 +129,7 @@ endfunction
 %!
 %!assert (size (randi (10, 3,1,2)), [3, 1, 2])
 
-%% Test input validation
+## Test input validation
 %!error (randi ())
 %!error (randi ("test"))
 %!error (randi (10+2i))

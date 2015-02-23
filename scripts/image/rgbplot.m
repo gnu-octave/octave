@@ -83,7 +83,7 @@ endfunction
 %! subplot (1, 2, 2);
 %! rgbplot (ocean, "composite");
 
-%% Test input validation
+## Test input validation
 %!error rgbplot ()
 %!error rgbplot (1,2)
 %!error <CMAP must be a valid colormap> rgbplot ({0 1 0})

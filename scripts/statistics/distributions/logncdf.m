@@ -38,7 +38,7 @@ function cdf = logncdf (x, mu = 0, sigma = 1)
     print_usage ();
   endif
 
-  if (!isscalar (mu) || !isscalar (sigma))
+  if (! isscalar (mu) || ! isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
       error ("logncdf: X, MU, and SIGMA must be of common size or scalars");
@@ -81,13 +81,13 @@ endfunction
 %!assert (logncdf (x, 0, sqrt(2)*[0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)], eps)
 %!assert (logncdf ([x(1:3) NaN x(5)], 0, sqrt(2)), [y(1:3) NaN y(5)], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (logncdf ([x, NaN], 0, sqrt(2)), [y, NaN], eps)
 %!assert (logncdf (single ([x, NaN]), 0, sqrt(2)), single ([y, NaN]), eps ("single"))
 %!assert (logncdf ([x, NaN], single (0), sqrt(2)), single ([y, NaN]), eps ("single"))
 %!assert (logncdf ([x, NaN], 0, single (sqrt(2))), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error logncdf ()
 %!error logncdf (1,2)
 %!error logncdf (1,2,3,4)

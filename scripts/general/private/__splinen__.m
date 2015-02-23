@@ -28,8 +28,9 @@
 function yi = __splinen__ (x, y, xi, extrapval, f)
   ## ND isvector function.
   isvec = @(x) numel (x) == length (x);
-  if (!iscell (x) || length (x) < ndims (y) || any (! cellfun (isvec, x))
-      || !iscell (xi) || length (xi) < ndims (y) || any (! cellfun (isvec, xi)))
+  if (! iscell (x) || length (x) < ndims (y) || any (! cellfun (isvec, x))
+      || ! iscell (xi) || length (xi) < ndims (y)
+      || any (! cellfun (isvec, xi)))
     error ("__splinen__: %s: non-gridded data or dimensions inconsistent", f);
   endif
   yi = y;
@@ -38,7 +39,7 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   endfor
 
   [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "uniformoutput", false){:});
-  if (!isempty (extrapval))
+  if (! isempty (extrapval))
     idx = zeros (size (xi{1}));
     for i = 1 : length (x)
       idx |= xi{i} < min (x{i}(:)) | xi{i} > max (x{i}(:));

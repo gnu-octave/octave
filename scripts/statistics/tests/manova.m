@@ -53,7 +53,7 @@ function manova (x, g)
 
   [n, p] = size (x);
 
-  if (!isvector (g) || (length (g) != n))
+  if (! isvector (g) || (length (g) != n))
     error ("manova: G must be a vector of length rows (X)");
   endif
 
@@ -85,9 +85,9 @@ function manova (x, g)
   l = real (eig (SSB / SSW));
 
   if (isa (l, "single"))
-    l (l < eps ("single")) = 0;
+    l(l < eps ("single")) = 0;
   else
-    l (l < eps) = 0;
+    l(l < eps) = 0;
   endif
 
   ## Wilks' Lambda

@@ -126,7 +126,7 @@ endfunction
 %! assert (XX1, XX2);
 %! assert (YY1, YY2);
 
-%% Test input validation
+## Test input validation
 %!error meshgrid ()
 %!error meshgrid (1,2,3,4)
 %!error <X and Y must be vectors> meshgrid (ones (2,2), 1:3)

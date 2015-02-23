@@ -85,7 +85,7 @@ function s = spaugment (A, c)
         c = max (abs (A(:))) / 1000;
       endif
     endif
-  elseif (!isscalar (c))
+  elseif (! isscalar (c))
     error ("spaugment: C must be a scalar");
   endif
 

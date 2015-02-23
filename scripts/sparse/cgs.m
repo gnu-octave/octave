@@ -159,7 +159,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
         ## We reach tolerance tol within maxit iterations.
         flag = 0;
         break
-      elseif (resvec (end) == resvec (end - 1))
+      elseif (resvec(end) == resvec(end - 1))
         ## The method stagnates.
         flag = 3;
         break

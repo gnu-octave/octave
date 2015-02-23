@@ -193,7 +193,7 @@ function [r, p, k, e] = residue (b, a, varargin)
   ## Sort poles so that multiplicity loop will work.
 
   [e, indx] = mpoles (p, toler, 1);
-  p = p (indx);
+  p = p(indx);
 
   ## For each group of pole multiplicity, set the value of each
   ## pole to the average of the group. This reduces the error in
@@ -289,8 +289,8 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
     indx = 1:numel (p);
   else
     [e, indx] = mpoles (p, toler, 0);
-    p = p (indx);
-    r = r (indx);
+    p = p(indx);
+    r = r(indx);
   endif
 
   indx = 1:numel (p);

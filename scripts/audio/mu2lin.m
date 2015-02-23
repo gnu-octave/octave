@@ -63,7 +63,7 @@ function y = mu2lin (x, n = 0)
   ## Set the shape of y to that of x overwrites the contents of y with
   ## ulaw of x.
   y = x;
-  y(:) = ulaw (x + 1);
+  y(:) = ulaw(x + 1);
 
   ## Convert to real or 8-bit.
   if (n == 0)

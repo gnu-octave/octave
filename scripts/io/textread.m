@@ -118,7 +118,8 @@ function varargout = textread (filename, format = "%f", varargin)
       error ("character value required for EndOfLine");
     endif
   else
-    ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
+    ## Determine EOL from file.
+    ## Search for EOL candidates in the first BUFLENGTH chars
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
@@ -158,7 +159,7 @@ function varargout = textread (filename, format = "%f", varargin)
     endwhile
     ## Found EOL delimiting last requested line. Compute ptr (incl. EOL)
     if (isempty (eoi))
-      printf ("textread: format repeat count specified but no endofline found\n");
+      disp ("textread: format repeat count specified but no endofline found");
       eoi_pos = nblks * BUFLENGTH + count;
     else
       eoi_pos = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi);
@@ -177,7 +178,7 @@ function varargout = textread (filename, format = "%f", varargin)
   endif
 
   ## Call strread to make it do the real work
-  [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
+  [varargout{1:max (nargout, 1)}] = strread (str, format, varargin{:});
 
   ## Hack to concatenate/reshape numeric output into 2D array (undocumented ML)
   ## In ML this only works in case of an empty format string
@@ -202,7 +203,7 @@ function varargout = textread (filename, format = "%f", varargin)
       ncols = numel (strfind (str, " ")) + 1;
     else
       ## 3B. Just count delimiters. FIXME: delimiters could occur in literals
-      delimiter = varargin {idelimiter+1};
+      delimiter = varargin{idelimiter+1};
       ncols = numel (regexp (str, sprintf ("[%s]", delimiter))) + 1;
     endif
     ## 6. Reshape; watch out, we need a transpose
@@ -238,7 +239,7 @@ endfunction
 %! unlink (f);
 %! assert (a, d(2:7, 1), 1e-2);
 
-%% Test reading 2D matrix with empty format
+## Test reading 2D matrix with empty format
 %!test
 %! f = tempname ();
 %! d = rand (5, 2);
@@ -247,7 +248,7 @@ endfunction
 %! unlink (f);
 %! assert (A, d(4:5, :), 1e-2);
 
-%% Read multiple lines using empty format string
+## Read multiple lines using empty format string
 %!test
 %! f = tempname ();
 %! unlink (f);
@@ -259,7 +260,7 @@ endfunction
 %! unlink (f);
 %! assert (A, d, 1e-6);
 
-%% Empty format, corner case = one line w/o EOL
+## Empty format, corner case = one line w/o EOL
 %!test
 %! f = tempname ();
 %! unlink (f);
@@ -271,7 +272,7 @@ endfunction
 %! unlink (f);
 %! assert (A, d, 1e-6);
 
-%% Read multiple lines using empty format string, missing data (should be 0)
+## Read multiple lines using empty format string, missing data (should be 0)
 %!test
 %! f = tempname ();
 %! unlink (f);
@@ -283,7 +284,7 @@ endfunction
 %! unlink (f);
 %! assert (A, [ d(1:2) 0 d(3:4)], 1e-6);
 
-%% Test with empty positions - ML returns 0 for empty fields
+## Test with empty positions - ML returns 0 for empty fields
 %!test
 %! f = tempname ();
 %! unlink (f);
@@ -295,8 +296,8 @@ endfunction
 %! unlink (f);
 %! assert (A, [0 2 0 4; 5 0 7 0], 1e-6);
 
-%% Another test with empty format + positions, now with more incomplete lower
-%% row (must be appended with zeros to get rectangular matrix)
+## Another test with empty format + positions, now with more incomplete lower
+## row (must be appended with zeros to get rectangular matrix)
 %!test
 %! f = tempname ();
 %! unlink (f);
@@ -308,7 +309,7 @@ endfunction
 %! unlink (f);
 %! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
 
-%% Test input validation
+## Test input validation
 %!error textread ()
 %!error textread (1)
 %!error <arguments must be strings> textread (1, "%f")

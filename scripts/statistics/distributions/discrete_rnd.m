@@ -65,7 +65,7 @@ function rnd = discrete_rnd (v, p, varargin)
       error ("discrete_rnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("discrete_rnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
@@ -81,13 +81,13 @@ endfunction
 %!assert (size (discrete_rnd (1:2, 1:2, [4 1])), [4, 1])
 %!assert (size (discrete_rnd (1:2, 1:2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (discrete_rnd (1:2, 1:2)), "double")
 %!assert (class (discrete_rnd (single (1:2), 1:2)), "single")
 ## FIXME: Maybe this should work, maybe it shouldn't.
 #%!assert(class (discrete_rnd (1:2, single(1:2))), "single");
 
-%% Test input validation
+## Test input validation
 %!error discrete_rnd ()
 %!error discrete_rnd (1)
 %!error discrete_rnd (1:2,1:2, -1)
@@ -95,7 +95,7 @@ endfunction
 %!error discrete_rnd (1:2,1:2, [2 -1 2])
 %!error discrete_rnd (1:2,1:2, 1, ones (2))
 %!error discrete_rnd (1:2,1:2, 1, -1)
-%% test v,p verification
+## test v,p verification
 %!error discrete_rnd (1, ones (2), ones (2,1))
 %!error discrete_rnd (1, ones (2,1), ones (1,1))
 %!error discrete_rnd (1, ones (2,1), [1 -1])

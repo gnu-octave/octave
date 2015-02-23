@@ -57,7 +57,7 @@ function retval = usejava (feature)
 
   retval = false;
 
-  switch feature
+  switch (feature)
     ## For each feature, try methods() on a Java class of a feature
     case "awt"
       try
@@ -88,7 +88,7 @@ endfunction
 %!testif HAVE_JAVA
 %! assert (usejava ("jvm"), true);
 
-%% Test input validation
+## Test input validation
 %!error usejava ()
 %!error usejava (1, 2)
 %!error usejava (1)

@@ -72,11 +72,11 @@ endfunction
 %!assert (unidpdf (x, 10*[0 NaN 1 1 1 1]), [NaN NaN y(3:6)])
 %!assert (unidpdf ([x, NaN], 10), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (unidpdf (single ([x, NaN]), 10), single ([y, NaN]))
 %!assert (unidpdf ([x, NaN], single (10)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error unidpdf ()
 %!error unidpdf (1)
 %!error unidpdf (1,2,3)

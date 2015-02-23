@@ -37,7 +37,8 @@ function [ver, url] = get_forge_pkg (name)
   name = tolower (name);
 
   ## Try to download package's index page.
-  [html, succ] = urlread (sprintf ("http://packages.octave.org/%s/index.html", name));
+  [html, succ] = urlread (sprintf ("http://packages.octave.org/%s/index.html",
+                                   name));
   if (succ)
     ## Remove blanks for simpler matching.
     html(isspace(html)) = [];

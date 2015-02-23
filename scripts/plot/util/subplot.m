@@ -197,8 +197,8 @@ function h = subplot (varargin)
     if (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
       align_axes = true;
     endif
-    
-    if (! have_position)    
+
+    if (! have_position)
       ## Subplots that cover more that one base subplot are not updated
       align_axes = (align_axes || (! isscalar (index)));
       ## Normal case where subplot indices have been given
@@ -208,7 +208,7 @@ function h = subplot (varargin)
       li = zeros (1,4);
       align_axes = true;
     endif
-    
+
     set (cf, "nextplot", "add");
 
     found = false;
@@ -233,7 +233,7 @@ function h = subplot (varargin)
           objpos = get (child, "position");
         endif
         if (all (abs (objpos - pos) < eps) && ! replace_axes)
-          ## If the new axes are in exactly the same position  
+          ## If the new axes are in exactly the same position
           ## as an existing axes object, or if they share the same
           ## appdata "__subplotposition__", use the existing axes.
           found = true;
@@ -241,7 +241,7 @@ function h = subplot (varargin)
         else
           ## If the new axes overlap an old axes object, delete the old axes.
           objpos = get (child, "position");
-          
+
           x0 = pos(1);
           x1 = x0 + pos(3);
           y0 = pos(2);
@@ -272,7 +272,7 @@ function h = subplot (varargin)
       if (! align_axes)
         ## base position (no ticks, no annotation, no cumbersome neighbor)
         setappdata (hsubplot, "__subplotposition__", pos);
-        ## max outerposition 
+        ## max outerposition
         setappdata (hsubplot, "__subplotouterposition__", opos);
         addlistener (hsubplot, "outerposition", @subplot_align);
         addlistener (hsubplot, "xaxislocation", @subplot_align);
@@ -280,13 +280,13 @@ function h = subplot (varargin)
         addlistener (hsubplot, "position", {@subplot_align, true});
         subplot_align (hsubplot);
       endif
-      
+
     endif
   unwind_protect_cleanup
     set (0, "defaultaxesunits", axesunits);
     set (cf, "units", figureunits);
   end_unwind_protect
-  
+
   if (nargout > 0)
     h = hsubplot;
   endif
@@ -302,13 +302,13 @@ function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
     li = get (0, "defaultaxeslooseinset");
     return;
   endif
-  
-  ## Row/Column inside the axes array  
+
+  ## Row/Column inside the axes array
   row = ceil (idx / ncols);
   col = idx .- (row - 1) * ncols;
   row = [min(row) max(row)];
-  col = [min(col) max(col)];  
-  
+  col = [min(col) max(col)];
+
   ## Minimal margins around subplots defined in points
   fig_units = get (hf, "units");
   set (hf, "units", "points");
@@ -319,13 +319,13 @@ function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
   ## Column/row separation
   margin.column = .2 / ncols + 2 * xbasemargin;
   margin.row = .2 / nrows + 2 * ybasemargin;
-  
+
   set (hf, "units", fig_units);
   margin.left = xbasemargin;
   margin.right = xbasemargin;
   margin.bottom = ybasemargin;
   margin.top = ybasemargin;
-  
+
   ## Boundary axes have default margins
   borders = get (0, "defaultaxesposition");
   if (col(1) == 1)
@@ -337,7 +337,7 @@ function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
     margin.right = 1 - borders(1) - borders(3);
   endif
 
-  
+
   if (row(2) == nrows)
     margin.bottom = borders(2);
   else
@@ -357,7 +357,7 @@ function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
   y0 = borders(2) + (nrows - row(2)) * (height + margin.row);
   width += diff (col) * (width + margin.column);
   height += diff (row) * (height + margin.row);
-  
+
   pos = [x0 y0 width height];
   opos = [(x0 - margin.left), (y0 - margin.bottom), ...
           (width + margin.left + margin.right), ...
@@ -378,12 +378,12 @@ function subplot_align (h, d, rmupdate = false)
       endif
       return
     endif
-    
+
     unwind_protect
       updating = true;
       hf = ancestor (h, "figure");
       children = get (hf, "children");
-                 
+
       ## Base position of the subplot
       pos = getappdata (children, "__subplotposition__");
 
@@ -394,8 +394,8 @@ function subplot_align (h, d, rmupdate = false)
         return
       endif
       hsubplots = children(do_align);
-      
-      
+
+
       ## There may be mixed subplot series (e.g. 2-by-6 and 1-by-6) in
       ## the same figure. Only subplots that have the same width and
       ## height as this one are updated.
@@ -417,7 +417,7 @@ function subplot_align (h, d, rmupdate = false)
       for ii = 1:numel (hsubplots);
         set (hsubplots(ii), "outerposition", opos(ii,:), ...
              "activepositionproperty", "position");
-      endfor   
+      endfor
 
       ## Compare current positions to default and compute the new ones
       curpos = get (hsubplots, "position");
@@ -437,11 +437,11 @@ function subplot_align (h, d, rmupdate = false)
       pos(:,2) += dy0;
       pos(:,3) -= dx0 + dx1;
       pos(:,4) -= dy0 + dy1;
-      
+
       for ii = 1:numel (hsubplots)
         set (hsubplots(ii), "position", pos(ii,:));
       endfor
-      
+
     unwind_protect_cleanup
       updating = false;
     end_unwind_protect

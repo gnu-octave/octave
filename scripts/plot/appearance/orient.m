@@ -156,7 +156,7 @@ endfunction
 %! assert (get (hfig, "papersize"), papersize);
 %! assert (get (hfig, "paperposition"), paperposition);
 
-%% Test input validation
+## Test input validation
 %!error orient (1.73, 2.5)
 %!error <unknown ORIENTATION> orient ("nobody")
 

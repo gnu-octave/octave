@@ -38,7 +38,7 @@ function inv = logninv (x, mu = 0, sigma = 1)
     print_usage ();
   endif
 
-  if (!isscalar (mu) || !isscalar (sigma))
+  if (! isscalar (mu) || ! isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
       error ("logninv: X, MU, and SIGMA must be of common size or scalars");
@@ -80,13 +80,13 @@ endfunction
 %!assert (logninv (x, 1, [1 0 NaN Inf 1]), [NaN NaN NaN NaN NaN])
 %!assert (logninv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 0 NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (logninv ([x, NaN], 1, 1), [NaN 0 e Inf NaN NaN])
 %!assert (logninv (single ([x, NaN]), 1, 1), single ([NaN 0 e Inf NaN NaN]))
 %!assert (logninv ([x, NaN], single (1), 1), single ([NaN 0 e Inf NaN NaN]))
 %!assert (logninv ([x, NaN], 1, single (1)), single ([NaN 0 e Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error logninv ()
 %!error logninv (1,2)
 %!error logninv (1,2,3,4)

@@ -40,7 +40,7 @@
 ##       @result{} 'Octave*Scilab*Lush*Yorick'
 ## @end group
 ## @end example
-## @seealso {strsplit}
+## @seealso{strsplit}
 ## @end deftypefn
 
 ## Author: Muthiah Annamalai <muthiah.annamalai@uta.edu>

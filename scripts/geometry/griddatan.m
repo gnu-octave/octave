@@ -62,7 +62,7 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
   if (strcmp (method, "nearest"))
     ## search index of nearest point
     idx = dsearchn (x, tri, xi);
-    valid = !isnan (idx);
+    valid = ! isnan (idx);
     yi(valid) = y(idx(valid));
 
   elseif (strcmp (method, "linear"))
@@ -70,13 +70,13 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
     [tri_list, bary_list] = tsearchn (x, tri, xi);
 
     ## only keep the points within triangles.
-    valid = !isnan (tri_list);
-    tri_list = tri_list(!isnan (tri_list));
-    bary_list = bary_list(!isnan (tri_list), :);
+    valid = ! isnan (tri_list);
+    tri_list = tri_list(! isnan (tri_list));
+    bary_list = bary_list(! isnan (tri_list), :);
     nr_t = rows (tri_list);
 
     ## assign x,y for each point of simplex
-    xt =  reshape (x(tri(tri_list,:),:), [nr_t, n+1, n]);
+    xt = reshape (x(tri(tri_list,:),:), [nr_t, n+1, n]);
     yt = y(tri(tri_list,:));
 
     ## Use barycentric coordinate of point to calculate yi

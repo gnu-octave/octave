@@ -91,7 +91,7 @@ function retval = num2str (x, arg)
     else
       if (isnumeric (x))
         ## Setup a suitable format string, ignoring inf entries
-        dgt = floor (log10 (max (abs (x(!isinf (x(:)))))));
+        dgt = floor (log10 (max (abs (x(! isinf (x(:)))))));
         if (isempty (dgt))
           ## If the whole input array is inf...
           dgt = 1;
@@ -129,8 +129,8 @@ function retval = num2str (x, arg)
       endif
     else
       ## Setup a suitable format string
-      dgt = floor (log10 (max (max (abs (real (x(!isinf (real (x(:))))))),
-                               max (abs (imag (x(!isinf (imag (x(:))))))))));
+      dgt = floor (log10 (max (max (abs (real (x(! isinf (real (x(:))))))),
+                               max (abs (imag (x(! isinf (imag (x(:))))))))));
       if (isempty (dgt))
         ## If the whole input array is inf...
         dgt = 1;

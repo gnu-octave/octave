@@ -103,7 +103,7 @@ endfunction
 
 ## Functional tests for wavread/wavwrite pair are in wavwrite.m.
 
-%% Test input validation
+## Test input validation
 %!error wavread ()
 %!error wavread (1)
 %!error wavread ("foo.wav", 2, 3, 4)

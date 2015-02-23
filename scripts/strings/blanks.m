@@ -56,7 +56,7 @@ endfunction
 %!assert (blanks (5), "     ")
 %!assert (blanks (10), "          ")
 
-%% Test input validation
+## Test input validation
 %!error blanks ()
 %!error blanks (1, 2)
 %!error blanks (ones (2))

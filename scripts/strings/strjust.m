@@ -104,7 +104,7 @@ endfunction
 %!        [" a  "; " ab"; "abc "; "abcd"])
 %!assert (strjust (["";""]), "")
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to strjust> strjust ()
 %!error <Invalid call to strjust> strjust (["a";"ab"], "center", 1)
 %!error <S must be a string> strjust (ones (3,3))

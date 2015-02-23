@@ -115,7 +115,7 @@ endfunction
 %! assert (c, [5]);
 %! assert (c, a(ia));
 
-%% Test output orientation compatibility (bug #42577)
+## Test output orientation compatibility (bug #42577)
 %!assert (setdiff ([1:5], 2), [1,3,4,5])
 %!assert (setdiff ([1:5]', 2), [1;3;4;5])
 %!assert (setdiff ([1:5], [2:3]), [1,4,5])

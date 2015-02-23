@@ -214,7 +214,7 @@ endfunction
 %! assert (A(i,:), a);
 %! assert (a(j,:), A);
 
-%% Test input validation
+## Test input validation
 %!error unique ()
 %!error <X must be an array or cell array of strings> unique ({1})
 %!error <options must be strings> unique (1, 2)

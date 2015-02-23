@@ -127,7 +127,7 @@ endfunction
 %! assert (x, full (sx));
 %! assert (idx, sidx);
 
-%% Test input validation
+## Test input validation
 %!error sortrows ()
 %!error sortrows (1, 2, 3)
 %!error sortrows (1, "ascend")

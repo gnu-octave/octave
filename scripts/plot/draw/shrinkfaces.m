@@ -217,7 +217,7 @@ endfunction
 %!assert (size (nfv.vertices), [3 3])
 %!assert (norm (nfv2.vertices - vertices), 0, 2*eps)
 
-%% Test input validation
+## Test input validation
 %!error shrinkfaces ()
 %!error shrinkfaces (1,2,3,4)
 %!error [a,b,c] = shrinkfaces (1)

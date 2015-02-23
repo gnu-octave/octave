@@ -2,7 +2,7 @@
 ##
 ## This file is part of Octave.
 ##
-# Octave is free software; you can redistribute it and/or modify it
+## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 3 of the License, or (at
 ## your option) any later version.
@@ -111,7 +111,7 @@
 ##
 ## check ("mech");           # valid, use defaults for other arguments
 ## check ();                 # error, one argument is mandatory
-## check (1);                # error, since !ischar
+## check (1);                # error, since ! ischar
 ## check ("mech", "~/dev");  # valid, use defaults for other arguments
 ##
 ## check ("mech", "~/dev", [0 1 0 0], "type", "linear");  # valid
@@ -242,29 +242,29 @@
 classdef inputParser < handle
   properties
     ## TODO set input checking for this properties
-    CaseSensitive   = false;
-    FunctionName    = "";
-    KeepUnmatched   = false;
-#    PartialMatching = true;   # TODO unimplemented
-#    StructExpand    = true;   # TODO unimplemented
+    CaseSensitive     = false;
+    FunctionName      = "";
+    KeepUnmatched     = false;
+    # PartialMatching = true;   # TODO unimplemented
+    # StructExpand    = true;   # TODO unimplemented
   endproperties
 
   properties (SetAccess = protected)
-    Parameters      = cell ();
-    Results         = struct ();
-    Unmatched       = struct ();
-    UsingDefaults   = cell ();
+    Parameters    = cell ();
+    Results       = struct ();
+    Unmatched     = struct ();
+    UsingDefaults = cell ();
   endproperties
 
   properties (Access = protected)
     ## Since Required and Optional are ordered, they get a cell array of
     ## structs with the fields "name", "def" (default), and "val" (validator).
-    Required    = cell ();
-    Optional    = cell ();
+    Required   = cell ();
+    Optional   = cell ();
     ## ParamValue and Swicth are unordered so we have a struct whose fieldnames
     ## are the argname, and values are a struct with fields "def" and "val"
-    ParamValue  = struct ();
-    Switch      = struct ();
+    ParamValue = struct ();
+    Switch     = struct ();
 
     ## List of ParamValues and Switch names to ease searches
     ParamValueNames = cell ();
@@ -273,7 +273,7 @@ classdef inputParser < handle
     ## When checking for fieldnames in a Case Insensitive way, this variable
     ## holds the correct identifier for the last searched named using the
     ## is_argname method.
-    last_name = "";
+    last_name  = "";
   endproperties
 
   properties (Access = protected, Constant = true)
@@ -385,7 +385,8 @@ classdef inputParser < handle
             this.error (sprintf ("no matching value for option '%s'",
                                  toupper (name)));
           endif
-          this.validate_arg (this.last_name, this.ParamValue.(this.last_name).val,
+          this.validate_arg (this.last_name,
+                             this.ParamValue.(this.last_name).val,
                              varargin{vidx});
         elseif (this.is_argname ("Switch", name))
           this.Results.(this.last_name) = true;

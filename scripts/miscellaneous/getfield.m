@@ -60,7 +60,7 @@ endfunction
 %! ss(1,2).fd(3).b(1,4) = 5;
 %! assert (getfield (ss,{1,2},"fd",{3},"b", {1,4}), 5);
 
-%% Test input validation
+## Test input validation
 %!error getfield ()
 %!error getfield (1)
 %!error <invalid index> getfield (1,2)

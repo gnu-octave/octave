@@ -307,7 +307,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   have_labels = (nargs > 0);
   hobjects = [];
-  hplots  = [];
+  hplots = [];
   text_strings = {};
 
   if (delete_leg)
@@ -336,7 +336,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       set (hlegend, "box", "off", "visible", "off");
     endif
   elseif (! have_labels && ! isempty (hlegend)
-          && ! (strcmp (location, "default") && strcmp (orientation, "default")))
+          && ! (strcmp (location, "default")
+                && strcmp (orientation, "default")))
     ## Changing location or orientation of existing legend
     if (strcmp (location, "default"))
       set (hlegend, "orientation", orientation);
@@ -358,7 +359,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   else
     ## Create new legend
     hobjects = [];
-    hplots  = [];
+    hplots = [];
     text_strings = {};
 
     if (have_labels)
@@ -499,7 +500,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         delete (fkids(fkids == hlegend));
         hlegend = [];
         hobjects = [];
-        hplots  = [];
+        hplots = [];
         text_strings = {};
       endif
     else

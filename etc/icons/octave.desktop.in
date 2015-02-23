@@ -8,3 +8,4 @@ Terminal=true
 Type=Application
 Categories=Education;Science;Math;
 StartupNotify=false
+MimeType=text/x-octave;text/x-matlab;

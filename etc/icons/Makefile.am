@@ -79,7 +79,7 @@ octave-logo.ico: $(WINDOWS_PNG_ICONS)
 install-data-local:
 	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor $(VENDOR) octave.desktop; \
+	    --rebuild-mime-info-cache --vendor $(VENDOR) octave.desktop; \
 	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \

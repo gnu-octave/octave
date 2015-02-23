@@ -305,6 +305,17 @@ AC_MSG_NOTICE([defining __NO_MATH_INLINES avoids buggy GNU libc exp function])
 AC_DEFINE(__NO_MATH_INLINES, 1,
   [Define to 1 if your version of GNU libc has buggy inline assembly code for math functions like exp.])
 
+## Save and restore CFLAGS, CXXFLAGS, and FFLAGS globally.  These variables
+## are for users, so we shouldn't be touching them.  Instead, we should set
+## the corresponding AM_ flags (currently by way of the XTRA_ variables).
+## However, for the duration of the configure script, we may set CFLAGS,
+## CXXFLAGS, or FFLAGS so that subsequent tests succeed.  Temporary
+## settings like this are currently done for pthreads and openmp, for
+## example.
+octave_configure_save_CFLAGS="$CFLAGS"
+octave_configure_save_CXXFLAGS="$CXXFLAGS"
+octave_configure_save_FFLAGS="$FFLAGS"
+
 ### Determine which C++ compiler to use (we expect to find g++).
 
 AC_PROG_CXX
@@ -417,8 +428,34 @@ AX_PTHREAD
 ## Include pthread libs and flags early in case other tests need them.
 ## They seem to be required for the OpenGL tests on Debian systems.
 LIBS="$PTHREAD_LIBS $LIBS"
+XTRA_CFLAGS="$XTRA_CFLAGS $PTHREAD_CFLAGS"
+XTRA_CXXFLAGS="$XTRA_CXXFLAGS $PTHREAD_CFLAGS"
+## Set these for any other tests that may require them.  They will be
+## reset before output files are generated.
 CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
+
+### Test whether the compiler supports OpenMP.  This is enabled by default
+### now to allow the option of using OpenMP in loadable modules.
+
+USE_OPENMP=no
+check_for_openmp=yes
+AC_ARG_ENABLE([openmp],
+  [AS_HELP_STRING([--disable-openmp],
+    [disable OpenMP SMP multi-threading])],
+  [if test "$enableval" = no; then check_for_openmp=no; fi], [])
+if test $check_for_openmp = yes; then
+  AC_LANG_PUSH(C)
+  AX_OPENMP([XTRA_CFLAGS="$XTRA_CFLAGS $OPENMP_CFLAGS"; USE_OPENMP=yes], [])
+  AC_LANG_POP(C)
+  AC_LANG_PUSH(C++)
+  AX_OPENMP([XTRA_CXXFLAGS="$XTRA_CXXFLAGS $OPENMP_CXXFLAGS"; USE_OPENMP=yes], [])
+  AC_LANG_POP(C++)
+fi
+## Set these for any other tests that may require them.  They will be
+## reset before output files are generated.
+CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
 
 ### When compiling math for x87, problems may arise in some code comparing
 ### floating-point intermediate results.  The root cause is the extra precision
@@ -516,29 +553,6 @@ esac
 
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
-
-### Test whether the compiler supports OpenMP.  This is enabled by default
-### now to allow the option of using OpenMP in loadable modules.
-
-USE_OPENMP=yes
-AC_ARG_ENABLE([openmp],
-  [AS_HELP_STRING([--disable-openmp],
-    [disable OpenMP SMP multi-threading])],
-  [if test "$enableval" = no; then USE_OPENMP=no; fi], [])
-if test $USE_OPENMP = yes; then
-  AC_LANG_PUSH(C)
-  AX_OPENMP
-  AC_LANG_POP(C)
-  AC_LANG_PUSH(C++)
-  AX_OPENMP
-  AC_LANG_POP(C++)
-  if test -n "$OPENMP_CFLAGS" && test -n "OPENMP_CXXFLAGS"; then
-    CFLAGS="$CFLAGS $OPENMP_CFLAGS"
-    CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
-  else
-    USE_OPENMP=no 
-  fi
-fi
 
 ### Defaults for cross compiling.  BUILD_CC and BUILD_CXX are
 ### the compilers that we use for building tools on the build system.
@@ -2948,11 +2962,9 @@ AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
 
-### Run configure in subdirectories.
-
-export CC
-export CXX
-export F77
+CFLAGS="$octave_configure_save_CFLAGS"
+CXXFLAGS="$octave_configure_save_CXXFLAGS"
+FFLAGS="$octave_configure_save_FFLAGS"
 
 AH_BOTTOM([#include "oct-conf-post.h"])
 

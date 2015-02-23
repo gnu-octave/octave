@@ -181,7 +181,8 @@ object) relevant global values before and after the nested call.
         } \
       else \
         { \
-          return curr_lexer->handle_incompatible_op (PATTERN, TOK, false); \
+          return curr_lexer->handle_language_extension_op (PATTERN, TOK, \
+                                                           false); \
         } \
     } \
   while (0)
@@ -209,7 +210,7 @@ object) relevant global values before and after the nested call.
           int tok \
             = (COMPAT \
                ? curr_lexer->handle_unary_op (TOK) \
-               : curr_lexer->handle_incompatible_unary_op (TOK)); \
+               : curr_lexer->handle_language_extension_unary_op (TOK)); \
  \
           if (tok < 0) \
             { \
@@ -506,7 +507,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->current_input_column = 1;
 
     if (curr_lexer->nesting_level.is_paren ())
-      curr_lexer->gripe_matlab_incompatible ("bare newline inside parentheses");
+      curr_lexer->gripe_language_extension ("bare newline inside parentheses");
     else
       {
         int tok = curr_lexer->previous_token_value ();
@@ -1319,7 +1320,7 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->nesting_level.is_paren ())
       {
         curr_lexer->at_beginning_of_statement = false;
-        curr_lexer->gripe_matlab_incompatible
+        curr_lexer->gripe_language_extension
           ("bare newline inside parentheses");
       }
     else if (curr_lexer->nesting_level.none ()
@@ -2713,7 +2714,7 @@ octave_base_lexer::handle_continuation (void)
 
   int offset = 1;
   if (yytxt[0] == '\\')
-    gripe_matlab_incompatible_continuation ();
+    gripe_language_extension_continuation ();
   else
     offset = 3;
 
@@ -3023,41 +3024,41 @@ octave_base_lexer::gripe_single_quote_string (void)
 }
 
 void
-octave_base_lexer::gripe_matlab_incompatible (const std::string& msg)
+octave_base_lexer::gripe_language_extension (const std::string& msg)
 {
   std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
-    warning_with_id ("Octave:matlab-incompatible",
-                     "potential Matlab compatibility problem: %s",
+    warning_with_id ("Octave:language-extension",
+                     "Octave language extension used: %s",
                      msg.c_str ());
   else
-    warning_with_id ("Octave:matlab-incompatible",
-                     "potential Matlab compatibility problem: %s near line %d offile %s",
+    warning_with_id ("Octave:language-extension",
+                     "Octave language extension used: %s near line %d offile %s",
                      msg.c_str (), input_line_number, nm.c_str ());
 }
 
 void
-octave_base_lexer::maybe_gripe_matlab_incompatible_comment (char c)
+octave_base_lexer::maybe_gripe_language_extension_comment (char c)
 {
   if (c == '#')
-    gripe_matlab_incompatible ("# used as comment character");
+    gripe_language_extension ("# used as comment character");
 }
 
 void
-octave_base_lexer::gripe_matlab_incompatible_continuation (void)
+octave_base_lexer::gripe_language_extension_continuation (void)
 {
-  gripe_matlab_incompatible ("\\ used as line continuation marker");
+  gripe_language_extension ("\\ used as line continuation marker");
 }
 
 void
-octave_base_lexer::gripe_matlab_incompatible_operator (const std::string& op)
+octave_base_lexer::gripe_language_extension_operator (const std::string& op)
 {
   std::string t = op;
   int n = t.length ();
   if (t[n-1] == '\n')
     t.resize (n-1);
-  gripe_matlab_incompatible (t + " used as operator");
+  gripe_language_extension (t + " used as operator");
 }
 
 void
@@ -3318,8 +3319,8 @@ octave_base_lexer::handle_op (const char *pattern, int tok, bool bos)
 }
 
 int
-octave_base_lexer::handle_incompatible_op (const char *pattern, int tok,
-                                           bool bos)
+octave_base_lexer::handle_language_extension_op (const char *pattern, int tok,
+                                                 bool bos)
 {
   lexer_debug (pattern);
 
@@ -3357,7 +3358,7 @@ octave_base_lexer::handle_unary_op (int tok, bool bos)
 }
 
 int
-octave_base_lexer::handle_incompatible_unary_op (int tok, bool bos)
+octave_base_lexer::handle_language_extension_unary_op (int tok, bool bos)
 {
   return maybe_unput_comma_before_unary_op (tok)
     ? -1 : handle_op_internal (tok, bos, false);
@@ -3367,7 +3368,7 @@ int
 octave_base_lexer::handle_op_internal (int tok, bool bos, bool compat)
 {
   if (! compat)
-    gripe_matlab_incompatible_operator (flex_yytext ());
+    gripe_language_extension_operator (flex_yytext ());
 
   push_token (new token (tok, input_line_number, current_input_column));
 

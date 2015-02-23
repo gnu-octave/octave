@@ -234,8 +234,8 @@ gripe_nonbraced_cs_list_assignment (void)
 void
 gripe_warn_complex_cmp (void)
 {
-  warning_with_id ("Octave:matlab-incompatible",
-                   "potential Matlab compatibility problem: comparing complex numbers");
+  warning_with_id ("Octave:language-extension",
+                   "comparing complex numbers is not supported in Matlab");
 }
 
 void

@@ -409,7 +409,7 @@ x
 @end example
 
 @noindent
-The warning id @code{Octave:matlab-incompatible} can be enabled to warn
+The warning id @code{Octave:language-extension} can be enabled to warn
 about this usage.  @xref{XREFwarning_ids,,warning_ids}.
 
 More realistically, all of the functions that operate on strings can be used

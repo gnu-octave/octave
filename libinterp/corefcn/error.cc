@@ -1515,7 +1515,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   // Since internal Octave functions are not
                   // compatible, turning all warnings into errors
                   // should leave the state of
-                  // Octave:matlab-incompatible alone.
+                  // Octave:language-extension alone.
 
                   if (arg1 == "error"
                       && warning_options.contains ("identifier"))
@@ -1533,7 +1533,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                             {
                               std::string key = vid.string_value ();
 
-                              if (key == "Octave:matlab-incompatible"
+                              if (key == "Octave:language-extension"
                                   || key == "Octave:single-quote-string")
                                 {
                                   id.resize (dim_vector (1, n+1));
@@ -1733,7 +1733,7 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:array-to-scalar");
   disable_warning ("Octave:array-to-vector");
   disable_warning ("Octave:imag-to-real");
-  disable_warning ("Octave:matlab-incompatible");
+  disable_warning ("Octave:language-extension");
   disable_warning ("Octave:missing-semicolon");
   disable_warning ("Octave:neg-dim-as-zero");
   disable_warning ("Octave:resize-on-range-error");

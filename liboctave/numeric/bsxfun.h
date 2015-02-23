@@ -46,8 +46,7 @@ is_valid_bsxfun (const std::string& name, const dim_vector& dx,
     }
 
   (*current_liboctave_warning_with_id_handler)
-    ("Octave:matlab-incompatible",
-     "Matlab compatibility problem - %s automatic broadcasting",
+    ("Octave:language-extension", "performing `%s' automatic broadcasting",
      name.c_str ());
 
   return true;
@@ -77,8 +76,7 @@ is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
     }
 
   (*current_liboctave_warning_with_id_handler)
-    ("Octave:matlab-incompatible",
-     "Matlab compatibility problem - %s automatic broadcasting",
+    ("Octave:language-extension", "performing `%s' automatic broadcasting",
      name.c_str ());
 
   return true;

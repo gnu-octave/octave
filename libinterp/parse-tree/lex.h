@@ -608,13 +608,13 @@ public:
 
   void gripe_single_quote_string (void);
 
-  void gripe_matlab_incompatible (const std::string& msg);
+  void gripe_language_extension (const std::string& msg);
 
-  void maybe_gripe_matlab_incompatible_comment (char c);
+  void maybe_gripe_language_extension_comment (char c);
 
-  void gripe_matlab_incompatible_continuation (void);
+  void gripe_language_extension_continuation (void);
 
-  void gripe_matlab_incompatible_operator (const std::string& op);
+  void gripe_language_extension_operator (const std::string& op);
 
   void push_token (token *);
 
@@ -663,17 +663,18 @@ public:
 
   int handle_op (const char *pattern, int tok, bool bos = false);
 
-  int handle_incompatible_op (const char *pattern, int tok, bool bos = false);
+  int handle_language_extension_op (const char *pattern, int tok,
+                                    bool bos = false);
 
   bool maybe_unput_comma_before_unary_op (int tok);
 
   int handle_unary_op (int tok, bool bos = false);
 
-  int handle_incompatible_unary_op (int tok, bool bos = false);
+  int handle_language_extension_unary_op (int tok, bool bos = false);
 
   int handle_assign_op (const char *pattern, int tok);
 
-  int handle_incompatible_assign_op (const char *pattern, int tok);
+  int handle_language_extension_assign_op (const char *pattern, int tok);
 
   int handle_op_internal (int tok, bool bos, bool compat);
 

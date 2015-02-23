@@ -161,18 +161,18 @@
 ## printed for implicit conversions of complex numbers to real numbers.
 ## By default, the @code{Octave:imag-to-real} warning is disabled.
 ##
+## @item Octave:language-extension
+## Print warnings when using features that are unique to the Octave
+## language and may be still be missing in @sc{Matlab}.
+## By default, the @code{Octave:language-extension} warning is disabled.
+## The --traditional or --braindead startup options for Octave may also
+## be of use, @pxref{Command Line Options}.
+##
 ## @item Octave:load-file-in-path
 ## By default, the @code{Octave:load-file-in-path} warning is enabled.
 ##
 ## @item Octave:logical-conversion
 ## By default, the @code{Octave:logical-conversion} warning is enabled.
-##
-## @item Octave:matlab-incompatible
-## Print warnings for Octave language features that may cause
-## compatibility problems with @sc{matlab}.
-## By default, the @code{Octave:matlab-incompatible} warning is disabled.
-## The --traditional or --braindead startup options for Octave may also
-## be of use, @pxref{Command Line Options}.
 ##
 ## @item Octave:md5sum-file-in-path
 ## By default, the @code{Octave:md5sum-file-in-path} warning is enabled.

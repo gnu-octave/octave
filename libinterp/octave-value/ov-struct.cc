@@ -122,11 +122,11 @@ maybe_warn_invalid_field_name (const std::string& key, const char *who)
   if (! valid_identifier (key))
     {
       if (who)
-        warning_with_id ("Octave:matlab-incompatible",
+        warning_with_id ("Octave:language-extension",
                          "%s: invalid structure field name '%s'",
                          who, key.c_str ());
       else
-        warning_with_id ("Octave:matlab-incompatible",
+        warning_with_id ("Octave:language-extension",
                          "invalid structure field name '%s'",
                          key.c_str ());
     }

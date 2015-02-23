@@ -268,8 +268,11 @@ Summary of important user-visible changes for version 4.0:
  ** The warning ID Octave:singular-matrix-div has been replaced by
     Octave:nearly-singular-matrix and Octave:singular-matrix.
 
+ ** The warning ID Octave:matlab-incompatible has been replaced by
+    Octave:language-extension to better reflect its meaning.
+
  ** The warning ID Octave:broadcast has been removed.  Instead automatic
-    broadcasting will throw an Octave:matlab-incompatible warning, together
+    broadcasting will throw an Octave:language-extension warning, together
     with other features not available in Matlab.
 
  ** The configure option --enable-octave-allocator has been removed.

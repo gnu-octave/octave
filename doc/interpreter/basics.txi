@@ -273,7 +273,7 @@ Octave:possible-matlab-short-circuit-operator
 @end example
 
 @noindent
-Note that this does not enable the @code{Octave:matlab-incompatible}
+Note that this does not enable the @code{Octave:language-extension}
 warning, which you might want if you want to be told about writing code
 that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
 @ref{XREFwarning_ids,,warning_ids}).

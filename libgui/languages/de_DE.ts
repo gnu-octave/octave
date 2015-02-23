@@ -823,7 +823,7 @@ Do you want to choose another name?</source>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation>Zum aktuellen Octave Verezichnis gehen</translation>
+        <translation>Zum aktuellen Octave Verzeichnis gehen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1143,7 +1143,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+199"/>
         <source>Replace Result</source>
-        <translation>Ergebins der Ersetzungen</translation>
+        <translation>Ergebnis der Ersetzungen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1670,7 +1670,7 @@ instead?</source>
     <message>
         <location line="-175"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished">Debug Modus beenden</translation>
+        <translation type="unfinished">Debug-Modus beenden</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -2382,7 +2382,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="-50"/>
         <source>Icon size</source>
-        <translation>Icongröße</translation>
+        <translation>Icon-Größe</translation>
     </message>
     <message>
         <location line="+1589"/>
@@ -3237,7 +3237,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location filename="../src/qtinfo/webinfo.cc" line="+82"/>
         <source>Type here and press &apos;Return&apos; to search</source>
-        <translation>Suchbegriff eingeben und mit &apos;Enter&apos; die Suche starten</translation>
+        <translation>Suchbegriff eingeben und mit der &apos;Eingabetaste&apos; die Suche starten</translation>
     </message>
     <message>
         <location line="+4"/>

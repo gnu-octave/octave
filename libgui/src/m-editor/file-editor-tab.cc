@@ -184,10 +184,14 @@ file_editor_tab::~file_editor_tab (void)
 void
 file_editor_tab::closeEvent (QCloseEvent *e)
 {
-  // ignore close event if file is not saved and user cancels
-  // closing this window
+  _cancelled = false;  // prevent unwanted interaction of previous
+                       // exits of octave which were canceled by the user
+
   if (check_file_modified () == QMessageBox::Cancel)
-    e->ignore ();
+    { // ignore close event if file is not saved and user cancels
+      // closing this window
+      e->ignore ();
+    }
   else
     {
       e->accept ();

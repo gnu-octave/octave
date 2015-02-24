@@ -173,8 +173,11 @@ ChangeLog:
 
 octetc_DATA = \
   CITATION \
-  NEWS \
-  config.log
+  NEWS
+
+if AMCOND_INSTALL_BUILD_LOGS
+octetc_DATA += config.log
+endif
 
 doxyhtml:
 	$(MAKE) -C doc/doxyhtml doxyhtml

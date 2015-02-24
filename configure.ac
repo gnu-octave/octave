@@ -2965,6 +2965,15 @@ AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
 
+### Decide whether or not to install build logs with Octave.
+
+install_build_logs=no
+AC_ARG_ENABLE([install-build-logs],
+  [AS_HELP_STRING([--enable-install-build-logs],
+    [install build logs (e.g. config.log) with Octave])],
+  [if test "$enableval" = yes; then install_build_logs=yes; fi])
+AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
+
 CFLAGS="$original_octave_configure_CFLAGS"
 CXXFLAGS="$original_octave_configure_CXXFLAGS"
 

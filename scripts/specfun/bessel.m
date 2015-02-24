@@ -84,7 +84,7 @@
 ## @end deftypefn
 
 function bessel ()
-  error ("bessel: you must use besselj, bessely, besseli, besselk, or besselh");
+  error ("bessel: you must use besselj, bessely, besseli, besselk, or besselh\n");
 endfunction
 
 

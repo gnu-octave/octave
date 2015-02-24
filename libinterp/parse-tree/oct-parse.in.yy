@@ -111,8 +111,7 @@ static void yyerror (octave_base_parser& parser, const char *s);
   do \
     { \
       yyerrok; \
-      if ((interactive || forced_interactive) \
-          && ! lexer.input_from_eval_string ()) \
+      if (interactive && ! lexer.input_from_eval_string ()) \
         YYACCEPT; \
       else \
         YYABORT; \

@@ -572,7 +572,7 @@ main_loop (void)
 
   // The big loop.
 
-  octave_lexer *lxr = ((interactive || forced_interactive)
+  octave_lexer *lxr = (interactive
                        ? new octave_lexer ()
                        : new octave_lexer (stdin));
 
@@ -600,7 +600,7 @@ main_loop (void)
 
                   octave_quit ();
 
-                  if (! (interactive || forced_interactive))
+                  if (! interactive)
                     {
                       bool quit = (tree_return_command::returning
                                    || tree_break_command::breaking);
@@ -617,7 +617,7 @@ main_loop (void)
 
                   if (error_state)
                     {
-                      if (! (interactive || forced_interactive))
+                      if (! interactive)
                         {
                           // We should exit with a nonzero status.
                           retval = 1;
@@ -730,7 +730,7 @@ do_octave_atexit (void)
 
       OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 
-      if (! quitting_gracefully && (interactive || forced_interactive))
+      if (! quitting_gracefully && interactive)
         {
           octave_stdout << "\n";
 

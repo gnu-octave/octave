@@ -451,7 +451,7 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
       && ! discard_error_messages)
     pr_where ("error");
 
-  if ((interactive || forced_interactive)
+  if (interactive
       && Vdebug_on_error && init_state == 0
       && octave_call_stack::caller_user_code ())
     {

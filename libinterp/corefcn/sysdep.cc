@@ -343,7 +343,7 @@ raw_mode (bool on, bool wait)
   int tty_fd = STDIN_FILENO;
   if (! gnulib::isatty (tty_fd))
     {
-      if (interactive)
+      if (interactive && ! forced_interactive)
         error ("stdin is not a tty!");
       return;
     }
@@ -745,7 +745,7 @@ returning the empty string if no key is available.\n\
 
   // FIXME: add timeout and default value args?
 
-  if (interactive || forced_interactive)
+  if (interactive)
     {
       Fdrawnow ();
 

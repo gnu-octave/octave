@@ -931,7 +931,7 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 {
   std::string retval;
 
-  if ((interactive || forced_interactive) && file_number () == 0)
+  if (interactive && file_number () == 0)
     {
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
@@ -1047,7 +1047,7 @@ octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
 {
   off_t cnt = -1;
 
-  if ((interactive || forced_interactive) && file_number () == 0)
+  if (interactive && file_number () == 0)
     {
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
@@ -1496,7 +1496,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 {
   octave_value retval = Matrix ();
 
-  if ((interactive || forced_interactive) && file_number () == 0)
+  if (interactive && file_number () == 0)
     {
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
@@ -1824,7 +1824,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
                   // FIXME: is this the right thing to do?
 
-                  if (interactive && name () == "stdin")
+                  if (interactive && ! forced_interactive && name () == "stdin")
                     {
                       is.clear ();
 
@@ -2049,7 +2049,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 
           // FIXME: is this the right thing to do?
 
-          if (interactive && name () == "stdin")
+          if (interactive && ! forced_interactive && name () == "stdin")
             {
               // Skip to end of line.
 

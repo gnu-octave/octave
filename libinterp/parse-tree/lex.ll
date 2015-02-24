@@ -2236,7 +2236,7 @@ octave_base_lexer::reset (void)
   // input.
 
   if (! quitting_gracefully
-      && (interactive || forced_interactive)
+      && interactive
       && ! (reading_fcn_file
             || reading_classdef_file
             || reading_script_file

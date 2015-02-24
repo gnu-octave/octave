@@ -791,11 +791,21 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   interactive = (! embedded && stdin_is_tty
                  && gnulib::isatty (fileno (stdout)));
 
-  if (! interactive && ! forced_line_editing)
+  // Check if the user forced an interactive session.  If he
+  // unnecessarily did so, reset forced_interactive to false.
+  if (forced_interactive)
+    {
+      if (interactive)
+        forced_interactive = false;
+      else
+        interactive = true;
+    }
+
+  if ((! interactive || forced_interactive) && ! forced_line_editing)
     line_editing = false;
 
   // Also skip start-up message unless session is interactive.
-  if (! (interactive || forced_interactive))
+  if (! interactive)
     inhibit_startup_message = true;
 
   // Force default line editor if we don't want readline editing.
@@ -881,7 +891,7 @@ octave_execute_interpreter (void)
   // Force input to be echoed if not really interactive,
   // but the user has forced interactive behavior.
 
-  if (! interactive && forced_interactive)
+  if (forced_interactive)
     {
       command_editor::blink_matching_paren (false);
 

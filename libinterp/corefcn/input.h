@@ -38,10 +38,11 @@ class octave_base_lexer;
 
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
-// TRUE means this is an interactive shell.
+// TRUE means this is an interactive shell (forced or not)
 extern bool interactive;
 
 // TRUE means the user forced this shell to be interactive (-i).
+// FALSE means the shell would be interactive, independent of user settings.
 extern bool forced_interactive;
 
 // TRUE after a call to completion_matches.

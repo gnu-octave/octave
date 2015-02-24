@@ -346,7 +346,8 @@ recursively remove all subdirectories as well.\n\
                 {
                   bool doit = true;
 
-                  if (interactive && Vconfirm_recursive_rmdir)
+                  if (interactive && ! forced_interactive
+                      && Vconfirm_recursive_rmdir)
                     {
                       std::string prompt
                         = "remove entire contents of " + fulldir + "? ";

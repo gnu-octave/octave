@@ -99,10 +99,11 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// TRUE means this is an interactive shell.
+// TRUE means this is an interactive shell (either forced or not)
 bool interactive = false;
 
 // TRUE means the user forced this shell to be interactive (-i).
+// FALSE means the shell would be interactive, independent of user settings.
 bool forced_interactive = false;
 
 // TRUE after a call to completion_matches.
@@ -196,7 +197,7 @@ interactive_input (const std::string& s, bool& eof)
 {
   Vlast_prompt_time.stamp ();
 
-  if (Vdrawnow_requested && (interactive || forced_interactive))
+  if (Vdrawnow_requested && interactive)
     {
       feval ("drawnow");
 
@@ -226,7 +227,7 @@ octave_base_reader::octave_gets (bool& eof)
   // Process pre input event hook function prior to flushing output and
   // printing the prompt.
 
-  if (interactive || forced_interactive)
+  if (interactive)
     {
       if (! Vdebugging)
         octave_link::exit_debugger_event ();
@@ -292,7 +293,7 @@ octave_base_reader::octave_gets (bool& eof)
   // Process post input event hook function after the internal history
   // list has been updated.
 
-  if (interactive || forced_interactive)
+  if (interactive)
     octave_link::post_input_event ();
 
   return retval;
@@ -587,8 +588,10 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
-  if (! (interactive || forced_interactive))
+  if (! interactive)
     {
+      frame.protect_var (interactive);
+      interactive = true;
       frame.protect_var (forced_interactive);
       forced_interactive = true;
     }

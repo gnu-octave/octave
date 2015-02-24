@@ -20,13 +20,15 @@
 @chapter GUI Development
 
 Octave is principally a batch or command-line language.  However, it does
-offer some limited features for constructing graphical interfaces for
-interacting with users.
+offer some features for constructing graphical interfaces that interact with
+users.
 
-The GUI elements available are I/O dialogs and a progress bar.  For example,
-rather than hardcoding a filename for output results a script can open a dialog
-box and allow the user to choose a file.  Similarly, if a calculation is
-expected to take a long time a script can display a progress bar.
+The GUI elements available are I/O dialogs, a progress bar, and UI elements
+for plot windows.  For example, rather than hardcoding a filename for output
+results a script can open a dialog box and allow the user to choose a file.
+Similarly, if a calculation is expected to take a long time a script can
+display a progress bar.  The various UI elements can be used to fully customize
+the plot window with menubars, context menus, 
 
 Several utility functions make it possible to store private data for use with
 a GUI which will not pollute the user's variable space.
@@ -38,6 +40,7 @@ preferences.
 @menu
 * I/O Dialogs::
 * Progress Bar::
+* UI Elements::
 * GUI Utility Functions::
 * User-Defined Preferences::
 @end menu
@@ -61,12 +64,31 @@ a file name.
 
 @DOCSTRING(waitbar)
 
+@node UI Elements
+@section UI Elements
+
+The ui* series of functions work best with the @code{qt} graphics toolkit,
+although some functionality is available with the @code{fltk} toolkit.  There
+is no support for the @code{gnuplot} toolkit.
+
+@DOCSTRING(uicontextmenu)
+
+@DOCSTRING(uicontrol)
+
+@DOCSTRING(uipanel)
+
+@DOCSTRING(uipushtool)
+
+@DOCSTRING(uitoggletool)
+
+@DOCSTRING(uitoolbar)
+
 @node GUI Utility Functions
 @section GUI Utility Functions
 
 These functions do not implement a GUI element but are useful when developing
-programs that do.  @strong{Warning:} The functions @code{uiwait},
-@code{uiresume}, and @code{waitfor} are only available for the FLTK toolkit.
+programs that do.  The functions @code{uiwait}, @code{uiresume}, and
+@code{waitfor} are only available with the @code{qt} or @code{fltk} toolkits.
 
 @DOCSTRING(desktop)
 

@@ -109,7 +109,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
 
   endswitch
 
-  if (isguirunning ())
+  if (__octave_link_enabled__ ())
     btn = __octave_link_question_dialog__ (msg, title, options{1}, options{2},
                                            options{3}, options{4});
   elseif (__have_feature__ ("JAVA"))

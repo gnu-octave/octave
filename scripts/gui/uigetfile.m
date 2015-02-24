@@ -173,7 +173,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endfor
   endif
 
-  if (isguirunning ())
+  if (__octave_link_enabled__ ())
     [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
   else
     funcname = __get_funcname__ (mfilename ());

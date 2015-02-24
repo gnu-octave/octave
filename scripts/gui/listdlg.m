@@ -128,7 +128,7 @@ function [sel, ok] = listdlg (varargin)
     error ("invalid SelectionMode");
   endif
 
-  if (isguirunning ())
+  if (__octave_link_enabled__ ())
     [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
                                              initialvalue, name, prompt,
                                              okstring, cancelstring);

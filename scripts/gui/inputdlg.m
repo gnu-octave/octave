@@ -127,7 +127,7 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
   defs = cellfun (@num2str, defaults, "UniformOutput", false);
   rc = arrayfun (@num2str, rowscols, "UniformOutput", false);
 
-  if (isguirunning ())
+  if (__octave_link_enabled__ ())
     cstr = __octave_link_input_dialog__ (prompt, title, rowscols, defs);
   elseif (__have_feature__ ("JAVA"))
     user_inputs = javaMethod ("inputdlg", "org.octave.JDialogBox",

@@ -43,7 +43,7 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     init_path = fileparts (init_path);
   endif
 
-  if (isguirunning ())
+  if (__octave_link_enabled__ ())
     file_filter = cell (0, 2);
     default_file_name = "";
     dialog_position = [240, 120];

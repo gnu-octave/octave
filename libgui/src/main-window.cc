@@ -1937,14 +1937,15 @@ main_window::construct_tool_bar (void)
   _main_tool_bar->addSeparator ();
 
   _current_directory_combo_box = new QComboBox (this);
-  _current_directory_combo_box->setFixedWidth (current_directory_width);
+  QFontMetrics fm = _current_directory_combo_box->fontMetrics ();
+  _current_directory_combo_box->setFixedWidth (48*fm.averageCharWidth ());
   _current_directory_combo_box->setEditable (true);
   _current_directory_combo_box->setInsertPolicy (QComboBox::NoInsert);
   _current_directory_combo_box->setToolTip (tr ("Enter directory name"));
   _current_directory_combo_box->setMaxVisibleItems (
     current_directory_max_visible);
   _current_directory_combo_box->setMaxCount (current_directory_max_count);
-  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
+  QSizePolicy sizePol (QSizePolicy::Preferred, QSizePolicy::Preferred);
   _current_directory_combo_box->setSizePolicy (sizePol);
 
   // addWidget takes ownership of the objects so there is no

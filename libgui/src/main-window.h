@@ -374,7 +374,6 @@ private:
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;
-  static const int current_directory_width = 300;
   static const int current_directory_max_visible = 16;
   static const int current_directory_max_count = 16;
   QLineEdit *_current_directory_line_edit;

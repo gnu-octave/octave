@@ -450,6 +450,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   QVector<color_picker*> bg_color (max_style);
   int default_size = 10;
   QFont default_font = QFont ();
+  int label_width;
   QColor default_color = QColor ();
   QColor dummy_color = QColor (255,0,255);
 
@@ -459,12 +460,13 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       QFont   actual_font = lexer->font (styles[i]);
       description[i] = new QLabel (actual_name);
       description[i]->setWordWrap (true);
-      description[i]->setMaximumSize (160,QWIDGETSIZE_MAX);
-      description[i]->setMinimumSize (160,1);
+      label_width = 24*description[i]->fontMetrics ().averageCharWidth ();
+      description[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
+      description[i]->setMinimumSize (label_width,1);
       select_font[i] = new QFontComboBox ();
       select_font[i]->setObjectName (actual_name+"_font");
-      select_font[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
-      select_font[i]->setMinimumSize (180,1);
+      select_font[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
+      select_font[i]->setMinimumSize (label_width,1);
       font_size[i] = new QSpinBox ();
       font_size[i]->setObjectName (actual_name+"_size");
       if (styles[i] == 0) // the default

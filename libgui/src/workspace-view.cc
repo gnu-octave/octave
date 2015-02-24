@@ -57,7 +57,7 @@ workspace_view::workspace_view (QWidget *p)
   _filter->setInsertPolicy (QComboBox::NoInsert);
   _filter->setSizeAdjustPolicy (
             QComboBox::AdjustToMinimumContentsLengthWithIcon);
-  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Maximum);
+  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
   _filter->setSizePolicy (sizePol);
   _filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 

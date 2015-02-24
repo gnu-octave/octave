@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -454,7 +454,7 @@
             <x>0</x>
             <y>0</y>
             <width>662</width>
-            <height>661</height>
+            <height>673</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -462,9 +462,6 @@
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <item>
               <layout class="QGridLayout" name="editor_common_settings_grid">
-               <property name="horizontalSpacing">
-                <number>6</number>
-               </property>
                <item row="6" column="2">
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
@@ -476,6 +473,12 @@
                  </item>
                  <item>
                   <widget class="QSpinBox" name="editor_long_line_column">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>2</number>
                    </property>
@@ -504,6 +507,12 @@
                </item>
                <item row="3" column="0">
                 <widget class="QCheckBox" name="editor_ws_checkbox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Show whitespace</string>
                  </property>
@@ -513,6 +522,12 @@
                 <widget class="QCheckBox" name="editor_showLineNumbers">
                  <property name="enabled">
                   <bool>true</bool>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
                  <property name="text">
                   <string>Show line numbers</string>
@@ -546,6 +561,12 @@
                 <widget class="QCheckBox" name="editor_highlightCurrentLine">
                  <property name="enabled">
                   <bool>true</bool>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
                  <property name="text">
                   <string>Highlight current line</string>
@@ -625,6 +646,12 @@
                  </item>
                  <item row="0" column="3">
                   <widget class="QSpinBox" name="editor_notebook_tab_width_min">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>80</number>
                    </property>
@@ -654,6 +681,12 @@
                  </item>
                  <item row="0" column="5">
                   <widget class="QSpinBox" name="editor_notebook_tab_width_max">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>180</number>
                    </property>
@@ -695,6 +728,12 @@
                </item>
                <item row="6" column="0">
                 <widget class="QCheckBox" name="editor_long_line_marker">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="toolTip">
                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
                  </property>
@@ -708,6 +747,12 @@
                </item>
                <item row="7" column="0">
                 <widget class="QCheckBox" name="cb_code_folding">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Enable Code Folding</string>
                  </property>
@@ -718,6 +763,12 @@
                </item>
                <item row="8" column="0">
                 <widget class="QCheckBox" name="cb_edit_status_bar">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Show status bar</string>
                  </property>
@@ -728,6 +779,12 @@
                </item>
                <item row="4" column="0">
                 <widget class="QCheckBox" name="cb_show_eol">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Show EOL characters</string>
                  </property>
@@ -744,6 +801,12 @@
                  </item>
                  <item>
                   <widget class="QComboBox" name="combo_eol_mode">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="sizeAdjustPolicy">
                     <enum>QComboBox::AdjustToContents</enum>
                    </property>
@@ -787,6 +850,12 @@
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Show horizontal scroll bar</string>
                  </property>
@@ -806,9 +875,6 @@
              </item>
              <item>
               <layout class="QGridLayout" name="gridLayout_4">
-               <property name="verticalSpacing">
-                <number>0</number>
-               </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_13">
                  <property name="text">
@@ -848,6 +914,12 @@
                </item>
                <item row="0" column="2">
                 <widget class="QSpinBox" name="editor_ind_width_spinbox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimum">
                   <number>1</number>
                  </property>
@@ -875,6 +947,12 @@
                </item>
                <item row="2" column="2">
                 <widget class="QSpinBox" name="editor_tab_width_spinbox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimum">
                   <number>1</number>
                  </property>
@@ -1406,6 +1484,12 @@
                  </item>
                  <item>
                   <widget class="QFontComboBox" name="terminal_fontName">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="editable">
                     <bool>false</bool>
                    </property>
@@ -1427,6 +1511,12 @@
                  </item>
                  <item>
                   <widget class="QSpinBox" name="terminal_fontSize">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>2</number>
                    </property>
@@ -1460,6 +1550,12 @@
                  </property>
                  <item>
                   <widget class="QSpinBox" name="terminal_history_buffer">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>0</number>
                    </property>
@@ -1554,12 +1650,6 @@
              </item>
              <item>
               <widget class="QGroupBox" name="terminal_colors_box">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>81</height>
-                </size>
-               </property>
                <property name="title">
                 <string>Terminal Colors</string>
                </property>
@@ -1705,7 +1795,14 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="le_file_browser_dir"/>
+                   <widget class="QLineEdit" name="le_file_browser_dir">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
                   </item>
                   <item row="0" column="1">
                    <widget class="QCheckBox" name="cb_restore_file_browser_dir">
@@ -1716,6 +1813,12 @@
                   </item>
                   <item row="1" column="2">
                    <widget class="QPushButton" name="pb_file_browser_dir">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
                      <string>Browse</string>
                     </property>
@@ -1808,12 +1911,6 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>81</height>
-                </size>
                </property>
                <property name="title">
                 <string>Colors for variable attributes </string>

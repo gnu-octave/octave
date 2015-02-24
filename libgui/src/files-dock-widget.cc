@@ -90,7 +90,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _current_directory->setInsertPolicy (QComboBox::NoInsert);
   _current_directory->setSizeAdjustPolicy (
     QComboBox::AdjustToMinimumContentsLengthWithIcon);
-  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Maximum);
+  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
   _current_directory->setSizePolicy (sizePol);
 
   QAction *directory_up_action = new QAction (QIcon (":/actions/icons/up.png"),

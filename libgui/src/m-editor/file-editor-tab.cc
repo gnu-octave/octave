@@ -91,16 +91,17 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   // eol mode
   QLabel *eol_label = new QLabel (tr ("eol:"), this);
   _eol_indicator = new QLabel ("",this);
-  _eol_indicator->setMinimumSize (35,0);
+  QFontMetrics fm = eol_label->fontMetrics ();
+  _eol_indicator->setMinimumSize (5*fm.averageCharWidth (),0);
   _status_bar->addPermanentWidget (eol_label, 0);
   _status_bar->addPermanentWidget (_eol_indicator, 0);
 
   // row- and col-indicator
   _row_indicator = new QLabel ("", this);
-  _row_indicator->setMinimumSize (30,0);
+  _row_indicator->setMinimumSize (5*fm.averageCharWidth (),0);
   QLabel *row_label = new QLabel (tr ("line:"), this);
   _col_indicator = new QLabel ("", this);
-  _col_indicator->setMinimumSize (25,0);
+  _col_indicator->setMinimumSize (4*fm.averageCharWidth (),0);
   QLabel *col_label = new QLabel (tr ("col:"), this);
   _status_bar->addPermanentWidget (row_label, 0);
   _status_bar->addPermanentWidget (_row_indicator, 0);

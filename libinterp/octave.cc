@@ -172,6 +172,11 @@ static bool start_gui = false;
 // (--traditional)
 static bool traditional = false;
 
+// TRUE if this is a program and no interpreter and interaction is
+// needed.  For example, an octave program with shebang line, or code
+// from eval without persist.
+static bool an_octave_program = false;
+
 // Store the command-line options for later use.
 
 static void
@@ -703,13 +708,14 @@ octave_process_command_line (int argc, char **argv)
     }
 
   bool script_file = (argc - optind) > 0;
-
   if (! code_to_eval.empty () && script_file)
     {
       error ("--eval \"CODE\" and script file are mutually exclusive options");
 
       octave_print_terse_usage_and_exit ();
     }
+  an_octave_program = (script_file || ! code_to_eval.empty ()) && ! persist;
+
 }
 
 // EMBEDDED is declared int instead of bool because this function is
@@ -788,7 +794,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   // a redirected file.
   bool stdin_is_tty = gnulib::isatty (fileno (stdin));
 
-  interactive = (! embedded && stdin_is_tty
+  interactive = (! embedded && ! an_octave_program && stdin_is_tty
                  && gnulib::isatty (fileno (stdout)));
 
   // Check if the user forced an interactive session.  If he

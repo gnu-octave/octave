@@ -23,8 +23,8 @@
 ## Flip array across specific dimension.
 ##
 ## This function is an alias for @code{flip} and exists for backwards
-## and @sc{matlab} compatibility.  See further details about its usage
-## on @code{flip} help text.
+## and @sc{matlab} compatibility.  See @code{flip} for complete usage
+## information.
 ##
 ## @seealso{flip, fliplr, flipud, rot90, rotdim}
 ## @end deftypefn

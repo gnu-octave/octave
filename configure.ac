@@ -316,16 +316,14 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 
-## Save and restore CFLAGS, CXXFLAGS, and FFLAGS globally.  These variables
-## are for users, so we shouldn't be touching them.  Instead, we should set
-## the corresponding AM_ flags (currently by way of the XTRA_ variables).
-## However, for the duration of the configure script, we may set CFLAGS,
-## CXXFLAGS, or FFLAGS so that subsequent tests succeed.  Temporary
-## settings like this are currently done for pthreads and openmp, for
-## example.
+## Save and restore CFLAGS and CXXFLAGS globally.  These variables
+## are for users, so we shouldn't be touching them.  Instead, we should
+## set the corresponding AM_ flags (currently by way of the XTRA_ variables).
+## However, for the duration of the configure script, we may set CFLAGS
+## and CXXFLAGS so that subsequent tests succeed.  Temporary settings
+## like this are currently done for pthreads and openmp, for example.
 original_octave_configure_CFLAGS="$CFLAGS"
 original_octave_configure_CXXFLAGS="$CXXFLAGS"
-original_octave_configure_FFLAGS="$FFLAGS"
 
 ## Check for MSVC
 have_msvc=no
@@ -2969,7 +2967,6 @@ AC_SUBST(QT_LIBS)
 
 CFLAGS="$original_octave_configure_CFLAGS"
 CXXFLAGS="$original_octave_configure_CXXFLAGS"
-FFLAGS="$original_octave_configure_FFLAGS"
 
 AH_BOTTOM([#include "oct-conf-post.h"])
 

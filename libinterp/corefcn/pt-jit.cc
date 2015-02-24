@@ -46,7 +46,7 @@ static bool Vjit_enable = false;
 
 static int Vjit_startcnt = 1000;
 
-static int Vjit_failure_count = 0;
+static int Vjit_failcnt = 0;
 
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
@@ -2312,7 +2312,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
             std::cout << "jit fail: " << e.what () << std::endl;
         }
 
-      Vjit_failure_count++;
+      Vjit_failcnt++;
 
       wrapper.erase ();
       raw_fn.erase ();
@@ -2471,7 +2471,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
             std::cout << "jit fail: " << e.what () << std::endl;
         }
 
-      Vjit_failure_count++;
+      Vjit_failcnt++;
 
     }
 
@@ -2514,12 +2514,12 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 #define UNUSED_WITHOUT_LLVM(x) x GCC_ATTR_UNUSED
 #endif
 
-DEFUN (jit_failure_count, UNUSED_WITHOUT_LLVM (args),
+DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),
        UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_failure_count ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_failure_count (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_failure_count (@var{new_val}, \"local\")\n\
+@deftypefn  {Built-in Function} {@var{val} =} jit_failcnt ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} jit_failcnt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that counts the number of\n\
 JIT fail exceptions for Octave's JIT compiler.\n\
 \n\
@@ -2530,9 +2530,9 @@ The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
-  return SET_INTERNAL_VARIABLE (jit_failure_count);
+  return SET_INTERNAL_VARIABLE (jit_failcnt);
 #else
-  warning ("jit_failure_count: JIT compiling not available in this version of Octave");
+  warning ("jit_failcnt: JIT compiling not available in this version of Octave");
   return octave_value ();
 #endif
 }

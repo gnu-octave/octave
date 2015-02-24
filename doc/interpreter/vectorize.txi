@@ -540,12 +540,14 @@ is available it may be worth benchmarking the code with JIT enabled.  The
 function @code{jit_enable} is used to turn compilation on or off.  The
 function @code{jit_startcnt} sets the threshold for acceleration.  Loops
 with iteration counts above @code{jit_startcnt} will be accelerated.  The
-function @code{debug_jit} is not likely to be of use to anyone not working
-directly on the implementation of the JIT compiler.
+functions @code{jit_failcnt} and @code{debug_jit} are not likely to be of use
+to anyone not working directly on the implementation of the JIT compiler.
 
 @DOCSTRING(jit_enable)
 
 @DOCSTRING(jit_startcnt)
+
+@DOCSTRING(jit_failcnt)
 
 @DOCSTRING(debug_jit)
 

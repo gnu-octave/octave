@@ -1128,8 +1128,16 @@ file_editor::handle_editor_state_changed (bool copy_available,
 void
 file_editor::notice_settings (const QSettings *settings)
 {
-  int icon_size = settings->value ("toolbar_icon_size", 16).toInt ();
-  _tool_bar->setIconSize (QSize (icon_size, icon_size));
+  int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+  if (icon_size_settings == 1)
+    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+  else if (icon_size_settings == -1)
+    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
+  _tool_bar->setIconSize (QSize (icon_size,icon_size));
 
   int tab_width_min = settings->value ("editor/notebook_tab_width_min", 160)
                                       .toInt ();

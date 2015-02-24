@@ -774,9 +774,15 @@ files_dock_widget::notice_settings (const QSettings *settings)
 {
   // Qsettings pointer is checked before emitting.
 
-  int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
-  if (icon_size > 16)
-    icon_size = icon_size - 4;
+  int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+  if (icon_size_settings == 1)
+    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+  else if (icon_size_settings == -1)
+    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
   _navigation_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
   // file names are always shown, other columns can be hidden by settings

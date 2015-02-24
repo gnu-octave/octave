@@ -731,7 +731,15 @@ main_window::notice_settings (const QSettings *settings)
   else
     _release_notes_icon = ":/actions/icons/logo.png";
 
-  int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
+  int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+  if (icon_size_settings == 1)
+    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+  else if (icon_size_settings == -1)
+    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
   if (settings->value ("show_status_bar",true).toBool ())

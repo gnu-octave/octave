@@ -85,10 +85,21 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   else
     ui->comboBox_language->setCurrentIndex (0);  // System is default
 
-  ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",
-                                                    16).toInt ());
+  // icon size
+  QButtonGroup *icon_size_group = new QButtonGroup (this);
+  icon_size_group->addButton (ui->icon_size_small);
+  icon_size_group->addButton (ui->icon_size_normal);
+  icon_size_group->addButton (ui->icon_size_large);
+  int icon_size = settings->value ("toolbar_icon_size", 0).toInt ();
+  ui->icon_size_normal->setChecked (true);  // the default
+  ui->icon_size_small->setChecked (icon_size == -1);
+  ui->icon_size_large->setChecked (icon_size == 1);
 
   // which icon has to be selected
+  QButtonGroup *icon_group = new QButtonGroup (this);
+  icon_group->addButton (ui->general_icon_octave);
+  icon_group->addButton (ui->general_icon_graphic);
+  icon_group->addButton (ui->general_icon_letter);
   QString widget_icon_set =
     settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
   ui->general_icon_octave-> setChecked (true);  // the default (if invalid set)
@@ -643,7 +654,12 @@ settings_dialog::write_changed_settings (bool closing)
                       _widget_title_fg_color_active->color ());
 
   // icon size
-  settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
+  int icon_size = 0;
+  if (ui->icon_size_small->isChecked ())
+    icon_size = -1;
+  else if (ui->icon_size_large->isChecked ())
+    icon_size = 1;
+  settings->setValue ("toolbar_icon_size", icon_size);
 
   // promp to exit
   settings->setValue ("prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());

@@ -119,18 +119,26 @@
                 <item row="2" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
                   <item>
-                   <widget class="QSpinBox" name="toolbar_icon_size">
-                    <property name="minimum">
-                     <number>16</number>
+                   <widget class="QRadioButton" name="icon_size_small">
+                    <property name="text">
+                     <string>Small</string>
                     </property>
-                    <property name="maximum">
-                     <number>32</number>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="icon_size_normal">
+                    <property name="text">
+                     <string> Normal</string>
                     </property>
-                    <property name="singleStep">
-                     <number>4</number>
+                    <property name="checked">
+                     <bool>true</bool>
                     </property>
-                    <property name="value">
-                     <number>24</number>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="icon_size_large">
+                    <property name="text">
+                     <string>Large</string>
                     </property>
                    </widget>
                   </item>

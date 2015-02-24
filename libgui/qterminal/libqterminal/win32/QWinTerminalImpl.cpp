@@ -985,7 +985,7 @@ void QConsolePrivate::log (const char* fmt, ...)
 
 void QConsolePrivate::updateConsoleSize (bool sync, bool allow_smaller_width)
 {
-  QFontMetrics fm (m_font);
+  QFontMetrics fm = m_consoleView->fontMetrics ();
   QSize winSize = m_consoleView->size ();
 
   m_charSize.rwidth () = fm.averageCharWidth ();

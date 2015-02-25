@@ -601,7 +601,7 @@ AC_CHECK_LIB(m, sin)
 ### Determine the Fortran compiler and how to invoke it
 
 ## Default FFLAGS is -O.
-if test x"$FFLAGS" = x""; then
+if test -z "$FFLAGS"; then
   FFLAGS="-O"
 fi
 
@@ -615,14 +615,13 @@ if test "$F77" = g77; then
   AC_MSG_ERROR([g77 is not a supported Fortran compiler.  Select another compiler by setting the environment variable F77 and re-running configure.])
 fi
 
-AC_MSG_CHECKING([if we have a usable Fortran compiler])
-if test x"$F77" = x""; then
-  AC_MSG_RESULT(no)
-  AC_MSG_ERROR(No Fortran compiler found)
-else
+AC_MSG_CHECKING([whether a usable Fortran compiler was found])
+if test -n "$F77"; then
   AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([A Fortran compiler is required])
 fi
-
 
 ## Determine calling conventions for Fortran compiler
 AC_F77_LIBRARY_LDFLAGS
@@ -1414,13 +1413,13 @@ ifdef([LT_INIT], [], [
 LT_PREREQ([2.2.2])
 LT_INIT([disable-static dlopen win32-dll])
 
-if test x"$enable_shared" = x"yes"; then
+if test $enable_shared = yes; then
   SHARED_LIBS=yes
 else
   SHARED_LIBS=no
 fi
 
-if test x"$enable_static" = x"yes"; then
+if test $enable_static = yes; then
   STATIC_LIBS=yes
 else
   STATIC_LIBS=no

@@ -67,7 +67,7 @@ function output = open (file)
       error ("executing .exe files is only supported on Windows systems");
     endif
   else
-    open_with_system_app (file);
+    __open_with_system_app__ (file);
   endif
 
 endfunction

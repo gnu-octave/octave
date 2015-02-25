@@ -185,9 +185,9 @@ w32_shell_execute (const std::string& file)
 }
 #endif
 
-DEFUN (open_with_system_app, args, ,
+DEFUN (__open_with_system_app__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __w32_shell_execute__ (@var{file})\n\
+@deftypefn {Loadable Function} {} __open_with_system_app__ (@var{file})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -215,7 +215,7 @@ Undocumented internal function.\n\
 #endif
         }
       else
-        error ("open_with_system_app: expecting argument to be a file name");
+        error ("__open_with_system_app__: argument must be a file name");
     }
   else
     print_usage ();

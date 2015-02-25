@@ -82,7 +82,7 @@
 ## for iterative methods}, SIAM, 2nd ed., 1994.
 ## @end enumerate
 ##
-## @seealso{bicg, bicgstab, cgs, gmres}
+## @seealso{bicg, bicgstab, cgs, gmres, pcg}
 ## @end deftypefn
 
 ## Author: Nathan Podlich <nathan.podlich@gmail.com>

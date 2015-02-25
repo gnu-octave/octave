@@ -67,7 +67,7 @@
 ## each iteration.
 ## @end itemize
 ##
-## @seealso{pcg, bicgstab, bicg, gmres}
+## @seealso{pcg, bicgstab, bicg, gmres, qmr}
 ## @end deftypefn
 
 function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)

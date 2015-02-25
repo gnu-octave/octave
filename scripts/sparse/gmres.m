@@ -69,7 +69,7 @@
 ## iteration.
 ## @end itemize
 ##
-## @seealso{bicg, bicgstab, cgs, pcg}
+## @seealso{bicg, bicgstab, cgs, pcg, pcr, qmr}
 ## @end deftypefn
 
 function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)

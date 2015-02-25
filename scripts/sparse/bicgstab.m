@@ -67,7 +67,7 @@
 ## iteration.
 ## @end itemize
 ##
-## @seealso{bicg, cgs, gmres, pcg}
+## @seealso{bicg, cgs, gmres, pcg, qmr}
 ##
 ## @end deftypefn
 

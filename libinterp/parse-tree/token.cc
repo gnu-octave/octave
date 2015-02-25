@@ -52,6 +52,17 @@ token::token (int tv, bool is_kw, int l, int c)
   type_tag = is_kw ? keyword_token : generic_token;
 }
 
+token::token (int tv, const char *s, int l, int c)
+{
+  maybe_cmd = false;
+  tspc = false;
+  line_num = l;
+  column_num = c;
+  tok_val = tv;
+  type_tag = string_token;
+  str = new std::string (s);
+}
+
 token::token (int tv, const std::string& s, int l, int c)
 {
   maybe_cmd = false;

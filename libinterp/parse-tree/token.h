@@ -63,6 +63,7 @@ public:
 
   token (int tv, int l = -1, int c = -1);
   token (int tv, bool is_keyword, int l = -1, int c = -1);
+  token (int tv, const char *s, int l = -1, int c = -1);
   token (int tv, const std::string& s, int l = -1, int c = -1);
   token (int tv, double d, const std::string& s = std::string (),
          int l = -1, int c = -1);

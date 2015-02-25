@@ -615,6 +615,15 @@ if test "$F77" = g77; then
   AC_MSG_ERROR([g77 is not a supported Fortran compiler.  Select another compiler by setting the environment variable F77 and re-running configure.])
 fi
 
+AC_MSG_CHECKING([if we have a usable Fortran compiler])
+if test x"$F77" = x""; then
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR(No Fortran compiler found)
+else
+  AC_MSG_RESULT(yes)
+fi
+
+
 ## Determine calling conventions for Fortran compiler
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_DUMMY_MAIN

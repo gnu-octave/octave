@@ -168,7 +168,7 @@ function opts = __opengl_print__ (opts)
       drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
     else
       ## Use OpenGL offscreen rendering with OSMesa
-      __osmesa_print__ (opts.figure, ['|', pipeline{n}), gl2ps_device{n}]);
+      __osmesa_print__ (opts.figure, ['|' pipeline{n}], gl2ps_device{n});
     endif
   endfor
 

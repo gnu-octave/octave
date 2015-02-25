@@ -72,6 +72,11 @@ workspace_view::workspace_view (QWidget *p)
   view->setAlternatingRowColors (true);
   view_previous_row_count = 0;
 
+  //enable sorting by parameter name
+  view->setSortingEnabled (true);
+  view->sortByColumn (0,Qt::AscendingOrder);
+
+
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
 
@@ -95,7 +100,8 @@ workspace_view::workspace_view (QWidget *p)
   // Initialize column order and width of the workspace
   view->horizontalHeader ()->restoreState (
     settings->value ("workspaceview/column_state").toByteArray ());
-
+  // Make the header clickable to enable sorting
+  view->horizontalHeader ()->setClickable (true);
   // Init state of the filter
   _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
 

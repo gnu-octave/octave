@@ -531,15 +531,15 @@ private:
     void remove (const dir_info& di);
 
     void clear (void)
-      {
-        dir_list.clear ();
+    {
+      dir_list.clear ();
 
-        fcn_map.clear ();
+      fcn_map.clear ();
 
-        private_fcn_map.clear ();
+      private_fcn_map.clear ();
 
-        method_map.clear ();
-      }
+      method_map.clear ();
+    }
 
     void display (std::ostream& out) const;
 

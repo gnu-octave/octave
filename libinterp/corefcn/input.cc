@@ -610,7 +610,7 @@ get_debug_input (const std::string& prompt)
 
       if (command_editor::interrupt (false))
         break;
-       else
+      else
         {
           if (retval == 0 && curr_parser.stmt_list)
             {

@@ -79,7 +79,7 @@ load_path::dir_info::update (void)
                   const dir_info& di = p->second;
 
                   if (fs.mtime () + fs.time_resolution ()
-                       > di.dir_time_last_checked)
+                      > di.dir_time_last_checked)
                     initialize ();
                   else
                     *this = di;
@@ -1279,7 +1279,7 @@ find_private_file (const std::string& fname)
       if (! dir_name.empty ())
         {
           std::string pfname = dir_name + file_ops::dir_sep_str ()
-            + "private" + file_ops::dir_sep_str () + fname;
+                               + "private" + file_ops::dir_sep_str () + fname;
 
           file_stat fs (pfname);
 

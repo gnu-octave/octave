@@ -1841,7 +1841,7 @@ state on the stream will be cleared.\n\
 }
 
 DEFUNX ("popen", Fpopen, args, ,
-       "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{fid} =} popen (@var{command}, @var{mode})\n\
 Start a process and create a pipe.  The name of the command to run is\n\
 given by @var{command}.  The file identifier corresponding to the input\n\

@@ -1144,7 +1144,7 @@ DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_uint64);
   template <class T> \
   inline octave_int<T> \
   operator OP (const double& x, const octave_int<T>& y) \
-  { return octave_int<T> (x OP static_cast<double> (y)); } \
+  { return octave_int<T> (x OP static_cast<double> (y)); }
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 // Handle mixed op using long double

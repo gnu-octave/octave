@@ -822,7 +822,7 @@ set_format (const Matrix& m, int& fw, double& scale)
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
   scale = (x_max == 0 || int_or_inf_or_nan)
-            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
+          ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
@@ -1238,7 +1238,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
   scale = (x_max == 0 || int_or_inf_or_nan)
-            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
+          ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
                              int_or_inf_or_nan, r_fw, i_fw);
@@ -1394,7 +1394,7 @@ set_format (const Range& r, int& fw, double& scale)
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
   scale = (x_max == 0 || all_ints)
-            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
+          ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
 }
@@ -2586,7 +2586,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 
     default:
       print_nd_array <ComplexNDArray, Complex, ComplexMatrix>
-                      (os, nda, pr_as_read_syntax);
+                     (os, nda, pr_as_read_syntax);
       break;
     }
 }

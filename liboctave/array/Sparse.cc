@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 template <class T>
 Sparse<T>::Sparse (const PermMatrix& a)
   : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
-         dimensions (dim_vector (a.rows (), a.cols ()))
+    dimensions (dim_vector (a.rows (), a.cols ()))
 {
   octave_idx_type n = a.rows ();
   for (octave_idx_type i = 0; i <= n; i++)
@@ -985,7 +985,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 
       if (c > rep->ncols)
         std::fill_n (rep->c + rep->ncols + 1, c - rep->ncols,
-          rep->c[rep->ncols]);
+                     rep->c[rep->ncols]);
     }
 
   rep->ncols = dimensions(1) = c;
@@ -1913,9 +1913,9 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
 
                   // ...tail
                   std::copy (tmp.data () + ui, tmp.data () + nz,
-                                  data () + li + rnz);
+                             data () + li + rnz);
                   std::copy (tmp.ridx () + ui, tmp.ridx () + nz,
-                                  ridx () + li + rnz);
+                             ridx () + li + rnz);
                 }
 
               cidx (1) = new_nz;
@@ -2104,9 +2104,9 @@ Sparse<T>::assign (const idx_vector& idx_i,
 
                   // ...tail.
                   std::copy (tmp.data () + ui, tmp.data () + nz,
-                                  data () + li + rnz);
+                             data () + li + rnz);
                   std::copy (tmp.ridx () + ui, tmp.ridx () + nz,
-                                  ridx () + li + rnz);
+                             ridx () + li + rnz);
                   mx_inline_add (nc - ub, cidx () + ub + 1,
                                  tmp.cidx () + ub + 1, new_nz - nz);
 
@@ -2157,18 +2157,18 @@ Sparse<T>::assign (const idx_vector& idx_i,
                       // from rhs
                       octave_idx_type k = rhs.cidx (j);
                       std::copy (rhs.data () + k, rhs.data () + k + u - l,
-                        xdata () + l);
+                                 xdata () + l);
                       std::copy (rhs.ridx () + k, rhs.ridx () + k + u - l,
-                        xridx () + l);
+                                 xridx () + l);
                     }
                   else
                     {
                       // original
                       octave_idx_type k = tmp.cidx (i);
                       std::copy (tmp.data () + k, tmp.data () + k + u - l,
-                        xdata () + l);
+                                 xdata () + l);
                       std::copy (tmp.ridx () + k, tmp.ridx () + k + u - l,
-                        xridx () + l);
+                                 xridx () + l);
                     }
                 }
 

@@ -2518,7 +2518,7 @@ Array<T>::find (octave_idx_type, bool) const\
 { return Array<octave_idx_type> (); } \
  \
 template <> Array<T>  \
-Array<T>::nth_element (const idx_vector&, int) const { return Array<T> (); } \
+Array<T>::nth_element (const idx_vector&, int) const { return Array<T> (); }
 
 
 template <class T>

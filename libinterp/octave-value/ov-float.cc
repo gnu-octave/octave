@@ -350,7 +350,7 @@ octave_float_scalar::map (unary_mapper_t umap) const
       }
 
     default:
-        return octave_base_value::map (umap);
+      return octave_base_value::map (umap);
     }
 }
 

@@ -38,14 +38,16 @@ along with Octave; see the file COPYING.  If not, see
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
 // Use symbolic names for axes
-enum {
+enum
+{
   X_AXIS,
   Y_AXIS,
   Z_AXIS
 };
 
 // Use symbolic names for color mode
-enum {
+enum
+{
   UNIFORM,
   FLAT,
   INTERP,
@@ -53,7 +55,8 @@ enum {
 };
 
 // Use symbolic names for lighting
-enum {
+enum
+{
   NONE,
   //FLAT,  // Already declared in anonymous enum for color mode
   GOURAUD = 2

@@ -110,7 +110,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   // custom title bar of dock widget
   QVariant default_var = QColor (255,255,255);
   QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
-                                      default_var).value<QColor> ();
+                                     default_var).value<QColor> ();
   _widget_title_bg_color = new color_picker (bg_color);
   _widget_title_bg_color->setEnabled (false);
   ui->layout_widget_bgtitle->addWidget (_widget_title_bg_color,0);
@@ -128,7 +128,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   default_var = QColor (0,0,0);
   QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
-                                      default_var).value<QColor> ();
+                                     default_var).value<QColor> ();
   _widget_title_fg_color = new color_picker (fg_color);
   _widget_title_fg_color->setEnabled (false);
   ui->layout_widget_fgtitle->addWidget (_widget_title_fg_color,0);
@@ -157,9 +157,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // Octave startup
   ui->cb_restore_octave_dir->setChecked (
-                 settings->value ("restore_octave_dir",false).toBool ());
+    settings->value ("restore_octave_dir",false).toBool ());
   ui->le_octave_dir->setText (
-                 settings->value ("octave_startup_dir").toString ());
+    settings->value ("octave_startup_dir").toString ());
   connect (ui->pb_octave_dir, SIGNAL (pressed ()),
            this, SLOT (get_octave_dir ()));
 
@@ -262,11 +262,11 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
-    settings->value ("terminal/fontName","Courier New").toString ()));
+      settings->value ("terminal/fontName","Courier New").toString ()));
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
   ui->terminal_history_buffer->setValue (
-     settings->value ("terminal/history_buffer",1000).toInt ());
+    settings->value ("terminal/history_buffer",1000).toInt ());
   ui->terminal_cursorBlinking->setChecked (
     settings->value ("terminal/cursorBlinking",true).toBool ());
   ui->terminal_cursorUseForegroundColor->setChecked (
@@ -309,9 +309,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->sync_octave_directory->setChecked (
     settings->value ("filesdockwidget/sync_octave_directory",true).toBool ());
   ui->cb_restore_file_browser_dir->setChecked (
-                 settings->value ("filesdockwidget/restore_last_dir",false).toBool ());
+    settings->value ("filesdockwidget/restore_last_dir",false).toBool ());
   ui->le_file_browser_dir->setText (
-                 settings->value ("filesdockwidget/startup_dir").toString ());
+    settings->value ("filesdockwidget/startup_dir").toString ());
   connect (ui->pb_file_browser_dir, SIGNAL (pressed ()),
            this, SLOT (get_file_browser_dir ()));
 
@@ -324,7 +324,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   int currentIndex = 0;
   QString proxyTypeString = settings->value ("proxyType").toString ();
   while ((currentIndex < ui->proxyType->count ())
-          && (ui->proxyType->currentText () != proxyTypeString))
+         && (ui->proxyType->currentText () != proxyTypeString))
     {
       currentIndex++;
       ui->proxyType->setCurrentIndex (currentIndex);
@@ -1018,8 +1018,10 @@ settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
 
   if (! disable)
     {
-      ui->le_file_browser_dir->setDisabled (ui->cb_restore_file_browser_dir->isChecked ());
-      ui->pb_file_browser_dir->setDisabled (ui->cb_restore_file_browser_dir->isChecked ());
+      ui->le_file_browser_dir->setDisabled (
+        ui->cb_restore_file_browser_dir->isChecked ());
+      ui->pb_file_browser_dir->setDisabled (
+        ui->cb_restore_file_browser_dir->isChecked ());
     }
   else
     {

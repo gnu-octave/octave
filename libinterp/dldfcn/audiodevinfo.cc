@@ -2547,11 +2547,11 @@ Undocumented internal function.\n\
 
   audiorecorder *recorder = get_recorder (args(0));
 
-      if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+  if (! recorder)
+    {
+      print_usage ();
+      return retval;
+    }
 
   recorder->stop ();
 

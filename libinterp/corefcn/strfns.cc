@@ -737,7 +737,7 @@ This is just the opposite of the corresponding C library function.\n\
 struct icmp_char_eq : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-    { return std::toupper (x) == std::toupper (y); }
+  { return std::toupper (x) == std::toupper (y); }
 };
 
 // strcmpi is equivalent to strcmp in that it checks all dims.

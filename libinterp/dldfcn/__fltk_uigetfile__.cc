@@ -126,7 +126,8 @@ Undocumented internal function.\n\
         retval(0) = file_ops::native_separator_path (std::string (fc.value ()));
       else
         {
-          retval(1) = file_ops::native_separator_path (std::string (fc.directory ()) + sep);
+          retval(1) = file_ops::native_separator_path (
+                        std::string (fc.directory ()) + sep);
           retval(2) = fc.filter_value () + 1;
         }
     }

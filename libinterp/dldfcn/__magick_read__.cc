@@ -1492,8 +1492,10 @@ use @code{imwrite}.\n\
   const octave_idx_type nFrames = imvec.size ();
 
   const octave_idx_type quality = options.getfield ("quality").int_value ();
-  const ColumnVector delaytime = options.getfield ("delaytime").column_vector_value ();
-  const Array<std::string> disposalmethod = options.getfield ("disposalmethod").cellstr_value ();
+  const ColumnVector delaytime =
+    options.getfield ("delaytime").column_vector_value ();
+  const Array<std::string> disposalmethod =
+    options.getfield ("disposalmethod").cellstr_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
     {
       imvec[i].quality (quality);

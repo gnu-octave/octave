@@ -77,20 +77,20 @@ public:
 
   template<class U>
   void accum (U val)
-    {
-      octave_quit ();
-      R t = std::abs (val);
-      if (scl == t) // we need this to handle Infs properly
+  {
+    octave_quit ();
+    R t = std::abs (val);
+    if (scl == t) // we need this to handle Infs properly
+      sum += 1;
+    else if (scl < t)
+      {
+        sum *= std::pow (scl/t, p);
         sum += 1;
-      else if (scl < t)
-        {
-          sum *= std::pow (scl/t, p);
-          sum += 1;
-          scl = t;
-        }
-      else if (t != 0)
-        sum += std::pow (t/scl, p);
-    }
+        scl = t;
+      }
+    else if (t != 0)
+      sum += std::pow (t/scl, p);
+  }
   operator R () { return scl * std::pow (sum, 1/p); }
 };
 
@@ -105,20 +105,20 @@ public:
 
   template<class U>
   void accum (U val)
-    {
-      octave_quit ();
-      R t = 1 / std::abs (val);
-      if (scl == t)
+  {
+    octave_quit ();
+    R t = 1 / std::abs (val);
+    if (scl == t)
+      sum += 1;
+    else if (scl < t)
+      {
+        sum *= std::pow (scl/t, p);
         sum += 1;
-      else if (scl < t)
-        {
-          sum *= std::pow (scl/t, p);
-          sum += 1;
-          scl = t;
-        }
-      else if (t != 0)
-        sum += std::pow (t/scl, p);
-    }
+        scl = t;
+      }
+    else if (t != 0)
+      sum += std::pow (t/scl, p);
+  }
   operator R () { return scl * std::pow (sum, -1/p); }
 };
 
@@ -132,25 +132,25 @@ public:
   norm_accumulator_2 () : scl(0), sum(1) {}
 
   void accum (R val)
-    {
-      R t = std::abs (val);
-      if (scl == t)
+  {
+    R t = std::abs (val);
+    if (scl == t)
+      sum += 1;
+    else if (scl < t)
+      {
+        sum *= pow2 (scl/t);
         sum += 1;
-      else if (scl < t)
-        {
-          sum *= pow2 (scl/t);
-          sum += 1;
-          scl = t;
-        }
-      else if (t != 0)
-        sum += pow2 (t/scl);
-    }
+        scl = t;
+      }
+    else if (t != 0)
+      sum += pow2 (t/scl);
+  }
 
   void accum (std::complex<R> val)
-    {
-      accum (val.real ());
-      accum (val.imag ());
-    }
+  {
+    accum (val.real ());
+    accum (val.imag ());
+  }
 
   operator R () { return scl * std::sqrt (sum); }
 };
@@ -164,9 +164,9 @@ public:
   norm_accumulator_1 () : sum (0) {}
   template<class U>
   void accum (U val)
-    {
-      sum += std::abs (val);
-    }
+  {
+    sum += std::abs (val);
+  }
   operator R () { return sum; }
 };
 
@@ -179,9 +179,9 @@ public:
   norm_accumulator_inf () : max (0) {}
   template<class U>
   void accum (U val)
-    {
-      max = std::max (max, std::abs (val));
-    }
+  {
+    max = std::max (max, std::abs (val));
+  }
   operator R () { return max; }
 };
 
@@ -194,9 +194,9 @@ public:
   norm_accumulator_minf () : min (octave_Inf) {}
   template<class U>
   void accum (U val)
-    {
-      min = std::min (min, std::abs (val));
-    }
+  {
+    min = std::min (min, std::abs (val));
+  }
   operator R () { return min; }
 };
 
@@ -209,9 +209,9 @@ public:
   norm_accumulator_0 () : num (0) {}
   template<class U>
   void accum (U val)
-    {
-      if (val != static_cast<U> (0)) ++num;
-    }
+  {
+    if (val != static_cast<U> (0)) ++num;
+  }
   operator R () { return num; }
 };
 

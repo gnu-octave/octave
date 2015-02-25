@@ -52,13 +52,13 @@ contains_char (const std::string& str, char c)
 struct icmp_char_lt : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-    { return std::toupper (x) < std::toupper (y); }
+  { return std::toupper (x) < std::toupper (y); }
 };
 
 struct icmp_char_gt : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-    { return std::toupper (x) > std::toupper (y); }
+  { return std::toupper (x) > std::toupper (y); }
 };
 
 // FIXME: maybe these should go elsewhere?

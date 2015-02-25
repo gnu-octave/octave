@@ -76,7 +76,7 @@ protected:
         gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
         opengl_renderer::set_polygon_offset (on, offset);
       }
-  } 
+  }
 
   void set_linewidth (float w)
   {

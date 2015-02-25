@@ -62,7 +62,7 @@ public:
                                 const intmap& lines = intmap ())
   {
     return instance_ok ()
-      ? instance->do_add_breakpoint (fname, lines) : intmap ();
+           ? instance->do_add_breakpoint (fname, lines) : intmap ();
   }
 
   // Remove a breakpoint from a line in file.
@@ -70,7 +70,7 @@ public:
                                 const intmap& lines = intmap ())
   {
     return instance_ok ()
-      ? instance->do_remove_breakpoint (fname, lines) : 0;
+           ? instance->do_remove_breakpoint (fname, lines) : 0;
   }
 
   // Remove all the breakpoints in a specified file.
@@ -78,7 +78,8 @@ public:
                                                 bool silent = false)
   {
     return instance_ok ()
-      ? instance->do_remove_all_breakpoints_in_file (fname, silent) : intmap ();
+           ? instance->do_remove_all_breakpoints_in_file (fname, silent)
+           : intmap ();
   }
 
   // Remove all the breakpoints registered with octave.
@@ -94,7 +95,7 @@ public:
   get_breakpoint_list (const octave_value_list& fname_list)
   {
     return instance_ok ()
-      ? instance->do_get_breakpoint_list (fname_list) : fname_line_map ();
+           ? instance->do_get_breakpoint_list (fname_list) : fname_line_map ();
   }
 
   static bool

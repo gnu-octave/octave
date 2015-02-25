@@ -3672,7 +3672,7 @@ numeric.\n\
 */
 
 DEFUN (isscalar, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isscalar (@var{x})\n\
 Return true if @var{x} is a scalar.\n\
 @seealso{isvector, ismatrix}\n\
@@ -3708,7 +3708,7 @@ Return true if @var{x} is a scalar.\n\
 */
 
 DEFUN (isvector, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {} isvector (@var{x})\n\
 Return true if @var{x} is a vector.\n\
 \n\
@@ -3751,7 +3751,7 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 */
 
 DEFUN (isrow, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {} isrow (@var{x})\n\
 Return true if @var{x} is a row vector 1xN with non-negative N.\n\
 @seealso{iscolumn, isscalar, isvector, ismatrix}\n\
@@ -3801,7 +3801,7 @@ Return true if @var{x} is a row vector 1xN with non-negative N.\n\
 */
 
 DEFUN (iscolumn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {} iscolumn (@var{x})\n\
 Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
 @seealso{isrow, isscalar, isvector, ismatrix}\n\
@@ -3898,7 +3898,7 @@ Return true if @var{a} is a 2-D array.\n\
 */
 
 DEFUN (issquare, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {} issquare (@var{x})\n\
 Return true if @var{x} is a square matrix.\n\
 @seealso{isscalar, isvector, ismatrix, size}\n\

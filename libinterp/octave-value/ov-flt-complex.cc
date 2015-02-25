@@ -80,7 +80,8 @@ octave_float_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
-  octave_value tmp (new octave_float_complex_matrix (float_complex_matrix_value ()));
+  octave_value tmp (new octave_float_complex_matrix (
+                      float_complex_matrix_value ()));
 
   return tmp.do_index_op (idx, resize_ok);
 }

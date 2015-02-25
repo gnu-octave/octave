@@ -20,7 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-static char default_im_data[] = {
+static char default_im_data[] =
+{
   31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,
   31,31,31,31,31,31,20,20,20,20,20,20,21,21,21,21,
   31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,

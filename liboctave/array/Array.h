@@ -497,7 +497,7 @@ public:
   //@{
   //! Indexing with possible resizing and fill
 
-  // FIXME -- this is really a corner case, that should better be
+  // FIXME: this is really a corner case, that should better be
   // handled directly in liboctinterp.
 
 
@@ -613,7 +613,8 @@ public:
 
   //! Find indices of (at most n) nonzero elements. If n is specified,
   //! backward specifies search from backward.
-  Array<octave_idx_type> find (octave_idx_type n = -1, bool backward = false) const;
+  Array<octave_idx_type> find (octave_idx_type n = -1,
+                               bool backward = false) const;
 
   //! Returns the n-th element in increasing order, using the same
   //! ordering as used for sort. n can either be a scalar index or a

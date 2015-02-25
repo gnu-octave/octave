@@ -416,11 +416,11 @@ public:
 private:
 
   enum class_ctor_type
-    {
-      none,
-      legacy,
-      classdef
-    };
+  {
+    none,
+    legacy,
+    classdef
+  };
 
   // List of arguments for this function.  These are local variables.
   tree_parameter_list *param_list;

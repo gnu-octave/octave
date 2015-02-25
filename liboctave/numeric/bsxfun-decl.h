@@ -54,6 +54,6 @@ extern API boolNDArray bsxfun_ ## OP (const ARRAY&, const ARRAY&);
   BSXFUN_REL_DECL (lt, ARRAY, API) \
   BSXFUN_REL_DECL (le, ARRAY, API) \
   BSXFUN_REL_DECL (gt, ARRAY, API) \
-  BSXFUN_REL_DECL (ge, ARRAY, API) \
+  BSXFUN_REL_DECL (ge, ARRAY, API)
 
 #endif

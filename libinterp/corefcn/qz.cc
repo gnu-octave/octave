@@ -75,7 +75,7 @@ extern "C"
                              octave_idx_type& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type& N, Complex* A,
                              const octave_idx_type& LDA, Complex* B,
@@ -97,7 +97,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (zggbak, ZGGBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type& N,
@@ -122,7 +122,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
- F77_RET_T
+  F77_RET_T
   F77_FUNC (zgghrd, ZGGHRD) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type& N,
@@ -153,7 +153,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (zhgeqz, ZHGEQZ) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
@@ -204,7 +204,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (ztgevc, ZTGEVC) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type* SELECT,

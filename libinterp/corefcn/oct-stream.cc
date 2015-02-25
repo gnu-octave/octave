@@ -2515,7 +2515,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
       std::string::size_type i1, i2;
 
       tfmt.replace ((i1 = tfmt.rfind (elt->type)),
-                   1, 1, 's');
+                    1, 1, 's');
 
       if ((i2 = tfmt.rfind ('.')) != std::string::npos
           && i2 < i1)

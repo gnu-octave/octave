@@ -1347,7 +1347,7 @@ array_property::validate (const octave_value& v)
 
       // check dimensional size constraints until a match is found
       for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
-           ! xok && it != size_constraints.end ();++it)
+           ! xok && it != size_constraints.end (); ++it)
         {
           dim_vector itdims = (*it);
 
@@ -3175,9 +3175,9 @@ void
 base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def, const std::string go_name) const
 {
   property_list local_defaults = get_defaults_list ();
-  property_list::plist_map_const_iterator p = 
+  property_list::plist_map_const_iterator p =
     local_defaults.find (go_name);
-  
+
   if (p != local_defaults.end ())
     {
       property_list::pval_map_type pval = p->second;
@@ -3199,16 +3199,16 @@ base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def
 
 void
 base_graphics_object::reset_default_properties (void)
-  {
-    if (valid_object ())
-      {
-        property_list::pval_map_type factory_pval =
-          gh_manager::get_object (0).get_factory_defaults_list ()
-          .find (type ())->second;
+{
+  if (valid_object ())
+    {
+      property_list::pval_map_type factory_pval =
+        gh_manager::get_object (0).get_factory_defaults_list ()
+        .find (type ())->second;
 
-        xreset_default_properties (get_handle (), factory_pval);
-      }
-  }
+      xreset_default_properties (get_handle (), factory_pval);
+    }
+}
 
 std::string
 base_graphics_object::values_as_string (void)

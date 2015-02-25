@@ -224,7 +224,7 @@ along with Octave; see the file COPYING.  If not, see
  \
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
     return retval; \
-  } \
+  }
 
 #define OCTAVE_SS_INT_BOOL_OPS(PFX, T1, T2, Z1, Z2) \
   DEFBINOP (PFX ## _el_and, T2, T2) \

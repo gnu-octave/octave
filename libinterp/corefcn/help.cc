@@ -108,55 +108,55 @@ size (T const (&)[z])
 const static pair_type operators[] =
 {
   pair_type ("!",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} !\n\
 Logical 'not' operator.\n\
 @seealso{~, not}\n\
 @end deftypefn"),
 
   pair_type ("~",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ~\n\
 Logical 'not' operator.\n\
 @seealso{!, not}\n\
 @end deftypefn"),
 
   pair_type ("!=",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} !=\n\
 Logical 'not equals' operator.\n\
 @seealso{~=, ne}\n\
 @end deftypefn"),
 
   pair_type ("~=",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ~=\n\
 Logical 'not equals' operator.\n\
 @seealso{!=, ne}\n\
 @end deftypefn"),
 
   pair_type ("\"",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} \"\n\
 String delimiter.\n\
 @end deftypefn"),
 
   pair_type ("#",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #\n\
 Begin comment character.\n\
 @seealso{%, #@\\{}\n\
 @end deftypefn"),
 
   pair_type ("%",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %\n\
 Begin comment character.\n\
 @seealso{#, %@\\{}\n\
 @end deftypefn"),
 
   pair_type ("#{",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #@{\n\
 Begin block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{#@{}.\n\
@@ -165,7 +165,7 @@ It is possible to nest block comments.\n\
 @end deftypefn"),
 
   pair_type ("%{",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %@{\n\
 Begin block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{%@{}.\n\
@@ -174,7 +174,7 @@ It is possible to nest block comments.\n\
 @end deftypefn"),
 
   pair_type ("#}",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #@}\n\
 Close block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{#@}}.\n\
@@ -183,7 +183,7 @@ It is possible to nest block comments.\n\
 @end deftypefn"),
 
   pair_type ("%}",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %@}\n\
 Close block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{%@}}.\n\
@@ -192,27 +192,27 @@ It is possible to nest block comments.\n\
 @end deftypefn"),
 
   pair_type ("...",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ...\n\
 Continuation marker.  Joins current line with following line.\n\
 @end deftypefn"),
 
   pair_type ("&",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} &\n\
 Element by element logical 'and' operator.\n\
 @seealso{&&, and}\n\
 @end deftypefn"),
 
   pair_type ("&&",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} &&\n\
 Logical 'and' operator (with short-circuit evaluation).\n\
 @seealso{&, and}\n\
 @end deftypefn"),
 
   pair_type ("'",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} '\n\
 Matrix transpose operator.  For complex matrices, computes the\n\
 complex conjugate (Hermitian) transpose.\n\
@@ -224,26 +224,26 @@ ambiguous.\n\
 @end deftypefn"),
 
   pair_type ("(",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} (\n\
 Array index or function argument delimiter.\n\
 @end deftypefn"),
 
   pair_type (")",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {})\n\
 Array index or function argument delimiter.\n\
 @end deftypefn"),
 
   pair_type ("*",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} *\n\
 Multiplication operator.\n\
 @seealso{.*, times}\n\
 @end deftypefn"),
 
   pair_type ("**",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} **\n\
 Power operator.  This may return complex results for real inputs.  Use\n\
 @code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
@@ -252,7 +252,7 @@ real results when possible.\n\
 @end deftypefn"),
 
   pair_type ("^",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ^\n\
 Power operator.  This may return complex results for real inputs.  Use\n\
 @code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
@@ -261,14 +261,14 @@ real results when possible.\n\
 @end deftypefn"),
 
   pair_type ("+",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} +\n\
 Addition operator.\n\
 @seealso{plus}\n\
 @end deftypefn"),
 
   pair_type ("++",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ++\n\
 Increment operator.  As in C, may be applied as a prefix or postfix\n\
 operator.\n\
@@ -276,20 +276,20 @@ operator.\n\
 @end deftypefn"),
 
   pair_type (",",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ,\n\
 Array index, function argument, or command separator.\n\
 @end deftypefn"),
 
   pair_type ("-",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} -\n\
 Subtraction or unary negation operator.\n\
 @seealso{minus}\n\
 @end deftypefn"),
 
   pair_type ("--",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} --\n\
 Decrement operator.  As in C, may be applied as a prefix or postfix\n\
 operator.\n\
@@ -297,7 +297,7 @@ operator.\n\
 @end deftypefn"),
 
   pair_type (".'",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .'\n\
 Matrix transpose operator.  For complex matrices, computes the\n\
 transpose, @emph{not} the complex conjugate transpose.\n\
@@ -305,14 +305,14 @@ transpose, @emph{not} the complex conjugate transpose.\n\
 @end deftypefn"),
 
   pair_type (".*",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .*\n\
 Element by element multiplication operator.\n\
 @seealso{*, times}\n\
 @end deftypefn"),
 
   pair_type (".**",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .*\n\
 Element by element power operator.  If several complex results are possible,\n\
 returns the one with smallest non-negative argument (angle).  Use\n\
@@ -322,7 +322,7 @@ real result is preferred.\n\
 @end deftypefn"),
 
   pair_type (".^",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .^\n\
 Element by element power operator.  If several complex results are possible,\n\
 returns the one with smallest non-negative argument (angle).  Use\n\
@@ -332,110 +332,110 @@ real result is preferred.\n\
 @end deftypefn"),
 
   pair_type ("./",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ./\n\
 Element by element right division operator.\n\
 @seealso{/, .\\, rdivide, mrdivide}\n\
 @end deftypefn"),
 
   pair_type ("/",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} /\n\
 Right division operator.\n\
 @seealso{./, \\, rdivide, mrdivide}\n\
 @end deftypefn"),
 
   pair_type (".\\",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .\\\n\
 Element by element left division operator.\n\
 @seealso{\\, ./, rdivide, mrdivide}\n\
 @end deftypefn"),
 
   pair_type ("\\",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} \\\n\
 Left division operator.\n\
 @seealso{.\\, /, ldivide, mldivide}\n\
 @end deftypefn"),
 
   pair_type (":",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} :\n\
 Select entire rows or columns of matrices.\n\
 @end deftypefn"),
 
   pair_type (";",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ;\n\
 Array row or command separator.\n\
 @seealso{,}\n\
 @end deftypefn"),
 
   pair_type ("<",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} <\n\
 'Less than' operator.\n\
 @seealso{lt}\n\
 @end deftypefn"),
 
   pair_type ("<=",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} <=\n\
 'Less than' or 'equals' operator.\n\
 @seealso{le}\n\
 @end deftypefn"),
 
   pair_type ("=",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} =\n\
 Assignment operator.\n\
 @end deftypefn"),
 
   pair_type ("==",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ==\n\
 Equality test operator.\n\
 @seealso{eq}\n\
 @end deftypefn"),
 
   pair_type (">",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} >\n\
 'Greater than' operator.\n\
 @seealso{gt}\n\
 @end deftypefn"),
 
   pair_type (">=",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} >=\n\
 'Greater than' or 'equals' operator.\n\
 @seealso{ge}\n\
 @end deftypefn"),
 
   pair_type ("[",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} [\n\
 Return list delimiter.\n\
 @seealso{]}\n\
 @end deftypefn"),
 
   pair_type ("]",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ]\n\
 Return list delimiter.\n\
 @seealso{[}\n\
 @end deftypefn"),
 
   pair_type ("|",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} |\n\
 Element by element logical 'or' operator.\n\
 @seealso{||, or}\n\
 @end deftypefn"),
 
   pair_type ("||",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ||\n\
 Logical 'or' (with short-circuit evaluation) operator.\n\
 @seealso{|, or}\n\
@@ -445,14 +445,14 @@ Logical 'or' (with short-circuit evaluation) operator.\n\
 const static pair_type keywords[] =
 {
   pair_type ("break",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} break\n\
 Exit the innermost enclosing do, while or for loop.\n\
 @seealso{do, while, for, parfor, continue}\n\
 @end deftypefn"),
 
   pair_type ("case",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn  {Keyword} {} case @var{value}\n\
 @deftypefnx {Keyword} {} case @{@var{value}, @dots{}@}\n\
 A case statement in a switch.  Octave cases are exclusive and do not\n\
@@ -462,7 +462,7 @@ one case.  See @code{switch} for an example.\n\
 @end deftypefn"),
 
   pair_type ("catch",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn  {Keyword} {} catch\n\
 @deftypefnx {Keyword} {} catch @var{value}\n\
 Begin the cleanup part of a try-catch block.\n\
@@ -470,14 +470,14 @@ Begin the cleanup part of a try-catch block.\n\
 @end deftypefn"),
 
   pair_type ("continue",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} continue\n\
 Jump to the end of the innermost enclosing do, while or for loop.\n\
 @seealso{do, while, for, parfor, break}\n\
 @end deftypefn"),
 
   pair_type ("do",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} do\n\
 Begin a do-until loop.  This differs from a do-while loop in that the\n\
 body of the loop is executed at least once.\n\
@@ -494,21 +494,21 @@ until (i == 10)\n\
 @end deftypefn"),
 
   pair_type ("else",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} else\n\
 Alternate action for an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
 @end deftypefn"),
 
   pair_type ("elseif",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} elseif (@var{condition})\n\
 Alternate conditional test for an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
 @end deftypefn"),
 
   pair_type ("end",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} end\n\
 Mark the end of any @code{for}, @code{parfor}, @code{if}, @code{do},\n\
 @code{while}, @code{function}, @code{switch}, @code{try}, or\n\
@@ -517,63 +517,63 @@ Mark the end of any @code{for}, @code{parfor}, @code{if}, @code{do},\n\
 @end deftypefn"),
 
   pair_type ("end_try_catch",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} end_try_catch\n\
 Mark the end of an @code{try-catch} block.\n\
 @seealso{try, catch}\n\
 @end deftypefn"),
 
   pair_type ("end_unwind_protect",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} end_unwind_protect\n\
 Mark the end of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
 @end deftypefn"),
 
   pair_type ("endfor",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endfor\n\
 Mark the end of a for loop.  See @code{for} for an example.\n\
 @seealso{for}\n\
 @end deftypefn"),
 
   pair_type ("endfunction",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endfunction\n\
 Mark the end of a function.\n\
 @seealso{function}\n\
 @end deftypefn"),
 
   pair_type ("endif",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endif\n\
 Mark the end of an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
 @end deftypefn"),
 
   pair_type ("endparfor",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endparfor\n\
 Mark the end of a parfor loop.  See @code{parfor} for an example.\n\
 @seealso{parfor}\n\
 @end deftypefn"),
 
   pair_type ("endswitch",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endswitch\n\
 Mark the end of a switch block.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
 @end deftypefn"),
 
   pair_type ("endwhile",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endwhile\n\
 Mark the end of a while loop.  See @code{while} for an example.\n\
 @seealso{do, while}\n\
 @end deftypefn"),
 
   pair_type ("for",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} for @var{i} = @var{range}\n\
 Begin a for loop.\n\
 \n\
@@ -588,7 +588,7 @@ endfor\n\
 @end deftypefn"),
 
   pair_type ("function",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn  {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
 @deftypefnx {Keyword} {} function {} function (@var{input}, @dots{})\n\
 @deftypefnx {Keyword} {} function @var{outputs} = function\n\
@@ -598,7 +598,7 @@ parameters.\n\
 @end deftypefn"),
 
   pair_type ("global",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} global @var{var}\n\
 Declare variables to have global scope.\n\
 \n\
@@ -614,7 +614,7 @@ endif\n\
 @end deftypefn"),
 
   pair_type ("if",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn  {Keyword} {} if (@var{cond}) @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} else @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
@@ -637,14 +637,14 @@ endif\n\
 @end deftypefn"),
 
   pair_type ("otherwise",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} otherwise\n\
 The default statement in a switch block (similar to else in an if block).\n\
 @seealso{switch}\n\
 @end deftypefn"),
 
   pair_type ("parfor",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn  {Keyword} {} parfor @var{i} = @var{range}\n\
 @deftypefnx {Keyword} {} parfor (@var{i} = @var{range}, @var{maxproc})\n\
 Begin a for loop that may execute in parallel.\n\
@@ -660,7 +660,7 @@ endparfor\n\
 @end deftypefn"),
 
   pair_type ("persistent",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} persistent @var{var}\n\
 Declare variables as persistent.  A variable that has been declared\n\
 persistent within a function will retain its contents in memory between\n\
@@ -671,21 +671,21 @@ scope to a particular function and are not visible elsewhere.\n\
 @end deftypefn"),
 
   pair_type ("return",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} return\n\
 Return from a function.\n\
 @seealso{function}\n\
 @end deftypefn"),
 
   pair_type ("static",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} static\n\
 This statement has been deprecated in favor of @code{persistent}.\n\
 @seealso{persistent}\n\
 @end deftypefn"),
 
   pair_type ("switch",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} switch @var{statement}\n\
 Begin a switch block.\n\
 \n\
@@ -707,7 +707,7 @@ endswitch\n\
 @end deftypefn"),
 
   pair_type ("try",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} try\n\
 Begin a try-catch block.\n\
 \n\
@@ -719,14 +719,14 @@ is completed).\n\
 @end deftypefn"),
 
   pair_type ("until",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} until (@var{cond})\n\
 End a do-until loop.  See @code{do} for an example.\n\
 @seealso{do}\n\
 @end deftypefn"),
 
   pair_type ("unwind_protect",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} unwind_protect\n\
 Begin an unwind_protect block.\n\
 \n\
@@ -740,28 +740,28 @@ unwind_protect block).\n\
 @end deftypefn"),
 
   pair_type ("unwind_protect_cleanup",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} unwind_protect_cleanup\n\
 Begin the cleanup section of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
 @end deftypefn"),
 
   pair_type ("varargin",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargin\n\
 Pass an arbitrary number of arguments into a function.\n\
 @seealso{varargout, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("varargout",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargout\n\
 Pass an arbitrary number of arguments out of a function.\n\
 @seealso{varargin, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("while",
-    "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} while\n\
 Begin a while loop.\n\
 \n\

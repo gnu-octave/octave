@@ -273,8 +273,8 @@ get_octave_archlibdir (void)
 
   std::string dir = octave_getenv ("OCTAVE_ARCHLIBDIR");
 
-  return dir.empty ()
-    ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR)) : dir;
+  return dir.empty () ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR))
+                      : dir;
 }
 
 // Adapted from libtool wrapper.

@@ -68,17 +68,17 @@ public:
   virtual void draw (const graphics_object& go, bool toplevel = true);
 
   virtual void draw (const Matrix& hlist, bool toplevel = false)
-    {
-      int len = hlist.length ();
+  {
+    int len = hlist.length ();
 
-      for (int i = len-1; i >= 0; i--)
-        {
-          graphics_object obj = gh_manager::get_object (hlist(i));
+    for (int i = len-1; i >= 0; i--)
+      {
+        graphics_object obj = gh_manager::get_object (hlist(i));
 
-          if (obj)
-            draw (obj, toplevel);
-        }
-    }
+        if (obj)
+          draw (obj, toplevel);
+      }
+  }
 
   virtual void set_viewport (int w, int h);
   virtual graphics_xform get_transform (void) const { return xform; }
@@ -150,27 +150,27 @@ private:
 #if HAVE_FREETYPE
     , text_renderer ()
 #endif
-    { }
+  { }
 
   opengl_renderer& operator = (const opengl_renderer&)
-    { return *this; }
+  { return *this; }
 
   bool is_nan_or_inf (double x, double y, double z) const
-    {
-      return (xisnan (x) || xisnan (y) || xisnan (z)
-              || xisinf (x) || xisinf (y) || xisinf (z));
-    }
+  {
+    return (xisnan (x) || xisnan (y) || xisnan (z)
+            || xisinf (x) || xisinf (y) || xisinf (z));
+  }
 
   octave_uint8 clip_code (double x, double y, double z) const
-    {
-      return ((x < xmin ? 1 : 0)
-              | (x > xmax ? 1 : 0) << 1
-              | (y < ymin ? 1 : 0) << 2
-              | (y > ymax ? 1 : 0) << 3
-              | (z < zmin ? 1 : 0) << 4
-              | (z > zmax ? 1 : 0) << 5
-              | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
-    }
+  {
+    return ((x < xmin ? 1 : 0)
+            | (x > xmax ? 1 : 0) << 1
+            | (y < ymin ? 1 : 0) << 2
+            | (y > ymax ? 1 : 0) << 3
+            | (z < zmin ? 1 : 0) << 4
+            | (z > zmax ? 1 : 0) << 5
+            | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
+  }
 
   unsigned int make_marker_list (const std::string& m, double size,
                                  bool filled) const;

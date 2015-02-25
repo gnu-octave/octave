@@ -56,7 +56,7 @@ workspace_view::workspace_view (QWidget *p)
   _filter->setMaxCount (MaxFilterHistory);
   _filter->setInsertPolicy (QComboBox::NoInsert);
   _filter->setSizeAdjustPolicy (
-            QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    QComboBox::AdjustToMinimumContentsLengthWithIcon);
   QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
   _filter->setSizePolicy (sizePol);
   _filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
@@ -100,7 +100,7 @@ workspace_view::workspace_view (QWidget *p)
   _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
 
   bool filter_state =
-            settings->value ("workspaceview/filter_active", false).toBool ();
+    settings->value ("workspaceview/filter_active", false).toBool ();
   _filter_checkbox->setChecked (filter_state);
   filter_activate (filter_state);
 

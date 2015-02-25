@@ -317,10 +317,10 @@ octave_dock_widget::set_style (bool active)
         }
 
       QString background =
-          QString ("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-                   "            stop: 0 %1, stop: 0.75 %2, stop: 0.9 %2, stop: 1.0 %1);").
-                   arg (bg_col.lighter ().name ()).
-                   arg (bg_col.name ());
+        QString ("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                 "            stop: 0 %1, stop: 0.75 %2, stop: 0.9 %2, stop: 1.0 %1);").
+        arg (bg_col.lighter ().name ()).
+        arg (bg_col.name ());
 
 #if defined (Q_OS_WIN32)
       css = background + QString (" color: %1 ;").arg (fg_col.name ());
@@ -359,8 +359,10 @@ octave_dock_widget::set_style (bool active)
   css_button = QString ("background: transparent; border: 0px;");
   _dock_button->setStyleSheet (css_button);
   _close_button->setStyleSheet (css_button);
-  _dock_action->setIcon (QIcon (":/actions/icons/" + dock_icon + icon_col + ".png"));
-  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + dock_icon + icon_col + ".png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/" + dock_icon + icon_col +
+                                ".png"));
+  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + dock_icon +
+                                 icon_col + ".png"));
 #else
   setStyleSheet (css);
 #endif
@@ -374,28 +376,28 @@ octave_dock_widget::handle_settings (const QSettings *settings)
 
   QColor default_var = QColor (0,0,0);
   _fg_color = settings->value ("Dockwidgets/title_fg_color",
-                                default_var).value<QColor> ();
+                               default_var).value<QColor> ();
   default_var = QColor (0,0,0);
   _fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
-                                default_var).value<QColor> ();
+                                      default_var).value<QColor> ();
 
   default_var = QColor (255,255,255);
   _bg_color = settings->value ("Dockwidgets/title_bg_color",
-                                default_var).value<QColor> ();
+                               default_var).value<QColor> ();
   default_var = QColor (192,192,192);
   _bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
-                                       default_var).value<QColor> ();
+                                      default_var).value<QColor> ();
 
   int r, g, b;
   _bg_color.getRgb (&r, &g, &b);
   if (r+g+b < 400)
-      _icon_color = "-light";
+    _icon_color = "-light";
   else
     _icon_color = "";
 
   _bg_color_active.getRgb (&r, &g, &b);
   if (r+g+b < 400)
-      _icon_color_active = "-light";
+    _icon_color_active = "-light";
   else
     _icon_color_active = "";
 

@@ -767,7 +767,7 @@ powf (const octave_int<T>& a, const float& b)
   template OCTAVE_API octave_int<T> powf (const float&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> powf (const octave_int<T>&, const float&); \
   template OCTAVE_API octave_int<T> \
-  bitshift (const octave_int<T>&, int, const octave_int<T>&); \
+  bitshift (const octave_int<T>&, int, const octave_int<T>&);
 
 INSTANTIATE_INTTYPE (int8_t);
 INSTANTIATE_INTTYPE (int16_t);

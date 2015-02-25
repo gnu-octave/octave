@@ -705,7 +705,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 
           if ((statement_context == script
                && ((Vecho_executing_commands & ECHO_SCRIPTS
-                   && octave_call_stack::all_scripts ())
+                    && octave_call_stack::all_scripts ())
                    || Vecho_executing_commands & ECHO_FUNCTIONS))
               || (statement_context == function
                   && Vecho_executing_commands & ECHO_FUNCTIONS))

@@ -206,35 +206,35 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
     return;
 
   if (args(0).is_string ())
-  {
-    // string could be function name or line number
-    int isint = atoi (args(0).string_value ().c_str ());
+    {
+      // string could be function name or line number
+      int isint = atoi (args(0).string_value ().c_str ());
 
-    if (error_state)
-      return;
+      if (error_state)
+        return;
 
-    if (isint == 0)
-      {
-        // It was a function name
-        symbol_name = args(0).string_value ();
-        if (error_state)
-          return;
-        idx = 1;
-      }
-    else
-      {
-        // It was a line number.  Need to get function name from debugger.
-        if (Vdebugging)
-          {
-            symbol_name = get_user_code ()->name ();
-            idx = 0;
-          }
-        else
-          {
-            error ("%s: no function specified", who);
-          }
-      }
-  }
+      if (isint == 0)
+        {
+          // It was a function name
+          symbol_name = args(0).string_value ();
+          if (error_state)
+            return;
+          idx = 1;
+        }
+      else
+        {
+          // It was a line number.  Need to get function name from debugger.
+          if (Vdebugging)
+            {
+              symbol_name = get_user_code ()->name ();
+              idx = 0;
+            }
+          else
+            {
+              error ("%s: no function specified", who);
+            }
+        }
+    }
   else if (args(0).is_map ())
     {
       // This is a problem because parse_dbfunction_params()
@@ -539,7 +539,9 @@ void
 bp_table::do_remove_all_breakpoints (void)
 {
   // Odd loop structure required because delete will invalidate bp_set iterators
-  for (const_bp_set_iterator it=bp_set.begin (), it_next=it; it != bp_set.end (); it=it_next)
+  for (const_bp_set_iterator it=bp_set.begin (), it_next=it;
+       it != bp_set.end ();
+       it=it_next)
     {
       ++it_next;
       remove_all_breakpoints_in_file (*it);
@@ -729,10 +731,10 @@ files.\n\
   if (nargin == 1 && symbol_name == "all")
     bp_table::remove_all_breakpoints ();
   else
-  {
-    if (! error_state)
-      bp_table::remove_breakpoint (symbol_name, lines);
-  }
+    {
+      if (! error_state)
+        bp_table::remove_breakpoint (symbol_name, lines);
+    }
 
   return retval;
 }
@@ -924,12 +926,12 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
           std::string text;
 
           while (std::getline (fs, text) && line <= end)
-          {
-            if (line >= start)
-              os << line << "\t" << text << "\n";
+            {
+              if (line >= start)
+                os << line << "\t" << text << "\n";
 
-            line++;
-          }
+              line++;
+            }
         }
       else
         os << "dbtype: unable to open '" << ff << "' for reading!\n";

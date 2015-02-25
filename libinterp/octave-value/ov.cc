@@ -2405,29 +2405,29 @@ do_colon_op (const octave_value& base, const octave_value& increment,
       else
         dispatch_type = limit.class_name ();
 
-    octave_value meth = symbol_table::find_method ("colon", dispatch_type);
+      octave_value meth = symbol_table::find_method ("colon", dispatch_type);
 
-    if (meth.is_defined ())
-      {
-        octave_value_list args;
+      if (meth.is_defined ())
+        {
+          octave_value_list args;
 
-        if (increment.is_defined ())
-          {
-            args(2) = limit;
-            args(1) = increment;
-          }
-        else
-          args(1) = limit;
+          if (increment.is_defined ())
+            {
+              args(2) = limit;
+              args(1) = increment;
+            }
+          else
+            args(1) = limit;
 
-        args(0) = base;
+          args(0) = base;
 
-        octave_value_list tmp = feval (meth.function_value (), args, 1);
+          octave_value_list tmp = feval (meth.function_value (), args, 1);
 
-        if (tmp.length () > 0)
-          retval = tmp(0);
-      }
-    else
-      error ("colon method not defined for %s class", dispatch_type.c_str ());
+          if (tmp.length () > 0)
+            retval = tmp(0);
+        }
+      else
+        error ("colon method not defined for %s class", dispatch_type.c_str ());
     }
   else
     {

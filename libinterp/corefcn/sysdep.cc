@@ -186,7 +186,7 @@ w32_shell_execute (const std::string& file)
 #endif
 
 DEFUN (__open_with_system_app__, args, ,
-           "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __open_with_system_app__ (@var{file})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1017,7 +1017,7 @@ tilde_expand (\"~/bin\")\n\
 // needed for X11 and Carbon functions.
 
 DEFUN (have_window_system, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} have_window_system ()\n\
 Return true if a window system is available (X11, Windows, or Apple OS X)\n\
 and false otherwise.\n\

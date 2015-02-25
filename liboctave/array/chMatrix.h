@@ -58,14 +58,14 @@ public:
 
   charMatrix (const charMatrix& a) : charNDArray (a) { }
 
-  charMatrix (char c) : charNDArray (c) {}
+  charMatrix (char c) : charNDArray (c) { }
 
-  charMatrix (const char *s) : charNDArray (s) {}
+  charMatrix (const char *s) : charNDArray (s) { }
 
-  charMatrix (const std::string& s) : charNDArray (s) {}
+  charMatrix (const std::string& s) : charNDArray (s) { }
 
   charMatrix (const string_vector& s, char fill_value = '\0')
-    : charNDArray (s, fill_value) {}
+    : charNDArray (s, fill_value) { }
 
   bool operator == (const charMatrix& a) const;
   bool operator != (const charMatrix& a) const;

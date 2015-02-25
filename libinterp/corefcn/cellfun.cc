@@ -1240,8 +1240,9 @@ arrayfun (@@str2num, [1234],\n\
               if (f -> is_overloaded ())
                 goto nevermind;
             }
-          octave_value f = symbol_table::find_function (func.function_value ()
-                                                         -> name ());
+          octave_value f
+            = symbol_table::find_function (func.function_value () -> name ());
+
           if (f.is_defined ())
             func = f;
         }

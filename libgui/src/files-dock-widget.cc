@@ -199,7 +199,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _file_tree_view->setSortingEnabled (true);
   _file_tree_view->setAlternatingRowColors (true);
   _file_tree_view->setAnimated (true);
-  _file_tree_view->setToolTip (tr ("Activate to open in editor, right click for alternatives"));
+  _file_tree_view->setToolTip (
+    tr ("Activate to open in editor, right click for alternatives"));
 
   // get sort column and order as well as cloumn state (order and width)
 

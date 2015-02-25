@@ -679,8 +679,8 @@ octave_range::as_mxArray (void) const
 octave_value
 octave_range::fast_elem_extract (octave_idx_type n) const
 {
-  return (n < range.nelem ())
-    ? octave_value (range.elem (n)) : octave_value ();
+  return (n < range.nelem ()) ? octave_value (range.elem (n))
+                              : octave_value ();
 }
 
 DEFUN (allow_noninteger_range_as_index, args, nargout,

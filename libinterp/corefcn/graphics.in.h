@@ -1730,7 +1730,7 @@ protected:
 
             if (t1 != t2)
               is_ok = false;
-            
+
             if (t1 == t3)
               add_hidden = false;
           }
@@ -2001,7 +2001,7 @@ typedef std::pair <std::string, octave_value> pval_pair;
 
 class pval_vector : public std::vector <pval_pair>
 {
- public:
+public:
   const_iterator find (const std::string pname) const
   {
     const_iterator it;
@@ -2031,7 +2031,7 @@ class pval_vector : public std::vector <pval_pair>
     const_iterator it = find (pname);
 
     if (it != (*this).end ())
-     retval = (*it).second;
+      retval = (*it).second;
 
     return retval;
   }
@@ -2716,7 +2716,7 @@ public:
     else
       error ("base_graphics_object::override_defaults: invalid graphics object");
   }
-  
+
   void build_user_defaults_map (property_list::pval_map_type &def,
                                 const std::string go_name) const;
 
@@ -2772,7 +2772,7 @@ public:
     error ("base_graphics_object::get_defaults: invalid graphics object");
     return octave_value ();
   }
-  
+
   virtual property_list get_defaults_list (void) const
   {
     if (! valid_object ())
@@ -4094,24 +4094,24 @@ public:
     }
 
     void update_font (void);
-    void update_fontname (void) 
-    { 
-      update_font (); 
+    void update_fontname (void)
+    {
+      update_font ();
       sync_positions ();
     }
-    void update_fontsize (void) 
-    { 
-      update_font (); 
+    void update_fontsize (void)
+    {
+      update_font ();
       sync_positions ();
     }
-    void update_fontangle (void) 
-    { 
-      update_font (); 
+    void update_fontangle (void)
+    {
+      update_font ();
       sync_positions ();
     }
-    void update_fontweight (void) 
-    { 
-      update_font (); 
+    void update_fontweight (void)
+    {
+      update_font ();
       sync_positions ();
     }
 
@@ -4684,22 +4684,22 @@ public:
 
   protected:
     void init (void)
-      {
-        xdata.add_constraint (2);
-        ydata.add_constraint (2);
-        cdata.add_constraint ("double");
-        cdata.add_constraint ("single");
-        cdata.add_constraint ("logical");
-        cdata.add_constraint ("uint8");
-        cdata.add_constraint ("uint16");
-        cdata.add_constraint ("int16");
-        cdata.add_constraint ("real");
-        cdata.add_constraint (dim_vector (-1, -1));
-        cdata.add_constraint (dim_vector (-1, -1, 3));
-        alphadata.add_constraint (dim_vector (-1, -1));
-        alphadata.add_constraint ("double");
-        alphadata.add_constraint ("uint8");
-      }
+    {
+      xdata.add_constraint (2);
+      ydata.add_constraint (2);
+      cdata.add_constraint ("double");
+      cdata.add_constraint ("single");
+      cdata.add_constraint ("logical");
+      cdata.add_constraint ("uint8");
+      cdata.add_constraint ("uint16");
+      cdata.add_constraint ("int16");
+      cdata.add_constraint ("real");
+      cdata.add_constraint (dim_vector (-1, -1));
+      cdata.add_constraint (dim_vector (-1, -1, 3));
+      alphadata.add_constraint (dim_vector (-1, -1));
+      alphadata.add_constraint ("double");
+      alphadata.add_constraint ("uint8");
+    }
 
   private:
     void update_alphadata (void)
@@ -4856,10 +4856,10 @@ public:
     // Matlab allows incoherent data to be stored into patch properties.
     // The patch should then be ignored by the renderer.
     bool has_bad_data (std::string &msg) const
-      {
-        msg = bad_data_msg;
-        return ! msg.empty ();
-      }
+    {
+      msg = bad_data_msg;
+      return ! msg.empty ();
+    }
 
     bool is_aliminclude (void) const
     { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
@@ -5546,9 +5546,9 @@ public:
 
   protected:
     void init (void)
-      {
-        position.add_constraint (dim_vector (1, 4));
-      }
+    {
+      position.add_constraint (dim_vector (1, 4));
+    }
 
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);

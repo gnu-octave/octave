@@ -62,13 +62,15 @@ octave_cmd_eval::execute ()
   std::string pending_input = command_editor::get_current_line ();
 
   if (valid_identifier (function_name.toStdString ()))
-    { // valid identifier: call as function with possibility to debug
+    {
+      // valid identifier: call as function with possibility to debug
       std::string path = _info.absolutePath ().toStdString ();
       if (octave_qt_link::file_in_path (file_path, path))
-          Feval (ovl (function_name.toStdString ()));
+        Feval (ovl (function_name.toStdString ()));
     }
   else
-    { // no valid identifier: use Fsource (), no debug possible
+    {
+      // no valid identifier: use Fsource (), no debug possible
       Fsource (ovl (file_path));
     }
 

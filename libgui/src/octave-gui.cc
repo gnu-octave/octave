@@ -120,7 +120,8 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       // show wizard if this is the first run
       if (resource_manager::is_first_run ())
         {
-          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr); // before wizard
+          // before wizard
+          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
           application.installTranslator (&qt_tr);
           application.installTranslator (&qsci_tr);
           application.installTranslator (&gui_tr);
@@ -136,7 +137,8 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
         {
           resource_manager::reload_settings ();  // get settings file
 
-          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr); // after settings
+          // after settings
+          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
           application.installTranslator (&qt_tr);
           application.installTranslator (&qsci_tr);
           application.installTranslator (&gui_tr);

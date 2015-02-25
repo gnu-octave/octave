@@ -239,7 +239,7 @@ boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
   BSXFUN_OP_DEF_MXLOOP (mul, ARRAY, mx_inline_mul) \
   BSXFUN_OP_DEF_MXLOOP (div, ARRAY, mx_inline_div) \
   BSXFUN_OP_DEF_MXLOOP (min, ARRAY, mx_inline_xmin) \
-  BSXFUN_OP_DEF_MXLOOP (max, ARRAY, mx_inline_xmax) \
+  BSXFUN_OP_DEF_MXLOOP (max, ARRAY, mx_inline_xmax)
 
 #define BSXFUN_STDREL_DEFS_MXLOOP(ARRAY) \
   BSXFUN_REL_DEF_MXLOOP (eq, ARRAY, mx_inline_eq) \

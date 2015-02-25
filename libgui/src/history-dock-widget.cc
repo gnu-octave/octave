@@ -284,7 +284,8 @@ history_dock_widget::copyClipboard ()
 {
   if (_history_list_view->hasFocus ())
     handle_contextmenu_copy (true);
-  if (_filter->lineEdit ()->hasFocus () && _filter->lineEdit ()->hasSelectedText ())
+  if (_filter->lineEdit ()->hasFocus ()
+      && _filter->lineEdit ()->hasSelectedText ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
       clipboard->setText ( _filter->lineEdit ()->selectedText ());
@@ -308,10 +309,10 @@ history_dock_widget::selectAll ()
 {
   if (_filter->lineEdit ()->hasFocus ())
     {
-        _filter->lineEdit ()->selectAll ();
+      _filter->lineEdit ()->selectAll ();
     }
   if (_history_list_view->hasFocus ())
     {
-        _history_list_view->selectAll ();
+      _history_list_view->selectAll ();
     }
 }

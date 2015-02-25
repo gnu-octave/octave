@@ -651,7 +651,8 @@ class plot_window : public Fl_Window
 {
   friend class fltk_uimenu;
 public:
-  plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp, bool internal)
+  plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp,
+               bool internal)
     : Fl_Window (xx, yy, ww, hh + menu_h + status_h + 2, "octave"),
       window_label (), fp (xfp), canvas (0),
       autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
@@ -889,20 +890,20 @@ public:
   }
 
   Matrix outerposition2position (const Matrix& outerpos)
-    {
-      Matrix pos = outerpos;
-      pos(1) += menu_dy ();
-      pos(3) -= menu_dy () + status_h + 2;
-      return pos;
-    }
+  {
+    Matrix pos = outerpos;
+    pos(1) += menu_dy ();
+    pos(3) -= menu_dy () + status_h + 2;
+    return pos;
+  }
 
   Matrix position2outerposition (const Matrix& pos)
-    {
-      Matrix outerpos = pos;
-      outerpos(1) -= menu_dy ();
-      outerpos(3) += menu_dy () + status_h + 2;
-      return outerpos;
-    }
+  {
+    Matrix outerpos = pos;
+    outerpos(1) -= menu_dy ();
+    outerpos(3) += menu_dy () + status_h + 2;
+    return outerpos;
+  }
 
   // Called from figure::properties::ID_POSITION if internal = true
   // or ID_OUTERPOSITION if false.
@@ -1437,236 +1438,237 @@ private:
             break;
           }
 
-      // Events we only handle if they are in the canvas area.
-      if (Fl::event_inside (canvas))
-        switch (event)
-          {
-          case FL_MOVE:
-            pixel2status (pixel2axes_or_ca (Fl::event_x (),
-                                            Fl::event_y () - menu_dy ()),
-                          Fl::event_x (), Fl::event_y () - menu_dy ());
-            return 1;
-
-          case FL_PUSH:
-            pos_x = Fl::event_x ();
-            pos_y = Fl::event_y () - menu_dy ();
-
-            set_currentpoint (pos_x, pos_y);
-
-            if (Fl::event_button () == FL_LEFT_MOUSE
-                && Fl::event_shift ())
-              fp.set_selectiontype ("extend");
-            else if ((Fl::event_button () == FL_LEFT_MOUSE
-                      && Fl::event_ctrl ())
-                      || Fl::event_button () == FL_RIGHT_MOUSE)
-              fp.set_selectiontype ("alternate");
-            else if (Fl::event_clicks ())
-              fp.set_selectiontype ("open");
-            else
-              fp.set_selectiontype ("normal");
-
-            if (fp.get_windowbuttondownfcn ().is_defined ())
-              fp.execute_windowbuttondownfcn (Fl::event_button ());
-
-            gh = pixel2axes_or_ca (pos_x, pos_y);
-
-            if (gh.ok ())
-              {
-                ax_obj = gh_manager::get_object (gh);
-                set_axes_currentpoint (ax_obj, pos_x, pos_y);
-
-                int ndim = calc_dimensions (ax_obj);
-
-                if (ndim == 3)
-                  rotate->activate ();
-                else // ndim == 2
-                  rotate->deactivate ();
-
-                fp.set_currentobject (ax_obj.get_handle ().value ());
-
-                base_properties& props = ax_obj.get_properties ();
-                if (props.get_buttondownfcn ().is_defined ())
-                  props.execute_buttondownfcn (Fl::event_button ());
-
-                return 1;
-              }
-            else if (fp.get_buttondownfcn ().is_defined ())
-              fp.execute_buttondownfcn (Fl::event_button ());
-
-            break;
-
-          case FL_DRAG:
-            if (fp.get_windowbuttonmotionfcn ().is_defined ())
-              {
-                set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
-                fp.execute_windowbuttonmotionfcn ();
-              }
-
-            if (Fl::event_button () == 1)
-              {
-                if (ax_obj && ax_obj.isa ("axes"))
-                  {
-                    axes::properties& ap =
-                      dynamic_cast<axes::properties&>
-                      (ax_obj.get_properties ());
-
-                    // Don't pan or rotate legend
-                    if (ap.get_tag ().compare ("legend") < 0)
-                      {
-                        if (rotate_enabled ())
-                          view2status (ax_obj);
-                        else
-                          pixel2status (ax_obj, pos_x, pos_y,
-                                        Fl::event_x (),
-                                        Fl::event_y () - menu_dy ());
-
-                        double x0, y0, x1, y1;
-                        Matrix pos = fp.get_boundingbox (true);
-                        pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
-                        pixel2pos (ax_obj, Fl::event_x (),
-                                           Fl::event_y () - menu_dy (),
-                                           x1, y1);
-
-                        if (pan_enabled ())
-                          ap.translate_view ("both", x0, x1, y0, y1);
-                        else if (rotate_enabled ())
-                          {
-                            double daz, del;
-                            daz = (Fl::event_x () - pos_x) / pos(2) * 360;
-                            del = (Fl::event_y () - menu_dy () - pos_y)
-                                  / pos(3) * 360;
-                            ap.rotate_view (del, daz);
-                          }
-                      }
-                    else
-                      {  // move the position of the legend
-                        Matrix pos = ap.get_position ().matrix_value ();
-                        pos(0) += double (Fl::event_x () - pos_x)
-                                  / canvas->w ();
-                        pos(1) -= double (Fl::event_y () - menu_dy () - pos_y)
-                                  / canvas->h ();
-                        ap.set_position (pos);
-                      }
-
-                    pos_x = Fl::event_x ();
-                    pos_y = Fl::event_y () - menu_dy ();
-                    mark_modified ();
-                  }
-                return 1;
-              }
-            else if (Fl::event_button () == 3)
-              {
-                pixel2status (ax_obj, pos_x, pos_y,
-                              Fl::event_x (), Fl::event_y () - menu_dy ());
-                Matrix zoom_box (1,4,0);
-                zoom_box (0) = pos_x;
-                zoom_box (1) = pos_y;
-                zoom_box (2) =  Fl::event_x ();
-                zoom_box (3) =  Fl::event_y () - menu_dy ();
-                canvas->set_zoom_box (zoom_box);
-                canvas->zoom (true);
-                mark_modified ();
-                return 1;
-              }
-
-            break;
-
-          case FL_MOUSEWHEEL:
+        // Events we only handle if they are in the canvas area.
+        if (Fl::event_inside (canvas))
+          switch (event)
             {
-              graphics_object ax =
-                gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
-                                                          Fl::event_y ()
-                                                          - menu_dy ()));
-              if (ax && ax.isa ("axes"))
+            case FL_MOVE:
+              pixel2status (pixel2axes_or_ca (Fl::event_x (),
+                                              Fl::event_y () - menu_dy ()),
+                            Fl::event_x (), Fl::event_y () - menu_dy ());
+              return 1;
+
+            case FL_PUSH:
+              pos_x = Fl::event_x ();
+              pos_y = Fl::event_y () - menu_dy ();
+
+              set_currentpoint (pos_x, pos_y);
+
+              if (Fl::event_button () == FL_LEFT_MOUSE
+                  && Fl::event_shift ())
+                fp.set_selectiontype ("extend");
+              else if ((Fl::event_button () == FL_LEFT_MOUSE
+                        && Fl::event_ctrl ())
+                       || Fl::event_button () == FL_RIGHT_MOUSE)
+                fp.set_selectiontype ("alternate");
+              else if (Fl::event_clicks ())
+                fp.set_selectiontype ("open");
+              else
+                fp.set_selectiontype ("normal");
+
+              if (fp.get_windowbuttondownfcn ().is_defined ())
+                fp.execute_windowbuttondownfcn (Fl::event_button ());
+
+              gh = pixel2axes_or_ca (pos_x, pos_y);
+
+              if (gh.ok ())
                 {
-                  axes::properties& ap =
-                    dynamic_cast<axes::properties&> (ax.get_properties ());
+                  ax_obj = gh_manager::get_object (gh);
+                  set_axes_currentpoint (ax_obj, pos_x, pos_y);
 
-                  // Control how fast to zoom when using scroll wheel.
-                  double wheel_zoom_speed = ap.get_mousewheelzoom ();
+                  int ndim = calc_dimensions (ax_obj);
 
-                  // Determine if we're zooming in or out.
-                  const double factor =
-                    (Fl::event_dy () > 0) ? 1 / (1.0 - wheel_zoom_speed)
-                                          : 1.0 - wheel_zoom_speed;
+                  if (ndim == 3)
+                    rotate->activate ();
+                  else // ndim == 2
+                    rotate->deactivate ();
 
-                  // Get the point we're zooming about.
-                  double x1, y1;
-                  pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (),
-                             x1, y1);
+                  fp.set_currentobject (ax_obj.get_handle ().value ());
 
-                  ap.zoom_about_point ("both", x1, y1, factor, false);
+                  base_properties& props = ax_obj.get_properties ();
+                  if (props.get_buttondownfcn ().is_defined ())
+                    props.execute_buttondownfcn (Fl::event_button ());
+
+                  return 1;
+                }
+              else if (fp.get_buttondownfcn ().is_defined ())
+                fp.execute_buttondownfcn (Fl::event_button ());
+
+              break;
+
+            case FL_DRAG:
+              if (fp.get_windowbuttonmotionfcn ().is_defined ())
+                {
+                  set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
+                  fp.execute_windowbuttonmotionfcn ();
+                }
+
+              if (Fl::event_button () == 1)
+                {
+                  if (ax_obj && ax_obj.isa ("axes"))
+                    {
+                      axes::properties& ap =
+                        dynamic_cast<axes::properties&>
+                        (ax_obj.get_properties ());
+
+                      // Don't pan or rotate legend
+                      if (ap.get_tag ().compare ("legend") < 0)
+                        {
+                          if (rotate_enabled ())
+                            view2status (ax_obj);
+                          else
+                            pixel2status (ax_obj, pos_x, pos_y,
+                                          Fl::event_x (),
+                                          Fl::event_y () - menu_dy ());
+
+                          double x0, y0, x1, y1;
+                          Matrix pos = fp.get_boundingbox (true);
+                          pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                          pixel2pos (ax_obj, Fl::event_x (),
+                                     Fl::event_y () - menu_dy (),
+                                     x1, y1);
+
+                          if (pan_enabled ())
+                            ap.translate_view ("both", x0, x1, y0, y1);
+                          else if (rotate_enabled ())
+                            {
+                              double daz, del;
+                              daz = (Fl::event_x () - pos_x) / pos(2) * 360;
+                              del = (Fl::event_y () - menu_dy () - pos_y)
+                                    / pos(3) * 360;
+                              ap.rotate_view (del, daz);
+                            }
+                        }
+                      else
+                        {
+                          // move the position of the legend
+                          Matrix pos = ap.get_position ().matrix_value ();
+                          pos(0) += double (Fl::event_x () - pos_x)
+                                    / canvas->w ();
+                          pos(1) -= double (Fl::event_y () - menu_dy () - pos_y)
+                                    / canvas->h ();
+                          ap.set_position (pos);
+                        }
+
+                      pos_x = Fl::event_x ();
+                      pos_y = Fl::event_y () - menu_dy ();
+                      mark_modified ();
+                    }
+                  return 1;
+                }
+              else if (Fl::event_button () == 3)
+                {
+                  pixel2status (ax_obj, pos_x, pos_y,
+                                Fl::event_x (), Fl::event_y () - menu_dy ());
+                  Matrix zoom_box (1,4,0);
+                  zoom_box (0) = pos_x;
+                  zoom_box (1) = pos_y;
+                  zoom_box (2) =  Fl::event_x ();
+                  zoom_box (3) =  Fl::event_y () - menu_dy ();
+                  canvas->set_zoom_box (zoom_box);
+                  canvas->zoom (true);
                   mark_modified ();
                   return 1;
                 }
-            }
 
-          case FL_RELEASE:
-            if (fp.get_windowbuttonupfcn ().is_defined ())
-              {
-                set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
-                fp.execute_windowbuttonupfcn ();
-              }
+              break;
 
-            if ((Fl::event_button () == 1) && Fl::event_clicks ())
+            case FL_MOUSEWHEEL:
               {
-                // Double click
-                set_on_ax_obj ("xlimmode", "auto");
-                set_on_ax_obj ("ylimmode", "auto");
-                set_on_ax_obj ("zlimmode", "auto");
-                return 1;
-              }
-            if (Fl::event_button () == 3)
-              {
-                // End of drag -- zoom.
-                if (canvas->zoom ())
+                graphics_object ax =
+                  gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
+                                          Fl::event_y ()
+                                          - menu_dy ()));
+                if (ax && ax.isa ("axes"))
                   {
-                    canvas->zoom (false);
-                    double x0,y0,x1,y1;
-                    if (ax_obj && ax_obj.isa ("axes"))
-                      {
-                        axes::properties& ap = dynamic_cast<axes::properties&>
-                                               (ax_obj.get_properties ());
-                        pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
-                        int pos_x1 = Fl::event_x ();
-                        int pos_y1 = Fl::event_y () - menu_dy ();
-                        pixel2pos (ax_obj, pos_x1, pos_y1, x1, y1);
-                        Matrix xl (1,2,0);
-                        Matrix yl (1,2,0);
-                        int dx = abs (pos_x - pos_x1);
-                        int dy = abs (pos_y - pos_y1);
-                        // Smallest zoom box must be 4 pixels square
-                        if ((dx > 4) && (dy > 4))
-                          {
-                            if (x0 < x1)
-                              {
-                                xl(0) = x0;
-                                xl(1) = x1;
-                              }
-                            else
-                              {
-                                xl(0) = x1;
-                                xl(1) = x0;
-                              }
-                            if (y0 < y1)
-                              {
-                                yl(0) = y0;
-                                yl(1) = y1;
-                              }
-                            else
-                              {
-                                yl(0) = y1;
-                                yl(1) = y0;
-                              }
-                            ap.zoom ("both", xl, yl);
-                          }
-                        mark_modified ();
-                        return 1;
-                      }
+                    axes::properties& ap =
+                      dynamic_cast<axes::properties&> (ax.get_properties ());
+
+                    // Control how fast to zoom when using scroll wheel.
+                    double wheel_zoom_speed = ap.get_mousewheelzoom ();
+
+                    // Determine if we're zooming in or out.
+                    const double factor =
+                      (Fl::event_dy () > 0) ? 1 / (1.0 - wheel_zoom_speed)
+                      : 1.0 - wheel_zoom_speed;
+
+                    // Get the point we're zooming about.
+                    double x1, y1;
+                    pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (),
+                               x1, y1);
+
+                    ap.zoom_about_point ("both", x1, y1, factor, false);
+                    mark_modified ();
+                    return 1;
                   }
               }
-            break;
-          }
+
+            case FL_RELEASE:
+              if (fp.get_windowbuttonupfcn ().is_defined ())
+                {
+                  set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
+                  fp.execute_windowbuttonupfcn ();
+                }
+
+              if ((Fl::event_button () == 1) && Fl::event_clicks ())
+                {
+                  // Double click
+                  set_on_ax_obj ("xlimmode", "auto");
+                  set_on_ax_obj ("ylimmode", "auto");
+                  set_on_ax_obj ("zlimmode", "auto");
+                  return 1;
+                }
+              if (Fl::event_button () == 3)
+                {
+                  // End of drag -- zoom.
+                  if (canvas->zoom ())
+                    {
+                      canvas->zoom (false);
+                      double x0,y0,x1,y1;
+                      if (ax_obj && ax_obj.isa ("axes"))
+                        {
+                          axes::properties& ap = dynamic_cast<axes::properties&>
+                                                 (ax_obj.get_properties ());
+                          pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                          int pos_x1 = Fl::event_x ();
+                          int pos_y1 = Fl::event_y () - menu_dy ();
+                          pixel2pos (ax_obj, pos_x1, pos_y1, x1, y1);
+                          Matrix xl (1,2,0);
+                          Matrix yl (1,2,0);
+                          int dx = abs (pos_x - pos_x1);
+                          int dy = abs (pos_y - pos_y1);
+                          // Smallest zoom box must be 4 pixels square
+                          if ((dx > 4) && (dy > 4))
+                            {
+                              if (x0 < x1)
+                                {
+                                  xl(0) = x0;
+                                  xl(1) = x1;
+                                }
+                              else
+                                {
+                                  xl(0) = x1;
+                                  xl(1) = x0;
+                                }
+                              if (y0 < y1)
+                                {
+                                  yl(0) = y0;
+                                  yl(1) = y1;
+                                }
+                              else
+                                {
+                                  yl(0) = y1;
+                                  yl(1) = y0;
+                                }
+                              ap.zoom ("both", xl, yl);
+                            }
+                          mark_modified ();
+                          return 1;
+                        }
+                    }
+                }
+              break;
+            }
       }
     //std::cout << "plot_window::handle wasn't interested in event " <<  fl_eventnames[event] << std::endl;
     return Fl_Window::handle (event);
@@ -1857,7 +1859,8 @@ private:
 
         idx2figprops (curr_index, fp);
 
-        windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3), fp, internal);
+        windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
+                                                 fp, internal);
       }
   }
 

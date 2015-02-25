@@ -85,13 +85,13 @@ PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
 PermMatrix::PermMatrix (const idx_vector& idx)
   : Array<octave_idx_type> ()
 {
-    setup (idx, false, 0);
+  setup (idx, false, 0);
 }
 
 PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
   : Array<octave_idx_type> ()
 {
-    setup (idx, colp, n);
+  setup (idx, colp, n);
 }
 
 PermMatrix::PermMatrix (octave_idx_type n)

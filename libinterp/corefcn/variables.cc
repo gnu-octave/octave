@@ -460,18 +460,18 @@ symbol_exist (const std::string& name, const std::string& type)
       if (fs)
         {
           if (search_any || search_file)
-          {
-            if (fs.is_dir ())
-              return 7;
+            {
+              if (fs.is_dir ())
+                return 7;
 
-            len = file_name.length ();
+              len = file_name.length ();
 
-            if (len > 4 && (file_name.substr (len-4) == ".oct"
-                            || file_name.substr (len-4) == ".mex"))
-              return 3;
-            else
-              return 2;
-          }
+              if (len > 4 && (file_name.substr (len-4) == ".oct"
+                              || file_name.substr (len-4) == ".mex"))
+                return 3;
+              else
+                return 2;
+            }
           else if (search_dir && fs.is_dir ())
             return 7;
         }

@@ -58,8 +58,8 @@ nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
     {
       float xarg = arg (x);
       float yarg = arg (y);
-      xarg = (xarg == -M_PI) ? M_PI : xarg; 
-      yarg = (yarg == -M_PI) ? M_PI : yarg; 
+      xarg = (xarg == -M_PI) ? M_PI : xarg;
+      yarg = (yarg == -M_PI) ? M_PI : yarg;
 
       return xarg < yarg;
     }
@@ -82,8 +82,8 @@ nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
     {
       float xarg = arg (x);
       float yarg = arg (y);
-      xarg = (xarg == -M_PI) ? M_PI : xarg; 
-      yarg = (yarg == -M_PI) ? M_PI : yarg; 
+      xarg = (xarg == -M_PI) ? M_PI : xarg;
+      yarg = (yarg == -M_PI) ? M_PI : yarg;
 
       return xarg > yarg;
     }

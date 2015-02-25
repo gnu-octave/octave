@@ -666,7 +666,7 @@ glob (\"file[12]\")\n\
 */
 
 DEFUN (__fnmatch__, args, ,
-        "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return true or false for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\

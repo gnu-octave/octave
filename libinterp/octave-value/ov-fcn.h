@@ -87,7 +87,7 @@ public:
 
   virtual bool
   is_classdef_constructor (const std::string& = std::string ()) const
-    { return false; }
+  { return false; }
 
   virtual bool is_class_method (const std::string& = std::string ()) const
   { return false; }
@@ -161,12 +161,12 @@ public:
   std::string name (void) const { return my_name; }
 
   std::string canonical_name (void) const
-    {
-      if (xpackage_name.empty ())
-        return my_name;
-      else
-        return xpackage_name + "." + my_name;
-    }
+  {
+    if (xpackage_name.empty ())
+      return my_name;
+    else
+      return xpackage_name + "." + my_name;
+  }
 
   void document (const std::string& ds) { doc = ds; }
 
@@ -177,7 +177,7 @@ public:
   virtual void accept (tree_walker&) { }
 
   virtual bool is_postfix_index_handled (char type) const
-    { return (type == '(' || type == '{'); }
+  { return (type == '(' || type == '{'); }
 
 protected:
 

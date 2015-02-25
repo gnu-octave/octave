@@ -971,7 +971,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define SPARSE_SMSM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO) \
   SPARSE_SMSM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO) \
-  SPARSE_SMSM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO) \
+  SPARSE_SMSM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
 
 #define SPARSE_SMSM_BOOL_OPS(M1, M2, ZERO) \
   SPARSE_SMSM_BOOL_OPS2(M1, M2, ZERO, ZERO)
@@ -1177,7 +1177,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define SPARSE_MSM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO) \
   SPARSE_MSM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO) \
-  SPARSE_MSM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO) \
+  SPARSE_MSM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
 
 #define SPARSE_MSM_BOOL_OPS(M1, M2, ZERO) \
   SPARSE_MSM_BOOL_OPS2(M1, M2, ZERO, ZERO)
@@ -1390,7 +1390,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define SPARSE_SMM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO) \
   SPARSE_SMM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO) \
-  SPARSE_SMM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO) \
+  SPARSE_SMM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
 
 #define SPARSE_SMM_BOOL_OPS(M1, M2, ZERO) \
   SPARSE_SMM_BOOL_OPS2(M1, M2, ZERO, ZERO)
@@ -1665,7 +1665,7 @@ along with Octave; see the file COPYING.  If not, see
 // we are looping over the rows and not the columns in the inner loop.
 #define SPARSE_ANY_ALL_OP_ROW_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \
-    tmp[ridx (i)] = TEST_TRUE_VAL; \
+    tmp[ridx (i)] = TEST_TRUE_VAL;
 
 #define SPARSE_ANY_ALL_OP_COL_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \

@@ -110,8 +110,8 @@ instead.\n\
         }
 
 #ifndef HAVE_GL2PS_H
-        error ("__osmesa_print__: Octave has been compiled without gl2ps");
-        return retval;
+      error ("__osmesa_print__: Octave has been compiled without gl2ps");
+      return retval;
 #endif
     }
 

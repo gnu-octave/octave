@@ -162,7 +162,7 @@ is in the upper left corner, by doing:\n\
               return retval; \
             } \
           retval(0) = U; \
-          retval(1) = S; \
+          retval(1) = S;
 
   if (double_type)
     {

@@ -218,7 +218,7 @@ information.\n\
               SparseLU fact (m, Qinit, thres, false, true);
 
               if (nargout < 2)
-                  retval(0) = fact.Y ();
+                retval(0) = fact.Y ();
               else
                 {
 
@@ -250,25 +250,25 @@ information.\n\
           else
             {
 
-                SparseLU fact (m, thres, scale);
+              SparseLU fact (m, thres, scale);
 
-                if (scale)
-                  retval(4) = fact.R ();
+              if (scale)
+                retval(4) = fact.R ();
 
-                if (vecout)
-                  {
-                    retval(3) = fact.Pc_vec ();
-                    retval(2) = fact.Pr_vec ();
-                  }
-                else
-                  {
-                    retval(3) = fact.Pc_mat ();
-                    retval(2) = fact.Pr_mat ();
-                  }
-                retval(1) = octave_value (fact.U (),
-                                          MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (),
-                                          MatrixType (MatrixType::Lower));
+              if (vecout)
+                {
+                  retval(3) = fact.Pc_vec ();
+                  retval(2) = fact.Pr_vec ();
+                }
+              else
+                {
+                  retval(3) = fact.Pc_mat ();
+                  retval(2) = fact.Pr_mat ();
+                }
+              retval(1) = octave_value (fact.U (),
+                                        MatrixType (MatrixType::Upper));
+              retval(0) = octave_value (fact.L (),
+                                        MatrixType (MatrixType::Lower));
             }
 
         }
@@ -287,7 +287,7 @@ information.\n\
 
               if (nargout < 2)
 
-                  retval(0) = fact.Y ();
+                retval(0) = fact.Y ();
 
               else
                 {
@@ -301,10 +301,10 @@ information.\n\
                   PermMatrix P = fact.Pr_mat ();
                   SparseComplexMatrix L = fact.L ();
                   if (nargout < 3)
-                      retval(0)
-                        = octave_value (P.transpose () * L,
-                            MatrixType (MatrixType::Permuted_Lower,
-                                        nr, fact.row_perm ()));
+                    retval(0)
+                      = octave_value (P.transpose () * L,
+                                      MatrixType (MatrixType::Permuted_Lower,
+                                                  nr, fact.row_perm ()));
                   else
                     {
                       retval(0) = L;
@@ -320,25 +320,25 @@ information.\n\
           else
             {
 
-                SparseComplexLU fact (m, thres, scale);
+              SparseComplexLU fact (m, thres, scale);
 
-                if (scale)
-                  retval(4) = fact.R ();
+              if (scale)
+                retval(4) = fact.R ();
 
-                if (vecout)
-                  {
-                    retval(3) = fact.Pc_vec ();
-                    retval(2) = fact.Pr_vec ();
-                  }
-                else
-                  {
-                    retval(3) = fact.Pc_mat ();
-                    retval(2) = fact.Pr_mat ();
-                  }
-                retval(1) = octave_value (fact.U (),
-                                          MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (),
-                                          MatrixType (MatrixType::Lower));
+              if (vecout)
+                {
+                  retval(3) = fact.Pc_vec ();
+                  retval(2) = fact.Pr_vec ();
+                }
+              else
+                {
+                  retval(3) = fact.Pc_mat ();
+                  retval(2) = fact.Pr_mat ();
+                }
+              retval(1) = octave_value (fact.U (),
+                                        MatrixType (MatrixType::Upper));
+              retval(0) = octave_value (fact.L (),
+                                        MatrixType (MatrixType::Lower));
             }
 
         }

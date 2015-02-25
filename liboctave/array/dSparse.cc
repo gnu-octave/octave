@@ -7260,7 +7260,8 @@ SparseMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
                      solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (b);
-  return solve (tmp, info, rcond, sing_handler).column (static_cast<octave_idx_type> (0));
+  return solve (tmp, info, rcond,
+                sing_handler).column (static_cast<octave_idx_type> (0));
 }
 
 // other operations.

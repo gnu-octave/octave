@@ -1056,7 +1056,7 @@ public:
     }
 
     octave_value find_function (const octave_value_list& args
-                                  = octave_value_list (),
+                                = octave_value_list (),
                                 bool local_funcs = true)
     {
       return rep->find_function (args, local_funcs);

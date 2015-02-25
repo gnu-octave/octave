@@ -2122,19 +2122,19 @@ main_window::execute_debug_callback ()
 
       if (debug == "step")
         {
-          Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
+          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
           Fdbstep ();
         }
       else if (debug == "cont")
         {
-          Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
+          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
           Fdbcont ();
         }
       else if (debug == "quit")
         Fdbquit ();
       else
         {
-          Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
+          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
           Fdbstep (ovl (debug.toStdString ()));
         }
 

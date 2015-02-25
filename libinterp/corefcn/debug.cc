@@ -1544,12 +1544,13 @@ Return true if in debugging mode, otherwise false.\n\
   return retval;
 }
 
-DEFUN (db_next_breakpoint_quiet, args, ,
+DEFUN (__db_next_breakpoint_quiet__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} db_next_breakpoint_quiet ()\n\
-@deftypefnx {Built-in Function} {} db_next_breakpoint_quiet (@var{flag})\n\
-Disable line info printing at the next breakpoint.  With a logical\n\
-argument, set the state on or off.\n\
+@deftypefn  {Built-in Function} {} __db_next_breakpoint_quiet__ ()\n\
+@deftypefnx {Built-in Function} {} __db_next_breakpoint_quiet__ (@var{flag})\n\
+Disable line info printing at the next breakpoint.\n\
+\n\
+With a logical argument @var{flag}, set the state on or off.\n\
 @end deftypefn")
 {
   octave_value retval;

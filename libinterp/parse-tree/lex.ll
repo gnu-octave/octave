@@ -2453,8 +2453,7 @@ octave_base_lexer::is_keyword_token (const std::string& s)
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
                 && ! fcn_file_full_name.empty ())
-              tok_val = new token (magic_file_kw, true,
-                                   fcn_file_full_name, l, c);
+              tok_val = new token (magic_file_kw, fcn_file_full_name, l, c);
             else
               tok_val = new token (magic_file_kw, "stdin", l, c);
           }

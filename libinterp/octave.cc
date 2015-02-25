@@ -980,6 +980,7 @@ DEFUN (isguirunning, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isguirunning ()\n\
 Return true if Octave is running in GUI mode and false otherwise.\n\
+@seealso{have_window_system}\n\
 @end deftypefn")
 {
   octave_value retval;

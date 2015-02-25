@@ -1021,6 +1021,7 @@ DEFUN (have_window_system, , ,
 @deftypefn {Built-in Function} {} have_window_system ()\n\
 Return true if a window system is available (X11, Windows, or Apple OS X)\n\
 and false otherwise.\n\
+@seealso{isguirunning}\n\
 @end deftypefn")
 {
   return octave_value (display_info::display_available ());

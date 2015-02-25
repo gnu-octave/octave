@@ -96,6 +96,8 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 
 @DOCSTRING(guihandles)
 
+@DOCSTRING(have_window_system)
+
 @DOCSTRING(isguirunning)
 
 @DOCSTRING(uiwait)

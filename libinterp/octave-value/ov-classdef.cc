@@ -280,12 +280,11 @@ get_class_context (std::string& name, bool& in_constructor)
 
   in_constructor = false;
 
-  if (fcn &&
-      (fcn->is_class_method ()
-       || fcn->is_classdef_constructor ()
-       || fcn->is_anonymous_function_of_class ()
-       || (fcn->is_private_function ()
-           && ! fcn->dispatch_class ().empty ())))
+  if (fcn && (fcn->is_class_method ()
+              || fcn->is_classdef_constructor ()
+              || fcn->is_anonymous_function_of_class ()
+              || (fcn->is_private_function ()
+                  && ! fcn->dispatch_class ().empty ())))
     {
       cls = lookup_class (fcn->dispatch_class ());
       if (! error_state)
@@ -3626,8 +3625,8 @@ cdef_package::cdef_package_rep::meta_subsref
                           // "end" that makes it impossible to execute the
                           // function call at this stage.
 
-                          if (type.size () > 1 &&
-                              ! fcn->is_postfix_index_handled (type[1]))
+                          if (type.size () > 1
+                              && ! fcn->is_postfix_index_handled (type[1]))
                             {
                               octave_value_list tmp_args;
 

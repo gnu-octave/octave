@@ -1575,9 +1575,9 @@ opengl_renderer::draw_line (const line::properties& props)
 
   set_clipping (false);
 
-  if (! props.marker_is ("none") &&
-      ! (props.markeredgecolor_is ("none")
-         && props.markerfacecolor_is ("none")))
+  if (! props.marker_is ("none")
+      && ! (props.markeredgecolor_is ("none")
+            && props.markerfacecolor_is ("none")))
     {
       Matrix lc, fc;
 
@@ -2136,9 +2136,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
         }
     }
 
-  if (! props.marker_is ("none") &&
-      ! (props.markeredgecolor_is ("none")
-         && props.markerfacecolor_is ("none")))
+  if (! props.marker_is ("none")
+      && ! (props.markeredgecolor_is ("none")
+            && props.markerfacecolor_is ("none")))
     {
       // FIXME: check how transparency should be handled in markers
       // FIXME: check what to do with marker facecolor set to auto

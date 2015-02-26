@@ -121,8 +121,8 @@ public:
 
   bool is_hermitian (void) const
   {
-    return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian ||
-            typ == Hermitian);
+    return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian
+            || typ == Hermitian);
   }
 
   bool is_rectangular (void) const { return (typ == Rectangular); }

@@ -1997,10 +1997,10 @@ belongs to.\n\
   for (octave_idx_type idx = 0; idx < n; idx++)
     {
       const std::string cl = cls(idx);
-      if ((cl == "float"   && obj.is_float_type   ()) ||
-          (cl == "integer" && obj.is_integer_type ()) ||
-          (cl == "numeric" && obj.is_numeric_type ()) ||
-          obj.class_name () == cl || obj.is_instance_of (cl))
+      if ((cl == "float"   && obj.is_float_type   ())
+          || (cl == "integer" && obj.is_integer_type ())
+          || (cl == "numeric" && obj.is_numeric_type ())
+          || obj.class_name () == cl || obj.is_instance_of (cl))
         matches(idx) = true;
     }
   return octave_value (matches);

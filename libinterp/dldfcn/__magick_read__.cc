@@ -800,8 +800,8 @@ use @code{imread}.\n\
     const octave_idx_type n = frameidx.nelem ();
     for (octave_idx_type frame = 0; frame < n; frame++)
       {
-        if (nRows != imvec[frameidx(frame)].rows () ||
-            nCols != imvec[frameidx(frame)].columns ())
+        if (nRows != imvec[frameidx(frame)].rows ()
+            || nCols != imvec[frameidx(frame)].columns ())
           {
             error ("imread: all frames must have the same size but frame %i is different",
                    frameidx(frame) +1);

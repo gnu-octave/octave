@@ -1271,8 +1271,8 @@ triangular, return the Cholesky@tie{}factorization of\n\
           if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
             {
 
-              if (argr.is_single_type () && argi.is_single_type () &&
-                  argj.is_single_type ())
+              if (argr.is_single_type () && argi.is_single_type ()
+                  && argj.is_single_type ())
                 {
                   if (argr.is_real_type ())
                     {

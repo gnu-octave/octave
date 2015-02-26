@@ -411,9 +411,9 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
   octave_idx_type nc = 0;
   bool success = true;
 
-  if (extract_keyword (is, "nnz", nz, true) &&
-      extract_keyword (is, "rows", nr, true) &&
-      extract_keyword (is, "columns", nc, true))
+  if (extract_keyword (is, "nnz", nz, true)
+      && extract_keyword (is, "rows", nr, true)
+      && extract_keyword (is, "columns", nc, true))
     {
       T tmp (nr, nc, nz);
 

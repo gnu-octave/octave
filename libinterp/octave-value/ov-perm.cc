@@ -112,11 +112,8 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   // if error_state is set, we've already griped.
   if (! error_state && ! retval.is_defined ())
     {
-      if (nidx == 2 && ! resize_ok &&
-          idx0.is_scalar () && idx1.is_scalar ())
-        {
-          retval = matrix.checkelem (idx0(0), idx1(0));
-        }
+      if (nidx == 2 && ! resize_ok && idx0.is_scalar () && idx1.is_scalar ())
+        retval = matrix.checkelem (idx0(0), idx1(0));
       else
         retval = to_dense ().do_index_op (idx, resize_ok);
     }

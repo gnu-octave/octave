@@ -215,8 +215,8 @@ check_gzip_magic (const std::string& fname)
   std::ifstream file (fname.c_str ());
   OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
-  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f &&
-      magic[1] == 0x8b)
+  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f
+      && magic[1] == 0x8b)
     retval = true;
 
   file.close ();
@@ -1713,8 +1713,8 @@ the file @file{data} in Octave's binary format.\n\
               return retval;
             }
 
-          bool write_header_info = ! (append &&
-                                      H5Fis_hdf5 (fname.c_str ()) > 0);
+          bool write_header_info
+            = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
 

@@ -270,8 +270,8 @@ Undocumented internal function.\n\
 
   // Note hold off reading B till later to avoid issues of double
   // copies of the matrix if B is full/real while A is complex.
-  if (!error_state && nargin > 1 + arg_offset &&
-      !(args(1 + arg_offset).is_real_scalar ()))
+  if (! error_state && nargin > 1 + arg_offset
+      && ! (args(1 + arg_offset).is_real_scalar ()))
     {
       if (args(1+arg_offset).is_complex_type ())
         {

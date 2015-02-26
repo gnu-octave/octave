@@ -632,8 +632,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   // array flags subelement
   int32_t len;
-  if (read_mat5_tag (is, swap, type, len, is_small_data_element) ||
-      type != miUINT32 || len != 8 || is_small_data_element)
+  if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+      || type != miUINT32 || len != 8 || is_small_data_element)
     {
       error ("load: invalid array flags subelement");
       goto early_read_error;
@@ -659,8 +659,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     {
       int32_t dim_len;
 
-      if (read_mat5_tag (is, swap, type, dim_len, is_small_data_element) ||
-          type != miINT32)
+      if (read_mat5_tag (is, swap, type, dim_len, is_small_data_element)
+          || type != miINT32)
         {
           error ("load: invalid dimensions array subelement");
           goto early_read_error;
@@ -695,7 +695,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       dims(1) = 1;
     }
 
-  if (read_mat5_tag (is, swap, type, len, is_small_data_element) || !INT8(type))
+  if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+      || ! INT8(type))
     {
       error ("load: invalid array name subelement");
       goto early_read_error;
@@ -914,9 +915,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 std::string mroot =
                   m0.contents ("matlabroot").string_value ();
 
-                if ((fpath.length () >= mroot.length ()) &&
-                    fpath.substr (0, mroot.length ()) == mroot &&
-                    OCTAVE_EXEC_PREFIX != mroot)
+                if ((fpath.length () >= mroot.length ())
+                    && fpath.substr (0, mroot.length ()) == mroot
+                    && OCTAVE_EXEC_PREFIX != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
                     // doesn't equal octave_config_info ("exec_prefix")
@@ -1097,7 +1098,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             int32_t fn_type;
             int32_t fn_len;
             if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
-                || !INT8(fn_type))
+                || ! INT8(fn_type))
               {
                 error ("load: invalid field name subelement");
                 goto data_read_error;
@@ -1158,8 +1159,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       {
         isclass = true;
 
-        if (read_mat5_tag (is, swap, type, len, is_small_data_element) ||
-            !INT8(type))
+        if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+            || ! INT8(type))
           {
             error ("load: invalid class name");
             goto skip_ahead;
@@ -1211,7 +1212,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // field name subelement.  The length of this subelement tells
         // us how many fields there are.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
-            || !INT8(fn_type))
+            || ! INT8(fn_type))
           {
             error ("load: invalid field name subelement");
             goto data_read_error;

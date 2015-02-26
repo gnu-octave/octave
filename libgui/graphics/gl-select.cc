@@ -92,8 +92,8 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
                  minZ = select_buffer[j++];
 
           j++; // skip maxZ
-          if (((flags & select_last) == 0 && (minZ <= current_minZ)) ||
-              ((flags & select_last) != 0 && (minZ >= current_minZ)))
+          if (((flags & select_last) == 0 && (minZ <= current_minZ))
+              || ((flags & select_last) != 0 && (minZ >= current_minZ)))
             {
               bool candidate = true;
               GLuint name =

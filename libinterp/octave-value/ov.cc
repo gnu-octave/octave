@@ -2036,8 +2036,9 @@ do_binary_op (octave_value::binary_op op,
             v2.numeric_conversion_function ();
 
           // Try biased (one-sided) conversions first.
-          if (cf2.type_id () >= 0 &&
-              octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
+          if (cf2.type_id () >= 0
+              && octave_value_typeinfo::lookup_binary_op (op, t1,
+                                                          cf2.type_id ()))
             cf1 = 0;
           else if (cf1.type_id () >= 0
                    && octave_value_typeinfo::lookup_binary_op (op,
@@ -2097,10 +2098,10 @@ do_binary_op (octave_value::binary_op op,
                   && octave_value_typeinfo::lookup_binary_op (op, t1,
                                                               cf2.type_id ()))
                 cf1 = 0;
-              else if (cf1.type_id () >= 0 &&
-                       octave_value_typeinfo::lookup_binary_op (op,
-                                                                cf1.type_id (),
-                                                                t2))
+              else if (cf1.type_id () >= 0
+                       && octave_value_typeinfo::lookup_binary_op (op,
+                                                                   cf1.type_id (),
+                                                                   t2))
                 cf2 = 0;
 
               if (cf1)

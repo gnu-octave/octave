@@ -772,8 +772,7 @@ SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
       int typ = mattyp.type ();
       mattyp.info ();
 
-      if (typ == MatrixType::Diagonal ||
-          typ == MatrixType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
         {
           if (typ == MatrixType::Permuted_Diagonal)
             retval = transpose ();
@@ -827,8 +826,8 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
       int typ = mattyp.type ();
       mattyp.info ();
 
-      if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
+      if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper
+          || typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -902,8 +901,8 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
                               colXp++;
                               colUp++;
                             }
-                        } while ((rpX<j) && (rpU<j) &&
-                                 (colXp<cx) && (colUp<nz));
+                        }
+                      while (rpX < j && rpU < j && colXp < cx && colUp < nz);
 
 
                       // get A(m,m)
@@ -1313,8 +1312,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal ||
-          typ == MatrixType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
         {
           retval.resize (nc, b.cols (), Complex (0.,0.));
           if (typ == MatrixType::Diagonal)
@@ -1375,8 +1373,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal ||
-          typ == MatrixType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
         {
           octave_idx_type b_nc = b.cols ();
           octave_idx_type b_nz = b.nnz ();
@@ -1467,8 +1464,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal ||
-          typ == MatrixType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
         {
           retval.resize (nc, b.cols (), Complex (0.,0.));
           if (typ == MatrixType::Diagonal)
@@ -1529,8 +1525,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal ||
-          typ == MatrixType::Permuted_Diagonal)
+      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
         {
           octave_idx_type b_nc = b.cols ();
           octave_idx_type b_nz = b.nnz ();
@@ -1621,8 +1616,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -1661,8 +1655,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
 
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k ||
-                              data (cidx (kidx+1)-1) == 0.)
+                          if (ridx (cidx (kidx+1)-1) != k
+                              || data (cidx (kidx+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -1737,8 +1731,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k+1)-1) != k ||
-                              data (cidx (k+1)-1) == 0.)
+                          if (ridx (cidx (k+1)-1) != k
+                              || data (cidx (k+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -1853,8 +1847,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -1902,8 +1895,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
 
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k ||
-                              data (cidx (kidx+1)-1) == 0.)
+                          if (ridx (cidx (kidx+1)-1) != k
+                              || data (cidx (kidx+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -1999,8 +1992,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k+1)-1) != k ||
-                              data (cidx (k+1)-1) == 0.)
+                          if (ridx (cidx (k+1)-1) != k
+                              || data (cidx (k+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -2136,8 +2129,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -2176,8 +2168,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k ||
-                              data (cidx (kidx+1)-1) == 0.)
+                          if (ridx (cidx (kidx+1)-1) != k
+                              || data (cidx (kidx+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -2252,8 +2244,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k+1)-1) != k ||
-                              data (cidx (k+1)-1) == 0.)
+                          if (ridx (cidx (k+1)-1) != k
+                              || data (cidx (k+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -2368,8 +2360,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -2417,8 +2408,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k ||
-                              data (cidx (kidx+1)-1) == 0.)
+                          if (ridx (cidx (kidx+1)-1) != k
+                              || data (cidx (kidx+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -2514,8 +2505,8 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k+1)-1) != k ||
-                              data (cidx (k+1)-1) == 0.)
+                          if (ridx (cidx (k+1)-1) != k
+                              || data (cidx (k+1)-1) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -2652,8 +2643,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -2789,8 +2779,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k)) != k ||
-                              data (cidx (k)) == 0.)
+                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -2905,8 +2894,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -3069,8 +3057,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k)) != k ||
-                              data (cidx (k)) == 0.)
+                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -3208,8 +3195,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -3347,8 +3333,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k)) != k ||
-                              data (cidx (k)) == 0.)
+                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -3464,8 +3449,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           double anorm = 0.;
           double ainvnorm = 0.;
@@ -3628,8 +3612,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k)) != k ||
-                              data (cidx (k)) == 0.)
+                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
                             {
                               err = -2;
                               goto triangular_error;
@@ -3920,8 +3903,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
       mattype.info ();
 
       // Note can't treat symmetric case as there is no dpttrf function
-      if (typ == MatrixType::Tridiagonal ||
-          typ == MatrixType::Tridiagonal_Hermitian)
+      if (typ == MatrixType::Tridiagonal
+          || typ == MatrixType::Tridiagonal_Hermitian)
         {
           OCTAVE_LOCAL_BUFFER (Complex, DU2, nr - 2);
           OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
@@ -4217,8 +4200,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
       mattype.info ();
 
       // Note can't treat symmetric case as there is no dpttrf function
-      if (typ == MatrixType::Tridiagonal ||
-          typ == MatrixType::Tridiagonal_Hermitian)
+      if (typ == MatrixType::Tridiagonal
+          || typ == MatrixType::Tridiagonal_Hermitian)
         {
           OCTAVE_LOCAL_BUFFER (Complex, DU2, nr - 2);
           OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
@@ -5540,8 +5523,8 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
         rcond = 1.;
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (status == UMFPACK_WARNING_singular_matrix ||
-          rcond_plus_one == 1.0 || xisnan (rcond))
+      if (status == UMFPACK_WARNING_singular_matrix
+          || rcond_plus_one == 1.0 || xisnan (rcond))
         {
           UMFPACK_ZNAME (report_numeric) (Numeric, control);
 
@@ -6579,8 +6562,8 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               rcond = Info (UMFPACK_RCOND);
               volatile double rcond_plus_one = rcond + 1.0;
 
-              if (status == UMFPACK_WARNING_singular_matrix ||
-                  rcond_plus_one == 1.0 || xisnan (rcond))
+              if (status == UMFPACK_WARNING_singular_matrix
+                  || rcond_plus_one == 1.0 || xisnan (rcond))
                 {
                   err = -2;
 
@@ -6651,8 +6634,8 @@ SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == MatrixType::Tridiagonal ||
-           typ == MatrixType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal
+           || typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6719,8 +6702,8 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == MatrixType::Tridiagonal ||
-           typ == MatrixType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal
+           || typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6787,8 +6770,8 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == MatrixType::Tridiagonal ||
-           typ == MatrixType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal
+           || typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6856,8 +6839,8 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
     retval = ltsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
-  else if (typ == MatrixType::Tridiagonal ||
-           typ == MatrixType::Tridiagonal_Hermitian)
+  else if (typ == MatrixType::Tridiagonal
+           || typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -7645,8 +7628,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
           while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
-              if ((! jb_lt_max) ||
-                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   Complex tmp = xmin (a.data (ja), 0.);
                   if (tmp != 0.)
@@ -7658,8 +7640,8 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if ((! ja_lt_max) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   Complex tmp = xmin (0., b.data (jb));
                   if (tmp != 0.)
@@ -7763,8 +7745,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
           while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
-              if ((! jb_lt_max) ||
-                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   Complex tmp = xmax (a.data (ja), 0.);
                   if (tmp != 0.)
@@ -7776,8 +7757,8 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if ((! ja_lt_max) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   Complex tmp = xmax (0., b.data (jb));
                   if (tmp != 0.)

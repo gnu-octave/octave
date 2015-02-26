@@ -1577,8 +1577,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
     {
       volatile int typ = mattype.type ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           octave_idx_type b_nc = b.cols ();
           rcon = 1.;
@@ -1672,8 +1671,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
     {
       volatile int typ = mattype.type ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           octave_idx_type b_nc = b.cols ();
           rcon = 1.;

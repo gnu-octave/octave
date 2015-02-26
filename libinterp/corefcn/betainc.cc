@@ -74,8 +74,8 @@ compatible dimensions.\n\
       octave_value b_arg = args(2);
 
       // FIXME: Can we make a template version of the duplicated code below
-      if (x_arg.is_single_type () || a_arg.is_single_type () ||
-          b_arg.is_single_type ())
+      if (x_arg.is_single_type () || a_arg.is_single_type ()
+          || b_arg.is_single_type ())
         {
           if (x_arg.is_scalar_type ())
             {
@@ -451,8 +451,8 @@ Compute the inverse of the incomplete Beta function, i.e., @var{x} such that\n\
       // accepted float inputs and returned float outputs.  As it is, we do
       // extra work to calculate betaincinv to double precision and then throw
       // that precision away.
-      if (x_arg.is_single_type () || a_arg.is_single_type () ||
-          b_arg.is_single_type ())
+      if (x_arg.is_single_type () || a_arg.is_single_type ()
+          || b_arg.is_single_type ())
         {
           retval = Array<float> (retval.array_value ());
         }

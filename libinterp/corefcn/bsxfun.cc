@@ -536,8 +536,8 @@ dimensionality as the other array.\n\
                         {
                           update_index (ra_idx, dvc, i);
 
-                          if (have_FloatNDArray ||
-                              have_FloatComplexNDArray)
+                          if (have_FloatNDArray
+                              || have_FloatComplexNDArray)
                             {
                               if (! tmp(0).is_float_type ())
                                 {
@@ -555,8 +555,8 @@ dimensionality as the other array.\n\
                                 }
                               else if (tmp(0).is_double_type ())
                                 {
-                                  if (tmp(0).is_complex_type () &&
-                                      have_FloatNDArray)
+                                  if (tmp(0).is_complex_type ()
+                                      && have_FloatNDArray)
                                     {
                                       result_ComplexNDArray =
                                         ComplexNDArray (result_FloatNDArray);

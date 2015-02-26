@@ -4226,15 +4226,18 @@ octave_stream_list::do_insert (octave_stream& os)
   if ((stream_number = os.file_number ()) == -1)
     return stream_number;
 
-  // Should we test for "(list.find (stream_number) != list.end ()) &&
-  // list[stream_number].is_open ()" and respond with "error
-  // ("internal error: ...")"? It should not happen except for some
-  // bug or if the user has opened a stream with an interpreted
-  // command, but closed it directly with a system call in an
-  // oct-file; then the kernel knows the fd is free, but Octave does
-  // not know. If it happens, it should not do harm here to simply
-  // overwrite this entry, although the wrong entry might have done
-  // harm before.
+  // Should we test for
+  //
+  //  (list.find (stream_number) != list.end ()
+  //   && list[stream_number].is_open ())
+  //
+  // and respond with "error ("internal error: ...")"?  It should not
+  // happen except for some bug or if the user has opened a stream with
+  // an interpreted command, but closed it directly with a system call
+  // in an oct-file; then the kernel knows the fd is free, but Octave
+  // does not know.  If it happens, it should not do harm here to simply
+  // overwrite this entry, although the wrong entry might have done harm
+  // before.
 
   if (list.size () < list.max_size ())
     list[stream_number] = os;

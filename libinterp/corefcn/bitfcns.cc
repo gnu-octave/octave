@@ -131,6 +131,26 @@ bitopx (const std::string& fname, const Array<T>& x, const Array<T>& y)
   return bitopxx (std::bit_xor<T>(), fname, x, y);
 }
 
+static inline int
+bitop_arg_is_int (const octave_value& arg)
+{
+  return (arg.class_name () != octave_scalar::static_class_name ()
+          && arg.class_name () != octave_float_scalar::static_class_name ()
+          && arg.class_name () != octave_bool::static_class_name ());
+}
+
+static inline int
+bitop_arg_is_bool (const octave_value& arg)
+{
+  return arg.class_name () == octave_bool::static_class_name ();
+}
+
+static inline int
+bitop_arg_is_float (const octave_value& arg)
+{
+  return arg.class_name () == octave_float_scalar::static_class_name ();
+}
+
 octave_value
 bitop (const std::string& fname, const octave_value_list& args)
 {
@@ -140,33 +160,21 @@ bitop (const std::string& fname, const octave_value_list& args)
 
   if (nargin == 2)
     {
-      if ((args(0).class_name () == octave_scalar::static_class_name ())
-          || (args(0).class_name () == octave_float_scalar::static_class_name ())
-          || (args(0).class_name () == octave_bool::static_class_name ())
-          || (args(1).class_name () == octave_scalar::static_class_name ())
-          || (args(1).class_name () == octave_float_scalar::static_class_name ())
-          || (args(1).class_name () == octave_bool::static_class_name ()))
+      if (args(0).class_name () == octave_scalar::static_class_name ()
+          || args(0).class_name () == octave_float_scalar::static_class_name ()
+          || args(0).class_name () == octave_bool::static_class_name ()
+          || args(1).class_name () == octave_scalar::static_class_name ()
+          || args(1).class_name () == octave_float_scalar::static_class_name ()
+          || args(1).class_name () == octave_bool::static_class_name ())
         {
-          bool arg0_is_int = (args(0).class_name () !=
-                              octave_scalar::static_class_name () &&
-                              args(0).class_name () !=
-                              octave_float_scalar::static_class_name () &&
-                              args(0).class_name () !=
-                              octave_bool::static_class_name ());
-          bool arg1_is_int = (args(1).class_name () !=
-                              octave_scalar::static_class_name () &&
-                              args(1).class_name () !=
-                              octave_float_scalar::static_class_name () &&
-                              args(1).class_name () !=
-                              octave_bool::static_class_name ());
-          bool arg0_is_bool = args(0).class_name () ==
-                              octave_bool::static_class_name ();
-          bool arg1_is_bool = args(1).class_name () ==
-                              octave_bool::static_class_name ();
-          bool arg0_is_float = args(0).class_name () ==
-                               octave_float_scalar::static_class_name ();
-          bool arg1_is_float = args(1).class_name () ==
-                               octave_float_scalar::static_class_name ();
+          bool arg0_is_int = bitop_arg_is_int (args(0));
+          bool arg1_is_int = bitop_arg_is_int (args(1));
+
+          bool arg0_is_bool = bitop_arg_is_bool (args(0));
+          bool arg1_is_bool = bitop_arg_is_bool (args(1));
+
+          bool arg0_is_float = bitop_arg_is_float (args(0));
+          bool arg1_is_float = bitop_arg_is_float (args(1));
 
           if (! (arg0_is_int || arg1_is_int))
             {

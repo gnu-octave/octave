@@ -1658,10 +1658,10 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
           /* We ignore an open brace surrounded by whitespace, and also
              an open brace followed immediately by a close brace, that
              was preceded with whitespace.  */
-          if (c == '{' &&
-              ((i == 0 || brace_whitespace (text[i-1])) &&
-               (i+1 < text_len &&
-                (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
+          if (c == '{'
+              && ((i == 0 || brace_whitespace (text[i-1]))
+                  && (i+1 < text_len
+                      && (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
             continue;
           /* If this is being compiled as part of bash, ignore the '{'
              in a '${ }' construct */

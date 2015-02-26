@@ -2806,9 +2806,9 @@ xreset_default_properties (graphics_handle gh,
       std::string pname = it->first;
 
       // Don't reset internal properties and handle_properties
-      if (! obj.has_readonly_property (pname) &&
-          pname.find ("__") != 0 && pname.find ("current") != 0 &&
-          pname != "uicontextmenu" && pname != "parent")
+      if (! obj.has_readonly_property (pname)
+          && pname.find ("__") != 0 && pname.find ("current") != 0
+          && pname != "uicontextmenu" && pname != "parent")
         {
           // Store *mode prop/val in order to set them last
           if (pname.find ("mode") == (pname.length () - 4))
@@ -3222,8 +3222,8 @@ base_graphics_object::values_as_string (void)
 
       for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
         {
-          if (pa->first != "children" &&
-              ! obj.has_readonly_property (pa->first))
+          if (pa->first != "children"
+              && ! obj.has_readonly_property (pa->first))
             {
               property p = get_properties ().get_property (pa->first);
 
@@ -7375,10 +7375,10 @@ axes::update_axis_limits (const std::string& axis_type,
 void
 axes::update_axis_limits (const std::string& axis_type)
 {
-  if ((updating_axis_limits.find (get_handle ().value ()) !=
-       updating_axis_limits.end ()) ||
-      (updating_aspectratios.find (get_handle ().value ()) !=
-       updating_aspectratios.end ()))
+  if ((updating_axis_limits.find (get_handle ().value ())
+       != updating_axis_limits.end ())
+      || (updating_aspectratios.find (get_handle ().value ())
+          != updating_aspectratios.end ()))
     return;
 
   Matrix kids = xproperties.get_children ();
@@ -8082,16 +8082,16 @@ text::properties::update_text_extent (void)
 
 #endif
 
-  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel") ||
-      autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
+  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel")
+      || autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
     update_autopos ("sync");
 }
 
 void
 text::properties::request_autopos (void)
 {
-  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel") ||
-      autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
+  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel")
+      || autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
     update_autopos (get_autopos_tag ());
 }
 
@@ -8176,8 +8176,8 @@ patch::properties::update_fvc (void)
   NDArray cd = get_cdata ().array_value ();
 
   bad_data_msg = std::string ();
-  if (xd.dims () != yd.dims () ||
-      (xd.dims () != zd.dims () && ! zd.is_empty ()))
+  if (xd.dims () != yd.dims ()
+      || (xd.dims () != zd.dims () && ! zd.is_empty ()))
     {
       bad_data_msg = "x/y/zdata should have the same dimensions";
       return;
@@ -11234,8 +11234,8 @@ dellistener (gcf, \"position\", c);\n\
                                                  POSTSET);
                   else
                     {
-                      if (args(2).is_string () &&
-                          args(2).string_value () == "persistent")
+                      if (args(2).is_string ()
+                          && args(2).string_value () == "persistent")
                         {
                           go.delete_property_listener (pname, octave_value (),
                                                        PERSISTENT);

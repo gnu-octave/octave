@@ -593,8 +593,8 @@ bool check_lu_dims (const octave_value& l, const octave_value& u,
   octave_idx_type k = u.rows ();
   octave_idx_type n = u.columns ();
   return ((l.ndims () == 2 && u.ndims () == 2 && k == l.columns ())
-          && k == std::min (m, n) &&
-          (p.is_undefined () || p.rows () == m));
+          && k == std::min (m, n)
+          && (p.is_undefined () || p.rows () == m));
 }
 
 DEFUN (luupdate, args, ,

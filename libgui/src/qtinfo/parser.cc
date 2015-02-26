@@ -345,7 +345,7 @@ replace_links (QString& text)
       url_link.replace ("</b>","");
       url_link = QUrl::toPercentEncoding (url_link, "", "'");
 
-      href += "<img src=':/actions/icons/bookmark.png' width=10/>";
+      href += "<font style=\"color:DarkGray; font-weight:bold;\">&raquo;</font>";
       href +=  "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
       f = re.matchedLength ();
       text.replace (i,f,href);
@@ -408,7 +408,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       info_to_html (text2);
 
       text = text1 + "<a name='" + anchor
-             + "'/><img src=':/actions/icons/arrow_down.png'><br>&nbsp;"
+             + "'/><font style=\"color:DarkBlue; font: bold monospace large;\">&diams;</font><br>&nbsp;"
              + text2;
     }
   else
@@ -420,9 +420,9 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
 
   QString navigationLinks = QString (
         "<b>Section:</b> <font style=\"color:DarkRed\">%1</font><br>"
-        "<img src=':/actions/icons/arrow_left.png'/> <b>Previous Section:</b> <a href='%2'>%3</a><br>"
-        "<img src=':/actions/icons/arrow_right.png'/> <b>Next Section:</b> <a href='%4'>%5</a><br>"
-        "<img src=':/actions/icons/arrow_up.png'/> <b>Up:</b> <a href='%6'>%7</a><br>\n"
+        "<b>Previous Section:</b> <a href='%2'>%3</a><br>"
+        "<b>Next Section:</b> <a href='%4'>%5</a><br>"
+        "<b>Up:</b> <a href='%6'>%7</a><br>\n"
         )
       .arg (nodeName)
       .arg (QString (QUrl::toPercentEncoding (nodePrev, "", "'")))
@@ -645,7 +645,7 @@ parser::global_search (const QString& text, int max_founds)
               if (founds == 0)
                 {
                   results.append(
-                    "<br>\n<img src=':/actions/icons/bookmark.png' width=10> <a href='"
+                    "<br>\n<font style=\"color:DarkGray; font-weight:bold;\">&raquo;</font> <a href='"
                     + QString(QUrl::toPercentEncoding(node,"","'")) +
                     "'>");
                   results.append (node);

@@ -1,6 +1,15 @@
 <RCC>
     <qresource prefix="/actions">
         <file>icons/applications-system.png</file>
+        <file>icons/bp-toggle.png</file>
+        <file>icons/bp-rm-all.png</file>
+        <file>icons/bp-prev.png</file>
+        <file>icons/bp-next.png</file>
+        <file>icons/db-cont.png</file>
+        <file>icons/db-step.png</file>
+        <file>icons/db-step-in.png</file>
+        <file>icons/db-step-out.png</file>
+        <file>icons/db-stop.png</file>
         <file>icons/document-new.png</file>
         <file>icons/document-open.png</file>
         <file>icons/document-print.png</file>
@@ -19,37 +28,6 @@
         <file>icons/go-first.png</file>
         <file>icons/go-last.png</file>
         <file>icons/go-up.png</file>
-        <file>icons/preferences-system.png</file>
-        <file>icons/user-home.png</file>
-        <file>icons/view-refresh.png</file>
-        <file>icons/zoom-in.png</file>
-        <file>icons/zoom-out.png</file>
-        <file>icons/up.png</file>
-        <file>icons/redled.png</file>
-        <file>icons/arrow_right.png</file>
-        <file>icons/arrow_left.png</file>
-        <file>icons/arrow_up.png</file>
-        <file>icons/arrow_down.png</file>
-        <file>icons/bookmark.png</file>
-        <file>icons/logo.png</file>
-        <file>icons/bp-toggle.png</file>
-        <file>icons/bp-rm-all.png</file>
-        <file>icons/bp-prev.png</file>
-        <file>icons/bp-next.png</file>
-        <file>icons/db-cont.png</file>
-        <file>icons/db-step.png</file>
-        <file>icons/db-step-in.png</file>
-        <file>icons/db-step-out.png</file>
-        <file>icons/db-stop.png</file>
-        <file>icons/system-run.png</file>
-        <file>icons/letter_logo_FilesDockWidget.png</file>
-        <file>icons/letter_logo_FileEditor.png</file>
-        <file>icons/letter_logo_NewsDockWidget.png</file>
-        <file>icons/letter_logo_TerminalDockWidget.png</file>
-        <file>icons/letter_logo_HistoryDockWidget.png</file>
-        <file>icons/letter_logo_WorkspaceView.png</file>
-        <file>icons/letter_logo_DocumentationDockWidget.png</file>
-        <file>icons/letter_logo_ReleaseWidget.png</file>
         <file>icons/graphic_logo_FilesDockWidget.png</file>
         <file>icons/graphic_logo_FileEditor.png</file>
         <file>icons/graphic_logo_NewsDockWidget.png</file>
@@ -58,12 +36,26 @@
         <file>icons/graphic_logo_WorkspaceView.png</file>
         <file>icons/graphic_logo_DocumentationDockWidget.png</file>
         <file>icons/graphic_logo_ReleaseWidget.png</file>
-        <file>icons/warning.png</file>
+        <file>icons/letter_logo_FilesDockWidget.png</file>
+        <file>icons/letter_logo_FileEditor.png</file>
+        <file>icons/letter_logo_NewsDockWidget.png</file>
+        <file>icons/letter_logo_TerminalDockWidget.png</file>
+        <file>icons/letter_logo_HistoryDockWidget.png</file>
+        <file>icons/letter_logo_WorkspaceView.png</file>
+        <file>icons/letter_logo_DocumentationDockWidget.png</file>
+        <file>icons/letter_logo_ReleaseWidget.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/preferences-system.png</file>
+        <file>icons/system-run.png</file>
+        <file>icons/user-home.png</file>
+        <file>icons/view-refresh.png</file>
         <file>icons/widget-close.png</file>
         <file>icons/widget-dock.png</file>
         <file>icons/widget-undock.png</file>
         <file>icons/widget-close-light.png</file>
         <file>icons/widget-dock-light.png</file>
         <file>icons/widget-undock-light.png</file>
+        <file>icons/zoom-in.png</file>
+        <file>icons/zoom-out.png</file>
     </qresource>
 </RCC>

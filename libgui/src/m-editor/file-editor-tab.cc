@@ -116,10 +116,11 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
   _edit_area->setMarginSensitivity (1, true);
   _edit_area->markerDefine (QsciScintilla::RightTriangle, bookmark);
-  _edit_area->markerDefine (QPixmap (":/actions/icons/redled.png"),
-                            breakpoint);
-  _edit_area->markerDefine (QPixmap (":/actions/icons/bookmark.png"),
-                            debugger_position);
+  _edit_area->setMarkerBackgroundColor (QColor (0,0,232), bookmark);
+  _edit_area->markerDefine (QsciScintilla::Circle, breakpoint);
+  _edit_area->setMarkerBackgroundColor (QColor (192,0,0), breakpoint);
+  _edit_area->markerDefine (QsciScintilla::RightTriangle, debugger_position);
+  _edit_area->setMarkerBackgroundColor (QColor (255,255,0), debugger_position);
 
   connect (_edit_area, SIGNAL (marginClicked (int, int,
                                               Qt::KeyboardModifiers)),

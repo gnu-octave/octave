@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "load-save.h"
+#include "oct-hdf5-id.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
@@ -587,6 +588,8 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
                 bool& global, octave_value& tc, std::string& doc,
                 const string_vector& argv, int argv_idx, int argc)
 {
+  check_hdf5_id_type ();
+
   std::string retval;
 
   doc.resize (0);
@@ -952,6 +955,8 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
                 bool mark_as_global, bool save_as_floats)
 {
+  check_hdf5_id_type ();
+
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 
   return add_hdf5_data (hs.file_id, tc, name, doc,

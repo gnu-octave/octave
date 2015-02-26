@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mxarray.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-complex.h"
@@ -307,16 +308,17 @@ octave_complex::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_complex::save_hdf5 (hid_t loc_id, const char *name,
+octave_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                            bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hsize_t dimens[3];
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
-  bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0)
@@ -349,13 +351,20 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
   H5Tclose (type_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_complex::load_hdf5 (hid_t loc_id, const char *name)
+octave_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
+
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
 #else
@@ -396,10 +405,12 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_complex::as_mxArray (void) const

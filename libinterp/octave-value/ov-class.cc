@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "mxarray.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "ov-class.h"
 #ifdef HAVE_JAVA
 #include "ov-java.h"
@@ -1505,11 +1506,11 @@ octave_class::load_binary (std::istream& is, bool swap,
   return success;
 }
 
+bool
+octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
 #if defined (HAVE_HDF5)
 
-bool
-octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   hsize_t hdims[3];
   hid_t group_hid = -1;
   hid_t type_hid = -1;
@@ -1601,12 +1602,19 @@ error_cleanup:
     H5Gclose (group_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_class::load_hdf5 (hid_t loc_id, const char *name)
+octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   hid_t group_hid = -1;
   hid_t data_hid = -1;
@@ -1741,10 +1749,12 @@ error_cleanup:
   if (data_hid > 0)
     H5Gclose (group_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_class::as_mxArray (void) const

@@ -183,7 +183,6 @@ src_libgui_src_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
-  $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \
   -I$(srcdir)/qterminal/libqterminal \

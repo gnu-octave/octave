@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "mxarray.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -562,12 +563,12 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
+octave_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                   bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
@@ -651,12 +652,19 @@ octave_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   H5Sclose (space_hid);
 
   return retval;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -725,10 +733,12 @@ octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 void
 octave_complex_matrix::print_raw (std::ostream& os,

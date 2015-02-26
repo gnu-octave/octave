@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
+#include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-handle.h"
@@ -704,11 +705,12 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
   return success;
 }
 
-#if defined (HAVE_HDF5)
 bool
-octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
+octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                               bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   bool retval = true;
 
   hid_t group_hid = -1;
@@ -931,11 +933,18 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   H5Gclose (group_hid);
 
   return retval;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
+octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+#if defined (HAVE_HDF5)
+
   bool success = true;
 
   hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
@@ -1291,9 +1300,12 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
   H5Gclose (group_hid);
 
   return success;
-}
 
+#else
+  gripe_load ("hdf5");
+  return false;
 #endif
+}
 
 /*
 %!test

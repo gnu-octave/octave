@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -551,11 +552,13 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
+bool
+octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+{
+  bool retval = false;
+
 #if defined (HAVE_HDF5)
 
-bool
-octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
-{
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
@@ -564,7 +567,6 @@ octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   int rank = dv.length ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
-  bool retval = true;
   FloatNDArray m = array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
@@ -610,13 +612,19 @@ octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -672,10 +680,12 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 void
 octave_float_matrix::print_raw (std::ostream& os,

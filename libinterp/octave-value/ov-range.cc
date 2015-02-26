@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "ops.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
@@ -543,14 +544,19 @@ hdf5_make_range_type (hid_t num_type)
   return type_id;
 }
 
+#endif
+
 bool
-octave_range::save_hdf5 (hid_t loc_id, const char *name,
+octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                          bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hsize_t dimens[3];
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
-  bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
@@ -594,13 +600,19 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   H5Tclose (type_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_range::load_hdf5 (hid_t loc_id, const char *name)
+octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -652,10 +664,12 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_hid);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_range::as_mxArray (void) const

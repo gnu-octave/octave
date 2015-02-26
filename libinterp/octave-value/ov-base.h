@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-hdf5.h"
+#include "oct-hdf5-id.h"
 
 class Cell;
 class mxArray;
@@ -636,13 +636,11 @@ public:
   virtual bool load_binary (std::istream& is, bool swap,
                             oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
   virtual bool
-  save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
   virtual bool
-  load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   virtual int
   write (octave_stream& os, int block_size,
@@ -820,6 +818,9 @@ protected:
   octave_refcount<octave_idx_type> count;
 
   static const char *get_umap_name (unary_mapper_t);
+
+  void gripe_load (const char *type) const;
+  void gripe_save (const char *type) const;
 
 private:
 

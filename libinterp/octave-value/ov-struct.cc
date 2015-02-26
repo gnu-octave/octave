@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "mxarray.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -979,11 +980,11 @@ octave_struct::load_binary (std::istream& is, bool swap,
   return success;
 }
 
+bool
+octave_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
 #if defined (HAVE_HDF5)
 
-bool
-octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   hid_t data_hid = -1;
 
 #if HAVE_HDF5_18
@@ -1018,12 +1019,19 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   H5Gclose (data_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_struct::load_hdf5 (hid_t loc_id, const char *name)
+octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   hdf5_callback_data dsub;
 
@@ -1066,10 +1074,12 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name)
       retval = true;
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_struct::as_mxArray (void) const
@@ -1614,12 +1624,12 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
   return success;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name,
+octave_scalar_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                  bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   hid_t data_hid = -1;
 
 #if HAVE_HDF5_18
@@ -1654,12 +1664,19 @@ octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name,
   H5Gclose (data_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
+octave_scalar_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   hdf5_callback_data dsub;
 
@@ -1700,10 +1717,12 @@ octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
       retval = true;
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_scalar_struct::as_mxArray (void) const

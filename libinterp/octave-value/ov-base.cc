@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-map.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-lvalue.h"
 #include "oct-stream.h"
 #include "ops.h"
@@ -1090,10 +1091,8 @@ octave_base_value::load_binary (std::istream&, bool,
   return false;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_base_value::save_hdf5 (hid_t, const char *, bool)
+octave_base_value::save_hdf5 (octave_hdf5_id, const char *, bool)
 {
   gripe_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
 
@@ -1101,14 +1100,12 @@ octave_base_value::save_hdf5 (hid_t, const char *, bool)
 }
 
 bool
-octave_base_value::load_hdf5 (hid_t, const char *)
+octave_base_value::load_hdf5 (octave_hdf5_id, const char *)
 {
   gripe_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
 
   return false;
 }
-
-#endif
 
 int
 octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
@@ -1255,6 +1252,24 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
     return "unknown";
   else
     return names[umap];
+}
+
+void
+octave_base_value::gripe_load (const char *type) const
+{
+  warning_with_id
+    ("Octave:load-save-unavailable",
+     "%s: loading %s files not available in this version of Octave",
+     t_name.c_str (), type);
+}
+
+void
+octave_base_value::gripe_save (const char *type) const
+{
+  warning_with_id
+    ("Octave:load-save-unavailable",
+     "%s: saving %s files not available in this version of Octave",
+     t_name.c_str (), type);
 }
 
 octave_value

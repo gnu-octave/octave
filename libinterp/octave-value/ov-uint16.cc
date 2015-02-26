@@ -36,12 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "ops.h"
 #include "ov-base.h"
-
-#ifdef HAVE_HDF5
-#define HDF5_SAVE_TYPE H5T_NATIVE_UINT16
-#endif
 
 #include "ov-base-int.h"
 #include "ov-base-int.cc"

@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "ov-cell.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "ov-base-mat.h"
@@ -1065,11 +1066,11 @@ octave_cell::mex_get_data (void) const
   return matrix.mex_get_data ();
 }
 
+bool
+octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
 #if defined (HAVE_HDF5)
 
-bool
-octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
@@ -1156,14 +1157,21 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   H5Gclose (data_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_cell::load_hdf5 (hid_t loc_id, const char *name)
+octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
-  clear_cellstr_cache ();
-
   bool retval = false;
+
+#if defined (HAVE_HDF5)
+
+  clear_cellstr_cache ();
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -1260,10 +1268,12 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
       retval = true;
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 DEFUN (iscell, args, ,
        "-*- texinfo -*-\n\

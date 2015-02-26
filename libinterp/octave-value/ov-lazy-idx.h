@@ -203,7 +203,6 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-  // HDF5 functions not defined.
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -248,4 +247,3 @@ private:
 };
 
 #endif
-

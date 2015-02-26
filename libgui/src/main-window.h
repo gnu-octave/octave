@@ -133,7 +133,7 @@ public slots:
   void open_octave_packages_page (void);
   void open_agora_page (void);
   void open_contribute_page (void);
-  void open_developer_page (void);
+  void open_donate_page (void);
   void process_settings_dialog_request (const QString& desired_tab
                                                          = QString ());
 

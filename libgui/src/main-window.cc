@@ -636,13 +636,13 @@ main_window::open_agora_page (void)
 void
 main_window::open_contribute_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://octave.org/donate.html"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/contribute.html"));
 }
 
 void
-main_window::open_developer_page (void)
+main_window::open_donate_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://octave.org/get-involved.html"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/donate.html"));
 }
 
 void
@@ -1995,10 +1995,10 @@ main_window::construct_help_menu (QMenuBar *p)
             tr ("Share Code"), SLOT (open_agora_page ()));
 
   _contribute_action = add_action (help_menu, QIcon (),
-            tr ("Contribute to Octave"), SLOT (open_contribute_page ()));
+            tr ("Contribute"), SLOT (open_contribute_page ()));
 
   _developer_action = add_action (help_menu, QIcon (),
-            tr ("Octave Developer Resources"), SLOT (open_developer_page ()));
+            tr ("Donate to Octave"), SLOT (open_donate_page ()));
 
   help_menu->addSeparator ();
 

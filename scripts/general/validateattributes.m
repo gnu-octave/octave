@@ -265,14 +265,14 @@ function validateattributes (A, cls, attr, varargin)
       case "nonnegative",   problem = any (A(:) < 0);
       case "nonzero",       problem = any (A(:) == 0);
       case "positive",      problem = any (A(:) <= 0);
-      case "decreasing",    problem = (any (isnan (A(:))) ||
-                                       any (diff (A(:)) >= 0));
-      case "increasing",    problem = (any (isnan (A(:))) ||
-                                       any (diff (A(:)) <= 0));
-      case "nondecreasing", problem = (any (isnan (A(:))) ||
-                                       any (diff (A(:)) <  0));
-      case "nonincreasing", problem = (any (isnan (A(:))) ||
-                                       any (diff (A(:)) >  0));
+      case "decreasing",    problem = (any (isnan (A(:)))
+                                       || any (diff (A(:)) >= 0));
+      case "increasing",    problem = (any (isnan (A(:)))
+                                       || any (diff (A(:)) <= 0));
+      case "nondecreasing", problem = (any (isnan (A(:)))
+                                       || any (diff (A(:)) <  0));
+      case "nonincreasing", problem = (any (isnan (A(:)))
+                                       || any (diff (A(:)) >  0));
       case "size",
         A_size = size (A);
         w_size = attr{idx++};

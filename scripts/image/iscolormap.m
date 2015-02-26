@@ -35,9 +35,9 @@ function retval = iscolormap (cmap)
     print_usage;
   endif
 
-  retval = (isnumeric (cmap) && isreal (cmap) &&
-            ndims (cmap) == 2 && columns (cmap) == 3 && isa (cmap, "double") &&
-            min (cmap(:)) >= 0 && max (cmap(:)) <= 1);
+  retval = (isnumeric (cmap) && isreal (cmap) && ndims (cmap) == 2
+            && columns (cmap) == 3 && isa (cmap, "double")
+            && min (cmap(:)) >= 0 && max (cmap(:)) <= 1);
 
 endfunction
 

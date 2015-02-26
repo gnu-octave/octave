@@ -69,8 +69,8 @@ function run_all_tests (directory, do_class_dirs)
   fflush (stdout);
   for i = 1:numel (flist)
     f = flist{i};
-    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
-        (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
+    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m"))
+        || (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       ff = fullfile (directory, f);
       if (has_tests (ff))
         print_test_file_name (f);

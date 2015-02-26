@@ -183,8 +183,8 @@ function retval = datestr (date, f = [], p = [])
     if (columns (date) == 6)
       ## Make sure that the input really is a datevec.
       maxdatevec = [Inf, 12, 31, 23, 59, 60];
-      if (any (max (date, 1) > maxdatevec) ||
-          any (date(:,1:5) != floor (date(:,1:5))))
+      if (any (max (date, 1) > maxdatevec)
+          || any (date(:,1:5) != floor (date(:,1:5))))
         v = datevec (date, p);
       endif
     endif

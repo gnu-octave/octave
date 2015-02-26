@@ -73,8 +73,8 @@ function varargout = __imread__ (filename, varargin)
   indexes = find (indexes);
   if (indexes)
     options.index = varargin{indexes+1};
-    if (! is_valid_index_option (options.index) &&
-        ! (ischar (options.index) && strcmpi (options.index, "all")))
+    if (! is_valid_index_option (options.index)
+        && ! (ischar (options.index) && strcmpi (options.index, "all")))
       error ("imread: value for %s must be a vector or the string `all'");
     endif
   endif

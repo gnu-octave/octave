@@ -190,8 +190,8 @@ function varargout = annotation (varargin)
         y = varargin{2};
         varargin(1:2) = [];
 
-        if (isnumeric (x) && isnumeric (y) &&
-            length (x) == 2 && length (y) == 2)
+        if (isnumeric (x) && isnumeric (y)
+            && length (x) == 2 && length (y) == 2)
           lims = [x(1) y(1) diff(x) diff(y)];
         else
           error ("annotation: expect 2 elements vectors for X and Y");

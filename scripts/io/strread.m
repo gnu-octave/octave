@@ -245,8 +245,8 @@ function varargout = strread (str, format = "%f", varargin)
           case "matlab"
             [comment_start, comment_end] = deal ("%" , "eol_char");
           otherwise
-            if (ischar (varargin{n+1}) ||
-               (numel (varargin{n+1}) == 1 && iscellstr (varargin{n+1})))
+            if (ischar (varargin{n+1})
+                || (numel (varargin{n+1}) == 1 && iscellstr (varargin{n+1})))
               [comment_start, comment_end] = deal (char (varargin{n+1}), "eol_char");
             elseif (iscellstr (varargin{n+1}) && numel (varargin{n+1}) == 2)
               [comment_start, comment_end] = deal (varargin{n+1}{:});

@@ -52,8 +52,7 @@ function value = getappdata (h, name)
     for i = 1:numel (h)
       value{i} = [];
       pval = get (h(i));
-      if (isfield (pval, "__appdata__") &&
-          isfield (pval.__appdata__, name))
+      if (isfield (pval, "__appdata__") && isfield (pval.__appdata__, name))
         value{i} = pval.__appdata__.(name);
       endif
     endfor

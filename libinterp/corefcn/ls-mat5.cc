@@ -1279,8 +1279,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       warning ("load: unable to reconstruct object inheritance");
 
                     tc = cls;
-                    if (load_path::find_method (classname, "loadobj") !=
-                        std::string ())
+                    if (load_path::find_method (classname, "loadobj")
+                        != std::string ())
                       {
                         octave_value_list tmp = feval ("loadobj", tc, 1);
 

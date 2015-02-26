@@ -6145,8 +6145,8 @@ static std::set<double> updating_aspectratios;
 void
 axes::properties::update_aspectratios (void)
 {
-  if (updating_aspectratios.find (get___myhandle__ ().value ()) !=
-      updating_aspectratios.end ())
+  if (updating_aspectratios.find (get___myhandle__ ().value ())
+      != updating_aspectratios.end ())
     return;
 
   Matrix xlimits = get_xlim ().matrix_value ();
@@ -7172,8 +7172,8 @@ void
 axes::update_axis_limits (const std::string& axis_type,
                           const graphics_handle& h)
 {
-  if (updating_axis_limits.find (get_handle ().value ()) !=
-      updating_axis_limits.end ())
+  if (updating_axis_limits.find (get_handle ().value ())
+      != updating_axis_limits.end ())
     return;
 
   Matrix kids = Matrix (1, 1, h.value ());

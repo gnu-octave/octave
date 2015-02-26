@@ -98,9 +98,8 @@ ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
           if (1 <= idx && idx <= lc)
             {
               list->item (idx-1)->setSelected (true);
-              if (i == 0
-                  && list->selectionMode () ==
-                        QAbstractItemView::SingleSelection)
+              if (i == 0 && (list->selectionMode ()
+                             == QAbstractItemView::SingleSelection))
                 break;
             }
         }

@@ -92,7 +92,7 @@ Undocumented internal function.\n\
           volatile const octave_idx_type inc = rows ? 1 : nyr;
           volatile octave_idx_type k = 0;
 
-          for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
+          for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
               F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
                                        ymat.data () + k * inc,
@@ -139,7 +139,7 @@ Undocumented internal function.\n\
           volatile const octave_idx_type inc = rows ? 1 : nyr;
           volatile octave_idx_type k = 0;
 
-          for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
+          for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
               F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
                                          ymat.data () + k * inc,

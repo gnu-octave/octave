@@ -53,6 +53,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-gui.h"
 #include "thread-manager.h"
 
+#include "builtin-defun-decls.h"
+#include "__init_qt__.h"
+
 // Allow the Octave interpreter to start as in CLI mode with a
 // QApplication context so that it can use Qt for things like plotting
 // and UI widgets.
@@ -106,6 +109,10 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
   // Installing our handler suppresses the messages.
   if (show_gui_msgs.empty ())
     qInstallMsgHandler (message_handler);
+
+  install___init_qt___functions ();
+
+  Fregister_graphics_toolkit (ovl ("qt"));
 
   if (start_gui)
     {

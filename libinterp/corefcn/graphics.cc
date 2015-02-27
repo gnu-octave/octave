@@ -11070,7 +11070,7 @@ undocumented.\n\
               if (! error_state)
                 {
                   size_t pos = file.find_first_not_of ("|");
-                  if (pos > 0)
+                  if (pos != std::string::npos)
                     file = file.substr (pos);
                   else
                     {

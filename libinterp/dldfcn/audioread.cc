@@ -331,7 +331,10 @@ Comment.\n\
   if (error_state)
     return retval;
 
-  std::string ext = filename.substr (filename.find_last_of (".") + 1);
+  std::string ext;
+  std::size_t dotpos = filename.find_last_of (".");
+  if (dotpos != std::string::npos)
+    ext = filename.substr (dotpos + 1);
   std::transform (ext.begin (), ext.end (), ext.begin (), ::tolower);
 
   sf_count_t items_to_write = audio.rows () * audio.columns ();

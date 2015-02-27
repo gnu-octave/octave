@@ -1280,9 +1280,10 @@ symbol_table::find_function (const std::string& name,
       std::string dispatch_type =
         name.substr (1, name.find_first_of (file_ops::dir_sep_str ()) - 1);
 
-      std::string method =
-        name.substr (name.find_last_of (file_ops::dir_sep_str ()) + 1,
-                     std::string::npos);
+      std::string method;
+      size_t pos = name.find_last_of (file_ops::dir_sep_str ());
+      if (pos != std::string::npos)
+        method = name.substr (pos + 1);
 
       retval = find_method (method, dispatch_type);
     }

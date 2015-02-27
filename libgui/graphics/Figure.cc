@@ -282,6 +282,10 @@ void Figure::createFigureToolBarAndMenuBar (void)
   connect (toggle_grid, SIGNAL (triggered (void)),
            this, SLOT (toggleGrid (void)));
 
+  QAction *auto_axes = m_figureToolBar->addAction ("Autoscale");
+  connect (auto_axes, SIGNAL (triggered (void)),
+           this, SLOT (autoAxes (void)));
+
   m_menuBar = new MenuBar (win);
   win->setMenuBar (m_menuBar);
 
@@ -858,6 +862,14 @@ void Figure::toggleGrid (void)
 
   if (canvas)
     canvas->toggleGrid (m_handle);
+}
+  
+void Figure::autoAxes (void)
+{
+  Canvas* canvas = m_container->canvas (m_handle);
+
+  if (canvas)
+    canvas->autoAxes (m_handle);
 }
   
 }; // namespace QtHandles

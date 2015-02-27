@@ -123,6 +123,7 @@ private slots:
   void updateContainer (void);
   void toggleAxes (void);
   void toggleGrid (void);
+  void autoAxes (void);
 
 signals:
   void asyncUpdate (void);

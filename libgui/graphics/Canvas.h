@@ -67,6 +67,7 @@ public:
 
   virtual void toggleAxes (const graphics_handle& handle) = 0;
   virtual void toggleGrid (const graphics_handle& handle) = 0;
+  virtual void autoAxes (const graphics_handle& handle) = 0;
 
 protected:
   virtual void draw (const graphics_handle& handle) = 0;
@@ -85,6 +86,7 @@ protected:
 
   void canvasToggleAxes (const graphics_handle& handle);
   void canvasToggleGrid (const graphics_handle& handle);
+  void canvasAutoAxes (const graphics_handle& handle);
   void canvasPaintEvent (void);
   void canvasMouseDoubleClickEvent (QMouseEvent* event);
   void canvasMouseMoveEvent (QMouseEvent* event);

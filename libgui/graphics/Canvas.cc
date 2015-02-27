@@ -199,6 +199,44 @@ void Canvas::canvasToggleGrid (const graphics_handle& handle)
     }
 }
 
+static void
+autoscale_axes (axes::properties& ap)
+{
+  ap.clear_zoom_stack ();
+
+  ap.set_xlimmode ("auto");
+  ap.set_ylimmode ("auto");
+  ap.set_zlimmode ("auto");
+}
+
+void Canvas::canvasAutoAxes (const graphics_handle& handle)
+{
+  gh_manager::auto_lock lock;
+
+  graphics_object go = gh_manager::get_object (handle);
+
+  if (go.valid_object ())
+    {
+      figure::properties& fp = Utils::properties<figure> (go);
+
+      graphics_handle ah = fp.get_currentaxes ();
+
+      graphics_object ax = gh_manager::get_object (ah);
+
+      if (ax.valid_object ())
+        {
+          axes::properties& ap = Utils::properties<axes> (ax);
+
+          if (ap.handlevisibility_is ("on") && ap.is_visible ())
+            {
+              autoscale_axes (ap);
+
+              redraw (true);
+            }
+        }
+    }
+}
+
 void Canvas::canvasPaintEvent (void)
 {
   if (! m_redrawBlocked)
@@ -397,10 +435,7 @@ void Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
                   axes::properties& ap =
                     Utils::properties<axes> (axesObj);
 
-                  ap.clear_zoom_stack ();
-                  ap.set_xlimmode ("auto");
-                  ap.set_ylimmode ("auto");
-                  ap.set_zlimmode ("auto");
+                  autoscale_axes (ap);
                 }
             }
 
@@ -573,10 +608,7 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
                           axes::properties& ap =
                             Utils::properties<axes> (axesObj);
 
-                          ap.clear_zoom_stack ();
-                          ap.set_xlimmode ("auto");
-                          ap.set_ylimmode ("auto");
-                          ap.set_zlimmode ("auto");
+                          autoscale_axes (ap);
                         }
                       break;
 

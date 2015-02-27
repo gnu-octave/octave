@@ -70,6 +70,11 @@ void GLCanvas::toggleGrid (const graphics_handle& gh)
   canvasToggleGrid (gh);
 }
 
+void GLCanvas::autoAxes (const graphics_handle& gh)
+{
+  canvasAutoAxes (gh);
+}
+
 graphics_object GLCanvas::selectFromAxes (const graphics_object& ax,
                                           const QPoint& pt)
 {

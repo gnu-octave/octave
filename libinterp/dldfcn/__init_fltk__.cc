@@ -1588,14 +1588,17 @@ private:
                     double wheel_zoom_speed = ap.get_mousewheelzoom ();
 
                     // Determine if we're zooming in or out.
-                    const double factor =
-                      (Fl::event_dy () > 0) ? 1 / (1.0 - wheel_zoom_speed)
-                      : 1.0 - wheel_zoom_speed;
+                    const double factor = (Fl::event_dy () < 0
+                                           ? 1 / (1.0 - wheel_zoom_speed)
+                                           : 1.0 - wheel_zoom_speed);
+
 
                     // Get the point we're zooming about.
                     double x1, y1;
                     pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (),
                                x1, y1);
+
+                    // FIXME: should we only zoom about point for 2D plots?
 
                     ap.zoom_about_point ("both", x1, y1, factor, false);
                     mark_modified ();

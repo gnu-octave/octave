@@ -179,8 +179,11 @@ static std::string mouse_mode_to_string (MouseMode mode)
     case RotateMode:
       return "rotate";
 
-    case ZoomMode:
-      return "zoom";
+    case ZoomInMode:
+      return "zoom in";
+
+    case ZoomOutMode:
+      return "zoom out";
 
     case PanMode:
       return "pan";
@@ -204,8 +207,10 @@ static MouseMode mouse_mode_from_string (const std::string& mode)
     return NoMode;
   else if (mode == "rotate")
     return RotateMode;
-  else if (mode == "zoom")
-    return ZoomMode;
+  else if (mode == "zoom in")
+    return ZoomInMode;
+  else if (mode == "zoom out")
+    return ZoomOutMode;
   else if (mode == "pan")
     return PanMode;
   else if (mode == "text")
@@ -243,6 +248,15 @@ MouseMode Figure::mouseMode (void)
   const figure::properties& fp = properties<figure> ();
 
   std::string mode = fp.get___mouse_mode__ ();
+
+  if (mode == "zoom")
+    {
+      octave_scalar_map zm = fp.get___zoom_mode__ ().scalar_map_value ();
+
+      std::string direction = zm.getfield ("Direction").string_value ();
+
+      mode += " " + direction;
+    }    
 
   return mouse_mode_from_string (mode);
 }

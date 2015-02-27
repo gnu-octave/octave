@@ -42,10 +42,11 @@ enum MouseMode
 
   NoMode        = 0,
   RotateMode    = 1,
-  ZoomMode      = 2,
-  PanMode       = 3,
-  TextMode      = 4,
-  SelectMode    = 5
+  ZoomInMode    = 2,
+  ZoomOutMode   = 3,
+  PanMode       = 4,
+  TextMode      = 5,
+  SelectMode    = 6
 };
 
 class Container;

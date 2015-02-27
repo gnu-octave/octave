@@ -38,8 +38,14 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
 {
   m_actions.append (new QAction (QIcon (":/images/rotate.png"),
                                  tr ("Rotate"), this));
-  m_actions.append (new QAction (QIcon (":/images/zoom.png"),
-                                 tr ("Zoom"), this));
+  QAction *zoom_in = new QAction ("Z+", this);
+  zoom_in->setToolTip (tr ("Zoom In")); 
+  m_actions.append (zoom_in);
+
+  QAction *zoom_out = new QAction ("Z-", this);
+  zoom_out->setToolTip (tr ("Zoom Out")); 
+  m_actions.append (zoom_out);
+
   m_actions.append (new QAction (QIcon (":/images/pan.png"),
                                  tr ("Pan"), this));
   m_actions.append (new QAction (QIcon::fromTheme ("insert-text"),
@@ -47,8 +53,8 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
   m_actions.append (new QAction (QIcon (":/images/select.png"),
                                  tr ("Select"), this));
 
-  m_actions[3]->setEnabled (false);
   m_actions[4]->setEnabled (false);
+  m_actions[5]->setEnabled (false);
 
   foreach (QAction* a, m_actions)
     {

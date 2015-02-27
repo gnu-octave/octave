@@ -71,7 +71,8 @@ void Canvas::setCursor (MouseMode mode)
           w->setCursor (Qt::OpenHandCursor);
           break;
 
-        case ZoomMode:
+        case ZoomInMode:
+        case ZoomOutMode:
           // FIXME: distinguish zoom in/out.
           w->setCursor (QBitmap (":/images/zoom.png"));
           break;
@@ -206,7 +207,7 @@ void Canvas::canvasPaintEvent (void)
 
       draw (m_handle);
 
-      if (m_mouseMode == ZoomMode && m_mouseAxes.ok ())
+      if (m_mouseMode == ZoomInMode && m_mouseAxes.ok ())
         drawZoomBox (m_mouseAnchor, m_mouseCurrent);
     }
 }
@@ -235,7 +236,8 @@ void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
           }
           break;
 
-        case ZoomMode:
+        case ZoomInMode:
+        case ZoomOutMode:
           m_mouseCurrent = event->pos ();
           redraw (true);
           break;
@@ -546,7 +548,8 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
 
         case PanMode:
         case RotateMode:
-        case ZoomMode:
+        case ZoomInMode:
+        case ZoomOutMode:
           if (axesObj)
             {
               bool redraw_figure = true;
@@ -609,7 +612,8 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
 
 void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 {
-  if (m_mouseMode == ZoomMode && m_mouseAxes.ok ())
+  if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
+      && m_mouseAxes.ok ())
     {
       gh_manager::auto_lock lock;
       graphics_object ax = gh_manager::get_object (m_mouseAxes);
@@ -626,9 +630,7 @@ void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 
           if (m_mouseAnchor == event->pos ())
             {
-              // FIXME: check direction here.
-
-              double factor = 2.0;
+              double factor = m_mouseMode == ZoomInMode ? 2.0 : 0.5;
 
               ap.zoom (zm, factor);
             }
@@ -720,7 +722,10 @@ void Canvas::canvasWheelEvent (QWheelEvent* event)
 
               if (zoom_enabled (figObj))
                 {
-                  newMouseMode = ZoomMode;
+                  if (event->delta () > 0)
+                    newMouseMode = ZoomInMode;
+                  else
+                    newMouseMode = ZoomOutMode;
 
                   mode = zoom_mode (figObj);
                 }
@@ -736,7 +741,8 @@ void Canvas::canvasWheelEvent (QWheelEvent* event)
 
           switch (newMouseMode)
             {
-            case ZoomMode:
+            case ZoomInMode:
+            case ZoomOutMode:
               {
                 axes::properties& ap = Utils::properties<axes> (axesObj);
 
@@ -744,21 +750,13 @@ void Canvas::canvasWheelEvent (QWheelEvent* event)
                 double wheel_zoom_speed = ap.get_mousewheelzoom ();
 
                 // Determine if we're zooming in or out.
-                double factor = (event->delta () > 0
+                double factor = (newMouseMode == ZoomInMode
                                  ? 1 / (1.0 - wheel_zoom_speed)
                                  : 1.0 - wheel_zoom_speed);
 
-                ap.zoom (mode, factor);
+                // FIXME: should we zoom about point for 2D plots?
 
-#if 0
-                Matrix view = ap.get_view ().matrix_value ();
-                if (view(1) != 90)
-                  {
-                    Matrix zlimits = ap.get_zlim ().matrix_value ();
-                    zlimits = factor * zlimits;
-                    ap.set_zlim (zlimits);
-                  }
-#endif
+                ap.zoom (mode, factor);
               }
               break;
 

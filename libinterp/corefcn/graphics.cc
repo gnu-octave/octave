@@ -1810,27 +1810,62 @@ figure::properties::set_toolkit (const graphics_toolkit& b)
 }
 
 void
-figure::properties::set___mouse_mode__ (const octave_value& val)
+figure::properties::set___mouse_mode__ (const octave_value& val_arg)
 {
   if (! error_state)
     {
-      if (__mouse_mode__.set (val, true))
+      std::string direction = "in";
+
+      octave_value val = val_arg;
+
+      if (val.is_string ())
         {
-          std::string mode = __mouse_mode__.current_value ();
+          std::string modestr = val.string_value ();
 
-          octave_scalar_map pm = get___pan_mode__ ().scalar_map_value ();
-          pm.setfield ("Enable", mode == "pan" ? "on" : "off");
-          set___pan_mode__ (pm);
+          if (modestr == "zoom in")
+            {
+              val = modestr = "zoom";
+              direction = "in";
+            }
+          else if (modestr == "zoom out")
+            {
+              val = modestr = "zoom";
+              direction = "out";
+            }
 
-          octave_scalar_map rm = get___rotate_mode__ ().scalar_map_value ();
-          rm.setfield ("Enable", mode == "rotate" ? "on" : "off");
-          set___rotate_mode__ (rm);
+          if (__mouse_mode__.set (val, true))
+            {
+              std::string mode = __mouse_mode__.current_value ();
 
-          octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
-          zm.setfield ("Enable", mode == "zoom" ? "on" : "off");
-          set___zoom_mode__ (zm);
+              octave_scalar_map pm = get___pan_mode__ ().scalar_map_value ();
+              pm.setfield ("Enable", mode == "pan" ? "on" : "off");
+              set___pan_mode__ (pm);
 
-          mark_modified ();
+              octave_scalar_map rm = get___rotate_mode__ ().scalar_map_value ();
+              rm.setfield ("Enable", mode == "rotate" ? "on" : "off");
+              set___rotate_mode__ (rm);
+
+              octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
+              zm.setfield ("Enable", mode == "zoom" ? "on" : "off");
+              zm.setfield ("Direction", direction);
+              set___zoom_mode__ (zm);
+
+              mark_modified ();
+            }
+          else if (modestr == "zoom")
+            {
+              octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
+              std::string curr_direction
+                = zm.getfield ("Direction").string_value ();
+
+              if (direction != curr_direction)
+                {
+                  zm.setfield ("Direction", direction);
+                  set___zoom_mode__ (zm);
+
+                  mark_modified ();
+                }
+            }
         }
     }
 }
@@ -7572,8 +7607,8 @@ do_zoom (double val, double factor, const Matrix& lims, bool is_logscale)
     }
 
   // Perform the zooming
-  lo = val + factor * (lo - val);
-  hi = val + factor * (hi - val);
+  lo = val + (lo - val) / factor;
+  hi = val + (hi - val) / factor;
 
   if (is_logscale)
     {

@@ -80,15 +80,15 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           // outputs the tex-file and the graphic filename to be included is
           // extracted from old_print_cmd.
           std::string include_graph;
-          std::size_t found_redirect = old_print_cmd.find (">");
+          size_t found_redirect = old_print_cmd.find (">");
           if (found_redirect != std::string::npos)
             include_graph = old_print_cmd.substr (found_redirect + 1);
           else
             include_graph = old_print_cmd;
-          std::size_t n_begin = include_graph.find_first_not_of (" ");
+          size_t n_begin = include_graph.find_first_not_of (" ");
           if (n_begin != std::string::npos)
             {
-              std::size_t n_end = include_graph.find_last_not_of (" ");
+              size_t n_end = include_graph.find_last_not_of (" ");
               include_graph = include_graph.substr (n_begin,
                                                     n_end - n_begin + 1);
             }

@@ -304,7 +304,7 @@ public:
             // End of submenu? Pop back one level.
             if (! m->label ())
               {
-                std::size_t idx = menupath.find_last_of ("/");
+                size_t idx = menupath.find_last_of ("/");
                 if (idx != std::string::npos)
                   menupath.erase (idx);
                 else
@@ -519,8 +519,8 @@ public:
             if (item)
               {
                 //avoid duplicate menulabels
-                std::size_t idx1 = fltk_label.find_last_of ("(");
-                std::size_t idx2 = fltk_label.find_last_of (")");
+                size_t idx1 = fltk_label.find_last_of ("(");
+                size_t idx2 = fltk_label.find_last_of (")");
                 int len = idx2 - idx1;
                 int val = 1;
                 if (len > 0)

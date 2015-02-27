@@ -9,34 +9,41 @@ octave_gui_ICONS = \
   src/icons/arrow_left.png \
   src/icons/arrow_up.png \
   src/icons/arrow_down.png \
-  src/icons/artsbuilderexecute.png \
   src/icons/bookmark.png \
-  src/icons/bp_next.png \
-  src/icons/bp_prev.png \
-  src/icons/bp_rm_all.png \
-  src/icons/bp_toggle.png \
-  src/icons/configure.png \
-  src/icons/db_cont.png \
-  src/icons/db_step_in.png \
-  src/icons/db_step_out.png \
-  src/icons/db_step.png \
-  src/icons/db_stop.png \
-  src/icons/editcopy.png \
-  src/icons/editcut.png \
-  src/icons/editdelete.png \
-  src/icons/editpaste.png \
-  src/icons/fileclose.png \
-  src/icons/filenew.png \
-  src/icons/fileopen.png \
-  src/icons/fileprint.png \
-  src/icons/filesaveas.png \
-  src/icons/filesave.png \
-  src/icons/find.png \
-  src/icons/findf.png \
-  src/icons/gear.png \
-  src/icons/folder_documents.png \
-  src/icons/folder_new.png \
+  src/icons/bp-next.png \
+  src/icons/bp-prev.png \
+  src/icons/bp-rm-all.png \
+  src/icons/bp-toggle.png \
+  src/icons/db-cont.png \
+  src/icons/db-step-in.png \
+  src/icons/db-step-out.png \
+  src/icons/db-step.png \
+  src/icons/db-stop.png \
+  src/icons/applications-system.png \
+  src/icons/document-new.png \
+  src/icons/document-open.png \
+  src/icons/document-print.png \
+  src/icons/document-save.png \
+  src/icons/document-save-as.png \
+  src/icons/edit-copy.png \
+  src/icons/edit-cut.png \
+  src/icons/edit-delete.png \
+  src/icons/edit-find.png \
+  src/icons/edit-find-replace.png \
+  src/icons/edit-paste.png \
+  src/icons/edit-redo.png \
+  src/icons/edit-undo.png \
   src/icons/folder.png \
+  src/icons/folder-new.png \
+  src/icons/go-first.png \
+  src/icons/go-last.png \
+  src/icons/go-up.png \
+  src/icons/preferences-system.png \
+  src/icons/system-run.png \
+  src/icons/user-home.png \
+  src/icons/view-refresh.png \
+  src/icons/zoom-in.png \
+  src/icons/zoom-out.png \
   src/icons/graphic_logo_DocumentationDockWidget.png \
   src/icons/graphic_logo_FileEditor.png \
   src/icons/graphic_logo_FilesDockWidget.png \
@@ -45,7 +52,6 @@ octave_gui_ICONS = \
   src/icons/graphic_logo_TerminalDockWidget.png \
   src/icons/graphic_logo_WorkspaceView.png \
   src/icons/graphic_logo_ReleaseWidget.png \
-  src/icons/home.png \
   src/icons/icons_license \
   src/icons/letter_logo_DocumentationDockWidget.png \
   src/icons/letter_logo_FileEditor.png \
@@ -56,12 +62,7 @@ octave_gui_ICONS = \
   src/icons/letter_logo_WorkspaceView.png \
   src/icons/letter_logo_ReleaseWidget.png \
   src/icons/logo.png \
-  src/icons/ok.png \
   src/icons/redled.png \
-  src/icons/redo.png \
-  src/icons/reload.png \
-  src/icons/search.png \
-  src/icons/undo.png \
   src/icons/up.png \
   src/icons/warning.png \
   src/icons/widget-close.png \
@@ -69,9 +70,7 @@ octave_gui_ICONS = \
   src/icons/widget-undock.png \
   src/icons/widget-close-light.png \
   src/icons/widget-dock-light.png \
-  src/icons/widget-undock-light.png \
-  src/icons/zoom-in.png \
-  src/icons/zoom-out.png
+  src/icons/widget-undock-light.png
 
 octave_gui_MOC =
 

@@ -305,3 +305,13 @@ resource_manager::terminal_default_colors (void)
 {
   return QTerminal::default_colors ();
 }
+
+QIcon
+resource_manager::do_icon (const QString& icon_name, bool fallback)
+{
+  if (fallback)
+    return QIcon::fromTheme (icon_name,
+                             QIcon (":/actions/icons/" + icon_name + ".png"));
+  else
+    return QIcon::fromTheme (icon_name);
+}

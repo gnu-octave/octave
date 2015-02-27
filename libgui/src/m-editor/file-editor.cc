@@ -1288,48 +1288,45 @@ file_editor::construct (void)
 
   _fileMenu->addSeparator ();
 
-  _save_action = add_action (_fileMenu, QIcon (":/actions/icons/filesave.png"),
+  _save_action = add_action (_fileMenu, resource_manager::icon ("document-save"),
           tr ("&Save File"), SLOT (request_save_file (bool)));
-  _save_as_action = add_action (_fileMenu, QIcon (":/actions/icons/filesaveas.png"),
+  _save_as_action = add_action (_fileMenu, resource_manager::icon ("document-save-as"),
           tr ("Save File &As..."), SLOT (request_save_file_as (bool)));
 
   _fileMenu->addSeparator ();
 
-  _close_action = add_action (_fileMenu,
-          QIcon::fromTheme("window-close",QIcon (":/actions/icons/fileclose.png")),
+  _close_action = add_action (_fileMenu, resource_manager::icon ("window-close",false),
           tr ("&Close"), SLOT (request_close_file (bool)));
-  _close_all_action = add_action (_fileMenu,
-          QIcon::fromTheme("window-close", QIcon (":/actions/icons/fileclose.png")),
+  _close_all_action = add_action (_fileMenu, resource_manager::icon ("window-close",false),
           tr ("Close All"), SLOT (request_close_all_files (bool)));
-  _close_others_action = add_action (_fileMenu,
-          QIcon::fromTheme("window-close", QIcon (":/actions/icons/fileclose.png")),
+  _close_others_action = add_action (_fileMenu, resource_manager::icon ("window-close",false),
           tr ("Close Other Files"), SLOT (request_close_other_files (bool)));
 
   _fileMenu->addSeparator ();
 
-  _print_action = add_action (_fileMenu, QIcon (":/actions/icons/fileprint.png"),
+  _print_action = add_action (_fileMenu, resource_manager::icon ("document-print"),
           tr ("Print..."), SLOT (request_print_file (bool)));
 
   // edit menu
 
   QMenu *editMenu = m_add_menu (_menu_bar, tr ("&Edit"));
 
-  _undo_action = add_action (editMenu, QIcon (":/actions/icons/undo.png"),
+  _undo_action = add_action (editMenu, resource_manager::icon ("edit-undo"),
           tr ("&Undo"), SLOT (request_undo (bool)));
   _undo_action->setEnabled (false);
-  _redo_action = add_action (editMenu, QIcon (":/actions/icons/redo.png"),
+  _redo_action = add_action (editMenu, resource_manager::icon ("edit-redo"),
           tr ("&Redo"), SLOT (request_redo (bool)));
   _redo_action->setEnabled (false);
 
   editMenu->addSeparator ();
 
-  _copy_action = add_action (editMenu, QIcon (":/actions/icons/editcopy.png"),
+  _copy_action = add_action (editMenu, resource_manager::icon ("edit-copy"),
           tr ("&Copy"), SLOT (request_copy (bool)));
   _copy_action->setEnabled (false);
-  _cut_action = add_action (editMenu, QIcon (":/actions/icons/editcut.png"),
+  _cut_action = add_action (editMenu, resource_manager::icon ("edit-cut"),
           tr ("Cu&t"), SLOT (request_cut (bool)));
   _cut_action->setEnabled (false);
-  _paste_action = add_action (editMenu, QIcon (":/actions/icons/editpaste.png"),
+  _paste_action = add_action (editMenu, resource_manager::icon ("edit-paste"),
           tr ("Paste"), SLOT (request_paste (bool)));
 
   editMenu->addSeparator ();
@@ -1339,7 +1336,7 @@ file_editor::construct (void)
 
   editMenu->addSeparator ();
 
-  _find_action = add_action (editMenu, QIcon (":/actions/icons/find.png"),
+  _find_action = add_action (editMenu, resource_manager::icon ("edit-find-replace"),
           tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
   editMenu->addSeparator ();
@@ -1423,10 +1420,10 @@ file_editor::construct (void)
 
   _edit_nav_menu->addSeparator ();
 
-  _next_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
-          tr ("&Next Bookmark"), SLOT (request_next_bookmark (bool)));
   _previous_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
           tr ("Pre&vious Bookmark"), SLOT (request_previous_bookmark (bool)));
+  _next_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+          tr ("&Next Bookmark"), SLOT (request_next_bookmark (bool)));
   _toggle_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
           tr ("Toggle &Bookmark"), SLOT (request_toggle_bookmark (bool)));
   _remove_bookmark_action = add_action (_edit_nav_menu, QIcon (),
@@ -1434,11 +1431,9 @@ file_editor::construct (void)
 
   editMenu->addSeparator ();
 
-  _preferences_action = add_action (editMenu,
-          QIcon (":/actions/icons/configure.png"),
+  _preferences_action = add_action (editMenu, resource_manager::icon ("preferences-system"),
           tr ("&Preferences..."), SLOT (request_preferences (bool)));
-  _styles_preferences_action = add_action (editMenu,
-          QIcon (":/actions/icons/configure.png"),
+  _styles_preferences_action = add_action (editMenu,  resource_manager::icon ("preferences-system"),
           tr ("&Styles Preferences..."), SLOT (request_styles_preferences (bool)));
 
   // view menu
@@ -1469,11 +1464,11 @@ file_editor::construct (void)
 
   view_menu->addSeparator ();
 
-  _zoom_in_action = add_action (view_menu, QIcon (),
+  _zoom_in_action = add_action (view_menu, resource_manager::icon ("zoom-in"),
           tr ("Zoom &In"), SLOT (zoom_in (bool)));
-  _zoom_out_action = add_action (view_menu, QIcon (),
+  _zoom_out_action = add_action (view_menu, resource_manager::icon ("zoom-out"),
           tr ("Zoom &Out"), SLOT (zoom_out (bool)));
-  _zoom_normal_action = add_action (view_menu, QIcon (),
+  _zoom_normal_action = add_action (view_menu,  QIcon (),
           tr ("&Normal Size"), SLOT (zoom_normal (bool)));
 
   _menu_bar->addMenu (view_menu);
@@ -1483,16 +1478,16 @@ file_editor::construct (void)
   _debug_menu = m_add_menu (_menu_bar, tr ("&Debug"));
 
   _toggle_breakpoint_action = add_action (_debug_menu,
-          QIcon (":/actions/icons/bp_toggle.png"), tr ("Toggle &Breakpoint"),
+          resource_manager::icon ("bp-toggle"), tr ("Toggle &Breakpoint"),
           SLOT (request_toggle_breakpoint (bool)));
   _next_breakpoint_action = add_action (_debug_menu,
-          QIcon (":/actions/icons/bp_next.png"), tr ("&Next Breakpoint"),
+          resource_manager::icon ("bp-next"), tr ("&Next Breakpoint"),
           SLOT (request_next_breakpoint (bool)));
   _previous_breakpoint_action = add_action (_debug_menu,
-          QIcon (":/actions/icons/bp_prev.png"), tr ("Pre&vious Breakpoint"),
+          resource_manager::icon ("bp-prev"), tr ("Pre&vious Breakpoint"),
           SLOT (request_previous_breakpoint (bool)));
   _remove_all_breakpoints_action = add_action (_debug_menu,
-          QIcon (":/actions/icons/bp_rm_all.png"), tr ("&Remove All Breakpoints"),
+          resource_manager::icon ("bp-rm-all"), tr ("&Remove All Breakpoints"),
           SLOT (request_remove_breakpoint (bool)));
 
   _debug_menu->addSeparator ();
@@ -1503,7 +1498,7 @@ file_editor::construct (void)
 
   QMenu *_run_menu = m_add_menu (_menu_bar, tr ("&Run"));
 
-  _run_action = add_action (_run_menu, QIcon (":/actions/icons/artsbuilderexecute.png"),
+  _run_action = add_action (_run_menu,  resource_manager::icon ("system-run"),
           tr ("Save File and Run"), SLOT (request_run_file (bool)));
   _run_selection_action = add_action (_run_menu, QIcon (),
           tr ("Run &Selection"), SLOT (request_context_run (bool)));
@@ -1536,8 +1531,8 @@ file_editor::construct (void)
   _tool_bar->addAction (_run_action);
   _tool_bar->addSeparator ();
   _tool_bar->addAction (_toggle_breakpoint_action);
-  _tool_bar->addAction (_next_breakpoint_action);
   _tool_bar->addAction (_previous_breakpoint_action);
+  _tool_bar->addAction (_next_breakpoint_action);
   _tool_bar->addAction (_remove_all_breakpoints_action);
 
   // layout

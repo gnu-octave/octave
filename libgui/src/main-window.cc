@@ -1603,7 +1603,7 @@ main_window::construct_file_menu (QMenuBar *p)
   construct_new_menu (file_menu);
 
   _open_action
-    = file_menu->addAction (QIcon (":/actions/icons/folder_documents.png"),
+    = file_menu->addAction (resource_manager::icon ("document-open"),
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
   _open_action->setToolTip (tr ("Open an existing file in editor"));
@@ -1627,7 +1627,7 @@ main_window::construct_file_menu (QMenuBar *p)
   file_menu->addSeparator ();
 
   _preferences_action
-    = file_menu->addAction (QIcon (":/actions/icons/configure.png"),
+    = file_menu->addAction (resource_manager::icon ("preferences-system"),
                             tr ("Preferences..."));
 
   file_menu->addSeparator ();
@@ -1659,7 +1659,7 @@ main_window::construct_new_menu (QMenu *p)
   QMenu *new_menu = p->addMenu (tr ("New"));
 
   _new_script_action
-    = new_menu->addAction (QIcon (":/actions/icons/filenew.png"),
+    = new_menu->addAction (resource_manager::icon ("document-new"),
                            tr ("New Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -1690,16 +1690,16 @@ main_window::construct_edit_menu (QMenuBar *p)
   QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
   _undo_action
-    = edit_menu->addAction (QIcon (":/actions/icons/undo.png"), tr ("Undo"));
+    = edit_menu->addAction (resource_manager::icon ("edit-undo"), tr ("Undo"));
 
   edit_menu->addSeparator ();
 
   _copy_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
+    = edit_menu->addAction (resource_manager::icon ("edit-copy"),
                             tr ("Copy"), this, SLOT (copyClipboard ()));
 
   _paste_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
+    = edit_menu->addAction (resource_manager::icon ("edit-paste"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
 
   _select_all_action
@@ -1745,7 +1745,9 @@ QAction *
 main_window::construct_debug_menu_item (const char *icon, const QString& item,
                                         const char *member)
 {
-  QAction *action = add_action (_debug_menu, QIcon (icon), item, member);
+  QAction *action = add_action (_debug_menu, 
+                                  resource_manager::icon (QString (icon)), 
+                                item, member);
 
   action->setEnabled (false);
 
@@ -1762,20 +1764,20 @@ main_window::construct_debug_menu (QMenuBar *p)
 {
   _debug_menu = m_add_menu (p, tr ("De&bug"));
 
-  _debug_step_over = construct_debug_menu_item
-                      (":/actions/icons/db_step.png", tr ("Step"),
+  _debug_step_over = construct_debug_menu_item (
+                      "db-step", tr ("Step"),
                        SLOT (debug_step_over ()));
 
-  _debug_step_into = construct_debug_menu_item
-                      (":/actions/icons/db_step_in.png", tr ("Step In"),
+  _debug_step_into = construct_debug_menu_item (
+                      "db-step-in", tr ("Step In"),
                        SLOT (debug_step_into ()));
 
-  _debug_step_out = construct_debug_menu_item
-                      (":/actions/icons/db_step_out.png", tr ("Step Out"),
+  _debug_step_out = construct_debug_menu_item (
+                      "db-step-out", tr ("Step Out"),
                        SLOT (debug_step_out ()));
 
-  _debug_continue = construct_debug_menu_item
-                      (":/actions/icons/db_cont.png", tr ("Continue"),
+  _debug_continue = construct_debug_menu_item (
+                      "db-cont", tr ("Continue"),
                        SLOT (debug_continue ()));
 
   _debug_menu->addSeparator ();
@@ -1783,8 +1785,8 @@ main_window::construct_debug_menu (QMenuBar *p)
   editor_window->debug_menu ()->addSeparator ();
 #endif
 
-  _debug_quit = construct_debug_menu_item
-                      (":/actions/icons/db_stop.png", tr ("Quit Debug Mode"),
+  _debug_quit = construct_debug_menu_item (
+                      "db-stop", tr ("Quit Debug Mode"),
                        SLOT (debug_quit ()));
 }
 
@@ -1956,10 +1958,10 @@ main_window::construct_tool_bar (void)
   _main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
   _main_tool_bar->addWidget (_current_directory_combo_box);
   QAction *current_dir_up = _main_tool_bar->addAction (
-                              QIcon (":/actions/icons/up.png"),
+                              resource_manager::icon ("go-up"),
                               tr ("One directory up"));
   QAction *current_dir_search = _main_tool_bar->addAction (
-                                  QIcon (":/actions/icons/folder.png"),
+                              resource_manager::icon ("folder"),
                                   tr ("Browse directories"));
 
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),

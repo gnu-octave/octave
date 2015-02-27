@@ -93,19 +93,19 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
   _current_directory->setSizePolicy (sizePol);
 
-  QAction *directory_up_action = new QAction (QIcon (":/actions/icons/up.png"),
+  QAction *directory_up_action = new QAction (resource_manager::icon ("go-up"),
                                               "", _navigation_tool_bar);
   directory_up_action->setToolTip (tr ("Move up one directory"));
 
   _sync_browser_directory_action
-    = new QAction (QIcon (":/actions/icons/reload.png"),
+    = new QAction (resource_manager::icon ("go-first"),
                    tr ("Show Octave directory"), _navigation_tool_bar);
   _sync_browser_directory_action->setToolTip (
     tr ("Go to current Octave directory"));
   _sync_browser_directory_action->setEnabled ("false");
 
   _sync_octave_directory_action
-    = new QAction (QIcon (":/actions/icons/ok.png"),
+    = new QAction (resource_manager::icon ("go-last"),
                    tr ("Set Octave directory"), _navigation_tool_bar);
   _sync_octave_directory_action->setToolTip (
     tr ("Set Octave directroy to current browser directory"));
@@ -114,7 +114,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QToolButton * popdown_button = new QToolButton ();
   popdown_button->setToolTip (tr ("Actions on current directory"));
   QMenu * popdown_menu = new QMenu ();
-  popdown_menu->addAction (QIcon (":/actions/icons/home.png"),
+  popdown_menu->addAction (resource_manager::icon ("user-home"),
                            tr ("Show Home Directory"),
                            this, SLOT (popdownmenu_home (bool)));
   popdown_menu->addAction (_sync_browser_directory_action);
@@ -122,22 +122,22 @@ files_dock_widget::files_dock_widget (QWidget *p)
   popdown_button->setMenu (popdown_menu);
   popdown_button->setPopupMode (QToolButton::InstantPopup);
   popdown_button->setDefaultAction (new QAction (
-                                      QIcon (":/actions/icons/gear.png"), "",
-                                      _navigation_tool_bar));
+                              resource_manager::icon ("applications-system"), "",
+                              _navigation_tool_bar));
 
   popdown_menu->addSeparator ();
-  popdown_menu->addAction (QIcon (":/actions/icons/folder.png"),
+  popdown_menu->addAction (resource_manager::icon ("folder"),
                            tr ("Set Browser Directory..."),
                            this, SLOT (popdownmenu_search_dir (bool)));
   popdown_menu->addSeparator ();
-  popdown_menu->addAction (QIcon (":/actions/icons/findf.png"),
+  popdown_menu->addAction (resource_manager::icon ("edit-find"),
                            tr ("Find Files..."),
                            this, SLOT (popdownmenu_findfiles (bool)));
   popdown_menu->addSeparator ();
-  popdown_menu->addAction (QIcon (":/actions/icons/filenew.png"),
+  popdown_menu->addAction (resource_manager::icon ("document-new"),
                            tr ("New File..."),
                            this, SLOT (popdownmenu_newfile (bool)));
-  popdown_menu->addAction (QIcon (":/actions/icons/folder_new.png"),
+  popdown_menu->addAction (resource_manager::icon ("folder-new"),
                            tr ("New Directory..."),
                            this, SLOT (popdownmenu_newdir (bool)));
 
@@ -495,7 +495,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
         }
 
       // construct the context menu depending on item
-      menu.addAction (QIcon (":/actions/icons/fileopen.png"), tr ("Open"),
+      menu.addAction (resource_manager::icon ("document-open"), tr ("Open"),
                       this, SLOT (contextmenu_open (bool)));
 
       menu.addAction (tr ("Open in Default Application"),
@@ -505,7 +505,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                       this, SLOT (contextmenu_copy_selection (bool)));
 
       if (info.isFile () && info.suffix () == "m")
-        menu.addAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
+        menu.addAction (resource_manager::icon ("media-playback-start"),
                         tr ("Run"), this, SLOT (contextmenu_run (bool)));
 
       if (info.isFile ())
@@ -514,27 +514,27 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       if (info.isDir ())
         {
           menu.addSeparator ();
-          menu.addAction (QIcon (":/actions/icons/ok.png"),
+          menu.addAction (resource_manager::icon ("go-first"),
                           tr ("Set Current Directory"),
                           this, SLOT (contextmenu_setcurrentdir (bool)));
           menu.addSeparator ();
-          menu.addAction (QIcon (":/actions/icons/findf.png"),
+          menu.addAction (resource_manager::icon ("edit-find"),
                           tr ("Find Files..."), this,
                           SLOT (contextmenu_findfiles (bool)));
         }
 
       menu.addSeparator ();
       menu.addAction (tr ("Rename..."), this, SLOT (contextmenu_rename (bool)));
-      menu.addAction (QIcon (":/actions/icons/editdelete.png"),
+      menu.addAction (resource_manager::icon ("edit-delete"),
                       tr ("Delete..."), this, SLOT (contextmenu_delete (bool)));
 
       if (info.isDir ())
         {
           menu.addSeparator ();
-          menu.addAction (QIcon (":/actions/icons/filenew.png"),
+          menu.addAction (resource_manager::icon ("document-new"),
                           tr ("New File..."),
                           this, SLOT (contextmenu_newfile (bool)));
-          menu.addAction (QIcon (":/actions/icons/folder_new.png"),
+          menu.addAction (resource_manager::icon ("folder-new"),
                           tr ("New Directory..."),
                           this, SLOT (contextmenu_newdir (bool)));
         }

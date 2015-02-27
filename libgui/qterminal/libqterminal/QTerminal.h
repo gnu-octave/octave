@@ -127,11 +127,11 @@ protected:
     _contextMenu = new QMenu (this);
 
     _copy_action = _contextMenu->addAction (
-                     QIcon (":/actions/icons/editcopy.png"),
+                     QIcon::fromTheme ("edit-copy", QIcon (":/actions/icons/edit-copy.svg")),
                      tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                      QIcon (":/actions/icons/editpaste.png"),
+                     QIcon::fromTheme ("edit-paste", QIcon (":/actions/icons/edit-paste.svg")),
                       tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();

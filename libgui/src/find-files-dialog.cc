@@ -50,7 +50,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
   : QDialog (p)
 {
   setWindowTitle (tr ("Find Files"));
-  setWindowIcon (QIcon (":/actions/icons/search.png"));
+  setWindowIcon (resource_manager::icon ("edit-find"));
 
   _dir_iterator = 0;
 

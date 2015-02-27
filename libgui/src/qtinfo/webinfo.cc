@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "help.h"
 #include "defaults.h"
+#include "resource-manager.h"
 
 
 webinfo::webinfo (QWidget *p)
@@ -63,11 +64,11 @@ webinfo::webinfo (QWidget *p)
   hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);
-  _zoom_in_button->setIcon (QIcon (":/actions/icons/zoom-in.png"));
+  _zoom_in_button->setIcon (resource_manager::icon ("zoom-in"));
   hbox_layout->addWidget (_zoom_in_button);
 
   _zoom_out_button = new QToolButton (this);
-  _zoom_out_button->setIcon (QIcon (":/actions/icons/zoom-out.png"));
+  _zoom_out_button->setIcon (resource_manager::icon ("zoom-out"));
   hbox_layout->addWidget (_zoom_out_button);
 
   _stacked_widget = new QStackedWidget (this);

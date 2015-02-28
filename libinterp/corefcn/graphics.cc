@@ -11069,12 +11069,11 @@ undocumented.\n\
 
               if (! error_state)
                 {
-                  size_t pos = file.find_first_not_of ("|");
-                  if (pos != std::string::npos)
-                    file = file.substr (pos);
+                  if (! file.empty () && file[0] == '|')
+                    file = file.substr (1);  // Strip leading pipe character
                   else
                     {
-                      pos = file.find_last_of (file_ops::dir_sep_chars ());
+                      size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
 
                       if (pos != std::string::npos)
                         {

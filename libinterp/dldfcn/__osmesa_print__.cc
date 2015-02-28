@@ -182,11 +182,10 @@ instead.\n\
 
       if (! error_state)
         {
-          size_t pos = file.find_first_not_of ("|");
-          if (pos != std::string::npos)
+          if (! file.empty () && file[0] == '|')
             {
               // create process and pipe gl2ps output to it
-              std::string cmd = file.substr (pos);
+              std::string cmd = file.substr (1);
               gl2ps_print (fobj, cmd, term);
             }
           else

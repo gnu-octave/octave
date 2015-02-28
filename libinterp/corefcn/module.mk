@@ -286,7 +286,7 @@ COREFCN_FT2_DF = \
 
 ## Special rules for FreeType .df files so that not all .df files are built
 ## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
-$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc
+$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(CPPFLAGS) \

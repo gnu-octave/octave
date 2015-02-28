@@ -137,7 +137,7 @@ OV_JAVA_DF = \
 
 ## Special rules for Java .df files so that not all .df files are built with
 ## JAVA_CPPFLAGS
-$(OV_JAVA_DF) : octave-value/%.df : octave-value/%.cc
+$(OV_JAVA_DF) : octave-value/%.df : octave-value/%.cc $(GENERATED_MAKE_BUILTINS_INCS)
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \

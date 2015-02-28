@@ -41,27 +41,30 @@ AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
 octlib_LTLIBRARIES = liboctinterp.la
 
-## Order matters here.  Leave builtins.cc last, because it depends on
-## $(DEF_FILES), and building those requires all the sources
-## (except builtins.cc) to be available.
-BUILT_SOURCES = \
-  corefcn/mxarray.h \
-  corefcn/oct-errno.cc \
+## This is the subset of $(BUILT_SOURCES) that may be included by source
+## files that are preprocessed to make $(DEF_FILES).  This ensures that
+## files in $(BUILT_SOURCES) are built in the right dependency order.
+GENERATED_MAKE_BUILTINS_INCS = \
   corefcn/defaults.h \
   corefcn/graphics-props.cc \
   corefcn/graphics.h \
+  corefcn/mxarray.h \
+  oct-conf-features.h \
+  oct-conf.h \
+  parse-tree/oct-gperf.h \
+  version.h
+
+BUILT_SOURCES = \
+  $(GENERATED_MAKE_BUILTINS_INCS) \
+  builtin-defun-decls.h \
+  builtins.cc \
+  corefcn/oct-errno.cc \
   corefcn/oct-tex-lexer.cc \
   corefcn/oct-tex-parser.cc \
   corefcn/oct-tex-symbols.cc \
   operators/ops.cc \
   parse-tree/lex.cc \
-  parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.cc \
-  oct-conf.h \
-  oct-conf-features.h \
-  version.h \
-  builtin-defun-decls.h \
-  builtins.cc
+  parse-tree/oct-parse.cc
 
 ULT_PARSER_SRC := \
   corefcn/oct-tex-lexer.in.ll \
@@ -238,7 +241,7 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## Rule to build a DEF file from a .cc file
 ## See also module.mk files for overrides when speciall CPPFLAGS are needed.
 ## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
-%.df: %.cc
+%.df: %.cc $(GENERATED_MAKE_BUILTINS_INCS)
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \

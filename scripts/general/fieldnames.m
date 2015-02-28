@@ -82,10 +82,10 @@ endfunction
 %!testif HAVE_JAVA
 %! names = fieldnames (javaObject ("java.lang.Double", 10));
 %! assert (any (strcmp (names, "MAX_VALUE")));
-%! assert (isempty (setxor (names(:),
-%!                          {"POSITIVE_INFINITY", "NEGATIVE_INFINITY", ...
-%!                           "NaN", "MAX_VALUE", "MIN_NORMAL", "MIN_VALUE", ...
-%!                           "MAX_EXPONENT", "MIN_EXPONENT", "SIZE", "TYPE"})));
+%! assert (all (ismember ({"POSITIVE_INFINITY", "NEGATIVE_INFINITY", ...
+%!                         "NaN", "MAX_VALUE", "MIN_NORMAL", "MIN_VALUE", ...
+%!                         "MAX_EXPONENT", "MIN_EXPONENT", "SIZE", "TYPE"},
+%!                        names)));
 
 %!testif HAVE_JAVA
 %! names = fieldnames (javaObject ("java.lang.String", "Hello"));

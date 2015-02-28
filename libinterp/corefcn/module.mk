@@ -138,6 +138,9 @@ COREFCN_SRC = \
   corefcn/Cell.cc \
   corefcn/__contourc__.cc \
   corefcn/__dispatch__.cc \
+  corefcn/__dsearchn__.cc \
+  corefcn/__ichol__.cc \
+  corefcn/__ilu__.cc \
   corefcn/__lin_interpn__.cc \
   corefcn/__pchip_deriv__.cc \
   corefcn/__qp__.cc \
@@ -255,8 +258,9 @@ COREFCN_SRC = \
   corefcn/time.cc \
   corefcn/toplev.cc \
   corefcn/tril.cc \
-  corefcn/txt-eng.cc \
+  corefcn/tsearch.cc \
   corefcn/txt-eng-ft.cc \
+  corefcn/txt-eng.cc \
   corefcn/typecast.cc \
   corefcn/urlwrite.cc \
   corefcn/utils.cc \

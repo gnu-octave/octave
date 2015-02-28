@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-locbuf.h"
 
-#include "defun-dld.h"
+#include "defun.h"
+#include "error.h"
 #include "parse.h"
 
 // Secondary functions for complex and real case used in ichol algorithms.
@@ -187,9 +188,10 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
     }
 }
 
-DEFUN_DLD (__ichol0__, args, nargout, "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{L} =} __ichol0__ (@var{A})\n\
-@deftypefnx {Loadable Function} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
+DEFUN (__ichol0__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{L} =} __ichol0__ (@var{A})\n\
+@deftypefnx {Built-in Function} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 
@@ -440,10 +442,11 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
     }
 }
 
-DEFUN_DLD (__icholt__, args, nargout, "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{L} =} __icholt__ (@var{A})\n\
-@deftypefnx {Loadable Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\
-@deftypefnx {Loadable Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})\n\
+DEFUN (__icholt__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{L} =} __icholt__ (@var{A})\n\
+@deftypefnx {Built-in Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\
+@deftypefnx {Built-in Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

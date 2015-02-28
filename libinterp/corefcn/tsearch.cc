@@ -26,17 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <iostream>
-#include <fstream>
-#include <string>
-
 #include "lo-ieee.h"
 #include "lo-math.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
-#include "parse.h"
 
 inline double max (double a, double b, double c)
 {
@@ -64,9 +59,9 @@ inline double min (double a, double b, double c)
 // e.g., build up a neighbouring triangle structure and use a simplex-like
 // method to traverse it
 
-DEFUN_DLD (tsearch, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
+DEFUN (tsearch, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
 Search for the enclosing Delaunay convex hull.  For @code{@var{t} =\n\
 delaunay (@var{x}, @var{y})}, finds the index in @var{t} containing the\n\
 points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\

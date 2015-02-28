@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-locbuf.h"
 
-#include "defun-dld.h"
+#include "defun.h"
+#include "error.h"
 #include "parse.h"
 
 // That function implements the IKJ and JKI variants of Gaussian elimination to
@@ -125,10 +126,11 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
     sm = sm.transpose ();
 }
 
-DEFUN_DLD (__ilu0__, args, nargout, "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
+DEFUN (__ilu0__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -467,11 +469,12 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
     }
 }
 
-DEFUN_DLD (__iluc__, args, nargout, "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}) \n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} __iluc__ (@var{A}, @dots{})\n\
+DEFUN (__iluc__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}) \n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __iluc__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -948,13 +951,14 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
     }
 }
 
-DEFUN_DLD (__ilutp__, args, nargout, "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})\n\
-@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})\n\
+DEFUN (__ilutp__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})\n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

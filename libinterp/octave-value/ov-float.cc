@@ -188,12 +188,13 @@ bool
 octave_float_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                 bool /* save_as_floats */)
 {
+  bool retval = false;
+
 #if defined (HAVE_HDF5)
 
   hsize_t dimens[3];
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
-  bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;

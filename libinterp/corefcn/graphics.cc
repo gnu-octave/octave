@@ -11069,15 +11069,34 @@ undocumented.\n\
 
               if (! error_state)
                 {
-                  if (! file.empty () && file[0] == '|')
-                    file = file.substr (1);  // Strip leading pipe character
+                  size_t pos_p = file.find_first_of ("|");
+                  size_t pos_c = file.find_first_not_of ("| ");
+
+                  if (pos_p == std::string::npos &&
+                      pos_c == std::string::npos)
+                    {
+                      error ("drawnow: empty output ''");
+
+                      return retval;
+                    }
+                  else if (pos_c == std::string::npos)
+                    {
+                      error ("drawnow: empty pipe '|'");
+
+                      return retval;
+                    }
+                  else if (pos_p != std::string::npos && pos_p < pos_c)
+                    {
+                      // Strip leading pipe character
+                      file = file.substr (pos_c);
+                    }
                   else
                     {
                       size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
 
                       if (pos != std::string::npos)
                         {
-                          std::string dirname = file.substr (0, pos+1);
+                          std::string dirname = file.substr (pos_c, pos+1);
 
                           file_stat fs (dirname);
 

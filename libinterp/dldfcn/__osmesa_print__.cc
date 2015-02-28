@@ -105,7 +105,7 @@ instead.\n\
     {
       if (! (args(1).is_string () && args(2).is_string ()))
         {
-          error ("__osmesa_print__: FILE and TERM has to be strings");
+          error ("__osmesa_print__: FILE and TERM must be strings");
           return retval;
         }
 
@@ -119,7 +119,7 @@ instead.\n\
   graphics_object fobj = gh_manager::get_object (h);
   if (! (fobj && fobj.isa ("figure")))
     {
-      error ("__osmesa_print__: H has to be a valid figure handle");
+      error ("__osmesa_print__: H must be a valid figure handle");
       return retval;
     }
 
@@ -182,16 +182,23 @@ instead.\n\
 
       if (! error_state)
         {
-          if (! file.empty () && file[0] == '|')
+          size_t pos_p = file.find_first_of ("|");
+          size_t pos_c = file.find_first_not_of ("| ");
+
+          if (pos_p == std::string::npos && pos_c == std::string::npos)
+            error ("__osmesa_print__: empty output ''");
+          else if (pos_c == std::string::npos)
+            error ("__osmesa_print__: empty pipe '|'");
+          else if (pos_p != std::string::npos && pos_p < pos_c)
             {
               // create process and pipe gl2ps output to it
-              std::string cmd = file.substr (1);
+              std::string cmd = file.substr (pos_c);
               gl2ps_print (fobj, cmd, term);
             }
           else
             {
               // write gl2ps output directly to file
-              FILE *filep = gnulib::fopen (file.c_str (), "w");
+              FILE *filep = gnulib::fopen (file.substr (pos_c).c_str (), "w");
 
               if (filep)
                 {

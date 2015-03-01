@@ -32,7 +32,7 @@ function funcname = __get_funcname__ (basename)
     tk = graphics_toolkit ();
     funcname = strcat ("__", basename, "_", tk, "__");
     if (numel (tk) > 0 && ! strcmp (tk, "fltk")
-        && ! __is_function__ (funcname)))
+        && ! __is_function__ (funcname))
       warning ("%s: no implementation for toolkit '%s', using 'fltk' instead",
                basename, tk);
     endif

@@ -52,6 +52,7 @@ GENERATED_MAKE_BUILTINS_INCS = \
   oct-conf-features.h \
   oct-conf.h \
   parse-tree/oct-gperf.h \
+  parse-tree/oct-parse.h \
   version.h
 
 BUILT_SOURCES = \

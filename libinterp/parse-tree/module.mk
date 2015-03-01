@@ -90,6 +90,8 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 	mv $@-t $@ && \
 	rm -f $@-t1
 
+parse-tree/oct-parse.h: parse-tree/oct-parse.cc
+
 parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
 

@@ -710,8 +710,9 @@ maybe_initialize_magick (void)
       setlocale (LC_ALL, locale.c_str ());
 
       if (QuantumDepth < 32)
-        warning ("your version of %s limits images to %d bits per pixel",
-                 MagickPackageName, QuantumDepth);
+        warning_with_id ("Octave:GraphicsMagic-Quantum-Depth",
+                         "your version of %s limits images to %d bits per pixel",
+                         MagickPackageName, QuantumDepth);
 
       initialized = true;
     }

@@ -149,7 +149,7 @@ function h = colorbar (varargin)
       ## if (! isempty (args))
       ##   set (hcb, args{:});
       ## endif
-      ax = get (get (hcb, "parent"), "currrentaxes");
+      ax = get (ancestor (hcb, "figure"), "currrentaxes");
     endif
   endif
 
@@ -163,7 +163,7 @@ function h = colorbar (varargin)
   showhiddenhandles = get (0, "showhiddenhandles");
   unwind_protect
     set (0, "showhiddenhandles", "on");
-    cax = findobj (get (ax, "parent"),
+    cax = findobj (ancestor (ax, "figure"),
                    "tag", "colorbar", "type", "axes", "axes", ax);
     if (! isempty (cax))
       delete (cax);
@@ -180,8 +180,8 @@ function h = colorbar (varargin)
     obj = get (ax);
     obj.__cbar_hax__ = ax;
     position = obj.position;
-    ## FIXME: Should this be ancestor to accommodate hggroups?
-    hpar = get (ax, "parent");
+    
+    hpar = ancestor (ax, "figure");
     clen = rows (get (hpar, "colormap"));
     cext = get (ax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
@@ -277,7 +277,7 @@ endfunction
 function resetaxis (cax, d, ax, orig_props)
   if (isaxes (ax))
     ## FIXME: Probably don't want to delete everyone's listeners on colormap.
-    dellistener (get (ax, "parent"), "colormap");
+    dellistener (ancestor (ax, "figure"), "colormap");
     dellistener (ax, "clim");
     dellistener (ax, "dataaspectratio");
     dellistener (ax, "dataaspectratiomode");
@@ -297,7 +297,7 @@ endfunction
 function update_colorbar_clim (hax, d, hi, vert)
   if (isaxes (hax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
-    clen = rows (get (get (hax, "parent"), "colormap"));
+    clen = rows (get (ancestor (hax, "figure"), "colormap"));
     cext = get (hax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
     cmin = cext(1) + cdiff;

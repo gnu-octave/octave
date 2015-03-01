@@ -125,7 +125,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (isempty (ca))
       ca = gca ();
     endif
-    fig = get (ca, "parent");
+    fig = ancestor (ca, "figure");
   else
     fig = get (0, "currentfigure");
     if (isempty (fig))

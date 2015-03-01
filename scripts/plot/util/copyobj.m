@@ -65,7 +65,7 @@ function hnew = copyobj (horig, hparent = 0)
 
   ## reset current figure (and eventually axes) to original
   set (0, "currentfigure", cf);
-  if (get (hnew, "parent") == cf && ! isempty (ca))
+  if (ancestor (hnew, "figure") == cf && ! isempty (ca))
     set (cf, "currentaxes", ca)
   endif
 

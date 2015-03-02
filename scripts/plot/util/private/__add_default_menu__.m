@@ -86,7 +86,7 @@ function __save_as__ (caller)
 endfunction
 
 
-function hax = __get_axes__ (h)
+function [hax, fig] = __get_axes__ (h)
   ## Get parent figure
   fig = ancestor (h, "figure");
 
@@ -113,23 +113,23 @@ function autoscale_cb (h, e)
 endfunction
 
 function guimode_cb (h, e)
-  hax = __get_axes__ (h);
+  [hax, fig] = __get_axes__ (h);
   id = get (h, "tag");
   switch (id)
     case "pan_on"
-      arrayfun (@(h) pan (h, "on"), hax)
+      pan (fig, "on")
     case "pan_xon"
-      arrayfun (@(h) pan (h, "xon"), hax)
+      pan (fig, "xon")
     case "pan_yon"
-      arrayfun (@(h) pan (h, "yon"), hax)
+      pan (fig, "yon")
     case "rotate3d"
-      arrayfun (@(h) rotate3d (h, "on"), hax)
+      rotate3d (fig, "on")
     case "no_pan_rotate"
-      arrayfun (@(h) pan (h, "off"), hax)
-      arrayfun (@(h) rotate3d (h, "off"), hax)
+      pan (fig, "off")
+      rotate3d (fig, "off")
     case "zoom_on"
-      arrayfun (@(h) set (h, "mouse_wheel_zoom", 0.05), hax);
+      arrayfun (@(h) set (h, "mousewheelzoom", 0.05), hax);
     case "zoom_off"
-      arrayfun (@(h) set (h, "mouse_wheel_zoom", 0.0), hax);
+      arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
 endfunction

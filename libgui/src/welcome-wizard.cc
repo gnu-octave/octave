@@ -30,6 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#ifdef __WIN32__
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+#endif
+
 #include "welcome-wizard.h"
 #include "resource-manager.h"
 
@@ -283,6 +288,11 @@ welcome_wizard::welcome_wizard (QWidget *p)
   setMinimumSize (QSize (600, 480));
 
   show_page ();
+
+#ifdef __WIN32__
+  // HACK to forceshow of dialog if started minimized
+  ShowWindow((HWND)winId(), SW_SHOWNORMAL);
+#endif
 }
 
 void

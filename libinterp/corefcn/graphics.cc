@@ -453,8 +453,8 @@ default_panel_position (void)
 
   retval(0) = 0;
   retval(1) = 0;
-  retval(2) = 0.5;
-  retval(3) = 0.5;
+  retval(2) = 1;
+  retval(3) = 1;
 
   return retval;
 }

@@ -71,6 +71,7 @@ function rotate3d (varargin)
       rm.Enable = "on";
     endif
     set (hfig, "__rotate_mode__", rm);
+    update_mouse_mode (hfig, rm.Enable);
   elseif (nargs == 1)
     arg = varargin{1};
     if (ischar (arg))
@@ -83,17 +84,7 @@ function rotate3d (varargin)
               rm.Motion = "both";
           endswitch
           set (hfig, "__rotate_mode__", rm);
-          if (strcmp (arg, "off"))
-            set (hfig, "__mouse_mode__", "none");
-          else
-            ## FIXME: Is there a better way other than calling these
-            ## functions to set the other mouse mode Enable fields to
-            ## "off"?
-            pan ("off");
-            zoom ("off");
-            set (hfig, "__mouse_mode__", "rotate");
-          endif
-
+          update_mouse_mode (hfig, arg);
         otherwise
           error ("rotate3d: unrecognized option '%s'", arg);
       endswitch
@@ -104,3 +95,15 @@ function rotate3d (varargin)
 
 endfunction
 
+function update_mouse_mode (hfig, arg)
+  if (strcmp (arg, "off"))
+    set (hfig, "__mouse_mode__", "none");
+  else
+    ## FIXME: Is there a better way other than calling these
+    ## functions to set the other mouse mode Enable fields to
+    ## "off"?
+    pan ("off");
+    zoom ("off");
+    set (hfig, "__mouse_mode__", "rotate");
+  endif
+endfunction

@@ -92,6 +92,7 @@ function zoom (varargin)
       zm.Enable = "on";
     endif
     set (hfig, "__zoom_mode__", zm);
+    update_mouse_mode (hfig, zm.Enable);
   elseif (nargs == 1)
     arg = varargin{1};
     if (isnumeric (arg))
@@ -141,29 +142,17 @@ function zoom (varargin)
               zm.Motion = "vertical";
           endswitch
           set (hfig, "__zoom_mode__", zm);
-          if (strcmp (arg, "off"))
-            set (hfig, "__mouse_mode__", "none");
-          else
-            ## FIXME: Is there a better way other than calling these
-            ## functions to set the other mouse mode Enable fields to
-            ## "off"?
-            pan ("off");
-            rotate3d ("off");
-            set (hfig, "__mouse_mode__", "zoom");
-          endif
-
+          update_mouse_mode (hfig, arg);
         case "out"
           cax = get (hfig, "currentaxes");
           if (! isempty (cax))
             __zoom__ (cax, "out");
           endif
-
         case "reset"
           cax = get (hfig, "currentaxes");
           if (! isempty (cax))
             __zoom__ (cax, "reset");
           endif
-
         otherwise
           error ("zoom: unrecognized option '%s'", arg);
       endswitch
@@ -174,6 +163,18 @@ function zoom (varargin)
 
 endfunction
 
+function update_mouse_mode (hfig, arg)
+  if (strcmp (arg, "off"))
+    set (hfig, "__mouse_mode__", "none");
+  else
+    ## FIXME: Is there a better way other than calling these
+    ## functions to set the other mouse mode Enable fields to
+    ## "off"?
+    pan ("off");
+    rotate3d ("off");
+    set (hfig, "__mouse_mode__", "zoom");
+  endif
+endfunction
 
 %!demo
 %! clf;

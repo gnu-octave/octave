@@ -76,6 +76,7 @@ function pan (varargin)
       pm.Enable = "on";
     endif
     set (hfig, "__pan_mode__", pm);
+    update_mouse_mode (hfig, pm.Enable);
   elseif (nargs == 1)
     arg = varargin{1};
     if (ischar (arg))
@@ -94,17 +95,7 @@ function pan (varargin)
               pm.Motion = "vertical";
           endswitch
           set (hfig, "__pan_mode__", pm);
-          if (strcmp (arg, "off"))
-            set (hfig, "__mouse_mode__", "none");
-          else
-            ## FIXME: Is there a better way other than calling these
-            ## functions to set the other mouse mode Enable fields to
-            ## "off"?
-            rotate3d ("off");
-            zoom ("off");
-            set (hfig, "__mouse_mode__", "pan");
-          endif
-
+          update_mouse_mode (hfig, arg);
         otherwise
           error ("pan: unrecognized option '%s'", arg);
       endswitch
@@ -115,3 +106,15 @@ function pan (varargin)
 
 endfunction
 
+function update_mouse_mode (hfig, arg)
+  if (strcmp (arg, "off"))
+    set (hfig, "__mouse_mode__", "none");
+  else
+    ## FIXME: Is there a better way other than calling these
+    ## functions to set the other mouse mode Enable fields to
+    ## "off"?
+    rotate3d ("off");
+    zoom ("off");
+    set (hfig, "__mouse_mode__", "pan");
+  endif
+endfunction

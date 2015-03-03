@@ -250,71 +250,6 @@ void Canvas::canvasPaintEvent (void)
     }
 }
 
-void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
-{
-  gh_manager::auto_lock lock;
-  graphics_object ax = gh_manager::get_object (m_mouseAxes);
-
-  if (m_mouseMode != NoMode && ax.valid_object ())
-    {
-      axes::properties& ap = Utils::properties<axes> (ax);
-
-      switch (m_mouseMode)
-        {
-        case RotateMode:
-          {
-            ap.rotate3d (m_mouseCurrent.x (), event->x (),
-                         m_mouseCurrent.y (), event->y ());
-
-            // Update current mouse position
-            m_mouseCurrent = event->pos ();
-
-            // Force immediate redraw
-            redraw (true);
-          }
-          break;
-
-        case ZoomInMode:
-        case ZoomOutMode:
-          m_mouseCurrent = event->pos ();
-          redraw (true);
-          break;
-
-        case PanMode:
-          {
-            ColumnVector p0 = ap.pixel2coord (m_mouseCurrent.x (),
-                                              m_mouseCurrent.y ());
-            ColumnVector p1 = ap.pixel2coord (event->x (),
-                                              event->y ());
-
-            ap.translate_view ("both", p0(0), p1(0), p0(1), p1(1));
-
-            // Update current mouse position
-            m_mouseCurrent = event->pos ();
-
-            // Force immediate redraw
-            redraw (true);
-          }
-
-        default:
-          break;
-        }
-    }
-  else if (m_mouseMode == NoMode)
-    {
-      graphics_object obj = gh_manager::get_object (m_handle);
-
-      if (obj.valid_object ())
-        {
-          graphics_object figObj (obj.get_ancestor ("figure"));
-
-          updateCurrentPoint (figObj, obj, event);
-          gh_manager::post_callback (figObj.get_handle (),
-                                     "windowbuttonmotionfcn");
-        }
-    }
-}
-
 static bool
 pan_enabled (const graphics_object figObj)
 {
@@ -385,6 +320,75 @@ zoom_direction (const graphics_object figObj)
   octave_scalar_map zm = ov_zm.scalar_map_value ();
 
   return zm.contents ("Direction").string_value ();
+}
+
+void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
+{
+  gh_manager::auto_lock lock;
+  graphics_object ax = gh_manager::get_object (m_mouseAxes);
+
+  if (m_mouseMode != NoMode && ax.valid_object ())
+    {
+      axes::properties& ap = Utils::properties<axes> (ax);
+
+      switch (m_mouseMode)
+        {
+        case RotateMode:
+          {
+            ap.rotate3d (m_mouseCurrent.x (), event->x (),
+                         m_mouseCurrent.y (), event->y ());
+
+            // Update current mouse position
+            m_mouseCurrent = event->pos ();
+
+            // Force immediate redraw
+            redraw (true);
+          }
+          break;
+
+        case ZoomInMode:
+        case ZoomOutMode:
+          m_mouseCurrent = event->pos ();
+          redraw (true);
+          break;
+
+        case PanMode:
+          {
+            graphics_object figObj (ax.get_ancestor ("figure"));
+
+            std::string mode = pan_mode (figObj);
+
+            ColumnVector p0 = ap.pixel2coord (m_mouseCurrent.x (),
+                                              m_mouseCurrent.y ());
+            ColumnVector p1 = ap.pixel2coord (event->x (),
+                                              event->y ());
+
+            ap.translate_view (mode, p0(0), p1(0), p0(1), p1(1));
+
+            // Update current mouse position
+            m_mouseCurrent = event->pos ();
+
+            // Force immediate redraw
+            redraw (true);
+          }
+
+        default:
+          break;
+        }
+    }
+  else if (m_mouseMode == NoMode)
+    {
+      graphics_object obj = gh_manager::get_object (m_handle);
+
+      if (obj.valid_object ())
+        {
+          graphics_object figObj (obj.get_ancestor ("figure"));
+
+          updateCurrentPoint (figObj, obj, event);
+          gh_manager::post_callback (figObj.get_handle (),
+                                     "windowbuttonmotionfcn");
+        }
+    }
 }
 
 void Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)

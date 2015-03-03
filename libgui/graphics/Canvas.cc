@@ -668,7 +668,9 @@ void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
             {
               double factor = m_mouseMode == ZoomInMode ? 2.0 : 0.5;
 
-              ap.zoom (zm, factor);
+              ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
+
+              ap.zoom_about_point (zm, p1(0), p1(1), factor);
             }
           else
             {

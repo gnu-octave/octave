@@ -1529,7 +1529,11 @@ private:
                                      x1, y1);
 
                           if (pan_enabled ())
-                            ap.translate_view ("both", x0, x1, y0, y1);
+                          {
+                            std::string mode = pan_mode ();
+
+                            ap.translate_view (mode, x0, x1, y0, y1);
+                          }
                           else if (rotate_enabled ())
                             {
                               double daz, del;

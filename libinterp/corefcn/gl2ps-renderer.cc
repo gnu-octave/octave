@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 
 void
-glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
+glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 {
   static bool in_draw = false;
   static std::string old_print_cmd;
@@ -52,15 +52,19 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 
       in_draw = true;
 
-      GLint buffsize = 0;
-      GLint state = GL2PS_OVERFLOW;
       GLint gl2ps_term;
-      if (term.find ("eps") != std::string::npos) gl2ps_term = GL2PS_EPS;
-      else if (term.find ("pdf") != std::string::npos) gl2ps_term = GL2PS_PDF;
-      else if (term.find ("ps") != std::string::npos) gl2ps_term = GL2PS_PS;
-      else if (term.find ("svg") != std::string::npos) gl2ps_term = GL2PS_SVG;
-      else if (term.find ("pgf") != std::string::npos) gl2ps_term = GL2PS_PGF;
-      else if (term.find ("tex") != std::string::npos) gl2ps_term = GL2PS_TEX;
+      if (term.find ("eps") != std::string::npos)
+        gl2ps_term = GL2PS_EPS;
+      else if (term.find ("pdf") != std::string::npos)
+        gl2ps_term = GL2PS_PDF;
+      else if (term.find ("ps") != std::string::npos)
+        gl2ps_term = GL2PS_PS;
+      else if (term.find ("svg") != std::string::npos)
+        gl2ps_term = GL2PS_SVG;
+      else if (term.find ("pgf") != std::string::npos)
+        gl2ps_term = GL2PS_PGF;
+      else if (term.find ("tex") != std::string::npos)
+        gl2ps_term = GL2PS_TEX;
       else
         {
           error ("gl2ps-renderer::draw: Unknown terminal %s", term.c_str ());
@@ -68,13 +72,18 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
         }
 
       GLint gl2ps_text = 0;
-      if (term.find ("notxt") != std::string::npos) gl2ps_text = GL2PS_NO_TEXT;
+      if (term.find ("notxt") != std::string::npos)
+        gl2ps_text = GL2PS_NO_TEXT;
 
       // Default sort order optimizes for 3D plots
       GLint gl2ps_sort = GL2PS_BSP_SORT;
+
       // For 2D plots we can use a simpler Z-depth sorting algorithm
       if (term.find ("is2D") != std::string::npos)
         gl2ps_sort = GL2PS_SIMPLE_SORT;
+
+      GLint state = GL2PS_OVERFLOW;
+      GLint buffsize = 0;
 
       while (state == GL2PS_OVERFLOW)
         {
@@ -83,13 +92,18 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           // print_cmd is saved as old_print_cmd.  Then the second drawnow()
           // outputs the tex-file and the graphic filename to be included is
           // extracted from old_print_cmd.
+
           std::string include_graph;
+
           size_t found_redirect = old_print_cmd.find (">");
+
           if (found_redirect != std::string::npos)
             include_graph = old_print_cmd.substr (found_redirect + 1);
           else
             include_graph = old_print_cmd;
+
           size_t n_begin = include_graph.find_first_not_of (" ");
+
           if (n_begin != std::string::npos)
             {
               size_t n_end = include_graph.find_last_not_of (" ");
@@ -98,17 +112,19 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
             }
           else
             include_graph = "foobar-inc";
+
           buffsize += 1024*1024;
+
           // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
-          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", NULL,
+          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", 0,
                                       gl2ps_term, gl2ps_sort,
-                                      (  GL2PS_NO_BLENDING
+                                      (GL2PS_NO_BLENDING
                                        | GL2PS_OCCLUSION_CULL
                                        | GL2PS_BEST_ROOT
                                        | gl2ps_text
                                        | GL2PS_NO_PS3_SHADING
                                        | GL2PS_USE_CURRENT_VIEWPORT),
-                                      GL_RGBA, 0, NULL, 0, 0, 0,
+                                      GL_RGBA, 0, 0, 0, 0, 0,
                                       buffsize, fp, include_graph.c_str ());
           if (ret == GL2PS_ERROR)
             {
@@ -116,10 +132,13 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
               error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
               return;
             }
+
           old_print_cmd = print_cmd;
+
           opengl_renderer::draw (go);
 
-          // Without glFinish () there may primitives be missing in the gl2ps output.
+          // Without glFinish () there may primitives be missing in the
+          // gl2ps output.
           glFinish ();
 
           state = gl2psEndPage ();
@@ -134,6 +153,7 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
               error ("gl2ps-renderer::draw: gl2psEndPage returned GL2PS_ERROR");
               return;
             }
+
           // Don't check state for GL2PS_UNINITIALIZED (should never happen)
           // GL2PS_OVERFLOW (see while loop) or GL2PS_SUCCESS
         }
@@ -145,7 +165,8 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 int
 glps_renderer::alignment_to_mode (int ha, int va) const
 {
-  int gl2psa=GL2PS_TEXT_BL;
+  int gl2psa = GL2PS_TEXT_BL;
+
   if (ha == 0)
     {
       if (va == 0 || va == 3)
@@ -173,6 +194,7 @@ glps_renderer::alignment_to_mode (int ha, int va) const
       else if (va == 1)
         gl2psa=GL2PS_TEXT_C;
     }
+
   return gl2psa;
 }
 
@@ -185,6 +207,7 @@ glps_renderer::render_text (const std::string& txt,
     return Matrix (1, 4, 0.0);
 
   glRasterPos3d (x, y, z);
+
   gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize,
                 alignment_to_mode (ha, va), rotation);
 
@@ -193,6 +216,7 @@ glps_renderer::render_text (const std::string& txt,
   Matrix bbox;
   uint8NDArray pixels;
   text_to_pixels (txt, pixels, bbox, 0, 0, rotation);
+
   return bbox;
 }
 

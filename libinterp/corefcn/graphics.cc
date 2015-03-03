@@ -7677,21 +7677,16 @@ axes::properties::zoom (const std::string& mode, double factor,
 void
 axes::properties::push_zoom_stack (void)
 {
-  // FIXME: Maybe make the size of the undo stack configurable.  A limit
-  // of 500 elements means 100 pan, rotate, or zoom actions are stored
-  // and may be undone.
-
-  if (zoom_stack.size () >= 500)
+  if (zoom_stack.empty ())
     {
-      for (int i = 0; i < 5; i++)
-        zoom_stack.pop_back ();
+      zoom_stack.push_front (xlimmode.get ());
+      zoom_stack.push_front (xlim.get ());
+      zoom_stack.push_front (ylimmode.get ());
+      zoom_stack.push_front (ylim.get ());
+      zoom_stack.push_front (zlimmode.get ());
+      zoom_stack.push_front (zlim.get ());
+      zoom_stack.push_front (view.get ());
     }
-
-  zoom_stack.push_front (xlimmode.get ());
-  zoom_stack.push_front (xlim.get ());
-  zoom_stack.push_front (ylimmode.get ());
-  zoom_stack.push_front (ylim.get ());
-  zoom_stack.push_front (view.get ());
 }
 
 void
@@ -7904,9 +7899,15 @@ axes::properties::rotate_view (double delta_el, double delta_az,
 void
 axes::properties::unzoom (void)
 {
-  if (zoom_stack.size () >= 5)
+  if (zoom_stack.size () >= 7)
     {
       view = zoom_stack.front ();
+      zoom_stack.pop_front ();
+
+      zlim = zoom_stack.front ();
+      zoom_stack.pop_front ();
+
+      zlimmode = zoom_stack.front ();
       zoom_stack.pop_front ();
 
       ylim = zoom_stack.front ();
@@ -7925,6 +7926,7 @@ axes::properties::unzoom (void)
 
       update_xlim ();
       update_ylim ();
+      update_zlim ();
 
       update_view ();
     }
@@ -7933,7 +7935,7 @@ axes::properties::unzoom (void)
 void
 axes::properties::clear_zoom_stack (bool do_unzoom)
 {
-  size_t items_to_leave_on_stack = do_unzoom ? 5 : 0;
+  size_t items_to_leave_on_stack = do_unzoom ? 7 : 0;
 
   while (zoom_stack.size () > items_to_leave_on_stack)
     zoom_stack.pop_front ();

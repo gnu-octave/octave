@@ -46,6 +46,10 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 
   if (!in_draw)
     {
+      unwind_protect frame;
+
+      frame.protect_var (in_draw);
+
       in_draw = true;
 
       GLint buffsize = 0;
@@ -108,7 +112,6 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
                                       buffsize, fp, include_graph.c_str ());
           if (ret == GL2PS_ERROR)
             {
-              in_draw = 0;
               old_print_cmd.clear ();
               error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
               return;
@@ -127,7 +130,6 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
             }
           else if (state == GL2PS_ERROR)
             {
-              in_draw = 0;
               old_print_cmd.clear ();
               error ("gl2ps-renderer::draw: gl2psEndPage returned GL2PS_ERROR");
               return;
@@ -135,8 +137,6 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           // Don't check state for GL2PS_UNINITIALIZED (should never happen)
           // GL2PS_OVERFLOW (see while loop) or GL2PS_SUCCESS
         }
-
-      in_draw = 0;
     }
   else
     opengl_renderer::draw (go);

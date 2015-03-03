@@ -407,8 +407,8 @@ void Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
       octave_idx_type num_children = children.numel ();
 
       for (int i = 0; i < num_children; i++)
-	{
-	  graphics_object childObj (gh_manager::get_object (children(i)));
+        {
+          graphics_object childObj (gh_manager::get_object (children(i)));
 
           if (childObj.isa ("axes"))
             {
@@ -727,8 +727,8 @@ void Canvas::canvasWheelEvent (QWheelEvent* event)
       octave_idx_type num_children = children.numel ();
 
       for (int i = 0; i < num_children; i++)
-	{
-	  graphics_object childObj (gh_manager::get_object (children(i)));
+        {
+          graphics_object childObj (gh_manager::get_object (children(i)));
 
           if (childObj.isa ("axes"))
             {

@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "url-transfer.h"
 
+#include "builtin-defun-decls.h"
 #include "defaults.h"
 #include "symtab.h"
 #include "version.h"

@@ -377,6 +377,9 @@ void
 octave_qt_link::do_set_workspace (bool top_level,
                                   const std::list<workspace_element>& ws)
 {
+  if (! top_level)
+    return;
+
   QString scopes;
   QStringList symbols;
   QStringList class_names;

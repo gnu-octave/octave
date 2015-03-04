@@ -178,7 +178,7 @@ opengl_texture::create (const octave_value& data)
       bool ok = true;
 
       tw = next_power_of_2 (w);
-      th = next_power_of_2 (w);
+      th = next_power_of_2 (h);
 
       glGenTextures (1, &id);
       glBindTexture (GL_TEXTURE_2D, id);

@@ -95,7 +95,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   QAction *directory_up_action = new QAction (resource_manager::icon ("go-up"),
                                               "", _navigation_tool_bar);
-  directory_up_action->setToolTip (tr ("Move up one directory"));
+  directory_up_action->setToolTip (tr ("One directory up"));
 
   _sync_browser_directory_action
     = new QAction (resource_manager::icon ("go-first"),

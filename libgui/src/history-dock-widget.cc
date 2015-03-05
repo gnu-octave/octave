@@ -179,10 +179,12 @@ history_dock_widget::update_filter_history ()
 void history_dock_widget::ctxMenu (const QPoint &xpos)
 {
   QMenu menu (this);
-  menu.addAction (tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
+  menu.addAction (resource_manager::icon ("edit-copy"),
+                  tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
   menu.addAction (tr ("Evaluate"), this,
                   SLOT (handle_contextmenu_evaluate (bool)));
-  menu.addAction (tr ("Create script"), this,
+  menu.addAction (resource_manager::icon ("document-new"),
+                  tr ("Create script"), this,
                   SLOT (handle_contextmenu_create_script (bool)));
   menu.exec (_history_list_view->mapToGlobal (xpos));
 }

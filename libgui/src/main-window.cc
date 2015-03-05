@@ -1714,7 +1714,9 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   edit_menu->addSeparator ();
 
-  _find_files_action = edit_menu->addAction (tr ("Find Files..."));
+  _find_files_action 
+    = edit_menu->addAction (resource_manager::icon ("edit-find"),
+                             tr ("Find Files..."));
 
   edit_menu->addSeparator ();
 

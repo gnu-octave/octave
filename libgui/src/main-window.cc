@@ -747,7 +747,6 @@ main_window::notice_settings (const QSettings *settings)
 
   _prevent_readline_conflicts =
     settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
-  set_global_shortcuts (command_window_has_focus ());
 
   _suppress_dbg_location =
         ! settings->value ("terminal/print_debug_location", false).toBool ();
@@ -755,6 +754,10 @@ main_window::notice_settings (const QSettings *settings)
   resource_manager::update_network_settings ();
 
   emit active_dock_changed (0, _active_dock); // update dock widget styles
+
+  configure_shortcuts ();
+  set_global_shortcuts (_active_dock == command_window);
+  set_global_edit_shortcuts (_active_dock == editor_window);
 }
 
 void

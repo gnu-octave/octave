@@ -173,7 +173,7 @@ protected:
     _interrupt_action->setShortcut (
             QKeySequence (Qt::ControlModifier + Qt::Key_C));
 
-    connect (_interrupt_action, SIGNAL (triggered (bool)),
+    connect (_interrupt_action, SIGNAL (triggered ()),
             this, SLOT (terminal_interrupt ()));
   }
 

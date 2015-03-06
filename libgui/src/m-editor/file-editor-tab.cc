@@ -708,7 +708,11 @@ file_editor_tab::run_file (const QWidget *ID)
     return;
 
   if (_edit_area->isModified () | ! valid_file_name ())
-    save_file (_file_name);  // save file dialog
+    {
+      save_file (_file_name);  // save file dialog
+      if (! valid_file_name ())
+        return;   // still invalid file name: "save as" was cancelled
+    }
 
   QFileInfo info (_file_name);
   emit run_file_signal (info);

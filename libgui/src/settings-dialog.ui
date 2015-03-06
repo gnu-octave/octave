@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>662</width>
+            <height>382</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -226,6 +226,41 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_13">
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <item row="0" column="9">
+                     <widget class="QLabel" name="label_bgtitle_active">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="text">
+                       <string>Active</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="4">
+                     <layout class="QHBoxLayout" name="layout_widget_fgtitle"/>
+                    </item>
+                    <item row="0" column="1">
+                     <spacer name="horizontalSpacer_22">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
                     <item row="1" column="2">
                      <widget class="QLabel" name="label_fgtitle">
                       <property name="enabled">
@@ -252,13 +287,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="cb_widget_custom_style">
-                      <property name="text">
-                       <string>Custom style</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="7">
                      <spacer name="horizontalSpacer_23">
                       <property name="orientation">
@@ -275,37 +303,12 @@
                       </property>
                      </spacer>
                     </item>
-                    <item row="0" column="1">
-                     <spacer name="horizontalSpacer_22">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Fixed</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="0" column="9">
-                     <widget class="QLabel" name="label_bgtitle_active">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cb_widget_custom_style">
                       <property name="text">
-                       <string>Active</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                       <string>Custom style</string>
                       </property>
                      </widget>
-                    </item>
-                    <item row="1" column="4">
-                     <layout class="QHBoxLayout" name="layout_widget_fgtitle"/>
                     </item>
                     <item row="0" column="4">
                      <layout class="QHBoxLayout" name="layout_widget_bgtitle"/>
@@ -328,6 +331,41 @@
                     </item>
                     <item row="1" column="10">
                      <layout class="QHBoxLayout" name="layout_widget_fgtitle_active"/>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_3d_title">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="text">
+                       <string>3D</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QSpinBox" name="sb_3d_title">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimum">
+                       <number>-80</number>
+                      </property>
+                      <property name="maximum">
+                       <number>80</number>
+                      </property>
+                      <property name="value">
+                       <number>50</number>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -2897,6 +2935,38 @@
     <hint type="destinationlabel">
      <x>533</x>
      <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_widget_custom_style</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_3d_title</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>419</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_widget_custom_style</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sb_3d_title</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>507</x>
+     <y>236</y>
     </hint>
    </hints>
   </connection>

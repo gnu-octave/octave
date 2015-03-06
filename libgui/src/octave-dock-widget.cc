@@ -79,6 +79,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   _close_button->setIconSize (QSize (12,12));
 
   _icon_color = "";
+  _title_3d = 50;
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);
@@ -316,11 +317,24 @@ octave_dock_widget::set_style (bool active)
           icon_col = _icon_color;
         }
 
+      QColor bg_col_top, bg_col_bottom;
+      if (_title_3d > 0)
+        {
+          bg_col_top = bg_col.lighter (100 + _title_3d);
+          bg_col_bottom = bg_col.darker (100 + _title_3d);
+        }
+      else
+        {
+          bg_col_top = bg_col.darker (100 - _title_3d);
+          bg_col_bottom = bg_col.lighter (100 - _title_3d);
+        }
+
       QString background =
         QString ("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
-                 "            stop: 0 %1, stop: 0.75 %2, stop: 0.9 %2, stop: 1.0 %1);").
-        arg (bg_col.lighter ().name ()).
-        arg (bg_col.name ());
+                 "            stop: 0 %1, stop: 0.60 %2, stop: 0.95 %2 stop: 1.0 %3);").
+        arg (bg_col_top.name ()).
+        arg (bg_col.name ()).
+        arg (bg_col_bottom.name ());
 
 #if defined (Q_OS_WIN32)
       css = background + QString (" color: %1 ;").arg (fg_col.name ());
@@ -373,6 +387,9 @@ octave_dock_widget::handle_settings (const QSettings *settings)
 {
   _custom_style =
     settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
+
+  _title_3d =
+    settings->value ("DockWidgets/widget_title_3d",50).toInt ();
 
   QColor default_var = QColor (0,0,0);
   _fg_color = settings->value ("Dockwidgets/title_fg_color",

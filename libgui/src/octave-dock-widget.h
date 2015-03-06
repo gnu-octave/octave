@@ -122,6 +122,7 @@ private:
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
   bool _floating;
   bool _custom_style;
+  int _title_3d;
   QColor _bg_color;
   QColor _bg_color_active;
   QColor _fg_color;

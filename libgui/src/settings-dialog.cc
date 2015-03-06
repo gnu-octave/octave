@@ -144,6 +144,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
            _widget_title_fg_color_active, SLOT (setEnabled (bool)));
 
+  ui->sb_3d_title->setValue (
+    settings->value ("DockWidgets/widget_title_3d", 50).toInt ());
   ui->cb_widget_custom_style->setChecked (
     settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
 
@@ -644,6 +646,8 @@ settings_dialog::write_changed_settings (bool closing)
   // dock widget title bar
   settings->setValue ("DockWidgets/widget_title_custom_style",
                       ui->cb_widget_custom_style->isChecked ());
+  settings->setValue ("DockWidgets/widget_title_3d",
+                      ui->sb_3d_title->value ( ));
   settings->setValue ("Dockwidgets/title_bg_color",
                       _widget_title_bg_color->color ());
   settings->setValue ("Dockwidgets/title_bg_color_active",

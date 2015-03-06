@@ -361,8 +361,8 @@ octave_dock_widget::set_style (bool active)
   _close_button->setStyleSheet (css_button);
   _dock_action->setIcon (QIcon (":/actions/icons/" + dock_icon + icon_col +
                                 ".png"));
-  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + dock_icon +
-                                 icon_col + ".png"));
+  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + icon_col +
+                                 ".png"));
 #else
   setStyleSheet (css);
 #endif

@@ -290,11 +290,17 @@ find_dialog::find (bool forward)
         }
       else if (! do_forward)
         {
-           // search from previous character if search backward
+           // search from position before search characters text length
+           // if search backward on existing results,
            _edit_area->getCursorPosition (&line,&col);
-           int currpos = _edit_area->positionFromLineIndex(line,col);
-           if (currpos > 0) currpos --;
-           _edit_area->lineIndexFromPosition(currpos, &line,&col);
+           if (_find_result_available && _edit_area->hasSelectedText ())
+             {
+               int currpos = _edit_area->positionFromLineIndex(line,col);
+               currpos -= (_search_line_edit->text ().length ());
+               if (currpos < 0) 
+                 currpos = 0;
+               _edit_area->lineIndexFromPosition(currpos, &line,&col);
+             }
         }
     }
 

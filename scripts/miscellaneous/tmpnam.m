@@ -30,7 +30,7 @@
 ## Programming Note: Because the named file is not opened by @code{tmpnam},
 ## it is possible, though relatively unlikely, that it will not be available
 ## by the time your program attempts to open it.  If this is a concern,
-## see @code{tmpfile}.  The functions @code{tmpnam} and @code{tmpnam} are
+## see @code{tmpfile}.  The functions @code{tmpnam} and @code{tempname} are
 ## equivalent with the latter provided for @sc{matlab} compatibility.
 ##
 ## @strong{Caution}: @code{tmpnam} will be removed in a future version of

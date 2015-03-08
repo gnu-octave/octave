@@ -123,6 +123,7 @@ private:
   bool _floating;
   bool _custom_style;
   int _title_3d;
+  int _icon_size;
   QColor _bg_color;
   QColor _bg_color_active;
   QColor _fg_color;

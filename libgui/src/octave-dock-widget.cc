@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSettings>
+#include <QStyle>
 
 #include "resource-manager.h"
 #include "octave-dock-widget.h"
@@ -52,6 +53,9 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   connect (p, SIGNAL (active_dock_changed (octave_dock_widget*, octave_dock_widget*)),
            this, SLOT (handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*)));
 
+  QStyle *st = style ();
+  _icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
+
 #if defined (Q_OS_WIN32)
   // windows: add an extra title bar that persists when floating
 
@@ -66,7 +70,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   _dock_button = new QToolButton (this);
   _dock_button->setDefaultAction (_dock_action);
   _dock_button->setFocusPolicy (Qt::NoFocus);
-  _dock_button->setIconSize (QSize (12,12));
+  _dock_button->setIconSize (QSize (_icon_size,_icon_size));
 
   _close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this);
@@ -76,7 +80,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   _close_button = new QToolButton (this);
   _close_button->setDefaultAction (_close_action);
   _close_button->setFocusPolicy (Qt::NoFocus);
-  _close_button->setIconSize (QSize (12,12));
+  _close_button->setIconSize (QSize (_icon_size,_icon_size));
 
   _icon_color = "";
   _title_3d = 50;
@@ -346,10 +350,9 @@ octave_dock_widget::set_style (bool active)
                      "  titlebar-close-icon: url(:/actions/icons/widget-close%2.png);"
                      "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"%2); }"
                      "QDockWidget::close-button,"
-                     "QDockWidget::float-button { border: 0px;}"
+                     "QDockWidget::float-button { border: 0px; icon-size: %3px; width: %3px}"
                      ).
-                     arg (fg_col.name ()).
-                     arg (icon_col);
+                     arg (fg_col.name ()).arg (icon_col).arg (_icon_size);
 #endif
     }
   else
@@ -363,8 +366,8 @@ octave_dock_widget::set_style (bool active)
                      "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"
                      "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"); }"
                      "QDockWidget::close-button,"
-                     "QDockWidget::float-button { border: 0px; }"
-                    );
+                     "QDockWidget::float-button { border: 0px; icon-size: %1px; width: %1px}"
+                    ).arg (_icon_size);
 #endif
     }
 

@@ -191,7 +191,7 @@ resource_manager::do_reload_settings (void)
       QString settings_text = in.readAll ();
       qt_settings.close ();
 
-      // Get the default monospaced font and replace placeholder
+      // Get the default monospaced font
 #if defined (HAVE_QFONT_MONOSPACE)
       QFont fixed_font;
       fixed_font.setStyleHint (QFont::Monospace);
@@ -203,6 +203,16 @@ resource_manager::do_reload_settings (void)
 #else
       QString default_family = "courier";
 #endif
+
+      // Get the default custom editor
+#if defined (Q_OS_WIN32)
+      QString custom_editor = "notepad++ -n%l %f";
+#else
+      QString custom_editor = "emacs +%l %f";
+#endif
+
+      // Replace placeholders
+      settings_text.replace ("__default_custom_editor__", custom_editor);
       settings_text.replace ("__default_font__", default_family);
       settings_text.replace ("__default_font_size__", "10");
 

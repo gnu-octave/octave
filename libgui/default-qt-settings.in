@@ -2,9 +2,8 @@
 connectOnStartup=true
 showMessageOfTheDay=true
 showTopic=true
+customFileEditor=__default_custom_editor__
 autoIdentification=false
-useCustomFileEditor=false
-customFileEditor=emacs
 useProxyServer=false
 proxyType=
 proxyHostName=none

@@ -270,7 +270,7 @@ file_editor::call_custom_editor (const QString& file_name, int line)
   // Check if the user wants to use a custom file editor.
   QSettings *settings = resource_manager::get_settings ();
 
-  if (settings->value ("useCustomFileEditor").toBool ())
+  if (settings->value ("useCustomFileEditor",false).toBool ())
     {
       QString editor = settings->value ("customFileEditor").toString ();
       editor.replace ("%f", file_name);

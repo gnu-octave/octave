@@ -152,11 +152,10 @@ instead.\n\
 
   // Test for a bug in OSMesa with version < 9.0
   //
-  // Unfortunately the macros OSMESA_MAJOR_VERSION and
-  // OSMESA_MINOR_VERSION weren't updated between many releases and
-  // can't be used for detection.  (Version 8.0 until 9.1.4 all return
-  // MAJOR 6, MINOR 5)
-  int z, s;
+  // Unfortunately the macros OSMESA_MAJOR_VERSION and OSMESA_MINOR_VERSION
+  // weren't updated between many releases and can't be used for detection.
+  // (Version 8.0 until 9.1.4 all return MAJOR 6, MINOR 5)
+  GLint z, s;
   glGetIntegerv (GL_DEPTH_BITS, &z);
   glGetIntegerv (GL_STENCIL_BITS, &s);
   if (z != 16 || s != 0)

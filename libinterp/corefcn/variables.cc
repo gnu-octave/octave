@@ -642,6 +642,26 @@ not on the search path you should use some combination of the functions\n\
 %!assert (exist ("print_usage", "file"), 2)
 %!assert (exist ("print_usage", "dir"), 0)
 
+## Don't search path for rooted relative file names
+%!assert (exist ("plot.m", "file"), 2);
+%!assert (exist ("./plot.m", "file"), 0);
+%!assert (exist ("./%nonexistentfile%", "file"), 0);
+%!assert (exist ("%nonexistentfile%", "file"), 0);
+ 
+## Don't search path for absolute file names
+%!test
+%! tname = tempname (pwd ()); 
+%! unwind_protect
+%!   ## open/close file to create it, equivalent of touch
+%!   fid = fopen (tname, "w");
+%!   fclose (fid);
+%!   [~, fname] = fileparts (tname);
+%!   assert (exist (fullfile (pwd (), fname), "file"), 2);
+%! unwind_protect_cleanup
+%!   unlink (tname);
+%! end_unwind_protect
+%! assert (exist (fullfile (pwd (), "%nonexistentfile%"), "file"), 0);
+
 %!testif HAVE_CHOLMOD
 %! assert (exist ("chol"), 3);
 %! assert (exist ("chol.oct"), 3);
@@ -662,16 +682,6 @@ not on the search path you should use some combination of the functions\n\
 %!error <TYPE must be a string> exist ("a", 1)
 %!error <NAME must be a string> exist (1)
 
-%!test
-%! flist = dir ();
-%! fname = flist(3).name;  ## skip . and ..
-%! assert (exist (fullfile (pwd (), fname), "file"), 2)
-%! assert (exist (fullfile (pwd (), "nonexistentfile"), "file"), 0)
-
-%!assert (exist ("plot.m", "file"), 2);
-%!assert (exist ("./plot.m", "file"), 0);
-%!assert (exist ("./nonexistentfile", "file"), 0);
-%!assert (exist ("nonexistentfile", "file"), 0);
 */
 
 octave_value

@@ -129,8 +129,8 @@ instead.\n\
   bool internal = true;
   Matrix bb = fp.get_boundingbox (internal);
 
-  int Width = bb(2);
-  int Height = bb(3);
+  GLsizei Width = static_cast<GLsizei> (bb(2));
+  GLsizei Height = static_cast<GLsizei> (bb(3));
 
   // Create an RGBA-mode context, specify Z=16, stencil=0, accum=0 sizes
   OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);

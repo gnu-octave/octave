@@ -331,7 +331,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp;
+      R fi = i * static_cast<R> (M_PI) / nsamp;
       R lambda1 = cos (fi);
       R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
@@ -364,7 +364,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp;
+      R fi = i * static_cast<R> (M_PI) / nsamp;
       R lambda1 = cos (fi);
       R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
@@ -383,7 +383,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp;
+      R fi = i * static_cast<R> (M_PI) / nsamp;
       lamcu = CR (cos (fi), sin (fi));
       R nrm1 = vector_norm (lama * lamcu * y + mu * col, p);
       if (nrm1 > nrm)

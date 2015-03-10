@@ -20,15 +20,19 @@
 %!test
 %! x = [0 i 1+i 2 3i 3+4i];
 %! assert (sort (x, "descend"), fliplr (x));
+%! assert (sort (single (x), "descend"), fliplr (single (x)));
 
 %!test
 %! x = [1, -1, i, -i];
 %! xs = [-i, 1, i, -1];
 %! assert (sort (x), xs);
 %! assert (sort (x, "descend"), fliplr (xs));
+%! assert (sort (single (x)), single (xs));
+%! assert (sort (single (x), "descend"), fliplr (single (xs)));
 
 ## bug #44071, issorted incorrect because it uses different sort routine.
 %!assert (issorted ([1, -1, i, -i]), false)
+%!assert (issorted (single ([1, -1, i, -i])), false)
 
 ## bug #43313, -1 is both '>' and '==' to (-1 - 0i)
 %!test
@@ -40,5 +44,9 @@
 %!test
 %! x = [complex(-1,0), complex(-1,-0), i, -i, 1];
 %! xs = sort (x);
+%! xf = single (x);
+%! xfs = sort (xf);
 %! assert (issorted (xs));
+%! assert (issorted (xfs));
+%! assert (double (xfs), xs);
 

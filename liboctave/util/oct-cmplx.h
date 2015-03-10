@@ -50,14 +50,14 @@ inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
     { \
       FLOAT_TRUNCATE const T ay = std::arg (a); \
       FLOAT_TRUNCATE const T by = std::arg (b); \
-      if (ay == -M_PI) \
+      if (ay == static_cast<T> (-M_PI)) \
         { \
-          if (by != -M_PI) \
-            return M_PI OP by; \
+          if (by != static_cast<T> (-M_PI)) \
+            return static_cast<T> (M_PI) OP by; \
         } \
-      else if (by == -M_PI) \
+      else if (by == static_cast<T> (-M_PI)) \
         { \
-          return ay OP M_PI; \
+          return ay OP static_cast<T> (M_PI); \
         } \
       return ay OP by; \
     } \
@@ -72,8 +72,8 @@ inline bool operator OP (const std::complex<T>& a, T b) \
   if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T ay = std::arg (a); \
-      if (ay == -M_PI) \
-        return M_PI OP 0; \
+      if (ay == static_cast<T> (-M_PI)) \
+        return static_cast<T> (M_PI) OP 0; \
       return ay OP 0; \
     } \
   else \
@@ -87,8 +87,8 @@ inline bool operator OP (T a, const std::complex<T>& b) \
   if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T by = std::arg (b); \
-      if (by == -M_PI) \
-        return 0 OP M_PI; \
+      if (by == static_cast<T> (-M_PI)) \
+        return 0 OP static_cast<T> (M_PI); \
       return 0 OP by; \
     } \
   else \

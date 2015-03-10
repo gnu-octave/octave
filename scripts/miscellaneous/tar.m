@@ -76,16 +76,17 @@ endfunction
 
 
 %!xtest
-%! ## test gzip together with gunzip
+%! ## test tar together with untar
 %! orig_dir = pwd ();
 %! unwind_protect
-%!   dirname = tempname;
+%!   dirname = tarname = outdir = "";
+%!   dirname = tempname ();
 %!   assert (mkdir (dirname));
 %!   chdir (dirname);
 %!   dirname2 = "dir2";
 %!   assert (mkdir (dirname2));
-%!   fname1 = "f1";
-%!   fname2 = fullfile (dirname2, "f2");
+%!   fname1 = "file1";
+%!   fname2 = fullfile (dirname2, "file2");
 %!   fid = fopen (fname1, "wt");
 %!   assert (fid >= 0);
 %!   fdisp (fid, "Hello World");
@@ -94,7 +95,7 @@ endfunction
 %!   assert (fid >= 0);
 %!   fdisp (fid, "Goodbye World");
 %!   fclose (fid);
-%!   tarname = [tempname ".tar"];
+%!   tarname = [tempname() ".tar"];
 %!   filelist = tar (tarname, {dirname2, fname1});
 %!   if (! strcmp (filelist{3}, fname1))
 %!     error ("tar file contents does not match expected file");
@@ -115,11 +116,17 @@ endfunction
 %!   fclose (fid);
 %!   assert (str, "Goodbye World");
 %! unwind_protect_cleanup
-%!   delete (tarname);
-%!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (dirname, "s");
-%!   rmdir (outdir, "s");
 %!   chdir (orig_dir);
+%!   if (exist (tarname))
+%!     delete (tarname);
+%!   endif
+%!   confirm_recursive_rmdir (false, "local");
+%!   if (exist (dirname))
+%!     rmdir (dirname, "s");
+%!   endif
+%!   if (exist (outdir))
+%!     rmdir (outdir, "s");
+%!   endif
 %! end_unwind_protect
 
 ## Test input validation

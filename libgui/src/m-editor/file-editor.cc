@@ -1855,7 +1855,7 @@ file_editor::set_shortcuts ()
   // Debug menu
   shortcut_manager::set_shortcut (_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
   shortcut_manager::set_shortcut (_next_breakpoint_action, "editor_debug:next_breakpoint");
-  shortcut_manager::set_shortcut (_previous_bookmark_action, "editor_debug:previous_breakpoint");
+  shortcut_manager::set_shortcut (_previous_breakpoint_action, "editor_debug:previous_breakpoint");
   shortcut_manager::set_shortcut (_remove_all_breakpoints_action, "editor_debug:remove_breakpoints");
 
   // Run menu

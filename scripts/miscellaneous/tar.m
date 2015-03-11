@@ -65,10 +65,7 @@ function filelist = tar (tarfile, files, rootdir = ".")
   endif
 
   if (nargout > 0)
-    if (output(end) == "\n")
-      output(end) = [];
-    endif
-    filelist = ostrsplit (output, "\n");
+    filelist = ostrsplit (output, "\r\n", true);
     filelist = filelist';
   endif
 
@@ -117,9 +114,7 @@ endfunction
 %!   assert (str, "Goodbye World");
 %! unwind_protect_cleanup
 %!   chdir (orig_dir);
-%!   if (exist (tarname))
-%!     delete (tarname);
-%!   endif
+%!   unlink (tarname);
 %!   confirm_recursive_rmdir (false, "local");
 %!   if (exist (dirname))
 %!     rmdir (dirname, "s");

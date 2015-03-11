@@ -236,12 +236,8 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   if (nargout > 0 || needmove)
-    ## Trim the last CR if needed.
-    ## FIXME: Will this need to change to a check for "\r\n" for windows?
-    if (output(end) == "\n")
-      output(end) = [];
-    endif
-    files = parsefcn (ostrsplit (output, "\n"))';
+    ## Trim the last CR or NL if needed.
+    files = parsefcn (ostrsplit (output, "\r\n", true))';
 
     ## Move files if necessary.
     if (needmove)

@@ -70,10 +70,7 @@ function filelist = zip (zipfile, files, rootdir = ".")
     if (status)
       error ("zip: zipinfo failed with exit status = %d", status);
     endif
-    if (filelist(end) == "\n")
-      filelist(end) = [];
-    endif
-    filelist = ostrsplit (filelist, "\n");
+    filelist = ostrsplit (filelist, "\r\n", true);
   endif
 
 endfunction
@@ -82,12 +79,12 @@ endfunction
 %!xtest
 %! ## test zip together with unzip
 %! unwind_protect
-%!   filename = tempname;
+%!   filename = tempname ();
 %!   tmp_var  = pi;
 %!   save (filename, "tmp_var");
-%!   dirname = tempname;
+%!   dirname = tempname ();
 %!   mkdir (dirname);
-%!   zipfile = tempname;
+%!   zipfile = tempname ();
 %!   [~, basename, ext] = fileparts (filename);
 %!   filelist = zip (zipfile, [basename ext], tempdir);
 %!   filelist = filelist{1};
@@ -110,8 +107,8 @@ endfunction
 %!     error ("unzipped file not equal to original file!");
 %!   endif
 %! unwind_protect_cleanup
-%!   delete (filename);
-%!   delete ([dirname, filesep, basename, extension]);
+%!   unlink (filename);
+%!   unlink ([dirname, filesep, basename, extension]);
 %!   rmdir (dirname);
 %! end_unwind_protect
 

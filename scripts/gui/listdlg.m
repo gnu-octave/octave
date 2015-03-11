@@ -121,6 +121,8 @@ function [sel, ok] = listdlg (varargin)
   ## make sure listcell strings are a cell array
   if (! iscell (listcell))
     listcell = {listcell};
+  elseif (iscellstr (listcell{1})) 
+    listcell = listcell{1};
   endif
 
   ## make sure valid selection mode

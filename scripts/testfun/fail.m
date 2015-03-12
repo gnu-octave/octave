@@ -146,8 +146,8 @@ endfunction
 
 ## Test that fail() itself will generate an error
 %!error <expected error> fail ("1")
-%!error <'a' undefined> fail ("a*[2;3]", "nonconformant")
-%!error <expected error .usage:>  fail ("a*[2,3]", "usage:")
+%!error <'__a__' undefined> fail ("__a__*[2;3]", "nonconformant")
+%!error <expected error .usage:>  fail ("__a__*[2,3]", "usage:")
 %!error <warning failure> fail ("warning ('warning failure')", "warning", "success")
 
 ## Test input validation

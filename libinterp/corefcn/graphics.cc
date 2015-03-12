@@ -11934,6 +11934,7 @@ Undocumented internal function.\n\
         return retval;
 
       ax_props.zoom (mode, factor);
+      Vdrawnow_requested = true;
     }
 
   return retval;

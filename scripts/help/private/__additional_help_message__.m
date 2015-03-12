@@ -26,7 +26,7 @@ function msg = __additional_help_message__ ()
   if (suppress_verbose_help_message ())
     msg = "";
   else
-    msg = "\
+    msg = "\n\
 Additional help for built-in functions and operators is\n\
 available in the online version of the manual.  Use the command\n\
 'doc <topic>' to search the manual index.\n\

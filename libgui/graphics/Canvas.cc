@@ -77,9 +77,11 @@ void Canvas::setCursor (MouseMode mode)
           break;
 
         case ZoomInMode:
+          w->setCursor (QPixmap (":/images/zoom-in.png"));
+          break;
+
         case ZoomOutMode:
-          // FIXME: distinguish zoom in/out.
-          w->setCursor (QBitmap (":/images/zoom.png"));
+          w->setCursor (QPixmap (":/images/zoom-out.png"));
           break;
 
         default:

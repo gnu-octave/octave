@@ -176,6 +176,7 @@ function update_mouse_mode (hfig, arg)
   endif
 endfunction
 
+
 %!demo
 %! clf;
 %! sombrero ();

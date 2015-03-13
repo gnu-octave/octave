@@ -35,6 +35,8 @@ see <http://www.gnu.org/licenses/>.
 #include <QApplication>
 #include <QAction>
 
+#include "resource-manager.h"
+
 class QTerminal : public QWidget
 {
   Q_OBJECT
@@ -127,11 +129,11 @@ protected:
     _contextMenu = new QMenu (this);
 
     _copy_action = _contextMenu->addAction (
-                     QIcon::fromTheme ("edit-copy", QIcon (":/actions/icons/edit-copy.svg")),
+                     resource_manager::icon ("edit-copy"),
                      tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                     QIcon::fromTheme ("edit-paste", QIcon (":/actions/icons/edit-paste.svg")),
+                     resource_manager::icon ("edit-paste"),
                       tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();

@@ -35,7 +35,8 @@ nodist_qterminal_libqterminal_la_SOURCES = $(qterminal_libqterminal_la_MOC)
 qterminal_libqterminal_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   @QT_CPPFLAGS@ \
-  -I$(srcdir)/qterminal/libqterminal
+  -I$(srcdir)/qterminal/libqterminal \
+  -I$(srcdir)/src
 
 qterminal_libqterminal_la_CFLAGS = $(AM_CFLAGS)
 

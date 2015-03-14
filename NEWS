@@ -1,6 +1,25 @@
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 
+ ** A graphical user interface is now the default when running Octave
+    interactively.  The start-up option --no-gui will run the familiar
+    command line interface, and still allows use of the GUI dialogs and
+    qt plotting toolkit.  The option --no-gui-libs runs a minimalist
+    command line interface that does not link with the Qt libraries and
+    uses the fltk toolkit for plotting.
+
+ ** Octave now uses OpenGL graphics with Qt widgets by default.  If OpenGL
+    libraries are not available when Octave is built, gnuplot is used.
+    You may choose to use the fltk or gnuplot toolkit for graphics by
+    executing the command
+
+      graphics_toolkit ("fltk")
+        OR
+      graphics_toolkit ("gnuplot")
+
+    Adding such a command to your ~/.octaverc file will set the default
+    for each session.
+
  ** A new syntax for object oriented programming termed classdef has been
     introduced.  See the manual for more extensive documentation of the
     classdef interface.
@@ -37,18 +56,6 @@ Summary of important user-visible changes for version 4.0:
     All three optimizations are disabled if Octave is started with the
     --braindead command line option.
 
- ** For compatibility with Matlab, the "backtrace" warning option is now
-    enabled by default.
-
- ** For compatibility with Matlab, the "ismatrix(x)" function now only checks
-    the dimension of "x". The old behaviour of "ismatrix" is obtained by
-    "isnumeric (x) || islogical (x) || ischar (x)".
-
- ** The nextpow2 function behaviour has been changed for vector inputs.
-    Instead of computing `nextpow2 (length (x))', it will now compute
-    nextpow2() for each element of the input.  Not only is this change
-    Matlab compatible, it also prevents bugs for "vectors" of length 1.
-
  ** The preference
 
       do_braindead_shortcircuit_evaluation
@@ -65,6 +72,18 @@ Summary of important user-visible changes for version 4.0:
 
     is now set to "on" by default instead of "error" by default and "on"
     for --traditional.
+
+ ** The "backtrace" warning option is now enabled by default.  This change
+    was made for Matlab compatability.
+
+ ** For compatibility with Matlab, the "ismatrix (x)" function now only checks
+    the dimension of "x".  The old behaviour of "ismatrix" is obtained by
+    "isnumeric (x) || islogical (x) || ischar (x)".
+
+ ** The nextpow2 function behaviour has been changed for vector inputs.
+    Instead of computing `nextpow2 (length (x))', it will now compute
+    nextpow2 for each element of the input.  This change is Matlab compatible,
+    and also prevents bugs for "vectors" of length 1.
 
  ** polyeig now returns a row vector of eigenvalues rather than a matrix
     with the eigenvalues on the diagonal.  This change was made for Matlab
@@ -120,13 +139,16 @@ Summary of important user-visible changes for version 4.0:
         integer format specifier.
 
     There is still one difference:  Matlab switches to '%e' and Octave
-    is currently switching to '%g'.
+    switches to '%g'.
 
  ** The archive family of functions (bzip2, gzip, zip, tar) and their
     unpacking routines (bunzip2, gunzip, unzip, untar, unpack) have
     been recoded.  Excepting unpack, the default is now to place files
     in the same directory as the archive (on unpack) or as the original
     files (on archiving).
+
+ ** Qt and FLTK graphics toolkits now support offscreen rendering on Linux.
+    In other words, print will work even when the figure visibility is "off".
 
  ** Z-order stacking issues with patches, grid lines, and line object
     plot markers for on screen display and printing have all been resolved.
@@ -159,6 +181,17 @@ Summary of important user-visible changes for version 4.0:
     previous separate warning IDs "Octave:fopen-file-in-path",
     "Octave:load-file-in-path", and "Octave:md5sum-file-in-path".
 
+ ** The warning ID Octave:singular-matrix-div has been replaced by
+    Octave:nearly-singular-matrix and Octave:singular-matrix.
+
+ ** The warning ID Octave:matlab-incompatible has been replaced by
+    Octave:language-extension to better reflect its meaning.
+
+ ** The warning ID Octave:broadcast has been removed.  Instead automatic
+    broadcasting will throw an Octave:language-extension warning.  This
+    warning ID is used for broadcasting as well as other features not
+    available in Matlab.
+
  ** Other new functions added in 4.0:
 
       annotation
@@ -174,15 +207,21 @@ Summary of important user-visible changes for version 4.0:
       im2frame
       isbanded
       isdiag
+      isstudent
       istril
       istriu
       javachk
+      jit_failcnt
       linkaxes
       lscov
+      metaclass
       numfields
+      open
       ordschur
+      pan
       qmr
       rotate
+      rotate3d
       sylvester
       unsetenv
       validateattributes
@@ -217,6 +256,7 @@ Summary of important user-visible changes for version 4.0:
       octave_tmp_file_name | tempname
       playaudio            | audioplayer
       saveaudio            | audiowrite
+      strmatch             | strncmp or strcmp or regexp
       syl                  | sylvester
       usage                | print_usage
 
@@ -265,25 +305,12 @@ Summary of important user-visible changes for version 4.0:
     been removed from Octave 4.0.  Replacement classes are
     <octave_map> (struct array) or <octave_scalar_map> for a single structure.
 
- ** The warning ID Octave:singular-matrix-div has been replaced by
-    Octave:nearly-singular-matrix and Octave:singular-matrix.
-
- ** The warning ID Octave:matlab-incompatible has been replaced by
-    Octave:language-extension to better reflect its meaning.
-
- ** The warning ID Octave:broadcast has been removed.  Instead automatic
-    broadcasting will throw an Octave:language-extension warning, together
-    with other features not available in Matlab.
-
  ** The configure option --enable-octave-allocator has been removed.
     The internal class <octave_allocator> declared in oct-alloc.h has
     been removed.  The header remains, but is deprecated.  The macros to
     access the class (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
     and DEFINE_OCTAVE_ALLOCATOR2) are now unconditionally defined to be
     empty.
-
- ** Qt and FLTK graphics toolkit now support offscreen rendering,
-    i.e., print will work when figure visibility is off.
 
  ** Octave now has OpenMP enabled by default if the system provides a
     working OpenMP implementation.  This allows oct-file modules to take

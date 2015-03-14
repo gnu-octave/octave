@@ -213,6 +213,7 @@ protected slots:
   void copyClipboard ();
   void pasteClipboard ();
   void selectAll ();
+  void do_undo ();
 
 private slots:
 
@@ -251,6 +252,8 @@ private:
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
   void toggle_preference (const QString& preference, bool def);
+
+  bool editor_tab_has_focus ();
 
   QWidget *find_tab_widget (const QString& openFileName) const;
   QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,

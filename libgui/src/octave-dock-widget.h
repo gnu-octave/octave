@@ -97,15 +97,11 @@ protected slots:
       emit active_changed (true);
   }
   /** slots to handle copy & paste */
-  virtual void copyClipboard ()
-  {
-  }
-  virtual void pasteClipboard ()
-  {
-  }
-  virtual void selectAll ()
-  {
-  }
+  virtual void copyClipboard () {  }
+  virtual void pasteClipboard () {  }
+  virtual void selectAll () {  }
+  /** slots to handle undo */
+  virtual void do_undo () {  }
 
   // event filter for double clicks into the window decoration elements
   bool eventFilter(QObject *obj, QEvent *e);

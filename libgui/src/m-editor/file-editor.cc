@@ -1759,35 +1759,39 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   check_actions ();
 }
 
+bool
+file_editor::editor_tab_has_focus ()
+{
+  QWidget * foc_w = focusWidget ();
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    return true;
+  return false;
+}
+
 void
 file_editor::copyClipboard ()
 {
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_copy (true);
-    }
+  if (editor_tab_has_focus ())
+    request_copy (true);
 }
 void
 file_editor::pasteClipboard ()
 {
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_paste (true);
-    }
+  if (editor_tab_has_focus ())
+    request_paste (true);
 }
 void
 file_editor::selectAll ()
 {
-  QWidget * foc_w = focusWidget ();
+  if (editor_tab_has_focus ())
+    request_selectall (true);
+}
 
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_selectall (true);
-    }
+void
+file_editor::do_undo ()
+{
+  if (editor_tab_has_focus ())
+    request_undo (true);
 }
 
 void

@@ -103,6 +103,7 @@ signals:
   void copyClipboard_signal (void);
   void pasteClipboard_signal (void);
   void selectAll_signal (void);
+  void undo_signal (void);
 
 public slots:
 

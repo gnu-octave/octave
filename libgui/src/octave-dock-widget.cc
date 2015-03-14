@@ -115,6 +115,8 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (pasteClipboard ()));
   connect (p, SIGNAL (selectAll_signal ()),
            this, SLOT (selectAll ()));
+  // undo handling
+  connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
 
   installEventFilter (this);
 

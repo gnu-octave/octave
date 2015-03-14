@@ -287,7 +287,10 @@ main_window::handle_rename_variable_request (const QString& old_name,
 void
 main_window::handle_undo_request (void)
 {
-  octave_link::post_event (this, &main_window::command_window_undo_callback);
+  if (command_window_has_focus ())
+    octave_link::post_event (this, &main_window::command_window_undo_callback);
+  else
+    emit undo_signal ();
 }
 
 void

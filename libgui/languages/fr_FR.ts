@@ -178,12 +178,12 @@
     <message>
         <location line="+2"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Agrandir</translation>
+        <translation>Agrandir</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Réduire</translation>
+        <translation>Réduire</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -586,7 +586,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation>&amp;Aide</translation>
+        <translation>A&amp;ide</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -648,7 +648,7 @@ pour écrire : %2.</translation>
     <message>
         <location line="+21"/>
         <source>&amp;Run</source>
-        <translation>&amp;Exécuter</translation>
+        <translation>E&amp;xécuter</translation>
     </message>
 </context>
 <context>
@@ -831,7 +831,7 @@ Voulez vous choisir un autre nom ?</translation>
     <message>
         <location line="-4"/>
         <source>One directory up</source>
-        <translation type="unfinished">Monter au répertoire parent</translation>
+        <translation>Monter au répertoire parent</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1627,7 +1627,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     <message>
         <location line="+14"/>
         <source>On Disk</source>
-        <translation>Installé localement</translation>
+        <translation>Installée localement</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1678,7 +1678,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     <message>
         <location line="+38"/>
         <source>&amp;Window</source>
-        <translation>&amp;Fenêtre</translation>
+        <translation>Fenê&amp;tre</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2199,17 +2199,17 @@ Le GUI d&apos;Octave doit maintenant être fermé.</translation>
     <message>
         <location line="-159"/>
         <source>Small</source>
-        <translation type="unfinished"></translation>
+        <translation>Petit</translation>
     </message>
     <message>
         <location line="+7"/>
         <source> Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Large</source>
-        <translation type="unfinished"></translation>
+        <translation>Grand</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -2219,7 +2219,7 @@ Le GUI d&apos;Octave doit maintenant être fermé.</translation>
     <message>
         <location line="+19"/>
         <source>3D</source>
-        <translation type="unfinished"></translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -2286,7 +2286,7 @@ Le GUI d&apos;Octave doit maintenant être fermé.</translation>
     <message>
         <location line="+68"/>
         <source>Indentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Indentation</translation>
     </message>
     <message>
         <location line="+117"/>
@@ -2316,7 +2316,7 @@ Le GUI d&apos;Octave doit maintenant être fermé.</translation>
     <message>
         <location line="+31"/>
         <source>File handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestion des fichiers</translation>
     </message>
     <message>
         <location line="+40"/>

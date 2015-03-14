@@ -1784,7 +1784,7 @@ function A = minij (n)
     error ("gallery: N must be an integer for minij matrix.");
   endif
 
-  A = min (ones (n, 1) * (1:n), (1:n)' * ones (1, n));
+  A = bsxfun (@min, 1:n, (1:n)');
 endfunction
 
 function A = moler (n, alpha = -1)
@@ -2867,3 +2867,7 @@ endfunction
 %!error <matrix binomial not implemented> gallery ("binomial")
 %!error <unknown matrix with NAME foobar> gallery ("foobar")
 
+%!assert (gallery ("minij", 4), [1 1 1 1; 1 2 2 2; 1 2 3 3; 1 2 3 4])
+%!assert (gallery ("minij", 1), 1)
+%!assert (gallery ("minij", 0), [])
+%!assert (gallery ("minij", -1), [])

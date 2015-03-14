@@ -119,6 +119,8 @@ public slots:
 
   void terminal_interrupt (void) { emit interrupt_signal (); }
 
+  void set_global_shortcuts (bool focus_out);
+
 protected:
 
   QTerminal (QWidget *xparent = 0) : QWidget (xparent)

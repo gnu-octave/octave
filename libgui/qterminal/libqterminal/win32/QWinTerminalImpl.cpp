@@ -1426,6 +1426,8 @@ QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
 
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent, SLOT (set_global_shortcuts (bool)));
+    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
+             this, SLOT (set_global_shortcuts (bool)));
 
     connect (this, SIGNAL (set_screen_size_signal (int, int)),
              parent, SLOT (set_screen_size (int, int)));

@@ -328,6 +328,8 @@ TerminalView::TerminalView(QWidget *parent)
 
   connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent->parent (), SLOT (set_global_shortcuts (bool)));
+  connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
+           parent, SLOT (set_global_shortcuts (bool)));
 
 }
 

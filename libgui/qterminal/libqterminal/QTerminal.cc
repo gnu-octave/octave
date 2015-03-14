@@ -71,6 +71,17 @@ QTerminal::color_names (void)
   return names;
 }
 
+// slot for disabling the interrupt action when terminal loses focus
+void
+QTerminal::set_global_shortcuts (bool focus_out)
+  {
+    if (focus_out)
+      _interrupt_action->setShortcut (QKeySequence ());
+    else
+     _interrupt_action->setShortcut (
+              QKeySequence (Qt::ControlModifier + Qt::Key_C));
+  }
+
 void
 QTerminal::notice_settings (const QSettings *settings)
 {

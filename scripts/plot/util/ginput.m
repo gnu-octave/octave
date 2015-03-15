@@ -64,12 +64,12 @@ function varargout = ginput (n = -1)
   x = y = button = [];
   ginput_accumulator (0, 0, 0, 0);  # initialize accumulator
 
-  orig_buttondownfcn = get (fig, "buttondownfcn");
+  orig_windowbuttondownfcn = get (fig, "windowbuttondownfcn");
   orig_ginput_keypressfcn = get (fig, "keypressfcn");
 
   unwind_protect
 
-    set (ax, "buttondownfcn", @ginput_buttondownfcn);
+    set (fig, "windowbuttondownfcn", @ginput_windowbuttondownfcn);
     set (fig, "keypressfcn", @ginput_keypressfcn);
 
     do
@@ -91,7 +91,7 @@ function varargout = ginput (n = -1)
     endif
 
   unwind_protect_cleanup
-    set (ax, "buttondownfcn", orig_buttondownfcn);
+    set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
     set (fig, "keypressfcn", orig_ginput_keypressfcn);
   end_unwind_protect
 
@@ -119,8 +119,8 @@ function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
 
 endfunction
 
-function ginput_buttondownfcn (src, button)
-  point = get (src, "currentpoint");
+function ginput_windowbuttondownfcn (src, button)
+  point = get (gca (), "currentpoint");
   ginput_accumulator (1, point(1,1), point(1,2), button);
 endfunction
 

@@ -1466,16 +1466,21 @@ private:
               else
                 fp.set_selectiontype ("normal");
 
-              if (fp.get_windowbuttondownfcn ().is_defined ())
-                fp.execute_windowbuttondownfcn (Fl::event_button ());
-
               gh = pixel2axes_or_ca (pos_x, pos_y);
 
               if (gh.ok ())
                 {
                   ax_obj = gh_manager::get_object (gh);
                   set_axes_currentpoint (ax_obj, pos_x, pos_y);
+                }
 
+              // Ensure windowbuttondownfcn is called after currentpoint
+              // is updated but before calling buttondownfcn.
+              if (fp.get_windowbuttondownfcn ().is_defined ())
+                fp.execute_windowbuttondownfcn (Fl::event_button ());
+
+              if (gh.ok ())
+                {
                   int ndim = calc_dimensions (ax_obj);
 
                   if (ndim == 3)

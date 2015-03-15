@@ -663,4 +663,7 @@ extern OCTAVE_API void
 ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
         double& err);
 
+template<class T>
+extern OCTAVE_API T psi (const T& z);
+
 #endif

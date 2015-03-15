@@ -1,8 +1,10 @@
 /*
 
 Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 2007-2010 D. Martin
 Copyright (C) 2010 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
+Copyright (C) 2015 Carnë Draug
 
 This file is part of Octave.
 
@@ -45,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-specfun.h"
 #include "mx-inlines.cc"
 #include "lo-mappers.h"
+#include "lo-math.h"
 
 #include "Faddeeva.hh"
 
@@ -3724,3 +3727,77 @@ ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
       dn = Complex (dd*cc1*dd1/ddd, -m*ss*cc*ss1/ddd);
     }
 }
+
+template<class T>
+T
+psi (const T& z)
+{
+  const T euler_mascheroni = 0.577215664901532860606512090082402431042;
+  const T pi = 3.14159265358979323846;
+
+  const bool is_int = (xfloor (z) == z);
+
+  T p = 0;
+  if (z <= 0)
+    {
+      // limits - zeros of the gamma function
+      if (is_int)
+        p = -octave_Inf; // Matlab returns -Inf for psi (0)
+      else
+        // Abramowitz and Stegun, page 259, eq 6.3.7
+        p = psi (1 - z) - (pi / tan (pi * z));
+    }
+  else if (is_int)
+    {
+      // Abramowitz and Stegun, page 258, eq 6.3.2
+      p = - euler_mascheroni;
+      const octave_idx_type n = z;
+      for (octave_idx_type k = 1; k < n; k++)
+        p += 1.0 / k;
+    }
+  else if (xfloor (z + 0.5) == z + 0.5)
+    {
+      // Abramowitz and Stegun, page 258, eq 6.3.3 and 6.3.4
+      const octave_idx_type n = z + 1;
+      for (octave_idx_type k = 1; k < n; k++)
+        p += 1.0 / (2 * k - 1);
+
+      p = - euler_mascheroni - 2 * log (2) + 2 * (p);
+    }
+  else
+    {
+      // adapted from XLiFE++ gammaFunctions
+
+      // Coefficients for C.Lanczos expansion of DiGamma function
+      // dg_coef[k] = - (2k+1) * lg_coef[k] (see melina++ gamma functions)
+      // -1/12, 3/360,-5/1260, 7/1680,-9/1188, 11*691/360360,-13/156, 15*3617/122400, ? , ?
+      const T dg_coeff[10] ={-0.83333333333333333e-1, 0.83333333333333333e-2,
+                             -0.39682539682539683e-2, 0.41666666666666667e-2,
+                             -0.75757575757575758e-2, 0.21092796092796093e-1,
+                             -0.83333333333333333e-1, 0.4432598039215686,
+                             -0.3053954330270122e+1,  0.125318899521531e+2};
+
+      T zc = z;
+      // Use formula for derivative of LogGamma(z)
+      if (z < 10)
+        {
+          const octave_idx_type n = 10 - z;
+          for (octave_idx_type k = 0; k < n; k++)
+            p -= 1.0 / (k + z);
+          zc += n;
+        }
+      T overz2  = 1.0 / (zc*zc);
+      T overz2k = overz2;
+
+      p += log (zc) - 0.5 / zc;
+      for (octave_idx_type k = 0; k < 10; k++, overz2k *= overz2)
+        p += dg_coeff[k] * overz2k;
+    }
+
+  return p;
+}
+
+// explicit instantiations
+template double psi<double> (const double& z);
+template float  psi<float> (const float& z);
+

@@ -315,6 +315,8 @@ cos (pi/2)
 @anchor{XREFgammaln}
 @DOCSTRING(lgamma)
 
+@DOCSTRING(psi)
+
 @node Rational Approximations
 @section Rational Approximations
 

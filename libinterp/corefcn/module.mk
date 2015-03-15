@@ -233,6 +233,7 @@ COREFCN_SRC = \
   corefcn/pr-output.cc \
   corefcn/procstream.cc \
   corefcn/profiler.cc \
+  corefcn/psi.cc \
   corefcn/quad.cc \
   corefcn/quadcc.cc \
   corefcn/qz.cc \

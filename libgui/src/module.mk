@@ -35,6 +35,14 @@ octave_gui_ICONS = \
   libgui/src/icons/graphic_logo_TerminalDockWidget.png \
   libgui/src/icons/graphic_logo_WorkspaceView.png \
   libgui/src/icons/graphic_logo_ReleaseWidget.png \
+  libgui/src/icons/graphic_logo_DocumentationDockWidget.svg \
+  libgui/src/icons/graphic_logo_FileEditor.svg \
+  libgui/src/icons/graphic_logo_FilesDockWidget.svg \
+  libgui/src/icons/graphic_logo_HistoryDockWidget.svg \
+  libgui/src/icons/graphic_logo_NewsDockWidget.svg \
+  libgui/src/icons/graphic_logo_TerminalDockWidget.svg \
+  libgui/src/icons/graphic_logo_WorkspaceView.svg \
+  libgui/src/icons/graphic_logo_ReleaseWidget.svg \
   libgui/src/icons/icons_license \
   libgui/src/icons/letter_logo_DocumentationDockWidget.png \
   libgui/src/icons/letter_logo_FileEditor.png \
@@ -44,6 +52,14 @@ octave_gui_ICONS = \
   libgui/src/icons/letter_logo_TerminalDockWidget.png \
   libgui/src/icons/letter_logo_WorkspaceView.png \
   libgui/src/icons/letter_logo_ReleaseWidget.png \
+  libgui/src/icons/letter_logo_DocumentationDockWidget.svg \
+  libgui/src/icons/letter_logo_FileEditor.svg \
+  libgui/src/icons/letter_logo_FilesDockWidget.svg \
+  libgui/src/icons/letter_logo_HistoryDockWidget.svg \
+  libgui/src/icons/letter_logo_NewsDockWidget.svg \
+  libgui/src/icons/letter_logo_TerminalDockWidget.svg \
+  libgui/src/icons/letter_logo_WorkspaceView.svg \
+  libgui/src/icons/letter_logo_ReleaseWidget.svg \
   libgui/src/icons/logo.png \
   libgui/src/icons/preferences-system.png \
   libgui/src/icons/system-run.png \

@@ -73,16 +73,28 @@ psi (z) = d (log (gamma (z))) / dx\n\
       E* psi_zv = psi_z.fortran_vec (); \
       const octave_idx_type n = z.numel (); \
       for (octave_idx_type i = 0; i < n; i++) \
-        psi_zv[i] = psi<E> (zv[i]); \
+        psi_zv[i] = psi (zv[i]); \
 \
       retval = psi_z; \
     } 
 
-  FLOAT_BRANCH(double, , , double)
-  else FLOAT_BRANCH(single, Float, float_, float)
+  if (args(0).is_complex_type ())
+    {
+      FLOAT_BRANCH(double, Complex, complex_, Complex)
+      else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)
+      else
+        {
+          error ("psi: Z must be a floating point");
+        }
+    }
   else
     {
-      error ("psi: Z must be a floating point");
+      FLOAT_BRANCH(double, , , double)
+      else FLOAT_BRANCH(single, Float, float_, float)
+      else
+        {
+          error ("psi: Z must be a floating point");
+        }
     }
 
 #undef FLOAT_BRANCH
@@ -126,5 +138,22 @@ psi (z) = d (log (gamma (z))) / dx\n\
 %!assert (psi (-2.610720868444144650001537715718724207951074010873480), 0, eps*10)
 %!assert (psi (-3.635293366436901097839181566946017713948423861193530), 0, eps)
 %!assert (psi (-4.653237761743142441714598151148207363719069416133868), 0, eps*100)
+
+## Tests for complex values
+%!shared z
+%! z = [-10:.1:-.1 .1:.1:20]; # drop the 0
+
+## Abramowitz and Stegun, page 259 eq 6.3.10
+%!assert (real (psi (i*z)), real (psi (1 - i*z)))
+
+## Abramowitz and Stegun, page 259 eq 6.3.11
+%!assert (imag (psi (i*z)), 1/2 .* 1./z + 1/2 * pi * coth (pi * z), eps *10)
+
+## Abramowitz and Stegun, page 259 eq 6.3.12
+%!assert (imag (psi (1/2 + i*z)), 1/2 * pi * tanh (pi * z), eps*10)
+
+## Abramowitz and Stegun, page 259 eq 6.3.13
+%!assert (imag (psi (1 + i*z)), - 1./(2*z) + 1/2 * pi * coth (pi * z), eps*10)
+
 */
 

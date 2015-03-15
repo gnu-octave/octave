@@ -665,5 +665,7 @@ ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
 
 template<class T>
 extern OCTAVE_API T psi (const T& z);
+template<class T>
+extern OCTAVE_API std::complex<T> psi (const std::complex<T>& z);
 
 #endif

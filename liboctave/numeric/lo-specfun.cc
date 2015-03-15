@@ -3728,13 +3728,23 @@ ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
     }
 }
 
+static const double euler_mascheroni = 0.577215664901532860606512090082402431042;
+static const double pi = 3.14159265358979323846;
+// Coefficients for C.Lanczos expansion of psi function from XLiFE++ gammaFunctions
+// psi_coef[k] = - (2k+1) * lg_coef[k] (see melina++ gamma functions)
+// -1/12, 3/360,-5/1260, 7/1680,-9/1188, 11*691/360360,-13/156, 15*3617/122400, ? , ?
+static const double psi_coeff[10] = {
+  -0.83333333333333333e-1, 0.83333333333333333e-2,
+  -0.39682539682539683e-2, 0.41666666666666667e-2,
+  -0.75757575757575758e-2, 0.21092796092796093e-1,
+  -0.83333333333333333e-1, 0.4432598039215686,
+  -0.3053954330270122e+1,  0.125318899521531e+2
+};
+
 template<class T>
 T
 psi (const T& z)
 {
-  const T euler_mascheroni = 0.577215664901532860606512090082402431042;
-  const T pi = 3.14159265358979323846;
-
   const bool is_int = (xfloor (z) == z);
 
   T p = 0;
@@ -3768,15 +3778,6 @@ psi (const T& z)
     {
       // adapted from XLiFE++ gammaFunctions
 
-      // Coefficients for C.Lanczos expansion of DiGamma function
-      // dg_coef[k] = - (2k+1) * lg_coef[k] (see melina++ gamma functions)
-      // -1/12, 3/360,-5/1260, 7/1680,-9/1188, 11*691/360360,-13/156, 15*3617/122400, ? , ?
-      const T dg_coeff[10] ={-0.83333333333333333e-1, 0.83333333333333333e-2,
-                             -0.39682539682539683e-2, 0.41666666666666667e-2,
-                             -0.75757575757575758e-2, 0.21092796092796093e-1,
-                             -0.83333333333333333e-1, 0.4432598039215686,
-                             -0.3053954330270122e+1,  0.125318899521531e+2};
-
       T zc = z;
       // Use formula for derivative of LogGamma(z)
       if (z < 10)
@@ -3791,7 +3792,7 @@ psi (const T& z)
 
       p += log (zc) - 0.5 / zc;
       for (octave_idx_type k = 0; k < 10; k++, overz2k *= overz2)
-        p += dg_coeff[k] * overz2k;
+        p += psi_coeff[k] * overz2k;
     }
 
   return p;
@@ -3800,4 +3801,58 @@ psi (const T& z)
 // explicit instantiations
 template double psi<double> (const double& z);
 template float  psi<float> (const float& z);
+
+template<class T>
+std::complex<T>
+psi (const std::complex<T>& z)
+{
+  // adapted from XLiFE++ gammaFunctions
+
+  typedef typename std::complex<T>::value_type P;
+
+  P z_r  = z.real ();
+  P z_ra = z_r;
+
+  if (z.imag () == 0)
+    return std::complex<T> (psi (z_r), 0.0);
+  else if (z_r < 0)
+    return psi (P (1.0) - z)- (P (pi) / tan (P (pi) * z));
+  else
+    {
+      // Use formula for derivative of LogGamma(z)
+
+      std::complex<T> dgam = 0.0;
+      std::complex<T> z_p  = z;
+
+      octave_idx_type n = 0;
+      std::complex<T> z_m = z_p;
+      if (z_ra < 8)
+        {
+          n = 8 - octave_idx_type (z_ra);
+          z_m = z_p + std::complex<T> (n, 0.0);
+        }
+
+      // for | Re(z) | > 8, use derivative of C.Lanczos expansion for LogGamma
+      // psi(z) = log(z) - 1/(2z) - 1/12z^2 + 3/360z^4 - 5/1260z^6 + 7/1680z^8 - 9/1188z^10 + ...
+      // (Abramowitz&Stegun, page 259, formula 6.3.18
+      std::complex<T> overz   = P (1.0) / z_m;
+      std::complex<T> overz2  = overz * overz;
+      std::complex<T> overz2k = overz2;
+
+      dgam += log (z_m) - P (0.5) * overz;
+      for (octave_idx_type k = 0; k < 10; k++, overz2k *= overz2)
+        dgam += P (psi_coeff[k]) * overz2k;
+
+      // Recurrence formula
+      // for | Re(z) | < 8 , use recursively DiGamma(z) = DiGamma(z+1) - 1/z
+      for (octave_idx_type k = 0; k < n; k++, z_p += 1.0)
+        dgam -= P (1.0) / z_p;
+
+      return dgam;
+    }
+}
+
+// explicit instantiations
+template Complex psi<double> (const Complex& z);
+template FloatComplex psi<float> (const FloatComplex& z);
 

@@ -55,6 +55,11 @@ function filelist = tar (tarfile, files, rootdir = ".")
 
   tarfile = make_absolute_filename (tarfile);
 
+  if (ispc)
+    ## Change tarfile into a mingw style acceptable for tar
+    tarfile = __w2mpth__ (tarfile);
+  endif
+
   cmd = sprintf ("tar cvf %s -C %s %s",
                           tarfile, rootdir, sprintf (" %s", files{:}));
 

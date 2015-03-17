@@ -190,6 +190,11 @@ function filelist = unpack (file, dir = ".", filetype = "")
     nodotext = ext(ext != '.');
   endif
 
+  if (ispc && strcmp (nodotext, "tar"))
+    ## Change file pathname into a mingw style acceptable for tar
+    file = __w2mpth__ (file);
+  endif
+
   if (isfield (commandlist, tolower (nodotext)))
     [commandv, commandq, parsefcn, move] = deal (commandlist.(nodotext){:});
     origdir = pwd ();
@@ -198,8 +203,8 @@ function filelist = unpack (file, dir = ".", filetype = "")
     else
       startdir = origdir;
     endif
-    cstartdir = canonicalize_file_name (startdir);
-    cenddir = canonicalize_file_name (dir);
+    cstartdir = make_absolute_filename (startdir);
+    cenddir = make_absolute_filename (dir);
     needmove = move && ! strcmp (cstartdir, cenddir);
     if (nargout > 0 || needmove)
       command = commandv;

@@ -75,7 +75,7 @@ public:
   typedef std::pair <std::string, std::string> name_pair;
   typedef std::pair <int, int> int_pair;
 
-  main_window (QWidget *parent = 0);
+  main_window (QWidget *parent = 0, bool start_gui = true);
 
   ~main_window (void);
 
@@ -173,7 +173,7 @@ public slots:
   void pasteClipboard (void);
   void selectAll (void);
 
-  void connect_uiwidget_links ();
+  void connect_uiwidget_links (void);
 
   void handle_create_dialog (const QString& message, const QString& title,
                              const QString& icon, const QStringList& button,
@@ -413,6 +413,7 @@ private:
 
   bool _prevent_readline_conflicts;
   bool _suppress_dbg_location;
+  bool _start_gui;
 };
 
 class news_reader : public QObject

@@ -73,16 +73,16 @@ create_default_editor (QWidget *p)
 #endif
 }
 
-main_window::main_window (QWidget *p)
+main_window::main_window (QWidget *p, bool start_gui)
   : QMainWindow (p),
-    _workspace_model (new workspace_model ()),
-    status_bar (new QStatusBar ()),
-    command_window (new terminal_dock_widget (this)),
-    history_window (new history_dock_widget (this)),
-    file_browser_window (new files_dock_widget (this)),
-    doc_browser_window (new documentation_dock_widget (this)),
-    editor_window (create_default_editor (this)),
-    workspace_window (new workspace_view (this)),
+    _workspace_model (start_gui ? new workspace_model () : 0),
+    status_bar (start_gui ? new QStatusBar () : 0),
+    command_window (start_gui ? new terminal_dock_widget (this) : 0),
+    history_window (start_gui ? new history_dock_widget (this) : 0),
+    file_browser_window (start_gui ? new files_dock_widget (this) : 0),
+    doc_browser_window (start_gui ? new documentation_dock_widget (this) : 0),
+    editor_window (start_gui ? create_default_editor (this) : 0),
+    workspace_window (start_gui ? new workspace_view (this) : 0),
     _settings_dlg (0),
     find_files_dlg (0),
     release_notes_window (0),
@@ -95,7 +95,9 @@ main_window::main_window (QWidget *p)
     _dbg_queue (new QStringList ()),  // no debug pending
     _dbg_processing (1),
     _dbg_queue_mutex (),
-    _prevent_readline_conflicts (true)
+    _prevent_readline_conflicts (true),
+    _suppress_dbg_location (true),
+    _start_gui (start_gui)
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -118,7 +120,7 @@ main_window::main_window (QWidget *p)
   QDateTime current = QDateTime::currentDateTime ();
   QDateTime one_day_ago = current.addDays (-1);
 
-  if (connect_to_web
+  if (start_gui && connect_to_web
       && (! last_checked.isValid () || one_day_ago > last_checked))
     load_and_display_community_news (serial);
 
@@ -768,22 +770,25 @@ main_window::confirm_shutdown_octave (void)
 {
   bool closenow = true;
 
-  QSettings *settings = resource_manager::get_settings ();
-
-  if (settings->value ("prompt_to_exit", false).toBool ())
+  if (_start_gui)
     {
-      int ans = QMessageBox::question (this, tr ("Octave"),
-         tr ("Are you sure you want to exit Octave?"),
-          QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+      QSettings *settings = resource_manager::get_settings ();
 
-      if (ans !=  QMessageBox::Ok)
-        closenow = false;
-    }
+      if (settings->value ("prompt_to_exit", false).toBool ())
+        {
+          int ans = QMessageBox::question (this, tr ("Octave"),
+                                           tr ("Are you sure you want to exit Octave?"),
+                                           QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+
+          if (ans !=  QMessageBox::Ok)
+            closenow = false;
+        }
 
 #ifdef HAVE_QSCINTILLA
-  if (closenow)
-    closenow = editor_window->check_closing ();
+      if (closenow)
+        closenow = editor_window->check_closing ();
 #endif
+    }
 
   _octave_qt_link->shutdown_confirmation (closenow);
 
@@ -1174,7 +1179,7 @@ main_window::selectAll (void)
 // is not a global variable and not accessible for connecting.
 
 void
-main_window::connect_uiwidget_links ()
+main_window::connect_uiwidget_links (void)
 {
   connect (&uiwidget_creator,
            SIGNAL (create_dialog (const QString&, const QString&,
@@ -1293,11 +1298,6 @@ void
 main_window::construct (void)
 {
   _closing = false;   // flag for editor files when closed
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-
-  workspace_window->setModel (_workspace_model);
-  connect (_workspace_model, SIGNAL (model_changed (void)),
-           workspace_window, SLOT (handle_model_changed (void)));
 
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -1310,89 +1310,98 @@ main_window::construct (void)
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-  construct_menu_bar ();
-
-  construct_tool_bar ();
-
-  connect (qApp, SIGNAL (aboutToQuit ()),
-           this, SLOT (prepare_to_exit ()));
-
-  connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
-           this, SLOT(focus_changed (QWidget*, QWidget*)));
-
-  connect (this, SIGNAL (settings_changed (const QSettings *)),
-           this, SLOT (notice_settings (const QSettings *)));
-
-  connect (this, SIGNAL (editor_focus_changed (bool)),
-           this, SLOT (set_global_edit_shortcuts (bool)));
-
-  connect (this, SIGNAL (editor_focus_changed (bool)),
-           editor_window, SLOT (enable_menu_shortcuts (bool)));
-
-  connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
-           this, SLOT (handle_load_workspace_request (const QString&)));
-
-  connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
-           this, SLOT (find_files (const QString&)));
-
   connect_uiwidget_links ();
-
-  setWindowTitle ("Octave");
-
-  setDockOptions (QMainWindow::AnimatedDocks
-                  | QMainWindow::AllowNestedDocks
-                  | QMainWindow::AllowTabbedDocks);
-
-  addDockWidget (Qt::RightDockWidgetArea, command_window);
-  addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
-  tabifyDockWidget (command_window, doc_browser_window);
-
-#ifdef HAVE_QSCINTILLA
-  addDockWidget (Qt::RightDockWidgetArea, editor_window);
-  tabifyDockWidget (command_window, editor_window);
-#endif
-
-  addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
-  addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
-  addDockWidget (Qt::LeftDockWidgetArea, history_window);
-
-  int win_x = QApplication::desktop ()->width ();
-  int win_y = QApplication::desktop ()->height ();
-
-  if (win_x > 960)
-    win_x = 960;
-
-  if (win_y > 720)
-    win_y = 720;
-
-  setGeometry (0, 0, win_x, win_y);
-
-  setStatusBar (status_bar);
 
   construct_octave_qt_link ();
 
+  if (_start_gui)
+    {
+      setWindowIcon (QIcon (":/actions/icons/logo.png"));
+
+      workspace_window->setModel (_workspace_model);
+      connect (_workspace_model, SIGNAL (model_changed (void)),
+               workspace_window, SLOT (handle_model_changed (void)));
+
+      construct_menu_bar ();
+
+      construct_tool_bar ();
+
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               this, SLOT (prepare_to_exit ()));
+
+      connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+               this, SLOT(focus_changed (QWidget*, QWidget*)));
+
+      connect (this, SIGNAL (settings_changed (const QSettings *)),
+               this, SLOT (notice_settings (const QSettings *)));
+
+      connect (this, SIGNAL (editor_focus_changed (bool)),
+               this, SLOT (set_global_edit_shortcuts (bool)));
+
+      connect (this, SIGNAL (editor_focus_changed (bool)),
+               editor_window, SLOT (enable_menu_shortcuts (bool)));
+
+      connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
+               this, SLOT (handle_load_workspace_request (const QString&)));
+
+      connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
+               this, SLOT (find_files (const QString&)));
+
+      setWindowTitle ("Octave");
+
+      setDockOptions (QMainWindow::AnimatedDocks
+                      | QMainWindow::AllowNestedDocks
+                      | QMainWindow::AllowTabbedDocks);
+
+      addDockWidget (Qt::RightDockWidgetArea, command_window);
+      addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
+      tabifyDockWidget (command_window, doc_browser_window);
+
 #ifdef HAVE_QSCINTILLA
-  connect (this,
-           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-           editor_window,
-           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
-
-  connect (this,
-           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-           editor_window,
-           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
-
-  connect (this,
-           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
-           editor_window,
-           SLOT (handle_update_breakpoint_marker_request (bool,
-                                                          const QString&,
-                                                          int)));
+      addDockWidget (Qt::RightDockWidgetArea, editor_window);
+      tabifyDockWidget (command_window, editor_window);
 #endif
 
-  octave_link::post_event (this, &main_window::resize_command_window_callback);
+      addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
+      addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
+      addDockWidget (Qt::LeftDockWidgetArea, history_window);
 
-  configure_shortcuts ();
+      int win_x = QApplication::desktop ()->width ();
+      int win_y = QApplication::desktop ()->height ();
+
+      if (win_x > 960)
+        win_x = 960;
+
+      if (win_y > 720)
+        win_y = 720;
+
+      setGeometry (0, 0, win_x, win_y);
+
+      setStatusBar (status_bar);
+
+#ifdef HAVE_QSCINTILLA
+      connect (this,
+               SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+               editor_window,
+               SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+
+      connect (this,
+               SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+               editor_window,
+               SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+
+      connect (this,
+               SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+               editor_window,
+               SLOT (handle_update_breakpoint_marker_request (bool,
+                                                              const QString&,
+                                                              int)));
+#endif
+
+      octave_link::post_event (this, &main_window::resize_command_window_callback);
+
+      configure_shortcuts ();
+    }
 }
 
 
@@ -1404,17 +1413,20 @@ main_window::handle_octave_ready ()
 
   QDir startup_dir = QDir ();    // current octave dir after startup
 
-  if (settings->value ("restore_octave_dir").toBool ())
+  if (settings)
     {
-      // restore last dir from previous session
-      QStringList curr_dirs
-        = settings->value ("MainWindow/current_directory_list").toStringList ();
-      startup_dir = QDir (curr_dirs.at (0));  // last dir in previous session
-    }
-  else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
-    {
-      // do not restore but there is a startup dir configured
-      startup_dir = QDir (settings->value ("octave_startup_dir").toString ());
+      if (settings->value ("restore_octave_dir").toBool ())
+        {
+          // restore last dir from previous session
+          QStringList curr_dirs
+            = settings->value ("MainWindow/current_directory_list").toStringList ();
+          startup_dir = QDir (curr_dirs.at (0));  // last dir in previous session
+        }
+      else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
+        {
+          // do not restore but there is a startup dir configured
+          startup_dir = QDir (settings->value ("octave_startup_dir").toString ());
+        }
     }
 
   if (! startup_dir.exists ())
@@ -1425,14 +1437,18 @@ main_window::handle_octave_ready ()
 
   set_current_working_directory (startup_dir.absolutePath ());
 
+  if (editor_window)
+    {
 #ifdef HAVE_QSCINTILLA
-  // Octave ready, determine whether to create an empty script.
-  // This can not be done when the editor is created because all functions
-  // must be known for the lexer's auto completion informations
-  editor_window->empty_script (true, false);
+      // Octave ready, determine whether to create an empty script.
+      // This can not be done when the editor is created because all functions
+      // must be known for the lexer's auto completion informations
+      editor_window->empty_script (true, false);
 #endif
+    }
 
-  focus_command_window ();  // make sure that the command window has focus
+  if (_start_gui)
+    focus_command_window ();  // make sure that the command window has focus
 
 }
 
@@ -1442,94 +1458,97 @@ main_window::construct_octave_qt_link (void)
 {
   _octave_qt_link = new octave_qt_link (this);
 
-  connect (_octave_qt_link, SIGNAL (confirm_shutdown_signal ()),
-           this, SLOT (confirm_shutdown_octave ()));
-
   connect (_octave_qt_link, SIGNAL (exit_app_signal (int)),
            this, SLOT (exit_app (int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (set_workspace_signal
-                   (bool, const QString&, const QStringList&,
-                    const QStringList&, const QStringList&,
-                    const QStringList&, const QIntList&)),
-           _workspace_model,
-           SLOT (set_workspace
-                 (bool, const QString&, const QStringList&,
-                  const QStringList&, const QStringList&,
-                  const QStringList&, const QIntList&)));
+  connect (_octave_qt_link, SIGNAL (confirm_shutdown_signal ()),
+           this, SLOT (confirm_shutdown_octave ()));
 
-  connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
-           _workspace_model, SLOT (clear_workspace ()));
+  if (_start_gui)
+    {
+      connect (_octave_qt_link,
+               SIGNAL (set_workspace_signal
+                       (bool, const QString&, const QStringList&,
+                        const QStringList&, const QStringList&,
+                        const QStringList&, const QIntList&)),
+               _workspace_model,
+               SLOT (set_workspace
+                     (bool, const QString&, const QStringList&,
+                      const QStringList&, const QStringList&,
+                      const QStringList&, const QIntList&)));
 
-  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-           this, SLOT (change_directory (QString)));
-  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-           file_browser_window, SLOT (update_octave_directory (QString)));
-  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-           editor_window, SLOT (update_octave_directory (QString)));
+      connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
+               _workspace_model, SLOT (clear_workspace ()));
 
-  connect (_octave_qt_link,
-           SIGNAL (execute_command_in_terminal_signal (QString)),
-           this, SLOT (execute_command_in_terminal (QString)));
+      connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+               this, SLOT (change_directory (QString)));
+      connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+               file_browser_window, SLOT (update_octave_directory (QString)));
+      connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+               editor_window, SLOT (update_octave_directory (QString)));
 
-  connect (_octave_qt_link,
-           SIGNAL (set_history_signal (const QStringList&)),
-           history_window, SLOT (set_history (const QStringList&)));
+      connect (_octave_qt_link,
+               SIGNAL (execute_command_in_terminal_signal (QString)),
+               this, SLOT (execute_command_in_terminal (QString)));
 
-  connect (_octave_qt_link,
-           SIGNAL (append_history_signal (const QString&)),
-           history_window, SLOT (append_history (const QString&)));
+      connect (_octave_qt_link,
+               SIGNAL (set_history_signal (const QStringList&)),
+               history_window, SLOT (set_history (const QStringList&)));
 
-  connect (_octave_qt_link,
-           SIGNAL (clear_history_signal (void)),
-           history_window, SLOT (clear_history (void)));
+      connect (_octave_qt_link,
+               SIGNAL (append_history_signal (const QString&)),
+               history_window, SLOT (append_history (const QString&)));
 
-  connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
-           this, SLOT (handle_enter_debugger ()));
+      connect (_octave_qt_link,
+               SIGNAL (clear_history_signal (void)),
+               history_window, SLOT (clear_history (void)));
 
-  connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
-           this, SLOT (handle_exit_debugger ()));
+      connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
+               this, SLOT (handle_enter_debugger ()));
 
-  connect (_octave_qt_link,
-           SIGNAL (show_preferences_signal (void)),
-           this, SLOT (process_settings_dialog_request ()));
+      connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
+               this, SLOT (handle_exit_debugger ()));
+
+      connect (_octave_qt_link,
+               SIGNAL (show_preferences_signal (void)),
+               this, SLOT (process_settings_dialog_request ()));
 
 #ifdef HAVE_QSCINTILLA
-  connect (_octave_qt_link,
-           SIGNAL (edit_file_signal (const QString&)),
-           editor_window,
-           SLOT (handle_edit_file_request (const QString&)));
+      connect (_octave_qt_link,
+               SIGNAL (edit_file_signal (const QString&)),
+               editor_window,
+               SLOT (handle_edit_file_request (const QString&)));
 #endif
 
-  connect (_octave_qt_link,
-           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-           this,
-           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+      connect (_octave_qt_link,
+               SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+               this,
+               SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-           this,
-           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+      connect (_octave_qt_link,
+               SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+               this,
+               SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
-           this,
-           SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
-                                                          int)));
+      connect (_octave_qt_link,
+               SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+               this,
+               SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
+                                                              int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (show_doc_signal (const QString &)),
-           this, SLOT (handle_show_doc (const QString &)));
+      connect (_octave_qt_link,
+               SIGNAL (show_doc_signal (const QString &)),
+               this, SLOT (handle_show_doc (const QString &)));
 
-  connect (_workspace_model,
-           SIGNAL (rename_variable (const QString&, const QString&)),
-           this,
-           SLOT (handle_rename_variable_request (const QString&,
-                                                 const QString&)));
+      connect (_workspace_model,
+               SIGNAL (rename_variable (const QString&, const QString&)),
+               this,
+               SLOT (handle_rename_variable_request (const QString&,
+                                                     const QString&)));
 
-  connect (command_window, SIGNAL (interrupt_signal (void)),
-           _octave_qt_link, SLOT (terminal_interrupt (void)));
+      connect (command_window, SIGNAL (interrupt_signal (void)),
+               _octave_qt_link, SLOT (terminal_interrupt (void)));
+    }
 
   _octave_qt_link->execute_interpreter ();
 

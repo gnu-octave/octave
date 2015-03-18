@@ -23,6 +23,7 @@ strings_FCN_FILES = \
   strings/strchr.m \
   strings/strjoin.m \
   strings/strjust.m \
+  strings/strmatch.m \
   strings/strsplit.m \
   strings/strtok.m \
   strings/strtrim.m \

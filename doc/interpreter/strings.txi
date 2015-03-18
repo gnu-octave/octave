@@ -440,6 +440,8 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(strjoin)
 
+@DOCSTRING(strmatch)
+
 @DOCSTRING(strtok)
 
 @DOCSTRING(strsplit)

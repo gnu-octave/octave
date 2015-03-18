@@ -2973,6 +2973,21 @@ AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
 
+# do we want to create cross-mkoctfile ?
+cross_mkoctfile=no
+AC_ARG_ENABLE([cross-mkoctfile],
+  [AS_HELP_STRING([--enable-cross-mkoctfile],
+    [build cross-mkoctfile if cross compiling])],
+  [if test "$enableval" = yes; then cross_mkoctfile=yes; fi])
+
+if test "$cross_mkoctfile" = yes; then
+  if test "$cross_compiling" = no; then
+    AC_MSG_WARN([ignoring --enable-cross-mkoctfile when not cross compiling])
+  fi
+fi
+AM_CONDITIONAL([AMCOND_CROSS_MKOCTFILE], [test $cross_mkoctfile = yes])
+
+
 ### Decide whether or not to install build logs with Octave.
 
 install_build_logs=no
@@ -3141,6 +3156,7 @@ Octave is now configured for $canonical_host_type
   Include support for GNU readline:   $USE_READLINE
   64-bit array dims and indexing:     $USE_64_BIT_IDX_T
   OpenMP SMP multithreading:          $USE_OPENMP
+  Build cross mkoctfile:              $cross_mkoctfile
 ])
 
 warn_msg_printed=false

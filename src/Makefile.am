@@ -57,8 +57,10 @@ noinst_HEADERS = \
 
 OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)
 
+archlib_PROGRAMS =
+
 if AMCOND_BUILD_GUI
-  archlib_PROGRAMS = octave-gui
+  archlib_PROGRAMS += octave-gui
   OCTAVE_VERSION_LINKS += octave-gui-$(version)$(EXEEXT)
 endif
 
@@ -129,7 +131,20 @@ octave_config_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBS)
 
-all-local: $(OCTAVE_VERSION_LINKS)
+# if building cross octfile
+OCTAVE_CROSS_TOOLS=
+if AMCOND_CROSS_MKOCTFILE
+OCTAVE_CROSS_TOOLS += $(host_triplet)-mkoctfile$(BUILD_EXEEXT)
+$(host_triplet)-mkoctfile$(BUILD_EXEEXT): $(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o $(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) $(host_triplet)-mkoctfile.cc
+mostlyclean-local:
+	-rm -f $(TARGET)-mkoctfile$(BUILD_EXEEXT)
+
+$(host_triplet)-mkoctfile.cc: mkoctfile.in.cc Makefile
+	$(AM_V_GEN)$(do_subst_cross_config_vals)
+endif
+
+all-local: $(OCTAVE_VERSION_LINKS) $(OCTAVE_CROSS_TOOLS)
 
 octave-config.cc: octave-config.in.cc Makefile
 	$(AM_V_GEN)$(do_subst_default_vals)

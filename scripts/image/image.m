@@ -172,14 +172,13 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
   endif  # ! isempty (img)
 
-  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
-                         "cdatamapping", "direct", varargin{:});
-
   if (do_new && ! ishold (hax))
     ## Set axis properties for new images
-
+    ## NOTE: Do this before calling __go_image__ so that image is not drawn
+    ##       once with default auto-scale axis limits and then a second time
+    ##       with tight axis limits.
     if (! isempty (img))
-      if (isscalar (get (hax, "children")))
+      if (isempty (get (hax, "children")))
         axis (hax, "tight");
       endif
 
@@ -197,6 +196,15 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
     set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top");
 
   endif  # do_new
+
+  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
+                         "cdatamapping", "direct", varargin{:});
+
+  if (do_new && ! ishold (hax) && ! isempty (img)
+      && isscalar (get (hax, "children")))
+    ## Re-scale axis limits for an image in a new figure or axis.
+    axis (hax, "tight");
+  endif
 
 endfunction
 

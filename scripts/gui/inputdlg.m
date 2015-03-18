@@ -100,16 +100,20 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
   ## r3  3   30   third  text field is 3x30
   if (isscalar (linespec))
     ## only scalar value in lineTo, copy from linespec and add defaults
-    rowscols = zeros (columns (prompt), 2);
+    rowscols = zeros (numel (prompt), 2);
     ## cols
     rowscols(:,2) = 25;
     rowscols(:,1) = linespec;
   elseif (isvector (linespec))
+    if (numel (linespec) == numel (prompt))
       ## only one column in lineTo, copy from vector linespec and add defaults
-      rowscols = zeros (columns (prompt), 2);
+      rowscols = zeros (numel (prompt), 2);
       ## rows from colum vector linespec, columns are set to default
       rowscols(:,2) = 25;
       rowscols(:,1) = linespec(:);
+    else
+      error ("inputdlg: ROWSCOLS vector does not match size of PROMPT");
+    endif
   elseif (ismatrix (linespec))
     if (rows (linespec) == columns (prompt) && columns (linespec) == 2)
       ## (rows x columns) match, copy array linespec

@@ -400,7 +400,7 @@ Undocumented internal function.\n\
                                          defaults_lst);
 
           nel = items_lst.size ();
-          Cell items (dim_vector (1, nel));
+          Cell items (dim_vector (nel, 1));
           octave_idx_type i = 0;
           for (std::list<std::string>::iterator it = items_lst.begin ();
                it != items_lst.end (); it++)

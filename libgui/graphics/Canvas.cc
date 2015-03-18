@@ -45,10 +45,15 @@ namespace QtHandles
 
 void Canvas::redraw (bool sync)
 {
-  if (sync)
-    qWidget ()->repaint ();
-  else
-    qWidget ()->update ();
+  QWidget *w = qWidget ();
+
+  if (w)
+    {
+      if (sync)
+        w->repaint ();
+      else
+        w->update ();
+    }
 }
 
 void Canvas::blockRedraw (bool block)

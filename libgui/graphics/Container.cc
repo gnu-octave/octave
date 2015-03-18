@@ -51,6 +51,7 @@ Canvas* Container::canvas (const graphics_handle& gh, bool xcreate)
 {
   if (! m_canvas && xcreate)
     {
+      gh_manager::auto_lock lock;
       graphics_object go = gh_manager::get_object (gh);
 
       if (go)

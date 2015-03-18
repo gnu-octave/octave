@@ -49,6 +49,7 @@ GLCanvas::~GLCanvas (void)
 
 void GLCanvas::draw (const graphics_handle& gh)
 {
+  gh_manager::auto_lock lock;
   graphics_object go = gh_manager::get_object (gh);
 
   if (go)

@@ -156,6 +156,8 @@ void Object::objectDestroyed (QObject* obj)
 
 Object* Object::parentObject (const graphics_object& go)
 {
+  gh_manager::auto_lock lock;
+
   Object* parent = Backend::toolkitObject
     (gh_manager::get_object (go.get_parent ()));
 

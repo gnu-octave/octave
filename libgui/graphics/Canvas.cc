@@ -91,6 +91,7 @@ void Canvas::setCursor (MouseMode mode)
 
 void Canvas::print (const QString& file_cmd, const QString& term)
 {
+  gh_manager::auto_lock lock;
   graphics_object obj = gh_manager::get_object (m_handle);
 
   if (obj.valid_object ())
@@ -104,6 +105,8 @@ void Canvas::print (const QString& file_cmd, const QString& term)
 void Canvas::updateCurrentPoint(const graphics_object& fig,
                                 const graphics_object& obj, QMouseEvent* event)
 {
+  gh_manager::auto_lock lock;
+
   gh_manager::post_set (fig.get_handle (), "currentpoint",
                         Utils::figureCurrentPoint (fig, event), false);
 

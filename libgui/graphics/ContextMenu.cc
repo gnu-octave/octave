@@ -111,6 +111,7 @@ void ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
 
   if (h.ok ())
     {
+      gh_manager::auto_lock lock;
       graphics_object go = gh_manager::get_object (h);
 
       if (go.valid_object ())

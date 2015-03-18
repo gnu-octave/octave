@@ -49,6 +49,8 @@ bool __init__ (void)
     {
       if (qApp)
         {
+          gh_manager::auto_lock lock;
+
           qRegisterMetaType<graphics_object> ("graphics_object");
 
           gh_manager::enable_event_processing (true);
@@ -96,6 +98,8 @@ bool __shutdown__ (void)
 {
   if (qtHandlesInitialized)
     {
+      gh_manager::auto_lock lock;
+
       octave_add_atexit_function ("__shutdown_qt__");
 
       gtk_manager::unload_toolkit ("qt");

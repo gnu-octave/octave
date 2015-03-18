@@ -60,6 +60,8 @@ DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
 
 static bool hasUiControlChildren (const figure::properties& fp)
 {
+  gh_manager::auto_lock lock;
+
   Matrix kids = fp.get_all_children ();
 
   for (int i = 0; i < kids.numel (); i++)
@@ -76,6 +78,8 @@ static bool hasUiControlChildren (const figure::properties& fp)
 
 static bool hasUiMenuChildren (const figure::properties& fp)
 {
+  gh_manager::auto_lock lock;
+
   Matrix kids = fp.get_all_children ();
 
   for (int i = 0; i < kids.numel (); i++)

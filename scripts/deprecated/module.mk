@@ -31,7 +31,6 @@ deprecated_FCN_FILES = \
   deprecated/saveaudio.m \
   deprecated/saving_history.m \
   deprecated/setaudio.m \
-  deprecated/strmatch.m \
   deprecated/syl.m \
   deprecated/usage.m
 

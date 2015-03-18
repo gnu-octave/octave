@@ -256,7 +256,6 @@ Summary of important user-visible changes for version 4.0:
       octave_tmp_file_name | tempname
       playaudio            | audioplayer
       saveaudio            | audiowrite
-      strmatch             | strncmp or strcmp or regexp
       syl                  | sylvester
       usage                | print_usage
 

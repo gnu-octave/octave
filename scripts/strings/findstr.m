@@ -35,7 +35,7 @@
 ##
 ## @strong{Caution:} @code{findstr} is scheduled for deprecation.  Use
 ## @code{strfind} in all new code.
-## @seealso{strfind, strcmp, strncmp, strcmpi, strncmpi, find}
+## @seealso{strfind, strmatch, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
 ## Note that this implementation swaps the strings if second one is longer

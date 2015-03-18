@@ -546,9 +546,6 @@ void Figure::updateBoundingBoxHelper (void* data)
       //qDebug ("Figure::updateBoundingBoxHelper: internal=%d, bbox=[%g %g %g %g]",
       //        d->m_internal, d->m_bbox(0), d->m_bbox(1), d->m_bbox(2), d->m_bbox(3));
       fp.set_boundingbox (d->m_bbox, d->m_internal, false);
-
-      if (d->m_internal)
-        emit d->m_figure->asyncUpdate ();
     }
 
   delete d;

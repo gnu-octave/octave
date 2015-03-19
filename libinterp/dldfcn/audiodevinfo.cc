@@ -282,7 +282,7 @@ or recording using those parameters.\n\
               return retval;
             }
         }
-      if (not found)
+      if (! found)
         error ("audiodevinfo: no device meeting the specified criteria found");
     }
   else if (nargin == 3)
@@ -1250,7 +1250,7 @@ audioplayer::stop (void)
   PaError err;
   set_sample_number (0);
   reset_end_sample ();
-  if (not Pa_IsStreamStopped (get_stream ()))
+  if (! Pa_IsStreamStopped (get_stream ()))
     {
       err = Pa_AbortStream (get_stream ());
       if (err != paNoError)
@@ -1877,7 +1877,7 @@ audiorecorder::stop (void)
     return;
 
   PaError err;
-  if (not Pa_IsStreamStopped (get_stream ()))
+  if (! Pa_IsStreamStopped (get_stream ()))
     {
       err = Pa_AbortStream (get_stream ());
       if (err != paNoError)

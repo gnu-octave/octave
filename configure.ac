@@ -2983,6 +2983,7 @@ AC_ARG_ENABLE([cross-mkoctfile],
 if test "$cross_mkoctfile" = yes; then
   if test "$cross_compiling" = no; then
     AC_MSG_WARN([ignoring --enable-cross-mkoctfile when not cross compiling])
+    cross_mkoctfile=no
   fi
 fi
 AM_CONDITIONAL([AMCOND_CROSS_MKOCTFILE], [test $cross_mkoctfile = yes])

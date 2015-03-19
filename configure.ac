@@ -465,35 +465,19 @@ CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
 ### (~80 bits) of x87 co-processor registers versus the IEEE standard 64 bits.
 ### Generally, storing the result in a local volatile variable forces a
 ### truncation back to 64 bits, but it also degrades performance.
-### Thus, we provide a FLOAT_TRUNCATE macro that may be defined to "volatile"
-### when compiling for x87 target, or left empty for modern SSE math, that
-### doesn't suffer from this problem at all.
-### FIXME: If no option value is given, configure uses a default heuristic
-###        which assumes that truncation should occur for MinGW and Cygwin
-###        systems and not for any others.  It would be marginally nicer
-###        to replace this with a test that checks whether the problem arises
-###        and only sets the flag if necessary.  However, the principal
-###        scenario for those two systems is a cross-build where we can't
-###        run an executable so the test wouldn't be too useful most of the
-###        time (only native builds on MinGW and Cygwin *might* benefit).
-###        Maybe, one could generate assembly code with -S option and inspect
-###        it without having to run an executable, but this sounds pretty dicey.
+### However, this performance degradation is very minimal, if indeed measurable.
+### Therefore, it has been enabled for all platforms and compilers.
+### Reported bugs indicate that --enable-float-truncate is required for MinGW
+### and Cygwin platforms and for GCC compilers >= 5.0.  It should not be
+### necessary for non-x87 targets or when using modern SSE math.
+ac_float_truncate=volatile
 AC_ARG_ENABLE([float-truncate],
-  [AS_HELP_STRING([--enable-float-truncate],
+  [AS_HELP_STRING([--disable-float-truncate],
     [truncate intermediate FP results])],
-  [if test "$enableval" = yes; then
-     ac_float_truncate=volatile
-   else
+  [if test "$enableval" = no; then
      ac_float_truncate=
    fi],
-  [case $host_os in
-     mingw* | cygwin*)
-       ac_float_truncate=volatile
-     ;;
-     *)
-       ac_float_truncate=
-     ;;
-   esac])
+  [])
 
 AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate],
   [Define to volatile if you need to truncate intermediate FP results.])

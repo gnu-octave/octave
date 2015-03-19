@@ -316,6 +316,17 @@ Summary of important user-visible changes for version 4.0:
     advantage of OpenMP if desired.  This can be disabled when building
     Octave with the configure option --disable-openmp.
 
+ ** Octave now automatically truncates intermediate calculations done with
+    floating point values to 64 bits.  Some hardware math co-processors, such
+    as the x87, maintain extra precision, but this leads to disagreements in
+    calculations when compared to reference implementations in software using
+    the IEEE standard for double precision.  There was no measurable
+    performance impact to this change, but it may be disabled with the
+    configure option --disable-float-truncate.  MinGW and Cygwin platforms,
+    as well as GCC compilers >= 5.0 require this feature.  Non-x87 hardware,
+    or hardware using SSE options exclusively, can disable float truncation
+    if desired.
+
 ---------------------------------------------------------
 
 See NEWS.3 for old news.

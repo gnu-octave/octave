@@ -46,51 +46,13 @@ sort_isnan<FloatComplex> (const FloatComplex& x)
 static bool
 nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
 {
-  if (xisnan (y))
-    return (! xisnan (x));
-
-  float xabs = std::abs (x);
-  float yabs = std::abs (y);
-
-  if (xabs < yabs)
-    return true;
-  else if (xabs == yabs)
-    {
-      float xarg = arg (x);
-      float yarg = arg (y);
-      xarg = (xarg == -static_cast<float> (M_PI)) ? static_cast<float> (M_PI)
-                                                  : xarg;
-      yarg = (yarg == -static_cast<float> (M_PI)) ? static_cast<float> (M_PI)
-                                                  : yarg;
-      return xarg < yarg;
-    }
-  else
-    return false;
+  return xisnan (y) ? ! xisnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 {
-  if (xisnan (x))
-    return (! xisnan (y));
-
-  float xabs = std::abs (x);
-  float yabs = std::abs (y);
-
-  if (xabs > yabs)
-    return true;
-  else if (xabs == yabs)
-    {
-      float xarg = arg (x);
-      float yarg = arg (y);
-      xarg = (xarg == -static_cast<float> (M_PI)) ? static_cast<float> (M_PI)
-                                                  : xarg;
-      yarg = (yarg == -static_cast<float> (M_PI)) ? static_cast<float> (M_PI)
-                                                  : yarg;
-      return xarg > yarg;
-    }
-  else
-    return false;
+  return xisnan (x) ? ! xisnan (y) : x > y;
 }
 
 Array<FloatComplex>::compare_fcn_type

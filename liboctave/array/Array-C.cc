@@ -46,49 +46,13 @@ sort_isnan<Complex> (const Complex& x)
 static bool
 nan_ascending_compare (const Complex& x, const Complex& y)
 {
-  if (xisnan (y))
-    return (! xisnan (x));
-
-  double xabs = std::abs (x);
-  double yabs = std::abs (y);
-
-  if (xabs < yabs)
-    return true;
-  else if (xabs == yabs)
-    {
-      double xarg = arg (x);
-      double yarg = arg (y);
-      xarg = (xarg == -M_PI) ? M_PI : xarg;
-      yarg = (yarg == -M_PI) ? M_PI : yarg;
-
-      return xarg < yarg;
-    }
-  else
-    return false;
+  return xisnan (y) ? ! xisnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (const Complex& x, const Complex& y)
 {
-  if (xisnan (x))
-    return (! xisnan (y));
-
-  double xabs = std::abs (x);
-  double yabs = std::abs (y);
-
-  if (xabs > yabs)
-    return true;
-  else if (xabs == yabs)
-    {
-      double xarg = arg (x);
-      double yarg = arg (y);
-      xarg = (xarg == -M_PI) ? M_PI : xarg;
-      yarg = (yarg == -M_PI) ? M_PI : yarg;
-
-      return xarg > yarg;
-    }
-  else
-    return false;
+  return xisnan (x) ? ! xisnan (y) : x > y;
 }
 
 Array<Complex>::compare_fcn_type

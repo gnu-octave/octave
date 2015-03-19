@@ -50,3 +50,15 @@
 %! assert (issorted (xfs));
 %! assert (double (xfs), xs);
 
+## Finally, test that sort and issorted agree on NaNs
+%!test
+%! x = [complex(NaN,-1), complex(NaN,NaN), ...
+%!      complex(-1,0), complex(-1,-0), i, -i, 1, ...
+%!      complex(1,NaN)];
+%! xs = sort (x);
+%! xf = single (x);
+%! xfs = sort (xf);
+%! assert (issorted (xs));
+%! assert (issorted (xfs));
+%! assert (double (xfs), xs);
+

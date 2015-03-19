@@ -32,7 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-CheckBoxControl* CheckBoxControl::create (const graphics_object& go)
+CheckBoxControl*
+CheckBoxControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 

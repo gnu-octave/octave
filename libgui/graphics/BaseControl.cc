@@ -36,7 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static void updatePalette (const uicontrol::properties& props, QWidget* w)
+static void
+updatePalette (const uicontrol::properties& props, QWidget* w)
 {
   QPalette p = w->palette ();
 
@@ -74,7 +75,8 @@ BaseControl::BaseControl (const graphics_object& go, QWidget* w)
   init (w);
 }
 
-void BaseControl::init (QWidget* w, bool callBase)
+void
+BaseControl::init (QWidget* w, bool callBase)
 {
   if (callBase)
     Object::init (w, callBase);
@@ -100,7 +102,8 @@ BaseControl::~BaseControl (void)
 {
 }
 
-void BaseControl::update (int pId)
+void
+BaseControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QWidget* w = qWidget<QWidget> ();
@@ -114,40 +117,49 @@ void BaseControl::update (int pId)
                           xround (bb(2)), xround (bb(3)));
         }
       break;
+
     case uicontrol::properties::ID_FONTNAME:
     case uicontrol::properties::ID_FONTSIZE:
     case uicontrol::properties::ID_FONTWEIGHT:
     case uicontrol::properties::ID_FONTANGLE:
       w->setFont (Utils::computeFont<uicontrol> (up));
       break;
+
     case uicontrol::properties::ID_FONTUNITS:
       // FIXME: We shouldn't have to do anything, octave should update
       //        the "fontsize" property automatically to the new units.
       //        Hence the actual font used shouldn't change.
       m_normalizedFont = up.fontunits_is ("normalized");
       break;
+
     case uicontrol::properties::ID_BACKGROUNDCOLOR:
     case uicontrol::properties::ID_FOREGROUNDCOLOR:
       updatePalette (up, w);
       break;
+
     case uicontrol::properties::ID_ENABLE:
       w->setEnabled (up.enable_is ("on"));
       break;
+
     case uicontrol::properties::ID_TOOLTIPSTRING:
       w->setToolTip (Utils::fromStdString (up.get_tooltipstring ()));
       break;
+
     case base_properties::ID_VISIBLE:
       w->setVisible (up.is_visible ());
       break;
+
     case uicontrol::properties::ID_KEYPRESSFCN:
       m_keyPressHandlerDefined = ! up.get_keypressfcn ().is_empty ();
       break;
+
     default:
       break;
     }
 }
 
-bool BaseControl::eventFilter (QObject* watched, QEvent* xevent)
+bool
+BaseControl::eventFilter (QObject* watched, QEvent* xevent)
 {
   switch (xevent->type ())
     {
@@ -160,41 +172,43 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* xevent)
                                         (properties<uicontrol> ()));
         }
       break;
+
     case QEvent::MouseButtonPress:
-        {
-          gh_manager::auto_lock lock;
+      {
+        gh_manager::auto_lock lock;
 
-          QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
-          graphics_object go = object ();
-          uicontrol::properties& up = Utils::properties<uicontrol> (go);
-          graphics_object fig = go.get_ancestor ("figure");
+        QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+        graphics_object go = object ();
+        uicontrol::properties& up = Utils::properties<uicontrol> (go);
+        graphics_object fig = go.get_ancestor ("figure");
 
-          if (m->button () != Qt::LeftButton
-              || ! up.enable_is ("on"))
-            {
+        if (m->button () != Qt::LeftButton
+            || ! up.enable_is ("on"))
+          {
+            gh_manager::post_set (fig.get_handle (), "selectiontype",
+                                  Utils::figureSelectionType (m), false);
+            gh_manager::post_set (fig.get_handle (), "currentpoint",
+                                  Utils::figureCurrentPoint (fig, m),
+                                  false);
+            gh_manager::post_callback (fig.get_handle (),
+                                       "windowbuttondownfcn");
+            gh_manager::post_callback (m_handle, "buttondownfcn");
+
+            if (m->button () == Qt::RightButton)
+              ContextMenu::executeAt (up, m->globalPos ());
+          }
+        else
+          {
+            if (up.style_is ("listbox"))
               gh_manager::post_set (fig.get_handle (), "selectiontype",
                                     Utils::figureSelectionType (m), false);
-              gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                    Utils::figureCurrentPoint (fig, m),
-                                    false);
-              gh_manager::post_callback (fig.get_handle (),
-                                         "windowbuttondownfcn");
-              gh_manager::post_callback (m_handle, "buttondownfcn");
-
-              if (m->button () == Qt::RightButton)
-                ContextMenu::executeAt (up, m->globalPos ());
-            }
-          else
-            {
-              if (up.style_is ("listbox"))
-                gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                      Utils::figureSelectionType (m), false);
-              else
-                gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                      octave_value ("normal"), false);
-            }
-        }
+            else
+              gh_manager::post_set (fig.get_handle (), "selectiontype",
+                                    octave_value ("normal"), false);
+          }
+      }
       break;
+
     case QEvent::MouseMove:
       if (qWidget<QWidget> ()->hasMouseTracking ())
         {
@@ -209,6 +223,7 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* xevent)
           gh_manager::post_callback (fig.get_handle (), "windowbuttonmotionfcn");
         }
       break;
+
     case QEvent::KeyPress:
       if (m_keyPressHandlerDefined)
         {
@@ -223,7 +238,9 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* xevent)
           gh_manager::post_callback (m_handle, "keypressfcn", keyData);
         }
       break;
-    default: break;
+
+    default:
+      break;
     }
 
   return Object::eventFilter (watched, xevent);

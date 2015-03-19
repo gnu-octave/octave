@@ -43,7 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-void Canvas::redraw (bool sync)
+void
+Canvas::redraw (bool sync)
 {
   QWidget *w = qWidget ();
 
@@ -56,12 +57,14 @@ void Canvas::redraw (bool sync)
     }
 }
 
-void Canvas::blockRedraw (bool block)
+void
+Canvas::blockRedraw (bool block)
 {
   m_redrawBlocked = block;
 }
 
-void Canvas::setCursor (MouseMode mode)
+void
+Canvas::setCursor (MouseMode mode)
 {
   QWidget *w = qWidget ();
 
@@ -91,7 +94,8 @@ void Canvas::setCursor (MouseMode mode)
     }
 }
 
-void Canvas::print (const QString& file_cmd, const QString& term)
+void
+Canvas::print (const QString& file_cmd, const QString& term)
 {
   gh_manager::auto_lock lock;
   graphics_object obj = gh_manager::get_object (m_handle);
@@ -104,8 +108,9 @@ void Canvas::print (const QString& file_cmd, const QString& term)
     }
 }
 
-void Canvas::updateCurrentPoint(const graphics_object& fig,
-                                const graphics_object& obj, QMouseEvent* event)
+void
+Canvas::updateCurrentPoint(const graphics_object& fig,
+                           const graphics_object& obj, QMouseEvent* event)
 {
   gh_manager::auto_lock lock;
 
@@ -141,7 +146,8 @@ void Canvas::updateCurrentPoint(const graphics_object& fig,
     }
 }
 
-void Canvas::canvasToggleAxes (const graphics_handle& handle)
+void
+Canvas::canvasToggleAxes (const graphics_handle& handle)
 {
   gh_manager::auto_lock lock;
 
@@ -169,7 +175,8 @@ void Canvas::canvasToggleAxes (const graphics_handle& handle)
     }
 }
 
-void Canvas::canvasToggleGrid (const graphics_handle& handle)
+void
+Canvas::canvasToggleGrid (const graphics_handle& handle)
 {
   gh_manager::auto_lock lock;
 
@@ -219,7 +226,8 @@ autoscale_axes (axes::properties& ap)
   ap.set_zlimmode ("auto");
 }
 
-void Canvas::canvasAutoAxes (const graphics_handle& handle)
+void
+Canvas::canvasAutoAxes (const graphics_handle& handle)
 {
   gh_manager::auto_lock lock;
 
@@ -247,7 +255,8 @@ void Canvas::canvasAutoAxes (const graphics_handle& handle)
     }
 }
 
-void Canvas::canvasPaintEvent (void)
+void
+Canvas::canvasPaintEvent (void)
 {
   if (! m_redrawBlocked)
     {
@@ -332,7 +341,8 @@ zoom_direction (const graphics_object figObj)
   return zm.contents ("Direction").string_value ();
 }
 
-void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
+void
+Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 {
   gh_manager::auto_lock lock;
   graphics_object ax = gh_manager::get_object (m_mouseAxes);
@@ -401,7 +411,8 @@ void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
     }
 }
 
-void Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
+void
+Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
 {
   if (event->buttons () != Qt::LeftButton)
     return;
@@ -485,7 +496,8 @@ button_number (QMouseEvent *event)
   return retval;
 }
 
-void Canvas::canvasMousePressEvent (QMouseEvent* event)
+void
+Canvas::canvasMousePressEvent (QMouseEvent* event)
 {
   gh_manager::auto_lock lock;
   graphics_object obj = gh_manager::get_object (m_handle);
@@ -656,7 +668,8 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
     }
 }
 
-void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
+void
+Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 {
   if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
       && m_mouseAxes.ok ())
@@ -722,7 +735,8 @@ void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
   m_mouseMode = NoMode;
 }
 
-void Canvas::canvasWheelEvent (QWheelEvent* event)
+void
+Canvas::canvasWheelEvent (QWheelEvent* event)
 {
   gh_manager::auto_lock lock;
   graphics_object obj = gh_manager::get_object (m_handle);
@@ -829,7 +843,8 @@ void Canvas::canvasWheelEvent (QWheelEvent* event)
     }
 }
 
-bool Canvas::canvasKeyPressEvent (QKeyEvent* event)
+bool
+Canvas::canvasKeyPressEvent (QKeyEvent* event)
 {
   if (m_eventMask & KeyPress)
     {
@@ -845,7 +860,8 @@ bool Canvas::canvasKeyPressEvent (QKeyEvent* event)
   return false;
 }
 
-bool Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
+bool
+Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
 {
   if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
     {
@@ -858,8 +874,9 @@ bool Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
   return false;
 }
 
-Canvas* Canvas::create (const std::string& /* name */, QWidget* parent,
-                        const graphics_handle& handle)
+Canvas*
+Canvas::create (const std::string& /* name */, QWidget* parent,
+                const graphics_handle& handle)
 {
   // Only OpenGL
   return new GLCanvas (parent, handle);

@@ -35,7 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-SliderControl* SliderControl::create (const graphics_object& go)
+SliderControl*
+SliderControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -52,7 +53,7 @@ SliderControl* SliderControl::create (const graphics_object& go)
 
 SliderControl::SliderControl (const graphics_object& go,
                               QAbstractSlider* slider)
-    : BaseControl (go, slider), m_blockUpdates (false)
+  : BaseControl (go, slider), m_blockUpdates (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -80,7 +81,8 @@ SliderControl::~SliderControl (void)
 {
 }
 
-void SliderControl::update (int pId)
+void
+SliderControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QScrollBar* slider = qWidget<QScrollBar> ();
@@ -88,36 +90,39 @@ void SliderControl::update (int pId)
   switch (pId)
     {
     case uicontrol::properties::ID_SLIDERSTEP:
-        {
-          Matrix steps = up.get_sliderstep ().matrix_value ();
+      {
+        Matrix steps = up.get_sliderstep ().matrix_value ();
 
-          slider->setSingleStep (xround (steps(0) * RANGE_INT_MAX));
-          slider->setPageStep (xround (steps(1) * RANGE_INT_MAX));
-        }
+        slider->setSingleStep (xround (steps(0) * RANGE_INT_MAX));
+        slider->setPageStep (xround (steps(1) * RANGE_INT_MAX));
+      }
       break;
+
     case uicontrol::properties::ID_VALUE:
-        {
-          Matrix value = up.get_value ().matrix_value ();
-          double dmax = up.get_max (), dmin = up.get_min ();
+      {
+        Matrix value = up.get_value ().matrix_value ();
+        double dmax = up.get_max (), dmin = up.get_min ();
 
-          if (value.numel () > 0)
-            {
-              int ival = xround (((value(0) - dmin) / (dmax - dmin))
-                                 * RANGE_INT_MAX);
+        if (value.numel () > 0)
+          {
+            int ival = xround (((value(0) - dmin) / (dmax - dmin))
+                               * RANGE_INT_MAX);
 
-              m_blockUpdates = true;
-              slider->setValue (ival);
-              m_blockUpdates = false;
-            }
-        }
+            m_blockUpdates = true;
+            slider->setValue (ival);
+            m_blockUpdates = false;
+          }
+      }
       break;
+
     default:
       BaseControl::update (pId);
       break;
     }
 }
 
-void SliderControl::valueChanged (int ival)
+void
+SliderControl::valueChanged (int ival)
 {
   if (! m_blockUpdates)
     {

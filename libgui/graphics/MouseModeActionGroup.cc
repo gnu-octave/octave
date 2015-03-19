@@ -67,7 +67,8 @@ MouseModeActionGroup::~MouseModeActionGroup (void)
 {
 }
 
-void MouseModeActionGroup::actionToggled (bool checked)
+void
+MouseModeActionGroup::actionToggled (bool checked)
 {
   if (! checked)
     {
@@ -92,7 +93,8 @@ void MouseModeActionGroup::actionToggled (bool checked)
     }
 }
 
-void MouseModeActionGroup::setMode (MouseMode mode)
+void
+MouseModeActionGroup::setMode (MouseMode mode)
 {
   for (int i = 0; i < m_actions.size (); i++)
     m_actions[i]->setChecked (i == mode - 1);

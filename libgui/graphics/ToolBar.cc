@@ -41,7 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static QAction* addEmptyAction (QToolBar* bar)
+static QAction*
+addEmptyAction (QToolBar* bar)
 {
   static QIcon _empty;
 
@@ -62,7 +63,8 @@ static QAction* addEmptyAction (QToolBar* bar)
   return a;
 }
 
-ToolBar* ToolBar::create (const graphics_object& go)
+ToolBar*
+ToolBar::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -78,7 +80,7 @@ ToolBar* ToolBar::create (const graphics_object& go)
 }
 
 ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
-     : Object (go, bar), m_empty (0), m_figure (0)
+  : Object (go, bar), m_empty (0), m_figure (0)
 {
   uitoolbar::properties& tp = properties<uitoolbar> ();
 
@@ -101,7 +103,8 @@ ToolBar::~ToolBar (void)
 {
 }
 
-void ToolBar::update (int pId)
+void
+ToolBar::update (int pId)
 {
   uitoolbar::properties& tp = properties<uitoolbar> ();
   QToolBar* bar = qWidget<QToolBar> ();
@@ -112,13 +115,15 @@ void ToolBar::update (int pId)
       if (m_figure)
         m_figure->showCustomToolBar (bar, tp.is_visible ());
       break;
+
     default:
       Object::update (pId);
       break;
     }
 }
 
-bool ToolBar::eventFilter (QObject* watched, QEvent* xevent)
+bool
+ToolBar::eventFilter (QObject* watched, QEvent* xevent)
 {
   if (watched == qObject ())
     {
@@ -145,6 +150,7 @@ bool ToolBar::eventFilter (QObject* watched, QEvent* xevent)
                 }
             }
           break;
+
         default:
           break;
         }
@@ -153,12 +159,14 @@ bool ToolBar::eventFilter (QObject* watched, QEvent* xevent)
   return false;
 }
 
-void ToolBar::hideEmpty (void)
+void
+ToolBar::hideEmpty (void)
 {
   m_empty->setVisible (false);
 }
 
-void ToolBar::beingDeleted (void)
+void
+ToolBar::beingDeleted (void)
 {
   if (m_figure)
     {

@@ -36,7 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static QKeySequence accelSequence (const uimenu::properties& up)
+static QKeySequence
+accelSequence (const uimenu::properties& up)
 {
   std::string s (up.get_accelerator ());
 
@@ -56,7 +57,8 @@ static QKeySequence accelSequence (const uimenu::properties& up)
   return QKeySequence ();
 }
 
-Menu* Menu::create (const graphics_object& go)
+Menu*
+Menu::create (const graphics_object& go)
 {
   Object* parent_obj = Object::parentObject (go);
 
@@ -72,19 +74,22 @@ Menu* Menu::create (const graphics_object& go)
 }
 
 Menu::Menu (const graphics_object& go, QAction* action, Object* xparent)
-    : Object (go, action), m_parent (0), m_separator (0)
+  : Object (go, action), m_parent (0), m_separator (0)
 {
   uimenu::properties& up = properties<uimenu> ();
 
   action->setText (Utils::fromStdString (up.get_label ()));
+
   if (up.is_checked ())
     {
       action->setCheckable (true);
       action->setChecked (up.is_checked ());
     }
+
   action->setEnabled (up.is_enable ());
   action->setShortcut (accelSequence (up));
   action->setVisible (up.is_visible ());
+
   if (up.is_separator ())
     {
       m_separator = new QAction (action);
@@ -151,7 +156,8 @@ Menu::~Menu (void)
 {
 }
 
-void Menu::update (int pId)
+void
+Menu::update (int pId)
 {
   uimenu::properties& up = properties<uimenu> ();
   QAction* action = qWidget<QAction> ();
@@ -161,6 +167,7 @@ void Menu::update (int pId)
     case uimenu::properties::ID_LABEL:
       action->setText (Utils::fromStdString (up.get_label ()));
       break;
+
     case uimenu::properties::ID_CHECKED:
       if (up.is_checked ())
         {
@@ -173,13 +180,16 @@ void Menu::update (int pId)
           action->setCheckable (false);
         }
       break;
+
     case uimenu::properties::ID_ENABLE:
       action->setEnabled (up.is_enable ());
       break;
+
     case uimenu::properties::ID_ACCELERATOR:
       if (! action->menu ())
         action->setShortcut (accelSequence (up));
       break;
+
     case uimenu::properties::ID_SEPARATOR:
       if (up.is_separator ())
         {
@@ -199,48 +209,56 @@ void Menu::update (int pId)
           m_separator = 0;
         }
       break;
+
     case uimenu::properties::ID_VISIBLE:
       action->setVisible (up.is_visible ());
       if (m_separator)
         m_separator->setVisible (up.is_visible ());
       break;
+
     case uimenu::properties::ID_POSITION:
-      if (m_separator)
-        m_parent->removeAction (m_separator);
-      m_parent->removeAction (action);
-        {
-          int pos = static_cast<int> (up.get_position ());
-          QAction* before = 0;
+      {
+        if (m_separator)
+          m_parent->removeAction (m_separator);
 
-          if (pos > 0)
-            {
-              int count = 0;
+        m_parent->removeAction (action);
 
-              foreach (QAction* a, m_parent->actions ())
-                if (! a->isSeparator () && a->objectName () != "builtinMenu")
-                  {
-                    count++;
-                    if (pos <= count)
-                      {
-                        before = a;
-                        break;
-                      }
-                  }
-            }
+        int pos = static_cast<int> (up.get_position ());
+        QAction* before = 0;
 
-          if (m_separator)
-            m_parent->insertAction (before, m_separator);
-          m_parent->insertAction (before, action);
-          updateSiblingPositions ();
-        }
+        if (pos > 0)
+          {
+            int count = 0;
+
+            foreach (QAction* a, m_parent->actions ())
+              if (! a->isSeparator () && a->objectName () != "builtinMenu")
+                {
+                  count++;
+                  if (pos <= count)
+                    {
+                      before = a;
+                      break;
+                    }
+                }
+          }
+
+        if (m_separator)
+          m_parent->insertAction (before, m_separator);
+
+        m_parent->insertAction (before, action);
+
+        updateSiblingPositions ();
+      }
       break;
+
     default:
       Object::update (pId);
       break;
     }
 }
 
-QWidget* Menu::menu (void)
+QWidget*
+Menu::menu (void)
 {
   QAction* action = qWidget<QAction> ();
   QMenu* _menu = action->menu ();
@@ -257,7 +275,8 @@ QWidget* Menu::menu (void)
   return _menu;
 }
 
-void Menu::actionTriggered (void)
+void
+Menu::actionTriggered (void)
 {
   QAction* action = qWidget<QAction> ();
 
@@ -266,12 +285,14 @@ void Menu::actionTriggered (void)
   gh_manager::post_callback (m_handle, "callback");
 }
 
-void Menu::actionHovered (void)
+void
+Menu::actionHovered (void)
 {
   gh_manager::post_callback (m_handle, "callback");
 }
 
-void Menu::updateSiblingPositions (void)
+void
+Menu::updateSiblingPositions (void)
 {
   if (m_parent)
     {

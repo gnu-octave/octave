@@ -47,7 +47,8 @@ GLCanvas::~GLCanvas (void)
 {
 }
 
-void GLCanvas::draw (const graphics_handle& gh)
+void
+GLCanvas::draw (const graphics_handle& gh)
 {
   gh_manager::auto_lock lock;
   graphics_object go = gh_manager::get_object (gh);
@@ -61,23 +62,26 @@ void GLCanvas::draw (const graphics_handle& gh)
     }
 }
 
-void GLCanvas::toggleAxes (const graphics_handle& gh)
+void
+GLCanvas::toggleAxes (const graphics_handle& gh)
 {
   canvasToggleAxes (gh);
 }
 
-void GLCanvas::toggleGrid (const graphics_handle& gh)
+void
+GLCanvas::toggleGrid (const graphics_handle& gh)
 {
   canvasToggleGrid (gh);
 }
 
-void GLCanvas::autoAxes (const graphics_handle& gh)
+void
+GLCanvas::autoAxes (const graphics_handle& gh)
 {
   canvasAutoAxes (gh);
 }
 
-graphics_object GLCanvas::selectFromAxes (const graphics_object& ax,
-                                          const QPoint& pt)
+graphics_object
+GLCanvas::selectFromAxes (const graphics_object& ax, const QPoint& pt)
 {
   makeCurrent ();
 
@@ -92,7 +96,8 @@ graphics_object GLCanvas::selectFromAxes (const graphics_object& ax,
   return graphics_object ();
 }
 
-inline void glDrawZoomBox (const QPoint& p1, const QPoint& p2)
+inline void
+glDrawZoomBox (const QPoint& p1, const QPoint& p2)
 {
   glVertex2d (p1.x (), p1.y ());
   glVertex2d (p2.x (), p1.y ());
@@ -101,7 +106,8 @@ inline void glDrawZoomBox (const QPoint& p1, const QPoint& p2)
   glVertex2d (p1.x (), p1.y ());
 }
 
-void GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
+void
+GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
 {
   glPushMatrix ();
 
@@ -130,43 +136,51 @@ void GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
   glPopMatrix ();
 }
 
-void GLCanvas::paintGL (void)
+void
+GLCanvas::paintGL (void)
 {
   canvasPaintEvent ();
 }
 
-void GLCanvas::mouseDoubleClickEvent (QMouseEvent* xevent)
+void
+GLCanvas::mouseDoubleClickEvent (QMouseEvent* xevent)
 {
   canvasMouseDoubleClickEvent (xevent);
 }
 
-void GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
+void
+GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
 {
   canvasMouseMoveEvent (xevent);
 }
 
-void GLCanvas::mousePressEvent (QMouseEvent* xevent)
+void
+GLCanvas::mousePressEvent (QMouseEvent* xevent)
 {
   canvasMousePressEvent (xevent);
 }
 
-void GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
+void
+GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
 {
   canvasMouseReleaseEvent (xevent);
 }
 
-void GLCanvas::wheelEvent (QWheelEvent* xevent)
+void
+GLCanvas::wheelEvent (QWheelEvent* xevent)
 {
   canvasWheelEvent (xevent);
 }
 
-void GLCanvas::keyPressEvent (QKeyEvent* xevent)
+void
+GLCanvas::keyPressEvent (QKeyEvent* xevent)
 {
   if (! canvasKeyPressEvent (xevent))
     QGLWidget::keyPressEvent (xevent);
 }
 
-void GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
+void
+GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
 {
   if (! canvasKeyReleaseEvent (xevent))
     QGLWidget::keyReleaseEvent (xevent);

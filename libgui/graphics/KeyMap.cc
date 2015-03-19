@@ -35,7 +35,8 @@ namespace QtHandles
 namespace KeyMap
 {
 
-std::string qKeyToKeyString (int key)
+std::string
+qKeyToKeyString (int key)
 {
   static QMap<int, std::string> keyMapper;
 

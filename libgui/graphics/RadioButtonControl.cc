@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-RadioButtonControl* RadioButtonControl::create (const graphics_object& go)
+RadioButtonControl*
+RadioButtonControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -50,7 +51,7 @@ RadioButtonControl* RadioButtonControl::create (const graphics_object& go)
 
 RadioButtonControl::RadioButtonControl (const graphics_object& go,
                                         QRadioButton* radio)
-    : ButtonControl (go, radio)
+  : ButtonControl (go, radio)
 {
   radio->setAutoFillBackground (true);
   radio->setAutoExclusive (false);

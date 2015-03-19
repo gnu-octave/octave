@@ -39,7 +39,7 @@ Logger* Logger::s_instance = 0;
 QMutex* Logger::s_mutex = 0;
 
 Logger::Logger (void)
-    : m_debugEnabled (false)
+  : m_debugEnabled (false)
 {
   QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
 
@@ -51,7 +51,8 @@ Logger::~Logger (void)
 {
 }
 
-Logger* Logger::instance (void)
+Logger*
+Logger::instance (void)
 {
   if (! s_instance)
     {
@@ -63,18 +64,19 @@ Logger* Logger::instance (void)
 }
 
 #define STATIC_LOGGER(fun) \
-void Logger::fun (const char* fmt, ...) \
-{ \
-  QMutexLocker lock (s_mutex); \
-  va_list vl; \
-  va_start (vl, fmt); \
-  instance ()->fun ## V (fmt, vl); \
-  va_end (vl); \
-}
+  void Logger::fun (const char* fmt, ...) \
+  { \
+    QMutexLocker lock (s_mutex); \
+    va_list vl; \
+    va_start (vl, fmt); \
+    instance ()->fun ## V (fmt, vl); \
+    va_end (vl); \
+  }
 
 STATIC_LOGGER (debug)
 
-void Logger::debugV (const char* fmt, va_list arg)
+void
+Logger::debugV (const char* fmt, va_list arg)
 {
   if (m_debugEnabled)
     {

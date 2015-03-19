@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ToggleButtonControl* ToggleButtonControl::create (const graphics_object& go)
+ToggleButtonControl*
+ToggleButtonControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 

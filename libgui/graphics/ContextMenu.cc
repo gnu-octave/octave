@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ContextMenu* ContextMenu::create (const graphics_object& go)
+ContextMenu*
+ContextMenu::create (const graphics_object& go)
 {
   Object* xparent = Object::parentObject (go);
 
@@ -60,7 +61,8 @@ ContextMenu::~ContextMenu (void)
 {
 }
 
-void ContextMenu::update (int pId)
+void
+ContextMenu::update (int pId)
 {
   uicontextmenu::properties& up = properties<uicontextmenu> ();
   QMenu* xmenu = qWidget<QMenu> ();
@@ -89,23 +91,27 @@ void ContextMenu::update (int pId)
     }
 }
 
-void ContextMenu::aboutToShow (void)
+void
+ContextMenu::aboutToShow (void)
 {
   gh_manager::post_callback (m_handle, "callback");
   gh_manager::post_set (m_handle, "visible", "on", false);
 }
 
-void ContextMenu::aboutToHide (void)
+void
+ContextMenu::aboutToHide (void)
 {
   gh_manager::post_set (m_handle, "visible", "off", false);
 }
 
-QWidget* ContextMenu::menu (void)
+QWidget*
+ContextMenu::menu (void)
 {
   return qWidget<QWidget> ();
 }
 
-void ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
+void
+ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
 {
   graphics_handle h = props.get_uicontextmenu ();
 

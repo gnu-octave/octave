@@ -58,7 +58,8 @@ namespace QtHandles
 
 DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
 
-static bool hasUiControlChildren (const figure::properties& fp)
+static bool
+hasUiControlChildren (const figure::properties& fp)
 {
   gh_manager::auto_lock lock;
 
@@ -76,7 +77,8 @@ static bool hasUiControlChildren (const figure::properties& fp)
   return false;
 }
 
-static bool hasUiMenuChildren (const figure::properties& fp)
+static bool
+hasUiMenuChildren (const figure::properties& fp)
 {
   gh_manager::auto_lock lock;
 
@@ -93,7 +95,8 @@ static bool hasUiMenuChildren (const figure::properties& fp)
   return false;
 }
 
-static QRect boundingBoxToRect (const Matrix& bb)
+static QRect
+boundingBoxToRect (const Matrix& bb)
 {
   QRect r;
 
@@ -108,15 +111,15 @@ static QRect boundingBoxToRect (const Matrix& bb)
   return r;
 }
 
-Figure* Figure::create (const graphics_object& go)
+Figure*
+Figure::create (const graphics_object& go)
 {
   return new Figure (go, new FigureWindow ());
 }
 
 Figure::Figure (const graphics_object& go, FigureWindow* win)
-     : Object (go, win), m_blockUpdates (false), m_figureToolBar (0),
-       m_menuBar (0), m_innerRect (), m_outerRect (),
-       m_mouseModeGroup (0)
+  : Object (go, win), m_blockUpdates (false), m_figureToolBar (0),
+    m_menuBar (0), m_innerRect (), m_outerRect (), m_mouseModeGroup (0)
 {
   m_container = new Container (win);
   win->setCentralWidget (m_container);
@@ -173,7 +176,8 @@ Figure::~Figure (void)
 {
 }
 
-static std::string mouse_mode_to_string (MouseMode mode)
+static std::string
+mouse_mode_to_string (MouseMode mode)
 {
   switch (mode)
     {
@@ -205,7 +209,8 @@ static std::string mouse_mode_to_string (MouseMode mode)
   return "none";
 }
 
-static MouseMode mouse_mode_from_string (const std::string& mode)
+static MouseMode
+mouse_mode_from_string (const std::string& mode)
 {
   if (mode == "none")
     return NoMode;
@@ -225,7 +230,8 @@ static MouseMode mouse_mode_from_string (const std::string& mode)
     return NoMode;
 }
 
-QString Figure::fileName (void)
+QString
+Figure::fileName (void)
 {
   gh_manager::auto_lock lock;
 
@@ -236,7 +242,8 @@ QString Figure::fileName (void)
   return QString::fromStdString (name);
 }
 
-void Figure::setFileName (const QString& name)
+void
+Figure::setFileName (const QString& name)
 {
   gh_manager::auto_lock lock;
 
@@ -245,7 +252,8 @@ void Figure::setFileName (const QString& name)
   fp.set_filename (name.toStdString ());
 }
 
-MouseMode Figure::mouseMode (void)
+MouseMode
+Figure::mouseMode (void)
 {
   gh_manager::auto_lock lock;
 
@@ -265,7 +273,8 @@ MouseMode Figure::mouseMode (void)
   return mouse_mode_from_string (mode);
 }
 
-void Figure::createFigureToolBarAndMenuBar (void)
+void
+Figure::createFigureToolBarAndMenuBar (void)
 {
   QMainWindow* win = qWidget<QMainWindow> ();
 
@@ -321,7 +330,8 @@ void Figure::createFigureToolBarAndMenuBar (void)
   m_menuBar->addReceiver (this);
 }
 
-void Figure::updateFigureToolBarAndMenuBar (void)
+void
+Figure::updateFigureToolBarAndMenuBar (void)
 {
   if (m_mouseModeGroup)
     {
@@ -331,12 +341,14 @@ void Figure::updateFigureToolBarAndMenuBar (void)
     }
 }
 
-Container* Figure::innerContainer (void)
+Container*
+Figure::innerContainer (void)
 {
   return m_container;
 }
 
-void Figure::redraw (void)
+void
+Figure::redraw (void)
 {
   Canvas* canvas = m_container->canvas (m_handle);
 
@@ -358,7 +370,8 @@ void Figure::redraw (void)
   updateFigureToolBarAndMenuBar ();
 }
 
-void Figure::print (const QString& file_cmd, const QString& term)
+void
+Figure::print (const QString& file_cmd, const QString& term)
 {
   Canvas* canvas = m_container->canvas (m_handle);
 
@@ -366,7 +379,8 @@ void Figure::print (const QString& file_cmd, const QString& term)
     canvas->print (file_cmd, term);
 }
 
-void Figure::beingDeleted (void)
+void
+Figure::beingDeleted (void)
 {
   Canvas* canvas = m_container->canvas (m_handle.value (), false);
 
@@ -378,7 +392,8 @@ void Figure::beingDeleted (void)
   qWidget<FigureWindow> ()->removeReceiver (this);
 }
 
-void Figure::update (int pId)
+void
+Figure::update (int pId)
 {
   if (m_blockUpdates)
     return;
@@ -406,16 +421,19 @@ void Figure::update (int pId)
           //qDebug () << "Figure::update(position): done";
         }
       break;
+
     case figure::properties::ID_NAME:
     case figure::properties::ID_NUMBERTITLE:
       win->setWindowTitle (Utils::fromStdString (fp.get_title ()));
       break;
+
     case figure::properties::ID_VISIBLE:
       if (fp.is_visible ())
         QTimer::singleShot (0, win, SLOT (show ()));
       else
         win->hide ();
       break;
+
     case figure::properties::ID_TOOLBAR:
       if (fp.toolbar_is ("none"))
         showFigureToolBar (false);
@@ -424,21 +442,25 @@ void Figure::update (int pId)
       else // "auto"
         showFigureToolBar (! hasUiControlChildren (fp));
       break;
+
     case figure::properties::ID_MENUBAR:
       showMenuBar (fp.menubar_is ("figure"));
       break;
+
     case figure::properties::ID_KEYPRESSFCN:
       if (fp.get_keypressfcn ().is_empty ())
         m_container->canvas (m_handle)->clearEventMask (Canvas::KeyPress);
       else
         m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
       break;
+
     case figure::properties::ID_KEYRELEASEFCN:
       if (fp.get_keyreleasefcn ().is_empty ())
         m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
       else
         m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
       break;
+
     case figure::properties::ID_WINDOWBUTTONMOTIONFCN:
         {
           bool hasCallback = ! fp.get_windowbuttonmotionfcn ().is_empty ();
@@ -448,6 +470,7 @@ void Figure::update (int pId)
             { w->setMouseTracking (hasCallback); }
         }
       break;
+
     default:
       break;
     }
@@ -455,7 +478,8 @@ void Figure::update (int pId)
   m_blockUpdates = false;
 }
 
-void Figure::showFigureToolBar (bool visible)
+void
+Figure::showFigureToolBar (bool visible)
 {
   if ((! m_figureToolBar->isHidden ()) != visible)
     {
@@ -476,7 +500,8 @@ void Figure::showFigureToolBar (bool visible)
     }
 }
 
-void Figure::showMenuBar (bool visible)
+void
+Figure::showMenuBar (bool visible)
 {
   int h1 = m_menuBar->sizeHint ().height ();
 
@@ -510,7 +535,8 @@ void Figure::showMenuBar (bool visible)
     }
 }
 
-void Figure::updateMenuBar (void)
+void
+Figure::updateMenuBar (void)
 {
   gh_manager::auto_lock lock;
   graphics_object go = object ();
@@ -519,7 +545,8 @@ void Figure::updateMenuBar (void)
     showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"));
 }
 
-QWidget* Figure::menu (void)
+QWidget*
+Figure::menu (void)
 {
   return qWidget<QMainWindow> ()->menuBar ();
 }
@@ -532,7 +559,8 @@ struct UpdateBoundingBoxData
   Figure* m_figure;
 };
 
-void Figure::updateBoundingBoxHelper (void* data)
+void
+Figure::updateBoundingBoxHelper (void* data)
 {
   gh_manager::auto_lock lock;
 
@@ -543,15 +571,14 @@ void Figure::updateBoundingBoxHelper (void* data)
     {
       figure::properties& fp = Utils::properties<figure> (go);
 
-      //qDebug ("Figure::updateBoundingBoxHelper: internal=%d, bbox=[%g %g %g %g]",
-      //        d->m_internal, d->m_bbox(0), d->m_bbox(1), d->m_bbox(2), d->m_bbox(3));
       fp.set_boundingbox (d->m_bbox, d->m_internal, false);
     }
 
   delete d;
 }
 
-void Figure::updateBoundingBox (bool internal, int flags)
+void
+Figure::updateBoundingBox (bool internal, int flags)
 {
   QWidget* win = qWidget<QWidget> ();
   Matrix bb (1, 4);
@@ -567,7 +594,6 @@ void Figure::updateBoundingBox (bool internal, int flags)
 
       if (r.isValid () && r != m_innerRect)
         {
-          //qDebug() << "inner rect changed:" << m_innerRect << "->>" << r;
           m_innerRect = r;
 
           bb(0) = r.x ();
@@ -589,7 +615,6 @@ void Figure::updateBoundingBox (bool internal, int flags)
 
       if (r.isValid () && r != m_outerRect)
         {
-          //qDebug() << "outer rect changed:" << m_outerRect << "->>" << r;
           m_outerRect = r;
 
           bb(0) = r.x ();
@@ -608,12 +633,11 @@ void Figure::updateBoundingBox (bool internal, int flags)
   d->m_handle = m_handle;
   d->m_figure = this;
 
-  //qDebug ("Figure::updateBoundingBox: internal=%d, bbox=[%g %g %g %g]",
-  //        d->m_internal, d->m_bbox(0), d->m_bbox(1), d->m_bbox(2), d->m_bbox(3));
   gh_manager::post_function (Figure::updateBoundingBoxHelper, d);
 }
 
-bool Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
+bool
+Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
 {
   if (! m_blockUpdates)
     {
@@ -626,14 +650,15 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
           switch (xevent->type ())
             {
             case QEvent::ActionRemoved:
-                {
-                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
+              {
+                QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
 
-                  if (! a->isSeparator ()
-                      && a->objectName () != "builtinMenu")
-                    updateMenuBar ();
-                }
+                if (! a->isSeparator ()
+                    && a->objectName () != "builtinMenu")
+                  updateMenuBar ();
+              }
               break;
+
             default:
               break;
             }
@@ -646,6 +671,7 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
               xevent->ignore ();
               gh_manager::post_callback (m_handle, "closerequestfcn");
               return true;
+
             default:
               break;
             }
@@ -655,7 +681,8 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
   return false;
 }
 
-void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
+void
+Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
 {
   if (! m_blockUpdates)
     {
@@ -666,6 +693,7 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
             case QEvent::Resize:
               updateBoundingBox (true, UpdateBoundingBoxSize);
               break;
+
             case QEvent::ChildAdded:
               if (dynamic_cast<QChildEvent*> (xevent)->child
                   ()->isWidgetType())
@@ -675,6 +703,7 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
 
                   showFigureToolBar (! hasUiControlChildren (fp));
                 }
+
             default:
               break;
             }
@@ -692,6 +721,7 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
                     updateMenuBar ();
                 }
               break;
+
             default:
               break;
             }
@@ -704,9 +734,11 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
               updateBoundingBox (false, UpdateBoundingBoxPosition);
               updateBoundingBox (true, UpdateBoundingBoxPosition);
               break;
+
             case QEvent::Resize:
               updateBoundingBox (false, UpdateBoundingBoxSize);
               break;
+
             default:
               break;
             }
@@ -714,13 +746,15 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
     }
 }
 
-void Figure::helpAboutQtHandles (void)
+void
+Figure::helpAboutQtHandles (void)
 {
   QMessageBox::about (qWidget<QMainWindow> (), tr ("About QtHandles"),
                       ABOUT_TEXT);
 }
 
-void Figure::setMouseMode (MouseMode mode)
+void
+Figure::setMouseMode (MouseMode mode)
 {
   if (m_blockUpdates)
     return;
@@ -737,7 +771,8 @@ void Figure::setMouseMode (MouseMode mode)
     canvas->setCursor (mode);
 }
 
-void Figure::fileSaveFigure (bool prompt)
+void
+Figure::fileSaveFigure (bool prompt)
 {
   QString file = fileName ();
 
@@ -769,34 +804,41 @@ void Figure::fileSaveFigure (bool prompt)
     }
 }
 
-void Figure::save_figure_callback (const std::string& file)
+void
+Figure::save_figure_callback (const std::string& file)
 {
   Ffeval (ovl ("print", file));
 }
   
-void Figure::fileSaveFigureAs (void)
+void
+Figure::fileSaveFigureAs (void)
 {
   fileSaveFigure (true);
 }
 
-void Figure::fileCloseFigure (void)
+void
+Figure::fileCloseFigure (void)
 {
   qWidget<QMainWindow> ()->close ();
 }
 
-void Figure::editCopy (void)
+void
+Figure::editCopy (void)
 {
 }
 
-void Figure::editCut (void)
+void
+Figure::editCut (void)
 {
 }
 
-void Figure::editPaste (void)
+void
+Figure::editPaste (void)
 {
 }
 
-void Figure::addCustomToolBar (QToolBar* bar, bool visible)
+void
+Figure::addCustomToolBar (QToolBar* bar, bool visible)
 {
   QMainWindow* win = qWidget<QMainWindow> ();
 
@@ -821,7 +863,8 @@ void Figure::addCustomToolBar (QToolBar* bar, bool visible)
     }
 }
 
-void Figure::showCustomToolBar (QToolBar* bar, bool visible)
+void
+Figure::showCustomToolBar (QToolBar* bar, bool visible)
 {
   QMainWindow* win = qWidget<QMainWindow> ();
 
@@ -844,12 +887,14 @@ void Figure::showCustomToolBar (QToolBar* bar, bool visible)
     }
 }
 
-void Figure::updateContainer (void)
+void
+Figure::updateContainer (void)
 {
   redraw ();
 }
 
-void Figure::toggleAxes (void)
+void
+Figure::toggleAxes (void)
 {
   Canvas* canvas = m_container->canvas (m_handle);
 
@@ -857,7 +902,8 @@ void Figure::toggleAxes (void)
     canvas->toggleAxes (m_handle);
 }
   
-void Figure::toggleGrid (void)
+void
+Figure::toggleGrid (void)
 {
   Canvas* canvas = m_container->canvas (m_handle);
 
@@ -865,7 +911,8 @@ void Figure::toggleGrid (void)
     canvas->toggleGrid (m_handle);
 }
   
-void Figure::autoAxes (void)
+void
+Figure::autoAxes (void)
 {
   Canvas* canvas = m_container->canvas (m_handle);
 

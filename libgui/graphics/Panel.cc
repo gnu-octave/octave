@@ -39,7 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static int frameStyleFromProperties (const uipanel::properties& pp)
+static int
+frameStyleFromProperties (const uipanel::properties& pp)
 {
   if (pp.bordertype_is ("none"))
     return QFrame::NoFrame;
@@ -55,7 +56,8 @@ static int frameStyleFromProperties (const uipanel::properties& pp)
     return (QFrame::Panel | QFrame::Plain);
 }
 
-static void setupPalette (const uipanel::properties& pp, QPalette& p)
+static void
+setupPalette (const uipanel::properties& pp, QPalette& p)
 {
   p.setColor (QPalette::Window,
               Utils::fromRgb (pp.get_backgroundcolor_rgb ()));
@@ -67,7 +69,8 @@ static void setupPalette (const uipanel::properties& pp, QPalette& p)
               Utils::fromRgb (pp.get_shadowcolor_rgb ()));
 }
 
-static int borderWidthFromProperties (const uipanel::properties& pp)
+static int
+borderWidthFromProperties (const uipanel::properties& pp)
 {
   int bw = 0;
 
@@ -81,7 +84,8 @@ static int borderWidthFromProperties (const uipanel::properties& pp)
   return bw;
 }
 
-Panel* Panel::create (const graphics_object& go)
+Panel*
+Panel::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -97,7 +101,7 @@ Panel* Panel::create (const graphics_object& go)
 }
 
 Panel::Panel (const graphics_object& go, QFrame* frame)
-    : Object (go, frame), m_container (0), m_title (0), m_blockUpdates (false)
+  : Object (go, frame), m_container (0), m_title (0), m_blockUpdates (false)
 {
   uipanel::properties& pp = properties<uipanel> ();
 
@@ -144,7 +148,8 @@ Panel::~Panel (void)
 {
 }
 
-bool Panel::eventFilter (QObject* watched, QEvent* xevent)
+bool
+Panel::eventFilter (QObject* watched, QEvent* xevent)
 {
   if (! m_blockUpdates)
     {
@@ -177,6 +182,7 @@ bool Panel::eventFilter (QObject* watched, QEvent* xevent)
                     }
                 }
               break;
+
             case QEvent::MouseButtonPress:
                 {
                   QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
@@ -189,6 +195,7 @@ bool Panel::eventFilter (QObject* watched, QEvent* xevent)
                     }
                 }
               break;
+
             default:
               break;
             }
@@ -205,6 +212,7 @@ bool Panel::eventFilter (QObject* watched, QEvent* xevent)
                   properties ().update_boundingbox ();
                 }
               break;
+
             default:
               break;
             }
@@ -214,7 +222,8 @@ bool Panel::eventFilter (QObject* watched, QEvent* xevent)
   return false;
 }
 
-void Panel::update (int pId)
+void
+Panel::update (int pId)
 {
   uipanel::properties& pp = properties<uipanel> ();
   QFrame* frame = qWidget<QFrame> ();
@@ -224,69 +233,76 @@ void Panel::update (int pId)
   switch (pId)
     {
     case uipanel::properties::ID_POSITION:
-        {
-          Matrix bb = pp.get_boundingbox (false);
+      {
+        Matrix bb = pp.get_boundingbox (false);
 
-          frame->setGeometry (xround (bb(0)), xround (bb(1)),
-                              xround (bb(2)), xround (bb(3)));
-          updateLayout ();
-        }
+        frame->setGeometry (xround (bb(0)), xround (bb(1)),
+                            xround (bb(2)), xround (bb(3)));
+        updateLayout ();
+      }
       break;
+
     case uipanel::properties::ID_BORDERWIDTH:
       frame->setLineWidth (xround (pp.get_borderwidth ()));
       updateLayout ();
       break;
+
     case uipanel::properties::ID_BACKGROUNDCOLOR:
     case uipanel::properties::ID_FOREGROUNDCOLOR:
     case uipanel::properties::ID_HIGHLIGHTCOLOR:
     case uipanel::properties::ID_SHADOWCOLOR:
-        {
-          QPalette pal = frame->palette ();
+      {
+        QPalette pal = frame->palette ();
 
-          setupPalette (pp, pal);
-          frame->setPalette (pal);
-          if (m_title)
-            m_title->setPalette (pal);
-        }
+        setupPalette (pp, pal);
+        frame->setPalette (pal);
+        if (m_title)
+          m_title->setPalette (pal);
+      }
       break;
+
     case uipanel::properties::ID_TITLE:
-        {
-          QString title = Utils::fromStdString (pp.get_title ());
+      {
+        QString title = Utils::fromStdString (pp.get_title ());
 
-          if (title.isEmpty ())
-            {
-              if (m_title)
-                delete m_title;
-              m_title = 0;
-            }
-          else
-            {
-              if (! m_title)
-                {
-                  QPalette pal = frame->palette ();
+        if (title.isEmpty ())
+          {
+            if (m_title)
+              delete m_title;
+            m_title = 0;
+          }
+        else
+          {
+            if (! m_title)
+              {
+                QPalette pal = frame->palette ();
 
-                  m_title = new QLabel (title, frame);
-                  m_title->setAutoFillBackground (true);
-                  m_title->setContentsMargins (4, 0, 4, 0);
-                  m_title->setPalette (pal);
-                  m_title->setFont (Utils::computeFont<uipanel> (pp));
-                  m_title->show ();
-                }
-              else
-                {
-                  m_title->setText (title);
-                  m_title->resize (m_title->sizeHint ());
-                }
-            }
-          updateLayout ();
-        }
+                m_title = new QLabel (title, frame);
+                m_title->setAutoFillBackground (true);
+                m_title->setContentsMargins (4, 0, 4, 0);
+                m_title->setPalette (pal);
+                m_title->setFont (Utils::computeFont<uipanel> (pp));
+                m_title->show ();
+              }
+            else
+              {
+                m_title->setText (title);
+                m_title->resize (m_title->sizeHint ());
+              }
+          }
+        updateLayout ();
+      }
+      break;
+
     case uipanel::properties::ID_TITLEPOSITION:
       updateLayout ();
       break;
+
     case uipanel::properties::ID_BORDERTYPE:
       frame->setFrameStyle (frameStyleFromProperties (pp));
       updateLayout ();
       break;
+
     case uipanel::properties::ID_FONTNAME:
     case uipanel::properties::ID_FONTSIZE:
     case uipanel::properties::ID_FONTWEIGHT:
@@ -298,10 +314,12 @@ void Panel::update (int pId)
           updateLayout ();
         }
       break;
+
     case uipanel::properties::ID_VISIBLE:
       frame->setVisible (pp.is_visible ());
       updateLayout ();
       break;
+
     default:
       break;
     }
@@ -309,7 +327,8 @@ void Panel::update (int pId)
   m_blockUpdates = false;
 }
 
-void Panel::redraw (void)
+void
+Panel::redraw (void)
 {
   Canvas* canvas = m_container->canvas (m_handle);
 
@@ -317,7 +336,8 @@ void Panel::redraw (void)
     canvas->redraw ();
 }
 
-void Panel::updateLayout (void)
+void
+Panel::updateLayout (void)
 {
   uipanel::properties& pp = properties<uipanel> ();
   QFrame* frame = qWidget<QFrame> ();

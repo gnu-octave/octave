@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-TextControl* TextControl::create (const graphics_object& go)
+TextControl*
+TextControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -49,7 +50,7 @@ TextControl* TextControl::create (const graphics_object& go)
 }
 
 TextControl::TextControl (const graphics_object& go, QLabel* label)
-     : BaseControl (go, label)
+  : BaseControl (go, label)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -66,7 +67,8 @@ TextControl::~TextControl (void)
 {
 }
 
-void TextControl::update (int pId)
+void
+TextControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QLabel* label = qWidget<QLabel> ();
@@ -77,11 +79,13 @@ void TextControl::update (int pId)
       // FIXME: support string_vector
       label->setText (Utils::fromStdString (up.get_string_string ()));
       break;
+
     case uicontrol::properties::ID_HORIZONTALALIGNMENT:
     case uicontrol::properties::ID_VERTICALALIGNMENT:
       label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                                up.get_verticalalignment ()));
       break;
+
     default:
       BaseControl::update (pId);
       break;

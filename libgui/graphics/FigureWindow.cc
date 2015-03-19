@@ -42,7 +42,8 @@ FigureWindow::~FigureWindow (void)
 {
 }
 
-QMenu* FigureWindow::createPopupMenu (void)
+QMenu*
+FigureWindow::createPopupMenu (void)
 {
   // For the time being, disable menubar/toolbar popup menu
   return 0;

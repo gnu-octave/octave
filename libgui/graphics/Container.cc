@@ -47,7 +47,8 @@ Container::~Container (void)
 {
 }
 
-Canvas* Container::canvas (const graphics_handle& gh, bool xcreate)
+Canvas*
+Container::canvas (const graphics_handle& gh, bool xcreate)
 {
   if (! m_canvas && xcreate)
     {
@@ -72,7 +73,8 @@ Canvas* Container::canvas (const graphics_handle& gh, bool xcreate)
   return m_canvas;
 }
 
-void Container::resizeEvent (QResizeEvent* /* event */)
+void
+Container::resizeEvent (QResizeEvent* /* event */)
 {
   if (m_canvas)
     m_canvas->qWidget ()->setGeometry (0, 0, width (), height ());
@@ -97,12 +99,11 @@ void Container::resizeEvent (QResizeEvent* /* event */)
     }
 }
 
-void Container::childEvent (QChildEvent* xevent)
+void
+Container::childEvent (QChildEvent* xevent)
 {
   if (xevent->child ()->isWidgetType ())
-    {
-      qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (hasMouseTracking ());
-    }
+    qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (hasMouseTracking ());
 }
 
 }; // namespace QtHandles

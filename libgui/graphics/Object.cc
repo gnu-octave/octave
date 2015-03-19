@@ -47,7 +47,8 @@ Object::Object (const graphics_object& go, QObject* obj)
   init (obj);
 }
 
-void Object::init (QObject* obj, bool)
+void
+Object::init (QObject* obj, bool)
 {
   if (m_qobject)
     qCritical ("QtHandles::Object::init: "
@@ -68,7 +69,8 @@ Object::~Object (void)
 {
 }
 
-graphics_object Object::object (void) const
+graphics_object
+Object::object (void) const
 {
   gh_manager::auto_lock lock (false);
 
@@ -80,7 +82,8 @@ graphics_object Object::object (void) const
   return gh_manager::get_object (m_handle);
 }
 
-void Object::slotUpdate (int pId)
+void
+Object::slotUpdate (int pId)
 {
   gh_manager::auto_lock lock;
 
@@ -92,6 +95,7 @@ void Object::slotUpdate (int pId)
     case base_properties::ID_BEINGDELETED:
       beingDeleted ();
       break;
+
     default:
       if (object ().valid_object ())
         update (pId);
@@ -99,14 +103,16 @@ void Object::slotUpdate (int pId)
     }
 }
 
-void Object::slotFinalize (void)
+void
+Object::slotFinalize (void)
 {
   gh_manager::auto_lock lock;
 
   finalize ();
 }
 
-void Object::slotRedraw (void)
+void
+Object::slotRedraw (void)
 {
   gh_manager::auto_lock lock;
 
@@ -114,7 +120,8 @@ void Object::slotRedraw (void)
     redraw ();
 }
 
-void Object::slotPrint (const QString& file_cmd, const QString& term)
+void
+Object::slotPrint (const QString& file_cmd, const QString& term)
 {
   gh_manager::auto_lock lock;
 
@@ -122,11 +129,13 @@ void Object::slotPrint (const QString& file_cmd, const QString& term)
     print (file_cmd, term);
 }
 
-void Object::update (int /* pId */)
+void
+Object::update (int /* pId */)
 {
 }
 
-void Object::finalize (void)
+void
+Object::finalize (void)
 {
   if (m_qobject)
     {
@@ -136,15 +145,18 @@ void Object::finalize (void)
   deleteLater ();
 }
 
-void Object::redraw (void)
+void
+Object::redraw (void)
 {
 }
 
-void Object::print (const QString& /* file_cmd */, const QString& /* term */)
+void
+Object::print (const QString& /* file_cmd */, const QString& /* term */)
 {
 }
 
-void Object::beingDeleted (void)
+void
+Object::beingDeleted (void)
 {
 }
 
@@ -154,7 +166,8 @@ void Object::objectDestroyed (QObject* obj)
     m_qobject = 0;
 }
 
-Object* Object::parentObject (const graphics_object& go)
+Object*
+Object::parentObject (const graphics_object& go)
 {
   gh_manager::auto_lock lock;
 
@@ -164,7 +177,8 @@ Object* Object::parentObject (const graphics_object& go)
   return parent;
 }
 
-Object* Object::fromQObject (QObject* obj)
+Object*
+Object::fromQObject (QObject* obj)
 {
   QVariant v = obj->property ("QtHandles::Object");
 

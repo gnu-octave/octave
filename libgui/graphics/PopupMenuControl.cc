@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-PopupMenuControl* PopupMenuControl::create (const graphics_object& go)
+PopupMenuControl*
+PopupMenuControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -49,7 +50,7 @@ PopupMenuControl* PopupMenuControl::create (const graphics_object& go)
 }
 
 PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
-     : BaseControl (go, box), m_blockUpdate (false)
+  : BaseControl (go, box), m_blockUpdate (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -94,6 +95,7 @@ void PopupMenuControl::update (int pId)
         }
       m_blockUpdate = false;
       break;
+
     case uicontrol::properties::ID_VALUE:
         {
           Matrix value = up.get_value ().matrix_value ();
@@ -110,13 +112,15 @@ void PopupMenuControl::update (int pId)
             }
         }
       break;
+
     default:
       BaseControl::update (pId);
       break;
     }
 }
 
-void PopupMenuControl::currentIndexChanged (int index)
+void
+PopupMenuControl::currentIndexChanged (int index)
 {
   if (! m_blockUpdate)
     {

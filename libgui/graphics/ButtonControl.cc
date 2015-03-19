@@ -34,7 +34,7 @@ namespace QtHandles
 {
 
 ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
-    : BaseControl (go, btn), m_blockCallback (false)
+  : BaseControl (go, btn), m_blockCallback (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -57,7 +57,8 @@ ButtonControl::~ButtonControl (void)
 {
 }
 
-void ButtonControl::update (int pId)
+void
+ButtonControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QAbstractButton* btn = qWidget<QAbstractButton> ();
@@ -67,6 +68,7 @@ void ButtonControl::update (int pId)
     case uicontrol::properties::ID_STRING:
       btn->setText (Utils::fromStdString (up.get_string_string ()));
       break;
+
     case uicontrol::properties::ID_VALUE:
       m_blockCallback = true;
       if (btn->isCheckable ())
@@ -85,13 +87,15 @@ void ButtonControl::update (int pId)
         }
       m_blockCallback = false;
       break;
+
     default:
       BaseControl::update (pId);
       break;
     }
 }
 
-void ButtonControl::toggled (bool checked)
+void
+ButtonControl::toggled (bool checked)
 {
   QAbstractButton* btn = qWidget<QAbstractButton> ();
 
@@ -111,7 +115,8 @@ void ButtonControl::toggled (bool checked)
     }
 }
 
-void ButtonControl::clicked (void)
+void
+ButtonControl::clicked (void)
 {
   QAbstractButton* btn = qWidget<QAbstractButton> ();
 

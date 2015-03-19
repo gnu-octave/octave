@@ -45,17 +45,20 @@ namespace QtHandles
 namespace Utils
 {
 
-QString fromStdString (const std::string& s)
+QString
+fromStdString (const std::string& s)
 {
   return QString::fromLocal8Bit (s.c_str ());
 }
 
-std::string toStdString (const QString& s)
+std::string
+toStdString (const QString& s)
 {
   return std::string (s.toLocal8Bit ().data ());
 }
 
-QStringList fromStringVector (const string_vector& v)
+QStringList
+fromStringVector (const string_vector& v)
 {
   QStringList l;
   octave_idx_type n = v.length ();
@@ -66,7 +69,8 @@ QStringList fromStringVector (const string_vector& v)
   return l;
 }
 
-string_vector toStringVector (const QStringList& l)
+string_vector
+toStringVector (const QStringList& l)
 {
   string_vector v (l.length ());
   int i = 0;
@@ -78,7 +82,8 @@ string_vector toStringVector (const QStringList& l)
 }
 
 template <class T>
-QFont computeFont (const typename T::properties& props, int height)
+QFont
+computeFont (const typename T::properties& props, int height)
 {
   QFont f (fromStdString (props.get_fontname ()));
 
@@ -109,10 +114,12 @@ QFont computeFont (const typename T::properties& props, int height)
 
 template QFont computeFont<uicontrol> (const uicontrol::properties& props,
                                        int height);
+
 template QFont computeFont<uipanel> (const uipanel::properties& props,
                                      int height);
 
-QColor fromRgb (const Matrix& rgb)
+QColor
+fromRgb (const Matrix& rgb)
 {
   QColor c;
 
@@ -122,7 +129,8 @@ QColor fromRgb (const Matrix& rgb)
   return c;
 }
 
-Matrix toRgb (const QColor& c)
+Matrix
+toRgb (const QColor& c)
 {
   Matrix rgb (1, 3);
   double* rgbData = rgb.fortran_vec ();
@@ -132,7 +140,8 @@ Matrix toRgb (const QColor& c)
   return rgb;
 }
 
-std::string figureSelectionType (QMouseEvent* event, bool isDoubleClick)
+std::string
+figureSelectionType (QMouseEvent* event, bool isDoubleClick)
 {
   if (isDoubleClick)
     return std::string ("open");
@@ -167,7 +176,8 @@ std::string figureSelectionType (QMouseEvent* event, bool isDoubleClick)
   return std::string ("normal");
 }
 
-Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
+Matrix
+figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
 {
   Object* tkFig = Backend::toolkitObject (fig);
 
@@ -188,8 +198,8 @@ Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
   return Matrix (1, 2, 0.0);
 }
 
-Qt::Alignment fromHVAlign (const caseless_str& halign,
-                           const caseless_str& valign)
+Qt::Alignment
+fromHVAlign (const caseless_str& halign, const caseless_str& valign)
 {
   Qt::Alignment flags;
 
@@ -214,7 +224,8 @@ Qt::Alignment fromHVAlign (const caseless_str& halign,
   return flags;
 }
 
-QImage makeImageFromCData (const octave_value& v, int width, int height)
+QImage
+makeImageFromCData (const octave_value& v, int width, int height)
 {
   dim_vector dv (v.dims ());
 
@@ -289,7 +300,8 @@ QImage makeImageFromCData (const octave_value& v, int width, int height)
   return QImage ();
 }
 
-octave_scalar_map makeKeyEventStruct (QKeyEvent* event)
+octave_scalar_map
+makeKeyEventStruct (QKeyEvent* event)
 {
   octave_scalar_map retval;
 

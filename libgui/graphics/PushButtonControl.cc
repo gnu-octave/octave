@@ -34,7 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-PushButtonControl* PushButtonControl::create (const graphics_object& go)
+PushButtonControl*
+PushButtonControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -49,7 +50,8 @@ PushButtonControl* PushButtonControl::create (const graphics_object& go)
   return 0;
 }
 
-PushButtonControl::PushButtonControl (const graphics_object& go, QPushButton* btn)
+PushButtonControl::PushButtonControl (const graphics_object& go,
+                                      QPushButton* btn)
   : ButtonControl (go, btn)
 {
   btn->setAutoFillBackground (true);
@@ -59,7 +61,8 @@ PushButtonControl::~PushButtonControl (void)
 {
 }
 
-void PushButtonControl::update (int pId)
+void
+PushButtonControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QPushButton* btn = qWidget<QPushButton> ();
@@ -69,6 +72,7 @@ void PushButtonControl::update (int pId)
     case uicontrol::properties::ID_STRING:
       btn->setText (Utils::fromStdString (up.get_string_string ()));
       break;
+
     default:
       BaseControl::update (pId);
       break;

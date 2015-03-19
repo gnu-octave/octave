@@ -48,7 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static std::string toolkitObjectProperty (const graphics_object& go)
+static std::string
+toolkitObjectProperty (const graphics_object& go)
 {
   if (go.isa ("figure"))
     return std::string ("__plot_stream__");
@@ -80,7 +81,8 @@ Backend::~Backend (void)
 {
 }
 
-bool Backend::initialize (const graphics_object& go)
+bool
+Backend::initialize (const graphics_object& go)
 {
   if (go.isa ("figure")
       || go.isa ("uicontrol")
@@ -108,7 +110,8 @@ bool Backend::initialize (const graphics_object& go)
   return false;
 }
 
-void Backend::update (const graphics_object& go, int pId)
+void
+Backend::update (const graphics_object& go, int pId)
 {
   // Rule out obvious properties we want to ignore.
   if (pId == figure::properties::ID___PLOT_STREAM__
@@ -143,7 +146,8 @@ void Backend::update (const graphics_object& go, int pId)
     }
 }
 
-void Backend::finalize (const graphics_object& go)
+void
+Backend::finalize (const graphics_object& go)
 {
   Logger::debug ("Backend::finalize %s from thread %08x",
                  go.type ().c_str (), QThread::currentThreadId ());
@@ -161,7 +165,8 @@ void Backend::finalize (const graphics_object& go)
     }
 }
 
-void Backend::redraw_figure (const graphics_object& go) const
+void
+Backend::redraw_figure (const graphics_object& go) const
 {
   if (go.get_properties ().is_visible ())
     {
@@ -172,7 +177,8 @@ void Backend::redraw_figure (const graphics_object& go) const
     }
 }
 
-void Backend::print_figure (const graphics_object& go,
+void
+Backend::print_figure (const graphics_object& go,
                             const std::string& term,
                             const std::string& file_cmd, bool /*mono*/,
                             const std::string& /*debug_file*/) const
@@ -187,7 +193,8 @@ void Backend::print_figure (const graphics_object& go,
     }
 }
 
-Object* Backend::toolkitObject (const graphics_object& go)
+Object*
+Backend::toolkitObject (const graphics_object& go)
 {
   ObjectProxy* proxy = toolkitObjectProxy (go);
 
@@ -197,7 +204,8 @@ Object* Backend::toolkitObject (const graphics_object& go)
   return 0;
 }
 
-ObjectProxy* Backend::toolkitObjectProxy (const graphics_object& go)
+ObjectProxy*
+Backend::toolkitObjectProxy (const graphics_object& go)
 {
   if (go)
     {

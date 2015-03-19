@@ -34,7 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-EditControl* EditControl::create (const graphics_object& go)
+EditControl*
+EditControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -62,7 +63,8 @@ EditControl::EditControl (const graphics_object& go, QLineEdit* edit)
   init (edit);
 }
 
-void EditControl::init (QLineEdit* edit, bool callBase)
+void
+EditControl::init (QLineEdit* edit, bool callBase)
 {
   if (callBase)
     BaseControl::init (edit, callBase);
@@ -83,12 +85,13 @@ void EditControl::init (QLineEdit* edit, bool callBase)
 }
 
 EditControl::EditControl (const graphics_object& go, TextEdit* edit)
-     : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
+  : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
 {
   init (edit);
 }
 
-void EditControl::init (TextEdit* edit, bool callBase)
+void
+EditControl::init (TextEdit* edit, bool callBase)
 {
   if (callBase)
     BaseControl::init (edit, callBase);
@@ -112,12 +115,14 @@ EditControl::~EditControl (void)
 {
 }
 
-void EditControl::initCommon (QWidget*)
+void
+EditControl::initCommon (QWidget*)
 {
   m_textChanged = false;
 }
 
-void EditControl::update (int pId)
+void
+EditControl::update (int pId)
 {
   bool handled = false;
 
@@ -137,7 +142,8 @@ void EditControl::update (int pId)
     }
 }
 
-bool EditControl::updateSingleLine (int pId)
+bool
+EditControl::updateSingleLine (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QLineEdit* edit = qWidget<QLineEdit> ();
@@ -147,11 +153,13 @@ bool EditControl::updateSingleLine (int pId)
     case uicontrol::properties::ID_STRING:
       edit->setText (Utils::fromStdString (up.get_string_string ()));
       return true;
+
     case uicontrol::properties::ID_HORIZONTALALIGNMENT:
     case uicontrol::properties::ID_VERTICALALIGNMENT:
       edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                               up.get_verticalalignment ()));
       return true;
+
     case uicontrol::properties::ID_MIN:
     case uicontrol::properties::ID_MAX:
       if ((up.get_max () - up.get_min ()) > 1)
@@ -162,6 +170,7 @@ bool EditControl::updateSingleLine (int pId)
           init (new TextEdit (container), true);
         }
       return true;
+
     default:
       break;
     }
@@ -169,7 +178,8 @@ bool EditControl::updateSingleLine (int pId)
   return false;
 }
 
-bool EditControl::updateMultiLine (int pId)
+bool
+EditControl::updateMultiLine (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   TextEdit* edit = qWidget<TextEdit> ();
@@ -179,6 +189,7 @@ bool EditControl::updateMultiLine (int pId)
     case uicontrol::properties::ID_STRING:
       edit->setPlainText (Utils::fromStdString (up.get_string_string ()));
       return true;
+
     case uicontrol::properties::ID_MIN:
     case uicontrol::properties::ID_MAX:
       if ((up.get_max () - up.get_min ()) <= 1)
@@ -189,6 +200,7 @@ bool EditControl::updateMultiLine (int pId)
           init (new QLineEdit (container), true);
         }
       return true;
+
     default:
       break;
     }
@@ -196,12 +208,14 @@ bool EditControl::updateMultiLine (int pId)
   return false;
 }
 
-void EditControl::textChanged (void)
+void
+EditControl::textChanged (void)
 {
   m_textChanged = true;
 }
 
-void EditControl::editingFinished (void)
+void
+EditControl::editingFinished (void)
 {
   if (m_textChanged)
     {

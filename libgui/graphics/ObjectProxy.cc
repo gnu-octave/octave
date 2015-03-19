@@ -40,7 +40,8 @@ ObjectProxy::ObjectProxy (Object* obj)
   init (obj);
 }
 
-void ObjectProxy::init (Object* obj)
+void
+ObjectProxy::init (Object* obj)
 {
   if (obj != m_object)
     {
@@ -72,13 +73,15 @@ void ObjectProxy::init (Object* obj)
     }
 }
 
-void ObjectProxy::setObject (Object* obj)
+void
+ObjectProxy::setObject (Object* obj)
 {
   emit sendFinalize ();
   init (obj);
 }
 
-void ObjectProxy::update (int pId)
+void
+ObjectProxy::update (int pId)
 {
   if (octave_thread::is_octave_thread ())
     emit sendUpdate (pId);
@@ -86,18 +89,21 @@ void ObjectProxy::update (int pId)
     m_object->slotUpdate (pId);
 }
 
-void ObjectProxy::finalize (void)
+void
+ObjectProxy::finalize (void)
 {
   emit sendFinalize ();
   init (0);
 }
 
-void ObjectProxy::redraw (void)
+void
+ObjectProxy::redraw (void)
 {
   emit sendRedraw ();
 }
 
-  void ObjectProxy::print (const QString& file_cmd, const QString& term)
+void
+ObjectProxy::print (const QString& file_cmd, const QString& term)
 {
   emit sendPrint (file_cmd, term);
 }

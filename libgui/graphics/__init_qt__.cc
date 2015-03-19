@@ -43,7 +43,8 @@ namespace QtHandles
 
 static bool qtHandlesInitialized = false;
 
-bool __init__ (void)
+bool
+__init__ (void)
 {
   if (! qtHandlesInitialized)
     {
@@ -94,7 +95,8 @@ bool __init__ (void)
   return false;
 }
 
-bool __shutdown__ (void)
+bool
+__shutdown__ (void)
 {
   if (qtHandlesInitialized)
     {
@@ -142,7 +144,8 @@ install___init_qt___functions (void)
 
 #if 0
 
-static QStringList makeFilterSpecs (const Cell& filters)
+static QStringList
+makeFilterSpecs (const Cell& filters)
 {
   using namespace QtHandles::Utils;
 
@@ -172,7 +175,8 @@ static QStringList makeFilterSpecs (const Cell& filters)
   return filterSpecs;
 }
 
-static QString appendDirSep (const QString& d)
+static QString
+appendDirSep (const QString& d)
 {
   if (! d.endsWith ("/") && ! d.endsWith (QDir::separator ()))
     return (d + "/");

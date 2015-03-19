@@ -35,7 +35,7 @@ namespace QtHandles
 
 template <class T>
 ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction* action)
-    : Object (go, action), m_separator (0)
+  : Object (go, action), m_separator (0)
 {
   typename T::properties& tp = properties<T> ();
 
@@ -64,7 +64,8 @@ ToolBarButton<T>::~ToolBarButton (void)
 }
 
 template <class T>
-void ToolBarButton<T>::update (int pId)
+void
+ToolBarButton<T>::update (int pId)
 {
   typename T::properties& tp = properties<T> ();
   QAction* action = qWidget<QAction> ();
@@ -76,16 +77,19 @@ void ToolBarButton<T>::update (int pId)
       if (m_separator)
         m_separator->setVisible (tp.is_visible ());
       break;
+
     case T::properties::ID_TOOLTIPSTRING:
       action->setToolTip (Utils::fromStdString (tp.get_tooltipstring ()));
       break;
-    case T::properties::ID_CDATA:
-        {
-          QImage img = Utils::makeImageFromCData (tp.get_cdata (), 16, 16);
 
-          action->setIcon (QIcon (QPixmap::fromImage (img)));
-        }
+    case T::properties::ID_CDATA:
+      {
+        QImage img = Utils::makeImageFromCData (tp.get_cdata (), 16, 16);
+
+        action->setIcon (QIcon (QPixmap::fromImage (img)));
+      }
       break;
+
     case T::properties::ID_SEPARATOR:
       if (tp.is_separator ())
         {
@@ -107,9 +111,11 @@ void ToolBarButton<T>::update (int pId)
           m_separator = 0;
         }
       break;
+
     case T::properties::ID_ENABLE:
       action->setEnabled (tp.is_enable ());
       break;
+
     default:
       Object::update (pId);
       break;

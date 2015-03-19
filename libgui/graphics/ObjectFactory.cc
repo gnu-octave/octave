@@ -54,7 +54,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ObjectFactory* ObjectFactory::instance (void)
+ObjectFactory*
+ObjectFactory::instance (void)
 {
   static ObjectFactory s_instance;
   static bool s_instanceCreated = false;
@@ -69,7 +70,8 @@ ObjectFactory* ObjectFactory::instance (void)
   return &s_instance;
 }
 
-void ObjectFactory::createObject (double handle)
+void
+ObjectFactory::createObject (double handle)
 {
   gh_manager::auto_lock lock;
 

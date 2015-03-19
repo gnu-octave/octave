@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static void updateSelection (QListWidget* list, const Matrix& value)
+static void
+updateSelection (QListWidget* list, const Matrix& value)
 {
   octave_idx_type n = value.numel ();
   int lc = list->count ();
@@ -60,7 +61,8 @@ static void updateSelection (QListWidget* list, const Matrix& value)
     }
 }
 
-ListBoxControl* ListBoxControl::create (const graphics_object& go)
+ListBoxControl*
+ListBoxControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -76,7 +78,7 @@ ListBoxControl* ListBoxControl::create (const graphics_object& go)
 }
 
 ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
-     : BaseControl (go, list), m_blockCallback (false)
+  : BaseControl (go, list), m_blockCallback (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -116,7 +118,8 @@ ListBoxControl::~ListBoxControl (void)
 {
 }
 
-void ListBoxControl::update (int pId)
+void
+ListBoxControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QListWidget* list = qWidget<QListWidget> ();
@@ -130,25 +133,30 @@ void ListBoxControl::update (int pId)
       updateSelection (list, up.get_value ().matrix_value ());
       m_blockCallback = false;
       break;
+
     case uicontrol::properties::ID_MIN:
+
     case uicontrol::properties::ID_MAX:
       if ((up.get_max () - up.get_min ()) > 1)
         list->setSelectionMode (QAbstractItemView::ExtendedSelection);
       else
         list->setSelectionMode (QAbstractItemView::SingleSelection);
       break;
+
     case uicontrol::properties::ID_VALUE:
       m_blockCallback = true;
       updateSelection (list, up.get_value ().matrix_value ());
       m_blockCallback = false;
       break;
+
     default:
       BaseControl::update (pId);
       break;
     }
 }
 
-void ListBoxControl::itemSelectionChanged (void)
+void
+ListBoxControl::itemSelectionChanged (void)
 {
   if (! m_blockCallback)
     {

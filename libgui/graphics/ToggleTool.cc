@@ -31,7 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ToggleTool* ToggleTool::create (const graphics_object& go)
+ToggleTool*
+ToggleTool::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
 
@@ -47,7 +48,7 @@ ToggleTool* ToggleTool::create (const graphics_object& go)
 }
 
 ToggleTool::ToggleTool (const graphics_object& go, QAction* action)
-    : ToolBarButton<uitoggletool> (go, action)
+  : ToolBarButton<uitoggletool> (go, action)
 {
   uitoggletool::properties& tp = properties<uitoggletool> ();
 
@@ -62,7 +63,8 @@ ToggleTool::~ToggleTool (void)
 {
 }
 
-void ToggleTool::update (int pId)
+void
+ToggleTool::update (int pId)
 {
   uitoggletool::properties& tp = properties<uitoggletool> ();
   QAction* action = qWidget<QAction> ();
@@ -72,13 +74,15 @@ void ToggleTool::update (int pId)
     case uitoggletool::properties::ID_STATE:
       action->setChecked (tp.is_state ());
       break;
+
     default:
       ToolBarButton<uitoggletool>::update (pId);
       break;
     }
 }
 
-void ToggleTool::triggered (bool checked)
+void
+ToggleTool::triggered (bool checked)
 {
   gh_manager::post_set (m_handle, "state", checked, false);
   gh_manager::post_callback (m_handle,

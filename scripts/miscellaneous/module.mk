@@ -2,6 +2,7 @@ FCN_FILE_DIRS += miscellaneous
 
 miscellaneous_PRIVATE_FCN_FILES = \
   miscellaneous/private/display_info_file.m \
+  miscellaneous/private/__w2mpth__.m \
   miscellaneous/private/__xzip__.m
 
 miscellaneous_FCN_FILES = \

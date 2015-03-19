@@ -5,7 +5,8 @@ EXTRA_DIST += \
   graphics/images/pan.png \
   graphics/images/rotate.png \
   graphics/images/select.png \
-  graphics/images/zoom.png
+  graphics/images/zoom-in.png \
+  graphics/images/zoom-out.png
 
 octave_gui_MOC += \
   graphics/moc-Backend.cc \

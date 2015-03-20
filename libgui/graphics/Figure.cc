@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2014 Michael Goffioul
+Copyright (C) 2011-2015 Michael Goffioul
 
 This file is part of Octave.
 
@@ -54,7 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-#define ABOUT_TEXT "<b>QtHandles</b> - a Qt-based toolkit for <a href=\"http://www.octave.org\">Octave</a>.<br><br>Copyright (C) 2011-2014 Michael Goffioul"
+#define ABOUT_TEXT "<b>QtHandles</b> - a Qt-based toolkit for <a href=\"http://www.octave.org\">Octave</a>.<br><br>Copyright (C) 2011-2015 Michael Goffioul"
 
 DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
 

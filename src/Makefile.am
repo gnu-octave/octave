@@ -131,17 +131,25 @@ octave_config_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBS)
 
-# if building cross octfile
 OCTAVE_CROSS_TOOLS=
-if AMCOND_CROSS_MKOCTFILE
+if AMCOND_CROSS_TOOLS
+# building cross mkoctfile
 OCTAVE_CROSS_TOOLS += $(host_triplet)-mkoctfile$(BUILD_EXEEXT)
 $(host_triplet)-mkoctfile$(BUILD_EXEEXT): $(host_triplet)-mkoctfile.cc
 	$(BUILD_CXX) -o $(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) $(host_triplet)-mkoctfile.cc
-mostlyclean-local:
-	-rm -f $(TARGET)-mkoctfile$(BUILD_EXEEXT)
-
 $(host_triplet)-mkoctfile.cc: mkoctfile.in.cc Makefile
 	$(AM_V_GEN)$(do_subst_cross_config_vals)
+
+# building cross octave-config
+OCTAVE_CROSS_TOOLS += $(host_triplet)-octave-config$(BUILD_EXEEXT)
+$(host_triplet)-octave-config$(BUILD_EXEEXT): $(host_triplet)-octave-config.cc
+	$(BUILD_CXX) -o $(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) $(host_triplet)-octave-config.cc
+$(host_triplet)-octave-config.cc: octave-config.in.cc Makefile
+	$(AM_V_GEN)$(do_subst_default_vals)
+
+mostlyclean-local:
+	-rm -f $(OCTAVE_CROSS_TOOLS)
+
 endif
 
 all-local: $(OCTAVE_VERSION_LINKS) $(OCTAVE_CROSS_TOOLS)

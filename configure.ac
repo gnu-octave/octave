@@ -2957,20 +2957,20 @@ AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
 
-# do we want to create cross-mkoctfile ?
-cross_mkoctfile=no
-AC_ARG_ENABLE([cross-mkoctfile],
-  [AS_HELP_STRING([--enable-cross-mkoctfile],
-    [build cross-mkoctfile if cross compiling])],
-  [if test "$enableval" = yes; then cross_mkoctfile=yes; fi])
+# do we want to create cross-mkoctfile etc ?
+cross_tools=no
+AC_ARG_ENABLE([cross-tools],
+  [AS_HELP_STRING([--enable-cross-tools],
+    [build cross tools (mkoctfile, octave-config) if cross compiling])],
+  [if test "$enableval" = yes; then cross_tools=yes; fi])
 
-if test "$cross_mkoctfile" = yes; then
+if test "$cross_tools" = yes; then
   if test "$cross_compiling" = no; then
-    AC_MSG_WARN([ignoring --enable-cross-mkoctfile when not cross compiling])
-    cross_mkoctfile=no
+    AC_MSG_WARN([ignoring --enable-cross-tools when not cross compiling])
+    cross_tools=no
   fi
 fi
-AM_CONDITIONAL([AMCOND_CROSS_MKOCTFILE], [test $cross_mkoctfile = yes])
+AM_CONDITIONAL([AMCOND_CROSS_TOOLS], [test $cross_tools = yes])
 
 
 ### Decide whether or not to install build logs with Octave.
@@ -3141,7 +3141,7 @@ Octave is now configured for $canonical_host_type
   Include support for GNU readline:   $USE_READLINE
   64-bit array dims and indexing:     $USE_64_BIT_IDX_T
   OpenMP SMP multithreading:          $USE_OPENMP
-  Build cross mkoctfile:              $cross_mkoctfile
+  Build cross tools:                  $cross_tools
 ])
 
 warn_msg_printed=false

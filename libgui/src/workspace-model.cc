@@ -228,6 +228,7 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 
 void
 workspace_model::set_workspace (bool top_level,
+                                bool debug,
                                 const QString& scopes,
                                 const QStringList& symbols,
                                 const QStringList& class_names,

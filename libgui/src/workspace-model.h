@@ -73,6 +73,7 @@ public:
 public slots:
 
   void set_workspace (bool top_level,
+                      bool debug,
                       const QString& scopes,
                       const QStringList& symbols,
                       const QStringList& class_names,

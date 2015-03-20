@@ -61,6 +61,7 @@ octave_link::set_workspace (void)
   if (enabled ())
     instance->do_set_workspace ((symbol_table::current_scope ()
                                  == symbol_table::top_scope ()),
+                                instance->debugging, 
                                 symbol_table::workspace_info ());
 }
 

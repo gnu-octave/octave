@@ -106,7 +106,7 @@ public:
 
   void do_execute_command_in_terminal (const std::string& command);
 
-  void do_set_workspace (bool top_level,
+  void do_set_workspace (bool top_level, bool debug, 
                          const std::list<workspace_element>& ws);
 
   void do_clear_workspace (void);
@@ -164,6 +164,7 @@ signals:
   void execute_command_in_terminal_signal (const QString& command);
 
   void set_workspace_signal (bool top_level,
+                             bool debug,
                              const QString& scopes,
                              const QStringList& symbols,
                              const QStringList& class_names,

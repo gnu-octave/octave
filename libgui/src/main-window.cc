@@ -1468,12 +1468,12 @@ main_window::construct_octave_qt_link (void)
     {
       connect (_octave_qt_link,
                SIGNAL (set_workspace_signal
-                       (bool, const QString&, const QStringList&,
+                       (bool, bool, const QString&, const QStringList&,
                         const QStringList&, const QStringList&,
                         const QStringList&, const QIntList&)),
                _workspace_model,
                SLOT (set_workspace
-                     (bool, const QString&, const QStringList&,
+                     (bool, bool, const QString&, const QStringList&,
                       const QStringList&, const QStringList&,
                       const QStringList&, const QIntList&)));
 

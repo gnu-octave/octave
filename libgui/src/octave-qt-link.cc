@@ -374,10 +374,10 @@ octave_qt_link::do_execute_command_in_terminal (const std::string& command)
 }
 
 void
-octave_qt_link::do_set_workspace (bool top_level,
+octave_qt_link::do_set_workspace (bool top_level, bool debug, 
                                   const std::list<workspace_element>& ws)
 {
-  if (! top_level)
+  if (! top_level && ! debug)
     return;
 
   QString scopes;
@@ -398,7 +398,7 @@ octave_qt_link::do_set_workspace (bool top_level,
       complex_flags.append (it->complex_flag ());
     }
 
-  emit set_workspace_signal (top_level, scopes, symbols, class_names,
+  emit set_workspace_signal (top_level, debug, scopes, symbols, class_names,
                              dimensions, values, complex_flags);
 }
 

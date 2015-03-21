@@ -23,11 +23,11 @@
 ## @deftypefnx {Function File} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
 ##
-## Return the elements exclusive to sets @var{a} or @var{b} sorted in
+## Return the unique elements exclusive to sets @var{a} or @var{b} sorted in
 ## ascending order.
 ##
-## If @var{a} and @var{b} are both column vectors return a column vector;
-## Otherwise, return a row vector.  The inputs may also be cell arrays of
+## If @var{a} and @var{b} are both row vectors then return a row vector;
+## Otherwise, return a column vector.  The inputs may also be cell arrays of
 ## strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return the rows exclusive
@@ -50,7 +50,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
   [a, b] = validsetargs ("setxor", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  iscol = isvector (a) && isvector (b) && iscolumn (a) && iscolumn (b);
+  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
 
   ## Form A and B into sets.
   if (nargout > 1)
@@ -91,7 +91,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
       endif
 
       ## Adjust output orientation for Matlab compatibility
-      if (! iscol)
+      if (isrowvec)
         c = c.';
       endif
     endif
@@ -112,8 +112,8 @@ endfunction
 %! a = [3, 1, 4, 1, 5];
 %! b = [1, 2, 3, 4];
 %! [c, ia, ib] = setxor (a, b.');
-%! assert (c, [2, 5]);
-%! assert (c, sort ([a(ia), b(ib)]));
+%! assert (c, [2; 5]);
+%! assert (c, sort ([a(ia)'; b(ib)']));
 
 %!test
 %! a = [1 2; 4 5; 1 3];
@@ -156,8 +156,8 @@ endfunction
 %! y = 2:5;
 
 %!assert (size (setxor (x, y)), [1 3])
-%!assert (size (setxor (x', y)), [1 3])
-%!assert (size (setxor (x, y')), [1 3])
+%!assert (size (setxor (x', y)), [3 1])
+%!assert (size (setxor (x, y')), [3 1])
 %!assert (size (setxor (x', y')), [3 1])
 
 ## Test multi-dimensional arrays
@@ -165,5 +165,5 @@ endfunction
 %! a = rand (3,3,3);
 %! b = a;
 %! b(1,1,1) = 2;
-%! assert (intersect (a, b), sort (a(2:end)));
+%! assert (intersect (a, b), sort (a(2:end)'));
 

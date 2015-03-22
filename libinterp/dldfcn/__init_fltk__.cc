@@ -1460,7 +1460,7 @@ private:
               else if ((Fl::event_button () == FL_LEFT_MOUSE
                         && Fl::event_ctrl ())
                        || Fl::event_button () == FL_RIGHT_MOUSE)
-                fp.set_selectiontype ("alternate");
+                fp.set_selectiontype ("alt");
               else if (Fl::event_clicks ())
                 fp.set_selectiontype ("open");
               else

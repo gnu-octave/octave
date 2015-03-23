@@ -440,11 +440,14 @@ Figure::update (int pId)
       else if (fp.toolbar_is ("figure"))
         showFigureToolBar (true);
       else // "auto"
-        showFigureToolBar (! hasUiControlChildren (fp));
+        showFigureToolBar (! hasUiControlChildren (fp) &&
+                           fp.menubar_is ("figure"));
       break;
 
     case figure::properties::ID_MENUBAR:
       showMenuBar (fp.menubar_is ("figure"));
+      if (fp.toolbar_is ("auto"))
+        showFigureToolBar (fp.menubar_is ("figure"));
       break;
 
     case figure::properties::ID_KEYPRESSFCN:

@@ -72,11 +72,6 @@ workspace_view::workspace_view (QWidget *p)
   view->setAlternatingRowColors (true);
   view_previous_row_count = 0;
 
-  //enable sorting by parameter name
-  view->setSortingEnabled (true);
-  view->sortByColumn (0,Qt::AscendingOrder);
-
-
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
 
@@ -97,11 +92,17 @@ workspace_view::workspace_view (QWidget *p)
 
   QSettings *settings = resource_manager::get_settings ();
 
+  //enable sorting as previously configured
+  view->setSortingEnabled (true);
+  view->sortByColumn (
+    settings->value ("workspaceview/sort_by_column",0).toInt (),
+    static_cast<Qt::SortOrder>
+    (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ())
+  );
   // Initialize column order and width of the workspace
   view->horizontalHeader ()->restoreState (
     settings->value ("workspaceview/column_state").toByteArray ());
-  // Make the header clickable to enable sorting
-  view->horizontalHeader ()->setClickable (true);
+
   // Init state of the filter
   _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
 
@@ -133,6 +134,12 @@ workspace_view::~workspace_view (void)
 
   settings->setValue ("workspaceview/column_state",
                       view->horizontalHeader ()->saveState ());
+
+  int sort_column = view->horizontalHeader ()->sortIndicatorSection ();
+  Qt::SortOrder sort_order = view->horizontalHeader ()->sortIndicatorOrder ();
+  settings->setValue ("workspaceview/sort_by_column", sort_column);
+  settings->setValue ("workspaceview/sort_order", sort_order);
+
   settings->setValue ("workspaceview/filter_active",
                       _filter_checkbox->isChecked ());
 
@@ -150,6 +157,7 @@ void workspace_view::setModel (workspace_model *model)
   _filter_model.setFilterKeyColumn(0);
 
   view->setModel (&_filter_model);
+
   _model = model;
 }
 

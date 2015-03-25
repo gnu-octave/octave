@@ -204,6 +204,10 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       // signal to all dock widgets for updating the style
       emit active_dock_changed (_active_dock, dock);
 
+      QList<QDockWidget *> tabbed = tabifiedDockWidgets (dock);
+      if (tabbed.contains (_active_dock))
+        dock->set_predecessor_widget (_active_dock);
+
       if (edit_dock_widget == dock)
         emit editor_focus_changed (true);
       else if (edit_dock_widget == _active_dock)

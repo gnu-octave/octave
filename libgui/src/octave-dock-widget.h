@@ -43,7 +43,7 @@ public:
   void make_window (void);
   void make_widget (bool dock=true);
   void set_title (const QString&);
-
+  void set_predecessor_widget (octave_dock_widget *prev_widget);
 signals:
 
   /** Custom signal that tells whether a user has clicked away
@@ -53,11 +53,7 @@ signals:
 
 protected:
 
-  virtual void closeEvent (QCloseEvent *e)
-  {
-    emit active_changed (false);
-    QDockWidget::closeEvent (e);
-  }
+  virtual void closeEvent (QCloseEvent *e);
 
   QWidget * focusWidget ();
 
@@ -114,6 +110,7 @@ private slots:
 private:
 
   void set_style (bool active);
+  void set_focus_predecessor ();
 
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
   bool _floating;
@@ -126,6 +123,7 @@ private:
   QColor _fg_color_active;
   QString _icon_color;
   QString _icon_color_active;
+  octave_dock_widget *_predecessor_widget;
 
 #if defined (Q_OS_WIN32)
   QWidget *_title_widget;

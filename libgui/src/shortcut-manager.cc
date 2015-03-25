@@ -292,7 +292,7 @@ shortcut_manager::do_init_data ()
         QKeySequence (ctrl + Qt::Key_Underscore));
 #else
   init (tr ("Zoom Normal"), "editor_view:zoom_normal",
-        QKeySequence (ctrl_alt + Qt::Key_0));
+        QKeySequence (ctrl + Qt::Key_Period));
 #endif
 
   // debug

@@ -202,26 +202,29 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     x0 = x0';
   endif
 
+  have_grd = 0;
   have_hess = 0;
   if (iscell (objf))
     switch (numel (objf))
       case 1
         obj_fun = objf{1};
-        obj_grd = @(x) fd_obj_grd (x, obj_fun);
+        obj_grd = @(x, obj) fd_obj_grd (x, obj, obj_fun);
       case 2
         obj_fun = objf{1};
         obj_grd = objf{2};
+        have_grd = 1;
       case 3
         obj_fun = objf{1};
         obj_grd = objf{2};
         obj_hess = objf{3};
+        have_grd = 1;
         have_hess = 1;
       otherwise
         error ("sqp: invalid objective function specification");
     endswitch
   else
     obj_fun = objf;   # No cell array, only obj_fun set
-    obj_grd = @(x) fd_obj_grd (x, obj_fun);
+    obj_grd = @(x, obj) fd_obj_grd (x, obj, obj_fun);
   endif
 
   ce_fun = @empty_cf;
@@ -351,7 +354,11 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
   obj = feval (obj_fun, x0);
   globals.nfun = 1;
 
-  c = feval (obj_grd, x0);
+  if (have_grd)
+    c = feval (obj_grd, x0);
+  else
+    c = feval (obj_grd, x0, obj);
+  endif
 
   ## Choose an initial NxN symmetric positive definite Hessian approximation B.
   n = length (x0);
@@ -433,10 +440,22 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     ## merit function phi.
     [x_new, alpha, obj_new, globals] = ...
         linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
-                       obj, globals);
+                       obj, c, globals);
+    
+    delx = x_new - x;
+
+    ## Check if step size has become too small (indicates lack of progress).
+    if (norm (delx) < tol * norm (x))
+      info = 104;
+      break;
+    endif
 
     ## Evaluate objective function, constraints, and gradients at x_new.
-    c_new = feval (obj_grd, x_new);
+    if (have_grd)
+      c_new = feval (obj_grd, x_new);
+    else
+      c_new = feval (obj_grd, x_new, obj_new);
+    endif
 
     ce_new = feval (ce_fun, x_new);
     F_new = feval (ce_grd, x_new);
@@ -456,14 +475,6 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     if (! isempty (A))
       t = ((A_new - A)'*lambda);
       y -= t;
-    endif
-
-    delx = x_new - x;
-
-    ## Check if step size has become too small (indicates lack of progress).
-    if (norm (delx) < tol * norm (x))
-      info = 104;
-      break;
     endif
 
     if (have_hess)
@@ -556,7 +567,7 @@ endfunction
 
 
 function [x_new, alpha, obj, globals] = ...
-   linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, obj, globals)
+   linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, obj, c, globals)
 
   ## Choose parameters
   ##
@@ -576,7 +587,6 @@ function [x_new, alpha, obj, globals] = ...
 
   alpha = 1;
 
-  c = feval (obj_grd, x);
   ce = feval (ce_fun, x);
 
   [phi_x_mu, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, ...
@@ -611,10 +621,9 @@ function [x_new, alpha, obj, globals] = ...
 endfunction
 
 
-function grd = fdgrd (f, x)
+function grd = fdgrd (f, x, y0)
 
   if (! isempty (f))
-    y0 = feval (f, x);
     nx = length (x);
     grd = zeros (nx, 1);
     deltax = sqrt (eps);
@@ -653,9 +662,9 @@ function jac = fdjac (f, x)
 endfunction
 
 
-function grd = fd_obj_grd (x, obj_fun)
+function grd = fd_obj_grd (x, obj, obj_fun)
 
-  grd = fdgrd (obj_fun, x);
+  grd = fdgrd (obj_fun, x, obj);
 
 endfunction
 

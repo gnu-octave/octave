@@ -1958,7 +1958,7 @@ main_window::construct_news_menu (QMenuBar *p)
 void
 main_window::construct_tool_bar (void)
 {
-  _main_tool_bar = addToolBar ("Main");
+  _main_tool_bar = addToolBar (tr ("Toolbar"));
 
   _main_tool_bar->setObjectName ("MainToolBar");
   _main_tool_bar->addAction (_new_script_action);
@@ -1968,7 +1968,6 @@ main_window::construct_tool_bar (void)
 
   _main_tool_bar->addAction (_copy_action);
   _main_tool_bar->addAction (_paste_action);
-  _main_tool_bar->addAction (_undo_action);
 
   _main_tool_bar->addSeparator ();
 

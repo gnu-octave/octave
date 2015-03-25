@@ -843,6 +843,7 @@ define do_subst_default_vals
     -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
     -e "s|%OCTAVE_DOC_CACHE_FILE%|\"${doc_cache_file}\"|" \
     -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \
+    -e "s|%OCTAVE_EXEEXT%|\"${EXEEXT}\"|" \
     -e "s|%OCTAVE_FCNFILEDIR%|\"${fcnfiledir}\"|" \
     -e "s|%OCTAVE_IMAGEDIR%|\"${imagedir}\"|" \
     -e "s|%OCTAVE_INCLUDEDIR%|\"${includedir}\"|" \
@@ -874,6 +875,7 @@ define do_subst_default_vals
     -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
     -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
     -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
+    -e "s|%OCTAVE_SHLEXT%|\"${SHLEXT}\"|" \
     -e "s|%OCTAVE_TEXI_MACROS_FILE%|\"${texi_macros_file}\"|" \
     -e "s|%OCTAVE_VERSION%|\"${version}\"|" && \
   $(simple_move_if_change_rule)

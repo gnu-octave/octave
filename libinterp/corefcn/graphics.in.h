@@ -3401,8 +3401,11 @@ public:
                 }
               else
                 {
-                  set_toolkit (b);
-                  mark_modified ();
+                  if (nm != get___graphics_toolkit__ ())
+                    {
+                      set_toolkit (b);
+                      mark_modified ();
+                    }
                 }
             }
           else

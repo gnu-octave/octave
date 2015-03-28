@@ -3011,7 +3011,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation>Fare doppio click su un comando per trasferirlo nel termianle.</translation>
+        <translation>Fare doppio click su un comando per trasferirlo nel terminale.</translation>
     </message>
     <message>
         <location line="+8"/>

@@ -162,12 +162,12 @@
     <message>
         <location line="+3"/>
         <source>&amp;Yes</source>
-        <translation>&amp;S&igrave;</translation>
+        <translation>&amp;Sì</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Yes to &amp;All</source>
-        <translation>S&igrave; a &amp;tutto</translation>
+        <translation>Sì a &amp;tutto</translation>
     </message>
     <message>
         <location line="+3"/>

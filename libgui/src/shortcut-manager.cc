@@ -249,11 +249,11 @@ shortcut_manager::do_init_data ()
         QKeySequence (ctrl_shift + Qt::Key_Tab));
 #endif
 
-  init (tr ("Convert Line Ednings to Windows"), "editor_edit:conv_eol_winows",
+  init (tr ("Convert Line Endings to Windows"), "editor_edit:conv_eol_winows",
         QKeySequence ());
-  init (tr ("Convert Line Ednings to Unix"), "editor_edit:conv_eol_unix",
+  init (tr ("Convert Line Endings to Unix"), "editor_edit:conv_eol_unix",
         QKeySequence ());
-  init (tr ("Convert Line Ednings to Mac"), "editor_edit:conv_eol_mac",
+  init (tr ("Convert Line Endings to Mac"), "editor_edit:conv_eol_mac",
         QKeySequence ());
 
   init (tr ("Goto Line"), "editor_edit:goto_line",

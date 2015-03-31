@@ -593,10 +593,12 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
           updateCurrentPoint (figObj, obj, event);
 
           gh_manager::post_callback (figObj.get_handle (),
-                                     "windowbuttondownfcn");
+                                     "windowbuttondownfcn",
+                                     button_number (event));
 
           gh_manager::post_callback (currentObj.get_handle (),
-                                     "buttondownfcn", button_number (event));
+                                     "buttondownfcn",
+                                     button_number (event));
 
           if (event->button () == Qt::RightButton)
             ContextMenu::executeAt (currentObj.get_properties (),

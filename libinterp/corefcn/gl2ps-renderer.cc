@@ -227,20 +227,50 @@ glps_renderer::set_font (const base_properties& props)
 
   fontsize = props.get ("fontsize_points").double_value ();
 
-  caseless_str fn = props.get ("fontname").string_value ();
+  caseless_str fn = props.get ("fontname").xtolower ().string_value ();
+  bool isbold = 
+    (props.get ("fontweight").xtolower ().string_value () == "bold");
+  bool isitalic = 
+    (props.get ("fontangle").xtolower ().string_value () == "italic");
+
   fontname = "";
   if (fn == "times" || fn == "times-roman")
-    fontname = "Times-Roman";
+    {
+      if (isitalic && isbold)
+        fontname = "Times-BoldItalic";
+      else if (isitalic)
+        fontname = "Times-Italic";
+      else if (isbold)
+        fontname = "Times-Bold";
+      else
+        fontname = "Times-Roman";
+    }
   else if (fn == "courier")
-    fontname = "Courier";
+    {
+      if (isitalic && isbold)
+        fontname = "Courier-BoldOblique";
+      else if (isitalic)
+        fontname = "Courier-Oblique";
+      else if (isbold)
+        fontname = "Courier-Bold";
+      else
+        fontname = "Courier";
+    }
   else if (fn == "symbol")
     fontname = "Symbol";
   else if (fn == "zapfdingbats")
     fontname = "ZapfDingbats";
   else
-    fontname = "Helvetica";
-
-  // FIXME: add support for bold and italic
+    {
+      if (isitalic && isbold)
+        fontname = "Helvetica-BoldOblique";
+      else if (isitalic)
+        fontname = "Helvetica-Oblique";
+      else if (isbold)
+        fontname = "Helvetica-Bold";
+      else
+        fontname = "Helvetica";
+    }
 }
 
 template <typename T>

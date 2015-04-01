@@ -1447,7 +1447,7 @@ file_editor::construct (void)
   _show_linenum_action->setCheckable (true);
 
   _show_whitespace_action = add_action (_view_editor_menu, QIcon (),
-          tr ("Show &White Spaces"), SLOT (show_white_space (bool)));
+          tr ("Show &Whitespace Characters"), SLOT (show_white_space (bool)));
   _show_whitespace_action->setCheckable (true);
 
   _show_eol_action = add_action (_view_editor_menu, QIcon (),

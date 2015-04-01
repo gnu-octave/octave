@@ -128,7 +128,7 @@
                   <item>
                    <widget class="QRadioButton" name="icon_size_normal">
                     <property name="text">
-                     <string> Normal</string>
+                     <string>Normal</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>

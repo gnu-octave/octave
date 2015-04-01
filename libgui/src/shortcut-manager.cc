@@ -278,7 +278,7 @@ shortcut_manager::do_init_data ()
   // view
   init (tr ("Show Line Numbers"), "editor_view:show_line_numbers",
         QKeySequence ());
-  init (tr ("Show White Spaces"), "editor_view:show_white_spaces",
+  init (tr ("Show Whitespace Characters"), "editor_view:show_white_spaces",
         QKeySequence ());
   init (tr ("Show Line Endings"), "editor_view:show_eol_chars", QKeySequence ());
   init (tr ("Show Indentation Guides"), "editor_view:show_ind_guides",

@@ -414,60 +414,8 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 void
 Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
 {
-  if (event->buttons () != Qt::LeftButton)
-    return;
-
-  gh_manager::auto_lock lock;
-  graphics_object obj = gh_manager::get_object (m_handle);
-
-  if (obj.valid_object ())
-    {
-      graphics_object axesObj;
-
-      Matrix children = obj.get_properties ().get_children ();
-      octave_idx_type num_children = children.numel ();
-
-      for (int i = 0; i < num_children; i++)
-        {
-          graphics_object childObj (gh_manager::get_object (children(i)));
-
-          if (childObj.isa ("axes"))
-            {
-              graphics_object go = selectFromAxes (childObj, event->pos ());
-
-              if (go)
-                {
-                  axesObj = childObj;
-                  break;
-                }
-            }
-        }
-
-      bool redrawFigure = true;
-
-      if (axesObj)
-        {
-          graphics_object figObj (obj.get_ancestor ("figure"));
-
-          if (axesObj.get_properties ().handlevisibility_is ("on"))
-            {
-              Utils::properties<figure> (figObj)
-                .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-
-              if (pan_enabled (figObj) || rotate_enabled (figObj)
-                  || zoom_enabled (figObj))
-                {
-                  axes::properties& ap =
-                    Utils::properties<axes> (axesObj);
-
-                  autoscale_axes (ap);
-                }
-            }
-
-          if (redrawFigure)
-            redraw (false);
-        }
-    }
+  // same processing as nornal click, but event type is MouseButtonDblClick
+  canvasMousePressEvent (event);
 }
 
 static double
@@ -501,6 +449,8 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
 {
   gh_manager::auto_lock lock;
   graphics_object obj = gh_manager::get_object (m_handle);
+
+  bool isdblclick = (event->type () == QEvent::MouseButtonDblClick);
 
   if (obj.valid_object ())
     {
@@ -588,7 +538,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
         {
         case NoMode:
           gh_manager::post_set (figObj.get_handle (), "selectiontype",
-                                Utils::figureSelectionType (event), false);
+                                Utils::figureSelectionType (event, isdblclick), false);
 
           updateCurrentPoint (figObj, obj, event);
 
@@ -617,7 +567,21 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
             {
               bool redraw_figure = true;
 
-              if (event->modifiers () == Qt::NoModifier)
+              if (isdblclick)
+                {
+                  if (event->button () == Qt::LeftButton)
+                    {
+                      axes::properties& ap =
+                        Utils::properties<axes> (axesObj);
+
+                      autoscale_axes (ap);
+                    }
+                  else
+                    {
+                      redraw_figure = false;
+                    }
+                }
+              else if (event->modifiers () == Qt::NoModifier)
                 {
                   switch (event->buttons ())
                     {
@@ -668,6 +632,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
           break;
         }
     }
+
 }
 
 void

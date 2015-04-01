@@ -287,15 +287,15 @@ Figure::createFigureToolBarAndMenuBar (void)
            SLOT (setMouseMode (MouseMode)));
   m_figureToolBar->addActions (m_mouseModeGroup->actions ());
 
-  QAction *toggle_axes = m_figureToolBar->addAction ("Axes");
+  QAction *toggle_axes = m_figureToolBar->addAction (tr ("Axes"));
   connect (toggle_axes, SIGNAL (triggered (void)),
            this, SLOT (toggleAxes (void)));
 
-  QAction *toggle_grid = m_figureToolBar->addAction ("Grid");
+  QAction *toggle_grid = m_figureToolBar->addAction (tr ("Grid"));
   connect (toggle_grid, SIGNAL (triggered (void)),
            this, SLOT (toggleGrid (void)));
 
-  QAction *auto_axes = m_figureToolBar->addAction ("Autoscale");
+  QAction *auto_axes = m_figureToolBar->addAction (tr ("Autoscale"));
   connect (auto_axes, SIGNAL (triggered (void)),
            this, SLOT (autoAxes (void)));
 

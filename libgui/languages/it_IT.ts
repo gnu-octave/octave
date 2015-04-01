@@ -112,12 +112,12 @@
     <message>
         <location line="+3"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annulla</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -132,12 +132,12 @@
     <message>
         <location line="+3"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Applica</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -147,62 +147,62 @@
     <message>
         <location line="+4"/>
         <source>Don&apos;t Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Non salvare</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Close without Saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi senza salvare</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Discard</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sì</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Yes to &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Sì a &amp;tutto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;No</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>N&amp;o to All</source>
-        <translation type="unfinished"></translation>
+        <translation>N&amp;o a tutto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva tutto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Retry</source>
-        <translation type="unfinished"></translation>
+        <translation>Riprova</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignora</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina defaults</translation>
     </message>
 </context>
 <context>
@@ -1832,12 +1832,12 @@ Si desidera sovrascriverlo?</translation>
     <message>
         <location line="+2"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Ingrandisci</translation>
+        <translation>Ingrandisci</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Riduci</translation>
+        <translation>Riduci</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2496,7 +2496,7 @@ Si desidera scegliere un altro nome?</translation>
     <message>
         <location line="-4"/>
         <source>One directory up</source>
-        <translation type="unfinished">Livello precedente</translation>
+        <translation>Livello precedente</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3011,7 +3011,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation>Fare doppio click su un comando per trasferirlo nel termianle.</translation>
+        <translation>Fare doppio click su un comando per trasferirlo nel terminale.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3601,7 +3601,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <location line="+19"/>
         <location line="+468"/>
         <source>General</source>
-        <translation>Genrale</translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <location line="-338"/>
@@ -3913,22 +3913,22 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     <message>
         <location line="+61"/>
         <source>Small</source>
-        <translation type="unfinished"></translation>
+        <translation>Piccolo</translation>
     </message>
     <message>
         <location line="+7"/>
         <source> Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normale</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Large</source>
-        <translation type="unfinished"></translation>
+        <translation>Grande</translation>
     </message>
     <message>
         <location line="+200"/>
         <source>3D</source>
-        <translation type="unfinished"></translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -3960,7 +3960,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     <message>
         <location line="+221"/>
         <source>Indentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Indentazione</translation>
     </message>
     <message>
         <location line="+256"/>
@@ -3980,7 +3980,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     <message>
         <location line="+31"/>
         <source>File handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestione file</translation>
     </message>
     <message>
         <location line="+40"/>

@@ -22,11 +22,11 @@
 ## @deftypefnx {Function File} {@var{c} =} union (@var{a}, @var{b}, "rows")
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@dots{})
 ##
-## Return the elements that are in either @var{a} or @var{b} sorted in
-## ascending order with duplicates removed.
+## Return the unique elements that are in either @var{a} or @var{b} sorted in
+## ascending order.
 ##
-## If @var{a} and @var{b} are both column vectors return a column vector;
-## Otherwise, return a row vector.  The inputs may also be cell arrays of
+## If @var{a} and @var{b} are both row vectors then return a row vector;
+## Otherwise, return a column vector.  The inputs may also be cell arrays of
 ## strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return rows that are in
@@ -51,14 +51,14 @@ function [y, ia, ib] = union (a, b, varargin)
   [a, b] = validsetargs ("union", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  iscol = isvector (a) && isvector (b) && iscolumn (a) && iscolumn (b);
+  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
 
   if (by_rows)
     y = [a; b];
   else
     y = [a(:); b(:)];
     ## Adjust output orientation for Matlab compatibility
-    if (! iscol)
+    if (isrowvec)
       y = y.';
     endif
   endif
@@ -76,23 +76,23 @@ endfunction
 
 
 %!assert (union ([1, 2, 4], [2, 3, 5]), [1, 2, 3, 4, 5])
-%!assert (union ([1; 2; 4], [2, 3, 5]), [1, 2, 3, 4, 5])
+%!assert (union ([1; 2; 4], [2, 3, 5]), [1; 2; 3; 4; 5])
 %!assert (union ([1; 2; 4], [2; 3; 5]), [1; 2; 3; 4; 5])
-%!assert (union ([1, 2, 3], [5; 7; 9]), [1, 2, 3, 5, 7, 9])
+%!assert (union ([1, 2, 3], [5; 7; 9]), [1; 2; 3; 5; 7; 9])
 
 ## Test multi-dimensional arrays
 %!test
 %! a = rand (3,3,3);
 %! b = a;
 %! b(1,1,1) = 2;
-%! assert (union (a, b), sort ([a(1:end), 2]));
+%! assert (union (a, b), sort ([a(1:end)'; 2]));
 
 %!test
 %! a = [3, 1, 4, 1, 5];
 %! b = [1, 2, 3, 4];
 %! [y, ia, ib] = union (a, b.');
-%! assert (y, [1, 2, 3, 4, 5]);
-%! assert (y, sort ([a(ia), b(ib)]));
+%! assert (y, [1; 2; 3; 4; 5]);
+%! assert (y, sort ([a(ia)'; b(ib)']));
 
 ## Test common input validation for set routines contained in validsetargs
 %!error <cell array of strings cannot be combined> union ({"a"}, 1)

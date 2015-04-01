@@ -141,6 +141,10 @@ Summary of important user-visible changes for version 4.0:
     There is still one difference:  Matlab switches to '%e' and Octave
     switches to '%g'.
 
+ ** The functions intersect, setdiff, setxor, and union now return a
+    column vector as output unless the input was a row vector.  This change
+    was made for Matlab compatibility.
+
  ** The archive family of functions (bzip2, gzip, zip, tar) and their
     unpacking routines (bunzip2, gunzip, unzip, untar, unpack) have
     been recoded.  Excepting unpack, the default is now to place files

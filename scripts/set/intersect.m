@@ -22,11 +22,11 @@
 ## @deftypefnx {Function File} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
 ##
-## Return the elements common to both @var{a} and @var{b} sorted in ascending
-## order.
+## Return the unique elements common to both @var{a} and @var{b} sorted in
+## ascending order.
 ##
-## If @var{a} and @var{b} are both column vectors then return a column vector;
-## Otherwise, return a row vector.  The inputs may also be cell arrays of
+## If @var{a} and @var{b} are both row vectors then return a row vector;
+## Otherwise, return a column vector.  The inputs may also be cell arrays of
 ## strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return the common rows of
@@ -50,7 +50,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
     c = ia = ib = [];
   else
     by_rows = nargin == 3;
-    iscol = isvector (a) && isvector (b) && iscolumn (a) && iscolumn (b);
+    isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
 
     ## Form A and B into sets
     if (nargout > 1)
@@ -85,7 +85,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
     endif
 
     ## Adjust output orientation for Matlab compatibility
-    if (! by_rows && ! iscol)
+    if (! by_rows && isrowvec)
       c = c.';
     endif
   endif
@@ -99,8 +99,8 @@ endfunction
 %! b = 2:5;
 
 %!assert (size (intersect (a, b)), [1 3])
-%!assert (size (intersect (a', b)), [1 3])
-%!assert (size (intersect (a, b')), [1 3])
+%!assert (size (intersect (a', b)), [3 1])
+%!assert (size (intersect (a, b')), [3 1])
 %!assert (size (intersect (a', b')), [3 1])
 
 ## Test multi-dimensional arrays
@@ -108,7 +108,7 @@ endfunction
 %! a = rand (3,3,3);
 %! b = a;
 %! b(1,1,1) = 2;
-%! assert (intersect (a, b), sort (a(2:end)));
+%! assert (intersect (a, b), sort (a(2:end)'));
 
 ## Test the routine for index vectors ia and ib
 %!test

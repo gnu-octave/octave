@@ -26,14 +26,14 @@
 ##
 ## @example
 ## @group
-##   mpth = __w2mpth ('D:\full\path\to\file.dat')
+##   mpth = __w2mpth__ ('D:\full\path\to\file.dat')
 ##   @result{} '/D/full/path/to/file.dat'
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
-##   mpth = __w2mpth ('relative\path\to\file.dat')
+##   mpth = __w2mpth__ ('relative\path\to\file.dat')
 ##   @result{} 'relative/path/to/file.dat'
 ## @end group
 ## @end example
@@ -47,7 +47,7 @@ function mingwpath = __w2mpth__ (winpath)
 
   ## Check for platform
   if (! ispc)
-    error ("__m2wpath__ should only be called on Windows platforms\n");
+    error ("__w2mpth__ should only be called on Windows platforms\n");
   endif
 
   ## Replace backslash file separators by forward slashes
@@ -59,13 +59,14 @@ endfunction
 
 
 ## Use single quote strings for winpaths to cope with backslashes.
-%!test
-%! if (ispc)
-%!   assert (__w2mpth__ ('file.fil'), 'file.fil');
-%!   assert (__w2mpth__ ('\file.fil'), '/file.fil');
-%!   assert (__w2mpth__ ('G:\file.fil'), '/G/file.fil');
-%!   assert (__w2mpth__ ('r:\subdir\file.fil'), '/r/subdir/file.fil');
-%!   assert (__w2mpth__ ('relative\path\to\file.dat'),
-%!                       'relative/path/to/file.dat')
-%! endif
+## These tests are commented out until a better place is found (bug #44581)
+##%!test
+##%! if (ispc)
+##%!   assert (__w2mpth__ ('file.fil'), 'file.fil');
+##%!   assert (__w2mpth__ ('\file.fil'), '/file.fil');
+##%!   assert (__w2mpth__ ('G:\file.fil'), '/G/file.fil');
+##%!   assert (__w2mpth__ ('r:\subdir\file.fil'), '/r/subdir/file.fil');
+##%!   assert (__w2mpth__ ('relative\path\to\file.dat'),
+##%!                       'relative/path/to/file.dat')
+##%! endif
 

@@ -301,6 +301,10 @@ function print (varargin)
     error ("print: no figure to print");
   endif
 
+  if (isempty (findall (opts.figure, "-depth", "1", "type", "axes")))
+    error ("print: no axes object in figure to print");
+  endif
+
   orig_figure = get (0, "currentfigure");
   set (0, "currentfigure", opts.figure);
 

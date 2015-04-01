@@ -64,13 +64,14 @@ static std::string help_msg =
 "                          DATAROOTDIR            LOCALVERFCNFILEDIR\n"
 "                          DEFAULT_PAGER          LOCALVEROCTFILEDIR\n"
 "                          EXEC_PREFIX            MAN1DIR\n"
-"                          FCNFILEDIR             MAN1EXT\n"
-"                          IMAGEDIR               MANDIR\n"
-"                          INCLUDEDIR             OCTDATADIR\n"
-"                          INFODIR                OCTFILEDIR\n"
-"                          INFOFILE               OCTINCLUDEDIR\n"
-"                          LIBDIR                 OCTLIBDIR\n"
-"                          LIBEXECDIR             PREFIX\n"
+"                          EXEEXT                 MAN1EXT\n"
+"                          FCNFILEDIR             MANDIR\n"
+"                          IMAGEDIR               OCTDATADIR\n"
+"                          INCLUDEDIR             OCTFILEDIR\n"
+"                          INFODIR                OCTINCLUDEDIR\n"
+"                          INFOFILE               OCTLIBDIR\n"
+"                          LIBDIR                 PREFIX\n"
+"                          LIBEXECDIR             SHLEXT\n"
 "                          LOCALAPIARCHLIBDIR     STARTUPFILEDIR\n"
 "                          LOCALAPIFCNFILEDIR     VERSION\n"
 "                          LOCALAPIOCTFILEDIR\n"
@@ -95,6 +96,7 @@ initialize (void)
   vars["DATADIR"] = subst_octave_home (%OCTAVE_DATADIR%);
   vars["DATAROOTDIR"] = subst_octave_home (%OCTAVE_DATAROOTDIR%);
   vars["EXEC_PREFIX"] = subst_octave_home (%OCTAVE_EXEC_PREFIX%);
+  vars["EXEEXT"] = subst_octave_home (%OCTAVE_EXEEXT%);
   vars["FCNFILEDIR"] = subst_octave_home (%OCTAVE_FCNFILEDIR%);
   vars["IMAGEDIR"] = subst_octave_home (%OCTAVE_IMAGEDIR%);
   vars["INCLUDEDIR"] = subst_octave_home (%OCTAVE_INCLUDEDIR%);
@@ -118,6 +120,7 @@ initialize (void)
   vars["OCTFILEDIR"] = subst_octave_home (%OCTAVE_OCTFILEDIR%);
   vars["OCTINCLUDEDIR"] = subst_octave_home (%OCTAVE_OCTINCLUDEDIR%);
   vars["OCTLIBDIR"] = subst_octave_home (%OCTAVE_OCTLIBDIR%);
+  vars["SHLEXT"] = subst_octave_home (%OCTAVE_SHLEXT%);
   vars["STARTUPFILEDIR"] = subst_octave_home (%OCTAVE_STARTUPFILEDIR%);
 }
 

@@ -21,11 +21,11 @@
 ## @deftypefn  {Function File} {@var{c} =} setdiff (@var{a}, @var{b})
 ## @deftypefnx {Function File} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}] =} setdiff (@dots{})
-## Return the elements in @var{a} that are not in @var{b} sorted in
+## Return the unique elements in @var{a} that are not in @var{b} sorted in
 ## ascending order.
 ##
-## If @var{a} and @var{b} are both column vectors return a column vector;
-## Otherwise, return a row vector.  The inputs may also be cell arrays of
+## If @var{a} is a row vector return a column vector;
+## Otherwise, return a column vector.  The inputs may also be cell arrays of
 ## strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return the rows in
@@ -49,7 +49,7 @@ function [c, ia] = setdiff (a, b, varargin)
   [a, b] = validsetargs ("setdiff", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  iscol = isvector (a) && isvector (b) && iscolumn (a) && iscolumn (b);
+  isrowvec = isvector (a) && isrow (a);
 
   if (by_rows)
     if (nargout > 1)
@@ -89,10 +89,10 @@ function [c, ia] = setdiff (a, b, varargin)
         ia(idx(dups)) = [];
       endif
       ## Reshape if necessary for Matlab compatibility.
-      if (iscol)
-        c = c(:);
-      else
+      if (isrowvec)
         c = c(:).';
+      else
+        c = c(:);
       endif
     endif
   endif
@@ -120,11 +120,11 @@ endfunction
 %!assert (setdiff ([1:5]', 2), [1;3;4;5])
 %!assert (setdiff ([1:5], [2:3]), [1,4,5])
 %!assert (setdiff ([1:5], [2:3]'), [1,4,5])
-%!assert (setdiff ([1:5]', [2:3]), [1,4,5])
+%!assert (setdiff ([1:5]', [2:3]), [1;4;5])
 %!assert (setdiff ([1:5]', [2:3]'), [1;4;5])
 
 %!test
 %! a = rand (3,3,3);
 %! b = a(1);
-%! assert (setdiff (a, b), sort (a(2:end)));
+%! assert (setdiff (a, b), sort (a(2:end)'));
 

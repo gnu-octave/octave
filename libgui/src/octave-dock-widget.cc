@@ -43,6 +43,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 
   _parent = static_cast<QMainWindow *> (p);     // store main window
   _floating = false;
+  _predecessor_widget = 0;
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
@@ -155,6 +156,13 @@ octave_dock_widget::connect_visibility_changed (void)
 }
 
 
+// set the widget which previously had focus when tabified
+void
+octave_dock_widget::set_predecessor_widget (octave_dock_widget *prev_widget)
+{
+  _predecessor_widget = prev_widget;
+}
+
 // set the title in the dockwidgets title bar
 void
 octave_dock_widget::set_title (const QString& title)
@@ -167,6 +175,16 @@ octave_dock_widget::set_title (const QString& title)
   h_layout->insertWidget (0,label);
 #endif
   setWindowTitle (title);
+}
+
+// set focus to previously active widget in tabbed widget stack
+void
+octave_dock_widget::set_focus_predecessor ()
+{
+  if (_predecessor_widget)    // only != 0 if widget was tabbed
+    _predecessor_widget->focus ();
+
+  _predecessor_widget = 0;
 }
 
 // make the widget floating
@@ -207,7 +225,10 @@ octave_dock_widget::make_window ()
 #endif
 
   _floating = true;
+
+  set_focus_predecessor ();  // set focus previously active widget if tabbed
 }
+
 
 // dock the widget
 void
@@ -454,4 +475,14 @@ octave_dock_widget::handle_active_dock_changed (octave_dock_widget *w_old,
       set_style (true);
       update ();
     }
+}
+
+
+// close event
+void
+octave_dock_widget::closeEvent (QCloseEvent *e)
+{
+  emit active_changed (false);
+  set_focus_predecessor ();
+  QDockWidget::closeEvent (e);
 }

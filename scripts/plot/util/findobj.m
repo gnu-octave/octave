@@ -227,11 +227,11 @@ function h = findobj (varargin)
             match(nh,np) = true;
           else
             if (regularexpression(np))
-              foo = regexp (p.(pname{np}), pvalue{np}, "once");
-              if (isempty (foo))
+              found = regexp (p.(pname{np}), pvalue{np}, "once");
+              if (isempty (found))
                 match(nh,np) = false;
               else
-                match(nh,np) = foo;
+                match(nh,np) = true;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
               if (ischar (pvalue{np}) && ischar (p.(pname{np})))

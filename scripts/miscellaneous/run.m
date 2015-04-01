@@ -64,7 +64,7 @@ function run (script)
       d = canonicalize_file_name (d);
       unwind_protect
         cd (d);
-        evalin ("caller", sprintf ('source ("%s%s");', f, ext),
+        evalin ("caller", sprintf ("source ('%s%s');", f, ext),
                 "rethrow (lasterror ())");
       unwind_protect_cleanup
         if (strcmp (d, pwd ()))
@@ -81,7 +81,7 @@ function run (script)
       ## Search PATH with null extension ('.' will be stripped and ext = "")
       script = which ([script "."]);
     endif
-    evalin ("caller", sprintf ('source ("%s");', script),
+    evalin ("caller", sprintf ("source ('%s');", script),
             "rethrow (lasterror ())");
   endif
 endfunction

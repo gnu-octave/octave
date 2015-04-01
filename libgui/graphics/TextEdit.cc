@@ -47,7 +47,7 @@ TextEdit::keyPressEvent (QKeyEvent* xevent)
   if ((xevent->key () == Qt::Key_Return
        || xevent->key () == Qt::Key_Enter)
       && xevent->modifiers () == Qt::ControlModifier)
-    emit editingFinished ();
+    emit returnPressed ();
 }
 
 }; // namespace QtHandles

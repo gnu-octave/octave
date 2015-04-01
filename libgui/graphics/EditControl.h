@@ -57,6 +57,7 @@ private:
 private slots:
   void textChanged (void);
   void editingFinished (void);
+  void returnPressed (void);
 
 private:
   bool m_multiLine;

@@ -82,6 +82,8 @@ EditControl::init (QLineEdit* edit, bool callBase)
            SLOT (textChanged (void)));
   connect (edit, SIGNAL (editingFinished (void)),
            SLOT (editingFinished (void)));
+  connect (edit, SIGNAL (returnPressed (void)),
+           SLOT (returnPressed (void)));
 }
 
 EditControl::EditControl (const graphics_object& go, TextEdit* edit)
@@ -109,6 +111,8 @@ EditControl::init (TextEdit* edit, bool callBase)
            SLOT (textChanged (void)));
   connect (edit, SIGNAL (editingFinished (void)),
            SLOT (editingFinished (void)));
+  connect (edit, SIGNAL (returnPressed (void)),
+           SLOT (returnPressed (void)));
 }
 
 EditControl::~EditControl (void)
@@ -212,6 +216,24 @@ void
 EditControl::textChanged (void)
 {
   m_textChanged = true;
+}
+
+void 
+EditControl::returnPressed (void)
+{
+  QString txt = (m_multiLine
+                 ? qWidget<TextEdit> ()->toPlainText ()
+                 : qWidget<QLineEdit> ()->text ());
+
+  if (m_textChanged)
+    {
+      gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+
+      m_textChanged = false;
+    }
+
+  if (txt.length () > 0)
+    gh_manager::post_callback (m_handle, "callback");
 }
 
 void

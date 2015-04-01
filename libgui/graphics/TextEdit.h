@@ -38,6 +38,7 @@ public:
 
 signals:
   void editingFinished (void);
+  void returnPressed (void);
 
 protected:
   void focusOutEvent (QFocusEvent* event);

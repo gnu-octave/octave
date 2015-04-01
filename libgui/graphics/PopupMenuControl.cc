@@ -56,6 +56,8 @@ PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
 
   box->addItems (Utils::fromStdString (up.get_string_string ()).split ('|'));
 
+  update (uicontrol::properties::ID_VALUE);
+
   connect (box, SIGNAL (currentIndexChanged (int)),
            SLOT (currentIndexChanged (int)));
 }
@@ -97,6 +99,7 @@ void PopupMenuControl::update (int pId)
       break;
 
     case uicontrol::properties::ID_VALUE:
+      m_blockUpdate = true;
         {
           Matrix value = up.get_value ().matrix_value ();
 
@@ -111,6 +114,7 @@ void PopupMenuControl::update (int pId)
                 }
             }
         }
+      m_blockUpdate = false;
       break;
 
     default:

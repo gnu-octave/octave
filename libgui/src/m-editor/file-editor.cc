@@ -1571,7 +1571,7 @@ file_editor::construct (void)
 
   resize (500, 400);
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  set_title ("Editor");
+  set_title (tr ("Editor"));
 
   //restore previous session
   if (settings->value ("editor/restoreSession", true).toBool ())

@@ -105,15 +105,22 @@ void PopupMenuControl::update (int pId)
 
           if (value.numel () > 0)
             {
-              int newIndex = int (value(0)) - 1;
-
-              if (newIndex >= 0 && newIndex < box->count ())
+              if (value(0) !=  static_cast<int>(value(0)))
                 {
-                  if (newIndex != box->currentIndex ())
-                    box->setCurrentIndex (newIndex);
+                warning ("popupmenu value should be integer");
                 }
               else
-                warning ("popupmenu value not within valid display range");
+                {
+                  int newIndex = int (value(0)) - 1;
+
+                  if (newIndex >= 0 && newIndex < box->count ())
+                    {
+                      if (newIndex != box->currentIndex ())
+                        box->setCurrentIndex (newIndex);
+                    }
+                  else
+                    warning ("popupmenu value not within valid display range");
+                }
             }
         }
       m_blockUpdate = false;

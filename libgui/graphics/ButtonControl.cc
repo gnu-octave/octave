@@ -79,7 +79,9 @@ ButtonControl::update (int pId)
             {
               double dValue = value(0);
 
-              if (dValue == up.get_min () && btn->isChecked ())
+              if (dValue != 0.0 && dValue != 1.0)
+                warning ("button value not within valid display range");
+              else if (dValue == up.get_min () && btn->isChecked ())
                 btn->setChecked (false);
               else if (dValue == up.get_max () && ! btn->isChecked ())
                 btn->setChecked (true);

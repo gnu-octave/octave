@@ -112,6 +112,8 @@ void PopupMenuControl::update (int pId)
                 {
                   box->setCurrentIndex (newIndex);
                 }
+              else
+                warning ("popupmenu value not within valid display range");
             }
         }
       m_blockUpdate = false;

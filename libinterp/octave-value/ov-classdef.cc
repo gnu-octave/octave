@@ -3978,7 +3978,7 @@ cdef_manager::do_find_package_symbol (const std::string& pack_name)
 {
   octave_function* retval = 0;
 
-  cdef_package pack = find_package (pack_name, false, false);
+  cdef_package pack = find_package (pack_name, false);
 
   if (pack.ok ())
     retval = new octave_classdef_meta (pack);

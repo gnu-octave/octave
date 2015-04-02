@@ -109,6 +109,12 @@ load_path::dir_info::update (void)
     }
 }
 
+bool
+load_path::dir_info::is_package (const std::string& name) const
+{
+  return package_dir_map.find (name) != package_dir_map.end ();
+}
+
 void
 load_path::dir_info::initialize (void)
 {
@@ -1216,6 +1222,20 @@ load_path::loader::methods (const std::string& class_name) const
     retval.sort ();
 
   return retval;
+}
+
+bool
+load_path::is_package (const std::string& name) const
+{
+  for (const_dir_info_list_iterator p = dir_info_list.begin ();
+       p != dir_info_list.end ();
+       p++)
+    {
+      if (p->is_package (name))
+        return true;
+    }
+
+  return false;
 }
 
 std::list<std::string>

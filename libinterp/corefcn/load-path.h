@@ -395,6 +395,8 @@ private:
     method_file_map_type method_file_map;
     package_dir_map_type package_dir_map;
 
+    bool is_package (const std::string& name) const;
+
   private:
 
     void initialize (void);
@@ -658,9 +660,11 @@ private:
   check_file_type (std::string& fname, int type, int possible_types,
                    const std::string& fcn, const char *who);
 
+  bool is_package (const std::string& name) const;
+
   loader& get_loader (const std::string& name) const
   {
-    if (! name.empty ())
+    if (! name.empty () && is_package (name))
       {
         loader_map_iterator l = loader_map.find (name);
 

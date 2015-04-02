@@ -174,7 +174,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
     __verbose  = -1;
   elseif (strcmp (__flag, "verbose"))
     __grabdemo = false;
-    __rundemo  = true;
+    __rundemo  = ! __batch;
     __verbose  = 1;
   elseif (strcmp (__flag, "grabdemo"))
     __grabdemo = true;

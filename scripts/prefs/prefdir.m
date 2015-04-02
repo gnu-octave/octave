@@ -42,7 +42,7 @@
 
 function folder = prefdir ()
 
-  folder = getenv ("HOME");
+  folder = get_home_directory ();
 
 endfunction
 

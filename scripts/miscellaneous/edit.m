@@ -125,7 +125,8 @@ function ret = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("HOME", fullfile (default_home, "octave"),
+  persistent FUNCTION = struct ("HOME",
+                                fullfile (get_home_directory (), "octave"),
                                 "AUTHOR", default_user(1),
                                 "EMAIL", [],
                                 "LICENSE", "GPL",
@@ -164,7 +165,7 @@ function ret = edit (varargin)
         return;
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")
-          stateval = [ default_home, stateval(2:end) ];
+          stateval = [ get_home_directory, stateval(2:end) ];
         endif
         FUNCTION.HOME = stateval;
         return;
@@ -513,20 +514,6 @@ SUCH DAMAGE.\
 
     do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
 
-  endif
-
-endfunction
-
-function retval = default_home ()
-
-  retval = getenv ("HOME");
-  if (isempty (retval))
-    retval = glob ("~");
-    if (! isempty (retval))
-      retval = retval{1};
-    else
-      retval = "";
-    endif
   endif
 
 endfunction

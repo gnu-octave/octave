@@ -268,7 +268,7 @@
 
 %!error <... getgid> getgid (1)
 
-%!assert (getenv ("HOME"), tilde_expand ("~"))
+%!assert (get_home_directory (), tilde_expand ("~"))
 
 %!error <Invalid call to getenv> getenv ()
 %!error <Invalid call to getenv> getenv ("foo", 1)

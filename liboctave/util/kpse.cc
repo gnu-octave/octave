@@ -1201,7 +1201,7 @@ kpse_tilde_expand (const std::string& name)
     }
   else if (name.length () == 1)
     {
-      expansion = octave_env::getenv ("HOME");
+      expansion = octave_env::get_home_directory ();
 
       if (expansion.empty ())
         expansion = ".";
@@ -1212,7 +1212,7 @@ kpse_tilde_expand (const std::string& name)
   else if (IS_DIR_SEP (name[1]))
     {
       unsigned c = 1;
-      std::string home = octave_env::getenv ("HOME");
+      std::string home = octave_env::get_home_directory ();
 
       if (home.empty ())
         home = ".";

@@ -129,8 +129,9 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   createFigureToolBarAndMenuBar ();
 
   int offset = 0;
-  if (fp.toolbar_is ("figure")
-      || (fp.toolbar_is ("auto") && ! hasUiControlChildren (fp)))
+  if (fp.toolbar_is ("figure") || 
+      (fp.toolbar_is ("auto") && fp.menubar_is ("figure") &&
+       ! hasUiControlChildren (fp)))
     offset += m_figureToolBar->sizeHint ().height ();
   else
     m_figureToolBar->hide ();

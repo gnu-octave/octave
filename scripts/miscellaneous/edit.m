@@ -546,12 +546,9 @@ endfunction
 
 function do_edit (editor, file, mode)
 
-  ## Give the hook function a chance.
-  ## If that fails, fall back on running an editor with the system function.
-
-  status = __octave_link_edit_file__ (file);
-
-  if (! status)
+  if (isguirunning ())
+    __octave_link_edit_file__ (file);
+  else
     system (sprintf (undo_string_escapes (editor), ['"' file '"']), [], mode);
   endif
 

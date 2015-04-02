@@ -1011,16 +1011,25 @@ tilde_expand (\"~/bin\")\n\
 
 DEFUN (get_home_directory, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} get_home_directory ()\n\
-Return the current home directory.  On most systems, this is equivalent\n\
-to @code{getenv (\"HOME\")}.  On Windows systems, if @env{HOME} is not\n\
-set in the environment, it is equivalent to\n\
+@deftypefn {Built-in Function} {@var{homedir} =} get_home_directory ()\n\
+Return the current home directory.\n\
+\n\
+On most systems, this is equivalent to @code{getenv (\"HOME\")}.  On Windows\n\
+systems, if the environment variable @env{HOME} is not set then it is\n\
+equivalent to\n\
 @code{fullfile (getenv (\"HOMEDRIVE\"), getenv (\"HOMEPATH\"))}\n\
 @seealso{getenv}\n\
 @end deftypefn")
 {
   return octave_value (octave_env::get_home_directory ());
 }
+
+/*
+%!test
+%! if (! ispc ())
+%!   assert (get_home_directory (), getenv ("HOME")); 
+%! endif
+*/
 
 // This function really belongs in display.cc, but including defun.h in
 // that file results in conflicts with symbols from headers that are

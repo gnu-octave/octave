@@ -406,6 +406,8 @@ they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(unsetenv)
 
+@DOCSTRING(get_home_directory)
+
 @node Current Working Directory
 @section Current Working Directory
 

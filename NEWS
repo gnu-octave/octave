@@ -204,6 +204,7 @@ Summary of important user-visible changes for version 4.0:
       dir_in_loadpath
       flip
       frame2im
+      get_home_directory
       hgload
       hgsave
       ichol

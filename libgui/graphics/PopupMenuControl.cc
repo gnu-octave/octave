@@ -107,10 +107,10 @@ void PopupMenuControl::update (int pId)
             {
               int newIndex = int (value(0)) - 1;
 
-              if (newIndex >= 0 && newIndex < box->count ()
-                  && newIndex != box->currentIndex ())
+              if (newIndex >= 0 && newIndex < box->count ())
                 {
-                  box->setCurrentIndex (newIndex);
+                  if (newIndex != box->currentIndex ())
+                    box->setCurrentIndex (newIndex);
                 }
               else
                 warning ("popupmenu value not within valid display range");

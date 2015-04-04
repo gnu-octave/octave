@@ -45,11 +45,11 @@ function c = hamming (m, opt)
     error ("hamming: M must be a positive integer");
   endif
 
-  periodic = false;
+  N = m - 1;
   if (nargin == 2)
     switch (opt)
       case "periodic"
-        periodic = true;
+        N = m;
       case "symmetric"
         ## Default option, same as no option specified.
       otherwise
@@ -60,14 +60,8 @@ function c = hamming (m, opt)
   if (m == 1)
     c = 1;
   else
-    if (! periodic)
-      m = m - 1;
-    endif
-    c = 0.54 - 0.46 * cos (2 * pi * (0:m)' / m);
-  endif
-
-  if (periodic)
-    c = c(1:end-1);
+    m = m - 1;
+    c = 0.54 - 0.46 * cos (2 * pi * (0 : m)' / N);
   endif
 
 endfunction

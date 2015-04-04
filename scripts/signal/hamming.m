@@ -75,19 +75,19 @@ endfunction
 
 %!assert (hamming (1), 1)
 %!assert (hamming (2), (0.54 - 0.46)*ones (2,1))
-%!assert (hamming (16), fliplr (hamming (16)))
-%!assert (hamming (15), fliplr (hamming (15)))
+%!assert (hamming (15), flip (hamming (15)), 5*eps)
+%!assert (hamming (16), flip (hamming (16)), 5*eps)
 %!test
 %! N = 15;
 %! A = hamming (N);
-%! assert (A (ceil (N/2)), 1);
+%! assert (A(ceil (N/2)), 1);
 
 %!assert (hamming (15), hamming (15, "symmetric"));
 %!assert (hamming (16)(1:15), hamming (15, "periodic"));
 %!test
 %! N = 16;
 %! A = hamming (N, "periodic");
-%! assert (A (N/2 + 1), 1);
+%! assert (A(N/2 + 1), 1);
 
 %!error hamming ()
 %!error hamming (0.5)

@@ -75,8 +75,8 @@ endfunction
 
 %!assert (hanning (1), 1);
 %!assert (hanning (2), zeros (2,1));
-%!assert (hanning (16), fliplr (hanning (16)));
-%!assert (hanning (15), fliplr (hanning (15)));
+%!assert (hanning (15), flip (hanning (15)), 5*eps);
+%!assert (hanning (16), flip (hanning (16)), 5*eps);
 %!test
 %! N = 15;
 %! A = hanning (N);
@@ -87,7 +87,7 @@ endfunction
 %!test
 %! N = 16;
 %! A = hanning (N, "periodic");
-%! assert (A (N/2 + 1), 1);
+%! assert (A(N/2 + 1), 1);
 
 %!error hanning ()
 %!error hanning (0.5)

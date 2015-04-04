@@ -76,20 +76,20 @@ endfunction
 
 %!assert (blackman (1), 1)
 %!assert (blackman (2), zeros (2,1), 1e-6)
-%!assert (blackman (16), fliplr (blackman (16)))
-%!assert (blackman (15), fliplr (blackman (15)))
+%!assert (blackman (15), flip (blackman (15)), 5*eps)
+%!assert (blackman (16), flip (blackman (16)), 5*eps)
 %!test
 %! N = 9;
 %! A = blackman (N);
-%! assert (A (ceil (N/2)), 1, 1e-6);
-%! assert ([A(1), A(length (A))], zeros (1, 2), 1e-6);
+%! assert (A(ceil (N/2)), 1, 1e-6);
+%! assert ([A(1), A(length (A))], zeros (1,2), 1e-6);
 
 %!assert (blackman (15), blackman (15, "symmetric"));
 %!assert (blackman (16)(1:15), blackman (15, "periodic"));
 %!test
 %! N = 16;
 %! A = blackman (N, "periodic");
-%! assert (A (N/2 + 1), 1, 1e-6);
+%! assert (A(N/2 + 1), 1, 1e-6);
 
 %!error blackman ()
 %!error blackman (0.5)

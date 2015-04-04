@@ -52,8 +52,8 @@ endfunction
 
 %!assert (bartlett (1), 1)
 %!assert (bartlett (2), zeros (2,1))
-%!assert (bartlett (16), fliplr (bartlett (16)))
-%!assert (bartlett (15), fliplr (bartlett (15)))
+%!assert (bartlett (15), flip (bartlett (15)), 5*eps)
+%!assert (bartlett (16), flip (bartlett (16)), 5*eps)
 %!test
 %! N = 9;
 %! A = bartlett (N);

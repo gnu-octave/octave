@@ -1333,7 +1333,7 @@ array_property::validate (const octave_value& v)
         xok = false;
     }
   else
-    xok = v.is_numeric_type ();
+    xok = v.is_numeric_type () || v.is_bool_scalar ();
 
   if (xok)
     {

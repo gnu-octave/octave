@@ -805,7 +805,7 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
   out = ostrsplit (text, sep, mult_dlms_s1);
   if (index (sep, eol_char)); out = strrep (out, char (255), ''); endif
   ## In case of trailing delimiter, strip stray last empty word
-  if (! isempty (out) && any (sep == text(end)))
+  if (! isempty (out) && any (sep == text(end)) && ! mult_dlms_s1)
     out(end) = [];
   endif
 
@@ -936,6 +936,11 @@ endfunction
 %! assert (b', [12, 23, 33]);
 %! assert (c', [13, 24, 34]);
 %! assert (d', [15, 25, 35]);
+
+## Bug #44750
+%!test
+%! assert (strread ('/home/foo/','%s','delimiter','/','MultipleDelimsAsOne',1), ...
+%!         {"home"; "foo"});
 
 ## delimiter as sq_string and dq_string
 %!test

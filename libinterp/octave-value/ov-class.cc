@@ -2052,6 +2052,15 @@ belongs to.\n\
 %!assert (isa ({1, 2}, "cell"))
 %!assert (isa ({1, 2}, {"numeric", "integer", "cell"}), [false false true])
 
+%!testif HAVE_JAVA
+%! ## The first and last assert() are equal on purpose.  The assert() in
+%! ## the middle with an invalid class name will cause the java code to
+%! ## throw exceptions which we then must clear properly (or all other calls
+%! ## will fail).  So we test this too.
+%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"))
+%! assert (isa (javaObject ("java.lang.Double", 10), "not_a_class"), false)
+%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"))
+
 %!test
 %! a.b = 1;
 %! assert (isa (a, "struct"));

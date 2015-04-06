@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #include <clocale>
 
@@ -668,6 +669,25 @@ octave_java::is_java_string (void) const
       return current_env->IsInstanceOf (java_object, cls);
     }
 
+  return false;
+}
+
+bool
+octave_java::is_instance_of (const std::string& cls_name) const
+{
+  JNIEnv *current_env = thread_jni_env ();
+
+  std::string cls_cpp = cls_name;
+  std::replace (cls_cpp.begin (), cls_cpp.end (), '.', '/');
+
+  if (current_env && java_object)
+    {
+      jclass_ref cls (current_env, current_env->FindClass (cls_cpp.c_str ()));
+      if (current_env->ExceptionCheck ())
+        current_env->ExceptionClear();
+      else
+        return current_env->IsInstanceOf (java_object, cls);
+    }
   return false;
 }
 

@@ -139,6 +139,8 @@ public:
   octave_base_value* clone (void) const { return new octave_java (*this); }
   octave_base_value* empty_clone (void) const { return new octave_java (); }
 
+  bool is_instance_of (const std::string&) const;
+
   bool is_defined (void) const { return true; }
 
   bool is_map (void) const { return false; }

@@ -972,37 +972,40 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
     }
 
   // Z box
-  set_color (props.get_zcolor_rgb ());
-
-  if (xySym)
+  if (! is2d)
     {
-      glVertex3d (xPlaneN, yPlane, zPlaneN);
-      glVertex3d (xPlaneN, yPlane, zPlane);
-    }
-  else
-    {
-      glVertex3d (xPlane, yPlaneN, zPlaneN);
-      glVertex3d (xPlane, yPlaneN, zPlane);
-    }
-
-  if (props.is_box ())
-    {
-      glVertex3d (xPlane, yPlane, zPlaneN);
-      glVertex3d (xPlane, yPlane, zPlane);
+      set_color (props.get_zcolor_rgb ());
 
       if (xySym)
-        {
-          glVertex3d (xPlane, yPlaneN, zPlaneN);
-          glVertex3d (xPlane, yPlaneN, zPlane);
-        }
-      else
         {
           glVertex3d (xPlaneN, yPlane, zPlaneN);
           glVertex3d (xPlaneN, yPlane, zPlane);
         }
+      else
+        {
+          glVertex3d (xPlane, yPlaneN, zPlaneN);
+          glVertex3d (xPlane, yPlaneN, zPlane);
+        }
 
-      glVertex3d (xPlaneN, yPlaneN, zPlaneN);
-      glVertex3d (xPlaneN, yPlaneN, zPlane);
+      if (props.is_box ())
+        {
+          glVertex3d (xPlane, yPlane, zPlaneN);
+          glVertex3d (xPlane, yPlane, zPlane);
+
+          if (xySym)
+            {
+              glVertex3d (xPlane, yPlaneN, zPlaneN);
+              glVertex3d (xPlane, yPlaneN, zPlane);
+            }
+          else
+            {
+              glVertex3d (xPlaneN, yPlane, zPlaneN);
+              glVertex3d (xPlaneN, yPlane, zPlane);
+            }
+
+          glVertex3d (xPlaneN, yPlaneN, zPlaneN);
+          glVertex3d (xPlaneN, yPlaneN, zPlane);
+        }
     }
 
   glEnd ();

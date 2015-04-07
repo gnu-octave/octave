@@ -81,6 +81,23 @@ toStringVector (const QStringList& l)
   return v;
 }
 
+Cell toCellString (const QStringList& l)
+{
+  QStringList tmp = l;
+
+  // dont get any empty lines from end of the list
+  while ((tmp.length () > 0) && (tmp.last ().length () == 0))
+    {
+      tmp.removeLast ();
+    }
+  // no strings will be a a 1x1 cell with empty string
+  if (tmp.length () == 0)
+    tmp += "";
+
+  Cell v(toStringVector (tmp));
+  return v;
+}
+
 template <class T>
 QFont
 computeFont (const typename T::properties& props, int height)

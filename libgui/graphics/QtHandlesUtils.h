@@ -47,6 +47,8 @@ namespace Utils
   QStringList fromStringVector (const string_vector& v);
   string_vector toStringVector (const QStringList& l);
 
+  Cell toCellString (const QStringList& l);
+
   template <class T>
   QFont computeFont (const typename T::properties& props, int height = -1);
 

@@ -59,8 +59,7 @@ TextControl::TextControl (const graphics_object& go, QLabel* label)
   label->setWordWrap (false);
   label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                            up.get_verticalalignment ()));
-  // FIXME: support string_vector
-  label->setText (Utils::fromStdString (up.get_string_string ()));
+  label->setText(Utils::fromStringVector (up.get_string_vector()).join("\n"));
 }
 
 TextControl::~TextControl (void)
@@ -76,8 +75,7 @@ TextControl::update (int pId)
   switch (pId)
     {
     case uicontrol::properties::ID_STRING:
-      // FIXME: support string_vector
-      label->setText (Utils::fromStdString (up.get_string_string ()));
+      label->setText(Utils::fromStringVector (up.get_string_vector()).join("\n"));
       break;
 
     case uicontrol::properties::ID_HORIZONTALALIGNMENT:

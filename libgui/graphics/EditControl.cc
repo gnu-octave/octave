@@ -104,8 +104,7 @@ EditControl::init (TextEdit* edit, bool callBase)
   uicontrol::properties& up = properties<uicontrol> ();
 
   edit->setAcceptRichText (false);
-  // FIXME: support string_vector
-  edit->setPlainText (Utils::fromStdString (up.get_string_string ()));
+  edit->setPlainText (Utils::fromStringVector (up.get_string_vector()).join("\n"));
 
   connect (edit, SIGNAL (textChanged (void)),
            SLOT (textChanged (void)));
@@ -191,7 +190,7 @@ EditControl::updateMultiLine (int pId)
   switch (pId)
     {
     case uicontrol::properties::ID_STRING:
-      edit->setPlainText (Utils::fromStdString (up.get_string_string ()));
+      edit->setPlainText (Utils::fromStringVector (up.get_string_vector()).join("\n"));
       return true;
 
     case uicontrol::properties::ID_MIN:
@@ -227,7 +226,10 @@ EditControl::returnPressed (void)
 
   if (m_textChanged)
     {
-      gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+      if (m_multiLine)
+        gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")), false);
+      else
+        gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
 
       m_textChanged = false;
     }
@@ -241,11 +243,15 @@ EditControl::editingFinished (void)
 {
   if (m_textChanged)
     {
+      uicontrol::properties& up = properties<uicontrol> ();
+
       QString txt = (m_multiLine
                      ? qWidget<TextEdit> ()->toPlainText ()
                      : qWidget<QLineEdit> ()->text ());
-
-      gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+      if (m_multiLine)
+        gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")), false);
+      else
+        gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
       gh_manager::post_callback (m_handle, "callback");
 
       m_textChanged = false;

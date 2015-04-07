@@ -1655,17 +1655,8 @@ main_window::construct_file_menu (QMenuBar *p)
 
   file_menu->addSeparator ();
 
-  _preferences_action
-    = file_menu->addAction (resource_manager::icon ("preferences-system"),
-                            tr ("Preferences..."));
-
-  file_menu->addSeparator ();
-
   _exit_action = file_menu->addAction (tr ("Exit"));
   _exit_action->setShortcutContext (Qt::ApplicationShortcut);
-
-  connect (_preferences_action, SIGNAL (triggered ()),
-           this, SLOT (process_settings_dialog_request ()));
 
 #ifdef HAVE_QSCINTILLA
   connect (_open_action, SIGNAL (triggered ()),
@@ -1755,6 +1746,12 @@ main_window::construct_edit_menu (QMenuBar *p)
   _clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
 
+  edit_menu->addSeparator ();
+
+  _preferences_action
+    = edit_menu->addAction (resource_manager::icon ("preferences-system"),
+                            tr ("Preferences..."));
+
   connect (_find_files_action, SIGNAL (triggered ()),
            this, SLOT (find_files ()));
 
@@ -1770,6 +1767,9 @@ main_window::construct_edit_menu (QMenuBar *p)
   connect (_clipboard, SIGNAL (changed (QClipboard::Mode)),
            this, SLOT (clipboard_has_changed (QClipboard::Mode)));
   clipboard_has_changed (QClipboard::Clipboard);
+
+  connect (_preferences_action, SIGNAL (triggered ()),
+           this, SLOT (process_settings_dialog_request ()));
 }
 
 QAction *

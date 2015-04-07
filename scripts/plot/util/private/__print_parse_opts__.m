@@ -156,6 +156,10 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.ghostscript.resolution = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2num (arg(3:end));
+      elseif (any (strcmp (arg, {"-painters", "-opengl"})))
+        warning ("print: '%s' accepted for Matlab compatibility, but is ignored", arg);
+      elseif (strcmp (arg, "-noui"))
+        warning ("print: option '-noui' not yet implemented");
       elseif (length (arg) >= 1 && arg(1) == "-")
         error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)

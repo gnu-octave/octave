@@ -282,7 +282,7 @@ instead.\n\
 %!   fn = tempname ();
 %!   plot (sin (0:0.1:2*pi));
 %!   __osmesa_print__ (h, fn, "svgis2d");
-%!   assert (stat (fn).size, 7438, -0.05);
+%!   assert (stat (fn).size, 7438, -0.1);
 %!   unlink (fn);
 %!   img = __osmesa_print__ (h);
 %!   assert (size (img), [get(h, "position")([4, 3]), 3])

@@ -243,8 +243,6 @@ EditControl::editingFinished (void)
 {
   if (m_textChanged)
     {
-      uicontrol::properties& up = properties<uicontrol> ();
-
       QString txt = (m_multiLine
                      ? qWidget<TextEdit> ()->toPlainText ()
                      : qWidget<QLineEdit> ()->text ());

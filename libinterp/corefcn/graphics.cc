@@ -11045,6 +11045,9 @@ undocumented.\n\
               else
                 {
                   error ("drawnow: invalid argument, expected 'expose' as argument");
+
+                  gh_manager::unlock ();
+
                   return retval;
                 }
             }
@@ -11079,11 +11082,15 @@ undocumented.\n\
                     {
                       error ("drawnow: empty output ''");
 
+                      gh_manager::unlock ();
+
                       return retval;
                     }
                   else if (pos_c == std::string::npos)
                     {
                       error ("drawnow: empty pipe '|'");
+
+                      gh_manager::unlock ();
 
                       return retval;
                     }
@@ -11106,6 +11113,8 @@ undocumented.\n\
                             {
                               error ("drawnow: nonexistent directory '%s'",
                                      dirname.c_str ());
+
+                              gh_manager::unlock ();
 
                               return retval;
                             }

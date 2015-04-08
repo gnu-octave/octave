@@ -414,7 +414,7 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 void
 Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
 {
-  // same processing as nornal click, but event type is MouseButtonDblClick
+  // same processing as normal click, but event type is MouseButtonDblClick
   canvasMousePressEvent (event);
 }
 
@@ -571,8 +571,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
                 {
                   if (event->button () == Qt::LeftButton)
                     {
-                      axes::properties& ap =
-                        Utils::properties<axes> (axesObj);
+                      axes::properties& ap = Utils::properties<axes> (axesObj);
 
                       autoscale_axes (ap);
                     }
@@ -662,7 +661,7 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 
               ap.zoom_about_point (zm, p1(0), p1(1), factor);
             }
-          else
+          else if (m_mouseMode == ZoomInMode)
             {
               ColumnVector p0 = ap.pixel2coord (m_mouseAnchor.x (),
                                                 m_mouseAnchor.y ());

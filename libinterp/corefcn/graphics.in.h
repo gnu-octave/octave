@@ -1577,6 +1577,8 @@ public:
     return *this;
   }
 
+  void invalidate (void) { current_val = octave_NaN; }
+
   base_property* clone (void) const { return new handle_property (*this); }
 
 protected:
@@ -3005,6 +3007,11 @@ public:
     rep->override_defaults (obj);
   }
 
+  void override_defaults (void)
+  {
+    rep->override_defaults (*rep);
+  }
+
   void build_user_defaults_map (property_list::pval_map_type &def,
                                 const std::string go_name) const
   {
@@ -3535,9 +3542,7 @@ private:
 public:
   figure (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p), default_properties ()
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~figure (void) { }
 
@@ -4290,7 +4295,6 @@ public:
     : base_graphics_object (), xproperties (mh, p), default_properties ()
   {
     xproperties.update_transform ();
-    xproperties.override_defaults (*this);
   }
 
   ~axes (void) { }
@@ -4440,9 +4444,7 @@ private:
 public:
   line (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~line (void) { }
 
@@ -4617,7 +4619,6 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   {
     xproperties.set_clipping ("off");
-    xproperties.override_defaults (*this);
   }
 
   ~text (void) { }
@@ -4825,7 +4826,6 @@ public:
   image (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
   {
-    xproperties.override_defaults (*this);
     xproperties.initialize_data ();
   }
 
@@ -5015,9 +5015,7 @@ private:
 public:
   patch (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~patch (void) { }
 
@@ -5179,9 +5177,7 @@ private:
 public:
   surface (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~surface (void) { }
 
@@ -5259,9 +5255,7 @@ private:
 public:
   hggroup (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~hggroup (void) { }
 
@@ -5333,9 +5327,7 @@ private:
 public:
   uimenu (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uimenu (void) { }
 
@@ -5388,9 +5380,7 @@ private:
 public:
   uicontextmenu (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uicontextmenu (void) { }
 
@@ -5489,9 +5479,7 @@ private:
 public:
   uicontrol (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uicontrol (void) { }
 
@@ -5564,9 +5552,7 @@ private:
 public:
   uipanel (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uipanel (void) { }
 
@@ -5612,9 +5598,7 @@ private:
 public:
   uitoolbar (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p), default_properties ()
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uitoolbar (void) { }
 
@@ -5723,9 +5707,7 @@ private:
 public:
   uipushtool (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uipushtool (void) { }
 
@@ -5784,9 +5766,7 @@ private:
 public:
   uitoggletool (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uitoggletool (void) { }
 

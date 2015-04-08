@@ -5068,18 +5068,29 @@ axes::properties::set_defaults (base_graphics_object& obj,
     {
       delete_children (true);
 
+      xlabel.invalidate ();
+      ylabel.invalidate ();
+      zlabel.invalidate ();
+      title.invalidate ();
+
       xlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                 false, false);
+                                                 false, false, false);
       ylabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                 false, false);
+                                                 false, false, false);
       zlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                 false, false);
+                                                 false, false, false);
       title = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                                false, false);
+                                                false, false, false);
+
       adopt (xlabel.handle_value ());
       adopt (ylabel.handle_value ());
       adopt (zlabel.handle_value ());
       adopt (title.handle_value ());
+
+      update_xlabel_position ();
+      update_ylabel_position ();
+      update_zlabel_position ();
+      update_title_position ();
     }
   else
     {
@@ -5766,6 +5777,35 @@ axes::properties::update_ticklength (void)
 %!  title title;
 */
 
+static ColumnVector
+convert_label_position (const ColumnVector& p,
+                        const text::properties& props,
+                        const graphics_xform& xform,
+                        const Matrix& bbox)
+{
+  ColumnVector retval;
+
+  caseless_str to_units = props.get_units ();
+
+  if (! to_units.compare ("data"))
+    {
+      ColumnVector v = xform.transform (p(0), p(1), p(2));
+
+      retval.resize (3);
+
+      retval(0) = v(0) - bbox(0) + 1;
+      retval(1) = bbox(1) + bbox(3) - v(1) + 1;
+      retval(2) = 0;
+
+      retval = convert_position (retval, "pixels", to_units,
+                                 bbox.extract_n (0, 2, 1, 2));
+    }
+  else
+    retval = p;
+
+  return retval;
+}
+
 static bool updating_xlabel_position = false;
 
 void
@@ -5774,9 +5814,13 @@ axes::properties::update_xlabel_position (void)
   if (updating_xlabel_position)
     return;
 
+  graphics_object obj = gh_manager::get_object (get_xlabel ());
+
+  if (! obj.valid_object ())
+    return;
+
   text::properties& xlabel_props
-    = reinterpret_cast<text::properties&>
-        (gh_manager::get_object (get_xlabel ()).get_properties ());
+    = reinterpret_cast<text::properties&> (obj.get_properties ());
 
   bool is_empty = xlabel_props.get_string ().is_empty ();
 
@@ -5848,6 +5892,10 @@ axes::properties::update_xlabel_position (void)
       if (xlabel_props.positionmode_is ("auto"))
         {
           p = xform.untransform (p(0), p(1), p(2), true);
+
+          p = convert_label_position (p, xlabel_props, xform,
+                                      get_extent (false));
+
           xlabel_props.set_position (p.extract_n (0, 3).transpose ());
           xlabel_props.set_positionmode ("auto");
         }
@@ -5868,9 +5916,13 @@ axes::properties::update_ylabel_position (void)
   if (updating_ylabel_position)
     return;
 
+  graphics_object obj = gh_manager::get_object (get_ylabel ());
+
+  if (! obj.valid_object ())
+    return;
+
   text::properties& ylabel_props
-    = reinterpret_cast<text::properties&>
-        (gh_manager::get_object (get_ylabel ()).get_properties ());
+    = reinterpret_cast<text::properties&> (obj.get_properties ());
 
   bool is_empty = ylabel_props.get_string ().is_empty ();
 
@@ -5951,6 +6003,10 @@ axes::properties::update_ylabel_position (void)
       if (ylabel_props.positionmode_is ("auto"))
         {
           p = xform.untransform (p(0), p(1), p(2), true);
+
+          p = convert_label_position (p, ylabel_props, xform,
+                                      get_extent (false));
+
           ylabel_props.set_position (p.extract_n (0, 3).transpose ());
           ylabel_props.set_positionmode ("auto");
         }
@@ -5971,9 +6027,13 @@ axes::properties::update_zlabel_position (void)
   if (updating_zlabel_position)
     return;
 
+  graphics_object obj = gh_manager::get_object (get_zlabel ());
+
+  if (! obj.valid_object ())
+    return;
+
   text::properties& zlabel_props
-    = reinterpret_cast<text::properties&>
-        (gh_manager::get_object (get_zlabel ()).get_properties ());
+    = reinterpret_cast<text::properties&> (obj.get_properties ());
 
   bool camAuto = cameraupvectormode_is ("auto");
   bool is_empty = zlabel_props.get_string ().is_empty ();
@@ -6067,6 +6127,10 @@ axes::properties::update_zlabel_position (void)
       if (zlabel_props.positionmode_is ("auto"))
         {
           p = xform.untransform (p(0), p(1), p(2), true);
+
+          p = convert_label_position (p, zlabel_props, xform,
+                                      get_extent (false));
+
           zlabel_props.set_position (p.extract_n (0, 3).transpose ());
           zlabel_props.set_positionmode ("auto");
         }
@@ -6087,9 +6151,13 @@ axes::properties::update_title_position (void)
   if (updating_title_position)
     return;
 
+  graphics_object obj = gh_manager::get_object (get_title ());
+
+  if (! obj.valid_object ())
+    return;
+
   text::properties& title_props
-    = reinterpret_cast<text::properties&>
-        (gh_manager::get_object (get_title ()).get_properties ());
+    = reinterpret_cast<text::properties&> (obj.get_properties ());
 
   unwind_protect frame;
   frame.protect_var (updating_title_position);
@@ -6117,6 +6185,8 @@ axes::properties::update_title_position (void)
         }
 
       p = xform.untransform (p(0), p(1), p(2), true);
+
+      p = convert_label_position (p, title_props, xform, bbox);
 
       title_props.set_position (p.extract_n (0, 3).transpose ());
       title_props.set_positionmode ("auto");
@@ -8145,10 +8215,17 @@ text::properties::update_units (void)
   Matrix pos = get_position ().matrix_value ();
 
   pos = convert_text_position (pos, *this, cached_units, get_units ());
+
   // FIXME: if the current axes view is 2D, then one should
   // probably drop the z-component of "pos" and leave "zliminclude"
   // to "off".
+
+  bool autopos = positionmode_is ("auto");
+
   set_position (pos);
+
+  if (autopos)
+    set_positionmode ("auto");
 
   if (units_is ("data"))
     {
@@ -9097,6 +9174,35 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
       graphics_object obj (go);
 
       handle_map[h] = obj;
+
+      // Overriding defaults will work now because the handle is valid
+      // and we can find parent objects (not just handles).
+      obj.override_defaults ();
+
+      if (go_name == "axes")
+        {
+          // Handle defaults for labels since overriding defaults for
+          // them can't work before the axes object is fully
+          // constructed.
+
+          axes::properties& props =
+            dynamic_cast<axes::properties&> (obj.get_properties ());
+
+          graphics_object tgo;
+
+          tgo = gh_manager::get_object (props.get_xlabel ());
+          tgo.override_defaults ();
+
+          tgo = gh_manager::get_object (props.get_ylabel ());
+          tgo.override_defaults ();
+
+          tgo = gh_manager::get_object (props.get_zlabel ());
+          tgo.override_defaults ();
+
+          tgo = gh_manager::get_object (props.get_title ());
+          tgo.override_defaults ();
+        }
+
       if (do_createfcn)
         go->get_properties ().execute_createfcn ();
 

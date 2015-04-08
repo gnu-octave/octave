@@ -5316,7 +5316,7 @@ public:
       bool_property enable , "on"
       color_property foregroundcolor , color_values (0, 0, 0)
       string_property label , ""
-      double_property position , 9
+      double_property position , 0
       bool_property separator , "off"
       // Octave-specific properties
       string_property fltk_label h , ""

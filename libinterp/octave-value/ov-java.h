@@ -143,6 +143,10 @@ public:
 
   bool is_defined (void) const { return true; }
 
+  // FIXME: Is a variable containing a java object an object?
+  //        Or should this be is_constant like a matrix?
+  bool is_object (void) const { return true; }
+
   bool is_map (void) const { return false; }
 
   bool is_java (void) const { return true; }

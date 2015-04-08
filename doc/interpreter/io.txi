@@ -392,6 +392,10 @@ modeled after the C language functions of the same name, but they
 interpret the format template differently in order to improve the
 performance of printing vector and matrix values.
 
+Implementation Note: For compatability with @sc{matlab}, escape sequences in
+the template string (e.g., @qcode{"\n"} => newline) are expanded even
+when the template string is defined with single quotes.
+
 @DOCSTRING(printf)
 
 @DOCSTRING(fprintf)

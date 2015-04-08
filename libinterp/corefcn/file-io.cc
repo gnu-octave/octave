@@ -888,6 +888,10 @@ If @var{fid} is omitted, the output is written to @code{stdout} making the\n\
 function exactly equivalent to @code{printf}.\n\
 \n\
 The optional output returns the number of bytes written to the file.\n\
+\n\
+Implementation Note: For compatability with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
+when the template string is defined with single quotes.\n\
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
 @end deftypefn")
 {
@@ -954,6 +958,10 @@ characters printed.\n\
 See the Formatted Output section of the GNU Octave manual for a\n\
 complete description of the syntax of the template string.\n\
 @end ifclear\n\
+\n\
+Implementation Note: For compatability with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
+when the template string is defined with single quotes.\n\
 @seealso{fprintf, sprintf, scanf}\n\
 @end deftypefn")
 {
@@ -1059,6 +1067,10 @@ string.  Unlike the C library function, which requires you to provide a\n\
 suitably sized string as an argument, Octave's @code{sprintf} function\n\
 returns the string, automatically sized to hold all of the items\n\
 converted.\n\
+\n\
+Implementation Note: For compatability with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
+when the template string is defined with single quotes.\n\
 @seealso{printf, fprintf, sscanf}\n\
 @end deftypefn")
 {

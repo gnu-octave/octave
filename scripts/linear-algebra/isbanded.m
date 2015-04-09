@@ -58,7 +58,7 @@ endfunction
 
 %!assert (! isbanded ("string", 0, 0))
 %!assert (! isbanded (zeros (2,2,2), 0, 0))
-%!assert (isbanded ([], 0, 0))
+%!assert (isbanded ([], 0, 0), [])
 %!assert (isbanded (1,0,0))
 %!assert (isbanded (1,10,10))
 

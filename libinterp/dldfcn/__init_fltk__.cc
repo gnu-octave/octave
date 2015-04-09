@@ -1684,6 +1684,7 @@ private:
                   set_on_ax_obj ("xlimmode", "auto");
                   set_on_ax_obj ("ylimmode", "auto");
                   set_on_ax_obj ("zlimmode", "auto");
+                  mark_modified ();
                   return 1;
                 }
               if (Fl::event_button () == 3)

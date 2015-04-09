@@ -2329,6 +2329,9 @@ Undocumented internal function.  Calls Fl::check ()\n\
 {
 #ifdef HAVE_FLTK
   Fl::check ();
+
+  if (Vdrawnow_requested)
+    Fdrawnow ();
 #else
   error ("__fltk_check__: not available without OpenGL and FLTK libraries");
 #endif

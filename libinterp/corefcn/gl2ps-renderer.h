@@ -54,6 +54,19 @@ protected:
   void draw_pixels (GLsizei w, GLsizei h, GLenum format,
                     GLenum type, const GLvoid *data);
 
+  void draw_axes (const axes::properties& props)
+  {
+    // Initialize a new sorting tree in gl2ps, this will make subsequent 
+    // objects be drawn over previous ones
+    GLint vp[4];
+    gl2psEndViewport ();
+    glGetIntegerv(GL_VIEWPORT, vp);
+    gl2psBeginViewport (vp);
+
+    opengl_renderer::draw_axes (props);
+  }
+
+
   void set_linestyle (const std::string& s, bool use_stipple = false)
   {
     opengl_renderer::set_linestyle (s, use_stipple);

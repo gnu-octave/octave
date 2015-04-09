@@ -1,5 +1,6 @@
 /*
 
+
 Copyright (C) 2007-2015 Shai Ayal
 Copyright (C) 2014-2015 Andreas Weber
 
@@ -503,6 +504,11 @@ public:
       }
   }
 
+  void update_position (uimenu::properties& uimenup, int pos)
+  {
+    uimenup.get_property ("position").set (octave_value (static_cast<double> (pos)), true, false);
+  }
+
   void add_entry (uimenu::properties& uimenup)
   {
 
@@ -555,9 +561,11 @@ public:
 
   void add_to_menu (uimenu::properties& uimenup)
   {
+    std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (uimenup);
     int len = kids.length ();
     std::string fltk_label = uimenup.get_fltk_label ();
+    int count = 0;
 
     add_entry (uimenup);
     update_foregroundcolor (uimenup);
@@ -574,15 +582,39 @@ public:
           {
             uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
                                         (kgo.get_properties ());
+
+            // if no pos yet, delay adding menu until after other menus
+            int pos = kprop.get_position ();
+            if (pos <= 0)
+              delayed_menus.push_back ((len - (ii + 1))); 
+            else
+             {
+               add_to_menu (kprop);
+             }
+          }
+      }
+
+    // create any delayed menus
+    for (size_t ii = 0; ii < delayed_menus.size (); ii++)
+      {
+        graphics_object kgo = gh_manager::get_object (kids (delayed_menus[ii]));
+
+        if (kgo.valid_object ())
+          {
+            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
+                                        (kgo.get_properties ());
             add_to_menu (kprop);
+            update_position (kprop, ++count);
           }
       }
   }
 
   void add_to_menu (figure::properties& figp)
   {
+    std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (figp);
     int len = kids.length ();
+    int count = 0;
     menubar->clear ();
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
@@ -592,7 +624,30 @@ public:
           {
             uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
                                         (kgo.get_properties ());
+
+            // if no pos yet, delay adding menu until after other menus
+            int pos = kprop.get_position ();
+            if (pos <= 0)
+              delayed_menus.push_back ((len - (ii + 1))); 
+            else
+             {
+               add_to_menu (kprop);
+               update_position (kprop, ++count);
+             }
+          }
+      }
+
+    // create any delayed menus
+    for (size_t ii = 0; ii < delayed_menus.size (); ii++)
+      {
+        graphics_object kgo = gh_manager::get_object (kids (delayed_menus[ii]));
+
+        if (kgo.valid_object ())
+          {
+            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
+                                        (kgo.get_properties ());
             add_to_menu (kprop);
+            update_position (kprop, ++count);
           }
       }
   }

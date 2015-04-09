@@ -113,7 +113,7 @@ endfunction
 %!   assert (get (ui, "checked"), "off");
 %!   assert (get (ui, "separator"), "off");
 %!   assert (get (ui, "enable"), "on");
-%!   assert (get (ui, "position"), 9);
+%!   assert (get (ui, "position"), 0);
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);

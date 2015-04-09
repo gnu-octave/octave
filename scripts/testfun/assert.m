@@ -76,7 +76,8 @@ function assert (cond, varargin)
     endif
 
     if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
-      if ((! isnumeric (cond) && ! islogical (cond)) || ! all (cond(:)))
+      if ((! isnumeric (cond) && ! islogical (cond))
+          || isempty (cond) || ! all (cond(:)))
         if (nargin == 1)
           ## Perhaps, say which elements failed?
           argin = ["(" strjoin(cellstr (argn), ",") ")"];
@@ -404,7 +405,10 @@ endfunction
 
 
 ## empty input
-%!assert ([])
+%!error assert ([])
+%!error assert ("")
+%!error assert ({})
+%!error assert (struct ([]))
 %!assert (zeros (3,0), zeros (3,0))
 %!error <O\(3x0\)\s+E\(0x2\)> assert (zeros (3,0), zeros (0,2))
 %!error <Dimensions don't match> assert (zeros (3,0), [])

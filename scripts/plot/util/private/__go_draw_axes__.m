@@ -1348,6 +1348,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
         if (ischar (obj.string))
           num_lines = rows (obj.string);
+          num_lines += numel (strfind (obj.string, "\n"));
         else
           num_lines = numel (obj.string);
         endif

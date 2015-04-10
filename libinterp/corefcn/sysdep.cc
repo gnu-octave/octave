@@ -1004,7 +1004,7 @@ tilde_expand (\"~/bin\")\n\
 /*
 %!test
 %! home = get_home_directory ();
-%! assert (tilde_expand ("~/foobar"), fullfile (home, "/foobar"));
+%! assert (tilde_expand ("~/foobar"), [home "/foobar"]);
 %! assert (tilde_expand ("/foo/bar"), "/foo/bar");
 %! assert (tilde_expand ("foo/bar"), "foo/bar");
 */

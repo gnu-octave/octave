@@ -380,7 +380,7 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+162"/>
         <source>Save File and Run</source>
-        <translation>Datei speichern und Ausführen</translation>
+        <translation>Datei speichern und ausführen</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -527,12 +527,14 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+8"/>
         <source>Move to Matching Brace</source>
+        <translatorcomment>Nicht ganz richtig. Funktioniert auch rückwärts mit der öffnenden Klammer. Besser &quot;passend&quot;, &quot;übereinstimmend&quot;, &quot;gegenüberliegend&quot;</translatorcomment>
         <translation>Zur schließenden Klammer springen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Select to Matching Brace</source>
-        <translation>Auswahl bis zur schließenden Klammer</translation>
+        <translatorcomment>Nicht ganz richtig. Funktioniert auch rückwärts mit der öffnenden Klammer. Besser &quot;passend&quot;, &quot;übereinstimmend&quot;, &quot;gegenüberliegend&quot;</translatorcomment>
+        <translation>Auswählen bis zur schließenden Klammer</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -780,7 +782,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <location line="-285"/>
         <source>Could not open file %1 for write:
 %2.</source>
-        <translation>Die Datei %1  konnte nicht zum Schreiben geöffnet werden:
+        <translation>Die Datei %1 konnte nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
@@ -1055,7 +1057,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Wir hoffen, dass Du Octave nützlich findest.&lt;/p&gt;
-&lt;p&gt;Wenn Du auf Probleme stoßen solltest, gibt es eine Reihe von Wegen um Hilfe zu bekommen. Neben der Option kommerziellen Support zu erhalten, gibt es noch eine Mailingliste, ein Wiki und andere Community Support Channels.
+&lt;p&gt;Wenn Du auf Probleme stoßen solltest, gibt es eine Reihe von Wegen, um Hilfe zu bekommen. Neben der Option kommerziellen Support zu erhalten, gibt es noch eine Mailingliste, ein Wiki und andere Community Support Channels.
 Mehr über jede Möglichkeit findest Du im Internet unter &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (Wird im externen Browser geöffnet).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -1367,7 +1369,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation>Doppelklick auf ein Kommando um dieses in das Terminal zu übertragen.</translation>
+        <translation>Doppelklick auf ein Kommando, um dieses in das Terminal zu übertragen.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1426,7 +1428,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Es scheint, dass die grafische Benutzerschnittstelle (GUI) zum ersten Mal auf diesem Computer gestartet wurde.
-Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave zu starten.&lt;/p&gt;
+Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave zu starten.&lt;/p&gt;
 &lt;p&gt;Die Konfigurationsdatei wird in&lt;br&gt;%1&lt;br&gt;gespeichert.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -1889,7 +1891,7 @@ existiert nicht. Soll sie erzeugt werden?</translation>
     <message>
         <location line="+211"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>Die Datei %1 befindet sich nicht im Suchpfad.  Um die momentan geöffnete Datei auszuführen oder zu debuggen, in das Verzeichnis %2 wechseln oder dieses Verzeichnis dem Suchpfad hinzufügen.</translation>
+        <translation>Die Datei %1 befindet sich nicht im Suchpfad. Um die momentan geöffnete Datei auszuführen oder zu debuggen, in das Verzeichnis %2 wechseln oder dieses Verzeichnis dem Suchpfad hinzufügen.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2415,7 +2417,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+23"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation>Octave erlauben Neuigkeiten und Informationen von der Octave Webseite anzuzeigen</translation>
+        <translation>Octave erlauben, Neuigkeiten und Informationen von der Octave Webseite anzuzeigen</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -2450,7 +2452,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+132"/>
         <source>Colors for variable attributes </source>
-        <translation>Farben für Variablen-Eigenschaften</translation>
+        <translation>Farben für Variablen-Attribute</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -2781,7 +2783,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Quit Debug Mode</source>
-        <translation>Debug Modus beenden</translation>
+        <translation>Debug-Modus beenden</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3352,7 +3354,6 @@ verwendet. Soll das Tastenkürzel trotzdem verwendet werden und damit von der vo
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translatorcomment>alternativ &quot;Eigenschaft&quot;</translatorcomment>
         <translation>Attribut</translation>
     </message>
     <message>
@@ -3387,8 +3388,7 @@ verwendet. Soll das Tastenkürzel trotzdem verwendet werden und damit von der vo
     <message>
         <location line="+10"/>
         <source>Filter</source>
-        <translation>Filter
-</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location line="+161"/>
@@ -3418,7 +3418,7 @@ verwendet. Soll das Tastenkürzel trotzdem verwendet werden und damit von der vo
     <message>
         <location line="+1"/>
         <source>Colors for variable attributes:</source>
-        <translation>Farben für Variablen Eigenschaften:</translation>
+        <translation>Farben für Variablen-Attribute:</translation>
     </message>
 </context>
 </TS>

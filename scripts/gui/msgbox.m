@@ -20,10 +20,11 @@
 ## @deftypefn  {Function File} {@var{h} =} msgbox (@var{msg})
 ## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title})
 ## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title}, @var{icon})
+## @deftypefnx {Function File} {@var{h} =} msgbox (@dots{}, @var{createmode})
 ## Display @var{msg} using a message dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
-## (@qcode{"\n"}), or it may be a cellstr array with one element for each
+## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
 ## decorate the dialog caption.
 ##
@@ -32,12 +33,16 @@
 ## @qcode{"help"}, or @qcode{"warn"}.
 ##
 ## The return value is always 1.
+##
+## Compatibility Note: The optional argument @var{createmode} is accepted for
+## @sc{matlab} compatibility, but is not implemented.
+#
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}
 ## @end deftypefn
 
 function retval = msgbox (msg, title = "", varargin)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 

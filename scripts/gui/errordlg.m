@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{h} =} errordlg (@var{msg})
 ## @deftypefnx {Function File} {@var{h} =} errordlg (@var{msg}, @var{title})
+## @deftypefnx {Function File} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
 ## Display @var{msg} using an error dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
@@ -27,16 +28,20 @@
 ## set the dialog caption.  The default title is @qcode{"Error Dialog"}.
 ##
 ## The return value is always 1.
+##
+## Compatibility Note: The optional argument @var{createmode} is accepted for
+## @sc{matlab} compatibility, but is not implemented.
+##
 ## @seealso{helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = errordlg (msg, title = "Error Dialog")
+function retval = errordlg (msg, title = "Error Dialog", varargin)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  retval = message_dialog ("errdlg", msg, title, "error");
+  retval = message_dialog ("errordlg", msg, title, "error", varargin{:});
 
 endfunction
 

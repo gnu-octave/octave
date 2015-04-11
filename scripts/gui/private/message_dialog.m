@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} message_dialog (@var{caller}, @var{msg}, @var{title}, @var{icon})
+## @deftypefn {Function File} {@var{h} =} message_dialog (@var{caller}, @var{msg}, @var{title}, @var{icon}, @var{createmode})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function retval = message_dialog (caller, msg, title = "", icon)
+function retval = message_dialog (caller, msg, title = "", icon, createmode)
 
   if (! ischar (msg))
     if (iscell (msg))
@@ -37,7 +37,7 @@ function retval = message_dialog (caller, msg, title = "", icon)
   endif
 
   dlg = "emptydlg";
-  if (nargin == 4)
+  if (nargin >= 4)
     switch (icon)
       case "error"
         dlg = "errordlg";
@@ -47,6 +47,9 @@ function retval = message_dialog (caller, msg, title = "", icon)
         dlg = "warndlg";
       case "none"
         dlg = "emptydlg";
+      case "custom"
+        icon = "emptydlg";
+        warning ("%s: custom icons not yet supported", caller);
       otherwise
         error ("%s: ICON is not a valid type", caller);
     endswitch
@@ -54,6 +57,18 @@ function retval = message_dialog (caller, msg, title = "", icon)
     icon = "none";
   endif
 
+  if (nargin == 5)
+    if ((isstruct (createmode)) && (isfield (createmode, "WindowStyle")))
+      createmode = createmode.WindowStyle;
+    endif
+    switch (createmode)
+      case {"nonmodal", "non-modal", "modal", "replace"}
+        warning ("%s: %s is not yet supported", caller, createmode);
+      otherwise
+        error ("%s: CREATEMODE is not a valid type", caller);
+    endswitch
+  endif
+  
   if (__octave_link_enabled__ ())
     retval = __octave_link_message_dialog__ (icon, msg, title);
   elseif (__have_feature__ ("JAVA"))

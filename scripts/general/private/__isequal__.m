@@ -41,7 +41,7 @@
 ##    and size of each dimension match.
 ## 3. For each argument after x, compare it for equality with x:
 ##    a. struct     compare each member by name, not by order (recursive)
-##    b. object     converted to struct, and then compared as stated above
+##    b. object     convert to struct, and then compare as stated above
 ##    c. cell       compare each member by order (recursive)
 ##    d. char       compare each member with strcmp
 ##    e  fcn_handle compare using overloade 'eq' operator
@@ -78,6 +78,8 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
   ## From here on, compare objects as if they were structures.
   if (t && isobject (x))
+    ## Locally suppress class-to-struct warning.  We know what we are doing.
+    warning ("off", "Octave:classdef-to-struct", "local");
     x = builtin ("struct", x);
     for i = 1:numel (varargin)
       varargin{i} = builtin ("struct", varargin{i});

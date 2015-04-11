@@ -1146,7 +1146,7 @@ is already open in the editor</source>
     <message>
         <location line="+2"/>
         <source>&amp;Format</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーマット (&amp;)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1161,42 +1161,42 @@ is already open in the editor</source>
     <message>
         <location line="+12"/>
         <source>&amp;Indent</source>
-        <translation type="unfinished"></translation>
+        <translation>インデント (&amp;I)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Unindent</source>
-        <translation type="unfinished"></translation>
+        <translation>アンインデント (&amp;U)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>行末文字を Windows 仕様にする (CRLF) (&amp;W)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
-        <translation type="unfinished"></translation>
+        <translation>行末文字を Unix 仕様にする (LF) (&amp;U)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation type="unfinished"></translation>
+        <translation>行末文字を Mac 仕様にする (CR) (&amp;U)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Navi&amp;gation</source>
-        <translation type="unfinished"></translation>
+        <translation>ナビゲーション (&amp;g)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished"></translation>
+        <translation>対応する括弧に移動</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished"></translation>
+        <translation>対応する括弧を選択</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1211,7 +1211,7 @@ is already open in the editor</source>
     <message>
         <location line="+4"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>表示 (&amp;V)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1323,7 +1323,7 @@ for write: %2.</source>
     <message>
         <location line="+138"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>ホワイトスペースを表示 (&amp;W)</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -2672,19 +2672,19 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="-159"/>
         <location filename="../src/ui-settings-dialog.h" line="-11"/>
         <source>Small</source>
-        <translation type="unfinished"></translation>
+        <translation>小さい</translation>
     </message>
     <message>
         <location line="+17"/>
         <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Large</source>
-        <translation type="unfinished"></translation>
+        <translation>大きい</translation>
     </message>
     <message>
         <location line="+168"/>
         <location filename="../src/ui-settings-dialog.h" line="+10"/>
         <source>Custom style</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムスタイル</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2710,7 +2710,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <location line="+82"/>
         <source>Startup path</source>
-        <translation type="unfinished"></translation>
+        <translation>起動パス</translation>
     </message>
     <message>
         <location line="-1379"/>
@@ -2742,13 +2742,13 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+40"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Tab width min.</source>
-        <translation type="unfinished"></translation>
+        <translation>タブ幅の最小値</translation>
     </message>
     <message>
         <location line="+64"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>max.</source>
-        <translation type="unfinished"></translation>
+        <translation>最大値</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3168,7 +3168,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+26"/>
         <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>標準</translation>
     </message>
     <message>
         <location line="+1195"/>
@@ -3224,13 +3224,13 @@ Octave GUI はオープンできませんでした．</translation>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <location line="+4"/>
         <source>Use this set</source>
-        <translation type="unfinished"></translation>
+        <translation>このセットを使用する</translation>
     </message>
     <message>
         <location line="-21"/>
         <location filename="../src/ui-settings-dialog.h" line="-3"/>
         <source>Set 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>セット 1</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3252,7 +3252,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Set 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>セット 2</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -3330,7 +3330,7 @@ Octave GUI はオープンできませんでした．</translation>
     <message>
         <location line="-355"/>
         <source>IBeam Cursor</source>
-        <translation>IBeam カーソル标</translation>
+        <translation>IBeam カーソル</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3864,7 +3864,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+25"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>ホワイトスペースの表示</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3979,7 +3979,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+17"/>
         <source>View</source>
-        <translation>ビュー</translation>
+        <translation>表示</translation>
     </message>
     <message>
         <location line="+4"/>

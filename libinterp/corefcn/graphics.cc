@@ -1473,6 +1473,18 @@ array_property::get_data_limits (void)
 bool
 handle_property::do_set (const octave_value& v)
 {
+  // Users may want to use empty matrix to reset a handle property
+  if (v.is_empty ())
+    {
+      if (! get ().is_empty ())
+        {
+          current_val = graphics_handle ();
+          return true;
+        }
+      else
+        return false;
+    }
+
   double dv = v.double_value ();
 
   if (! error_state)
@@ -3083,6 +3095,21 @@ base_properties::update_axis_limits (const std::string& axis_type,
 
   if (obj)
     obj.update_axis_limits (axis_type, h);
+}
+
+void
+base_properties::update_uicontextmenu (void) const
+{
+  if (uicontextmenu.get ().is_empty ())
+    return;
+  
+  graphics_object obj = gh_manager::get_object (uicontextmenu.get ());
+  if (obj && obj.isa ("uicontextmenu"))
+    {
+      uicontextmenu::properties& props =
+        reinterpret_cast<uicontextmenu::properties&> (obj.get_properties ());
+      props.add_dependent_obj (__myhandle__);
+    }
 }
 
 bool
@@ -8810,6 +8837,51 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
   base_graphics_object::update_axis_limits (axis_type);
 }
+
+// ---------------------------------------------------------------------
+
+uicontextmenu::~uicontextmenu (void)
+{ 
+  std::list<graphics_handle> lst = xproperties.get_dependent_obj_list ();
+  std::list<graphics_handle>::const_iterator it;
+  
+  for (it = lst.begin (); it != lst.end (); it++)
+    {
+      graphics_object go = gh_manager::get_object (*it);
+      
+      if (go.valid_object () &&
+          go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
+        go.set ("uicontextmenu", Matrix ());
+    }
+}
+
+
+/*
+## Test deletion/reset of uicontextmenu
+%!test
+%! hf = figure ("visible", "off");
+%! hax = axes ("parent", hf);
+%! unwind_protect
+%!   hctx1 = uicontextmenu ("parent", hf);
+%!   hctx2 = uicontextmenu ("parent", hf);
+%!   set (hf, "uicontextmenu", hctx2);
+%!   set (hax, "uicontextmenu", hctx2);
+%!   assert (get (hf, "uicontextmenu"), hctx2);
+%!   assert (get (hax, "uicontextmenu"), hctx2);
+%!   assert (get (hf, "children"), [hctx2; hctx1; hax]);
+%!   delete (hctx2);
+%!   assert (get (hf, "uicontextmenu"), []);
+%!   assert (get (hax, "uicontextmenu"), []);
+%!   assert (get (hf, "children"), [hctx1; hax]);
+%!   set (hf, "uicontextmenu", hctx1);
+%!   assert (get (hf, "uicontextmenu"), hctx1);
+%!   set (hf, "uicontextmenu", []);
+%!   assert (get (hf, "uicontextmenu"), []);
+%!   assert (get (hf, "children"), [hctx1; hax]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect;
+ */
 
 // ---------------------------------------------------------------------
 

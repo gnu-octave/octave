@@ -2595,6 +2595,8 @@ public:
   virtual void update_axis_limits (const std::string& axis_type,
                                    const graphics_handle& h) const;
 
+  virtual void update_uicontextmenu (void) const;
+
   virtual void delete_children (bool clear = false)
   {
     children.delete_children (clear);
@@ -2663,7 +2665,7 @@ protected:
     bool_property selectionhighlight , "on"
     string_property tag s , ""
     string_property type frs , ty
-    handle_property uicontextmenu , graphics_handle ()
+    handle_property uicontextmenu u , graphics_handle ()
     any_property userdata , Matrix ()
     bool_property visible , "on"
     // additional (Octave-specific) properties
@@ -5355,6 +5357,15 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+  
+    void add_dependent_obj (graphics_handle gh) 
+    { dependent_obj_list.push_back (gh); }
+
+    // FIXME: the list may contain duplicates. 
+    //        Should we return only unique elements? 
+    const std::list<graphics_handle> get_dependent_obj_list (void) 
+    { return dependent_obj_list; }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -5372,6 +5383,10 @@ public:
       position.add_constraint (dim_vector (2, 1));
       visible.set (octave_value (true));
     }
+
+  private:
+    // List of objects that might depend on this uicontextmenu object
+    std::list<graphics_handle> dependent_obj_list;
   };
 
 private:
@@ -5382,7 +5397,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uicontextmenu (void) { }
+  ~uicontextmenu (void);
 
   base_properties& get_properties (void) { return xproperties; }
 

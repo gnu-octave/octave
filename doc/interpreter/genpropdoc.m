@@ -166,6 +166,10 @@ always @qcode{\"__objname__\"}";
         s.printdefault = false;
 
       case "uicontextmenu"
+        s.doc = "Graphics handle of the uicontextmenu object that is \
+currently associated to this __objname__ object.";
+        s.valid = valid_handle;
+        
       case "userdata"
         s.doc = "User-defined data to associate with the graphics object.";
         s.valid = "Any Octave data";

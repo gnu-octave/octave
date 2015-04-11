@@ -30,6 +30,10 @@
 ## was clicked in the units of the current axes.  The return value @var{button}
 ## is 1, 2, or 3 for the left, middle, or right button.  If a key is pressed
 ## the ASCII value is returned in @var{button}.
+##
+## Implementation Note: @code{ginput} is intenteded for 2-D plots.  For 3-D
+## plots see the @var{currentpoint} property of the current axes which can be
+## transformed with knowledge of the current @code{view} into data units.
 ## @seealso{gtext, waitforbuttonpress}
 ## @end deftypefn
 

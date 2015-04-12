@@ -1759,17 +1759,17 @@ Si desidera sovrascriverlo?</translation>
     <message>
         <location line="+9"/>
         <source>Axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Assi</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Griglia</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Autoscale</source>
-        <translation type="unfinished"></translation>
+        <translation>Ridimensiona</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2024,7 +2024,7 @@ is already open in the editor</source>
     <message>
         <location line="+5"/>
         <source>Duplicate Selection/Line</source>
-        <translation>Duplica selezion/riga</translation>
+        <translation>Duplica selezione/riga</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2089,7 +2089,7 @@ is already open in the editor</source>
     <message>
         <location line="+148"/>
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location line="-150"/>
@@ -2261,7 +2261,7 @@ is already open in the editor</source>
     <message>
         <location line="+13"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra Spazio &amp;Bianco</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -2480,7 +2480,7 @@ Si desidera scegliere un altro nome?</translation>
     <message>
         <location line="+1"/>
         <source>Browse your files.</source>
-        <translation>Esplorare i prorpi file.</translation>
+        <translation>Esplorare i propri file.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2490,7 +2490,7 @@ Si desidera scegliere un altro nome?</translation>
     <message>
         <location line="+24"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostare la cartella di Octave alla cartella corrente</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2718,7 +2718,11 @@ Si desidera scegliere un altro nome?</translation>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Ci auguriamo che troviate Octave un utile strumento.&lt;/p&gt;
+&lt;p&gt;Se incontraste problemi, ci sono vari modi di ottenere aiuto, tra cui supporto commerciale, una mailing list, una wiki ed altri canali di supporto gestiti dalla community.
+Potete trovare ulteriori informazioni al riguardo visitando &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (si apre in un browser esterno).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -3337,7 +3341,7 @@ Fare click su &apos;Successivo&apos; per creare un file di configurazione e lanc
     <message>
         <location line="+6"/>
         <source>Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra degli Strumenti</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3689,7 +3693,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <location line="-152"/>
         <location filename="../src/ui-settings-dialog.h" line="-10"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normale</translation>
     </message>
     <message>
         <location line="+191"/>
@@ -4834,47 +4838,47 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="-145"/>
         <source>Step</source>
-        <translation type="unfinished">Un&apos;istruzione alla volta</translation>
+        <translation>Un&apos;istruzione alla volta</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Ripristina il Layout della Finestra</translation>
+        <translation>Ripristina il Layout della Finestra</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Segnala un Problema</translation>
+        <translation>Segnala un Problema</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Chiudi gli Altri File</translation>
+        <translation>Chiudi gli Altri File</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Show Completion List</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra Lista di Completamenti</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Convert Line Endings to Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Converti Fine Riga a Windows</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Unix</source>
-        <translation type="unfinished"></translation>
+        <translation>Converti Fine Riga a Unix</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Mac</source>
-        <translation type="unfinished"></translation>
+        <translation>Converti Fine Riga a Mac</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra Spazio Bianco</translation>
     </message>
     <message>
         <location line="+2"/>

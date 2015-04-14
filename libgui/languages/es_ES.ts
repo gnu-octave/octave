@@ -104,17 +104,17 @@
     <message>
         <location line="+9"/>
         <source>Axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejes</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Malla</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Autoscale</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoescalado</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -309,27 +309,33 @@
         <location line="-1237"/>
         <source>New function name:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre para la nueva función:
+</translation>
     </message>
     <message>
         <location line="+99"/>
         <source>Could not start custom file editor
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede abrir el editor de texto personalizado
+%1</translation>
     </message>
     <message>
         <location line="+125"/>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero
+%1
+no puede ser abierto para lectura: %2.</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero
+%1
+no existe. ¿Desea crearlo?</translation>
     </message>
     <message>
         <location line="+998"/>
@@ -344,7 +350,7 @@ does not exist. Do you want to create it?</source>
     <message>
         <location line="+20"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar &amp;espacios en blanco</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -416,14 +422,18 @@ does not exist. Do you want to create it?</source>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero
+%2
+no se puede abrir para escritura: %2.</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Fichero no guardado! Ya hay un fichero con el nombre seleccionado
+%1
+abierto en el editor</translation>
     </message>
     <message>
         <location line="+762"/>
@@ -548,7 +558,7 @@ is already open in the editor</source>
     <message>
         <location line="+8"/>
         <source>Move to Matching Brace</source>
-        <translatorcomment>Las posibilidades son aréntesis, corchete o llave.</translatorcomment>
+        <translatorcomment>Las posibilidades son paréntesis, corchete o llave.</translatorcomment>
         <translation>Mover al paréntesis/corchete/llave correspondiente</translation>
     </message>
     <message>
@@ -584,12 +594,12 @@ is already open in the editor</source>
     <message>
         <location line="+128"/>
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location line="-120"/>
         <source>Show Line &amp;Endings</source>
-        <translation>Mostrar &amp;fin de líneas</translation>
+        <translation>Mostrar &amp;fines de línea</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -639,7 +649,7 @@ is already open in the editor</source>
     <message>
         <location line="-969"/>
         <source>The associated file editor tab has disappeared.</source>
-        <translation>La pestaña para la edición del archivo ha desaparecido.</translation>
+        <translation>La pestaña del editor de texto asociado ha desaparecido.</translation>
     </message>
     <message>
         <location line="+731"/>
@@ -677,7 +687,7 @@ is already open in the editor</source>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        <translation>Col:</translation>
+        <translation>Columna:</translation>
     </message>
     <message>
         <location line="+156"/>
@@ -712,13 +722,18 @@ is already open in the editor</source>
   %1
 
 is about to be closed but has been modified.  %2</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero
+
+  %1
+
+se va a cerrar, pero ha sido modificado.  %2</translation>
     </message>
     <message>
         <location line="+213"/>
         <source>Could not open file %1 for write:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero %1 no se puede abrir para escritura:
+%2.</translation>
     </message>
     <message>
         <location line="+177"/>
@@ -729,21 +744,31 @@ If you keep this file name, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot;
+no es un identificador válido.
+
+Si mantiene este nombre para el fichero, no podrá llamar al script
+usando su nombre como un comando de Octave.
+
+¿Desea seleccionar otro nombre?</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Aviso: ¡el contenido del editor ha sido modificado!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Parece que el fichero
+%1
+ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
     </message>
     <message>
         <location line="-210"/>
@@ -801,7 +826,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+24"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Asignar el directorio actual del navegador como directorio de Octave</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -823,19 +848,22 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="+123"/>
         <source>Rename file/directory:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Renombrar fichero/directorio
+</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>
  to: </source>
-        <translation type="unfinished"></translation>
+        <translation>
+ a: </translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de que quiere borrar
+</translation>
     </message>
     <message>
         <location line="+214"/>
@@ -882,7 +910,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="-335"/>
         <source>Activate to open in editor, right click for alternatives</source>
-        <translation>Activar para abrir en el editor, haga clic derecho para ver las alternativas</translation>
+        <translation>Activar para abrir en el editor. Haga clic derecho para ver las alternativas</translation>
     </message>
     <message>
         <location line="+236"/>
@@ -1026,7 +1054,11 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Esperamos que Octave le sea útil.&lt;/p&gt;
+&lt;p&gt;Si se encuentra con problemas, existen varias vías para obtener ayuda, las cuales incluyen soporte comercial, listas de correo, un wiki y otros canales de comunicación soportados por la comunidad.
+Puede encontrar más información visitando &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (se abre en una ventana externa del navegador).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1049,9 +1081,9 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Para más información acerca de Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Visite &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (abre en un navegador externo)&lt;/li&gt;
-&lt;li&gt;Obtenga la documentación en linea en formato &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o como &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;documento&lt;/span&gt;&lt;/a&gt; pdf(abre en un navegador externo)&lt;/li&gt;
-&lt;li&gt;Abra el navegador de la documentación de la GUI de Octave con el menú de ayuda&lt;/li&gt;
+&lt;li&gt;Visite &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (se abre en una ventana externa del navegador)&lt;/li&gt;
+&lt;li&gt;Obtenga la documentación en linea en formato &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o como &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;documento&lt;/span&gt;&lt;/a&gt; pdf(se abre en una ventana externa del navegador)&lt;/li&gt;
+&lt;li&gt;Abra el navegador de documentación de la GUI de Octave desde el menú de ayuda&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;
 
@@ -1369,7 +1401,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+3"/>
         <source>Create script</source>
         <translatorcomment>Ha sido utilizada la traducción &quot;guión&quot; de script: http://es.wikipedia.org/wiki/Script#Traducci.C3.B3n</translatorcomment>
-        <translation>Crear un guión</translation>
+        <translation>Crear un guión (script)</translation>
     </message>
 </context>
 <context>
@@ -1474,7 +1506,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation>El archivo de notas de versión %1 no puede ser leído.</translation>
+        <translation>El archivo de notas de versión %1 no se puede leer.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1644,7 +1676,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+6"/>
         <source>Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de herramientas</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1853,7 +1885,9 @@ o active la conexión a la web para ver las novedades en el diálogo de configur
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero
+%1
+no existe. ¿Desea crearlo?</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1912,7 +1946,13 @@ Make sure you have read and write permissions to
 %2
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero de configuración
+%1
+no existe y no puede ser creado.
+Asegúrese de que tiene permisos de lectura y escritura en
+%2
+
+La interfaz gráfica de Octave se cerrará.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2157,7 +2197,7 @@ Octave GUI must be closed now.</source>
         <location line="-429"/>
         <location filename="../src/ui-settings-dialog.h" line="-28"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation>línea de comando(%f=archivo, %l=linea):</translation>
+        <translation>línea de comando (%f=archivo, %l=linea):</translation>
     </message>
     <message>
         <location line="+521"/>
@@ -2263,7 +2303,7 @@ Octave GUI must be closed now.</source>
         <location line="-152"/>
         <location filename="../src/ui-settings-dialog.h" line="-10"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location line="+191"/>
@@ -2303,13 +2343,13 @@ Octave GUI must be closed now.</source>
         <location line="-1322"/>
         <location filename="../src/ui-settings-dialog.h" line="-78"/>
         <source>After Column</source>
-        <translation>Despues de la columna</translation>
+        <translation>Después de la columna</translation>
     </message>
     <message>
         <location line="+144"/>
         <location filename="../src/ui-settings-dialog.h" line="+6"/>
         <source>Tab width min.</source>
-        <translation>Anchura mínima del tabulador.</translation>
+        <translation>Anchura mínima del tabulador</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -2537,7 +2577,7 @@ Octave GUI must be closed now.</source>
         <location line="+3"/>
         <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Disable global shortcuts when terminal window has focus</source>
-        <translation>Deshabilitar loa atajos globales cuando la ventana del terminal se enfoque </translation>
+        <translation>Deshabilitar los atajos globales cuando la ventana del terminal se enfoque </translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3145,52 +3185,52 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="-145"/>
         <source>Step</source>
-        <translation type="unfinished">Siguiente instrucción</translation>
+        <translation>Siguiente instrucción</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Restablecer el esquema de ventana predeterminado</translation>
+        <translation>Restablecer el esquema de ventana predeterminado</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Informar de fallo</translation>
+        <translation>Informar de fallo</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Cerrar otros archivos</translation>
+        <translation>Cerrar otros archivos</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Show Completion List</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar lista de comandos coincidentes</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Convert Line Endings to Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir fines de línea a Windows</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Unix</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir fines de línea a Unix</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Mac</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir fines de línea a Mac</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar espacios en blanco</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show Line Endings</source>
-        <translation>Mostrar fin de línea</translation>
+        <translation>Mostrar fines de línea</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3310,7 +3350,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+124"/>
         <source>Enter new Shortcut for Set %1</source>
-        <translation>Introduzca nuevo atajo para conjunto %1</translation>
+        <translation>Introduzca nuevo atajo para el conjunto %1</translation>
     </message>
     <message>
         <location line="+5"/>

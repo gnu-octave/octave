@@ -2059,6 +2059,18 @@ octave_base_parser::end_error (const char *type, token::end_tok_type ettype,
       error (fmt, type, "end", l, c);
       break;
 
+    case token::classdef_end:
+      error (fmt, type, "endclassdef", l, c);
+      break;
+
+    case token::enumeration_end:
+      error (fmt, type, "endenumeration", l, c);
+      break;
+
+    case token::events_end:
+      error (fmt, type, "endevents", l, c);
+      break;
+
     case token::for_end:
       error (fmt, type, "endfor", l, c);
       break;
@@ -2067,20 +2079,24 @@ octave_base_parser::end_error (const char *type, token::end_tok_type ettype,
       error (fmt, type, "endfunction", l, c);
       break;
 
-    case token::classdef_end:
-      error (fmt, type, "endclassdef", l, c);
-      break;
-
     case token::if_end:
       error (fmt, type, "endif", l, c);
       break;
 
-    case token::switch_end:
-      error (fmt, type, "endswitch", l, c);
+    case token::methods_end:
+      error (fmt, type, "endmethods", l, c);
       break;
 
-    case token::while_end:
-      error (fmt, type, "endwhile", l, c);
+    case token::parfor_end:
+      error (fmt, type, "endparfor", l, c);
+      break;
+
+    case token::properties_end:
+      error (fmt, type, "endproperties", l, c);
+      break;
+
+    case token::switch_end:
+      error (fmt, type, "endswitch", l, c);
       break;
 
     case token::try_catch_end:
@@ -2089,6 +2105,10 @@ octave_base_parser::end_error (const char *type, token::end_tok_type ettype,
 
     case token::unwind_protect_end:
       error (fmt, type, "end_unwind_protect", l, c);
+      break;
+
+    case token::while_end:
+      error (fmt, type, "endwhile", l, c);
       break;
 
     default:
@@ -2121,12 +2141,16 @@ octave_base_parser::end_token_ok (token *tok, token::end_tok_type expected)
           end_error ("classdef", ettype, l, c);
           break;
 
-        case token::for_end:
-          end_error ("for", ettype, l, c);
-          break;
-
         case token::enumeration_end:
           end_error ("enumeration", ettype, l, c);
+          break;
+
+        case token::events_end:
+          end_error ("events", ettype, l, c);
+          break;
+
+        case token::for_end:
+          end_error ("for", ettype, l, c);
           break;
 
         case token::function_end:
@@ -2137,16 +2161,24 @@ octave_base_parser::end_token_ok (token *tok, token::end_tok_type expected)
           end_error ("if", ettype, l, c);
           break;
 
+        case token::methods_end:
+          end_error ("methods", ettype, l, c);
+          break;
+
         case token::parfor_end:
           end_error ("parfor", ettype, l, c);
           break;
 
-        case token::try_catch_end:
-          end_error ("try", ettype, l, c);
+        case token::properties_end:
+          end_error ("properties", ettype, l, c);
           break;
 
         case token::switch_end:
           end_error ("switch", ettype, l, c);
+          break;
+
+        case token::try_catch_end:
+          end_error ("try", ettype, l, c);
           break;
 
         case token::unwind_protect_end:

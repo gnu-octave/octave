@@ -56,9 +56,9 @@ public:
     parfor_end,
     properties_end,
     switch_end,
-    while_end,
     try_catch_end,
-    unwind_protect_end
+    unwind_protect_end,
+    while_end,
   };
 
   token (int tv, int l = -1, int c = -1);

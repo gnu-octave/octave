@@ -116,8 +116,6 @@ private slots:
   void fileSaveFigureAs (void);
   void fileCloseFigure (void);
   void editCopy (void);
-  void editCut (void);
-  void editPaste (void);
   void helpAboutQtHandles (void);
   void updateMenuBar (void);
   void updateContainer (void);

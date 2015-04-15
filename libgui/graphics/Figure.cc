@@ -315,10 +315,6 @@ Figure::createFigureToolBarAndMenuBar (void)
   editMenu->menuAction ()->setObjectName ("builtinMenu");
   editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (void)),
                        Qt::CTRL|Qt::Key_C)->setEnabled (false);
-  editMenu->addAction (tr ("Cu&t"), this, SLOT (editCut (void)),
-                       Qt::CTRL|Qt::Key_X)->setEnabled (false);
-  editMenu->addAction (tr ("&Paste"), this, SLOT (editPaste(void)),
-                       Qt::CTRL|Qt::Key_V)->setEnabled (false);
   editMenu->addSeparator ();
   editMenu->addActions (m_mouseModeGroup->actions ());
 
@@ -829,16 +825,8 @@ Figure::fileCloseFigure (void)
 void
 Figure::editCopy (void)
 {
-}
-
-void
-Figure::editCut (void)
-{
-}
-
-void
-Figure::editPaste (void)
-{
+  // FIXME: implement this by printing to a temporary file in some
+  // format (jpg?  png?  pdf?) and copying the result to the clipboard.
 }
 
 void

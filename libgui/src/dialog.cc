@@ -193,14 +193,10 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   QListView *view = new QListView;
   view->setModel (model);
 
-  if (mode == "Single")
+  if (mode == "single")
     view->setSelectionMode (QAbstractItemView::SingleSelection);
-  else if (mode == "Multiple")
+  else if (mode == "multiple")
     view->setSelectionMode (QAbstractItemView::ExtendedSelection);
-//  else if ()
-//    view->setSelectionMode (QAbstractItemView::ContiguousSelection);
-//  else if ()
-//    view->setSelectionMode (QAbstractItemView::MultiSelection);
   else
     view->setSelectionMode (QAbstractItemView::NoSelection);
 
@@ -249,7 +245,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
     }
   listLayout->addWidget (view);
   QPushButton *select_all = new QPushButton (tr ("Select All"));
-  select_all->setEnabled (mode == "Multiple");
+  select_all->setEnabled (mode == "multiple");
   listLayout->addWidget (select_all);
 
   QPushButton *buttonOk = new QPushButton (ok_string);

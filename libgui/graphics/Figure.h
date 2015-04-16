@@ -109,13 +109,14 @@ private:
   static void updateBoundingBoxHelper (void*);
 
   void save_figure_callback (const std::string& file);
+  void copy_figure_callback (const std::string& format);
 
 private slots:
   void setMouseMode (MouseMode mode);
   void fileSaveFigure (bool prompt = false);
   void fileSaveFigureAs (void);
   void fileCloseFigure (void);
-  void editCopy (void);
+  void editCopy (bool choose_format = false);
   void helpAboutQtHandles (void);
   void updateMenuBar (void);
   void updateContainer (void);

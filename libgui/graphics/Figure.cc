@@ -28,10 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QActionEvent>
 #include <QActionGroup>
 #include <QApplication>
+#include <QClipboard>
 #include <QEvent>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFrame>
+#include <QImage>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
@@ -46,6 +48,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "FigureWindow.h"
 #include "MouseModeActionGroup.h"
 #include "QtHandlesUtils.h"
+
+#include "file-ops.h"
+#include "unwind-prot.h"
 
 #include "octave-qt-link.h"
 
@@ -313,8 +318,8 @@ Figure::createFigureToolBarAndMenuBar (void)
 
   QMenu* editMenu = m_menuBar->addMenu (tr ("&Edit"));
   editMenu->menuAction ()->setObjectName ("builtinMenu");
-  editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (void)),
-                       Qt::CTRL|Qt::Key_C)->setEnabled (false);
+  editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (bool)),
+                       Qt::CTRL|Qt::Key_C);
   editMenu->addSeparator ();
   editMenu->addActions (m_mouseModeGroup->actions ());
 
@@ -809,6 +814,38 @@ Figure::save_figure_callback (const std::string& file)
 {
   Ffeval (ovl ("print", file));
 }
+
+static void
+delete_file (const std::string& file)
+{
+  octave_unlink (file);
+}
+  
+void
+Figure::copy_figure_callback (const std::string& format)
+{
+  std::string msg;
+
+  unwind_protect frame;
+
+  std::string file = octave_tempnam ("", "oct-", msg);
+
+  if (file.empty ())
+    {
+      // FIXME: report error contained in message.
+      return;
+    }
+
+  frame.add_fcn (delete_file, file);
+
+  std::string device = "-d" + format;
+
+  Ffeval (ovl ("print", file, device));
+
+  QClipboard *clipboard = QApplication::clipboard ();
+
+  clipboard->setImage (QImage (file.c_str ()));
+}
   
 void
 Figure::fileSaveFigureAs (void)
@@ -823,10 +860,27 @@ Figure::fileCloseFigure (void)
 }
 
 void
-Figure::editCopy (void)
+Figure::editCopy (bool /* choose_format */)
 {
-  // FIXME: implement this by printing to a temporary file in some
-  // format (jpg?  png?  pdf?) and copying the result to the clipboard.
+  QString format = "jpg";
+
+#if 0
+
+  // FIXME: allow choice of image formats.
+
+  if (choose_format)
+    {
+      QFileInfo finfo (file);
+
+      format = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
+                                           tr ("Save Figure As"),
+                                           finfo.absoluteFilePath (), 0, 0,
+                                           QFileDialog::DontUseNativeDialog);
+    }
+#endif
+
+  octave_link::post_event (this, &Figure::copy_figure_callback,
+                           format.toStdString ());
 }
 
 void

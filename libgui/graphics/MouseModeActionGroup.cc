@@ -53,8 +53,6 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
   m_actions.append (new QAction (QIcon (":/images/select.png"),
                                  tr ("Select"), this));
 
-  m_actions[4]->setEnabled (false);
-
   foreach (QAction* a, m_actions)
     {
       a->setCheckable (true);

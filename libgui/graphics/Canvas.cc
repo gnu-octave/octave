@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QApplication>
 #include <QBitmap>
 #include <QCursor>
+#include <QInputDialog>
 #include <QList>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -39,6 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 
 #include "gl2ps-renderer.h"
+#include "octave-qt-link.h"
+
+#include "builtin-defun-decls.h"
 
 namespace QtHandles
 {
@@ -146,6 +150,14 @@ Canvas::updateCurrentPoint(const graphics_object& fig,
     }
 }
 
+void
+Canvas::annotation_callback (const octave_value_list& args)
+{
+  Ffeval (ovl ("annotation").append (args));
+
+  redraw ();
+}
+  
 void
 Canvas::canvasToggleAxes (const graphics_handle& handle)
 {
@@ -556,7 +568,39 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
           break;
 
         case TextMode:
-          // Handle text insertion here.
+          {
+            QWidget *w = qWidget ();
+
+            if (! w)
+              break;
+
+            bool ok;
+
+            // FIXME: this dialog should allow multiple line text entry
+            // and also provide options for setting text properties of
+            // the text annotation.
+
+            QString text = QInputDialog::getText (w, "Annotation", "",
+                                                  QLineEdit::Normal, "", &ok);
+
+            if (! ok || text.isEmpty ())
+              break;
+
+            Matrix bb = axesObj.get_properties ().get_boundingbox (false);
+
+            QPoint pos = event->pos ();
+
+            Matrix position (1, 4);
+
+            position(0) = pos.x () / bb(2);
+            position(1) = 1.0 - (pos.y () / bb(3));
+            position(2) = pos.x () / bb(2);
+            position(3) = 1.0 - (pos.y () / bb(3));
+
+            octave_link::post_event (this, &Canvas::annotation_callback,
+                                     ovl ("textbox", position,
+                                          "string", text.toStdString ()));
+          }
           break;
 
         case PanMode:

@@ -48,6 +48,8 @@ public:
 protected:
   virtual void draw_text (const text::properties& props);
 
+  virtual void draw_image (const image::properties& props);
+
   virtual void setup_opengl_transformation (const axes::properties& props);
 
   virtual void init_marker (const std::string& m, double size, float width);

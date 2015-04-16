@@ -201,3 +201,35 @@ opengl_selector::render_text (const std::string& txt,
   return Matrix (1, 4, 0.0);
 #endif
 }
+
+void
+opengl_selector::draw_image (const image::properties& props)
+{
+  Matrix xd = props.get_xdata ().matrix_value ();
+  octave_idx_type nc = props.get_cdata ().matrix_value ().columns ();
+  double x_pix_size = (xd(1) - xd(0)) / (nc - 1);
+
+  Matrix yd = props.get_ydata ().matrix_value ();
+  octave_idx_type nr = props.get_cdata ().matrix_value ().rows ();
+  double y_pix_size = (yd(1) - yd(0)) / (nr - 1);
+
+  ColumnVector p1(3, 0.0), p2(3, 0.0), p3(3, 0.0), p4(3, 0.0);
+  p1(0) = xd(0) - x_pix_size/2;
+  p1(1) = yd(0) - y_pix_size/2;
+
+  p2(0) = xd(1) + x_pix_size/2;
+  p2(1) = yd(0) - y_pix_size/2;
+
+  p3(0) = xd(1) + x_pix_size/2;
+  p3(1) = yd(1) + y_pix_size/2;
+
+  p4(0) = xd(0) - x_pix_size/2;
+  p4(1) = yd(1) + y_pix_size/2;
+  
+  glBegin (GL_QUADS);
+  glVertex3dv (p1.data ());
+  glVertex3dv (p2.data ());
+  glVertex3dv (p3.data ());
+  glVertex3dv (p4.data ());
+  glEnd ();
+}

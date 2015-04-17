@@ -55,10 +55,12 @@ function filelist = zip (zipfile, files, rootdir = ".")
 
   zipfile = make_absolute_filename (zipfile);
 
-  cmd = sprintf ("cd %s; zip -r %s %s",
-                     rootdir,   zipfile, sprintf (" %s", files{:}));
+  cmd = sprintf ("zip -r %s %s", zipfile, sprintf (" %s", files{:}));
 
+  origdir = pwd ();
+  cd (rootdir);
   [status, output] = system (cmd);
+  cd (origdir);
 
   if (status)
     error ("zip: zip failed with exit status = %d", status);
@@ -108,7 +110,7 @@ endfunction
 %!   endif
 %! unwind_protect_cleanup
 %!   unlink (filename);
-%!   unlink ([dirname, filesep, basename, extension]);
+%!   unlink ([dirname, filesep, basename, ext]);
 %!   rmdir (dirname);
 %! end_unwind_protect
 

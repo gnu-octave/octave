@@ -9303,6 +9303,8 @@ gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
   if (do_notify_toolkit)
     obj.initialize ();
 
+  obj.override_defaults ();
+
   return h;
 }
 

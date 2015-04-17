@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
-#include <iosfwd>
+#include <streambuf>
 
 class
 c_file_ptr_buf : public std::streambuf

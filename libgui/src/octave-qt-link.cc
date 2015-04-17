@@ -56,6 +56,10 @@ octave_qt_link::octave_qt_link (QWidget *p)
   command_interpreter->moveToThread (main_thread);
 
   main_thread->start ();
+
+  // Move this link object affinity to the same thread as the
+  // interpreter to ensure signals/slots to the GUI are queued.
+  moveToThread (main_thread);
 }
 
 octave_qt_link::~octave_qt_link (void) { }
@@ -69,12 +73,18 @@ octave_qt_link::execute_interpreter (void)
 bool
 octave_qt_link::do_confirm_shutdown (void)
 {
+  // Lock the mutex before emitting signal.
+  mutex.lock ();
+
   emit confirm_shutdown_signal ();
 
   // Wait while the GUI shuts down.
   waitcondition.wait (&mutex);
 
-  // The GUI has sent a signal and the process has been awakened.
+  // The GUI has sent a signal and the thread has been awakened.
+
+  mutex.unlock ();
+
   return _shutdown_confirm_result;
 }
 
@@ -110,6 +120,9 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
   role << "YesRole" << "RejectRole";
   btn << tr ("Create") << tr ("Cancel");
 
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_dialog (
     tr ("File\n%1\ndoes not exist. Do you want to create it?").
     arg (QDir::currentPath () + QDir::separator ()
@@ -117,9 +130,13 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
     tr ("Octave Editor"), "quest", btn, tr ("Create"), role );
 
   // Wait while the user is responding to message box.
-  uiwidget_creator.wait ();
-  // The GUI has sent a signal and the process has been awakened.
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+
+  // The GUI has sent a signal and the thread has been awakened.
+
   QString answer = uiwidget_creator.get_dialog_button ();
+
+  uiwidget_creator.mutex.unlock ();
 
   return (answer == tr ("Create"));
 }
@@ -129,6 +146,9 @@ octave_qt_link::do_message_dialog (const std::string& dlg,
                                    const std::string& msg,
                                    const std::string& title)
 {
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_dialog (QString::fromStdString (msg),
                                   QString::fromStdString (title),
                                   QString::fromStdString (dlg),
@@ -136,10 +156,15 @@ octave_qt_link::do_message_dialog (const std::string& dlg,
                                   QStringList ());
 
   // Wait while the user is responding to message box.
-  uiwidget_creator.wait ();
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
 
-  // The GUI has sent a signal and the process has been awakened.
-  return uiwidget_creator.get_dialog_result ();
+  // The GUI has sent a signal and the thread has been awakened.
+
+  int answer = uiwidget_creator.get_dialog_result ();
+
+  uiwidget_creator.mutex.unlock ();
+
+  return answer;
 }
 
 std::string
@@ -160,6 +185,9 @@ octave_qt_link::do_question_dialog (const std::string& msg,
     btn << QString::fromStdString (btn2);
   btn << QString::fromStdString (btn3);
 
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_dialog (QString::fromStdString (msg),
                                   QString::fromStdString (title),
                                   "quest",
@@ -168,10 +196,15 @@ octave_qt_link::do_question_dialog (const std::string& msg,
                                   role);
 
   // Wait while the user is responding to message box.
-  uiwidget_creator.wait ();
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
 
-  // The GUI has sent a signal and the process has been awakened.
-  return uiwidget_creator.get_dialog_button ().toStdString ();
+  // The GUI has sent a signal and the thread has been awakened.
+
+  std::string answer = uiwidget_creator.get_dialog_button ().toStdString ();
+
+  uiwidget_creator.mutex.unlock ();
+
+  return answer;
 }
 
 static QStringList
@@ -232,6 +265,9 @@ octave_qt_link::do_list_dialog (const std::list<std::string>& list,
                                 const std::string& ok_string,
                                 const std::string& cancel_string)
 {
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_listview (make_qstring_list (list),
                                     QString::fromStdString (mode),
                                     width, height,
@@ -242,11 +278,14 @@ octave_qt_link::do_list_dialog (const std::list<std::string>& list,
                                     QString::fromStdString (cancel_string));
 
   // Wait while the user is responding to message box.
-  uiwidget_creator.wait ();
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
 
-  // The GUI has sent a signal and the process has been awakened.
+  // The GUI has sent a signal and the thread has been awakened.
+
   const QIntList *selected = uiwidget_creator.get_list_index ();
   int ok = uiwidget_creator.get_dialog_result ();
+
+  uiwidget_creator.mutex.unlock ();
 
   return std::pair<std::list<int>, int> (selected->toStdList (), ok);
 }
@@ -260,6 +299,9 @@ octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
 {
   std::list<std::string> retval;
 
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
                                        QString::fromStdString (title),
                                        QFloatList::fromStdList (nr),
@@ -267,10 +309,13 @@ octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
                                        make_qstring_list (defaults));
 
   // Wait while the user is responding to message box.
-  uiwidget_creator.wait ();
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
 
-  // The GUI has sent a signal and the process has been awakened.
+  // The GUI has sent a signal and the thread has been awakened.
+
   const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+  uiwidget_creator.mutex.unlock ();
 
   for (QStringList::const_iterator it = inputLine->begin ();
        it != inputLine->end (); it++)
@@ -290,6 +335,9 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
 {
   std::list<std::string> retval;
 
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_filedialog (make_filter_list (filter),
                                       QString::fromStdString (title),
                                       QString::fromStdString (filename),
@@ -297,7 +345,9 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
                                       QString::fromStdString (multimode));
 
   // Wait while the user is responding to dialog.
-  uiwidget_creator.wait ();
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+
+  // The GUI has sent a signal and the thread has been awakened.
 
   // Add all the file dialog results to a string list.
   const QStringList *inputLine = uiwidget_creator.get_string_list ();
@@ -309,6 +359,8 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
   retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
   retval.push_back ((QString ("%1").arg (
                        uiwidget_creator.get_dialog_result ())).toStdString ());
+
+  uiwidget_creator.mutex.unlock ();
 
   return retval;
 }
@@ -346,12 +398,19 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
   btn << cancel_txt;
   role << "AcceptRole";
 
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
+
   uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
 
   // Wait while the user is responding to message box.
-  uiwidget_creator.wait ();
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+
+  // The GUI has sent a signal and the thread has been awakened.
 
   QString result = uiwidget_creator.get_dialog_button ();
+
+  uiwidget_creator.mutex.unlock ();
 
   if (result == cd_txt)
     retval = 1;

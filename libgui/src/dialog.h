@@ -114,11 +114,11 @@ public:
 
   const QString *get_dialog_path (void) { return path_name; }
 
-  void wait (void)
-  {
-    // Wait while the user is responding to message box.
-    waitcondition.wait (&mutex);
-  }
+  // GUI objects cannot be accessed in the non-GUI thread.  However,
+  // signals can be sent to slots across threads with proper
+  // synchronization.  Hence, the use of QWaitCondition.
+  QMutex mutex;
+  QWaitCondition waitcondition;
 
 signals:
 
@@ -159,13 +159,6 @@ private:
 
   QString *path_name;
 
-  // GUI objects cannot be accessed in the non-GUI thread.  However,
-  // signals can be sent to slots across threads with proper
-  // synchronization.  Hence, the use of QWaitCondition.
-
-  QMutex mutex;
-
-  QWaitCondition waitcondition;
 };
 
 extern QUIWidgetCreator uiwidget_creator;

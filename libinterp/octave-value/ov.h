@@ -54,7 +54,16 @@ class octave_lvalue;
 
 #include "ov-base.h"
 
-// Constants.
+// Forward declarations of friend functions that have default arguments.
+
+OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                        const octave_value& limit,
+                                        bool is_for_cmd_expr = false);
+
+OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                        const octave_value& increment,
+                                        const octave_value& limit,
+                                        bool is_for_cmd_expr = false);
 
 class
 OCTINTERP_API
@@ -1063,7 +1072,7 @@ public:
 
   friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
                                                  const octave_value& limit,
-                                                 bool is_for_cmd_expr = false)
+                                                 bool is_for_cmd_expr)
   {
     return do_colon_op (base, octave_value (), limit, is_for_cmd_expr);
   }
@@ -1071,7 +1080,7 @@ public:
   friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
                                                  const octave_value& increment,
                                                  const octave_value& limit,
-                                                 bool is_for_cmd_expr = false);
+                                                 bool is_for_cmd_expr);
 
   const octave_base_value& get_rep (void) const { return *rep; }
 

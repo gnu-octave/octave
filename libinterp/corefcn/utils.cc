@@ -1356,11 +1356,16 @@ DEFUN (isindex, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} isindex (@var{ind})\n\
 @deftypefnx {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
-Return true if @var{ind} is a valid index.  Valid indices are\n\
-either positive integers (although possibly of real data type), or logical\n\
-arrays.  If present, @var{n} specifies the maximum extent of the dimension\n\
-to be indexed.  When possible the internal result is cached so that\n\
-subsequent indexing using @var{ind} will not perform the check again.\n\
+Return true if @var{ind} is a valid index.\n\
+\n\
+Valid indices are either positive integers (although possibly of real data\n\
+type), or logical arrays.  If present, @var{n} specifies the maximum extent\n\
+of the dimension to be indexed.  When possible the internal result is cached\n\
+so that subsequent indexing using @var{ind} will not perform the check again.\n\
+\n\
+Implementation Note: Strings are first converted to double values before the\n\
+checks for valid indices are made.  Unless a string contains the NULL\n\
+character \"\\0\", it will always be a valid index.\n\
 @end deftypefn")
 {
   octave_value retval;

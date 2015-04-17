@@ -272,6 +272,9 @@ file_editor::call_custom_editor (const QString& file_name, int line)
 
   if (settings->value ("useCustomFileEditor",false).toBool ())
     {
+      if (line > -1)  // check for a specific line (debugging)
+        return true;  // yes: do ont open a file in external editor
+
       QString editor = settings->value ("customFileEditor").toString ();
       editor.replace ("%f", file_name);
       editor.replace ("%l", QString::number (line));
@@ -1916,6 +1919,10 @@ file_editor::check_actions ()
 void
 file_editor::empty_script (bool startup, bool visible)
 {
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings->value ("useCustomFileEditor",false).toBool ())
+    return;  // do not open an empty script in the external editor
+
   bool real_visible;
 
   if (startup)

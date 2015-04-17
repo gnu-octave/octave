@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "unwind-prot.h"
+#include "utils.h"
 
 #include "octave-qt-link.h"
 
@@ -828,11 +829,11 @@ Figure::copy_figure_callback (const std::string& format)
 
   unwind_protect frame;
 
-  std::string file = octave_tempnam ("", "oct-", msg);
+  std::string file = octave_tempnam ("", "oct-", msg) + "." + format;
 
   if (file.empty ())
     {
-      // FIXME: report error contained in message.
+      // Report error?
       return;
     }
 
@@ -844,7 +845,15 @@ Figure::copy_figure_callback (const std::string& format)
 
   QClipboard *clipboard = QApplication::clipboard ();
 
-  clipboard->setImage (QImage (file.c_str ()));
+  QImage img (file.c_str (), format.c_str ());
+
+  if (img.isNull ())
+    {
+      // Report error?
+      return;
+    }
+
+  clipboard->setImage (img);
 }
   
 void

@@ -94,7 +94,30 @@ do_bessel (enum bessel_type type, const char *fn,
 
   if (nargin == 2 || nargin == 3)
     {
-      bool scaled = (nargin == 3);
+      bool scaled = false;
+      if (nargin == 3)
+        {
+          octave_value opt_arg = args(2);
+          bool rpt_error = false;
+
+          if (! opt_arg.is_scalar_type ())
+            rpt_error = true;
+          else if (opt_arg.is_numeric_type ())
+            {
+              double opt_val = opt_arg.double_value ();
+              if (opt_val != 0.0 && opt_val != 1.0)
+                rpt_error = true;
+              scaled = (opt_val == 1.0);
+            }
+          else if (opt_arg.is_bool_type ())
+            scaled = opt_arg.bool_value ();
+
+          if (rpt_error)
+            {
+              error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
+              return retval;
+            }
+        }
 
       octave_value alpha_arg = args(0);
       octave_value x_arg = args(1);
@@ -389,26 +412,26 @@ Compute Bessel or Hankel functions of various kinds:\n\
 \n\
 @table @code\n\
 @item besselj\n\
-Bessel functions of the first kind.  If the argument @var{opt} is supplied,\n\
-the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
+Bessel functions of the first kind.  If the argument @var{opt} is 1 or true,\n\
+the result is multiplied by @w{@code{exp (-abs (imag (@var{x})))}}.\n\
 \n\
 @item bessely\n\
-Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
+Bessel functions of the second kind.  If the argument @var{opt} is 1 or true,\n\
 the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
 \n\
 @item besseli\n\
 \n\
-Modified Bessel functions of the first kind.  If the argument @var{opt} is\n\
-supplied, the result is multiplied by @code{exp (-abs (real (@var{x})))}.\n\
+Modified Bessel functions of the first kind.  If the argument @var{opt} is 1\n\
+or true, the result is multiplied by @code{exp (-abs (real (@var{x})))}.\n\
 \n\
 @item besselk\n\
 \n\
-Modified Bessel functions of the second kind.  If the argument @var{opt} is\n\
-supplied, the result is multiplied by @code{exp (@var{x})}.\n\
+Modified Bessel functions of the second kind.  If the argument @var{opt} is 1\n\
+or true, the result is multiplied by @code{exp (@var{x})}.\n\
 \n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
-= 2) kind.  If the argument @var{opt} is supplied, the result is multiplied\n\
+= 2) kind.  If the argument @var{opt} is 1 or true, the result is multiplied\n\
 by @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
 @var{k} = 2.\n\
 @end table\n\

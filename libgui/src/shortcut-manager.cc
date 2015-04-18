@@ -113,7 +113,6 @@ shortcut_manager::do_init_data ()
   init (tr ("Open File"), "main_file:open_file", QKeySequence::Open);
   init (tr ("Load Workspace"), "main_file:load_workspace", QKeySequence ());
   init (tr ("Save Workspace As"), "main_file:save_workspace", QKeySequence ());
-  init (tr ("Preferences"), "main_file:preferences", QKeySequence ());
   init (tr ("Exit Octave"), "main_file:exit", QKeySequence::Quit);
 
   // edit
@@ -129,6 +128,7 @@ shortcut_manager::do_init_data ()
   init (tr ("Clear Command History"), "main_edit:clear_history",
         QKeySequence ());
   init (tr ("Clear Workspace"), "main_edit:clear_workspace", QKeySequence ());
+  init (tr ("Preferences"), "main_edit:preferences", QKeySequence ());
 
   // debug
   init (tr ("Step"), "main_debug:step_over",

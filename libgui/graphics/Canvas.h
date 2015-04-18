@@ -83,6 +83,7 @@ protected:
     : m_handle (handle),
       m_redrawBlocked (false),
       m_mouseMode (NoMode),
+      m_clickMode (false),
       m_eventMask (0)
     { }
 
@@ -107,6 +108,7 @@ private:
   graphics_handle m_handle;
   bool m_redrawBlocked;
   MouseMode m_mouseMode;
+  bool m_clickMode;              // True: ZoomIn, False: ZoomOut
   QPoint m_mouseAnchor;
   QPoint m_mouseCurrent;
   graphics_handle m_mouseAxes;

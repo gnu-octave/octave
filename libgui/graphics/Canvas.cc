@@ -632,10 +632,18 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
                       m_mouseAnchor = m_mouseCurrent = event->pos ();
                       m_mouseAxes = axesObj.get_handle ();
                       m_mouseMode = newMouseMode;
+                      m_clickMode = newMouseMode == ZoomInMode;
                       break;
 
                     case Qt::RightButton:
-                      Utils::properties<axes> (axesObj).unzoom ();
+                      if (newMouseMode == ZoomInMode)
+                        {
+                          m_mouseAnchor = m_mouseCurrent = event->pos ();
+                          m_mouseAxes = axesObj.get_handle ();
+                          m_mouseMode = newMouseMode;
+                          m_clickMode = false;
+                        }
+
                       break;
 
                     case Qt::MidButton:
@@ -657,7 +665,13 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
                   switch (event->buttons ())
                     {
                     case Qt::LeftButton:
-                      Utils::properties<axes> (axesObj).unzoom ();
+                      if (newMouseMode == ZoomInMode)
+                        {
+                          m_mouseAnchor = m_mouseCurrent = event->pos ();
+                          m_mouseAxes = axesObj.get_handle ();
+                          m_mouseMode = newMouseMode;
+                          m_clickMode = false;
+                        }
                       break;
 
                     default:
@@ -699,7 +713,7 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 
           if (m_mouseAnchor == event->pos ())
             {
-              double factor = m_mouseMode == ZoomInMode ? 2.0 : 0.5;
+              double factor = m_clickMode ? 2.0 : 0.5;
 
               ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
 

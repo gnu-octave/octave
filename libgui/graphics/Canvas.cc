@@ -39,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "GLCanvas.h"
 #include "QtHandlesUtils.h"
 
+#include "annotation-dialog.h"
+
 #include "gl2ps-renderer.h"
 #include "octave-qt-link.h"
 
@@ -574,32 +576,27 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
             if (! w)
               break;
 
-            bool ok;
-
-            // FIXME: this dialog should allow multiple line text entry
-            // and also provide options for setting text properties of
-            // the text annotation.
-
-            QString text = QInputDialog::getText (w, "Annotation", "",
-                                                  QLineEdit::Normal, "", &ok);
-
-            if (! ok || text.isEmpty ())
-              break;
-
             Matrix bb = axesObj.get_properties ().get_boundingbox (false);
+            Matrix position (1, 4);
 
             QPoint pos = event->pos ();
-
-            Matrix position (1, 4);
 
             position(0) = pos.x () / bb(2);
             position(1) = 1.0 - (pos.y () / bb(3));
             position(2) = pos.x () / bb(2);
             position(3) = 1.0 - (pos.y () / bb(3));
 
-            octave_link::post_event (this, &Canvas::annotation_callback,
-                                     ovl ("textbox", position,
-                                          "string", text.toStdString ()));
+            octave_value_list props = ovl("textbox", position);
+
+            annotation_dialog anno_dlg (w, props);
+            
+            if (anno_dlg.exec () == QDialog::Accepted)
+              {
+                props = anno_dlg.get_properties ();
+
+                octave_link::post_event (this, &Canvas::annotation_callback,
+                  props);
+              }
           }
           break;
 

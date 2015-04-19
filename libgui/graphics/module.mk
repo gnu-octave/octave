@@ -6,9 +6,11 @@ EXTRA_DIST += \
   graphics/images/rotate.png \
   graphics/images/select.png \
   graphics/images/zoom-in.png \
-  graphics/images/zoom-out.png
+  graphics/images/zoom-out.png \
+  $(octave_gui_graphics_UI) 
 
 octave_gui_MOC += \
+  graphics/moc-annotation-dialog.cc \
   graphics/moc-Backend.cc \
   graphics/moc-ButtonControl.cc \
   graphics/moc-ContextMenu.cc \
@@ -28,10 +30,18 @@ octave_gui_MOC += \
   graphics/moc-ToggleTool.cc \
   graphics/moc-ToolBar.cc
 
+octave_gui_graphics_UI = \
+  graphics/annotation-dialog.ui
+
+octave_gui_graphics_UI_H = $(patsubst graphics/%.ui, graphics/ui-%.h, $(octave_gui_graphics_UI))
+
+BUILT_SOURCES += $(octave_gui_graphics_UI_H)
+
 octave_gui_graphics_RC = graphics/qrc-qthandles.cc
 
 noinst_HEADERS += \
   graphics/__init_qt__.h \
+  graphics/annotation-dialog.h \
   graphics/Backend.h \
   graphics/BaseControl.h \
   graphics/ButtonControl.h \
@@ -71,6 +81,7 @@ noinst_HEADERS += \
 
 graphics_libgui_graphics_la_SOURCES = \
   graphics/__init_qt__.cc \
+  graphics/annotation-dialog.cc \
   graphics/Backend.cc \
   graphics/BaseControl.cc \
   graphics/ButtonControl.cc \
@@ -137,4 +148,5 @@ noinst_LTLIBRARIES += graphics/libgui-graphics.la
 
 CLEANFILES += \
   $(octave_gui_graphics_MOC) \
-  $(octave_gui_graphics_RC)
+  $(octave_gui_graphics_RC) \
+  $(octave_gui_graphics_UI_H)

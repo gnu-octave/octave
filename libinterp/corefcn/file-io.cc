@@ -889,7 +889,7 @@ function exactly equivalent to @code{printf}.\n\
 \n\
 The optional output returns the number of bytes written to the file.\n\
 \n\
-Implementation Note: For compatability with @sc{matlab}, escape sequences in\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
 the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
 when the template string is defined with single quotes.\n\
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
@@ -959,7 +959,7 @@ See the Formatted Output section of the GNU Octave manual for a\n\
 complete description of the syntax of the template string.\n\
 @end ifclear\n\
 \n\
-Implementation Note: For compatability with @sc{matlab}, escape sequences in\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
 the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
 when the template string is defined with single quotes.\n\
 @seealso{fprintf, sprintf, scanf}\n\
@@ -1068,7 +1068,7 @@ suitably sized string as an argument, Octave's @code{sprintf} function\n\
 returns the string, automatically sized to hold all of the items\n\
 converted.\n\
 \n\
-Implementation Note: For compatability with @sc{matlab}, escape sequences in\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
 the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
 when the template string is defined with single quotes.\n\
 @seealso{printf, fprintf, sscanf}\n\
@@ -2289,7 +2289,7 @@ temporary files.\n\
 \n\
 Programming Note: The value returned by @code{P_tmpdir} is always the\n\
 default location.  This value may not agree with that returned from\n\
-@code{tempdir} if the user has overriden the default with the @env{TMPDIR}\n\
+@code{tempdir} if the user has overridden the default with the @env{TMPDIR}\n\
 environment variable.\n\
 @seealso{tempdir, tempname, mkstemp, tmpfile}\n\
 @end deftypefn")

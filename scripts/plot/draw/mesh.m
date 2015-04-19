@@ -141,6 +141,6 @@ endfunction
 %! xlabel 'X-axis';
 %! ylabel 'Y-axis';
 %! zlabel 'Z-axis';
-%! title ({'mesh() default properties overriden', ...
+%! title ({'mesh() default properties overridden', ...
 %!         'transparent mesh with cyan color'});
 

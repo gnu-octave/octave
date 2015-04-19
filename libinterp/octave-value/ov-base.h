@@ -219,7 +219,7 @@ public:
   virtual octave_base_value *
   empty_clone (void) const;
 
-  // Unique clone. Usually clones, but may be overriden to fake the
+  // Unique clone. Usually clones, but may be overridden to fake the
   // cloning when sharing copies is to be controlled from within an
   // instance (see octave_class).
   virtual octave_base_value *
@@ -764,7 +764,7 @@ public:
   virtual bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
-  // This is a helper for the above, to be overriden in scalar types.  The
+  // This is a helper for the above, to be overridden in scalar types.  The
   // whole point is to handle the insertion efficiently with just *two* VM
   // calls, which is basically the theoretical minimum.
   virtual bool

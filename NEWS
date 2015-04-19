@@ -74,7 +74,7 @@ Summary of important user-visible changes for version 4.0:
     for --traditional.
 
  ** The "backtrace" warning option is now enabled by default.  This change
-    was made for Matlab compatability.
+    was made for Matlab compatibility.
 
  ** For compatibility with Matlab, the "ismatrix (x)" function now only checks
     the dimension of "x".  The old behaviour of "ismatrix" is obtained by

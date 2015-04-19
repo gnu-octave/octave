@@ -1873,7 +1873,7 @@ use @code{imfinfo}.\n\
     "Copyright",          // actually an Exif tag
     "DigitalCamera",
     "GPSInfo",
-    // Notes for the future: GM allows to get many attributes, and even has
+    // Notes for the future: GM allows one to get many attributes, and even has
     // attribute() to obtain arbitrary ones, that may exist in only some
     // cases. The following is a list of some methods and into what possible
     // Matlab compatible values they may be converted.

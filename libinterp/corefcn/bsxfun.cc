@@ -359,7 +359,7 @@ dimensionality as the other array.\n\
           || (func.is_function_handle ()
               && ! A.is_object () && ! B.is_object ()))
         {
-          // This may break if the default behavior is overriden.  But if you
+          // This may break if the default behavior is overridden.  But if you
           // override arithmetic operators for builtin classes, you should
           // expect mayhem anyway (constant folding etc).  Querying
           // is_overloaded() may not be exactly what we need here.

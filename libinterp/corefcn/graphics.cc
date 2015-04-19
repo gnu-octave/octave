@@ -11561,8 +11561,8 @@ additional set of accepted string values (like a radio property).\n\
 @var{type} may also be the concatenation of a core object type and\n\
 a valid property name for that object type.  The property created\n\
 then has the same characteristics as the referenced property (type,\n\
-possible values, hidden state@dots{}).  This allows to clone an existing\n\
-property into the graphics object @var{h}.\n\
+possible values, hidden state@dots{}).  This allows one to clone an\n\
+existing property into the graphics object @var{h}.\n\
 \n\
 Examples:\n\
 \n\

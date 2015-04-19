@@ -506,7 +506,7 @@ to your @file{.emacs} file.
 You can use either `plain' Emacs Info or the function @code{octave-help}
 as your Octave info reader (for @samp{help -i}).  In the former case,
 use @code{info_program ("info-emacs-info")}.
-The latter is perhaps more attractive because it allows to look up keys
+The latter is perhaps more attractive because it allows one to look up keys
 in the indices of @emph{several} info files related to Octave (provided
 that the Emacs variable @code{octave-help-files} is set correctly).  In
 this case, use @code{info_program ("info-emacs-octave-help")}.

@@ -65,7 +65,7 @@ public: // FIXME: make this class private?
 
     bool is_out_of_date (void) const;
 
-    // This method will be overriden conditionally.
+    // This method will be overridden conditionally.
     static shlib_rep *new_instance (const std::string& f);
 
     static shlib_rep *get_instance (const std::string& f, bool fake);

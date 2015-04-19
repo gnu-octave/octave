@@ -35,7 +35,7 @@
 ## colormap.  Defaults to the length of the current colormap.
 ##
 ## Development of this colormap is described in @cite{Green, D. A., 2011,
-## "A colour scheme for the display of astronomical intensity images",
+## "A @nospell{colour} scheme for the display of astronomical intensity images",
 ## Bulletin of the Astronomical Society of India, 39, 289.}.
 ##
 ## @seealso{colormap}

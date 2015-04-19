@@ -37,9 +37,9 @@
 ## (default) or @code{false}.
 ##
 ## @item @var{delimitertype} which may take the value of @qcode{"simple"}
-## (default) or @qcode{"regularexpression"}.  A simple delimiter matches the
-## text exactly as written.  Otherwise, the syntax for regular expressions
-## outlined in @code{regexp} is used.
+## (default) or @nospell{@qcode{"regularexpression"}}.  A simple delimiter
+## matches the text exactly as written.  Otherwise, the syntax for regular
+## expressions outlined in @code{regexp} is used.
 ## @end itemize
 ##
 ## The optional second output, @var{matches}, returns the delimiters which were
@@ -84,7 +84,7 @@
 ##
 ## @end example
 ##
-## Examples with regularexpression delimiters:
+## Examples with @nospell{regularexpression} delimiters:
 ##
 ## @smallexample
 ## strsplit ("a foo b,bar c", ',|\s|foo|bar', "delimitertype", "regularexpression")

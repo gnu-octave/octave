@@ -34,7 +34,7 @@
 ## of rows in @var{map}) in order
 ##
 ## Multi-dimensional indexed images (of size @nospell{MxNx3xK}) are also
-## supported, both via a single input (@var{rgb}) or its three colour channels
+## supported, both via a single input (@var{rgb}) or its three color channels
 ## as separate variables.
 ##
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}

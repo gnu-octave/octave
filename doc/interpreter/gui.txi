@@ -67,9 +67,9 @@ a file name.
 @node UI Elements
 @section UI Elements
 
-The ui* series of functions work best with the @code{qt} graphics toolkit,
-although some functionality is available with the @code{fltk} toolkit.  There
-is no support for the @code{gnuplot} toolkit.
+The @nospell{ui*} series of functions work best with the @code{qt} graphics
+toolkit, although some functionality is available with the @code{fltk} toolkit.
+There is no support for the @code{gnuplot} toolkit.
 
 @DOCSTRING(uicontextmenu)
 

@@ -648,6 +648,7 @@ NAMESPACE
 NaN
 NaNs
 nargin
+nargout
 nbincdf
 nbininv
 nbinpdf
@@ -1046,6 +1047,7 @@ ub
 UB
 uchar
 UHESS
+UI
 UID
 uimenu
 uint

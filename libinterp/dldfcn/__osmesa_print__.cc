@@ -176,6 +176,9 @@ instead.\n\
   if (nargin == 3)
     {
       // use gl2ps
+#ifndef HAVE_GL2PS_H
+      gripe_disabled_feature ("__osmesa_print__", "gl2ps");
+#else
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();
 
@@ -215,6 +218,7 @@ instead.\n\
                 error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
             }
         }
+#endif
     }
   else
     {
@@ -261,7 +265,7 @@ instead.\n\
 ##        This is not critical, since this facility will mostly be used in
 ##        the future for generating the images in Octave's own documentation.
 ##        For the moment, disable these tests on PC's and Macs.
-%!testif HAVE_OSMESA
+%!testif HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
 %!   h = figure ("visible", "off");
 %!   fn = tempname ();
@@ -276,7 +280,7 @@ instead.\n\
 %!   assert (img_fp, [52942515; 54167797; 56158178], -0.05);
 %! endif
 
-%!testif HAVE_OSMESA
+%!testif HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
 %!   h = figure ("visible", "off");
 %!   fn = tempname ();

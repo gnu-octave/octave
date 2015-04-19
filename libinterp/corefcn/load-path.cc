@@ -112,7 +112,22 @@ load_path::dir_info::update (void)
 bool
 load_path::dir_info::is_package (const std::string& name) const
 {
-  return package_dir_map.find (name) != package_dir_map.end ();
+  size_t pos = name.find ('.');
+
+  if (pos == std::string::npos)
+    return package_dir_map.find (name) != package_dir_map.end ();
+  else
+    {
+      std::string name_head = name.substr (0, pos);
+      std::string name_tail = name.substr (pos + 1);
+
+      const_package_dir_map_iterator it = package_dir_map.find (name_head);
+
+      if (it != package_dir_map.end ())
+        return it->second.is_package (name_tail);
+      else
+        return false;
+    }
 }
 
 void

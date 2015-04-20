@@ -3163,27 +3163,27 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="-125"/>
         <source>Step</source>
-        <translation type="unfinished">Einzelschritt</translation>
+        <translation>Einzelschritt</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Fensterlayout auf Grundeinstellung zurücksetzen</translation>
+        <translation>Fensterlayout auf Grundeinstellung zurücksetzen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Fehler melden</translation>
+        <translation>Fehler melden</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Andere Dokumente schließen</translation>
+        <translation>Andere Dokumente schließen</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Show Completion List</source>
-        <translation type="unfinished"></translation>
+        <translation>Vervollständigungsliste anzeigen</translation>
     </message>
     <message>
         <location line="+33"/>

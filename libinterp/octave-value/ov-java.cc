@@ -1281,6 +1281,34 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jobj = jni_env->NewStringUTF (s.c_str ());
       jcls = jni_env->GetObjectClass (jobj);
     }
+  else if (val.numel () > 1 && val.dims ().is_vector ())
+    {
+#define IF_UNBOX_PRIMITIVE_ARRAY(CHECK_TYPE, METHOD_TYPE, OCTAVE_TYPE, JAVA_TYPE, JAVA_TYPE_CAP) \
+      if (val.is_ ## CHECK_TYPE ## _type ()) \
+        { \
+          const OCTAVE_TYPE ## NDArray v = val.METHOD_TYPE ## array_value (); \
+          JAVA_TYPE ## Array jarr = jni_env->New ## JAVA_TYPE_CAP ## Array (v.numel ()); \
+          const JAVA_TYPE* jv = reinterpret_cast<const JAVA_TYPE*> (v.data ()); \
+          jni_env->Set ## JAVA_TYPE_CAP ## ArrayRegion (jarr, 0, v.numel (), jv); \
+          jobj = reinterpret_cast<jobject> (jarr); \
+          jcls = jni_env->GetObjectClass (jobj); \
+        }
+
+      // Note that we do NOT handle char here because they are unboxed
+      // into a String[], not into a char array
+           IF_UNBOX_PRIMITIVE_ARRAY(bool,   bool_,   bool,   jboolean, Boolean)
+      else IF_UNBOX_PRIMITIVE_ARRAY(float,  float_,  Float,  jfloat,   Float)
+      else IF_UNBOX_PRIMITIVE_ARRAY(int8,   int8_,   int8,   jbyte,    Byte)
+      else IF_UNBOX_PRIMITIVE_ARRAY(uint8,  uint8_,  uint8,  jbyte,    Byte)
+      else IF_UNBOX_PRIMITIVE_ARRAY(int16,  int16_,  int16,  jshort,   Short)
+      else IF_UNBOX_PRIMITIVE_ARRAY(uint16, uint16_, uint16, jshort,   Short)
+      else IF_UNBOX_PRIMITIVE_ARRAY(int32,  int32_,  int32,  jint,     Int)
+      else IF_UNBOX_PRIMITIVE_ARRAY(uint32, uint32_, uint32, jint,     Int)
+      else IF_UNBOX_PRIMITIVE_ARRAY(int64,  int64_,  int64,  jlong,    Long)
+      else IF_UNBOX_PRIMITIVE_ARRAY(uint64, uint64_, uint64, jlong,    Long)
+
+#undef IF_UNBOX_PRIMITIVE_ARRAY
+    }
   else if (val.is_real_scalar ())
     {
       if (val.is_double_type ())

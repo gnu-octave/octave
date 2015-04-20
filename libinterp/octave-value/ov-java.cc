@@ -1309,44 +1309,32 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
 
 #undef IF_UNBOX_PRIMITIVE_ARRAY
     }
-  else if (val.is_real_scalar ())
+  else if (val.is_real_scalar () || val.is_bool_scalar ())
     {
-      if (val.is_double_type ())
-        {
-          double dval = val.double_value ();
-          jclass_ref dcls (jni_env, jni_env->FindClass ("java/lang/Double"));
-          jfieldID fid = jni_env->GetStaticFieldID (dcls, "TYPE", "Ljava/lang/Class;");
-          jmethodID mid = jni_env->GetMethodID (dcls, "<init>", "(D)V");
-          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
-          jobj = jni_env->NewObject (dcls, mid, dval);
-        }
-      else if (val.is_bool_type ())
-        {
-          bool bval = val.bool_value ();
-          jclass_ref bcls (jni_env, jni_env->FindClass ("java/lang/Boolean"));
-          jfieldID fid = jni_env->GetStaticFieldID (bcls, "TYPE", "Ljava/lang/Class;");
-          jmethodID mid = jni_env->GetMethodID (bcls, "<init>", "(Z)V");
-          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (bcls, fid));
-          jobj = jni_env->NewObject (bcls, mid, bval);
-        }
-      else
-        {
-          float fval = val.float_scalar_value ();
-          jclass_ref fcls (jni_env, jni_env->FindClass ("java/lang/Float"));
-          jfieldID fid = jni_env->GetStaticFieldID (fcls, "TYPE", "Ljava/lang/Class;");
-          jmethodID mid = jni_env->GetMethodID (fcls, "<init>", "(F)V");
-          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (fcls, fid));
-          jobj = jni_env->NewObject (fcls, mid, fval);
-        }
-    }
-  else if (val.is_integer_type () && val.is_scalar_type ())
-    {
-      int32_t ival = val.int32_scalar_value ();
-      jclass_ref icls (jni_env, jni_env->FindClass ("java/lang/Integer"));
-      jfieldID fid = jni_env->GetStaticFieldID (icls, "TYPE", "Ljava/lang/Class;");
-      jmethodID mid = jni_env->GetMethodID (icls, "<init>", "(I)V");
-      jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (icls, fid));
-      jobj = jni_env->NewObject (icls, mid, ival);
+#define IF_UNBOX_PRIMITIVE_SCALAR(CHECK_TYPE, OCTAVE_TYPE, METHOD_TYPE, JAVA_TYPE, JAVA_CON) \
+      if (val.is_ ## CHECK_TYPE ## _type ()) \
+        { \
+          const OCTAVE_TYPE ov = val.METHOD_TYPE ## _value (); \
+          jclass_ref dcls (jni_env, jni_env->FindClass (JAVA_TYPE)); \
+          const jfieldID fid = jni_env->GetStaticFieldID (dcls, "TYPE", "Ljava/lang/Class;"); \
+          const jmethodID mid = jni_env->GetMethodID (dcls, "<init>", JAVA_CON); \
+          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid)); \
+          jobj = jni_env->NewObject (dcls, mid, ov); \
+         }
+
+           IF_UNBOX_PRIMITIVE_SCALAR(double, double,   double,        "java/lang/Double",  "(D)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(float,  float,    float,         "java/lang/Float",   "(F)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(bool,   bool,     bool,          "java/lang/Boolean", "(Z)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(int8,   int8_t,   int8_scalar,   "java/lang/Byte",    "(B)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(uint8,  uint8_t,  uint8_scalar,  "java/lang/Byte",    "(B)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(int16,  int16_t,  int16_scalar,  "java/lang/Short",   "(S)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(uint16, uint16_t, uint16_scalar, "java/lang/Short",   "(S)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(int32,  int32_t,  int32_scalar,  "java/lang/Int",     "(I)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(uint32, uint32_t, uint32_scalar, "java/lang/Int",     "(I)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(int64,  int64_t,  int64_scalar,  "java/lang/Long",    "(L)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(uint64, uint64_t, uint64_scalar, "java/lang/Long",    "(L)V")
+
+#undef IF_UNBOX_PRIMITIVE_SCALAR
     }
   else if (val.is_empty ())
     {
@@ -2485,4 +2473,12 @@ Return true if @var{x} is a Java object.\n\
 ## Check automatic conversion of java primitive arrays into octave types
 %!assert (javaObject ("java.lang.String", "hello").getBytes (),
 %!        int8 ([104 101 108 108 111]'))
+
+## Check automatic conversion of octave types into java primitive arrays
+## Note that uint8 are casted into int8
+%!assert (javaMethod ("binarySearch", "java.util.Arrays", [90 100 255], 255), 2)
+%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 255]), uint8  (255)) < 0)
+%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 128]), uint8  (128)) < 0)
+%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 127]), uint8  (127)), 2)
+%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2)
 */

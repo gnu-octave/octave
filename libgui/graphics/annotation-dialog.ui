@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>368</height>
+    <width>621</width>
+    <height>401</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -625,7 +625,14 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="sb_x"/>
+       <widget class="QDoubleSpinBox" name="sb_x">
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label_22">
@@ -638,7 +645,14 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QDoubleSpinBox" name="sb_y"/>
+       <widget class="QDoubleSpinBox" name="sb_y">
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="0" column="4">
        <widget class="QLabel" name="label_23">
@@ -648,7 +662,14 @@
        </widget>
       </item>
       <item row="0" column="5">
-       <widget class="QDoubleSpinBox" name="sb_width"/>
+       <widget class="QDoubleSpinBox" name="sb_width">
+        <property name="minimum">
+         <double>-99.989999999999995</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="0" column="6">
        <widget class="QLabel" name="label_24">
@@ -658,7 +679,14 @@
        </widget>
       </item>
       <item row="0" column="7">
-       <widget class="QDoubleSpinBox" name="sb_height"/>
+       <widget class="QDoubleSpinBox" name="sb_height">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_18">

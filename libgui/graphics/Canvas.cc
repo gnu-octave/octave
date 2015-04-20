@@ -278,7 +278,7 @@ Canvas::canvasPaintEvent (void)
 
       draw (m_handle);
 
-      if (m_mouseMode == ZoomInMode && m_mouseAxes.ok ())
+      if ((m_mouseMode == ZoomInMode && m_mouseAxes.ok ()) || m_rectMode)
         drawZoomBox (m_mouseAnchor, m_mouseCurrent);
     }
 }
@@ -379,7 +379,7 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
             redraw (true);
           }
           break;
-
+        case TextMode:
         case ZoomInMode:
         case ZoomOutMode:
           m_mouseCurrent = event->pos ();
@@ -571,32 +571,18 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
 
         case TextMode:
           {
-            QWidget *w = qWidget ();
-
-            if (! w)
-              break;
-
-            Matrix bb = axesObj.get_properties ().get_boundingbox (false);
-            Matrix position (1, 4);
-
-            QPoint pos = event->pos ();
-
-            position(0) = pos.x () / bb(2);
-            position(1) = 1.0 - (pos.y () / bb(3));
-            position(2) = pos.x () / bb(2);
-            position(3) = 1.0 - (pos.y () / bb(3));
-
-            octave_value_list props = ovl("textbox", position);
-
-            annotation_dialog anno_dlg (w, props);
-            
-            if (anno_dlg.exec () == QDialog::Accepted)
+            if (event->modifiers () == Qt::NoModifier)
               {
-                props = anno_dlg.get_properties ();
-
-                octave_link::post_event (this, &Canvas::annotation_callback,
-                  props);
+                switch (event->buttons ())
+                  {
+                  case Qt::LeftButton:
+                    m_mouseAnchor = m_mouseCurrent = event->pos ();
+                    m_mouseAxes = axesObj.get_handle ();
+                    m_mouseMode = newMouseMode;
+                    m_rectMode = true;
+                  }
               }
+            redraw (false);
           }
           break;
 
@@ -751,7 +737,38 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
                                      "windowbuttonupfcn");
         }
     }
+  else if (m_mouseMode == TextMode)
+    {
+      gh_manager::auto_lock lock;
+      
+      graphics_object figObj = 
+        gh_manager::get_object (m_handle).get_ancestor ("figure");
+      if (figObj.valid_object ())
+        {          
+          QWidget *w = qWidget ();
+          if (w)
+            {
+              Matrix bb = figObj.get ("position").matrix_value ();
+              bb(0) = m_mouseAnchor.x () / bb(2);
+              bb(1) = 1.0 - (m_mouseAnchor.y () / bb(3));
+              bb(2) = (event->x () - m_mouseAnchor.x ()) / bb(2);
+              bb(3) = (m_mouseAnchor.y () - event->y ()) / bb(3);
 
+              octave_value_list props = ovl("textbox", bb);
+
+              annotation_dialog anno_dlg (w, props);
+            
+              if (anno_dlg.exec () == QDialog::Accepted)
+                {
+                  props = anno_dlg.get_properties ();
+
+                  octave_link::post_event (this, &Canvas::annotation_callback,
+                                           props);
+                }
+            }
+        }
+    }
+  m_rectMode = false;
   m_mouseAxes = graphics_handle ();
   m_mouseMode = NoMode;
 }

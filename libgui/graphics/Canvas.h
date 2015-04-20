@@ -84,7 +84,8 @@ protected:
       m_redrawBlocked (false),
       m_mouseMode (NoMode),
       m_clickMode (false),
-      m_eventMask (0)
+      m_eventMask (0),
+      m_rectMode (false)
     { }
 
   void canvasToggleAxes (const graphics_handle& handle);
@@ -113,6 +114,7 @@ private:
   QPoint m_mouseCurrent;
   graphics_handle m_mouseAxes;
   int m_eventMask;
+  bool m_rectMode;
 };
 
 }; // namespace QtHandles

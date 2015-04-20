@@ -1047,6 +1047,30 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
           break;
         }
 
+#define BOX_PRIMITIVE_ARRAY(JAVA_TYPE, JAVA_ID, JAVA_TYPE_CAP, OCTAVE_ID) \
+      cls = jni_env->FindClass (JAVA_ID); \
+      if (jni_env->IsInstanceOf (jobj, cls)) \
+        { \
+          const JAVA_TYPE ## Array jarr = reinterpret_cast<JAVA_TYPE ## Array> (jobj); \
+          const jsize len = jni_env->GetArrayLength (jarr); \
+          OCTAVE_ID ## NDArray d (dim_vector (len, 1)); \
+          JAVA_TYPE * buffer = reinterpret_cast<JAVA_TYPE *> (d.fortran_vec ()); \
+          jni_env->Get ## JAVA_TYPE_CAP ## ArrayRegion (jarr, 0, len, buffer); \
+          retval = d; \
+          break; \
+        }
+
+BOX_PRIMITIVE_ARRAY (jboolean, "[Z", Boolean, bool)
+BOX_PRIMITIVE_ARRAY (jchar,    "[C", Char,    char)
+BOX_PRIMITIVE_ARRAY (jbyte,    "[B", Byte,    int8)
+BOX_PRIMITIVE_ARRAY (jshort,   "[S", Short,   int16)
+BOX_PRIMITIVE_ARRAY (jint,     "[I", Int,     int32)
+BOX_PRIMITIVE_ARRAY (jlong,    "[J", Long,    int64)
+BOX_PRIMITIVE_ARRAY (jfloat,   "[F", Float,   Float)
+BOX_PRIMITIVE_ARRAY (jdouble,  "[D", Double,  )
+
+#undef BOX_PRIMITIVE_ARRAY
+
       if (Vjava_matrix_autoconversion)
         {
           cls = find_octave_class (jni_env, "org/octave/Matrix");
@@ -2437,3 +2461,8 @@ Return true if @var{x} is a Java object.\n\
   return retval;
 }
 
+/*
+## Check automatic conversion of java primitive arrays into octave types
+%!assert (javaObject ("java.lang.String", "hello").getBytes (),
+%!        int8 ([104 101 108 108 111]'))
+*/

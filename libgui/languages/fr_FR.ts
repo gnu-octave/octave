@@ -104,17 +104,17 @@
     <message>
         <location line="+9"/>
         <source>Axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Axes</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Grille</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Autoscale</source>
-        <translation type="unfinished"></translation>
+        <translation>Échelle Auto</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -561,7 +561,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+128"/>
         <source>Editor</source>
-        <translation type="unfinished">Éditeur</translation>
+        <translation>Éditeur</translation>
     </message>
     <message>
         <location line="-120"/>
@@ -658,7 +658,7 @@ pour écrire : %2.</translation>
     <message>
         <location line="+138"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les e&amp;spaces</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -825,7 +825,7 @@ Voulez vous choisir un autre nom ?</translation>
     <message>
         <location line="+24"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le répertoire du navigateur comme répertoire de travail</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1053,7 +1053,11 @@ Voulez vous choisir un autre nom ?</translation>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Nous espérons que vous trouvez Octave utile.&lt;/p&gt;
+&lt;p&gt;Si vous rencontrez des difficultés, il y a plusieurs façon de trouver de l&apos;aide parmis les-quelles des options de support commercial, une liste mail, un wiki et d&apos;autres ressources communautaires.
+Vous trouverez des information sur chacune d&apos;entre elles sur &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (ouvert dans un navigateur externe).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1668,7 +1672,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     <message>
         <location line="+6"/>
         <source>Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;Outils</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1991,7 +1995,7 @@ Le GUI d&apos;Octave doit maintenant être fermé.</translation>
         <location line="+60"/>
         <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location line="+178"/>
@@ -3171,47 +3175,47 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="-145"/>
         <source>Step</source>
-        <translation type="unfinished">Avancer d&apos;un pas</translation>
+        <translation>Avancer d&apos;un pas</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Rétablir la disposition par défaut des fenêtres</translation>
+        <translation>Rétablir la disposition par défaut des fenêtres</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Signaler un bug</translation>
+        <translation>Signaler un bug</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Fermer les autres fichiers</translation>
+        <translation>Fermer les autres fichiers</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Show Completion List</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer la liste de suggestions</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Convert Line Endings to Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir les caractères de fin de ligne en Windows</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Unix</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir les caractères de fin de ligne en Unix</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Mac</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir les caractères de fin de ligne en Mac</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les Espaces</translation>
     </message>
     <message>
         <location line="+2"/>

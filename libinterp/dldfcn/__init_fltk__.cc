@@ -2166,7 +2166,7 @@ public:
                        (go.get_properties ()).get_fltk_label ()
                        + "/"
                        + fltk_label;
-        else if (go.isa ("figure"))
+        else if (go.isa ("figure") || go.isa ("uicontextmenu"))
           ;
         else
           error ("unexpected parent object\n");

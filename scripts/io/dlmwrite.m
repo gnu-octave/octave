@@ -50,9 +50,11 @@
 ##
 ## @item @qcode{"newline"}
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @qcode{"unix"} is changed into @qcode{"\n"},
-## @qcode{"pc"} is changed into @qcode{"\r\n"}, and @qcode{"mac"} is changed
-## into @qcode{"\r"}.  Other values for this option are kept as is.
+## exist for this option.  @qcode{"unix"} is changed into
+## @qcode{"@xbackslashchar{}n"}, @qcode{"pc"} is changed into
+## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"}, and @qcode{"mac"} is changed
+## into @qcode{"@xbackslashchar{}r"}.  Any other value is used directly as the
+## newline separator.
 ##
 ## @item @qcode{"roffset"}
 ## See @var{r} above.
@@ -70,7 +72,7 @@
 ## @end example
 ##
 ## @example
-## dlmwrite ("file.tex", a, "delimiter", "&", "newline", "\\n")
+## dlmwrite ("file.tex", a, "delimiter", "&", "newline", "\n")
 ## @end example
 ##
 ## @seealso{dlmread, csvread, csvwrite}

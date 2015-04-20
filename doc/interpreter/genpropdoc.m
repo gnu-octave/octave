@@ -135,7 +135,7 @@ clipped in its parent axes limits.";
         s.doc = "Callback function executed immediately after __objname__ \
 has been created.  Function is set by using default property on root object, \
 e.g., @code{set (0, \"default__objname__createfcn\", \
-'disp (\"__objname__ created!\")') }.";
+'disp (\"__objname__ created!\")')}.";
         s.valid = valid_fcn;
 
       case "deletefcn"

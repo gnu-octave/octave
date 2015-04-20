@@ -1365,7 +1365,7 @@ so that subsequent indexing using @var{ind} will not perform the check again.\n\
 \n\
 Implementation Note: Strings are first converted to double values before the\n\
 checks for valid indices are made.  Unless a string contains the NULL\n\
-character \"\\0\", it will always be a valid index.\n\
+character @nospell{\"\\0\"}, it will always be a valid index.\n\
 @end deftypefn")
 {
   octave_value retval;

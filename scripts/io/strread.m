@@ -147,8 +147,10 @@
 ## @item @qcode{"whitespace"}
 ## Any character in @var{value} will be interpreted as whitespace and
 ## trimmed; the string defining whitespace must be enclosed in double
-## quotes for proper processing of special characters like \t.
-## The default value for whitespace = @qcode{" \b\r\n\t"} (note the space).
+## quotes for proper processing of special characters like
+## @qcode{"@xbackslashchar{}t"}.  The default value for whitespace is
+## @qcode{" @xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t"}
+## (note the space).
 ## Unless whitespace is set to '' (empty) AND at least one @qcode{"%s"} format
 ## conversion specifier is supplied, a space is always part of whitespace.
 ##
@@ -159,11 +161,11 @@
 ## depends on the last character of @var{str}:
 ##
 ## @table @asis
-## @item last character = @qcode{"\n"}
+## @item last character = @qcode{"@xbackslashchar{}n"}
 ## Data columns are padded with empty fields or Nan so that all columns
 ## have equal length
 ##
-## @item last character is not @qcode{"\n"}
+## @item last character is not @qcode{"@xbackslashchar{}n"}
 ## Data columns are not padded; strread returns columns of unequal length
 ##
 ## @end table

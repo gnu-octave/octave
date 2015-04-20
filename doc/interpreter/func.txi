@@ -114,8 +114,8 @@ endfunction
 @end example
 
 The @code{printf} statement (@pxref{Input and Output}) simply tells
-Octave to print the string @qcode{"\a"}.  The special character @samp{\a}
-stands for the alert character (ASCII 7).  @xref{Strings}.
+Octave to print the string @qcode{"@xbackslashchar{}a"}.  The special character
+@samp{\a} stands for the alert character (ASCII 7).  @xref{Strings}.
 
 Once this function is defined, you can ask Octave to evaluate it by
 typing the name of the function.

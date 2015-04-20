@@ -2637,8 +2637,9 @@ be aligned between entries.  Numbering starts from 0 which indicates the\n\
 leftmost column.  @code{left-min} specifies the minimum field width to the\n\
 left of the specified balance column.\n\
 \n\
-The default format is\n\
-@qcode{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+The default format is:\n\
+\n\
+@qcode{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n\"}\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\

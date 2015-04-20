@@ -678,10 +678,11 @@ Match within a word\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences\n\
-in @var{pat} (e.g., @qcode{\"\\\\n\"} => newline) are expanded even when\n\
-@var{pat} has been defined with single quotes.  To disable expansion use\n\
-a second backslash before the escape sequence (e.g., \"\\\\n\") or use the\n\
-@code{regexptranslate} function.\n\
+in @var{pat} (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are expanded\n\
+even when @var{pat} has been defined with single quotes.  To disable\n\
+expansion use a second backslash before the escape sequence (e.g.,\n\
+\"@xbackslashchar{}@xbackslashchar{}n\") or use the @code{regexptranslate}\n\
+function.\n\
 \n\
 The outputs of @code{regexp} default to the order given below\n\
 \n\
@@ -1310,10 +1311,11 @@ This option is present for compatibility but is ignored.\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences\n\
-in @var{pat} (e.g., @qcode{\"\\\\n\"} => newline) are expanded even when\n\
-@var{pat} has been defined with single quotes.  To disable expansion use\n\
-a second backslash before the escape sequence (e.g., \"\\\\n\") or use the\n\
-@code{regexptranslate} function.\n\
+in @var{pat} (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are expanded\n\
+even when @var{pat} has been defined with single quotes.  To disable\n\
+expansion use a second backslash before the escape sequence (e.g.,\n\
+\"@xbackslashchar{}@xbackslashchar{}n\") or use the @code{regexptranslate}\n\
+function.\n\
 @seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {

@@ -890,8 +890,8 @@ function exactly equivalent to @code{printf}.\n\
 The optional output returns the number of bytes written to the file.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
-the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
-when the template string is defined with single quotes.\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
 @end deftypefn")
 {
@@ -960,8 +960,8 @@ complete description of the syntax of the template string.\n\
 @end ifclear\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
-the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
-when the template string is defined with single quotes.\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
 @seealso{fprintf, sprintf, scanf}\n\
 @end deftypefn")
 {
@@ -1069,8 +1069,8 @@ returns the string, automatically sized to hold all of the items\n\
 converted.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
-the template string (e.g., @qcode{\"\\\\n\"} => newline) are expanded even\n\
-when the template string is defined with single quotes.\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
 @seealso{printf, fprintf, sscanf}\n\
 @end deftypefn")
 {

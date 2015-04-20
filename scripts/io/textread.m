@@ -36,7 +36,8 @@
 ## The first @var{value} number of lines of @var{filename} are skipped.
 ##
 ## @item @qcode{"endofline"}:
-## Specify a single character or @qcode{"\r\n"}.  If no value is given, it
+## Specify a single character or
+## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"}.  If no value is given, it
 ## will be inferred from the file.  If set to "" (empty string) EOLs are
 ## ignored as delimiters.
 ## @end itemize

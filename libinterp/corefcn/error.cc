@@ -1093,11 +1093,12 @@ error (err_msg);\n\
 which will only stop execution if an error has been found.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences in @var{template} (e.g., \"\\n\" => newline) are processed\n\
-regardless of whether @var{template} has been defined with single quotes,\n\
-as long as there are two or more input arguments.  To disable escape sequence\n\
-expansion use a second backslash before the sequence (e.g., \"\\\\n\") or\n\
-use the @code{regexptranslate} function.\n\
+sequences in @var{template} (e.g., @qcode{\"@xbackslashchar{}n\"} =>\n\
+newline) are processed regardless of whether @var{template} has been defined\n\
+with single quotes, as long as there are two or more input arguments.  To\n\
+disable escape sequence expansion use a second backslash before the sequence\n\
+(e.g., \"@xbackslashchar{}@xbackslashchar{}n\") or use the\n\
+@code{regexptranslate} function.\n\
 @seealso{warning, lasterror}\n\
 @end deftypefn")
 {
@@ -1392,11 +1393,12 @@ function.  The @qcode{\"local\"} option is ignored if used in the top-level\n\
 workspace.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences in @var{template} (e.g., \"\\n\" => newline) are processed\n\
-regardless of whether @var{template} has been defined with single quotes,\n\
-as long as there are two or more input arguments.  To disable escape sequence\n\
-expansion use a second backslash before the sequence (e.g., \"\\\\n\") or\n\
-use the @code{regexptranslate} function.\n\
+sequences in @var{template} (e.g., @qcode{\"@xbackslashchar{}n\"} =>\n\
+newline) are processed regardless of whether @var{template} has been defined\n\
+with single quotes, as long as there are two or more input arguments.  To\n\
+disable escape sequence expansion use a second backslash before the sequence\n\
+(e.g., \"@xbackslashchar{}@xbackslashchar{}n\") or use the\n\
+@code{regexptranslate} function.\n\
 @seealso{warning_ids, lastwarn, error}\n\
 @end deftypefn")
 {

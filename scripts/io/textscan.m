@@ -40,10 +40,10 @@
 ## leaves output in distinct columns.
 ##
 ## @item @qcode{"endofline"}:
-## Specify @qcode{"\r"}, @qcode{"\n"} or @qcode{"\r\n"} (for CR, LF, or
-## CRLF).  If no value is given, it will be inferred from the file.  If set
-## to "" (empty string) EOLs are ignored as delimiters and added to
-## whitespace.
+## Specify @qcode{"@xbackslashchar{}r"}, @qcode{"@xbackslashchar{}n"} or
+## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"} (for CR, LF, or CRLF).  If no
+## value is given, it will be inferred from the file.  If set to "" (empty
+## string) EOLs are ignored as delimiters and added to whitespace.
 ##
 ## @item @qcode{"headerlines"}:
 ## The first @var{value} number of lines of @var{fid} are skipped.

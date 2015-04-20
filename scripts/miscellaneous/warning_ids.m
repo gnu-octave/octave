@@ -163,10 +163,10 @@
 ##
 ## @item Octave:language-extension
 ## Print warnings when using features that are unique to the Octave
-## language and may be still be missing in @sc{Matlab}.
+## language and that may still be missing in @sc{matlab}.
 ## By default, the @code{Octave:language-extension} warning is disabled.
-## The --traditional or --braindead startup options for Octave may also
-## be of use, @pxref{Command Line Options}.
+## The @option{--traditional} or @option{--braindead} startup options for
+## Octave may also be of use, @pxref{Command Line Options}.
 ##
 ## @item Octave:load-file-in-path
 ## By default, the @code{Octave:load-file-in-path} warning is enabled.

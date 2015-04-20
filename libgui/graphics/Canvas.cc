@@ -472,7 +472,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
       graphics_object currentObj, axesObj;
       QList<graphics_object> axesList;
 
-      Matrix children = obj.get_properties ().get_children ();
+      Matrix children = obj.get_properties ().get_all_children ();
       octave_idx_type num_children = children.numel ();
 
       for (int i = 0; i < num_children; i++)
@@ -518,7 +518,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
                     axesObj = *it;
                 }
 
-              if (axesObj)
+              if (axesObj && currentObj)
                 break;
             }
 
@@ -604,7 +604,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
         case RotateMode:
         case ZoomInMode:
         case ZoomOutMode:
-          if (axesObj)
+          if (axesObj && axesObj.get_properties ().handlevisibility_is ("on"))
             {
               bool redraw_figure = true;
 

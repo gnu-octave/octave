@@ -1261,11 +1261,11 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
   return retval;
 }
 
-int
+bool
 unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls)
 {
-  int found = 1;
+  bool found = true;
 
   if (val.is_java ())
     {
@@ -1393,7 +1393,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
         }
       else
         {
-          found = 0;
+          found = false;
           error ("cannot convert matrix of type '%s'", val.class_name ().c_str ());
         }
     }
@@ -1425,11 +1425,11 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
   return found;
 }
 
-int
+bool
 unbox (JNIEnv* jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss)
 {
-  int found = 1;
+  bool found = true;
 
   jclass_ref ocls (jni_env, jni_env->FindClass ("java/lang/Object"));
   jclass_ref ccls (jni_env, jni_env->FindClass ("java/lang/Class"));
@@ -1445,11 +1445,9 @@ unbox (JNIEnv* jni_env, const octave_value_list& args,
       jobject_ref jobj (jni_env);
       jclass_ref jcls (jni_env);
 
-      if (! unbox (jni_env, args(i), jobj, jcls))
-        {
-          found = 0;
-          break;
-        }
+      found = unbox (jni_env, args(i), jobj, jcls);
+      if (! found)
+        break;
 
       jni_env->SetObjectArrayElement (jobjs, i, jobj);
       jni_env->SetObjectArrayElement (jclss, i, jcls);
@@ -1537,18 +1535,12 @@ Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
     varargin(i) = box (env, env->GetObjectArrayElement (argin, i), 0);
 
   varargout = feval (fname, varargin, nargout);
+  if (error_state)
+    return false;
 
-  if (! error_state)
-    {
-      jobjectArray_ref out_objs (env, argout), out_clss (env);
-
-      out_objs.detach ();
-
-      if (unbox (env, varargout, out_objs, out_clss))
-        return true;
-    }
-
-  return false;
+  jobjectArray_ref out_objs (env, argout), out_clss (env);
+  out_objs.detach ();
+  return unbox (env, varargout, out_objs, out_clss);
 }
 
 JNIEXPORT void JNICALL

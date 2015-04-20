@@ -95,11 +95,11 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 extern OCTINTERP_API octave_value
 box_more (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 
-extern OCTINTERP_API int
+extern OCTINTERP_API bool
 unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls);
 
-extern OCTINTERP_API int
+extern OCTINTERP_API bool
 unbox (JNIEnv* jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 

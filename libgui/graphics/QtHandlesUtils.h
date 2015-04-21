@@ -62,6 +62,7 @@ namespace Utils
                                    bool isDoubleClick = false);
 
   Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
+  Matrix figureCurrentPoint (const graphics_object& fig);
 
   template <class T>
   inline typename T::properties&

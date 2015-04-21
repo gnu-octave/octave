@@ -193,6 +193,11 @@ figureSelectionType (QMouseEvent* event, bool isDoubleClick)
   return std::string ("normal");
 }
 
+/*
+   Two figureCurrentPoint() routines are required:
+   1) Used for QMouseEvents where cursor position data is in callback from Qt.
+   2) Used for QKeyEvents where cursor position must be determined.
+*/
 Matrix
 figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
 {
@@ -206,9 +211,31 @@ figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
         {
           QPoint qp = c->mapFromGlobal (event->globalPos ());
 
-          return
-            tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
-                                                               qp.y ());
+          return tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
+                                                                    qp.y ());
+        }
+    }
+
+  return Matrix (1, 2, 0.0);
+}
+
+Matrix
+figureCurrentPoint (const graphics_object& fig)
+{
+  Object* tkFig = Backend::toolkitObject (fig);
+
+  if (tkFig)
+    {
+      Container* c = tkFig->innerContainer ();
+
+      if (c)
+        {
+          // FIXME: QCursor::pos() may give inaccurate results with asynchronous
+          //        window systems like X11 over ssh.
+          QPoint qp = c->mapFromGlobal (QCursor::pos ());
+
+          return tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
+                                                                    qp.y ());
         }
     }
 

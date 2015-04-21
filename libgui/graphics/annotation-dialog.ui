@@ -1317,17 +1317,7 @@
        <widget class="QComboBox" name="cb_line_style">
         <item>
          <property name="text">
-          <string>left</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>middle</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>right</string>
+          <string>none</string>
          </property>
         </item>
        </widget>

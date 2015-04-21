@@ -138,6 +138,7 @@ annotation_dialog::get_gui_props ()
   props.append (ovl ("fontweight", ui->cb_font_bold->isChecked() ? "bold" : "normal" ));
   props.append (ovl ("fontangle", ui->cb_font_italic->isChecked() ? "italic" : "normal" ));
   props.append (ovl ("color", Utils::toRgb (ui->btn_color->palette ().color (QPalette::Button))));
+  props.append (ovl ("linestyle", ui->cb_line_style->currentText ().toStdString ()));
 }
 
 void

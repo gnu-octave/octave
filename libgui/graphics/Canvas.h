@@ -102,6 +102,8 @@ protected:
 
   void updateCurrentPoint (const graphics_object& fig,
                            const graphics_object& obj, QMouseEvent *event);
+  void updateCurrentPoint (const graphics_object& fig,
+                           const graphics_object& obj);
 
   void annotation_callback (const octave_value_list& args);
 

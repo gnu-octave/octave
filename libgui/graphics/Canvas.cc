@@ -114,6 +114,11 @@ Canvas::print (const QString& file_cmd, const QString& term)
     }
 }
 
+/*
+   Two updateCurrentPoint() routines are required:
+   1) Used for QMouseEvents where cursor position data is in callback from Qt.
+   2) Used for QKeyEvents where cursor position must be determined.
+*/
 void
 Canvas::updateCurrentPoint(const graphics_object& fig,
                            const graphics_object& obj, QMouseEvent* event)
@@ -140,6 +145,46 @@ Canvas::updateCurrentPoint(const graphics_object& fig,
                                                 x_zlim(0));
           ColumnVector p2 = x_form.untransform (event->x (), event->y (),
                                                 x_zlim(1));
+
+          Matrix cp (2, 3, 0.0);
+
+          cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
+          cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
+
+          gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
+                                false);
+        }
+    }
+}
+
+void
+Canvas::updateCurrentPoint(const graphics_object& fig,
+                           const graphics_object& obj)
+{
+  gh_manager::auto_lock lock;
+
+  gh_manager::post_set (fig.get_handle (), "currentpoint",
+                        Utils::figureCurrentPoint (fig), false);
+
+  Matrix children = obj.get_properties ().get_children ();
+  octave_idx_type num_children = children.numel ();
+
+  for (int i = 0; i < num_children; i++)
+    {
+      graphics_object childObj (gh_manager::get_object (children(i)));
+
+      if (childObj.isa ("axes"))
+        {
+          // FIXME: QCursor::pos() may give inaccurate results with asynchronous
+          //        window systems like X11 over ssh.
+          QWidget *w = qWidget ();
+          QPoint p = w->mapFromGlobal (QCursor::pos ());
+          axes::properties& ap = Utils::properties<axes> (childObj);
+          Matrix x_zlim = ap.get_transform_zlim ();
+          graphics_xform x_form = ap.get_transform ();
+
+          ColumnVector p1 = x_form.untransform (p.x (), p.y (), x_zlim(0));
+          ColumnVector p2 = x_form.untransform (p.x (), p.y (), x_zlim(1));
 
           Matrix cp (2, 3, 0.0);
 
@@ -886,6 +931,16 @@ Canvas::canvasKeyPressEvent (QKeyEvent* event)
 {
   if (m_eventMask & KeyPress)
     {
+      gh_manager::auto_lock lock;
+      graphics_object obj = gh_manager::get_object (m_handle);
+
+      if (obj.valid_object ())
+        {
+          graphics_object figObj (obj.get_ancestor ("figure"));
+
+          updateCurrentPoint (figObj, obj);
+        }
+
       octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
 
       gh_manager::post_set (m_handle, "currentcharacter",

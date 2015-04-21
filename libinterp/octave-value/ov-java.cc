@@ -2481,4 +2481,10 @@ Return true if @var{x} is a Java object.\n\
 %!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 128]), uint8  (128)) < 0)
 %!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 127]), uint8  (127)), 2)
 %!assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2)
+
+## Check we can create objects that wrap java literals (bug #38821)
+%!assert (class (javaObject ("java.lang.Byte", uint8 (1))), "java.lang.Byte");
+%!assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
+%!assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
+%!assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
 */

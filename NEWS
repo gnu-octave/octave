@@ -179,7 +179,7 @@ Summary of important user-visible changes for version 4.0:
 
  ** The following functions now support N-dimensional arrays:
 
-      fliplr   flipud   rot90
+      fliplr   flipud   rot90   rectint
 
  ** The new warning ID "Octave:data-file-in-path" replaces the three
     previous separate warning IDs "Octave:fopen-file-in-path",

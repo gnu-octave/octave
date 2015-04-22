@@ -851,7 +851,7 @@ Figure::fileCloseFigure (void)
 void
 Figure::editCopy (bool /* choose_format */)
 {
-  QString format = "jpg";
+  QString format = "png";
 
 #if 0
 

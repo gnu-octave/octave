@@ -132,6 +132,9 @@ public slots:
   void open_developer_page (void);
   void process_settings_dialog_request (const QString& desired_tab
                                                          = QString ());
+
+  void copy_image_to_clipboard (const QString& file, bool remove_file);
+
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
   void confirm_shutdown_octave (void);

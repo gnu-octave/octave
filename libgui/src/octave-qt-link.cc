@@ -99,6 +99,14 @@ octave_qt_link::do_exit (int status)
 }
 
 bool
+octave_qt_link::do_copy_image_to_clipboard (const std::string& file)
+{
+  emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
+
+  return true;
+}
+
+bool
 octave_qt_link::do_edit_file (const std::string& file)
 {
   emit edit_file_signal (QString::fromStdString (file));

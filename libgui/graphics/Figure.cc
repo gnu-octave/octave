@@ -816,18 +816,10 @@ Figure::save_figure_callback (const std::string& file)
   Ffeval (ovl ("print", file));
 }
 
-static void
-delete_file (const std::string& file)
-{
-  octave_unlink (file);
-}
-  
 void
 Figure::copy_figure_callback (const std::string& format)
 {
   std::string msg;
-
-  unwind_protect frame;
 
   std::string file = octave_tempnam ("", "oct-", msg) + "." + format;
 
@@ -837,23 +829,11 @@ Figure::copy_figure_callback (const std::string& format)
       return;
     }
 
-  frame.add_fcn (delete_file, file);
-
   std::string device = "-d" + format;
 
   Ffeval (ovl ("print", file, device));
 
-  QClipboard *clipboard = QApplication::clipboard ();
-
-  QImage img (file.c_str (), format.c_str ());
-
-  if (img.isNull ())
-    {
-      // Report error?
-      return;
-    }
-
-  clipboard->setImage (img);
+  octave_link::copy_image_to_clipboard (file);
 }
   
 void

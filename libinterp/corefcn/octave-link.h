@@ -133,6 +133,12 @@ public:
   }
 
   static bool
+  copy_image_to_clipboard (const std::string& file)
+  {
+    return enabled () ? instance->do_copy_image_to_clipboard (file) : false;
+  }
+
+  static bool
   edit_file (const std::string& file)
   {
     return enabled () ? instance->do_edit_file (file) : false;
@@ -392,6 +398,8 @@ protected:
 
   virtual bool do_confirm_shutdown (void) = 0;
   virtual bool do_exit (int status) = 0;
+
+  virtual bool do_copy_image_to_clipboard (const std::string& file) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;
   virtual bool do_prompt_new_edit_file (const std::string& file) = 0;

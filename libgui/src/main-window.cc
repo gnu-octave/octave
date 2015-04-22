@@ -672,6 +672,25 @@ main_window::process_settings_dialog_request (const QString& desired_tab)
 }
 
 void
+main_window::copy_image_to_clipboard (const QString& file, bool remove_file)
+{
+  QClipboard *clipboard = QApplication::clipboard ();
+
+  QImage img (file);
+
+  if (img.isNull ())
+    {
+      // Report error?
+      return;
+    }
+
+  clipboard->setImage (img);
+
+  if (remove_file)
+    QFile::remove (file);
+}
+
+void
 main_window::request_reload_settings ()
 {
   QSettings *settings = resource_manager::get_settings ();
@@ -1522,6 +1541,10 @@ main_window::construct_octave_qt_link (void)
       connect (_octave_qt_link,
                SIGNAL (show_preferences_signal (void)),
                this, SLOT (process_settings_dialog_request ()));
+
+      connect (_octave_qt_link,
+               SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+               this, SLOT (copy_image_to_clipboard (const QString&, bool)));
 
 #ifdef HAVE_QSCINTILLA
       connect (_octave_qt_link,

@@ -1427,14 +1427,34 @@ private:
               int e_key = Fl::event_key ();
               const char *e_text = Fl::event_text ();
               int e_state = Fl::event_state ();
-              octave_scalar_map evt =
-                format_key_event (e_key, e_text, e_state);
+              octave_scalar_map evt = format_key_event (e_key, e_text, e_state);
 
               fp.set_currentcharacter (std::string (e_text));
-              if (fp.get_keypressfcn ().is_defined ()
-                  && (evt.contents ("Key").length () > 0))
-                fp.execute_keypressfcn (evt);
 
+              if (! fp.get_keypressfcn ().is_empty ()
+                  && (evt.contents ("Key").length () > 0))
+                {
+                  // Update CurrentPoint before callback
+                  if (Fl::event_inside (canvas))
+                    {
+                      pos_x = Fl::event_x ();
+                      pos_y = Fl::event_y () - menu_dy ();
+
+                      set_currentpoint (pos_x, pos_y);
+
+                      gh = pixel2axes_or_ca (pos_x, pos_y);
+
+                      if (gh.ok ())
+                        {
+                          ax_obj = gh_manager::get_object (gh);
+                          set_axes_currentpoint (ax_obj, pos_x, pos_y);
+                        }
+                     }
+
+                  fp.execute_keypressfcn (evt);
+                }
+
+              // Handle special keys used in toolbar
               switch (e_key)
                 {
                 case 'a':

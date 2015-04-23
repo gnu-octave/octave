@@ -1505,7 +1505,7 @@ private:
                   evt = format_key_event (e_key, e_text, e_state);
                 }
 
-              if (fp.get_keyreleasefcn ().is_defined ()
+              if (! fp.get_keyreleasefcn ().is_empty ()
                   && (evt.contents ("Key").length () > 0))
                 fp.execute_keyreleasefcn (evt);
               return 1;
@@ -1552,7 +1552,7 @@ private:
 
               // Ensure windowbuttondownfcn is called after currentpoint
               // is updated but before calling buttondownfcn.
-              if (fp.get_windowbuttondownfcn ().is_defined ())
+              if (! fp.get_windowbuttondownfcn ().is_empty ())
                 fp.execute_windowbuttondownfcn (Fl::event_button ());
 
               if (gh.ok ())
@@ -1567,18 +1567,18 @@ private:
                   fp.set_currentobject (ax_obj.get_handle ().value ());
 
                   base_properties& props = ax_obj.get_properties ();
-                  if (props.get_buttondownfcn ().is_defined ())
+                  if (! props.get_buttondownfcn ().is_empty ())
                     props.execute_buttondownfcn (Fl::event_button ());
 
                   return 1;
                 }
-              else if (fp.get_buttondownfcn ().is_defined ())
+              else if (! fp.get_buttondownfcn ().is_empty ())
                 fp.execute_buttondownfcn (Fl::event_button ());
 
               break;
 
             case FL_DRAG:
-              if (fp.get_windowbuttonmotionfcn ().is_defined ())
+              if (! fp.get_windowbuttonmotionfcn ().is_empty ())
                 {
                   set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                   fp.execute_windowbuttonmotionfcn ();
@@ -1692,7 +1692,7 @@ private:
               }
 
             case FL_RELEASE:
-              if (fp.get_windowbuttonupfcn ().is_defined ())
+              if (! fp.get_windowbuttonupfcn ().is_empty ())
                 {
                   set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                   fp.execute_windowbuttonupfcn ();

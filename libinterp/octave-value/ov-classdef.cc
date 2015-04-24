@@ -1629,6 +1629,13 @@ cdef_object_array::subsref (const std::string& type,
         bool is_scalar = true;
         Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
+        if (ival.empty ())
+          {
+            ::error ("can't index %s object(s) with empty parentheses",
+                     class_name ().c_str ());
+            break;
+          }
+
         for (int i = 0; ! error_state && i < ival.length (); i++)
           {
             iv(i) = ival(i).index_vector ();

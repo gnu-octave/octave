@@ -106,6 +106,8 @@ public:
 
   bool is_real_type (void) const { return true; }
 
+  bool is_real_scalar (void) const { return true; }
+
   //  void increment (void) { scalar += 1; }
 
   //  void decrement (void) { scalar -= 1; }

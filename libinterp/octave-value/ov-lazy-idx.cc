@@ -70,6 +70,12 @@ octave_lazy_index::try_narrowing_conversion (void)
 }
 
 octave_value
+octave_lazy_index::fast_elem_extract (octave_idx_type n) const
+{
+  return double (index.checkelem (n) + 1);
+}
+
+octave_value
 octave_lazy_index::reshape (const dim_vector& new_dims) const
 {
   return idx_vector (index.as_array ().reshape (new_dims),

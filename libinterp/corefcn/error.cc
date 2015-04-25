@@ -638,7 +638,12 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
       bool in_user_code = octave_call_stack::caller_user_code () != 0;
 
-      if (in_user_code && Vbacktrace_on_warning && ! warning_state
+      bool fmt_suppresses_backtrace = false;
+      size_t fmt_len = fmt ? strlen (fmt) : 0;
+      fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
+
+      if (! fmt_suppresses_backtrace && in_user_code
+          && Vbacktrace_on_warning && ! warning_state
           && ! discard_warning_messages)
         pr_where ("warning");
 

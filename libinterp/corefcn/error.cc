@@ -447,13 +447,12 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 
   error_1 (std::cerr, "error", id, fmt, args, with_cfn);
 
-  if (error_state != -2 && ! symbol_table::at_top_level ()
-      && ! discard_error_messages)
+  bool in_user_code = octave_call_stack::caller_user_code () != 0;
+
+  if (error_state != -2 && in_user_code && ! discard_error_messages)
     pr_where ("error");
 
-  if (interactive
-      && Vdebug_on_error && init_state == 0
-      && octave_call_stack::caller_user_code ())
+  if (interactive && Vdebug_on_error && init_state == 0 && in_user_code)
     {
       unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -637,17 +636,16 @@ warning_1 (const char *id, const char *fmt, va_list args)
     {
       vwarning ("warning", id, fmt, args);
 
-      if (! symbol_table::at_top_level ()
-          && Vbacktrace_on_warning
-          && ! warning_state
+      bool in_user_code = octave_call_stack::caller_user_code () != 0;
+
+      if (in_user_code && Vbacktrace_on_warning && ! warning_state
           && ! discard_warning_messages)
         pr_where ("warning");
 
       warning_state = 1;
 
       if ((interactive || forced_interactive)
-          && Vdebug_on_warning
-          && octave_call_stack::caller_user_code ())
+          && Vdebug_on_warning && in_user_code)
         {
           unwind_protect frame;
           frame.protect_var (Vdebug_on_warning);

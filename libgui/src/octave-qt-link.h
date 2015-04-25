@@ -139,6 +139,8 @@ public:
   QWaitCondition waitcondition;
   void shutdown_confirmation (bool sd) {_shutdown_confirm_result = sd;}
 
+  void update_directory (void);
+
 private:
 
   bool _shutdown_confirm_result;
@@ -154,6 +156,9 @@ private:
   QThread *main_thread;
 
   octave_interpreter *command_interpreter;
+
+  QString _current_directory;
+  bool    _new_dir;
 
 signals:
 

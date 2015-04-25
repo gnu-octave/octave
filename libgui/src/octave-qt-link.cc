@@ -47,6 +47,9 @@ octave_qt_link::octave_qt_link (QWidget *p)
   : octave_link (), main_thread (new QThread ()),
     command_interpreter (new octave_interpreter ())
 {
+  _current_directory = "";
+  _new_dir = true;
+
   connect (this, SIGNAL (execute_interpreter_signal (void)),
            command_interpreter, SLOT (execute (void)));
 
@@ -431,7 +434,15 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 void
 octave_qt_link::do_change_directory (const std::string& dir)
 {
-  emit change_directory_signal (QString::fromStdString (dir));
+  _current_directory = QString::fromStdString (dir);
+  _new_dir = true;
+}
+
+void
+octave_qt_link::update_directory ()
+{
+   emit change_directory_signal (_current_directory);
+  _new_dir = false;
 }
 
 void
@@ -446,6 +457,9 @@ octave_qt_link::do_set_workspace (bool top_level, bool debug,
 {
   if (! top_level && ! debug)
     return;
+
+  if (_new_dir)
+    update_directory ();
 
   QString scopes;
   QStringList symbols;

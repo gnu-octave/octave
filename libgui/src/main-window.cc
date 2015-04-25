@@ -2141,6 +2141,7 @@ void
 main_window::change_directory_callback (const std::string& directory)
 {
   Fcd (ovl (directory));
+  _octave_qt_link->update_directory ();
 }
 
 // The next callbacks are invoked by GUI buttons.  Those buttons

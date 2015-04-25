@@ -59,10 +59,6 @@ octave_qt_link::octave_qt_link (QWidget *p)
   command_interpreter->moveToThread (main_thread);
 
   main_thread->start ();
-
-  // Move this link object affinity to the same thread as the
-  // interpreter to ensure signals/slots to the GUI are queued.
-  moveToThread (main_thread);
 }
 
 octave_qt_link::~octave_qt_link (void) { }

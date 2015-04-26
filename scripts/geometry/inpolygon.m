@@ -18,13 +18,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
+## @deftypefn  {Function File} {@var{in} =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
+## @deftypefnx {Function File} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
 ##
-## For a polygon defined by vertex points @code{(@var{xv}, @var{yv})}, determine
-## if the points @code{(@var{x}, @var{y})} are inside or outside the polygon.
+## For a polygon defined by vertex points @code{(@var{xv}, @var{yv})}, return
+## true if the points @code{(@var{x}, @var{y})} are inside (or on the boundary)
+## of the polygon; Otherwise, return false.
+##
 ## The variables @var{x}, @var{y}, must have the same dimension.  The optional
-## output @var{on} gives the points that are on the polygon.
-##
+## output @var{on} returns true if the points are exactly on the polygon
+## edge, and false otherwise.
+## @seealso{delaunay}
 ## @end deftypefn
 
 ## Author: Frederick (Rick) A Niles <niles@rickniles.com>
@@ -34,8 +38,8 @@
 
 ## The method for determining if a point is in in a polygon is based on
 ## the algorithm shown on
-## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/ and is
-## credited to Randolph Franklin.
+## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
+## and is credited to Randolph Franklin.
 
 function [in, on] = inpolygon (x, y, xv, yv)
 
@@ -45,19 +49,15 @@ function [in, on] = inpolygon (x, y, xv, yv)
 
   if (! (isreal (x) && isreal (y) && ismatrix (y) && ismatrix (y)
          && size_equal (x, y)))
-    error ("inpolygon: first two arguments must be real matrices of same size");
+    error ("inpolygon: X and Y must be real matrices of the same size");
   elseif (! (isreal (xv) && isreal (yv) && isvector (xv) && isvector (yv)
              && size_equal (xv, yv)))
-    error ("inpolygon: last two arguments must be real vectors of same size");
+    error ("inpolygon: XV and YV must be real vectors of the same size");
   endif
 
   npol = length (xv);
-  do_boundary = (nargout >= 2);
 
-  in = zeros (size (x), "logical");
-  if (do_boundary)
-    on = zeros (size (x), "logical");
-  endif
+  in = on = false (size (x));
 
   j = npol;
   for i = 1 : npol
@@ -65,22 +65,23 @@ function [in, on] = inpolygon (x, y, xv, yv)
     delta_yv = yv(j) - yv(i);
     ## distance = [distance from (x,y) to edge] * length(edge)
     distance = delta_xv .* (y - yv(i)) - (x - xv(i)) .* delta_yv;
-    ##
-    ## is y between the y-values of edge i,j
-    ##        AND (x,y) on the left of the edge ?
+
+    ## is y between the y-values of edge i,j AND (x,y) on the left of the edge?
     idx1 = (((yv(i) <= y & y < yv(j)) | (yv(j) <= y & y < yv(i)))
             & 0 < distance.*delta_yv);
     in(idx1) = ! in(idx1);
 
     ## Check if (x,y) are actually on the boundary of the polygon.
-    if (do_boundary)
-       idx2 = (((yv(i) <= y & y <= yv(j)) | (yv(j) <= y & y <= yv(i)))
-               & ((xv(i) <= x & x <= xv(j)) | (xv(j) <= x & x <= xv(i)))
-               & (0 == distance | !delta_xv));
-       on(idx2) = true;
-    endif
+    idx2 = (((yv(i) <= y & y <= yv(j)) | (yv(j) <= y & y <= yv(i)))
+            & ((xv(i) <= x & x <= xv(j)) | (xv(j) <= x & x <= xv(i)))
+            & (0 == distance | !delta_xv));
+    on(idx2) = true;
+
     j = i;
   endfor
+
+  ## Matlab definition include both in polygon and on polygon points. 
+  in |= on;
 
 endfunction
 
@@ -119,8 +120,8 @@ endfunction
 %!         0.82096, 0.60628];
 %! xa = [0:0.1:2.3];
 %! ya = [0:0.1:1.4];
-%! [x,y] = meshgrid (xa, ya);
-%! [in,on] = inpolygon (x, y, xv, yv);
+%! [x, y] = meshgrid (xa, ya);
+%! [in, on] = inpolygon (x, y, xv, yv);
 %! inside = in & !on;
 %!
 %! clf;
@@ -134,14 +135,19 @@ endfunction
 %! disp ("and blue are on boundary.");
 
 %!test
-%! [in, on] = inpolygon ([1, 0], [1, 0], [-1, -1, 1, 1], [-1, 1, 1, -1]);
-%! assert (in, [false, true]);
-%! assert (on, [true, false]);
+%! [in, on] = inpolygon ([1, 0, 2], [1, 0, 0], [-1, -1, 1, 1], [-1, 1, 1, -1]);
+%! assert (in, [true, true, false]);
+%! assert (on, [true, false, false]);
 
 ## Test input validation
 %!error inpolygon ()
 %!error inpolygon (1, 2)
 %!error inpolygon (1, 2, 3)
-%!error inpolygon (1, [1,2], [3, 4], [5, 6])
-%!error inpolygon ([1,2], [3, 4], [5, 6], 1)
+%!error inpolygon (1, 2, 3, 4, 5)
+%!error <X and Y must be real matrices> inpolygon (1i, 1, [3, 4], [5, 6])
+%!error <X and Y must be real matrices> inpolygon (1, {1}, [3, 4], [5, 6])
+%!error <X and Y must be .* the same size> inpolygon (1, [1,2], [3, 4], [5, 6])
+%!error <XV and YV must be real vectors> inpolygon (1, 1, [3i, 4], [5, 6])
+%!error <XV and YV must be real vectors> inpolygon (1, 1, [3, 4], {5, 6})
+%!error <XV and YV must .* the same size> inpolygon ([1,2], [3, 4], [5, 6], 1)
 

@@ -145,6 +145,10 @@ Summary of important user-visible changes for version 4.0:
     column vector as output unless the input was a row vector.  This change
     was made for Matlab compatibility.
 
+ ** The inpolygon function now returns true for points that are within
+    the polygon OR on it's edge.  This change was made for Matlab
+    compatibility. 
+
  ** The archive family of functions (bzip2, gzip, zip, tar) and their
     unpacking routines (bunzip2, gunzip, unzip, untar, unpack) have
     been recoded.  Excepting unpack, the default is now to place files

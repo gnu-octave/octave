@@ -47,7 +47,7 @@ OCTAVE_RELEASE_DATE="2015-03-20"
 ## libinterp, perhaps we should be computing the "api version" from
 ## those versions numbers in some way instead of setting it
 ## independently here.
-OCTAVE_API_VERSION="api-v49+"
+OCTAVE_API_VERSION="api-v50+"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)

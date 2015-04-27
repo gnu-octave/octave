@@ -1769,12 +1769,14 @@ void QWinTerminalImpl::copyClipboard ()
 
   QString selection = d->getSelection ();
 
-  if (selection.isEmpty () && ! _extra_interrupt)
-    terminal_interrupt ();
+  if (selection.isEmpty ())
+    {
+      if (! _extra_interrupt)
+        terminal_interrupt ();
+    }
   else
     {
       clipboard->setText (selection);
-
       emit report_status_message (tr ("copied selection to clipboard"));
     }
 }

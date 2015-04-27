@@ -2281,8 +2281,11 @@ void TerminalView::copyClipboard(bool extra_interrupt)
 
   QString text = _screenWindow->selectedText(_preserveLineBreaks);
 
-  if (text.isEmpty () && ! extra_interrupt)
-    emit interrupt_signal ();
+  if (text.isEmpty ())
+    {
+      if (! extra_interrupt)
+        emit interrupt_signal ();
+    }
   else
     QApplication::clipboard()->setText(text);
 }

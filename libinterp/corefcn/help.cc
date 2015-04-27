@@ -932,10 +932,21 @@ raw_help (const std::string& nm, bool& symbol_found)
   std::string w;
   std::string f;
 
-  (raw_help_from_symbol_table (nm, h, w, symbol_found)
-   || raw_help_from_file (nm, h, f, symbol_found)
-   || raw_help_from_map (nm, h, operators_map, symbol_found)
-   || raw_help_from_map (nm, h, keywords_map, symbol_found));
+  bool found;
+
+  found = raw_help_from_symbol_table (nm, h, w, symbol_found);
+  if (! found && ! error_state)
+    {
+      found = raw_help_from_file (nm, h, f, symbol_found);
+      if (! found && ! error_state)
+        {
+          found = raw_help_from_map (nm, h, operators_map, symbol_found);
+          if (! found && ! error_state)
+            {
+              raw_help_from_map (nm, h, keywords_map, symbol_found);
+            }
+        }
+    }
 
   return h;
 }

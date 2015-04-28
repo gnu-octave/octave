@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 VZLU Prague, a.s.
+## Copyright (C) 2008-2015 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -100,7 +100,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8,
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", eps,
                   "OutputFcn", [], "FunValCheck", "off");
     return;
   endif
@@ -117,7 +117,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   ## displev = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
-  tolx = optimget (options, "TolX", 1e-8);
+  tolx = optimget (options, "TolX", eps);
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
 
@@ -302,7 +302,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     endif
 
     ## If there's an output function, use it now.
-    if (outfcn)
+    if (! isempty (outfcn))
       optv.funccount = nfev;
       optv.fval = fval;
       optv.iteration = niter;
@@ -333,7 +333,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Check solution for a singularity by examining slope
   if (info == 1)
-    if ((b - a) != 0 && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/(eps+tolx)))
+    if ((b - a) != 0
+        && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/(eps+tolx)))
       info = -5;
     endif
   endif

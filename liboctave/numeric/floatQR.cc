@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
@@ -136,7 +136,8 @@ FloatQR::init (const FloatMatrix& a, qr_type_t qr_type)
 void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
                     float *tau, qr_type_t qr_type)
 {
-  octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
+  octave_idx_type m = afact.rows ();
+  octave_idx_type min_mn = std::min (m, n);
   octave_idx_type info;
 
   if (qr_type == qr_type_raw)
@@ -212,7 +213,8 @@ FloatQR::update (const FloatColumnVector& u, const FloatColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      FloatColumnVector utmp = u, vtmp = v;
+      FloatColumnVector utmp = u;
+      FloatColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
       F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (),
                                  m, r.fortran_vec (), k,
@@ -234,7 +236,8 @@ FloatQR::update (const FloatMatrix& u, const FloatMatrix& v)
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatColumnVector utmp = u.column (i), vtmp = v.column (i);
+          FloatColumnVector utmp = u.column (i);
+          FloatColumnVector vtmp = v.column (i);
           F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec (),
@@ -539,7 +542,7 @@ FloatMatrix shift_cols (const FloatMatrix& a,
                         octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = a.columns ();
-  Array<octave_idx_type> p (n);
+  Array<octave_idx_type> p (dim_vector (n, 1));
   for (octave_idx_type k = 0; k < n; k++) p(k) = k;
   if (i < j)
     {
@@ -608,7 +611,6 @@ FloatQR::delete_col (octave_idx_type j)
 {
   warn_qrupdate_once ();
 
-  octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
   if (j < 0 || j > n-1)
@@ -624,7 +626,6 @@ FloatQR::delete_col (const Array<octave_idx_type>& j)
 {
   warn_qrupdate_once ();
 
-  octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
   Array<octave_idx_type> jsi;
@@ -671,7 +672,6 @@ FloatQR::delete_row (octave_idx_type j)
   warn_qrupdate_once ();
 
   octave_idx_type m = r.rows ();
-  octave_idx_type n = r.columns ();
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
@@ -688,7 +688,6 @@ FloatQR::shift_cols (octave_idx_type i, octave_idx_type j)
 {
   warn_qrupdate_once ();
 
-  octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
   if (i < 0 || i > n-1 || j < 0 || j > n-1)

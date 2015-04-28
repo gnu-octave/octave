@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -65,7 +65,8 @@ function q = triplequad (f, xa, xb, ya, yb, za, zb, tol = 1e-6, quadf = @quadcc,
     varargin = {};
   endif
 
-  q = dblquad (@(y, z) inner (y, z, f, xa, xb, tol, quadf, varargin{:}), ya, yb, za, zb, tol);
+  q = dblquad (@(y, z) inner (y, z, f, xa, xb, tol, quadf, varargin{:}), ...
+               ya, yb, za, zb, tol);
 
 endfunction
 
@@ -79,7 +80,7 @@ endfunction
 
 %!assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadcc), pi^(3/2) * erf (1).^3, 1e-6)
 
-%% These tests are too expensive to run normally (~30 sec each).  Disable them
+## These tests are too expensive to run normally (~30 sec each).  Disable them
 #%!assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadgk), pi^(3/2) * erf (1).^3, 1e-6)
 #%!#assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadl), pi^(3/2) * erf (1).^3, 1e-6)
 #%!#assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadv), pi^(3/2) * erf (1).^3, 1e-6)

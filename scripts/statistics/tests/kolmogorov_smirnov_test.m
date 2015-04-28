@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -76,7 +76,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
     end_try_catch
   end_try_catch
 
-  alt  = "!=";
+  alt = "!=";
 
   args{1} = s;
   nvargs = numel (varargin);

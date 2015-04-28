@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -392,6 +392,10 @@ modeled after the C language functions of the same name, but they
 interpret the format template differently in order to improve the
 performance of printing vector and matrix values.
 
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in
+the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+expanded even when the template string is defined with single quotes.
+
 @DOCSTRING(printf)
 
 @DOCSTRING(fprintf)
@@ -616,10 +620,26 @@ Print a literal @samp{%} character.  @xref{Other Output Conversions}.
 @end table
 
 If the syntax of a conversion specification is invalid, unpredictable
-things will happen, so don't do this.  If there aren't enough function
-arguments provided to supply values for all the conversion
-specifications in the template string, or if the arguments are not of
-the correct types, the results are unpredictable.  If you supply more
+things will happen, so don't do this.  In particular, @sc{matlab} allows
+a bare percentage sign @samp{%} with no subsequent conversion character.
+Octave will emit an error and stop if it sees such code.  When the string
+variable to be processed cannot be guaranteed to be free of potential format
+codes it is better to use the two argument form of any of the @code{printf}
+functions and set the format string to @code{%s}.  Alternatively, for code
+which is not required to be backwards-compatible with @sc{matlab} the
+Octave function @code{puts} or @code{disp} can be used.
+
+@example
+@group
+printf (strvar);        # Unsafe if strvar contains format codes
+printf ("%s", strvar);  # Safe
+puts (strvar);          # Safe
+@end group
+@end example
+
+If there aren't enough function arguments provided to supply values for all
+the conversion specifications in the template string, or if the arguments are
+not of the correct types, the results are unpredictable.  If you supply more
 arguments than conversion specifications, the extra argument values are
 simply ignored; this is sometimes useful.
 
@@ -1006,7 +1026,11 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(tmpfile)
 
-@DOCSTRING(tmpnam)
+@DOCSTRING(tempname)
+
+@DOCSTRING(tempdir)
+
+@DOCSTRING(P_tmpdir)
 
 @node EOF and Errors
 @subsection End of File and Errors

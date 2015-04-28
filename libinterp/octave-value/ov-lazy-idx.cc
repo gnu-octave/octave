@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2013 VZLU Prague
+Copyright (C) 2010-2015 VZLU Prague
 
 This file is part of Octave.
 
@@ -67,6 +67,12 @@ octave_lazy_index::try_narrowing_conversion (void)
     }
 
   return retval;
+}
+
+octave_value
+octave_lazy_index::fast_elem_extract (octave_idx_type n) const
+{
+  return double (index.checkelem (n) + 1);
 }
 
 octave_value

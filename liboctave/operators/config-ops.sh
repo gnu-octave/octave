@@ -81,7 +81,7 @@ case "$obj_type" in
   smx | all)
     case "$src_type" in
       inc | all)
-        SMX_INC=$($AWK -f $sparse_mk_ops prefix=smx list_h_files=1 $liboctave_dir/sparse-mx-ops)
+        SMX_INC=$($AWK -f $sparse_mk_ops prefix=smx list_h_files=1 $liboctave_dir/smx-ops)
         echo "SMX_OP_INC = $SMX_INC" > $liboctave_dir/smx-op-inc.mk-t
         $move_if_change $liboctave_dir/smx-op-inc.mk-t $liboctave_dir/smx-op-inc.mk
       ;;
@@ -93,7 +93,7 @@ case "$obj_type" in
   smx | all)
     case "$src_type" in
       src | all)
-        SMX_SRC=$($AWK -f $sparse_mk_ops prefix=smx list_cc_files=1 $liboctave_dir/sparse-mx-ops)
+        SMX_SRC=$($AWK -f $sparse_mk_ops prefix=smx list_cc_files=1 $liboctave_dir/smx-ops)
         echo "SMX_OP_SRC = $SMX_SRC" > $liboctave_dir/smx-op-src.mk-t
         $move_if_change $liboctave_dir/smx-op-src.mk-t $liboctave_dir/smx-op-src.mk
       ;;

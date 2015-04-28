@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -85,7 +85,7 @@ static bool free_format = false;
 static bool plus_format = false;
 
 // First char for > 0, second for < 0, third for == 0.
-static std::string plus_format_chars = "+  ";
+static std::string plus_format_chars = "+- ";
 
 // TRUE means always print in a rational approximation
 static bool rat_format = false;
@@ -596,13 +596,11 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
         {
           ld = digits;
           rd = prec > digits ? prec - digits : prec;
-          digits++;
         }
       else
         {
           ld = 1;
           rd = prec > digits ? prec - digits : prec;
-          digits = -digits + 1;
         }
 
       fw = 1 + ld + 1 + rd;
@@ -824,7 +822,7 @@ set_format (const Matrix& m, int& fw, double& scale)
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
   scale = (x_max == 0 || int_or_inf_or_nan)
-            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
+          ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
@@ -1240,7 +1238,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
   scale = (x_max == 0 || int_or_inf_or_nan)
-            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
+          ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
                              int_or_inf_or_nan, r_fw, i_fw);
@@ -1396,7 +1394,7 @@ set_format (const Range& r, int& fw, double& scale)
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
   scale = (x_max == 0 || all_ints)
-            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
+          ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
 }
@@ -2105,7 +2103,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, Matrix (nda),
                              pr_as_read_syntax, extra_indent);
       break;
 
@@ -2502,11 +2500,10 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
       if (pr_as_read_syntax)
         {
-          Array<octave_idx_type> pvec = m.pvec ();
-          bool colp = m.is_col_perm ();
+          Array<octave_idx_type> pvec = m.col_perm_vec ();
 
           os << "eye (";
-          if (colp) os << ":, ";
+          os << ":, ";
 
           octave_idx_type col = 0;
           while (col < nc)
@@ -2537,7 +2534,6 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
               else
                 os << " ...\n";
             }
-          if (! colp) os << ", :";
           os << ")";
         }
       else
@@ -2584,13 +2580,13 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, ComplexMatrix (nda),
                              pr_as_read_syntax, extra_indent);
       break;
 
     default:
       print_nd_array <ComplexNDArray, Complex, ComplexMatrix>
-                      (os, nda, pr_as_read_syntax);
+                     (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2794,7 +2790,7 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, boolMatrix (nda),
                              pr_as_read_syntax, extra_indent);
       break;
 
@@ -2861,7 +2857,7 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, charMatrix (nda),
                              pr_as_read_syntax, extra_indent, pr_as_string);
       break;
 
@@ -3402,8 +3398,7 @@ octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 }
 
 void
-octave_print_internal (std::ostream&, const octave_value&,
-                       bool pr_as_read_syntax)
+octave_print_internal (std::ostream&, const octave_value&, bool)
 {
   panic_impossible ();
 }
@@ -3457,7 +3452,7 @@ If the length of the smallest possible rational approximation exceeds\n\
               rat_format = true;
 
               std::ostringstream buf;
-              args(0).print (buf);
+              arg.print (buf);
               std::string s = buf.str ();
 
               std::list<std::string> lst;
@@ -3519,11 +3514,12 @@ returns the formatted output in a string.\n\
 
   if (nargin == 1 && nargout < 2)
     {
+      octave_value arg = args(0);
+
       if (nargout == 0)
-        args(0).print (octave_stdout);
+        arg.print (octave_stdout);
       else
         {
-          octave_value arg = args(0);
           std::ostringstream buf;
           arg.print (buf);
           retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
@@ -3560,7 +3556,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 
   if (nargin == 2)
     {
-      int fid = octave_stream_list::get_file_number (args (0));
+      int fid = octave_stream_list::get_file_number (args(0));
 
       octave_stream os = octave_stream_list::lookup (fid, "fdisp");
 
@@ -3568,8 +3564,10 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
         {
           std::ostream *osp = os.output_stream ();
 
+          octave_value arg = args(1);
+
           if (osp)
-            args(1).print (*osp);
+            arg.print (*osp);
           else
             error ("fdisp: stream FID not open for writing");
         }
@@ -3630,20 +3628,25 @@ set_output_prec_and_fw (int prec, int fw)
   Voutput_max_field_width = fw;
 }
 
+static std::string format_string ("short");
+
 static void
 set_format_style (int argc, const string_vector& argv)
 {
   int idx = 1;
+  std::string format;
 
   if (--argc > 0)
     {
       std::string arg = argv[idx++];
+      format = arg;
 
       if (arg == "short")
         {
           if (--argc > 0)
             {
               arg = argv[idx++];
+              format.append (arg);
 
               if (arg == "e")
                 {
@@ -3684,11 +3687,44 @@ set_format_style (int argc, const string_vector& argv)
 
           set_output_prec_and_fw (5, 10);
         }
+      else if (arg == "shorte")
+        {
+          init_format_state ();
+          print_e = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortE")
+        {
+          init_format_state ();
+          print_e = true;
+          print_big_e = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortg")
+        {
+          init_format_state ();
+          print_g = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortG")
+        {
+          init_format_state ();
+          print_g = true;
+          print_big_e = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortEng")
+        {
+          init_format_state ();
+          print_eng = true;
+          set_output_prec_and_fw (5, 10);
+        }
       else if (arg == "long")
         {
           if (--argc > 0)
             {
               arg = argv[idx++];
+              format.append (arg);
 
               if (arg == "e")
                 {
@@ -3729,6 +3765,38 @@ set_format_style (int argc, const string_vector& argv)
 
           set_output_prec_and_fw (15, 20);
         }
+      else if (arg == "longe")
+        {
+          init_format_state ();
+          print_e = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longE")
+        {
+          init_format_state ();
+          print_e = true;
+          print_big_e = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longg")
+        {
+          init_format_state ();
+          print_g = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longG")
+        {
+          init_format_state ();
+          print_g = true;
+          print_big_e = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longEng")
+        {
+          init_format_state ();
+          print_eng = true;
+          set_output_prec_and_fw (15, 20);
+        }
       else if (arg == "hex")
         {
           init_format_state ();
@@ -3754,6 +3822,7 @@ set_format_style (int argc, const string_vector& argv)
           if (--argc > 0)
             {
               arg = argv[idx++];
+              format.append (arg);
 
               if (arg.length () == 3)
                 plus_format_chars = arg;
@@ -3764,7 +3833,7 @@ set_format_style (int argc, const string_vector& argv)
                 }
             }
           else
-            plus_format_chars = "+  ";
+            plus_format_chars = "+- ";
 
           init_format_state ();
           plus_format = true;
@@ -3792,20 +3861,29 @@ set_format_style (int argc, const string_vector& argv)
       else if (arg == "compact")
         {
           Vcompact_format = true;
+          return;
         }
       else if (arg == "loose")
         {
           Vcompact_format = false;
+          return;
         }
       else
-        error ("format: unrecognized format state '%s'", arg.c_str ());
+        {
+          error ("format: unrecognized format state '%s'", arg.c_str ());
+          return;
+        }
     }
   else
     {
       init_format_state ();
       set_output_prec_and_fw (5, 10);
+      format = std::string ("short");
     }
+
+  format_string = format;
 }
+
 
 DEFUN (format, args, ,
        "-*- texinfo -*-\n\
@@ -3900,18 +3978,19 @@ The following formats affect all numeric output (floating point and\n\
 integer types).\n\
 \n\
 @table @code\n\
-@item  +\n\
-@itemx + @var{chars}\n\
+@item  \"+\"\n\
+@itemx \"+\" @var{chars}\n\
 @itemx plus\n\
 @itemx plus @var{chars}\n\
-Print a @samp{+} symbol for nonzero matrix elements and a space for zero\n\
-matrix elements.  This format can be very useful for examining the\n\
-structure of a large sparse matrix.\n\
+Print a @samp{+} symbol for matrix elements greater than zero, a\n\
+@samp{-} symbol for elements less than zero and a space for zero matrix\n\
+elements.  This format can be very useful for examining the structure\n\
+of a large sparse matrix.\n\
 \n\
 The optional argument @var{chars} specifies a list of 3 characters to use\n\
 for printing values greater than zero, less than zero and equal to zero.\n\
-For example, with the @samp{+ \"+-.\"} format, @code{[1, 0, -1; -1, 0, 1]}\n\
-is displayed as\n\
+For example, with the @samp{\"+\" \"+-.\"} format,\n\
+@code{[1, 0, -1; -1, 0, 1]} is displayed as\n\
 \n\
 @example\n\
 @group\n\
@@ -3991,6 +4070,25 @@ to produce a more readable output with less data per page.  (default).\n\
   return retval;
 }
 
+DEFUN (__compactformat__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} __compactformat__ ()\n\
+@deftypefnx {Built-in Function} {} __compactformat__ (@var{TRUE|FALSE})\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (compact_format);
+}
+
+DEFUN (__formatstring__, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} __formatstring__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (format_string);
+}
+
 DEFUN (fixed_point_format, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} fixed_point_format ()\n\
@@ -4020,7 +4118,7 @@ ans =\n\
 \n\
 @noindent\n\
 Notice that the first value appears to be 0 when it is actually 1.  Because\n\
-of the possibilty for confusion you should be careful about enabling\n\
+of the possibility for confusion you should be careful about enabling\n\
 @code{fixed_point_format}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\

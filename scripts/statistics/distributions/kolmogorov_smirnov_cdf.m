@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -87,7 +87,7 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error kolmogorov_smirnov_cdf ()
 %!error kolmogorov_smirnov_cdf (1,2,3)
 %!error kolmogorov_smirnov_cdf (1, ones (2))

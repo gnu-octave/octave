@@ -1,6 +1,6 @@
-EXTRA_DIST += dasrt/module.mk
+EXTRA_DIST += cruft/dasrt/module.mk
 
-libcruft_la_SOURCES += \
-  dasrt/ddasrt.f \
-  dasrt/drchek.f \
-  dasrt/droots.f
+CRUFT_SOURCES += \
+  cruft/dasrt/ddasrt.f \
+  cruft/dasrt/drchek.f \
+  cruft/dasrt/droots.f

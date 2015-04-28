@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2013 John W. Eaton
+Copyright (C) 2006-2015 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "input.h"
 #include "load-path.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "toplev.h"
@@ -78,7 +79,7 @@ load_path::dir_info::update (void)
                   const dir_info& di = p->second;
 
                   if (fs.mtime () + fs.time_resolution ()
-                       > di.dir_time_last_checked)
+                      > di.dir_time_last_checked)
                     initialize ();
                   else
                     *this = di;
@@ -108,6 +109,27 @@ load_path::dir_info::update (void)
     }
 }
 
+bool
+load_path::dir_info::is_package (const std::string& name) const
+{
+  size_t pos = name.find ('.');
+
+  if (pos == std::string::npos)
+    return package_dir_map.find (name) != package_dir_map.end ();
+  else
+    {
+      std::string name_head = name.substr (0, pos);
+      std::string name_tail = name.substr (pos + 1);
+
+      const_package_dir_map_iterator it = package_dir_map.find (name_head);
+
+      if (it != package_dir_map.end ())
+        return it->second.is_package (name_tail);
+      else
+        return false;
+    }
+}
+
 void
 load_path::dir_info::initialize (void)
 {
@@ -120,6 +142,7 @@ load_path::dir_info::initialize (void)
   if (fs)
     {
       method_file_map.clear ();
+      package_dir_map.clear ();
 
       dir_mtime = fs.mtime ();
       dir_time_last_checked = octave_time ();
@@ -181,6 +204,8 @@ load_path::dir_info::get_file_list (const std::string& d)
                     get_private_file_map (full_name);
                   else if (fname[0] == '@')
                     get_method_file_map (full_name, fname.substr (1));
+                  else if (fname[0] == '+')
+                    get_package_dir (full_name, fname.substr (1));
                 }
               else
                 {
@@ -286,6 +311,13 @@ load_path::dir_info::get_method_file_map (const std::string& d,
     method_file_map[class_name].private_file_map = get_fcn_files (pd);
 }
 
+void
+load_path::dir_info::get_package_dir (const std::string& d,
+                                      const std::string& package_name)
+{
+  package_dir_map[package_name] = dir_info (d);
+}
+
 bool
 load_path::instance_ok (void)
 {
@@ -373,8 +405,8 @@ load_path::do_contains_canonical (const std::string& dir) const
 }
 
 void
-load_path::move_fcn_map (const std::string& dir_name,
-                         const string_vector& fcn_files, bool at_end)
+load_path::loader::move_fcn_map (const std::string& dir_name,
+                                 const string_vector& fcn_files, bool at_end)
 {
   octave_idx_type len = fcn_files.length ();
 
@@ -422,7 +454,7 @@ load_path::move_fcn_map (const std::string& dir_name,
 }
 
 void
-load_path::move_method_map (const std::string& dir_name, bool at_end)
+load_path::loader::move_method_map (const std::string& dir_name, bool at_end)
 {
   for (method_map_iterator i = method_map.begin ();
        i != method_map.end ();
@@ -466,7 +498,7 @@ load_path::move_method_map (const std::string& dir_name, bool at_end)
 }
 
 void
-load_path::move (dir_info_list_iterator i, bool at_end)
+load_path::do_move (dir_info_list_iterator i, bool at_end)
 {
   if (dir_info_list.size () > 1)
     {
@@ -479,14 +511,54 @@ load_path::move (dir_info_list_iterator i, bool at_end)
       else
         dir_info_list.push_front (di);
 
-      std::string dir_name = di.dir_name;
-
-      move_fcn_map (dir_name, di.fcn_files, at_end);
-
-      // No need to move elements of private function map.
-
-      move_method_map (dir_name, at_end);
+      move (di, at_end);
     }
+}
+
+void
+load_path::move (const dir_info& di, bool at_end, const std::string& pname)
+{
+  loader& l = get_loader (pname);
+
+  l.move (di, at_end);
+
+  dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
+
+  for (dir_info::const_package_dir_map_iterator p = package_dir_map.begin ();
+       p != package_dir_map.end (); ++p)
+    {
+      std::string full_name = p->first;
+
+      if (! pname.empty ())
+        full_name = pname + "." + full_name;
+
+      move (p->second, at_end, full_name);
+    }
+}
+
+void
+load_path::loader::move (const dir_info& di, bool at_end)
+{
+  std::string dir_name = di.dir_name;
+
+  std::list<std::string>::iterator s =
+    std::find (dir_list.begin (), dir_list.end (), dir_name);
+
+  if (s != dir_list.end ())
+    {
+      dir_list.erase (s);
+
+      if (at_end)
+        dir_list.push_back (dir_name);
+      else
+        dir_list.push_front (dir_name);
+    }
+
+  move_fcn_map (dir_name, di.fcn_files, at_end);
+
+  // No need to move elements of private function map.
+
+  move_method_map (dir_name, at_end);
 }
 
 static void
@@ -518,6 +590,7 @@ load_path::do_initialize (bool set_initial_path)
       maybe_add_path_elts (sys_path, Vlocal_fcn_file_dir);
       maybe_add_path_elts (sys_path, Voct_file_dir);
       maybe_add_path_elts (sys_path, Vfcn_file_dir);
+      maybe_add_path_elts (sys_path, Voct_data_dir);
     }
 
   std::string tpath = load_path::command_line_path;
@@ -544,9 +617,10 @@ void
 load_path::do_clear (void)
 {
   dir_info_list.clear ();
-  fcn_map.clear ();
-  private_fcn_map.clear ();
-  method_map.clear ();
+
+  default_loader.clear ();
+
+  loader_map.clear ();
 }
 
 static std::list<std::string>
@@ -683,7 +757,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
   dir_info_list_iterator i = find_dir_info (dir);
 
   if (i != dir_info_list.end ())
-    move (i, at_end);
+    do_move (i, at_end);
   else
     {
       file_stat fs (dir);
@@ -701,11 +775,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
                   else
                     dir_info_list.push_front (di);
 
-                  add_to_fcn_map (di, at_end);
-
-                  add_to_private_fcn_map (di);
-
-                  add_to_method_map (di, at_end);
+                  add (di, at_end);
 
                   if (add_hook)
                     add_hook (dir);
@@ -726,12 +796,12 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
   i = find_dir_info (".");
 
   if (i != dir_info_list.end ())
-    move (i, false);
+    do_move (i, false);
 }
 
 void
-load_path::remove_fcn_map (const std::string& dir,
-                           const string_vector& fcn_files)
+load_path::loader::remove_fcn_map (const std::string& dir,
+                                   const string_vector& fcn_files)
 {
   octave_idx_type len = fcn_files.length ();
 
@@ -770,7 +840,7 @@ load_path::remove_fcn_map (const std::string& dir,
 }
 
 void
-load_path::remove_private_fcn_map (const std::string& dir)
+load_path::loader::remove_private_fcn_map (const std::string& dir)
 {
   private_fcn_map_iterator p = private_fcn_map.find (dir);
 
@@ -779,7 +849,7 @@ load_path::remove_private_fcn_map (const std::string& dir)
 }
 
 void
-load_path::remove_method_map (const std::string& dir)
+load_path::loader::remove_method_map (const std::string& dir)
 {
   for (method_map_iterator i = method_map.begin ();
        i != method_map.end ();
@@ -847,20 +917,53 @@ load_path::do_remove (const std::string& dir_arg)
               if (remove_hook)
                 remove_hook (dir);
 
-              string_vector fcn_files = i->fcn_files;
+              dir_info& di = *i;
+
+              remove (di);
 
               dir_info_list.erase (i);
-
-              remove_fcn_map (dir, fcn_files);
-
-              remove_private_fcn_map (dir);
-
-              remove_method_map (dir);
             }
         }
     }
 
   return retval;
+}
+
+void
+load_path::remove (const dir_info& di, const std::string& pname)
+{
+  loader& l = get_loader (pname);
+
+  l.remove (di);
+
+  dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
+
+  for (dir_info::const_package_dir_map_iterator p = package_dir_map.begin ();
+       p != package_dir_map.end (); ++p)
+    {
+      std::string full_name = p->first;
+
+      if (! pname.empty ())
+        full_name = pname + "." + full_name;
+
+      remove (p->second, full_name);
+    }
+}
+
+void
+load_path::loader::remove (const dir_info& di)
+{
+  std::string dir = di.dir_name;
+
+  string_vector fcn_files = di.fcn_files;
+
+  dir_list.remove (dir);
+
+  remove_fcn_map (dir, fcn_files);
+
+  remove_private_fcn_map (dir);
+
+  remove_method_map (dir);
 }
 
 void
@@ -870,11 +973,9 @@ load_path::do_update (void) const
   // preserve the correct directory ordering for new files that
   // have appeared.
 
-  fcn_map.clear ();
+  default_loader.clear ();
 
-  private_fcn_map.clear ();
-
-  method_map.clear ();
+  loader_map.clear ();
 
   for (dir_info_list_iterator p = dir_info_list.begin ();
        p != dir_info_list.end ();
@@ -884,11 +985,7 @@ load_path::do_update (void) const
 
       di.update ();
 
-      add_to_fcn_map (di, true);
-
-      add_to_private_fcn_map (di);
-
-      add_to_method_map (di, true);
+      add (di, true);
     }
 }
 
@@ -987,8 +1084,8 @@ load_path::check_file_type (std::string& fname, int type, int possible_types,
 }
 
 std::string
-load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
-                        int type) const
+load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
+                             int type) const
 {
   std::string retval;
 
@@ -1003,7 +1100,7 @@ load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
           std::string class_name = fcn.substr (1, pos-1);
           std::string meth = fcn.substr (pos+1);
 
-          retval = do_find_method (class_name, meth, dir_name);
+          retval = find_method (class_name, meth, dir_name);
         }
       else
         retval = std::string ();
@@ -1042,8 +1139,8 @@ load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
 }
 
 std::string
-load_path::do_find_private_fcn (const std::string& dir,
-                                const std::string& fcn, int type) const
+load_path::loader::find_private_fcn (const std::string& dir,
+                                     const std::string& fcn, int type) const
 {
   std::string retval;
 
@@ -1072,9 +1169,9 @@ load_path::do_find_private_fcn (const std::string& dir,
 }
 
 std::string
-load_path::do_find_method (const std::string& class_name,
-                           const std::string& meth,
-                           std::string& dir_name, int type) const
+load_path::loader::find_method (const std::string& class_name,
+                                const std::string& meth,
+                                std::string& dir_name, int type) const
 {
   std::string retval;
 
@@ -1120,7 +1217,7 @@ load_path::do_find_method (const std::string& class_name,
 }
 
 std::list<std::string>
-load_path::do_methods (const std::string& class_name) const
+load_path::loader::methods (const std::string& class_name) const
 {
   std::list<std::string> retval;
 
@@ -1142,6 +1239,20 @@ load_path::do_methods (const std::string& class_name) const
   return retval;
 }
 
+bool
+load_path::is_package (const std::string& name) const
+{
+  for (const_dir_info_list_iterator p = dir_info_list.begin ();
+       p != dir_info_list.end ();
+       p++)
+    {
+      if (p->is_package (name))
+        return true;
+    }
+
+  return false;
+}
+
 std::list<std::string>
 load_path::do_overloads (const std::string& meth) const
 {
@@ -1149,13 +1260,67 @@ load_path::do_overloads (const std::string& meth) const
 
   //  update ();
 
+  default_loader.overloads (meth, retval);
+
+  for (const_loader_map_iterator l = loader_map.begin ();
+       l != loader_map.end (); ++l)
+    l->second.overloads (meth, retval);
+
+  return retval;
+}
+
+void
+load_path::loader::overloads (const std::string& meth,
+                              std::list<std::string>& l) const
+{
   for (const_method_map_iterator q = method_map.begin ();
        q != method_map.end (); q++)
     {
       const fcn_map_type& m = q->second;
 
       if (m.find (meth) != m.end ())
-        retval.push_back (q->first);
+        {
+          std::string class_name = q->first;
+
+          if (! prefix.empty ())
+            class_name = prefix + "." + class_name;
+
+          l.push_back (class_name);
+        }
+    }
+}
+
+// Should we cache all files in private directories, or is it OK to just
+// look them up each time as needed?
+
+std::string
+find_private_file (const std::string& fname)
+{
+  std::string retval;
+
+  // Look in private directory corresponding to current function (if
+  // any).
+
+  octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
+
+  if (curr_fcn)
+    {
+      // Even for private functions, dir_name doesn't contain the
+      // "private" directory component so we append it here in all
+      // cases.
+
+      std::string dir_name = curr_fcn->dir_name ();
+
+      if (! dir_name.empty ())
+        {
+          std::string pfname = dir_name + file_ops::dir_sep_str ()
+                               + "private" + file_ops::dir_sep_str () + fname;
+
+          file_stat fs (pfname);
+
+          if (fs.exists () && fs.is_reg ())
+            retval = pfname;
+        }
     }
 
   return retval;
@@ -1166,33 +1331,42 @@ load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
+  if (octave_env::absolute_pathname (file)
+      || octave_env::rooted_relative_pathname (file))
+    {
+      file_stat fs (file);
+
+      return fs.exists () ? file : retval;
+    }
+  else
+    {
+      std::string tfile = find_private_file (file);
+
+      if (! tfile.empty ())
+        return tfile;
+    }
+
   if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
     {
-      if (octave_env::absolute_pathname (file)
-          || octave_env::rooted_relative_pathname (file))
+      // Given name has a directory separator, so append it to each
+      // element of the load path in turn.
+
+      for (const_dir_info_list_iterator p = dir_info_list.begin ();
+           p != dir_info_list.end ();
+           p++)
         {
-          file_stat fs (file);
+          std::string tfile = file_ops::concat (p->dir_name, file);
+
+          file_stat fs (tfile);
 
           if (fs.exists ())
-            return file;
-        }
-      else
-        {
-          for (const_dir_info_list_iterator p = dir_info_list.begin ();
-               p != dir_info_list.end ();
-               p++)
-            {
-              std::string tfile = file_ops::concat (p->dir_name, file);
-
-              file_stat fs (tfile);
-
-              if (fs.exists ())
-                return tfile;
-            }
+            return tfile;
         }
     }
   else
     {
+      // Look in cache.
+
       for (const_dir_info_list_iterator p = dir_info_list.begin ();
            p != dir_info_list.end ();
            p++)
@@ -1244,7 +1418,7 @@ load_path::do_find_dir (const std::string& dir) const
 
           size_t dir_len = dir.length ();
 
-          if (dname_len >= dir_len
+          if (dname_len > dir_len
               && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
               && dir.compare (dname.substr (dname_len - dir_len)) == 0)
             {
@@ -1291,7 +1465,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
 
           size_t dir_len = dir.length ();
 
-          if (dname_len >= dir_len
+          if (dname_len > dir_len
               && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
               && dir.compare (dname.substr (dname_len - dir_len)) == 0)
             {
@@ -1515,6 +1689,12 @@ load_path::do_files (const std::string& dir, bool omit_exts) const
 string_vector
 load_path::do_fcn_names (void) const
 {
+  return default_loader.fcn_names ();
+}
+
+string_vector
+load_path::loader::fcn_names (void) const
+{
   size_t len = fcn_map.size ();
 
   string_vector retval (len);
@@ -1657,69 +1837,11 @@ load_path::do_display (std::ostream& os) const
         }
     }
 
-  for (const_private_fcn_map_iterator i = private_fcn_map.begin ();
-       i != private_fcn_map.end (); i++)
-    {
-      os << "\n*** private functions in "
-         << file_ops::concat (i->first, "private") << ":\n\n";
+  default_loader.display (os);
 
-      print_fcn_list (os, i->second);
-    }
-
-#if defined (DEBUG_LOAD_PATH)
-
-  for (const_fcn_map_iterator i = fcn_map.begin ();
-       i != fcn_map.end ();
-       i++)
-    {
-      os << i->first << ":\n";
-
-      const file_info_list_type& file_info_list = i->second;
-
-      for (const_file_info_list_iterator p = file_info_list.begin ();
-           p != file_info_list.end ();
-           p++)
-        {
-          os << "  " << p->dir_name << " (";
-
-          print_types (os, p->types);
-
-          os << ")\n";
-        }
-    }
-
-  for (const_method_map_iterator i = method_map.begin ();
-       i != method_map.end ();
-       i++)
-    {
-      os << "CLASS " << i->first << ":\n";
-
-      const fcn_map_type& fm = i->second;
-
-      for (const_fcn_map_iterator q = fm.begin ();
-           q != fm.end ();
-           q++)
-        {
-          os << "  " << q->first << ":\n";
-
-          const file_info_list_type& file_info_list = q->second;
-
-          for (const_file_info_list_iterator p = file_info_list.begin ();
-               p != file_info_list.end ();
-               p++)
-            {
-              os << "  " << p->dir_name << " (";
-
-              print_types (os, p->types);
-
-              os << ")\n";
-            }
-        }
-    }
-
-  os << "\n";
-
-#endif
+  for (const_loader_map_iterator l = loader_map.begin ();
+       l != loader_map.end (); ++l)
+    l->second.display (os);
 }
 
 // True if a path is contained in a path list separated by path_sep_char
@@ -1743,7 +1865,29 @@ in_path_list (const std::string& path_list, const std::string& path)
 }
 
 void
-load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
+load_path::add (const dir_info& di, bool at_end,
+                const std::string& pname) const
+{
+  loader& l = get_loader (pname);
+
+  l.add (di, at_end);
+
+  dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
+
+  for (dir_info::const_package_dir_map_iterator p = package_dir_map.begin ();
+       p != package_dir_map.end (); ++p)
+    {
+      std::string full_name = p->first;
+
+      if (! pname.empty ())
+        full_name = pname + "." + full_name;
+
+      add (p->second, at_end, full_name);
+    }
+}
+
+void
+load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
 {
   std::string dir_name = di.dir_name;
 
@@ -1839,7 +1983,7 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
 }
 
 void
-load_path::add_to_private_fcn_map (const dir_info& di) const
+load_path::loader::add_to_private_fcn_map (const dir_info& di)
 {
   dir_info::fcn_file_map_type private_file_map = di.private_file_map;
 
@@ -1848,7 +1992,7 @@ load_path::add_to_private_fcn_map (const dir_info& di) const
 }
 
 void
-load_path::add_to_method_map (const dir_info& di, bool at_end) const
+load_path::loader::add_to_method_map (const dir_info& di, bool at_end)
 {
   std::string dir_name = di.dir_name;
 
@@ -1918,6 +2062,81 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
     }
 }
 
+void
+load_path::loader::display (std::ostream& os) const
+{
+  os << "*** loader: " << (prefix.empty () ? "<top-level>" : prefix) << "\n\n";
+
+  for (std::list<std::string>::const_iterator s = dir_list.begin ();
+       s != dir_list.end (); ++s)
+    os << *s << "\n";
+  os << "\n";
+
+  for (const_private_fcn_map_iterator i = private_fcn_map.begin ();
+       i != private_fcn_map.end (); i++)
+    {
+      os << "\n*** private functions in "
+         << file_ops::concat (i->first, "private") << ":\n\n";
+
+      print_fcn_list (os, i->second);
+    }
+
+#if defined (DEBUG_LOAD_PATH)
+
+  for (const_fcn_map_iterator i = fcn_map.begin ();
+       i != fcn_map.end ();
+       i++)
+    {
+      os << i->first << ":\n";
+
+      const file_info_list_type& file_info_list = i->second;
+
+      for (const_file_info_list_iterator p = file_info_list.begin ();
+           p != file_info_list.end ();
+           p++)
+        {
+          os << "  " << p->dir_name << " (";
+
+          print_types (os, p->types);
+
+          os << ")\n";
+        }
+    }
+
+  for (const_method_map_iterator i = method_map.begin ();
+       i != method_map.end ();
+       i++)
+    {
+      os << "CLASS " << i->first << ":\n";
+
+      const fcn_map_type& fm = i->second;
+
+      for (const_fcn_map_iterator q = fm.begin ();
+           q != fm.end ();
+           q++)
+        {
+          os << "  " << q->first << ":\n";
+
+          const file_info_list_type& file_info_list = q->second;
+
+          for (const_file_info_list_iterator p = file_info_list.begin ();
+               p != file_info_list.end ();
+               p++)
+            {
+              os << "  " << p->dir_name << " (";
+
+              print_types (os, p->types);
+
+              os << ")\n";
+            }
+        }
+    }
+
+  os << "\n";
+
+#endif
+}
+
 std::string
 genpath (const std::string& dirname, const string_vector& skip)
 {
@@ -1929,7 +2148,7 @@ genpath (const std::string& dirname, const string_vector& skip)
     {
       retval = dirname;
 
-      string_vector dirlist = dir.read ();
+      string_vector dirlist = dir.read ().sort (false);
 
       octave_idx_type len = dirlist.length ();
 
@@ -1937,7 +2156,8 @@ genpath (const std::string& dirname, const string_vector& skip)
         {
           std::string elt = dirlist[i];
 
-          bool skip_p = (elt == "." || elt == ".." || elt[0] == '@');
+          bool skip_p = (elt == "." || elt == ".." || elt[0] == '@'
+                         || elt[0] == '+');
 
           if (! skip_p)
             {
@@ -1959,6 +2179,21 @@ genpath (const std::string& dirname, const string_vector& skip)
                 }
             }
         }
+    }
+
+  return retval;
+}
+
+std::list<std::string>
+load_path::do_get_all_package_names (bool only_top_level) const
+{
+  std::list<std::string> retval;
+
+  for (const_loader_map_iterator l = loader_map.begin ();
+       l != loader_map.end (); ++l)
+    {
+      if (! only_top_level || l->first.find ('.') == std::string::npos)
+        retval.push_back (l->first);
     }
 
   return retval;
@@ -2013,7 +2248,7 @@ exclude directories with those names.\n\
       if (! error_state)
         retval = genpath (dirname);
       else
-        error ("genpath: DIR must be a character string");
+        error ("genpath: DIR must be a string");
     }
   else if (nargin > 1)
     {
@@ -2032,7 +2267,7 @@ exclude directories with those names.\n\
       if (! error_state)
         retval = genpath (dirname, skip);
       else
-        error ("genpath: all arguments must be character strings");
+        error ("genpath: all arguments must be strings");
     }
   else
     print_usage ();
@@ -2237,10 +2472,10 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          std::string arg = args(i).string_value ();
-
-          if (! error_state)
+          if (args(i).is_string ())
             {
+              std::string arg = args(i).string_value ();
+
               std::list<std::string> dir_elts = split_path (arg);
 
               if (! append)
@@ -2264,7 +2499,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
                 }
             }
           else
-            error ("addpath: all arguments must be character strings");
+            error ("addpath: all arguments must be strings");
         }
 
       if (need_to_update)
@@ -2306,10 +2541,9 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          std::string arg = args(i).string_value ();
-
-          if (! error_state)
+          if (args(i).is_string ())
             {
+              std::string arg = args(i).string_value ();
               std::list<std::string> dir_elts = split_path (arg);
 
               for (std::list<std::string>::const_iterator p = dir_elts.begin ();
@@ -2328,7 +2562,7 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
                 }
             }
           else
-            error ("addpath: all arguments must be character strings");
+            error ("addpath: all arguments must be strings");
         }
 
       if (need_to_update)
@@ -2338,4 +2572,11 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
     print_usage ();
 
   return retval;
+}
+
+DEFUN (__dump_load_path__, , , "")
+{
+  load_path::display (octave_stdout);
+
+  return octave_value_list ();
 }

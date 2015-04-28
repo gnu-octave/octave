@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Kai Habel
+## Copyright (C) 2010-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} uimenu (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
-## Create a uimenu object and return a handle to it.  If @var{h} is omitted
-## then a top-level menu for the current figure is created.  If @var{h}
-## is given then a submenu relative to @var{h} is created.
+## @deftypefn  {Function File} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {@var{hui} =} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
+## Create a uimenu object and return a handle to it.
+##
+## If @var{h} is omitted then a top-level menu for the current figure is
+## created.  If @var{h} is given then a submenu relative to @var{h} is created.
 ##
 ## uimenu objects have the following specific properties:
 ##
@@ -80,7 +81,8 @@
 
 function hui = uimenu (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uimenu", varargin, {"figure", "uicontextmenu", "uimenu"});
+  [h, args] = __uiobject_split_args__ ("uimenu", varargin,
+                                       {"figure", "uicontextmenu", "uimenu"});
 
   tmp = __go_uimenu__ (h, args{:});
 
@@ -111,13 +113,13 @@ endfunction
 %!   assert (get (ui, "checked"), "off");
 %!   assert (get (ui, "separator"), "off");
 %!   assert (get (ui, "enable"), "on");
-%!   assert (get (ui, "position"), 9);
+%!   assert (get (ui, "position"), 0);
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%% check for top level menus file, edit, and help
+## check for top level menus file and edit
 %!testif HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
@@ -126,8 +128,6 @@ endfunction
 %!   assert (ishghandle (uif));
 %!   uie = findall (hf, "label", "&edit");
 %!   assert (ishghandle (uie));
-%!   uih = findall (hf, "label", "&help");
-%!   assert (ishghandle (uih));
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);

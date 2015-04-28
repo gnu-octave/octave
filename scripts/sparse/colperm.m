@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 David Bateman and Andy Adler
+## Copyright (C) 2004-2015 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -20,9 +20,9 @@
 ## @deftypefn {Function File} {@var{p} =} colperm (@var{s})
 ## Return the column permutations such that the columns of
 ## @code{@var{s} (:, @var{p})} are ordered in terms of increase number
-## of non-zero elements.  If @var{s} is symmetric, then @var{p} is chosen
+## of nonzero elements.  If @var{s} is symmetric, then @var{p} is chosen
 ## such that @code{@var{s} (@var{p}, @var{p})} orders the rows and
-## columns with increasing number of non zeros elements.
+## columns with increasing number of nonzeros elements.
 ## @end deftypefn
 
 function p = colperm (s)

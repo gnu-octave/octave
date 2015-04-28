@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 2010 Jaroslav Hajek, Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
@@ -125,8 +125,9 @@ extended_gcd (double a, double b, double& x, double& y)
   double aa = fabs (a);
   double bb = fabs (b);
 
-  double xx = 0, yy = 1;
-  double lx = 1, ly = 0;
+  double xx, lx, yy, ly;
+  xx = 0, lx = 1;
+  yy = 1, ly = 0;
 
   while (bb != 0)
     {
@@ -161,7 +162,8 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
     (*current_liboctave_error_handler)
       ("gcd: all complex parts must be integers");
 
-  std::complex<FP> aa = a, bb = b;
+  std::complex<FP> aa = a;
+  std::complex<FP> bb = b;
   bool swapped = false;
   if (abs (aa) < abs (bb))
     {
@@ -169,8 +171,9 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
       swapped = true;
     }
 
-  std::complex<FP> xx = 0, lx = 1;
-  std::complex<FP> yy = 1, ly = 0;
+  std::complex<FP> xx, lx, yy, ly;
+  xx = 0, lx = 1;
+  yy = 1, ly = 0;
 
   while (abs(bb) != 0)
     {
@@ -204,8 +207,9 @@ extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
 {
   T aa = a.abs ().value ();
   T bb = b.abs ().value ();
-  T xx = 0, lx = 1;
-  T yy = 1, ly = 0;
+  T xx, lx, yy, ly;
+  xx = 0, lx = 1;
+  yy = 1, ly = 0;
 
   while (bb != 0)
     {
@@ -347,7 +351,8 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       bool incb = bb.numel () != 1;
 
       T *gptr = gg.fortran_vec ();
-      T *xptr = xx.fortran_vec (), *yptr = yy.fortran_vec ();
+      T *xptr = xx.fortran_vec ();
+      T *yptr = yy.fortran_vec ();
 
       octave_idx_type n = gg.numel ();
       for (octave_idx_type i = 0; i < n; i++)
@@ -436,25 +441,16 @@ DEFUN (gcd, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 @deftypefnx {Built-in Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
+Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.\n\
 \n\
-Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.  If more\n\
-than one argument is given all arguments must be the same size or scalar.\n\
-In this case the greatest common divisor is calculated for each element\n\
-individually.  All elements must be ordinary or Gaussian (complex)\n\
-integers.  Note that for Gaussian integers, the gcd is not unique up to\n\
-units (multiplication by 1, -1, @var{i} or -@var{i}), so an arbitrary\n\
-greatest common divisor amongst four possible is returned.\n\
+If more than one argument is given then all arguments must be the same size\n\
+or scalar.  In this case the greatest common divisor is calculated for each\n\
+element individually.  All elements must be ordinary or Gaussian (complex)\n\
+integers.  Note that for Gaussian integers, the gcd is only unique up to a\n\
+phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest\n\
+common divisor amongst four possible is returned.\n\
 \n\
-Example code:\n\
-\n\
-@example\n\
-@group\n\
-gcd ([15, 9], [20, 18])\n\
-   @result{}  5  9\n\
-@end group\n\
-@end example\n\
-\n\
-Optional return arguments @var{v1}, etc., contain integer vectors such\n\
+Optional return arguments @var{v1}, @dots{}, contain integer vectors such\n\
 that,\n\
 \n\
 @tex\n\
@@ -468,7 +464,16 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 \n\
 @end ifnottex\n\
 \n\
-@seealso{lcm, factor}\n\
+Example code:\n\
+\n\
+@example\n\
+@group\n\
+gcd ([15, 9], [20, 18])\n\
+   @result{}  5  9\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{lcm, factor, isprime}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -519,6 +524,19 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 %!assert (gcd (int16 (200), int16 (300), int16 (50), int16 (35)), int16 (5))
 %!assert (gcd (uint64 (200), uint64 (300), uint64 (50), uint64 (35)), uint64 (5))
 %!assert (gcd (18-i, -29+3i), -3-4i)
+
+%!test
+%! p = [953 967];
+%! u = [953 + i*971, 967 + i*977];
+%! [d, k(1), k(2)] = gcd (p(1), p(2));
+%! [z, w(1), w(2)] = gcd (u(1), u(2));
+%! assert (d, 1)
+%! assert (sum (p.*k), d)
+%! assert (abs (z), sqrt (2))
+%! assert (abs (sum (u.*w)), sqrt (2))
+
+%!error <all values must be integers> gcd (1/2, 2);
+%!error <all complex parts must be integers> gcd (e + i*pi, 1);
 
 %!error gcd ()
 

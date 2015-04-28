@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -77,7 +77,7 @@ function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
     term = gnuplot_default_term (plot_stream);
     if (strcmp (term, "dumb"))
       ## popen2 eats stdout of gnuplot, use temporary file instead
-      dumb_tmp_file = tmpnam ();
+      dumb_tmp_file = tempname ();
       enhanced = gnuplot_set_term (plot_stream(1), new_stream, h,
                                    term, dumb_tmp_file);
     else
@@ -209,9 +209,11 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
               size_str = sprintf ("size %gin,%gin", gnuplot_size);
             case "dumb"
               new_stream = 1;
-              if (!isempty (getenv ("COLUMNS")) && !isempty (getenv ("LINES")))
+              if (! isempty (getenv ("COLUMNS"))
+                  && ! isempty (getenv ("LINES")))
                 ## Let dumb use full text screen size (minus prompt lines).
-                n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
+                n = sprintf ("%i",
+                             -2 - length (find (sprintf ("%s", PS1) == "\n")));
                 ## n = the number of times \n appears in PS1
                 size_str = ["size " getenv("COLUMNS") "," getenv("LINES") n];
               else
@@ -297,8 +299,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       ## If "set termoption dashed" isn't available add "dashed" option
       ## to the "set terminal ..." command, if it is supported.
       if (any (strcmp (term, {"aqua", "cgm", "eepic", "emf", "epslatex", ...
-                              "fig", "pcl5", "mp", "next", "openstep", "pdf", ...
-                              "pdfcairo", "pngcairo", "postscript", ...
+                              "fig", "pcl5", "mp", "next", "openstep", ...
+                              "pdf", "pdfcairo", "pngcairo", "postscript", ...
                               "pslatex", "pstext", "svg", "tgif", "x11"})))
         term_str = [term_str " dashed"];
       endif

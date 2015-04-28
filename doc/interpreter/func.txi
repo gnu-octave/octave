@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -114,8 +114,8 @@ endfunction
 @end example
 
 The @code{printf} statement (@pxref{Input and Output}) simply tells
-Octave to print the string @qcode{"\a"}.  The special character @samp{\a}
-stands for the alert character (ASCII 7).  @xref{Strings}.
+Octave to print the string @qcode{"@xbackslashchar{}a"}.  The special character
+@samp{\a} stands for the alert character (ASCII 7).  @xref{Strings}.
 
 Once this function is defined, you can ask Octave to evaluate it by
 typing the name of the function.
@@ -393,14 +393,26 @@ endif
 which stops the function execution and prints a message about the correct
 way to call the function whenever the number of inputs is wrong.
 
-For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
-@code{nargoutchk} are available which provide similar error checking.
-
-@DOCSTRING(nargchk)
+For compatibility with @sc{matlab}, @code{narginchk} and @code{nargoutchk} are
+available which provide similar error checking.
 
 @DOCSTRING(narginchk)
 
 @DOCSTRING(nargoutchk)
+
+Besides the number of arguments, inputs can be checked for various properties.
+@code{validatestring} is used for string arguments and
+@code{validateattributes} for numeric arguments.
+
+@DOCSTRING(validatestring)
+
+@DOCSTRING(validateattributes)
+
+If none of the preceding functions is sufficient there is also the class
+@code{inputParser} which can perform extremely complex input checking for
+functions.
+
+@DOCSTRING(inputParser)
 
 @anchor{XREFvarargin} @anchor{XREFvarargout}
 @node Variable-length Argument Lists
@@ -800,7 +812,7 @@ After this the directory @samp{~/Octave} will be searched for functions.
 
 @DOCSTRING(command_line_path)
 
-@DOCSTRING(find_dir_in_path)
+@DOCSTRING(dir_in_loadpath)
 
 @node Subfunctions
 @subsection Subfunctions
@@ -1124,7 +1136,7 @@ A function defined within a private directory of the directory
 which contains the current function.
 
 @item Class constructor
-A function that constuctors a user class as defined in chapter
+A function that constructs a user class as defined in chapter
 @ref{Object Oriented Programming}.
 
 @item Class method
@@ -1377,6 +1389,34 @@ adapts a function with several parameters to the form required by
 are passed to @code{betainc} are inherited from the current
 environment.
 
+Note that for performance reasons it is better to use handles to existing
+Octave functions, rather than to define anonymous functions which wrap an
+existing function.  The integration of @code{sin (x)} is 5X faster if the code
+is written as
+
+@example
+quad (@@sin, 0, pi)
+@end example
+
+@noindent
+rather than using the anonymous function @code{@@(x) sin (x)}.  There are many
+operators which have functional equivalents that may be better choices than an
+anonymous function.  Instead of writing
+
+@example
+f = @@(x, y) x + y
+@end example
+
+@noindent
+this should be coded as
+
+@example
+f = @@plus
+@end example
+
+@xref{Operator Overloading}, for a list of operators which also have a
+functional form.
+
 @node Inline Functions
 @subsection Inline Functions
 
@@ -1391,6 +1431,11 @@ f = inline ("x^2 + 2");
 @noindent
 After this it is possible to evaluate @math{f} at any @math{x} by
 writing @code{f(x)}.
+
+@strong{Caution}: @sc{matlab} has begun the process of deprecating inline
+functions.  At some point in the future support will be dropped and eventually
+Octave will follow @sc{matlab} and also remove inline functions.  Use anonymous
+functions in all new code.
 
 @DOCSTRING(inline)
 
@@ -1486,7 +1531,7 @@ Class functions for the FTP object.
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
-@code{ismatrix}, @code{nargchk}, etc.
+@code{ismatrix}, @code{narginchk}, etc.
 
 @item geometry
 Functions related to Delaunay triangulation.

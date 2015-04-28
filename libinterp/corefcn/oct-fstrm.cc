@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -77,7 +77,7 @@ octave_fstream::tell (void)
   return -1;
 }
 
-// Return non-zero if EOF has been reached on this stream.
+// Return nonzero if EOF has been reached on this stream.
 
 bool
 octave_fstream::eof (void) const

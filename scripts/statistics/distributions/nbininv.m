@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -40,7 +40,7 @@ function inv = nbininv (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar (n) || !isscalar (p))
+  if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("nbininv: X, N, and P must be of common size or scalars");
@@ -108,13 +108,13 @@ endfunction
 %!assert (nbininv (x, 1, 0.5*[1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN])
 %!assert (nbininv ([x(1:2) NaN x(4:5)], 1, 0.5), [NaN 0 NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (nbininv ([x, NaN], 1, 0.5), [NaN 0 1 Inf NaN NaN])
 %!assert (nbininv (single ([x, NaN]), 1, 0.5), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (nbininv ([x, NaN], single (1), 0.5), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (nbininv ([x, NaN], 1, single (0.5)), single ([NaN 0 1 Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error nbininv ()
 %!error nbininv (1)
 %!error nbininv (1,2)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -117,6 +117,7 @@ Duplicate a file descriptor.\n\
 If successful, @var{fid} is greater than zero and contains the new file\n\
 ID@.  Otherwise, @var{fid} is negative and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{fopen, fclose, fcntl}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -189,10 +190,10 @@ error message.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string exec_file = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string exec_file = args(0).string_value ();
+
           string_vector exec_args;
 
           if (nargin == 2)
@@ -211,7 +212,7 @@ error message.\n\
                     exec_args[i+1] = tmp[i];
                 }
               else
-                error ("exec: arguments must be character strings");
+                error ("exec: all arguments must be strings");
             }
           else
             {
@@ -299,10 +300,10 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      std::string exec_file = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string exec_file = args(0).string_value ();
+
           string_vector arg_list;
 
           if (nargin >= 2)
@@ -321,7 +322,7 @@ exit status, it will linger until Octave exits.\n\
                     arg_list[i+1] = tmp[i];
                 }
               else
-                error ("popen2: arguments must be character strings");
+                error ("popen2: all arguments must be strings");
             }
           else
             {
@@ -366,7 +367,7 @@ exit status, it will linger until Octave exits.\n\
                 }
             }
           else
-            error ("popen2: arguments must be character strings");
+            error ("popen2: all arguments must be strings");
         }
       else
         error ("popen2: COMMAND argument must be a string");
@@ -448,8 +449,9 @@ exit status, it will linger until Octave exits.\n\
 DEFUNX ("fcntl", Ffcntl, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})\n\
-Change the properties of the open file @var{fid}.  The following values\n\
-may be passed as @var{request}:\n\
+Change the properties of the open file @var{fid}.\n\
+\n\
+The following values may be passed as @var{request}:\n\
 \n\
 @vtable @code\n\
 @item F_DUPFD\n\
@@ -500,6 +502,7 @@ Set the file status flags for @var{fid} to the value specified by\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{fopen, dup2}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -511,7 +514,7 @@ system-dependent error message.\n\
 
   if (nargin == 3)
     {
-      octave_stream strm = octave_stream_list::lookup (args (0), "fcntl");
+      octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
 
       if (! error_state)
         {
@@ -1622,10 +1625,9 @@ the empty string (\"\") is returned.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string name = args(0).string_value ();
           std::string msg;
 
           std::string result = octave_canonicalize_file_name (name, msg);
@@ -1635,7 +1637,7 @@ the empty string (\"\") is returned.\n\
           retval(0) = result;
         }
       else
-        error ("canonicalize_file_name: NAME must be a character string");
+        error ("canonicalize_file_name: NAME must be a string");
     }
   else
     print_usage ();
@@ -1878,7 +1880,7 @@ synchronous I/O.\n\
 
 DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} O_TRUNC ()\n\
+@deftypefn {Built-in Function} {} O_TRUNC ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that if file exists, it should\n\
 be truncated when writing.\n\
@@ -1959,3 +1961,4 @@ signal.\n\
 {
   return const_value (args, WCONTINUE);
 }
+

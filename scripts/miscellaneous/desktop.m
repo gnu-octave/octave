@@ -1,4 +1,4 @@
-## Copyright (C) 2013 John W. Eaton
+## Copyright (C) 2013-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{used} = desktop ("-inuse")
+## @deftypefn {Function File} {@var{used} =} desktop ("-inuse")
 ## Return true if the desktop (GUI) is currently in use.
 ## @seealso{isguirunning}
 ## @end deftypefn

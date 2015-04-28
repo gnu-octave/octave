@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 Copyright (C) 2010 Jaroslav Hajek
 
@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
+#include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-handle.h"
@@ -64,7 +65,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
                                      "function handle",
@@ -270,7 +270,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
           std::string dir_name = str.substr (0, xpos);
 
           octave_function *xfcn
-            = load_fcn_from_file (str, dir_name, "", nm);
+            = load_fcn_from_file (str, dir_name, "", "", nm);
 
           if (xfcn)
             {
@@ -300,7 +300,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", nm);
+          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", "", nm);
 
           if (xfcn)
             {
@@ -323,7 +323,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = fpath.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", nm);
+          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", "", nm);
 
           if (xfcn)
             {
@@ -705,11 +705,12 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
   return success;
 }
 
-#if defined (HAVE_HDF5)
 bool
-octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
+octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                               bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   bool retval = true;
 
   hid_t group_hid = -1;
@@ -721,7 +722,8 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   if (group_hid < 0)
     return false;
 
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
 
   // attach the type of the variable
   type_hid = H5Tcopy (H5T_C_S1);
@@ -931,11 +933,18 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   H5Gclose (group_hid);
 
   return retval;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
+octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+#if defined (HAVE_HDF5)
+
   bool success = true;
 
   hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
@@ -1291,9 +1300,12 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
   H5Gclose (group_hid);
 
   return success;
-}
 
+#else
+  gripe_load ("hdf5");
+  return false;
 #endif
+}
 
 /*
 %!test
@@ -1315,7 +1327,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 %! endif
 %! for i = 1:numel (modes)
 %!   mode = modes{i};
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   unwind_protect
 %!     f2 (1); # bug #33857
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
@@ -1368,7 +1380,7 @@ Test for bug #35876
 %! endif
 %! for i = 1:numel (modes)
 %!   mode = modes{i};
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   unwind_protect
 %!     fcn_handle_save_recurse (2, mode, nm, f2, g2, hm2, hdld2, hbi2);
 %!     clear f2 g2 hm2 hdld2 hbi2
@@ -1386,7 +1398,7 @@ Test for bug #35876
 */
 
 void
-octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -1572,7 +1584,8 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
   // for any class.
   if (local_funcs && fptr
       && (fptr->is_subfunction () || fptr->is_private_function ()
-          || fptr->is_class_constructor ()))
+          || fptr->is_class_constructor ()
+          || fptr->is_classdef_constructor ()))
     {
       // Locally visible function.
       retval = octave_value (new octave_fcn_handle (f, tnm));
@@ -1848,10 +1861,11 @@ functions are ignored in the lookup.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string nm = args(0).string_value ();
-
-      if (! error_state)
-        retval = make_fcn_handle (nm, nargin != 2);
+      if (args(0).is_string ())
+        {
+          std::string nm = args(0).string_value ();
+          retval = make_fcn_handle (nm, nargin != 2);
+        }
       else
         error ("str2func: FCN_NAME must be a string");
     }

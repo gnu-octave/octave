@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -51,6 +51,8 @@ public:
 
   static std::string get_home_directory (void);
 
+  static std::string get_temp_directory (void);
+
   static std::string get_program_name (void);
 
   static std::string get_program_invocation_name (void);
@@ -87,6 +89,8 @@ private:
   std::string do_getcwd (void) const;
 
   std::string do_get_home_directory (void) const;
+
+  std::string do_get_temp_directory (void) const;
 
   std::string do_get_user_name (void) const;
 

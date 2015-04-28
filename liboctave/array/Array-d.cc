@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -155,7 +155,7 @@ Array<double>::is_sorted (sortmode mode) const
   return mode;
 }
 
-INSTANTIATE_ARRAY_SORT (double);
+template class OCTAVE_API octave_sort<double>;
 
 INSTANTIATE_ARRAY (double, OCTAVE_API);
 

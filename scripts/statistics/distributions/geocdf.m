@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -35,7 +35,7 @@ function cdf = geocdf (x, p)
     print_usage ();
   endif
 
-  if (!isscalar (p))
+  if (! isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
       error ("geocdf: X and P must be of common size or scalars");
@@ -76,12 +76,12 @@ endfunction
 %!assert (geocdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)])
 %!assert (geocdf ([x(1:2) NaN x(4)], 0.5), [y(1:2) NaN y(4)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (geocdf ([x, NaN], 0.5), [y, NaN])
 %!assert (geocdf (single ([x, NaN]), 0.5), single ([y, NaN]))
 %!assert (geocdf ([x, NaN], single (0.5)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error geocdf ()
 %!error geocdf (1)
 %!error geocdf (1,2,3)

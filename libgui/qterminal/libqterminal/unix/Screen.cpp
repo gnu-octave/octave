@@ -110,7 +110,7 @@ Screen::~Screen()
 
 // Cursor Setting --------------------------------------------------------------
 
-/*! \section Cursor
+/*! @section Cursor
 
     The `cursor' is a location within the screen that is implicitely used in
     many operations. The operations within this section allow to manipulate
@@ -502,7 +502,7 @@ void Screen::effectiveRendition()
 /*!
     returns the image.
 
-    Get the size of the image by \sa getLines and \sa getColumns.
+    Get the size of the image by @sa getLines and @sa getColumns.
 
     NOTE that the image returned by this function must later be
     freed.
@@ -861,7 +861,7 @@ void Screen::scrollUp(int n)
 
 /*! scroll up `n' lines within current region.
     The `n' new lines are cleared.
-    \sa setRegion \sa scrollDown
+    @sa setRegion @sa scrollDown
 */
 
 QRect Screen::lastScrolledRegion() const
@@ -889,7 +889,7 @@ void Screen::scrollDown(int n)
 
 /*! scroll down `n' lines within current region.
     The `n' new lines are cleared.
-    \sa setRegion \sa scrollUp
+    @sa setRegion @sa scrollUp
 */
 
 void Screen::scrollDown(int from, int n)
@@ -949,7 +949,7 @@ int Screen::getCursorY() const
 
 // Erasing ---------------------------------------------------------------------
 
-/*! \section Erasing
+/*! @section Erasing
 
     This group of operations erase parts of the screen contents by filling
     it with spaces colored due to the current rendition settings.

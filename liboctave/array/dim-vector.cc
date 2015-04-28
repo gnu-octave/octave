@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyirght (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
@@ -176,7 +176,8 @@ dim_vector::squeeze (void) const
 bool
 dim_vector::concat (const dim_vector& dvb, int dim)
 {
-  int orig_nd = ndims (), ndb = dvb.ndims ();
+  int orig_nd = ndims ();
+  int ndb = dvb.ndims ();
   int new_nd = dim < ndb ? ndb : dim + 1;
   if (new_nd > orig_nd)
     resize (new_nd, 1);

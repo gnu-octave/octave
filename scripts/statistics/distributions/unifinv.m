@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@ function inv = unifinv (x, a = 0, b = 1)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("unifinv: X, A, and B must be of common size or scalars");
@@ -72,13 +72,13 @@ endfunction
 %!assert (unifinv (x, 1, 2*[1 0 NaN 1 1]), [NaN NaN NaN 2 NaN])
 %!assert (unifinv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 1 NaN 2 NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (unifinv ([x, NaN], 1, 2), [NaN 1 1.5 2 NaN NaN])
 %!assert (unifinv (single ([x, NaN]), 1, 2), single ([NaN 1 1.5 2 NaN NaN]))
 %!assert (unifinv ([x, NaN], single (1), 2), single ([NaN 1 1.5 2 NaN NaN]))
 %!assert (unifinv ([x, NaN], 1, single (2)), single ([NaN 1 1.5 2 NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error unifinv ()
 %!error unifinv (1,2)
 %!error unifinv (1,2,3,4)

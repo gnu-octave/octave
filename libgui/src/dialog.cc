@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2013 Daniel J. Sebald
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2015 Daniel J. Sebald
 
 This file is part of Octave.
 
@@ -62,12 +62,17 @@ QUIWidgetCreator::~QUIWidgetCreator (void)
 void
 QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
 {
+  // Wait for link thread to go to sleep state.
+  mutex.lock ();
+
   // Store the value so that builtin functions can retrieve.
   if (button)
     dialog_button = button->text ();
 
   // The value should always be 1 for the Octave functions.
   dialog_result = 1;
+
+  mutex.unlock ();
 
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
@@ -78,9 +83,14 @@ void
 QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                         int button_pressed)
 {
+  // Wait for link thread to go to sleep state.
+  mutex.lock ();
+
   // Store the value so that builtin functions can retrieve.
   *list_index = selected;
   dialog_result = button_pressed;
+
+  mutex.unlock ();
 
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
@@ -90,9 +100,14 @@ QUIWidgetCreator::list_select_finished (const QIntList& selected,
 void
 QUIWidgetCreator::input_finished (const QStringList& input, int button_pressed)
 {
+  // Wait for link thread to go to sleep state.
+  mutex.lock ();
+
   // Store the value so that builtin functions can retrieve.
   *string_list = input;
   dialog_result = button_pressed;
+
+  mutex.unlock ();
 
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
@@ -102,10 +117,15 @@ void
 QUIWidgetCreator::filedialog_finished (const QStringList& files,
                                        const QString& path, int filterindex)
 {
+  // Wait for link thread to go to sleep state.
+  mutex.lock ();
+
   // Store the value so that builtin functions can retrieve.
   *string_list = files;
   dialog_result = filterindex;
   *path_name = path;
+
+  mutex.unlock ();
 
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
@@ -193,14 +213,10 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   QListView *view = new QListView;
   view->setModel (model);
 
-  if (mode == "Single")
+  if (mode == "single")
     view->setSelectionMode (QAbstractItemView::SingleSelection);
-  else if (mode == "Multiple")
+  else if (mode == "multiple")
     view->setSelectionMode (QAbstractItemView::ExtendedSelection);
-//  else if ()
-//    view->setSelectionMode (QAbstractItemView::ContiguousSelection);
-//  else if ()
-//    view->setSelectionMode (QAbstractItemView::MultiSelection);
   else
     view->setSelectionMode (QAbstractItemView::NoSelection);
 
@@ -249,7 +265,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
     }
   listLayout->addWidget (view);
   QPushButton *select_all = new QPushButton (tr ("Select All"));
-  select_all->setEnabled (mode == "Multiple");
+  select_all->setEnabled (mode == "multiple");
   listLayout->addWidget (select_all);
 
   QPushButton *buttonOk = new QPushButton (ok_string);
@@ -466,18 +482,18 @@ FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
            &uiwidget_creator,
            SLOT (filedialog_finished (const QStringList&, const QString&,
                                       int)));
+  connect (this, SIGNAL (accepted ()), this, SLOT (acceptSelection ()));
+  connect (this, SIGNAL (rejected ()), this, SLOT (rejectSelection ()));
 }
 
 void
-FileDialog::reject (void)
+FileDialog::rejectSelection(void)
 {
   QStringList empty;
   emit finish_input (empty, "", 0);
-  done (QDialog::Rejected);
-
 }
 
-void FileDialog::accept (void)
+void FileDialog::acceptSelection (void)
 {
   QStringList string_result;
   QString path;
@@ -485,20 +501,33 @@ void FileDialog::accept (void)
 
   string_result = selectedFiles ();
 
+  if (testOption (QFileDialog::ShowDirsOnly)  == true &&
+      string_result.size () > 0)
+    {
+      path = string_result[0];
+    }
+  else
+    {
+      path = directory ().absolutePath ();
+    }
+
   // Matlab expects just the file name, whereas the file dialog gave us
-  // pull path names, so fix it.
+  // full path names, so fix it.
 
   for (int i = 0; i < string_result.size (); i++)
     string_result[i] = QFileInfo (string_result[i]).fileName ();
 
+  // if not showing only dirs, add end slash for the path component
+  if (testOption (QFileDialog::ShowDirsOnly)  == false)
+    path = path + "/";
 
-  path = directory ().absolutePath ();
+  // convert to native slashes
+  path = QDir::toNativeSeparators (path);
 
   QStringList name_filters = nameFilters ();
   idx = name_filters.indexOf (selectedNameFilter ()) + 1;
 
   // send the selected info
   emit finish_input (string_result, path, idx);
-  done (QDialog::Accepted);
 }
 

@@ -1,5 +1,5 @@
-## Copyright (C) 2013 Julien Bect
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 2013-2015 Julien Bect
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -92,7 +92,7 @@ function y = kurtosis (x, flag, dim)
   if (nargin < 2 || isempty (flag))
     flag = 1;  # default: do not use the "bias corrected" version
   else
-    if ((! isscalar (flag)) || (flag != 0 && flag != 1))
+    if (! isscalar (flag) || (flag != 0 && flag != 1))
       error ("kurtosis: FLAG must be 0 or 1");
     endif
   endif
@@ -159,7 +159,7 @@ endfunction
 %!   warning (wstate, "Octave:divide-by-zero");
 %! end_unwind_protect
 
-%% Test input validation
+## Test input validation
 %!error kurtosis ()
 %!error kurtosis (1, 2, 3)
 %!error <X must be a numeric vector or matrix> kurtosis (['A'; 'B'])

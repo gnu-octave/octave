@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 John W. Eaton and David Bateman
+## Copyright (C) 2007-2015 John W. Eaton and David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -39,7 +39,7 @@ function plotimages (nm, typ)
     title ("Simple 2-D Plot");
     print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "hist"))
-    rand ("state", 2);
+    randn ("state", 1);
     hist (randn (10000, 1), 30);
     xlabel ("Value");
     ylabel ("Count");

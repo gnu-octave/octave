@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -30,7 +30,9 @@
 ## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The
 ## first and second elements specify the lower and upper limits for the
 ## x-axis.  The third and fourth specify the limits for the y-axis, and the
-## fifth and sixth specify the limits for the z-axis.
+## fifth and sixth specify the limits for the z-axis.  The special values
+## -Inf and Inf may be used to indicate that the limit should automatically be
+## computed based on the data in the axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
@@ -191,8 +193,8 @@ function limits = __axis__ (ca, ax, varargin)
       set (ca, "dataaspectratiomode", "auto",
                "plotboxaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "equal"))
-      if (strcmp (get (get (ca, "parent"), "__graphics_toolkit__"), "gnuplot"))
-        ## FIXME - gnuplot applies the aspect ratio activepostionproperty.
+      if (strcmp (get (ancestor (ca, "figure"), "__graphics_toolkit__"), "gnuplot"))
+        ## FIXME: gnuplot applies the aspect ratio activepostionproperty.
         set (ca, "activepositionproperty", "position");
         ## The following line is a trick used to trigger the recalculation of
         ## aspect related magnitudes even if the aspect ratio is the same
@@ -297,15 +299,15 @@ function limits = __axis__ (ca, ax, varargin)
     endfor
 
     if (len > 1)
-      set (ca, "xlim", [ax(1), ax(2)]);
+      xlim (ca, ax(1:2));
     endif
 
     if (len > 3)
-      set (ca, "ylim", [ax(3), ax(4)]);
+      ylim (ca, ax(3:4));
     endif
 
     if (len > 5)
-      set (ca, "zlim", [ax(5), ax(6)]);
+      zlim (ca, ax(5:6));
     endif
 
   else

@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Mike Miller
+## Copyright (C) 2013-2015 Mike Miller
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} __gripe_missing_component__ (@var{caller}, @var{component})
+## @deftypefn {Function File} {} __gripe_missing_component__ (@var{caller}, @var{component})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -46,11 +46,22 @@ function __gripe_missing_component__ (caller, component)
       case "octave-config"
         msg = "unable to find the octave-config command, Octave installation is incomplete";
       otherwise
-        msg = ["unable to find required Octave component \"" component "\""];
+        msg = ['unable to find required Octave component "' component '"'];
     endswitch
   endif
 
   error ("%s: %s\n", caller, msg);
 
 endfunction
+
+
+## Some trivial testing
+%!error <abc: unable to find the Octave info manual> __gripe_missing_component__ ("abc", "info-file")
+%!error <abc: unable to find the octave executable> __gripe_missing_component__ ("abc", "octave")
+%!error <abc: unable to find the octave-config command> __gripe_missing_component__ ("abc", "octave-config")
+%!error <abc: unable to find required Octave component "xyz"> __gripe_missing_component__ ("abc", "xyz")
+
+%!error __gripe_missing_component__ ()
+%!error __gripe_missing_component__ ("fcn")
+%!error __gripe_missing_component__ ("fcn", 1 , 2)
 

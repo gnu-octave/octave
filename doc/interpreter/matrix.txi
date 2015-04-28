@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -90,7 +90,7 @@ its elements may have, consult @ref{Status of Variables}.
 
 @DOCSTRING(flipud)
 
-@DOCSTRING(flipdim)
+@DOCSTRING(flip)
 
 @DOCSTRING(rot90)
 

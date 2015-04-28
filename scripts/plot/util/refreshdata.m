@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -90,7 +90,7 @@ function refreshdata (h, workspace)
     ## properties that are not, in fact, datasources.
     ## m = regexp (flds, '^.+datasource$');
     m = strfind (flds, "datasource");
-    m = flds(!cellfun (@isempty, m));
+    m = flds(! cellfun (@isempty, m));
     for j = 1 : numel (m)
       if (isempty (obj.(m{j})))
         continue;  # datasource field doesn't point to anything

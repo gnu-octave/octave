@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,8 @@ function h = __line__ (p, varargin)
     [~, m] = max (m);
     b = ones (size (varargin{m(1)}));
     try
-      varargin(n) = cellfun (@(x) bsxfun (@times, b, x), varargin(n), "uniformoutput", false);
+      varargin(n) = cellfun (@(x) bsxfun (@times, b, x), varargin(n),
+                             "uniformoutput", false);
     catch
       error ("line: number of X, Y, and Z points must be equal");
     end_try_catch

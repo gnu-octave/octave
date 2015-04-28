@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -18,21 +18,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} assert (@var{cond})
+## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected}, @var{tol})
 ##
-## Produce an error if the specified condition is not met.  @code{assert} can
-## be called in three different ways.
+## Produce an error if the specified condition is not met.
+##
+## @code{assert} can be called in three different ways.
 ##
 ## @table @code
 ## @item  assert (@var{cond})
+## @itemx assert (@var{cond}, @var{errmsg})
 ## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
 ## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## Called with a single argument @var{cond}, @code{assert} produces an
-## error if @var{cond} is zero.  When called with more than one argument the
-## additional arguments are passed to the @code{error} function.
+## error if @var{cond} is false (numeric zero).  Any additional arguments are
+## passed to the @code{error} function for processing.
 ##
 ## @item assert (@var{observed}, @var{expected})
 ## Produce an error if observed is not the same as expected.  Note that
@@ -46,12 +49,13 @@
 ## an error if @code{abs (@var{observed} - @var{expected}) > abs (@var{tol})}.
 ## If @var{tol} is negative then it is a relative tolerance which will produce
 ## an error if @code{abs (@var{observed} - @var{expected}) >
-## abs (@var{tol} * @var{expected})}.  If @var{expected} is zero @var{tol} will
-## always be interpreted as an absolute tolerance.  If @var{tol} is not scalar
-## its dimensions must agree with those of @var{observed} and @var{expected}
-## and tests are performed on an element-wise basis.
+## abs (@var{tol} * @var{expected})}.
+## If @var{expected} is zero @var{tol} will always be interpreted as an
+## absolute tolerance.  If @var{tol} is not scalar its dimensions must agree
+## with those of @var{observed} and @var{expected} and tests are performed on
+## an element-by-element basis.
 ## @end table
-## @seealso{test, fail, error}
+## @seealso{fail, test, error, isequal}
 ## @end deftypefn
 
 function assert (cond, varargin)
@@ -72,7 +76,8 @@ function assert (cond, varargin)
     endif
 
     if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
-      if ((! isnumeric (cond) && ! islogical (cond)) || ! all (cond(:)))
+      if ((! isnumeric (cond) && ! islogical (cond))
+          || isempty (cond) || ! all (cond(:)))
         if (nargin == 1)
           ## Perhaps, say which elements failed?
           argin = ["(" strjoin(cellstr (argn), ",") ")"];
@@ -162,7 +167,7 @@ function assert (cond, varargin)
           err.reason{end+1} = ["Expected struct, but observed " class(cond)];
         elseif (ndims (cond) != ndims (expected)
                 || any (size (cond) != size (expected))
-                || rows (fieldnames (cond)) != rows (fieldnames (expected)))
+                || numfields (cond) != numfields (expected))
 
           err.index{end+1} = ".";
           err.observed{end+1} = ["O(" sprintf("%dx", size(cond))(1:end-1) ")"];
@@ -292,12 +297,14 @@ function assert (cond, varargin)
           ## Replace exceptional values already checked above by zero.
           A_null_real = real (A);
           B_null_real = real (B);
-          exclude = errseen | ! isfinite (A_null_real) & ! isfinite (B_null_real);
+          exclude = errseen ...
+                    | ! isfinite (A_null_real) & ! isfinite (B_null_real);
           A_null_real(exclude) = 0;
           B_null_real(exclude) = 0;
           A_null_imag = imag (A);
           B_null_imag = imag (B);
-          exclude = errseen | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+          exclude = errseen ...
+                    | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
           A_null_imag(exclude) = 0;
           B_null_imag(exclude) = 0;
           A_null = complex (A_null_real, A_null_imag);
@@ -398,7 +405,10 @@ endfunction
 
 
 ## empty input
-%!assert ([])
+%!error assert ([])
+%!error assert ("")
+%!error assert ({})
+%!error assert (struct ([]))
 %!assert (zeros (3,0), zeros (3,0))
 %!error <O\(3x0\)\s+E\(0x2\)> assert (zeros (3,0), zeros (0,2))
 %!error <Dimensions don't match> assert (zeros (3,0), [])
@@ -621,10 +631,10 @@ endfunction
 %!   if (sum (errmsg () == "\n") != 6)
 %!     error ("Incorrect number of errors reported");
 %!   endif
-%!   assert (!isempty (regexp (errmsg, '\(1,2\).*Abs err 3 exceeds tol 0\>')));
-%!   assert (!isempty (regexp (errmsg, '\(2,2\).*Abs err 2 exceeds tol 0.3')));
-%!   assert (!isempty (regexp (errmsg, '\(1,1\).*Abs err 1 exceeds tol 0.1')));
-%!   assert (!isempty (regexp (errmsg, '\(2,1\).*Rel err 2 exceeds tol 0.2')));
+%!   assert (! isempty (regexp (errmsg, '\(1,2\).*Abs err 3 exceeds tol 0\>')));
+%!   assert (! isempty (regexp (errmsg, '\(2,2\).*Abs err 2 exceeds tol 0.3')));
+%!   assert (! isempty (regexp (errmsg, '\(1,1\).*Abs err 1 exceeds tol 0.1')));
+%!   assert (! isempty (regexp (errmsg, '\(2,1\).*Rel err 2 exceeds tol 0.2')));
 %! end_try_catch
 
 ## test input validation
@@ -637,7 +647,7 @@ function cout = ind2tuple (matsize, erridx)
 
   cout = cell (numel (erridx), 1);
   tmp = cell (1, numel (matsize));
-  [tmp{:}] = ind2sub (matsize, erridx (:));
+  [tmp{:}] = ind2sub (matsize, erridx(:));
   subs = [tmp{:}];
   if (numel (matsize) == 2)
     subs = subs(:, matsize != 1);

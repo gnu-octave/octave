@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Friedrich Leisch
+## Copyright (C) 1995-2015 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -46,7 +46,7 @@ function x = arma_rnd (a, b, v, t, n)
   if (nargin == 4)
     n = 100;
   elseif (nargin == 5)
-    if (!isscalar (n))
+    if (! isscalar (n))
       error ("arma_rnd: N must be a scalar");
     endif
   else
@@ -57,7 +57,7 @@ function x = arma_rnd (a, b, v, t, n)
     error ("arma_rnd: A and B must not be matrices");
   endif
 
-  if (!isscalar (t))
+  if (! isscalar (t))
     error ("arma_rnd: T must be a scalar");
   endif
 

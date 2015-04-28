@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -39,17 +39,21 @@
 ## points.  This process is performed @var{m} times.  If only @var{v} is
 ## specified, then @var{m} is assumed to be @code{1}.
 ##
-## Method is one of:
+## The interpolation @var{method} is one of:
 ##
 ## @table @asis
 ## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item @qcode{"linear"}
+## @item @qcode{"linear"} (default)
 ## Linear interpolation from nearest neighbors.
 ##
+## @item @qcode{"pchip"}
+## Piecewise cubic Hermite interpolating polynomial---shape-preserving
+## interpolation with smooth first derivative (not implemented yet).
+##
 ## @item @qcode{"cubic"}
-## Cubic interpolation from four nearest neighbors (not implemented yet).
+## Cubic interpolation (same as @qcode{"pchip"} [not implemented yet]).
 ##
 ## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
@@ -58,33 +62,43 @@
 ##
 ## The default method is @qcode{"linear"}.
 ##
-## If @var{extrapval} is the scalar value, use it to replace the values
-## beyond the endpoints with that number.  If @var{extrapval} is missing,
-## assume NA.
-## @seealso{interp1, interp2, spline, ndgrid}
+## @var{extrapval} is a scalar number.  It replaces values beyond the endpoints
+## with @var{extrapval}.  Note that if @var{extrapval} is used, @var{method}
+## must be specified as well.  If @var{extrapval} is omitted and the
+## @var{method} is @qcode{"spline"}, then the extrapolated values of the
+## @qcode{"spline"} are used.  Otherwise the default @var{extrapval} value for
+## any other @var{method} is @qcode{"NA"}.
+## @seealso{interp1, interp2, interp3, spline, ndgrid}
 ## @end deftypefn
 
 function vi = interpn (varargin)
 
   method = "linear";
-  extrapval = NA;
+  extrapval = [];
   nargs = nargin;
 
   if (nargin < 1 || ! isnumeric (varargin{1}))
     print_usage ();
   endif
 
-  if (ischar (varargin{end}))
-    method = varargin{end};
-    nargs -= 1;
-  elseif (nargs > 1 && ischar (varargin{end - 1}))
+  if (nargs > 1 && ischar (varargin{end-1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
-      error ("interpn: extrapal is expected to be a numeric scalar");
+      error ("interpn: EXTRAPVAL must be a numeric scalar");
     endif
-    method = varargin{end - 1};
     extrapval = varargin{end};
+    method = varargin{end-1};
     nargs -= 2;
+  elseif (ischar (varargin{end}))
+    method = varargin{end};
+    nargs--;
   endif
+
+  if (method(1) == "*")
+    warning ("interpn: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
+  endif
+  method = validatestring (method, ...
+    {"nearest", "linear", "pchip", "cubic", "spline"});
 
   if (nargs < 3)
     v = varargin{1};
@@ -154,6 +168,9 @@ function vi = interpn (varargin)
 
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
+    if (isempty (extrapval))
+      extrapval = NA;
+    endif
     vi(isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
     yshape = size (y{1});
@@ -164,13 +181,17 @@ function vi = interpn (varargin)
     endfor
     idx = cell (1,nd);
     for i = 1 : nd
-      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
+      idx{i} = yidx{i} ...
+               + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
     endfor
     vi = v(sub2ind (sz, idx{:}));
     idx = zeros (prod (yshape), 1);
     for i = 1 : nd
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
     endfor
+    if (isempty (extrapval))
+      extrapval = NA;
+    endif
     vi(idx) = extrapval;
     vi = reshape (vi, yshape);
   elseif (strcmp (method, "spline"))
@@ -317,4 +338,7 @@ endfunction
 %! assert (interpn (z), zout, tol);
 %! assert (interpn (z, "linear"), zout, tol);
 %! assert (interpn (z, "spline"), zout, tol);
+
+## Test input validation
+%!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");
 

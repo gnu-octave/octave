@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2013 John W. Eaton
+Copyright (C) 1998-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -153,7 +153,7 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 

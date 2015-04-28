@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@ function cdf = normcdf (x, mu = 0, sigma = 1)
     print_usage ();
   endif
 
-  if (!isscalar (mu) || !isscalar (sigma))
+  if (! isscalar (mu) || ! isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
       error ("normcdf: X, MU, and SIGMA must be of common size or scalars");
@@ -80,13 +80,13 @@ endfunction
 %!assert (normcdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN])
 %!assert (normcdf ([x(1:2) NaN x(4)], 1, 1), [y(1:2) NaN y(4)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (normcdf ([x, NaN], 1, 1), [y, NaN])
 %!assert (normcdf (single ([x, NaN]), 1, 1), single ([y, NaN]), eps ("single"))
 %!assert (normcdf ([x, NaN], single (1), 1), single ([y, NaN]), eps ("single"))
 %!assert (normcdf ([x, NaN], 1, single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error normcdf ()
 %!error normcdf (1,2)
 %!error normcdf (1,2,3,4)

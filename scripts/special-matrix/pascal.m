@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2013 Peter Ekberg
+## Copyright (C) 1999-2015 Peter Ekberg
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -80,7 +80,7 @@ endfunction
 %!assert (pascal (3,2), [1,1,1;-2,-1,0;1,0,0])
 %!assert (pascal (0,2), [])
 
-%% Test input validation
+## Test input validation
 %!error pascal ()
 %!error pascal (1,2,3)
 %!error <N and T must be scalars> pascal ([1 2])

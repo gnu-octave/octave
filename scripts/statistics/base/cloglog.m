@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -51,7 +51,7 @@ endfunction
 %!assert (cloglog (1), Inf)
 %!assert (cloglog (1/e), 0)
 
-%% Test input validation
+## Test input validation
 %!error cloglog ()
 %!error cloglog (1, 2)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 John W. Eaton
+## Copyright (C) 2006-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} ls
-## @deftypefnx {Command} {} ls filenames
-## @deftypefnx {Command} {} ls options
-## @deftypefnx {Command} {} ls options filenames
-## List directory contents.  For example:
+## @deftypefnx {Command} {} ls @var{filenames}
+## @deftypefnx {Command} {} ls @var{options}
+## @deftypefnx {Command} {} ls @var{options} @var{filenames}
+## @deftypefnx {Function File} {@var{list} =} ls (@dots{})
+##
+## List directory contents.
+##
+## The @code{ls} command is implemented by calling the native operating
+## system's directory listing command---available @var{options} will vary from
+## system to system.
+##
+## Filenames are subject to shell expansion if they contain any wildcard
+## characters @samp{*}, @samp{?}, @samp{[]}.  To find a literal example of a
+## wildcard character the wildcard must be escaped using the backslash operator
+## @samp{\}.
+##
+## If the optional output @var{list} is requested then @code{ls} returns a
+## character array with one row for each file/directory name.
+##
+## Example usage on a UNIX-like system:
 ##
 ## @example
 ## @group
@@ -32,14 +48,6 @@
 ## @end group
 ## @end example
 ##
-## The @code{dir} and @code{ls} commands are implemented by calling your
-## system's directory listing command, so the available options will vary
-## from system to system.
-##
-## Filenames are subject to shell expansion if they contain any wildcard
-## characters @samp{*}, @samp{?}, @samp{[]}.  If you want to find a
-## literal example of a wildcard character you must escape it using the
-## backslash operator @samp{\}.
 ## @seealso{dir, readdir, glob, what, stat, filesep, ls_command}
 ## @end deftypefn
 
@@ -50,8 +58,7 @@ function retval = ls (varargin)
   global __ls_command__;
 
   if (isempty (__ls_command__) || ! ischar (__ls_command__))
-    ## Initialize value for __ls_command__.
-    ls_command ();
+    ls_command ();  # Initialize global value for __ls_command__.
   endif
 
   if (! iscellstr (varargin))
@@ -61,17 +68,25 @@ function retval = ls (varargin)
   if (nargin > 0)
     args = tilde_expand (varargin);
     if (ispc () && ! isunix ())
+      idx = ! strncmp (args, '/', 1);
+      ## Enclose paths, potentially having spaces, in double quotes:
+      args(idx) = strcat ('"', args(idx), '"');
       ## shell (cmd.exe) on MinGW uses '^' as escape character
-      args = regexprep (args, '([^\w.*? -])', '^$1');
+      args = regexprep (args, '([^\w.*?])', '^$1');
     else
-      args = regexprep (args, '([^\w.*?-])', '\\$1');
+      ## Escape any special characters in filename
+      args = regexprep (args, '([^][\w.*?-])', '\\$1');
+      ## Undo escaped spaces following command args
+      ## Only used for command form where single str contains many args.
+      ## Example: list = ls ("-l /usr/bin")
+      args = regexprep (args, '(-\w+)(?:\\ )+', '$1 ');
     endif
     args = sprintf ("%s ", args{:});
   else
     args = "";
   endif
 
-  cmd = sprintf ("%s %s", __ls_command__, args);
+  cmd = [__ls_command__ " " args];
 
   if (page_screen_output () || nargout > 0)
     [status, output] = system (cmd);
@@ -80,10 +95,8 @@ function retval = ls (varargin)
       error ("ls: command exited abnormally with status %d\n", status);
     elseif (nargout == 0)
       puts (output);
-    elseif (isempty (output))
-      retval = "";
     else
-      retval = strvcat (regexp (output, '\S+', 'match'){:});
+      retval = strvcat (regexp (output, "[\r\n]+", "split"){:});
     endif
   else
     ## Just let the output flow if the pager is off.  That way the
@@ -100,5 +113,18 @@ endfunction
 %! assert (ischar (list));
 %! assert (! isempty (list));
 
-%!error ls (1)
+%!test
+%! if (isunix ())
+%!   list = ls ("/");
+%!   list = (list')(:)';   # transform to a single row vector
+%!   assert (! isempty (strfind (list, "sbin")));
+%!   list2 = ls ("-l /");
+%!   list2 = (list2')(:)';   # transform to a single row vector
+%!   assert (! isempty (strfind (list2, "sbin")));
+%!   assert (rows (list) == rows (list2));
+%! endif
+
+%!error <all arguments must be character strings> ls (1)
+## Test below is valid, but produces confusing output on screen
+%!#error <command exited abnormally> ls ("-!")
 

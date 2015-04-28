@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -42,22 +42,22 @@
 
 function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
 
-  if ((nargin < 4) || (nargin > 5))
-        print_usage ();
+  if (nargin < 4 || nargin > 5)
+    print_usage ();
   endif
 
   ## Could do sanity checking on x1, n1, x2, n2 here
 
-  p1  = x1 / n1;
-  p2  = x2 / n2;
-  pc  = (x1 + x2) / (n1 + n2);
+  p1 = x1 / n1;
+  p2 = x2 / n2;
+  pc = (x1 + x2) / (n1 + n2);
 
-  z   = (p1 - p2) / sqrt (pc * (1 - pc) * (1/n1 + 1/n2));
+  z  = (p1 - p2) / sqrt (pc * (1 - pc) * (1/n1 + 1/n2));
 
   cdf = stdnormal_cdf (z);
 
   if (nargin == 4)
-    alt  = "!=";
+    alt = "!=";
   endif
 
   if (! ischar (alt))

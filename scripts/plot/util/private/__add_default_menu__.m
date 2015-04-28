@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Kai Habel
+## Copyright (C) 2010-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -33,48 +33,43 @@ function __add_default_menu__ (fig)
 
   obj = findall (fig, "-depth", 1, "tag", "__default_menu__", "label", "&File");
   if (isempty (obj))
-    ## FIXME: uimenu() will cause menubar to be displayed, even though property
-    ##        menubar remains set at "none".  So, forcibly turn menubar status
-    ##        on and then off to force figure to hide menubar.
-    menubar_state = get (fig, "menubar");
-    set (fig, "menubar", "figure");
-
     __f = uimenu (fig, "label", "&File", "handlevisibility", "off",
                        "tag", "__default_menu__");
-      uimenu (__f, "label", "Save &As", "callback", @save_cb);
       uimenu (__f, "label", "&Save", "callback", @save_cb);
+      uimenu (__f, "label", "Save &As", "callback", @save_cb);
       uimenu (__f, "label", "&Close", "callback", "close (gcf)");
 
     __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off",
                        "tag", "__default_menu__");
-      uimenu (__e, "label", "&Grid", "callback", @grid_cb);
-      uimenu (__e, "label", "Auto&scale", "callback", @autoscale_cb);
-      gm = uimenu (__e, "label", "GUI &Mode");
-        uimenu (gm, "label", "Pan+Zoom", "callback", @guimode_cb);
-        uimenu (gm, "label", "Rotate+Zoom", "callback", @guimode_cb);
-        uimenu (gm, "label", "None+Zoom", "callback", @guimode_cb);
+      uimenu (__e, "label", "Toggle &grid on all axes", "tag", "toggle", "callback", @grid_cb);
+      uimenu (__e, "label", "Show grid on all axes", "tag", "on", "callback", @grid_cb);
+      uimenu (__e, "label", "Hide grid on all axes", "tag", "off", "callback", @grid_cb);
+      uimenu (__e, "label", "Auto&scale all axes", "callback", @autoscale_cb);
+      gm = uimenu (__e, "label", "GUI &Mode (on all axes)");
+        uimenu (gm, "label", "Pan x and y", "tag", "pan_on", "callback", @guimode_cb);
+        uimenu (gm, "label", "Pan x only", "tag", "pan_xon", "callback", @guimode_cb);
+        uimenu (gm, "label", "Pan y only", "tag", "pan_yon", "callback", @guimode_cb);
+        uimenu (gm, "label", "Disable pan and rotate", "tag", "no_pan_rotate", "callback", @guimode_cb);
+        uimenu (gm, "label", "Rotate on", "tag", "rotate3d", "callback", @guimode_cb);
+        uimenu (gm, "label", "Enable mousezoom", "tag", "zoom_on", "callback", @guimode_cb);
+        uimenu (gm, "label", "Disable mousezoom", "tag", "zoom_off", "callback", @guimode_cb);
 
-    ## FIXME: This drawnow () must occur after at least one menu item has
-    ##        been defined to avoid sizing issues in new figures.
-    ##        This may lead to flicker.  The real fix must be in the C++ code.
-    drawnow ();
-
-    set (fig, "menubar", menubar_state);
   endif
 
 endfunction
 
 function save_cb (h, e)
-  lbl = get (gcbo, "label");
+  [hcbo, hfig] = gcbo ();
+  lbl = get (hcbo, "label");
   if (strcmp (lbl, "&Save"))
-    fname = get (gcbo, "userdata");
+    fname = get (hfig, "filename");
     if (isempty (fname))
-      __save_as__ (gcbo);
+      __save_as__ (hcbo);
     else
-      saveas (gcbo, fname);
+      saveas (hcbo, fname);
     endif
   elseif (strcmp (lbl, "Save &As"))
-    __save_as__ (gcbo);
+    __save_as__ (hcbo);
   endif
 endfunction
 
@@ -82,34 +77,59 @@ function __save_as__ (caller)
   [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
                                     "Supported Graphic Formats"},
                                    "Save Figure",
-                                   pwd);
+                                   [pwd, filesep, "untitled.pdf"]);
   if (filename != 0)
     fname = [filedir filesep() filename];
-    obj = findall (gcbf, "label", "&Save");
-    if (! isempty (obj))
-      set (obj(1), "userdata", fname);
-    endif
+    set (gcbf, "filename", fname)
     saveas (caller, fname);
   endif
 endfunction
 
+
+function [hax, fig] = __get_axes__ (h)
+  ## Get parent figure
+  fig = ancestor (h, "figure");
+
+  ## Find all axes which aren't legends
+  hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
+endfunction
+
 function grid_cb (h, e)
-  grid;
+  hax = __get_axes__ (h);
+  id = get (h, "tag");
+  switch (id)
+    case "toggle"
+      arrayfun (@grid, hax);
+    otherwise
+      arrayfun (@(h) grid(h, id), hax);
+  endswitch
+  drawnow ();
 endfunction
 
 function autoscale_cb (h, e)
-  axis ("auto");
+  hax = __get_axes__ (h);
+  arrayfun (@(h) axis (h, "auto"), hax)
+  drawnow ();
 endfunction
 
 function guimode_cb (h, e)
-  lbl = get (h, "label");
-  switch (lbl)
-    case "Pan+Zoom"
-      gui_mode ("2D");
-    case "Rotate+Zoom"
-      gui_mode ("3D");
-    case "None"
-      gui_mode ("None");
+  [hax, fig] = __get_axes__ (h);
+  id = get (h, "tag");
+  switch (id)
+    case "pan_on"
+      pan (fig, "on")
+    case "pan_xon"
+      pan (fig, "xon")
+    case "pan_yon"
+      pan (fig, "yon")
+    case "rotate3d"
+      rotate3d (fig, "on")
+    case "no_pan_rotate"
+      pan (fig, "off")
+      rotate3d (fig, "off")
+    case "zoom_on"
+      arrayfun (@(h) set (h, "mousewheelzoom", 0.05), hax);
+    case "zoom_off"
+      arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
 endfunction
-

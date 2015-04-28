@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 Michael Goffioul
+Copyright (C) 2009-2015 Michael Goffioul
 
 This file is part of Octave.
 
@@ -114,7 +114,7 @@ private:
   ft_render& operator = (const ft_render&);
 
   // Class to hold information about fonts and a strong
-  // reference to the font objects loaded by freetype.
+  // reference to the font objects loaded by FreeType.
   class ft_font
   {
   public:

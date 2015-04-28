@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -113,6 +113,8 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
     p = (localtime (time ())).year + 1900 - 50;
   endif
 
+  do_resize = false;
+
   if (iscell (date))
 
     nd = numel (date);
@@ -123,8 +125,10 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
       for k = 1:nd
         found = false;
         for l = 1:nfmt
-          [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (std_formats{l});
-          [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
+          [f, rY, ry, fy, fm, fd, fh, fmi, fs] = ...
+            __date_vfmt2sfmt__ (std_formats{l});
+          [found y(k) m(k) d(k) h(k) mi(k) s(k)] = ...
+            __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
           if (found)
             break;
           endif
@@ -137,7 +141,8 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
       ## Decipher the format string just once for speed.
       [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f);
       for k = 1:nd
-        [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
+        [found y(k) m(k) d(k) h(k) mi(k) s(k)] = ...
+          __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
         if (! found)
           error ("datevec: DATE not parsed correctly with given format");
         endif
@@ -146,6 +151,10 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
 
   else   # datenum input
 
+    if (! iscolumn (date))
+      date_sz = size (date);
+      do_resize = true;
+    endif
     date = date(:);
 
     ## Move day 0 from midnight -0001-12-31 to midnight 0000-3-1
@@ -182,6 +191,13 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
 
   if (nargout <= 1)
     y = [y, m, d, h, mi, s];
+  elseif (do_resize)
+    y = reshape (y, date_sz);
+    m = reshape (m, date_sz);
+    d = reshape (d, date_sz);
+    h = reshape (h, date_sz);
+    mi = reshape (mi, date_sz);
+    s = reshape (s, date_sz);
   endif
 
 endfunction
@@ -306,14 +322,25 @@ endfunction
 %!assert (datevec ("03:38 PM"), [yr,1,1,15,38,0])
 %!assert (datevec ("03/13/1962"), [1962,3,13,0,0,0])
 
-%% Test millisecond format FFF
+## Test millisecond format FFF
 %!assert (datevec ("15:38:21.25", "HH:MM:SS.FFF"), [yr,1,1,15,38,21.025])
 
-# Other tests
+## Test structure of return value (bug #42334)
+%!test
+%! [~, ~, d] = datevec ([1 2; 3 4]);
+%! assert (d, [1 2; 3 4]);
+
+## Other tests
 %!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]');
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));
 %!assert (double (datevec (int64 (datenum ([2014 6 1])))), datevec (datenum ([2014 6 1])))
 %!assert (double (datevec (int64 (datenum ([2014 6 18])))), datevec (datenum ([2014 6 18])))
+
+## Test input validation
+%!error datevec ()
+%!error datevec (1,2,3,4)
+%!error <none of the standard formats match> datevec ("foobar")
+%!error <DATE not parsed correctly with given format> datevec ("foobar", "%d")
 

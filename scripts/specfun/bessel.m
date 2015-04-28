@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -31,24 +31,21 @@
 ##
 ## @item bessely
 ## Bessel functions of the second kind.  If the argument @var{opt} is supplied,
-## the result is multiplied by @code{exp (-abs (imag (x)))}.
+## the result is multiplied by @w{@code{exp (-abs (imag (x)))}}.
 ##
 ## @item besseli
 ## Modified Bessel functions of the first kind.  If the argument @var{opt} is
-## supplied,
-## the result is multiplied by @code{exp (-abs (real (x)))}.
+## supplied, the result is multiplied by @w{@code{exp (-abs (real (x)))}}.
 ##
 ## @item besselk
 ## Modified Bessel functions of the second kind.  If the argument @var{opt} is
-## supplied,
-## the result is multiplied by @code{exp (x)}.
+## supplied, the result is multiplied by @w{@code{exp (x)}}.
 ##
 ## @item besselh
-## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
-## = 2) kind.  If the argument @var{opt} is supplied, the result is multiplied
-## by
-## @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
-## @var{k} = 2.
+## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k} = 2)
+## kind.  If the argument @var{opt} is supplied, the result is multiplied by
+## @w{@code{exp (-I*@var{x})}} for @var{k} = 1 or @w{@code{exp (I*@var{x})}}
+## for @var{k} = 2.
 ## @end table
 ##
 ## If @var{alpha} is a scalar, the result is the same size as @var{x}.
@@ -58,11 +55,10 @@
 ## @code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and
 ## @var{x} must conform and the result will be the same size.
 ##
-## The value of @var{alpha} must be real.  The value of @var{x} may be
-## complex.
+## The value of @var{alpha} must be real.  The value of @var{x} may be complex.
 ##
-## If requested, @var{ierr} contains the following status information
-## and is the same size as the result.
+## If requested, @var{ierr} contains the following status information and is
+## the same size as the result.
 ##
 ## @enumerate 0
 ## @item
@@ -75,8 +71,8 @@
 ## Overflow, return @code{Inf}.
 ##
 ## @item
-## Loss of significance by argument reduction results in less than
-## half of machine accuracy.
+## Loss of significance by argument reduction results in less than half of
+## machine accuracy.
 ##
 ## @item
 ## Complete loss of significance by argument reduction, return @code{NaN}.
@@ -88,7 +84,7 @@
 ## @end deftypefn
 
 function bessel ()
-  error ("bessel: you must use besselj, bessely, besseli, or besselk");
+  error ("bessel: you must use besselj, bessely, besseli, besselk, or besselh\n");
 endfunction
 
 

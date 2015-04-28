@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2012-2013 John W. Eaton
+Copyright (C) 2012-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -58,76 +58,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
+#include "display-available.h"
 #include "shared-fcns.h"
 
 #include <cstdlib>
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-#include <windows.h>
-#elif defined (HAVE_FRAMEWORK_CARBON)
-#include <Carbon/Carbon.h>
-#elif defined (HAVE_X_WINDOWS)
-#include <X11/Xlib.h>
-#endif
-
-bool
-display_available (std::string& err_msg)
-{
-  bool dpy_avail = false;
-
-  err_msg = "";
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-
-  HDC hdc = GetDC (0);
-
-  if (hdc)
-    dpy_avail = true;
-  else
-    err_msg = "no graphical display found";
-
-#elif defined (HAVE_FRAMEWORK_CARBON)
-
-  CGDirectDisplayID display = CGMainDisplayID ();
-
-  if (display)
-    dpy_avail = true;
-  else
-    err_msg = "no graphical display found";
-
-#elif defined (HAVE_X_WINDOWS)
-
-  const char *display_name = getenv ("DISPLAY");
-
-  if (display_name && *display_name)
-    {
-      Display *display = XOpenDisplay (display_name);
-
-      if (display)
-        {
-          Screen *screen = DefaultScreenOfDisplay (display);
-
-          if (! screen)
-            err_msg = "X11 display has no default screen";
-
-          XCloseDisplay (display);
-
-          dpy_avail = true;
-        }
-      else
-        err_msg = "unable to open X11 DISPLAY";
-    }
-  else
-    err_msg = "X11 DISPLAY environment variable not set";
-
-#else
-
-  err_msg = "no graphical display found";
-
-#endif
-
-  return dpy_avail;
-}
 
 #if (defined (HAVE_OCTAVE_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
@@ -339,8 +273,8 @@ get_octave_archlibdir (void)
 
   std::string dir = octave_getenv ("OCTAVE_ARCHLIBDIR");
 
-  return dir.empty ()
-    ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR)) : dir;
+  return dir.empty () ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR))
+                      : dir;
 }
 
 // Adapted from libtool wrapper.
@@ -493,14 +427,22 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
-  bool start_gui = false;
-  bool gui_libs = false;
+  bool start_gui = true;
+  bool gui_libs = true;
 
   std::string octave_bindir = get_octave_bindir ();
   std::string octave_archlibdir = get_octave_archlibdir ();
 
+#if defined (HAVE_OCTAVE_GUI)
+  // The Octave version number is already embedded in the
+  // octave_archlibdir directory name so we don't need to append it to
+  // the octave-gui file name.
+
+  std::string file = octave_archlibdir + dir_sep_char + "octave-gui";
+#else
   std::string file
-    = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;;
+    = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
+#endif
 
   char **new_argv = new char * [argc + 1];
 
@@ -510,22 +452,7 @@ main (int argc, char **argv)
 
   for (int i = 1; i < argc; i++)
     {
-      if (! strcmp (argv[i], "--force-gui"))
-        {
-          start_gui = true;
-          gui_libs = true;
-#if defined (HAVE_OCTAVE_GUI)
-          // The Octave version number is already embedded in the
-          // octave_archlibdir directory name so we don't need to
-          // append it to the octave-gui file name.
-
-          file = octave_archlibdir + dir_sep_char + "octave-gui";
-#else
-          file = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
-#endif
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--no-gui-libs"))
+      if (! strcmp (argv[i], "--no-gui-libs"))
         {
           // Run the version of Octave that is not linked with any GUI
           // libraries.  It may not be possible to do plotting or any
@@ -533,7 +460,9 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
-          // This is the default for 3.8 release.
+          start_gui = false;
+          gui_libs = false;
+          file = octave_bindir + dir_sep_char + "octave-cli";
         }
       else if (! strcmp (argv[i], "--no-gui"))
         {
@@ -543,10 +472,11 @@ main (int argc, char **argv)
           // even if the --no-gui option is given, we may be asked to do
           // some plotting or ui* calls.
 
-          // This option calls the cli executable for the 3.8 release.
+          start_gui = false;
+          new_argv[k++] = argv[i];
         }
-      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "-q")
-               || ! strcmp (argv[i], "--quiet"))
+      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet")
+               || ! strcmp (argv[i], "-q"))
         {
           warn_display = false;
           new_argv[k++] = argv[i];
@@ -559,9 +489,11 @@ main (int argc, char **argv)
 
   if (gui_libs || start_gui)
     {
-      std::string display_check_err_msg;
+      int dpy_avail;
 
-      if (! display_available (display_check_err_msg))
+      const char *display_check_err_msg = display_available (&dpy_avail);
+
+      if (! dpy_avail)
         {
           start_gui = false;
           gui_libs = false;
@@ -570,6 +502,9 @@ main (int argc, char **argv)
 
           if (warn_display)
             {
+              if (! display_check_err_msg)
+                display_check_err_msg = "graphical display unavailable";
+
               std::cerr << "octave: " << display_check_err_msg << std::endl;
               std::cerr << "octave: disabling GUI features" << std::endl;
             }
@@ -607,8 +542,8 @@ main (int argc, char **argv)
 
               retval = 1;
             }
-
-          retval = octave_exec (file, new_argv);
+          else
+            retval = octave_exec (file, new_argv);
         }
       else
         {

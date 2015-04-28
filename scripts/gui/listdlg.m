@@ -97,7 +97,7 @@ function [sel, ok] = listdlg (varargin)
     if (strcmpi (varargin{i}, "ListString"))
       listcell = varargin{i+1};
     elseif (strcmpi (varargin{i}, "SelectionMode"))
-      selmode = varargin{i+1};
+      selmode = tolower (varargin{i+1});
     elseif (strcmpi (varargin{i}, "ListSize"))
       listsize = varargin{i+1};
     elseif (strcmpi (varargin{i}, "InitialValue"))
@@ -121,11 +121,13 @@ function [sel, ok] = listdlg (varargin)
   ## make sure listcell strings are a cell array
   if (! iscell (listcell))
     listcell = {listcell};
+  elseif (iscellstr (listcell{1})) 
+    listcell = listcell{1};
   endif
 
   ## make sure valid selection mode
-  if (! strcmp (selmode, "Multiple") && ! strcmp (selmode, "Single"))
-    error ("invalid SelectionMode");
+  if (! strcmpi (selmode, "multiple") && ! strcmpi (selmode, "single"))
+    error ("listdlg: invalid SelectionMode");
   endif
 
   if (__octave_link_enabled__ ())

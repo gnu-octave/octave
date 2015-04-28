@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -171,6 +171,7 @@ endfunction
 ## variable is not normalized properly.
 ## Also check the usage of 2nd & 3rd output arguments.
 %!test
+%! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! x = [ -1196.4, -1195.2, -1194, -1192.8, -1191.6, -1190.4, -1189.2, -1188, ...
 %!       -1186.8, -1185.6, -1184.4, -1183.2, -1182];
 %! y = [ 315571.7086, 315575.9618, 315579.4195, 315582.6206, 315585.4966, ...
@@ -188,6 +189,7 @@ endfunction
 %! assert (p, p0, 1000*eps);
 
 %!test
+%! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! x = 1000 + (-5:5);
 %! xn = (x - mean (x)) / std (x);
 %! pn = ones (1,5);

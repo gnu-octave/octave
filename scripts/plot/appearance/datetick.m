@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -45,8 +45,8 @@ function datetick (varargin)
 
   unwind_protect
     ## FIXME: This will bring the axes to the top of the stack.
-    ##        This may not always be desirable if there are multiple axes
-    ##        objects.
+    ##        This may not be desirable if there are multiple axes objects,
+    ##        such as can occur with plotyy.
     axes (hax);
     __datetick__ (varargin{:});
   unwind_protect_cleanup
@@ -64,22 +64,22 @@ endfunction
 %! pop = [76.094, 92.407, 106.461, 123.077 131.954, 151.868, 179.979, ...
 %!        203.984, 227.225, 249.623, 282.224];
 %! plot (datenum (yr, 1, 1), pop);
-%! title ("US population (millions)");
-%! xlabel ("Year");
-%! datetick ("x", "YYYY");
+%! title ('US population (millions)');
+%! xlabel ('Year');
+%! datetick ('x', 'YYYY');
 
 %!demo
 %! clf;
 %! yr = 1988:2:2002;
 %! yr = datenum (yr,1,1);
 %! pr = [12.1 13.3 12.6 13.1 13.3 14.1 14.4 15.2];
-%! plot (yr, pr, "-o");
-%! xlabel ("year");
-%! ylabel ("average price");
+%! plot (yr, pr, '-o');
+%! xlabel ('year');
+%! ylabel ('average price');
 %! ax = gca;
-%! set (ax, "xtick", datenum (1990:5:2005,1,1));
-%! datetick (2, "keepticks");
-%! set (ax, "ytick", 12:16);
+%! set (ax, 'xtick', datenum (1990:5:2005,1,1));
+%! datetick (2, 'x', 'keepticks');
+%! set (ax, 'ytick', 12:16);
 
 ## Remove from test statistics.  No real tests possible.
 %!assert (1)
@@ -271,7 +271,7 @@ function [a, b] = __magform__ (x)
     b = 0;
   else
     l = log10 (abs (x));
-    r = fmod (l, 1);
+    r = rem (l, 1);
     a = 10 .^ r;
     b = fix (l - r);
     if (a < 1)

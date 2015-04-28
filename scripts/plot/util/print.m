@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -226,7 +226,7 @@
 ##   @item -interchange
 ##     Provide an interchange preview.
 ##
-##   @item -metalfile
+##   @item -metafile
 ##     Provide a metafile preview.
 ##
 ##   @item -pict
@@ -284,7 +284,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{saveas, orient, figure}
+## @seealso{saveas, hgsave, orient, figure}
 ## @end deftypefn
 
 function print (varargin)
@@ -301,12 +301,16 @@ function print (varargin)
     error ("print: no figure to print");
   endif
 
+  if (isempty (findall (opts.figure, "-depth", "1", "type", "axes")))
+    error ("print: no axes object in figure to print");
+  endif
+
   orig_figure = get (0, "currentfigure");
   set (0, "currentfigure", opts.figure);
 
   if (opts.append_to_file)
     [~, ~, ext] = fileparts (opts.ghostscript.output);
-    opts.ghostscript.prepend = strcat (tmpnam (), ext);
+    opts.ghostscript.prepend = [tempname() ext];
     copyfile (opts.ghostscript.output, opts.ghostscript.prepend);
   endif
 
@@ -428,7 +432,7 @@ function print (varargin)
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
       otherwise
-        opts = __fltk_print__ (opts);
+        opts = __opengl_print__ (opts);
     endswitch
 
   unwind_protect_cleanup
@@ -473,6 +477,17 @@ function cmd = epstool (opts, filein, fileout)
   ## Unix Shell;
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
+  ## HACK: Keep track of whether ghostscript supports epswrite or eps2write.
+  persistent epsdevice;
+  if (isempty (epsdevice))
+    [status, devlist] = system (sprintf ("%s -h", opts.ghostscript.binary));
+    if (isempty (strfind (devlist, "eps2write")))
+      epsdevice = "epswrite";
+    else
+      epsdevice = "eps2write";
+    endif
+  endif
+
   dos_shell = (ispc () && ! isunix ());
 
   cleanup = "";
@@ -484,7 +499,7 @@ function cmd = epstool (opts, filein, fileout)
 
   if (nargin < 2 || strcmp (filein, "-") || isempty (filein))
     pipein = true;
-    filein = strcat (tmpnam (), ".eps");
+    filein = [tempname() ".eps"];
     if (dos_shell)
       cleanup = sprintf ("& del %s ", strrep (filein, '/', '\'));
     else
@@ -496,11 +511,11 @@ function cmd = epstool (opts, filein, fileout)
   endif
   if (strcmp (fileout, "-"))
     pipeout = true;
-    fileout = strcat (tmpnam (), ".eps");
+    fileout = [tempname() ".eps"];
     if (dos_shell)
-      cleanup = horzcat (cleanup, sprintf ("& del %s ", strrep (fileout, '/', '\')));
+      cleanup = [cleanup, sprintf("& del %s ", strrep (fileout, '/', '\'))];
     else
-      cleanup = horzcat (cleanup, sprintf ("; rm %s ", fileout));
+      cleanup = [cleanup, sprintf("; rm %s ", fileout)];
     endif
   else
     pipeout = false;
@@ -531,7 +546,7 @@ function cmd = epstool (opts, filein, fileout)
                    opts.preview);
         endswitch
         if (! isempty (opts.ghostscript.resolution))
-          cmd = sprintf ("%s --dpi %d", cmd, opts.ghostscript.resolution);
+          cmd = sprintf ("%s --dpi %d", cmd, fix (opts.ghostscript.resolution));
         endif
       else
         cmd = "";
@@ -544,7 +559,7 @@ function cmd = epstool (opts, filein, fileout)
         if (dos_shell)
           filein(filein=="'") = "\"";
           gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                                    "device", "epswrite",
+                                    "device", epsdevice,
                                     "source", "-",
                                     "output", filein);
           cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
@@ -576,7 +591,7 @@ function cmd = epstool (opts, filein, fileout)
     if (pipein && pipeout)
       if (dos_shell)
         cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                               "device", "epswrite",
+                               "device", epsdevice,
                                "source", "-",
                                "output", "-");
       else
@@ -587,7 +602,7 @@ function cmd = epstool (opts, filein, fileout)
         ## ghostscript expects double, not single, quotes
         fileout(fileout=="'") = "\"";
         cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                               "device", "epswrite",
+                               "device", epsdevice,
                                "source", "-",
                                "output", fileout);
       else
@@ -614,12 +629,12 @@ endfunction
 
 function cmd = fig2dev (opts, devopt)
   if (nargin < 2)
-    devopt =  opts.devopt;
+    devopt = opts.devopt;
   endif
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.fig2dev_binary))
     if (dos_shell)
-      ## FIXME - is this the right thing to do for DOS?
+      ## FIXME: Is this the right thing to do for DOS?
       cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
     else
       cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
@@ -650,7 +665,7 @@ function latex_standalone (opts)
       graphicsfile = strcat (opts.name, "-inc.eps");
   endswitch
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
-                       opts.canvas_size, opts.canvas_size);
+                       fix (opts.canvas_size), fix (opts.canvas_size));
   prepend = {"\\documentclass{minimal}";
              packages;
              papersize;
@@ -690,7 +705,7 @@ endfunction
 
 function cmd = lpr (opts)
   if (nargin < 2)
-    devopt =  opts.devopt;
+    devopt = opts.devopt;
   endif
   if (! isempty (opts.lpr_binary))
     cmd = opts.lpr_binary;
@@ -710,14 +725,14 @@ endfunction
 
 function cmd = pstoedit (opts, devopt)
   if (nargin < 2)
-    devopt =  opts.devopt;
+    devopt = opts.devopt;
   endif
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.pstoedit_binary))
     if (dos_shell)
       cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
     else
-      ## FIXME - is this the right thing to do for DOS?
+      ## FIXME: Is this the right thing to do for DOS?
       cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
     endif
   elseif (isempty (opts.pstoedit_binary))

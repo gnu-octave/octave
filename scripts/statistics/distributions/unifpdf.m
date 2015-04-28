@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -35,7 +35,7 @@ function pdf = unifpdf (x, a = 0, b = 1)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("unifpdf: X, A, and B must be of common size or scalars");
@@ -75,12 +75,12 @@ endfunction
 %!assert (unifpdf (x, 1, 2*[0 NaN 1 1 1]), [NaN NaN y(3:5)])
 %!assert (unifpdf ([x, NaN], 1, 2), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (unifpdf (single ([x, NaN]), 1, 2), single ([y, NaN]))
 %!assert (unifpdf (single ([x, NaN]), single (1), 2), single ([y, NaN]))
 %!assert (unifpdf ([x, NaN], 1, single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error unifpdf ()
 %!error unifpdf (1,2)
 %!error unifpdf (1,2,3,4)

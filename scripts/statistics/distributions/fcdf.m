@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function cdf = fcdf (x, m, n)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (n))
+  if (! isscalar (m) || ! isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
       error ("fcdf: X, M, and N must be of common size or scalars");
@@ -76,13 +76,13 @@ endfunction
 %!assert (fcdf (x, 2, [0 NaN Inf 2 2 2]), [NaN NaN NaN y(4:6)], eps)
 %!assert (fcdf ([x(1:2) NaN x(4:6)], 2, 2), [y(1:2) NaN y(4:6)], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (fcdf ([x, NaN], 2, 2), [y, NaN], eps)
 %!assert (fcdf (single ([x, NaN]), 2, 2), single ([y, NaN]), eps ("single"))
 %!assert (fcdf ([x, NaN], single (2), 2), single ([y, NaN]), eps ("single"))
 %!assert (fcdf ([x, NaN], 2, single (2)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error fcdf ()
 %!error fcdf (1)
 %!error fcdf (1,2)

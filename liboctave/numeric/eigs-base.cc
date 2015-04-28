@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2013 David Bateman
+Copyright (C) 2005-2015 David Bateman
 
 This file is part of Octave.
 
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "f77-fcn.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 #include "SparsedbleLU.h"
 #include "SparseCmplxLU.h"
@@ -205,6 +206,15 @@ static Matrix
 utsolve (const Matrix&, const ColumnVector&, const Matrix&);
 
 #endif
+
+static void
+warn_convergence (void)
+{
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:convergence",
+     "eigs: 'A - sigma*B' is singular, indicating sigma is exactly "
+     "an eigenvalue so convergence is not guaranteed");
+}
 
 template <class M, class SM>
 static octave_idx_type
@@ -492,8 +502,8 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = 0.;
-      if (U.xcidx (j+1) > U.xcidx (j) &&
-          U.xridx (U.xcidx (j+1)-1) == j)
+      if (U.xcidx (j+1) > U.xcidx (j)
+          && U.xridx (U.xcidx (j+1)-1) == j)
         d = std::abs (U.xdata (U.xcidx (j+1)-1));
 
       if (xisnan (minU) || d < minU)
@@ -507,12 +517,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -584,12 +589,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -666,8 +666,8 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = 0.;
-      if (U.xcidx (j+1) > U.xcidx (j) &&
-          U.xridx (U.xcidx (j+1)-1) == j)
+      if (U.xcidx (j+1) > U.xcidx (j)
+          && U.xridx (U.xcidx (j+1)-1) == j)
         d = std::abs (U.xdata (U.xcidx (j+1)-1));
 
       if (xisnan (minU) || d < minU)
@@ -681,12 +681,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -758,12 +753,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -856,8 +846,8 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
             {
               octave_idx_type bidx =
                 static_cast<octave_idx_type> (permB(i));
-              if (checked(bidx) || bidx < 0 ||
-                  bidx >= n || D_NINT (bidx) != bidx)
+              if (checked(bidx) || bidx < 0 || bidx >= n
+                  || D_NINT (bidx) != bidx)
                 {
                   (*current_liboctave_error_handler)
                     ("eigs: permB vector invalid");
@@ -867,9 +857,9 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA" &&
-      typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI" &&
-      typ != "SI")
+  if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
+      && typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI"
+      && typ != "SI")
     {
       (*current_liboctave_error_handler)
         ("eigs: unrecognized sigma value");
@@ -1179,8 +1169,8 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
             {
               octave_idx_type bidx =
                 static_cast<octave_idx_type> (permB(i));
-              if (checked(bidx) || bidx < 0 ||
-                  bidx >= n || D_NINT (bidx) != bidx)
+              if (checked(bidx) || bidx < 0 || bidx >= n
+                  || D_NINT (bidx) != bidx)
                 {
                   (*current_liboctave_error_handler)
                     ("eigs: permB vector invalid");
@@ -1475,9 +1465,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
 
   if (! have_sigma)
     {
-      if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA" &&
-          typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI" &&
-          typ != "SI")
+      if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
+          && typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI"
+          && typ != "SI")
         (*current_liboctave_error_handler)
           ("eigs: unrecognized sigma value");
 
@@ -1770,8 +1760,8 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             {
               octave_idx_type bidx =
                 static_cast<octave_idx_type> (permB(i));
-              if (checked(bidx) || bidx < 0 ||
-                  bidx >= n || D_NINT (bidx) != bidx)
+              if (checked(bidx) || bidx < 0 || bidx >= n
+                  || D_NINT (bidx) != bidx)
                 {
                   (*current_liboctave_error_handler)
                     ("eigs: permB vector invalid");
@@ -1781,9 +1771,9 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA" &&
-      typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI" &&
-      typ != "SI")
+  if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
+      && typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI"
+      && typ != "SI")
     {
       (*current_liboctave_error_handler)
         ("eigs: unrecognized sigma value");
@@ -2142,8 +2132,8 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             {
               octave_idx_type bidx =
                 static_cast<octave_idx_type> (permB(i));
-              if (checked(bidx) || bidx < 0 ||
-                  bidx >= n || D_NINT (bidx) != bidx)
+              if (checked(bidx) || bidx < 0 || bidx >= n
+                  || D_NINT (bidx) != bidx)
                 {
                   (*current_liboctave_error_handler)
                     ("eigs: permB vector invalid");
@@ -2493,9 +2483,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
 
   if (! have_sigma)
     {
-      if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA" &&
-          typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI" &&
-          typ != "SI")
+      if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
+          && typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI"
+          && typ != "SI")
         (*current_liboctave_error_handler)
           ("eigs: unrecognized sigma value");
 
@@ -2838,8 +2828,8 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
             {
               octave_idx_type bidx =
                 static_cast<octave_idx_type> (permB(i));
-              if (checked(bidx) || bidx < 0 ||
-                  bidx >= n || D_NINT (bidx) != bidx)
+              if (checked(bidx) || bidx < 0 || bidx >= n
+                  || D_NINT (bidx) != bidx)
                 {
                   (*current_liboctave_error_handler)
                     ("eigs: permB vector invalid");
@@ -2849,9 +2839,9 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA" &&
-      typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI" &&
-      typ != "SI")
+  if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
+      && typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI"
+      && typ != "SI")
     {
       (*current_liboctave_error_handler)
         ("eigs: unrecognized sigma value");
@@ -3162,8 +3152,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
             {
               octave_idx_type bidx =
                 static_cast<octave_idx_type> (permB(i));
-              if (checked(bidx) || bidx < 0 ||
-                  bidx >= n || D_NINT (bidx) != bidx)
+              if (checked(bidx) || bidx < 0 || bidx >= n
+                  || D_NINT (bidx) != bidx)
                 {
                   (*current_liboctave_error_handler)
                     ("eigs: permB vector invalid");
@@ -3466,9 +3456,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
 
   if (! have_sigma)
     {
-      if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA" &&
-          typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI" &&
-          typ != "SI")
+      if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
+          && typ != "BE" && typ != "LR" && typ != "SR" && typ != "LI"
+          && typ != "SI")
         (*current_liboctave_error_handler)
           ("eigs: unrecognized sigma value");
 

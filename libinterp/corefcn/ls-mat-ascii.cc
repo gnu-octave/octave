@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -172,8 +172,8 @@ get_lines_and_columns (std::istream& is,
 
               beg = buf.find_first_not_of (", \t", end);
 
-              if (beg == std::string::npos || (buf[beg] == '\r' &&
-                                               beg == buf.length () - 1))
+              if (beg == std::string::npos
+                  || (buf[beg] == '\r' && beg == buf.length () - 1))
                 {
                   // We had a line with trailing spaces and
                   // ending with a CRLF, so this should look like EOL,

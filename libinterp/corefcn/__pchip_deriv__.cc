@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2013 Kai Habel
+Copyright (C) 2002-2015 Kai Habel
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -59,7 +59,7 @@ Undocumented internal function.\n\
   octave_value retval;
   const int nargin = args.length ();
 
-  bool rows = (nargin == 3 && args (2).uint_value () == 2);
+  bool rows = (nargin == 3 && args(2).uint_value () == 2);
 
   if (nargin >= 2)
     {
@@ -85,25 +85,25 @@ Undocumented internal function.\n\
               return retval;
             }
 
-          const float *yvec = ymat.data ();
           FloatMatrix dmat (nyr, nyc);
-          float *dvec = dmat.fortran_vec ();
 
           octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
-          const octave_idx_type inc = rows ? 1 : nyr;
+          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          volatile octave_idx_type k = 0;
 
-          for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
+          for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
               F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
-                                       yvec, dvec, incfd, &ierr));
+                                       ymat.data () + k * inc,
+                                       dmat.fortran_vec () + k * inc,
+                                       incfd, &ierr));
 
-              yvec += inc;
-              dvec += inc;
+              k++;
 
               if (ierr < 0)
                 {
-                  error ("PCHIM: error: %i\n", ierr);
+                  error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
                   return retval;
                 }
             }
@@ -132,25 +132,24 @@ Undocumented internal function.\n\
               return retval;
             }
 
-          const double *yvec = ymat.data ();
           Matrix dmat (nyr, nyc);
-          double *dvec = dmat.fortran_vec ();
 
           octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
-          const octave_idx_type inc = rows ? 1 : nyr;
+          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          volatile octave_idx_type k = 0;
 
-          for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
+          for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
               F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
-                                         yvec, dvec, incfd, &ierr));
-
-              yvec += inc;
-              dvec += inc;
+                                         ymat.data () + k * inc,
+                                         dmat.fortran_vec () + k * inc,
+                                         incfd, &ierr));
+              k++;
 
               if (ierr < 0)
                 {
-                  error ("DPCHIM: error: %i\n", ierr);
+                  error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
                   return retval;
                 }
             }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <memory>
 
-#include "oct-alloc.h"
 
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -147,13 +146,11 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -164,7 +161,6 @@ private:
 
   bool set_fcn (const std::string &octaveroot, const std::string& fpath);
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

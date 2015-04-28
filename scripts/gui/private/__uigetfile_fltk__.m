@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Michael Goffioul
+## Copyright (C) 2012-2015 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,8 @@ function [retval, retpath, retindex] = __uigetfile_fltk__ (filters, title, defva
   if (length (defdir) > 0)
     defval = fullfile (defdir, defval);
   endif
-  [retval, retpath, retindex] = __fltk_uigetfile__ (filters, title, defval, position, multiselect);
+  [retval, retpath, retindex] = ...
+    __fltk_uigetfile__ (filters, title, defval, position, multiselect);
 
 endfunction
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -162,7 +162,7 @@ endfunction
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, 'facecolor', 'interp', 'edgecolor', 'k');
 
-%% Test input validation
+## Test input validation
 %!error trisurf ()
 %!error trisurf (1)
 %!error trisurf (1,2)

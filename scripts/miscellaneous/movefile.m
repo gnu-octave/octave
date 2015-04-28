@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -21,12 +21,13 @@
 ## @deftypefnx {Function File} {} movefile (@var{f1}, @var{f2})
 ## @deftypefnx {Function File} {} movefile (@var{f1}, @var{f2}, 'f')
 ## @deftypefnx {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} movefile (@dots{})
-## Move the file @var{f1} to the destination @var{f2}.
+## Move the source files or directories @var{f1} to the destination @var{f2}.
 ##
 ## The name @var{f1} may contain globbing patterns.  If @var{f1} expands to
 ## multiple file names, @var{f2} must be a directory.  If no destination
 ## @var{f2} is specified then the destination is the present working directory.
 ## If @var{f2} is a file name then @var{f1} is renamed to @var{f2}.
+##
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
 ##
@@ -50,7 +51,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   msgid = "";
 
   ## FIXME: maybe use the same method as in ls to allow users control
-  ## over the command that is executed.
+  ##        over the command that is executed.
 
   if (ispc () && ! isunix ()
       && isempty (file_in_path (getenv ("PATH"), "mv.exe")))
@@ -63,28 +64,25 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   endif
 
   ## Input type check.
-  if (! (ischar (f1) || iscellstr (f1)))
-    error ("movefile: F1 must be a character string or a cell array of character strings");
+  if (ischar (f1))
+    f1 = cellstr (f1);
+  elseif (! iscellstr (f1))
+    error ("copyfile: F1 must be a string or a cell array of strings");
   endif
 
   if (nargin == 1)
     f2 = pwd ();
   elseif (! ischar (f2))
-    error ("movefile: F2 must be a character string");
+    error ("movefile: F2 must be a string");
   endif
 
   if (nargin == 3 && strcmp (force, "f"))
     cmd = [cmd " " cmd_force_flag];
   endif
 
-  ## If f1 isn't a cellstr convert it to one.
-  if (ischar (f1))
-    f1 = cellstr (f1);
-  endif
-
   ## If f1 has more than 1 element f2 must be a directory
   isdir = (exist (f2, "dir") != 0);
-  if (length (f1) > 1 && ! isdir)
+  if (numel (f1) > 1 && ! isdir)
     error ("movefile: when moving multiple files, F2 must be a directory");
   endif
 
@@ -136,4 +134,36 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   endif
 
 endfunction
+
+
+%!test
+%! unwind_protect
+%!   f1 = tempname;
+%!   tmp_var = pi;
+%!   save (f1, "tmp_var");
+%!   fid = fopen (f1, "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   f2 = tempname;
+%!   assert (movefile (f1, f2));
+%!   assert (! exist (f1, "file"));
+%!   assert (exist (f2, "file"));
+%!   fid = fopen (f2, "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
+%!     error ("moved file not equal to original file!");
+%!   endif
+%! unwind_protect_cleanup
+%!   delete (f2);
+%! end_unwind_protect
+
+## Test input validation
+%!error movefile ()
+%!error movefile (1,2,3,4)
+%!error <F1 must be a string> movefile (1, "foobar")
+%!error <F2 must be a string> movefile ("foobar", 1)
+%!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%")
 

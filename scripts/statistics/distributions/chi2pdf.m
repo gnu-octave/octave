@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function pdf = chi2pdf (x, n)
     print_usage ();
   endif
 
-  if (!isscalar (n))
+  if (! isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
       error ("chi2pdf: X and N must be of common size or scalars");
@@ -57,11 +57,11 @@ endfunction
 %!assert (chi2pdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)])
 %!assert (chi2pdf ([x, NaN], 2), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (chi2pdf (single ([x, NaN]), 2), single ([y, NaN]))
 %!assert (chi2pdf ([x, NaN], single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error chi2pdf ()
 %!error chi2pdf (1)
 %!error chi2pdf (1,2,3)

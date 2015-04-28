@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Friedrich Leisch
+## Copyright (C) 1995-2015 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@
 ## described above is returned in @var{dd}.  The value of @var{d} is
 ## simply the mean of @var{dd}.
 ##
-## Reference: P.J. Brockwell & R.A. Davis. @cite{Time Series:
+## Reference: @nospell{P.J. Brockwell & R.A. Davis}. @cite{Time Series:
 ## Theory and Methods}. Springer 1987.
 ## @end deftypefn
 
@@ -41,23 +41,23 @@
 
 function [d, dd] = diffpara (x, a, b)
 
-  if ((nargin < 1) || (nargin > 3))
+  if (nargin < 1 || nargin > 3)
     print_usage ();
+  endif
+
+  if (isvector (x))
+    n = length (x);
+    k = 1;
+    x = reshape (x, n, 1);
   else
-    if (isvector (x))
-      n = length (x);
-      k = 1;
-      x = reshape (x, n, 1);
-    else
-      [n, k] = size (x);
-    endif
-    if (nargin == 1)
-      a = 0.5 * sqrt (n);
-      b = 1.5 * sqrt (n);
-    elseif (nargin == 2)
-      b = a;
-      a = 1;
-    endif
+    [n, k] = size (x);
+  endif
+  if (nargin == 1)
+    a = 0.5 * sqrt (n);
+    b = 1.5 * sqrt (n);
+  elseif (nargin == 2)
+    b = a;
+    a = 1;
   endif
 
   if (! (isscalar (a) && isscalar (b)))

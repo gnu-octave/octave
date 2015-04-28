@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -100,7 +100,8 @@ void FloatComplexLU::update (const FloatComplexColumnVector& u,
 
   if (u.length () == m && v.length () == n)
     {
-      FloatComplexColumnVector utmp = u, vtmp = v;
+      FloatComplexColumnVector utmp = u;
+      FloatComplexColumnVector vtmp = v;
       F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
                                  utmp.fortran_vec (), vtmp.fortran_vec ()));
     }
@@ -125,7 +126,8 @@ void FloatComplexLU::update (const FloatComplexMatrix& u,
     {
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          FloatComplexColumnVector utmp = u.column (i);
+          FloatComplexColumnVector vtmp = v.column (i);
           F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec ()));
@@ -150,7 +152,8 @@ void FloatComplexLU::update_piv (const FloatComplexColumnVector& u,
 
   if (u.length () == m && v.length () == n)
     {
-      FloatComplexColumnVector utmp = u, vtmp = v;
+      FloatComplexColumnVector utmp = u;
+      FloatComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
@@ -182,7 +185,8 @@ void FloatComplexLU::update_piv (const FloatComplexMatrix& u,
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          FloatComplexColumnVector utmp = u.column (i);
+          FloatComplexColumnVector vtmp = v.column (i);
           F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
                                        m, r.fortran_vec (), k,
                                        ipvt.fortran_vec (),

@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2013 John W. Eaton
+## Copyright (C) 1993-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -71,7 +71,7 @@ function retval = num2str (x, arg)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
-  elseif (! ismatrix (x))
+  elseif (! (isnumeric (x) || islogical (x) || ischar (x)))
     error ("num2str: X must be a numeric, logical, or character array");
   endif
 
@@ -83,7 +83,7 @@ function retval = num2str (x, arg)
     if (nargin == 2)
       if (ischar (arg))
         fmt = arg;
-      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
+      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
         fmt = sprintf ("%%%d.%dg", arg+7, arg);
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");
@@ -91,7 +91,7 @@ function retval = num2str (x, arg)
     else
       if (isnumeric (x))
         ## Setup a suitable format string, ignoring inf entries
-        dgt = floor (log10 (max (abs (x(!isinf (x(:)))))));
+        dgt = floor (log10 (max (abs (x(! isinf (x(:)))))));
         if (isempty (dgt))
           ## If the whole input array is inf...
           dgt = 1;
@@ -122,15 +122,15 @@ function retval = num2str (x, arg)
     if (nargin == 2)
       if (ischar (arg))
         fmt = [arg "%-+" arg(2:end) "i"];
-      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
+      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
         fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");
       endif
     else
       ## Setup a suitable format string
-      dgt = floor (log10 (max (max (abs (real (x(!isinf (real (x(:))))))),
-                               max (abs (imag (x(!isinf (imag (x(:))))))))));
+      dgt = floor (log10 (max (max (abs (real (x(! isinf (real (x(:))))))),
+                               max (abs (imag (x(! isinf (imag (x(:))))))))));
       if (isempty (dgt))
         ## If the whole input array is inf...
         dgt = 1;

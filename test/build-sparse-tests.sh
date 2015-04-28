@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2006-2013 David Bateman
+# Copyright (C) 2006-2015 David Bateman
 #
 # This file is part of Octave.
 #
@@ -464,7 +464,7 @@ print_mapper_test conj
 print_mapper_test cos
 print_mapper_test cosh
 print_mapper_test exp
-print_mapper_test finite
+print_mapper_test isfinite
 print_mapper_test fix
 print_mapper_test floor
 print_mapper_test imag
@@ -508,19 +508,18 @@ print_real_mapper_test ispunct 0
 print_real_mapper_test isspace 0
 print_real_mapper_test isupper 0
 print_real_mapper_test isxdigit 0
-#print_real_mapper_test lgamma 1
+#print_real_mapper_test gammaln 1
 
 # Specific tests for certain mapper functions
     cat >>$TESTS <<EOF
 
-%% These mapper functions always return a full matrix
 %!test
 %! wn2s = warning ("query", "Octave:num-to-str");
 %! warning ("off", "Octave:num-to-str");
 %! if (isreal (af))
 %!   assert (toascii (as), toascii (af));
-%!   assert (tolower (as), tolower (af));
-%!   assert (toupper (as), toupper (af));
+%!   assert (tolower (as), as);
+%!   assert (toupper (as), as);
 %! endif
 %! warning (wn2s.state, "Octave:num-to-str");
 
@@ -856,7 +855,7 @@ gen_select_tests() {
 %!assert (as(idx'), sparse (af(idx')));
 %!assert (as(flipud (idx(:))), sparse (af(flipud (idx(:)))))
 %!assert (as([idx,idx]), sparse (af([idx,idx])))
-%!error (as(reshape ([idx;idx], [1,length(idx),2])))
+%!assert (as(reshape ([idx;idx], [1,length(idx),2])), sparse(af(reshape ([idx;idx], [1,length(idx),2]))))
 
 %% Slice tests
 %!assert (as(ridx,cidx), sparse (af(ridx,cidx)))
@@ -915,7 +914,7 @@ EOF
 gen_save_tests() {
     cat >>$TESTS <<EOF
 %!test # save ascii
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-text", savefile, "bf", "as_save", "af");
 %! clear as_save;
@@ -923,7 +922,7 @@ gen_save_tests() {
 %! unlink (savefile);
 %! assert (as_save, sparse (af));
 %!test # save binary
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-binary", savefile, "bf", "as_save", "af");
 %! clear as_save;
@@ -931,7 +930,7 @@ gen_save_tests() {
 %! unlink (savefile);
 %! assert (as_save, sparse (af));
 %!testif HAVE_HDF5   # save hdf5
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-hdf5", savefile, "bf", "as_save", "af");
 %! clear as_save;
@@ -942,7 +941,7 @@ gen_save_tests() {
 ## saving sparse matrices to MAT files when using 64-bit indexing since
 ## that is not implemented yet.
 %!test # save matlab
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-mat", savefile, "bf", "as_save", "af");
 %! clear as_save;

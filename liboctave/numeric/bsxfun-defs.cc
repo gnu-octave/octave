@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 Jaroslav Hajek
+Copyright (C) 2009-2015 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -41,14 +41,16 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
               void (*op_vs) (size_t, R *, const X *, Y))
 {
   int nd = std::max (x.ndims (), y.ndims ());
-  dim_vector dvx = x.dims ().redim (nd), dvy = y.dims ().redim (nd);
+  dim_vector dvx = x.dims ().redim (nd);
+  dim_vector dvy = y.dims ().redim (nd);
 
   // Construct the result dimensions.
   dim_vector dvr;
   dvr.resize (nd);
   for (int i = 0; i < nd; i++)
     {
-      octave_idx_type xk = dvx(i), yk = dvy(i);
+      octave_idx_type xk = dvx(i);
+      octave_idx_type yk = dvy(i);
       if (xk == 1)
         dvr(i) = yk;
       else if (yk == 1 || xk == yk)
@@ -84,7 +86,8 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
   else
     {
       // Determine the type of the low-level loop.
-      bool xsing = false, ysing = false;
+      bool xsing = false;
+      bool ysing = false;
       if (ldr == 1)
         {
           xsing = dvx(start) == 1;
@@ -95,7 +98,8 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
               start++;
             }
         }
-      dim_vector cdvx = dvx.cumulative (), cdvy = dvy.cumulative ();
+      dim_vector cdvx = dvx.cumulative ();
+      dim_vector cdvy = dvy.cumulative ();
       // Nullify singleton dims to achieve a spread effect.
       for (int i = std::max (start, octave_idx_type (1)); i < nd; i++)
         {
@@ -139,7 +143,8 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
                       void (*op_vv) (size_t, R *, const X *),
                       void (*op_vs) (size_t, R *, X))
 {
-  dim_vector dvr = r.dims (), dvx = x.dims ();
+  dim_vector dvr = r.dims ();
+  dim_vector dvx = x.dims ();
   octave_idx_type nd = r.ndims ();
   dvx.redim (nd);
 
@@ -234,7 +239,7 @@ boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
   BSXFUN_OP_DEF_MXLOOP (mul, ARRAY, mx_inline_mul) \
   BSXFUN_OP_DEF_MXLOOP (div, ARRAY, mx_inline_div) \
   BSXFUN_OP_DEF_MXLOOP (min, ARRAY, mx_inline_xmin) \
-  BSXFUN_OP_DEF_MXLOOP (max, ARRAY, mx_inline_xmax) \
+  BSXFUN_OP_DEF_MXLOOP (max, ARRAY, mx_inline_xmax)
 
 #define BSXFUN_STDREL_DEFS_MXLOOP(ARRAY) \
   BSXFUN_REL_DEF_MXLOOP (eq, ARRAY, mx_inline_eq) \

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 VZLU Prague
+## Copyright (C) 2010-2015 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -48,7 +48,7 @@ endfunction
 
 %!test
 %! cstr = {"Hello World", "The answer is 42", "Goodbye World"};
-%! fname = tmpnam ();
+%! fname = tempname ();
 %! fid = fopen (fname, "w");
 %! fprintf (fid, "%s\n", cstr{:});
 %! fclose (fid);
@@ -56,7 +56,7 @@ endfunction
 %! unlink (fname);
 %! assert (str, [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
 
-%% Test input validation
+## Test input validation
 %!error fileread ()
 %!error fileread (1, 2)
 %!error <FILENAME argument must be a string> fileread (1)

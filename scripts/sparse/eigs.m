@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 David Bateman
+## Copyright (C) 2005-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -183,9 +183,9 @@
 ## of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.
 ## Any other value indicates a failure to converge.
 ##
-## This function is based on the @sc{arpack} package, written by R. Lehoucq,
-## K. Maschhoff, D. Sorensen, and C. Yang.  For more information see
-## @url{http://www.caam.rice.edu/software/ARPACK/}.
+## This function is based on the @sc{arpack} package, written by
+## @nospell{R. Lehoucq, K. Maschhoff, D. Sorensen, and C. Yang}.  For more
+## information see @url{http://www.caam.rice.edu/software/ARPACK/}.
 ##
 ## @seealso{eig, svds}
 ## @end deftypefn
@@ -490,7 +490,7 @@ endfunction
 %!shared n, k, A, d0
 %! n = 20;
 %! k = 4;
-%! A =  sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
+%! A = sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
@@ -859,7 +859,7 @@ endfunction
 %!shared n, k, A, d0
 %! n = 20;
 %! k = 4;
-%! A =  full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]));
+%! A = full (sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]));
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);

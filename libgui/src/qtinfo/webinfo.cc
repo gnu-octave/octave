@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012-2013 Jacob Dawid
+Copyright (C) 2012-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: Jacob Dawid <jacob.dawid@gmail.com>
+// Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "help.h"
 #include "defaults.h"
+#include "resource-manager.h"
 
 
 webinfo::webinfo (QWidget *p)
@@ -57,15 +58,17 @@ webinfo::webinfo (QWidget *p)
   _tab_bar->setSizePolicy (QSizePolicy::Preferred,QSizePolicy::Preferred);
   _tab_bar->setExpanding (false);
   _tab_bar->setTabsClosable (true);
+#ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_bar->setMovable (true);
+#endif
   hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);
-  _zoom_in_button->setIcon (QIcon (":/actions/icons/zoom-in.png"));
+  _zoom_in_button->setIcon (resource_manager::icon ("zoom-in"));
   hbox_layout->addWidget (_zoom_in_button);
 
   _zoom_out_button = new QToolButton (this);
-  _zoom_out_button->setIcon (QIcon (":/actions/icons/zoom-out.png"));
+  _zoom_out_button->setIcon (resource_manager::icon ("zoom-out"));
   hbox_layout->addWidget (_zoom_out_button);
 
   _stacked_widget = new QStackedWidget (this);
@@ -94,15 +97,30 @@ webinfo::webinfo (QWidget *p)
 
   resize (500, 300);
 
-  set_info_path (QString::fromStdString (Vinfo_file));
+  if (! set_info_path (QString::fromStdString (Vinfo_file)))
+    { // Info file does not exist
+      _search_check_box->setEnabled (false);
+      _search_line_edit->setEnabled (false);
 
+      QTextBrowser *msg = addNewTab (tr ("Error"));
+      QString msg_text = QString (
+          "<html><body><br><br><center><b>%1</b></center></body></html>").
+          arg (tr ("The info file<p>%1<p>or compressed versions do not exist").
+          arg(QString::fromStdString (Vinfo_file)));
+      msg->setHtml (msg_text);
+    }
 }
 
-void
+bool
 webinfo::set_info_path (const QString& info_path)
 {
-  _parser.set_info_path (info_path);
-  load_node ("Top");
+  if (_parser.set_info_path (info_path))
+    {
+      load_node ("Top");
+      return true;
+    }
+  else
+    return false;
 }
 
 void
@@ -165,7 +183,7 @@ webinfo::addNewTab (const QString& name)
   _text_browser->show ();
 
   connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this,
-           SLOT (link_clicked (const QUrl &)) );
+           SLOT (link_clicked (const QUrl &)));
   disconnect(_tab_bar, SIGNAL (currentChanged(int)), this,
              SLOT (current_tab_changed (int)));
 
@@ -265,6 +283,20 @@ webinfo::copyClipboard ()
       _text_browser->copy ();
     }
 }
+
+void
+webinfo::selectAll ()
+{
+  if (_search_line_edit->hasFocus ())
+    {
+      _search_line_edit->selectAll ();
+    }
+  if (_text_browser->hasFocus ())
+    {
+      _text_browser->selectAll ();
+    }
+}
+
 
 void
 webinfo::pasteClipboard ()

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -55,13 +55,13 @@ function rnd = trnd (n, varargin)
       error ("trnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 2)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("trnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (n) && !isequal (size (n), sz))
+  if (! isscalar (n) && ! isequal (size (n), sz))
     error ("trnd: N must be scalar or of size SZ");
   endif
 
@@ -85,7 +85,8 @@ function rnd = trnd (n, varargin)
     rnd = NaN (sz, cls);
 
     k = (n > 0) & (n < Inf);
-    rnd(k) = randn (sum (k(:)), 1, cls) ./ sqrt (2*randg (n(k)/2, cls) ./ n(k))(:);
+    rnd(k) = randn (sum (k(:)), 1, cls) ...
+             ./ sqrt (2*randg (n(k)/2, cls) ./ n(k))(:);
   endif
 
 endfunction
@@ -98,12 +99,12 @@ endfunction
 %!assert (size (trnd (1, [4 1])), [4, 1])
 %!assert (size (trnd (1, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (trnd (1)), "double")
 %!assert (class (trnd (single (1))), "single")
 %!assert (class (trnd (single ([1 1]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error trnd ()
 %!error trnd (1, -1)
 %!error trnd (1, ones (2))

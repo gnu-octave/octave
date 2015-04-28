@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 David Bateman
+## Copyright (C) 2005-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -40,95 +40,102 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
   global topsrcdir = fcnfiledir;
   global topbuilddir = testsdir;
   pso = page_screen_output ();
-  warn_state = warning ("query", "quiet");
-  warning ("on", "quiet");
+  orig_wstate = warning ();
   logfile = make_absolute_filename ("fntests.log");
-  try
+  unwind_protect
     page_screen_output (false);
+    warning ("on", "quiet");
     warning ("off", "Octave:deprecated-function");
-    fid = fopen (logfile, "wt");
-    if (fid < 0)
-      error ("could not open %s for writing", logfile);
-    endif
-    test ("", "explain", fid);
-    dp = dn = dxf = dsk = 0;
-    puts ("\nIntegrated test scripts:\n\n");
-    for i = 1:length (fcndirs)
-      [p, n, xf, sk] = run_test_script (fid, fcndirs{i});
-      dp += p;
-      dn += n;
-      dxf += xf;
-      dsk += sk;
-    endfor
-    puts ("\nFixed test scripts:\n\n");
-    for i = 1:length (fixedtestdirs)
-      [p, n, xf, sk] = run_test_dir (fid, fixedtestdirs{i});
-      dp += p;
-      dn += n;
-      dxf += xf;
-      dsk += sk;
-    endfor
-    puts ("\nSummary:\n\n");
-    nfail = dn - dp;
-    printf ("  PASS    %6d\n", dp);
-    printf ("  FAIL    %6d\n", nfail);
-    if (dxf > 0)
-      printf ("  XFAIL   %6d\n", dxf);
-    endif
-    if (dsk > 0)
-      printf ("  SKIPPED %6d\n", dsk);
-    endif
-    puts ("\n");
-    printf ("See the file %s for additional details.\n", logfile);
-    if (dxf > 0)
+    try
+      fid = fopen (logfile, "wt");
+      if (fid < 0)
+        error ("could not open %s for writing", logfile);
+      endif
+      test ("", "explain", fid);
+      dp = dn = dxf = dsk = 0;
+      puts ("\nIntegrated test scripts:\n\n");
+      for i = 1:length (fcndirs)
+        [p, n, xf, sk] = run_test_script (fid, fcndirs{i});
+        dp += p;
+        dn += n;
+        dxf += xf;
+        dsk += sk;
+      endfor
+      puts ("\nFixed test scripts:\n\n");
+      for i = 1:length (fixedtestdirs)
+        [p, n, xf, sk] = run_test_dir (fid, fixedtestdirs{i});
+        dp += p;
+        dn += n;
+        dxf += xf;
+        dsk += sk;
+      endfor
+      puts ("\nSummary:\n\n");
+      nfail = dn - dp - dxf;
+      printf ("  PASS    %6d\n", dp);
+      printf ("  FAIL    %6d\n", nfail);
+      if (dxf > 0)
+        printf ("  XFAIL   %6d\n", dxf);
+      endif
+      if (dsk > 0)
+        printf ("  SKIPPED %6d\n", dsk);
+      endif
       puts ("\n");
-      puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
-      puts ("Please help improve Octave by contributing fixes for them.\n");
-    endif
-    if (dsk > 0)
-      puts ("\n");
-      puts ("Tests are most often skipped because the features they require\n");
-      puts ("have been disabled.  Features are most often disabled because\n");
-      puts ("they require dependencies that were not present when Octave\n");
-      puts ("was built.  The configure script should have printed a summary\n");
-      puts ("at the end of its run indicating which dependencies were not found.\n");
-    endif
+      printf ("See the file %s for additional details.\n", logfile);
+      if (dxf > 0)
+        puts ("\n");
+        puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
+        puts ("Please help improve Octave by contributing fixes for them.\n");
+      endif
+      if (dsk > 0)
+        puts ("\n");
+        puts ("Tests are most often skipped because the features they require\n");
+        puts ("have been disabled.  Features are most often disabled because\n");
+        puts ("they require dependencies that were not present when Octave\n");
+        puts ("was built.  The configure script should have printed a summary\n");
+        puts ("at the end of its run indicating which dependencies were not found.\n");
+      endif
 
-    ## Weed out deprecated and private functions
-    weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<private\>', 'once'));
-    files_with_tests = files_with_tests(weed_idx);
-    weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<private\>', 'once'));
-    files_with_no_tests = files_with_no_tests(weed_idx);
+      ## Weed out deprecated and private functions
+      weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<private\>', 'once'));
+      files_with_tests = files_with_tests(weed_idx);
+      weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<private\>', 'once'));
+      files_with_no_tests = files_with_no_tests(weed_idx);
 
-    report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
+      report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
 
-    puts ("\nPlease help improve Octave by contributing tests for these files\n");
-    printf ("(see the list in the file %s).\n\n", logfile);
+      puts ("\nPlease help improve Octave by contributing tests for these files\n");
+      printf ("(see the list in the file %s).\n\n", logfile);
 
-    fprintf (fid, "\nFiles with no tests:\n\n%s",
-                  list_in_columns (files_with_no_tests, 80));
-    fclose (fid);
-
+      fprintf (fid, "\nFiles with no tests:\n\n%s",
+                    list_in_columns (files_with_no_tests, 80));
+      fclose (fid);
+    catch
+      disp (lasterr ());
+    end_try_catch
+  unwind_protect_cleanup
+    warning ("off", "all");
+    warning (orig_wstate);
     page_screen_output (pso);
-    warning (warn_state.state, "quiet");
-  catch
-    page_screen_output (pso);
-    warning (warn_state.state, "quiet");
-    disp (lasterr ());
-  end_try_catch
+  end_unwind_protect
 endfunction
 
 function print_test_file_name (nm)
-  filler = repmat (".", 1, 55-length (nm));
+  filler = repmat (".", 1, 60-length (nm));
   printf ("  %s %s", nm, filler);
 endfunction
 
-function print_pass_fail (n, p)
-  if (n > 0)
-    printf (" PASS %4d/%-4d", p, n);
-    nfail = n - p;
+function print_pass_fail (p, n, xf, sk)
+  if ((n + sk) > 0)
+    printf (" PASS   %4d/%-4d", p, n);
+    nfail = n - p - xf;
     if (nfail > 0)
-      printf (" FAIL %d", nfail);
+      printf ("\n%71s %3d", "FAIL ", nfail);
+    endif
+    if (sk > 0)
+      printf ("\n%71s %3d", "SKIP ", sk);
+    endif
+    if (xf > 0)
+      printf ("\n%71s %3d", "XFAIL", xf);
     endif
   endif
   puts ("\n");
@@ -184,7 +191,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   endfor
   saved_dir = pwd ();
   unwind_protect
-    chdir (d);
+    cd (d);
     for i = 1:length (lst)
       nm = lst(i).name;
       if (length (nm) > 4 && strcmpi (nm((end-3):end), ".tst"))
@@ -193,7 +200,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
         if (has_tests (ffnm))
           print_test_file_name (nm);
           [p, n, xf, sk] = test (nm, "quiet", fid);
-          print_pass_fail (n, p);
+          print_pass_fail (p, n, xf, sk);
           files_with_tests(end+1) = ffnm;
         else
           files_with_no_tests(end+1) = ffnm;
@@ -205,7 +212,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
       endif
     endfor
   unwind_protect_cleanup
-    chdir (saved_dir);
+    cd (saved_dir);
   end_unwind_protect
 endfunction
 
@@ -244,7 +251,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         tmp = strrep (tmp, [topbuilddir, filesep], "");
         print_test_file_name (tmp);
         [p, n, xf, sk] = test (f, "quiet", fid);
-        print_pass_fail (n, p);
+        print_pass_fail (p, n, xf, sk);
         dp += p;
         dn += n;
         dxf += xf;
@@ -271,4 +278,8 @@ function report_files_with_no_tests (with, without, typ)
   n_tot = n_with + n_without;
   printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
 endfunction
+
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
 

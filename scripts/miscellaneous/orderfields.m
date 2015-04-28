@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Paul Kienzle
+## Copyright (C) 2006-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,20 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1})
-## @deftypefnx {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}, @var{s2})
-## Return a copy of @var{s1} with fields arranged alphabetically or as
-## specified by @var{s2}.
+## @deftypefn  {Function File} {@var{sout}] =} orderfields (@var{s1})
+## @deftypefnx {Function File} {@var{sout}] =} orderfields (@var{s1}, @var{s2})
+## @deftypefnx {Function File} {@var{sout}] =} orderfields (@var{s1}, @{@var{cellstr}@})
+## @deftypefnx {Function File} {@var{sout}] =} orderfields (@var{s1}, @var{p})
+## @deftypefnx {Function File} {[@var{sout}, @var{p}] =} orderfields (@dots{})
+## Return a @emph{copy} of @var{s1} with fields arranged alphabetically, or as
+## specified by the second input.
 ##
-## Given one struct, arrange field names in @var{s1} alphabetically.
+## Given one input struct @var{s1}, arrange field names alphabetically.
 ##
-## If the second argument is a struct, arrange field names in @var{s1} as they
+## If a second struct argument is given, arrange field names in @var{s1} as they
 ## appear in @var{s2}.  The second argument may also specify the order in a
-## permutation vector or a cell array of strings containing the fieldnames of
-## @var{s1} in the desired order.
+## cell array of strings @var{cellstr}.  The second argument may also be a
+## permutation vector.
 ##
-## The optional second output argument @var{p} is assigned the permutation
-## vector which converts the original name order into the new name order.
+## The optional second output argument @var{p} is the permutation vector which
+## converts the original name order to the new name order.
 ##
 ## Examples:
 ##
@@ -84,20 +87,18 @@
 ## @end group
 ## @end example
 ##
-## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}
+## @seealso{fieldnames, getfield, setfield, rmfield, isfield, isstruct, struct}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## Adapted-By: jwe
 
-function [t, p] = orderfields (s1, s2)
+function [sout, p] = orderfields (s1, s2)
 
-  if (nargin == 1 || nargin == 2)
-    if (! isstruct (s1))
-      error ("orderfields: S1 must be a struct");
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+  elseif (! isstruct (s1))
+    error ("orderfields: S1 must be a struct");
   endif
 
   if (nargin == 1)
@@ -110,32 +111,34 @@ function [t, p] = orderfields (s1, s2)
       ## Two structures: return the fields in the order of s2.
       names = fieldnames (s2);
       if (! isequal (sort (fieldnames (s1)), sort (names)))
-        error ("orderfields: structures do not have the same fields");
+        error ("orderfields: structures S1 and S2 do not have the same fields");
       endif
     elseif (iscellstr (s2))
       ## A structure and a list of fields: order by the list of fields.
       t1 = sort (fieldnames (s1));
       t2 = sort (s2(:));
       if (! isequal (t1, t2))
-        error ("orderfields: name list does not match structure fields");
+        error ("orderfields: CELLSTR list does not match structure fields");
       endif
       names = s2;
     elseif (isvector (s2))
       ## A structure and a permutation vector: permute the order of s1.
       names = fieldnames (s1);
-      t1 = sort (s2);
-      t1 = t1(:)';
-      t2 = 1:numel (names);
+      t1 = 1:numel (names);
+      t2 = sort (s2);
+      t2 = t2(:)';
       if (! isequal (t1, t2))
-        error ("orderfields: invalid permutation vector");
+        error ("orderfields: invalid permutation vector P");
       endif
       names = names(s2);
+    else
+      error ("orderfields: second argument must be structure, cellstr, or permutation vector");
     endif
   endif
 
   ## Corner case of empty struct
   if (isempty (names))
-    t = struct ();
+    sout = struct ();
     p = [];
   endif
 
@@ -150,19 +153,22 @@ function [t, p] = orderfields (s1, s2)
   endif
 
   ## Permute the names in the structure.
-  if (numel (s1) == 0)
+  if (isempty (s1))
+    ## Corner case of empty structure.  Still need to re-order fields.
     args = cell (1, 2 * numel (names));
     args(1:2:end) = names;
     args(2:2:end) = {[]};
-    t = struct (args{:});
+    sout = struct (args{:});
+    ## inherit dimensions
+    sout = resize (sout, size (s1));
   else
     n = numel (s1);
     for i = 1:numel (names)
       el = names{i};
-      [t(1:n).(el)] = s1(:).(el);
+      [sout(1:n).(el)] = s1(:).(el);
     endfor
     ## inherit dimensions
-    t = reshape (t, size (s1));
+    sout = reshape (sout, size (s1));
   endif
 
 endfunction
@@ -202,4 +208,28 @@ endfunction
 
 ## Corner case of empty struct, bug #40224
 %!assert (orderfields (struct ()), struct ())
+%!test
+%! s(2,2).a = 1;
+%! s(1,1).b = 2;
+%! s = resize (s, [1 0]);
+%! s2 = orderfields (s, {"b", "a"});
+%! assert (fieldnames (s2), {"b"; "a"});
+%! assert (size_equal (s, s2));
 
+## Test input validation
+%!error orderfields ()
+%!error orderfields (1,2,3)
+%!error <S1 must be a struct> orderfields (1)
+%!error <S1 and S2 do not have the same fields>
+%! s1.a = 1;
+%! s2.b = 2;
+%! orderfields (s1, s2);
+%!error <CELLSTR list does not match structure fields>
+%! s1.a = 1;
+%! orderfields (s1, {"b"});
+%!error <invalid permutation vector P>
+%! s1.a = 1;
+%! orderfields (s1, [2 1]);
+%!error <second argument must be structure, cellstr, or permutation vector>
+%! s1.a = 1;
+%! orderfields (s1, ones (2,2));

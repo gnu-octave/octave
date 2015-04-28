@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2013 David Bateman
+Copyright (C) 2006-2015 David Bateman
 Copyright (C) 2006 Andy Adler
 
 This file is part of Octave.
@@ -121,8 +121,8 @@ public:
 
   bool is_hermitian (void) const
   {
-    return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian ||
-            typ == Hermitian);
+    return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian
+            || typ == Hermitian);
   }
 
   bool is_rectangular (void) const { return (typ == Rectangular); }

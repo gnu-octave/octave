@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Alexander Barth
+## Copyright (C) 2006-2015 Alexander Barth
 ##
 ## This file is part of Octave.
 ##
@@ -121,7 +121,7 @@ endfunction
 %!assert (ndgrid ([]), zeros(0,1))
 %!assert (ndgrid ([], []), zeros(0,0))
 
-%% Test input validation
+## Test input validation
 %!error ndgrid ()
 %!error <wrong number of input arguments> [a,b,c] = ndgrid (1:3,1:3)
 %!error <arguments must be vectors> ndgrid (ones (2,2))

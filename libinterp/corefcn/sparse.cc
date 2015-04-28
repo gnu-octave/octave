@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -135,7 +135,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 
   if (nargin == 1)
     {
-      octave_value arg = args (0);
+      octave_value arg = args(0);
       if (arg.is_bool_type ())
         retval = arg.sparse_bool_matrix_value ();
       else if (arg.is_complex_type ())
@@ -178,7 +178,8 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 
       if (! error_state)
         {
-          octave_idx_type m = -1, n = -1, nzmax = -1;
+          octave_idx_type m, n, nzmax;
+          m = n = nzmax = -1;
           if (nargin == 6)
             {
               nzmax = args(5).idx_type_value ();

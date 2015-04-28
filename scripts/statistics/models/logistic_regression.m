@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -104,7 +104,7 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
   z  = (y * ones (1, yrange)) == ((y * 0 + 1) * (ymin : (ymax - 1)));
   z1 = (y * ones (1, yrange)) == ((y * 0 + 1) * ((ymin + 1) : ymax));
   z  = z(:, any (z));
-  z1 = z1 (:, any(z1));
+  z1 = z1(:, any(z1));
   [mz, nz] = size (z);
 
   ## starting values
@@ -157,8 +157,8 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
 
   ## tidy up output
 
-  theta = tb (1 : nz, 1);
-  beta  = tb ((nz + 1) : (nz + nx), 1);
+  theta = tb(1 : nz, 1);
+  beta  = tb((nz + 1) : (nz + nx), 1);
 
   if (print >= 1)
     printf ("\n");

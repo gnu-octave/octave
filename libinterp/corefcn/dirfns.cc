@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -346,7 +346,8 @@ recursively remove all subdirectories as well.\n\
                 {
                   bool doit = true;
 
-                  if (interactive && Vconfirm_recursive_rmdir)
+                  if (interactive && ! forced_interactive
+                      && Vconfirm_recursive_rmdir)
                     {
                       std::string prompt
                         = "remove entire contents of " + fulldir + "? ";
@@ -608,7 +609,7 @@ glob (\"file[12]\")\n\
         [2,1] = file2\n\
       @}\n\
 @end example\n\
-@seealso{ls, dir, readdir, what, fnmatch}\n\
+@seealso{ls, dir, readdir, what}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -634,7 +635,7 @@ glob (\"file[12]\")\n\
 
 /*
 %!test
-%! tmpdir = tmpnam;
+%! tmpdir = tempname;
 %! filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
 %! if (mkdir (tmpdir))
 %!   cwd = pwd;
@@ -664,8 +665,8 @@ glob (\"file[12]\")\n\
 %! assert (result3, {"file1"; "file2"});
 */
 
-DEFUNX ("fnmatch", Ffnmatch, args, ,
-        "-*- texinfo -*-\n\
+DEFUN (__fnmatch__, args, ,
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return true or false for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -99,7 +99,7 @@ public:
 
   FloatDiagMatrix inverse (void) const;
   FloatDiagMatrix inverse (octave_idx_type& info) const;
-  FloatDiagMatrix pseudo_inverse (void) const;
+  FloatDiagMatrix pseudo_inverse (float tol = 0.0f) const;
 
   // other operations
 

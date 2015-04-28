@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2013 Peter Ekberg
+## Copyright (C) 1999-2015 Peter Ekberg
 ##
 ## This file is part of Octave.
 ##
@@ -52,7 +52,7 @@ endfunction
 %!assert (wilkinson (3), [1,1,0;1,0,1;0,1,1])
 %!assert (wilkinson (4), [1.5,1,0,0;1,0.5,1,0;0,1,0.5,1;0,0,1,1.5])
 
-%% Test input validation
+## Test input validation
 %!error wilkinson ()
 %!error wilkinson (1,2)
 %!error <N must be a non-negative integer> wilkinson (ones (2))

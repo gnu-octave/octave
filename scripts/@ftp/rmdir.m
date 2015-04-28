@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 David Bateman
+## Copyright (C) 2009-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -26,4 +26,8 @@
 function rmdir (f, path)
   __ftp_rmdir__ (f.curlhandle, path);
 endfunction
+
+
+## No test possible for interactive function.
+%!assert (1)
 

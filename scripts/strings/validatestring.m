@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Bill Denney
+## Copyright (C) 2008-2015 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -53,7 +53,7 @@
 ## @end group
 ## @end smallexample
 ##
-## @seealso{strcmp, strcmpi}
+## @seealso{strcmp, strcmpi, validateattributes, inputParser}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>
@@ -67,7 +67,7 @@ function str = validatestring (str, strarray, varargin)
   position = 0;
   ## Process input arguments
   if (! isempty (varargin) && isnumeric (varargin{end}))
-    position = varargin{end};
+    position = fix (varargin{end});
     varargin(end) = [];
   endif
 
@@ -100,22 +100,21 @@ function str = validatestring (str, strarray, varargin)
   ## Make static part of error string that uses funcname, varname, and position
   errstr = "";
   if (! isempty (funcname))
-    errstr = sprintf ("Function: %s ", funcname);
+    errstr = [funcname ": "];
   endif
   if (! isempty (varname))
-    errstr = sprintf ("%sVariable: %s ", errstr, varname);
+    errstr = [errstr varname " "];
+  else
+    errstr = sprintf ("%s'%s' ", errstr, str);
   endif
   if (position > 0)
-    errstr = sprintf ("%sArgument position %d ", errstr, position);
-  endif
-  if (! isempty (errstr))
-    errstr(end:end+1) = ":\n";
+    errstr = sprintf ("%s(argument #%i) ", errstr, position);
   endif
 
   matches = strncmpi (str, strarray(:), length (str));
   nmatches = sum (matches);
   if (nmatches == 0)
-    error ("validatestring: %s'%s' does not match any of\n%s", errstr, str,
+    error ("%sdoes not match any of\n%s", errstr,
            sprintf ("%s, ", strarray{:})(1:end-2));
   elseif (nmatches == 1)
     str = strarray{matches};
@@ -130,8 +129,8 @@ function str = validatestring (str, strarray, varargin)
     if (all (submatch))
       str = short_str;
     else
-      error ("validatestring: %smultiple unique matches were found for '%s':\n%s",
-             errstr, str, sprintf ("%s, ", strarray{match_idx})(1:end-2));
+      error ("%sallows multiple unique matches:\n%s",
+             errstr, sprintf ("%s, ", strarray{match_idx})(1:end-2));
     endif
   endif
 
@@ -147,12 +146,12 @@ endfunction
 %!assert (validatestring ("d", strarray), "def")
 
 %!error <'xyz' does not match any> validatestring ("xyz", strarray)
-%!error <Function: DUMMY_TEST> validatestring ("xyz", strarray, "DUMMY_TEST")
-%!error <Function: DUMMY_TEST Variable: DUMMY_VAR:> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR")
-%!error <Function: DUMMY_TEST Variable: DUMMY_VAR Argument position 5> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR", 5)
-%!error <multiple unique matches were found for 'abc'> validatestring ("abc", strarray)
+%!error <DUMMY_TEST: 'xyz' does not> validatestring ("xyz", strarray, "DUMMY_TEST")
+%!error <DUMMY_TEST: DUMMY_VAR does> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR")
+%!error <DUMMY_TEST: DUMMY_VAR \(argument #5\) does> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR", 5)
+%!error <'abc' allows multiple unique matches> validatestring ("abc", strarray)
 
-%% Test input validation
+## Test input validation
 %!error validatestring ("xyz")
 %!error validatestring ("xyz", {"xyz"}, "3", "4", 5, 6)
 %!error <invalid number of character inputs> validatestring ("xyz", {"xyz"}, "3", "4", "5")

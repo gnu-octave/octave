@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Michael D. Godfrey
+## Copyright (C) 2013-2015 Michael D. Godfrey
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +44,7 @@ function pr_out = printd (obj, filename)
     error ("The output filename: %s requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
   endif
   opt = substr (filename, sufix+1);
-  [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);  # Safe version of tmpnam()
+  [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);
   fprintf (pf, "%s", disp (obj));
   frewind (pf);
 
@@ -53,8 +53,7 @@ function pr_out = printd (obj, filename)
   opt = lower (opt);
   switch (opt)
     case "pdf"
-      enscr = sprintf (
-                       "enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit",...
+      enscr = sprintf ("enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit", ...
                        tempf, tempf, tempf, tempf, tempf, filename);
       system (enscr);
       delete ([tempf ".ps"]);
@@ -62,8 +61,7 @@ function pr_out = printd (obj, filename)
       enscr = sprintf ("enscript --no-header -o %s %s ; exit", filename, tempf);
       system (enscr);
     case "eps"
-      enscr = sprintf (
-                       "enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit",...
+      enscr = sprintf ("enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit", ...
                        tempf, tempf, tempf, tempf, filename);
       system (enscr);
       delete ([tempf ".ps"]);
@@ -81,18 +79,18 @@ function pr_out = printd (obj, filename)
   endswitch
   fclose (pf);
   delete (tempf);
-  pr_out =  sprintf ("%s file %s written\n", opt, filename);
+  pr_out = sprintf ("%s file %s written\n", opt, filename);
 endfunction
 
 
 %!demo
-%! r2 = char (
-%! 'stem step: 10, data: unsorted.',
-%! 'Hinges:    lo: 12, hi: 42'     ,
-%! '   1 | 22118'                  ,
-%! '   2 | 28'                     ,
-%! '   3 | 98'                     ,
-%! '   4 | 244'                    ,
+%! r2 = char ( ...
+%! 'stem step: 10, data: unsorted.', ...
+%! 'Hinges:    lo: 12, hi: 42'     , ...
+%! '   1 | 22118'                  , ...
+%! '   2 | 28'                     , ...
+%! '   3 | 98'                     , ...
+%! '   4 | 244'                    , ...
 %! '   5 | 2'                      );
 %! printd (r2, 'test_p.txt');
 %! system ('cat test_p.txt');

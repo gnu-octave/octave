@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2013 David Bateman
+Copyright (C) 2005-2015 David Bateman
 
 This file is part of Octave.
 
@@ -148,7 +148,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                 {
                   mattyp = args(0).matrix_type ();
 
-                  if (mattyp.is_unknown () && autocomp )
+                  if (mattyp.is_unknown () && autocomp)
                     {
                       SparseComplexMatrix m =
                         args(0).sparse_complex_matrix_value ();
@@ -213,18 +213,18 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
           else
             {
               // Ok, we're changing the matrix type
-              std::string str_typ = args(1).string_value ();
-
-              // FIXME: why do I have to explicitly call the constructor?
-              MatrixType mattyp = MatrixType ();
-
-              octave_idx_type nl = 0;
-              octave_idx_type nu = 0;
-
-              if (error_state)
+              if (! args(1).is_string ())
                 error ("matrix_type: TYPE must be a string");
               else
                 {
+                  std::string str_typ = args(1).string_value ();
+
+                  // FIXME: why do I have to explicitly call the constructor?
+                  MatrixType mattyp = MatrixType ();
+
+                  octave_idx_type nl = 0;
+                  octave_idx_type nu = 0;
+
                   // Use STL function to convert to lower case
                   std::transform (str_typ.begin (), str_typ.end (),
                                   str_typ.begin (), tolower);
@@ -281,7 +281,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                           && (str_typ == "upper" || str_typ == "lower"))
                         {
                           const ColumnVector perm =
-                            ColumnVector (args (2).vector_value ());
+                            ColumnVector (args(2).vector_value ());
 
                           if (error_state)
                             error ("matrix_type: Invalid permutation vector PERM");
@@ -416,15 +416,15 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
           else
             {
               // Ok, we're changing the matrix type
-              std::string str_typ = args(1).string_value ();
-
-              // FIXME: why do I have to explicitly call the constructor?
-              MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
-
-              if (error_state)
+              if (! args(1).is_string ())
                 error ("matrix_type: TYPE must be a string");
               else
                 {
+                  std::string str_typ = args(1).string_value ();
+
+                  // FIXME: why do I have to explicitly call the constructor?
+                  MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
+
                   // Use STL function to convert to lower case
                   std::transform (str_typ.begin (), str_typ.end (),
                                   str_typ.begin (), tolower);
@@ -454,7 +454,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                           || str_typ == "lower"))
                         {
                           const ColumnVector perm =
-                            ColumnVector (args (2).vector_value ());
+                            ColumnVector (args(2).vector_value ());
 
                           if (error_state)
                             error ("matrix_type: Invalid permutation vector PERM");

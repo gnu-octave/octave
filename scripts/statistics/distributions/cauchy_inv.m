@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -35,7 +35,7 @@ function inv = cauchy_inv (x, location = 0, scale = 1)
     print_usage ();
   endif
 
-  if (!isscalar (location) || !isscalar (scale))
+  if (! isscalar (location) || ! isscalar (scale))
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
       error ("cauchy_inv: X, LOCATION, and SCALE must be of common size or scalars");
@@ -52,7 +52,7 @@ function inv = cauchy_inv (x, location = 0, scale = 1)
     inv = NaN (size (x));
   endif
 
-  ok = !isinf (location) & (scale > 0) & (scale < Inf);
+  ok = ! isinf (location) & (scale > 0) & (scale < Inf);
 
   k = (x == 0) & ok;
   inv(k) = -Inf;
@@ -79,13 +79,13 @@ endfunction
 %!assert (cauchy_inv (x, 1, 2*[1 0 NaN Inf 1]), [NaN NaN NaN NaN NaN])
 %!assert (cauchy_inv ([x(1:2) NaN x(4:5)], 1, 2), [NaN -Inf NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (cauchy_inv ([x, NaN], 1, 2), [NaN -Inf 1 Inf NaN NaN], eps)
 %!assert (cauchy_inv (single ([x, NaN]), 1, 2), single ([NaN -Inf 1 Inf NaN NaN]), eps ("single"))
 %!assert (cauchy_inv ([x, NaN], single (1), 2), single ([NaN -Inf 1 Inf NaN NaN]), eps ("single"))
 %!assert (cauchy_inv ([x, NaN], 1, single (2)), single ([NaN -Inf 1 Inf NaN NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error cauchy_inv ()
 %!error cauchy_inv (1,2)
 %!error cauchy_inv (1,2,3,4)

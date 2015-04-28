@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstddef>
 #include <cmath>
+#include <cstring>
 #include <memory>
 
 #include "quit.h"
@@ -365,7 +366,8 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
                  void (*op2) (size_t, R *, const X *, Y) throw (),
                  const char *opname)
 {
-  dim_vector dx = x.dims (), dy = y.dims ();
+  dim_vector dx = x.dims ();
+  dim_vector dy = y.dims ();
   if (dx == dy)
     {
       Array<R> r (dx);
@@ -410,7 +412,8 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
                   void (*op1) (size_t, R *, X) throw (),
                   const char *opname)
 {
-  dim_vector dr = r.dims (), dx = x.dims ();
+  dim_vector dr = r.dims ();
+  dim_vector dx = x.dims ();
   if (dr == dx)
     {
       op (r.length (), r.fortran_vec (), x.data ());
@@ -483,6 +486,14 @@ inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
 #define OP_RED_SUMSQ(ac, el) ac += el*el
 #define OP_RED_SUMSQC(ac, el) ac += cabsq (el)
 
+inline void op_dble_prod (double& ac, float el)
+{ ac *= el; }
+inline void op_dble_prod (Complex& ac, const FloatComplex& el)
+{ ac *= el; } // FIXME: guaranteed?
+template <class T>
+inline void op_dble_prod (double& ac, const octave_int<T>& el)
+{ ac *= el.double_value (); }
+
 inline void op_dble_sum (double& ac, float el)
 { ac += el; }
 inline void op_dble_sum (Complex& ac, const FloatComplex& el)
@@ -512,6 +523,7 @@ OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_FCN (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1)
 OP_RED_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
@@ -537,6 +549,7 @@ OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN2 (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_FCN2 (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 0.0)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 
@@ -610,6 +623,7 @@ OP_RED_FCNN (mx_inline_sum, T, T)
 OP_RED_FCNN (mx_inline_dsum, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_count, bool, T)
 OP_RED_FCNN (mx_inline_prod, T, T)
+OP_RED_FCNN (mx_inline_dprod, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_sumsq, T, T)
 OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
 OP_RED_FCNN (mx_inline_any, T, bool)
@@ -856,7 +870,8 @@ void F (const T *v, T *r, octave_idx_type n) \
 { \
   if (! n) return; \
   T tmp = v[0]; \
-  octave_idx_type i = 1, j = 0; \
+  octave_idx_type i = 1; \
+  octave_idx_type j = 0; \
   if (xisnan (tmp)) \
     { \
       for (; i < n && xisnan (v[i]); i++) ; \
@@ -876,7 +891,8 @@ void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
 { \
   if (! n) return; \
   T tmp = v[0]; octave_idx_type tmpi = 0; \
-  octave_idx_type i = 1, j = 0; \
+  octave_idx_type i = 1; \
+  octave_idx_type j = 0; \
   if (xisnan (tmp)) \
     { \
       for (; i < n && xisnan (v[i]); i++) ; \
@@ -923,6 +939,8 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
             { r[i] = r0[i]; nan = true; } \
           else if (xisnan (r0[i]) || v[i] OP r0[i]) \
             r[i] = v[i]; \
+          else \
+            r[i] = r0[i]; \
         } \
       j++; v += m; r0 = r; r += m; \
     } \
@@ -960,6 +978,8 @@ F (const T *v, T *r, octave_idx_type *ri, \
             { r[i] = r0[i]; ri[i] = r0i[i]; nan = true; } \
           else if (xisnan (r0[i]) || v[i] OP r0[i]) \
             { r[i] = v[i]; ri[i] = j; }\
+          else \
+            { r[i] = r0[i]; ri[i] = r0i[i]; }\
         } \
       j++; v += m; r0 = r; r += m; r0i = ri; ri += m;  \
     } \
@@ -1330,7 +1350,9 @@ template <class T>
 inline void twosum_accum (T& s, T& e,
                           const T& x)
 {
-  T s1 = s + x, t = s1 - s, e1 = (s - (s1 - t)) + (x - t);
+  T s1 = s + x;
+  T t = s1 - s;
+  T e1 = (s - (s1 - t)) + (x - t);
   s = s1;
   e += e1;
 }
@@ -1339,7 +1361,8 @@ template <class T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n)
 {
-  T s = 0, e = 0;
+  T s, e;
+  s = e = 0;
   for (octave_idx_type i = 0; i < n; i++)
     twosum_accum (s, e, v[i]);
 

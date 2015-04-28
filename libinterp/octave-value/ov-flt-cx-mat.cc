@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "mxarray.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -62,7 +63,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<FloatComplexNDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_float_complex_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_matrix,
                                      "float complex matrix", "single");
@@ -140,7 +140,7 @@ octave_float_complex_matrix::matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (FloatComplexMatrix (matrix));
 
   return retval;
 }
@@ -154,7 +154,7 @@ octave_float_complex_matrix::float_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (FloatComplexMatrix (matrix));
 
   return retval;
 }
@@ -202,13 +202,13 @@ octave_float_complex_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_float_complex_matrix::complex_matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return FloatComplexMatrix (matrix);
 }
 
 FloatComplexMatrix
 octave_float_complex_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (matrix);
 }
 
 boolNDArray
@@ -290,7 +290,7 @@ octave_float_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      FloatComplexMatrix mat = matrix.matrix_value ();
+      FloatComplexMatrix mat (matrix);
 
       retval = mat.diag (m, n);
     }
@@ -525,19 +525,21 @@ octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
+bool
+octave_float_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+{
+  bool retval = false;
+
 #if defined (HAVE_HDF5)
 
-bool
-octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
-{
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
   FloatComplexNDArray m = complex_array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
@@ -601,13 +603,19 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   H5Tclose (type_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_float_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -676,10 +684,12 @@ octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 void
 octave_float_complex_matrix::print_raw (std::ostream& os,

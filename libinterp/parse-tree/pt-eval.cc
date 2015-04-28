@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 John W. Eaton
+Copyright (C) 2009-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -56,6 +56,8 @@ int tree_evaluator::dbstep_flag = 0;
 size_t tree_evaluator::current_frame = 0;
 
 bool tree_evaluator::debug_mode = false;
+
+bool tree_evaluator::quiet_breakpoint_flag = false;
 
 tree_evaluator::stmt_list_type tree_evaluator::statement_context
   = tree_evaluator::other;
@@ -368,7 +370,8 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
         dim_vector dv = rhs.dims ().redim (2);
 
-        octave_idx_type nrows = dv(0), steps = dv(1);
+        octave_idx_type nrows = dv(0);
+        octave_idx_type steps = dv(1);
 
         if (steps > 0)
           {
@@ -626,6 +629,12 @@ tree_evaluator::visit_fcn_handle (tree_fcn_handle&)
 }
 
 void
+tree_evaluator::visit_funcall (tree_funcall&)
+{
+  panic_impossible ();
+}
+
+void
 tree_evaluator::visit_parameter_list (tree_parameter_list&)
 {
   panic_impossible ();
@@ -694,13 +703,12 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           if (! Vdebugging)
             octave_call_stack::set_location (stmt.line (), stmt.column ());
 
-          // FIXME: we need to distinguish functions from scripts
-          //        to get this right.
           if ((statement_context == script
-               && ((Vecho_executing_commands & ECHO_SCRIPTS)
-                   || (Vecho_executing_commands & ECHO_FUNCTIONS)))
+               && ((Vecho_executing_commands & ECHO_SCRIPTS
+                    && octave_call_stack::all_scripts ())
+                   || Vecho_executing_commands & ECHO_FUNCTIONS))
               || (statement_context == function
-                  && (Vecho_executing_commands & ECHO_FUNCTIONS)))
+                  && Vecho_executing_commands & ECHO_FUNCTIONS))
             stmt.echo_code ();
         }
 
@@ -925,6 +933,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
               err.assign ("message", last_error_message ());
               err.assign ("identifier", last_error_id ());
+              err.assign ("stack", last_error_stack ());
 
               if (! error_state)
                 ult.assign (octave_value::op_asn_eq, err);
@@ -1102,6 +1111,11 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 {
   if (error_state)
     return;
+
+#if HAVE_LLVM
+  if (tree_jit::execute (cmd))
+    return;
+#endif
 
   unwind_protect frame;
 

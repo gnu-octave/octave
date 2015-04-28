@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Carnë Draug
+## Copyright (C) 2012-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -28,7 +28,7 @@
 ##
 ## Note that this function evaluates @code{nargin} on the caller.
 ##
-## @seealso{nargchk, nargoutchk, error, nargout, nargin}
+## @seealso{nargoutchk, error, nargout, nargin}
 ## @end deftypefn
 
 ## Author: Carnë Draug <carandraug+dev@gmail.com>
@@ -37,9 +37,9 @@ function narginchk (minargs, maxargs)
 
   if (nargin != 2)
     print_usage;
-  elseif (!isnumeric (minargs) || !isscalar (minargs))
+  elseif (! isnumeric (minargs) || ! isscalar (minargs))
     error ("minargs must be a numeric scalar");
-  elseif (!isnumeric (maxargs) || !isscalar (maxargs))
+  elseif (! isnumeric (maxargs) || ! isscalar (maxargs))
     error ("maxargs must be a numeric scalar");
   elseif (minargs > maxargs)
     error ("minargs cannot be larger than maxargs");

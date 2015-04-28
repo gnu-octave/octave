@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -50,7 +50,7 @@ function cdf = wblcdf (x, scale = 1, shape = 1)
     print_usage ();
   endif
 
-  if (!isscalar (shape) || !isscalar (scale))
+  if (! isscalar (shape) || ! isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
       error ("wblcdf: X, SCALE, and SHAPE must be of common size or scalars");
@@ -95,13 +95,13 @@ endfunction
 %!assert (wblcdf (x, 1, [0 1 NaN Inf 1]), [NaN 0 NaN NaN 1])
 %!assert (wblcdf ([x(1:2) NaN x(4:5)], 1, 1), [y(1:2) NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (wblcdf ([x, NaN], 1, 1), [y, NaN])
 %!assert (wblcdf (single ([x, NaN]), 1, 1), single ([y, NaN]))
 %!assert (wblcdf ([x, NaN], single (1), 1), single ([y, NaN]))
 %!assert (wblcdf ([x, NaN], 1, single (1)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error wblcdf ()
 %!error wblcdf (1,2,3,4)
 %!error wblcdf (ones (3), ones (2), ones (2))

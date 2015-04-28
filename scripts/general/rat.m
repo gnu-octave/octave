@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2013 Paul Kienzle
+## Copyright (C) 2001-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -142,7 +142,7 @@ function [n,d] = rat (x,tol)
       s_nc = columns (s);
       if (n_nc > s_nc)
         s(:,s_nc+1:n_nc) = " ";
-      elseif (s_nc > n_nc)
+      elseif (s_nc > n_nc && n_nc != 0)
         n(:,n_nc+1:s_nc) = " ";
       endif
       n = cat (1, n, s);
@@ -156,6 +156,9 @@ endfunction
 %! [n, d] = rat ([0.5, 0.3, 1/3]);
 %! assert (n, [1, 3, 1]);
 %! assert (d, [2, 10, 3]);
+
+## bug #43374
+%!assert (eval (rat (0.75)), [0.75])
 
 %!error rat ();
 %!error rat (1, 2, 3);

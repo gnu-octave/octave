@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
@@ -138,7 +138,8 @@ QR::init (const Matrix& a, qr_type_t qr_type)
 void QR::form (octave_idx_type n, Matrix& afact,
                double *tau, qr_type_t qr_type)
 {
-  octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
+  octave_idx_type m = afact.rows ();
+  octave_idx_type min_mn = std::min (m, n);
   octave_idx_type info;
 
   if (qr_type == qr_type_raw)
@@ -214,7 +215,8 @@ QR::update (const ColumnVector& u, const ColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      ColumnVector utmp = u, vtmp = v;
+      ColumnVector utmp = u;
+      ColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
       F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (),
                                  m, r.fortran_vec (), k,
@@ -236,7 +238,8 @@ QR::update (const Matrix& u, const Matrix& v)
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          ColumnVector utmp = u.column (i), vtmp = v.column (i);
+          ColumnVector utmp = u.column (i);
+          ColumnVector vtmp = v.column (i);
           F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec (),
@@ -541,7 +544,7 @@ Matrix shift_cols (const Matrix& a,
                    octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = a.columns ();
-  Array<octave_idx_type> p (n);
+  Array<octave_idx_type> p (dim_vector (n, 1));
   for (octave_idx_type k = 0; k < n; k++) p(k) = k;
   if (i < j)
     {
@@ -610,7 +613,6 @@ QR::delete_col (octave_idx_type j)
 {
   warn_qrupdate_once ();
 
-  octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
   if (j < 0 || j > n-1)
@@ -626,7 +628,6 @@ QR::delete_col (const Array<octave_idx_type>& j)
 {
   warn_qrupdate_once ();
 
-  octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
   Array<octave_idx_type> jsi;
@@ -671,7 +672,6 @@ void
 QR::delete_row (octave_idx_type j)
 {
   octave_idx_type m = r.rows ();
-  octave_idx_type n = r.columns ();
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
@@ -688,7 +688,6 @@ QR::shift_cols (octave_idx_type i, octave_idx_type j)
 {
   warn_qrupdate_once ();
 
-  octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
   if (i < 0 || i > n-1 || j < 0 || j > n-1)
@@ -704,11 +703,13 @@ void warn_qrupdate_once (void)
   static bool warned = false;
   if (! warned)
     {
-      (*current_liboctave_warning_handler)
-        ("In this version of Octave, QR & Cholesky updating routines\n"
-         "simply update the matrix and recalculate factorizations.\n"
-         "To use fast algorithms, link Octave with the qrupdate library.\n"
-         "See <http://sourceforge.net/projects/qrupdate>.\n");
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:missing-dependency",
+         "In this version of Octave, QR & Cholesky updating routines "
+         "simply update the matrix and recalculate factorizations. "
+         "To use fast algorithms, link Octave with the qrupdate library. "
+         "See <http://sourceforge.net/projects/qrupdate>.");
+
       warned = true;
     }
 }

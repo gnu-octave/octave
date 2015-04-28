@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Bill Denney, Robert Platt
+## Copyright (C) 2008-2015 Bill Denney, Robert Platt
 ##
 ## This file is part of Octave.
 ##
@@ -19,23 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{varname} =} genvarname (@var{str})
 ## @deftypefnx {Function File} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
-## Create unique variable(s) from @var{str}.  If @var{exclusions} is
-## given, then the variable(s) will be unique to each other and to
-## @var{exclusions} (@var{exclusions} may be either a string or a cellstr).
+## Create valid unique variable name(s) from @var{str}.
 ##
 ## If @var{str} is a cellstr, then a unique variable is created for each
 ## cell in @var{str}.
-##
-## @example
-## @group
-## x = 3.141;
-## genvarname ("x", who ())
-##   @result{} x1
-## @end group
-## @end example
-##
-## If @var{wanted} is a cell array, genvarname will make sure the returned
-## strings are distinct:
 ##
 ## @example
 ## @group
@@ -48,7 +35,19 @@
 ## @end group
 ## @end example
 ##
-## Note that the result is a char array/cell array of strings, not the
+## If @var{exclusions} is given, then the variable(s) will be unique to each
+## other and to @var{exclusions} (@var{exclusions} may be either a string or
+## a cellstr).
+##
+## @example
+## @group
+## x = 3.141;
+## genvarname ("x", who ())
+##   @result{} x1
+## @end group
+## @end example
+##
+## Note that the result is a char array or cell array of strings, not the
 ## variables themselves.  To define a variable, @code{eval()} can be
 ## used.  The following trivial example sets @code{x} to @code{42}.
 ##
@@ -60,7 +59,7 @@
 ## @end group
 ## @end example
 ##
-## Also, this can be useful for creating unique struct field names.
+## This can be useful for creating unique struct field names.
 ##
 ## @example
 ## @group
@@ -77,50 +76,53 @@
 ## @end group
 ## @end example
 ##
-## Since variable names may only contain letters, digits and underscores,
-## genvarname replaces any sequence of disallowed characters with
+## Since variable names may only contain letters, digits, and underscores,
+## @code{genvarname} will replace any sequence of disallowed characters with
 ## an underscore.  Also, variables may not begin with a digit; in this
-## case an underscore is added before the variable name.
+## case an @samp{x} is added before the variable name.
 ##
 ## Variable names beginning and ending with two underscores @qcode{"__"} are
-## valid but they are used internally by octave and should generally be
-## avoided, therefore genvarname will not generate such names.
+## valid, but they are used internally by Octave and should generally be
+## avoided; therefore, @code{genvarname} will not generate such names.
 ##
-## genvarname will also make sure that returned names do not clash with
+## @code{genvarname} will also ensure that returned names do not clash with
 ## keywords such as @qcode{"for"} and @qcode{"if"}.  A number will be
 ## appended if necessary.  Note, however, that this does @strong{not} include
-## function names, such as @qcode{"sin"}.  Such names should be included in
-## @var{avoid} if necessary.
-## @seealso{isvarname, exist, tmpnam, eval}
+## function names such as @qcode{"sin"}.  Such names should be included in
+## @var{exclusions} if necessary.
+## @seealso{isvarname, iskeyword, exist, who, tempname, eval}
 ## @end deftypefn
 
 ## Authors: Rob Platt <robert.platt@postgrad.manchester.ac.uk>
 ##          Bill Denney <bill@denney.ws>
 
-function varname = genvarname (str, exclusions)
+function varname = genvarname (str, exclusions = {})
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
 
   strinput = ischar (str);
   ## Process the inputs
-  if (nargin < 2)
-    exclusions = {};
-  elseif (ischar (exclusions))
-    if (rows (exclusions) != 1)
-      error ("genvarname: if more than one exclusion is given, it must be a cellstr");
-    endif
-    exclusions = {exclusions};
-  elseif (! iscellstr (exclusions))
-    error ("genvarname: EXCLUSIONS must be a string or a cellstr");
-  endif
-  if (ischar (str))
+  if (strinput)
     if (rows (str) != 1)
       error ("genvarname: if more than one STR is given, it must be a cellstr");
     endif
     str = {str};
   elseif (! iscellstr (str))
-    error ("genvarname: STR must be a string or a cellstr");
+    error ("genvarname: STR must be a string or cellstr");
   endif
 
-  validchars = ["A":"Z", "a":"z", "0":"9", "_"];
+  if (ischar (exclusions))
+    if (rows (exclusions) != 1)
+      error ("genvarname: if more than one exclusion is given, it must be a cellstr");
+    endif
+    exclusions = {exclusions};
+  elseif (! iscellstr (exclusions))
+    error ("genvarname: EXCLUSIONS must be a string or cellstr");
+  else
+    exclusions = exclusions(:);
+  endif
 
   varname = cell (size (str));
   for i = 1:numel (str)
@@ -128,34 +130,32 @@ function varname = genvarname (str, exclusions)
     ## a valid variable name.
 
     ## remove invalid characters
-    str{i}(! ismember (str{i}, validchars)) = "_";
+    str{i}(! (isalnum (str{i}) | str{i} == "_")) = "_";
     ## do not use keywords
     if (iskeyword (str{i}))
-      str{i} = ["_" str{i}];
-    endif
-    ## double underscores at the beginning and end are reserved variables
-    underscores = (str{i} == "_");
-    if (any (underscores))
-      firstnon = find (!underscores, 1);
-      lastnon = find (!underscores, 1, "last");
-      str{i}([1:firstnon-2, lastnon+2:end]) = [];
+      firstcharacter = toupper (str{i}(1));
+      str{i} = ["x", firstcharacter, str{i}(2:end)];
     endif
     ## The variable cannot be empty
     if (isempty (str{i}))
       str{i} = "x";
     endif
+    ## Leading underscores are not Matlab compatible
+    if (str{i}(1) == "_")
+      str{i} = ["x", str{i}];
+    endif
     ## it cannot start with a number
-    if (ismember (str{i}(1), "0":"9"))
-      str{i} = ["_" str{i}];
+    if (isdigit (str{i}(1)))
+      str{i} = ["x", str{i}];
     endif
 
     ## make sure that the variable is unique relative to other variables
     ## and the exclusions list
     excluded = any (strcmp (str{i}, exclusions));
-    if (excluded && ismember (str{i}(end), "0":"9"))
+    if (excluded && isdigit (str{i}(end)))
       ## if it is not unique and ends with a digit, add an underscore to
       ## make the variable name more readable ("x1_1" instead of "x11")
-      str{i}(end+1) = "_";
+      str{i} = [str{i}, "_"];
     endif
     varname(i) = str(i);
     idx = 0;
@@ -199,12 +199,22 @@ endfunction
 ## more than one repetition not in order
 %!assert (genvarname ({"a" "b" "a" "b" "a"}), {"a" "b" "a1" "b1" "a2"})
 ## Variable name munging
-%!assert (genvarname ("__x__"), "_x_")
-%!assert (genvarname ("123456789"), "_123456789")
-%!assert (genvarname ("_$1__"), "_1_")
-%!assert (genvarname ("__foo__", "_foo_"), "_foo_1")
-%!assert (genvarname ("1million_and1", "_1million_and1"), "_1million_and1_1")
+%!assert (genvarname ("__x__"), "x__x__")
+%!assert (genvarname ("123456789"), "x123456789")
+%!assert (genvarname ("_$1__"), "x__1__")
+%!assert (genvarname ("__foo__", "x__foo__"), "x__foo__1")
+%!assert (genvarname ("1million_and1", "x1million_and1"), "x1million_and1_1")
 %!assert (genvarname ({"", "", ""}), {"x", "x1", "x2"})
-%!assert (genvarname ("if"), "_if")
-%!assert (genvarname ({"if", "if", "if"}), {"_if", "_if1", "_if2"})
+%!assert (genvarname ("if"), "xIf")
+%!assert (genvarname ({"if", "if", "if"}), {"xIf", "xIf1", "xIf2"})
+## Exclusions in odd format
+%!assert (genvarname ("x", {"a", "b"; "x", "d"}), "x1")
+
+## Test input validation
+%!error genvarname ()
+%!error genvarname (1,2,3)
+%!error <more than one STR is given, it must be a cellstr> genvarname (char ("a", "b", "c"))
+%!error <STR must be a string or cellstr> genvarname (1)
+%!error <more than one exclusion is given, it must be a cellstr> genvarname ("x", char ("a", "b", "c"))
+%!error <EXCLUSIONS must be a string or cellstr> genvarname ("x", 1)
 

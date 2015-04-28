@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 John W. Eaton
+Copyright (C) 2007-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,11 +36,15 @@ To initialize:
 #include "builtins.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "file-stat.h"
 #include "graphics.h"
+#include "oct-conf.h"
+#include "oct-env.h"
 #include "parse.h"
+#include "utils.h"
 #include "variables.h"
 
-// PKG_ADD: register_graphics_toolkit ("gnuplot");
+// PKG_ADD: if (__have_gnuplot__ ()) register_graphics_toolkit ("gnuplot"); endif
 
 static bool toolkit_loaded = false;
 
@@ -166,13 +170,41 @@ private:
   }
 };
 
-// Initialize the fltk graphics toolkit.
+static bool
+have_gnuplot_binary (void)
+{
+  const std::string exeext = std::string (OCTAVE_CONF_EXEEXT);
+  const std::string path = octave_env::getenv ("PATH");
+
+  octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
+  std::string gnuplot_binary = tmp(0).string_value ();
+
+  string_vector args (gnuplot_binary);
+  std::string gnuplot_path = search_path_for_file (path, args);
+
+  file_stat fs (gnuplot_path);
+
+  if (! fs.exists () && ! exeext.empty ())
+    {
+      args[0] += exeext;
+
+      gnuplot_path = search_path_for_file (path, args);
+
+      fs = file_stat (gnuplot_path);
+    }
+
+  return fs.exists ();
+}
+
+// Initialize the gnuplot graphics toolkit.
 
 DEFUN_DLD (__init_gnuplot__, , , "")
 {
   octave_value retval;
 
-  if (! toolkit_loaded)
+  if (! have_gnuplot_binary ())
+    error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
+  else if (! toolkit_loaded)
     {
       mlock ();
 
@@ -181,6 +213,19 @@ DEFUN_DLD (__init_gnuplot__, , , "")
 
       toolkit_loaded = true;
     }
+
+  return retval;
+}
+
+DEFUN_DLD (__have_gnuplot__, , ,
+           "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{gnuplot_available} =} __have_gnuplot__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  retval = have_gnuplot_binary ();
 
   return retval;
 }

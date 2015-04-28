@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Max Brister
+Copyright (C) 2012-2015 Max Brister
 
 This file is part of Octave.
 
@@ -46,13 +46,26 @@ static bool Vjit_enable = false;
 
 static int Vjit_startcnt = 1000;
 
+static int Vjit_failcnt = 0;
+
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
+
+#ifdef HAVE_LLVM_IR_VERIFIER_H
+#include <llvm/IR/Verifier.h>
+#else
 #include <llvm/Analysis/Verifier.h>
+#endif
+
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
+
+#ifdef LEGACY_PASSMANAGER
+#include <llvm/IR/LegacyPassManager.h>
+#else
 #include <llvm/PassManager.h>
+#endif
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
 #include <llvm/IR/LLVMContext.h>
@@ -164,7 +177,7 @@ jit_convert::jit_convert (octave_user_function& fcn,
       if (expr)
         {
           jit_variable *retvar = get_variable ("#return");
-          jit_value *retval;
+          jit_value *retval = 0;
           try
             {
               retval = visit (expr);
@@ -230,13 +243,13 @@ jit_convert::jit_convert (octave_user_function& fcn,
 void
 jit_convert::visit_anon_fcn_handle (tree_anon_fcn_handle&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_anon_fcn_handle implementation");
 }
 
 void
 jit_convert::visit_argument_list (tree_argument_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_argument_list implementation");
 }
 
 void
@@ -337,25 +350,25 @@ jit_convert::visit_continue_command (tree_continue_command&)
 void
 jit_convert::visit_global_command (tree_global_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_global_command implemenation");
 }
 
 void
 jit_convert::visit_persistent_command (tree_persistent_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_persistent_command implementation");
 }
 
 void
 jit_convert::visit_decl_elt (tree_decl_elt&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_decl_elt implementation");
 }
 
 void
 jit_convert::visit_decl_init_list (tree_decl_init_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_decl_init_list implementation");
 }
 
 void
@@ -464,37 +477,37 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 void
 jit_convert::visit_complex_for_command (tree_complex_for_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_complex_for_command implementation");
 }
 
 void
 jit_convert::visit_octave_user_script (octave_user_script&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_script implementation");
 }
 
 void
 jit_convert::visit_octave_user_function (octave_user_function&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_function implementation");
 }
 
 void
 jit_convert::visit_octave_user_function_header (octave_user_function&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_function_header implementation");
 }
 
 void
 jit_convert::visit_octave_user_function_trailer (octave_user_function&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_function_trailer implementation");
 }
 
 void
 jit_convert::visit_function_def (tree_function_def&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_function_def implementation");
 }
 
 void
@@ -518,7 +531,7 @@ jit_convert::visit_identifier (tree_identifier& ti)
 void
 jit_convert::visit_if_clause (tree_if_clause&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_if_clause implementation");
 }
 
 void
@@ -539,7 +552,6 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   // the condition check for the ith clause. For the else, it is simple the
   // else body. If there is no else body, then it is padded with the tail
   std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
-  std::vector<jit_block *> branch_blocks (lst.size (), 0); // final blocks
   entry_blocks[0] = block;
 
   // we need to construct blocks first, because they have jumps to eachother
@@ -630,25 +642,25 @@ jit_convert::visit_index_expression (tree_index_expression& exp)
 void
 jit_convert::visit_matrix (tree_matrix&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_matrix implementation");
 }
 
 void
 jit_convert::visit_cell (tree_cell&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_cell implementation");
 }
 
 void
 jit_convert::visit_multi_assignment (tree_multi_assignment&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_multi_assignment implementation");
 }
 
 void
 jit_convert::visit_no_op_command (tree_no_op_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_no_op_command implementation");
 }
 
 void
@@ -679,13 +691,19 @@ jit_convert::visit_constant (tree_constant& tc)
 void
 jit_convert::visit_fcn_handle (tree_fcn_handle&)
 {
+  throw jit_fail_exception ("No visit_fcn_handle implementation");
+}
+
+void
+jit_convert::visit_funcall (tree_funcall&)
+{
   throw jit_fail_exception ();
 }
 
 void
 jit_convert::visit_parameter_list (tree_parameter_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_parameter_list implementation");
 }
 
 void
@@ -721,13 +739,13 @@ jit_convert::visit_prefix_expression (tree_prefix_expression& tpe)
 void
 jit_convert::visit_return_command (tree_return_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_return_command implementation");
 }
 
 void
 jit_convert::visit_return_list (tree_return_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_return_list implementation");
 }
 
 void
@@ -805,31 +823,132 @@ jit_convert::visit_statement_list (tree_statement_list& lst)
 void
 jit_convert::visit_switch_case (tree_switch_case&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_switch_case implementation");
 }
 
 void
 jit_convert::visit_switch_case_list (tree_switch_case_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_switch_case_list implementation");
 }
 
 void
-jit_convert::visit_switch_command (tree_switch_command&)
+jit_convert::visit_switch_command (tree_switch_command& cmd)
 {
-  throw jit_fail_exception ();
+  tree_switch_case_list *lst = cmd.case_list ();
+
+  // always visit switch expression
+  tree_expression *expr = cmd.switch_value ();
+  assert (expr && "Switch value can not be null");
+  jit_value *value = visit (expr);
+  assert (value);
+
+  size_t case_blocks_num = lst->size ();
+
+  if (! case_blocks_num)  // there's nothing to do
+    return;
+
+  // check for otherwise, it's interpreted as last 'else' condition
+  size_t has_otherwise = 0;
+  tree_switch_case *last = lst->back ();
+  if (last->is_default_case ())
+    has_otherwise = 1;
+
+  std::vector<jit_block *> entry_blocks (case_blocks_num + 1 - has_otherwise);
+
+  // the first entry point is always the actual block. afterward new blocks
+  // are created for every case and the otherwise branch
+  entry_blocks[0] = block;
+  for (size_t i = 1; i < case_blocks_num; ++i)
+    entry_blocks[i] = factory.create<jit_block> ("case_cond");
+
+  jit_block *tail = factory.create<jit_block> ("switch_tail");
+
+  // if there's no otherwise branch, the the 'else' of the last branch
+  // has to point to the tail
+  if (! has_otherwise)
+    entry_blocks[entry_blocks.size()-1] = tail;
+
+  // each branch in the case statement will have different breaks/continues
+  block_list current_breaks = breaks;
+  block_list current_continues = continues;
+  breaks.clear ();
+  continues.clear ();
+
+  size_t num_incomming = 0; // number of incomming blocks to our tail
+
+  tree_switch_case_list::iterator iter = lst->begin ();
+  for (size_t i = 0; i < case_blocks_num; ++iter, ++i)
+    {
+      tree_switch_case *twc = *iter;
+      block = entry_blocks[i]; // case_cond
+      assert (block);
+
+      if (i)
+        blocks.push_back (entry_blocks[i]);  // first block already pushed
+
+      if (! twc->is_default_case ())
+        {
+          // compare result of switch expression with actual case label
+          tree_expression *te = twc->case_label ();
+          jit_value *label = visit (te);
+          assert(label);
+
+          const jit_operation& fn = jit_typeinfo::binary_op (octave_value::op_eq);
+          jit_value *cond = create_checked (fn, value, label);
+          assert(cond);
+
+          jit_call *check = create_checked (&jit_typeinfo::logically_true,
+                                            cond);
+
+          jit_block *body = factory.create<jit_block> ("case_body");
+          blocks.push_back (body);
+
+          block->append (factory.create<jit_cond_branch> (check, body,
+                                                          entry_blocks[i+1]));
+          block = body; // case_body
+        }
+
+      tree_statement_list *stmt_lst = twc->commands ();
+      assert(stmt_lst);
+
+      try
+        {
+          stmt_lst->accept (*this);
+          num_incomming++;
+          block->append (factory.create<jit_branch> (tail));
+        }
+      catch (const jit_break_exception&)
+        { }
+
+      // each branch in the case statement will have different breaks/continues
+      current_breaks.splice (current_breaks.end (), breaks);
+      current_continues.splice (current_continues.end (), continues);
+    }
+
+  // each branch in the case statement will have different breaks/continues
+  breaks.splice (breaks.end (), current_breaks);
+  continues.splice (continues.end (), current_continues);
+
+  if (num_incomming || ! has_otherwise)
+    {
+      blocks.push_back (tail);
+      block = tail; // switch_tail
+    }
+  else
+    throw jit_break_exception ();   // every branch broke
 }
 
 void
 jit_convert::visit_try_catch_command (tree_try_catch_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_try_catch_command implementation");
 }
 
 void
 jit_convert::visit_unwind_protect_command (tree_unwind_protect_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_unwind_protect_command implementation");
 }
 
 void
@@ -895,9 +1014,66 @@ jit_convert::visit_while_command (tree_while_command& wc)
 }
 
 void
-jit_convert::visit_do_until_command (tree_do_until_command&)
+jit_convert::visit_do_until_command (tree_do_until_command& duc)
 {
-  throw jit_fail_exception ();
+  unwind_protect prot;
+  prot.protect_var (breaks);
+  prot.protect_var (continues);
+  breaks.clear ();
+  continues.clear ();
+
+  jit_block *body = factory.create<jit_block> ("do_until_body");
+  jit_block *cond_check = factory.create<jit_block> ("do_until_cond_check");
+  jit_block *tail = factory.create<jit_block> ("do_until_tail");
+
+  block->append (factory.create<jit_branch> (body));
+  blocks.push_back (body);
+  block = body;
+
+  tree_statement_list *loop_body = duc.body ();
+  bool all_breaking = false;
+  if (loop_body)
+    {
+      try
+        {
+          loop_body->accept (*this);
+        }
+      catch (const jit_break_exception&)
+        {
+          all_breaking = true;
+        }
+    }
+
+  finish_breaks (tail, breaks);
+
+  if (! all_breaking || continues.size ())
+    {
+      jit_block *interrupt_check
+        = factory.create<jit_block> ("interrupt_check");
+      blocks.push_back (interrupt_check);
+      finish_breaks (interrupt_check, continues);
+      if (! all_breaking)
+        block->append (factory.create<jit_branch> (interrupt_check));
+
+      block = interrupt_check;
+      jit_error_check *ec
+        = factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                           cond_check, final_block);
+      block->append (ec);
+
+      blocks.push_back (cond_check);
+      block = cond_check;
+
+      tree_expression *expr = duc.condition ();
+      assert (expr && "Do-Until expression can not be null");
+      jit_value *check = visit (expr);
+      check = create_checked (&jit_typeinfo::logically_true, check);
+
+      block->append (factory.create<jit_cond_branch> (check, tail, body));
+    }
+
+  blocks.push_back (tail);
+  block = tail;
 }
 
 void
@@ -956,6 +1132,9 @@ jit_convert::get_variable (const std::string& vname)
   else
     {
       octave_value val = record.varval ();
+      if (val.is_undefined ())
+        val = symbol_table::find_function (vname);
+
       jit_type *type = jit_typeinfo::type_of (val);
       bounds.push_back (type_bound (type, vname));
 
@@ -1888,10 +2067,15 @@ tree_jit::initialize (void)
   if (! engine)
     return false;
 
+#ifdef LEGACY_PASSMANAGER
+  module_pass_manager = new llvm::legacy::PassManager ();
+  pass_manager = new llvm::legacy::FunctionPassManager (module);
+#else
   module_pass_manager = new llvm::PassManager ();
+  pass_manager = new llvm::FunctionPassManager (module);
+#endif
   module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
-  pass_manager = new llvm::FunctionPassManager (module);
 #ifdef HAVE_LLVM_DATALAYOUT
   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
 #else
@@ -2006,8 +2190,13 @@ tree_jit::optimize (llvm::Function *fn)
   if (Vdebug_jit)
     {
       std::string error;
+#ifdef RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS
+      llvm::raw_fd_ostream fout ("test.bc", error,
+                                 llvm::sys::fs::F_Binary);
+#else
       llvm::raw_fd_ostream fout ("test.bc", error,
                                  llvm::raw_fd_ostream::F_Binary);
+#endif
       llvm::WriteBitcodeToFile (module, fout);
     }
 }
@@ -2122,6 +2311,8 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
         }
+
+      Vjit_failcnt++;
 
       wrapper.erase ();
       raw_fn.erase ();
@@ -2279,6 +2470,9 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
         }
+
+      Vjit_failcnt++;
+
     }
 
   if (llvm_function)
@@ -2314,7 +2508,37 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
-DEFUN (debug_jit, args, nargout,
+#if defined (HAVE_LLVM)
+#define UNUSED_WITHOUT_LLVM(x) x
+#else
+#define UNUSED_WITHOUT_LLVM(x) x GCC_ATTR_UNUSED
+#endif
+
+DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} jit_failcnt ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} jit_failcnt (@var{new_val}, \"local\")\n\
+Query or set the internal variable that counts the number of\n\
+JIT fail exceptions for Octave's JIT compiler.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
+@seealso{jit_enable, jit_startcnt, debug_jit}\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM)
+  return SET_INTERNAL_VARIABLE (jit_failcnt);
+#else
+  warning ("jit_failcnt: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}
+
+DEFUN (debug_jit, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_jit ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_jit (@var{new_val})\n\
@@ -2336,7 +2560,8 @@ The original variable value is restored when exiting the function.\n\
 #endif
 }
 
-DEFUN (jit_enable, args, nargout,
+DEFUN (jit_enable, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_enable ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_enable (@var{new_val})\n\
@@ -2357,7 +2582,8 @@ The original variable value is restored when exiting the function.\n\
 #endif
 }
 
-DEFUN (jit_startcnt, args, nargout,
+DEFUN (jit_startcnt, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_startcnt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\

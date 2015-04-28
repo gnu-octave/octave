@@ -1,7 +1,7 @@
 // Template sparse classes
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -38,7 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 
 #include "oct-sort.h"
-#include "oct-mem.h"
 
 class idx_vector;
 class PermMatrix;
@@ -102,9 +101,9 @@ protected:
         nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
     {
       octave_idx_type nz = a.nnz ();
-      copy_or_memcpy (nz, a.d, d);
-      copy_or_memcpy (nz, a.r, r);
-      copy_or_memcpy (ncols + 1, a.c, c);
+      std::copy (a.d, a.d + nz, d);
+      std::copy (a.r, a.r + nz, r);
+      std::copy (a.c, a.c + ncols + 1, c);
     }
 
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
@@ -213,8 +212,8 @@ public:
   {
     octave_idx_type nz = a.nnz ();
     std::copy (a.rep->d, a.rep->d + nz, rep->d);
-    copy_or_memcpy (nz, a.rep->r, rep->r);
-    copy_or_memcpy (rep->ncols + 1, a.rep->c, rep->c);
+    std::copy (a.rep->r, a.rep->r + nz, rep->r);
+    std::copy (a.rep->c, a.rep->c + rep->ncols + 1, rep->c);
   }
 
   // No type conversion case.
@@ -242,7 +241,7 @@ public:
   Sparse<T>& operator = (const Sparse<T>& a);
 
   // Note that nzmax and capacity are the amount of storage for
-  // non-zero elements, while nnz is the actual number of non-zero
+  // nonzero elements, while nnz is the actual number of nonzero
   // terms.
   octave_idx_type nzmax (void) const { return rep->length (); }
   octave_idx_type capacity (void) const { return nzmax (); }
@@ -300,13 +299,15 @@ public:
 
   T& xelem (octave_idx_type n)
   {
-    octave_idx_type i = n % rows (), j = n / rows ();
+    octave_idx_type i = n % rows ();
+    octave_idx_type j = n / rows ();
     return xelem (i, j);
   }
 
   T xelem (octave_idx_type n) const
   {
-    octave_idx_type i = n % rows (), j = n / rows ();
+    octave_idx_type i = n % rows ();
+    octave_idx_type j = n / rows ();
     return xelem (i, j);
   }
 

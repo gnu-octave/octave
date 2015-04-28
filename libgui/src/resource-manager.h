@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -44,6 +44,14 @@ public:
   static QSettings *get_settings (void)
   {
     return instance_ok () ? instance->do_get_settings () : 0;
+  }
+
+  static QIcon icon (const QString& icon_name, bool fallback = true)
+  {
+    if (instance_ok ())
+      return instance->do_icon (icon_name, fallback);
+
+    return QIcon ();
   }
 
   static QSettings *get_default_settings (void)
@@ -128,6 +136,8 @@ private:
   void do_update_network_settings (void);
 
   bool do_is_first_run (void) const;
+
+  QIcon do_icon (const QString& icon, bool fallback);
 
 };
 

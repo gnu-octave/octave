@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -128,7 +128,7 @@ endfunction
 %! a = toeplitz ([1;randn_9x1_data], [1,randn_1x9_data]);
 %! compass (eig (a));
 
-%% Test input validation
+## Test input validation
 %!error compass ()
 %!error compass (1,2,3,4)
 %!error compass (1, "-r", 2)

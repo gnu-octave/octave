@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Bill Denney
+## Copyright (C) 2008-2015 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -115,7 +115,7 @@ endfunction
 %!assert (addtodate ([d;d+1], 1, "month"), [d+31;d+1+31])
 %!assert (addtodate ([d d+1], 1, "month"), [d+31 d+1+31])
 
-%% Test input validation
+## Test input validation
 %!error addtodate ()
 %!error addtodate (1)
 %!error addtodate (1,2)

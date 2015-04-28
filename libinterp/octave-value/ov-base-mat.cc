@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
+
+#include "Array-util.h"
 
 #include "Cell.h"
 #include "oct-obj.h"
@@ -351,7 +353,8 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
               {
                 // optimize all scalar indices. Don't construct an index array,
                 // but rather calc a scalar index directly.
-                octave_idx_type k = 1, j = 0;
+                octave_idx_type k = 1;
+                octave_idx_type j = 0;
                 for (octave_idx_type i = 0; i < n_idx; i++)
                   {
                     j += idx_vec(i)(0) * k;
@@ -435,7 +438,7 @@ octave_base_matrix<MT>::print_as_scalar (void) const
 
 template <class MT>
 void
-octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -476,7 +479,10 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
               octave_print_internal (buf, matrix(j*nr+i));
               std::string tmp = buf.str ();
               size_t pos = tmp.find_first_not_of (" ");
-              os << tmp.substr (pos);
+              if (pos != std::string::npos)
+                os << tmp.substr (pos);
+              else if (! tmp.empty ())
+                os << tmp[0];
 
               if (++elts >= max_elts)
                 goto done;

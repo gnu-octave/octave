@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -89,6 +89,7 @@ public:
   intNDArray cummin (int dim = -1) const;
   intNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
+  intNDArray prod (int dim) const;
   intNDArray sum (int dim) const;
   NDArray dsum (int dim) const;
   intNDArray cumsum (int dim) const;

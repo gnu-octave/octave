@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -207,7 +207,7 @@ read_binary_data (std::istream& is, bool swap,
       {
         // FIXME:
         // This is cruft, since its for a save type that is old. Maybe
-        // this is taking backward compatability too far!!
+        // this is taking backward compatibility too far!!
         int32_t len;
         if (! is.read (reinterpret_cast<char *> (&len), 4))
           goto data_read_error;

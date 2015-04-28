@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Paul Kienzle
+## Copyright (C) 2005-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -22,51 +22,51 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} fail (@var{code})
 ## @deftypefnx {Function File} {} fail (@var{code}, @var{pattern})
+## @deftypefnx {Function File} {} fail (@var{code}, "warning")
 ## @deftypefnx {Function File} {} fail (@var{code}, "warning", @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
-## @var{pattern}, otherwise produce an error.  Note that @var{code}
-## is a string and if @var{code} runs successfully, the error produced is:
+## @var{pattern}, otherwise produce an error.
+##
+## @var{code} must be in the form of a string that is passed to the Octave
+## interpreter via the @code{evalin} function, i.e., a (quoted) string constant
+## or a string variable.
+##
+## Note that if @var{code} runs successfully, rather than failing, the error
+## printed is:
 ##
 ## @example
 ##           expected error <.> but got none
 ## @end example
 ##
-##
-## Code must be in the form of a string that may be passed by
-## @code{fail} to the Octave interpreter via the @code{evalin} function,
-## that is, a (quoted) string constant or a string variable.
-##
-## If called with two arguments, the behavior is similar to
-## @code{fail (@var{code})}, except the return value will only be true if
-## code fails with an error message containing pattern (case sensitive).
-## If the code fails with a different error to that given in pattern,
-## the message produced is:
+## If called with two arguments, the return value will be true only if
+## @var{code} fails with an error message containing @var{pattern}
+## (case sensitive).  If the code fails with a different error than the one
+## specified in @var{pattern} then the message produced is:
 ##
 ## @example
 ## @group
-##           expected <pattern>
+##           expected <@var{pattern}>
 ##           but got <text of actual error>
 ## @end group
 ## @end example
 ##
 ## The angle brackets are not part of the output.
 ##
-## Called with three arguments, the behavior is similar to
-## @code{fail (@var{code}, @var{pattern})}, but produces an error if no
-## warning is given during code execution or if the code fails.
-## @seealso{assert}
+## When called with the @qcode{"warning"} option @code{fail} will produce
+## an error if executing the code produces no warning.
+## @seealso{assert, error}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function ret = fail (code, pattern, warning_pattern)
+function retval = fail (code, pattern, warning_pattern)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  ## sort out arguments
+  ## Parse input arguments
   test_warning = (nargin > 1 && strcmp (pattern, "warning"));
   if (nargin == 3)
     pattern = warning_pattern;
@@ -74,52 +74,50 @@ function ret = fail (code, pattern, warning_pattern)
     pattern = "";
   endif
 
-  ## match any nonempty message
+  ## Match any nonempty message
   if (isempty (pattern))
     pattern = ".";
   endif
 
-  ## allow assert (fail ())
+  ## Allow assert (fail ())
   if (nargout)
-    ret = 1;
+    retval = true;
   endif
 
   if (test_warning)
     ## Perform the warning test.
     ## Clear old warnings.
-    lastwarn ();
+    lastwarn ("");
     ## Make sure warnings are turned on.
     state = warning ("query", "quiet");
     warning ("on", "quiet");
     try
-      ## printf ("lastwarn before %s: %s\n",code,lastwarn);
-      evalin ("caller", sprintf ("%s;", code));
-      ## printf ("lastwarn after %s: %s\n",code,lastwarn);
+      evalin ("caller", [code ";"]);
       ## Retrieve new warnings.
-      err = lastwarn ();
+      warn = lastwarn ();
       warning (state.state, "quiet");
-      if (isempty (err))
+      if (isempty (warn))
         msg = sprintf ("expected warning <%s> but got none", pattern);
       else
         ## Transform "warning: ...\n" to "...".
-        err([1:9, end]) = [];
-        if (! isempty (regexp (err, pattern, "once")))
+        warn([1:9, end]) = [];
+        if (! isempty (regexp (warn, pattern, "once")))
           return;
         endif
-        msg = sprintf ("expected warning <%s>\nbut got <%s>", pattern, err);
+        msg = sprintf ("expected warning <%s>\nbut got <%s>", pattern, warn);
       endif
     catch
       warning (state.state, "quiet");
       err = lasterr;
       ## Transform "error: ...\n", to "...".
-      err([1:7, end]) = [];
-      msg = sprintf ("expected warning <%s> but got error <%s>", pattern, err);
+      err([1:6, end]) = [];
+      msg = sprintf ("expected warning <%s>\nbut got error <%s>", pattern, err);
     end_try_catch
 
   else
     ## Perform the error test.
     try
-      evalin ("caller", sprintf ("%s;", code));
+      evalin ("caller", [code ";"]);
       msg = sprintf ("expected error <%s> but got none", pattern);
     catch
       err = lasterr ();
@@ -144,11 +142,15 @@ endfunction
 %!fail ("fail ('[1,2]*[2,3]', 'usage:')", "expected error <usage:>\nbut got.*nonconformant")
 %!fail ("warning ('test warning')", "warning", "test warning");
 
-##% !fail ("warning ('next test')",'warning','next test');  ## only allowed one warning test?!?
+#%!fail ("warning ('next test')",'warning','next test');  # only allowed one warning test?!?
 
-%% Test that fail() itself will generate an error
-%!error fail ("1")
-%!error <undefined> fail ("a*[2;3]", "nonconformant")
-%!error <expected error>  fail ("a*[2,3]", "usage:")
+## Test that fail() itself will generate an error
+%!error <expected error> fail ("1")
+%!error <'__a__' undefined> fail ("__a__*[2;3]", "nonconformant")
+%!error <expected error .usage:>  fail ("__a__*[2,3]", "usage:")
 %!error <warning failure> fail ("warning ('warning failure')", "warning", "success")
+
+## Test input validation
+%!error fail ()
+%!error fail (1,2,3,4)
 

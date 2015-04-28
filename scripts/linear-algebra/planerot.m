@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{g}, @var{y}] =} planerot (@var{x})
-## Given a two-element column vector, returns the
+## @deftypefn {Function File} {[@var{G}, @var{y}] =} planerot (@var{x})
+## Given a two-element column vector, return the
 ## @tex
 ## $2 \times 2$ orthogonal matrix
 ## @end tex
@@ -31,8 +31,16 @@
 ## @end deftypefn
 
 function [G, y] = planerot (x)
+
+  if (nargin != 1)
+    print_usage ();
+  elseif (! (isvector (x) && numel (x) == 2))
+    error ("planerot: X must be a 2-element vector");
+  endif
+
   G = givens (x(1), x(2));
   y = G * x(:);
+
 endfunction
 
 
@@ -42,7 +50,8 @@ endfunction
 %! assert (g, [x(1) x(2); -x(2) x(1)] / sqrt (x(1)^2 + x(2)^2), 2e-8);
 %! assert (y(2), 0, 2e-8);
 
-%!error planerot ([0])
-%!error planerot ([0 0 0])
 %!error planerot ()
+%!error planerot (1,2)
+%!error <X must be a 2-element vector> planerot (ones (2,2))
+%!error <X must be a 2-element vector> planerot ([0 0 0])
 

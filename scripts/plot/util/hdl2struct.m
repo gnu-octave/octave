@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 pdiribarne
+## Copyright (C) 2012-2015 pdiribarne
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ##
 ## The fields of the structure @var{s} are @qcode{"type"}, @qcode{"handle"},
 ## @qcode{"properties"}, @qcode{"children"}, and @qcode{"special"}.
-## @seealso{struct2hdl, findobj}
+## @seealso{struct2hdl, hgsave, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>
@@ -31,7 +31,7 @@
 
 function s = hdl2struct (h)
 
-  if (nargin != 1 || !ishandle (h))
+  if (nargin != 1 || ! ishandle (h))
     print_usage ();
   endif
 
@@ -43,8 +43,8 @@ function s = hdl2struct (h)
   ## main object
   main = get (h);
   s.handle = h;
-  s.type =  main.type;
-  s.properties  = getprops (h);
+  s.type = main.type;
+  s.properties = getprops (h);
   s.children = [];
   s.special = [];
 

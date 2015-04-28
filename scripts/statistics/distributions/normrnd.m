@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +44,7 @@ function rnd = normrnd (mu, sigma, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (mu) || !isscalar (sigma))
+  if (! isscalar (mu) || ! isscalar (sigma))
     [retval, mu, sigma] = common_size (mu, sigma);
     if (retval > 0)
       error ("normrnd: mu and sigma must be of common size or scalars");
@@ -66,13 +66,13 @@ function rnd = normrnd (mu, sigma, varargin)
       error ("normrnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("normrnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (mu) && !isequal (size (mu), sz))
+  if (! isscalar (mu) && ! isequal (size (mu), sz))
     error ("normrnd: mu and sigma must be scalar or of size SZ");
   endif
 
@@ -83,8 +83,8 @@ function rnd = normrnd (mu, sigma, varargin)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
-      rnd =  mu + sigma * randn (sz, cls);
+    if (isfinite (mu) && (sigma >= 0) && (sigma < Inf))
+      rnd = mu + sigma * randn (sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
@@ -106,14 +106,14 @@ endfunction
 %!assert (size (normrnd (1, 2, [4 1])), [4, 1])
 %!assert (size (normrnd (1, 2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (normrnd (1, 2)), "double")
 %!assert (class (normrnd (single (1), 2)), "single")
 %!assert (class (normrnd (single ([1 1]), 2)), "single")
 %!assert (class (normrnd (1, single (2))), "single")
 %!assert (class (normrnd (1, single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error normrnd ()
 %!error normrnd (1)
 %!error normrnd (ones (3), ones (2))

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -52,12 +52,17 @@ documentation_dock_widget::pasteClipboard ()
   _webinfo->pasteClipboard ();
 }
 void
+documentation_dock_widget::selectAll ()
+{
+  _webinfo->selectAll ();
+}
+
+void
 documentation_dock_widget::showDoc (const QString &name)
 {
-  // show the doc pane
+  // show the doc pane without focus for carrying on typing in the console
   if (!isVisible ())
     setVisible (true);
-  setFocus ();
   raise ();
 
   _webinfo->load_ref (name);

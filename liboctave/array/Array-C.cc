@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -41,22 +41,18 @@ sort_isnan<Complex> (const Complex& x)
   return xisnan (x);
 }
 
+// Sort Criteria: 1) isnan, 2) magnitude of z, 3) phase of z in range (-pi, pi]
+
 static bool
 nan_ascending_compare (const Complex& x, const Complex& y)
 {
-  return (xisnan (y)
-          ? ! xisnan (x)
-          : ((std::abs (x) < std::abs (x))
-             || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
+  return xisnan (y) ? ! xisnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (const Complex& x, const Complex& y)
 {
-  return (xisnan (x)
-          ? ! xisnan (y)
-          : ((std::abs (x) > std::abs (x))
-             || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
+  return xisnan (x) ? ! xisnan (y) : x > y;
 }
 
 Array<Complex>::compare_fcn_type
@@ -88,7 +84,7 @@ safe_comparator (sortmode mode, const Array<Complex>& a , bool allow_chk)
   return result;
 }
 
-INSTANTIATE_ARRAY_SORT (Complex);
+template class OCTAVE_API octave_sort<Complex>;
 
 INSTANTIATE_ARRAY (Complex, OCTAVE_API);
 

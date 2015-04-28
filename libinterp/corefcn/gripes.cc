@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -234,8 +234,8 @@ gripe_nonbraced_cs_list_assignment (void)
 void
 gripe_warn_complex_cmp (void)
 {
-  warning_with_id ("Octave:matlab-incompatible",
-                   "potential Matlab compatibility problem: comparing complex numbers");
+  warning_with_id ("Octave:language-extension",
+                   "comparing complex numbers is not supported in Matlab");
 }
 
 void
@@ -244,4 +244,12 @@ gripe_disabled_feature (const std::string& func, const std::string& feature,
 {
   error ("%s: support for %s was disabled when %s was built",
          func.c_str (), feature.c_str (), pkg.c_str ());
+}
+
+void
+gripe_data_file_in_path (const std::string& fcn, const std::string& file)
+{
+  warning_with_id ("Octave:data-file-in-path",
+                   "%s: '%s' found by searching load path",
+                   fcn.c_str (), file.c_str ());
 }

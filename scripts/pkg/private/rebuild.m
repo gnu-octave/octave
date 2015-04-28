@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -93,7 +93,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
       endfor
     endfor
     if (! isempty (dup))
-      descriptions (dup) = [];
+      descriptions(dup) = [];
     endif
   endif
 endfunction

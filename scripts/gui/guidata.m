@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Michael Goffioul
+## Copyright (C) 2012-2015 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -59,7 +59,7 @@ function dataout = guidata (h, data)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error guidata ()
 %!error guidata (1,2,3)
 %!error <H must be a valid object handle> guidata ({1})

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -21,18 +21,18 @@
 @cindex linear algebra
 
 This chapter documents the linear algebra functions provided in Octave.
-Reference material for many of these functions may be found in Golub and
-Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins, 1989, and
-in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992. The
-@cite{@sc{lapack} Users' Guide} is available at:
+Reference material for many of these functions may be found in
+@nospell{Golub and Van Loan}, @cite{Matrix Computations, 2nd Ed.},
+Johns Hopkins, 1989, and in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992.
+The @cite{@sc{lapack} Users' Guide} is available at:
 @cite{http://www.netlib.org/lapack/lug/}
 
-A common text for engineering courses is G. Strang, @cite{Linear Algebra
-and Its Applications, 4th Edition}. It has become a widespread reference
-for linear algebra. An alternative is P. Lax @cite{Linear Algebra and
-Its Applications}, and also is a good choice. It claims to be suitable
-for high school students with substantial mathematical interests as well
-as first-year undergraduates.
+A common text for engineering courses is @nospell{G. Strang},
+@cite{Linear Algebra and Its Applications, 4th Edition}. It has become a
+widespread reference for linear algebra.  An alternative is P. Lax
+@cite{Linear Algebra and Its Applications}, and also is a good choice.  It
+claims to be suitable for high school students with substantial mathematical
+interests as well as first-year undergraduates.
 
 @menu
 * Techniques Used for Linear Algebra::
@@ -49,7 +49,7 @@ as first-year undergraduates.
 Octave includes a polymorphic solver that selects an appropriate matrix
 factorization depending on the properties of the matrix itself.
 Generally, the cost of determining the matrix type is small relative to
-the cost of factorizing the matrix itself. In any case the matrix type
+the cost of factorizing the matrix itself.  In any case the matrix type
 is cached once it is calculated so that it is not re-determined each
 time it is used in a linear equation.
 
@@ -95,6 +95,8 @@ detect a non-Hermitian matrix.
 @cindex matrix functions, basic
 
 @DOCSTRING(balance)
+
+@DOCSTRING(bandwidth)
 
 @DOCSTRING(cond)
 
@@ -173,6 +175,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(rsf2csf)
 
+@DOCSTRING(ordschur)
+
 @DOCSTRING(subspace)
 
 @DOCSTRING(svd)
@@ -199,7 +203,7 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(blkmm)
 
-@DOCSTRING(syl)
+@DOCSTRING(sylvester)
 
 @node Specialized Solvers
 @section Specialized Solvers
@@ -212,3 +216,6 @@ detect a non-Hermitian matrix.
 @DOCSTRING(cgs)
 
 @DOCSTRING(gmres)
+
+@DOCSTRING(qmr)
+

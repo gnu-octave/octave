@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{h} =} warndlg (@var{msg})
 ## @deftypefnx {Function File} {@var{h} =} warndlg (@var{msg}, @var{title})
+## @deftypefnx {Function File} {@var{h} =} warndlg (@var{msg}, @var{title}, @var{createmode})
 ## Display @var{msg} using a warning dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
@@ -26,16 +27,21 @@
 ## line.  The optional input @var{title} (character string) can be used to
 ## set the dialog caption.  The default title is @qcode{"Warning Dialog"}.
 ##
+## The return value is always 1.
+##
+## Compatibility Note: The optional argument @var{createmode} is accepted for
+## @sc{matlab} compatibility, but is not implemented.
+##
 ## @seealso{helpdlg, inputdlg, listdlg, questdlg}
 ## @end deftypefn
 
-function retval = warndlg (msg, title = "Warning Dialog")
+function retval = warndlg (msg, title = "Warning Dialog", varargin)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  retval = message_dialog ("warndlg", msg, title, "warn");
+  retval = message_dialog ("warndlg", msg, title, "warn", varargin{:});
 
 endfunction
 

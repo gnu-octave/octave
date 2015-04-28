@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -33,6 +33,10 @@ const char *error_id_nonconformant_args = "Octave:nonconformant-args";
 const char *error_id_index_out_of_bounds = "Octave:index-out-of-bounds";
 
 const char *error_id_invalid_index = "Octave:invalid-index";
+
+const char *warning_id_nearly_singular_matrix = "Octave:nearly-singular-matrix";
+
+const char *warning_id_singular_matrix = "Octave:singular-matrix";
 
 void
 gripe_nan_to_logical_conversion (void)
@@ -166,3 +170,19 @@ gripe_assignment_dimension_mismatch (void)
     ("A(I,J,...) = X: dimensions mismatch");
 }
 
+void
+gripe_singular_matrix (double rcond)
+{
+  if (rcond == 0.0)
+    {
+      (*current_liboctave_warning_with_id_handler)
+        (warning_id_singular_matrix,
+         "matrix singular to machine precision");
+    }
+  else
+    {
+      (*current_liboctave_warning_with_id_handler)
+        (warning_id_nearly_singular_matrix,
+         "matrix singular to machine precision, rcond = %g", rcond);
+    }
+}

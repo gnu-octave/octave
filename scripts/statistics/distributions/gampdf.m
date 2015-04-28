@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function pdf = gampdf (x, a, b)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("gampdf: X, A, and B must be of common size or scalars");
@@ -84,12 +84,12 @@ endfunction
 %!assert (gampdf (x, 1, [0 -Inf NaN Inf 1]), [NaN NaN NaN 0 y(5)])
 %!assert (gampdf ([x, NaN], 1, 1), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (gampdf (single ([x, NaN]), 1, 1), single ([y, NaN]))
 %!assert (gampdf ([x, NaN], single (1), 1), single ([y, NaN]))
 %!assert (gampdf ([x, NaN], 1, single (1)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error gampdf ()
 %!error gampdf (1)
 %!error gampdf (1,2)

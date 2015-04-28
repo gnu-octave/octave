@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,7 @@
 
 function [pval, t, df] = welch_test (x, y, alt)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -62,7 +62,7 @@ function [pval, t, df] = welch_test (x, y, alt)
   cdf  = tcdf (t, df);
 
   if (nargin == 2)
-    alt  = "!=";
+    alt = "!=";
   endif
 
   if (! ischar (alt))

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -74,7 +74,7 @@ endfunction
 %! assert (k, 12);
 %! assert (d, 1);
 
-%% Test input validation
+## Test input validation
 %!error unmkpp ()
 %!error unmkpp (1,2)
 %!error <piecewise polynomial structure> unmkpp (1)

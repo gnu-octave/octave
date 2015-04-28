@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 John W. Eaton
+## Copyright (C) 2010-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} is_valid_file_id (@var{fid})
 ## Return true if @var{fid} refers to an open file.
-## @seealso{fopen}
+## @seealso{freport, fopen}
 ## @end deftypefn
 
 function retval = is_valid_file_id (fid)

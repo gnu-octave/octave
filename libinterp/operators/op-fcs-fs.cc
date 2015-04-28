@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -64,7 +64,7 @@ DEFBINOP (ldiv, float_complex, float)
 
   FloatComplex d = v1.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v2.float_value () / d);
@@ -99,7 +99,7 @@ DEFBINOP (el_ldiv, float_complex, float)
 
   FloatComplex d = v1.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v2.float_value () / d);
@@ -109,16 +109,14 @@ DEFBINOP (el_and, float_complex, float)
 {
   CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
 
-  return (v1.float_complex_value () != static_cast<float>(0.0) &&
-          v2.float_value ());
+  return (v1.float_complex_value () != 0.0f && v2.float_value ());
 }
 
 DEFBINOP (el_or, float_complex, float)
 {
   CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
 
-  return (v1.float_complex_value () != static_cast<float>(0.0) ||
-          v2.float_value ());
+  return (v1.float_complex_value () != 0.0f || v2.float_value ());
 }
 
 DEFNDCATOP_FN (fcs_fs, float_complex, float_scalar, float_complex_array,

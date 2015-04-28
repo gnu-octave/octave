@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -72,7 +72,7 @@ endfunction
 %! assert (etime (t4, t1), 60);
 %! assert (etime (t5, t1), 13);
 
-%% Test input validation
+## Test input validation
 %!error etime ();
 %!error etime (1);
 %!error etime (1, 2, 3);

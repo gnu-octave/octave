@@ -27,13 +27,58 @@
 ##
 ## @var{m} must be a scalar or real array with -Inf @leq{} @var{m} @leq{} 1.
 ##
-## The optional input @var{tol} is currently ignored (@sc{matlab} uses this
-## to allow a faster, less accurate approximation).
+## The optional input @var{tol} controls the stopping tolerance of the
+## algorithm and defaults to @code{eps (class (@var{m}))}.  The tolerance can
+## be increased to compute a faster, less accurate approximation.
 ##
-## Called with only one output, elliptic integrals of the first kind are
+## When called with one output only elliptic integrals of the first kind are
 ## returned.
 ##
-## Reference: Milton Abramowitz and Irene A. Stegun,
+## Mathematical Note:
+##
+## Elliptic integrals of the first kind are defined as
+##
+## @tex
+## $$
+## {\rm K} (m) = \int_0^1 {dt \over \sqrt{(1 - t^2) (1 - m^2 t^2)}}
+## $$
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+##          1
+##         /               dt
+## K (m) = | ------------------------------
+##         / sqrt ((1 - t^2)*(1 - m^2*t^2))
+##        0
+## @end group
+## @end example
+##
+## @end ifnottex
+##
+## Elliptic integrals of the second kind are defined as
+##
+## @tex
+## $$
+## {\rm E} (m) = \int_0^1 {\sqrt{1 - m^2 t^2} \over \sqrt{1 - t^2}} dt
+## $$
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+##          1
+##         /  sqrt (1 - m^2*t^2)
+## E (m) = |  ------------------ dt
+##         /  sqrt (1 - t^2)
+##        0
+## @end group
+## @end example
+##
+## @end ifnottex
+##
+## Reference: Milton @nospell{Abramowitz} and Irene A. @nospell{Stegun},
 ## @cite{Handbook of Mathematical Functions}, Chapter 17, Dover, 1965.
 ## @seealso{ellipj}
 ## @end deftypefn
@@ -42,12 +87,13 @@
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## Author: Jaakko Ruohio
 
-function [k, e] = ellipke (m)
+function [k, e] = ellipke (m, tol = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  sz = size (m);
   m = m(:);
   if (! isreal (m))
     error ("ellipke: M must be real");
@@ -55,7 +101,13 @@ function [k, e] = ellipke (m)
     error ("ellipke: M must be <= 1");
   endif
 
-  k = e = zeros (size (m));
+  if (isempty (tol))
+    tol = eps (class (m));
+  elseif (! (isreal (tol) && isscalar (tol) && tol > 0))
+    error ("ellipke: TOL must be a real scalar > 0")
+  endif
+
+  k = e = zeros (sz);
 
   ## Handle extreme values
   idx_1 = (m == 1);
@@ -84,11 +136,11 @@ function [k, e] = ellipke (m)
     do
       t = (a + b)/2;
       c = (a - b)/2;
-      b = sqrt (a.*b);
+      b = sqrt (a .* b);
       a = t;
       f *= 2;
       sum += f*c.^2;
-    until (all (c./a < eps) || (++n > Nmax))
+    until (all (c./a < tol) || (++n > Nmax))
     if (n >= Nmax)
       error ("ellipke: algorithm did not converge in %d iterations", Nmax);
     endif
@@ -104,23 +156,17 @@ endfunction
 ## Test complete elliptic functions of first and second kind
 ## against "exact" solution from Mathematica 3.0
 %!test
-%! m = [0.0; 0.01; 0.1; 0.5; 0.9; 0.99; 1.0];
+%! m = [0.0, 0.01; 0.1, 0.5; 0.9, 0.99; 1.0, 0.0];
 %! [k,e] = ellipke (m);
 %!
-%! k_exp = [1.5707963267948966192;
-%!          1.5747455615173559527;
-%!          1.6124413487202193982;
-%!          1.8540746773013719184;
-%!          2.5780921133481731882;
-%!          3.6956373629898746778;
-%!          Inf ];
-%! e_exp = [1.5707963267948966192;
-%!          1.5668619420216682912;
-%!          1.5307576368977632025;
-%!          1.3506438810476755025;
-%!          1.1047747327040733261;
-%!          1.0159935450252239356;
-%!          1.0 ];
+%! k_exp = [1.5707963267948966192, 1.5747455615173559527
+%!          1.6124413487202193982, 1.8540746773013719184
+%!          2.5780921133481731882, 3.6956373629898746778
+%!          Inf                  , 1.5707963267948966192 ];
+%! e_exp = [1.5707963267948966192, 1.5668619420216682912
+%!          1.5307576368977632025, 1.3506438810476755025
+%!          1.1047747327040733261, 1.0159935450252239356
+%!          1.0                  , 1.5707963267948966192 ];
 %! assert (k, k_exp, 8*eps);
 %! assert (e, e_exp, 8*eps);
 
@@ -175,4 +221,9 @@ endfunction
 ## Test input validation
 %!error ellipke ()
 %!error ellipke (1,2,3)
+%!error <M must be real> ellipke (1i)
+%!error <M must be .= 1> ellipke (2)
+%!error <TOL must be a real scalar . 0> ellipke (1, i)
+%!error <TOL must be a real scalar . 0> ellipke (1, [1 1])
+%!error <TOL must be a real scalar . 0> ellipke (1, -1)
 

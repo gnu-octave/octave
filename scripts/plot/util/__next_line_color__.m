@@ -1,5 +1,5 @@
-## Copyright (C) 2013 Carl Osterwisch
-## Copyright (C) 2007-2013 John W. Eaton
+## Copyright (C) 2013-2015 Carl Osterwisch
+## Copyright (C) 2007-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -51,4 +51,23 @@ function rgb = __next_line_color__ (reset)
   endif
 
 endfunction
+
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   set (hax, "colororder", [1 0 0; 0 1 0; 0 0 1]);
+%!   hold on;
+%!   h = plot (1:5,1:5,'o', 1:4,1:4, "x", 1:3,1:3, "d");
+%!   assert (get (h, "color"), {[1 0 0]; [0 1 0]; [0 0 1]});
+%!   cla (hax);
+%!   hold all;
+%!   h1 = plot (1:5,1:5,'o');
+%!   h2 = plot (1:4,1:4, "x");
+%!   h3 = plot (1:3,1:3, "d");
+%!   assert (get ([h1;h2;h3], "color"), {[1 0 0]; [0 1 0]; [0 0 1]});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

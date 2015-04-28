@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Martin Helm
+## Copyright (C) 2009-2015 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -24,8 +24,8 @@
 ## @end deftypefn
 
 function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
-  if (ismatrix (x) && ndims (x) == 3 && ismatrix (y) && ndims (y) == 3
-       && ismatrix (z) && ndims (z) == 3 && size_equal (x, y, z, val))
+  if (isnumeric (x) && ndims (x) == 3 && isnumeric (y) && ndims (y) == 3
+       && isnumeric (z) && ndims (z) == 3 && size_equal (x, y, z, val))
     x = squeeze (x(1,:,1))(:);
     y = squeeze (y(:,1,1))(:);
     z = squeeze (z(1,1,:))(:);
@@ -42,7 +42,7 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
   if (columns (v) != 3)
     error ( "V has to be Nx3 matrix");
   endif
-  ##if (!ischar (req))
+  ##if (! ischar (req))
   ## error ('__interp_cube__: Invalid request parameter use "values", "normals" or "normals8"');
   ##endif
   if (isempty (v))

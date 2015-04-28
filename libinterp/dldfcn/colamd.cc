@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -270,10 +270,9 @@ the current version of @sc{colamd} (reserved for future use).\n\
 \n\
 The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
-The authors of the code itself are Stefan I. Larimore and Timothy A.\n\
-Davis @email{davis@@cise.ufl.edu}, University of Florida.  The algorithm was\n\
-developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
-Ng, Oak Ridge National Laboratory.  (see\n\
+The authors of the code itself are @nospell{Stefan I. Larimore} and\n\
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},\n\
+Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
 @seealso{colperm, symamd, ccolamd}\n\
 @end deftypefn")
@@ -506,10 +505,9 @@ always zero in the current version of SYMAMD (reserved for future use).\n\
 \n\
 The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
-The authors of the code itself are Stefan I. Larimore and Timothy A.\n\
-Davis @email{davis@@cise.ufl.edu}, University of Florida.  The algorithm was\n\
-developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
-Ng, Oak Ridge National Laboratory.  (see\n\
+The authors of the code itself are @nospell{Stefan I. Larimore} and\n\
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},\n\
+Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
 @seealso{colperm, colamd}\n\
 @end deftypefn")

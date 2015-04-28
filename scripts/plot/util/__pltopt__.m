@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -232,4 +232,40 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   endif
 
 endfunction
+
+
+## Only cursory testing.  Real testing done by appearance of plots.
+%test
+%! opts = __pltopt__ ("abc", "");
+%! assert (opts.color, []);
+%! assert (opts.linestyle, []);
+%! assert (opts.marker, []);
+%! assert (opts.key, "");
+%!test
+%! opts = __pltopt__ ("abc", "r:x");
+%! assert (opts.color, [1 0 0]);
+%! assert (opts.linestyle, ":");
+%! assert (opts.marker, "x");
+%!test
+%! opts = __pltopt__ ("abc", "2square");
+%! assert (opts.color, [0 1 0]);
+%! assert (opts.linestyle, "none");
+%! assert (opts.marker, "s");
+%!test
+%! opts = __pltopt__ ("abc", ";Title;");
+%! assert (opts.key, "Title");
+%! assert (opts.color, []);
+%! assert (opts.linestyle, []);
+%! assert (opts.marker, []);
+%!test
+%! opts = __pltopt__ ("__errplot__", "~>r");
+%! assert (opts.errorstyle, "~>");
+%! assert (opts.color, [1 0 0 ]);
+%! assert (opts.linestyle, []);
+%! assert (opts.marker, []);
+
+## Test input validation
+%!error <argument must be a character string or cell array> __pltopt__ ("abc", 1)
+%!error <unfinished key label> __pltopt__ ("abc", "rx;my_title", true)
+%!error <unrecognized format character: 'u'> __pltopt__ ("abc", "u", true)
 

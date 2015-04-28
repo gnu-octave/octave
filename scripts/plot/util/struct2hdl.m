@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 pdiribarne
+## Copyright (C) 2012-2015 pdiribarne
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@
 ## A third boolean argument @var{hilev} can be passed to specify whether
 ## the function should preserve listeners/callbacks, e.g., for legends or
 ## hggroups.  The default is false.
-## @seealso{hdl2struct, findobj}
+## @seealso{hdl2struct, hgload, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>
@@ -177,7 +177,7 @@ endfunction
 
 function [h, sout] = createaxes (s, p, par)
   ## regular axes
-  if (strcmp (s.properties.tag, ""))
+  if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     propval = {"position", s.properties.position};
     hid = {"autopos_tag", "looseinset"};
     for ii = 1:numel (hid)
@@ -297,7 +297,11 @@ function [h, sout] = createpatch (s, par)
   h = patch (prp);
   set (h, "parent", par);
   s.properties = rmfield (s.properties,
-                            {"faces", "vertices", "facevertexcdata"});
+                          {"faces", "vertices", "facevertexcdata"});
+  ## Also remove derived properties.  Otherwise there is a possibility for
+  ## a segfault when 'set (h, properties)' is used to restore properties
+  ## which do not match in size the ones created with from the call to patch().
+  s.properties = rmfield (s.properties, {"xdata", "ydata", "zdata", "cdata"});
   addmissingprops (h, s.properties);
   sout = s;
 endfunction
@@ -447,7 +451,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
 
   elseif (isfield (fields, "bargroup"))
     ## bar plot
-    ## FIXME - here we don't have access to brothers so we first create all
+    ## FIXME: Here we don't have access to brothers so we first create all
     ## the barseries of the bargroup (but the last), then retrieve information,
     ## and rebuild the whole bargroup.
     ## The duplicate are deleted after calling "setprops"
@@ -459,7 +463,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
 
     tst = sum (temp) == length (bargroup);
 
-    if (isscalar (bargroup) || !tst)
+    if (isscalar (bargroup) || ! tst)
       xdata = s.properties.xdata;
       ydata = s.properties.ydata;
 
@@ -480,7 +484,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
       tmp = struct ("handle", NaN, "type", "", "children", [], "special", []);
       for ii = 1:(nbar - 1)
         idx = find (p(1:2:end) == bargroup(ii)) * 2;
-        hdl = p (idx);
+        hdl = p(idx);
         xdata = [xdata get(hdl).xdata];
         ydata = [ydata get(hdl).ydata];
         tmp.children(ii) = hdl2struct (hdl);
@@ -547,8 +551,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
 endfunction
 
 function setprops (s, h, p, hilev)
-  more off;
-  if (strcmpi (s.properties.tag, ""))
+  if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     specs = s.children(s.special);
     if (isempty (specs))
       hdls = [];
@@ -613,8 +616,7 @@ function setprops (s, h, p, hilev)
       endif
     endif
 
-  elseif (strcmpi (s.properties.tag, "legend")
-          || strcmpi (s.properties.tag, "colorbar"))
+  else
     set (h, s.properties);
   endif
 

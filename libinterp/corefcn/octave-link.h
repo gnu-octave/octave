@@ -1,8 +1,8 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
-Copyright (C) 2011-2013 John P. Swensen
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2015 John P. Swensen
 
 This file is part of Octave.
 
@@ -79,6 +79,16 @@ public:
       instance->do_discard_events ();
   }
 
+  static bool confirm_shutdown (void)
+  {
+    bool retval = true;
+
+    if (instance_ok ())
+      retval = instance->do_confirm_shutdown ();
+
+    return retval;
+  }
+
   static bool exit (int status)
   {
     bool retval = false;
@@ -110,14 +120,6 @@ public:
       instance->do_post_event (obj, method, arg);
   }
 
-  template <class T, class A, class B>
-  static void post_event (T *obj, void (T::*method) (const A&, const B&),
-                          const A& arg_a, const B& arg_b)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg_a, arg_b);
-  }
-
   static void entered_readline_hook (void)
   {
     if (enabled ())
@@ -128,6 +130,12 @@ public:
   {
     if (enabled ())
       instance->do_finished_readline_hook ();
+  }
+
+  static bool
+  copy_image_to_clipboard (const std::string& file)
+  {
+    return enabled () ? instance->do_copy_image_to_clipboard (file) : false;
   }
 
   static bool
@@ -229,7 +237,7 @@ public:
                              const std::list<workspace_element>& ws)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, ws);
+      instance->do_set_workspace (top_level, instance->debugging, ws);
   }
 
   static void clear_workspace (void)
@@ -388,7 +396,10 @@ protected:
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }
 
+  virtual bool do_confirm_shutdown (void) = 0;
   virtual bool do_exit (int status) = 0;
+
+  virtual bool do_copy_image_to_clipboard (const std::string& file) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;
   virtual bool do_prompt_new_edit_file (const std::string& file) = 0;
@@ -434,7 +445,7 @@ protected:
   virtual void do_execute_command_in_terminal (const std::string& command) = 0;
 
   virtual void
-  do_set_workspace (bool top_level,
+  do_set_workspace (bool top_level, bool debug,
                     const std::list<workspace_element>& ws) = 0;
 
   virtual void do_clear_workspace (void) = 0;

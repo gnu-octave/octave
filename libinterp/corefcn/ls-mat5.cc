@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -264,7 +264,8 @@ read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
       if (len > 0) \
         { \
           OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-          stream.read (reinterpret_cast<char *> (ptr), size * len); \
+          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
+          stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
           if (swap) \
             swap_bytes< size > (ptr, len); \
           for (octave_idx_type i = 0; i < len; i++) \
@@ -439,7 +440,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
   unsigned int upper;
   int32_t temp;
 
-  if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
+  if (! is.read (reinterpret_cast<char *> (&temp), 4))
     goto data_read_error;
 
   if (swap)
@@ -456,7 +457,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
     }
   else
     {
-      if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
+      if (! is.read (reinterpret_cast<char *> (&temp), 4))
         goto data_read_error;
       if (swap)
         swap_bytes<4> (&temp);
@@ -631,8 +632,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   // array flags subelement
   int32_t len;
-  if (read_mat5_tag (is, swap, type, len, is_small_data_element) ||
-      type != miUINT32 || len != 8 || is_small_data_element)
+  if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+      || type != miUINT32 || len != 8 || is_small_data_element)
     {
       error ("load: invalid array flags subelement");
       goto early_read_error;
@@ -650,7 +651,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   arrayclass = static_cast<arrayclasstype> (flags & 0xff);
 
   int32_t tmp_nzmax;
-  read_int (is, swap, tmp_nzmax);   // max number of non-zero in sparse
+  read_int (is, swap, tmp_nzmax);   // max number of nonzero in sparse
   nzmax = tmp_nzmax;
 
   // dimensions array subelement
@@ -658,8 +659,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     {
       int32_t dim_len;
 
-      if (read_mat5_tag (is, swap, type, dim_len, is_small_data_element) ||
-          type != miINT32)
+      if (read_mat5_tag (is, swap, type, dim_len, is_small_data_element)
+          || type != miINT32)
         {
           error ("load: invalid dimensions array subelement");
           goto early_read_error;
@@ -694,7 +695,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       dims(1) = 1;
     }
 
-  if (read_mat5_tag (is, swap, type, len, is_small_data_element) || !INT8(type))
+  if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+      || ! INT8(type))
     {
       error ("load: invalid array name subelement");
       goto early_read_error;
@@ -709,7 +711,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     if (len)
       {
-        if (! is.read (name, len ))
+        if (! is.read (name, len))
           goto data_read_error;
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
@@ -913,9 +915,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 std::string mroot =
                   m0.contents ("matlabroot").string_value ();
 
-                if ((fpath.length () >= mroot.length ()) &&
-                    fpath.substr (0, mroot.length ()) == mroot &&
-                    OCTAVE_EXEC_PREFIX != mroot)
+                if ((fpath.length () >= mroot.length ())
+                    && fpath.substr (0, mroot.length ()) == mroot
+                    && OCTAVE_EXEC_PREFIX != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
                     // doesn't equal octave_config_info ("exec_prefix")
@@ -937,7 +939,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         std::string dir_name = str.substr (0, xpos);
 
                         octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", fname);
+                          = load_fcn_from_file (str, dir_name, "", "", fname);
 
                         if (fcn)
                           {
@@ -966,7 +968,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         std::string dir_name = str.substr (0, xpos);
 
                         octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", fname);
+                          = load_fcn_from_file (str, dir_name, "", "", fname);
 
                         if (fcn)
                           {
@@ -991,7 +993,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string dir_name = fpath.substr (0, xpos);
 
                     octave_function *fcn
-                      = load_fcn_from_file (fpath, dir_name, "", fname);
+                      = load_fcn_from_file (fpath, dir_name, "", "", fname);
 
                     if (fcn)
                       {
@@ -1096,7 +1098,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             int32_t fn_type;
             int32_t fn_len;
             if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
-                || !INT8(fn_type))
+                || ! INT8(fn_type))
               {
                 error ("load: invalid field name subelement");
                 goto data_read_error;
@@ -1157,8 +1159,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       {
         isclass = true;
 
-        if (read_mat5_tag (is, swap, type, len, is_small_data_element) ||
-            !INT8(type))
+        if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+            || ! INT8(type))
           {
             error ("load: invalid class name");
             goto skip_ahead;
@@ -1171,7 +1173,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
           if (len)
             {
-              if (! is.read (name, len ))
+              if (! is.read (name, len))
                 goto data_read_error;
 
               is.seekg (tmp_pos + static_cast<std::streamoff>
@@ -1201,7 +1203,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             goto data_read_error;
           }
 
-        if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len ))
+        if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len))
           goto data_read_error;
 
         if (swap)
@@ -1210,7 +1212,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // field name subelement.  The length of this subelement tells
         // us how many fields there are.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
-            || !INT8(fn_type))
+            || ! INT8(fn_type))
           {
             error ("load: invalid field name subelement");
             goto data_read_error;
@@ -1277,8 +1279,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       warning ("load: unable to reconstruct object inheritance");
 
                     tc = cls;
-                    if (load_path::find_method (classname, "loadobj") !=
-                        std::string ())
+                    if (load_path::find_method (classname, "loadobj")
+                        != std::string ())
                       {
                         octave_value_list tmp = feval ("loadobj", tc, 1);
 
@@ -1568,7 +1570,8 @@ int
 read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
                               const std::string& filename)
 {
-  int16_t version=0, magic=0;
+  int16_t version = 0;
+  int16_t magic = 0;
   uint64_t subsys_offset;
 
   is.seekg (116, std::ios::beg);
@@ -1674,7 +1677,8 @@ data_write_error:
       OCTAVE_LOCAL_BUFFER (TYPE, ptr, count); \
       for (octave_idx_type i = 0; i < count; i++) \
         ptr[i] = static_cast<TYPE> (data[i]); \
-      stream.write (reinterpret_cast<char *> (ptr), count * sizeof (TYPE)); \
+      std::streamsize n_bytes = sizeof (TYPE) * static_cast<std::streamsize> (count); \
+      stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
     } \
   while (0)
 

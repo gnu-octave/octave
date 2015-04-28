@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -18,12 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} primes (@var{n})
-##
 ## Return all primes up to @var{n}.
 ##
-## The algorithm used is the Sieve of Eratosthenes.
+## The output data class (double, single, uint32, etc.) is the same as
+## the input class of @var{n}.  The algorithm used is the Sieve of
+## Eratosthenes.
 ##
-## Note that if you need a specific number of primes you can use the
+## Notes: If you need a specific number of primes you can use the
 ## fact that the distance from one prime to the next is, on average,
 ## proportional to the logarithm of the prime.  Integrating, one finds
 ## that there are about @math{k} primes less than
@@ -33,6 +34,9 @@
 ## @ifnottex
 ## k*log (5*k).
 ## @end ifnottex
+##
+## See also @code{list_primes} if you need a specific number @var{n} of
+## primes.
 ## @seealso{list_primes, isprime}
 ## @end deftypefn
 
@@ -40,7 +44,7 @@
 ## Author: Francesco Potortì
 ## Author: Dirk Laurie
 
-function x = primes (n)
+function p = primes (n)
 
   if (nargin != 1)
     print_usage ();
@@ -50,9 +54,9 @@ function x = primes (n)
     error ("primes: N must be a scalar");
   endif
 
-  if (n > 100000)
+  if (n > 100e3)
     ## Optimization: 1/6 less memory, and much faster (asymptotically)
-    ## 100000 happens to be the cross-over point for Paul's machine;
+    ## 100K happens to be the cross-over point for Paul's machine;
     ## below this the more direct code below is faster.  At the limit
     ## of memory in Paul's machine, this saves .7 seconds out of 7 for
     ## n = 3e6.  Hardly worthwhile, but Dirk reports better numbers.
@@ -71,8 +75,8 @@ function x = primes (n)
         sievem(5*i+1:6*i+1:lenm) = false;
       endif
     endfor
-    x = sort ([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
-  elseif (n > 352)                # nothing magical about 352; must be >2
+    p = sort ([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
+  elseif (n > 352)                # nothing magical about 352; must be > 2
     len = floor ((n-1)/2);        # length of the sieve
     sieve = true (1, len);        # assume every odd number is prime
     for i = 1:(sqrt (n)-1)/2      # check up to sqrt (n)
@@ -80,7 +84,7 @@ function x = primes (n)
         sieve(3*i+1:2*i+1:len) = false; # do it
       endif
     endfor
-    x = [2, 1+2*find(sieve)];     # primes remaining after sieve
+    p = [2, 1+2*find(sieve)];     # primes remaining after sieve
   else
     a = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, ...
          53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, ...
@@ -88,7 +92,11 @@ function x = primes (n)
          173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, ...
          233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, ...
          293, 307, 311, 313, 317, 331, 337, 347, 349];
-    x = a(a <= n);
+    p = a(a <= n);
+  endif
+
+  if (! isa (n, "double"))
+    cast (p, class (n));
   endif
 
 endfunction
@@ -99,4 +107,5 @@ endfunction
 
 %!error primes ()
 %!error primes (1, 2)
+%!error <N must be a scalar> primes (ones (2,2))
 

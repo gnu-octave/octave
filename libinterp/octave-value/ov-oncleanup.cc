@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2013 VZLU Prague
+Copyright (C) 2010-2015 VZLU Prague
 
 This file is part of Octave.
 
@@ -98,14 +98,9 @@ octave_oncleanup::~octave_oncleanup (void)
       error ("onCleanup: internal error: unhandled exception in cleanup action");
     }
 
-  // We don't want to ignore errors that occur in the cleanup code, so
-  // if an error is encountered there, leave error_state alone.
-  // Otherwise, set it back to what it was before.
+  // FIXME: can this happen now?
   if (error_state)
-    {
-      frame.discard_first ();
-      octave_call_stack::backtrace_error_message ();
-    }
+    frame.discard_first ();
 }
 
 octave_scalar_map
@@ -152,9 +147,9 @@ octave_oncleanup::load_binary (std::istream& /* is */, bool /* swap */,
   return true;
 }
 
-#if defined (HAVE_HDF5)
 bool
-octave_oncleanup::save_hdf5 (hid_t /* loc_id */, const char * /* name */,
+octave_oncleanup::save_hdf5 (octave_hdf5_id /* loc_id */,
+                             const char * /* name */,
                              bool /* save_as_floats */)
 {
   warn_save_load ();
@@ -162,15 +157,15 @@ octave_oncleanup::save_hdf5 (hid_t /* loc_id */, const char * /* name */,
 }
 
 bool
-octave_oncleanup::load_hdf5 (hid_t /* loc_id */, const char * /* name */)
+octave_oncleanup::load_hdf5 (octave_hdf5_id /* loc_id */,
+                             const char * /* name */)
 {
   warn_save_load ();
   return true;
 }
-#endif
 
 void
-octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

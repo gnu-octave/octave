@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Søren Hauberg
+## Copyright (C) 2009-2015 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -113,7 +113,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
     endl_idx = find (help_text == "\n");
     buffer = "";
     for k = 1:length (def_idx)
-      endl = endl_idx (find (endl_idx > def_idx(k), 1));
+      endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
         buffer = strcat (buffer, help_text (def_idx(k):end), "\n");
       else

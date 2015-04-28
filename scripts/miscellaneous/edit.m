@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2013 Paul Kienzle
+## Copyright (C) 2001-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as
-## its argument it will be opened in the text editor defined by @code{EDITOR}.
+## its argument it will be opened in the text editor defined by @env{EDITOR}.
 ##
 ## @itemize @bullet
 ## @item
@@ -125,7 +125,8 @@ function ret = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("HOME", fullfile (default_home, "octave"),
+  persistent FUNCTION = struct ("HOME",
+                                fullfile (get_home_directory (), "octave"),
                                 "AUTHOR", default_user(1),
                                 "EMAIL", [],
                                 "LICENSE", "GPL",
@@ -164,7 +165,7 @@ function ret = edit (varargin)
         return;
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")
-          stateval = [ default_home, stateval(2:end) ];
+          stateval = [ get_home_directory, stateval(2:end) ];
         endif
         FUNCTION.HOME = stateval;
         return;
@@ -221,10 +222,10 @@ function ret = edit (varargin)
     if (exist (FUNCTION.HOME, "dir") == 7)
       curr_dir = pwd ();
       unwind_protect
-        chdir (FUNCTION.HOME);
+        cd (FUNCTION.HOME);
         do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
       unwind_protect_cleanup
-        chdir (curr_dir);
+        cd (curr_dir);
       end_unwind_protect
     else
       do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
@@ -284,7 +285,7 @@ function ret = edit (varargin)
     endif
 
     ## If the file includes a path, it may be an overloaded function.
-    if (! index (file, "@") && index (file, filesep))
+    if (! index (file, "@") && strchr (file, '/\'))
       ## No "@" at the beginning of the file, add to the list.
       numfiles = numel (filelist);
       for n = 1:numfiles
@@ -330,7 +331,7 @@ function ret = edit (varargin)
 
     ## If editing a new file, prompt for creation if gui is running
     if (isguirunning ())
-      if (! __octave_link_edit_file__ (file,"prompt"));
+      if (! __octave_link_edit_file__ (file, "prompt"));
         return;
       endif
     endif
@@ -340,12 +341,22 @@ function ret = edit (varargin)
     ## If in gui-mode, create it before or editor would prompt again.
     fileandpath = file;
     idx = rindex (file, ".");
-    name = file(1:idx-1);
-    ext = file(idx+1:end);
+    if (idx)
+      name = file(1:idx-1);
+      ext = file(idx+1:end);
+    else
+      name = file;
+      ext = "";
+    endif
     if (! any (strcmp (ext, {"cc", "m"})))
       ## Some unknown file.  Create and open it or just open it.
+      if (isempty (ext))
+        fileandpath = [fileandpath ".m"];  # Add .m extension per default
+      endif
       if (isguirunning ())
         ## Write the initial file (if there is anything to write)
+        ## Give user the opportunity to change the file extension
+        fileandpath = uiputfile (fileandpath);
         fid = fopen (fileandpath, "wt");
         if (fid < 0)
           error ("edit: could not create %s", fileandpath);
@@ -507,20 +518,6 @@ SUCH DAMAGE.\
 
 endfunction
 
-function retval = default_home ()
-
-  retval = getenv ("HOME");
-  if (isempty (retval))
-    retval = glob ("~");
-    if (! isempty (retval))
-      retval = retval{1};
-    else
-      retval = "";
-    endif
-  endif
-
-endfunction
-
 ## Return the name associated with the current user ID.
 ##
 ## If LONG_FORM is 1, return the full name.  This will be the
@@ -549,12 +546,9 @@ endfunction
 
 function do_edit (editor, file, mode)
 
-  ## Give the hook function a chance.
-  ## If that fails, fall back on running an editor with the system function.
-
-  status = __octave_link_edit_file__ (file);
-
-  if (! status)
+  if (isguirunning ())
+    __octave_link_edit_file__ (file);
+  else
     system (sprintf (undo_string_escapes (editor), ['"' file '"']), [], mode);
   endif
 
@@ -572,7 +566,7 @@ endfunction
 %! edit author none
 %! edit email none
 %! edit license none
-%! edit ("editinplace", !s.editinplace)
+%! edit ("editinplace", ! s.editinplace)
 %! if (s.mode(1) == "a")
 %!   edit mode sync
 %! else

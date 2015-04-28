@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -100,7 +100,7 @@ FloatQRP::init (const FloatMatrix& a, qr_type_t qr_type)
 FloatRowVector
 FloatQRP::Pvec (void) const
 {
-  Array<float> pa (p.pvec ());
+  Array<float> pa (p.col_perm_vec ());
   FloatRowVector pv (MArray<float> (pa) + 1.0f);
   return pv;
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2013 John W. Eaton
+Copyright (C) 2006-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -249,7 +249,7 @@ oct_init_by_array (uint32_t *init_key, int key_length)
         }
     }
 
-  state[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
+  state[0] = 0x80000000UL; /* MSB is 1; assuring nonzero initial array */
   left = 1;
   initf = 1;
 }

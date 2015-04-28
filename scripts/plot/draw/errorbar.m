@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Teemu Ikonen
+## Copyright (C) 2000-2015 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -213,7 +213,7 @@ endfunction
 %! y1 = sin (x);
 %! y2 = cos (x);
 %! errorbar (x, y1, err, '~', x, y2, err, '>');
-%! legend ("Y errbar", "X errbar");
+%! legend ('Y errbar', 'X errbar');
 %! title ('errorbar() with 2 datasets');
 
 
@@ -224,7 +224,7 @@ endfunction
 %! y1 = sin (x);
 %! y2 = cos (x);
 %! errorbar (x, y1, err, err, '#r', x, y2, err, err, '#~');
-%! legend ("X errbox", "Y errbox");
+%! legend ('X errbox', 'Y errbox');
 %! title ('errorbar() with error boxes');
 
 %!demo
@@ -235,7 +235,7 @@ endfunction
 %! y2 = cos (x);
 %! errorbar (x, y1, err, err, err, err, '~>', ...
 %!           x, y2, err, err, err, err, '#~>-*');
-%! legend ("X-Y errbars", "X-Y errboxes");
+%! legend ('X-Y errbars', 'X-Y errboxes');
 %! title ('errorbar() with X-Y errorbars and error boxes');
 
 ## Invisible figure used for tests

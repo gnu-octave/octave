@@ -95,11 +95,11 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 extern OCTINTERP_API octave_value
 box_more (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 
-extern OCTINTERP_API int
+extern OCTINTERP_API bool
 unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls);
 
-extern OCTINTERP_API int
+extern OCTINTERP_API bool
 unbox (JNIEnv* jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 
@@ -139,7 +139,11 @@ public:
   octave_base_value* clone (void) const { return new octave_java (*this); }
   octave_base_value* empty_clone (void) const { return new octave_java (); }
 
+  bool is_instance_of (const std::string&) const;
+
   bool is_defined (void) const { return true; }
+
+  bool is_constant (void) const { return true; }
 
   bool is_map (void) const { return false; }
 
@@ -149,7 +153,7 @@ public:
 
   dim_vector dims (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -294,7 +298,6 @@ private:
 
   std::string java_classname;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
 public:
   int type_id (void) const { return t_id; }

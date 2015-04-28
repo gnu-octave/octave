@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -377,12 +377,14 @@ endfunction
 %!demo
 %! clf;
 %! z = [0:0.05:5];
-%! plot3 (cos (2*pi*z), sin (2*pi*z), z, ';helix;');
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z)
+%! legend ('helix');
 %! title ('plot3() of a helix');
 
 %!demo
 %! clf;
 %! z = [0:0.05:5];
-%! plot3 (z, exp (2i*pi*z), ';complex sinusoid;');
+%! plot3 (z, exp (2i*pi*z));
+%! legend ('complex sinusoid');
 %! title ('plot3() with complex input');
 

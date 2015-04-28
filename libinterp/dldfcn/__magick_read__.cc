@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 Carnë Draug
-Copyright (C) 2002-2013 Andy Adler
+Copyright (C) 2013-2015 Carnë Draug
+Copyright (C) 2002-2015 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
 Copyright (C) 2010 David Grundberg
 
@@ -710,8 +710,9 @@ maybe_initialize_magick (void)
       setlocale (LC_ALL, locale.c_str ());
 
       if (QuantumDepth < 32)
-        warning ("your version of %s limits images to %d bits per pixel",
-                 MagickPackageName, QuantumDepth);
+        warning_with_id ("Octave:GraphicsMagic-Quantum-Depth",
+                         "your version of %s limits images to %d bits per pixel",
+                         MagickPackageName, QuantumDepth);
 
       initialized = true;
     }
@@ -800,8 +801,8 @@ use @code{imread}.\n\
     const octave_idx_type n = frameidx.nelem ();
     for (octave_idx_type frame = 0; frame < n; frame++)
       {
-        if (nRows != imvec[frameidx(frame)].rows () ||
-            nCols != imvec[frameidx(frame)].columns ())
+        if (nRows != imvec[frameidx(frame)].rows ()
+            || nCols != imvec[frameidx(frame)].columns ())
           {
             error ("imread: all frames must have the same size but frame %i is different",
                    frameidx(frame) +1);
@@ -1108,8 +1109,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c;
-                    c.redQuantum (double (*img_fvec) / divisor);
+                    const double grey = double (*img_fvec) / divisor;
+                    Magick::Color c (grey, grey, grey);
                     pix[GM_idx] = c;
                     img_fvec++;
                     GM_idx += nCols;
@@ -1492,8 +1493,10 @@ use @code{imwrite}.\n\
   const octave_idx_type nFrames = imvec.size ();
 
   const octave_idx_type quality = options.getfield ("quality").int_value ();
-  const ColumnVector delaytime = options.getfield ("delaytime").column_vector_value ();
-  const Array<std::string> disposalmethod = options.getfield ("disposalmethod").cellstr_value ();
+  const ColumnVector delaytime =
+    options.getfield ("delaytime").column_vector_value ();
+  const Array<std::string> disposalmethod =
+    options.getfield ("disposalmethod").cellstr_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
     {
       imvec[i].quality (quality);
@@ -1870,7 +1873,7 @@ use @code{imfinfo}.\n\
     "Copyright",          // actually an Exif tag
     "DigitalCamera",
     "GPSInfo",
-    // Notes for the future: GM allows to get many attributes, and even has
+    // Notes for the future: GM allows one to get many attributes, and even has
     // attribute() to obtain arbitrary ones, that may exist in only some
     // cases. The following is a list of some methods and into what possible
     // Matlab compatible values they may be converted.

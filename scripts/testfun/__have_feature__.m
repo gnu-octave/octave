@@ -1,4 +1,4 @@
-## Copyright (C) 2013 John W. Eaton
+## Copyright (C) 2013-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -32,4 +32,8 @@ function retval = __have_feature__ (feature)
     retval = false;
   endif
 endfunction
+
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
 

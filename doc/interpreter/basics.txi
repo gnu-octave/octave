@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -244,16 +244,18 @@ user preferences to the following values
 @group
 PS1                             = ">> "
 PS2                             = ""
-allow_noninteger_range_as_index = true
 beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
-save_default_options            = "-mat-binary"
-do_braindead_shortcircuit_evaluation = true
+disable_diagonal_matrix         = true
+disable_permutation_matrix      = true
+disable_range                   = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 page_screen_output              = false
 print_empty_dimensions          = false
+save_default_options            = "-mat-binary"
+struct_levels_to_print          = 0
 @end group
 @end example
 
@@ -266,11 +268,12 @@ Octave:abbreviated-property-match
 Octave:fopen-file-in-path
 Octave:function-name-clash
 Octave:load-file-in-path
+Octave:possible-matlab-short-circuit-operator
 @end group
 @end example
 
 @noindent
-Note that this does not enable the @code{Octave:matlab-incompatible}
+Note that this does not enable the @code{Octave:language-extension}
 warning, which you might want if you want to be told about writing code
 that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
 @ref{XREFwarning_ids,,warning_ids}).
@@ -377,15 +380,19 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @option{--verbose} option but without the
 @option{--silent} option.
 
-The @code{dump_prefs} function is useful for determining what customizations
-to Octave are possible and which are in effect.
-
-@DOCSTRING(dump_prefs)
-
 @node Quitting Octave
 @section Quitting Octave
 @cindex exiting octave
 @cindex quitting octave
+@cindex finish.m
+@cindex site exiting file
+
+Shutdown is initiated with the @code{exit} or @code{quit} commands (they are
+equivalent).  Similar to startup, Octave has a shutdown process that can be
+customized by user script files.  During shutdown Octave will search for the
+script file @file{finish.m} in the function load path.  Commands to save all
+workspace variables or cleanup temporary files may be placed there.  Additional
+functions to execute on shutdown may be registered with @code{atexit}.
 
 @DOCSTRING(quit)
 

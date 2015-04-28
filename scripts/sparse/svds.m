@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 David Bateman
+## Copyright (C) 2006-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -107,16 +107,16 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     opts.disp = 0;
     opts.maxit = 300;
   else
-    if (!isstruct (opts))
+    if (! isstruct (opts))
       error ("svds: OPTS must be a structure");
     endif
-    if (!isfield (opts, "tol"))
+    if (! isfield (opts, "tol"))
       opts.tol = 0;  # use ARPACK default
     else
       opts.tol = opts.tol / root2;
     endif
     if (isfield (opts, "v0"))
-      if (!isvector (opts.v0) || (length (opts.v0) != sum (size (A))))
+      if (! isvector (opts.v0) || (length (opts.v0) != sum (size (A))))
         error ("svds: OPTS.v0 must be a vector with rows(A)+columns(A) entries");
       endif
     endif
@@ -160,7 +160,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     ## Call to eigs is always a symmetric matrix by construction
     b_opts.issym = true;
     b_sigma = sigma;
-    if (!ischar (b_sigma))
+    if (! ischar (b_sigma))
       b_sigma = b_sigma / max_a;
     endif
 
@@ -169,7 +169,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       ## The eigenvalues returns by eigs for sigma=0 are symmetric about 0.
       ## As we are only interested in the positive eigenvalues, we have to
       ## double k and then throw out the k negative eigenvalues.
-      ## Separately, if sigma is non-zero, but smaller than the smallest
+      ## Separately, if sigma is nonzero, but smaller than the smallest
       ## singular value, ARPACK may not return k eigenvalues. However, as
       ## computation scales with k we'd like to avoid doubling k for all
       ## scalar values of sigma.
@@ -219,7 +219,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
 
     if (length (s) < k)
       warning ("returning fewer singular values than requested");
-      if (!ischar (sigma))
+      if (! ischar (sigma))
         warning ("try increasing the value of sigma");
       endif
     endif

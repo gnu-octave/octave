@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -31,11 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 
 // We are likely to have a lot of octave_value_list objects to allocate,
 // so make the grow_size large.
-DEFINE_OCTAVE_ALLOCATOR2(octave_value_list, 1024);
 
 octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
 {
-  octave_idx_type n = 0, nel = 0;
+  octave_idx_type n = 0;
+  octave_idx_type nel = 0;
 
   // Determine number.
   for (std::list<octave_value_list>::const_iterator p = lst.begin ();

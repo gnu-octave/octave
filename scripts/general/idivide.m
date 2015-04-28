@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -83,7 +83,7 @@ function z = idivide (x, y, op)
       typ = class (x);
     else
       typ = class (x);
-      if (!strcmp (class (x), class (y)))
+      if (! strcmp (class (x), class (y)))
         error ("idivide: incompatible types");
       endif
     endif

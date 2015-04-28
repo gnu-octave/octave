@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -99,16 +99,18 @@ octave_popen2 (const std::string& cmd, const string_vector& args,
   ZeroMemory (&si, sizeof (si));
   si.cb = sizeof (si);
 
-  if (! CreatePipe (&childRead, &parentWrite, 0, 0) ||
-      ! DuplicateHandle (hProcess, childRead, hProcess, &childRead, 0, TRUE,
-                         DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
+  if (! CreatePipe (&childRead, &parentWrite, 0, 0)
+      || ! DuplicateHandle (hProcess, childRead, hProcess, &childRead,
+                            0, TRUE,
+                            DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
     {
       msg = "popen2: pipe creation failed";
       return -1;
     }
-  if (! CreatePipe (&parentRead, &childWrite, 0, 0) ||
-      ! DuplicateHandle (hProcess, childWrite, hProcess, &childWrite, 0, TRUE,
-                         DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
+  if (! CreatePipe (&parentRead, &childWrite, 0, 0)
+      || ! DuplicateHandle (hProcess, childWrite, hProcess, &childWrite,
+                            0, TRUE,
+                            DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
     {
       msg = "popen2: pipe creation failed";
       return -1;

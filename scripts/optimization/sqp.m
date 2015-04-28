@@ -1,4 +1,5 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2013-2015 Arun Giridhar
 ##
 ## This file is part of Octave.
 ##
@@ -129,7 +130,16 @@
 ## @table @asis
 ## @item 101
 ## The algorithm terminated normally.
-## Either all constraints meet the requested tolerance, or the stepsize,
+## All constraints meet the specified tolerance.
+##
+## @item 102
+## The BFGS update failed.
+##
+## @item 103
+## The maximum number of iterations was reached.
+##
+## @item 104
+## The stepsize has become too small, i.e.,
 ## @tex
 ## $\Delta x,$
 ## @end tex
@@ -137,12 +147,6 @@
 ## delta @var{x},
 ## @end ifnottex
 ## is less than @code{@var{tol} * norm (x)}.
-##
-## @item 102
-## The BFGS update failed.
-##
-## @item 103
-## The maximum number of iterations was reached.
 ## @end table
 ##
 ## An example of calling @code{sqp}:
@@ -192,7 +196,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     print_usage ();
   endif
 
-  if (!isvector (x0))
+  if (! isvector (x0))
     error ("sqp: X0 must be a vector");
   endif
   if (rows (x0) == 1)
@@ -204,7 +208,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     switch (numel (objf))
       case 1
         obj_fun = objf{1};
-        obj_grd = @ (x) fd_obj_grd (x, obj_fun);
+        obj_grd = @(x) fd_obj_grd (x, obj_fun);
       case 2
         obj_fun = objf{1};
         obj_grd = objf{2};
@@ -218,7 +222,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     endswitch
   else
     obj_fun = objf;   # No cell array, only obj_fun set
-    obj_grd = @ (x) fd_obj_grd (x, obj_fun);
+    obj_grd = @(x) fd_obj_grd (x, obj_fun);
   endif
 
   ce_fun = @empty_cf;
@@ -228,7 +232,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       switch (numel (cef))
         case 1
           ce_fun = cef{1};
-          ce_grd = @ (x) fd_ce_jac (x, ce_fun);
+          ce_grd = @(x) fd_ce_jac (x, ce_fun);
         case 2
           ce_fun = cef{1};
           ce_grd = cef{2};
@@ -237,7 +241,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       endswitch
     elseif (! isempty (cef))
       ce_fun = cef;   # No cell array, only constraint equality function set
-      ce_grd = @ (x) fd_ce_jac (x, ce_fun);
+      ce_grd = @(x) fd_ce_jac (x, ce_fun);
     endif
   endif
 
@@ -258,7 +262,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     if (nargin < 5 || (nargin > 5 && isempty (lb) && isempty (ub)))
       ## constraint inequality function only without any bounds
-      ci_grd = @ (x) fd_ci_jac (x, globals.cifcn);
+      ci_grd = @(x) fd_ci_jac (x, globals.cifcn);
       if (iscell (cif))
         switch (length (cif))
           case 1
@@ -310,8 +314,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         error ("sqp: upper bound smaller than lower bound");
       endif
       bounds_grad = [lb_grad; ub_grad];
-      ci_fun = @ (x) cf_ub_lb (x, lb_idx, ub_idx, globals);
-      ci_grd = @ (x) cigrad_ub_lb (x, bounds_grad, globals);
+      ci_fun = @(x) cf_ub_lb (x, lb_idx, ub_idx, globals);
+      ci_grd = @(x) cigrad_ub_lb (x, bounds_grad, globals);
     endif
 
   endif   # if (nargin > 3)
@@ -394,6 +398,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     t3 = all (lambda_i >= 0);
     t4 = norm (lambda .* con);
 
+    ## Normal convergence.  All constraints are satisfied
+    ## and objective has converged.
     if (t2 && t3 && max ([t0; t1; t4]) < tol)
       info = 101;
       break;
@@ -408,8 +414,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     info = INFO.info;
 
-    ## FIXME -- check QP solution and attempt to recover if it has
-    ## failed.  For now, just warn about possible problems.
+    ## FIXME: check QP solution and attempt to recover if it has failed.
+    ##        For now, just warn about possible problems.
 
     id = "Octave:SQP-QP-subproblem";
     switch (info)
@@ -453,8 +459,9 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     delx = x_new - x;
 
+    ## Check if step size has become too small (indicates lack of progress).
     if (norm (delx) < tol * norm (x))
-      info = 101;
+      info = 104;
       break;
     endif
 
@@ -483,6 +490,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
       d2 = delxt*r;
 
+      ## Check if the next BFGS update will work properly.
+      ## If d1 or d2 vanish, the BFGS update will fail.
       if (d1 == 0 || d2 == 0)
         info = 102;
         break;
@@ -510,6 +519,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
   endwhile
 
+  ## Check if we've spent too many iterations without converging.
   if (iter >= iter_max)
     info = 103;
   endif
@@ -694,7 +704,7 @@ endfunction
 
 function res = cigrad_ub_lb (x, bgrad, globals)
 
-  cigradfcn = @ (x) fd_ci_jac (x, globals.cifcn);
+  cigradfcn = @(x) fd_ci_jac (x, globals.cifcn);
 
   if (iscell (globals.cif) && length (globals.cif) > 1)
     cigradfcn = globals.cif{2};
@@ -708,7 +718,7 @@ function res = cigrad_ub_lb (x, bgrad, globals)
 
 endfunction
 
-# Utility function used to debug sqp
+## Utility function used to debug sqp
 function report (iter, qp_iter, alpha, nfun, obj)
 
   if (nargin == 0)
@@ -720,8 +730,8 @@ function report (iter, qp_iter, alpha, nfun, obj)
 endfunction
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Test Code
+################################################################################
+## Test Code
 
 %!function r = __g (x)
 %!  r = [sumsq(x)-10;
@@ -750,7 +760,7 @@ endfunction
 %! assert (x, x_opt, 8*sqrt (eps));
 %! assert (obj, obj_opt, sqrt (eps));
 
-%% Test input validation
+## Test input validation
 %!error sqp ()
 %!error sqp (1)
 %!error sqp (1,2,3,4,5,6,7,8,9)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2013 VZLU Prague
+Copyright (C) 2010-2015 VZLU Prague
 
 This file is part of Octave.
 
@@ -116,7 +116,8 @@ convolve (const MArray<T>& a, const MArray<R>& b,
     return MArray<T> ();
 
   int nd = std::max (a.ndims (), b.ndims ());
-  const dim_vector adims = a.dims ().redim (nd), bdims = b.dims ().redim (nd);
+  const dim_vector adims = a.dims ().redim (nd);
+  const dim_vector bdims = b.dims ().redim (nd);
   dim_vector cdims = dim_vector::alloc (nd);
 
   for (int i = 0; i < nd; i++)

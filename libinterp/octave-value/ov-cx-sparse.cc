@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -39,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-complex.h"
 #include "gripes.h"
 
+#include "oct-hdf5.h"
+
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
@@ -49,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTINTERP_API octave_base_sparse<SparseComplexMatrix>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_sparse_complex_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
                                      "sparse complex matrix", "double");
@@ -241,16 +242,16 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
-  itmp= -2;
+  itmp = -2;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nr;
+  itmp = nr;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nc;
+  itmp = nc;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nz;
+  itmp = nz;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
   save_type st = LS_DOUBLE;
@@ -367,12 +368,14 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
+octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                          bool save_as_floats)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
@@ -390,8 +393,8 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   if (group_hid < 0)
     return false;
 
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   SparseComplexMatrix m = sparse_complex_matrix_value ();
   octave_idx_type tmp;
   hsize_t hdims[2];
@@ -614,12 +617,20 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   H5Tclose (type_hid);
   H5Gclose (group_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   octave_idx_type nr, nc, nz;
   hid_t group_hid, data_hid, space_hid;
   hsize_t rank;
@@ -636,7 +647,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
 #if HAVE_HDF5_18
   data_hid = H5Dopen (group_hid, "nr", H5P_DEFAULT);
@@ -840,7 +851,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   Complex *ctmp = m.xdata ();
-  bool retval = false;
+
   if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL,
                H5P_DEFAULT, ctmp) >= 0
       && m.indices_ok ())
@@ -854,10 +865,12 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   H5Dclose (data_hid);
   H5Gclose (group_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_sparse_complex_matrix::as_mxArray (void) const

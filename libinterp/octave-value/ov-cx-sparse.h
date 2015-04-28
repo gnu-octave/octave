@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -142,11 +141,9 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   mxArray *as_mxArray (void) const;
 
@@ -154,7 +151,6 @@ public:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

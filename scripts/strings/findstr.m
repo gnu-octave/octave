@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -78,9 +78,9 @@ function v = findstr (s, t, overlap = true)
     ## length three or more: match the first three by find then go through
     ## the much smaller list to determine which of them are real matches
     limit = l_s - l_t + 1;
-    v = find (s(1:limit) == t(1)
+    v = find (  s(1:limit)   == t(1)
               & s(2:limit+1) == t(2)
-              & s (3:limit+2) == t(3));
+              & s(3:limit+2) == t(3));
   endif
 
   ## Need to search the index vector if our find was too short
@@ -136,7 +136,7 @@ endfunction
 %!assert (findstr ("abababa", "aba"), [1, 3, 5])
 %!assert (findstr ("aba", "abababa", 0), [1, 5])
 
-%% Test input validation
+## Test input validation
 %!error findstr ()
 %!error findstr ("foo", "bar", 3, 4)
 %!error <must have only one non-singleton dimension> findstr (["AB" ; "CD"], "C")

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 John W. Eaton
+Copyright (C) 2007-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -296,7 +296,7 @@ public:
 
   graphics_handle get_parent (void) const { return parent; }
 
-  void set_parent (const graphics_handle &h) { parent = h; }
+  void set_parent (const graphics_handle& h) { parent = h; }
 
   bool is_hidden (void) const { return hidden; }
 
@@ -1028,7 +1028,7 @@ public:
     validate ();
   }
 
-  color_values (std::string str)
+  color_values (const std::string& str)
     : xrgb (1, 3)
   {
     if (! str2rgb (str))
@@ -1076,7 +1076,7 @@ public:
 private:
   Matrix xrgb;
 
-  OCTINTERP_API bool str2rgb (std::string str);
+  OCTINTERP_API bool str2rgb (const std::string& str);
 };
 
 class color_property : public base_property
@@ -1577,6 +1577,8 @@ public:
     return *this;
   }
 
+  void invalidate (void) { current_val = octave_NaN; }
+
   base_property* clone (void) const { return new handle_property (*this); }
 
 protected:
@@ -1631,7 +1633,7 @@ public:
   }
 
   children_property (const std::string& nm, const graphics_handle& h,
-                     const Matrix &val)
+                     const Matrix& val)
     : base_property (nm, h), children_list ()
   {
     do_init_children (val);
@@ -1651,12 +1653,12 @@ public:
 
   base_property* clone (void) const { return new children_property (*this); }
 
-  bool remove_child (const double &val)
+  bool remove_child (double val)
   {
     return do_remove_child (val);
   }
 
-  void adopt (const double &val)
+  void adopt (double val)
   {
     do_adopt_child (val);
   }
@@ -1716,6 +1718,7 @@ protected:
     const Matrix new_kids_column = new_kids.reshape (dim_vector (nel, 1));
 
     bool is_ok = true;
+    bool add_hidden = true;
 
     if (! error_state)
       {
@@ -1725,9 +1728,13 @@ protected:
           {
             Matrix t1 = visible_kids.sort ();
             Matrix t2 = new_kids_column.sort ();
+            Matrix t3 = get_hidden ().sort ();
 
             if (t1 != t2)
               is_ok = false;
+
+            if (t1 == t3)
+              add_hidden = false;
           }
         else
           is_ok = false;
@@ -1743,7 +1750,10 @@ protected:
 
     if (is_ok)
       {
-        Matrix tmp = new_kids_column.stack (get_hidden ());
+        Matrix tmp = new_kids_column;
+
+        if (add_hidden)
+          tmp.stack (get_hidden ());
 
         children_list.clear ();
 
@@ -1759,14 +1769,14 @@ protected:
   }
 
 private:
-  void do_init_children (const Matrix &val)
+  void do_init_children (const Matrix& val)
   {
     children_list.clear ();
     for (octave_idx_type i = 0; i < val.numel (); i++)
       children_list.push_front (val.xelem (i));
   }
 
-  void do_init_children (const std::list<double> &val)
+  void do_init_children (const std::list<double>& val)
   {
     children_list.clear ();
     for (const_children_list_iterator p = val.begin (); p != val.end (); p++)
@@ -1800,7 +1810,7 @@ private:
     return false;
   }
 
-  void do_adopt_child (const double &val)
+  void do_adopt_child (double val)
   {
     children_list.push_front (val);
   }
@@ -1989,10 +1999,76 @@ private:
 
 // ---------------------------------------------------------------------
 
+typedef std::pair <std::string, octave_value> pval_pair;
+
+class pval_vector : public std::vector <pval_pair>
+{
+public:
+  const_iterator find (const std::string pname) const
+  {
+    const_iterator it;
+
+    for (it = (*this).begin (); it != (*this).end (); it++)
+      if (pname.compare ((*it).first) == 0)
+        return it;
+
+    return (*this).end ();
+  }
+
+  iterator find (const std::string pname)
+  {
+    iterator it;
+
+    for (it = (*this).begin (); it != (*this).end (); it++)
+      if (pname.compare ((*it).first) == 0)
+        return it;
+
+    return (*this).end ();
+  }
+
+  octave_value lookup (const std::string pname) const
+  {
+    octave_value retval;
+
+    const_iterator it = find (pname);
+
+    if (it != (*this).end ())
+      retval = (*it).second;
+
+    return retval;
+  }
+
+  octave_value& operator [] (const std::string pname)
+  {
+    iterator it = find (pname);
+
+    if (it == (*this).end ())
+      {
+        push_back (pval_pair (pname, octave_value ()));
+        return (*this).back ().second;
+      }
+
+    return (*it).second;
+  }
+
+  void erase (const std::string pname)
+  {
+    iterator it = find (pname);
+    if (it != (*this).end ())
+      erase (it);
+  }
+
+  void erase (iterator it)
+  {
+    std::vector <pval_pair>::erase (it);
+  }
+
+};
+
 class property_list
 {
 public:
-  typedef std::map<std::string, octave_value> pval_map_type;
+  typedef pval_vector pval_map_type;
   typedef std::map<std::string, pval_map_type> plist_map_type;
 
   typedef pval_map_type::iterator pval_map_iterator;
@@ -2273,7 +2349,7 @@ public:
 
 private:
 
-  gtk_manager (void);
+  gtk_manager (void) { }
 
   ~gtk_manager (void) { }
 
@@ -2322,15 +2398,9 @@ private:
 
   graphics_toolkit do_get_toolkit (void) const;
 
-  void do_register_toolkit (const std::string& name)
-  {
-    available_toolkits.insert (name);
-  }
+  void do_register_toolkit (const std::string& name);
 
-  void do_unregister_toolkit (const std::string& name)
-  {
-    available_toolkits.erase (name);
-  }
+  void do_unregister_toolkit (const std::string& name);
 
   void do_load_toolkit (const graphics_toolkit& tk)
   {
@@ -2462,12 +2532,16 @@ public:
   virtual void remove_child (const graphics_handle& h)
   {
     if (children.remove_child (h.value ()))
-      mark_modified ();
+      {
+        children.run_listeners ();
+        mark_modified ();
+      }
   }
 
   virtual void adopt (const graphics_handle& h)
   {
     children.adopt (h.value ());
+    children.run_listeners ();
     mark_modified ();
   }
 
@@ -2520,6 +2594,8 @@ public:
 
   virtual void update_axis_limits (const std::string& axis_type,
                                    const graphics_handle& h) const;
+
+  virtual void update_uicontextmenu (void) const;
 
   virtual void delete_children (bool clear = false)
   {
@@ -2589,7 +2665,7 @@ protected:
     bool_property selectionhighlight , "on"
     string_property tag s , ""
     string_property type frs , ty
-    handle_property uicontextmenu , graphics_handle ()
+    handle_property uicontextmenu u , graphics_handle ()
     any_property userdata , Matrix ()
     bool_property visible , "on"
     // additional (Octave-specific) properties
@@ -2600,7 +2676,7 @@ protected:
 protected:
   struct cmp_caseless_str
   {
-    bool operator () (const caseless_str &a, const caseless_str &b) const
+    bool operator () (const caseless_str& a, const caseless_str& b) const
     {
       std::string a1 = a;
       std::transform (a1.begin (), a1.end (), a1.begin (), tolower);
@@ -2644,6 +2720,9 @@ public:
     else
       error ("base_graphics_object::override_defaults: invalid graphics object");
   }
+
+  void build_user_defaults_map (property_list::pval_map_type &def,
+                                const std::string go_name) const;
 
   virtual void set_from_list (property_list& plist)
   {
@@ -2698,13 +2777,33 @@ public:
     return octave_value ();
   }
 
+  virtual property_list get_defaults_list (void) const
+  {
+    if (! valid_object ())
+      error ("base_graphics_object::get_defaults_list: invalid graphics object");
+    return property_list ();
+  }
+
   virtual octave_value get_factory_defaults (void) const
   {
     error ("base_graphics_object::get_factory_defaults: invalid graphics object");
     return octave_value ();
   }
 
+  virtual property_list get_factory_defaults_list (void) const
+  {
+    error ("base_graphics_object::get_factory_defaults_list: invalid graphics object");
+    return property_list ();
+  }
+
+  virtual bool has_readonly_property (const caseless_str& pname) const
+  {
+    return base_properties::has_readonly_property (pname);
+  }
+
   virtual std::string values_as_string (void);
+
+  virtual std::string value_as_string (const std::string& prop);
 
   virtual octave_scalar_map values_as_struct (void);
 
@@ -2828,16 +2927,7 @@ public:
 
   virtual void remove_all_listeners (void);
 
-  virtual void reset_default_properties (void)
-  {
-    if (valid_object ())
-      {
-        std::string msg = (type () + "::reset_default_properties");
-        gripe_not_implemented (msg.c_str ());
-      }
-    else
-      error ("base_graphics_object::default: invalid graphics object");
-  }
+  virtual void reset_default_properties (void);
 
 protected:
   virtual void initialize (const graphics_object& go)
@@ -2919,6 +3009,17 @@ public:
     rep->override_defaults (obj);
   }
 
+  void override_defaults (void)
+  {
+    rep->override_defaults (*rep);
+  }
+
+  void build_user_defaults_map (property_list::pval_map_type &def,
+                                const std::string go_name) const
+  {
+    rep->build_user_defaults_map (def, go_name);
+  }
+
   void set_from_list (property_list& plist) { rep->set_from_list (plist); }
 
   void set (const caseless_str& name, const octave_value& val)
@@ -2970,12 +3071,32 @@ public:
 
   octave_value get_defaults (void) const { return rep->get_defaults (); }
 
+  property_list get_defaults_list (void) const
+  {
+    return rep->get_defaults_list ();
+  }
+
   octave_value get_factory_defaults (void) const
   {
     return rep->get_factory_defaults ();
   }
 
+  property_list get_factory_defaults_list (void) const
+  {
+    return rep->get_factory_defaults_list ();
+  }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    return rep->has_readonly_property (pname);
+  }
+
   std::string values_as_string (void) { return rep->values_as_string (); }
+
+  std::string value_as_string (const std::string& prop)
+  {
+    return rep->value_as_string (prop);
+  }
 
   octave_map values_as_struct (void) { return rep->values_as_struct (); }
 
@@ -3096,20 +3217,10 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // FIXME: it seems strange to me that the diary, diaryfile,
-    // echo, errormessage, format, formatspacing, language, and
-    // recursionlimit properties are here.
-    // WTF do they have to do with graphics?
-    // Also note that these properties (and the monitorpositions,
-    // pointerlocation, and pointerwindow properties) are not yet used
-    // by Octave, so setting them will have no effect, and changes
-    // made elswhere (say, the diary or format functions) will not
-    // cause these properties to be updated.
-    // ANSWER: Matlab defines these properties and uses them in
-    // the same way that Octave uses an internal static variable to
-    // keep track of state.  set (0, "echo", "on") is equivalent
-    // to Octave's echo ("on").  Maybe someday we can connect callbacks
-    // that actually call Octave's own functions for this.
+    // FIXME: Properties that still dont have callbacks are:
+    // language, monitorpositions, pointerlocation, pointerwindow.
+    // Note that these properties are not yet used by Octave, so setting
+    // them will have no effect.
 
     // Programming note: Keep property list sorted if new ones are added.
 
@@ -3117,18 +3228,18 @@ public:
       handle_property callbackobject Sr , graphics_handle ()
       array_property commandwindowsize r , Matrix (1, 2, 0)
       handle_property currentfigure S , graphics_handle ()
-      bool_property diary , "off"
-      string_property diaryfile , "diary"
-      bool_property echo , "off"
-      string_property errormessage , ""
+      bool_property diary GS , "off"
+      string_property diaryfile GS , "diary"
+      bool_property echo GS , "off"
+      string_property errormessage Gr , ""
       string_property fixedwidthfontname , "Courier"
-      radio_property format , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rational|{short}|shorte|shorteng|shortg"
-      radio_property formatspacing , "compact|{loose}"
+      radio_property format GS , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rat|{short}|shorte|shorteng|shortg"
+      radio_property formatspacing GS , "compact|{loose}"
       string_property language , "ascii"
       array_property monitorpositions , Matrix (1, 4, 0)
       array_property pointerlocation , Matrix (1, 2, 0)
       double_property pointerwindow r , 0.0
-      double_property recursionlimit , 256.0
+      double_property recursionlimit GS , 256.0
       double_property screendepth r , default_screendepth ()
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
       array_property screensize r , default_screensize ()
@@ -3138,6 +3249,7 @@ public:
 
   private:
     std::list<graphics_handle> cbo_stack;
+
   };
 
 private:
@@ -3218,9 +3330,19 @@ public:
     return default_properties.as_struct ("default");
   }
 
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
+  }
+
   octave_value get_factory_defaults (void) const
   {
     return factory_properties.as_struct ("factory");
+  }
+
+  property_list get_factory_defaults_list (void) const
+  {
+    return factory_properties;
   }
 
   base_properties& get_properties (void) { return xproperties; }
@@ -3230,6 +3352,14 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 private:
   property_list default_properties;
@@ -3280,14 +3410,19 @@ public:
                 }
               else
                 {
-                  set_toolkit (b);
-                  mark_modified ();
+                  if (nm != get___graphics_toolkit__ ())
+                    {
+                      set_toolkit (b);
+                      mark_modified ();
+                    }
                 }
             }
           else
             error ("set___graphics_toolkit__ must be a string");
         }
     }
+
+    void adopt (const graphics_handle& h);
 
     void set_position (const octave_value& val,
                        bool do_notify_toolkit = true);
@@ -3339,8 +3474,8 @@ public:
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)
       radio_property paperorientation U , "{portrait}|landscape|rotated"
-      array_property paperposition , default_figure_paperposition ()
-      radio_property paperpositionmode , "auto|{manual}"
+      array_property paperposition m , default_figure_paperposition ()
+      radio_property paperpositionmode au , "auto|{manual}"
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property paperunits Su , "{inches}|centimeters|normalized|points"
@@ -3368,8 +3503,12 @@ public:
       string_property xvisual , ""
       radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
+      radio_property __mouse_mode__ hS , "{none}|pan|rotate|select|text|zoom"
+      any_property __pan_mode__ h , Matrix ()
+      any_property __rotate_mode__ h , Matrix ()
+      any_property __zoom_mode__ h , Matrix ()
       bool_property __enhanced__ h , "on"
-      string_property __graphics_toolkit__ s , gtk_manager::default_toolkit ()
+      string_property __graphics_toolkit__ hs , gtk_manager::default_toolkit ()
       any_property __guidata__ h , Matrix ()
       any_property __plot_stream__ h , Matrix ()
     END_PROPERTIES
@@ -3388,6 +3527,14 @@ public:
     }
 
   private:
+    Matrix get_auto_paperposition (void);
+
+    void update_paperpositionmode (void)
+    {
+      if (paperpositionmode.is ("auto"))
+        paperposition.set (get_auto_paperposition ());
+    }
+
     mutable graphics_toolkit toolkit;
   };
 
@@ -3397,9 +3544,7 @@ private:
 public:
   figure (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p), default_properties ()
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~figure (void) { }
 
@@ -3447,6 +3592,11 @@ public:
     return default_properties.as_struct ("default");
   }
 
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
+  }
+
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
@@ -3454,6 +3604,14 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 private:
   property_list default_properties;
@@ -3639,6 +3797,7 @@ public:
     bool get_x2Dtop (void) const { return x2Dtop; }
     bool get_y2Dright (void) const { return y2Dright; }
     bool get_layer2Dtop (void) const { return layer2Dtop; }
+    bool get_is2D (void) const { return is2D; }
     bool get_xySym (void) const { return xySym; }
     bool get_xyzSym (void) const { return xyzSym; }
     bool get_zSign (void) const { return zSign; }
@@ -3650,14 +3809,29 @@ public:
     ColumnVector coord2pixel (double x, double y, double z) const
     { return get_transform ().transform (x, y, z); }
 
-    void zoom_about_point (double x, double y, double factor,
-                           bool push_to_zoom_stack = true);
-    void zoom (const Matrix& xl, const Matrix& yl,
+    void zoom_about_point (const std::string& mode, double x, double y,
+                           double factor, bool push_to_zoom_stack = true);
+    void zoom (const std::string& mode, double factor,
                bool push_to_zoom_stack = true);
-    void translate_view (double x0, double x1, double y0, double y1);
-    void rotate_view (double delta_az, double delta_el);
+    void zoom (const std::string& mode, const Matrix& xl, const Matrix& yl,
+               bool push_to_zoom_stack = true);
+
+    void translate_view (const std::string& mode,
+                         double x0, double x1, double y0, double y1,
+                         bool push_to_zoom_stack = true);
+
+    void pan (const std::string& mode, double factor,
+              bool push_to_zoom_stack = true);
+
+    void rotate3d (double x0, double x1, double y0, double y1,
+                   bool push_to_zoom_stack = true);
+
+    void rotate_view (double delta_az, double delta_el,
+                      bool push_to_zoom_stack = true);
+
     void unzoom (void);
-    void clear_zoom_stack (void);
+    void push_zoom_stack (void);
+    void clear_zoom_stack (bool do_unzoom = true);
 
     void update_units (const caseless_str& old_units);
 
@@ -3677,11 +3851,11 @@ public:
     double fx, fy, fz;
     double xticklen, yticklen, zticklen;
     double xtickoffset, ytickoffset, ztickoffset;
-    bool x2Dtop, y2Dright, layer2Dtop;
+    bool x2Dtop, y2Dright, layer2Dtop, is2D;
     bool xySym, xyzSym, zSign, nearhoriz;
 
 #if HAVE_FREETYPE
-    // freetype renderer, used for calculation of text (tick labels) size
+    // FreeType renderer, used for calculation of text (tick labels) size
     ft_render text_renderer;
 #endif
 
@@ -3704,7 +3878,7 @@ public:
       radio_property camerapositionmode , "{auto}|manual"
       array_property cameratarget m , Matrix (1, 3, 0.0)
       radio_property cameratargetmode , "{auto}|manual"
-      array_property cameraupvector m , Matrix ()
+      array_property cameraupvector m , Matrix (1, 3, 0.0)
       radio_property cameraupvectormode , "{auto}|manual"
       double_property cameraviewangle m , 10.0
       radio_property cameraviewanglemode , "{auto}|manual"
@@ -3730,6 +3904,7 @@ public:
       any_property linestyleorder S , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
+      double_property mousewheelzoom , 0.5
       radio_property nextplot , "add|replacechildren|{replace}"
       array_property outerposition u , default_axes_outerposition ()
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
@@ -3743,7 +3918,7 @@ public:
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
-      array_property view u , Matrix ()
+      array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|zero"
       color_property xcolor , color_values (0, 0, 0)
       radio_property xdir u , "{normal}|reverse"
@@ -3802,6 +3977,8 @@ public:
       row_vector_property xmtick h , Matrix ()
       row_vector_property ymtick h , Matrix ()
       row_vector_property zmtick h , Matrix ()
+      // hidden property for text rendering
+      double_property fontsize_points hgr , 0
    END_PROPERTIES
 
   protected:
@@ -3844,11 +4021,13 @@ public:
     void update_layer (void) { update_axes_layout (); }
     void update_yaxislocation (void)
     {
+      sync_positions ();
       update_axes_layout ();
       update_ylabel_position ();
     }
     void update_xaxislocation (void)
     {
+      sync_positions ();
       update_axes_layout ();
       update_xlabel_position ();
     }
@@ -3865,16 +4044,19 @@ public:
     {
       if (xticklabelmode.is ("auto"))
         calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
+      sync_positions ();
     }
     void update_ytick (void)
     {
       if (yticklabelmode.is ("auto"))
         calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
+      sync_positions ();
     }
     void update_ztick (void)
     {
       if (zticklabelmode.is ("auto"))
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+      sync_positions ();
     }
 
     void update_xtickmode (void)
@@ -3922,10 +4104,26 @@ public:
     }
 
     void update_font (void);
-    void update_fontname (void) { update_font (); }
-    void update_fontsize (void) { update_font (); }
-    void update_fontangle (void) { update_font (); }
-    void update_fontweight (void) { update_font (); }
+    void update_fontname (void)
+    {
+      update_font ();
+      sync_positions ();
+    }
+    void update_fontsize (void)
+    {
+      update_font ();
+      sync_positions ();
+    }
+    void update_fontangle (void)
+    {
+      update_font ();
+      sync_positions ();
+    }
+    void update_fontweight (void)
+    {
+      update_font ();
+      sync_positions ();
+    }
 
     void update_outerposition (void)
     {
@@ -4044,7 +4242,7 @@ public:
                             double min_pos, double max_neg,
                             bool logscale);
 
-    void update_xlim (bool do_clr_zoom = true)
+    void update_xlim ()
     {
       if (xtickmode.is ("auto"))
         calc_ticks_and_lims (xlim, xtick, xmtick, xlimmode.is ("auto"),
@@ -4056,13 +4254,10 @@ public:
 
       update_xscale ();
 
-      if (do_clr_zoom)
-        zoom_stack.clear ();
-
       update_axes_layout ();
     }
 
-    void update_ylim (bool do_clr_zoom = true)
+    void update_ylim (void)
     {
       if (ytickmode.is ("auto"))
         calc_ticks_and_lims (ylim, ytick, ymtick, ylimmode.is ("auto"),
@@ -4073,9 +4268,6 @@ public:
       fix_limits (ylim);
 
       update_yscale ();
-
-      if (do_clr_zoom)
-        zoom_stack.clear ();
 
       update_axes_layout ();
     }
@@ -4092,8 +4284,6 @@ public:
 
       update_zscale ();
 
-      zoom_stack.clear ();
-
       update_axes_layout ();
     }
 
@@ -4106,7 +4296,6 @@ public:
   axes (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p), default_properties ()
   {
-    xproperties.override_defaults (*this);
     xproperties.update_transform ();
   }
 
@@ -4139,7 +4328,6 @@ public:
 
   void set_defaults (const std::string& mode)
   {
-    remove_all_listeners ();
     xproperties.set_defaults (*this, mode);
   }
 
@@ -4163,6 +4351,11 @@ public:
     return default_properties.as_struct ("default");
   }
 
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
+  }
+
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
@@ -4175,6 +4368,14 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 protected:
   void initialize (const graphics_object& go);
@@ -4245,9 +4446,7 @@ private:
 public:
   line (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~line (void) { }
 
@@ -4256,6 +4455,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4307,13 +4514,13 @@ public:
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
-      radio_property fontunits , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontunits SU , "inches|centimeters|normalized|{points}|pixels"
       radio_property fontweight u , "light|{normal}|demi|bold"
       radio_property horizontalalignment mu , "{left}|center|right"
       radio_property interpreter u , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      double_property margin , 1
+      double_property margin , 2
       array_property position smu , Matrix (1, 3, 0.0)
       double_property rotation mu , 0
       text_label_property string u , ""
@@ -4333,13 +4540,15 @@ public:
       radio_property horizontalalignmentmode hu , "{auto}|manual"
       radio_property verticalalignmentmode hu , "{auto}|manual"
       radio_property autopos_tag h , "{none}|xlabel|ylabel|zlabel|title"
+      // hidden property for text rendering
+      double_property fontsize_points hgr , 0
     END_PROPERTIES
 
     Matrix get_data_position (void) const;
     Matrix get_extent_matrix (void) const;
     const uint8NDArray& get_pixels (void) const { return pixels; }
 #if HAVE_FREETYPE
-    // freetype renderer, used for calculation of text size
+    // FreeType renderer, used for calculation of text size
     ft_render renderer;
 #endif
 
@@ -4397,6 +4606,7 @@ public:
     void update_verticalalignment (void) { update_text_extent (); }
 
     void update_units (void);
+    void update_fontunits (const caseless_str& old_fontunits);
 
   private:
     std::string cached_units;
@@ -4411,7 +4621,6 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   {
     xproperties.set_clipping ("off");
-    xproperties.override_defaults (*this);
   }
 
   ~text (void) { }
@@ -4421,6 +4630,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4443,18 +4660,21 @@ public:
 
     octave_value get_color_data (void) const;
 
+    void initialize_data (void) { update_cdata (); }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (image)
-      array_property alphadata u , Matrix ()
-      radio_property alphadatamapping al , "none|direct|{scaled}"
-      array_property cdata u , Matrix ()
+      array_property alphadata u , Matrix (1, 1, 1.0)
+      radio_property alphadatamapping al , "{none}|direct|scaled"
+      array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
+      string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
-      row_vector_property xdata u , Matrix ()
-      row_vector_property ydata u , Matrix ()
+      row_vector_property xdata mu , Matrix ()
+      row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
       row_vector_property alim hlr , Matrix ()
       row_vector_property clim hlr , Matrix ()
@@ -4464,26 +4684,28 @@ public:
       bool_property climinclude hlg , "on"
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
+      radio_property xdatamode ha , "{auto}|manual"
+      radio_property ydatamode ha , "{auto}|manual"
     END_PROPERTIES
 
   protected:
     void init (void)
-      {
-        xdata.add_constraint (2);
-        ydata.add_constraint (2);
-        cdata.add_constraint ("double");
-        cdata.add_constraint ("single");
-        cdata.add_constraint ("logical");
-        cdata.add_constraint ("uint8");
-        cdata.add_constraint ("uint16");
-        cdata.add_constraint ("int16");
-        cdata.add_constraint ("real");
-        cdata.add_constraint (dim_vector (-1, -1));
-        cdata.add_constraint (dim_vector (-1, -1, 3));
-        alphadata.add_constraint (dim_vector (-1, -1));
-        alphadata.add_constraint ("double");
-        alphadata.add_constraint ("uint8");
-      }
+    {
+      xdata.add_constraint (2);
+      ydata.add_constraint (2);
+      cdata.add_constraint ("double");
+      cdata.add_constraint ("single");
+      cdata.add_constraint ("logical");
+      cdata.add_constraint ("uint8");
+      cdata.add_constraint ("uint16");
+      cdata.add_constraint ("int16");
+      cdata.add_constraint ("real");
+      cdata.add_constraint (dim_vector (-1, -1));
+      cdata.add_constraint (dim_vector (-1, -1, 3));
+      alphadata.add_constraint (dim_vector (-1, -1));
+      alphadata.add_constraint ("double");
+      alphadata.add_constraint ("uint8");
+    }
 
   private:
     void update_alphadata (void)
@@ -4500,10 +4722,25 @@ public:
         set_clim (cdata.get_limits ());
       else
         clim = cdata.get_limits ();
+
+      if (xdatamode.is ("auto"))
+        update_xdata ();
+
+      if (ydatamode.is ("auto"))
+        update_ydata ();
     }
 
     void update_xdata (void)
     {
+      if (xdata.get ().is_empty ())
+        set_xdatamode ("auto");
+
+      if (xdatamode.is ("auto"))
+        {
+          set_xdata (get_auto_xdata ());
+          set_xdatamode ("auto");
+        }
+
       Matrix limits = xdata.get_limits ();
       float dp = pixel_xsize ();
 
@@ -4514,12 +4751,45 @@ public:
 
     void update_ydata (void)
     {
+      if (ydata.get ().is_empty ())
+        set_ydatamode ("auto");
+
+      if (ydatamode.is ("auto"))
+        {
+          set_ydata (get_auto_ydata ());
+          set_ydatamode ("auto");
+        }
+
       Matrix limits = ydata.get_limits ();
       float dp = pixel_ysize ();
 
       limits(0) = limits(0) - dp;
       limits(1) = limits(1) + dp;
       set_ylim (limits);
+    }
+
+    Matrix get_auto_xdata (void)
+    {
+      dim_vector dv = get_cdata ().dims ();
+      Matrix data;
+      if (dv(1) > 0.)
+        {
+          data = Matrix (1, 2, 1);
+          data(1) = dv(1);
+        }
+      return data;
+    }
+
+    Matrix get_auto_ydata (void)
+    {
+      dim_vector dv = get_cdata ().dims ();
+      Matrix data;
+      if (dv(0) > 0.)
+        {
+          data = Matrix (1, 2, 1);
+          data(1) = dv(0);
+        }
+      return data;
     }
 
     float pixel_size (octave_idx_type dim, const Matrix limits)
@@ -4558,7 +4828,7 @@ public:
   image (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
   {
-    xproperties.override_defaults (*this);
+    xproperties.initialize_data ();
   }
 
   ~image (void) { }
@@ -4568,6 +4838,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4579,6 +4857,14 @@ public:
   {
   public:
     octave_value get_color_data (void) const;
+
+    // Matlab allows incoherent data to be stored into patch properties.
+    // The patch should then be ignored by the renderer.
+    bool has_bad_data (std::string &msg) const
+    {
+      msg = bad_data_msg;
+      return ! msg.empty ();
+    }
 
     bool is_aliminclude (void) const
     { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
@@ -4609,9 +4895,9 @@ public:
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property facelighting , "{none}|flat|gouraud|phong"
-      array_property faces , Matrix ()
+      array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
-      array_property facevertexcdata , Matrix ()
+      array_property facevertexcdata u , Matrix ()
       // FIXME: interpreter is not a property of a Matlab patch.
       //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
@@ -4624,11 +4910,11 @@ public:
       radio_property normalmode , "{auto}|manual"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
-      double_property specularstrength , 0.6
+      double_property specularstrength , 0.9
       array_property vertexnormals , Matrix ()
-      array_property vertices , Matrix ()
-      array_property xdata u , Matrix ()
-      array_property ydata u , Matrix ()
+      array_property vertices u , default_patch_vertices ()
+      array_property xdata u , default_patch_xdata ()
+      array_property ydata u , default_patch_ydata ()
       array_property zdata u , Matrix ()
 
       // hidden properties for limit computation
@@ -4662,17 +4948,67 @@ public:
     }
 
   private:
-    void update_xdata (void) { set_xlim (xdata.get_limits ()); }
-    void update_ydata (void) { set_ylim (ydata.get_limits ()); }
-    void update_zdata (void) { set_zlim (zdata.get_limits ()); }
+    std::string bad_data_msg;
+
+    void update_faces (void) { update_data ();}
+
+    void update_vertices (void)  {  update_data ();}
+
+    void update_facevertexcdata (void) { update_data ();}
+
+    void update_fvc (void);
+
+    void update_xdata (void)
+    {
+      if (get_xdata ().is_empty ())
+        {
+          // For compatibility with matlab behavior,
+          // if x/ydata are set empty, silently empty other *data and
+          // faces properties while vertices remain unchanged.
+          set_ydata (Matrix ());
+          set_zdata (Matrix ());
+          set_cdata (Matrix ());
+          set_faces (Matrix ());
+        }
+      else
+        update_fvc ();
+
+      set_xlim (xdata.get_limits ());
+    }
+
+    void update_ydata (void)
+    {
+      if (get_ydata ().is_empty ())
+        {
+          set_xdata (Matrix ());
+          set_zdata (Matrix ());
+          set_cdata (Matrix ());
+          set_faces (Matrix ());
+        }
+      else
+        update_fvc ();
+
+      set_ylim (ydata.get_limits ());
+    }
+
+    void update_zdata (void)
+    {
+      update_fvc ();
+      set_zlim (zdata.get_limits ());
+    }
 
     void update_cdata (void)
     {
+      update_fvc ();
+
       if (cdatamapping_is ("scaled"))
         set_clim (cdata.get_limits ());
       else
         clim = cdata.get_limits ();
     }
+
+
+    void update_data (void);
   };
 
 private:
@@ -4681,9 +5017,7 @@ private:
 public:
   patch (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~patch (void) { }
 
@@ -4692,6 +5026,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4719,11 +5061,11 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (surface)
-      array_property alphadata u , Matrix ()
+      array_property alphadata u , Matrix (1, 1, 1.0)
       radio_property alphadatamapping l , "none|direct|{scaled}"
       double_property ambientstrength , 0.3
       radio_property backfacelighting , "unlit|lit|{reverselit}"
-      array_property cdata u , Matrix ()
+      array_property cdata u , default_surface_cdata ()
       radio_property cdatamapping al , "{scaled}|direct"
       string_property cdatasource , ""
       double_property diffusestrength , 0.6
@@ -4750,11 +5092,11 @@ public:
       double_property specularexponent , 10
       double_property specularstrength , 0.9
       array_property vertexnormals u , Matrix ()
-      array_property xdata u , Matrix ()
+      array_property xdata u , default_surface_xdata ()
       string_property xdatasource , ""
-      array_property ydata u , Matrix ()
+      array_property ydata u , default_surface_ydata ()
       string_property ydatasource , ""
-      array_property zdata u , Matrix ()
+      array_property zdata u , default_surface_zdata ()
       string_property zdatasource , ""
 
       // hidden properties for limit computation
@@ -4784,6 +5126,7 @@ public:
       alphadata.add_constraint ("uint8");
       alphadata.add_constraint (dim_vector (-1, -1));
       vertexnormals.add_constraint (dim_vector (-1, -1, 3));
+      vertexnormals.add_constraint (dim_vector (0, 0));
     }
 
   private:
@@ -4836,9 +5179,7 @@ private:
 public:
   surface (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~surface (void) { }
 
@@ -4847,6 +5188,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4908,9 +5257,7 @@ private:
 public:
   hggroup (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~hggroup (void) { }
 
@@ -4924,6 +5271,14 @@ public:
 
   void update_axis_limits (const std::string& axis_type,
                            const graphics_handle& h);
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 
@@ -4957,7 +5312,7 @@ public:
       bool_property enable , "on"
       color_property foregroundcolor , color_values (0, 0, 0)
       string_property label , ""
-      double_property position , 9
+      double_property position , 0
       bool_property separator , "off"
       // Octave-specific properties
       string_property fltk_label h , ""
@@ -4974,9 +5329,7 @@ private:
 public:
   uimenu (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uimenu (void) { }
 
@@ -4985,6 +5338,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 
@@ -4996,6 +5357,15 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+  
+    void add_dependent_obj (graphics_handle gh) 
+    { dependent_obj_list.push_back (gh); }
+
+    // FIXME: the list may contain duplicates. 
+    //        Should we return only unique elements? 
+    const std::list<graphics_handle> get_dependent_obj_list (void) 
+    { return dependent_obj_list; }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -5013,6 +5383,10 @@ public:
       position.add_constraint (dim_vector (2, 1));
       visible.set (octave_value (true));
     }
+
+  private:
+    // List of objects that might depend on this uicontextmenu object
+    std::list<graphics_handle> dependent_obj_list;
   };
 
 private:
@@ -5021,17 +5395,23 @@ private:
 public:
   uicontextmenu (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
-  ~uicontextmenu (void) { }
+  ~uicontextmenu (void);
 
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 
@@ -5114,9 +5494,7 @@ private:
 public:
   uicontrol (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uicontrol (void) { }
 
@@ -5125,6 +5503,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -5166,9 +5552,9 @@ public:
 
   protected:
     void init (void)
-      {
-        position.add_constraint (dim_vector (1, 4));
-      }
+    {
+      position.add_constraint (dim_vector (1, 4));
+    }
 
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
@@ -5181,9 +5567,7 @@ private:
 public:
   uipanel (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uipanel (void) { }
 
@@ -5192,6 +5576,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -5221,9 +5613,7 @@ private:
 public:
   uitoolbar (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p), default_properties ()
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uitoolbar (void) { }
 
@@ -5271,6 +5661,11 @@ public:
     return default_properties.as_struct ("default");
   }
 
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
+  }
+
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
@@ -5278,6 +5673,14 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 private:
   property_list default_properties;
@@ -5319,9 +5722,7 @@ private:
 public:
   uipushtool (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uipushtool (void) { }
 
@@ -5330,6 +5731,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 
@@ -5372,9 +5781,7 @@ private:
 public:
   uitoggletool (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
-  {
-    xproperties.override_defaults (*this);
-  }
+  { }
 
   ~uitoggletool (void) { }
 
@@ -5384,16 +5791,24 @@ public:
 
   bool valid_object (void) const { return true; }
 
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
 };
 
 // ---------------------------------------------------------------------
 
 octave_value
-get_property_from_handle (double handle, const std::string &property,
-                          const std::string &func);
+get_property_from_handle (double handle, const std::string& property,
+                          const std::string& func);
 bool
-set_property_in_handle (double handle, const std::string &property,
-                        const octave_value &arg, const std::string &func);
+set_property_in_handle (double handle, const std::string& property,
+                        const octave_value& arg, const std::string& func);
 
 // ---------------------------------------------------------------------
 
@@ -5864,12 +6279,12 @@ private:
   void do_execute_callback (const graphics_handle& h, const octave_value& cb,
                             const octave_value& data);
 
-  void do_post_callback (const graphics_handle& h, const std::string name,
+  void do_post_callback (const graphics_handle& h, const std::string& name,
                          const octave_value& data);
 
   void do_post_function (graphics_event::event_fcn fcn, void* fcn_data);
 
-  void do_post_set (const graphics_handle& h, const std::string name,
+  void do_post_set (const graphics_handle& h, const std::string& name,
                     const octave_value& value, bool notify_toolkit = true);
 
   int do_process_events (bool force = false);

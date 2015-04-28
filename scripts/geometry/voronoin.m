@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Kai Habel
+## Copyright (C) 2000-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -75,7 +75,7 @@ function [C, F] = voronoin (pts, options)
 endfunction
 
 
-%% FIXME: Need functional tests
+## FIXME: Need functional tests
 
 %!error voronoin ()
 %!error voronoin (1,2,3)

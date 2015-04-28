@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-ascii.h"
 #include "ls-utils.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-scalar.h"
@@ -53,8 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-mat.h"
 #include "utils.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
-DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_sq_str);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string",
@@ -211,7 +210,7 @@ octave_char_matrix_str::all_strings (bool) const
 
   if (matrix.ndims () == 2)
     {
-      charMatrix chm = matrix.matrix_value ();
+      charMatrix chm (matrix);
 
       octave_idx_type n = chm.rows ();
 
@@ -233,7 +232,7 @@ octave_char_matrix_str::string_value (bool) const
 
   if (matrix.ndims () == 2)
     {
-      charMatrix chm = matrix.matrix_value ();
+      charMatrix chm (matrix);
 
       retval = chm.row_as_string (0);  // FIXME?
     }
@@ -250,7 +249,7 @@ octave_char_matrix_str::cellstr_value (void) const
 
   if (matrix.ndims () == 2)
     {
-      const charMatrix chm = matrix.matrix_value ();
+      const charMatrix chm (matrix);
       octave_idx_type nr = chm.rows ();
       retval.clear (nr, 1);
       for (octave_idx_type i = 0; i < nr; i++)
@@ -571,20 +570,22 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
+octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                    bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   charNDArray m = char_array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
@@ -620,13 +621,19 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
+octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -789,7 +796,9 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
         }
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif

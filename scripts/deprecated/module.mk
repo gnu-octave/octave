@@ -1,12 +1,14 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
-  deprecated/__error_text__.m \
-  deprecated/cor.m \
-  deprecated/corrcoef.m \
-  deprecated/cut.m \
+  deprecated/bicubic.m \
   deprecated/default_save_options.m \
-  deprecated/error_text.m \
+  deprecated/delaunay3.m \
+  deprecated/dump_prefs.m \
+  deprecated/find_dir_in_path.m \
+  deprecated/finite.m \
+  deprecated/fmod.m \
+  deprecated/fnmatch.m \
   deprecated/gen_doc_cache.m \
   deprecated/interp1q.m \
   deprecated/isequalwithequalnans.m \
@@ -18,13 +20,19 @@ deprecated_FCN_FILES = \
   deprecated/java_unsigned_conversion.m \
   deprecated/javafields.m \
   deprecated/javamethods.m \
-  deprecated/polyderiv.m \
+  deprecated/loadaudio.m \
+  deprecated/luinc.m \
+  deprecated/mouse_wheel_zoom.m \
+  deprecated/nfields.m \
+  deprecated/octave_tmp_file_name.m \
+  deprecated/playaudio.m \
   deprecated/re_read_readline_init_file.m \
   deprecated/read_readline_init_file.m \
+  deprecated/saveaudio.m \
   deprecated/saving_history.m \
-  deprecated/shell_cmd.m \
-  deprecated/studentize.m \
-  deprecated/sylvester_matrix.m
+  deprecated/setaudio.m \
+  deprecated/syl.m \
+  deprecated/usage.m
 
 FCN_FILES += $(deprecated_FCN_FILES)
 

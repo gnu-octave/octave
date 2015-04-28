@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2013 Paul Kienzle
+## Copyright (C) 2001-2015 Paul Kienzle
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -19,15 +19,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} perms (@var{v})
+## Generate all permutations of @var{v} with one row per permutation.
 ##
-## Generate all permutations of @var{v}, one row per permutation.  The
-## result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
+## The result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
 ## is the length of @var{v}.
 ##
-## As an example, @code{perms ([1, 2, 3])} returns the matrix
+## Example
 ##
 ## @example
 ## @group
+## perms ([1, 2, 3])
+## @result{}
 ##   1   2   3
 ##   2   1   3
 ##   1   3   2
@@ -36,12 +38,18 @@
 ##   3   2   1
 ## @end group
 ## @end example
+##
+## Programming Note: The maximum length of @var{v} should be less than or
+## equal to 10 to limit memory consumption.
+## @seealso{permute, randperm, nchoosek}
 ## @end deftypefn
 
 function A = perms (v)
+
   if (nargin != 1)
     print_usage ();
   endif
+
   vidx = uint8 ([1:length(v)]');
   n = length (vidx);
 
@@ -62,7 +70,9 @@ function A = perms (v)
       endfor
     endfor
   endif
+
   A = v(p);
+
 endfunction
 
 

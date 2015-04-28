@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@ function inv = expinv (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (lambda))
+  if (! isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("expinv: X and LAMBDA must be of common size or scalars");
@@ -43,7 +43,7 @@ function inv = expinv (x, lambda)
     error ("expinv: X and LAMBDA must not be complex");
   endif
 
-  if (!isscalar (x))
+  if (! isscalar (x))
     sz = size (x);
   else
     sz = size (lambda);
@@ -79,12 +79,12 @@ endfunction
 %!assert (expinv (x, 2*[1 0 NaN 1 1]), [NaN NaN NaN Inf NaN], eps)
 %!assert (expinv ([x(1:2) NaN x(4:5)], 2), [NaN 0 NaN Inf NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (expinv ([x, NaN], 2), [NaN 0 1 Inf NaN NaN], eps)
 %!assert (expinv (single ([x, NaN]), 2), single ([NaN 0 1 Inf NaN NaN]), eps)
 %!assert (expinv ([x, NaN], single (2)), single ([NaN 0 1 Inf NaN NaN]), eps)
 
-%% Test input validation
+## Test input validation
 %!error expinv ()
 %!error expinv (1)
 %!error expinv (1,2,3)

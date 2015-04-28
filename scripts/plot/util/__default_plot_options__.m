@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 John W. Eaton
+## Copyright (C) 2007-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -32,4 +32,14 @@ function options = __default_plot_options__ ()
   options.errorstyle = [];
 
 endfunction
+
+
+%!test
+%! options = __default_plot_options__ ();
+%! assert (isfield (options, "key"));
+%! assert (options.key, "");
+%! assert (options.color, []);
+%! assert (options.linestyle, []);
+%! assert (options.marker, []);
+%! assert (options.errorstyle, []);
 

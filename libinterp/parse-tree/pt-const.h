@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-#include "oct-alloc.h"
 
 class octave_value_list;
 class tree_walker;
@@ -99,7 +98,6 @@ private:
 
   tree_constant& operator = (const tree_constant&);
 
-  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #endif

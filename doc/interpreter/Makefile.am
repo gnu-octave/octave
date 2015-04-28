@@ -1,6 +1,6 @@
 # Makefile for Octave's doc/interpreter directory
 #
-# Copyright (C) 1993-2013 John W. Eaton
+# Copyright (C) 1993-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -40,43 +40,43 @@ dist_man_MANS = \
 ## They are dependencies for the documentation.
 ## They must not be distributed from this directory.
 EXAMPLE_FILES = \
-  $(top_srcdir)/examples/@FIRfilter/FIRfilter.m \
-  $(top_srcdir)/examples/@FIRfilter/FIRfilter_aggregation.m \
-  $(top_srcdir)/examples/@FIRfilter/display.m \
-  $(top_srcdir)/examples/@FIRfilter/subsasgn.m \
-  $(top_srcdir)/examples/@FIRfilter/subsref.m \
-  $(top_srcdir)/examples/@polynomial/display.m \
-  $(top_srcdir)/examples/@polynomial/double.m \
-  $(top_srcdir)/examples/@polynomial/end.m \
-  $(top_srcdir)/examples/@polynomial/get.m \
-  $(top_srcdir)/examples/@polynomial/mtimes.m \
-  $(top_srcdir)/examples/@polynomial/plot.m \
-  $(top_srcdir)/examples/@polynomial/polynomial.m \
-  $(top_srcdir)/examples/@polynomial/polynomial_superiorto.m \
-  $(top_srcdir)/examples/@polynomial/polyval.m \
-  $(top_srcdir)/examples/@polynomial/set.m \
-  $(top_srcdir)/examples/@polynomial/subsref.m \
-  $(top_srcdir)/examples/addtwomatrices.cc \
-  $(top_srcdir)/examples/celldemo.cc \
-  $(top_srcdir)/examples/embedded.cc \
-  $(top_srcdir)/examples/fortrandemo.cc \
-  $(top_srcdir)/examples/fortransub.f \
-  $(top_srcdir)/examples/funcdemo.cc \
-  $(top_srcdir)/examples/globaldemo.cc \
-  $(top_srcdir)/examples/helloworld.cc \
-  $(top_srcdir)/examples/mycell.c \
-  $(top_srcdir)/examples/myfeval.c \
-  $(top_srcdir)/examples/myfunc.c \
-  $(top_srcdir)/examples/myhello.c \
-  $(top_srcdir)/examples/mypow2.c \
-  $(top_srcdir)/examples/mysparse.c \
-  $(top_srcdir)/examples/mystring.c \
-  $(top_srcdir)/examples/mystruct.c \
-  $(top_srcdir)/examples/paramdemo.cc \
-  $(top_srcdir)/examples/standalone.cc \
-  $(top_srcdir)/examples/stringdemo.cc \
-  $(top_srcdir)/examples/structdemo.cc \
-  $(top_srcdir)/examples/unwinddemo.cc
+  $(top_srcdir)/examples/code/@FIRfilter/FIRfilter.m \
+  $(top_srcdir)/examples/code/@FIRfilter/FIRfilter_aggregation.m \
+  $(top_srcdir)/examples/code/@FIRfilter/display.m \
+  $(top_srcdir)/examples/code/@FIRfilter/subsasgn.m \
+  $(top_srcdir)/examples/code/@FIRfilter/subsref.m \
+  $(top_srcdir)/examples/code/@polynomial/display.m \
+  $(top_srcdir)/examples/code/@polynomial/double.m \
+  $(top_srcdir)/examples/code/@polynomial/end.m \
+  $(top_srcdir)/examples/code/@polynomial/get.m \
+  $(top_srcdir)/examples/code/@polynomial/mtimes.m \
+  $(top_srcdir)/examples/code/@polynomial/plot.m \
+  $(top_srcdir)/examples/code/@polynomial/polynomial.m \
+  $(top_srcdir)/examples/code/@polynomial/polynomial_superiorto.m \
+  $(top_srcdir)/examples/code/@polynomial/polyval.m \
+  $(top_srcdir)/examples/code/@polynomial/set.m \
+  $(top_srcdir)/examples/code/@polynomial/subsref.m \
+  $(top_srcdir)/examples/code/addtwomatrices.cc \
+  $(top_srcdir)/examples/code/celldemo.cc \
+  $(top_srcdir)/examples/code/embedded.cc \
+  $(top_srcdir)/examples/code/fortrandemo.cc \
+  $(top_srcdir)/examples/code/fortransub.f \
+  $(top_srcdir)/examples/code/funcdemo.cc \
+  $(top_srcdir)/examples/code/globaldemo.cc \
+  $(top_srcdir)/examples/code/helloworld.cc \
+  $(top_srcdir)/examples/code/mycell.c \
+  $(top_srcdir)/examples/code/myfeval.c \
+  $(top_srcdir)/examples/code/myfunc.c \
+  $(top_srcdir)/examples/code/myhello.c \
+  $(top_srcdir)/examples/code/mypow2.c \
+  $(top_srcdir)/examples/code/mysparse.c \
+  $(top_srcdir)/examples/code/mystring.c \
+  $(top_srcdir)/examples/code/mystruct.c \
+  $(top_srcdir)/examples/code/paramdemo.cc \
+  $(top_srcdir)/examples/code/standalone.cc \
+  $(top_srcdir)/examples/code/stringdemo.cc \
+  $(top_srcdir)/examples/code/structdemo.cc \
+  $(top_srcdir)/examples/code/unwinddemo.cc
 
 
 include images.mk
@@ -170,8 +170,11 @@ MUNGED_TEXI_SRC = \
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
+include graphics_properties.mk
+
 BUILT_TEXINFOS = \
   contributors.texi \
+  $(GRAPH_PROP_TEXI_SRC) \
   $(MUNGED_TEXI_SRC)
 
 info_TEXINFOS = octave.texi
@@ -208,38 +211,42 @@ octetc_DATA = doc-cache macros.texi
 DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
-	$(top_builddir)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(srcdir)/macros.texi $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(top_builddir)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m - $(srcdir)/macros.texi $(DOCSTRING_FILES) >$@-t && \
+	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) $(munge_texi_SOURCES)
 
 %.texi: %.txi munge-texi.pl
-	$(PERL) $(srcdir)/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(PERL) $(srcdir)/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t && \
 	mv $@-t $@
 
 contributors.texi: contributors.in
-	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t && \
 	mv $@-t $@
 
 ../../AUTHORS: preface.texi contributors.texi
-	rm -f AUTHORS
+	$(AM_V_MAKEINFO)rm -f AUTHORS && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/contributors.texi ] && [ ! -f contributors.texi ]; then \
 		cp $(srcdir)/contributors.texi contributors.texi; \
 		touch -r $(srcdir)/contributors.texi contributors.texi; \
-	fi
-	-$(MAKEINFO) -D AUTHORSONLY -I $(srcdir) \
-	  --no-validate --no-headers --no-split --output AUTHORS $<
+	fi && \
+	$(MAKEINFO) -D AUTHORSONLY -I $(srcdir) \
+	  --no-validate --no-headers --no-split --output AUTHORS $< && \
 	mv AUTHORS ../../AUTHORS
 
 ../../BUGS: bugs.texi
-	rm -f BUGS
-	-$(MAKEINFO) -D BUGSONLY -I $(srcdir) \
-	  --no-validate --no-headers --no-split --output BUGS $<
+	$(AM_V_MAKEINFO)rm -f BUGS && \
+	$(MAKEINFO) -D BUGSONLY -I $(srcdir) \
+	  --no-validate --no-headers --no-split --output BUGS $< && \
 	mv BUGS ../../BUGS
 
 ../../INSTALL.OCTAVE: install.texi
-	rm -f INSTALL
-	-$(MAKEINFO) -D INSTALLONLY -I $(srcdir) \
-	  --no-validate --no-headers --no-split --output INSTALL $<
+	$(AM_V_MAKEINFO)rm -f INSTALL && \
+	$(MAKEINFO) -D INSTALLONLY -I $(srcdir) \
+	  --no-validate --no-headers --no-split --output INSTALL $< && \
 	mv INSTALL ../../INSTALL.OCTAVE
 
 
@@ -271,6 +278,8 @@ EXTRA_DIST = \
   contributors.in \
   doc-cache \
   find-docstring-files.sh \
+  genpropdoc.m \
+  graphics_properties.mk \
   images \
   images.awk \
   images.mk \

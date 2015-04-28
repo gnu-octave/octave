@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2013 John W. Eaton
+Copyright (C) 2002-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -55,8 +55,10 @@ kron (const MArray<R>& a, const MArray<T>& b)
   assert (a.ndims () == 2);
   assert (b.ndims () == 2);
 
-  octave_idx_type nra = a.rows (), nrb = b.rows ();
-  octave_idx_type nca = a.cols (), ncb = b.cols ();
+  octave_idx_type nra = a.rows ();
+  octave_idx_type nrb = b.rows ();
+  octave_idx_type nca = a.cols ();
+  octave_idx_type ncb = b.cols ();
 
   MArray<T> c (dim_vector (nra*nrb, nca*ncb));
   T *cv = c.fortran_vec ();
@@ -79,8 +81,11 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
 {
   assert (b.ndims () == 2);
 
-  octave_idx_type nra = a.rows (), nrb = b.rows (), dla = a.diag_length ();
-  octave_idx_type nca = a.cols (), ncb = b.cols ();
+  octave_idx_type nra = a.rows ();
+  octave_idx_type nrb = b.rows ();
+  octave_idx_type dla = a.diag_length ();
+  octave_idx_type nca = a.cols ();
+  octave_idx_type ncb = b.cols ();
 
   MArray<T> c (dim_vector (nra*nrb, nca*ncb), T ());
 
@@ -129,38 +134,20 @@ kron (const MSparse<T>& A, const MSparse<T>& B)
 static PermMatrix
 kron (const PermMatrix& a, const PermMatrix& b)
 {
-  octave_idx_type na = a.rows (), nb = b.rows ();
-  const octave_idx_type *pa = a.data (), *pb = b.data ();
-  PermMatrix c(na*nb); // Row permutation.
-  octave_idx_type *pc = c.fortran_vec ();
-
-  bool cola = a.is_col_perm (), colb = b.is_col_perm ();
-  if (cola && colb)
+  octave_idx_type na = a.rows ();
+  octave_idx_type nb = b.rows ();
+  const Array<octave_idx_type>& pa = a.col_perm_vec ();
+  const Array<octave_idx_type>& pb = b.col_perm_vec ();
+  Array<octave_idx_type> res_perm (dim_vector (na * nb, 1));
+  octave_idx_type rescol = 0;
+  for (octave_idx_type i = 0; i < na; i++)
     {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[pa[i]*nb+pb[j]] = i*nb+j;
-    }
-  else if (cola)
-    {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[pa[i]*nb+j] = i*nb+pb[j];
-    }
-  else if (colb)
-    {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[i*nb+pb[j]] = pa[i]*nb+j;
-    }
-  else
-    {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[i*nb+j] = pa[i]*nb+pb[j];
+      octave_idx_type a_add = pa(i) * nb;
+      for (octave_idx_type j = 0; j < nb; j++)
+        res_perm.xelem (rescol++) = a_add + pb(j);
     }
 
-  return c;
+  return PermMatrix (res_perm, true);
 }
 
 template <class MTA, class MTB>
@@ -195,7 +182,7 @@ dispatch_kron (const octave_value& a, const octave_value& b)
           // the diagonals as vectors and compute the product.  That
           // will be another vector, which we then use to construct a
           // diagonal matrix object.  Note that this will fail if our
-          // digaonal matrix object is modified to allow the non-zero
+          // digaonal matrix object is modified to allow the nonzero
           // values to be stored off of the principal diagonal (i.e., if
           // diag ([1,2], 3) is modified to return a diagonal matrix
           // object instead of a full matrix object).
@@ -282,7 +269,8 @@ Since the Kronecker product is associative, this is well-defined.\n\
 
   if (nargin >= 2)
     {
-      octave_value a = args(0), b = args(1);
+      octave_value a = args(0);
+      octave_value b = args(1);
       retval = dispatch_kron (a, b);
       for (octave_idx_type i = 2; i < nargin; i++)
         retval = dispatch_kron (retval, args(i));
@@ -299,13 +287,26 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %! x = ones (2);
 %! assert (kron (x, x), ones (4));
 
-%!shared x, y, z
+%!shared x, y, z, p1, p2, d1, d2
 %! x =  [1, 2];
 %! y =  [-1, -2];
 %! z =  [1,  2,  3,  4; 1,  2,  3,  4; 1,  2,  3,  4];
+%! p1 = eye (3)([2, 3, 1], :);  ## Permutation matrix
+%! p2 = [0 1 0; 0 0 1; 1 0 0];  ## Non-permutation equivalent
+%! d1 = diag ([1 2 3]);         ## Diag type matrix
+%! d2 = [1 0 0; 0 2 0; 0 0 3];  ## Non-diag equivalent
 %!assert (kron (1:4, ones (3, 1)), z)
+%!assert (kron (single (1:4), ones (3, 1)), single (z))
+%!assert (kron (sparse (1:4), ones (3, 1)), sparse (z))
+%!assert (kron (complex (1:4), ones (3, 1)), z)
+%!assert (kron (complex (single(1:4)), ones (3, 1)), single(z))
 %!assert (kron (x, y, z), kron (kron (x, y), z))
 %!assert (kron (x, y, z), kron (x, kron (y, z)))
+%!assert (kron (p1, p1), kron (p2, p2))
+%!assert (kron (p1, p2), kron (p2, p1))
+%!assert (kron (d1, d1), kron (d2, d2))
+%!assert (kron (d1, d2), kron (d2, d1))
+
 
 %!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
 

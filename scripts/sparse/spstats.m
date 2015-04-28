@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 Paul Kienzle
+## Copyright (C) 2004-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -19,10 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S})
 ## @deftypefnx {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S}, @var{j})
-## Return the stats for the non-zero elements of the sparse matrix @var{S}.
-## @var{count} is the number of non-zeros in each column, @var{mean}
-## is the mean of the non-zeros in each column, and @var{var} is the
-## variance of the non-zeros in each column.
+## Return the stats for the nonzero elements of the sparse matrix @var{S}.
+## @var{count} is the number of nonzeros in each column, @var{mean}
+## is the mean of the nonzeros in each column, and @var{var} is the
+## variance of the nonzeros in each column.
 ##
 ## Called with two input arguments, if @var{S} is the data and @var{j}
 ## is the bin number for the data, compute the stats for each bin.  In
@@ -50,7 +50,7 @@ function [count, mean, var] = spstats (S, j)
     mean = sum (S) ./ count;
   endif
   if (nargout > 2)
-    ## FIXME Variance with count = 0 or 1?
+    ## FIXME: Variance with count = 0 or 1?
     diff = S - sparse (i, j, mean (j), n, m);
     var = sum (diff .* diff) ./ (count - 1);
   endif

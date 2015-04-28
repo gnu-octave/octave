@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 John W. Eaton
+## Copyright (C) 2012-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -91,7 +91,7 @@ function retval = getpref (group, pref, default)
 endfunction
 
 
-%% Testing these functions will require some care to avoid wiping out
-%% existing (or creating unwanted) preferences for the user running the
-%% tests.
+## Testing these functions will require some care to avoid wiping out
+## existing (or creating unwanted) preferences for the user running the
+## tests.
 

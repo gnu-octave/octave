@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -119,7 +119,7 @@ endfunction
 %!assert (std ([]), []);
 %!assert (std (ones (1,3,0,2)), ones (1,3,0,2));
 
-%% Test input validation
+## Test input validation
 %!error std ()
 %!error std (1, 2, 3, 4)
 %!error std (['A'; 'B'])

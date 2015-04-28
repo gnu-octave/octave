@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2012 John W. Eaton
-Copyright (C) 2005-2013 David Bateman
+Copyright (C) 2005-2015 David Bateman
 Copyright (C) 2002-2005 Paul Kienzle
 
 This file is part of Octave.
@@ -179,8 +179,9 @@ regexp::compile_internal (void)
                   if (!lookbehind_warned)
                     {
                       lookbehind_warned = true;
-                      (*current_liboctave_warning_handler)
-                        ("%s: arbitrary length lookbehind patterns are only supported up to length %d",
+                      (*current_liboctave_warning_with_id_handler)
+                        ("Octave:regexp-lookbehind-limit",
+                         "%s: arbitrary length lookbehind patterns are only supported up to length %d",
                          who.c_str (), MAXLOOKBEHIND);
                     }
 
@@ -251,7 +252,7 @@ regexp::match (const std::string& buffer)
   char *nametable;
   size_t idx = 0;
 
-  pcre *re = static_cast <pcre *> (data);
+  pcre *re = static_cast<pcre *> (data);
 
   pcre_fullinfo (re, 0, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
   pcre_fullinfo (re, 0, PCRE_INFO_NAMECOUNT, &namecount);
@@ -282,13 +283,14 @@ regexp::match (const std::string& buffer)
         {
           // Try harder; start with default value for MATCH_LIMIT
           // and increase it.
-          (*current_liboctave_warning_handler)
-            ("your pattern caused PCRE to hit its MATCH_LIMIT; trying harder now, but this will be slow");
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:regexp-match-limit",
+             "your pattern caused PCRE to hit its MATCH_LIMIT; trying harder now, but this will be slow");
 
           pcre_extra pe;
 
           pcre_config (PCRE_CONFIG_MATCH_LIMIT,
-                       static_cast <void *> (&pe.match_limit));
+                       static_cast<void *> (&pe.match_limit));
 
           pe.flags = PCRE_EXTRA_MATCH_LIMIT;
 

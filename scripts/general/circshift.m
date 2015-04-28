@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 David Bateman
+## Copyright (C) 2004-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,7 @@
 ##     9, 7, 8
 ## @end group
 ## @end example
-## @seealso {permute, ipermute, shiftdim}
+## @seealso{permute, ipermute, shiftdim}
 ## @end deftypefn
 
 function y = circshift (x, n)
@@ -94,7 +94,7 @@ endfunction
 %!assert (circshift (eye (3), 1), circshift (eye (3), 1))
 %!assert (circshift (eye (3), 1), [0,0,1;1,0,0;0,1,0])
 
-%% Test input validation
+## Test input validation
 %!error circshift ()
 %!error circshift (1)
 %!error circshift (1,2,3)

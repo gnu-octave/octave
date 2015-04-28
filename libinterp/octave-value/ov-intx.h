@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -303,8 +302,10 @@ public:
     matrix_ref ().changesign ();
   }
 
-  idx_vector index_vector (void) const
-  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  idx_vector index_vector (bool /* require_integers */ = false) const
+  {
+    return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
+  }
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -356,8 +357,15 @@ public:
       case umap_finite:
         return boolNDArray (matrix.dims (), true);
 
+      // Special cases for Matlab compatibility.
+      case umap_xtolower:
+      case umap_xtoupper:
+        return matrix;
+
       default:
         {
+          // FIXME: we should be able to do better than converting to
+          // double here.
           octave_matrix m (array_value ());
           return m.map (umap);
         }
@@ -366,7 +374,6 @@ public:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -606,7 +613,7 @@ public:
     scalar -= OCTAVE_INT_T (1);
   }
 
-  idx_vector index_vector (void) const { return idx_vector (scalar); }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, octave_idx_type skip,
@@ -656,6 +663,11 @@ public:
       case umap_finite:
         return true;
 
+      // Special cases for Matlab compatibility.
+      case umap_xtolower:
+      case umap_xtoupper:
+        return scalar;
+
       default:
         {
           octave_scalar m (scalar_value ());
@@ -666,7 +678,6 @@ public:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

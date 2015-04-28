@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -50,7 +50,7 @@ function rgb = ntsc2rgb (yiq)
   endif
 
   ## If we have an image convert it into a color map.
-  if (ismatrix (yiq) && ndims (yiq) == 3)
+  if (isnumeric (yiq) && ndims (yiq) == 3)
     is_image = true;
     sz = size (yiq);
     yiq = [yiq(:,:,1)(:), yiq(:,:,2)(:), yiq(:,:,3)(:)];
@@ -81,7 +81,7 @@ function rgb = ntsc2rgb (yiq)
 endfunction
 
 
-%% Test pure R, G, B colors
+## Test pure R, G, B colors
 %!assert (ntsc2rgb ([.299  .596  .211]), [1 0 0], 1e-5)
 %!assert (ntsc2rgb ([.587 -.274 -.523]), [0 1 0], 1e-5)
 %!assert (ntsc2rgb ([.114 -.322  .312]), [0 0 1], 1e-5)
@@ -94,7 +94,7 @@ endfunction
 %! rgb_img = rand (64, 64, 3);
 %! assert (ntsc2rgb (rgb2ntsc (rgb_img)), rgb_img, 1e-3);
 
-%% Test input validation
+## Test input validation
 %!error ntsc2rgb ()
 %!error ntsc2rgb (1,2)
 %!error <YIQ must be of type double> ntsc2rgb (uint8 (1))

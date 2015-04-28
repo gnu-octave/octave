@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2013 John W. Eaton
+## Copyright (C) 2003-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{dir}, @var{name}, @var{ext}, @var{ver}] =} fileparts (@var{filename})
-## Return the directory, name, extension, and version components of
-## @var{filename}.
-## @seealso{fullfile}
+## @deftypefn {Function File} {[@var{dir}, @var{name}, @var{ext}] =} fileparts (@var{filename})
+## Return the directory, name, and extension components of @var{filename}.
+##
+## The input @var{filename} is a string which is parsed.  There is no attempt
+## to check whether the filename or directory specified actually exists.
+## @seealso{fullfile, filesep}
 ## @end deftypefn
 
-function [directory, name, extension, version] = fileparts (filename)
+function [dir, name, ext] = fileparts (filename)
 
   if (nargin != 1)
     print_usage ();
@@ -42,20 +44,25 @@ function [directory, name, extension, version] = fileparts (filename)
   if (es <= ds)
     es = length (filename)+1;
   endif
+
   if (ds == 0)
-    directory = "";
+    dir = "";
   elseif (ds == 1)
-    directory = filename(1);
+    dir = filename(1);
   else
-    directory = filename(1:ds-1);
+    dir = filename(1:ds-1);
   endif
+
   name = filename(ds+1:es-1);
-  if (es > 0 && es <= length (filename))
-    extension = filename(es:end);
-  else
-    extension = "";
+  if (isempty (name))
+    name = "";
   endif
-  version = "";
+
+  if (es > 0 && es <= length (filename))
+    ext = filename(es:end);
+  else
+    ext = "";
+  endif
 
 endfunction
 
@@ -90,13 +97,13 @@ endfunction
 
 %!test
 %! [d, n, e] = fileparts ("/.ext");
-%! assert (strcmp (d, "/") && strcmp (n, char (zeros (1, 0))) && strcmp (e, ".ext"));
+%! assert (strcmp (d, "/") && strcmp (n, "") && strcmp (e, ".ext"));
 
 %!test
 %! [d, n, e] = fileparts (".ext");
-%! assert (strcmp (d, "") && strcmp (n, char (zeros (1, 0))) && strcmp (e, ".ext"));
+%! assert (strcmp (d, "") && strcmp (n, "") && strcmp (e, ".ext"));
 
-%% Test input validation
+## Test input validation
 %!error fileparts ()
 %!error fileparts (1,2)
 %!error <FILENAME must be a single string> fileparts (1)

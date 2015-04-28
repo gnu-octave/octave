@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -41,7 +41,7 @@ function load_packages (files, handle_deps, local_list, global_list)
     idx = [];
     for i = 1:length (installed_pkgs_lst)
       if (exist (fullfile (pdirs{i}, "packinfo", ".autoload"), "file"))
-        idx (end + 1) = i;
+        idx(end + 1) = i;
       endif
     endfor
   ## Load package_name1 ...
@@ -52,7 +52,7 @@ function load_packages (files, handle_deps, local_list, global_list)
       if (! any (idx2))
           error ("package %s is not installed", files{i});
       endif
-      idx (end + 1) = idx2;
+      idx(end + 1) = idx2;
     endfor
   endif
 

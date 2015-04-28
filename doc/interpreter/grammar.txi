@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -49,9 +49,8 @@ or function names:
 @item @code{function} @tab @code{global} @tab @code{if}
 @item @code{methods} @tab @code{otherwise} @tab @code{parfor}
 @item @code{persistent} @tab @code{properties} @tab @code{return}
-@item @code{static} @tab @code{switch} @tab @code{try}
-@item @code{until} @tab @code{unwind_protect} @tab @code{unwind_protect_cleanup}
-@item @code{while}
+@item @code{switch} @tab @code{try} @tab @code{until}
+@item @code{unwind_protect} @tab @code{unwind_protect_cleanup} @tab @code{while}
 @end multitable
 
 The function @code{iskeyword} can be used to quickly check whether an

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -266,7 +267,7 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 template <class T>
 bool
 octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format )
+                                        oct_mach_info::float_format)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
@@ -333,21 +334,23 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 template <class T>
 bool
-octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
+octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hid_t save_type_hid = HDF5_SAVE_TYPE;
-  bool retval = true;
   dim_vector dv = this->dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
@@ -376,15 +379,22 @@ octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  this->gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 template <class T>
 bool
-octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
+octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
-  hid_t save_type_hid = HDF5_SAVE_TYPE;
   bool retval = false;
+
+#if defined (HAVE_HDF5)
+
+  hid_t save_type_hid = HDF5_SAVE_TYPE;
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
@@ -438,10 +448,12 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  this->gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 template <class T>
 void
@@ -541,16 +553,18 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 template <class T>
 bool
-octave_base_int_scalar<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
+octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hid_t save_type_hid = HDF5_SAVE_TYPE;
-  bool retval = true;
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
@@ -574,13 +588,19 @@ octave_base_int_scalar<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  this->gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 template <class T>
 bool
-octave_base_int_scalar<T>::load_hdf5 (hid_t loc_id, const char *name)
+octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+#if defined (HAVE_HDF5)
+
   hid_t save_type_hid = HDF5_SAVE_TYPE;
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -610,6 +630,10 @@ octave_base_int_scalar<T>::load_hdf5 (hid_t loc_id, const char *name)
   H5Dclose (data_hid);
 
   return true;
+
+#else
+  this->gripe_load ("hdf5");
+  return false;
+#endif
 }
 
-#endif

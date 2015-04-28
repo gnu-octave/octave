@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Friedrich Leisch
+## Copyright (C) 1995-2015 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -28,18 +28,9 @@
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Compute a sine tone
 
-function retval = sinetone (freq, rate, sec, ampl)
+function retval = sinetone (freq, rate = 8000, sec = 1, ampl = 64)
 
-  if (nargin == 1)
-    rate = 8000;
-    sec = 1;
-    ampl = 64;
-  elseif (nargin == 2)
-    sec = 1;
-    ampl = 64;
-  elseif (nargin == 3)
-    ampl = 64;
-  elseif ((nargin < 1) || (nargin > 4))
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 

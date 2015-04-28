@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2013 Kai Habel
+## Copyright (C) 1999-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -31,16 +31,12 @@
 ## PKG_ADD: colormap ("register", "hot");
 ## PKG_DEL: colormap ("unregister", "hot");
 
-function map = hot (n)
+function map = hot (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("hot: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("hot: N must be a scalar");
   endif
 
   if (n == 1)

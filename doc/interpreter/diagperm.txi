@@ -1,4 +1,4 @@
-@c Copyright (C) 2009-2013 Jaroslav Hajek
+@c Copyright (C) 2009-2015 Jaroslav Hajek
 @c
 @c This file is part of Octave.
 @c
@@ -59,7 +59,26 @@ $P_{ij}=0$ otherwise.
 Octave provides special treatment of real and complex rectangular diagonal
 matrices, as well as permutation matrices.  They are stored as special objects,
 using efficient storage and algorithms, facilitating writing both readable and
-efficient matrix algebra expressions in the Octave language.
+efficient matrix algebra expressions in the Octave language.  The special
+treatment may be disabled by using the functions @dfn{disable_diagonal_matrix}
+and @dfn{disable_permutation_matrix}.
+
+@DOCSTRING(disable_diagonal_matrix)
+
+@DOCSTRING(disable_permutation_matrix)
+
+The space savings are significant as demonstrated by the following code.
+
+@example
+@group
+x = diag (rand (10, 1));
+xf = full (x);
+sizeof (x)
+@result{} 80
+sizeof (xf)
+@result{} 800
+@end group
+@end example
 
 @menu
 * Creating Diagonal Matrices::
@@ -462,7 +481,8 @@ in earlier versions of Octave, but slowly.
 
 @noindent
 Finally, here's how to solve a linear system @code{A*x = b}
-with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
+with @nospell{Tikhonov} regularization (ridge regression) using SVD (a skeleton
+only):
 
 @example
 @group
@@ -489,21 +509,18 @@ Making diagonal and permutation matrices special matrix objects in their own
 right and the consequent usage of smarter algorithms for certain operations
 implies, as a side effect, small differences in treating zeros.
 The contents of this section apply also to sparse matrices, discussed in
-the following chapter. (@pxref{Sparse Matrices})
+the following chapter.  (@pxref{Sparse Matrices})
 
-The IEEE floating point standard defines the result of the expressions @code{0*Inf} and
-@code{0*NaN} as @code{NaN}. This is widely agreed to be a good
-compromise.
-Numerical software dealing with structured and sparse matrices (including
-Octave) however, almost always makes a distinction between a "numerical zero"
-and an "assumed zero".
-A "numerical zero" is a zero value occurring in a place where any floating-point
-value could occur.  It is normally stored somewhere in memory as an explicit
-value.
-An "assumed zero", on the contrary, is a zero matrix element implied by the
-matrix structure (diagonal, triangular) or a sparsity pattern; its value is
-usually not stored explicitly anywhere, but is implied by the underlying
-data structure.
+The IEEE floating point standard defines the result of the expressions
+@code{0*Inf} and @code{0*NaN} as @code{NaN}.  This is widely agreed to be a
+good compromise.  Numerical software dealing with structured and sparse matrices
+(including Octave) however, almost always makes a distinction between a
+"numerical zero" and an "assumed zero".  A "numerical zero" is a zero value
+occurring in a place where any floating-point value could occur.  It is
+normally stored somewhere in memory as an explicit value.  An "assumed zero", on
+the contrary, is a zero matrix element implied by the matrix structure
+(diagonal, triangular) or a sparsity pattern; its value is usually not stored
+explicitly anywhere, but is implied by the underlying data structure.
 
 The primary distinction is that an assumed zero, when multiplied
 by any number, or divided by any nonzero number,

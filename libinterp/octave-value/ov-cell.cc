@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2013 John W. Eaton
+Copyright (C) 1999-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "ov-cell.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "ov-base-mat.h"
@@ -124,7 +125,6 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 
 template class octave_base_matrix<Cell>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
@@ -687,7 +687,7 @@ octave_cell::print_as_scalar (void) const
 }
 
 void
-octave_cell::print (std::ostream& os, bool) const
+octave_cell::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -1066,18 +1066,19 @@ octave_cell::mex_get_data (void) const
   return matrix.mex_get_data ();
 }
 
+bool
+octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
 #if defined (HAVE_HDF5)
 
-bool
-octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   hsize_t rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1, size_hid = -1;
+  hid_t space_hid, data_hid, size_hid;
+  space_hid = data_hid = size_hid = -1;
 
 #if HAVE_HDF5_18
   data_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -1156,14 +1157,21 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   H5Gclose (data_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_cell::load_hdf5 (hid_t loc_id, const char *name)
+octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
-  clear_cellstr_cache ();
-
   bool retval = false;
+
+#if defined (HAVE_HDF5)
+
+  clear_cellstr_cache ();
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -1260,10 +1268,12 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
       retval = true;
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 DEFUN (iscell, args, ,
        "-*- texinfo -*-\n\

@@ -1,7 +1,7 @@
 // Template array classes with like-type math ops
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -48,12 +48,6 @@ protected:
 public:
 
   MArray (void) : Array<T> () { }
-
-  explicit MArray (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : Array<T> (dim_vector (n, 1)) { }
-
-  MArray (octave_idx_type n, const T& val) GCC_ATTR_DEPRECATED
-    : Array<T> (dim_vector (n, 1), val) { }
 
   explicit MArray (const dim_vector& dv)
     : Array<T> (dv) { }

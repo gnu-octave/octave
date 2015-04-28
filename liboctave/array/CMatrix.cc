@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague, a.s.
 
@@ -36,8 +36,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 
 #include "Array-util.h"
+#include "boolMatrix.h"
+#include "chMatrix.h"
+#include "dMatrix.h"
 #include "CMatrix.h"
-#include "CmplxAEPBAL.h"
+#include "CNDArray.h"
+#include "CRowVector.h"
+#include "dRowVector.h"
+#include "CDiagMatrix.h"
+#include "dDiagMatrix.h"
 #include "CmplxCHOL.h"
 #include "CmplxSCHUR.h"
 #include "CmplxSVD.h"
@@ -48,7 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "mx-base.h"
 #include "mx-cm-dm.h"
 #include "mx-cm-s.h"
 #include "mx-dm-cm.h"
@@ -262,39 +268,67 @@ static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 // Complex Matrix class
 
 ComplexMatrix::ComplexMatrix (const Matrix& a)
-  : MArray<Complex> (a)
+  : ComplexNDArray (a)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const RowVector& rv)
-  : MArray<Complex> (rv)
+  : ComplexNDArray (rv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ColumnVector& cv)
-  : MArray<Complex> (cv)
+  : ComplexNDArray (cv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
-  : MArray<Complex> (a.dims (), 0.0)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const MDiagArray2<double>& a)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const DiagArray2<double>& a)
+  : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
-  : MArray<Complex> (rv)
+  : ComplexNDArray (rv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
-  : MArray<Complex> (cv)
+  : ComplexNDArray (cv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
-  : MArray<Complex> (a.dims (), 0.0)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const MDiagArray2<Complex>& a)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const DiagArray2<Complex>& a)
+  : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -303,12 +337,12 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
 // FIXME: could we use a templated mixed-type copy function here?
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
-  : MArray<Complex> (a)
+  : ComplexNDArray (a)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const charMatrix& a)
-  : MArray<Complex> (a.dims (), 0.0)
+  : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
@@ -316,7 +350,7 @@ ComplexMatrix::ComplexMatrix (const charMatrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const Matrix& re, const Matrix& im)
-  : MArray<Complex> (re.dims ())
+  : ComplexNDArray (re.dims ())
 {
   if (im.rows () != rows () || im.cols () != cols ())
     (*current_liboctave_error_handler) ("complex: internal error");
@@ -463,7 +497,7 @@ ComplexMatrix&
 ComplexMatrix::insert (const ComplexMatrix& a,
                        octave_idx_type r, octave_idx_type c)
 {
-  Array<Complex>::insert (a, r, c);
+  ComplexNDArray::insert (a, r, c);
   return *this;
 }
 
@@ -1353,7 +1387,7 @@ ComplexMatrix::fourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1394,7 +1428,7 @@ ComplexMatrix::ifourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1438,7 +1472,7 @@ ComplexMatrix::fourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1460,7 +1494,7 @@ ComplexMatrix::fourier2d (void) const
   wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> tmp (npts, 1);
+  Array<Complex> tmp (dim_vector (npts, 1));
   Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (zffti, ZFFTI) (npts, pwsave);
@@ -1504,7 +1538,7 @@ ComplexMatrix::ifourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1529,7 +1563,7 @@ ComplexMatrix::ifourier2d (void) const
   wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> tmp (npts, 1);
+  Array<Complex> tmp (dim_vector (npts, 1));
   Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (zffti, ZFFTI) (npts, pwsave);
@@ -1722,7 +1756,7 @@ ComplexMatrix::rcond (void) const
 double
 ComplexMatrix::rcond (MatrixType &mattype) const
 {
-  double rcon;
+  double rcon = octave_NaN;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1904,8 +1938,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
     {
       volatile int typ = mattype.type ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           octave_idx_type b_nc = b.cols ();
           rcon = 1.;
@@ -1920,11 +1953,27 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               const Complex *tmp_data = fortran_vec ();
 
+              retval = b;
+              Complex *result = retval.fortran_vec ();
+
+              char uplo = 'U';
+              char trans = get_blas_char (transt);
+              char dia = 'N';
+
+              F77_XFCN (ztrtrs, ZTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                         F77_CONST_CHAR_ARG2 (&trans, 1),
+                                         F77_CONST_CHAR_ARG2 (&dia, 1),
+                                         nr, b_nc, tmp_data, nr,
+                                         result, nr, info
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)));
+
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'U';
-                  char dia = 'N';
+                  uplo = 'U';
+                  dia = 'N';
 
                   Array<Complex> z (dim_vector (2 * nc, 1));
                   Complex *pz = z.fortran_vec ();
@@ -1952,29 +2001,8 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
-                }
-
-              if (info == 0)
-                {
-                  retval = b;
-                  Complex *result = retval.fortran_vec ();
-
-                  char uplo = 'U';
-                  char trans = get_blas_char (transt);
-                  char dia = 'N';
-
-                  F77_XFCN (ztrtrs, ZTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
-                                             F77_CONST_CHAR_ARG2 (&trans, 1),
-                                             F77_CONST_CHAR_ARG2 (&dia, 1),
-                                             nr, b_nc, tmp_data, nr,
-                                             result, nr, info
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)));
                 }
             }
         }
@@ -2005,8 +2033,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
     {
       volatile int typ = mattype.type ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           octave_idx_type b_nc = b.cols ();
           rcon = 1.;
@@ -2021,11 +2048,27 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               const Complex *tmp_data = fortran_vec ();
 
+              retval = b;
+              Complex *result = retval.fortran_vec ();
+
+              char uplo = 'L';
+              char trans = get_blas_char (transt);
+              char dia = 'N';
+
+              F77_XFCN (ztrtrs, ZTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                         F77_CONST_CHAR_ARG2 (&trans, 1),
+                                         F77_CONST_CHAR_ARG2 (&dia, 1),
+                                         nr, b_nc, tmp_data, nr,
+                                         result, nr, info
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)));
+
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'L';
-                  char dia = 'N';
+                  uplo = 'L';
+                  dia = 'N';
 
                   Array<Complex> z (dim_vector (2 * nc, 1));
                   Complex *pz = z.fortran_vec ();
@@ -2053,29 +2096,8 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
-                }
-
-              if (info == 0)
-                {
-                  retval = b;
-                  Complex *result = retval.fortran_vec ();
-
-                  char uplo = 'L';
-                  char trans = get_blas_char (transt);
-                  char dia = 'N';
-
-                  F77_XFCN (ztrtrs, ZTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
-                                             F77_CONST_CHAR_ARG2 (&trans, 1),
-                                             F77_CONST_CHAR_ARG2 (&dia, 1),
-                                             nr, b_nc, tmp_data, nr,
-                                             result, nr, info
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)));
                 }
             }
         }
@@ -2159,9 +2181,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -2216,8 +2236,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -2245,9 +2264,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -2342,9 +2359,9 @@ ComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 
   // Only calculate the condition number for LU/Cholesky
   if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
-    retval = utsolve (mattype, b, info, rcon, sing_handler, false, transt);
+    retval = utsolve (mattype, b, info, rcon, sing_handler, true, transt);
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-    retval = ltsolve (mattype, b, info, rcon, sing_handler, false, transt);
+    retval = ltsolve (mattype, b, info, rcon, sing_handler, true, transt);
   else if (transt == blas_trans)
     return transpose ().solve (mattype, b, info, rcon, sing_handler,
                                singular_fallback);
@@ -3096,154 +3113,60 @@ ComplexMatrix::operator -= (const Matrix& a)
   return *this;
 }
 
-// unary operations
-
-boolMatrix
-ComplexMatrix::operator ! (void) const
-{
-  if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-
-  return do_mx_unary_op<bool, Complex> (*this, mx_inline_not);
-}
-
 // other operations
-
-bool
-ComplexMatrix::any_element_is_nan (void) const
-{
-  return do_mx_check<Complex> (*this, mx_inline_any_nan);
-}
-
-bool
-ComplexMatrix::any_element_is_inf_or_nan (void) const
-{
-  return ! do_mx_check<Complex> (*this, mx_inline_all_finite);
-}
-
-// Return true if no elements have imaginary components.
-
-bool
-ComplexMatrix::all_elements_are_real (void) const
-{
-  return do_mx_check<Complex> (*this, mx_inline_all_real);
-}
-
-// Return nonzero if any element of CM has a non-integer real or
-// imaginary part.  Also extract the largest and smallest (real or
-// imaginary) values and return them in MAX_VAL and MIN_VAL.
-
-bool
-ComplexMatrix::all_integers (double& max_val, double& min_val) const
-{
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      Complex val = elem (0, 0);
-
-      double r_val = std::real (val);
-      double i_val = std::imag (val);
-
-      max_val = r_val;
-      min_val = r_val;
-
-      if (i_val > max_val)
-        max_val = i_val;
-
-      if (i_val < max_val)
-        min_val = i_val;
-    }
-  else
-    return false;
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        Complex val = elem (i, j);
-
-        double r_val = std::real (val);
-        double i_val = std::imag (val);
-
-        if (r_val > max_val)
-          max_val = r_val;
-
-        if (i_val > max_val)
-          max_val = i_val;
-
-        if (r_val < min_val)
-          min_val = r_val;
-
-        if (i_val < min_val)
-          min_val = i_val;
-
-        if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
-          return false;
-      }
-
-  return true;
-}
-
-bool
-ComplexMatrix::too_large_for_float (void) const
-{
-  return test_any (xtoo_large_for_float);
-}
-
-// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 ComplexMatrix::all (int dim) const
 {
-  return do_mx_red_op<bool, Complex> (*this, dim, mx_inline_all);
+  return ComplexNDArray::all (dim);
 }
 
 boolMatrix
 ComplexMatrix::any (int dim) const
 {
-  return do_mx_red_op<bool, Complex> (*this, dim, mx_inline_any);
+  return ComplexNDArray::any (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumprod);
+  return ComplexNDArray::cumprod (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumsum);
+  return ComplexNDArray::cumsum (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::prod (int dim) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_prod);
+  return ComplexNDArray::prod (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::sum (int dim) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_sum);
+  return ComplexNDArray::sum (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<double, Complex> (*this, dim, mx_inline_sumsq);
+  return ComplexNDArray::sumsq (dim);
 }
 
-Matrix ComplexMatrix::abs (void) const
+Matrix
+ComplexMatrix::abs (void) const
 {
-  return do_mx_unary_map<double, Complex, std::abs> (*this);
+  return ComplexNDArray::abs ();
 }
 
 ComplexMatrix
 ComplexMatrix::diag (octave_idx_type k) const
 {
-  return MArray<Complex>::diag (k);
+  return ComplexNDArray::diag (k);
 }
 
 ComplexDiagMatrix
@@ -3705,7 +3628,7 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   // FIXME: check info?
 
-  retval = -ua * cx * ub.hermitian ();
+  retval = ua * cx * ub.hermitian ();
 
   return retval;
 }
@@ -3765,8 +3688,10 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
 {
   ComplexMatrix retval;
 
-  bool tra = transa != blas_no_trans, trb = transb != blas_no_trans;
-  bool cja = transa == blas_conj_trans, cjb = transb == blas_conj_trans;
+  bool tra = transa != blas_no_trans;
+  bool trb = transb != blas_no_trans;
+  bool cja = transa == blas_conj_trans;
+  bool cjb = transb == blas_conj_trans;
 
   octave_idx_type a_nr = tra ? a.cols () : a.rows ();
   octave_idx_type a_nc = tra ? a.rows () : a.cols ();
@@ -3822,8 +3747,10 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
         }
       else
         {
-          octave_idx_type lda = a.rows (), tda = a.cols ();
-          octave_idx_type ldb = b.rows (), tdb = b.cols ();
+          octave_idx_type lda = a.rows ();
+          octave_idx_type tda = a.cols ();
+          octave_idx_type ldb = b.rows ();
+          octave_idx_type tdb = b.cols ();
 
           retval = ComplexMatrix (a_nr, b_nc, 0.0);
           Complex *c = retval.fortran_vec ();
@@ -3902,7 +3829,7 @@ min (const Complex& c, const ComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (c, m (i, j));
+        result(i, j) = xmin (c, m(i, j));
       }
 
   return result;
@@ -3922,7 +3849,7 @@ min (const ComplexMatrix& m, const Complex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (m (i, j), c);
+        result(i, j) = xmin (m(i, j), c);
       }
 
   return result;
@@ -3951,7 +3878,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
+          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = 0;
               break;
@@ -3961,14 +3888,14 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result (i, j) = xmin (std::real (a (i, j)), std::real (b (i, j)));
+            result(i, j) = xmin (std::real (a(i, j)), std::real (b(i, j)));
         }
       else
         {
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = xmin (a (i, j), b (i, j));
+              result(i, j) = xmin (a(i, j), b(i, j));
             }
         }
     }
@@ -3990,7 +3917,7 @@ max (const Complex& c, const ComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (c, m (i, j));
+        result(i, j) = xmax (c, m(i, j));
       }
 
   return result;
@@ -4010,7 +3937,7 @@ max (const ComplexMatrix& m, const Complex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (m (i, j), c);
+        result(i, j) = xmax (m(i, j), c);
       }
 
   return result;
@@ -4039,7 +3966,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
+          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = 0;
               break;
@@ -4051,7 +3978,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = xmax (std::real (a (i, j)), std::real (b (i, j)));
+              result(i, j) = xmax (std::real (a(i, j)), std::real (b(i, j)));
             }
         }
       else
@@ -4059,7 +3986,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = xmax (a (i, j), b (i, j));
+              result(i, j) = xmax (a(i, j), b(i, j));
             }
         }
     }

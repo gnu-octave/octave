@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "mxarray.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "ops.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -52,7 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<boolNDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_bool_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix,
                                      "bool matrix", "logical");
@@ -79,7 +79,7 @@ octave_bool_matrix::try_narrowing_conversion (void)
 
   if (matrix.ndims () == 2)
     {
-      boolMatrix bm = matrix.matrix_value ();
+      boolMatrix bm (matrix);
 
       octave_idx_type nr = bm.rows ();
       octave_idx_type nc = bm.cols ();
@@ -409,20 +409,22 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
+octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                bool /* save_as_floats */)
 {
+  bool retval = true;
+
+#if defined (HAVE_HDF5)
+
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   boolNDArray m = bool_array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
@@ -459,13 +461,19 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -524,10 +532,12 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_bool_matrix::as_mxArray (void) const
@@ -551,7 +561,7 @@ DEFUN (logical, args, ,
 @deftypefn {Built-in Function} {} logical (@var{x})\n\
 Convert the numeric object @var{x} to logical type.\n\
 \n\
-Any non-zero values will be converted to true (1) while zero values\n\
+Any nonzero values will be converted to true (1) while zero values\n\
 will be converted to false (0).  The non-numeric value NaN cannot be\n\
 converted and will produce an error.\n\
 \n\

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Bill Denney
+## Copyright (C) 2006-2015 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -80,87 +80,68 @@ function out = compare_versions (v1, v2, operator)
 
   ## Make sure that the version numbers are valid.
   if (! (ischar (v1) && ischar (v2)))
-    error ("compare_versions: both version numbers must be strings");
+    error ("compare_versions: version numbers V1 and V2 must be strings");
   elseif (rows (v1) != 1 || rows (v2) != 1)
-    error ("compare_versions: version numbers must be a single row");
+    error ("compare_versions: version numbers V1 and V2 must be a single row");
   endif
 
   ## check and make sure that the operator is valid
   if (! ischar (operator))
-    error ("compare_versions: OPERATOR must be a character string");
+    error ("compare_versions: OPERATOR must be a string");
   elseif (numel (operator) > 2)
     error ("compare_versions: OPERATOR must be 1 or 2 characters long");
   endif
 
-  ## trim off any character data that is not part of a normal version
-  ## number
-  numbers = "0123456789.";
+  ## trim off any character data that is not part of a normal version number
+  v1firstchar = find (! (isdigit (v1) | v1 == "."), 1);
+  v2firstchar = find (! (isdigit (v2) | v2 == "."), 1);
 
-  v1firstchar = find (! ismember (v1, numbers), 1);
-  v2firstchar = find (! ismember (v2, numbers), 1);
-  if (! isempty (v1firstchar))
-    v1c = v1(v1firstchar:length (v1));
-    v1nochar = v1(1:v1firstchar-1);
-  else
+  if (isempty (v1firstchar))
     v1c = "";
     v1nochar = v1;
-  endif
-  if (! isempty (v2firstchar))
-    v2c = v2(v2firstchar:length (v2));
-    v2nochar = v2(1:v2firstchar-1);
   else
+    v1c = v1(v1firstchar:end);
+    v1nochar = v1(1:v1firstchar-1);
+  endif
+  if (isempty (v2firstchar))
     v2c = "";
     v2nochar = v2;
+  else
+    v2c = v2(v2firstchar:end);
+    v2nochar = v2(1:v2firstchar-1);
   endif
 
-  v1n = str2num (char (ostrsplit (v1nochar, ".")));
-  v2n = str2num (char (ostrsplit (v2nochar, ".")));
-  if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty (v2c)))
-    error ("compare_versions: given version strings are not valid: %s %s",
-           v1, v2);
+  v1n = str2double (ostrsplit (v1nochar, ".")');
+  if (isnan (v1n))
+    v1n = [];
+  endif
+  v2n = str2double (ostrsplit (v2nochar, ".")');
+  if (isnan (v2n))
+    v2n = [];
   endif
 
-  ## Assume that any additional elements would be 0 if one is longer
-  ## than the other.
+  if (isempty (v1n) && isempty (v1c))
+    error ("compare_versions: version string V1 is not valid: %s", v1);
+  elseif (isempty (v2n) && isempty (v2c))
+    error ("compare_versions: version string V2 is not valid: %s", v2);
+  endif
+
+  ## Assume any additional elements would be 0 if one is longer than the other.
   maxnumlen = max ([length(v1n) length(v2n)]);
-  if (length (v1n) < maxnumlen)
-    v1n(length(v1n)+1:maxnumlen) = 0;
-  endif
-  if (length (v2n) < maxnumlen)
-    v2n(length(v2n)+1:maxnumlen) = 0;
-  endif
+  v1n(end+1:maxnumlen) = 0;
+  v2n(end+1:maxnumlen) = 0;
 
-  ## Assume that any additional character elements would be 0 if one is
-  ## longer than the other.
+  ## Assume any additional character elements would be 0,
+  ## if one is longer than the other.
   maxcharlen = max ([length(v1c), length(v2c)]);
-  if (length (v1c) < maxcharlen)
-    v1c(length(v1c)+1:maxcharlen) = "\0";
-  endif
-  if (length (v2c) < maxcharlen)
-    v2c(length(v2c)+1:maxcharlen) = "\0";
-  endif
+  v1c(end+1:maxcharlen) = "\0";
+  v2c(end+1:maxcharlen) = "\0";
 
   ## Determine the operator.
-  if (any (ismember (operator, "=")))
-    equal_op = true;
-  else
-    equal_op = false;
-  endif
-  if (any (ismember (operator, "~!")))
-    not_op = true;
-  else
-    not_op = false;
-  endif
-  if (any (ismember (operator, "<")))
-    lt_op = true;
-  else
-    lt_op = false;
-  endif
-  if (any (ismember (operator, ">")))
-    gt_op = true;
-  else
-    gt_op = false;
-  endif
+  equal_op = any (operator == "=");
+  not_op = any (operator == "!" | operator == "~");
+  lt_op = any (operator == "<");
+  gt_op = any (operator == ">");
 
   ## Make sure that we don't have conflicting operators.
   if (gt_op && lt_op)
@@ -168,9 +149,9 @@ function out = compare_versions (v1, v2, operator)
   elseif ((gt_op || lt_op) && not_op)
     error ("compare_versions: OPERATOR cannot contain not and greater than or less than symbols");
   elseif (strcmp (operator, "="))
-    error ("compare_versions: equality OPERATOR is \"==\", not \"=\"");
+    error ('compare_versions: equality OPERATOR is "==", not "="');
   elseif (! (equal_op || not_op || lt_op || gt_op))
-    error ("compare_versions: No valid OPERATOR specified");
+    error ("compare_versions: no valid OPERATOR specified");
   endif
 
   ## Compare the versions (making sure that they're the same shape)
@@ -180,7 +161,7 @@ function out = compare_versions (v1, v2, operator)
     ## so that we only need to check for the output being greater than 1
     vcmp = -vcmp;
   endif
-  firstdiff = find (vcmp != 0, 1);
+  firstdiff = find (vcmp, 1);
 
   if (isempty (firstdiff))
     ## They're equal.
@@ -241,13 +222,23 @@ endfunction
 %!assert (compare_versions ("0.1", "0.1", "!="), false)
 %!assert (compare_versions ("0.1", "0.1", "~="), false)
 
-%% Test input validation
-%!error (compare_versions (0.1, "0.1", "=="))
-%!error (compare_versions ("0.1", 0.1, "=="))
-%!error (compare_versions (["0";".";"1"], "0.1", "=="))
-%!error (compare_versions ("0.1", ["0";".";"1"], "=="))
-%!error (compare_versions ("0.1", "0.1", "<>"))
-%!error (compare_versions ("0.1", "0.1", "!>"))
-%!error (compare_versions ("0.1", "0.1", "="))
-%!error (compare_versions ("0.1", "0.1", "aa"))
+## Test input validation
+%!error compare_versions ()
+%!error compare_versions (1)
+%!error compare_versions (1,2)
+%!error compare_versions (1,2,3,4)
+%!error <V1 and V2 must be strings> compare_versions (0.1, "0.1", "==")
+%!error <V1 and V2 must be strings> compare_versions ("0.1", 0.1, "==")
+%!error <V1 and V2 must be a single row> compare_versions (["0";".";"1"], "0.1", "==")
+%!error <V1 and V2 must be a single row> compare_versions ("0.1", ["0";".";"1"], "==")
+%!error <OPERATOR must be a string> compare_versions ("0.1", "0.1", 1)
+%!error <OPERATOR must be 1 or 2> compare_versions ("0.1", "0.1", "==>")
+%!error <V1 is not valid> compare_versions (".", "0.1", "==")
+%!error <V2 is not valid> compare_versions ("0.1", ".", "==")
+
+%!error <cannot contain both greater and less than> compare_versions ("0.1", "0.1", "<>")
+%!error <cannot contain not and greater than> compare_versions ("0.1", "0.1", "!>")
+%!error <cannot contain not and greater than> compare_versions ("0.1", "0.1", "!<")
+%!error <equality OPERATOR is "=="> compare_versions ("0.1", "0.1", "=")
+%!error <no valid OPERATOR> compare_versions ("0.1", "0.1", "aa")
 

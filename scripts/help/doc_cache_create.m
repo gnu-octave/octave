@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Søren Hauberg
+## Copyright (C) 2009-2015 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -55,6 +55,7 @@ function doc_cache_create (out_file = "doc-cache", directory = [])
 
   ## Save cache
   if (! isempty (cache))
+     save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION], "local");
      save ("-text", out_file, "cache");
   endif
 
@@ -123,7 +124,7 @@ function cache = gen_doc_cache_in_dir (directory)
   if (! iscell (directory))
     directory = {directory};
   endif
-  dirs_notpath = {directory{!dir_in_path}};
+  dirs_notpath = {directory{! dir_in_path}};
 
   ## add them
   if (! isempty (dirs_notpath))
@@ -154,7 +155,7 @@ function cache = gen_builtin_cache ()
 endfunction
 
 
-%% No true tests desirable for this function.
-%% Test input validation
+## No true tests desirable for this function.
+## Test input validation
 %!error doc_cache_create (1)
 

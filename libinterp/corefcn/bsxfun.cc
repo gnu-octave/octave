@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 David Bateman
+Copyright (C) 2007-2015 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -201,7 +201,8 @@ maybe_optimized_builtin (const std::string& name,
   bsxfun_builtin_op op = bsxfun_builtin_lookup (name);
   if (op != bsxfun_builtin_unknown)
     {
-      builtin_type_t btyp_a = a.builtin_type (), btyp_b = b.builtin_type ();
+      builtin_type_t btyp_a = a.builtin_type ();
+      builtin_type_t btyp_b = b.builtin_type ();
 
       // Simplify single/double combinations.
       if (btyp_a == btyp_float && btyp_b == btyp_double)
@@ -286,7 +287,7 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
   if (i == 0)
     {
       for (octave_idx_type j = nd - 1; j > 0; j--)
-        idx(j) = octave_value (static_cast<double>(1));
+        idx(j) = octave_value (1.0);
       idx(0) = octave_value (':');
     }
   else
@@ -351,14 +352,14 @@ dimensionality as the other array.\n\
                || args(0).is_inline_function ()))
         error ("bsxfun: F must be a string or function handle");
 
-      const octave_value A = args (1);
-      const octave_value B = args (2);
+      const octave_value A = args(1);
+      const octave_value B = args(2);
 
       if (func.is_builtin_function ()
           || (func.is_function_handle ()
               && ! A.is_object () && ! B.is_object ()))
         {
-          // This may break if the default behavior is overriden.  But if you
+          // This may break if the default behavior is overridden.  But if you
           // override arithmetic operators for builtin classes, you should
           // expect mayhem anyway (constant folding etc).  Querying
           // is_overloaded() may not be exactly what we need here.
@@ -535,8 +536,8 @@ dimensionality as the other array.\n\
                         {
                           update_index (ra_idx, dvc, i);
 
-                          if (have_FloatNDArray ||
-                              have_FloatComplexNDArray)
+                          if (have_FloatNDArray
+                              || have_FloatComplexNDArray)
                             {
                               if (! tmp(0).is_float_type ())
                                 {
@@ -554,8 +555,8 @@ dimensionality as the other array.\n\
                                 }
                               else if (tmp(0).is_double_type ())
                                 {
-                                  if (tmp(0).is_complex_type () &&
-                                      have_FloatNDArray)
+                                  if (tmp(0).is_complex_type ()
+                                      && have_FloatNDArray)
                                     {
                                       result_ComplexNDArray =
                                         ComplexNDArray (result_FloatNDArray);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013 Torsten
+Copyright (C) 2013-2015 Torsten
 
 This file is part of Octave.
 
@@ -50,6 +50,11 @@ public:
 signals:
 
   void execute_command_in_terminal_signal (const QString&);
+  void create_context_menu_signal (QMenu*);
+  void context_menu_edit_signal (const QString&);
+  void qsci_has_focus_signal (bool);
+  void status_update (bool,bool);
+  void show_doc_signal (const QString&);
 
 private slots:
 
@@ -58,6 +63,10 @@ private slots:
   void contextmenu_help_doc (bool);
   void contextmenu_edit (bool);
   void contextmenu_run (bool);
+
+  void text_changed (void);
+
+protected:
 
 private:
 

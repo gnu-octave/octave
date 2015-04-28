@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -161,7 +161,7 @@ endfunction
 %! c = cov (x, 1);
 %! assert (c, 2);
 
-%% Test input validation
+## Test input validation
 %!error cov ()
 %!error cov (1, 2, 3, 4)
 %!error cov ([1; 2], ["A", "B"])

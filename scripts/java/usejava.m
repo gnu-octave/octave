@@ -1,5 +1,5 @@
-## Copyright (C) 2012-2013 Rik Wehbring
-## Parts Copyright (C) 2012-2013 Philip Nienhuis
+## Copyright (C) 2012-2015 Rik Wehbring
+## Parts Copyright (C) 2012-2015 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -43,6 +43,7 @@
 ## @qcode{"desktop"} always returns @code{false} as Octave has no Java-based
 ## desktop.  Other features may be available if Octave was compiled with the
 ## Java Interface and Java is installed.
+## @seealso{javachk}
 ## @end deftypefn
 
 ## Author: Rik Wehbring
@@ -56,7 +57,7 @@ function retval = usejava (feature)
 
   retval = false;
 
-  switch feature
+  switch (feature)
     ## For each feature, try methods() on a Java class of a feature
     case "awt"
       try
@@ -87,7 +88,7 @@ endfunction
 %!testif HAVE_JAVA
 %! assert (usejava ("jvm"), true);
 
-%% Test input validation
+## Test input validation
 %!error usejava ()
 %!error usejava (1, 2)
 %!error usejava (1)

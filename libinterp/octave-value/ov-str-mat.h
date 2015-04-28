@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -153,11 +153,9 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -171,7 +169,6 @@ protected:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -255,7 +252,6 @@ public:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

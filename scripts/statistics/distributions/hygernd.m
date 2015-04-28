@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1997-2013 Kurt Hornik
+## Copyright (C) 1997-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -66,13 +66,13 @@ function rnd = hygernd (t, m, n, varargin)
       error ("hygernd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 4)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("hygernd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (t) && !isequal (size (t), sz))
+  if (! isscalar (t) && ! isequal (size (t), sz))
     error ("hygernd: T, M, and N must be scalar or of size SZ");
   endif
 
@@ -129,7 +129,7 @@ endfunction
 %!assert (class (hygernd (4,2,single (2))), "single")
 %!assert (class (hygernd (4,2,single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error hygernd ()
 %!error hygernd (1)
 %!error hygernd (1,2)

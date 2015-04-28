@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -143,13 +143,13 @@ function h = colorbar (varargin)
       ## FIXME: No listener on location property so have to re-create
       ##        colorbar whenever an option changes.
       ##        re-instate this code if listener is developed.
-      # if (! isempty (loc))
-      #   set (hcb, "location", loc);
-      # endif
-      # if (! isempty (args))
-      #   set (hcb, args{:});
-      # endif
-      ax = get (get (hcb, "parent"), "currrentaxes");
+      ## if (! isempty (loc))
+      ##   set (hcb, "location", loc);
+      ## endif
+      ## if (! isempty (args))
+      ##   set (hcb, args{:});
+      ## endif
+      ax = get (ancestor (hcb, "figure"), "currrentaxes");
     endif
   endif
 
@@ -163,7 +163,8 @@ function h = colorbar (varargin)
   showhiddenhandles = get (0, "showhiddenhandles");
   unwind_protect
     set (0, "showhiddenhandles", "on");
-    cax = findobj (get (ax, "parent"), "tag", "colorbar", "type", "axes", "axes", ax);
+    cax = findobj (ancestor (ax, "figure"),
+                   "tag", "colorbar", "type", "axes", "axes", ax);
     if (! isempty (cax))
       delete (cax);
     endif
@@ -179,16 +180,16 @@ function h = colorbar (varargin)
     obj = get (ax);
     obj.__cbar_hax__ = ax;
     position = obj.position;
-    ## FIXME: Should this be ancestor to accommodate hggroups?
-    hpar = get (ax, "parent");
+    
+    hpar = ancestor (ax, "figure");
     clen = rows (get (hpar, "colormap"));
     cext = get (ax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
 
-    [pos, cpos, vertical, mirror] =  ...
-        __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
+    [pos, cpos, vertical, mirror] = ...
+       __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "position", pos);
 
     cax = __go_axes__ (hpar, "tag", "colorbar",
@@ -207,11 +208,11 @@ function h = colorbar (varargin)
       if (mirror)
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
                   "ylim", cext, "ylimmode", "manual",
-                  "yaxislocation", "right", args{:});
+                  "yaxislocation", "right", "layer", "top", args{:});
       else
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
                   "ylim", cext, "ylimmode", "manual",
-                  "yaxislocation", "left", args{:});
+                  "yaxislocation", "left", "layer", "top", args{:});
       endif
     else
       hi = image (cax, "xdata", [cmin, cmax], "ydata", [0,1],
@@ -219,11 +220,11 @@ function h = colorbar (varargin)
       if (mirror)
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
                   "xlim", cext, "xlimmode", "manual",
-                  "xaxislocation", "top", args{:});
+                  "xaxislocation", "top", "layer", "top", args{:});
       else
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
                   "xlim", cext, "xlimmode", "manual",
-                  "xaxislocation", "bottom", args{:});
+                  "xaxislocation", "bottom", "layer", "top", args{:});
       endif
     endif
 
@@ -260,7 +261,7 @@ function deletecolorbar (h, d, hc, orig_props)
     if (strcmp (get (hc, "beingdeleted"), "off"))
       delete (hc);
     endif
-    if (!isempty (ancestor (h, "axes"))
+    if (! isempty (ancestor (h, "axes"))
         && strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
       ax = ancestor (h, "axes");
       units = get (ax, "units");
@@ -276,7 +277,7 @@ endfunction
 function resetaxis (cax, d, ax, orig_props)
   if (isaxes (ax))
     ## FIXME: Probably don't want to delete everyone's listeners on colormap.
-    dellistener (get (ax, "parent"), "colormap");
+    dellistener (ancestor (ax, "figure"), "colormap");
     dellistener (ax, "clim");
     dellistener (ax, "dataaspectratio");
     dellistener (ax, "dataaspectratiomode");
@@ -296,7 +297,7 @@ endfunction
 function update_colorbar_clim (hax, d, hi, vert)
   if (isaxes (hax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
-    clen = rows (get (get (hax, "parent"), "colormap"));
+    clen = rows (get (ancestor (hax, "figure"), "colormap"));
     cext = get (hax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
     cmin = cext(1) + cdiff;
@@ -310,24 +311,6 @@ function update_colorbar_clim (hax, d, hi, vert)
       set (hi, "xdata", [cmin, cmax]);
       set (hiax, "xlim", cext);
     endif
-
-    ## FIXME: Setting xlim or ylim from within a listener callback
-    ##        causes the axis to change size rather than change limits.
-    ##        Workaround it by jiggling the position property which forces
-    ##        a redraw of the axis object.
-    ##
-    ## Debug Example:
-    ## Uncomment the line below.
-    ##   keyboard;
-    ## Now run the the following code.
-    ##   clf; colorbar (); contour (peaks ())
-    ## Once the keyboard command has been hit in the debugger try
-    ##   set (hiax, "ylim", [0 0.5])
-    pos = get (hiax, "position");
-    pos(1) += eps;
-    set (hiax, "position", pos);
-    pos(1) -= eps;
-    set (hiax, "position", pos);
   endif
 endfunction
 
@@ -358,8 +341,8 @@ function update_colorbar_axis (h, d, cax, orig_props)
     obj.__cbar_hax__ = h;
     obj.position = orig_props.position;
     obj.outerposition = orig_props.outerposition;
-    [pos, cpos, vertical, mirror] =  ...
-        __position_colorbox__ (loc, obj, ancestor (h, "figure"));
+    [pos, cpos, vertical, mirror] = ...
+       __position_colorbox__ (loc, obj, ancestor (h, "figure"));
 
     if (vertical)
       if (mirror)

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 A. Scottedward Hodel
+## Copyright (C) 1995-2015 A. Scottedward Hodel
 ##
 ## This file is part of Octave.
 ##
@@ -43,7 +43,7 @@
 ## @end table
 ##
 ## @noindent
-## Outputs (see Golub and Van Loan):
+## Outputs (see @nospell{Golub and Van Loan}):
 ##
 ## @table @var
 ## @item beta

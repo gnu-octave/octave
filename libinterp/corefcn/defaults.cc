@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -74,6 +74,7 @@ std::string Vlocal_ver_fcn_file_dir;
 std::string Vlocal_api_fcn_file_dir;
 std::string Vlocal_fcn_file_dir;
 
+std::string Voct_data_dir;
 std::string Voct_etc_dir;
 std::string Voct_locale_dir;
 
@@ -216,6 +217,12 @@ static void
 set_default_image_dir (void)
 {
   Vimage_dir = subst_octave_home (OCTAVE_IMAGEDIR);
+}
+
+static void
+set_default_oct_data_dir (void)
+{
+  Voct_data_dir = subst_octave_home (OCTAVE_OCTDATADIR);
 }
 
 static void
@@ -435,6 +442,7 @@ install_defaults (void)
   set_default_local_api_fcn_file_dir ();
   set_default_local_fcn_file_dir ();
 
+  set_default_oct_data_dir ();
   set_default_oct_etc_dir ();
   set_default_oct_locale_dir ();
 
@@ -594,7 +602,8 @@ Return the name of the top-level Octave installation directory.\n\
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
-Return the version number of Octave, as a string.\n\
+Return the version number of Octave as a string.\n\
+@seealso{ver, version}\n\
 @end deftypefn")
 {
   octave_value retval;

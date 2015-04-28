@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Nir Krakauer
+## Copyright (C) 2013-2015 Nir Krakauer
 ##
 ## This file is part of Octave.
 ##
@@ -87,28 +87,24 @@ function [x, R] = linsolve (A, b, opts)
     trans_A = false;
     if (isfield (opts, "TRANSA") && opts.TRANSA)
       trans_A = true;
-      A = A';
     endif
     if (isfield (opts, "POSDEF") && opts.POSDEF)
       A = matrix_type (A, "positive definite");
     endif
     if (isfield (opts, "LT") && opts.LT)
-      if (trans_A)
-        A = matrix_type (A, "upper");
-      else
-        A = matrix_type (A, "lower");
-      endif
-    endif
-    if (isfield (opts, "UT") && opts.UT)
-      if (trans_A)
-        A = matrix_type (A, "lower");
-      else
-        A = matrix_type (A, "upper");
-      endif
+      A = matrix_type (A, "lower");
+    elseif (isfield (opts, "UT") && opts.UT)
+      A = matrix_type (A, "upper");
     endif
   endif
 
-  x = A \ b;
+  ## This way is faster as the transpose is not calculated in Octave,
+  ## but forwarded as a flag option to BLAS.
+  if (trans_A)
+    x = A' \ b;
+  else
+    x = A \ b;
+  endif
 
   if (nargout > 1)
     if (issquare (A))
@@ -117,12 +113,13 @@ function [x, R] = linsolve (A, b, opts)
       R = 0;
     endif
   endif
+
 endfunction
 
 
 %!test
-%! n = 4;
-%! A = triu (rand (n));
+%! n = 10;
+%! A = triu (gallery ("condex", n));
 %! x = rand (n, 1);
 %! b = A' * x;
 %! opts.UT = true;

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,14 +46,16 @@ public:
                           octave_value::binary_op t
                             = octave_value::unknown_binary_op)
     : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t),
-      eligible_for_braindead_shortcircuit (false) { }
+      eligible_for_braindead_shortcircuit (false),
+      braindead_shortcircuit_warning_issued (false) { }
 
   tree_binary_expression (tree_expression *a, tree_expression *b,
                           int l = -1, int c = -1,
                           octave_value::binary_op t
                             = octave_value::unknown_binary_op)
     : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t),
-      eligible_for_braindead_shortcircuit (false) { }
+      eligible_for_braindead_shortcircuit (false),
+      braindead_shortcircuit_warning_issued (false) { }
 
   ~tree_binary_expression (void)
   {
@@ -61,23 +63,14 @@ public:
     delete op_rhs;
   }
 
-  void mark_braindead_shortcircuit (const std::string& file)
+  void mark_braindead_shortcircuit (void)
   {
     if (etype == octave_value::op_el_and || etype == octave_value::op_el_or)
       {
-        if (file.empty ())
-          warning_with_id ("Octave:possible-matlab-short-circuit-operator",
-                           "possible Matlab-style short-circuit operator at line %d, column %d",
-                           line (), column ());
-        else
-          warning_with_id ("Octave:possible-matlab-short-circuit-operator",
-                           "%s: possible Matlab-style short-circuit operator at line %d, column %d",
-                           file.c_str (), line (), column ());
-
         eligible_for_braindead_shortcircuit = true;
 
-        op_lhs->mark_braindead_shortcircuit (file);
-        op_rhs->mark_braindead_shortcircuit (file);
+        op_lhs->mark_braindead_shortcircuit ();
+        op_rhs->mark_braindead_shortcircuit ();
       }
   }
 
@@ -107,6 +100,9 @@ public:
 
   void accept (tree_walker& tw);
 
+  std::string profiler_name (void) const { return "binary " + oper (); }
+
+
 protected:
 
   // The operands for the expression.
@@ -121,6 +117,12 @@ private:
   // TRUE if this is an | or & expression in the condition of an IF
   // or WHILE statement.
   bool eligible_for_braindead_shortcircuit;
+
+  // TRUE if we have already issued a warning about short circuiting
+  // for this operator.
+  bool braindead_shortcircuit_warning_issued;
+
+  void matlab_style_short_circuit_warning (const char *op);
 
   // No copying!
 

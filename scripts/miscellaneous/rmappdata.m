@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott
+## Copyright (C) 2010-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rmappdata (@var{h}, @var{name})
-## Delete the named application data for the object(s) with
-## handle(s) @var{h}.
+## @deftypefn  {Function File} {} rmappdata (@var{h}, @var{name})
+## @deftypefnx {Function File} {} rmappdata (@var{h}, @var{name1}, @var{name2}, @dots{})
+## Delete the application data @var{name} from the graphics object with handle
+## @var{h}.
+##
+## @var{h} may also be a vector of graphics handles.  Multiple application data
+## names may be supplied to delete several properties at once.
+##
+## @seealso{setappdata, getappdata, isappdata}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
@@ -27,21 +33,28 @@
 
 function rmappdata (h, varargin)
 
-  if (! (all (ishandle (h)) && iscellstr (varargin)))
-    error ("rmappdata: invalid input");
+  if (nargin < 2)
+    print_usage ();
   endif
 
-  for nh = 1:numel (h)
-    if (isprop (h(nh), "__appdata__"))
-      appdata = get (h(nh), "__appdata__");
-      for v = 1:numel(varargin)
-        if (isfield (appdata, varargin{v}))
-          appdata = rmfield (appdata, varargin{v});
-        else
-          error ("rmappdata: appdata '%s' is not present")
-        endif
-      endfor
-      set (h(nh), "__appdata__", appdata);
+  h = h(:).';
+  if (! all (ishandle (h)))
+    error ("rmappdata: H must be a scalar or vector of graphic handles");
+  elseif (! iscellstr (varargin))
+    error ("rmappdata: NAME must be a string");
+  endif
+
+  for hg = h
+    if (isprop (hg, "__appdata__"))
+      appdata = get (hg, "__appdata__");
+      vld = isfield (appdata, varargin);
+      if (! all (vld))
+        ## FIXME: Should we bother to error out?  Or just silently continue?
+        missing = varargin{find (! vld, 1)};
+        error ("rmappdata: appdata '%s' is not present", missing);
+      endif
+      appdata = rmfield (appdata, varargin);
+      set (hg, "__appdata__", appdata);
     endif
   endfor
 
@@ -49,14 +62,21 @@ endfunction
 
 
 %!test
-%! setappdata (0, "hello", "world");
-%! rmappdata (0, "hello");
-%! assert (isappdata (0, "hello"), false);
+%! setappdata (0, "%hello%", "world");
+%! rmappdata (0, "%hello%");
+%! assert (isappdata (0, "%hello%"), false);
 
 %!test
-%! setappdata (0, "data1", rand (3));
-%! setappdata (0, "data2", {"hello", "world"});
-%! rmappdata (0, "data1", "data2");
-%! assert (isappdata (0, "data1"), false);
-%! assert (isappdata (0, "data2"), false);
+%! setappdata (0, "%data1%", ones (3));
+%! setappdata (0, "%data2%", {"hello", "world"});
+%! rmappdata (0, "%data1%", "%data2%");
+%! assert (isappdata (0, "%data1%"), false);
+%! assert (isappdata (0, "%data2%"), false);
+
+## Test input validation
+%!error rmappdata ()
+%!error rmappdata (1)
+%!error <H must be a scalar .* graphic handle> rmappdata (-1, "hello")
+%!error <NAME must be a string> rmappdata (0, 1)
+%!error <appdata 'foobar' is not present> rmappdata (0, "foobar")
 

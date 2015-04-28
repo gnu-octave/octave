@@ -3,6 +3,7 @@ FCN_FILE_DIRS += gui
 gui_PRIVATE_FCN_FILES = \
   gui/private/__file_filter__.m \
   gui/private/__fltk_file_filter__.m \
+  gui/private/__get_funcname__.m \
   gui/private/__is_function__.m \
   gui/private/__uigetdir_fltk__.m \
   gui/private/__uigetfile_fltk__.m \

@@ -1,6 +1,6 @@
 # Makefile for Octave's src directory
 #
-# Copyright (C) 1993-2013 John W. Eaton
+# Copyright (C) 1993-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -52,12 +52,15 @@ bin_PROGRAMS = \
   octave-config
 
 noinst_HEADERS = \
+  display-available.h	\
   shared-fcns.h
 
 OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)
 
+archlib_PROGRAMS =
+
 if AMCOND_BUILD_GUI
-  archlib_PROGRAMS = octave-gui
+  archlib_PROGRAMS += octave-gui
   OCTAVE_VERSION_LINKS += octave-gui-$(version)$(EXEEXT)
 endif
 
@@ -68,6 +71,7 @@ OCTAVE_CORE_LIBS = \
 include ../libgui/link-deps.mk
 
 nodist_octave_SOURCES = main.cc
+octave_SOURCES = display-available.c
 
 octave_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
@@ -127,19 +131,40 @@ octave_config_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBS)
 
-all-local: $(OCTAVE_VERSION_LINKS)
+OCTAVE_CROSS_TOOLS=
+if AMCOND_CROSS_TOOLS
+# building cross mkoctfile
+OCTAVE_CROSS_TOOLS += $(host_triplet)-mkoctfile$(BUILD_EXEEXT)
+$(host_triplet)-mkoctfile$(BUILD_EXEEXT): $(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o $(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) $(host_triplet)-mkoctfile.cc
+$(host_triplet)-mkoctfile.cc: mkoctfile.in.cc Makefile
+	$(AM_V_GEN)$(do_subst_cross_config_vals)
+
+# building cross octave-config
+OCTAVE_CROSS_TOOLS += $(host_triplet)-octave-config$(BUILD_EXEEXT)
+$(host_triplet)-octave-config$(BUILD_EXEEXT): $(host_triplet)-octave-config.cc
+	$(BUILD_CXX) -o $(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) $(host_triplet)-octave-config.cc
+$(host_triplet)-octave-config.cc: octave-config.in.cc Makefile
+	$(AM_V_GEN)$(do_subst_default_vals)
+
+mostlyclean-local:
+	-rm -f $(OCTAVE_CROSS_TOOLS)
+
+endif
+
+all-local: $(OCTAVE_VERSION_LINKS) $(OCTAVE_CROSS_TOOLS)
 
 octave-config.cc: octave-config.in.cc Makefile
-	@$(do_subst_default_vals)
+	$(AM_V_GEN)$(do_subst_default_vals)
 
 mkoctfile.cc: mkoctfile.in.cc Makefile
-	@$(do_subst_config_vals)
+	$(AM_V_GEN)$(do_subst_config_vals)
 
 ## main.cc must depend on Makefile.  Calling configure may change
 ## default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 main.cc: main.in.cc Makefile
-	@$(do_subst_default_vals)
+	$(AM_V_GEN)$(do_subst_default_vals)
 
 install-exec-hook: make-version-links
 
@@ -163,11 +188,11 @@ remove-version-links:
 ## program (main.cc) will try to invoke the versioned binaries.
 
 octave-cli-$(version)$(EXEEXT): octave-cli$(EXEEXT)
-	rm -f $@
+	$(AM_V_GEN)rm -f $@ && \
 	$(LN_S) $< $@
 
 octave-gui-$(version)$(EXEEXT): octave-gui$(EXEEXT)
-	rm -f $@
+	$(AM_V_GEN)rm -f $@ && \
 	$(LN_S) $< $@
 
 CLEANFILES = \

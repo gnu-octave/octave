@@ -1,7 +1,7 @@
 // N-D Array  manipulations.
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "Array-util.h"
+#include "boolNDArray.h"
 #include "CNDArray.h"
 #include "mx-base.h"
 #include "lo-ieee.h"
@@ -103,14 +104,6 @@ boolNDArray&
 boolNDArray::insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<bool>::insert (a, ra_idx);
-  return *this;
-}
-
-
-
-boolMatrix
-boolNDArray::matrix_value (void) const
-{
   return *this;
 }
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -165,7 +165,6 @@ private:
 
   octave_user_script& operator = (const octave_user_script& f);
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -327,12 +326,20 @@ public:
 
   void mark_as_nested_function (void) { nested_function = true; }
 
-  void mark_as_class_constructor (void) { class_constructor = true; }
+  void mark_as_class_constructor (void) { class_constructor = legacy; }
+
+  void mark_as_classdef_constructor (void) { class_constructor = classdef; }
 
   bool is_class_constructor (const std::string& cname = std::string ()) const
   {
-    return class_constructor
-           ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    return class_constructor == legacy
+      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+  }
+
+  bool is_classdef_constructor (const std::string& cname = std::string ()) const
+  {
+    return class_constructor == classdef
+      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
 
   void mark_as_class_method (void) { class_method = true; }
@@ -408,6 +415,13 @@ public:
 
 private:
 
+  enum class_ctor_type
+  {
+    none,
+    legacy,
+    classdef
+  };
+
   // List of arguments for this function.  These are local variables.
   tree_parameter_list *param_list;
 
@@ -470,8 +484,8 @@ private:
   // TRUE means this is a nested function. (either a child or parent)
   bool nested_function;
 
-  // TRUE means this function is the constructor for class object.
-  bool class_constructor;
+  // Enum describing whether this function is the constructor for class object.
+  class_ctor_type class_constructor;
 
   // TRUE means this function is a method for a class.
   bool class_method;
@@ -506,7 +520,6 @@ private:
 
   octave_user_function& operator = (const octave_user_function& fn);
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

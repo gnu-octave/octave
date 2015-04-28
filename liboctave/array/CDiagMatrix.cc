@@ -1,7 +1,7 @@
 // DiagMatrix manipulations.
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -383,7 +383,7 @@ ComplexDiagMatrix::inverse (octave_idx_type& info) const
 }
 
 ComplexDiagMatrix
-ComplexDiagMatrix::pseudo_inverse (void) const
+ComplexDiagMatrix::pseudo_inverse (double tol) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
@@ -393,10 +393,11 @@ ComplexDiagMatrix::pseudo_inverse (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (elem (i, i) != 0.0)
-        retval.elem (i, i) = 1.0 / elem (i, i);
-      else
+      double val = std::abs (elem (i, i));
+      if (val < tol || val == 0.0)
         retval.elem (i, i) = 0.0;
+      else
+        retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
   return retval;
@@ -448,7 +449,8 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
+  octave_idx_type len = c.length ();
+  octave_idx_type lenm = len < a_nc ? len : a_nc;
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -549,7 +551,8 @@ double
 ComplexDiagMatrix::rcond (void) const
 {
   ColumnVector av = extract_diag (0).map<double> (std::abs);
-  double amx = av.max (), amn = av.min ();
+  double amx = av.max ();
+  double amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }
 

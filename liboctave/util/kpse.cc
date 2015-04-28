@@ -3,7 +3,7 @@
 
 /* Look up a filename in a path.
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
 Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
@@ -1201,7 +1201,7 @@ kpse_tilde_expand (const std::string& name)
     }
   else if (name.length () == 1)
     {
-      expansion = octave_env::getenv ("HOME");
+      expansion = octave_env::get_home_directory ();
 
       if (expansion.empty ())
         expansion = ".";
@@ -1212,7 +1212,7 @@ kpse_tilde_expand (const std::string& name)
   else if (IS_DIR_SEP (name[1]))
     {
       unsigned c = 1;
-      std::string home = octave_env::getenv ("HOME");
+      std::string home = octave_env::get_home_directory ();
 
       if (home.empty ())
         home = ".";
@@ -1549,8 +1549,9 @@ brace_expand (const std::string& text)
       /* What if there isn't a matching close brace? */
       if (! c)
         {
-          (*current_liboctave_warning_handler)
-            ("%s: Unmatched {", text.c_str ());
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:pathsearch-syntax",
+             "%s: Unmatched {", text.c_str ());
 
           result = string_vector (text);
         }
@@ -1612,7 +1613,10 @@ expand_amble (const std::string& text)
 static int
 brace_gobbler (const std::string& text, int& indx, int satisfy)
 {
-  int c = 0, level = 0, quoted = 0, pass_next = 0;
+  int c = 0;
+  int level = 0;
+  int quoted = 0;
+  int pass_next = 0;
 
   size_t text_len = text.length ();
 
@@ -1654,10 +1658,10 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
           /* We ignore an open brace surrounded by whitespace, and also
              an open brace followed immediately by a close brace, that
              was preceded with whitespace.  */
-          if (c == '{' &&
-              ((i == 0 || brace_whitespace (text[i-1])) &&
-               (i+1 < text_len &&
-                (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
+          if (c == '{'
+              && ((i == 0 || brace_whitespace (text[i-1]))
+                  && (i+1 < text_len
+                      && (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
             continue;
           /* If this is being compiled as part of bash, ignore the '{'
              in a '${ }' construct */
@@ -2542,8 +2546,9 @@ expand (std::string &expansion, const std::string& var)
 {
   if (expanding_p (var))
     {
-      (*current_liboctave_warning_handler)
-        ("kpathsea: variable '%s' references itself (eventually)",
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:pathsearch-syntax",
+         "kpathsea: variable '%s' references itself (eventually)",
          var.c_str ());
     }
   else
@@ -2620,8 +2625,9 @@ kpse_var_expand (const std::string& src)
 
               if (var_end == src_len)
                 {
-                  (*current_liboctave_warning_handler)
-                    ("%s: No matching } for ${", src.c_str ());
+                  (*current_liboctave_warning_with_id_handler)
+                    ("Octave:pathsearch-syntax",
+                     "%s: No matching } for ${", src.c_str ());
                   i = var_end - 1; /* will incr to eos at top of loop */
                 }
               else
@@ -2633,8 +2639,9 @@ kpse_var_expand (const std::string& src)
           else
             {
               /* $<something-else>: error.  */
-              (*current_liboctave_warning_handler)
-                ("%s: Unrecognized variable construct '$%c'",
+              (*current_liboctave_warning_with_id_handler)
+                ("Octave:pathsearch-syntax",
+                 "%s: Unrecognized variable construct '$%c'",
                  src.c_str (), src[i]);
 
               /* Just ignore those chars and keep going.  */

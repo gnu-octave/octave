@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2013 John W. Eaton
+Copyright (C) 1997-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -57,7 +57,8 @@ gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
 \n\
 @end ifnottex\n\
 with the limiting value of 1 as @var{x} approaches infinity.\n\
-The standard notation is @math{P(a,x)}, e.g., Abramowitz and Stegun (6.5.1).\n\
+The standard notation is @math{P(a,x)}, e.g., @nospell{Abramowitz} and\n\
+@nospell{Stegun} (6.5.1).\n\
 \n\
 If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned\n\
 for each element of @var{x} and vice versa.\n\
@@ -72,7 +73,7 @@ integrated from @var{x} to infinity is calculated.  It should be noted that\n\
 @example\n\
 gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
 @end example\n\
-@seealso{gamma, lgamma}\n\
+@seealso{gamma, gammaln}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -116,8 +117,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                   else
                     {
@@ -125,8 +125,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                 }
             }
@@ -142,8 +141,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                   else
                     {
@@ -151,8 +149,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                 }
             }

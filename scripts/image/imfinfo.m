@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Soren Hauberg
+## Copyright (C) 2008-2015 Soren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{info} =} imfinfo (@var{filename})
-## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{filename}, @var{ext})
 ## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{url})
+## @deftypefnx {Function File} {@var{info} =} imfinfo (@dots{}, @var{ext})
 ## Read image information from a file.
 ##
 ## @code{imfinfo} returns a structure containing information about the image
@@ -148,14 +148,32 @@
 
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
-function info = imfinfo (varargin)
+function info = imfinfo (filename, varargin)
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (! ischar (varargin{1}))
+  elseif (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");
-  elseif (nargin > 1 && ! ischar (varargin{2}))
+  elseif (nargin > 1 && ! ischar (ext))
     error ("imfinfo: EXT must be a string");
   endif
-  info = imageIO (@__imfinfo__, "info", varargin, varargin{:});
+  info = imageIO ("imfinfo", @__imfinfo__, "info", filename, varargin{:});
 endfunction
+
+## This test is the same as the similar one in imread. imfinfo must check
+## if file exists before calling __imfinfo_. This test confirm this.
+%!testif HAVE_MAGICK
+%! fmt = fmt_ori = imformats ("jpg");
+%! fmt.info = @true;
+%! error_thrown = false;
+%! imformats ("update", "jpg", fmt);
+%! unwind_protect
+%!   try
+%!     imread ("I sure hope this file does not exist.jpg");
+%!   catch
+%!     error_thrown = true;
+%!   end_try_catch
+%! unwind_protect_cleanup
+%!   imformats ("update", "jpg", fmt_ori);
+%! end_unwind_protect
+%! assert (error_thrown, true);
 

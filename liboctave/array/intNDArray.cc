@@ -1,7 +1,7 @@
 // N-D Array  manipulations.
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -209,6 +209,13 @@ intNDArray<T>::signum (void) const
     }
 
   return ret;
+}
+
+template <class T>
+intNDArray<T>
+intNDArray<T>::prod (int dim) const
+{
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_prod);
 }
 
 template <class T>

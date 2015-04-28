@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -145,8 +145,9 @@ gnu_history::do_process_histcontrol (const std::string& control_arg)
           else if (tmp == "ignorespace")
             history_control |= HC_IGNSPACE;
           else
-            (*current_liboctave_warning_handler)
-              ("unknown histcontrol directive %s", tmp.c_str ());
+            (*current_liboctave_warning_with_id_handler)
+              ("Octave:history-control",
+               "unknown histcontrol directive %s", tmp.c_str ());
 
           if (end != std::string::npos)
             beg = end + 1;
@@ -779,8 +780,9 @@ command_history::clean_up_and_save (const std::string& f, int n)
 void
 command_history::do_process_histcontrol (const std::string&)
 {
-  (*current_liboctave_warning_handler)
-    ("readline is not linked, so history control is not available");
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:history-control",
+     "readline is not linked, so history control is not available");
 }
 
 void

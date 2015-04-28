@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Kai Habel
+## Copyright (C) 2010-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -53,7 +53,7 @@ function [retval, defname, defdir] = __file_filter__ (file_filter, name)
     if (! strcmp (fname, "*"))
       defname = strcat (fname, fext);
     endif
-    if (length (fext) > 0)
+    if ((length (fext) > 0) && (! strcmp(fext, '.*')))
       fext = strcat ("*", fext);
       retval = {fext, __default_filtername__(fext)};
     endif

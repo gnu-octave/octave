@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,8 +40,7 @@ public:
     double_token,
     ettype_token,
     sym_rec_token,
-    scls_rec_token,
-    meta_rec_token
+    scls_name_token,
   };
 
   enum end_tok_type
@@ -57,9 +56,9 @@ public:
     parfor_end,
     properties_end,
     switch_end,
-    while_end,
     try_catch_end,
-    unwind_protect_end
+    unwind_protect_end,
+    while_end,
   };
 
   token (int tv, int l = -1, int c = -1);
@@ -70,11 +69,8 @@ public:
          int l = -1, int c = -1);
   token (int tv, end_tok_type t, int l = -1, int c = -1);
   token (int tv, symbol_table::symbol_record *s, int l = -1, int c = -1);
-  token (int tv, symbol_table::symbol_record *cls,
-         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
-  token (int tv, symbol_table::symbol_record *mth,
-         symbol_table::symbol_record *cls,
-         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
+  token (int tv, const std::string& mth, const std::string& cls,
+         int l = -1, int c = -1);
 
   ~token (void);
 
@@ -107,12 +103,8 @@ public:
   end_tok_type ettype (void) const;
   symbol_table::symbol_record *sym_rec (void);
 
-  symbol_table::symbol_record *method_rec (void);
-  symbol_table::symbol_record *class_rec (void);
-  symbol_table::symbol_record *package_rec (void);
-
-  symbol_table::symbol_record *meta_class_rec (void);
-  symbol_table::symbol_record *meta_package_rec (void);
+  std::string superclass_method_name (void);
+  std::string superclass_class_name (void);
 
   std::string text_rep (void);
 
@@ -138,15 +130,9 @@ private:
     symbol_table::symbol_record *sr;
     struct
     {
-      symbol_table::symbol_record *mr;
-      symbol_table::symbol_record *cr;
-      symbol_table::symbol_record *pr;
+      std::string *method_nm;
+      std::string *class_nm;
     } sc;
-    struct
-    {
-      symbol_table::symbol_record *cr;
-      symbol_table::symbol_record *pr;
-    } mc;
   };
   std::string orig_text;
 };

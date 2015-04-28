@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -137,7 +137,7 @@ endfunction
 %!assert (conv (b,a,"valid"), zeros (1,0))
 
 
-%% Test input validation
+## Test input validation
 %!error conv (1)
 %!error conv (1,2,3,4)
 %!error <A and B must be vectors> conv ([1, 2; 3, 4], 3)

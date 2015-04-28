@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -70,7 +70,7 @@ function [pval, t, df] = t_test_regression (y, x, rr, r, alt)
   if (! (isvector (y) && (length (y) == T)))
     error ("t_test_regression: Y must be a vector of length rows (X)");
   endif
-  s      = size (rr);
+  s = size (rr);
   if (! ((max (s) == k) && (min (s) == 1)))
     error ("t_test_regression: RR must be a vector of length columns (X)");
   endif

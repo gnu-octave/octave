@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -63,7 +63,7 @@ endfunction
 %!assert (cstrcat ("foo", "bar"), "foobar")
 %!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
-%% Test input validation
+## Test input validation
 %!error cstrcat ()
 %!error cstrcat (1, 2)
 

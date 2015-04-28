@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -235,7 +235,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
         quad_fcn = args(0).function_value ();
       else
         {
-          fcn_name = unique_symbol_name ("__quad_fcn_");
+          fcn_name = unique_symbol_name ("__quad_fcn__");
           std::string fname = "function y = ";
           fname.append (fcn_name);
           fname.append ("(x) y = ");

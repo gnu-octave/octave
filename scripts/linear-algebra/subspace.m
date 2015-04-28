@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 VZLU Prague, a.s., Czech Republic
+## Copyright (C) 2008-2015 VZLU Prague, a.s., Czech Republic
 ##
 ## This file is part of Octave.
 ##
@@ -59,4 +59,19 @@ function ang = subspace (A, B)
   endif
 
 endfunction
+
+
+%!test
+%! ## For random vectors
+%! a = rand (2,1);
+%! b = rand (2,1);
+%! a1 = norm (a,2);
+%! b1 = norm (b,2);
+%! theta = acos (dot (a,b)/(a1*b1));
+%! assert (theta, subspace (a, b), 100*eps);
+
+%!test
+%! ## For random matrices
+%! M = rand (3, 3);
+%! assert (0, subspace (M, M'), 100*eps);
 

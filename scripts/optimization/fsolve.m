@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 VZLU Prague, a.s.
+## Copyright (C) 2008-2015 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -262,9 +262,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         ## FIXME: the original minpack used the following rescaling strategy:
         ##   dg = max (dg, jcn);
         ## but it seems not good if we start with a bad guess yielding Jacobian
-        ## columns with large norms that later decrease, because the corresponding
-        ## variable will still be overscaled. So instead, we only give the old
-        ## scaling a small momentum, but do not honor it.
+        ## columns with large norms that later decrease, because the
+        ## corresponding variable will still be overscaled. So instead, we only
+        ## give the old scaling a small momentum, but do not honor it.
 
         dg = max (0.1*dg, jcn);
       endif
@@ -382,7 +382,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       ## iterations, so we need scaling-independent tolerances wherever
       ## possible.
 
-      ## FIXME -- why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
+      ## FIXME: Why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
       ## of perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e. by
       ## tolf ~ eps we demand as much accuracy as we can expect.
       if (fn <= tolf*n*xn)

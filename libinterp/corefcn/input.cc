@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -99,10 +99,11 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// TRUE means this is an interactive shell.
+// TRUE means this is an interactive shell (either forced or not)
 bool interactive = false;
 
 // TRUE means the user forced this shell to be interactive (-i).
+// FALSE means the shell would be interactive, independent of user settings.
 bool forced_interactive = false;
 
 // TRUE after a call to completion_matches.
@@ -196,7 +197,7 @@ interactive_input (const std::string& s, bool& eof)
 {
   Vlast_prompt_time.stamp ();
 
-  if (Vdrawnow_requested && (interactive || forced_interactive))
+  if (Vdrawnow_requested && interactive)
     {
       feval ("drawnow");
 
@@ -226,7 +227,7 @@ octave_base_reader::octave_gets (bool& eof)
   // Process pre input event hook function prior to flushing output and
   // printing the prompt.
 
-  if (interactive || forced_interactive)
+  if (interactive)
     {
       if (! Vdebugging)
         octave_link::exit_debugger_event ();
@@ -292,7 +293,7 @@ octave_base_reader::octave_gets (bool& eof)
   // Process post input event hook function after the internal history
   // list has been updated.
 
-  if (interactive || forced_interactive)
+  if (interactive)
     octave_link::post_input_event ();
 
   return retval;
@@ -508,10 +509,12 @@ get_debug_input (const std::string& prompt)
 {
   unwind_protect frame;
 
+  bool silent = tree_evaluator::quiet_breakpoint_flag;
+  tree_evaluator::quiet_breakpoint_flag = false;
+
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
-
-  int curr_debug_line = octave_call_stack::current_line ();
+  int curr_debug_line;
 
   bool have_file = false;
 
@@ -523,9 +526,11 @@ get_debug_input (const std::string& prompt)
         nm = caller->name ();
       else
         have_file = true;
+
+      curr_debug_line = octave_call_stack::caller_user_code_line ();
     }
   else
-    curr_debug_line = -1;
+    curr_debug_line = octave_call_stack::current_line ();
 
   std::ostringstream buf;
 
@@ -543,10 +548,13 @@ get_debug_input (const std::string& prompt)
           // that we are stopped on the no-op command that marks the
           // end of a function or script.
 
-          buf << "stopped in " << nm;
+          if (! silent)
+            {
+              buf << "stopped in " << nm;
 
-          if (curr_debug_line > 0)
-            buf << " at line " << curr_debug_line;
+              if (curr_debug_line > 0)
+                buf << " at line " << curr_debug_line;
+            }
 
           if (have_file)
             {
@@ -557,14 +565,20 @@ get_debug_input (const std::string& prompt)
               frame.add_fcn (execute_in_debugger_handler,
                              std::pair<std::string, int> (nm, curr_debug_line));
 
-              std::string line_buf
-                = get_file_line (nm, curr_debug_line);
+              if (! silent)
+                {
+                  std::string line_buf
+                    = get_file_line (nm, curr_debug_line);
 
-              if (! line_buf.empty ())
-                buf << "\n" << curr_debug_line << ": " << line_buf;
+                  if (! line_buf.empty ())
+                    buf << "\n" << curr_debug_line << ": " << line_buf;
+                }
             }
         }
     }
+
+  if (silent)
+    command_editor::erase_empty_line (true);
 
   std::string msg = buf.str ();
 
@@ -574,8 +588,10 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
-  if (! (interactive || forced_interactive))
+  if (! interactive)
     {
+      frame.protect_var (interactive);
+      interactive = true;
       frame.protect_var (forced_interactive);
       forced_interactive = true;
     }
@@ -749,10 +765,10 @@ Pick a number, any number!\n\
 @noindent\n\
 and waits for the user to enter a value.  The string entered by the user\n\
 is evaluated as an expression, so it may be a literal constant, a\n\
-variable name, or any other valid expression.\n\
+variable name, or any other valid Octave code.\n\
 \n\
-Currently, @code{input} only returns one value, regardless of the number\n\
-of values produced by the evaluation of the expression.\n\
+The number of return arguments, their size, and their class depend on the\n\
+expression entered.\n\
 \n\
 If you are only interested in getting a literal string value, you can\n\
 call @code{input} with the character string @qcode{\"s\"} as the second\n\
@@ -771,7 +787,7 @@ the screen before your prompt.\n\
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = get_user_input (args, nargout);
+    retval = get_user_input (args, std::max (nargout, 1));
   else
     print_usage ();
 
@@ -821,11 +837,11 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
 
       if (nargin == 1)
         {
-          prompt = args(0).string_value ();
-
-          if (error_state)
+          if (args(0).is_string ())
+            prompt = args(0).string_value ();
+          else
             {
-              error ("yes_or_no: PROMPT must be a character string");
+              error ("yes_or_no: PROMPT must be a string");
               return retval;
             }
         }
@@ -909,6 +925,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
       octave_call_stack::goto_frame_relative (0);
 
       tree_evaluator::debug_mode = true;
+      tree_evaluator::quiet_breakpoint_flag = false;
 
       tree_evaluator::current_frame = octave_call_stack::current_frame ();
 
@@ -1002,6 +1019,15 @@ With no arguments, @code{echo} toggles the current echo state.\n\
     }
 
   return retval;
+}
+
+DEFUN (__echostate__, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{state} =} __echostate__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (Vecho_executing_commands == ECHO_SCRIPTS);
 }
 
 DEFUN (completion_matches, args, nargout,
@@ -1184,7 +1210,7 @@ the list of input hook functions.\n\
           retval = hook_fcn.id ();
         }
       else
-        error ("add_input_event_hook: expecting function handle or character string as first argument");
+        error ("add_input_event_hook: FCN must be a function handle or string");
     }
   else
     print_usage ();
@@ -1409,11 +1435,12 @@ Undocumented internal function.\n\
 DEFUN (filemarker, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
-@deftypefnx {Built-in Function} {} filemarker (@var{new_val})\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} filemarker (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\
-Query or set the character used to separate filename from the\n\
-the subfunction names contained within the file.  This can be used in\n\
-a generic manner to interact with subfunctions.  For example,\n\
+Query or set the character used to separate the filename from the subfunction\n\
+names contained within the file.  By default this is the character @samp{>}.\n\
+This can be used in a generic manner to interact with subfunctions.\n\
+For example,\n\
 \n\
 @example\n\
 help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
@@ -1421,8 +1448,10 @@ help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 \n\
 @noindent\n\
 returns the help string associated with the subfunction @code{mysubfunc}\n\
-of the function @code{myfunc}.  Another use of @code{filemarker} is when\n\
-debugging it allows easier placement of breakpoints within subfunctions.\n\
+located in the file @file{myfunc.m}.\n\
+\n\
+@code{filemarker} is also useful during debugging for placing breakpoints\n\
+within subfunctions or nested functions.\n\
 For example,\n\
 \n\
 @example\n\
@@ -1433,7 +1462,7 @@ dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

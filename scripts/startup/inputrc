@@ -24,3 +24,8 @@
 ## \C-q should still be available for quoted insert.
 
 "\C-v": ""
+
+## In windows, disable audiable bell which is enabled by default
+$if term=cygwin
+   set bell-style none
+$endif

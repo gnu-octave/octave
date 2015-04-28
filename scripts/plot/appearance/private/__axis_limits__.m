@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -42,12 +42,17 @@ function retval = __axis_limits__ (fcn, varargin)
         set (hax, fcnmode, arg);
       endif
     else
-      if (!isnumeric (arg) && any (size (arg(:)) != [2, 1]))
+      if (! isnumeric (arg) && any (size (arg(:)) != [2, 1]))
         error ("%s: LIMITS must be a 2-element vector", fcn);
       else
         if (arg(1) >= arg(2))
           error ("%s: axis limits must be increasing", fcn);
         else
+          autoscale = isinf (arg);
+          if (any (autoscale))
+            set (hax, fcnmode, "auto");
+            arg(autoscale) = get (hax, fcn)(autoscale);
+          endif
           set (hax, fcn, arg(:));
         endif
       endif

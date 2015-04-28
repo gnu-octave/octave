@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 John W. Eaton
+## Copyright (C) 1995-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -198,147 +198,90 @@ function h = subplot (varargin)
       align_axes = true;
     endif
 
-    ## Oh, the things we do for Matlab compatibility.  Using the "position"
-    ## argument changes things so much that it became clearer to replicate
-    ## large chunks of code rather than have lots of if/else statements.
     if (! have_position)
+      ## Subplots that cover more that one base subplot are not updated
+      align_axes = (align_axes || (! isscalar (index)));
       ## Normal case where subplot indices have been given
-      pos = subplot_position (rows, cols, index, "position");
-      outerpos = subplot_position (rows, cols, index, "outerposition");
-      box = [pos(1:2), pos(1:2)+pos(3:4)];
-      outerbox = [outerpos(1:2), outerpos(1:2)+outerpos(3:4)];
-      looseinset = [box(1:2)-outerbox(1:2), outerbox(3:4)-box(3:4)];
+      [pos, opos, li] = subplot_position (cf, rows, cols, index);
+    else
+      ## Position is specified by the user.
+      li = zeros (1,4);
+      align_axes = true;
+    endif
 
-      if (align_axes)
-        activepositionproperty = "position";
-      else
-        activepositionproperty = "outerposition";
+    set (cf, "nextplot", "add");
+
+    found = false;
+    kids = get (cf, "children");
+    for child = kids(:)'
+      ## Check whether this child is still valid; this might not be the
+      ## case anymore due to the deletion of previous children (due to
+      ## "deletefcn" callback or for legends/colorbars that are deleted
+      ## with their corresponding axes).
+      if (! ishandle (child))
+        continue;
       endif
-
-      set (cf, "nextplot", "add");
-
-      found = false;
-      kids = get (cf, "children");
-      for child = kids(:)'
-        ## Check whether this child is still valid; this might not be the
-        ## case anymore due to the deletion of previous children (due to
-        ## "deletefcn" callback or for legends/colorbars that are deleted
-        ## with their corresponding axes).
-        if (! ishandle (child))
+      if (strcmp (get (child, "type"), "axes"))
+        ## Skip legend and colorbar objects.
+        if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
           continue;
         endif
-        if (strcmp (get (child, "type"), "axes"))
-          ## Skip legend and colorbar objects.
-          if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
-            continue;
-          endif
-          objpos = get (child, "outerposition");
-          if (all (abs (objpos - outerpos) < eps) && ! replace_axes)
-            ## If the new axes are in exactly the same position
-            ## as an existing axes object, use the existing axes.
-            found = true;
-            hsubplot = child;
-          else
-            ## If the new axes overlap an old axes object, delete the old axes.
-            if (align_axes)
-              objpos = get (child, "position");
-            endif
-            x0 = pos(1);
-            x1 = x0 + pos(3);
-            y0 = pos(2);
-            y1 = y0 + pos(4);
-            objx0 = objpos(1);
-            objx1 = objx0 + objpos(3);
-            objy0 = objpos(2);
-            objy1 = objy0 + objpos(4);
-            if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
-              delete (child);
-            endif
-          endif
-        endif
-      endfor
 
-      if (found)
-        ## Switch to existing subplot
-        set (cf, "currentaxes", hsubplot);
-      else
-        hsubplot = axes ("box", "off",
-                         "position", pos,
-                         "looseinset", looseinset,
-                         "activepositionproperty", activepositionproperty,
-                         varargin{:});
-        addproperty ("subplot_align", hsubplot, "boolean", true);
-        addlistener (hsubplot, "position", @subplot_align);
-        if (! align_axes)
-          set (hsubplot, "subplot_align", false)
-          subplot_align (hsubplot)
+        if (isappdata (child, "__subplotposition__"))
+          objpos = getappdata (child, "__subplotposition__");
+        else
+          objpos = get (child, "position");
         endif
+        if (all (abs (objpos - pos) < eps) && ! replace_axes)
+          ## If the new axes are in exactly the same position
+          ## as an existing axes object, or if they share the same
+          ## appdata "__subplotposition__", use the existing axes.
+          found = true;
+          hsubplot = child;
+        else
+          ## If the new axes overlap an old axes object, delete the old axes.
+          objpos = get (child, "position");
+
+          x0 = pos(1);
+          x1 = x0 + pos(3);
+          y0 = pos(2);
+          y1 = y0 + pos(4);
+          objx0 = objpos(1);
+          objx1 = objx0 + objpos(3);
+          objy0 = objpos(2);
+          objy1 = objy0 + objpos(4);
+          if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
+            delete (child);
+          endif
+        endif
+      endif
+    endfor
+
+    if (found)
+      ## Switch to existing subplot and set requested properties
+      set (cf, "currentaxes", hsubplot);
+      if (! isempty (varargin))
+        set (hsubplot, varargin{:});
       endif
     else
-      ## "position" attribute given
-      if (align_axes)
-        activepositionproperty = "position";
-      else
-        activepositionproperty = "outerposition";
+      hsubplot = axes ("box", "off",
+                       "activepositionproperty", "position",
+                       "position", pos, "looseinset", li,
+                       varargin{:});
+
+      if (! align_axes)
+        ## base position (no ticks, no annotation, no cumbersome neighbor)
+        setappdata (hsubplot, "__subplotposition__", pos);
+        ## max outerposition
+        setappdata (hsubplot, "__subplotouterposition__", opos);
+        addlistener (hsubplot, "outerposition", @subplot_align);
+        addlistener (hsubplot, "xaxislocation", @subplot_align);
+        addlistener (hsubplot, "yaxislocation", @subplot_align);
+        addlistener (hsubplot, "position", {@subplot_align, true});
+        subplot_align (hsubplot);
       endif
 
-      set (cf, "nextplot", "add");
-
-      found = false;
-      kids = get (cf, "children");
-      for child = kids(:)'
-        ## Check whether this child is still valid; this might not be the
-        ## case anymore due to the deletion of previous children (due to
-        ## "deletefcn" callback or for legends/colorbars that are deleted
-        ## with their corresponding axes).
-        if (! ishandle (child))
-          continue;
-        endif
-        if (strcmp (get (child, "type"), "axes"))
-          ## Skip legend and colorbar objects.
-          if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
-            continue;
-          endif
-          objpos = get (child, "position");
-          if (all (abs (objpos - pos) < eps) && ! replace_axes)
-            ## If the new axes are in exactly the same position
-            ## as an existing axes object, use the existing axes.
-            found = true;
-            hsubplot = child;
-          else
-            ## If the new axes overlap an old axes object, delete the old axes.
-            x0 = pos(1);
-            x1 = x0 + pos(3);
-            y0 = pos(2);
-            y1 = y0 + pos(4);
-            objx0 = objpos(1);
-            objx1 = objx0 + objpos(3);
-            objy0 = objpos(2);
-            objy1 = objy0 + objpos(4);
-            if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
-              delete (child);
-            endif
-          endif
-        endif
-      endfor
-
-      if (found)
-        ## Switch to existing subplot
-        set (cf, "currentaxes", hsubplot);
-      else
-        hsubplot = axes ("box", "off",
-                         "position", pos,
-                         "activepositionproperty", activepositionproperty,
-                         varargin{:});
-        addproperty ("subplot_align", hsubplot, "boolean", true);
-        addlistener (hsubplot, "position", @subplot_align);
-        if (! align_axes)
-          set (hsubplot, "subplot_align", false)
-          subplot_align (hsubplot)
-        endif
-      endif
-    endif  # ! have_position
-
+    endif
   unwind_protect_cleanup
     set (0, "defaultaxesunits", axesunits);
     set (cf, "units", figureunits);
@@ -350,96 +293,155 @@ function h = subplot (varargin)
 
 endfunction
 
-function pos = subplot_position (rows, cols, index, position_property)
+function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
 
-  if (rows == 1 && cols == 1)
+  if (nrows == 1 && ncols == 1)
     ## Trivial result for subplot (1,1,1)
-    if (strcmpi (position_property, "position"))
-      pos = get (0, "defaultaxesposition");
-    else
-      pos = get (0, "defaultaxesouterposition");
-    endif
+    pos = get (0, "defaultaxesposition");
+    opos = get (0, "defaultaxesouterposition");
+    li = get (0, "defaultaxeslooseinset");
     return;
   endif
 
-  if (strcmp (position_property, "outerposition"))
-    margins.left   = 0.05;
-    margins.bottom = 0.05;
-    margins.right  = 0.05;
-    margins.top    = 0.05;
-    margins.column = 0.04 / cols;
-    margins.row    = 0.04 / rows;
-    width = 1 - margins.left - margins.right - (cols-1)*margins.column;
-    width = width / cols;
-    height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
-    height = height / rows;
+  ## Row/Column inside the axes array
+  row = ceil (idx / ncols);
+  col = idx .- (row - 1) * ncols;
+  row = [min(row) max(row)];
+  col = [min(col) max(col)];
+
+  ## Minimal margins around subplots defined in points
+  fig_units = get (hf, "units");
+  set (hf, "units", "points");
+  pts_size = get (gcf, "position")(3:4);
+  xbasemargin = 6 / pts_size(1);
+  ybasemargin = 6 / pts_size(2);
+
+  ## Column/row separation
+  margin.column = .2 / ncols + 2 * xbasemargin;
+  margin.row = .2 / nrows + 2 * ybasemargin;
+
+  set (hf, "units", fig_units);
+  margin.left = xbasemargin;
+  margin.right = xbasemargin;
+  margin.bottom = ybasemargin;
+  margin.top = ybasemargin;
+
+  ## Boundary axes have default margins
+  borders = get (0, "defaultaxesposition");
+  if (col(1) == 1)
+    margin.left = borders(1);
   else
-    defaultaxesposition = get (0, "defaultaxesposition");
-
-    ## The outer margins surrounding all subplot "positions" are independent
-    ## of the number of rows and/or columns
-    margins.left   = defaultaxesposition(1);
-    margins.bottom = defaultaxesposition(2);
-    margins.right  = 1.0 - margins.left - defaultaxesposition(3);
-    margins.top    = 1.0 - margins.bottom - defaultaxesposition(4);
-
-    ## Fit from Matlab experiments
-    pc = 1 ./ [0.1860, (margins.left + margins.right - 1)];
-    margins.column = 1 ./ polyval (pc , cols);
-    pr = 1 ./ [0.2282, (margins.top + margins.bottom - 1)];
-    margins.row    = 1 ./ polyval (pr , rows);
-
-    ## Calculate the width/height of the subplot axes "position".
-    ## This is also consistent with Matlab
-    width = 1 - margins.left - margins.right - (cols-1)*margins.column;
-    width = width / cols;
-    height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
-    height = height / rows;
+    margin.left = margin.column - margin.right;
+  endif
+  if (col(2) == ncols)
+    margin.right = 1 - borders(1) - borders(3);
   endif
 
-  ## Index offsets from the lower left subplot
-  yi = fix ((index(:)-1)/cols);
-  xi = index(:) - yi*cols - 1;
-  yi = (rows - 1) - yi;
 
-  ## Lower left corner of the subplot, i.e., position(1:2)
-  x0 = xi .* (width + margins.column) + margins.left;
-  y0 = yi .* (height + margins.row) + margins.bottom;
-
-  if (numel (x0) > 1)
-    ## subplot (row, col, m:n)
-    x1 = max (x0(:)) + width;
-    y1 = max (y0(:)) + height;
-    x0 = min (x0(:));
-    y0 = min (y0(:));
-    pos = [x0, y0, x1-x0, y1-y0];
+  if (row(2) == nrows)
+    margin.bottom = borders(2);
   else
-    ## subplot (row, col, num)
-    pos = [x0, y0, width, height];
+    margin.bottom = margin.row - margin.top;
   endif
+  if (row(1) == 1)
+    margin.top = 1 - borders(2) - borders(4);
+  endif
+
+
+  ## Compute base width and height
+  width = (borders(3) - (ncols - 1) * margin.column) / ncols;
+  height = (borders(4) - (nrows - 1) * margin.row) /nrows;
+
+  ## Position, outerposition and looseinset
+  x0 = borders(1) + (col(1) - 1) * (width + margin.column);
+  y0 = borders(2) + (nrows - row(2)) * (height + margin.row);
+  width += diff (col) * (width + margin.column);
+  height += diff (row) * (height + margin.row);
+
+  pos = [x0 y0 width height];
+  opos = [(x0 - margin.left), (y0 - margin.bottom), ...
+          (width + margin.left + margin.right), ...
+          (height + margin.bottom + margin.top)];
+  li = [margin.left, margin.bottom, margin.right, margin.top];
 
 endfunction
 
-function subplot_align (h, varargin)
+function subplot_align (h, d, rmupdate = false)
   persistent updating = false;
-
   if (! updating)
+    if (rmupdate)
+      ## The "position" property has been changed from outside this
+      ## routine. Don't update anymore.
+      if (isappdata (h, "__subplotposition__"))
+        rmappdata (h, "__subplotposition__");
+        rmappdata (h, "__subplotouterposition__");
+      endif
+      return
+    endif
+
     unwind_protect
       updating = true;
-      hfig = ancestor (h, "figure");
-      hsubplots = findall (hfig, "type", "axes", "subplot_align", "off");
-      if (! isempty (hsubplots))
-        tightinset = get (hsubplots, "tightinset");
-        if (iscell (tightinset))
-          tightinset = max (cell2mat (tightinset));
-        endif
-        looseinset = get (hsubplots, "looseinset");
-        if (iscell (looseinset))
-          looseinset = max (cell2mat (looseinset));
-        endif
-        looseinset = max (tightinset, looseinset);
-        set (hsubplots, "looseinset", looseinset);
+      hf = ancestor (h, "figure");
+      children = get (hf, "children");
+
+      ## Base position of the subplot
+      pos = getappdata (children, "__subplotposition__");
+
+      if (iscell (pos))
+        do_align = ! cellfun (@isempty, pos);
+        pos = cell2mat (pos(do_align));
+      else
+        return
       endif
+      hsubplots = children(do_align);
+
+
+      ## There may be mixed subplot series (e.g. 2-by-6 and 1-by-6) in
+      ## the same figure. Only subplots that have the same width and
+      ## height as this one are updated.
+      if (any (h == hsubplots))
+        width = pos(h == hsubplots, 3);
+        height = pos(h == hsubplots, 4);
+        do_align = (pos(:,3) == width) & (pos(:,4) == height);
+        hsubplots(! do_align) = [];
+        pos(! do_align,:) = [];
+      else
+        return
+      endif
+
+      ## Reset outerpositions to their default value
+      opos = getappdata (hsubplots, "__subplotouterposition__");
+      if (iscell (opos))
+        opos = cell2mat (opos);
+      endif
+      for ii = 1:numel (hsubplots);
+        set (hsubplots(ii), "outerposition", opos(ii,:), ...
+             "activepositionproperty", "position");
+      endfor
+
+      ## Compare current positions to default and compute the new ones
+      curpos = get (hsubplots, "position");
+      if (iscell (curpos))
+        curpos = cell2mat (curpos);
+      endif
+      dx0 = max (curpos(:,1) - pos(:,1));
+      dx0(dx0<0) = 0;
+      dx1 = max ((pos(:,1) + pos(:,3)) - (curpos(:,1) + curpos(:,3)));
+      dx1(dx1<0) = 0;
+      dy0 = max (curpos(:,2) - pos(:,2));
+      dy0(dy0<0) = 0;
+      dy1 = max ((pos(:,2) + pos(:,4)) - (curpos(:,2) + curpos(:,4)));
+      dy1(dy1<0) = 0;
+
+      pos(:,1) += dx0;
+      pos(:,2) += dy0;
+      pos(:,3) -= dx0 + dx1;
+      pos(:,4) -= dy0 + dy1;
+
+      for ii = 1:numel (hsubplots)
+        set (hsubplots(ii), "position", pos(ii,:));
+      endfor
+
     unwind_protect_cleanup
       updating = false;
     end_unwind_protect
@@ -543,3 +545,49 @@ endfunction
 %!       'horizontalalignment', 'center', ...
 %!       'units', 'normalized');
 
+## Test recognition/deletion of previous axes
+## Default mode
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   for ii = 1:9
+%!     hax(ii) = subplot (3,3,ii);
+%!   endfor
+%!   subplot (3,3,1);
+%!   assert (gca (), hax(1));
+%!   subplot (2,1,1);
+%!   assert (ishandle (hax),[false(1,6), true(1,3)]);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+## Position mode
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = subplot ("position", [0.1 0.1 0.3 0.3]);
+%!   h2 = subplot ("position", [0.5 0.5 0.3 0.3]);
+%!   subplot ("position", [0.1 0.1 0.3 0.3]);
+%!   assert (gca (), h1);
+%!   subplot ("position", [0.5 0.5 0.3 0.3]);
+%!   assert (gca (), h2);
+%!   subplot ("position", [0.5 0.5 0.3 0.2]);
+%!   assert (! ishandle (h2));
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+## Align mode
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = subplot (3,5,1, "align");
+%!   h2 = subplot (3,5,2, "align");
+%!   subplot (3,5,1, "align");
+%!   assert (gca (), h1);
+%!   subplot (3,2,1, "align");
+%!   assert (! ishandle (h1));
+%!   assert (! ishandle (h2));
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect

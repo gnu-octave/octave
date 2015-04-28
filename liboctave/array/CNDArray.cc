@@ -1,7 +1,7 @@
 // N-D Array  manipulations.
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray-defs.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
+#include "mx-cnda-s.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 
@@ -812,20 +813,6 @@ ComplexNDArray::insert (const ComplexNDArray& a,
 {
   Array<Complex>::insert (a, ra_idx);
   return *this;
-}
-
-ComplexMatrix
-ComplexNDArray::matrix_value (void) const
-{
-  ComplexMatrix retval;
-
-  if (ndims () == 2)
-    retval = ComplexMatrix (Array<Complex> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of ComplexNDArray to ComplexMatrix");
-
-  return retval;
 }
 
 void

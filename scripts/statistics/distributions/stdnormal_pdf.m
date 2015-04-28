@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -47,10 +47,10 @@ endfunction
 %! y = 1/sqrt(2*pi)*exp (-x.^2/2);
 %!assert (stdnormal_pdf ([x, NaN]), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (stdnormal_pdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error stdnormal_pdf ()
 %!error stdnormal_pdf (1,2)
 %!error stdnormal_pdf (i)

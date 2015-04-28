@@ -1,5 +1,5 @@
 /*  Copyright (C) 2008 e_k (e_k@users.sourceforge.net)
-    Copyright (C) 2012-2013 Jacob Dawid <jacob.dawid@googlemail.com>
+    Copyright (C) 2012-2015 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -47,12 +47,14 @@ public:
     void setForegroundColor (const QColor& color);
     void setSelectionColor (const QColor& color);
     void setCursorColor (bool useForegroundColor, const QColor& color);
-
+    void setScrollBufferSize(int value);
     QString selectedText();
+    void has_extra_interrupt (bool extra_interrupt);
 
 public slots:
     void copyClipboard();
     void pasteClipboard();
+    void selectAll();
 
 protected:
     void showEvent(QShowEvent *);
@@ -65,6 +67,7 @@ private:
     TerminalView *m_terminalView;
     TerminalModel *m_terminalModel;
     KPty *m_kpty;
+    bool _extra_interrupt;
 };
 
 #endif // Q_UNIXTERMINALIMPL

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2008 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 
@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fDiagMatrix.h"
 #include "CDiagMatrix.h"
 #include "fCDiagMatrix.h"
+#include "lo-array-gripes.h"
 #include "quit.h"
 
 #include "error.h"
@@ -58,8 +59,7 @@ result_ok (octave_idx_type info)
 static void
 solve_singularity_warning (double rcond)
 {
-  warning_with_id ("Octave:singular-matrix-div",
-                   "matrix singular to machine precision, rcond = %g", rcond);
+  gripe_singular_matrix (rcond);
 }
 
 template <class T1, class T2>
@@ -405,8 +405,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
 static void
 solve_singularity_warning (float rcond)
 {
-  warning ("matrix singular to machine precision, rcond = %g", rcond);
-  warning ("attempting to find minimum norm solution");
+  gripe_singular_matrix (rcond);
 }
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (FloatMatrix, FloatMatrix);
@@ -713,7 +712,9 @@ mdm_div_impl (const MT& a, const DMT& d)
   if (! mx_div_conform (a, d))
     return MT ();
 
-  octave_idx_type m = a.rows (), n = d.rows (), l = d.length ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = d.rows ();
+  octave_idx_type l = d.length ();
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;
@@ -794,7 +795,10 @@ dmm_leftdiv_impl (const DMT& d, const MT& a)
   if (! mx_leftdiv_conform (d, a, blas_no_trans))
     return MT ();
 
-  octave_idx_type m = d.cols (), n = a.cols (), k = a.rows (), l = d.length ();
+  octave_idx_type m = d.cols ();
+  octave_idx_type n = a.cols ();
+  octave_idx_type k = a.rows ();
+  octave_idx_type l = d.length ();
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;
@@ -871,8 +875,11 @@ dmdm_div_impl (const MT& a, const DMT& d)
   if (! mx_div_conform (a, d))
     return MT ();
 
-  octave_idx_type m = a.rows (), n = d.rows (), k = d.cols ();
-  octave_idx_type l = std::min (m, n), lk = std::min (l, k);
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = d.rows ();
+  octave_idx_type k = d.cols ();
+  octave_idx_type l = std::min (m, n);
+  octave_idx_type lk = std::min (l, k);
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;
@@ -943,8 +950,11 @@ dmdm_leftdiv_impl (const DMT& d, const MT& a)
   if (! mx_leftdiv_conform (d, a, blas_no_trans))
     return MT ();
 
-  octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();
-  octave_idx_type l = std::min (m, n), lk = std::min (l, k);
+  octave_idx_type m = d.cols ();
+  octave_idx_type n = a.cols ();
+  octave_idx_type k = d.rows ();
+  octave_idx_type l = std::min (m, n);
+  octave_idx_type lk = std::min (l, k);
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;

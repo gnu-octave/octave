@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -65,6 +65,11 @@ search_path_for_all_files (const std::string&, const string_vector&);
 
 extern OCTINTERP_API std::string
 file_in_path (const std::string&, const std::string&);
+
+extern OCTINTERP_API std::string
+find_data_file_in_load_path  (const std::string& fcn,
+                              const std::string& file,
+                              bool require_regular_file = false);
 
 extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -191,7 +191,7 @@ resource_manager::do_reload_settings (void)
       QString settings_text = in.readAll ();
       qt_settings.close ();
 
-      // Get the default monospaced font and replace placeholder
+      // Get the default monospaced font
 #if defined (HAVE_QFONT_MONOSPACE)
       QFont fixed_font;
       fixed_font.setStyleHint (QFont::Monospace);
@@ -203,6 +203,16 @@ resource_manager::do_reload_settings (void)
 #else
       QString default_family = "courier";
 #endif
+
+      // Get the default custom editor
+#if defined (Q_OS_WIN32)
+      QString custom_editor = "notepad++ -n%l %f";
+#else
+      QString custom_editor = "emacs +%l %f";
+#endif
+
+      // Replace placeholders
+      settings_text.replace ("__default_custom_editor__", custom_editor);
       settings_text.replace ("__default_font__", default_family);
       settings_text.replace ("__default_font_size__", "10");
 
@@ -232,10 +242,11 @@ resource_manager::do_set_settings (const QString& file)
          && settings->isWritable ()
          && settings->status () ==  QSettings::NoError))
     {
-      QString msg = QString (QT_TR_NOOP ("The settings file\n%1\n"
-              "does not exist and can not be created.\n"
-              "Make sure you have read and write permissions to\n%2\n\n"
-              "Octave GUI must be closed now."));
+      QString msg = QString (QT_TR_NOOP (
+        "The settings file\n%1\n"
+        "does not exist and can not be created.\n"
+        "Make sure you have read and write permissions to\n%2\n\n"
+        "Octave GUI must be closed now."));
       QMessageBox::critical (0, QString (QT_TR_NOOP ("Octave Critical Error")),
           msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
       exit (1);
@@ -303,4 +314,14 @@ QList<QColor>
 resource_manager::terminal_default_colors (void)
 {
   return QTerminal::default_colors ();
+}
+
+QIcon
+resource_manager::do_icon (const QString& icon_name, bool fallback)
+{
+  if (fallback)
+    return QIcon::fromTheme (icon_name,
+                             QIcon (":/actions/icons/" + icon_name + ".png"));
+  else
+    return QIcon::fromTheme (icon_name);
 }

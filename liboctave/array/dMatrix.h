@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_dMatrix_h)
 #define octave_dMatrix_h 1
 
+#include "dNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -33,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-Matrix : public MArray<double>
+Matrix : public NDArray
 {
 public:
 
@@ -42,26 +43,26 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  Matrix (void) : MArray<double> () { }
+  Matrix (void) : NDArray () { }
 
   Matrix (octave_idx_type r, octave_idx_type c)
-    : MArray<double> (dim_vector (r, c)) { }
+    : NDArray (dim_vector (r, c)) { }
 
   Matrix (octave_idx_type r, octave_idx_type c, double val)
-    : MArray<double> (dim_vector (r, c), val) { }
+    : NDArray (dim_vector (r, c), val) { }
 
-  Matrix (const dim_vector& dv) : MArray<double> (dv.redim (2)) { }
+  Matrix (const dim_vector& dv) : NDArray (dv.redim (2)) { }
 
   Matrix (const dim_vector& dv, double val)
-    : MArray<double> (dv.redim (2), val) { }
+    : NDArray (dv.redim (2), val) { }
 
-  Matrix (const Matrix& a) : MArray<double> (a) { }
-
-  template <class U>
-  Matrix (const MArray<U>& a) : MArray<double> (a.as_matrix ()) { }
+  Matrix (const Matrix& a) : NDArray (a) { }
 
   template <class U>
-  Matrix (const Array<U>& a) : MArray<double> (a.as_matrix ()) { }
+  Matrix (const MArray<U>& a) : NDArray (a.as_matrix ()) { }
+
+  template <class U>
+  Matrix (const Array<U>& a) : NDArray (a.as_matrix ()) { }
 
   explicit Matrix (const RowVector& rv);
 
@@ -69,17 +70,15 @@ public:
 
   explicit Matrix (const DiagMatrix& a);
 
+  explicit Matrix (const MDiagArray2<double>& a);
+
+  explicit Matrix (const DiagArray2<double>& a);
+
   explicit Matrix (const PermMatrix& a);
 
   explicit Matrix (const boolMatrix& a);
 
   explicit Matrix (const charMatrix& a);
-
-  Matrix& operator = (const Matrix& a)
-  {
-    MArray<double>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const Matrix& a) const;
   bool operator != (const Matrix& a) const;
@@ -303,18 +302,7 @@ public:
 
   // unary operations
 
-  boolMatrix operator ! (void) const;
-
   // other operations
-
-  bool any_element_is_negative (bool = false) const;
-  bool any_element_is_positive (bool = false) const;
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool any_element_not_one_or_zero (void) const;
-  bool all_elements_are_int_or_inf_or_nan (void) const;
-  bool all_integers (double& max_val, double& min_val) const;
-  bool too_large_for_float (void) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

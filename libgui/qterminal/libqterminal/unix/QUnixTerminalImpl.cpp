@@ -1,5 +1,5 @@
 /*  Copyright (C) 2008 e_k (e_k@users.sourceforge.net)
-    Copyright (C) 2012-2013 Jacob Dawid <jacob.dawid@googlemail.com>
+    Copyright (C) 2012-2015 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -69,12 +69,22 @@ void QUnixTerminalImpl::initialize()
     m_terminalModel = new TerminalModel(m_kpty);
     m_terminalModel->setAutoClose(true);
     m_terminalModel->setCodec(QTextCodec::codecForName("UTF-8"));
-    m_terminalModel->setHistoryType(HistoryTypeBuffer(1000));
+    m_terminalModel->setHistoryType(HistoryTypeBuffer (1000));
     m_terminalModel->setDarkBackground(true);
     m_terminalModel->setKeyBindings("");
     m_terminalModel->run();
     m_terminalModel->addView(m_terminalView);
     connectToPty();
+}
+void QUnixTerminalImpl::setScrollBufferSize(int value)
+{
+  if (value > 0)
+    {
+      m_terminalModel->clearHistory ();
+      m_terminalModel->setHistoryType (HistoryTypeBuffer ( value ));
+    }
+  else
+    m_terminalModel->setHistoryType (HistoryTypeNone ());
 }
 
 void QUnixTerminalImpl::connectToPty()
@@ -197,7 +207,7 @@ void QUnixTerminalImpl::resizeEvent(QResizeEvent*)
 
 void QUnixTerminalImpl::copyClipboard()
 {
-    m_terminalView->copyClipboard();
+    m_terminalView->copyClipboard (_extra_interrupt);
 }
 
 void QUnixTerminalImpl::pasteClipboard()
@@ -205,7 +215,19 @@ void QUnixTerminalImpl::pasteClipboard()
     m_terminalView->pasteClipboard();
 }
 
+void QUnixTerminalImpl::selectAll()
+{
+    m_terminalView->selectAll();
+}
+
+
 QString QUnixTerminalImpl::selectedText ()
 {
   return m_terminalView->selectedText ();
+}
+
+void
+QUnixTerminalImpl::has_extra_interrupt (bool extra)
+{
+  _extra_interrupt = extra;
 }

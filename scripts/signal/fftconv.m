@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -65,7 +65,7 @@ function c = fftconv (x, y, n)
 endfunction
 
 
-%% FIXME: Borrow tests from conv.m.  May need a tolerance on the assert comparison
+## FIXME: Borrow tests from conv.m.  May need tolerance on the assert stmt.
 %!test
 %! x = ones (3,1);
 %! y = ones (1,3);
@@ -98,7 +98,7 @@ endfunction
 %! assert (size (conv (a,b)), [1, numel(a)+numel(b)-1]);
 %! assert (size (conv (b,a)), [1, numel(a)+numel(b)-1]);
 
-%% Test input validation
+## Test input validation
 %!error fftconv (1)
 %!error fftconv (1,2,3,4)
 %!error fftconv ([1, 2; 3, 4], 3)

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2013 Nicolo' Giorgetti
-Copyright (C) 2013 Sébastien Villemot <sebastien@debian.org>
+Copyright (C) 2005-2015 Nicolo' Giorgetti
+Copyright (C) 2013-2015 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 
@@ -716,7 +716,8 @@ Undocumented internal function.\n\
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
   double time;
-  int status, errnum = 0;
+  int status;
+  volatile int errnum = 0;
 
   int jmpret = setjmp (mark);
 

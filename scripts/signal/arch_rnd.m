@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -71,11 +71,11 @@ function y = arch_rnd (a, b, t)
     b  = [b, 0];
     lb = lb + 1;
   endif
-  m  = max ([la, lb]);
+  m = max ([la, lb]);
 
-  e  = zeros (t, 1);
-  h  = zeros (t, 1);
-  y  = zeros (t, 1);
+  e = zeros (t, 1);
+  h = zeros (t, 1);
+  y = zeros (t, 1);
 
   h(1) = a(1);
   e(1) = sqrt (h(1)) * randn;

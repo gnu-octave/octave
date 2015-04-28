@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -104,7 +104,6 @@ function copy_files (desc, packdir, global_install)
 
   packinfo_copy_file ("DESCRIPTION", "required", packdir, packinfo, desc, octfiledir);
   packinfo_copy_file ("COPYING", "required", packdir, packinfo, desc, octfiledir);
-
   packinfo_copy_file ("CITATION", "optional", packdir, packinfo, desc, octfiledir);
   packinfo_copy_file ("NEWS", "optional", packdir, packinfo, desc, octfiledir);
   packinfo_copy_file ("ONEWS", "optional", packdir, packinfo, desc, octfiledir);

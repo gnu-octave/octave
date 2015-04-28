@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -250,13 +250,9 @@ string_vector::list_in_columns (std::ostream& os, int width,
     nc = 1;
 
   // Calculate the number of rows that will be in each column except
-  // possibly  for a short column on the right.
+  // possibly for a short column on the right.
 
   octave_idx_type nr = total_names / nc + (total_names % nc != 0);
-
-  // Recalculate columns based on rows.
-
-  nc = total_names / nr + (total_names % nr != 0);
 
   octave_idx_type count;
   for (octave_idx_type row = 0; row < nr; row++)

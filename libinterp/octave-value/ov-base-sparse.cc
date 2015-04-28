@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -288,7 +288,7 @@ octave_base_sparse<T>::print_as_scalar (void) const
 
 template <class T>
 void
-octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -411,9 +411,9 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
   octave_idx_type nc = 0;
   bool success = true;
 
-  if (extract_keyword (is, "nnz", nz, true) &&
-      extract_keyword (is, "rows", nr, true) &&
-      extract_keyword (is, "columns", nc, true))
+  if (extract_keyword (is, "nnz", nz, true)
+      && extract_keyword (is, "rows", nr, true)
+      && extract_keyword (is, "columns", nc, true))
     {
       T tmp (nr, nc, nz);
 
@@ -436,31 +436,73 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
   return success;
 }
 
+
+template <class T>
+octave_value
+octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
+{
+  octave_idx_type nr = matrix.rows ();
+  octave_idx_type nc = matrix.cols ();
+
+  octave_idx_type i = n % nr;
+  octave_idx_type j = n / nr;
+
+  return (i < nr && j < nc) ? octave_value (matrix(i,j)) : octave_value ();
+}
+
 template <class T>
 octave_value
 octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 {
+  if (umap == umap_xtolower || umap == umap_xtoupper)
+    return matrix;
+
   // Try the map on the dense value.
+  // FIXME: We should probably be smarter about this, especially for the
+  // cases that are expected to return sparse matrices.
   octave_value retval = this->full_value ().map (umap);
 
   // Sparsify the result if possible.
-  // FIXME: intentionally skip this step for string mappers. Is this wanted?
-  if (umap >= umap_xisalnum && umap <= umap_xtoupper)
-    return retval;
 
-  switch (retval.builtin_type ())
+  switch (umap)
     {
-    case btyp_double:
-      retval = retval.sparse_matrix_value ();
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xtoascii:
+      // FIXME: intentionally skip this step for string mappers.
+      // Is this wanted?
       break;
-    case btyp_complex:
-      retval = retval.sparse_complex_matrix_value ();
-      break;
-    case btyp_bool:
-      retval = retval.sparse_bool_matrix_value ();
-      break;
+
     default:
-      break;
+      {
+        switch (retval.builtin_type ())
+          {
+          case btyp_double:
+            retval = retval.sparse_matrix_value ();
+            break;
+
+          case btyp_complex:
+            retval = retval.sparse_complex_matrix_value ();
+            break;
+
+          case btyp_bool:
+            retval = retval.sparse_bool_matrix_value ();
+            break;
+
+          default:
+            break;
+          }
+      }
     }
 
   return retval;

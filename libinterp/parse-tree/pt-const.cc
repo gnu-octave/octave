@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // We are likely to have a lot of tree_constant objects to allocate,
 // so make the grow_size large.
-DEFINE_OCTAVE_ALLOCATOR2 (tree_constant, 1024);
 
 void
 tree_constant::print (std::ostream& os, bool pr_as_read_syntax,

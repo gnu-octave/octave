@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -42,6 +42,8 @@ octave_interpreter::execute (void)
 
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
+
+  emit octave_ready_signal ();
 
   octave_execute_interpreter ();
 }

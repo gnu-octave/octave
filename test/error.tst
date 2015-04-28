@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 John W. Eaton
+## Copyright (C) 2006-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -58,6 +58,36 @@
 %! st.state = "off";
 %! assert (warning ("query", "backtrace"), st);
 %! warning (ws.state, "backtrace");
+
+%!shared t1_opts, t2_opts, t1_id, t1_state, saved_opts, saved_id, saved_state
+%! saved_opts = warning ();
+%! saved_id = {saved_opts.identifier};
+%! saved_state = {saved_opts.state};
+%! warning ("off", "all");
+%! assert (warning (), struct ("identifier", {"all"}, "state", {"off"}));
+%! warning ("off", "all");
+%! warning (saved_opts);
+%! t1_opts = struct ("identifier", {"foo:bar"}, "state", {"off"});
+%! t1_id = {t1_opts.identifier};
+%! t1_state = {t1_opts.state};
+%! warning (t1_opts);
+%! t2_opts = struct ("identifier", [saved_id, t1_id], "state", [saved_state, t1_state]);
+%! assert (warning (), t2_opts);
+%! warning ("off", "all");
+%! warning (saved_opts);
+
+## Bug 36393
+
+%!test
+%! w0 = warning;
+%! warnoffId = "MATLAB:singularMatrix";
+%! warnstat = warning ("query", warnoffId);
+%! warnoff = warnstat;
+%! warnoff.state = "off";
+%! warning (warnoff); %update warning status
+%! warning (warnstat); %reset warning status
+%! w = warning;
+%! assert (w, w0);
 
 ## Test usage() function
 

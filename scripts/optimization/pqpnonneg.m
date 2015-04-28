@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Bill Denney
+## Copyright (C) 2008-2015 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
@@ -75,7 +75,8 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
     return;
   endif
 
-  if (! (nargin >= 2 && nargin <= 4 && ismatrix (c) && ismatrix (d) && isstruct (options)))
+  if (nargin < 2 || nargin > 4
+      || ! (ismatrix (c) && ismatrix (d) && isstruct (options)))
     print_usage ();
   endif
 
@@ -134,7 +135,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
         x += alpha*(xx - x);
         ## LH11: move from P to Z all X == 0.
         ## This corresponds to those indices where minimum of sf is attained.
-        idx = idx (sf == alpha);
+        idx = idx(sf == alpha);
         p(idx) = [];
         if (usechol)
           ## update the Cholesky factorization.

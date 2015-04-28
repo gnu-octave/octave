@@ -1,7 +1,7 @@
 // N-D Array  manipulations.
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,14 +25,63 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "Array-util.h"
 #include "chNDArray.h"
 #include "mx-base.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "mx-op-defs.h"
+#include "str-vec.h"
 
 #include "bsxfun-defs.cc"
+
+charNDArray::charNDArray (char c)
+  : Array<char> ()
+{
+  octave_idx_type n = 1;
+
+  resize1 (n);
+
+  elem (0) = c;
+}
+
+charNDArray::charNDArray (const char *s)
+  : Array<char> ()
+{
+  octave_idx_type n = s ? strlen (s) : 0;
+
+  resize1 (n);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    elem (i) = s[i];
+}
+
+charNDArray::charNDArray (const std::string& s)
+  : Array<char> ()
+{
+  octave_idx_type n = s.length ();
+
+  resize1 (n);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    elem (i) = s[i];
+}
+
+charNDArray::charNDArray (const string_vector& s, char fill_value)
+  : Array<char> (dim_vector (s.length (), s.max_length ()), fill_value)
+{
+  octave_idx_type nr = rows ();
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    {
+      const std::string si = s(i);
+      octave_idx_type nc = si.length ();
+      for (octave_idx_type j = 0; j < nc; j++)
+        elem (i, j) = si[j];
+    }
+}
 
 // FIXME: this is not quite the right thing.
 
@@ -127,12 +176,6 @@ charNDArray&
 charNDArray::insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<char>::insert (a, ra_idx);
-  return *this;
-}
-
-charMatrix
-charNDArray::matrix_value (void) const
-{
   return *this;
 }
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2013 John Donoghue
+## Copyright (C) 2013-2015 John Donoghue
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,7 @@
 
 function folder = prefdir ()
 
-  folder = getenv ("HOME");
+  folder = get_home_directory ();
 
 endfunction
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -32,28 +32,29 @@
 ## @headitem Figure NextPlot @tab Action
 ## @item @qcode{"new"} @tab Create a new figure and make it the current figure.
 ##
-## @item @qcode{"add"} (default) @tab Add new graphic objects to the current figure.
+## @item @qcode{"add"} (default) @tab Add new graphic objects to the current
+## figure.
 ##
-## @item @qcode{"replacechildren"} @tab Delete child objects whose HandleVisibility is
-## set to @qcode{"on"}.  Set NextPlot property to @qcode{"add"}.  This
-## typically clears a figure, but leaves in place hidden objects such as
-## menubars.  This is equivalent to @code{clf}.
+## @item @qcode{"replacechildren"} @tab Delete child objects whose
+## HandleVisibility is set to @qcode{"on"}.  Set NextPlot property to
+## @qcode{"add"}.  This typically clears a figure, but leaves in place hidden
+## objects such as menubars.  This is equivalent to @code{clf}.
 ##
 ## @item @qcode{"replace"} @tab Delete all child objects of the figure and
 ## reset all figure properties to their defaults.  However, the following
 ## four properties are not reset: Position, Units, PaperPosition, PaperUnits.
-##  This is equivalent to @code{clf reset}.
+## This is equivalent to @code{clf reset}.
 ## @end multitable
 ##
 ## @multitable @columnfractions .25 .75
 ## @headitem Axis NextPlot @tab Action
-## @item @qcode{"add"} @tab Add new graphic objects to the current axes.  This is
-## equivalent to @code{hold on}.
+## @item @qcode{"add"} @tab Add new graphic objects to the current axes.  This
+## is equivalent to @code{hold on}.
 ##
-## @item @qcode{"replacechildren"} @tab Delete child objects whose HandleVisibility is
-## set to @qcode{"on"}, but leave axis properties unmodified.  This typically
-## clears a plot, but preserves special settings such as log scaling for
-## axes.  This is equivalent to @code{cla}.
+## @item @qcode{"replacechildren"} @tab Delete child objects whose
+## HandleVisibility is set to @qcode{"on"}, but leave axis properties
+## unmodified.  This typically clears a plot, but preserves special settings
+## such as log scaling for axes.  This is equivalent to @code{cla}.
 ##
 ## @item @qcode{"replace"} (default) @tab Delete all child objects of the
 ## axis and reset all axis properties to their defaults.  However, the
@@ -189,8 +190,15 @@ function hax = newplot (hsave = [])
         kids(kids == hkid) = [];
         delete (kids);
       else
-        __go_axes_init__ (ca, "replace");
-        __request_drawnow__ ();
+        if (isprop (ca, "__plotyy_axes__"))
+          ## Hack for bug #44246.  There is no way to reset or remove a
+          ## property created with addproperty short of deleting the object.
+          delete (ca);
+          ca = axes ();
+        else
+          __go_axes_init__ (ca, "replace");
+          __request_drawnow__ ();
+        endif
       endif
       ## FIXME: The code above should perform the following:
       ###########################

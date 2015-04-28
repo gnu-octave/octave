@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Kai Habel
+## Copyright (C) 2010-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -20,9 +20,10 @@
 ## @deftypefn  {Function File} {@var{dirname} =} uigetdir ()
 ## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path})
 ## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path}, @var{dialog_name})
-## Open a GUI dialog for selecting a directory.  If @var{init_path} is not
-## given the current working directory is used.  @var{dialog_name} may be
-## used to customize the dialog title.
+## Open a GUI dialog for selecting a directory.
+##
+## If @var{init_path} is not given the current working directory is used.
+## @var{dialog_name} may be used to customize the dialog title.
 ## @seealso{uigetfile, uiputfile}
 ## @end deftypefn
 
@@ -30,30 +31,15 @@
 
 function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to Open")
 
-  if (! __octave_link_enabled__ ())
-    defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
-    funcname = ["__uigetdir_", defaulttoolkit, "__"];
-    functype = exist (funcname);
-    if (! __is_function__ (funcname))
-      funcname = "__uigetdir_fltk__";
-      if (! __is_function__ (funcname))
-        error ("uigetdir: fltk graphics toolkit required");
-      elseif (! strcmp (defaulttoolkit, "gnuplot"))
-        warning ("uigetdir: no implementation for toolkit '%s', using 'fltk' instead",
-                 defaulttoolkit);
-      endif
-    endif
-  endif
-
   if (nargin > 2)
     print_usage ();
   endif
 
-  if (!ischar (init_path) || !ischar (dialog_name))
+  if (! ischar (init_path) || ! ischar (dialog_name))
     error ("uigetdir: INIT_PATH and DIALOG_NAME must be string arguments");
   endif
 
-  if (!isdir (init_path))
+  if (! isdir (init_path))
     init_path = fileparts (init_path);
   endif
 
@@ -68,8 +54,10 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
                                      default_file_name, dialog_position,
                                      dialog_mode, init_path);
   else
+    funcname = __get_funcname__ (mfilename ());
     dirname = feval (funcname, init_path, dialog_name);
   endif
+
 endfunction
 
 

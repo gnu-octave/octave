@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -585,7 +585,7 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      retval = do_strcmp_fun (args (0), args (1), 0,
+      retval = do_strcmp_fun (args(0), args(1), 0,
                               "strcmp", strcmp_array_op, strcmp_str_op);
     }
   else
@@ -647,7 +647,8 @@ static bool
 strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
                   octave_idx_type n)
 {
-  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  octave_idx_type l1 = s1.numel ();
+  octave_idx_type l2 = s2.numel ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
@@ -658,7 +659,8 @@ strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
 static bool
 strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 {
-  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  octave_idx_type l1 = s1.length ();
+  octave_idx_type l2 = s2.length ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
@@ -735,7 +737,7 @@ This is just the opposite of the corresponding C library function.\n\
 struct icmp_char_eq : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-    { return std::toupper (x) == std::toupper (y); }
+  { return std::toupper (x) == std::toupper (y); }
 };
 
 // strcmpi is equivalent to strcmp in that it checks all dims.
@@ -781,7 +783,7 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      retval = do_strcmp_fun (args (0), args (1), 0,
+      retval = do_strcmp_fun (args(0), args(1), 0,
                               "strcmpi", strcmpi_array_op, strcmpi_str_op);
     }
   else
@@ -799,7 +801,8 @@ static bool
 strncmpi_array_op (const charNDArray& s1, const charNDArray& s2,
                    octave_idx_type n)
 {
-  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  octave_idx_type l1 = s1.numel ();
+  octave_idx_type l2 = s2.numel ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
@@ -810,7 +813,8 @@ static bool
 strncmpi_str_op (const std::string& s1, const std::string& s2,
                  octave_idx_type n)
 {
-  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  octave_idx_type l1 = s1.length ();
+  octave_idx_type l2 = s2.length ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
@@ -912,7 +916,7 @@ whos ans\n\
 
   if (error_state)
     {
-      error ("list_in_columns: expecting cellstr or char array");
+      error ("list_in_columns: ARG must be a cellstr or char array");
       return retval;
     }
 
@@ -934,18 +938,10 @@ whos ans\n\
   if (nargin > 2)
     {
       if (args(2).is_string ())
-        {
-          prefix = args(2).string_value ();
-
-          if (error_state)
-            {
-              error ("list_in_columns: PREFIX must be a character string");
-              return retval;
-            }
-        }
+        prefix = args(2).string_value ();
       else
         {
-          error ("list_in_columns: PREFIX must be a character string");
+          error ("list_in_columns: PREFIX must be a string");
           return retval;
         }
     }

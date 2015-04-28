@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2008-2013 Michael Goffioul
+Copyright (C) 2008-2015 Michael Goffioul
 
 This file is part of Octave.
 
@@ -56,23 +56,25 @@ static std::string help_msg =
 "  -p VAR, --print VAR   Print the value of the given configuration\n"
 "                        variable VAR.  Recognized variables are:\n"
 "\n"
-"                          API_VERSION            LOCALAPIOCTFILEDIR\n"
-"                          ARCHLIBDIR             LOCALARCHLIBDIR\n"
-"                          BINDIR                 LOCALFCNFILEDIR\n"
-"                          CANONICAL_HOST_TYPE    LOCALOCTFILEDIR\n"
-"                          DATADIR                LOCALSTARTUPFILEDIR\n"
-"                          DATAROOTDIR            LOCALVERARCHLIBDIR\n"
-"                          DEFAULT_PAGER          LOCALVERFCNFILEDIR\n"
-"                          EXEC_PREFIX            LOCALVEROCTFILEDIR\n"
-"                          FCNFILEDIR             MAN1DIR\n"
-"                          IMAGEDIR               MAN1EXT\n"
-"                          INCLUDEDIR             MANDIR\n"
-"                          INFODIR                OCTFILEDIR\n"
-"                          INFOFILE               OCTINCLUDEDIR\n"
-"                          LIBDIR                 OCTLIBDIR\n"
-"                          LIBEXECDIR             PREFIX\n"
+"                          API_VERSION            LOCALARCHLIBDIR\n"
+"                          ARCHLIBDIR             LOCALFCNFILEDIR\n"
+"                          BINDIR                 LOCALOCTFILEDIR\n"
+"                          CANONICAL_HOST_TYPE    LOCALSTARTUPFILEDIR\n"
+"                          DATADIR                LOCALVERARCHLIBDIR\n"
+"                          DATAROOTDIR            LOCALVERFCNFILEDIR\n"
+"                          DEFAULT_PAGER          LOCALVEROCTFILEDIR\n"
+"                          EXEC_PREFIX            MAN1DIR\n"
+"                          EXEEXT                 MAN1EXT\n"
+"                          FCNFILEDIR             MANDIR\n"
+"                          IMAGEDIR               OCTDATADIR\n"
+"                          INCLUDEDIR             OCTFILEDIR\n"
+"                          INFODIR                OCTINCLUDEDIR\n"
+"                          INFOFILE               OCTLIBDIR\n"
+"                          LIBDIR                 PREFIX\n"
+"                          LIBEXECDIR             SHLEXT\n"
 "                          LOCALAPIARCHLIBDIR     STARTUPFILEDIR\n"
 "                          LOCALAPIFCNFILEDIR     VERSION\n"
+"                          LOCALAPIOCTFILEDIR\n"
 "\n"
 "  -v, --version         Print the Octave version number.\n"
 "\n";
@@ -94,6 +96,7 @@ initialize (void)
   vars["DATADIR"] = subst_octave_home (%OCTAVE_DATADIR%);
   vars["DATAROOTDIR"] = subst_octave_home (%OCTAVE_DATAROOTDIR%);
   vars["EXEC_PREFIX"] = subst_octave_home (%OCTAVE_EXEC_PREFIX%);
+  vars["EXEEXT"] = subst_octave_home (%OCTAVE_EXEEXT%);
   vars["FCNFILEDIR"] = subst_octave_home (%OCTAVE_FCNFILEDIR%);
   vars["IMAGEDIR"] = subst_octave_home (%OCTAVE_IMAGEDIR%);
   vars["INCLUDEDIR"] = subst_octave_home (%OCTAVE_INCLUDEDIR%);
@@ -113,9 +116,11 @@ initialize (void)
   vars["LOCALVEROCTFILEDIR"] = subst_octave_home (%OCTAVE_LOCALVEROCTFILEDIR%);
   vars["MAN1DIR"] = subst_octave_home (%OCTAVE_MAN1DIR%);
   vars["MANDIR"] = subst_octave_home (%OCTAVE_MANDIR%);
+  vars["OCTDATADIR"] = subst_octave_home (%OCTAVE_OCTDATADIR%);
   vars["OCTFILEDIR"] = subst_octave_home (%OCTAVE_OCTFILEDIR%);
   vars["OCTINCLUDEDIR"] = subst_octave_home (%OCTAVE_OCTINCLUDEDIR%);
   vars["OCTLIBDIR"] = subst_octave_home (%OCTAVE_OCTLIBDIR%);
+  vars["SHLEXT"] = subst_octave_home (%OCTAVE_SHLEXT%);
   vars["STARTUPFILEDIR"] = subst_octave_home (%OCTAVE_STARTUPFILEDIR%);
 }
 

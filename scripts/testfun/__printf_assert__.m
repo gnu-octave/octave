@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 David Bateman
+## Copyright (C) 2005-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,11 @@
 ## @end deftypefn
 
 function __printf_assert__ (varargin)
-  global _assert_printf;
+  global _assert_printf = "";
   _assert_printf = cat (2, _assert_printf, sprintf (varargin{:}));
 endfunction
+
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
 

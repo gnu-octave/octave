@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_dNDArray_h 1
 
 #include "MArray.h"
-#include "dMatrix.h"
 #include "intNDArray.h"
 
 #include "mx-defs.h"
@@ -37,8 +36,6 @@ NDArray : public MArray<double>
 {
 public:
 
-  typedef Matrix matrix_type;
-
   NDArray (void) : MArray<double> () { }
 
   NDArray (const dim_vector& dv) : MArray<double> (dv) { }
@@ -47,8 +44,6 @@ public:
     : MArray<double> (dv, val) { }
 
   NDArray (const NDArray& a) : MArray<double> (a) { }
-
-  NDArray (const Matrix& a) : MArray<double> (a) { }
 
   NDArray (const Array<octave_idx_type>& a, bool zero_based = false,
            bool negative_to_nan = false);
@@ -140,8 +135,6 @@ public:
   friend OCTAVE_API NDArray imag (const ComplexNDArray& a);
 
   friend class ComplexNDArray;
-
-  Matrix matrix_value (void) const;
 
   NDArray squeeze (void) const { return MArray<double>::squeeze (); }
 

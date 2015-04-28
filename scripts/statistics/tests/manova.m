@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -28,7 +28,7 @@
 ## and columns are variables.  The vector @var{g} specifies the
 ## corresponding group labels (e.g., numbers from 1 to @var{k}).
 ##
-## The LR test statistic (Wilks' Lambda) and approximate p-values are
+## The LR test statistic (@nospell{Wilks' Lambda}) and approximate p-values are
 ## computed and displayed.
 ## @end deftypefn
 
@@ -53,7 +53,7 @@ function manova (x, g)
 
   [n, p] = size (x);
 
-  if (!isvector (g) || (length (g) != n))
+  if (! isvector (g) || (length (g) != n))
     error ("manova: G must be a vector of length rows (X)");
   endif
 
@@ -85,9 +85,9 @@ function manova (x, g)
   l = real (eig (SSB / SSW));
 
   if (isa (l, "single"))
-    l (l < eps ("single")) = 0;
+    l(l < eps ("single")) = 0;
   else
-    l (l < eps) = 0;
+    l(l < eps) = 0;
   endif
 
   ## Wilks' Lambda

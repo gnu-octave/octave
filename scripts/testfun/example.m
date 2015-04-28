@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -35,44 +35,52 @@
 ## @seealso{demo, test}
 ## @end deftypefn
 
-function [code_r, idx_r] = example (name, n)
+function [ex_code, ex_idx] = example (name, n = 0)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if (nargin < 2)
-    n = 0;
-  elseif (ischar (n))
+  if (ischar (n))
     n = str2double (n);
   endif
 
+  if (! (isreal (n) && isscalar (n) && n == fix (n)))
+    error ("example: N must be a scalar integer");
+  endif
+
   [code, idx] = test (name, "grabdemo");
+
+  if (idx == -1)
+    warning ("example: no function %s found", name);
+    return;
+  elseif (isempty (idx))
+    warning ("example: no example available for %s", name);
+    return;
+  elseif (n >= length (idx))
+    warning ("example: only %d examples available for %s",
+             length (idx) - 1, name);
+    return;
+  endif
+
   if (nargout > 0)
     if (n > 0)
       if (n <= length (idx))
-        code_r = code(idx(n):idx(n+1)-1);
-        idx_r = [1, length(code_r)+1];
+        ex_code = code(idx(n):idx(n+1)-1);
+        ex_idx = [1, length(ex_code)+1];
       else
-        code_r = "";
-        idx_r = [];
+        ex_code = "";
+        ex_idx = [];
       endif
     else
-      code_r = code;
-      idx_r = idx;
+      ex_code = code;
+      ex_idx = idx;
     endif
   else
     if (n > 0)
       doidx = n;
     else
       doidx = 1:length (idx) - 1;
-    endif
-    if (isempty (idx))
-      warning ("no example available for %s", name);
-      return;
-    elseif (n >= length (idx))
-      warning ("only %d examples available for %s", length (idx) - 1, name);
-      return;
     endif
 
     for i = 1:length (doidx)
@@ -90,17 +98,24 @@ endfunction
 
 %!demo
 %! clf;
-%! t = 0:0.01:2*pi;  x = sin (t);
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
 %! plot (t,x)
 
-%!assert (example ("example",1), "\n example (\"example\");");
+%!assert (example ("example", 1), "\n example (\"example\");");
+
 %!test
 %! [code, idx] = example ("example");
 %! assert (code, ...
-%!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;  x = sin (t);\n plot (t,x)")
+%!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;\n x = sin (t);\n plot (t,x)");
 %! assert (idx, [1, 23, 73]);
 
-%% Test input validation
-%!error example
+## Test input validation
+%!error example ()
 %!error example ("example", 3, 5)
+%!error <N must be a scalar integer> example ("example", {1})
+%!error <N must be a scalar integer> example ("example", ones (2,2))
+%!error <N must be a scalar integer> example ("example", 1.5)
+%!warning <no function .* found> example ("_%NOT_A_FUNCTION%_");
+%!warning <only 2 examples available for example> example ("example", 10);
 

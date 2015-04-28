@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2013 A. S. Hodel
+Copyright (C) 1998-2015 A. S. Hodel
 
 This file is part of Octave.
 
@@ -75,7 +75,7 @@ extern "C"
                              octave_idx_type& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type& N, Complex* A,
                              const octave_idx_type& LDA, Complex* B,
@@ -97,7 +97,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (zggbak, ZGGBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type& N,
@@ -122,7 +122,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
- F77_RET_T
+  F77_RET_T
   F77_FUNC (zgghrd, ZGGHRD) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type& N,
@@ -153,7 +153,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (zhgeqz, ZHGEQZ) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
@@ -204,7 +204,7 @@ F77_RET_T
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-F77_RET_T
+  F77_RET_T
   F77_FUNC (ztgevc, ZTGEVC) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type* SELECT,
@@ -402,7 +402,7 @@ compatibility with @sc{matlab}.\n\
 
   if (nargin == 2)
     ord_job = 'N';
-  else if (!args(2).is_string ())
+  else if (! args(2).is_string ())
     {
       error ("qz: OPT must be a string");
       return retval;
@@ -928,7 +928,7 @@ compatibility with @sc{matlab}.\n\
                   std::cout << "  single gen eig:" << std::endl;
                   std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
                             << std::endl;
-                  std::cout << "  betar( " << jj << ") = " << bb(jj,jj)
+                  std::cout << "  betar(" << jj << ") = " << bb(jj,jj)
                             << std::endl;
                   std::cout << "  alphai(" << jj << ") = 0" << std::endl;
 #endif
@@ -1277,9 +1277,9 @@ compatibility with @sc{matlab}.\n\
 %! [aa, bb, q, z, v, w, lambda] = qz (a, b);
 %! sz = length (lambda);
 %! observed = (b * v * diag ([lambda;0])) (:, 1:sz);
-%! assert ( (a*v) (:, 1:sz), observed, norm (observed) * 1e-14);
+%! assert ((a*v)(:, 1:sz), observed, norm (observed) * 1e-14);
 %! observed = (diag ([lambda;0]) * w' * b) (1:sz, :);
-%! assert ( (w'*a) (1:sz, :) , observed, norm (observed) * 1e-13);
+%! assert ((w'*a)(1:sz, :) , observed, norm (observed) * 1e-13);
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
 

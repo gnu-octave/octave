@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -261,16 +261,18 @@ public:
       looking_at_matrix_or_assign_lhs (false),
       looking_for_object_index (false),
       looking_at_indirect_ref (false), parsing_class_method (false),
-      maybe_classdef_get_set_method (false), parsing_classdef (false),
+      parsing_classdef (false), maybe_classdef_get_set_method (false),
+      parsing_classdef_get_method (false),
+      parsing_classdef_set_method (false),
       quote_is_transpose (false), force_script (false),
       reading_fcn_file (false), reading_script_file (false),
       reading_classdef_file (false),
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
-      block_comment_nesting_level (0), token_count (0),
-      current_input_line (), comment_text (), help_text (),
-      string_text (), string_line (0), string_column (0),
+      block_comment_nesting_level (0), command_arg_paren_count (0),
+      token_count (0), current_input_line (), comment_text (),
+      help_text (), string_text (), string_line (0), string_column (0),
       fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
       symtab_context (), nesting_level (), tokens ()
@@ -341,13 +343,19 @@ public:
   // true means we are parsing a class method in function or classdef file.
   bool parsing_class_method;
 
+  // true means we are parsing a classdef file
+  bool parsing_classdef;
+
   // true means we are parsing a class method declaration line in a
   // classdef file and can accept a property get or set method name.
   // for example, "get.propertyname" is recognized as a function name.
   bool maybe_classdef_get_set_method;
 
-  // true means we are parsing a classdef file
-  bool parsing_classdef;
+  // TRUE means we are parsing a classdef get.method.
+  bool parsing_classdef_get_method;
+
+  // TRUE means we are parsing a classdef set.method.
+  bool parsing_classdef_set_method;
 
   // return transpose or start a string?
   bool quote_is_transpose;
@@ -388,6 +396,9 @@ public:
 
   // nestng level for blcok comments.
   int block_comment_nesting_level;
+
+  // Parenthesis count for command argument parsing.
+  int command_arg_paren_count;
 
   // Count of tokens recognized by this lexer since initialized or
   // since the last reset.
@@ -569,6 +580,8 @@ public:
 
   int is_keyword_token (const std::string& s);
 
+  bool fq_identifier_contains_keyword (const std::string& s);
+
   bool whitespace_is_significant (void);
 
   void handle_number (void);
@@ -587,19 +600,21 @@ public:
 
   int handle_meta_identifier (void);
 
+  int handle_fq_identifier (void);
+
   int handle_identifier (void);
 
   void maybe_warn_separator_insert (char sep);
 
   void gripe_single_quote_string (void);
 
-  void gripe_matlab_incompatible (const std::string& msg);
+  void gripe_language_extension (const std::string& msg);
 
-  void maybe_gripe_matlab_incompatible_comment (char c);
+  void maybe_gripe_language_extension_comment (char c);
 
-  void gripe_matlab_incompatible_continuation (void);
+  void gripe_language_extension_continuation (void);
 
-  void gripe_matlab_incompatible_operator (const std::string& op);
+  void gripe_language_extension_operator (const std::string& op);
 
   void push_token (token *);
 
@@ -648,17 +663,18 @@ public:
 
   int handle_op (const char *pattern, int tok, bool bos = false);
 
-  int handle_incompatible_op (const char *pattern, int tok, bool bos = false);
+  int handle_language_extension_op (const char *pattern, int tok,
+                                    bool bos = false);
 
   bool maybe_unput_comma_before_unary_op (int tok);
 
   int handle_unary_op (int tok, bool bos = false);
 
-  int handle_incompatible_unary_op (int tok, bool bos = false);
+  int handle_language_extension_unary_op (int tok, bool bos = false);
 
   int handle_assign_op (const char *pattern, int tok);
 
-  int handle_incompatible_assign_op (const char *pattern, int tok);
+  int handle_language_extension_assign_op (const char *pattern, int tok);
 
   int handle_op_internal (int tok, bool bos, bool compat);
 
@@ -671,6 +687,8 @@ public:
   int count_token_internal (int tok);
 
   int show_token (int tok);
+
+  void enable_fq_identifier (void);
 
 protected:
 

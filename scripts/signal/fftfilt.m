@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -185,7 +185,7 @@ endfunction
 %! y  = fftfilt (b, x);
 %! assert (y0, y, 55*eps);
 
-%% Test input validation
+## Test input validation
 %!error fftfilt (1)
 %!error fftfilt (1, 2, 3, 4)
 %!error fftfilt (ones (2), 1)

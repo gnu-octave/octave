@@ -12,9 +12,12 @@ sparse_FCN_FILES = \
   sparse/etreeplot.m \
   sparse/gmres.m \
   sparse/gplot.m \
+  sparse/ichol.m \
+  sparse/ilu.m \
   sparse/nonzeros.m \
   sparse/pcg.m \
   sparse/pcr.m \
+  sparse/qmr.m \
   sparse/spaugment.m \
   sparse/spconvert.m \
   sparse/spdiags.m \

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -45,7 +45,7 @@
 
 function [pval, z] = u_test (x, y, alt)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -53,16 +53,16 @@ function [pval, z] = u_test (x, y, alt)
     error ("u_test: both X and Y must be vectors");
   endif
 
-  n_x  = length (x);
-  n_y  = length (y);
-  r    = ranks ([(reshape (x, 1, n_x)), (reshape (y, 1, n_y))]);
-  z    = (sum (r(1 : n_x)) - n_x * (n_x + n_y + 1) / 2) ...
-           / sqrt (n_x * n_y * (n_x + n_y + 1) / 12);
+  n_x = length (x);
+  n_y = length (y);
+  r   = ranks ([(reshape (x, 1, n_x)), (reshape (y, 1, n_y))]);
+  z   = (sum (r(1 : n_x)) - n_x * (n_x + n_y + 1) / 2) ...
+          / sqrt (n_x * n_y * (n_x + n_y + 1) / 12);
 
-  cdf  = stdnormal_cdf (z);
+  cdf = stdnormal_cdf (z);
 
   if (nargin == 2)
-    alt  = "!=";
+    alt = "!=";
   endif
 
   if (! ischar (alt))

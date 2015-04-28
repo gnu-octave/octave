@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Kai Habel
+## Copyright (C) 2000-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -104,7 +104,7 @@ function z = trapz (x, y, dim)
   if (! have_xy)
     z = 0.5 * sum (x(idx1{:}) + x(idx2{:}), dim);
   else
-    if (isvector (x) && !isvector (y))
+    if (isvector (x) && ! isvector (y))
       if (length (x) != sz(dim))
         error ("trapz: length of X and length of Y along DIM must match");
       endif

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -87,7 +86,7 @@ public:
   octave_base_value *empty_clone (void) const
   { return new octave_char_matrix (); }
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   builtin_type_t builtin_type (void) const { return btyp_char; }
 
@@ -107,10 +106,10 @@ public:
   { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-  { return Matrix (matrix.matrix_value ()); }
+  { return Matrix (charMatrix (matrix)); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (matrix.matrix_value ()); }
+  { return FloatMatrix (charMatrix (matrix)); }
 
   NDArray array_value (bool = false) const
   { return NDArray (matrix); }
@@ -123,10 +122,10 @@ public:
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (matrix.matrix_value ()); }
+  { return ComplexMatrix (charMatrix (matrix)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (matrix.matrix_value ()); }
+  { return FloatComplexMatrix (charMatrix (matrix)); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (matrix); }
@@ -135,7 +134,7 @@ public:
   { return FloatComplexNDArray (matrix); }
 
   charMatrix char_matrix_value (bool = false) const
-  { return matrix.matrix_value (); }
+  { return charMatrix (matrix); }
 
   charNDArray char_array_value (bool = false) const
   { return matrix; }

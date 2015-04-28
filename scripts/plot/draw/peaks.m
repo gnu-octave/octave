@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 Paul Kienzle
+## Copyright (C) 2007-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -27,7 +27,7 @@
 ## The function has the form
 ##
 ## @tex
-## $$f(x,y) = 3 (1 - x) ^ 2 e ^ {\left(-x^2 - (y+1)^2\right)} - 10 \left({x \over 5} - x^3 - y^5)\right) - {1 \over 3} e^{\left(-(x+1)^2 - y^2\right)}$$
+## $$f(x,y) = 3 (1 - x) ^ 2 e ^ {\left(-x^2 - (y+1)^2\right)} - 10 \left({x \over 5} - x^3 - y^5\right) - {1 \over 3} e^{\left(-(x+1)^2 - y^2\right)}$$
 ## @end tex
 ## @ifnottex
 ## @verbatim
@@ -83,6 +83,9 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
 
   if (nargout == 0)
     surf (x, y, Z);
+    Z_max = max (Z(:));
+    Z_min = min (Z(:));
+    axis ([-3, 3, -3, 3, Z_min, Z_max]);
   elseif (nargout == 1)
     X_out = Z;
   else

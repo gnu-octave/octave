@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,7 @@ function retval = doc (fname)
 
     if (nargin == 1)
       ## Get the directory where the function lives.
-      ## FIXME -- maybe we should have a better way of doing this.
+      ## FIXME: Maybe we should have a better way of doing this?
 
       if (ischar (fname))
         ftype = exist (fname);
@@ -54,7 +54,7 @@ function retval = doc (fname)
     endif
 
     ## if GUI is running, let it display the function
-    if isguirunning ()
+    if (isguirunning ())
       __octave_link_show_doc__ (fname);
     else
 
@@ -81,12 +81,13 @@ function retval = doc (fname)
         info_file_name = info_file ();
 
         if (! exist (info_file_name, "file")
-            && ! exist ([info_file_name ".gz"], "file"))
+            && ! exist ([info_file_name ".gz"], "file")
+            && ! exist ([info_file_name ".bz2"], "file"))
           __gripe_missing_component__ ("doc", "info-file");
         endif
       endif
 
-      ## FIXME -- don't change the order of the arguments below because
+      ## FIXME: Don't change the order of the arguments below because
       ## the info-emacs-info script currently expects --directory DIR as
       ## the third and fourth arguments.  Someone should fix that.
 

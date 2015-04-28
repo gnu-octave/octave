@@ -1,64 +1,67 @@
 EXTRA_DIST += \
-  ranlib/module.mk \
-  ranlib/Basegen.doc \
-  ranlib/HOWTOGET \
-  ranlib/README \
-  ranlib/randlib.chs \
-  ranlib/randlib.fdoc \
-  ranlib/tstbot.for \
-  ranlib/tstgmn.for \
-  ranlib/tstmid.for
+  cruft/ranlib/module.mk \
+  cruft/ranlib/Basegen.doc \
+  cruft/ranlib/HOWTOGET \
+  cruft/ranlib/README \
+  cruft/ranlib/randlib.chs \
+  cruft/ranlib/randlib.fdoc \
+  cruft/ranlib/tstbot.for \
+  cruft/ranlib/tstgmn.for \
+  cruft/ranlib/tstmid.for
 
 RANLIB_SRC = \
-  ranlib/advnst.f \
-  ranlib/genbet.f \
-  ranlib/genchi.f \
-  ranlib/genexp.f \
-  ranlib/genf.f \
-  ranlib/gengam.f \
-  ranlib/genmn.f \
-  ranlib/genmul.f \
-  ranlib/gennch.f \
-  ranlib/gennf.f \
-  ranlib/gennor.f \
-  ranlib/genprm.f \
-  ranlib/genunf.f \
-  ranlib/getcgn.f \
-  ranlib/getsd.f \
-  ranlib/ignbin.f \
-  ranlib/ignlgi.f \
-  ranlib/ignnbn.f \
-  ranlib/ignpoi.f \
-  ranlib/ignuin.f \
-  ranlib/initgn.f \
-  ranlib/inrgcm.f \
-  ranlib/lennob.f \
-  ranlib/mltmod.f \
-  ranlib/phrtsd.f \
-  ranlib/qrgnin.f \
-  ranlib/ranf.f \
-  ranlib/setall.f \
-  ranlib/setant.f \
-  ranlib/setgmn.f \
-  ranlib/setsd.f \
-  ranlib/sexpo.f \
-  ranlib/sgamma.f \
-  ranlib/snorm.f \
-  ranlib/wrap.f
+  cruft/ranlib/advnst.f \
+  cruft/ranlib/genbet.f \
+  cruft/ranlib/genchi.f \
+  cruft/ranlib/genexp.f \
+  cruft/ranlib/genf.f \
+  cruft/ranlib/gengam.f \
+  cruft/ranlib/genmn.f \
+  cruft/ranlib/genmul.f \
+  cruft/ranlib/gennch.f \
+  cruft/ranlib/gennf.f \
+  cruft/ranlib/gennor.f \
+  cruft/ranlib/genprm.f \
+  cruft/ranlib/genunf.f \
+  cruft/ranlib/getcgn.f \
+  cruft/ranlib/getsd.f \
+  cruft/ranlib/ignbin.f \
+  cruft/ranlib/ignlgi.f \
+  cruft/ranlib/ignnbn.f \
+  cruft/ranlib/ignpoi.f \
+  cruft/ranlib/ignuin.f \
+  cruft/ranlib/initgn.f \
+  cruft/ranlib/inrgcm.f \
+  cruft/ranlib/lennob.f \
+  cruft/ranlib/mltmod.f \
+  cruft/ranlib/phrtsd.f \
+  cruft/ranlib/qrgnin.f \
+  cruft/ranlib/ranf.f \
+  cruft/ranlib/setall.f \
+  cruft/ranlib/setant.f \
+  cruft/ranlib/setgmn.f \
+  cruft/ranlib/setsd.f \
+  cruft/ranlib/sexpo.f \
+  cruft/ranlib/sgamma.f \
+  cruft/ranlib/snorm.f \
+  cruft/ranlib/wrap.f
 
-noinst_LTLIBRARIES += ranlib/libranlib.la
+noinst_LTLIBRARIES += cruft/ranlib/libranlib.la
 
-ranlib_libranlib_la_SOURCES = $(RANLIB_SRC)
+cruft_ranlib_libranlib_la_SOURCES = $(RANLIB_SRC)
 
-ranlib_libranlib_la_DEPENDENCIES = ranlib/ranlib.def
+cruft_ranlib_libranlib_la_DEPENDENCIES = cruft/ranlib/ranlib.def
+
+define gen-ranlib-def
+  rm -f $@-t $@ && \
+  $(MKDIR_P) cruft/ranlib && \
+  $(SHELL) cruft/mkf77def $(srcdir) $(RANLIB_SRC) > $@-t && \
+  mv $@-t $@
+endef
 
 ## Special rules for files which must be built before compilation
 ## ranlib directory may not exist in VPATH build; create it if necessary.
-ranlib/ranlib.def: $(RANLIB_SRC) mkf77def
-	@-if ! test -d ranlib; then \
-		mkdir ranlib ; \
-	fi
-	chmod a+rx mkf77def
-	./mkf77def $(srcdir) $(RANLIB_SRC) > $@-t
-	mv $@-t $@
+cruft/ranlib/ranlib.def: $(RANLIB_SRC) cruft/mkf77def
+	$(AM_V_GEN)$(gen-ranlib-def)
 
+liboctave_la_LIBADD += cruft/ranlib/libranlib.la

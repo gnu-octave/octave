@@ -1,6 +1,6 @@
 # Makefile for Octave's scripts directory
 #
-# Copyright (C) 1993-2013 John W. Eaton
+# Copyright (C) 1993-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -91,143 +91,178 @@ endif
 octave_dirstamp = $(am__leading_dot)dirstamp
 
 @ftp/PKG_ADD: $(@ftp_FCN_FILES) $(@ftp_GEN_FCN_FILES) @ftp/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(@ftp_FCN_FILES) -- $(@ftp_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(@ftp_FCN_FILES) -- $(@ftp_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 audio/PKG_ADD: $(audio_FCN_FILES) $(audio_GEN_FCN_FILES) audio/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(audio_FCN_FILES) -- $(audio_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(audio_FCN_FILES) -- $(audio_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 deprecated/PKG_ADD: $(deprecated_FCN_FILES) $(deprecated_GEN_FCN_FILES) deprecated/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(deprecated_FCN_FILES) -- $(deprecated_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(deprecated_FCN_FILES) -- $(deprecated_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 elfun/PKG_ADD: $(elfun_FCN_FILES) $(elfun_GEN_FCN_FILES) elfun/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(elfun_FCN_FILES) -- $(elfun_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(elfun_FCN_FILES) -- $(elfun_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 general/PKG_ADD: $(general_FCN_FILES) $(general_GEN_FCN_FILES) general/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(general_FCN_FILES) -- $(general_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(general_FCN_FILES) -- $(general_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 geometry/PKG_ADD: $(geometry_FCN_FILES) $(geometry_GEN_FCN_FILES) geometry/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(geometry_FCN_FILES) -- $(geometry_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(geometry_FCN_FILES) -- $(geometry_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 gui/PKG_ADD: $(gui_FCN_FILES) $(gui_GEN_FCN_FILES) gui/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(gui_FCN_FILES) -- $(gui_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(gui_FCN_FILES) -- $(gui_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 help/PKG_ADD: $(help_FCN_FILES) $(help_GEN_FCN_FILES) help/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(help_FCN_FILES) -- $(help_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(help_FCN_FILES) -- $(help_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 image/PKG_ADD: $(image_FCN_FILES) $(image_GEN_FCN_FILES) image/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(image_FCN_FILES) -- $(image_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(image_FCN_FILES) -- $(image_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 io/PKG_ADD: $(io_FCN_FILES) $(io_GEN_FCN_FILES) io/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(io_FCN_FILES) -- $(io_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(io_FCN_FILES) -- $(io_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 java/PKG_ADD: $(java_FCN_FILES) $(java_GEN_FCN_FILES) java/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(java_FCN_FILES) -- $(java_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(java_FCN_FILES) -- $(java_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 linear-algebra/PKG_ADD: $(linear_algebra_FCN_FILES) $(linear_algebra_GEN_FCN_FILES) linear-algebra/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(linear_algebra_FCN_FILES) -- $(linear_algebra_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(linear_algebra_FCN_FILES) -- $(linear_algebra_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 miscellaneous/PKG_ADD: $(miscellaneous_FCN_FILES) $(miscellaneous_GEN_FCN_FILES) miscellaneous/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(miscellaneous_FCN_FILES) -- $(miscellaneous_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(miscellaneous_FCN_FILES) -- $(miscellaneous_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 optimization/PKG_ADD: $(optimization_FCN_FILES) $(optimization_GEN_FCN_FILES) optimization/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add "$(srcdir)" $(optimization_FCN_FILES) -- $(optimization_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add "$(srcdir)" $(optimization_FCN_FILES) -- $(optimization_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 path/PKG_ADD: $(path_FCN_FILES) $(path_GEN_FCN_FILES) path/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(path_FCN_FILES) -- $(path_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(path_FCN_FILES) -- $(path_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 pkg/PKG_ADD: $(pkg_FCN_FILES) $(pkg_GEN_FCN_FILES) pkg/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(pkg_FCN_FILES) -- $(pkg_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(pkg_FCN_FILES) -- $(pkg_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 plot/appearance/PKG_ADD: $(plot_appearance_FCN_FILES) $(plot_appearance_GEN_FCN_FILES) plot/appearance/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(plot_appearance_FCN_FILES) -- $(plot_appearance_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(plot_appearance_FCN_FILES) -- $(plot_appearance_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 plot/draw/PKG_ADD: $(plot_draw_FCN_FILES) $(plot_draw_GEN_FCN_FILES) plot/draw/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(plot_draw_FCN_FILES) -- $(plot_draw_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(plot_draw_FCN_FILES) -- $(plot_draw_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 plot/util/PKG_ADD: $(plot_util_FCN_FILES) $(plot_util_GEN_FCN_FILES) plot/util/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(plot_util_FCN_FILES) -- $(plot_util_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(plot_util_FCN_FILES) -- $(plot_util_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 polynomial/PKG_ADD: $(polynomial_FCN_FILES) $(polynomial_GEN_FCN_FILES) polynomial/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(polynomial_FCN_FILES) -- $(polynomial_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(polynomial_FCN_FILES) -- $(polynomial_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 prefs/PKG_ADD: $(prefs_FCN_FILES) $(prefs_GEN_FCN_FILES) prefs/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(prefs_FCN_FILES) -- $(prefs_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(prefs_FCN_FILES) -- $(prefs_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 set/PKG_ADD: $(set_FCN_FILES) $(set_GEN_FCN_FILES) set/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(set_FCN_FILES) -- $(set_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(set_FCN_FILES) -- $(set_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 signal/PKG_ADD: $(signal_FCN_FILES) $(signal_GEN_FCN_FILES) signal/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(signal_FCN_FILES) -- $(signal_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(signal_FCN_FILES) -- $(signal_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 sparse/PKG_ADD: $(sparse_FCN_FILES) $(sparse_GEN_FCN_FILES) sparse/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(sparse_FCN_FILES) -- $(sparse_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(sparse_FCN_FILES) -- $(sparse_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 specfun/PKG_ADD: $(specfun_FCN_FILES) $(specfun_GEN_FCN_FILES) specfun/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(specfun_FCN_FILES) -- $(specfun_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(specfun_FCN_FILES) -- $(specfun_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 special-matrix/PKG_ADD: $(special_matrix_FCN_FILES) $(special_matrix_GEN_FCN_FILES) special-matrix/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(special_matrix_FCN_FILES) -- $(special_matrix_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(special_matrix_FCN_FILES) -- $(special_matrix_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 startup/PKG_ADD: $(startup_FCN_FILES) $(startup_GEN_FCN_FILES) startup/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(startup_FCN_FILES) -- $(startup_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(startup_FCN_FILES) -- $(startup_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 statistics/base/PKG_ADD: $(statistics_base_FCN_FILES) $(statistics_base_GEN_FCN_FILES) statistics/base/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_base_FCN_FILES) -- $(statistics_base_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_base_FCN_FILES) -- $(statistics_base_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 statistics/distributions/PKG_ADD: $(statistics_distributions_FCN_FILES) $(statistics_distributions_GEN_FCN_FILES) statistics/distributions/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_distributions_FCN_FILES) -- $(statistics_distributions_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_distributions_FCN_FILES) -- $(statistics_distributions_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 statistics/models/PKG_ADD: $(statistics_models_FCN_FILES) $(statistics_models_GEN_FCN_FILES) statistics/models/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_models_FCN_FILES) -- $(statistics_models_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_models_FCN_FILES) -- $(statistics_models_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 statistics/tests/PKG_ADD: $(statistics_tests_FCN_FILES) $(statistics_tests_GEN_FCN_FILES) statistics/tests/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_tests_FCN_FILES) -- $(statistics_tests_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(statistics_tests_FCN_FILES) -- $(statistics_tests_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 strings/PKG_ADD: $(strings_FCN_FILES) $(strings_GEN_FCN_FILES) strings/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(strings_FCN_FILES) -- $(strings_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(strings_FCN_FILES) -- $(strings_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 testfun/PKG_ADD: $(testfun_FCN_FILES) $(testfun_GEN_FCN_FILES) testfun/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(testfun_FCN_FILES) -- $(testfun_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(testfun_FCN_FILES) -- $(testfun_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 time/PKG_ADD: $(time_FCN_FILES) $(time_GEN_FCN_FILES) time/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(time_FCN_FILES) -- $(time_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(time_FCN_FILES) -- $(time_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 ui/PKG_ADD: $(ui_FCN_FILES) $(ui_GEN_FCN_FILES) ui/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(ui_FCN_FILES) -- $(ui_GEN_FCN_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(srcdir) $(ui_FCN_FILES) -- $(ui_GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@
 
 $(@ftp_GEN_FCN_FILES): @ftp/$(octave_dirstamp)
@@ -267,127 +302,128 @@ $(time_GEN_FCN_FILES): time/$(octave_dirstamp)
 $(ui_GEN_FCN_FILES): ui/$(octave_dirstamp)
 
 @ftp/$(octave_dirstamp):
-	$(MKDIR_P) @ftp
+	$(AM_V_GEN)$(MKDIR_P) @ftp && \
 	: > @ftp/$(octave_dirstamp)
 audio/$(octave_dirstamp):
-	$(MKDIR_P) audio
+	$(AM_V_GEN)$(MKDIR_P) audio && \
 	: > audio/$(octave_dirstamp)
 deprecated/$(octave_dirstamp):
-	$(MKDIR_P) deprecated
+	$(AM_V_GEN)$(MKDIR_P) deprecated && \
 	: > deprecated/$(octave_dirstamp)
 elfun/$(octave_dirstamp):
-	$(MKDIR_P) elfun
+	$(AM_V_GEN)$(MKDIR_P) elfun && \
 	: > elfun/$(octave_dirstamp)
 general/$(octave_dirstamp):
-	$(MKDIR_P) general
+	$(AM_V_GEN)$(MKDIR_P) general && \
 	: > general/$(octave_dirstamp)
 geometry/$(octave_dirstamp):
-	$(MKDIR_P) geometry
+	$(AM_V_GEN)$(MKDIR_P) geometry && \
 	: > geometry/$(octave_dirstamp)
 gui/$(octave_dirstamp):
-	$(MKDIR_P) gui
+	$(AM_V_GEN)$(MKDIR_P) gui && \
 	: > gui/$(octave_dirstamp)
 help/$(octave_dirstamp):
-	$(MKDIR_P) help
+	$(AM_V_GEN)$(MKDIR_P) help && \
 	: > help/$(octave_dirstamp)
 image/$(octave_dirstamp):
-	$(MKDIR_P) image
+	$(AM_V_GEN)$(MKDIR_P) image && \
 	: > image/$(octave_dirstamp)
 io/$(octave_dirstamp):
-	$(MKDIR_P) io
+	$(AM_V_GEN)$(MKDIR_P) io && \
 	: > io/$(octave_dirstamp)
 java/$(octave_dirstamp):
-	$(MKDIR_P) java
+	$(AM_V_GEN)$(MKDIR_P) java && \
 	: > java/$(octave_dirstamp)
 linear-algebra/$(octave_dirstamp):
-	$(MKDIR_P) linear-algebra
+	$(AM_V_GEN)$(MKDIR_P) linear-algebra && \
 	: > linear-algebra/$(octave_dirstamp)
 miscellaneous/$(octave_dirstamp):
-	$(MKDIR_P) miscellaneous
+	$(AM_V_GEN)$(MKDIR_P) miscellaneous && \
 	: > miscellaneous/$(octave_dirstamp)
 optimization/$(octave_dirstamp):
-	$(MKDIR_P) optimization
+	$(AM_V_GEN)$(MKDIR_P) optimization && \
 	: > optimization/$(octave_dirstamp)
 path/$(octave_dirstamp):
-	$(MKDIR_P) path
+	$(AM_V_GEN)$(MKDIR_P) path && \
 	: > path/$(octave_dirstamp)
 pkg/$(octave_dirstamp):
-	$(MKDIR_P) pkg
+	$(AM_V_GEN)$(MKDIR_P) pkg && \
 	: > pkg/$(octave_dirstamp)
 plot/appearance/$(octave_dirstamp):
-	$(MKDIR_P) plot/appearance
+	$(AM_V_GEN)$(MKDIR_P) plot/appearance && \
 	: > plot/appearance/$(octave_dirstamp)
 plot/draw/$(octave_dirstamp):
-	$(MKDIR_P) plot/draw
+	$(AM_V_GEN)$(MKDIR_P) plot/draw && \
 	: > plot/draw/$(octave_dirstamp)
 plot/util/$(octave_dirstamp):
-	$(MKDIR_P) plot/util
+	$(AM_V_GEN)$(MKDIR_P) plot/util && \
 	: > plot/util/$(octave_dirstamp)
 polynomial/$(octave_dirstamp):
-	$(MKDIR_P) polynomial
+	$(AM_V_GEN)$(MKDIR_P) polynomial && \
 	: > polynomial/$(octave_dirstamp)
 prefs/$(octave_dirstamp):
-	$(MKDIR_P) prefs
+	$(AM_V_GEN)$(MKDIR_P) prefs && \
 	: > prefs/$(octave_dirstamp)
 set/$(octave_dirstamp):
-	$(MKDIR_P) set
+	$(AM_V_GEN)$(MKDIR_P) set && \
 	: > set/$(octave_dirstamp)
 signal/$(octave_dirstamp):
-	$(MKDIR_P) signal
+	$(AM_V_GEN)$(MKDIR_P) signal && \
 	: > signal/$(octave_dirstamp)
 sparse/$(octave_dirstamp):
-	$(MKDIR_P) sparse
+	$(AM_V_GEN)$(MKDIR_P) sparse && \
 	: > sparse/$(octave_dirstamp)
 specfun/$(octave_dirstamp):
-	$(MKDIR_P) specfun
+	$(AM_V_GEN)$(MKDIR_P) specfun && \
 	: > specfun/$(octave_dirstamp)
 special-matrix/$(octave_dirstamp):
-	$(MKDIR_P) special-matrix
+	$(AM_V_GEN)$(MKDIR_P) special-matrix && \
 	: > special-matrix/$(octave_dirstamp)
 startup/$(octave_dirstamp):
-	$(MKDIR_P) startup
+	$(AM_V_GEN)$(MKDIR_P) startup && \
 	: > startup/$(octave_dirstamp)
 statistics/base/$(octave_dirstamp):
-	$(MKDIR_P) statistics/base
+	$(AM_V_GEN)$(MKDIR_P) statistics/base && \
 	: > statistics/base/$(octave_dirstamp)
 statistics/distributions/$(octave_dirstamp):
-	$(MKDIR_P) statistics/distributions
+	$(AM_V_GEN)$(MKDIR_P) statistics/distributions && \
 	: > statistics/distributions/$(octave_dirstamp)
 statistics/models/$(octave_dirstamp):
-	$(MKDIR_P) statistics/models
+	$(AM_V_GEN)$(MKDIR_P) statistics/models && \
 	: > statistics/models/$(octave_dirstamp)
 statistics/tests/$(octave_dirstamp):
-	$(MKDIR_P) statistics/tests
+	$(AM_V_GEN)$(MKDIR_P) statistics/tests && \
 	: > statistics/tests/$(octave_dirstamp)
 strings/$(octave_dirstamp):
-	$(MKDIR_P) strings
+	$(AM_V_GEN)$(MKDIR_P) strings && \
 	: > strings/$(octave_dirstamp)
 testfun/$(octave_dirstamp):
-	$(MKDIR_P) testfun
+	$(AM_V_GEN)$(MKDIR_P) testfun && \
 	: > testfun/$(octave_dirstamp)
 time/$(octave_dirstamp):
-	$(MKDIR_P) time
+	$(AM_V_GEN)$(MKDIR_P) time && \
 	: > time/$(octave_dirstamp)
 ui/$(octave_dirstamp):
-	$(MKDIR_P) ui
+	$(AM_V_GEN)$(MKDIR_P) ui && \
 	: > ui/$(octave_dirstamp)
 
 if AMCOND_BUILD_DOCS
 
 .DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) mkdoc.pl Makefile
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-	fi
-	@echo "creating .DOCSTRINGS from .m script files"
-	@$(PERL) $(srcdir)/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
-	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
+	fi && \
+	$(PERL) $(srcdir)/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t && \
+	mv $@-t $@ && \
+	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS && \
 	touch $@
 
 endif
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile
-	@$(do_subst_config_vals)
+	$(AM_V_GEN)$(do_subst_config_vals)
 
 check-m-sources:
 	@echo "checking whether files in source tree are listed in module.mk files..."; \
@@ -495,5 +531,5 @@ DISTCLEANFILES += \
 
 distclean-local:
 	if [ "x$(srcdir)" != "x." ]; then \
-	  rm $(java_JAVA_IMAGES); \
+	  rm -f $(java_JAVA_IMAGES); \
 	fi

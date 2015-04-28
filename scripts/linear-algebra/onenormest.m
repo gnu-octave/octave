@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 Regents of the University of California
+## Copyright (C) 2007-2015 Regents of the University of California
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
-## Apply Higham and Tisseur's randomized block 1-norm estimator to
+## Apply @nospell{Higham and Tisseur's} randomized block 1-norm estimator to
 ## matrix @var{A} using @var{t} test vectors.  If @var{t} exceeds 5, then
 ## only 5 test vectors are used.
 ##
@@ -41,13 +41,13 @@
 ##
 ## @itemize
 ## @item
-## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
+## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. SIMAX vol 21, no 4, pp 1185-1201.
 ## @url{http://dx.doi.org/10.1137/S0895479899356080}
 ##
 ## @item
-## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
+## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. @url{http://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
@@ -103,7 +103,7 @@ function [est, v, w, iter] = onenormest (varargin)
   default_t = 5;
   itmax = 10;
 
-  if (ismatrix (varargin{1}))
+  if (isnumeric (varargin{1}))
     [n, nc] = size (varargin{1});
     if (n != nc)
       error ("onenormest: matrix must be square");

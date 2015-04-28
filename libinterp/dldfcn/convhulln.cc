@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2013 Kai Habel
+Copyright (C) 2000-2015 Kai Habel
 
 This file is part of Octave.
 
@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <sstream>
+#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "defun-dld.h"

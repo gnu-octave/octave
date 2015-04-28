@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_fCMatrix_h)
 #define octave_fCMatrix_h 1
 
+#include "fCNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -34,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatComplexMatrix : public MArray<FloatComplex>
+FloatComplexMatrix : public FloatComplexNDArray
 {
 public:
 
@@ -43,31 +44,31 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatComplexMatrix (void) : MArray<FloatComplex> () { }
+  FloatComplexMatrix (void) : FloatComplexNDArray () { }
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c)
-    : MArray<FloatComplex> (dim_vector (r, c)) { }
+    : FloatComplexNDArray (dim_vector (r, c)) { }
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c,
                       const FloatComplex& val)
-    : MArray<FloatComplex> (dim_vector (r, c), val) { }
+    : FloatComplexNDArray (dim_vector (r, c), val) { }
 
   FloatComplexMatrix (const dim_vector& dv)
-    : MArray<FloatComplex> (dv.redim (2)) { }
+    : FloatComplexNDArray (dv.redim (2)) { }
 
   FloatComplexMatrix (const dim_vector& dv, const FloatComplex& val)
-    : MArray<FloatComplex> (dv.redim (2), val) { }
+    : FloatComplexNDArray (dv.redim (2), val) { }
 
   FloatComplexMatrix (const FloatComplexMatrix& a)
-    : MArray<FloatComplex> (a) { }
+    : FloatComplexNDArray (a) { }
 
   template <class U>
   FloatComplexMatrix (const MArray<U>& a)
-    : MArray<FloatComplex> (a.as_matrix ()) { }
+    : FloatComplexNDArray (a.as_matrix ()) { }
 
   template <class U>
   FloatComplexMatrix (const Array<U>& a)
-    : MArray<FloatComplex> (a.as_matrix ()) { }
+    : FloatComplexNDArray (a.as_matrix ()) { }
 
   explicit FloatComplexMatrix (const FloatMatrix& a);
 
@@ -77,23 +78,25 @@ public:
 
   explicit FloatComplexMatrix (const FloatDiagMatrix& a);
 
+  explicit FloatComplexMatrix (const MDiagArray2<float>& a);
+
+  explicit FloatComplexMatrix (const DiagArray2<float>& a);
+
   explicit FloatComplexMatrix (const FloatComplexRowVector& rv);
 
   explicit FloatComplexMatrix (const FloatComplexColumnVector& cv);
 
   explicit FloatComplexMatrix (const FloatComplexDiagMatrix& a);
 
+  explicit FloatComplexMatrix (const MDiagArray2<FloatComplex>& a);
+
+  explicit FloatComplexMatrix (const DiagArray2<FloatComplex>& a);
+
   explicit FloatComplexMatrix (const boolMatrix& a);
 
   explicit FloatComplexMatrix (const charMatrix& a);
 
   FloatComplexMatrix (const FloatMatrix& re, const FloatMatrix& im);
-
-  FloatComplexMatrix& operator = (const FloatComplexMatrix& a)
-  {
-    MArray<FloatComplex>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const FloatComplexMatrix& a) const;
   bool operator != (const FloatComplexMatrix& a) const;
@@ -379,12 +382,6 @@ public:
   boolMatrix operator ! (void) const;
 
   // other operations
-
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool all_elements_are_real (void) const;
-  bool all_integers (float& max_val, float& min_val) const;
-  bool too_large_for_float (void) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

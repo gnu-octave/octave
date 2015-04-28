@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -46,10 +46,10 @@ endfunction
 %! y = [0, 1/4, 1/2, 3/4, 1];
 %!assert (laplace_cdf ([x, NaN]), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (laplace_cdf (single ([x, NaN])), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error laplace_cdf ()
 %!error laplace_cdf (1,2)
 %!error laplace_cdf (i)

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 Michael Goffioul and Kai Habel
+## Copyright (C) 2007-2015 Michael Goffioul and Kai Habel
 ##
 ## This file is part of Octave.
 ##

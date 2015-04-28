@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -51,6 +51,12 @@ public:
       etype (ct) { }
 
   octave_value::compound_binary_op cop_type (void) const { return etype; }
+
+  bool rvalue_ok (void) const { return true; }
+
+  octave_value rvalue1 (int nargout = 1);
+
+  octave_value_list rvalue (int nargout);
 
 private:
 

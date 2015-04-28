@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Erik Kjellson
+## Copyright (C) 2012-2015 Erik Kjellson
 ##
 ## This file is part of Octave.
 ##
@@ -129,8 +129,8 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
       [output.data, output.fs] = wavread (fname);
     otherwise
       ## Assume the file is in ASCII format.
-      [output, delimiter, header_rows]  = ...
-          importdata_ascii (fname, delimiter, header_rows);
+      [output, delimiter, header_rows] = ...
+        importdata_ascii (fname, delimiter, header_rows);
   endswitch
 
   ## If there are any empty fields in the output structure, then remove them
@@ -146,8 +146,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
     ## i.e., output = output.onlyFieldLeft
 
     ## Update the list of fields
-    fields = fieldnames (output);
-    if (numel (fields) == 1)
+    if (numfields (output) == 1)
       output = output.(fields{1});
     endif
   endif
@@ -210,11 +209,33 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
 
   endwhile
 
-  fclose (fid);
-
   if (row == -1)
-    error ("importdata: Unable to determine delimiter");
+    ## No numeric data found => return file as cellstr array
+    ## 1. Read as char string
+    fseek (fid, 0, "bof");
+    output = fread (fid, Inf, "*char")';
+    fclose (fid);
+    ## 2. Find EOL type
+    idx = find (output(1:min (4096, length (output))) == "\n", 1) - 1;
+    if (isindex (idx) && output(idx) == "\r")
+      dlm = "\r\n";
+    else
+      dlm = "\n";
+    endif
+    ## 3. Split each line into a cell (column vector)
+    output = strsplit (output, dlm)';
+    ## 4. Remove last cell (for files with -proper- EOL before EOF)
+    if (isempty (output{end}))
+      output(end) = [];
+    endif
+    ## 5. Return after setting some output data
+    delimiter = "";
+    header_rows = numel (output);
+    return;
+  else
+    fclose (fid);
   endif
+
   if (num_header_rows >= 0)
     header_rows = num_header_rows;
   endif
@@ -271,7 +292,7 @@ endfunction
 %!test
 %! ## Comma separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1,-7.2,0\n0.012,6.5,128");
 %! fclose (fid);
@@ -288,7 +309,7 @@ endfunction
 %!test
 %! ## Tab separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
 %! fclose (fid);
@@ -305,7 +326,7 @@ endfunction
 %!test
 %! ## Space separated values, using multiple spaces to align in columns.
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%10.3f %10.3f %10.3f\n", A');
 %! fclose (fid);
@@ -322,7 +343,7 @@ endfunction
 %!test
 %! ## No separator, 1 column of data only
 %! A = [3.1;-7.2;0;0.012;6.5;128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%f\n", A);
 %! fclose (fid);
@@ -342,7 +363,7 @@ endfunction
 %! A.textdata = {"This is a header row."; ...
 %!               "this row does not contain any data, but the next one does."};
 %! A.colheaders = A.textdata (2);
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
@@ -359,7 +380,7 @@ endfunction
 %! A.textdata = {"Label1\tLabel2\tLabel3";
 %!               "col 1\tcol 2\tcol 3"};
 %! A.colheaders = {"col 1", "col 2", "col 3"};
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
@@ -375,7 +396,7 @@ endfunction
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"row1"; "row2"};
 %! A.rowheaders = A.textdata;
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
 %! fclose (fid);
@@ -392,7 +413,7 @@ endfunction
 %!               "      col1 col2 col3"
 %!               "row1"
 %!               "row2"};
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{1:2});
 %! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
@@ -406,7 +427,7 @@ endfunction
 %!test
 %! ## Ignore empty rows containing only spaces
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(1,:));
 %! fputs (fid, "      ");
@@ -421,7 +442,7 @@ endfunction
 %!test
 %! ## Exponentials
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "+3.1e0\t-72E-1\t0\n12e-3\t6.5\t128");
 %! fclose (fid);
@@ -434,7 +455,7 @@ endfunction
 %!test
 %! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0-3.4i\n0.012\t-6.5+7.2i\t128");
 %! fclose (fid);
@@ -447,7 +468,7 @@ endfunction
 %!test
 %! ## Exceptional values (Inf, NaN, NA)
 %! A = [3.1 Inf NA; -Inf NaN 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\tInf\tNA\n-Inf\tNaN\t128");
 %! fclose (fid);
@@ -462,7 +483,7 @@ endfunction
 %! A.data = [3.1 NA 0; 0.012 NA 128];
 %! A.textdata = {char(zeros(1,0))
 %!               "NO DATA"};
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t\t0\n0.012\tNO DATA\t128");
 %! fclose (fid);
@@ -475,7 +496,7 @@ endfunction
 %!#test
 %! ## CRLF for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r\n0.012\t6.5\t128");
 %! fclose (fid);
@@ -488,7 +509,7 @@ endfunction
 %!#test
 %! ## CR for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r0.012\t6.5\t128");
 %! fclose (fid);
@@ -509,6 +530,30 @@ endfunction
 %! assert (a, [2e2, 4e-4]);
 %! assert (d, " ");
 %! assert (h, 0);
+
+%!test
+%! ## Only text / no numeric data; \n as EOL
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "aaaa 11\nbbbbb 22\nccccc 3\n");
+%! fclose (fid);
+%! [a, d, h] = importdata (fn);
+%! unlink (fn);
+%! assert (a, {"aaaa 11"; "bbbbb 22"; "ccccc 3"});
+%! assert (d, "");
+%! assert (h, 3);
+
+%!test
+%! ## Only text / no numeric data; \r\n as EOL; missing last EOL before EOF
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "aaaa 11\r\nbbbbb 22\r\nccccc 3");
+%! fclose (fid);
+%! [a, d, h] = importdata (fn);
+%! unlink (fn);
+%! assert (a, {"aaaa 11"; "bbbbb 22"; "ccccc 3"});
+%! assert (d, "");
+%! assert (h, 3);
 
 %!error importdata ()
 %!error importdata (1,2,3,4)

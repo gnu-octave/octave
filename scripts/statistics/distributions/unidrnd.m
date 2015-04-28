@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -55,13 +55,13 @@ function rnd = unidrnd (n, varargin)
       error ("unidrnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 2)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("unidrnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (n) && !isequal (size (n), sz))
+  if (! isscalar (n) && ! isequal (size (n), sz))
     error ("unidrnd: N must be scalar or of size SZ");
   endif
 
@@ -97,12 +97,12 @@ endfunction
 %!assert (size (unidrnd (10, [4 1])), [4, 1])
 %!assert (size (unidrnd (10, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (unidrnd (2)), "double")
 %!assert (class (unidrnd (single (2))), "single")
 %!assert (class (unidrnd (single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error unidrnd ()
 %!error unidrnd (10, [1;2;3])
 %!error unidrnd (10, 2, ones (2))

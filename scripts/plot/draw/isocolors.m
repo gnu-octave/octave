@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Martin Helm
+## Copyright (C) 2009-2015 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -54,7 +54,7 @@
 ##             "PlotBoxAspectRatio", [1 1 1]);
 ##   set (p, "FaceColor", "interp");
 ##   ## set (p, "FaceLighting", "flat");
-##   ## light ("Position", [1 1 5]); ## Available with JHandles
+##   ## light ("Position", [1 1 5]);  # Available with JHandles
 ## endfunction
 ##
 ## N = 15;    # Increase number of vertices in each direction
@@ -133,7 +133,7 @@ function varargout = isocolors (varargin)
     otherwise
       print_usage ();
   endswitch
-  if (ismatrix (vp) && columns (vp) == 3)
+  if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
   elseif ( ishandle (vp) )
@@ -152,7 +152,7 @@ function varargout = isocolors (varargin)
   endif
   switch (nargout)
     case 0
-      if (!isempty (pa))
+      if (! isempty (pa))
         set (pa, "FaceVertexCData", new_col);
       endif
     case 1

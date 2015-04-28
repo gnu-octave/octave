@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -98,7 +98,7 @@ public:
 
   DiagMatrix inverse (void) const;
   DiagMatrix inverse (octave_idx_type& info) const;
-  DiagMatrix pseudo_inverse (void) const;
+  DiagMatrix pseudo_inverse (double tol = 0.0) const;
 
   // other operations
 

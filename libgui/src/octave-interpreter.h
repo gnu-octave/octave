@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -37,6 +37,10 @@ public:
   // An object to manage the Octave interpreter.
 
   octave_interpreter (void) : QObject (), thread_manager () { }
+
+signals:
+
+  void octave_ready_signal ();
 
 public slots:
 

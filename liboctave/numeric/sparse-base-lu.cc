@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "sparse-base-lu.h"
+
+#include "PermMatrix.h"
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type

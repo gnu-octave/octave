@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_diag<DiagMatrix, Matrix>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_diag_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
                                      "double");
@@ -179,7 +178,8 @@ bool
 octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
 
-  int32_t r = matrix.rows (), c = matrix.cols ();
+  int32_t r = matrix.rows ();
+  int32_t c = matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 

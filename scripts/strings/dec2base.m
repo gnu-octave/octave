@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Daniel Calvelo
+## Copyright (C) 2000-2015 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -158,7 +158,7 @@ endfunction
 %! a = 0:3;
 %! assert (dec2base (!a, 2, 1), ["1"; "0"; "0"; "0"])
 
-%%Test input validation
+## Test input validation
 %!error dec2base ()
 %!error dec2base (1)
 %!error dec2base (1, 2, 3, 4)

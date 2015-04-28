@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -56,7 +56,7 @@ endfunction
 %!assert (range (magic (3), 2), [7; 4; 7])
 %!assert (range (2), 0)
 
-%% Test input validation
+## Test input validation
 %!error range ()
 %!error range (1, 2, 3)
 

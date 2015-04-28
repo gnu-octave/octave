@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Martin Helm
+## Copyright (C) 2009-2015 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -68,7 +68,7 @@
 ## [f, v, cdat] = isosurface (x, y, z, c, iso, y);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
-## isofinish (p); ## Call user function isofinish
+## isofinish (p);  # Call user function isofinish
 ##
 ## subplot (2,2,2); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
@@ -122,7 +122,7 @@ function varargout = isonormals (varargin)
     otherwise
       print_usage ();
   endswitch
-  if (ismatrix (vp) && columns (vp) == 3)
+  if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
   elseif (ishandle (vp))
@@ -138,7 +138,7 @@ function varargout = isonormals (varargin)
   endif
   switch (nargout)
     case 0
-      if (!isempty (pa))
+      if (! isempty (pa))
         set (pa, "VertexNormals", normals);
       endif
     case 1

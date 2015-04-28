@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2008 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague, a.s.
 
@@ -34,8 +34,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "byte-swap.h"
+#include "boolMatrix.h"
+#include "chMatrix.h"
 #include "dMatrix.h"
-#include "dbleAEPBAL.h"
+#include "dDiagMatrix.h"
+#include "CMatrix.h"
+#include "dColVector.h"
+#include "dRowVector.h"
+#include "CColVector.h"
+#include "PermMatrix.h"
 #include "DET.h"
 #include "dbleSCHUR.h"
 #include "dbleSVD.h"
@@ -47,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "mx-base.h"
 #include "mx-m-dm.h"
 #include "mx-dm-m.h"
 #include "mx-inlines.cc"
@@ -240,44 +246,54 @@ extern "C"
 // Matrix class.
 
 Matrix::Matrix (const RowVector& rv)
-  : MArray<double> (rv)
+  : NDArray (rv)
 {
 }
 
 Matrix::Matrix (const ColumnVector& cv)
-  : MArray<double> (cv)
+  : NDArray (cv)
 {
 }
 
 Matrix::Matrix (const DiagMatrix& a)
-  : MArray<double> (a.dims (), 0.0)
+  : NDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+Matrix::Matrix (const MDiagArray2<double>& a)
+  : NDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+Matrix::Matrix (const DiagArray2<double>& a)
+  : NDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 Matrix::Matrix (const PermMatrix& a)
-  : MArray<double> (a.dims (), 0.0)
+  : NDArray (a.dims (), 0.0)
 {
-  const Array<octave_idx_type> ia (a.pvec ());
+  const Array<octave_idx_type> ia (a.col_perm_vec ());
   octave_idx_type len = a.rows ();
-  if (a.is_col_perm ())
-    for (octave_idx_type i = 0; i < len; i++)
-      elem (ia(i), i) = 1.0;
-  else
-    for (octave_idx_type i = 0; i < len; i++)
-      elem (i, ia(i)) = 1.0;
+  for (octave_idx_type i = 0; i < len; i++)
+    elem (ia(i), i) = 1.0;
 }
 
 // FIXME: could we use a templated mixed-type copy function here?
 
 Matrix::Matrix (const boolMatrix& a)
-  : MArray<double> (a)
+  : NDArray (a)
 {
 }
 
 Matrix::Matrix (const charMatrix& a)
-  : MArray<double> (a.dims ())
+  : NDArray (a.dims ())
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
@@ -1382,7 +1398,7 @@ Matrix::rcond (void) const
 double
 Matrix::rcond (MatrixType &mattype) const
 {
-  double rcon;
+  double rcon = octave_NaN;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1561,8 +1577,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
     {
       volatile int typ = mattype.type ();
 
-      if (typ == MatrixType::Permuted_Upper ||
-          typ == MatrixType::Upper)
+      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
           octave_idx_type b_nc = b.cols ();
           rcon = 1.;
@@ -1577,11 +1592,27 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
             {
               const double *tmp_data = fortran_vec ();
 
+              retval = b;
+              double *result = retval.fortran_vec ();
+
+              char uplo = 'U';
+              char trans = get_blas_char (transt);
+              char dia = 'N';
+
+              F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                         F77_CONST_CHAR_ARG2 (&trans, 1),
+                                         F77_CONST_CHAR_ARG2 (&dia, 1),
+                                         nr, b_nc, tmp_data, nr,
+                                         result, nr, info
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)));
+
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'U';
-                  char dia = 'N';
+                  uplo = 'U';
+                  dia = 'N';
 
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();
@@ -1609,29 +1640,8 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
-                }
-
-              if (info == 0)
-                {
-                  retval = b;
-                  double *result = retval.fortran_vec ();
-
-                  char uplo = 'U';
-                  char trans = get_blas_char (transt);
-                  char dia = 'N';
-
-                  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
-                                             F77_CONST_CHAR_ARG2 (&trans, 1),
-                                             F77_CONST_CHAR_ARG2 (&dia, 1),
-                                             nr, b_nc, tmp_data, nr,
-                                             result, nr, info
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)));
                 }
             }
         }
@@ -1661,8 +1671,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
     {
       volatile int typ = mattype.type ();
 
-      if (typ == MatrixType::Permuted_Lower ||
-          typ == MatrixType::Lower)
+      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
           octave_idx_type b_nc = b.cols ();
           rcon = 1.;
@@ -1677,11 +1686,27 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
             {
               const double *tmp_data = fortran_vec ();
 
+              retval = b;
+              double *result = retval.fortran_vec ();
+
+              char uplo = 'L';
+              char trans = get_blas_char (transt);
+              char dia = 'N';
+
+              F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                         F77_CONST_CHAR_ARG2 (&trans, 1),
+                                         F77_CONST_CHAR_ARG2 (&dia, 1),
+                                         nr, b_nc, tmp_data, nr,
+                                         result, nr, info
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)
+                                         F77_CHAR_ARG_LEN (1)));
+
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'L';
-                  char dia = 'N';
+                  uplo = 'L';
+                  dia = 'N';
 
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();
@@ -1709,29 +1734,8 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
-                }
-
-              if (info == 0)
-                {
-                  retval = b;
-                  double *result = retval.fortran_vec ();
-
-                  char uplo = 'L';
-                  char trans = get_blas_char (transt);
-                  char dia = 'N';
-
-                  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
-                                             F77_CONST_CHAR_ARG2 (&trans, 1),
-                                             F77_CONST_CHAR_ARG2 (&dia, 1),
-                                             nr, b_nc, tmp_data, nr,
-                                             result, nr, info
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)
-                                             F77_CHAR_ARG_LEN (1)));
                 }
             }
         }
@@ -1813,9 +1817,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -1868,8 +1870,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -1897,9 +1898,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -1962,9 +1961,9 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
   // Only calculate the condition number for LU/Cholesky
   if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
-    retval = utsolve (mattype, b, info, rcon, sing_handler, false, transt);
+    retval = utsolve (mattype, b, info, rcon, sing_handler, true, transt);
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-    retval = ltsolve (mattype, b, info, rcon, sing_handler, false, transt);
+    retval = ltsolve (mattype, b, info, rcon, sing_handler, true, transt);
   else if (transt == blas_trans || transt == blas_conj_trans)
     return transpose ().solve (mattype, b, info, rcon, sing_handler,
                                singular_fallback);
@@ -2012,7 +2011,9 @@ Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
 static Matrix
 stack_complex_matrix (const ComplexMatrix& cm)
 {
-  octave_idx_type m = cm.rows (), n = cm.cols (), nel = m*n;
+  octave_idx_type m = cm.rows ();
+  octave_idx_type n = cm.cols ();
+  octave_idx_type nel = m*n;
   Matrix retval (m, 2*n);
   const Complex *cmd = cm.data ();
   double *rd = retval.fortran_vec ();
@@ -2027,7 +2028,9 @@ stack_complex_matrix (const ComplexMatrix& cm)
 static ComplexMatrix
 unstack_complex_matrix (const Matrix& sm)
 {
-  octave_idx_type m = sm.rows (), n = sm.cols () / 2, nel = m*n;
+  octave_idx_type m = sm.rows ();
+  octave_idx_type n = sm.cols () / 2;
+  octave_idx_type nel = m*n;
   ComplexMatrix retval (m, n);
   const double *smd = sm.data ();
   Complex *rd = retval.fortran_vec ();
@@ -2626,15 +2629,6 @@ Matrix::operator -= (const DiagMatrix& a)
 
 // unary operations
 
-boolMatrix
-Matrix::operator ! (void) const
-{
-  if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-
-  return do_mx_unary_op<bool, double> (*this, mx_inline_not);
-}
-
 // column vector by row vector -> matrix operations
 
 Matrix
@@ -2664,137 +2658,60 @@ operator * (const ColumnVector& v, const RowVector& a)
 
 // other operations.
 
-bool
-Matrix::any_element_is_negative (bool neg_zero) const
-{
-  return (neg_zero ? test_all (xnegative_sign)
-          : do_mx_check<double> (*this, mx_inline_any_negative));
-}
-
-bool
-Matrix::any_element_is_positive (bool neg_zero) const
-{
-  return (neg_zero ? test_all (xpositive_sign)
-          : do_mx_check<double> (*this, mx_inline_any_positive));
-}
-
-bool
-Matrix::any_element_is_nan (void) const
-{
-  return do_mx_check<double> (*this, mx_inline_any_nan);
-}
-
-bool
-Matrix::any_element_is_inf_or_nan (void) const
-{
-  return ! do_mx_check<double> (*this, mx_inline_all_finite);
-}
-
-bool
-Matrix::any_element_not_one_or_zero (void) const
-{
-  return ! test_all (xis_one_or_zero);
-}
-
-bool
-Matrix::all_elements_are_int_or_inf_or_nan (void) const
-{
-  return test_all (xis_int_or_inf_or_nan);
-}
-
-// Return nonzero if any element of M is not an integer.  Also extract
-// the largest and smallest values and return them in MAX_VAL and MIN_VAL.
-
-bool
-Matrix::all_integers (double& max_val, double& min_val) const
-{
-  octave_idx_type nel = nelem ();
-
-  if (nel > 0)
-    {
-      max_val = elem (0);
-      min_val = elem (0);
-    }
-  else
-    return false;
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-
-      if (val > max_val)
-        max_val = val;
-
-      if (val < min_val)
-        min_val = val;
-
-      if (! xisinteger (val))
-        return false;
-    }
-
-  return true;
-}
-
-bool
-Matrix::too_large_for_float (void) const
-{
-  return test_any (xtoo_large_for_float);
-}
-
 // FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 Matrix::all (int dim) const
 {
-  return do_mx_red_op<bool, double> (*this, dim, mx_inline_all);
+  return NDArray::all (dim);
 }
 
 boolMatrix
 Matrix::any (int dim) const
 {
-  return do_mx_red_op<bool, double> (*this, dim, mx_inline_any);
+  return NDArray::any (dim);
 }
 
 Matrix
 Matrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumprod);
+  return NDArray::cumprod (dim);
 }
 
 Matrix
 Matrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumsum);
+  return NDArray::cumsum (dim);
 }
 
 Matrix
 Matrix::prod (int dim) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_prod);
+  return NDArray::prod (dim);
 }
 
 Matrix
 Matrix::sum (int dim) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_sum);
+  return NDArray::sum (dim);
 }
 
 Matrix
 Matrix::sumsq (int dim) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_sumsq);
+  return NDArray::sumsq (dim);
 }
 
 Matrix
 Matrix::abs (void) const
 {
-  return do_mx_unary_map<double, double, std::abs> (*this);
+  return NDArray::abs ();
 }
 
 Matrix
 Matrix::diag (octave_idx_type k) const
 {
-  return MArray<double>::diag (k);
+  return NDArray::diag (k);
 }
 
 DiagMatrix
@@ -3135,7 +3052,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   // FIXME: check info?
 
-  retval = -ua*cx*ub.transpose ();
+  retval = ua*cx*ub.transpose ();
 
   return retval;
 }
@@ -3180,7 +3097,8 @@ xgemm (const Matrix& a, const Matrix& b,
 {
   Matrix retval;
 
-  bool tra = transa != blas_no_trans, trb = transb != blas_no_trans;
+  bool tra = transa != blas_no_trans;
+  bool trb = transb != blas_no_trans;
 
   octave_idx_type a_nr = tra ? a.cols () : a.rows ();
   octave_idx_type a_nc = tra ? a.rows () : a.cols ();
@@ -3215,8 +3133,10 @@ xgemm (const Matrix& a, const Matrix& b,
         }
       else
         {
-          octave_idx_type lda = a.rows (), tda = a.cols ();
-          octave_idx_type ldb = b.rows (), tdb = b.cols ();
+          octave_idx_type lda = a.rows ();
+          octave_idx_type tda = a.cols ();
+          octave_idx_type ldb = b.rows ();
+          octave_idx_type tdb = b.cols ();
 
           retval = Matrix (a_nr, b_nc);
           double *c = retval.fortran_vec ();
@@ -3285,7 +3205,7 @@ min (double d, const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (d, m (i, j));
+        result(i, j) = xmin (d, m(i, j));
       }
 
   return result;
@@ -3305,7 +3225,7 @@ min (const Matrix& m, double d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (m (i, j), d);
+        result(i, j) = xmin (m(i, j), d);
       }
 
   return result;
@@ -3332,7 +3252,7 @@ min (const Matrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (a (i, j), b (i, j));
+        result(i, j) = xmin (a(i, j), b(i, j));
       }
 
   return result;
@@ -3352,7 +3272,7 @@ max (double d, const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (d, m (i, j));
+        result(i, j) = xmax (d, m(i, j));
       }
 
   return result;
@@ -3372,7 +3292,7 @@ max (const Matrix& m, double d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (m (i, j), d);
+        result(i, j) = xmax (m(i, j), d);
       }
 
   return result;
@@ -3399,7 +3319,7 @@ max (const Matrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (a (i, j), b (i, j));
+        result(i, j) = xmax (a(i, j), b(i, j));
       }
 
   return result;

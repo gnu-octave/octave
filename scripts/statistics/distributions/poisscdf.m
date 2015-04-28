@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function cdf = poisscdf (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (lambda))
+  if (! isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("poisscdf: X and LAMBDA must be of common size or scalars");
@@ -74,12 +74,12 @@ endfunction
 %!assert (poisscdf (x, [1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)])
 %!assert (poisscdf ([x(1:2) NaN Inf x(5)], 1), [y(1:2) NaN 1 y(5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (poisscdf ([x, NaN], 1), [y, NaN])
 %!assert (poisscdf (single ([x, NaN]), 1), single ([y, NaN]), eps ("single"))
 %!assert (poisscdf ([x, NaN], single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error poisscdf ()
 %!error poisscdf (1)
 %!error poisscdf (1,2,3)

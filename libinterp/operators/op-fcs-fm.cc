@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,10 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "mx-cs-nda.h"
-#include "mx-nda-cs.h"
-#include "mx-cs-nda.h"
-#include "mx-nda-cs.h"
+#include "mx-fcs-fnda.h"
+#include "mx-fnda-fcs.h"
 
 #include "gripes.h"
 #include "oct-obj.h"
@@ -71,7 +69,7 @@ DEFBINOP (ldiv, float_complex, float_matrix)
 
   FloatComplex d = v1.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v2.float_array_value () / d);
@@ -103,7 +101,7 @@ DEFBINOP (el_ldiv, float_complex, float_matrix)
 
   FloatComplex d = v1.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v2.float_array_value () / d);

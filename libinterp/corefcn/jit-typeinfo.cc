@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Max Brister
+Copyright (C) 2012-2015 Max Brister
 
 This file is part of Octave.
 
@@ -34,7 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "jit-typeinfo.h"
 
+#ifdef HAVE_LLVM_IR_VERIFIER_H
+#include <llvm/IR/Verifier.h>
+#else
 #include <llvm/Analysis/Verifier.h>
+#endif
+
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
@@ -916,7 +921,7 @@ jit_operation::generate (const signature_vec&) const
 
 bool
 jit_operation::signature_cmp
-::operator() (const signature_vec *lhs, const signature_vec *rhs)
+::operator() (const signature_vec *lhs, const signature_vec *rhs) const
 {
   const signature_vec& l = *lhs;
   const signature_vec& r = *rhs;
@@ -1247,6 +1252,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   destroy_fn.add_overload (create_identity(index));
   destroy_fn.add_overload (create_identity(complex));
 
+  // -------------------- scalar related operations --------------------
+
   // now for binary scalar operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
   add_binary_op (scalar, octave_value::op_sub, llvm::Instruction::FSub);
@@ -1335,6 +1342,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     val = builder.CreateFMul (val, mone);
     fn.do_return (builder, val);
   }
+  unary_ops[octave_value::op_uminus].add_overload (fn);
 
   fn = create_identity (scalar);
   unary_ops[octave_value::op_uplus].add_overload (fn);
@@ -1842,7 +1850,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   register_generic ("cos", matrix, matrix);
 
   add_builtin ("exp");
-  register_intrinsic ("exp", llvm::Intrinsic::cos, scalar, scalar);
+  register_intrinsic ("exp", llvm::Intrinsic::exp, scalar, scalar);
   register_generic ("exp", matrix, matrix);
 
   add_builtin ("balance");

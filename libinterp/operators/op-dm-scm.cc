@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 Jason Riedy, Jaroslav Hajek
+Copyright (C) 2009-2015 Jason Riedy, Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -23,6 +23,15 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "mx-cm-s.h"
+#include "mx-s-cm.h"
+
+#include "mx-dm-cs.h"
+#include "mx-cs-dm.h"
+
+#include "mx-m-cs.h"
+#include "mx-cs-m.h"
 
 #include "gripes.h"
 #include "oct-obj.h"

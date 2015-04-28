@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 David Bateman
+## Copyright (C) 2010-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{hplots}, @var{strings}]} = __getlegenddata__ (@var{h})
+## @deftypefn {Function File} {[@var{hplots}, @var{strings}] =} __getlegenddata__ (@var{h})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -29,7 +29,7 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
   if (numel (ca) == 1)
     kids = get (ca, "children");
   else
-    kids = [get(kids, "children"){:}];
+    kids = [get(ca, "children"){:}];
   endif
 
   for i = numel (kids):-1:1
@@ -58,4 +58,8 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
   endfor
 
 endfunction
+
+
+## No test needed for internal helper function.
+%!assert (1)
 

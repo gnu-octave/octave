@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott and John W. Eaton
+## Copyright (C) 2010-2015 Ben Abbott and John W. Eaton
 ##
 ## This file is part of Octave.
 ##

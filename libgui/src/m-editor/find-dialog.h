@@ -2,7 +2,7 @@
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2013 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2015 Torsten <ttl@justmail.de>
 Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)
@@ -79,7 +79,13 @@ public:
   void init_search_text ();
 
 private slots:
+#ifdef HAVE_QSCI_FINDSELECTION
+  void handle_sel_search_changed (int);
+  void handle_selection_changed (bool has_selected);
+#endif
   void handle_backward_search_changed (int);
+  void handle_search_text_changed (QString new_search_text);
+
   void find (bool forward = true);
   void find_next ();
   void find_prev ();
@@ -87,7 +93,10 @@ private slots:
   void replace_all ();
 
 private:
+
   void no_matches_message ();
+  void do_replace ();
+
   QLabel            *_search_label;
   QLineEdit         *_search_line_edit;
   QLabel            *_replace_label;
@@ -108,6 +117,8 @@ private:
   QWidget           *_extension;
   QsciScintilla     *_edit_area;
   bool               _find_result_available;
+  int                _rep_all;
+  bool               _rep_active;
 };
 
 #endif // FIND_DIALOG_H

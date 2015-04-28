@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -112,11 +112,8 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   // if error_state is set, we've already griped.
   if (! error_state && ! retval.is_defined ())
     {
-      if (nidx == 2 && ! resize_ok &&
-          idx0.is_scalar () && idx1.is_scalar ())
-        {
-          retval = matrix.checkelem (idx0(0), idx1(0));
-        }
+      if (nidx == 2 && ! resize_ok && idx0.is_scalar () && idx1.is_scalar ())
+        retval = matrix.checkelem (idx0(0), idx1(0));
       else
         retval = to_dense ().do_index_op (idx, resize_ok);
     }
@@ -245,9 +242,9 @@ FORWARD_MATRIX_VALUE (boolNDArray, bool_array)
 FORWARD_MATRIX_VALUE (charNDArray, char_array)
 
 idx_vector
-octave_perm_matrix::index_vector (void) const
+octave_perm_matrix::index_vector (bool require_integers) const
 {
-  return to_dense ().index_vector ();
+  return to_dense ().index_vector (require_integers);
 }
 
 octave_value
@@ -260,12 +257,10 @@ octave_perm_matrix::convert_to_str_internal (bool pad, bool force,
 bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
-  typedef octave_int<octave_idx_type> idx_int_type;
-
   os << "# size: " << matrix.rows () << "\n";
-  os << "# orient: " << (matrix.is_col_perm () ? 'c' : 'r') << '\n';
+  os << "# orient: c\n";
 
-  Array<octave_idx_type> pvec = matrix.pvec ();
+  Array<octave_idx_type> pvec = matrix.col_perm_vec ();
   octave_idx_type n = pvec.length ();
   ColumnVector tmp (n);
   for (octave_idx_type i = 0; i < n; i++) tmp(i) = pvec(i) + 1;
@@ -277,7 +272,6 @@ octave_perm_matrix::save_ascii (std::ostream& os)
 bool
 octave_perm_matrix::load_ascii (std::istream& is)
 {
-  typedef octave_int<octave_idx_type> idx_int_type;
   octave_idx_type n;
   bool success = true;
   char orient;
@@ -317,18 +311,19 @@ octave_perm_matrix::save_binary (std::ostream& os, bool&)
 {
 
   int32_t sz = matrix.rows ();
-  bool colp = matrix.is_col_perm ();
+  bool colp = true;
   os.write (reinterpret_cast<char *> (&sz), 4);
   os.write (reinterpret_cast<char *> (&colp), 1);
-  os.write (reinterpret_cast<const char *> (matrix.data ()),
-                                            matrix.byte_size ());
+  const Array<octave_idx_type>& col_perm = matrix.col_perm_vec ();
+  os.write (reinterpret_cast<const char *> (col_perm.data ()),
+                                            col_perm.byte_size ());
 
   return true;
 }
 
 bool
 octave_perm_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format )
+                                 oct_mach_info::float_format)
 {
   int32_t sz;
   bool colp;
@@ -389,7 +384,7 @@ octave_perm_matrix::print_as_scalar (void) const
 }
 
 void
-octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -420,7 +415,6 @@ octave_perm_matrix::to_dense (void) const
   return dense_cache;
 }
 
-DEFINE_OCTAVE_ALLOCATOR (octave_perm_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix,
                                      "permutation matrix", "double");
@@ -451,3 +445,18 @@ octave_perm_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
+octave_value
+octave_perm_matrix::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < matrix.numel ())
+    {
+      octave_idx_type nr = matrix.rows ();
+
+      octave_idx_type r = n % nr;
+      octave_idx_type c = n / nr;
+
+      return octave_value (matrix.elem (r, c));
+    }
+  else
+    return octave_value ();
+}

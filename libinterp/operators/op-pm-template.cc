@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -23,6 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+// FIXME: it might be nice to only include the declarations of the
+// operators that are actually needed instead of including all of them.
+#include "mx-ops.h"
 
 #include "ov-perm.h"
 #include MINCLUDE

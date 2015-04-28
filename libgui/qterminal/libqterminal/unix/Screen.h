@@ -50,7 +50,7 @@ struct ScreenParm
 class TerminalCharacterDecoder;
 
 /**
-    \brief An image of characters with associated attributes.
+    @brief An image of characters with associated attributes.
 
     The terminal emulation ( Emulation ) receives a serial stream of
     characters from the program currently running in the terminal.

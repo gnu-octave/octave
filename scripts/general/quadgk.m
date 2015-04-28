@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -27,7 +27,7 @@
 ## using adaptive Gauss-Konrod quadrature.
 ## @var{f} is a function handle, inline function, or string
 ## containing the name of the function to evaluate.
-## The formulation is based on a proposal by L.F. Shampine,
+## The formulation is based on a proposal by @nospell{L.F. Shampine},
 ## @cite{"Vectorized adaptive quadrature in @sc{matlab}", Journal of
 ## Computational and Applied Mathematics, pp131-140, Vol 211, Issue 2,
 ## Feb 2008} where all function evaluations at an iteration are
@@ -163,7 +163,7 @@ function [q, err] = quadgk (f, a, b, varargin)
             elseif (strcmpi (str, "waypoints"))
               waypoints = varargin{idx++} (:);
               if (isreal (waypoints))
-                waypoints (waypoints < a | waypoints > b) = [];
+                waypoints(waypoints < a | waypoints > b) = [];
               endif
             elseif (strcmpi (str, "maxintervalcount"))
               maxint = varargin{idx++};

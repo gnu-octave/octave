@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -59,7 +59,7 @@ public:
   octave_base_value *empty_clone (void) const
   { return new octave_magic_colon (); }
 
-  idx_vector index_vector (void) const { return idx_vector (':'); }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (':'); }
 
   bool is_defined (void) const { return true; }
 
@@ -67,7 +67,7 @@ public:
 
   bool is_magic_colon (void) const { return true; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

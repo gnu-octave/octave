@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 John W. Eaton
+Copyright (C) 2009-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,8 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_oct_hdf5_h)
 #define octave_hdf5_h 1
 
-#if defined (HAVE_HDF5)
+#if defined (HAVE_HDF5_H)
+
 #include <hdf5.h>
+
+#define HDF5_SAVE_TYPE H5T_NATIVE_UINT8
+
 #endif
 
 #endif

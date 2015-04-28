@@ -2,9 +2,10 @@
 Name=GNU Octave
 Comment=Scientific Computing using GNU Octave
 TryExec=%OCTAVE_PREFIX%/bin/octave
-Exec=%OCTAVE_PREFIX%/bin/octave
+Exec=%OCTAVE_PREFIX%/bin/octave --force-gui
 Icon=%OCTAVE_IMAGEDIR%/octave-logo.svg
-Terminal=true
+Terminal=false
 Type=Application
 Categories=Education;Science;Math;
 StartupNotify=false
+MimeType=text/x-octave;text/x-matlab;

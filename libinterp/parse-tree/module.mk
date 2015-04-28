@@ -21,6 +21,7 @@ PARSE_TREE_INC = \
   parse-tree/pt-cbinop.h \
   parse-tree/pt-cell.h \
   parse-tree/pt-check.h \
+  parse-tree/pt-classdef.h \
   parse-tree/pt-cmd.h \
   parse-tree/pt-colon.h \
   parse-tree/pt-const.h \
@@ -29,6 +30,7 @@ PARSE_TREE_INC = \
   parse-tree/pt-except.h \
   parse-tree/pt-exp.h \
   parse-tree/pt-fcn-handle.h \
+  parse-tree/pt-funcall.h \
   parse-tree/pt-id.h \
   parse-tree/pt-idx.h \
   parse-tree/pt-jump.h \
@@ -52,6 +54,7 @@ PARSE_TREE_SRC = \
   parse-tree/pt-cbinop.cc \
   parse-tree/pt-cell.cc \
   parse-tree/pt-check.cc \
+  parse-tree/pt-classdef.cc \
   parse-tree/pt-cmd.cc \
   parse-tree/pt-colon.cc \
   parse-tree/pt-const.cc \
@@ -60,6 +63,7 @@ PARSE_TREE_SRC = \
   parse-tree/pt-except.cc \
   parse-tree/pt-exp.cc \
   parse-tree/pt-fcn-handle.cc \
+  parse-tree/pt-funcall.cc \
   parse-tree/pt-id.cc \
   parse-tree/pt-idx.cc \
   parse-tree/pt-jump.cc \
@@ -80,41 +84,16 @@ PARSE_TREE_SRC = \
 ## will still be success and we will end up creating an empty
 ## oct-gperf.h file.
 parse-tree/oct-gperf.h: parse-tree/octave.gperf
-	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)rm -f $@-t $@t1 $@ && \
+	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 && \
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t && \
+	mv $@-t $@ && \
 	rm -f $@-t1
 
+parse-tree/oct-parse.h: parse-tree/oct-parse.cc
+
 parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
-	case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	  *api*) \
-	    case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	     *brace*) \
-	       api_prefix_decl='%define api.prefix {octave_}'; ;; \
-	     *) \
-	       api_prefix_decl='%define api.prefix "octave_"'; ;; \
-             esac; \
-            ;; \
-	  *name*) \
-	    case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	      *brace*) \
-	        api_prefix_decl='%name-prefix {octave_}'; ;; \
-	      *) \
-	        api_prefix_decl='%name-prefix="octave_"'; ;; \
-            esac; \
-          ;; \
-	esac; \
-	case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
-	  *quote*) quote='"' ;; \
-	  *) quote="" ;; \
-	esac; \
-	case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
-	  *dash*) push_pull_decl="%define api.push-pull $${quote}both$${quote}"; ;; \
-	  *underscore*) push_pull_decl="%define api.push_pull $${quote}both$${quote}"; ;; \
-	esac; \
-	$(SED) -e "s/%PUSH_PULL_DECL%/$$push_pull_decl/" \
-	       -e "s/%API_PREFIX_DECL%/$$api_prefix_decl/" $< > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
 
 noinst_LTLIBRARIES += \
   parse-tree/libparse-tree.la \

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -31,20 +31,21 @@ along with Octave; see the file COPYING.  If not, see
 
 class OCTAVE_API PermMatrix : protected Array<octave_idx_type>
 {
-
 public:
 
-  PermMatrix (void) : Array<octave_idx_type> (), _colp (false) { }
+  PermMatrix (void) : Array<octave_idx_type> () { }
 
   PermMatrix (octave_idx_type n);
 
-  PermMatrix (const Array<octave_idx_type>& p, bool colp = false,
-              bool check = true);
+  PermMatrix (const Array<octave_idx_type>& p) GCC_ATTR_DEPRECATED;
 
-  PermMatrix (const PermMatrix& m)
-    : Array<octave_idx_type> (m), _colp(m._colp) { }
+  PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
-  PermMatrix (const idx_vector& idx, bool colp = false, octave_idx_type n = 0);
+  PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
+
+  PermMatrix (const idx_vector& idx) GCC_ATTR_DEPRECATED;
+
+  PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 
   octave_idx_type dim1 (void) const
   { return Array<octave_idx_type>::length (); }
@@ -68,15 +69,13 @@ public:
 
   dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }
 
-  Array<octave_idx_type> pvec (void) const
+  const Array<octave_idx_type>& col_perm_vec (void) const
   { return *this; }
 
   octave_idx_type
   elem (octave_idx_type i, octave_idx_type j) const
   {
-    return (_colp
-            ? ((Array<octave_idx_type>::elem (j) == i) ? 1 : 0)
-              : ((Array<octave_idx_type>::elem (i) == j) ? 1 : 0));
+    return (Array<octave_idx_type>::elem (j) == i) ? 1 : 0;
   }
 
   octave_idx_type
@@ -102,20 +101,8 @@ public:
   // Efficient integer power of a permutation.
   PermMatrix power (octave_idx_type n) const;
 
-  bool is_col_perm (void) const { return _colp; }
-  bool is_row_perm (void) const { return !_colp; }
-
-  friend OCTAVE_API PermMatrix operator *(const PermMatrix& a,
-                                          const PermMatrix& b);
-
-  const octave_idx_type *data (void) const
-  { return Array<octave_idx_type>::data (); }
-
-  const octave_idx_type *fortran_vec (void) const
-  { return Array<octave_idx_type>::fortran_vec (); }
-
-  octave_idx_type *fortran_vec (void)
-  { return Array<octave_idx_type>::fortran_vec (); }
+  bool is_col_perm (void) const { return true; }
+  bool is_row_perm (void) const { return false; }
 
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<octave_idx_type>::print_info (os, prefix); }
@@ -123,12 +110,17 @@ public:
   static PermMatrix eye (octave_idx_type n);
 
 private:
-  bool _colp;
+
+  PermMatrix pos_power (octave_idx_type m) const;
+
+  void setup (const Array<octave_idx_type>& p, bool colp, bool check);
+
+  void setup (const idx_vector& idx, bool colp, octave_idx_type n);
 };
 
 // Multiplying permutations together.
 PermMatrix
 OCTAVE_API
-operator *(const PermMatrix& a, const PermMatrix& b);
+operator * (const PermMatrix& a, const PermMatrix& b);
 
 #endif

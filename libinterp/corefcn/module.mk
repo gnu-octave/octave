@@ -5,6 +5,7 @@ EXTRA_DIST += \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.in.cc \
   corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-parser.in.yy \
   corefcn/oct-tex-symbols.in
 
 ## Options functions for Fortran packages like LSODE, DASPK.
@@ -24,13 +25,14 @@ OPT_INC = \
   $(top_builddir)/liboctave/numeric/Quad-opts.h
 
 $(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/numeric/%.in
-	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t && \
 	mv $@-t $@
 
 $(OPT_HANDLERS): $(top_srcdir)/build-aux/mk-opts.pl
 
 $(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(top_builddir)/liboctave/numeric $(@F)
+	$(AM_V_GEN)$(MAKE) -C $(top_builddir)/liboctave/numeric $(@F)
 
 JIT_INC = \
   corefcn/jit-util.h \
@@ -44,6 +46,7 @@ TEX_PARSER_INC = \
 COREFCN_INC = \
   corefcn/Cell.h \
   corefcn/c-file-ptr-stream.h \
+  corefcn/cdisplay.h \
   corefcn/comment-list.h \
   corefcn/cutils.h \
   corefcn/data.h \
@@ -75,11 +78,11 @@ COREFCN_INC = \
   corefcn/ls-utils.h \
   corefcn/mex.h \
   corefcn/mexproto.h \
-  corefcn/mxarray.in.h \
   corefcn/oct-errno.h \
   corefcn/oct-fstrm.h \
   corefcn/oct-handle.h \
   corefcn/oct-hdf5.h \
+  corefcn/oct-hdf5-id.h \
   corefcn/oct-hist.h \
   corefcn/oct-iostrm.h \
   corefcn/oct-lvalue.h \
@@ -91,6 +94,7 @@ COREFCN_INC = \
   corefcn/oct-stream.h \
   corefcn/oct-strstrm.h \
   corefcn/oct.h \
+  corefcn/octave-default-image.h \
   corefcn/octave-link.h \
   corefcn/pager.h \
   corefcn/pr-output.h \
@@ -134,6 +138,9 @@ COREFCN_SRC = \
   corefcn/Cell.cc \
   corefcn/__contourc__.cc \
   corefcn/__dispatch__.cc \
+  corefcn/__dsearchn__.cc \
+  corefcn/__ichol__.cc \
+  corefcn/__ilu__.cc \
   corefcn/__lin_interpn__.cc \
   corefcn/__pchip_deriv__.cc \
   corefcn/__qp__.cc \
@@ -143,6 +150,7 @@ COREFCN_SRC = \
   corefcn/bitfcns.cc \
   corefcn/bsxfun.cc \
   corefcn/c-file-ptr-stream.cc \
+  corefcn/cdisplay.c \
   corefcn/cellfun.cc \
   corefcn/colloc.cc \
   corefcn/comment-list.cc \
@@ -208,6 +216,7 @@ COREFCN_SRC = \
   corefcn/mgorth.cc \
   corefcn/nproc.cc \
   corefcn/oct-fstrm.cc \
+  corefcn/oct-hdf5-id.cc \
   corefcn/oct-hist.cc \
   corefcn/oct-iostrm.cc \
   corefcn/oct-lvalue.cc \
@@ -218,6 +227,7 @@ COREFCN_SRC = \
   corefcn/oct-stream.cc \
   corefcn/oct-strstrm.cc \
   corefcn/octave-link.cc \
+  corefcn/ordschur.cc \
   corefcn/pager.cc \
   corefcn/pinv.cc \
   corefcn/pr-output.cc \
@@ -241,15 +251,16 @@ COREFCN_SRC = \
   corefcn/strfns.cc \
   corefcn/sub2ind.cc \
   corefcn/svd.cc \
-  corefcn/syl.cc \
+  corefcn/sylvester.cc \
   corefcn/symtab.cc \
   corefcn/syscalls.cc \
   corefcn/sysdep.cc \
   corefcn/time.cc \
   corefcn/toplev.cc \
   corefcn/tril.cc \
-  corefcn/txt-eng.cc \
+  corefcn/tsearch.cc \
   corefcn/txt-eng-ft.cc \
+  corefcn/txt-eng.cc \
   corefcn/typecast.cc \
   corefcn/urlwrite.cc \
   corefcn/utils.cc \
@@ -275,12 +286,13 @@ COREFCN_FT2_DF = \
 
 ## Special rules for FreeType .df files so that not all .df files are built
 ## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
-$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc
+$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS)
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t
-	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	  -DMAKE_BUILTINS $< > $@-t && \
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@ && \
 	rm $@-t
 
 ## Special rules for sources which must be built before rest of compilation.
@@ -289,44 +301,52 @@ $(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc
 ## may change default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 corefcn/defaults.h: corefcn/defaults.in.h Makefile
-	@$(do_subst_default_vals)
+	$(AM_V_GEN)$(do_subst_default_vals)
 
 corefcn/graphics.h: corefcn/graphics.in.h genprops.awk Makefile
-	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
 corefcn/graphics-props.cc: corefcn/graphics.in.h genprops.awk Makefile
-	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
 corefcn/oct-errno.cc: corefcn/oct-errno.in.cc Makefile
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	if test -n "$(PERL)"; then \
 	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
 	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
-	fi
+	fi && \
 	mv $@-t $@
 
 corefcn/mxarray.h: corefcn/mxarray.in.h Makefile
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
-	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
+	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t && \
 	mv $@-t $@
 
 corefcn/oct-tex-lexer.ll: corefcn/oct-tex-lexer.in.ll corefcn/oct-tex-symbols.in Makefile.am
-	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t && \
 	mv $@-t $@
 
 corefcn/oct-tex-symbols.cc: corefcn/oct-tex-symbols.in Makefile.am
-	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } /^#/ { } { if (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; } }' $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } !/^#/ && (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; }' $< > $@-t && \
 	mv $@-t $@
 
 corefcn/txt-eng.cc: corefcn/oct-tex-symbols.cc
 corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
 corefcn/oct-tex-parser.h: corefcn/oct-tex-parser.yy
 
+corefcn/oct-tex-parser.yy: corefcn/oct-tex-parser.in.yy
+	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
 
 noinst_LTLIBRARIES += \
   corefcn/libcorefcn.la \
@@ -338,7 +358,9 @@ corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) \
                                  $(FONTCONFIG_CPPFLAGS) \
                                  $(FT2_CPPFLAGS) \
                                  $(HDF5_CPPFLAGS) \
-                                 $(LLVM_CPPFLAGS)
+                                 $(LLVM_CPPFLAGS) \
+                                 $(Z_CPPFLAGS)
+
 corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)

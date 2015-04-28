@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 David Bateman and Marco Caliari
+## Copyright (C) 2006-2015 David Bateman and Marco Caliari
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -84,7 +84,7 @@ endfunction
 %! A = rand (10);
 %! assert (normest (A), norm (A), 1e-6);
 
-%% Test input validation
+## Test input validation
 %!error normest ()
 %!error normest (1, 2, 3)
 %!error normest ([true true])

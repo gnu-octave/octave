@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gripes.h"
 #include "mxarray.h"
+#include "oct-hdf5.h"
 #include "oct-obj.h"
 #include "ops.h"
 #include "ov-bool.h"
@@ -46,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_scalar<bool>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_bool);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool", "logical");
 
@@ -158,15 +158,17 @@ octave_bool::load_binary (std::istream& is, bool /* swap */,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_bool::save_hdf5 (hid_t loc_id, const char *name,
+octave_bool::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                         bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
@@ -190,12 +192,18 @@ octave_bool::save_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_bool::load_hdf5 (hid_t loc_id, const char *name)
+octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+#if defined (HAVE_HDF5)
+
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
 #else
@@ -223,10 +231,12 @@ octave_bool::load_hdf5 (hid_t loc_id, const char *name)
 
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return true;
 }
-
-#endif
 
 mxArray *
 octave_bool::as_mxArray (void) const

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -63,7 +63,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       && strcmp (axis_obj.xlimmode, "manual")
       && strcmp (axis_obj.ylimmode, "manual")
       && (nd == 2 || all (mod (axis_obj.view, 90) == 0)))
-    ## FIXME - adjust plotboxaspectratio to respect other
+    ## FIXME: adjust plotboxaspectratio to respect other
     fpos = get (axis_obj.parent, "position");
     apos = axis_obj.position;
   endif
@@ -75,7 +75,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       dr = dr(1) / dr(2);
     else
-      ## FIXME - need to properly implement 3D
+      ## FIXME: need to properly implement 3D
       dr = mean (dr(1:2)) / dr(3);
     endif
   else
@@ -106,7 +106,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fprintf (plot_stream, "set rmargin 0;\n");
 
       if (nd == 3 && all (axis_obj.view == [0, 90]))
-        ## FIXME -- Kludge to allow colorbar to be added to a pcolor() plot
+        ## FIXME: Kludge to allow colorbar to be added to a pcolor() plot
         pos(3:4) = pos(3:4) * 1.4;
         pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
       endif
@@ -139,8 +139,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   endif
 
   ## Reset all labels, axis-labels, tick-labels, and title
-  ## FIXME - We should have an function to initialize the axis.
-  ##         Presently, this is dispersed in this function.
+  ## FIXME: We should have an function to initialize the axis.
+  ##        Presently, this is dispersed in this function.
   fputs (plot_stream, "unset label;\n");
   fputs (plot_stream, "unset xtics;\n");
   fputs (plot_stream, "unset ytics;\n");
@@ -153,10 +153,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     if (isempty (t.string))
       fputs (plot_stream, "unset title;\n");
     else
+      colorspec = get_text_colorspec (t.color, mono);
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
-      fprintf (plot_stream, "set title \"%s\" %s %s;\n",
-               undo_string_escapes (tt), fontspec,
+      fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",
+               undo_string_escapes (tt), fontspec, colorspec,
                __do_enhanced_option__ (enhanced, t));
     endif
   endif
@@ -164,7 +165,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.xlabel))
     t = get (axis_obj.xlabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (axis_obj.xcolor, mono);
+    colorspec = get_text_colorspec (t.color, mono);
     if (isempty (t.string))
       fprintf (plot_stream, "unset xlabel;\n");
       fprintf (plot_stream, "unset x2label;\n");
@@ -192,7 +193,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.ylabel))
     t = get (axis_obj.ylabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (axis_obj.ycolor, mono);
+    colorspec = get_text_colorspec (t.color, mono);
     if (isempty (t.string))
       fprintf (plot_stream, "unset ylabel;\n");
       fprintf (plot_stream, "unset y2label;\n");
@@ -220,7 +221,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.zlabel))
     t = get (axis_obj.zlabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (axis_obj.zcolor, mono);
+    colorspec = get_text_colorspec (t.color, mono);
     if (isempty (t.string))
       fputs (plot_stream, "unset zlabel;\n");
     else
@@ -323,9 +324,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     fputs (plot_stream, "set border front;\n");
   else
     fputs (plot_stream, "set grid layerdefault;\n");
-    ## FIXME -- the gnuplot help says that "layerdefault" should work
-    ## for set border too, but it fails for me with gnuplot 4.2.5.  So
-    ## use "back" instead.
+    ## FIXME: The gnuplot help says that "layerdefault" should work
+    ##        for set border too, but it fails for me with gnuplot 4.2.5.
+    ##        So, use "back" instead.
     fputs (plot_stream, "set border back;\n");
   endif
 
@@ -512,6 +513,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           img_ydata = img_ydata(1) + [0, rows(img_data)-1];
         endif
 
+        x_origin = min (img_xdata);
+        y_origin = min (img_ydata);
+
         [y_dim, x_dim] = size (img_data(:,:,1));
         if (x_dim > 1)
           dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
@@ -519,6 +523,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           x_dim = 2;
           img_data = [img_data, img_data];
           dx = abs (img_xdata(2)-img_xdata(1));
+          if (dx < 1)
+            ## Correct gnuplot string for 1-D images
+            dx       = 0.5;
+            x_origin = 0.75;
+          endif
         endif
         if (y_dim > 1)
           dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
@@ -526,10 +535,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           y_dim = 2;
           img_data = [img_data; img_data];
           dy = abs (img_ydata(2)-img_ydata(1));
+          if (dy < 1)
+            ## Correct gnuplot string for 1-D images
+            dy       = 0.5;
+            y_origin = 0.75;
+          endif
         endif
-
-        x_origin = min (img_xdata);
-        y_origin = min (img_ydata);
 
         if (ndims (img_data) == 3)
           data{data_idx} = permute (img_data, [3, 1, 2])(:);
@@ -561,7 +572,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         if (isempty (obj.displayname))
           titlespec{data_idx} = "title \"\"";
         else
-          tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
+          tmp = undo_string_escapes (
+                  __maybe_munge_text__ (enhanced, obj, "displayname")
+                );
           titlespec{data_idx} = ['title "' tmp '"'];
         endif
         usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
@@ -575,14 +588,17 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             zdat = zeros (size (xdat));
           endif
           data{data_idx} = [xdat, ydat, zdat]';
-          usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", numel (xdat));
+          usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)",
+                                           numel (xdat));
+          hidden_removal = false;
           ## fputs (plot_stream, "set parametric;\n");
         else
           xdat = obj.xdata(:);
           ydat = obj.ydata(:);
           data{data_idx} = [xdat, ydat]';
-          usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
-                                          rows (xdat), xaxisloc_using, yaxisloc_using);
+          usingclause{data_idx} = ...
+            sprintf ("record=%d using ($1):($2) axes %s%s",
+                     rows (xdat), xaxisloc_using, yaxisloc_using);
         endif
 
         style = do_linestyle_command (obj, obj.color, data_idx, mono,
@@ -601,7 +617,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                        style{2}, data_idx);
+                                          style{2}, data_idx);
         endif
         if (length (style) > 2)
           data_idx++;
@@ -613,7 +629,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                        style{3}, data_idx);
+                                          style{3}, data_idx);
         endif
 
      case "patch"
@@ -680,7 +696,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              if (i > 1 || isempty (obj.displayname))
                titlespec{local_idx} = "title \"\"";
              else
-               tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
+               tmp = undo_string_escapes (
+                       __maybe_munge_text__ (enhanced, obj, "displayname")
+                     );
                titlespec{local_idx} = ['title "' tmp '"'];
              endif
              if (isfield (obj, "facecolor"))
@@ -691,12 +709,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      && (columns (obj.cdata) == nc
                          && (rows (obj.cdata) == 1
                              || rows (obj.cdata) == 3)))
-                   ccol = cdat (:, i);
+                   ccol = cdat(:, i);
                  elseif (ndims (obj.cdata) == 2
                      && (rows (obj.cdata) == nc
                          && (columns (obj.cdata) == 1
                              || columns (obj.cdata) == 3)))
-                   ccol = cdat (i, :);
+                   ccol = cdat(i, :);
                  elseif (ndims (obj.cdata) == 3)
                    ccol = permute (cdat (:, i, :), [1, 3, 2]);
                  else
@@ -756,6 +774,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                if (isnan (ccdat))
                  ccdat = (rows (cmap) + rows (addedcmap) + 1) * ones(3, 1);
                  addedcmap = [addedcmap; reshape(color, 1, 3)];
+               elseif (numel (ccdat) <= 1)
+                 ccdat = zcol;
                endif
                data{data_3d_idx} = [data{data_3d_idx}, ...
                                     [[xcol; xcol(end)], [ycol; ycol(end)], ...
@@ -766,7 +786,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                elseif (__gnuplot_has_feature__ ("transparent_patches")
                        && isscalar (obj.facealpha))
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
-                                    round (255*color), obj.facealpha);
+                                      round (255*color), obj.facealpha);
                else
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
                                       round (255*color));
@@ -800,12 +820,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            endif
 
            if (isfield (obj, "edgecolor"))
-             ## FIXME
-             ## This is the wrong thing to do as edgecolor, markeredgecolor
-             ## and markerfacecolor can have different values and we should
-             ## treat them seperately. However, the below allow the scatter
-             ## functions to work as expected, where only one of these values
-             ## is set
+             ## FIXME: This is the wrong thing to do as edgecolor,
+             ## markeredgecolor and markerfacecolor can have different values
+             ## and we should treat them seperately. However, the code below
+             ## allows the scatter functions to work as expected, where only
+             ## one of these values is set.
              if (strcmp (obj.edgecolor, "none"))
                if (strcmp (obj.markeredgecolor, "none"))
                  ec = obj.markerfacecolor;
@@ -823,12 +842,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                    && (columns (obj.cdata) == nc
                        && (rows (obj.cdata) == 1
                            || rows (obj.cdata) == 3)))
-                 ccol = cdat (:, i);
+                 ccol = cdat(:, i);
                elseif (ndims (obj.cdata) == 2
                        && (rows (obj.cdata) == nc
                            && (columns (obj.cdata) == 1
                                || columns (obj.cdata) == 3)))
-                 ccol = cdat (i, :);
+                 ccol = cdat(i, :);
                elseif (ndims (obj.cdata) == 3)
                  ccol = permute (cdat (:, i, :), [1, 3, 2]);
                else
@@ -887,7 +906,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            if (isfield (obj, "linewidth"))
              lw = sprintf ("linewidth %f", obj.linewidth);
            else
-             lw  = "";
+             lw = "";
            endif
 
            [pt, pt2, obj] = gnuplot_pointtype (obj);
@@ -919,7 +938,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
            facesame = true;
            if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-               && !strcmp (obj.markerfacecolor, "none"))
+               && ! strcmp (obj.markerfacecolor, "none"))
              if (strcmp (obj.markerfacecolor, "auto")
                  || ! isnumeric (obj.markerfacecolor)
                  || (isnumeric (obj.markerfacecolor)
@@ -969,8 +988,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            endif
 
            if (isfield (obj, "markeredgecolor")
-               && !strcmp (obj.markeredgecolor, "none"))
-             if (facesame && !isempty (pt)
+               && ! strcmp (obj.markeredgecolor, "none"))
+             if (facesame && ! isempty (pt)
                  && (strcmp (obj.markeredgecolor, "auto")
                      || ! isnumeric (obj.markeredgecolor)
                      || (isnumeric (obj.markeredgecolor)
@@ -994,7 +1013,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                                           colorspec);
                endif
              else
-               if (!isempty (style))
+               if (! isempty (style))
                  if (length (tmpwith) < sidx || isempty (tmpwith{sidx}))
                    tmpwith{sidx} = sprintf ("with %s %s %s %s",
                                             style, lw, lt,
@@ -1003,7 +1022,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  sidx ++;
                endif
 
-               if (!isempty (pt))
+               if (! isempty (pt))
                  if (! mono)
                    if (strcmp (obj.markeredgecolor, "auto"))
                      colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
@@ -1116,7 +1135,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           if (isempty (obj.displayname))
             titlespec{data_idx} = "title \"\"";
           else
-            tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
+            tmp = undo_string_escapes (
+                    __maybe_munge_text__ (enhanced, obj, "displayname")
+                  );
             titlespec{data_idx} = ['title "' tmp '"'];
           endif
           withclause{data_idx} = sprintf ("with pm3d linestyle %d",
@@ -1187,7 +1208,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           fputs (plot_stream, "set style increment default;\n");
           if (flat_interp_edge && facecolor_none_or_white)
             withpm3d = false;
-            withclause{data_idx} = sprintf ("with %s palette", style {1});
+            withclause{data_idx} = sprintf ("with %s palette", style{1});
             fputs (plot_stream, "unset pm3d\n");
             if (all (obj.facecolor == 1))
               hidden_removal = true;
@@ -1212,9 +1233,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           endif
 
           if (flat_interp_face && strcmp (obj.edgecolor, "flat"))
-            fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n",
+            fprintf (plot_stream,
+                     "set pm3d explicit at s %s %s corners2color c3;\n",
                      interp_str, dord);
-          elseif (!facecolor_none_or_white)
+          elseif (! facecolor_none_or_white)
             if (strcmp (obj.edgecolor, "none"))
               if (__gnuplot_has_feature__ ("transparent_surface")
                   && isscalar (obj.facealpha))
@@ -1222,10 +1244,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                          "set style fill transparent solid %f;\n",
                          obj.facealpha);
               endif
-              fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n",
+              fprintf (plot_stream,
+                       "set pm3d explicit at s %s corners2color c3;\n",
                        interp_str, dord);
             else
-              fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n",
+              fprintf (plot_stream,
+                       "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n",
                        data_idx, interp_str, dord);
 
               if (__gnuplot_has_feature__ ("transparent_surface")
@@ -1324,6 +1348,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
         if (ischar (obj.string))
           num_lines = rows (obj.string);
+          num_lines += numel (strfind (obj.string, "\n"));
         else
           num_lines = numel (obj.string);
         endif
@@ -1380,7 +1405,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
   ## This is need to prevent warnings for rotations in 3D plots, while
   ## allowing colorbars with contours.
-  if (nd == 2 || (data_idx > 1 && !view_map))
+  if (nd == 2 || (data_idx > 1 && ! view_map))
     fputs (plot_stream, "set pm3d implicit;\n");
   else
     fputs (plot_stream, "set pm3d explicit;\n");
@@ -1444,8 +1469,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
            endif
         endfor
-        fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim(1), clim(2) *
-                 (cmap_sz + rows (addedcmap)) / cmap_sz);
+        fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n",
+                 clim(1), clim(2) * (cmap_sz + rows (addedcmap)) / cmap_sz);
       else
         fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim);
       endif
@@ -1469,12 +1494,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
-          fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_x2tick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 12;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 9;\n");
         else # xaxislocation == zero
           fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
@@ -1487,16 +1510,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
-          fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_x2tick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 6;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 3;\n");
         else # xaxislocation == zero
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 2;\n");
           fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
                    axis_obj.linewidth);
@@ -1505,17 +1525,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
-          fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_x2tick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 4;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 1;\n");
         else # xaxislocation == zero
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-                   axis_obj.tickdir);
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                    axis_obj.tickdir);
           fputs (plot_stream, "unset border;\n");
           fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
@@ -1587,9 +1604,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     endswitch
     if (__gnuplot_has_feature__ ("key_has_font_properties"))
       [fontname, fontsize] = get_fontname_and_size (hlgnd);
-      fontspec = create_fontspec (fontname, fontsize, gnuplot_term);
+      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term),...
+                        create_fontspec(fontname, fontsize, gnuplot_term) ];
     else
-      fontspec = "";
+      fontspacespec = "";
     endif
     textcolors = get (findobj (hlgnd.children, "type", "text"), "color");
     if (iscell (textcolors))
@@ -1605,7 +1623,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       colorspec = get_text_colorspec (textcolors, mono);
     endif
     fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s %s;\n",
-             inout, pos, box, reverse, horzvert, fontspec, colorspec,
+             inout, pos, box, reverse, horzvert, fontspacespec, colorspec,
              __do_enhanced_option__ (enhanced, hlgnd));
   else
     fputs (plot_stream, "unset key;\n");
@@ -1614,7 +1632,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
   cmap = [cmap; addedcmap];
   cmap_sz = cmap_sz + rows (addedcmap);
-  if (length (cmap) > 0)
+  if (mono == false && length (cmap) > 0)
     fprintf (plot_stream,
              "set palette positive color model RGB maxcolors %i;\n",
              cmap_sz);
@@ -1659,8 +1677,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                usingclause{1}, titlespec{1}, withclause{1});
     else
-      fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-               usingclause{1}, titlespec{1}, withclause{1});
+      fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n",
+               plot_cmd, usingclause{1}, titlespec{1}, withclause{1});
     endif
     for i = 2:data_idx
       if (have_3d_patch (i))
@@ -1700,8 +1718,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           fputs (plot_stream, "unset obj 2; \\\n");
           fg_is_set = false;
         endif
-        fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-                 usingclause{i}, titlespec{i}, withclause{i});
+        fprintf (plot_stream,"%s \"-\" binary format='%%float64' %s %s %s \\\n",
+                 plot_cmd, usingclause{i}, titlespec{i}, withclause{i});
       else
         fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
                  usingclause{i}, titlespec{i}, withclause{i});
@@ -1718,7 +1736,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             fputs (plot_stream, "\n\n");
           endif
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j).');
-          fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n", data{i}(:,j+1).');
+          fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n",data{i}(:,j+1).');
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+2).');
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+3).');
         endfor
@@ -1756,6 +1774,21 @@ function x = flip (x)
   else
     x = flipud (fliplr (x));
   endif
+endfunction
+
+function spacing_spec = create_spacingspec (f, s, gp_term)
+  ## The gnuplot default font size is 10, and default spacing is 1.25.
+  ## gnuplot has a concept of a figure global font, and sizes everything
+  ## appropriate to that, including the legend spacing.
+  ##
+  ## This means that if an alternative size is used, gnuplot will use an
+  ## inappropriate spacing in the legend by default.
+  ##
+  ## FIXME: Are fractional spacing specifications allowed?  Or should this
+  ##        number be rounded?
+  spc = s / 10 * 1.25;
+  spacing_spec = sprintf ("spacing %d", spc);
+
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)
@@ -1825,21 +1858,21 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
   sidx = 1;
   if (isempty (errbars))
     if (isempty (lt))
-      style {sidx} = "";
+      style{sidx} = "";
     else
-      style {sidx} = "lines";
+      style{sidx} = "lines";
     endif
 
     facesame = true;
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-        && !strcmp (obj.markerfacecolor, "none"))
+        && ! strcmp (obj.markerfacecolor, "none"))
       if (strcmp (obj.markerfacecolor, "auto")
           || ! isnumeric (obj.markerfacecolor)
           || (isnumeric (obj.markerfacecolor)
               && isequal (color, obj.markerfacecolor)))
         if (! isempty (pt2))
           fprintf (plot_stream, " pointtype %s", pt2);
-          style {sidx} = strcat (style{sidx}, "points");
+          style{sidx} = strcat (style{sidx}, "points");
         endif
         if (isfield (obj, "markersize"))
           fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
@@ -1850,7 +1883,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           fputs (plot_stream, " default");
         endif
         fputs (plot_stream, ";\n");
-        if (! isempty (style {sidx}))
+        if (! isempty (style{sidx}))
           sidx ++;
           idx ++;
         else
@@ -1863,7 +1896,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
                    round (255*obj.markerfacecolor));
         endif
         if (! isempty (pt2))
-          style {sidx} = "points";
+          style{sidx} = "points";
           fprintf (plot_stream, " pointtype %s", pt2);
         endif
         if (isfield (obj, "markersize"))
@@ -1872,16 +1905,16 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
       endif
     endif
     if (isfield (obj, "markeredgecolor")
-        && !strcmp (obj.markeredgecolor, "none"))
-      if (facesame && !isempty (pt)
+        && ! strcmp (obj.markeredgecolor, "none"))
+      if (facesame && ! isempty (pt)
           && (strcmp (obj.markeredgecolor, "auto")
               || ! isnumeric (obj.markeredgecolor)
               || (isnumeric (obj.markeredgecolor)
                   && isequal (color, obj.markeredgecolor))))
-        if (sidx == 1 && ((length (style {sidx}) == 5
-            && strncmp (style{sidx}, "lines", 5)) || isempty (style {sidx})))
+        if (sidx == 1 && ((length (style{sidx}) == 5
+            && strncmp (style{sidx}, "lines", 5)) || isempty (style{sidx})))
           if (! isempty (pt))
-            style {sidx} = strcat (style{sidx}, "points");
+            style{sidx} = strcat (style{sidx}, "points");
             fprintf (plot_stream, " pointtype %s", pt);
           endif
           if (isfield (obj, "markersize"))
@@ -1893,7 +1926,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           fputs (plot_stream, " default");
         endif
         fputs (plot_stream, ";\n");
-        if (!isempty (style {sidx}))
+        if (! isempty (style{sidx}))
           sidx ++;
           idx ++;
         else
@@ -1911,7 +1944,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           endif
         endif
         if (! isempty (pt))
-          style {sidx} = "points";
+          style{sidx} = "points";
           fprintf (plot_stream, " pointtype %s", pt);
         endif
         if (isfield (obj, "markersize"))
@@ -1924,7 +1957,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     fputs (plot_stream, " pointtype 0");
   endif
 
-  if (! found_style && isempty (style {1}))
+  if (! found_style && isempty (style{1}))
     fputs (plot_stream, " default");
   endif
 
@@ -1969,19 +2002,19 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
         pt = "10";
         pt2 = "11";
       case ">"
-        ## FIXME: should be triangle pointing right, use triangle pointing up
+        ## FIXME: Should be triangle pointing right, use triangle pointing up
         pt = "8";
         pt2 = "9";
       case "<"
-        ## FIXME: should be triangle pointing left, use triangle pointing down
+        ## FIXME: Should be triangle pointing left, use triangle pointing down
         pt = "10";
         pt2 = "11";
       case {"pentagram", "p"}
-        ## FIXME: should be pentagram, using pentagon
+        ## FIXME: Should be pentagram, using pentagon
         pt = "14";
         pt2 = "15";
       case {"hexagram", "h"}
-        ## FIXME: should be 6 pt start, using "*" instead
+        ## FIXME: Should be 6 pt start, using "*" instead
         pt = pt2 = "3";
       case "none"
         pt = pt2 = "";
@@ -1997,7 +2030,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
   ## DATA is already transposed.
 
-  ## FIXME -- this may need to be converted to C++ for speed.
+  ## FIXME: this may need to be converted to C++ for speed.
 
   ## Convert NA elements to normal NaN values because fprintf writes
   ## "NA" and that confuses gnuplot.
@@ -2115,6 +2148,13 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
                     plot_stream, mirror, mono, axispos, tickdir, ticklength,
                     fontname, fontspec, interpreter, scale, sgn, gnuplot_term)
   persistent warned_latex = false;
+
+  ## Avoid emitting anything if the tics are empty, because this undoes the
+  ## effect of the previous unset xtics and thereby adds back in the tics.
+  if (isempty (tics))
+    return;
+  endif
+
   if (mirror)
     mirror = "mirror";
   else
@@ -2145,53 +2185,37 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     num_mtics = 5;
   endif
   colorspec = get_text_colorspec (color, mono);
-  if (strcmpi (ticmode, "manual") || strcmpi (labelmode, "manual"))
+  fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
+  if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
       return
     endif
-    if (strcmpi (ticmode, "manual"))
-      fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
-      fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
-               ticklength, axispos, mirror);
-      fprintf (plot_stream, " %.15g,", tics(1:end-1));
-      fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
-    endif
-    if (strcmpi (labelmode, "manual"))
-      if (ischar (labels))
-        labels = cellstr (labels);
-      endif
-      if (isnumeric (labels))
-        labels = num2str (real (labels(:)));
-      endif
-      if (ischar (labels))
-        labels = permute (cellstr (labels), [2, 1]);
-      endif
-      if (iscellstr (labels))
-        k = 1;
-        ntics = numel (tics);
-        nlabels = numel (labels);
-        fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
-                 tickdir, ticklength, axispos, mirror);
-        labels = strrep (labels, "%", "%%");
-        for i = 1:ntics
-          fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
-          if (i < ntics)
-            fputs (plot_stream, ", ");
-          endif
-          if (k > nlabels)
-            k = 1;
-          endif
-        endfor
-        fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
-      else
-        error ("__go_draw_axes__: unsupported type of ticklabel");
-      endif
-    endif
+    fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
+             ticklength, axispos, mirror);
+    fprintf (plot_stream, " %.15e,", tics(1:end-1));
+    fprintf (plot_stream, " %.15e) %s;\n", tics(end), fontspec);
   else
-    fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
     fprintf (plot_stream, "set %stics %s %s %s %s %s %s;\n", ax,
              tickdir, ticklength, axispos, mirror, colorspec, fontspec);
+  endif
+  if (strcmpi (labelmode, "manual"))
+    k = 1;
+    ntics = numel (tics);
+    nlabels = numel (labels);
+    fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
+             tickdir, ticklength, axispos, mirror);
+    labels = strrep (labels, "%", "%%");
+    for i = 1:ntics
+      fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
+      if (i < ntics)
+        fputs (plot_stream, ", ");
+      endif
+      if (k > nlabels)
+        k = 1;
+      endif
+    endfor
+    fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
   endif
   if (strcmp (mtics, "on"))
     fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
@@ -2201,20 +2225,12 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
 endfunction
 
 function ticklabel = ticklabel_to_cell (ticklabel)
-  if (isnumeric (ticklabel))
-    ## Use upto 5 significant digits
-    ticklabel = num2str (ticklabel(:), 5);
-  endif
   if (ischar (ticklabel))
-    if (rows (ticklabel) == 1 && any (ticklabel == "|"))
-      ticklabel = ostrsplit (ticklabel, "|");
-    else
-      ticklabel = cellstr (ticklabel);
-    endif
-  elseif (isempty (ticklabel))
-    ticklabel = {""};
-  else
+    ticklabel = cellstr (ticklabel);
+  elseif (iscellstr (ticklabel))
     ticklabel = ticklabel;
+  else
+    error ("__go_draw_axes__: unsupported type of ticklabel");
   endif
 endfunction
 
@@ -2274,7 +2290,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
     bld = false;
   endif
 
-  ## The text object maybe multiline, and may be of any class
+  ## The text object may be multiline, and may be of any class
   str = getfield (obj, fld);
   if (ischar (str) && rows (str) > 1)
     str = cellstr (str);
@@ -2288,6 +2304,10 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       endif
     endfor
     str = sprintf ("%s\n", str{:})(1:end-1);
+  endif
+
+  if (enhanced)
+    str = regexprep (str, '(?<!\\)@', '\@');
   endif
 
   if (enhanced)
@@ -2315,14 +2335,14 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   [s, e, m] = regexp (str, "\\\\([a-zA-Z]+|0)", "start", "end", "matches");
 
   for i = length (s) : -1 : 1
-    ## special case for "\0"  and replace with "{/Symbol \306}'
+    ## special case for "\0"  and replace with empty set "{/Symbol \306}'
     if (strncmp (m{i}, '\0', 2))
       str = [str(1:s(i) - 1) '{/Symbol \306}' str(s(i) + 2:end)];
     else
       f = m{i}(2:end);
       if (isfield (sym, f))
         g = getfield (sym, f);
-        ## FIXME The symbol font doesn't seem to support bold or italic
+        ## FIXME: The symbol font doesn't seem to support bold or italic
         ##if (bld)
         ##  if (it)
         ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
@@ -2352,7 +2372,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
           str = [str(1:s(i) - 1) '/' fnt '-bold ' str(s(i) + 3:end)];
         endif
       elseif (strcmpi (f, "color"))
-        ## FIXME Ignore \color but remove trailing {} block as well
+        ## FIXME: Ignore \color but remove trailing {} block as well
         d = strfind (str(e(i) + 1:end),'}');
         if (isempty (d))
           warning ('syntax error in \color argument');
@@ -2383,7 +2403,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         for j = 1 : length (flds)
           if (strncmp (flds{j}, f, length (flds{j})))
             g = getfield (sym, flds{j});
-            ## FIXME The symbol font doesn't seem to support bold or italic
+            ## FIXME: The symbol font doesn't seem to support bold or italic
             ##if (bld)
             ##  if (it)
             ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
@@ -2401,13 +2421,13 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
     endif
   endfor
 
-  ## Prepend @ to things  things like _0^x or _{-100}^{100} for
-  ## alignment But need to put the shorter of the two arguments first.
-  ## Carful of nested {} and unprinted characters when defining
-  ## shortest.. Don't have to worry about things like ^\theta as they
+  ## Prepend @ to things like _0^x or _{-100}^{100} for alignment.
+  ## But need to put the shorter of the two arguments first.
+  ## Careful of nested {} and unprinted characters when defining
+  ## shortest..  Don't have to worry about things like ^\theta as they
   ## are already converted to ^{/Symbol q}.
 
-  ## FIXME -- This is a mess... Is it worth it just for a "@" character?
+  ## FIXME: This is a mess... Is it worth it just for a "@" character?
 
   [s, m] = regexp (str,'[_\^]','start','matches');
   i = 1;
@@ -2486,7 +2506,7 @@ endfunction
 function l = length_string (s)
   l = length (s) - length (strfind (s,'{')) - length (strfind (s,'}'));
   m = regexp (s, '/([\w-]+|[\w-]+=\d+)', 'matches');
-  if (!isempty (m))
+  if (! isempty (m))
     l = l - sum (cellfun ("length", m));
   endif
 endfunction
@@ -2519,12 +2539,12 @@ function sym = __setup_sym_table__ ()
   sym.gamma = '{/Symbol g}';
   sym.eta = '{/Symbol h}';
   sym.iota = '{/Symbol i}';
-  sym.varphi = '{/Symbol j}';
+  sym.varphi = '{/Symbol j}';              # Not in OpenGL
   sym.kappa = '{/Symbol k}';
   sym.lambda = '{/Symbol l}';
   sym.mu = '{/Symbol m}';
   sym.nu = '{/Symbol n}';
-  sym.o =  '{/Symbol o}';
+  sym.o = '{/Symbol o}';
   sym.pi = '{/Symbol p}';
   sym.theta = '{/Symbol q}';
   sym.rho = '{/Symbol r}';
@@ -2550,7 +2570,9 @@ function sym = __setup_sym_table__ ()
   sym.uparrow = '{/Symbol \255}';
   sym.rightarrow = '{/Symbol \256}';
   sym.downarrow = '{/Symbol \257}';
-  sym.circ = '{/Symbol \260}';
+  sym.circ = '{/Symbol \260}';         # degree symbol, not circ as in FLTK
+  sym.deg = '{/Symbol \260}';
+  sym.ast = '{/Symbol *}';
   sym.pm = '{/Symbol \261}';
   sym.geq = '{/Symbol \263}';
   sym.times = '{/Symbol \264}';
@@ -2569,6 +2591,7 @@ function sym = __setup_sym_table__ ()
   sym.wp = '{/Symbol \303}';
   sym.otimes = '{/Symbol \304}';
   sym.oplus = '{/Symbol \305}';
+  ## empty set, not circled slash division operator as in FLTK.
   sym.oslash = '{/Symbol \306}';
   sym.cap = '{/Symbol \307}';
   sym.cup = '{/Symbol \310}';
@@ -2577,29 +2600,29 @@ function sym = __setup_sym_table__ ()
   sym.subset = '{/Symbol \314}';
   sym.subseteq = '{/Symbol \315}';
   sym.in = '{/Symbol \316}';
-  sym.notin = '{/Symbol \317}';
+  sym.notin = '{/Symbol \317}';            # Not in OpenGL
   sym.angle = '{/Symbol \320}';
-  sym.bigtriangledown = '{/Symbol \321}';
+  sym.bigtriangledown = '{/Symbol \321}';  # Not in OpenGL
   sym.langle = '{/Symbol \341}';
   sym.rangle = '{/Symbol \361}';
   sym.nabla = '{/Symbol \321}';
-  sym.prod = '{/Symbol \325}';
+  sym.prod = '{/Symbol \325}';             # Not in OpenGL
   sym.surd = '{/Symbol \326}';
   sym.cdot = '{/Symbol \327}';
   sym.neg = '{/Symbol \330}';
   sym.wedge = '{/Symbol \331}';
   sym.vee = '{/Symbol \332}';
-  sym.Leftrightarrow = '{/Symbol \333}';
+  sym.Leftrightarrow = '{/Symbol \333}';   # Not in OpenGL
   sym.Leftarrow = '{/Symbol \334}';
-  sym.Uparrow = '{/Symbol \335}';
+  sym.Uparrow = '{/Symbol \335}';          # Not in OpenGL
   sym.Rightarrow = '{/Symbol \336}';
-  sym.Downarrow = '{/Symbol \337}';
-  sym.diamond = '{/Symbol \340}';
+  sym.Downarrow = '{/Symbol \337}';        # Not in OpenGL
+  sym.diamond = '{/Symbol \340}';          # Not in OpenGL
   sym.copyright = '{/Symbol \343}';
   sym.lfloor = '{/Symbol \353}';
-  sym.lceil  = '{/Symbol \351}';
+  sym.lceil = '{/Symbol \351}';
   sym.rfloor = '{/Symbol \373}';
-  sym.rceil  = '{/Symbol \371}';
+  sym.rceil = '{/Symbol \371}';
   sym.int = '{/Symbol \362}';
 endfunction
 
@@ -2614,3 +2637,16 @@ function retval = __do_enhanced_option__ (enhanced, obj)
   endif
 endfunction
 
+function maybe_do_xtick_mirror (plot_stream, axis_obj)
+  if (! isempty(axis_obj.xtick))
+    fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+                          axis_obj.tickdir);
+  endif
+endfunction
+
+function maybe_do_x2tick_mirror (plot_stream, axis_obj)
+  if (! isempty(axis_obj.xtick))
+    fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+                          axis_obj.tickdir);
+  endif
+endfunction

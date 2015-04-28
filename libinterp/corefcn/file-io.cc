@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -240,10 +240,17 @@ DEFUN (fclose, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} fclose (@var{fid})\n\
 @deftypefnx {Built-in Function} {} fclose (\"all\")\n\
-Close the specified file.  If successful, @code{fclose} returns 0,\n\
-otherwise, it returns -1.  The second form of the @code{fclose} call closes\n\
-all open files except @code{stdout}, @code{stderr}, and @code{stdin}.\n\
-@seealso{fopen, freport}\n\
+@deftypefnx {Built-in Function} {@var{status} =} fclose (\"all\")\n\
+Close the file specified by the file descriptor @var{fid}.\n\
+\n\
+If successful, @code{fclose} returns 0, otherwise, it returns -1.  The\n\
+second form of the @code{fclose} call closes all open files except\n\
+@code{stdout}, @code{stderr}, and @code{stdin}.\n\
+\n\
+Programming Note: When using @qcode{\"all\"} the file descriptors associated\n\
+with gnuplot will also be closed.  This will prevent further plotting with\n\
+gnuplot until Octave is closed and restarted.\n\
+@seealso{fopen, fflush, freport}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -261,8 +268,9 @@ all open files except @code{stdout}, @code{stderr}, and @code{stdin}.\n\
 DEFUN (fclear, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fclear (@var{fid})\n\
-Clear the stream state for the specified file.\n\
-@seealso{fopen}\n\
+Clear the stream state for the file specified by the file descriptor\n\
+@var{fid}.\n\
+@seealso{ferror, fopen}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -271,7 +279,7 @@ Clear the stream state for the specified file.\n\
 
   if (nargin == 1)
     {
-      int fid = octave_stream_list::get_file_number (args (0));
+      int fid = octave_stream_list::get_file_number (args(0));
 
       octave_stream os = octave_stream_list::lookup (fid, "fclear");
 
@@ -287,13 +295,15 @@ Clear the stream state for the specified file.\n\
 DEFUN (fflush, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fflush (@var{fid})\n\
-Flush output to @var{fid}.  This is useful for ensuring that all\n\
-pending output makes it to the screen before some other event occurs.\n\
-For example, it is always a good idea to flush the standard output\n\
-stream before calling @code{input}.\n\
+Flush output to file descriptor @var{fid}.\n\
 \n\
 @code{fflush} returns 0 on success and an OS dependent error value\n\
 (@minus{}1 on Unix) on error.\n\
+\n\
+Programming Note: Flushing is useful for ensuring that all pending output\n\
+makes it to the screen before some other event occurs.  For example, it is\n\
+always a good idea to flush the standard output stream before calling\n\
+@code{input}.\n\
 @seealso{fopen, fclose}\n\
 @end deftypefn")
 {
@@ -305,7 +315,7 @@ stream before calling @code{input}.\n\
     {
       // FIXME: any way to avoid special case for stdout?
 
-      int fid = octave_stream_list::get_file_number (args (0));
+      int fid = octave_stream_list::get_file_number (args(0));
 
       if (fid == 1)
         {
@@ -335,8 +345,7 @@ Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, excluding\n\
 the possible trailing newline, are returned as a string.\n\
 \n\
-If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
-character.\n\
+If @var{len} is omitted, @code{fgetl} reads until the next newline character.\n\
 \n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 \n\
@@ -386,8 +395,7 @@ Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, including\n\
 the possible trailing newline, are returned as a string.\n\
 \n\
-If @var{len} is omitted, @code{fgets} reads until the next newline\n\
-character.\n\
+If @var{len} is omitted, @code{fgets} reads until the next newline character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 \n\
@@ -434,7 +442,9 @@ DEFUN (fskipl, args, ,
 @deftypefn  {Built-in Function} {@var{nlines} =} fskipl (@var{fid})\n\
 @deftypefnx {Built-in Function} {@var{nlines} =} fskipl (@var{fid}, @var{count})\n\
 @deftypefnx {Built-in Function} {@var{nlines} =} fskipl (@var{fid}, Inf)\n\
-Read and skip @var{count} lines from the file descriptor @var{fid}.\n\
+Read and skip @var{count} lines from the file specified by the file\n\
+descriptor @var{fid}.\n\
+\n\
 @code{fskipl} discards characters until an end-of-line is encountered exactly\n\
 @var{count}-times, or until the end-of-file marker is found.\n\
 \n\
@@ -500,23 +510,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
           file_stat fs (fname);
 
-          if (! (md & std::ios::out
-                 || octave_env::absolute_pathname (fname)
-                 || octave_env::rooted_relative_pathname (fname)))
-            {
-              if (! fs.exists ())
-                {
-                  std::string tmp
-                    = octave_env::make_absolute (load_path::find_file (fname));
-
-                  if (! tmp.empty ())
-                    {
-                      warning_with_id ("Octave:fopen-file-in-path",
-                                       "fopen: file found in load path");
-                      fname = tmp;
-                    }
-                }
-            }
+          if (! (md & std::ios::out))
+            fname = find_data_file_in_load_path ("fopen", fname);
 
           if (! fs.is_dir ())
             {
@@ -562,18 +557,20 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
   fid = -1;
 
-  std::string name = tc_name.string_value ();
-
-  if (! error_state)
+  if (tc_name.is_string ())
     {
-      std::string mode = tc_mode.string_value ();
+      std::string name = tc_name.string_value ();
 
-      if (! error_state)
+      if (tc_mode.is_string ())
         {
-          std::string arch = tc_arch.string_value ();
+          std::string mode = tc_mode.string_value ();
 
-          if (! error_state)
-            retval = do_stream_open (name, mode, arch, fid);
+          if (tc_arch.is_string ())
+            {
+              std::string arch = tc_arch.string_value ();
+
+              retval = do_stream_open (name, mode, arch, fid);
+            }
           else
             ::error ("%s: architecture type must be a string", fcn);
         }
@@ -588,7 +585,10 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
 DEFUN (fopen, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})\n\
+@deftypefn  {Built-in Function} {@var{fid} =} fopen (@var{name})\n\
+@deftypefnx {Built-in Function} {@var{fid} =} fopen (@var{name}, @var{mode})\n\
+@deftypefnx {Built-in Function} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch})\n\
+@deftypefnx {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@dots{})\n\
 @deftypefnx {Built-in Function} {@var{fid_list} =} fopen (\"all\")\n\
 @deftypefnx {Built-in Function} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})\n\
 The first form of the @code{fopen} function opens the named file with\n\
@@ -627,7 +627,7 @@ produce unexpected results.\n\
 The possible values @samp{mode} may have are\n\
 \n\
 @table @asis\n\
-@item @samp{r}\n\
+@item @samp{r} (default)\n\
 Open a file for reading.\n\
 \n\
 @item @samp{w}\n\
@@ -652,7 +652,7 @@ Append a @qcode{\"t\"} to the mode string to open the file in text mode or a\n\
 @qcode{\"b\"} to open in binary mode.  On Windows and Macintosh systems, text\n\
 mode reading and writing automatically converts linefeeds to the\n\
 appropriate line end character for the system (carriage-return linefeed\n\
-on Windows, carriage-return on Macintosh).  The default if no mode is\n\
+on Windows, carriage-return on Macintosh).  The default when no mode is\n\
 specified is binary mode.\n\
 \n\
 Additionally, you may append a @qcode{\"z\"} to the mode string to open a\n\
@@ -663,8 +663,8 @@ The parameter @var{arch} is a string specifying the default data format\n\
 for the file.  Valid values for @var{arch} are:\n\
 \n\
 @table @samp\n\
-@item native\n\
-The format of the current machine (this is the default).\n\
+@item native (default)\n\
+The format of the current machine.\n\
 \n\
 @item ieee-be\n\
 IEEE big endian format.\n\
@@ -753,15 +753,15 @@ for reading, writing, or both.  For example:\n\
 @group\n\
 freport ()\n\
 \n\
-     @print{}  number  mode  name\n\
-     @print{}\n\
-     @print{}       0     r  stdin\n\
-     @print{}       1     w  stdout\n\
-     @print{}       2     w  stderr\n\
-     @print{}       3     r  myfile\n\
+     @print{}  number  mode  arch       name\n\
+     @print{}  ------  ----  ----       ----\n\
+     @print{}     0     r    ieee-le    stdin\n\
+     @print{}     1     w    ieee-le    stdout\n\
+     @print{}     2     w    ieee-le    stderr\n\
+     @print{}     3     r    ieee-le    myfile\n\
 @end group\n\
 @end example\n\
-@seealso{fopen, fclose}\n\
+@seealso{fopen, fclose, is_valid_file_id}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -778,10 +778,13 @@ freport ()\n\
 
 DEFUN (frewind, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} frewind (@var{fid})\n\
-Move the file pointer to the beginning of the file @var{fid}, returning\n\
-0 for success, and -1 if an error was encountered.  It is equivalent to\n\
-@code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
+@deftypefn  {Built-in Function} {} frewind (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{status} =} frewind (@var{fid})\n\
+Move the file pointer to the beginning of the file specified by file\n\
+descriptor @var{fid}.\n\
+\n\
+@code{frewind} returns 0 for success, and -1 if an error is encountered.  It\n\
+is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
 @seealso{fseek, ftell, fopen}\n\
 @end deftypefn")
 {
@@ -812,7 +815,7 @@ DEFUN (fseek, args, ,
 @deftypefn  {Built-in Function} {} fseek (@var{fid}, @var{offset})\n\
 @deftypefnx {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})\n\
 @deftypefnx {Built-in Function} {@var{status} =} fseek (@dots{})\n\
-Set the file pointer to any location within the file @var{fid}.\n\
+Set the file pointer to the location @var{offset} within the file @var{fid}.\n\
 \n\
 The pointer is positioned @var{offset} characters from the @var{origin},\n\
 which may be one of the predefined variables @w{@code{SEEK_CUR}} (current\n\
@@ -822,7 +825,7 @@ file) or strings @qcode{\"cof\"}, @qcode{\"bof\"} or @qcode{\"eof\"}.  If\n\
 be positive, negative, or zero but not all combinations of @var{origin} and\n\
 @var{offset} can be realized.\n\
 \n\
-Return 0 on success and -1 on error.\n\
+@code{fseek} returns 0 on success and -1 on error.\n\
 @seealso{fskipl, frewind, ftell, fopen}\n\
 @end deftypefn")
 {
@@ -850,10 +853,10 @@ Return 0 on success and -1 on error.\n\
 
 DEFUN (ftell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ftell (@var{fid})\n\
-Return the position of the file pointer as the number of characters\n\
-from the beginning of the file @var{fid}.\n\
-@seealso{fseek, feof, fopen}\n\
+@deftypefn {Built-in Function} {@var{pos} =} ftell (@var{fid})\n\
+Return the position of the file pointer as the number of characters from the\n\
+beginning of the file specified by file descriptor @var{fid}.\n\
+@seealso{fseek, frewind, feof, fopen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -875,10 +878,20 @@ from the beginning of the file @var{fid}.\n\
 
 DEFUN (fprintf, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
-This function is just like @code{printf}, except that the output is\n\
-written to the stream @var{fid} instead of @code{stdout}.\n\
-If @var{fid} is omitted, the output is written to @code{stdout}.\n\
+@deftypefn  {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {} fprintf (@var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {@var{numbytes} =} fprintf (@dots{})\n\
+This function is equivalent to @code{printf}, except that the output is\n\
+written to the file descriptor @var{fid} instead of @code{stdout}.\n\
+\n\
+If @var{fid} is omitted, the output is written to @code{stdout} making the\n\
+function exactly equivalent to @code{printf}.\n\
+\n\
+The optional output returns the number of bytes written to the file.\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
 @end deftypefn")
 {
@@ -945,6 +958,10 @@ characters printed.\n\
 See the Formatted Output section of the GNU Octave manual for a\n\
 complete description of the syntax of the template string.\n\
 @end ifclear\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
 @seealso{fprintf, sprintf, scanf}\n\
 @end deftypefn")
 {
@@ -986,10 +1003,15 @@ complete description of the syntax of the template string.\n\
 
 DEFUN (fputs, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})\n\
-Write a string to a file with no formatting.\n\
+@deftypefn  {Built-in Function} {} fputs (@var{fid}, @var{string})\n\
+@deftypefnx {Built-in Function} {@var{status} =} fputs (@var{fid}, @var{string})\n\
+Write the string @var{string} to the file with file descriptor @var{fid}.\n\
 \n\
-Return a non-negative number on success and EOF on error.\n\
+The string is written to the file with no additional formatting.  Use\n\
+@code{fdisp} instead to automatically append a newline character appropriate\n\
+for the local machine.\n\
+\n\
+Return a non-negative number on success or EOF on error.\n\
 @seealso{fdisp, fprintf, fwrite, fopen}\n\
 @end deftypefn")
 {
@@ -1014,8 +1036,12 @@ Return a non-negative number on success and EOF on error.\n\
 
 DEFUN (puts, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} puts (@var{string})\n\
+@deftypefn  {Built-in Function} {} puts (@var{string})\n\
+@deftypefnx {Built-in Function} {@var{status} =} puts (@var{string})\n\
 Write a string to the standard output with no formatting.\n\
+\n\
+The string is written verbatim to the standard output.  Use @code{disp} to\n\
+automatically append a newline character appropriate for the local machine.\n\
 \n\
 Return a non-negative number on success and EOF on error.\n\
 @seealso{fputs, disp}\n\
@@ -1041,6 +1067,10 @@ string.  Unlike the C library function, which requires you to provide a\n\
 suitably sized string as an argument, Octave's @code{sprintf} function\n\
 returns the string, automatically sized to hold all of the items\n\
 converted.\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
 @seealso{printf, fprintf, sscanf}\n\
 @end deftypefn")
 {
@@ -1078,8 +1108,13 @@ converted.\n\
 
               retval(2) = os.printf (fmt_arg, tmp_args, who);
               retval(1) = os.error ();
-              retval(0) = octave_value (ostr->str (),
-                                        fmt_arg.is_sq_string () ? '\'' : '"');
+
+              std::string result = ostr->str ();
+              char type = fmt_arg.is_sq_string () ? '\'' : '"';
+
+              retval(0) = (result.empty ()
+                           ? octave_value (charMatrix (1, 0), type)
+                           : octave_value (result, type));
             }
           else
             ::error ("%s: format TEMPLATE must be a string", who.c_str ());
@@ -1327,8 +1362,7 @@ DEFUN (scanf, args, nargout,
 @deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, \"C\")\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
-It is currently not useful to call @code{scanf} in interactive\n\
-programs.\n\
+It is currently not useful to call @code{scanf} in interactive programs.\n\
 @seealso{fscanf, sscanf, printf}\n\
 @end deftypefn")
 {
@@ -1338,7 +1372,7 @@ programs.\n\
 
   tmp_args (0) = 0.0;
   for (int i = 0; i < nargin; i++)
-    tmp_args (i+1) = args (i);
+    tmp_args(i+1) = args(i);
 
   return Ffscanf (tmp_args, nargout);
 }
@@ -1356,10 +1390,10 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   if (! error_state)
     {
-      std::string prec = prec_arg.string_value ();
-
-      if (! error_state)
+      if (prec_arg.is_string ())
         {
+          std::string prec = prec_arg.string_value ();
+
           int block_size = 1;
           oct_data_conv::data_type input_type;
           oct_data_conv::data_type output_type;
@@ -1373,10 +1407,10 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
               if (! error_state)
                 {
-                  std::string arch = arch_arg.string_value ();
-
-                  if (! error_state)
+                  if (arch_arg.is_string ())
                     {
+                      std::string arch = arch_arg.string_value ();
+
                       oct_mach_info::float_format flt_fmt
                         = oct_mach_info::string_to_float_format (arch);
 
@@ -1404,9 +1438,13 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
 DEFUN (fread, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
-Read binary data of type @var{precision} from the specified file ID\n\
-@var{fid}.\n\
+@deftypefn  {Built-in Function} {@var{val} =} fread (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
+@deftypefnx {Built-in Function} {[@var{val}, @var{count}] =} fread (@dots{})\n\
+Read binary data from the file specified by the file descriptor @var{fid}.\n\
 \n\
 The optional argument @var{size} specifies the amount of data to read\n\
 and may be one of\n\
@@ -1548,19 +1586,19 @@ a complete block of 3 values.\n\
 The optional argument @var{arch} is a string specifying the data format\n\
 for the file.  Valid values are\n\
 \n\
-@table @code\n\
+@table @asis\n\
 @item @qcode{\"native\"}\n\
 The format of the current machine.\n\
 \n\
-@item \"ieee-be\"\n\
+@item @qcode{\"ieee-be\"}\n\
 IEEE big endian.\n\
 \n\
-@item \"ieee-le\"\n\
+@item @qcode{\"ieee-le\"}\n\
 IEEE little endian.\n\
 @end table\n\
 \n\
-The data read from the file is returned in @var{val}, and the number of\n\
-values read is returned in @code{count}\n\
+The output argument @var{val} contains the data read from the file.\n\
+The optional return value @var{count} contains the number of elements read.\n\
 @seealso{fwrite, fgets, fgetl, fscanf, fopen}\n\
 @end deftypefn")
 {
@@ -1622,10 +1660,10 @@ do_fwrite (octave_stream& os, const octave_value& data,
 {
   int retval = -1;
 
-  std::string prec = prec_arg.string_value ();
-
-  if (! error_state)
+  if (prec_arg.is_string ())
     {
+      std::string prec = prec_arg.string_value ();
+
       int block_size = 1;
       oct_data_conv::data_type output_type;
 
@@ -1637,10 +1675,10 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
           if (! error_state)
             {
-              std::string arch = arch_arg.string_value ();
-
-              if (! error_state)
+              if (arch_arg.is_string ())
                 {
+                  std::string arch = arch_arg.string_value ();
+
                   oct_mach_info::float_format flt_fmt
                     = oct_mach_info::string_to_float_format (arch);
 
@@ -1665,10 +1703,14 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
 DEFUN (fwrite, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{count} =} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})\n\
-Write data in binary form of type @var{precision} to the specified file\n\
-ID @var{fid}, returning the number of values successfully written to the\n\
-file.\n\
+@deftypefn  {Built-in Function} {} fwrite (@var{fid}, @var{data})\n\
+@deftypefnx {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision})\n\
+@deftypefnx {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip})\n\
+@deftypefnx {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})\n\
+@deftypefnx {Built-in Function} {@var{count} =} fwrite (@dots{})\n\
+Write data in binary form to the file specified by the file descriptor\n\
+@var{fid}, returning the number of values @var{count} successfully written\n\
+to the file.\n\
 \n\
 The argument @var{data} is a matrix of values that are to be written to\n\
 the file.  The values are extracted in column-major order.\n\
@@ -1726,12 +1768,14 @@ are too large to fit in the specified precision.\n\
 
 DEFUNX ("feof", Ffeof, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} feof (@var{fid})\n\
-Return 1 if an end-of-file condition has been encountered for a given\n\
-file and 0 otherwise.  Note that it will only return 1 if the end of the\n\
-file has already been encountered, not if the next read operation will\n\
-result in an end-of-file condition.\n\
-@seealso{fread, fopen}\n\
+@deftypefn {Built-in Function} {@var{status} =} feof (@var{fid})\n\
+Return 1 if an end-of-file condition has been encountered for the file\n\
+specified by file descriptor @var{fid} and 0 otherwise.\n\
+\n\
+Note that @code{feof} will only return 1 if the end of the file has already\n\
+been encountered, not if the next read operation will result in an\n\
+end-of-file condition.\n\
+@seealso{fread, frewind, fseek, fclear, fopen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -1753,15 +1797,22 @@ result in an end-of-file condition.\n\
 
 DEFUNX ("ferror", Fferror, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid})\n\
-@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid}, \"clear\")\n\
-Return 1 if an error condition has been encountered for the file ID\n\
-@var{fid} and 0 otherwise.  Note that it will only return 1 if an error\n\
-has already been encountered, not if the next operation will result in\n\
-an error condition.\n\
+@deftypefn  {Built-in Function} {@var{msg} =} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{msg}, @var{err}] =} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{dots}] =} ferror (@var{fid}, \"clear\")\n\
+Query the error status of the stream specified by file descriptor @var{fid}\n\
 \n\
-The second argument is optional.  If it is supplied, also clear the\n\
-error condition.\n\
+If an error condition exists then return a string @var{msg} describing the\n\
+error.  Otherwise, return an empty string @qcode{\"\"}.\n\
+\n\
+The optional second output is a numeric indication of the error status.\n\
+@var{err} is 1 if an error condition has been encountered and 0 otherwise.\n\
+\n\
+Note that @code{ferror} indicates if an error has already occurred, not\n\
+whether the next operation will result in an error condition.\n\
+\n\
+The second input @qcode{\"clear\"} is optional.  If supplied, the error\n\
+state on the stream will be cleared.\n\
 @seealso{fclear, fopen}\n\
 @end deftypefn")
 {
@@ -1802,7 +1853,7 @@ error condition.\n\
 }
 
 DEFUNX ("popen", Fpopen, args, ,
-       "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{fid} =} popen (@var{command}, @var{mode})\n\
 Start a process and create a pipe.  The name of the command to run is\n\
 given by @var{command}.  The file identifier corresponding to the input\n\
@@ -1833,6 +1884,7 @@ endwhile\n\
    @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
 @end group\n\
 @end example\n\
+@seealso{popen2}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -1841,14 +1893,14 @@ endwhile\n\
 
   if (nargin == 2)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
-          std::string mode = args(1).string_value ();
+          std::string name = args(0).string_value ();
 
-          if (! error_state)
+          if (args(1).is_string ())
             {
+              std::string mode = args(1).string_value ();
+
               if (mode == "r")
                 {
                   octave_stream ips = octave_iprocstream::create (name);
@@ -1879,8 +1931,10 @@ endwhile\n\
 DEFUNX ("pclose", Fpclose, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} pclose (@var{fid})\n\
-Close a file identifier that was opened by @code{popen}.  You may also\n\
-use @code{fclose} for the same purpose.\n\
+Close a file identifier that was opened by @code{popen}.\n\
+\n\
+The function @code{fclose} may also be used for the same purpose.\n\
+@seealso{fclose, popen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -1895,23 +1949,23 @@ use @code{fclose} for the same purpose.\n\
   return retval;
 }
 
-DEFUNX ("tmpnam", Ftmpnam, args, ,
-        "-*- texinfo -*-\n\
-@c List other forms of function in documentation index\n\
-@findex octave_tmp_file_name\n\
-\n\
-@deftypefn  {Built-in Function} {} tmpnam ()\n\
-@deftypefnx {Built-in Function} {} tmpnam (@var{dir})\n\
-@deftypefnx {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
+DEFUN (tempname, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{fname} =} tempname ()\n\
+@deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir})\n\
+@deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
 If @var{dir} is also omitted, the default directory for temporary files\n\
-is used.  If @var{dir} is provided, it must exist, otherwise the default\n\
-directory for temporary files is used.  Since the named file is not\n\
-opened, by @code{tmpnam}, it is possible (though relatively unlikely)\n\
-that it will not be available by the time your program attempts to open it.\n\
-@seealso{tmpfile, mkstemp, P_tmpdir}\n\
+(@code{P_tmpdir}) is used.  If @var{dir} is provided, it must exist,\n\
+otherwise the default directory for temporary files is used.\n\
+\n\
+Programming Note: Because the named file is not opened by @code{tempname},\n\
+it is possible, though relatively unlikely, that it will not be available\n\
+by the time your program attempts to open it.  If this is a concern,\n\
+see @code{tmpfile}.\n\
+@seealso{mkstemp, tempdir, P_tmpdir, tmpfile}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1920,20 +1974,25 @@ that it will not be available by the time your program attempts to open it.\n\
 
   if (len < 3)
     {
-      std::string dir = len > 0 ? args(0).string_value () : std::string ();
-
-      if (! error_state)
+      std::string dir;
+      if (len > 0)
         {
-          std::string pfx
-            = len > 1 ? args(1).string_value () : std::string ("oct-");
+          if (args(0).is_string ())
+            dir = args(0).string_value ();
+          else
+            ::error ("DIR must be a string");
+        }
 
-          if (! error_state)
-            retval = octave_tempnam (dir, pfx);
+      std::string pfx ("oct-");
+      if (len > 1)
+        {
+          if (args(1).is_string ())
+            pfx = args(1).string_value ();
           else
             ::error ("PREFIX must be a string");
         }
-      else
-        ::error ("DIR argument must be a string");
+
+      retval = octave_tempnam (dir, pfx);
     }
   else
     print_usage ();
@@ -1941,20 +2000,67 @@ that it will not be available by the time your program attempts to open it.\n\
   return retval;
 }
 
-DEFALIAS (octave_tmp_file_name, tmpnam);
+/*
+%!test
+%! if (ispc ())
+%!   envname = "TMP";
+%! else
+%!   envname = "TMPDIR";
+%! endif
+%! envdir = getenv (envname);
+%! unsetenv (envname);
+%! unwind_protect
+%!   ## Test 0-argument form
+%!   fname = tempname ();
+%!   [tmpdir, tmpfname] = fileparts (fname);
+%!   assert (tmpdir, P_tmpdir);
+%!   assert (tmpfname (1:4), "oct-");
+%!   ## Test 1-argument form
+%!   tmp_tmpdir = [P_tmpdir filesep() substr(tmpfname, -5)];
+%!   mkdir (tmp_tmpdir) || error ("Unable to create tmp dir");
+%!   setenv (envname, P_tmpdir);
+%!   fname = tempname (tmp_tmpdir);
+%!   [tmpdir, tmpfname] = fileparts (fname);
+%!   assert (tmpdir, tmp_tmpdir);
+%!   assert (tmpfname (1:4), "oct-");
+%!   ## Test 1-argument form w/null tmpdir
+%!   fname = tempname ("");
+%!   [tmpdir, tmpfname] = fileparts (fname);
+%!   assert (tmpdir, P_tmpdir);
+%!   assert (tmpfname (1:4), "oct-");
+%!   ## Test 2-argument form
+%!   fname = tempname (tmp_tmpdir, "pfx-");
+%!   [tmpdir, tmpfname] = fileparts (fname);
+%!   assert (tmpdir, tmp_tmpdir);
+%!   assert (tmpfname (1:4), "pfx-");
+%!   ## Test 2-argument form w/null prefix
+%!   fname = tempname (tmp_tmpdir, "");
+%!   [tmpdir, tmpfname] = fileparts (fname);
+%!   assert (tmpdir, tmp_tmpdir);
+%!   assert (tmpfname (1:4), "file");
+%! unwind_protect_cleanup
+%!   rmdir (tmp_tmpdir);
+%!   if (isempty (envdir))
+%!     unsetenv (envname);
+%!   else
+%!     setenv (envname, envdir);
+%!   endif
+%! end_unwind_protect
+*/
 
 DEFUN (tmpfile, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} tmpfile ()\n\
 Return the file ID corresponding to a new temporary file with a unique\n\
-name.  The file is opened in binary read/write (@qcode{\"w+b\"}) mode.\n\
-The file will be deleted automatically when it is closed or when Octave\n\
-exits.\n\
+name.\n\
+\n\
+The file is opened in binary read/write (@qcode{\"w+b\"}) mode and will be\n\
+deleted automatically when it is closed or when Octave exits.\n\
 \n\
 If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
 string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{tmpnam, mkstemp, P_tmpdir}\n\
+@seealso{tempname, mkstemp, tempdir, P_tmpdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1996,23 +2102,25 @@ system-dependent error message.\n\
 
 DEFUN (mkstemp, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (@var{template}, @var{delete})\n\
-Return the file ID corresponding to a new temporary file with a unique\n\
-name created from @var{template}.  The last six characters of @var{template}\n\
-must be @code{XXXXXX} and these are replaced with a string that makes the\n\
-filename unique.  The file is then created with mode read/write and\n\
-permissions that are system dependent (on GNU/Linux systems, the permissions\n\
-will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
-in binary mode and with the @w{@code{O_EXCL}} flag.\n\
+@deftypefn  {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (\"@var{template}\")\n\
+@deftypefnx {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (\"@var{template}\", @var{delete})\n\
+Return the file descriptor @var{fid} corresponding to a new temporary file\n\
+with a unique name created from @var{template}.\n\
 \n\
-If the optional argument @var{delete} is supplied and is true,\n\
-the file will be deleted automatically when Octave exits.\n\
+The last six characters of @var{template} must be @qcode{\"XXXXXX\"} and\n\
+these are replaced with a string that makes the filename unique.  The file\n\
+is then created with mode read/write and permissions that are system\n\
+dependent (on GNU/Linux systems, the permissions will be 0600 for versions of\n\
+glibc 2.0.7 and later).  The file is opened in binary mode and with the\n\
+@w{@code{O_EXCL}} flag.\n\
 \n\
-If successful, @var{fid} is a valid file ID, @var{name} is the name of\n\
-the file, and @var{msg} is an empty string.  Otherwise, @var{fid}\n\
-is -1, @var{name} is empty, and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{tmpfile, tmpnam, P_tmpdir}\n\
+If the optional argument @var{delete} is supplied and is true, the file will\n\
+be deleted automatically when Octave exits.\n\
+\n\
+If successful, @var{fid} is a valid file ID, @var{name} is the name of the\n\
+file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
+@var{name} is empty, and @var{msg} contains a system-dependent error message.\n\
+@seealso{tempname, tempdir, P_tmpdir, tmpfile, fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2025,10 +2133,10 @@ error message.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string tmpl8 = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string tmpl8 = args(0).string_value ();
+
           OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
           strcpy (tmp, tmpl8.c_str ());
 
@@ -2112,10 +2220,12 @@ convert (int x, int ibase, int obase)
 DEFUNX ("umask", Fumask, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} umask (@var{mask})\n\
-Set the permission mask for file creation.  The parameter @var{mask}\n\
-is an integer, interpreted as an octal number.  If successful,\n\
-returns the previous value of the mask (as an integer to be\n\
+Set the permission mask for file creation.\n\
+\n\
+The parameter @var{mask} is an integer, interpreted as an octal number.  If\n\
+successful, returns the previous value of the mask (as an integer to be\n\
 interpreted as an octal number); otherwise an error message is printed.\n\
+@seealso{fopen, mkdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2174,8 +2284,14 @@ const_value (const char *, const octave_value_list& args, int val)
 DEFUNX ("P_tmpdir", FP_tmpdir, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} P_tmpdir ()\n\
-Return the default name of the directory for temporary files on\n\
-this system.  The name of this directory is system dependent.\n\
+Return the name of the host system's @strong{default} directory for\n\
+temporary files.\n\
+\n\
+Programming Note: The value returned by @code{P_tmpdir} is always the\n\
+default location.  This value may not agree with that returned from\n\
+@code{tempdir} if the user has overridden the default with the @env{TMPDIR}\n\
+environment variable.\n\
+@seealso{tempdir, tempname, mkstemp, tmpfile}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2198,8 +2314,8 @@ DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
 @deftypefn  {Built-in Function} {} SEEK_SET ()\n\
 @deftypefnx {Built-in Function} {} SEEK_CUR ()\n\
 @deftypefnx {Built-in Function} {} SEEK_END ()\n\
-Return the numerical value to pass to @code{fseek} to perform\n\
-one of the following actions:\n\
+Return the numerical value to pass to @code{fseek} to perform one of the\n\
+following actions:\n\
 \n\
 @table @code\n\
 @item SEEK_SET\n\
@@ -2259,7 +2375,8 @@ DEFUNX ("stdin", Fstdin, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} stdin ()\n\
 Return the numeric value corresponding to the standard input stream.\n\
-When Octave is used interactively, this is filtered through the command\n\
+\n\
+When Octave is used interactively, stdin is filtered through the command\n\
 line editing functions.\n\
 @seealso{stdout, stderr}\n\
 @end deftypefn")
@@ -2271,6 +2388,7 @@ DEFUNX ("stdout", Fstdout, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} stdout ()\n\
 Return the numeric value corresponding to the standard output stream.\n\
+\n\
 Data written to the standard output is normally filtered through the pager.\n\
 @seealso{stdin, stderr}\n\
 @end deftypefn")
@@ -2282,8 +2400,9 @@ DEFUNX ("stderr", Fstderr, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} stderr ()\n\
 Return the numeric value corresponding to the standard error stream.\n\
-Even if paging is turned on, the standard error is not sent to the\n\
-pager.  It is useful for error messages and prompts.\n\
+\n\
+Even if paging is turned on, the standard error is not sent to the pager.\n\
+It is useful for error messages and prompts.\n\
 @seealso{stdin, stdout}\n\
 @end deftypefn")
 {

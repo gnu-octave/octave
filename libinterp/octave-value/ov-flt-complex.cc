@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mxarray.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-complex.h"
@@ -50,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_scalar<FloatComplex>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_float_complex);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex,
                                      "float complex scalar", "single");
@@ -81,7 +81,8 @@ octave_float_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
-  octave_value tmp (new octave_float_complex_matrix (float_complex_matrix_value ()));
+  octave_value tmp (new octave_float_complex_matrix (
+                      float_complex_matrix_value ()));
 
   return tmp.do_index_op (idx, resize_ok);
 }
@@ -89,7 +90,7 @@ octave_float_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 double
 octave_float_complex::double_value (bool force_conversion) const
 {
-  double retval = lo_ieee_nan_value ();
+  double retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
@@ -103,7 +104,7 @@ octave_float_complex::double_value (bool force_conversion) const
 float
 octave_float_complex::float_value (bool force_conversion) const
 {
-  float retval = lo_ieee_float_nan_value ();
+  float retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
@@ -293,15 +294,17 @@ octave_float_complex::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_float_complex::save_hdf5 (hid_t loc_id, const char *name,
+octave_float_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                  bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hsize_t dimens[3];
-  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, type_hid, data_hid;
+  space_hid = type_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0)
@@ -334,13 +337,20 @@ octave_float_complex::save_hdf5 (hid_t loc_id, const char *name,
   H5Tclose (type_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_float_complex::load_hdf5 (hid_t loc_id, const char *name)
+octave_float_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
+
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
 #else
@@ -381,10 +391,12 @@ octave_float_complex::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_float_complex::as_mxArray (void) const

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 VZLU Prague, a.s.
+## Copyright (C) 2008-2015 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -63,11 +63,11 @@
 ## Last relative change in function value was less than @code{TolFun}.
 ##
 ## @item 0
-## Iteration limit exceeded---either maximum numer of algorithm iterations
+## Iteration limit exceeded---either maximum number of algorithm iterations
 ## @code{MaxIter} or maximum number of function evaluations @code{MaxFunEvals}.
 ##
 ## @item -1
-## Alogrithm terminated by @code{OutputFcn}.
+## Algorithm terminated by @code{OutputFcn}.
 ##
 ## @item -3
 ## The trust region radius became excessively small.
@@ -251,7 +251,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
       if (fval1 < fval)
         ## Scaled actual reduction.
-        actred =  (fval - fval1) / (abs (fval1) + abs (fval));
+        actred = (fval - fval1) / (abs (fval1) + abs (fval));
       else
         actred = -1;
       endif
@@ -371,6 +371,7 @@ endfunction
 %!  n = length (x);
 %!  f = sumsq (1 - x(1:n-1)) + 100 * sumsq (x(2:n) - x(1:n-1).^2);
 %!endfunction
+%!
 %!test
 %! [x, fval, info, out] = fminunc (@__rosenb, [5, -5]);
 %! tol = 2e-5;
@@ -383,7 +384,8 @@ endfunction
 %! assert (info > 0);
 %! assert (x, ones (1, 4), tol);
 %! assert (fval, 0, tol);
-%% Test FunValCheck works correctly
+
+## Test FunValCheck works correctly
 %!assert (fminunc (@(x) x^2, 1, optimset ("FunValCheck", "on")), 0, eps)
 %!error <non-real value> fminunc (@(x) x + i, 1, optimset ("FunValCheck", "on"))
 %!error <NaN value> fminunc (@(x) x + NaN, 1, optimset ("FunValCheck", "on"))

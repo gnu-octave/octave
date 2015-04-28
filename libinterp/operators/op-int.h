@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -224,7 +224,7 @@ along with Octave; see the file COPYING.  If not, see
  \
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
     return retval; \
-  } \
+  }
 
 #define OCTAVE_SS_INT_BOOL_OPS(PFX, T1, T2, Z1, Z2) \
   DEFBINOP (PFX ## _el_and, T2, T2) \
@@ -1160,7 +1160,10 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 #define OCTAVE_INSTALL_INT_NULL_ASSIGN_OPS(TYPE) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_matrix, TYPE ## null_assign) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_str, TYPE ## null_assign) \
-  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_sq_str, TYPE ## null_assign)
+  INSTALL_ASSIGNOP (op_asn_eq, octave_ ## TYPE ## _matrix, octave_null_sq_str, TYPE ## null_assign) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_null_matrix, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV (octave_## TYPE ## _scalar, octave_null_str, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV (octave_## TYPE ## _scalar, octave_null_sq_str, octave_ ## TYPE ## _matrix)
 
 #define OCTAVE_INSTALL_INT_OPS(TYPE) \
   OCTAVE_INSTALL_SS_INT_OPS (TYPE) \

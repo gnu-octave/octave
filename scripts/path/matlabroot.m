@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Ben Abbott
+## Copyright (C) 2008-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -30,7 +30,6 @@ function retval = matlabroot ()
   retval = OCTAVE_HOME;
 
 endfunction
-
 
 
 %!assert (matlabroot (), OCTAVE_HOME ())

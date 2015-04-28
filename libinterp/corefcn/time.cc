@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -123,6 +123,8 @@ value returned by @code{time} was 856163706.\n\
 
 /*
 %!assert (time () > 0)
+
+%!error time (1)
 */
 
 DEFUN (gmtime, args, ,
@@ -299,7 +301,9 @@ mktime (localtime (time ()))\n\
 %!assert (datestr (datenum (1795, 1, 1), 0), "01-Jan-1795 00:00:00")
 
 %!error mktime ()
+%!error mktime (1)
 %!error mktime (1, 2, 3)
+%!error mktime (struct ("year", "foo"))
 */
 
 DEFUN (strftime, args, ,
@@ -459,10 +463,10 @@ Year (1970-).\n\
 
   if (args.length () == 2)
     {
-      std::string fmt = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string fmt = args(0).string_value ();
+
           octave_scalar_map map = args(1).scalar_map_value ();
 
           if (! error_state)
@@ -494,6 +498,8 @@ Year (1970-).\n\
 %!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))));
 
 %!error strftime ()
+%!error strftime ("foo", 1)
+%!error strftime ("foo", struct ("year", "foo"))
 %!error strftime ("foo", localtime (time ()), 1)
 */
 
@@ -513,14 +519,14 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   if (args.length () == 2)
     {
-      std::string str = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
-          std::string fmt = args(1).string_value ();
+          std::string str = args(0).string_value ();
 
-          if (! error_state)
+          if (args(1).is_string ())
             {
+              std::string fmt = args(1).string_value ();
+
               octave_strptime t (str, fmt);
 
               retval(1) = t.characters_converted ();
@@ -537,3 +543,23 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   return retval;
 }
+
+/*
+%!test
+%! fmt = "%Y-%m-%d %H:%M:%S";
+%! s = strftime (fmt, localtime (time ()));
+%! ts = strptime  (s, fmt);
+%! assert (isstruct (ts));
+%! assert (isfield (ts, "usec"));
+%! assert (isfield (ts, "year"));
+%! assert (isfield (ts, "mon"));
+%! assert (isfield (ts, "mday"));
+%! assert (isfield (ts, "sec"));
+%! assert (isfield (ts, "min"));
+%! assert (isfield (ts, "wday"));
+%! assert (isfield (ts, "hour"));
+%! assert (isfield (ts, "isdst"));
+%! assert (isfield (ts, "yday"));
+
+%!error strptime ()
+*/

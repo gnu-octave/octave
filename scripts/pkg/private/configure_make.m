@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -29,14 +29,11 @@ function configure_make (desc, packdir, verbose)
     octave_bindir = octave_config_info ("bindir");
     ver = version ();
     ext = octave_config_info ("EXEEXT");
-    mkoctfile_program = fullfile (octave_bindir, sprintf ("mkoctfile-%s%s", ver, ext));
-    octave_config_program = fullfile (octave_bindir, sprintf ("octave-config-%s%s", ver, ext));
+    mkoctfile_program = fullfile (octave_bindir, ...
+                                  sprintf ("mkoctfile-%s%s", ver, ext));
+    octave_config_program = fullfile (octave_bindir, ...
+                                      sprintf ("octave-config-%s%s", ver, ext));
     octave_binary = fullfile (octave_bindir, sprintf ("octave-%s%s", ver, ext));
-    cenv = {"MKOCTFILE"; mkoctfile_program;
-            "OCTAVE_CONFIG"; octave_config_program;
-            "OCTAVE"; octave_binary;
-            "INSTALLDIR"; desc.dir};
-    scenv = sprintf ("%s=\"%s\" ", cenv{:});
 
     if (! exist (mkoctfile_program, "file"))
       __gripe_missing_component__ ("pkg", "mkoctfile");
@@ -47,6 +44,16 @@ function configure_make (desc, packdir, verbose)
     if (! exist (octave_binary, "file"))
       __gripe_missing_component__ ("pkg", "octave");
     endif
+
+    if (verbose)
+      mkoctfile_program = [mkoctfile_program " --verbose"];
+    endif
+
+    cenv = {"MKOCTFILE"; mkoctfile_program;
+            "OCTAVE_CONFIG"; octave_config_program;
+            "OCTAVE"; octave_binary;
+            "INSTALLDIR"; desc.dir};
+    scenv = sprintf ("%s='%s' ", cenv{:});
 
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
@@ -74,8 +81,15 @@ function configure_make (desc, packdir, verbose)
     endif
 
     ## Make.
+    if (ispc ())
+      jobs = 1;
+    else
+      jobs = nproc ("overridable");
+    endif
+
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell ([scenv "make -C '" src "'"], verbose);
+      [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
+                                         scenv, jobs, src), verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);
@@ -101,7 +115,7 @@ function configure_make (desc, packdir, verbose)
         filenames(end) = [];
       endif
       filenames = strtrim (ostrsplit (filenames, "\n"));
-      delete_idx =  [];
+      delete_idx = [];
       for i = 1:length (filenames)
         if (! all (isspace (filenames{i})))
           filenames{i} = fullfile (src, filenames{i});
@@ -126,8 +140,8 @@ function configure_make (desc, packdir, verbose)
     else
       idx = cellfun ("is_architecture_dependent", filenames);
     endif
-    archdependent = filenames (idx);
-    archindependent = filenames (!idx);
+    archdependent = filenames(idx);
+    archindependent = filenames(!idx);
 
     ## Copy the files.
     if (! all (isspace ([filenames{:}])))

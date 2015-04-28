@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Jaroslav Hajek, Marco Caliari
+## Copyright (C) 2008-2015 Jaroslav Hajek, Marco Caliari
 ##
 ## This file is part of Octave.
 ##
@@ -33,8 +33,8 @@
 ##
 ## @end ifnottex
 ## The Taylor series is @emph{not} the way to compute the matrix
-## exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
-## Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
+## exponential; see @nospell{Moler and Van Loan}, @cite{Nineteen Dubious Ways
+## to Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
 ## uses Ward's diagonal Pad@'e approximation method with three step
 ## preconditioning (SIAM Journal on Numerical Analysis, 1977).  Diagonal
 ## Pad@'e approximations are rational polynomials of matrices
@@ -77,7 +77,7 @@ function r = expm (A)
     print_usage ();
   endif
 
-  if (! ismatrix (A) || ! issquare (A))
+  if (! isnumeric (A) || ! issquare (A))
     error ("expm: A must be a square matrix");
   endif
 
@@ -149,7 +149,7 @@ endfunction
 %!assert (full (expm (eye (3))), expm (full (eye (3))))
 %!assert (full (expm (10*eye (3))), expm (full (10*eye (3))), 8*eps)
 
-%% Test input validation
+## Test input validation
 %!error expm ()
 %!error expm (1, 2)
 %!error <expm: A must be a square matrix> expm ([1 0;0 1; 2 2])

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012-2013 Jacob Dawid
+Copyright (C) 2012-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: 2012 Jacob Dawid <jacob.dawid@gmail.com>
+// Author: 2012 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #include <QTextBrowser>
 #include "parser.h"
@@ -38,7 +38,7 @@ class webinfo : public QWidget
   Q_OBJECT
 public:
   webinfo (QWidget *parent = 0);
-  void set_info_path (const QString& info_path);
+  bool set_info_path (const QString& info_path);
   void load_node (const QString& node_name);
 
   void load_ref (const QString &ref_name);
@@ -53,6 +53,7 @@ public slots:
 
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 private:
   QTextBrowser        *_text_browser;

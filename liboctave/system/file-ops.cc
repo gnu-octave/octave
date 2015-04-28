@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -38,6 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "pathmax.h"
 #include "canonicalize.h"
+
+extern "C" {
+#include <tempname.h>
+}
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -362,6 +366,27 @@ file_ops::concat (const std::string& dir, const std::string& file)
             : dir + dir_sep_char () + file);
 }
 
+std::string
+file_ops::native_separator_path (const std::string& path)
+{
+  std::string retval;
+
+  if (dir_sep_char () == '/')
+    retval = path;
+  else
+    {
+      size_t n = path.length ();
+      for (size_t i = 0; i < n; i++)
+        {
+          if (path[i] == '/')
+            retval += dir_sep_char();
+          else
+            retval += path[i];
+        }
+    }
+
+  return retval;
+}
 
 int
 octave_mkdir (const std::string& nm, mode_t md)
@@ -657,20 +682,36 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
 
   std::string retval;
 
-  const char *pdir = dir.empty () ? 0 : dir.c_str ();
-
-  const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();
-
-  char *tmp = tempnam (pdir, ppfx);
-
-  if (tmp)
-    {
-      retval = tmp;
-
-      free (tmp);
-    }
+  // get dir path to use for template
+  std::string templatename;
+  if (dir.empty ())
+    templatename = octave_env::get_temp_directory ();
+  else if (! file_stat (dir, false).is_dir ())
+    templatename = octave_env::get_temp_directory ();
   else
+    templatename = dir;
+
+  // add dir sep char if it is not there
+  if (*templatename.rbegin () != file_ops::dir_sep_char ())
+    templatename += file_ops::dir_sep_char ();
+
+  if (pfx.empty ())
+    templatename += "file";
+  else
+    templatename += pfx;
+
+  // add the required XXXXXX for the template
+  templatename += "XXXXXX";
+
+  // create and copy template to char array for call to gen_tempname
+  char tname [templatename.length () + 1];
+
+  strcpy (tname, templatename.c_str ());
+
+  if (gen_tempname (tname, 0, 0, GT_NOCREATE) == -1)
     msg = gnulib::strerror (errno);
+  else
+    retval = tname;
 
   return retval;
 }
@@ -689,8 +730,6 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
 
   std::string retval;
 
-#if defined (HAVE_CANONICALIZE_FILE_NAME)
-
   char *tmp = gnulib::canonicalize_file_name (name.c_str ());
 
   if (tmp)
@@ -698,98 +737,6 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
       retval = tmp;
       free (tmp);
     }
-
-#elif defined (HAVE_RESOLVEPATH)
-
-#if !defined (errno)
-extern int errno;
-#endif
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  // All known hosts with resolvepath (e.g. Solaris 7) don't turn
-  // relative names into absolute ones, so prepend the working
-  // directory if the path is not absolute.
-
-  std::string absolute_name = octave_env::make_absolute (name);
-
-  size_t resolved_size = absolute_name.length ();
-
-  while (true)
-    {
-      resolved_size = 2 * resolved_size + 1;
-
-      OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
-
-      int resolved_len
-        = resolvepath (absolute_name.c_str (), resolved, resolved_size);
-
-      if (resolved_len < 0)
-        break;
-
-      if (resolved_len < resolved_size)
-        {
-          retval = resolved;
-          break;
-        }
-    }
-
-#elif defined (__WIN32__)
-
-  int n = 1024;
-
-  std::string win_path (n, '\0');
-
-  while (true)
-    {
-      int status = GetFullPathName (name.c_str (), n, &win_path[0], 0);
-
-      if (status == 0)
-        break;
-      else if (status < n)
-        {
-          win_path.resize (status);
-          retval = win_path;
-          break;
-        }
-      else
-        {
-          n *= 2;
-          win_path.resize (n);
-        }
-    }
-
-#elif defined (HAVE_REALPATH)
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
-
-  if (::realpath (name.c_str (), buf))
-    retval = buf;
-
-#else
-
-  // FIXME: provide replacement here...
-  retval = name;
-
-#endif
 
   if (retval.empty ())
     msg = gnulib::strerror (errno);

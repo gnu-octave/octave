@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -89,7 +89,7 @@ function [c, hg] = __contour__ (varargin)
   if (isscalar (vn))
     ## FIXME: The levels should be determined similarly to {x,y,z}ticks
     ##        so that they aren't set at extremely odd values.
-    lvl = linspace (min (z1(!isinf (z1))), max (z1(!isinf (z1))), vn + 2);
+    lvl = linspace (min (z1(! isinf (z1))), max (z1(! isinf (z1))), vn + 2);
     ## Strip off max outlier, min must stay for contourf hole algorithm.
     lvl = lvl(1:end-1);
   else
@@ -446,7 +446,7 @@ function update_data (h, ~, prop = "")
       z = get (h, "zdata");
       ## FIXME: The levels should be determined similarly to {x,y,z}ticks
       ##        so that they aren't set at extremely odd values.
-      lvl = linspace (min (z(!isinf (z))), max (z(!isinf (z))), 10 + 2);
+      lvl = linspace (min (z(! isinf (z))), max (z(! isinf (z))), 10 + 2);
       ## Strip off max outlier, min must stay for contourf hole algorithm.
       lvl = lvl(1:end-1);
     endif

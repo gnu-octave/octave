@@ -1,6 +1,6 @@
 # Makefile for Octave's test directory
 #
-# Copyright (C) 1994-2013 John W. Eaton
+# Copyright (C) 1994-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -25,6 +25,8 @@ FCN_FILES = \
   args.tst \
   bug-31371.tst \
   bug-38576.tst \
+  colormaps.tst \
+  complex.tst \
   diag-perm.tst \
   error.tst \
   eval-catch.tst \
@@ -56,6 +58,7 @@ include bug-35448/module.mk
 include bug-36025/module.mk
 include bug-38236/module.mk
 include bug-38691/module.mk
+include classdef/module.mk
 include classes/module.mk
 include class-concat/module.mk
 include ctor-vs-method/module.mk
@@ -70,8 +73,13 @@ all-local: .gdbinit
 check: sparse.tst bc-overload-tests.stamp
 	$(top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
 
+if AMCOND_HAVE_LLVM
+check-jit: sparse.tst bc-overload-tests.stamp
+	$(top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
+endif
+
 sparse.tst: build-sparse-tests.sh
-	$(srcdir)/build-sparse-tests.sh
+	$(AM_V_GEN)$(srcdir)/build-sparse-tests.sh
 
 GENERATED_BC_OVERLOADS_DIRS := \
   $(shell $(srcdir)/build-bc-overload-tests.sh --list-dirs)

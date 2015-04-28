@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-map.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-lvalue.h"
 #include "oct-stream.h"
 #include "ops.h"
@@ -52,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pr-output.h"
 #include "utils.h"
+#include "toplev.h"
 #include "variables.h"
 
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
@@ -214,7 +216,7 @@ octave_base_value::do_multi_index_op (int nargout, const octave_value_list& idx,
 }
 
 idx_vector
-octave_base_value::index_vector (void) const
+octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = type_name ();
   error ("%s type invalid as index value", nm.c_str ());
@@ -396,7 +398,7 @@ octave_base_value::convert_to_row_or_column_vector (void)
 }
 
 void
-octave_base_value::print (std::ostream&, bool) const
+octave_base_value::print (std::ostream&, bool)
 {
   gripe_wrong_type_arg ("octave_base_value::print ()", type_name ());
 }
@@ -1089,10 +1091,8 @@ octave_base_value::load_binary (std::istream&, bool,
   return false;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_base_value::save_hdf5 (hid_t, const char *, bool)
+octave_base_value::save_hdf5 (octave_hdf5_id, const char *, bool)
 {
   gripe_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
 
@@ -1100,14 +1100,12 @@ octave_base_value::save_hdf5 (hid_t, const char *, bool)
 }
 
 bool
-octave_base_value::load_hdf5 (hid_t, const char *)
+octave_base_value::load_hdf5 (octave_hdf5_id, const char *)
 {
   gripe_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
 
   return false;
 }
-
-#endif
 
 int
 octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
@@ -1254,6 +1252,24 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
     return "unknown";
   else
     return names[umap];
+}
+
+void
+octave_base_value::gripe_load (const char *type) const
+{
+  warning_with_id
+    ("Octave:load-save-unavailable",
+     "%s: loading %s files not available in this version of Octave",
+     t_name.c_str (), type);
+}
+
+void
+octave_base_value::gripe_save (const char *type) const
+{
+  warning_with_id
+    ("Octave:load-save-unavailable",
+     "%s: saving %s files not available in this version of Octave",
+     t_name.c_str (), type);
 }
 
 octave_value
@@ -1534,6 +1550,111 @@ CONVDECLX (string_conv)
 CONVDECLX (cell_conv)
 {
   return new octave_cell ();
+}
+
+static inline octave_value_list
+sanitize (const octave_value_list& ovl)
+{
+  octave_value_list retval = ovl;
+
+  for (octave_idx_type i = 0; i < ovl.length (); i++)
+    {
+      if (retval(i).is_magic_colon ())
+        retval(i) = ":";
+    }
+
+  return retval;
+}
+
+octave_value
+make_idx_args (const std::string& type,
+               const std::list<octave_value_list>& idx,
+               const std::string& who)
+{
+  octave_value retval;
+
+  size_t len = type.length ();
+
+  if (len == idx.size ())
+    {
+      Cell type_field (1, len);
+      Cell subs_field (1, len);
+
+      std::list<octave_value_list>::const_iterator p = idx.begin ();
+
+      for (size_t i = 0; i < len; i++)
+        {
+          char t = type[i];
+
+          switch (t)
+            {
+            case '(':
+              type_field(i) = "()";
+              subs_field(i) = Cell (sanitize (*p++));
+              break;
+
+            case '{':
+              type_field(i) = "{}";
+              subs_field(i) = Cell (sanitize (*p++));
+              break;
+
+            case '.':
+              {
+                type_field(i) = ".";
+
+                octave_value_list vlist = *p++;
+
+                if (vlist.length () == 1)
+                  {
+                    octave_value val = vlist(0);
+
+                    if (val.is_string ())
+                      subs_field(i) = val;
+                    else
+                      {
+                        error ("string argument required for '.' index");
+                        return retval;
+                      }
+                  }
+                else
+                  {
+                    error ("only single argument permitted for '.' index");
+                    return retval;
+                  }
+              }
+              break;
+
+            default:
+              panic_impossible ();
+              break;
+            }
+        }
+
+      octave_map m;
+
+      m.assign ("type", type_field);
+      m.assign ("subs", subs_field);
+
+      retval = m;
+    }
+  else
+    error ("invalid index for %s", who.c_str ());
+
+  return retval;
+}
+
+bool
+called_from_builtin (void)
+{
+  octave_function *fcn = octave_call_stack::caller ();
+
+  // FIXME: we probably need a better check here, or some other
+  // mechanism to avoid overloaded functions when builtin is used.
+  // For example, what if someone overloads the builtin function?
+  // Also, are there other places where using builtin is not properly
+  // avoiding dispatch?
+
+  return (fcn && fcn->name () == "builtin");
 }
 
 void

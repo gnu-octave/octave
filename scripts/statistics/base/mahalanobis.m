@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -70,7 +70,7 @@ function retval = mahalanobis (x, y)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error mahalanobis ()
 %!error mahalanobis (1, 2, 3)
 %!error mahalanobis ('A', 'B')

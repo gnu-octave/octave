@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +44,7 @@
 
 function [pval, b, n] = sign_test (x, y, alt)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -60,7 +60,7 @@ function [pval, b, n] = sign_test (x, y, alt)
   cdf = binocdf (b, n, 1/2);
 
   if (nargin == 2)
-    alt  = "!=";
+    alt = "!=";
   endif
 
   if (! ischar (alt))

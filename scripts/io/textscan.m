@@ -40,10 +40,10 @@
 ## leaves output in distinct columns.
 ##
 ## @item @qcode{"endofline"}:
-## Specify @qcode{"\r"}, @qcode{"\n"} or @qcode{"\r\n"} (for CR, LF, or
-## CRLF).  If no value is given, it will be inferred from the file.  If set
-## to "" (empty string) EOLs are ignored as delimiters and added to
-## whitespace.
+## Specify @qcode{"@xbackslashchar{}r"}, @qcode{"@xbackslashchar{}n"} or
+## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"} (for CR, LF, or CRLF).  If no
+## value is given, it will be inferred from the file.  If set to "" (empty
+## string) EOLs are ignored as delimiters and added to whitespace.
 ##
 ## @item @qcode{"headerlines"}:
 ## The first @var{value} number of lines of @var{fid} are skipped.
@@ -98,7 +98,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
 
   ## Determine the number of data fields & initialize output array
-  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
+  num_fields = numel (regexp (format, '(%(\d*|\d*\.\d*)?[nfduscq]|%\[)', "match"));
+  if (! num_fields)
+    error ("textscan.m: no valid format conversion specifiers found\n");
+  endif
   C = cell (1, num_fields);
 
   if (! (isa (fid, "double") && fid > 0) && ! ischar (fid))
@@ -229,7 +232,8 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     endif
   else
     if (! ischar (fid))
-    ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
+    ## Determine EOL from file.
+    ## Search for EOL candidates in the first BUFLENGTH chars
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
@@ -248,7 +252,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     args(end+1:end+2) = {"endofline", eol_char};
   endif
 
-  if (!ischar (fid))
+  if (! ischar (fid))
     ## Now that we know what EOL looks like, we can process format_repeat_count.
     ## FIXME The below isn't ML-compatible: counts lines, not format string uses
     if (isfinite (nlines) && (nlines >= 0))
@@ -273,11 +277,12 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       endwhile
       ## OK, found EOL delimiting last requested line. Compute ptr (incl. EOL)
       if (isempty (eoi))
-        printf ("textscan: format repeat count specified but no endofline found\n");
+        disp ("textscan: format repeat count specified but no endofline found");
         data_size = nblks * BUFLENGTH + count;
       else
         ## Compute data size to read incl complete EOL
-        data_size = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi) ...
+        data_size = (nblks * BUFLENGTH) ...
+                    + eoi(end + min (nlines, n_eoi) - n_eoi) ...
                     + l_eol_char - 1;
       endif
       fseek (fid, st_pos, "bof");
@@ -316,18 +321,20 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       ## See if lowermost data row must be completed
       pad = mod (numel (C{1}), ncols);
       if (pad)
-        ## Textscan returns NaNs for empty fields
-        C(1) = [C{1}; NaN(ncols - pad, 1)];
-      endif
-      ## Replace NaNs with EmptyValue, if any
-      ipos = find (strcmpi (args, "emptyvalue"));
-      if (ipos)
-        C{1}(find (isnan (C{1}))) = args{ipos+1};
+        ## Pad output with emptyvalues (rest has been done by stread.m)
+        emptv = find (strcmpi (args, "emptyvalue"));
+        if (isempty (emptv))
+          ## By default textscan returns NaNs for empty fields
+          C(1) = [C{1}; NaN(ncols - pad, 1)];
+        else
+          ## Otherwise return supplied emptyvalue. Pick last occurrence
+          C(1) = [C{1}; repmat(args{emptv(end)+1}, ncols - pad, 1)];
+        endif
       endif
       ## Compute nr. of rows
       nrows = floor (numel (C{1}) / ncols);
       ## Reshape C; watch out, transpose needed
-      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols)';
+      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols).';
       ## Distribute columns over C and wipe cols 2:end of C{1}
       for ii=2:ncols
         C(ii) = C{1}(:, ii);
@@ -429,12 +436,12 @@ endfunction
 %! assert (a{2}', {'B' 'J' 'R' 'Z'});
 %! assert (a{3}', int32 ([16 241 3 0]));
 
-%% Test with default endofline parameter
+## Test with default endofline parameter
 %!test
 %! c = textscan ("L1\nL2", "%s");
 %! assert (c{:}, {"L1"; "L2"});
 
-%% Test with endofline parameter set to "" (empty) - newline should be in word
+## Test with endofline parameter set to "" (empty) - newline should be in word
 %!test
 %! c = textscan ("L1\nL2", "%s", "endofline", "");
 %! assert (int8 (c{:}{:}), int8 ([ 76,  49,  10,  76,  50 ]));
@@ -445,8 +452,8 @@ endfunction
 %! c = textscan (str, "Text%*dText%dText");
 %! assert (c{1}, int32 ([2; 4; 0]));
 
+## CollectOutput test
 %!test
-%% CollectOutput test
 %! b = [10:10:100];
 %! b = [b; 8*b/5; 8*b*1000/5];
 %! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
@@ -455,8 +462,8 @@ endfunction
 %! assert (size (c{3}), [10, 2]);
 %! assert (size (c{2}), [10, 2]);
 
+## CollectOutput test with uneven column length files
 %!test
-%% CollectOutput test with uneven column length files
 %! b = [10:10:100];
 %! b = [b; 8*b/5; 8*b*1000/5];
 %! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
@@ -470,7 +477,7 @@ endfunction
 %! assert (c{2}{11, 1}, "/hr");
 %! assert (isempty (c{2}{11, 2}), true);
 
-%% Test input validation
+## Test input validation
 %!error textscan ()
 %!error textscan (single (4))
 %!error textscan ({4})
@@ -483,13 +490,13 @@ endfunction
 %! assert (R{1}, int32 (1));
 %! assert (isempty (R{2}), true);
 
-%% bug #37023 (actually a strread test)
+## bug #37023 (actually a strread test)
 %!test
 %! data = textscan("   1. 1 \n 2 3\n", '%f %f');
 %! assert (data{1}, [1; 2], 1e-15);
 %! assert (data{2}, [1; 3], 1e-15);
 
-%%  Whitespace test (bug #37333) using delimiter ";"
+## Whitespace test (bug #37333) using delimiter ";"
 %!test
 %! tc = [];
 %! tc{1, 1} = "C:/code;";
@@ -506,7 +513,7 @@ endfunction
 %!   assert (strcmp (lh, rh));
 %! end
 
-%%  Whitespace test (bug #37333), adding multipleDelimsAsOne true arg
+## Whitespace test (bug #37333), adding multipleDelimsAsOne true arg
 %!test
 %! tc = [];
 %! tc{1, 1} = "C:/code;";
@@ -523,7 +530,7 @@ endfunction
 %!   assert (strcmp (lh, rh));
 %! end
 
-%%  Whitespace test (bug #37333), adding multipleDelimsAsOne false arg
+## Whitespace test (bug #37333), adding multipleDelimsAsOne false arg
 %!test
 %! tc = [];
 %! tc{1, 1} = "C:/code;";
@@ -541,7 +548,7 @@ endfunction
 %!   assert (strcmp (lh, rh));
 %! end
 
-%%  Whitespace test (bug #37333) whitespace "" arg
+## Whitespace test (bug #37333) whitespace "" arg
 %!test
 %! tc = [];
 %! tc{1, 1} = "C:/code;";
@@ -557,7 +564,7 @@ endfunction
 %!   assert (strcmp (lh, rh));
 %! end
 
-%%  Whitespace test (bug #37333), whitespace " " arg
+## Whitespace test (bug #37333), whitespace " " arg
 %!test
 %! tc = [];
 %! tc{1, 1} = "C:/code;";
@@ -574,9 +581,9 @@ endfunction
 %!   assert (strcmp (lh, rh));
 %! end
 
-%% Test reading from a real file
+## Test reading from a real file
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);
@@ -587,9 +594,9 @@ endfunction
 %! assert (A{1}, [d(1); d(3)], 1e-6);
 %! assert (A{2}, [d(2); d(4)], 1e-6);
 
-%% Tests reading with empty format, should return proper nr of columns
+## Tests reading with empty format, should return proper nr of columns
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid, " 1 2 3 4\n5 6 7 8");
 %! fseek (fid, 0, "bof");
@@ -601,9 +608,9 @@ endfunction
 %! assert (A{3}, [3 ; 7], 1e-6);
 %! assert (A{4}, [4 ; 8], 1e-6);
 
-%% Tests reading with empty format; empty fields & incomplete lower row
+## Tests reading with empty format; empty fields & incomplete lower row
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid, " ,2,,4\n5,6");
 %! fseek (fid, 0, "bof");
@@ -612,10 +619,10 @@ endfunction
 %! unlink (f);
 %! assert (A{1}, [999, 2, 999, 4; 5, 6, 999, 999], 1e-6);
 
-%% Error message tests
+## Error message tests
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! msg1 = "Missing or illegal value for 'headerlines'";
 %! try
@@ -626,7 +633,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! msg1 = "Missing or illegal value for 'headerlines'";
 %! try
@@ -637,7 +644,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid,"some_string");
 %! fseek (fid, 0, "bof");
@@ -650,7 +657,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid,"some_string");
 %! fseek (fid, 0, "bof");
@@ -662,7 +669,24 @@ endfunction
 %! unlink (f);
 %! assert (msg1, lasterr);
 
-%% Bug #41824
+## Bug #41824
 %!test
 %! assert (textscan ("123", "", "whitespace", " "){:}, 123);
 
+## Bug #42343-1, just test supplied emptyvalue (actually done by strread.m)
+%!test
+%! assert (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf), {Inf, NaN});
+
+## Bug #42343-2, test padding with supplied emptyvalue (done by textscan.m)
+%!test
+%! a = textscan (",1,,4\nInf,  ,NaN", "", "delimiter", ",", "emptyvalue", -10);
+%! assert (cell2mat (a), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
+
+## Bug #42528
+%!test
+%! assert (textscan ("1i", ""){1},  0+1i);
+%! assert (cell2mat (textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i", "")), [3+0i, 2-4i, NaN+0i; 0-i,  1+0i, 23.4+2.2i]);
+
+## Illegal format specifiers
+%!test
+%!error <no valid format conversion specifiers> textscan ("1.0", "%z");

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 Piotr Krzyzanowski
+## Copyright (C) 2004-2015 Piotr Krzyzanowski
 ##
 ## This file is part of Octave.
 ##
@@ -162,8 +162,8 @@
 ##
 ## References:
 ##
-##      [1] W. Hackbusch, @cite{Iterative Solution of Large Sparse Systems of
-##      Equations}, section 9.5.4; Springer, 1994
+## [1] @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
+## Systems of Equations}, section 9.5.4; Springer, 1994
 ##
 ## @seealso{sparse, pcg}
 ## @end deftypefn

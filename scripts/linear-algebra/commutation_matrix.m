@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -63,8 +63,8 @@
 ## @end ifnottex
 ##  is returned.
 ##
-## See Magnus and Neudecker (1988), @cite{Matrix Differential Calculus with
-## Applications in Statistics and Econometrics.}
+## See @nospell{Magnus and Neudecker} (1988), @cite{Matrix Differential
+## Calculus with Applications in Statistics and Econometrics.}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -90,7 +90,7 @@ function k = commutation_matrix (m, n)
   k = zeros (m * n, m * n);
   for i = 1 : m
     for j = 1 : n
-      k ((i - 1) * n + j, (j - 1) * m + i) = 1;
+      k((i - 1) * n + j, (j - 1) * m + i) = 1;
     endfor
   endfor
 

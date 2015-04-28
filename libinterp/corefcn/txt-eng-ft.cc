@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 Michael Goffioul
+Copyright (C) 2009-2015 Michael Goffioul
 
 This file is part of Octave.
 
@@ -121,7 +121,7 @@ private:
   typedef std::pair<std::string, double> ft_key;
   typedef std::map<ft_key, FT_Face> ft_cache;
 
-  // Cache the fonts loaded by freetype. This cache only contains
+  // Cache the fonts loaded by FreeType. This cache only contains
   // weak references to the fonts, strong references are only present
   // in class ft_render.
   ft_cache cache;
@@ -138,7 +138,7 @@ private:
     : library (), freetype_initialized (false), fontconfig_initialized (false)
   {
     if (FT_Init_FreeType (&library))
-      ::error ("unable to initialize freetype library");
+      ::error ("unable to initialize FreeType library");
     else
       freetype_initialized = true;
 
@@ -635,7 +635,8 @@ ft_render::visit (text_element_string& e)
       FT_UInt glyph_index, previous = 0;
 
       std::string str = e.string_value ();
-      size_t n = str.length (), curr = 0;
+      size_t n = str.length ();
+      size_t curr = 0;
       mbstate_t ps;
       memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;

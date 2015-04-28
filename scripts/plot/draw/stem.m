@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Michel D. Schmid
+## Copyright (C) 2006-2015 Michel D. Schmid
 ##
 ## This file is part of Octave.
 ##
@@ -187,7 +187,7 @@ endfunction
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);
 %! set (h(2), 'color', 'g');
-%! set (h(1), 'basevalue', -1);
+%! set (h(1), 'basevalue', -0.75);
 %! title ('stem plots modified through hggroup handle');
 
 %!demo
@@ -212,4 +212,19 @@ endfunction
 %!error <inconsistent sizes for X and Y> stem (1:2, ones (3,3))
 %!error <inconsistent sizes for X and Y> stem (ones (2,2), ones (3,3))
 %!error <No value specified for property "FOO"> stem (1, "FOO")
+
+%!test
+%! ## stemseries share the same baseline and basevalue
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = stem ([1 2; 1.5 2.5], [1 1;2 2]);
+%!   assert (get (h(1), "baseline"), get (h(2), "baseline"))
+%!   bv = 0.3;
+%!   set (h(1), "basevalue", bv)
+%!   assert (get (get (h(1), "baseline"), "basevalue"), bv)
+%!   assert (get (h(1), "basevalue"), bv)
+%!   assert (get (h(2), "basevalue"), bv)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

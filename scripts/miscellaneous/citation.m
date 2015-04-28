@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Carnë Draug
+## Copyright (C) 2013-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,7 @@ function citation (package = "octave")
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error citation (1, 2)
 %!error <citation: PACKAGE must be a string> citation (1)
 %!error <citation: package .* is not installed> citation ("__NOT_A_VALID_PKG_NAME__")

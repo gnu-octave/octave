@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Radek Salac
+## Copyright (C) 2008-2015 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.
@@ -67,7 +67,7 @@
 ## each iteration.
 ## @end itemize
 ##
-## @seealso{pcg, bicgstab, bicg, gmres}
+## @seealso{pcg, bicgstab, bicg, gmres, qmr}
 ## @end deftypefn
 
 function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
@@ -76,7 +76,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 
     if (ischar (A))
       A = str2func (A);
-    elseif (ismatrix (A))
+    elseif (isnumeric (A) && ismatrix (A))
       Ax = @(x) A * x;
     elseif (isa (A, "function_handle"))
       Ax = @(x) feval (A, x);
@@ -97,7 +97,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       M1m1x = @(x) x;
     elseif (ischar (M1))
       M1m1x = str2func (M1);
-    elseif (ismatrix (M1))
+    elseif (isnumeric (M1) && ismatrix (M1))
       M1m1x = @(x) M1 \ x;
     elseif (isa (M1, "function_handle"))
       M1m1x = @(x) feval (M1, x);
@@ -109,7 +109,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       M2m1x = @(x) x;
     elseif (ischar (M2))
       M2m1x = str2func (M2);
-    elseif (ismatrix (M2))
+    elseif (isnumeric (M2) && ismatrix (M2))
       M2m1x = @(x) M2 \ x;
     elseif (isa (M2, "function_handle"))
       M2m1x = @(x) feval (M2, x);
@@ -159,7 +159,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
         ## We reach tolerance tol within maxit iterations.
         flag = 0;
         break
-      elseif (resvec (end) == resvec (end - 1))
+      elseif (resvec(end) == resvec(end - 1))
         ## The method stagnates.
         flag = 3;
         break

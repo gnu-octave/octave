@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -106,8 +106,8 @@ DEFBINOP (el_pow, complex_matrix, sparse_matrix)
                    const octave_sparse_matrix&);
 
   return octave_value
-         (elem_xpow ( SparseComplexMatrix (v1.complex_matrix_value ()),
-                      v2.sparse_matrix_value ()));
+         (elem_xpow (SparseComplexMatrix (v1.complex_matrix_value ()),
+                     v2.sparse_matrix_value ()));
 }
 
 DEFBINOP (el_ldiv, complex_matrix, sparse_matrix)

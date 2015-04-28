@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -37,16 +37,16 @@
 ##
 ## @multitable @columnfractions 0.1 0.45 0.35
 ## @headitem Code @tab Format @tab Example
-## @item 0 @tab dd-mmm-yyyy HH:MM:SS   @tab 07-Sep-2000 15:38:09
-## @item 1 @tab dd-mmm-yyyy            @tab 07-Sep-2000
-## @item 2 @tab mm/dd/yy               @tab 09/07/00
-## @item 3 @tab mmm                    @tab Sep
-## @item 4 @tab m                      @tab S
-## @item 5 @tab mm                     @tab 09
-## @item 6 @tab mm/dd                  @tab 09/07
-## @item 7 @tab dd                     @tab 07
-## @item 8 @tab ddd                    @tab Thu
-## @item 9 @tab d                      @tab T
+## @item 0 @tab dd-mmm-yyyy HH:MM:SS    @tab 07-Sep-2000 15:38:09
+## @item 1 @tab dd-mmm-yyyy             @tab 07-Sep-2000
+## @item 2 @tab mm/dd/yy                @tab 09/07/00
+## @item 3 @tab mmm                     @tab Sep
+## @item 4 @tab m                       @tab S
+## @item 5 @tab mm                      @tab 09
+## @item 6 @tab mm/dd                   @tab 09/07
+## @item 7 @tab dd                      @tab 07
+## @item 8 @tab ddd                     @tab Thu
+## @item 9 @tab d                       @tab T
 ## @item 10 @tab yyyy                   @tab 2000
 ## @item 11 @tab yy                     @tab 00
 ## @item 12 @tab mmmyy                  @tab Sep00
@@ -183,8 +183,8 @@ function retval = datestr (date, f = [], p = [])
     if (columns (date) == 6)
       ## Make sure that the input really is a datevec.
       maxdatevec = [Inf, 12, 31, 23, 59, 60];
-      if (any (max (date, 1) > maxdatevec) ||
-          any (date(:,1:5) != floor (date(:,1:5))))
+      if (any (max (date, 1) > maxdatevec)
+          || any (date(:,1:5) != floor (date(:,1:5))))
         v = datevec (date, p);
       endif
     endif
@@ -193,7 +193,7 @@ function retval = datestr (date, f = [], p = [])
     endif
   endif
 
-  retval = [];
+  retval = "";
   for i = 1 : rows (v)
 
     if (isempty (f))
@@ -213,8 +213,8 @@ function retval = datestr (date, f = [], p = [])
     endif
 
     df_orig = df;
-    df = strrep (df, 'AM', "%p");
-    df = strrep (df, 'PM', "%p");
+    df = strrep (df, "AM", "%p");
+    df = strrep (df, "PM", "%p");
     if (strcmp (df, df_orig))
       ## PM not set.
       df = strrep (df, "HH", "%H");
@@ -222,20 +222,20 @@ function retval = datestr (date, f = [], p = [])
       df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
     endif
 
-    df = regexprep (df, '[Yy][Yy][Yy][Yy]', "%Y");
+    df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%Y");
 
-    df = regexprep (df, '[Yy][Yy]', "%y");
+    df = regexprep (df, "[Yy][Yy]", "%y");
 
-    df = regexprep (df, '[Dd][Dd][Dd][Dd]', "%A");
+    df = regexprep (df, "[Dd][Dd][Dd][Dd]", "%A");
 
-    df = regexprep (df, '[Dd][Dd][Dd]', "%a");
+    df = regexprep (df, "[Dd][Dd][Dd]", "%a");
 
-    df = regexprep (df, '[Dd][Dd]', "%d");
+    df = regexprep (df, "[Dd][Dd]", "%d");
 
     wday = weekday (datenum (v(i,1), v(i,2), v(i,3)));
     tmp = names_d{wday};
-    df = regexprep (df, '([^%])[Dd]', sprintf ("$1%s", tmp));
-    df = regexprep (df, '^[Dd]', sprintf ("%s", tmp));
+    df = regexprep (df, "([^%])[Dd]", sprintf ("$1%s", tmp));
+    df = regexprep (df, "^[Dd]", sprintf ("%s", tmp));
 
     df = strrep (df, "mmmm", "%B");
 
@@ -244,17 +244,18 @@ function retval = datestr (date, f = [], p = [])
     df = strrep (df, "mm", "%m");
 
     tmp = names_m{v(i,2)};
-    pos = regexp (df, '[^%]m') + 1;
+    pos = regexp (df, "[^%]m") + 1;
     df(pos) = tmp;
-    df = regexprep (df, '^m', tmp);
+    df = regexprep (df, "^m", tmp);
 
     df = strrep (df, "MM", "%M");
 
-    df = regexprep (df, '[Ss][Ss]', "%S");
+    df = regexprep (df, "[Ss][Ss]", "%S");
 
-    df = strrep (df, "FFF", sprintf ("%03d", 1000 * (v(i,6) - fix (v(i,6)))));
+    df = strrep (df, "FFF", sprintf ("%03d",
+                                     round (1000 * (v(i,6) - fix (v(i,6))))));
 
-    df = strrep (df, 'QQ', sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
+    df = strrep (df, "QQ", sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
 
     vi = v(i,:);
     tm.year = vi(1) - 1900;
@@ -266,7 +267,7 @@ function retval = datestr (date, f = [], p = [])
     tm.sec = fix (sec);
     tm.usec = fix ((sec - tm.sec) * 1e6);
     tm.wday = wday - 1;
-    ## FIXME -- Do we need YDAY and DST?  How should they be computed?
+    ## FIXME: Do we need YDAY and DST?  How should they be computed?
     ## We don't want to use "localtime (mktime (tm))" because that
     ## doesn't correctly handle dates before 1970-01-01 on some systems.
     ## tm.yday = ?;
@@ -339,7 +340,7 @@ endfunction
 ## Test fractional millisecond time extension
 %!assert (datestr (testtime, "HH:MM:SS:FFF"), "02:33:17:382")
 
-%% Test input validation
+## Test input validation
 %!error datestr ()
 %!error datestr (1, 2, 3, 4)
 

@@ -26,7 +26,6 @@ UTIL_INC = \
   util/oct-inttypes.h \
   util/oct-locbuf.h \
   util/oct-md5.h \
-  util/oct-mem.h \
   util/oct-mutex.h \
   util/oct-refcount.h \
   util/oct-rl-edit.h \
@@ -47,7 +46,6 @@ UTIL_INC = \
 
 UTIL_C_SRC = \
   util/f2c-main.c \
-  util/lo-cieee.c \
   util/lo-cutils.c \
   util/oct-rl-edit.c \
   util/oct-rl-hist.c
@@ -60,7 +58,6 @@ UTIL_SRC = \
   util/lo-array-gripes.cc \
   util/lo-ieee.cc \
   util/lo-utils.cc \
-  util/oct-alloc.cc \
   util/oct-base64.cc \
   util/oct-glob.cc \
   util/oct-inttypes.cc \
@@ -89,6 +86,8 @@ noinst_LTLIBRARIES += util/libutil.la
 util_libutil_la_SOURCES = $(UTIL_SRC)
 util_libutil_la_CPPFLAGS = \
   $(liboctave_la_CPPFLAGS) \
+  $(CURL_CPPFLAGS) \
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
+liboctave_la_LIBADD += util/libutil.la

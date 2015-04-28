@@ -1,7 +1,7 @@
 // N-D Array  manipulations.
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray-defs.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
+#include "mx-fcnda-fs.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 
@@ -213,7 +214,7 @@ FloatComplexNDArray::fourier (int dim) const
   FloatComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<FloatComplex> wsave (nn, 1);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, tmp, npts);
@@ -260,7 +261,7 @@ FloatComplexNDArray::ifourier (int dim) const
   FloatComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<FloatComplex> wsave (nn, 1);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, tmp, npts);
@@ -310,9 +311,9 @@ FloatComplexNDArray::fourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn, 1);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts, 1);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -358,9 +359,9 @@ FloatComplexNDArray::ifourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn, 1);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts, 1);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -406,9 +407,9 @@ FloatComplexNDArray::fourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn, 1);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts, 1);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -453,9 +454,9 @@ FloatComplexNDArray::ifourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn, 1);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts, 1);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -614,6 +615,12 @@ FloatComplexNDArray
 FloatComplexNDArray::prod (int dim) const
 {
   return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_prod);
+}
+
+ComplexNDArray
+FloatComplexNDArray::dprod (int dim) const
+{
+  return do_mx_red_op<Complex, FloatComplex> (*this, dim, mx_inline_dprod);
 }
 
 FloatComplexNDArray
@@ -817,20 +824,6 @@ FloatComplexNDArray::insert (const FloatComplexNDArray& a,
 {
   Array<FloatComplex>::insert (a, ra_idx);
   return *this;
-}
-
-FloatComplexMatrix
-FloatComplexNDArray::matrix_value (void) const
-{
-  FloatComplexMatrix retval;
-
-  if (ndims () == 2)
-    retval = FloatComplexMatrix (Array<FloatComplex> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of FloatComplexNDArray to FloatComplexMatrix");
-
-  return retval;
 }
 
 void

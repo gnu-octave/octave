@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Daniel Calvelo
+## Copyright (C) 1996-2015 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -58,7 +58,7 @@ endfunction
 %!assert (hex2dec (["12b"; "12B"]), [299; 299])
 %!assert (hex2dec ({"A1", "1A"}), [161; 26])
 
-%%Test input validation
+## Test input validation
 %!error hex2dec ()
 %!error hex2dec (1)
 %!error hex2dec ("1", 2)

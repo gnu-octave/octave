@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -100,7 +100,6 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                                         bool resize_ok)
 {
   octave_value retval;
-  typedef typename DMT::element_type el_type;
 
   if (idx.length () == 2 && ! resize_ok)
     {
@@ -412,9 +411,9 @@ octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 
 template <class DMT, class MT>
 idx_vector
-octave_base_diag<DMT, MT>::index_vector (void) const
+octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 {
-  return to_dense ().index_vector ();
+  return to_dense ().index_vector (require_integers);
 }
 
 template <class DMT, class MT>
@@ -441,7 +440,8 @@ template <class DMT, class MT>
 bool
 octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
-  octave_idx_type r = 0, c = 0;
+  octave_idx_type r = 0;
+  octave_idx_type c = 0;
   bool success = true;
 
   if (extract_keyword (is, "rows", r, true)
@@ -505,8 +505,7 @@ octave_base_diag<DMT, MT>::print_as_scalar (void) const
 
 template <class DMT, class MT>
 void
-octave_base_diag<DMT, MT>::print (std::ostream& os,
-                                  bool pr_as_read_syntax) const
+octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -527,6 +526,23 @@ octave_base_diag<DMT, MT>::print_info (std::ostream& os,
                                        const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
+}
+
+template <class DMT, class MT>
+octave_value
+octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < matrix.numel ())
+    {
+      octave_idx_type nr = matrix.rows ();
+
+      octave_idx_type r = n % nr;
+      octave_idx_type c = n / nr;
+
+      return octave_value (matrix.elem (r, c));
+    }
+  else
+    return octave_value ();
 }
 
 template <class DMT, class MT>

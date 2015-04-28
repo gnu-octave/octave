@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 John W. Eaton
+## Copyright (C) 2007-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -129,6 +129,8 @@ function h = text (varargin)
 
   if (isempty (hax))
     hax = gca ();
+  else
+    hax = hax(1);
   endif
 
   ## Position argument may alse be in PROP/VAL pair

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 #include "main-window.h"
 #include "settings-dialog.h"
+#include "shortcut-manager.h"
 
 #include "Array.h"
 #include "cmd-edit.h"
@@ -60,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "symtab.h"
 #include "version.h"
+#include "utils.h"
 
 static file_editor_interface *
 create_default_editor (QWidget *p)
@@ -71,33 +73,38 @@ create_default_editor (QWidget *p)
 #endif
 }
 
-main_window::main_window (QWidget *p)
+main_window::main_window (QWidget *p, bool start_gui)
   : QMainWindow (p),
-    _workspace_model (new workspace_model ()),
-    status_bar (new QStatusBar ()),
-    command_window (new terminal_dock_widget (this)),
-    history_window (new history_dock_widget (this)),
-    file_browser_window (new files_dock_widget (this)),
-    doc_browser_window (new documentation_dock_widget (this)),
-    editor_window (create_default_editor (this)),
-    workspace_window (new workspace_view (this)),
+    _workspace_model (start_gui ? new workspace_model () : 0),
+    status_bar (start_gui ? new QStatusBar () : 0),
+    command_window (start_gui ? new terminal_dock_widget (this) : 0),
+    history_window (start_gui ? new history_dock_widget (this) : 0),
+    file_browser_window (start_gui ? new files_dock_widget (this) : 0),
+    doc_browser_window (start_gui ? new documentation_dock_widget (this) : 0),
+    editor_window (start_gui ? create_default_editor (this) : 0),
+    workspace_window (start_gui ? new workspace_view (this) : 0),
+    _settings_dlg (0),
     find_files_dlg (0),
     release_notes_window (0),
     community_news_window (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
-    _cmd_queue (new QStringList ()),  // no command pending
+    _cmd_queue (QList<octave_cmd *> ()),  // no command pending
     _cmd_processing (1),
     _cmd_queue_mutex (),
     _dbg_queue (new QStringList ()),  // no debug pending
     _dbg_processing (1),
-    _dbg_queue_mutex ()
+    _dbg_queue_mutex (),
+    _prevent_readline_conflicts (true),
+    _suppress_dbg_location (true),
+    _start_gui (start_gui)
 {
   QSettings *settings = resource_manager::get_settings ();
 
   bool connect_to_web = true;
   QDateTime last_checked;
   int serial = 0;
+  _active_dock = 0;
 
   if (settings)
     {
@@ -113,7 +120,7 @@ main_window::main_window (QWidget *p)
   QDateTime current = QDateTime::currentDateTime ();
   QDateTime one_day_ago = current.addDays (-1);
 
-  if (connect_to_web
+  if (start_gui && connect_to_web
       && (! last_checked.isValid () || one_day_ago > last_checked))
     load_and_display_community_news (serial);
 
@@ -144,13 +151,70 @@ main_window::~main_window (void)
       delete release_notes_window;
       release_notes_window = 0;
     }
+  if (_settings_dlg)
+    {
+      delete _settings_dlg;
+      _settings_dlg = 0;
+    }
   if (community_news_window)
     {
       delete community_news_window;
       community_news_window = 0;
     }
   delete _octave_qt_link;
-  delete _cmd_queue;
+}
+
+// catch focus changes and determine the active dock widget
+void
+main_window::focus_changed (QWidget *, QWidget *new_widget)
+{
+  octave_dock_widget* dock = 0;
+  QWidget *w_new = new_widget;  // get a copy of new focus widget
+  QWidget *start = w_new;       // Save it as start of our search
+  int count = 0;                // fallback to prevent endless loop
+
+  while (w_new && w_new != _main_tool_bar && count < 100)
+    {
+      dock = qobject_cast <octave_dock_widget *> (w_new);
+      if (dock)
+        break; // it is a QDockWidget ==> exit loop
+
+#ifdef HAVE_QSCINTILLA
+      if (qobject_cast <octave_qscintilla *> (w_new))
+        {
+          dock = static_cast<octave_dock_widget *> (editor_window);
+          break; // it is the editor window ==> exit loop
+        }
+#endif
+
+      w_new = qobject_cast <QWidget *> (w_new->previousInFocusChain ());
+      if (w_new == start)
+        break; // we have arrived where we began ==> exit loop
+
+      count++;
+    }
+
+  // editor needs extra handling
+  octave_dock_widget *edit_dock_widget =
+                        static_cast<octave_dock_widget *> (editor_window);
+  // if new dock has focus, emit signal and store active focus
+  // except editor changes to a dialog (dock=0)
+  if ((dock || _active_dock != edit_dock_widget) && (dock != _active_dock))
+    {
+      // signal to all dock widgets for updating the style
+      emit active_dock_changed (_active_dock, dock);
+
+      QList<QDockWidget *> tabbed = tabifiedDockWidgets (dock);
+      if (tabbed.contains (_active_dock))
+        dock->set_predecessor_widget (_active_dock);
+
+      if (edit_dock_widget == dock)
+        emit editor_focus_changed (true);
+      else if (edit_dock_widget == _active_dock)
+        emit editor_focus_changed (false);
+
+      _active_dock = dock;
+    }
 }
 
 bool
@@ -229,7 +293,10 @@ main_window::handle_rename_variable_request (const QString& old_name,
 void
 main_window::handle_undo_request (void)
 {
-  octave_link::post_event (this, &main_window::command_window_undo_callback);
+  if (command_window_has_focus ())
+    octave_link::post_event (this, &main_window::command_window_undo_callback);
+  else
+    emit undo_signal ();
 }
 
 void
@@ -244,35 +311,42 @@ main_window::handle_clear_history_request (void)
   octave_link::post_event (this, &main_window::clear_history_callback);
 }
 
+bool
+main_window::focus_console_after_command ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  return settings->value ("terminal/focus_after_command",false).toBool ();
+}
+
 void
 main_window::execute_command_in_terminal (const QString& command)
 {
-  queue_command (command);
-  focus_command_window ();
+  octave_cmd_exec *cmd = new octave_cmd_exec (command);
+  queue_command (cmd);
+  if (focus_console_after_command ())
+    focus_command_window ();
 }
 
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
   octave_link::post_event (this, &main_window::run_file_callback, info);
+  if (focus_console_after_command ())
+    focus_command_window ();
 }
 
 void
 main_window::run_file_callback (const QFileInfo& info)
 {
-  QString dir = info.absolutePath ();
-  QString function_name = info.fileName ();
-  function_name.chop (info.suffix ().length () + 1);
-  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
-                                    dir.toStdString ()))
-    queue_command (function_name);
+  octave_cmd_eval *cmd = new octave_cmd_eval (info);
+  queue_command (cmd);
 }
 
 void
-main_window::queue_command (QString command)
+main_window::queue_command (octave_cmd* cmd)
 {
   _cmd_queue_mutex.lock ();
-  _cmd_queue->append (command);   // queue command
+  _cmd_queue.append (cmd);     // queue command and type
   _cmd_queue_mutex.unlock ();
 
   if (_cmd_processing.tryAcquire ())  // if callback not processing, post event
@@ -331,14 +405,17 @@ main_window::display_release_notes (void)
       release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
 
       browser->document()->adjustSize ();
-      QSize doc_size = browser->document()->size().toSize ();
-      doc_size.rwidth () += 45;
-      int h = QApplication::desktop ()->height ();
-      if (h > 800)
-        h = 800;
-      doc_size.rheight () = h;
 
-      release_notes_window->resize (doc_size);
+      // center the window on the screen where octave is running
+      QDesktopWidget *m_desktop = QApplication::desktop ();
+      int screen = m_desktop->screenNumber (this);  // screen of the main window
+      QRect screen_geo = m_desktop->availableGeometry (screen);
+      int win_x = screen_geo.width ();        // width of the screen
+      int win_y = screen_geo.height ();       // height of the screen
+      int reln_x = std::min (620, win_x-80);  // desired width of release notes
+      int reln_y = std::min (640, win_y-80);  // desired height of release notes
+      release_notes_window->resize (reln_x, reln_y);  // set size
+      release_notes_window->move (20, 0);     // move to the top left corner
     }
 
   if (! release_notes_window->isVisible ())
@@ -518,9 +595,16 @@ main_window::display_community_news (const QString& news)
 
       community_news_window->setLayout (vlayout);
       community_news_window->setWindowTitle (tr ("Octave Community News"));
-      community_news_window->resize (640, 480);
-      int win_x = QApplication::desktop ()->width ();
-      int win_y = QApplication::desktop ()->height ();
+
+      // center the window on the screen where octave is running
+      QDesktopWidget *m_desktop = QApplication::desktop ();
+      int screen = m_desktop->screenNumber (this);  // screen of the main window
+      QRect screen_geo = m_desktop->availableGeometry (screen);
+      int win_x = screen_geo.width ();        // width of the screen
+      int win_y = screen_geo.height ();       // height of the screen
+      int news_x = std::min (640, win_x-80);  // desired width of news window
+      int news_y = std::min (480, win_y-80);  // desired height of news window
+      community_news_window->resize (news_x, news_y);  // set size and center
       community_news_window->move ((win_x - community_news_window->width ())/2,
                                    (win_y - community_news_window->height ())/2);
     }
@@ -570,18 +654,50 @@ main_window::open_developer_page (void)
 void
 main_window::process_settings_dialog_request (const QString& desired_tab)
 {
-  settings_dialog *settingsDialog = new settings_dialog (this, desired_tab);
-  int change_settings = settingsDialog->exec ();
-  if (change_settings == QDialog::Accepted)
-    {
-      settingsDialog->write_changed_settings ();
-      QSettings *settings = resource_manager::get_settings ();
-      if (settings)
-        emit settings_changed (settings);
+  if (_settings_dlg)  // _settings_dlg is a guarded pointer!
+    {                 // here the dialog is still open and called once again
+      if (! desired_tab.isEmpty ())
+        _settings_dlg->show_tab (desired_tab);
+      return;
     }
-  delete settingsDialog;
+
+  _settings_dlg = new settings_dialog (this, desired_tab);
+
+  connect (_settings_dlg, SIGNAL (apply_new_settings ()),
+           this, SLOT (request_reload_settings ()));
+
+  _settings_dlg->setModal (false);
+  _settings_dlg->setAttribute (Qt::WA_DeleteOnClose);
+  _settings_dlg->show ();
 }
 
+void
+main_window::copy_image_to_clipboard (const QString& file, bool remove_file)
+{
+  QClipboard *clipboard = QApplication::clipboard ();
+
+  QImage img (file);
+
+  if (img.isNull ())
+    {
+      // Report error?
+      return;
+    }
+
+  clipboard->setImage (img);
+
+  if (remove_file)
+    QFile::remove (file);
+}
+
+void
+main_window::request_reload_settings ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings)
+    emit settings_changed (settings);
+}
 
 void
 main_window::notice_settings (const QSettings *settings)
@@ -641,12 +757,73 @@ main_window::notice_settings (const QSettings *settings)
   else
     _release_notes_icon = ":/actions/icons/logo.png";
 
-  int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
+  int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+  if (icon_size_settings == 1)
+    icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+  else if (icon_size_settings == -1)
+    icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
+  if (settings->value ("show_status_bar",true).toBool ())
+    status_bar->show ();
+  else
+    status_bar->hide ();
+
+  _prevent_readline_conflicts =
+    settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
+
+  _suppress_dbg_location =
+        ! settings->value ("terminal/print_debug_location", false).toBool ();
+
   resource_manager::update_network_settings ();
+
+  emit active_dock_changed (0, _active_dock); // update dock widget styles
+
+  configure_shortcuts ();
+  set_global_shortcuts (_active_dock == command_window);
+  set_global_edit_shortcuts (_active_dock == editor_window);
 }
 
+void
+main_window::confirm_shutdown_octave (void)
+{
+  bool closenow = true;
+
+  if (_start_gui)
+    {
+      QSettings *settings = resource_manager::get_settings ();
+
+      if (settings->value ("prompt_to_exit", false).toBool ())
+        {
+          int ans = QMessageBox::question (this, tr ("Octave"),
+                                           tr ("Are you sure you want to exit Octave?"),
+                                           QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+
+          if (ans !=  QMessageBox::Ok)
+            closenow = false;
+        }
+
+#ifdef HAVE_QSCINTILLA
+      if (closenow)
+        closenow = editor_window->check_closing ();
+#endif
+    }
+
+  // Wait for link thread to go to sleep state.
+  _octave_qt_link->mutex.lock ();
+
+  _octave_qt_link->shutdown_confirmation (closenow);
+
+  _octave_qt_link->mutex.unlock ();
+
+  // Awake the worker thread so that it continues shutting down (or not).
+  _octave_qt_link->waitcondition.wakeAll ();
+
+}
 
 void
 main_window::prepare_to_exit (void)
@@ -655,7 +832,7 @@ main_window::prepare_to_exit (void)
 }
 
 void
-main_window::exit (int status)
+main_window::exit_app (int status)
 {
   qApp->exit (status);
 }
@@ -683,8 +860,6 @@ main_window::change_directory (const QString& dir)
 
   _current_directory_combo_box->insertItem (0, dir);
   _current_directory_combo_box->setCurrentIndex (0);
-
-  file_browser_window->update_octave_directory (dir);
 }
 
 void
@@ -855,7 +1030,8 @@ void
 main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
-  octave_link::post_event (this, &main_window::exit_callback);
+  octave_cmd_exec *cmd = new octave_cmd_exec ("exit");
+  queue_command (cmd);
 }
 
 void
@@ -879,6 +1055,12 @@ main_window::read_settings (void)
       _current_directory_combo_box->addItem (curr_dirs.at (i));
     }
   emit settings_changed (settings);
+}
+
+void
+main_window::init_terminal_size (void)
+{
+  emit init_terminal_size_signal ();
 }
 
 void
@@ -965,6 +1147,10 @@ main_window::connect_visibility_changed (void)
 {
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
+
+#ifdef HAVE_QSCINTILLA
+  editor_window->enable_menu_shortcuts (false);
+#endif
 }
 
 void
@@ -1000,13 +1186,29 @@ main_window::pasteClipboard (void)
     emit pasteClipboard_signal ();
 }
 
+void
+main_window::selectAll (void)
+{
+  if (_current_directory_combo_box->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      if (edit)
+        {
+          edit->selectAll ();
+        }
+    }
+  else
+    emit selectAll_signal ();
+}
+
+
 // Connect the signals emitted when the Octave thread wants to create
 // a dialog box of some sort.  Perhaps a better place for this would be
 // as part of the QUIWidgetCreator class.  However, mainWindow currently
 // is not a global variable and not accessible for connecting.
 
 void
-main_window::connect_uiwidget_links ()
+main_window::connect_uiwidget_links (void)
 {
   connect (&uiwidget_creator,
            SIGNAL (create_dialog (const QString&, const QString&,
@@ -1125,11 +1327,6 @@ void
 main_window::construct (void)
 {
   _closing = false;   // flag for editor files when closed
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
-
-  workspace_window->setModel (_workspace_model);
-  connect (_workspace_model, SIGNAL (model_changed (void)),
-           workspace_window, SLOT (handle_model_changed (void)));
 
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -1142,177 +1339,249 @@ main_window::construct (void)
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-  construct_menu_bar ();
-
-  construct_tool_bar ();
-
-  construct_warning_bar ();
-
-  connect (qApp, SIGNAL (aboutToQuit ()),
-           this, SLOT (prepare_to_exit ()));
-
-  connect (this, SIGNAL (settings_changed (const QSettings *)),
-           this, SLOT (notice_settings (const QSettings *)));
-
-  connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
-           this, SLOT (handle_load_workspace_request (const QString&)));
-
-  connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
-           this, SLOT (find_files (const QString&)));
-
-  connect (this, SIGNAL (set_widget_shortcuts_signal (bool)),
-           editor_window, SLOT (set_shortcuts (bool)));
-
   connect_uiwidget_links ();
-
-  setWindowTitle ("Octave");
-
-  setDockOptions (QMainWindow::AnimatedDocks
-                  | QMainWindow::AllowNestedDocks
-                  | QMainWindow::AllowTabbedDocks);
-
-  addDockWidget (Qt::RightDockWidgetArea, command_window);
-  addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
-  tabifyDockWidget (command_window, doc_browser_window);
-
-#ifdef HAVE_QSCINTILLA
-  addDockWidget (Qt::RightDockWidgetArea, editor_window);
-  tabifyDockWidget (command_window, editor_window);
-#endif
-
-  addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
-  addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
-  addDockWidget (Qt::LeftDockWidgetArea, history_window);
-
-  int win_x = QApplication::desktop ()->width ();
-  int win_y = QApplication::desktop ()->height ();
-
-  if (win_x > 960)
-    win_x = 960;
-
-  if (win_y > 720)
-    win_y = 720;
-
-  setGeometry (0, 0, win_x, win_y);
-
-  setStatusBar (status_bar);
 
   construct_octave_qt_link ();
 
+  if (_start_gui)
+    {
+      setWindowIcon (QIcon (":/actions/icons/logo.png"));
+
+      workspace_window->setModel (_workspace_model);
+      connect (_workspace_model, SIGNAL (model_changed (void)),
+               workspace_window, SLOT (handle_model_changed (void)));
+
+      construct_menu_bar ();
+
+      construct_tool_bar ();
+
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               this, SLOT (prepare_to_exit ()));
+
+      connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+               this, SLOT(focus_changed (QWidget*, QWidget*)));
+
+      connect (this, SIGNAL (settings_changed (const QSettings *)),
+               this, SLOT (notice_settings (const QSettings *)));
+
+      connect (this, SIGNAL (editor_focus_changed (bool)),
+               this, SLOT (set_global_edit_shortcuts (bool)));
+
+      connect (this, SIGNAL (editor_focus_changed (bool)),
+               editor_window, SLOT (enable_menu_shortcuts (bool)));
+
+      connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
+               this, SLOT (handle_load_workspace_request (const QString&)));
+
+      connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
+               this, SLOT (find_files (const QString&)));
+
+      setWindowTitle ("Octave");
+
+      setDockOptions (QMainWindow::AnimatedDocks
+                      | QMainWindow::AllowNestedDocks
+                      | QMainWindow::AllowTabbedDocks);
+
+      addDockWidget (Qt::RightDockWidgetArea, command_window);
+      addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
+      tabifyDockWidget (command_window, doc_browser_window);
+
 #ifdef HAVE_QSCINTILLA
-  connect (this,
-           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-           editor_window,
-           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
-
-  connect (this,
-           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-           editor_window,
-           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
-
-  connect (this,
-           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
-           editor_window,
-           SLOT (handle_update_breakpoint_marker_request (bool,
-                                                          const QString&,
-                                                          int)));
+      addDockWidget (Qt::RightDockWidgetArea, editor_window);
+      tabifyDockWidget (command_window, editor_window);
 #endif
 
-  QDir curr_dir;
-  set_current_working_directory (curr_dir.absolutePath ());
+      addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
+      addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
+      addDockWidget (Qt::LeftDockWidgetArea, history_window);
 
-  octave_link::post_event (this, &main_window::resize_command_window_callback);
+      int win_x = QApplication::desktop ()->width ();
+      int win_y = QApplication::desktop ()->height ();
 
-  set_global_shortcuts (true);
+      if (win_x > 960)
+        win_x = 960;
+
+      if (win_y > 720)
+        win_y = 720;
+
+      setGeometry (0, 0, win_x, win_y);
+
+      setStatusBar (status_bar);
+
+#ifdef HAVE_QSCINTILLA
+      connect (this,
+               SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+               editor_window,
+               SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+
+      connect (this,
+               SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+               editor_window,
+               SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+
+      connect (this,
+               SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+               editor_window,
+               SLOT (handle_update_breakpoint_marker_request (bool,
+                                                              const QString&,
+                                                              int)));
+#endif
+
+      octave_link::post_event (this, &main_window::resize_command_window_callback);
+
+      configure_shortcuts ();
+    }
+}
+
+
+void
+main_window::handle_octave_ready ()
+{
+  // actions after the startup files are executed
+  QSettings *settings = resource_manager::get_settings ();
+
+  QDir startup_dir = QDir ();    // current octave dir after startup
+
+  if (settings)
+    {
+      if (settings->value ("restore_octave_dir").toBool ())
+        {
+          // restore last dir from previous session
+          QStringList curr_dirs
+            = settings->value ("MainWindow/current_directory_list").toStringList ();
+          startup_dir = QDir (curr_dirs.at (0));  // last dir in previous session
+        }
+      else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
+        {
+          // do not restore but there is a startup dir configured
+          startup_dir = QDir (settings->value ("octave_startup_dir").toString ());
+        }
+    }
+
+  if (! startup_dir.exists ())
+    {
+      // the configured startup dir does not exist, take actual one
+      startup_dir = QDir ();
+    }
+
+  set_current_working_directory (startup_dir.absolutePath ());
+
+  if (editor_window)
+    {
+#ifdef HAVE_QSCINTILLA
+      // Octave ready, determine whether to create an empty script.
+      // This can not be done when the editor is created because all functions
+      // must be known for the lexer's auto completion informations
+      editor_window->empty_script (true, false);
+#endif
+    }
+
+  if (_start_gui)
+    focus_command_window ();  // make sure that the command window has focus
 
 }
+
 
 void
 main_window::construct_octave_qt_link (void)
 {
-  _octave_qt_link = new octave_qt_link ();
+  _octave_qt_link = new octave_qt_link (this);
 
-  connect (_octave_qt_link, SIGNAL (exit_signal (int)),
-           this, SLOT (exit (int)));
+  connect (_octave_qt_link, SIGNAL (exit_app_signal (int)),
+           this, SLOT (exit_app (int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (set_workspace_signal
-                   (bool, const QString&, const QStringList&,
-                    const QStringList&, const QStringList&,
-                    const QStringList&, const QIntList&)),
-           _workspace_model,
-           SLOT (set_workspace
-                 (bool, const QString&, const QStringList&,
-                  const QStringList&, const QStringList&,
-                  const QStringList&, const QIntList&)));
+  connect (_octave_qt_link, SIGNAL (confirm_shutdown_signal ()),
+           this, SLOT (confirm_shutdown_octave ()));
 
-  connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
-           _workspace_model, SLOT (clear_workspace ()));
+  if (_start_gui)
+    {
+      connect (_octave_qt_link,
+               SIGNAL (set_workspace_signal
+                       (bool, bool, const QString&, const QStringList&,
+                        const QStringList&, const QStringList&,
+                        const QStringList&, const QIntList&)),
+               _workspace_model,
+               SLOT (set_workspace
+                     (bool, bool, const QString&, const QStringList&,
+                      const QStringList&, const QStringList&,
+                      const QStringList&, const QIntList&)));
 
-  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-           this, SLOT (change_directory (QString)));
+      connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
+               _workspace_model, SLOT (clear_workspace ()));
 
-  connect (_octave_qt_link,
-           SIGNAL (execute_command_in_terminal_signal (QString)),
-           this, SLOT (execute_command_in_terminal (QString)));
+      connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+               this, SLOT (change_directory (QString)));
+      connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+               file_browser_window, SLOT (update_octave_directory (QString)));
+      connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+               editor_window, SLOT (update_octave_directory (QString)));
 
-  connect (_octave_qt_link,
-           SIGNAL (set_history_signal (const QStringList&)),
-           history_window, SLOT (set_history (const QStringList&)));
+      connect (_octave_qt_link,
+               SIGNAL (execute_command_in_terminal_signal (QString)),
+               this, SLOT (execute_command_in_terminal (QString)));
 
-  connect (_octave_qt_link,
-           SIGNAL (append_history_signal (const QString&)),
-           history_window, SLOT (append_history (const QString&)));
+      connect (_octave_qt_link,
+               SIGNAL (set_history_signal (const QStringList&)),
+               history_window, SLOT (set_history (const QStringList&)));
 
-  connect (_octave_qt_link,
-           SIGNAL (clear_history_signal (void)),
-           history_window, SLOT (clear_history (void)));
+      connect (_octave_qt_link,
+               SIGNAL (append_history_signal (const QString&)),
+               history_window, SLOT (append_history (const QString&)));
 
-  connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
-           this, SLOT (handle_enter_debugger ()));
+      connect (_octave_qt_link,
+               SIGNAL (clear_history_signal (void)),
+               history_window, SLOT (clear_history (void)));
 
-  connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
-           this, SLOT (handle_exit_debugger ()));
+      connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
+               this, SLOT (handle_enter_debugger ()));
 
-  connect (_octave_qt_link,
-           SIGNAL (show_preferences_signal (void)),
-           this, SLOT (process_settings_dialog_request ()));
+      connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
+               this, SLOT (handle_exit_debugger ()));
+
+      connect (_octave_qt_link,
+               SIGNAL (show_preferences_signal (void)),
+               this, SLOT (process_settings_dialog_request ()));
+
+      connect (_octave_qt_link,
+               SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+               this, SLOT (copy_image_to_clipboard (const QString&, bool)));
 
 #ifdef HAVE_QSCINTILLA
-  connect (_octave_qt_link,
-           SIGNAL (edit_file_signal (const QString&)),
-           editor_window,
-           SLOT (handle_edit_file_request (const QString&)));
+      connect (_octave_qt_link,
+               SIGNAL (edit_file_signal (const QString&)),
+               editor_window,
+               SLOT (handle_edit_file_request (const QString&)));
 #endif
 
-  connect (_octave_qt_link,
-           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-           this,
-           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+      connect (_octave_qt_link,
+               SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+               this,
+               SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-           this,
-           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+      connect (_octave_qt_link,
+               SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+               this,
+               SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
-           this,
-           SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
-                                                          int)));
+      connect (_octave_qt_link,
+               SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+               this,
+               SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
+                                                              int)));
 
-  connect (_octave_qt_link,
-           SIGNAL (show_doc_signal (const QString &)),
-           this, SLOT (handle_show_doc (const QString &)));
+      connect (_octave_qt_link,
+               SIGNAL (show_doc_signal (const QString &)),
+               this, SLOT (handle_show_doc (const QString &)));
 
-  connect (_workspace_model,
-           SIGNAL (rename_variable (const QString&, const QString&)),
-           this,
-           SLOT (handle_rename_variable_request (const QString&,
-                                                 const QString&)));
+      connect (_workspace_model,
+               SIGNAL (rename_variable (const QString&, const QString&)),
+               this,
+               SLOT (handle_rename_variable_request (const QString&,
+                                                     const QString&)));
 
-  connect (command_window, SIGNAL (interrupt_signal (void)),
-           _octave_qt_link, SLOT (terminal_interrupt (void)));
+      connect (command_window, SIGNAL (interrupt_signal (void)),
+               _octave_qt_link, SLOT (terminal_interrupt (void)));
+    }
 
   _octave_qt_link->execute_interpreter ();
 
@@ -1337,54 +1606,96 @@ main_window::construct_menu_bar (void)
   construct_news_menu (menu_bar);
 }
 
+QAction*
+main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                         const char *member, const QWidget *receiver)
+{
+  QAction *a;
+
+  if (receiver)
+    a = menu->addAction (icon, text, receiver, member);
+  else
+    a = menu->addAction (icon, text, this, member);
+
+  addAction (a);  // important for shortcut context
+  a->setShortcutContext (Qt::ApplicationShortcut);
+  return a;
+}
+
+void
+main_window::enable_menu_shortcuts (bool enable)
+{
+  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
+
+  while (i != _hash_menu_text.constEnd())
+    {
+      i.key ()->setTitle (i.value ().at (! enable));
+      ++i;
+    }
+}
+
+QMenu*
+main_window::m_add_menu (QMenuBar *p, QString name)
+{
+  QMenu *menu = p->addMenu (name);
+
+  QString base_name = name;  // get a copy
+  // replace intended '&' ("&&") by a temp. string
+  base_name.replace ("&&","___octave_amp_replacement___");
+  // remove single '&' (shortcut)
+  base_name.remove ("&");
+  // restore intended '&'
+  base_name.replace ("___octave_amp_replacement___","&&");
+
+  // remember names with and without shortcut
+  _hash_menu_text[menu] = QStringList () << name << base_name;
+
+  return menu;
+}
+
 void
 main_window::construct_file_menu (QMenuBar *p)
 {
-  QMenu *file_menu = p->addMenu (tr ("&File"));
+  QMenu *file_menu = m_add_menu (p, tr ("&File"));
 
   construct_new_menu (file_menu);
 
   _open_action
-    = file_menu->addAction (QIcon (":/actions/icons/folder_documents.png"),
+    = file_menu->addAction (resource_manager::icon ("document-open"),
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
-
+  _open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #ifdef HAVE_QSCINTILLA
+  editor_window->insert_new_open_actions (_new_script_action,
+                                          _new_function_action,
+                                          _open_action);
+
   file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 
   file_menu->addSeparator ();
 
-  QAction *load_workspace_action
+  _load_workspace_action
     = file_menu->addAction (tr ("Load Workspace..."));
 
-  QAction *save_workspace_action
+  _save_workspace_action
     = file_menu->addAction (tr ("Save Workspace As..."));
-
-  file_menu->addSeparator ();
-
-  QAction *preferences_action
-    = file_menu->addAction (QIcon (":/actions/icons/configure.png"),
-                            tr ("Preferences..."));
 
   file_menu->addSeparator ();
 
   _exit_action = file_menu->addAction (tr ("Exit"));
   _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  connect (preferences_action, SIGNAL (triggered ()),
-           this, SLOT (process_settings_dialog_request ()));
-
 #ifdef HAVE_QSCINTILLA
   connect (_open_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_open_file ()));
 #endif
 
-  connect (load_workspace_action, SIGNAL (triggered ()),
+  connect (_load_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_load_workspace_request ()));
 
-  connect (save_workspace_action, SIGNAL (triggered ()),
+  connect (_save_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_save_workspace_request ()));
 
   connect (_exit_action, SIGNAL (triggered ()),
@@ -1397,16 +1708,16 @@ main_window::construct_new_menu (QMenu *p)
   QMenu *new_menu = p->addMenu (tr ("New"));
 
   _new_script_action
-    = new_menu->addAction (QIcon (":/actions/icons/filenew.png"),
-                           tr ("Script"));
+    = new_menu->addAction (resource_manager::icon ("document-new"),
+                           tr ("New Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  _new_function_action = new_menu->addAction (tr ("Function..."));
+  _new_function_action = new_menu->addAction (tr ("New Function..."));
   _new_function_action->setEnabled (true);
   _new_function_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
-  new_figure_action->setEnabled (true);
+  _new_figure_action = new_menu->addAction (tr ("New Figure"));
+  _new_figure_action->setEnabled (true);
 
 #ifdef HAVE_QSCINTILLA
   connect (_new_script_action, SIGNAL (triggered ()),
@@ -1416,33 +1727,32 @@ main_window::construct_new_menu (QMenu *p)
            editor_window, SLOT (request_new_function ()));
 #endif
 
-  connect (new_figure_action, SIGNAL (triggered ()),
+  connect (_new_figure_action, SIGNAL (triggered ()),
            this, SLOT (handle_new_figure_request ()));
 }
 
 void
 main_window::construct_edit_menu (QMenuBar *p)
 {
-  QMenu *edit_menu = p->addMenu (tr ("&Edit"));
+  QMenu *edit_menu = m_add_menu (p, tr ("&Edit"));
 
   QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
   _undo_action
-    = edit_menu->addAction (QIcon (":/actions/icons/undo.png"), tr ("Undo"));
-  _undo_action->setShortcut (QKeySequence::Undo);
+    = edit_menu->addAction (resource_manager::icon ("edit-undo"), tr ("Undo"));
 
   edit_menu->addSeparator ();
 
   _copy_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
+    = edit_menu->addAction (resource_manager::icon ("edit-copy"),
                             tr ("Copy"), this, SLOT (copyClipboard ()));
-  _copy_action->setShortcut (QKeySequence::Copy);
-
 
   _paste_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
+    = edit_menu->addAction (resource_manager::icon ("edit-paste"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
-  _paste_action->setShortcut (QKeySequence::Paste);
+
+  _select_all_action
+    = edit_menu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
 
   _clear_clipboard_action
     = edit_menu->addAction (tr ("Clear Clipboard"), this,
@@ -1450,45 +1760,56 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   edit_menu->addSeparator ();
 
-  _find_files_action = edit_menu->addAction (tr ("Find Files..."));
+  _find_files_action 
+    = edit_menu->addAction (resource_manager::icon ("edit-find"),
+                             tr ("Find Files..."));
 
   edit_menu->addSeparator ();
 
-  QAction *clear_command_window_action
+  _clear_command_window_action
     = edit_menu->addAction (tr ("Clear Command Window"));
 
-  QAction *clear_command_history
+  _clear_command_history_action
     = edit_menu->addAction (tr ("Clear Command History"));
 
-  QAction *clear_workspace_action
+  _clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
+
+  edit_menu->addSeparator ();
+
+  _preferences_action
+    = edit_menu->addAction (resource_manager::icon ("preferences-system"),
+                            tr ("Preferences..."));
 
   connect (_find_files_action, SIGNAL (triggered ()),
            this, SLOT (find_files ()));
 
-  connect (clear_command_window_action, SIGNAL (triggered ()),
+  connect (_clear_command_window_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_command_window_request ()));
 
-  connect (clear_command_history, SIGNAL (triggered ()),
+  connect (_clear_command_history_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_history_request ()));
 
-  connect (clear_workspace_action, SIGNAL (triggered ()),
+  connect (_clear_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_workspace_request ()));
 
   connect (_clipboard, SIGNAL (changed (QClipboard::Mode)),
            this, SLOT (clipboard_has_changed (QClipboard::Mode)));
   clipboard_has_changed (QClipboard::Clipboard);
+
+  connect (_preferences_action, SIGNAL (triggered ()),
+           this, SLOT (process_settings_dialog_request ()));
 }
 
 QAction *
-main_window::construct_debug_menu_item (const char *icon_file,
-                                        const QString& item,
-                                        const QKeySequence& key)
+main_window::construct_debug_menu_item (const char *icon, const QString& item,
+                                        const char *member)
 {
-  QAction *action = _debug_menu->addAction (QIcon (icon_file), item);
+  QAction *action = add_action (_debug_menu, 
+                                  resource_manager::icon (QString (icon)), 
+                                item, member);
 
   action->setEnabled (false);
-  action->setShortcut (key);
 
 #ifdef HAVE_QSCINTILLA
   editor_window->debug_menu ()->addAction (action);
@@ -1501,59 +1822,61 @@ main_window::construct_debug_menu_item (const char *icon_file,
 void
 main_window::construct_debug_menu (QMenuBar *p)
 {
-  _debug_menu = p->addMenu (tr ("De&bug"));
+  _debug_menu = m_add_menu (p, tr ("De&bug"));
 
-  _debug_step_over = construct_debug_menu_item
-                       (":/actions/icons/db_step.png", tr ("Step"),
-                        Qt::Key_F10);
+  _debug_step_over = construct_debug_menu_item (
+                      "db-step", tr ("Step"),
+                       SLOT (debug_step_over ()));
 
-  _debug_step_into = construct_debug_menu_item
-                       (":/actions/icons/db_step_in.png", tr ("Step In"),
-                        Qt::Key_F11);
+  _debug_step_into = construct_debug_menu_item (
+                      "db-step-in", tr ("Step In"),
+                       SLOT (debug_step_into ()));
 
-  _debug_step_out = construct_debug_menu_item
-                      (":/actions/icons/db_step_out.png", tr ("Step Out"),
-                       Qt::ShiftModifier + Qt::Key_F11);
+  _debug_step_out = construct_debug_menu_item (
+                      "db-step-out", tr ("Step Out"),
+                       SLOT (debug_step_out ()));
 
-  _debug_continue = construct_debug_menu_item
-                      (":/actions/icons/db_cont.png", tr ("Continue"),
-                       Qt::Key_F5);
+  _debug_continue = construct_debug_menu_item (
+                      "db-cont", tr ("Continue"),
+                       SLOT (debug_continue ()));
 
   _debug_menu->addSeparator ();
 #ifdef HAVE_QSCINTILLA
   editor_window->debug_menu ()->addSeparator ();
 #endif
 
-  _debug_quit = construct_debug_menu_item
-                (":/actions/icons/db_stop.png", tr ("Exit Debug Mode"),
-                 Qt::ShiftModifier + Qt::Key_F5);
-
-  connect (_debug_step_over, SIGNAL (triggered ()),
-           this, SLOT (debug_step_over ()));
-
-  connect (_debug_step_into, SIGNAL (triggered ()),
-           this, SLOT (debug_step_into ()));
-
-  connect (_debug_step_out, SIGNAL (triggered ()),
-           this, SLOT (debug_step_out ()));
-
-  connect (_debug_continue, SIGNAL (triggered ()),
-           this, SLOT (debug_continue ()));
-
-  connect (_debug_quit, SIGNAL (triggered ()),
-           this, SLOT (debug_quit ()));
+  _debug_quit = construct_debug_menu_item (
+                      "db-stop", tr ("Quit Debug Mode"),
+                       SLOT (debug_quit ()));
 }
 
 QAction *
 main_window::construct_window_menu_item (QMenu *p, const QString& item,
-                                         bool checkable,
-                                         const QKeySequence& key)
+                                         bool checkable, QWidget *widget)
 {
-  QAction *action = p->addAction (item);
+  QAction *action = p->addAction (QIcon (), item);
 
+  addAction (action);  // important for shortcut context
   action->setCheckable (checkable);
-  action->setShortcut (key);
   action->setShortcutContext (Qt::ApplicationShortcut);
+
+  if (widget)  // might be zero for editor_window
+    {
+      if (checkable)
+        {
+          // action for visibilty of dock widget
+          connect (action, SIGNAL (toggled (bool)),
+                   widget, SLOT (setVisible (bool)));
+
+          connect (widget, SIGNAL (active_changed (bool)),
+                   action, SLOT (setChecked (bool)));
+        }
+      else
+        {
+          // action for focus of dock widget
+          connect (action, SIGNAL (triggered ()), widget, SLOT (focus ()));
+        }
+    }
 
   return action;
 }
@@ -1561,385 +1884,110 @@ main_window::construct_window_menu_item (QMenu *p, const QString& item,
 void
 main_window::construct_window_menu (QMenuBar *p)
 {
-  QMenu *window_menu = p->addMenu (tr ("&Window"));
+  QMenu *window_menu = m_add_menu (p, tr ("&Window"));
 
-  QKeySequence ctrl = Qt::ControlModifier;
-  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
+  _show_command_window_action = construct_window_menu_item
+            (window_menu, tr ("Show Command Window"), true, command_window);
 
-  QAction *show_command_window_action = construct_window_menu_item
-                                        (window_menu,
-                                         tr ("Show Command Window"), true,
-                                         ctrl_shift + Qt::Key_0);
+  _show_history_action = construct_window_menu_item
+            (window_menu, tr ("Show Command History"), true, history_window);
 
-  QAction *show_history_action = construct_window_menu_item
-                                 (window_menu, tr ("Show Command History"),
-                                  true, ctrl_shift + Qt::Key_1);
+  _show_file_browser_action = construct_window_menu_item
+            (window_menu, tr ("Show File Browser"), true, file_browser_window);
 
-  QAction *show_file_browser_action =  construct_window_menu_item
-                                       (window_menu, tr ("Show File Browser"),
-                                        true, ctrl_shift + Qt::Key_2);
+  _show_workspace_action = construct_window_menu_item
+            (window_menu, tr ("Show Workspace"), true, workspace_window);
 
-  QAction *show_workspace_action = construct_window_menu_item
-                                   (window_menu, tr ("Show Workspace"), true,
-                                    ctrl_shift + Qt::Key_3);
+  _show_editor_action = construct_window_menu_item
+            (window_menu, tr ("Show Editor"), true, editor_window);
 
-  QAction *show_editor_action = construct_window_menu_item
-                                (window_menu, tr ("Show Editor"), true,
-                                 ctrl_shift + Qt::Key_4);
-
-  QAction *show_documentation_action = construct_window_menu_item
-                                       (window_menu, tr ("Show Documentation"),
-                                        true, ctrl_shift + Qt::Key_5);
+  _show_documentation_action = construct_window_menu_item
+            (window_menu, tr ("Show Documentation"), true, doc_browser_window);
 
   window_menu->addSeparator ();
 
-  QAction *command_window_action = construct_window_menu_item
-                                   (window_menu, tr ("Command Window"), false,
-                                    ctrl + Qt::Key_0);
+  _command_window_action = construct_window_menu_item
+            (window_menu, tr ("Command Window"), false, command_window);
 
-  QAction *history_action = construct_window_menu_item
-                            (window_menu, tr ("Command History"), false,
-                             ctrl + Qt::Key_1);
+  _history_action = construct_window_menu_item
+            (window_menu, tr ("Command History"), false, history_window);
 
-  QAction *file_browser_action = construct_window_menu_item
-                                 (window_menu, tr ("File Browser"), false,
-                                  ctrl + Qt::Key_2);
+  _file_browser_action = construct_window_menu_item
+            (window_menu, tr ("File Browser"), false, file_browser_window);
 
-  QAction *workspace_action = construct_window_menu_item
-                              (window_menu, tr ("Workspace"), false,
-                               ctrl + Qt::Key_3);
+  _workspace_action = construct_window_menu_item
+            (window_menu, tr ("Workspace"), false, workspace_window);
 
-  QAction *editor_action = construct_window_menu_item
-                           (window_menu, tr ("Editor"), false,
-                            ctrl + Qt::Key_4);
+  _editor_action = construct_window_menu_item
+            (window_menu, tr ("Editor"), false, editor_window);
 
-  QAction *documentation_action = construct_window_menu_item
-                                  (window_menu, tr ("Documentation"), false,
-                                   ctrl + Qt::Key_5);
+  _documentation_action = construct_window_menu_item
+            (window_menu, tr ("Documentation"), false, doc_browser_window);
 
   window_menu->addSeparator ();
 
-  QAction *reset_windows_action
-    = window_menu->addAction (tr ("Reset Default Window Layout"));
-
-  connect (show_command_window_action, SIGNAL (toggled (bool)),
-           command_window, SLOT (setVisible (bool)));
-
-  connect (command_window, SIGNAL (active_changed (bool)),
-           show_command_window_action, SLOT (setChecked (bool)));
-
-  connect (show_workspace_action, SIGNAL (toggled (bool)),
-           workspace_window, SLOT (setVisible (bool)));
-
-  connect (workspace_window, SIGNAL (active_changed (bool)),
-           show_workspace_action, SLOT (setChecked (bool)));
-
-  connect (show_history_action, SIGNAL (toggled (bool)),
-           history_window, SLOT (setVisible (bool)));
-
-  connect (history_window, SIGNAL (active_changed (bool)),
-           show_history_action, SLOT (setChecked (bool)));
-
-  connect (show_file_browser_action, SIGNAL (toggled (bool)),
-           file_browser_window, SLOT (setVisible (bool)));
-
-  connect (file_browser_window, SIGNAL (active_changed (bool)),
-           show_file_browser_action, SLOT (setChecked (bool)));
-
-#ifdef HAVE_QSCINTILLA
-  connect (show_editor_action, SIGNAL (toggled (bool)),
-           editor_window, SLOT (setVisible (bool)));
-
-  connect (editor_window, SIGNAL (active_changed (bool)),
-           show_editor_action, SLOT (setChecked (bool)));
-#endif
-
-  connect (show_documentation_action, SIGNAL (toggled (bool)),
-           doc_browser_window, SLOT (setVisible (bool)));
-
-  connect (doc_browser_window, SIGNAL (active_changed (bool)),
-           show_documentation_action, SLOT (setChecked (bool)));
-
-  connect (command_window_action, SIGNAL (triggered ()),
-           command_window, SLOT (focus ()));
-
-  connect (workspace_action, SIGNAL (triggered ()),
-           workspace_window, SLOT (focus ()));
-
-  connect (history_action, SIGNAL (triggered ()),
-           history_window, SLOT (focus ()));
-
-  connect (file_browser_action, SIGNAL (triggered ()),
-           file_browser_window, SLOT (focus ()));
-
-#ifdef HAVE_QSCINTILLA
-  connect (editor_action, SIGNAL (triggered ()),
-           editor_window, SLOT (focus ()));
-#endif
-
-  connect (documentation_action, SIGNAL (triggered ()),
-           doc_browser_window, SLOT (focus ()));
-
-  connect (reset_windows_action, SIGNAL (triggered ()),
-           this, SLOT (reset_windows ()));
+  _reset_windows_action = add_action (window_menu, QIcon (),
+              tr ("Reset Default Window Layout"), SLOT (reset_windows ()));
 }
 
 void
 main_window::construct_help_menu (QMenuBar *p)
 {
-  QMenu *help_menu = p->addMenu (tr ("&Help"));
+  QMenu *help_menu = m_add_menu (p, tr ("&Help"));
 
   construct_documentation_menu (help_menu);
 
   help_menu->addSeparator ();
 
-  QAction *report_bug_action
-    = help_menu->addAction (tr ("Report Bug"));
+  _report_bug_action = add_action (help_menu, QIcon (),
+            tr ("Report Bug"), SLOT (open_bug_tracker_page ()));
 
-  QAction *octave_packages_action
-    = help_menu->addAction (tr ("Octave Packages"));
+  _octave_packages_action =  add_action (help_menu, QIcon (),
+            tr ("Octave Packages"), SLOT (open_octave_packages_page ()));
 
-  QAction *agora_action
-    = help_menu->addAction (tr ("Share Code"));
+  _agora_action = add_action (help_menu, QIcon (),
+            tr ("Share Code"), SLOT (open_agora_page ()));
 
-  QAction *contribute_action
-    = help_menu->addAction (tr ("Contribute to Octave"));
+  _contribute_action = add_action (help_menu, QIcon (),
+            tr ("Contribute to Octave"), SLOT (open_contribute_page ()));
 
-  QAction *developer_action
-    = help_menu->addAction (tr ("Octave Developer Resources"));
+  _developer_action = add_action (help_menu, QIcon (),
+            tr ("Octave Developer Resources"), SLOT (open_developer_page ()));
 
   help_menu->addSeparator ();
 
-  QAction *about_octave_action
-    = help_menu->addAction (tr ("About Octave"));
-
-  connect (report_bug_action, SIGNAL (triggered ()),
-           this, SLOT (open_bug_tracker_page ()));
-
-  connect (octave_packages_action, SIGNAL (triggered ()),
-           this, SLOT (open_octave_packages_page ()));
-
-  connect (agora_action, SIGNAL (triggered ()),
-           this, SLOT (open_agora_page ()));
-
-  connect (contribute_action, SIGNAL (triggered ()),
-           this, SLOT (open_contribute_page ()));
-
-  connect (developer_action, SIGNAL (triggered ()),
-           this, SLOT (open_developer_page ()));
-
-  connect (about_octave_action, SIGNAL (triggered ()),
-           this, SLOT (show_about_octave ()));
+  _about_octave_action = add_action (help_menu, QIcon (),
+            tr ("About Octave"), SLOT (show_about_octave ()));
 }
 
 void
 main_window::construct_documentation_menu (QMenu *p)
 {
-  QMenu *documentation_menu = p->addMenu (tr ("Documentation"));
+  QMenu *doc_menu = p->addMenu (tr ("Documentation"));
 
-  QAction *ondisk_documentation_action
-    = documentation_menu->addAction (tr ("On Disk"));
+  _ondisk_doc_action = add_action (doc_menu, QIcon (),
+                     tr ("On Disk"), SLOT (focus ()), doc_browser_window);
 
-  QAction *online_documentation_action
-    = documentation_menu->addAction (tr ("Online"));
-
-  connect (ondisk_documentation_action, SIGNAL (triggered ()),
-           doc_browser_window, SLOT (focus ()));
-
-  connect (online_documentation_action, SIGNAL (triggered ()),
-           this, SLOT (open_online_documentation_page ()));
+  _online_doc_action = add_action (doc_menu, QIcon (),
+                     tr ("Online"), SLOT (open_online_documentation_page ()));
 }
 
 void
 main_window::construct_news_menu (QMenuBar *p)
 {
-  QMenu *news_menu = p->addMenu (tr ("&News"));
+  QMenu *news_menu = m_add_menu (p, tr ("&News"));
 
-  QAction *release_notes_action
-    = news_menu->addAction (tr ("Release Notes"));
+  _release_notes_action = add_action (news_menu, QIcon (),
+            tr ("Release Notes"), SLOT (display_release_notes ()));
 
-  QAction *current_news_action
-    = news_menu->addAction (tr ("Community News"));
-
-  connect (release_notes_action, SIGNAL (triggered ()),
-           this, SLOT (display_release_notes ()));
-
-  connect (current_news_action, SIGNAL (triggered ()),
-           this, SLOT (load_and_display_community_news ()));
-}
-
-void
-main_window::construct_warning_bar (void)
-{
-  QSettings *settings = resource_manager::get_settings ();
-
-  if (settings
-      && settings->value ("General/hide_new_gui_warning", false).toBool ())
-    {
-      construct_gui_info_button ();
-
-      return;
-    }
-
-  _warning_bar = new QDockWidget (this);
-  _warning_bar->setAttribute (Qt::WA_DeleteOnClose);
-
-  QFrame *box = new QFrame (_warning_bar);
-
-  QLabel *icon = new QLabel (box);
-  QIcon warning_icon
-    = QIcon::fromTheme ("dialog-warning",
-                        QIcon (":/actions/icons/warning.png"));
-  QPixmap icon_pixmap = warning_icon.pixmap (QSize (32, 32));
-  icon->setPixmap (icon_pixmap);
-
-  QTextBrowser *msg = new QTextBrowser (box);
-  msg->setOpenExternalLinks (true);
-  msg->setText
-    (tr ("<strong>You are using a release candidate of Octave's experimental GUI.</strong>  "
-         "Octave is under continuous improvement and the GUI will be the "
-         "default interface for the 4.0 release.  For more information, "
-         "select the \"Release Notes\" item in the \"News\" menu of the GUI, "
-         "or visit <a href=\"http://octave.org\">http://octave.org</a>."));
-
-  msg->setStyleSheet ("background-color: #ffd97f; color: black; margin 4px;");
-  msg->setMinimumWidth (100);
-  msg->setMinimumHeight (60);
-  msg->setMaximumHeight (80);
-  msg->setSizePolicy (QSizePolicy (QSizePolicy::Expanding,
-                                   QSizePolicy::Minimum));
-
-  QPushButton *info_button = new QPushButton (tr ("More Info"), box);
-  QPushButton *hide_button = new QPushButton (tr ("Hide"), box);
-
-  connect (info_button, SIGNAL (clicked ()),
-           this, SLOT (show_gui_info ()));
-
-  connect (hide_button, SIGNAL (clicked ()),
-           this, SLOT (hide_warning_bar ()));
-
-  QVBoxLayout *button_layout = new QVBoxLayout;
-
-  button_layout->addWidget (info_button);
-  button_layout->addWidget (hide_button);
-
-  QHBoxLayout *icon_and_message = new QHBoxLayout;
-
-  icon_and_message->addWidget (icon);
-  icon_and_message->addSpacing (10);
-  icon_and_message->addWidget (msg);
-  icon_and_message->addSpacing (10);
-  icon_and_message->addLayout (button_layout);
-
-  icon_and_message->setAlignment (hide_button, Qt::AlignTop);
-
-  box->setFrameStyle (QFrame::Box);
-  box->setLineWidth (2);
-  box->setMaximumWidth (1000);
-  box->adjustSize ();
-  box->setLayout (icon_and_message);
-
-  _warning_bar->setFeatures (QDockWidget::NoDockWidgetFeatures);
-  _warning_bar->setObjectName ("WarningToolBar");
-  _warning_bar->setWidget (box);
-
-  setCorner (Qt::TopLeftCorner, Qt::TopDockWidgetArea);
-  setCorner (Qt::TopRightCorner, Qt::TopDockWidgetArea);
-
-  addDockWidget (Qt::TopDockWidgetArea, _warning_bar);
-};
-
-void
-main_window::construct_gui_info_button (void)
-{
-  QIcon warning_icon
-    = QIcon::fromTheme ("dialog-warning",
-                        QIcon (":/actions/icons/warning.png"));
-
-  _gui_info_button
-    = new QPushButton (warning_icon, tr ("Experimental GUI Info"));
-
-  _main_tool_bar->addWidget (_gui_info_button);
-
-  connect (_gui_info_button, SIGNAL (clicked ()),
-           this, SLOT (show_gui_info ()));
-}
-
-void
-main_window::hide_warning_bar (void)
-{
-  QSettings *settings = resource_manager::get_settings ();
-
-  if (settings)
-    {
-      settings->setValue ("General/hide_new_gui_warning", true);
-
-      settings->sync ();
-    }
-
-  removeDockWidget (_warning_bar);
-
-  construct_gui_info_button ();
-}
-
-void
-main_window::show_gui_info (void)
-{
-  QString gui_info
-    ( QObject::tr ("<p><strong>A Note about Octave's New GUI</strong></p>"
-         "<p>One of the biggest new features for Octave 3.8 is a graphical "
-         "user interface.  It is the one thing that users have requested "
-         "most often over the last few years and now it is almost ready.  "
-         "But because it is not quite as polished as we would like, we "
-         "have decided to wait until the 4.0.x release series before "
-         "making the GUI the default interface.</p>"
-         "<p>Given the length of time and the number of bug fixes and "
-         "improvements since the last major release, we also "
-         "decided against delaying the release of all these new "
-         "improvements any longer just to perfect the GUI.  So please "
-         "enjoy the 3.8 release of Octave and the preview of the new GUI.  "
-         "We believe it is working reasonably well, but we also know that "
-         "there are some obvious rough spots and many things that could be "
-         "improved.</p>"
-         "<p><strong>We Need Your Help</strong></p>"
-         "<p>There are many ways that you can help us fix the remaining "
-         "problems, complete the GUI, and improve the overall user "
-         "experience for both novices and experts alike (links will open "
-         "an external browser):</p>"
-         "<p><ul><li>If you are a skilled software developer, you can "
-         "help by contributing your time to help "
-         "<a href=\"http://octave.org/get-involved.html\">develop "
-         "Octave</a>.</li>"
-         "<li>If Octave does not work properly, you are encouraged to "
-         "<a href=\"http://octave.org/bugs.html\">report problems </a> "
-         "that you find.</li>"
-         "<li>Whether you are a user or developer, you can "
-         "<a href=\"http://octave.org/donate.html\">help to fund the "
-         "project</a>.  "
-         "Octave development takes a lot of time and expertise.  "
-         "Your contributions help to ensure that Octave will continue "
-         "to improve.</li></ul></p>"
-         "<p>We hope you find Octave to be useful.  Please help us make "
-         "it even better for the future!</p>"));
-
-  QMessageBox gui_info_dialog (QMessageBox::Warning,
-                               tr ("Experimental GUI Info"),
-                               QString (gui_info.length (),' '), QMessageBox::Close);
-  QGridLayout *box_layout
-      = qobject_cast<QGridLayout *>(gui_info_dialog.layout());
-  if (box_layout)
-    {
-      QTextEdit *text = new QTextEdit(gui_info);
-      text->setReadOnly(true);
-      box_layout->addWidget(text, 0, 1);
-    }
-  gui_info_dialog.exec ();
+  _current_news_action = add_action (news_menu, QIcon (),
+            tr ("Community News"), SLOT (load_and_display_community_news ()));
 }
 
 void
 main_window::construct_tool_bar (void)
 {
-  _main_tool_bar = addToolBar ("Main");
+  _main_tool_bar = addToolBar (tr ("Toolbar"));
 
   _main_tool_bar->setObjectName ("MainToolBar");
   _main_tool_bar->addAction (_new_script_action);
@@ -1949,19 +1997,19 @@ main_window::construct_tool_bar (void)
 
   _main_tool_bar->addAction (_copy_action);
   _main_tool_bar->addAction (_paste_action);
-  _main_tool_bar->addAction (_undo_action);
 
   _main_tool_bar->addSeparator ();
 
   _current_directory_combo_box = new QComboBox (this);
-  _current_directory_combo_box->setFixedWidth (current_directory_width);
+  QFontMetrics fm = _current_directory_combo_box->fontMetrics ();
+  _current_directory_combo_box->setFixedWidth (48*fm.averageCharWidth ());
   _current_directory_combo_box->setEditable (true);
   _current_directory_combo_box->setInsertPolicy (QComboBox::NoInsert);
   _current_directory_combo_box->setToolTip (tr ("Enter directory name"));
   _current_directory_combo_box->setMaxVisibleItems (
     current_directory_max_visible);
   _current_directory_combo_box->setMaxCount (current_directory_max_count);
-  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
+  QSizePolicy sizePol (QSizePolicy::Preferred, QSizePolicy::Preferred);
   _current_directory_combo_box->setSizePolicy (sizePol);
 
   // addWidget takes ownership of the objects so there is no
@@ -1969,10 +2017,10 @@ main_window::construct_tool_bar (void)
   _main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
   _main_tool_bar->addWidget (_current_directory_combo_box);
   QAction *current_dir_up = _main_tool_bar->addAction (
-                              QIcon (":/actions/icons/up.png"),
+                              resource_manager::icon ("go-up"),
                               tr ("One directory up"));
   QAction *current_dir_search = _main_tool_bar->addAction (
-                                  QIcon (":/actions/icons/folder.png"),
+                              resource_manager::icon ("folder"),
                                   tr ("Browse directories"));
 
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
@@ -2033,14 +2081,20 @@ main_window::command_window_undo_callback (void)
 void
 main_window::clear_command_window_callback (void)
 {
-  Fclc ();
-  command_editor::interrupt (true);
+  command_editor::kill_full_line ();
+  command_editor::clear_screen ();
 }
 
 void
 main_window::resize_command_window_callback (void)
 {
   command_editor::resize_terminal ();
+}
+
+void
+main_window::set_screen_size_callback (const int_pair& sz)
+{
+  command_editor::set_screen_size (sz.first, sz.second);
 }
 
 void
@@ -2054,25 +2108,21 @@ main_window::execute_command_callback ()
 {
   bool repost = false;          // flag for reposting event for this callback
 
-  if (!_cmd_queue->isEmpty ())  // list can not be empty here, just to make sure
+  if (! _cmd_queue.isEmpty ())  // list can not be empty here, just to make sure
     {
-      std::string pending_input = command_editor::get_current_line ();
-      command_editor::set_initial_input (pending_input);
-
       _cmd_queue_mutex.lock (); // critical path
-      std::string command = _cmd_queue->takeFirst ().toStdString ();
-      if (_cmd_queue->isEmpty ())
+
+      octave_cmd *cmd = _cmd_queue.takeFirst ();
+
+      if (_cmd_queue.isEmpty ())
         _cmd_processing.release ();  // cmd queue empty, processing will stop
       else
         repost = true;          // not empty, repost at end
       _cmd_queue_mutex.unlock ();
 
-      command_editor::replace_line (command);
+      cmd->execute ();
 
-      command_editor::redisplay ();
-      // We are executing inside the command editor event loop.  Force
-      // the current line to be returned for processing.
-      command_editor::interrupt ();
+      delete cmd;
     }
 
   if (repost)  // queue not empty, so repost event for further processing
@@ -2091,6 +2141,7 @@ void
 main_window::change_directory_callback (const std::string& directory)
 {
   Fcd (ovl (directory));
+  _octave_qt_link->update_directory ();
 }
 
 // The next callbacks are invoked by GUI buttons.  Those buttons
@@ -2127,13 +2178,22 @@ main_window::execute_debug_callback ()
       _dbg_queue_mutex.unlock ();
 
       if (debug == "step")
-        Fdbstep ();
+        {
+          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+          Fdbstep ();
+        }
       else if (debug == "cont")
-        Fdbcont ();
+        {
+          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+          Fdbcont ();
+        }
       else if (debug == "quit")
         Fdbquit ();
       else
-        Fdbstep (ovl (debug.toStdString ()));
+        {
+          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+          Fdbstep (ovl (debug.toStdString ()));
+        }
 
       command_editor::interrupt (true);
     }
@@ -2141,12 +2201,6 @@ main_window::execute_debug_callback ()
   if (repost)  // queue not empty, so repost event for further processing
     octave_link::post_event (this, &main_window::execute_debug_callback);
 
-}
-
-void
-main_window::exit_callback (void)
-{
-  Fquit ();
 }
 
 void
@@ -2188,40 +2242,167 @@ main_window::find_files_finished (int)
 }
 
 void
-main_window::set_global_shortcuts (bool set_shortcuts)
+main_window::set_global_edit_shortcuts (bool editor_has_focus)
 {
-  if (set_shortcuts)
+  // this slot is called when editor gets/loses focus
+  if (editor_has_focus)
     {
-
-      _open_action->setShortcut (QKeySequence::Open);
-      _new_script_action->setShortcut (QKeySequence::New);
-      _new_function_action->setShortcut (Qt::ControlModifier
-                                       + Qt::ShiftModifier
-                                       + Qt::Key_N);
-
-      _exit_action->setShortcut (QKeySequence::Quit);
-
-      _find_files_action->setShortcut (Qt::ControlModifier
-                                       + Qt::ShiftModifier
-                                       + Qt::Key_F);
-
+      // disable shortcuts that are also provided by the editor itself
+      QKeySequence no_key = QKeySequence ();
+      _copy_action->setShortcut (no_key);
+      _paste_action->setShortcut (no_key);
+      _undo_action->setShortcut (no_key);
+      _select_all_action->setShortcut (no_key);
     }
   else
     {
+      // editor loses focus, set the global shortcuts
+      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+    }
 
+  // dis-/enable global menu depending on editor's focus
+  enable_menu_shortcuts (! editor_has_focus);
+}
+
+void
+main_window::configure_shortcuts ()
+{
+  // file menu
+  shortcut_manager::set_shortcut (_open_action, "main_file:open_file");
+  shortcut_manager::set_shortcut (_new_script_action, "main_file:new_file");
+  shortcut_manager::set_shortcut (_new_function_action, "main_file:new_function");
+  shortcut_manager::set_shortcut (_new_function_action, "main_file:new_figure");
+  shortcut_manager::set_shortcut (_load_workspace_action,
+                                  "main_file:load_workspace");
+  shortcut_manager::set_shortcut (_save_workspace_action,
+                                  "main_file:save_workspace");
+  shortcut_manager::set_shortcut (_preferences_action, "main_file:preferences");
+  shortcut_manager::set_shortcut (_exit_action,"main_file:exit");
+
+  // edit menu
+  shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+  shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+  shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+  shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+  shortcut_manager::set_shortcut (_clear_clipboard_action,
+                                  "main_edit:clear_clipboard");
+  shortcut_manager::set_shortcut (_find_files_action, "main_edit:find_in_files");
+  shortcut_manager::set_shortcut (_clear_command_history_action,
+                                  "main_edit:clear_history");
+  shortcut_manager::set_shortcut (_clear_command_window_action,
+                                  "main_edit:clear_command_window");
+  shortcut_manager::set_shortcut (_clear_workspace_action,
+                                  "main_edit:clear_workspace");
+
+  // debug menu
+  shortcut_manager::set_shortcut (_debug_step_over, "main_debug:step_over");
+  shortcut_manager::set_shortcut (_debug_step_into, "main_debug:step_into");
+  shortcut_manager::set_shortcut (_debug_step_out,  "main_debug:step_out");
+  shortcut_manager::set_shortcut (_debug_continue,  "main_debug:continue");
+  shortcut_manager::set_shortcut (_debug_quit,  "main_debug:quit");
+
+  // window menu
+  shortcut_manager::set_shortcut (_show_command_window_action,
+                                  "main_window:show_command");
+  shortcut_manager::set_shortcut (_show_history_action,
+                                  "main_window:show_history");
+  shortcut_manager::set_shortcut (_show_workspace_action,
+                                  "main_window:show_workspace");
+  shortcut_manager::set_shortcut (_show_file_browser_action,
+                                  "main_window:show_file_browser");
+  shortcut_manager::set_shortcut (_show_editor_action, "main_window:show_editor");
+  shortcut_manager::set_shortcut (_show_documentation_action,
+                                  "main_window:show_doc");
+  shortcut_manager::set_shortcut (_command_window_action, "main_window:command");
+  shortcut_manager::set_shortcut (_history_action, "main_window:history");
+  shortcut_manager::set_shortcut (_workspace_action,  "main_window:workspace");
+  shortcut_manager::set_shortcut (_file_browser_action,
+                                  "main_window:file_browser");
+  shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
+  shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
+  shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
+
+  // help menu
+  shortcut_manager::set_shortcut (_ondisk_doc_action, "main_help:ondisk_doc");
+  shortcut_manager::set_shortcut (_online_doc_action, "main_help:online_doc");
+  shortcut_manager::set_shortcut (_report_bug_action, "main_help:report_bug");
+  shortcut_manager::set_shortcut (_octave_packages_action, "main_help:packages");
+  shortcut_manager::set_shortcut (_agora_action, "main_help:agora");
+  shortcut_manager::set_shortcut (_contribute_action, "main_help:contribute");
+  shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
+  shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
+
+  // news menu
+  shortcut_manager::set_shortcut (_release_notes_action,
+                                  "main_news:release_notes");
+  shortcut_manager::set_shortcut (_current_news_action,
+                                  "main_news:community_news");
+}
+
+void
+main_window::set_global_shortcuts (bool set_shortcuts)
+{
+  // this slot is called when the terminal gets/loses focus
+
+  // return if the user don't want to use readline shortcuts
+  if (! _prevent_readline_conflicts)
+    return;
+
+  if (set_shortcuts)
+    {
+      // terminal loses focus: set the global shortcuts
+      configure_shortcuts ();
+    }
+  else
+    {
+      // terminal gets focus: disable some shortcuts
       QKeySequence no_key = QKeySequence ();
 
+      // file menu
       _open_action->setShortcut (no_key);
       _new_script_action->setShortcut (no_key);
       _new_function_action->setShortcut (no_key);
-
+      _new_function_action->setShortcut (no_key);
+      _load_workspace_action->setShortcut (no_key);
+      _save_workspace_action->setShortcut (no_key);
+      _preferences_action->setShortcut (no_key);
       _exit_action->setShortcut (no_key);
 
+      // edit menu
+      _select_all_action->setShortcut (no_key);
+      _clear_clipboard_action->setShortcut (no_key);
       _find_files_action->setShortcut (no_key);
+      _clear_command_history_action->setShortcut (no_key);
+      _clear_command_window_action->setShortcut (no_key);
+      _clear_workspace_action->setShortcut (no_key);
 
+      // window menu
+      _reset_windows_action->setShortcut (no_key);
+
+      // help menu
+      _ondisk_doc_action->setShortcut (no_key);
+      _online_doc_action->setShortcut (no_key);
+      _report_bug_action->setShortcut (no_key);
+      _octave_packages_action->setShortcut (no_key);
+      _agora_action->setShortcut (no_key);
+      _contribute_action->setShortcut (no_key);
+      _developer_action->setShortcut (no_key);
+      _about_octave_action->setShortcut (no_key);
+
+      // news menu
+      _release_notes_action->setShortcut (no_key);
+      _current_news_action->setShortcut (no_key);
     }
+}
 
-  emit set_widget_shortcuts_signal (set_shortcuts);
+void
+main_window::set_screen_size (int ht, int wd)
+{
+  octave_link::post_event (this, &main_window::set_screen_size_callback,
+                           int_pair (ht, wd));
 }
 
 void
@@ -2254,3 +2435,4 @@ main_window::clear_clipboard ()
 {
   _clipboard->clear (QClipboard::Clipboard);
 }
+

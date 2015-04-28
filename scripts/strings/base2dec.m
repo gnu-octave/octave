@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Daniel Calvelo
+## Copyright (C) 2000-2015 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -122,10 +122,10 @@ endfunction
 %!assert (base2dec ("-1", 2), NaN)
 %!assert (base2dec ({"A1", "1A"}, 16), [161; 26])
 
-%% Bug #35621
+## Bug #35621
 %!assert (base2dec (["0"; "1"], 2), [0; 1])
 
-%%Test input validation
+## Test input validation
 %!error base2dec ()
 %!error base2dec ("11120")
 %!error base2dec ("11120", 3, 4)

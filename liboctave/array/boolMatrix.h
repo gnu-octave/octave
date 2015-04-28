@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -25,37 +25,33 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_boolMatrix_h 1
 
 #include "Array.h"
+#include "boolNDArray.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 
 class
 OCTAVE_API
-boolMatrix : public Array<bool>
+boolMatrix : public boolNDArray
 {
 public:
 
-  boolMatrix (void) : Array<bool> () { }
+  boolMatrix (void) : boolNDArray () { }
 
   boolMatrix (octave_idx_type r, octave_idx_type c)
-    : Array<bool> (dim_vector (r, c)) { }
+    : boolNDArray (dim_vector (r, c)) { }
 
   boolMatrix (octave_idx_type r, octave_idx_type c, bool val)
-    : Array<bool> (dim_vector (r, c), val) { }
+    : boolNDArray (dim_vector (r, c), val) { }
 
-  boolMatrix (const dim_vector& dv) : Array<bool> (dv) { }
+  boolMatrix (const dim_vector& dv) : boolNDArray (dv.redim (2)) { }
 
-  boolMatrix (const dim_vector& dv, bool val) : Array<bool> (dv, val) { }
+  boolMatrix (const dim_vector& dv, bool val)
+    : boolNDArray (dv.redim (2), val) { }
 
-  boolMatrix (const Array<bool>& a) : Array<bool> (a.as_matrix ()) { }
+  boolMatrix (const Array<bool>& a) : boolNDArray (a.as_matrix ()) { }
 
-  boolMatrix (const boolMatrix& a) : Array<bool> (a) { }
-
-  boolMatrix& operator = (const boolMatrix& a)
-  {
-    Array<bool>::operator = (a);
-    return *this;
-  }
+  boolMatrix (const boolMatrix& a) : boolNDArray (a) { }
 
   bool operator == (const boolMatrix& a) const;
   bool operator != (const boolMatrix& a) const;
@@ -74,9 +70,6 @@ public:
   // other operations
 
   boolMatrix diag (octave_idx_type k = 0) const;
-
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
 
 #if 0
   // i/o

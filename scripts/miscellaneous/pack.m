@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2013 John W. Eaton
+## Copyright (C) 1999-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} pack ()
-## Consolidate workspace memory in @sc{matlab}.  This function is provided for
-## compatibility, but does nothing in Octave.
+## Consolidate workspace memory in @sc{matlab}.
+##
+## This function is provided for compatibility, but does nothing in Octave.
+## @seealso{clear}
 ## @end deftypefn
 
 ## Author: jwe
@@ -27,4 +29,8 @@
 function pack ()
 
 endfunction
+
+
+## No test needed for empty function
+%!assert (1)
 

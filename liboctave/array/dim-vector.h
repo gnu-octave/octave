@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyirght (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
@@ -62,7 +62,7 @@ private:
 
   octave_idx_type& count (void) const { return rep[-2]; }
 
-  // Construct a new rep with count = 1 and ndims given.
+  //! Construct a new rep with count = 1 and ndims given.
 
   static octave_idx_type *newrep (int ndims)
   {
@@ -74,7 +74,7 @@ private:
     return r;
   }
 
-  // Clone this->rep.
+  //! Clone this->rep.
 
   octave_idx_type *clonerep (void)
   {
@@ -91,7 +91,7 @@ private:
     return r;
   }
 
-  // Clone and resize this->rep to length n, filling by given value.
+  //! Clone and resize this->rep to length n, filling by given value.
 
   octave_idx_type *resizerep (int n, octave_idx_type fill_value)
   {
@@ -117,7 +117,7 @@ private:
     return r;
   }
 
-  // Free the rep.
+  //! Free the rep.
 
   void freerep (void)
   {
@@ -139,27 +139,6 @@ private:
   }
 
 public:
-
-  // The constructor
-  //
-  //   dim_vector (n)
-  //
-  // creates an dimension vector with N rows and 1 column.  It is
-  // deprecated because of the potentiol for confusion that it causes.
-  // Additional constructors of the form
-  //
-  //   dim_vector (r, c)
-  //   dim_vector (r, c, p)
-  //   dim_vector (d1, d2, d3, d4, ...)
-  //
-  // are available for up to 7 dimensions.
-
-  explicit dim_vector (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : rep (newrep (2))
-  {
-    rep[0] = n;
-    rep[1] = 1;
-  }
 
 #define ASSIGN_REP(i) rep[i] = d ## i;
 #define DIM_VECTOR_CTOR(N) \
@@ -337,9 +316,12 @@ public:
     return (num_ones () == length ());
   }
 
-  // Return the number of elements that a matrix with this dimension
-  // vector would have, NOT the number of dimensions (elements in the
-  // dimension vector).
+  //! Number of elements that a matrix with this dimensions would have.
+  /*!
+     Return the number of elements that a matrix with this dimension
+     vector would have, NOT the number of dimensions (elements in the
+     dimension vector).
+  */
 
   octave_idx_type numel (int n = 0) const
   {
@@ -353,13 +335,15 @@ public:
     return retval;
   }
 
-  // The following function will throw a std::bad_alloc ()
-  // exception if the requested size is larger than can be indexed by
-  // octave_idx_type. This may be smaller than the actual amount of
-  // memory that can be safely allocated on a system.  However, if we
-  // don't fail here, we can end up with a mysterious crash inside a
-  // function that is iterating over an array using octave_idx_type
-  // indices.
+  /*!
+     The following function will throw a std::bad_alloc ()
+     exception if the requested size is larger than can be indexed by
+     octave_idx_type. This may be smaller than the actual amount of
+     memory that can be safely allocated on a system.  However, if we
+     don't fail here, we can end up with a mysterious crash inside a
+     function that is iterating over an array using octave_idx_type
+     indices.
+  */
 
   octave_idx_type safe_numel (void) const;
 
@@ -377,18 +361,19 @@ public:
 
   dim_vector squeeze (void) const;
 
-  // This corresponds to cat().
+  //! This corresponds to cat().
   bool concat (const dim_vector& dvb, int dim);
 
-  // This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1).
+  //! This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1).
   // The rules are more relaxed here.
   bool hvcat (const dim_vector& dvb, int dim);
 
-  // Force certain dimensionality, preserving numel ().  Missing
-  // dimensions are set to 1, redundant are folded into the trailing
-  // one.  If n = 1, the result is 2d and the second dim is 1
-  // (dim_vectors are always at least 2D).
-
+  /*!
+      Force certain dimensionality, preserving numel ().  Missing
+      dimensions are set to 1, redundant are folded into the trailing
+      one.  If n = 1, the result is 2d and the second dim is 1
+      (dim_vectors are always at least 2D).
+  */
   dim_vector redim (int n) const;
 
   dim_vector as_column (void) const
@@ -423,7 +408,7 @@ public:
     return def;
   }
 
-  // Compute a linear index from an index tuple.
+  //! Compute a linear index from an index tuple.
 
   octave_idx_type compute_index (const octave_idx_type *idx) const
   {
@@ -434,7 +419,7 @@ public:
     return k;
   }
 
-  // Ditto, but the tuple may be incomplete (nidx < length ()).
+  //! Ditto, but the tuple may be incomplete (nidx < length ()).
 
   octave_idx_type compute_index (const octave_idx_type *idx, int nidx) const
   {
@@ -445,9 +430,11 @@ public:
     return k;
   }
 
-  // Increment a multi-dimensional index tuple, optionally starting
-  // from an offset position and return the index of the last index
-  // position that was changed, or length () if just cycled over.
+  /*/!
+      Increment a multi-dimensional index tuple, optionally starting
+      from an offset position and return the index of the last index
+      position that was changed, or length () if just cycled over.
+  */
 
   int increment_index (octave_idx_type *idx, int start = 0) const
   {
@@ -462,7 +449,7 @@ public:
     return i;
   }
 
-  // Return cumulative dimensions.
+  //! Return cumulative dimensions.
 
   dim_vector cumulative (void) const
   {
@@ -476,8 +463,8 @@ public:
     return retval;
   }
 
-  // Compute a linear index from an index tuple.  Dimensions are
-  // required to be cumulative.
+  //! Compute a linear index from an index tuple.  Dimensions are
+  //! required to be cumulative.
 
   octave_idx_type cum_compute_index (const octave_idx_type *idx) const
   {

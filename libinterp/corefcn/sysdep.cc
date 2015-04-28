@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -106,6 +106,7 @@ BSD_init (void)
 
 #define WIN32_LEAN_AND_MEAN
 #include <tlhelp32.h>
+#include <windows.h>
 
 static void
 w32_set_octave_home (void)
@@ -169,13 +170,64 @@ MINGW_signal_cleanup (void)
 {
   w32_set_quiet_shutdown ();
 }
+
+static void
+w32_init (void)
+{
+  w32_set_octave_home ();
+
+  command_editor::prefer_env_winsize (true);
+}
+
+static bool
+w32_shell_execute (const std::string& file)
+{
+}
 #endif
+
+DEFUN (__open_with_system_app__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __open_with_system_app__ (@var{file})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string file = args(0).string_value ();
+
+      if (! error_state)
+        {
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+          HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
+                                           SW_SHOWNORMAL);
+
+          // ShellExecute returns a value greater than 32 if successful.
+          retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+#else
+          octave_value_list tmp
+            = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
+                            false, "async"),
+                       1);
+
+          retval = (tmp(0).double_value () == 0);
+#endif
+        }
+      else
+        error ("__open_with_system_app__: argument must be a file name");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
 
 #if defined (__MINGW32__)
 static void
 MINGW_init (void)
 {
-  w32_set_octave_home ();
+  w32_init ();
 }
 #endif
 
@@ -183,7 +235,7 @@ MINGW_init (void)
 static void
 MSVC_init (void)
 {
-  w32_set_octave_home ();
+  w32_init ();
 }
 #endif
 
@@ -291,7 +343,7 @@ raw_mode (bool on, bool wait)
   int tty_fd = STDIN_FILENO;
   if (! gnulib::isatty (tty_fd))
     {
-      if (interactive)
+      if (interactive && ! forced_interactive)
         error ("stdin is not a tty!");
       return;
     }
@@ -555,6 +607,7 @@ getenv (\"PATH\")\n\
 \n\
 @noindent\n\
 returns a string containing the value of your path.\n\
+@seealso{setenv, unsetenv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -574,11 +627,20 @@ returns a string containing the value of your path.\n\
   return retval;
 }
 
-DEFUN (putenv, args, ,
+/*
+%!assert (ischar (getenv ("OCTAVE_HOME")))
+*/
+
+DEFUN (setenv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} putenv (@var{var}, @var{value})\n\
-@deftypefnx {Built-in Function} {} setenv (@var{var}, @var{value})\n\
+@deftypefn  {Built-in Function} {} setenv (@var{var}, @var{value})\n\
+@deftypefnx {Built-in Function} {} setenv (@var{var})\n\
+@deftypefnx {Built-in Function} {} putenv (@dots{})\n\
 Set the value of the environment variable @var{var} to @var{value}.\n\
+\n\
+If no @var{value} is specified then the variable will be assigned the null\n\
+string.\n\
+@seealso{unsetenv, getenv}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -587,20 +649,20 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   if (nargin == 2 || nargin == 1)
     {
-      std::string var = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string var = args(0).string_value ();
+
           std::string val = (nargin == 2
                              ? args(1).string_value () : std::string ());
 
           if (! error_state)
             octave_env::putenv (var, val);
           else
-            error ("putenv: VALUE must be a string");
+            error ("setenv: VALUE must be a string");
         }
       else
-        error ("putenv: VAR must be a string");
+        error ("setenv: VAR must be a string");
     }
   else
     print_usage ();
@@ -608,13 +670,48 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
   return retval;
 }
 
-DEFALIAS (setenv, putenv);
+DEFALIAS (putenv, setenv);
 
 /*
-%!assert (ischar (getenv ("OCTAVE_HOME")))
 %!test
 %! setenv ("dummy_variable_that_cannot_matter", "foobar");
 %! assert (getenv ("dummy_variable_that_cannot_matter"), "foobar");
+%! unsetenv ("dummy_variable_that_cannot_matter");
+%! assert (getenv ("dummy_variable_that_cannot_matter"), "");
+*/
+
+DEFUN (unsetenv, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{status} =} unsetenv (@var{var})\n\
+Delete the environment variable @var{var}.\n\
+\n\
+Return 0 if the variable was deleted, or did not exist, and -1 if an error\n\
+occurred.\n\
+@seealso{setenv, getenv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string tmp = args(0).string_value ();
+
+      if (! error_state)
+        {
+          int status = gnulib::unsetenv (tmp.c_str ());
+          retval = status;
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+## Test for unsetenv is in setenv test
 */
 
 // FIXME: perhaps kbhit should also be able to print a prompt?
@@ -648,7 +745,7 @@ returning the empty string if no key is available.\n\
 
   // FIXME: add timeout and default value args?
 
-  if (interactive || forced_interactive)
+  if (interactive)
     {
       Fdrawnow ();
 
@@ -906,13 +1003,32 @@ tilde_expand (\"~/bin\")\n\
 
 /*
 %!test
-%! if (isempty (getenv ("HOME")))
-%!   setenv ("HOME", "foobar");
-%! endif
-%! home = getenv ("HOME");
-%! assert (tilde_expand ("~/foobar"), strcat (home, "/foobar"));
+%! home = get_home_directory ();
+%! assert (tilde_expand ("~/foobar"), [home "/foobar"]);
 %! assert (tilde_expand ("/foo/bar"), "/foo/bar");
 %! assert (tilde_expand ("foo/bar"), "foo/bar");
+*/
+
+DEFUN (get_home_directory, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{homedir} =} get_home_directory ()\n\
+Return the current home directory.\n\
+\n\
+On most systems, this is equivalent to @code{getenv (\"HOME\")}.  On Windows\n\
+systems, if the environment variable @env{HOME} is not set then it is\n\
+equivalent to\n\
+@code{fullfile (getenv (\"HOMEDRIVE\"), getenv (\"HOMEPATH\"))}\n\
+@seealso{getenv}\n\
+@end deftypefn")
+{
+  return octave_value (octave_env::get_home_directory ());
+}
+
+/*
+%!test
+%! if (! ispc ())
+%!   assert (get_home_directory (), getenv ("HOME")); 
+%! endif
 */
 
 // This function really belongs in display.cc, but including defun.h in
@@ -920,10 +1036,11 @@ tilde_expand (\"~/bin\")\n\
 // needed for X11 and Carbon functions.
 
 DEFUN (have_window_system, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} have_window_system ()\n\
 Return true if a window system is available (X11, Windows, or Apple OS X)\n\
 and false otherwise.\n\
+@seealso{isguirunning}\n\
 @end deftypefn")
 {
   return octave_value (display_info::display_available ());

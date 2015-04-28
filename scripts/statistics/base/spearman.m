@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -84,7 +84,7 @@ endfunction
 
 %!assert (spearman ([1 2 3], [-1 1 -2]), -0.5, 5*eps)
 
-%% Test input validation
+## Test input validation
 %!error spearman ()
 %!error spearman (1, 2, 3)
 %!error spearman (['A'; 'B'])

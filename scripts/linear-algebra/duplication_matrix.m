@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -54,8 +54,8 @@
 ##  @math{A}.
 ## @end ifnottex
 ##
-## See Magnus and Neudecker (1988), Matrix differential calculus with
-## applications in statistics and econometrics.
+## See @nospell{Magnus and Neudecker} (1988), @cite{Matrix Differential
+## Calculus with Applications in Statistics and Econometrics.}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -77,10 +77,10 @@ function d = duplication_matrix (n)
   ## It is clearly possible to make this a LOT faster!
   count = 0;
   for j = 1 : n
-    d ((j - 1) * n + j, count + j) = 1;
+    d((j - 1) * n + j, count + j) = 1;
     for i = (j + 1) : n
-      d ((j - 1) * n + i, count + i) = 1;
-      d ((i - 1) * n + j, count + i) = 1;
+      d((j - 1) * n + i, count + i) = 1;
+      d((i - 1) * n + j, count + i) = 1;
     endfor
     count = count + n - j;
   endfor

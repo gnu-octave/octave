@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Max Brister
+Copyright (C) 2012-2015 Max Brister
 
 This file is part of Octave.
 
@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 // Operations are defined and implemented in jit_typeinfo.  Eventually they
 // should be moved elsewhere. (just like with octave_typeinfo)
 
-// jit_range is compatable with the llvm range structure
+// jit_range is compatible with the llvm range structure
 struct
 jit_range
 {
@@ -63,7 +63,7 @@ jit_range
 
 std::ostream& operator << (std::ostream& os, const jit_range& rng);
 
-// jit_array is compatable with the llvm array/matrix structures
+// jit_array is compatible with the llvm array/matrix structures
 template <typename T, typename U>
 struct
 jit_array
@@ -372,7 +372,7 @@ private:
 
   struct signature_cmp
   {
-    bool operator() (const signature_vec *lhs, const signature_vec *rhs);
+    bool operator() (const signature_vec *lhs, const signature_vec *rhs) const;
   };
 
   typedef std::map<const signature_vec *, jit_function *, signature_cmp>

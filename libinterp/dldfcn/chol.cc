@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2008-2009 VZLU Prague
 
@@ -135,7 +135,7 @@ upper triangular part is used.\n\
 \n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
-@seealso{hess, lu, qr, qz, schur, svd, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
+@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -155,7 +155,7 @@ sparse matrices.\n\
     {
       std::string tmp = args(n++).string_value ();
 
-      if (! error_state )
+      if (! error_state)
         {
           if (tmp.compare ("vector") == 0)
             vecout = true;
@@ -1271,8 +1271,8 @@ triangular, return the Cholesky@tie{}factorization of\n\
           if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
             {
 
-              if (argr.is_single_type () && argi.is_single_type () &&
-                  argj.is_single_type ())
+              if (argr.is_single_type () && argi.is_single_type ()
+                  && argj.is_single_type ())
                 {
                   if (argr.is_real_type ())
                     {

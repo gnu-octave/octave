@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function inv = poissinv (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (lambda))
+  if (! isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("poissinv: X and LAMBDA must be of common size or scalars");
@@ -87,12 +87,12 @@ endfunction
 %!assert (poissinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN])
 %!assert (poissinv ([x(1:2) NaN x(4:5)], 1), [NaN 0 NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (poissinv ([x, NaN], 1), [NaN 0 1 Inf NaN NaN])
 %!assert (poissinv (single ([x, NaN]), 1), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (poissinv ([x, NaN], single (1)), single ([NaN 0 1 Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error poissinv ()
 %!error poissinv (1)
 %!error poissinv (1,2,3)

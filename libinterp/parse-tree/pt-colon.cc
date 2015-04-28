@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -81,89 +81,6 @@ tree_colon_expression::rvalue (int nargout)
 }
 
 octave_value
-tree_colon_expression::make_range (const Matrix& m_base,
-                                   const Matrix& m_limit,
-                                   const Matrix& m_increment,
-                                   bool result_is_str, bool dq_str) const
-{
-  octave_value retval;
-
-  bool base_empty = m_base.is_empty ();
-  bool limit_empty = m_limit.is_empty ();
-  bool increment_empty = m_increment.is_empty ();
-
-  if (base_empty || limit_empty || increment_empty)
-    retval = Range ();
-  else
-    {
-      retval = Range (m_base(0), m_limit(0), m_increment(0));
-
-      if (result_is_str)
-        retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
-    }
-
-  return retval;
-}
-
-octave_value
-tree_colon_expression::make_range (const octave_value& ov_base,
-                                   const octave_value& ov_limit,
-                                   const octave_value& ov_increment) const
-{
-  octave_value retval;
-
-  if (ov_base.is_object () || ov_limit.is_object () ||
-      ov_increment.is_object ())
-    {
-      octave_value_list tmp1;
-      tmp1(2) = ov_limit;
-      tmp1(1) = ov_increment;
-      tmp1(0) = ov_base;
-
-      octave_value fcn = symbol_table::find_function ("colon", tmp1);
-
-      if (fcn.is_defined ())
-        {
-          octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-
-          if (! error_state)
-            retval = tmp2 (0);
-        }
-      else
-        ::error ("can not find overloaded colon function");
-    }
-  else
-    {
-      bool result_is_str = (ov_base.is_string () && ov_limit.is_string ());
-      bool dq_str = (ov_base.is_dq_string () || ov_limit.is_dq_string ());
-
-      Matrix m_base = ov_base.matrix_value (true);
-
-      if (error_state)
-        eval_error ("invalid base value in colon expression");
-      else
-        {
-          Matrix m_limit = ov_limit.matrix_value (true);
-
-          if (error_state)
-            eval_error ("invalid limit value in colon expression");
-          else
-            {
-              Matrix m_increment = ov_increment.matrix_value (true);
-
-              if (error_state)
-                eval_error ("invalid increment value in colon expression");
-              else
-                retval = make_range (m_base, m_limit, m_increment,
-                                     result_is_str, dq_str);
-            }
-        }
-    }
-
-  return retval;
-}
-
-octave_value
 tree_colon_expression::rvalue1 (int)
 {
   octave_value retval;
@@ -232,7 +149,8 @@ tree_colon_expression::rvalue1 (int)
             }
 
           if (! error_state)
-            retval = make_range (ov_base, ov_limit, ov_increment);
+            retval = do_colon_op (ov_base, ov_increment, ov_limit,
+                                  is_for_cmd_expr ());
         }
     }
 

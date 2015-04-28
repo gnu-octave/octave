@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Michel D. Schmid
+## Copyright (C) 2006-2015 Michel D. Schmid
 ##
 ## This file is part of Octave.
 ##
@@ -48,6 +48,8 @@ function h = __stem__ (have_z, varargin)
 
     h = [];
     nx = rows (x);
+    h_baseline = [];
+
     for i = 1 : columns (x)
       if (have_z)
         xt = x(:)';
@@ -90,30 +92,25 @@ function h = __stem__ (have_z, varargin)
         __line__ (hax, xt, yt, zt, "color", lc, "linestyle", ls, "parent", hg);
         __line__ (hax, x, y, z, "color", mc, "linestyle", "none",
                        "marker", ms, "markerfacecolor", fc, "parent", hg);
-        h_baseline = [];
       else
         __line__ (hax, xt, yt, "color", lc, "linestyle", ls, "parent", hg);
         __line__ (hax, x(:,i), y(:, i), "color", mc, "linestyle", "none",
                        "marker", ms, "markerfacecolor", fc, "parent", hg);
+
         x_axis_range = get (hax, "xlim");
-        h_baseline = line (hax, x_axis_range, [0, 0], "color", [0, 0, 0]);
-        set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
-        addlistener (hax, "xlim", @update_xlim);
-        addproperty ("basevalue", h_baseline, "data", 0);
-        addlistener (h_baseline, "basevalue", {@update_baseline, 0});
-        addlistener (h_baseline, "ydata", {@update_baseline, 1});
-        addlistener (h_baseline, "visible", {@update_baseline, 2});
+        if (isempty (h_baseline))
+          h_baseline = line (hax, x_axis_range, [0, 0], "color", [0, 0, 0]);
+          set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
+          addproperty ("basevalue", h_baseline, "data", 0);
+        else
+          set (h_baseline, "xdata", x_axis_range);
+        endif
       endif
 
       ## Setup the hggroup and listeners.
       addproperty ("showbaseline", hg, "radio", "{on}|off");
       addproperty ("baseline", hg, "data", h_baseline);
       addproperty ("basevalue", hg, "data", 0);
-
-      if (! have_z)
-        addlistener (hg, "showbaseline", @show_baseline);
-        addlistener (hg, "basevalue", @move_baseline);
-      endif
 
       addproperty ("color", hg, "linecolor", lc);
       addproperty ("linestyle", hg, "linelinestyle", ls);
@@ -131,7 +128,13 @@ function h = __stem__ (have_z, varargin)
       addlistener (hg, "markerfacecolor", @update_props);
       addlistener (hg, "markersize", @update_props);
 
+      if (islogical (x))
+        x = double (x);
+      endif
       addproperty ("xdata", hg, "data", x(:, i));
+      if (islogical (y))
+        y = double (y);
+      endif
       addproperty ("ydata", hg, "data", y(:, i));
       if (have_z)
         addproperty ("zdata", hg, "data", z(:, i));
@@ -146,13 +149,27 @@ function h = __stem__ (have_z, varargin)
       ## Matlab property, although Octave does not implement it.
       addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
 
-      if (! isempty (args))
-        set (hg, args{:});
-      endif
-      if (i == 1 && ! isempty (h_baseline))
-        set (h_baseline, "parent", get (hg, "parent"));
-      endif
     endfor
+
+    ## baseline listeners
+    if (! isempty (h_baseline))
+      addlistener (hax, "xlim", @update_xlim);
+      for hg = h'
+        addlistener (hg, "showbaseline", @show_baseline);
+        addlistener (hg, "visible", {@show_baseline, h});
+        addlistener (hg, "basevalue", @move_baseline);
+      endfor
+
+      addlistener (h_baseline, "basevalue", {@update_baseline, 0});
+      addlistener (h_baseline, "ydata", {@update_baseline, 1});
+      addlistener (h_baseline, "visible", {@update_baseline, 2});
+      set (h_baseline, "parent", get (hg(1), "parent"));
+    endif
+
+    ## property/value pairs
+    if (! isempty (args))
+        set (h, args{:});
+    endif
 
     if (! strcmp (hold_state, "add") && have_z)
       set (hax, "view", [-37.5 30],
@@ -222,7 +239,9 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         y = repmat ([1:nr]', 1, nc);
       endif
     endif
-    if (! (ismatrix (x) && ismatrix (y) && ismatrix (z)))
+    if (! (isnumeric (x) || islogical (x))
+        || ! (isnumeric (y) || islogical (y))
+        || ! (isnumeric (z) || islogical (z)))
       error ("stem3: X, Y, and Z must be numeric");
     endif
   else
@@ -233,7 +252,8 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         x = 1:rows (y);
       endif
     endif
-    if (! (ismatrix (x) && ismatrix (y)))
+    if (! (isnumeric (x) || islogical (x))
+        || ! (isnumeric (y) || islogical (y)))
       error ("stem: X and Y must be numeric");
     endif
   endif
@@ -365,8 +385,16 @@ function update_baseline (h, ~, src)
   endfor
 endfunction
 
-function show_baseline (h, ~)
-  set (get (h, "baseline"), "visible", get (h, "showbaseline"));
+function show_baseline (h, ~, hg = [])
+  if (isempty (hg))
+    set (get (h, "baseline"), "visible", get (h, "showbaseline"));
+  else
+    if (all (strcmp (get (hg, "visible"), "off")))
+      set (get (h, "baseline"), "visible", "off");
+    else
+      set (get (h, "baseline"), "visible", "on");
+    endif
+  endif
 endfunction
 
 function move_baseline (h, ~)
@@ -374,6 +402,7 @@ function move_baseline (h, ~)
   bl = get (h, "baseline");
 
   set (bl, "ydata", [b0, b0]);
+  set (bl, "basevalue", b0);
 
   kids = get (h, "children");
   yt = get (h, "ydata")(:)';
@@ -398,7 +427,7 @@ function update_data (h, ~)
   y = get (h, "ydata");
   z = get (h, "zdata");
 
-  if (!isempty (z) && size_equal (x, y, z))
+  if (! isempty (z) && size_equal (x, y, z))
     sz = min ([size(x); size(y); size(z)]);
     x = x(1:sz(1),1:sz(2));
     y = y(1:sz(1),1:sz(2));

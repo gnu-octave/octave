@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 
 #include "Array-util.h"
+#include "lo-array-gripes.h"
 #include "oct-cmplx.h"
 #include "quit.h"
 #include "error.h"
@@ -43,8 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 solve_singularity_warning (double rcond)
 {
-  warning ("matrix singular to machine precision, rcond = %g", rcond);
-  warning ("attempting to find minimum norm solution");
+  gripe_singular_matrix (rcond);
 }
 
 template <class T1, class T2>
@@ -302,7 +302,7 @@ RT do_rightdiv_sm_dm (const SM& a, const DM& d)
   using std::min;
   const octave_idx_type nc = min (d_nr, a_nc);
 
-  if ( ! mx_div_conform (a, d))
+  if (! mx_div_conform (a, d))
     return RT ();
 
   const octave_idx_type nz = a.nnz ();
@@ -569,7 +569,7 @@ RT do_leftdiv_dm_sm (const DM& d, const SM& a)
   using std::min;
   const octave_idx_type nr = min (d_nc, a_nr);
 
-  if ( ! mx_leftdiv_conform (d, a))
+  if (! mx_leftdiv_conform (d, a))
     return RT ();
 
   const octave_idx_type nz = a.nnz ();

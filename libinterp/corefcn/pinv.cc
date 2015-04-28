@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -76,22 +76,45 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
   if (arg.is_diag_matrix ())
     {
-      if (nargin == 2)
-        warning ("pinv: tol is ignored for diagonal matrices");
-
-      if (arg.is_complex_type ())
+      if (isfloat)
         {
-          if (isfloat)
-            retval = arg.float_complex_diag_matrix_value ().pseudo_inverse ();
+          float tol = 0.0;
+          if (nargin == 2)
+            tol = args(1).float_value ();
+
+          if (error_state)
+            return retval;
+
+          if (tol < 0.0)
+            {
+              error ("pinv: TOL must be greater than zero");
+              return retval;
+            }
+
+          if (arg.is_real_type ())
+            retval = arg.float_diag_matrix_value ().pseudo_inverse (tol);
           else
-            retval = arg.complex_diag_matrix_value ().pseudo_inverse ();
+            retval = arg.float_complex_diag_matrix_value ().pseudo_inverse (tol);
         }
       else
         {
-          if (isfloat)
-            retval = arg.float_diag_matrix_value ().pseudo_inverse ();
+          double tol = 0.0;
+          if (nargin == 2)
+            tol = args(1).double_value ();
+
+          if (error_state)
+            return retval;
+
+          if (tol < 0.0)
+            {
+              error ("pinv: TOL must be greater than zero");
+              return retval;
+            }
+
+          if (arg.is_real_type ())
+            retval = arg.diag_matrix_value ().pseudo_inverse (tol);
           else
-            retval = arg.diag_matrix_value ().pseudo_inverse ();
+            retval = arg.complex_diag_matrix_value ().pseudo_inverse (tol);
         }
     }
   else if (arg.is_perm_matrix ())
@@ -189,4 +212,20 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 %!assert (y*x*y, y, -hitol)
 %!assert ((x*y)', x*y, hitol)
 %!assert ((y*x)', y*x, hitol)
+
+## Clear shared variables
+%!shared
+
+## Test pinv for Diagonal matrices
+%!test
+%! x = diag ([3 2 1 0 -0.5]);
+%! y = pinv (x);
+%! assert (typeinfo (y)(1:8), "diagonal");
+%! assert (isa (y, "double"));
+%! assert (diag (y), [1/3, 1/2, 1, 0  1/-0.5]');
+%! y = pinv (x, 1);
+%! assert (diag (y), [1/3 1/2 1 0 0]');
+%! y = pinv (x, 2);
+%! assert (diag (y), [1/3 1/2 0 0 0]');
+
 */

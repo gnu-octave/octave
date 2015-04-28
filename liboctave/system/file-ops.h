@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -94,6 +94,9 @@ public:
 
     return path.substr (ipos);
   }
+
+  // convert path from UNIX type separators to whatever is the system separators
+  static std::string native_separator_path (const std::string& path);
 
 private:
 

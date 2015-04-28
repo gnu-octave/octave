@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2013 John W. Eaton
+## Copyright (C) 1993-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -35,9 +35,9 @@
 ## @end example
 ##
 ## The Hessenberg-triangular decomposition is the first step in
-## Moler and Stewart's QZ@tie{}decomposition algorithm.
+## @nospell{Moler and Stewart's} QZ@tie{}decomposition algorithm.
 ##
-## Algorithm taken from Golub and Van Loan,
+## Algorithm taken from @nospell{Golub and Van Loan},
 ## @cite{Matrix Computations, 2nd edition}.
 ##
 ## @seealso{lu, chol, hess, qr, qz, schur, svd}
@@ -71,21 +71,21 @@ function [aa, bb, q, z] = qzhess (A, B)
       ## disp (["zero out aa(", num2str(i), ",", num2str(j), ")"])
 
       rot = givens (aa (i-1, j), aa (i, j));
-      aa ((i-1):i, :) = rot *aa ((i-1):i, :);
-      bb ((i-1):i, :) = rot *bb ((i-1):i, :);
-      q  ((i-1):i, :) = rot *q  ((i-1):i, :);
+      aa((i-1):i, :) = rot *aa((i-1):i, :);
+      bb((i-1):i, :) = rot *bb((i-1):i, :);
+       q((i-1):i, :) = rot * q((i-1):i, :);
 
       ## disp (["now zero out bb(", num2str(i), ",", num2str(i-1), ")"])
 
       rot = givens (bb (i, i), bb (i, i-1))';
-      bb (:, (i-1):i) = bb (:, (i-1):i) * rot';
-      aa (:, (i-1):i) = aa (:, (i-1):i) * rot';
-      z  (:, (i-1):i) = z  (:, (i-1):i) * rot';
+      bb(:, (i-1):i) = bb(:, (i-1):i) * rot';
+      aa(:, (i-1):i) = aa(:, (i-1):i) * rot';
+       z(:, (i-1):i) =  z(:, (i-1):i) * rot';
 
     endfor
   endfor
 
-  bb (2, 1) = 0.0;
+  bb(2, 1) = 0.0;
   for i = 3:na
     bb (i, 1:(i-1)) = zeros (1, i-1);
     aa (i, 1:(i-2)) = zeros (1, i-2);

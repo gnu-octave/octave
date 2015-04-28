@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -33,17 +33,14 @@
 ## PKG_ADD: colormap ("register", "gray");
 ## PKG_DEL: colormap ("unregister", "gray");
 
-function map = gray (n)
+function map = gray (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("gray: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("gray: N must be a scalar");
   endif
+  n = double (n);
 
   if (n == 1)
     map = [0, 0, 0];

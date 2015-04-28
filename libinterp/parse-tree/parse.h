@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -43,6 +43,18 @@ class tree_anon_fcn_handle;
 class tree_argument_list;
 class tree_array_list;
 class tree_cell;
+class tree_classdef;
+class tree_classdef_attribute_list;
+class tree_classdef_body;
+class tree_classdef_enum_block;
+class tree_classdef_enum_list;
+class tree_classdef_events_block;
+class tree_classdef_events_list;
+class tree_classdef_methods_block;
+class tree_classdef_methods_list;
+class tree_classdef_properties_block;
+class tree_classdef_property_list;
+class tree_classdef_superclass_list;
 class tree_colon_expression;
 class tree_command;
 class tree_constant;
@@ -50,6 +62,7 @@ class tree_decl_command;
 class tree_decl_init_list;
 class tree_expression;
 class tree_fcn_handle;
+class tree_funcall;
 class tree_function_def;
 class tree_identifier;
 class tree_if_clause;
@@ -92,6 +105,7 @@ extern OCTINTERP_API octave_function *
 load_fcn_from_file (const std::string& file_name,
                     const std::string& dir_name = std::string (),
                     const std::string& dispatch_type = std::string (),
+                    const std::string& package_name = std::string (),
                     const std::string& fcn_name = std::string (),
                     bool autoload = false);
 
@@ -136,9 +150,9 @@ public:
       autoloading (false), fcn_file_from_relative_lookup (false),
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
-      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-      subfunction_names (), stmt_list (0),
-      lexer (lxr)
+      curr_class_name (), curr_package_name (), function_scopes (),
+      primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
+      stmt_list (0), lexer (lxr)
   { }
 
   ~octave_base_parser (void);
@@ -284,6 +298,52 @@ public:
   void
   recover_from_parsing_function (void);
 
+  tree_funcall *
+  make_superclass_ref (const std::string& method_nm,
+                       const std::string& class_nm);
+
+  tree_funcall *
+  make_meta_class_query (const std::string& class_nm);
+
+  tree_classdef *
+  make_classdef (token *tok_val, tree_classdef_attribute_list *a,
+                 tree_identifier *id, tree_classdef_superclass_list *sc,
+                 tree_classdef_body *body, token *end_tok,
+                 octave_comment_list *lc);
+
+  tree_classdef_properties_block *
+  make_classdef_properties_block (token *tok_val,
+                                  tree_classdef_attribute_list *a,
+                                  tree_classdef_property_list *plist,
+                                  token *end_tok, octave_comment_list *lc);
+
+  tree_classdef_methods_block *
+  make_classdef_methods_block (token *tok_val,
+                               tree_classdef_attribute_list *a,
+                               tree_classdef_methods_list *mlist,
+                               token *end_tok, octave_comment_list *lc);
+
+  tree_classdef_events_block *
+  make_classdef_events_block (token *tok_val,
+                              tree_classdef_attribute_list *a,
+                              tree_classdef_events_list *elist,
+                              token *end_tok, octave_comment_list *lc);
+
+  tree_classdef_enum_block *
+  make_classdef_enum_block (token *tok_val,
+                            tree_classdef_attribute_list *a,
+                            tree_classdef_enum_list *elist,
+                            token *end_tok, octave_comment_list *lc);
+
+  octave_user_function *
+  start_classdef_external_method (tree_identifier *id,
+                                  tree_parameter_list *pl);
+
+  tree_function_def *
+  finish_classdef_external_method (octave_user_function *fcn,
+                                   tree_parameter_list *ret_list,
+                                   octave_comment_list *cl);
+
   // Make an index expression.
   tree_index_expression *
   make_index_expression (tree_expression *expr,
@@ -372,6 +432,10 @@ public:
   // constructors.
   std::string curr_class_name;
 
+  // Name of the current package when we are parsing an element contained
+  // in a package directory (+-directory).
+  std::string curr_package_name;
+
   // A stack holding the nested function scopes being parsed.
   // We don't use std::stack, because we want the clear method. Also, we
   // must access one from the top
@@ -384,6 +448,9 @@ public:
   // installed in the symbol table, then ordered as they appear in the
   // file.  Eventually stashed in the primary function object.
   std::list<std::string> subfunction_names;
+
+  // Pointer to the classdef object we just parsed, if any.
+  tree_classdef *classdef_object;
 
   // Result of parsing input.
   tree_statement_list *stmt_list;

@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2013 Andy Adler
+## Copyright (C) 1998-2015 Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -72,6 +72,6 @@ endfunction
 %! clf;
 %! spy (sprand (10,10, 0.2));
 
-%% Mark graphical function as tested by demo block
+## Mark graphical function as tested by demo block
 %!assert (1)
 

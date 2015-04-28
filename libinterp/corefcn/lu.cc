@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -137,7 +137,7 @@ routines is returned.  If the input matrix is sparse then the matrix @var{L}\n\
 is embedded into @var{U} to give a return value similar to the full case.\n\
 For both full and sparse matrices, @code{lu} loses the permutation\n\
 information.\n\
-@seealso{luupdate, chol, hess, qr, qz, schur, svd}\n\
+@seealso{luupdate, ilu, chol, hess, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -158,23 +158,20 @@ information.\n\
   int n = 1;
   while (n < nargin && ! error_state)
     {
-      if (args (n).is_string ())
+      if (args(n).is_string ())
         {
           std::string tmp = args(n++).string_value ();
 
-          if (! error_state )
-            {
-              if (tmp.compare ("vector") == 0)
-                vecout = true;
-              else
-                error ("lu: unrecognized string argument");
-            }
+          if (tmp.compare ("vector") == 0)
+            vecout = true;
+          else
+            error ("lu: unrecognized string argument");
         }
       else
         {
           Matrix tmp = args(n++).matrix_value ();
 
-          if (! error_state )
+          if (! error_state)
             {
               if (!issparse)
                 error ("lu: can not define pivoting threshold THRES for full matrices");
@@ -211,7 +208,7 @@ information.\n\
 
           SparseMatrix m = arg.sparse_matrix_value ();
 
-          if ( nargout < 4 )
+          if (nargout < 4)
             {
 
               ColumnVector Qinit;
@@ -220,8 +217,8 @@ information.\n\
                 Qinit (i) = i;
               SparseLU fact (m, Qinit, thres, false, true);
 
-              if ( nargout < 2 )
-                  retval(0) = fact.Y ();
+              if (nargout < 2)
+                retval(0) = fact.Y ();
               else
                 {
 
@@ -233,15 +230,15 @@ information.\n\
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseMatrix L = fact.L ();
-                  if ( nargout < 3 )
+                  if (nargout < 3)
                       retval(0)
-                        = octave_value ( P.transpose () * L,
+                        = octave_value (P.transpose () * L,
                             MatrixType (MatrixType::Permuted_Lower,
                                         nr, fact.row_perm ()));
                   else
                     {
                       retval(0) = L;
-                      if ( vecout )
+                      if (vecout)
                         retval(2) = fact.Pr_vec();
                       else
                         retval(2) = P;
@@ -253,25 +250,25 @@ information.\n\
           else
             {
 
-                SparseLU fact (m, thres, scale);
+              SparseLU fact (m, thres, scale);
 
-                if (scale)
-                  retval(4) = fact.R ();
+              if (scale)
+                retval(4) = fact.R ();
 
-                if (vecout)
-                  {
-                    retval(3) = fact.Pc_vec ();
-                    retval(2) = fact.Pr_vec ();
-                  }
-                else
-                  {
-                    retval(3) = fact.Pc_mat ();
-                    retval(2) = fact.Pr_mat ();
-                  }
-                retval(1) = octave_value (fact.U (),
-                                          MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (),
-                                          MatrixType (MatrixType::Lower));
+              if (vecout)
+                {
+                  retval(3) = fact.Pc_vec ();
+                  retval(2) = fact.Pr_vec ();
+                }
+              else
+                {
+                  retval(3) = fact.Pc_mat ();
+                  retval(2) = fact.Pr_mat ();
+                }
+              retval(1) = octave_value (fact.U (),
+                                        MatrixType (MatrixType::Upper));
+              retval(0) = octave_value (fact.L (),
+                                        MatrixType (MatrixType::Lower));
             }
 
         }
@@ -279,7 +276,7 @@ information.\n\
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-          if ( nargout < 4 )
+          if (nargout < 4)
             {
 
               ColumnVector Qinit;
@@ -288,9 +285,9 @@ information.\n\
                 Qinit (i) = i;
               SparseComplexLU fact (m, Qinit, thres, false, true);
 
-              if ( nargout < 2 )
+              if (nargout < 2)
 
-                  retval(0) = fact.Y ();
+                retval(0) = fact.Y ();
 
               else
                 {
@@ -303,15 +300,15 @@ information.\n\
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseComplexMatrix L = fact.L ();
-                  if ( nargout < 3 )
-                      retval(0)
-                        = octave_value ( P.transpose () * L,
-                            MatrixType (MatrixType::Permuted_Lower,
-                                        nr, fact.row_perm ()));
+                  if (nargout < 3)
+                    retval(0)
+                      = octave_value (P.transpose () * L,
+                                      MatrixType (MatrixType::Permuted_Lower,
+                                                  nr, fact.row_perm ()));
                   else
                     {
                       retval(0) = L;
-                      if ( vecout )
+                      if (vecout)
                         retval(2) = fact.Pr_vec();
                       else
                         retval(2) = P;
@@ -323,25 +320,25 @@ information.\n\
           else
             {
 
-                SparseComplexLU fact (m, thres, scale);
+              SparseComplexLU fact (m, thres, scale);
 
-                if (scale)
-                  retval(4) = fact.R ();
+              if (scale)
+                retval(4) = fact.R ();
 
-                if (vecout)
-                  {
-                    retval(3) = fact.Pc_vec ();
-                    retval(2) = fact.Pr_vec ();
-                  }
-                else
-                  {
-                    retval(3) = fact.Pc_mat ();
-                    retval(2) = fact.Pr_mat ();
-                  }
-                retval(1) = octave_value (fact.U (),
-                                          MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (),
-                                          MatrixType (MatrixType::Lower));
+              if (vecout)
+                {
+                  retval(3) = fact.Pc_vec ();
+                  retval(2) = fact.Pr_vec ();
+                }
+              else
+                {
+                  retval(3) = fact.Pc_mat ();
+                  retval(2) = fact.Pr_mat ();
+                }
+              retval(1) = octave_value (fact.U (),
+                                        MatrixType (MatrixType::Upper));
+              retval(0) = octave_value (fact.L (),
+                                        MatrixType (MatrixType::Lower));
             }
 
         }
@@ -592,10 +589,12 @@ static
 bool check_lu_dims (const octave_value& l, const octave_value& u,
                     const octave_value& p)
 {
-  octave_idx_type m = l.rows (), k = u.rows (), n = u.columns ();
+  octave_idx_type m = l.rows ();
+  octave_idx_type k = u.rows ();
+  octave_idx_type n = u.columns ();
   return ((l.ndims () == 2 && u.ndims () == 2 && k == l.columns ())
-          && k == std::min (m, n) &&
-          (p.is_undefined () || p.rows () == m));
+          && k == std::min (m, n)
+          && (p.is_undefined () || p.rows () == m));
 }
 
 DEFUN (luupdate, args, ,
@@ -838,6 +837,20 @@ recompute the factorization from scratch.\n\
 %! assert (norm (vec (tril (L)-L), Inf) == 0);
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
 %! assert (norm (vec (P'*L*U - A - u*v.'), Inf) < norm (A)*1e1*eps);
+%!
+%!testif HAVE_QRUPDATE_LUU
+%! [L,U,P] = lu (A);
+%! [~,ordcols] = max (P,[],1);
+%! [~,ordrows] = max (P,[],2);
+%! P1 = eye (size(P))(:,ordcols);
+%! P2 = eye (size(P))(ordrows,:);
+%! assert(P1 == P);
+%! assert(P2 == P);
+%! [L,U,P] = luupdate (L,U,P,u,v);
+%! [L,U,P1] = luupdate (L,U,P1,u,v);
+%! [L,U,P2] = luupdate (L,U,P2,u,v);
+%! assert(P1 == P);
+%! assert(P2 == P);
 %!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu (Ac);

@@ -38,18 +38,9 @@ BEGIN {
   print "## Use stamp files to avoid problems with checking timestamps";
   print "## of symbolic links";
   print "";
-  for (i = 1; i <= nfiles; i++) {
-    basename = files[i];
-    sub (/\.cc$/, "", basename);
-    printf ("dldfcn/$(am__leading_dot)%s.oct-stamp: dldfcn/%s.la\n", basename, basename);
-    print "\trm -f $(<:.la=.oct)";
-    print "\tla=$(<F) && \\";
-    print "\t  of=$(<F:.la=.oct) && \\";
-    print "\t  cd dldfcn && \\";
-    print "\t  $(LN_S) .libs/`$(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $$la` $$of && \\";
-    print "\t  touch $(@F)";
-    print "";
-  }
+  print "%.oct : %.la"
+  print "	$(AM_V_GEN)$(INSTALL_PROGRAM) dldfcn/.libs/$(shell $(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $<) $@"
+  print ""
   print "else";
   print "";
   print "noinst_LTLIBRARIES += $(DLDFCN_LIBS)";
@@ -66,7 +57,7 @@ BEGIN {
       {
         printf ("dldfcn/%s.df: CPPFLAGS += %s\n",
                 basename, cppflags[i]);
-        printf ("dldfcn_%s_la_CPPFLAGS = %s $(AM_CPPFLAGS)\n",
+        printf ("dldfcn_%s_la_CPPFLAGS = $(AM_CPPFLAGS) %s\n",
                 basename, cppflags[i]);
       }
     printf ("dldfcn_%s_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED_LDFLAG) %s $(OCT_LINK_OPTS)\n",

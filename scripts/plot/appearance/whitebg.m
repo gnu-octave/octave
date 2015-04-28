@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 David Bateman
+## Copyright (C) 2010-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -75,15 +75,15 @@ function whitebg (varargin)
     if (isroot)
       fac = get (0, "factory");
       fields = fieldnames (fac);
-      fieldindex = intersect (find (!cellfun ("isempty", regexp (fields, 'color'))), union (find (!cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
+      fieldindex = intersect (find (! cellfun ("isempty", regexp (fields, 'color'))), union (find (! cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
 
       ## Check whether the factory value has been replaced
       for nf = 1 : numel (fieldindex);
-        defaultfield = strrep (fields {fieldindex (nf)}, "factory", "default");
+        defaultfield = strrep (fields{fieldindex(nf)}, "factory", "default");
         try
-          defaultvalue = 1 - get (0, defaultfield {n});
+          defaultvalue = 1 - get (0, defaultfield{n});
         catch
-          field = fields {fieldindex (nf)};
+          field = fields{fieldindex(nf)};
           defaultvalue = 1 - subsref (fac, struct ("type", ".", "subs", field));
         end_try_catch
         set (0, defaultfield, defaultvalue);
@@ -108,7 +108,7 @@ function whitebg (varargin)
       fieldindex = find (!cellfun ("isempty", regexp (fields, 'color')));
       if (numel (fieldindex))
         for nf = 1 : numel (fieldindex);
-          field = fields {fieldindex (nf)};
+          field = fields{fieldindex(nf)};
           c = subsref (p, struct ("type", ".", "subs", field));
           if (! ischar (c) && columns (c) == 3)
             set (h (nh), field, 1 - c);
@@ -122,10 +122,11 @@ function whitebg (varargin)
         def = get (h (nh), "default");
         fields = fieldnames (def);
         if (! isempty (fields))
-          fieldindex = find (!cellfun ("isempty", regexp (fields, 'color')));
+          fieldindex = find (! cellfun ("isempty", regexp (fields, 'color')));
           for nf = 1 : numel (fieldindex)
-            defaultfield = fields {fieldindex (nf)};
-            defaultvalue = 1 - subsref (def, struct ("type", ".", "subs", defaultfield));
+            defaultfield = fields{fieldindex(nf)};
+            defaultvalue = ...
+              1 - subsref (def, struct ("type", ".", "subs", defaultfield));
             set (h (nh), defaultfield, defaultvalue);
           endfor
         endif

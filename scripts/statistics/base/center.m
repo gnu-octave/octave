@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -75,7 +75,7 @@ endfunction
 %!assert (center (magic (3)), [3,-4,1;-2,0,2;-1,4,-3])
 %!assert (center ([1 2 3; 6 5 4], 2), [-1 0 1; 1 0 -1])
 
-%% Test input validation
+## Test input validation
 %!error center ()
 %!error center (1, 2, 3)
 %!error center (1, ones (2,2))

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2013 David Bateman
+Copyright (C) 2005-2015 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -48,12 +48,9 @@ SparseCholError (int status, const char *file, int line, const char *message)
   // Ignore CHOLMOD_NOT_POSDEF, since we handle that in Fchol as an
   // error or exit status.
   if (status != CHOLMOD_NOT_POSDEF)
-    {
-      (*current_liboctave_warning_handler)("warning %i, at line %i in file %s",
-                                           status, line, file);
-
-      (*current_liboctave_warning_handler)(message);
-    }
+    (*current_liboctave_warning_with_id_handler)
+      ("Octave:cholmod-message", "warning %i, at line %i in file %s: %s",
+       status, line, file, message);
 }
 
 int

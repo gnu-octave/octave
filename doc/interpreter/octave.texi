@@ -1,4 +1,4 @@
-% Copyright (C) 1996-2013 John W. Eaton
+% Copyright (C) 1996-2015 John W. Eaton
 %
 % This file is part of Octave.
 %
@@ -89,8 +89,8 @@ modified versions.
 @titlepage
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
-@subtitle Edition 3 for Octave version @value{VERSION}
-@subtitle December 2013
+@subtitle Edition 4 for Octave version @value{VERSION}
+@subtitle March 2015
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
@@ -109,9 +109,9 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011, 2013 John W. Eaton.
+2007, 2011, 2013, 2015 John W. Eaton.
 
-This is the third edition of the Octave documentation, and is consistent
+This is the fourth edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.
 
 Permission is granted to make and distribute verbatim copies of
@@ -505,6 +505,7 @@ High-Level Plotting
 * Plot Annotations::
 * Multiple Plots on One Page::
 * Multiple Plot Windows::
+* Manipulation of Plot Objects::
 * Manipulation of Plot Windows::
 * Use of the @code{interpreter} Property::
 * Printing and Saving Plots::
@@ -722,6 +723,25 @@ Image Processing
 * Plotting on top of Images::
 * Color Conversion::
 
+Audio Processing
+
+* Audio File Utilities::
+* Audio Device Information::
+* Audio Player::
+* Audio Recorder::
+* Audio Data Processing::
+
+Audio Player
+
+* Playback::
+* Player Properties::
+
+Audio Recorder
+
+* Recording::
+* Data Retrieval::
+* Recorder Properties::
+
 Object Oriented Programming
 
 * Creating a Class::
@@ -745,6 +765,7 @@ GUI Development
 
 * I/O Dialogs::
 * Progress Bar::
+* UI Elements::
 * GUI Utility Functions::
 * User-Defined Preferences::
 
@@ -894,7 +915,6 @@ Grammar and Parser
 
 * Keywords::
 * Parser::
-
 @end detailmenu
 @end menu
 

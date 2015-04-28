@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 Paul Kienzle
+## Copyright (C) 2004-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -22,20 +22,24 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} inputname (@var{n})
 ## Return the name of the @var{n}-th argument to the calling function.
+##
 ## If the argument is not a simple variable name, return an empty string.
+## @code{inputname} may only be used within a function body, not at the
+## command line.
+## @seealso{nargin, nthargout}
 ## @end deftypefn
 
 function s = inputname (n)
 
-  if (nargin == 1)
-    s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", n));
-    ## For compatibility with Matlab, return empty string if argument
-    ## name is not a valid identifier.
-    if (! isvarname (s))
-      s = "";
-    endif
-  else
+  if (nargin != 1)
     print_usage ();
+  endif
+
+  s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", fix (n)));
+  ## For compatibility with Matlab,
+  ## return empty string if argument name is not a valid identifier.
+  if (! isvarname (s))
+    s = "";
   endif
 
 endfunction
@@ -56,4 +60,13 @@ endfunction
 %!shared hello, worldly
 %!assert (inputname (1), "hello")
 %!assert (inputname (2), "worldly")
+
+%!function r = foo (x, y)
+%!  r = inputname (2);
+%!endfunction
+%!assert (foo (pi, e), "e");
+%!assert (feval (@foo, pi, e), "e");
+
+%!error inputname ()
+%!error inputname (1,2)
 

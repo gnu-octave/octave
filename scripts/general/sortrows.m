@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Daniel Calvelo
+## Copyright (C) 2000-2015 Daniel Calvelo
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -127,7 +127,7 @@ endfunction
 %! assert (x, full (sx));
 %! assert (idx, sidx);
 
-%% Test input validation
+## Test input validation
 %!error sortrows ()
 %!error sortrows (1, 2, 3)
 %!error sortrows (1, "ascend")

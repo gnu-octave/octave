@@ -32,6 +32,8 @@ class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
 class QPoint;
+class QDragEnterEvent;
+class QDropEvent;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -60,18 +62,24 @@ public:
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
   void setCursorColor (bool useForegoundColor, const QColor& color);
+  void setScrollBufferSize(int value);
 
   QString selectedText ();
+
+  void has_extra_interrupt (bool);
 
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
+  void selectAll (void);
   void blinkCursorEvent (void);
+  void init_terminal_size (void);
 
 signals:
   void terminated (void);
   void titleChanged (const QString&);
   void set_global_shortcuts_signal (bool);
+  void set_screen_size_signal (int, int);
 
 protected:
   void viewPaintEvent (QConsoleView*, QPaintEvent*);
@@ -86,16 +94,25 @@ protected:
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
+  void mouseDoubleClickEvent (QMouseEvent* event);
+  void mouseTripleClickEvent (QMouseEvent* event);
 
   bool eventFilter(QObject *obj, QEvent *ev);
 
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
+
 private slots:
-  void scrollValueChanged (int value);
+  void horizontalScrollValueChanged (int value);
+  void verticalScrollValueChanged (int value);
   void monitorConsole (void);
   void updateSelection (void);
+  void tripleClickTimeout (void);
 
 private:
   QConsolePrivate* d;
+  bool allowTripleClick;
+  bool _extra_interrupt;
 };
 
 //////////////////////////////////////////////////////////////////////////////

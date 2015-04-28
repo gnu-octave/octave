@@ -1,6 +1,6 @@
 /* Contour lines for function evaluated on a grid.
 
-Copyright (C) 2007-2013 Kai Habel
+Copyright (C) 2007-2015 Kai Habel
 Copyright (C) 2004, 2007 Shai Ayal
 
 Adapted to an oct file from the stand alone contourl by Victro Munoz
@@ -307,10 +307,10 @@ Undocumented internal function.\n\
 
   if (args.length () == 4)
     {
-      RowVector X = args (0).row_vector_value ();
-      RowVector Y = args (1).row_vector_value ();
-      Matrix Z = args (2).matrix_value ();
-      RowVector L = args (3).row_vector_value ();
+      RowVector X = args(0).row_vector_value ();
+      RowVector Y = args(1).row_vector_value ();
+      Matrix Z = args(2).matrix_value ();
+      RowVector L = args(3).row_vector_value ();
 
       if (! error_state)
         {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -83,11 +83,15 @@ public:
 
   static void resize_terminal (void);
 
+  static void set_screen_size (int ht, int wd);
+
   static std::string decode_prompt_string (const std::string& s);
 
   static void restore_terminal_state (void);
 
   static void blink_matching_paren (bool flag);
+
+  static bool erase_empty_line (bool flag);
 
   static void set_basic_word_break_characters (const std::string& s);
 
@@ -129,6 +133,8 @@ public:
 
   static void replace_line (const std::string& text, bool clear_undo = true);
 
+  static void kill_full_line (void);
+
   static void insert_text (const std::string& text);
 
   static void newline (void);
@@ -160,6 +166,8 @@ public:
   static bool filename_completion_desired (bool);
 
   static bool filename_quoting_desired (bool);
+
+  static bool prefer_env_winsize (bool);
 
   static bool interrupt (bool = true);
 
@@ -248,6 +256,8 @@ protected:
 
   virtual void do_resize_terminal (void) { }
 
+  virtual void do_set_screen_size (int, int) { }
+
   virtual std::string do_decode_prompt_string (const std::string&);
 
   virtual std::string newline_chars (void) { return "\n"; }
@@ -255,6 +265,8 @@ protected:
   virtual void do_restore_terminal_state (void) { }
 
   virtual void do_blink_matching_paren (bool) { }
+
+  virtual bool do_erase_empty_line (bool) { return false; }
 
   virtual void do_set_basic_word_break_characters (const std::string&) { }
 
@@ -299,6 +311,8 @@ protected:
 
   virtual void do_replace_line (const std::string& text, bool clear_undo) = 0;
 
+  virtual void do_kill_full_line (void) = 0;
+
   virtual void do_insert_text (const std::string& text) = 0;
 
   virtual void do_newline (void) = 0;
@@ -328,6 +342,8 @@ protected:
   virtual bool do_filename_completion_desired (bool) { return false; }
 
   virtual bool do_filename_quoting_desired (bool) { return false; }
+
+  virtual bool do_prefer_env_winsize (bool) { return false; }
 
   virtual void do_interrupt (bool) { }
 

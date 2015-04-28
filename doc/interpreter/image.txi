@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -84,11 +84,11 @@ its commonly closed nature, it is impossible to have a library
 capable of reading them all.  Because of this, the function
 @code{imformats} keeps a configurable list of available formats,
 their extensions, and what functions should the image IO functions
-use.  This allows to expand Octave's image IO capabilities by
+use.  This allows one to expand Octave's image IO capabilities by
 creating functions aimed at acting on specific file formats.
 
 While it would be possible to call the extra functions directly,
-properly configuring Octave with @code{imformats} allows to keep a
+properly configuring Octave with @code{imformats} allows one to keep a
 consistent code that is abstracted from file formats.
 
 It is important to note that a file format is not actually defined by its
@@ -163,6 +163,8 @@ between 0 and 1.
 @DOCSTRING(cool)
 
 @DOCSTRING(copper)
+
+@DOCSTRING(cubehelix)
 
 @DOCSTRING(flag)
 

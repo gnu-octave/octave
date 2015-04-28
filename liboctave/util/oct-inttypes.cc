@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -280,7 +280,8 @@ uint64_t
 octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
 {
   // Get upper words
-  uint64_t ux = x >> 32, uy = y >> 32;
+  uint64_t ux = x >> 32;
+  uint64_t uy = y >> 32;
   uint64_t res;
   if (ux)
     {
@@ -288,21 +289,25 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
         goto overflow;
       else
         {
-          uint64_t ly = static_cast<uint32_t> (y), uxly = ux*ly;
+          uint64_t ly = static_cast<uint32_t> (y);
+          uint64_t uxly = ux*ly;
           if (uxly >> 32)
             goto overflow;
           uxly <<= 32; // never overflows
-          uint64_t lx = static_cast<uint32_t> (x), lxly = lx*ly;
+          uint64_t lx = static_cast<uint32_t> (x);
+          uint64_t lxly = lx*ly;
           res = add (uxly, lxly);
         }
     }
   else if (uy)
     {
-      uint64_t lx = static_cast<uint32_t> (x), uylx = uy*lx;
+      uint64_t lx = static_cast<uint32_t> (x);
+      uint64_t uylx = uy*lx;
       if (uylx >> 32)
         goto overflow;
       uylx <<= 32; // never overflows
-      uint64_t ly = static_cast<uint32_t> (y), lylx = ly*lx;
+      uint64_t ly = static_cast<uint32_t> (y);
+      uint64_t lylx = ly*lx;
       res = add (uylx, lylx);
     }
   else
@@ -330,11 +335,13 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
   // (as above) and impose the sign.
   // FIXME: can we do something faster if we HAVE_FAST_INT_OPS?
 
-  uint64_t usx = octave_int_abs (x), usy = octave_int_abs (y);
+  uint64_t usx = octave_int_abs (x);
+  uint64_t usy = octave_int_abs (y);
   bool positive = (x < 0) == (y < 0);
 
   // Get upper words
-  uint64_t ux = usx >> 32, uy = usy >> 32;
+  uint64_t ux = usx >> 32;
+  uint64_t uy = usy >> 32;
   uint64_t res;
   if (ux)
     {
@@ -342,11 +349,13 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
         goto overflow;
       else
         {
-          uint64_t ly = static_cast<uint32_t> (usy), uxly = ux*ly;
+          uint64_t ly = static_cast<uint32_t> (usy);
+          uint64_t uxly = ux*ly;
           if (uxly >> 32)
             goto overflow;
           uxly <<= 32; // never overflows
-          uint64_t lx = static_cast<uint32_t> (usx), lxly = lx*ly;
+          uint64_t lx = static_cast<uint32_t> (usx);
+          uint64_t lxly = lx*ly;
           res = uxly + lxly;
           if (res < uxly)
             goto overflow;
@@ -354,11 +363,13 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
     }
   else if (uy)
     {
-      uint64_t lx = static_cast<uint32_t> (usx), uylx = uy*lx;
+      uint64_t lx = static_cast<uint32_t> (usx);
+      uint64_t uylx = uy*lx;
       if (uylx >> 32)
         goto overflow;
       uylx <<= 32; // never overflows
-      uint64_t ly = static_cast<uint32_t> (usy), lylx = ly*lx;
+      uint64_t ly = static_cast<uint32_t> (usy);
+      uint64_t lylx = ly*lx;
       res = uylx + lylx;
       if (res < uylx)
         goto overflow;
@@ -496,11 +507,14 @@ DOUBLE_INT_BINOP_DECL (-, int64)
 static void
 umul128 (uint64_t x, uint64_t y, uint32_t w[4])
 {
-  uint64_t lx = static_cast<uint32_t> (x), ux = x >> 32;
-  uint64_t ly = static_cast<uint32_t> (y), uy = y >> 32;
+  uint64_t lx = static_cast<uint32_t> (x);
+  uint64_t ux = x >> 32;
+  uint64_t ly = static_cast<uint32_t> (y);
+  uint64_t uy = y >> 32;
   uint64_t a = lx * ly;
   w[0] = a; a >>= 32;
-  uint64_t uxly = ux*ly, uylx = uy*lx;
+  uint64_t uxly = ux*ly;
+  uint64_t uylx = uy*lx;
   a += static_cast<uint32_t> (uxly); uxly >>= 32;
   a += static_cast<uint32_t> (uylx); uylx >>= 32;
   w[1] = a; a >>= 32;
@@ -753,7 +767,7 @@ powf (const octave_int<T>& a, const float& b)
   template OCTAVE_API octave_int<T> powf (const float&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> powf (const octave_int<T>&, const float&); \
   template OCTAVE_API octave_int<T> \
-  bitshift (const octave_int<T>&, int, const octave_int<T>&); \
+  bitshift (const octave_int<T>&, int, const octave_int<T>&);
 
 INSTANTIATE_INTTYPE (int8_t);
 INSTANTIATE_INTTYPE (int16_t);

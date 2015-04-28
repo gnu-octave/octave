@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -42,7 +42,7 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
             for j = 1 : length (installed_pkgs_lst)
               if (strcmp (installed_pkgs_lst{j}.name, deps{k}.package))
                 if (! any (idx == j))
-                  tmplidx (end + 1) = j;
+                  tmplidx(end + 1) = j;
                   break;
                 endif
               endif

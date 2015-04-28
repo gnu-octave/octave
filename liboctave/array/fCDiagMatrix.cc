@@ -1,7 +1,7 @@
 // DiagMatrix manipulations.
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -374,20 +374,20 @@ FloatComplexDiagMatrix::inverse (octave_idx_type& info) const
   info = 0;
   for (octave_idx_type i = 0; i < length (); i++)
     {
-      if (elem (i, i) == static_cast<float> (0.0))
+      if (elem (i, i) == 0.0f)
         {
           info = -1;
           return *this;
         }
       else
-        retval.elem (i, i) = static_cast<float> (1.0) / elem (i, i);
+        retval.elem (i, i) = 1.0f / elem (i, i);
     }
 
   return retval;
 }
 
 FloatComplexDiagMatrix
-FloatComplexDiagMatrix::pseudo_inverse (void) const
+FloatComplexDiagMatrix::pseudo_inverse (float tol) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
@@ -397,10 +397,11 @@ FloatComplexDiagMatrix::pseudo_inverse (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (elem (i, i) != 0.0f)
-        retval.elem (i, i) = 1.0f / elem (i, i);
-      else
+      float val = std::abs (elem (i, i));
+      if (val < tol || val == 0.0f)
         retval.elem (i, i) = 0.0f;
+      else
+        retval.elem (i, i) = 1.0f / elem (i, i);
     }
 
   return retval;
@@ -452,7 +453,8 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
+  octave_idx_type len = c.length ();
+  octave_idx_type lenm = len < a_nc ? len : a_nc;
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -553,7 +555,8 @@ float
 FloatComplexDiagMatrix::rcond (void) const
 {
   FloatColumnVector av = extract_diag (0).map<float> (std::abs);
-  float amx = av.max (), amn = av.min ();
+  float amx = av.max ();
+  float amn = av.min ();
   return amx == 0 ? 0.0f : amn / amx;
 }
 

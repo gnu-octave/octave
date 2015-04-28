@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -27,6 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QListView>
 #include <QSortFilterProxyModel>
 #include <QStringListModel>
+#include <QComboBox>
+#include <QCheckBox>
+
 #include "octave-dock-widget.h"
 
 class history_dock_widget : public octave_dock_widget
@@ -36,6 +39,7 @@ class history_dock_widget : public octave_dock_widget
 public:
 
   history_dock_widget (QWidget *parent = 0);
+  ~history_dock_widget ();
 
 public slots:
 
@@ -56,6 +60,9 @@ signals:
 
 private slots:
 
+  void update_filter_history ();
+  void filter_activate (bool enable);
+
   void handle_double_click (QModelIndex modelIndex);
   void handle_contextmenu_copy (bool flag);
   void handle_contextmenu_evaluate (bool flag);
@@ -64,16 +71,20 @@ private slots:
 
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 private:
 
   void construct ();
   QListView *_history_list_view;
-  QLineEdit *_filter_line_edit;
   QSortFilterProxyModel _sort_filter_proxy_model;
 
   /** Stores the current history_model. */
   QStringListModel *_history_model;
+
+  QCheckBox *_filter_checkbox;
+  QComboBox *_filter;
+  enum { MaxFilterHistory = 10 };
 };
 
 #endif // HISTORYDOCKWIDGET_H

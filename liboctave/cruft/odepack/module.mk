@@ -1,19 +1,19 @@
-EXTRA_DIST += odepack/module.mk
+EXTRA_DIST += cruft/odepack/module.mk
 
-libcruft_la_SOURCES += \
-  odepack/cfode.f \
-  odepack/dlsode.f \
-  odepack/ewset.f \
-  odepack/intdy.f \
-  odepack/prepj.f \
-  odepack/solsy.f \
-  odepack/stode.f \
-  odepack/vnorm.f \
-  odepack/scfode.f \
-  odepack/sewset.f \
-  odepack/sintdy.f \
-  odepack/slsode.f \
-  odepack/sprepj.f \
-  odepack/ssolsy.f \
-  odepack/sstode.f \
-  odepack/svnorm.f
+CRUFT_SOURCES += \
+  cruft/odepack/cfode.f \
+  cruft/odepack/dlsode.f \
+  cruft/odepack/ewset.f \
+  cruft/odepack/intdy.f \
+  cruft/odepack/prepj.f \
+  cruft/odepack/solsy.f \
+  cruft/odepack/stode.f \
+  cruft/odepack/vnorm.f \
+  cruft/odepack/scfode.f \
+  cruft/odepack/sewset.f \
+  cruft/odepack/sintdy.f \
+  cruft/odepack/slsode.f \
+  cruft/odepack/sprepj.f \
+  cruft/odepack/ssolsy.f \
+  cruft/odepack/sstode.f \
+  cruft/odepack/svnorm.f

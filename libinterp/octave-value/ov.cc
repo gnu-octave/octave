@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
+#include "ov-classdef.h"
 #include "ov-oncleanup.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
@@ -92,7 +93,18 @@ along with Octave; see the file COPYING.  If not, see
 
 // We are likely to have a lot of octave_value objects to allocate, so
 // make the grow_size large.
-DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
+
+// If TRUE, don't create special diagonal matrix objects.
+
+static bool Vdisable_diagonal_matrix = false;
+
+// If TRUE, don't create special permutation matrix objects.
+
+static bool Vdisable_permutation_matrix = false;
+
+// If TRUE, don't create special range objects.
+
+static bool Vdisable_range = false;
 
 // FIXME
 
@@ -673,37 +685,49 @@ octave_value::octave_value (const Array<float>& a)
 }
 
 octave_value::octave_value (const DiagArray2<double>& d)
-  : rep (new octave_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<float>& d)
-  : rep (new octave_float_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<Complex>& d)
-  : rep (new octave_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<FloatComplex>& d)
-  : rep (new octave_float_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagMatrix& d)
-  : rep (new octave_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatDiagMatrix& d)
-  : rep (new octave_float_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
 {
   maybe_mutate ();
 }
@@ -781,13 +805,17 @@ octave_value::octave_value (const Array<FloatComplex>& a)
 }
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
-  : rep (new octave_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatComplexDiagMatrix& d)
-  : rep (new octave_float_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
@@ -817,7 +845,9 @@ octave_value::octave_value (const FloatComplexColumnVector& v)
 }
 
 octave_value::octave_value (const PermMatrix& p)
-  : rep (new octave_perm_matrix (p))
+  : rep (Vdisable_permutation_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (p)))
+         : dynamic_cast<octave_base_value *> (new octave_perm_matrix (p)))
 {
   maybe_mutate ();
 }
@@ -1176,8 +1206,10 @@ octave_value::octave_value (double base, double limit, double inc)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Range& r)
-  : rep (new octave_range (r))
+octave_value::octave_value (const Range& r, bool force_range)
+  : rep (force_range || ! Vdisable_range
+         ? dynamic_cast<octave_base_value *> (new octave_range (r))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ())))
 {
   maybe_mutate ();
 }
@@ -1193,13 +1225,14 @@ octave_value::octave_value (const octave_scalar_map& m)
 {
 }
 
-octave_value::octave_value (const Octave_map& m)
-  : rep (new octave_struct (m))
+octave_value::octave_value (const octave_map& m, const std::string& id,
+                            const std::list<std::string>& plist)
+  : rep (new octave_class (m, id, plist))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Octave_map& m, const std::string& id,
+octave_value::octave_value (const octave_scalar_map& m, const std::string& id,
                             const std::list<std::string>& plist)
   : rep (new octave_class (m, id, plist))
 {
@@ -1951,7 +1984,9 @@ do_binary_op (octave_value::binary_op op,
   int t2 = v2.type_id ();
 
   if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ())
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
@@ -2001,8 +2036,9 @@ do_binary_op (octave_value::binary_op op,
             v2.numeric_conversion_function ();
 
           // Try biased (one-sided) conversions first.
-          if (cf2.type_id () >= 0 &&
-              octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
+          if (cf2.type_id () >= 0
+              && octave_value_typeinfo::lookup_binary_op (op, t1,
+                                                          cf2.type_id ()))
             cf1 = 0;
           else if (cf1.type_id () >= 0
                    && octave_value_typeinfo::lookup_binary_op (op,
@@ -2062,10 +2098,10 @@ do_binary_op (octave_value::binary_op op,
                   && octave_value_typeinfo::lookup_binary_op (op, t1,
                                                               cf2.type_id ()))
                 cf1 = 0;
-              else if (cf1.type_id () >= 0 &&
-                       octave_value_typeinfo::lookup_binary_op (op,
-                                                                cf1.type_id (),
-                                                                t2))
+              else if (cf1.type_id () >= 0
+                       && octave_value_typeinfo::lookup_binary_op (op,
+                                                                   cf1.type_id (),
+                                                                   t2))
                 cf2 = 0;
 
               if (cf1)
@@ -2207,7 +2243,9 @@ do_binary_op (octave_value::compound_binary_op op,
   int t2 = v2.type_id ();
 
   if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ())
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
@@ -2351,6 +2389,101 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
   return retval;
 }
 
+octave_value
+do_colon_op (const octave_value& base, const octave_value& increment,
+             const octave_value& limit, bool is_for_cmd_expr)
+{
+  octave_value retval;
+
+  if (base.is_object () || increment.is_object () || limit.is_object ())
+    {
+      std::string dispatch_type;
+
+      if (base.is_object ())
+        dispatch_type = base.class_name ();
+      else if (increment.is_defined () && increment.is_object ())
+        dispatch_type = increment.class_name ();
+      else
+        dispatch_type = limit.class_name ();
+
+      octave_value meth = symbol_table::find_method ("colon", dispatch_type);
+
+      if (meth.is_defined ())
+        {
+          octave_value_list args;
+
+          if (increment.is_defined ())
+            {
+              args(2) = limit;
+              args(1) = increment;
+            }
+          else
+            args(1) = limit;
+
+          args(0) = base;
+
+          octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+          if (tmp.length () > 0)
+            retval = tmp(0);
+        }
+      else
+        error ("colon method not defined for %s class", dispatch_type.c_str ());
+    }
+  else
+    {
+      bool result_is_str = (base.is_string () && limit.is_string ());
+      bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+
+      Matrix m_base = base.matrix_value (true);
+
+      if (error_state)
+        {
+          error ("invalid base value in colon expression");
+          return retval;
+        }
+
+      Matrix m_limit = limit.matrix_value (true);
+
+      if (error_state)
+        {
+          error ("invalid limit value in colon expression");
+          return retval;
+        }
+
+      Matrix m_increment = (increment.is_defined ()
+                            ? increment.matrix_value (true)
+                            : Matrix (1, 1, 1.0));
+
+      if (error_state)
+        {
+          error ("invalid increment value in colon expression");
+          return retval;
+        }
+
+      bool base_empty = m_base.is_empty ();
+      bool limit_empty = m_limit.is_empty ();
+      bool increment_empty = m_increment.is_empty ();
+
+      if (base_empty || limit_empty || increment_empty)
+        retval = Range ();
+      else
+        {
+          Range r (m_base(0), m_limit(0), m_increment(0));
+
+          // For compatibility with Matlab, don't allow the range used in
+          // a FOR loop expression to be converted to a Matrix.
+
+          retval = octave_value (r, is_for_cmd_expr);
+
+          if (result_is_str)
+            retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+        }
+    }
+
+  return retval;
+}
+
 void
 octave_value::print_info (std::ostream& os, const std::string& prefix) const
 {
@@ -2381,7 +2514,8 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 
   int t = v.type_id ();
 
-  if (t == octave_class::static_type_id ())
+  if (t == octave_class::static_type_id ()
+      || t == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::unary_class_op_fcn f
         = octave_value_typeinfo::lookup_unary_class_op (op);
@@ -2835,10 +2969,9 @@ decode_subscripts (const char* name, const octave_value& arg,
 
       for (int k = 0; k < nel; k++)
         {
-          std::string item = type(k).string_value ();
-
-          if (! error_state)
+          if (type(k).is_string ())
             {
+              std::string item = type(k).string_value ();
               if (item == "{}")
                 type_string[k] = '{';
               else if (item == "()")
@@ -2853,8 +2986,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             }
           else
             {
-              error ("%s: expecting type(%d) to be a character string",
-                     name, k+1);
+              error ("%s: type(%d) must be a string", name, k+1);
               return;
             }
 
@@ -2877,8 +3009,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             }
           else
             {
-              error ("%s: expecting subs(%d) to be a character string or cell array",
-                     name, k+1);
+              error ("%s: subs(%d) must be a string or cell array", name, k+1);
               return;
             }
 
@@ -3141,3 +3272,107 @@ Return true if @var{x} is a double-quoted character string.\n\
 %!error is_dq_string ()
 %!error is_dq_string ("foo", 2)
 */
+
+DEFUN (disable_permutation_matrix, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_permutation_matrix ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether permutation\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store permutation\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@seealso{disable_range, disable_diagonal_matrix}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_permutation_matrix);
+}
+
+/*
+%!function p = __test_dpm__ (dpm)
+%!  disable_permutation_matrix (dpm, "local");
+%!  [~, ~, p] = lu ([1,2;3,4]);
+%!endfunction
+
+%!assert (typeinfo (__test_dpm__ (false)), "permutation matrix");
+%!assert (typeinfo (__test_dpm__ (true)), "matrix");
+*/
+
+DEFUN (disable_diagonal_matrix, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_diagonal_matrix ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether diagonal\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store diagonal\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@seealso{disable_range, disable_permutation_matrix}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_diagonal_matrix);
+}
+
+/*
+%!function [x, xi, fx, fxi] = __test_ddm__ (ddm)
+%!  disable_diagonal_matrix (ddm, "local");
+%!  x = eye (2);
+%!  xi = x*i;
+%!  fx = single (x);
+%!  fxi = single (xi);
+%!endfunction
+
+%!shared x, xi, fx, fxi
+%!  [x, xi, fx, fxi] = __test_ddm__ (false);
+%!assert (typeinfo (x), "diagonal matrix");
+%!assert (typeinfo (xi), "complex diagonal matrix");
+%!assert (typeinfo (fx), "float diagonal matrix");
+%!assert (typeinfo (fxi), "float complex diagonal matrix");
+
+%!shared x, xi, fx, fxi
+%!  [x, xi, fx, fxi] = __test_ddm__ (true);
+%!assert (typeinfo (x), "matrix");
+%!assert (typeinfo (xi), "complex matrix");
+%!assert (typeinfo (fx), "float matrix");
+%!assert (typeinfo (fxi), "float complex matrix");
+*/
+
+DEFUN (disable_range, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_range ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_range (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_range (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether ranges are stored\n\
+in a special space-efficient format.  The default value is true.  If this\n\
+option is disabled Octave will store ranges as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@seealso{disable_diagonal_matrix, disable_permutation_matrix}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_range);
+}
+
+/*
+%!function r = __test_dr__ (dr)
+%!  disable_range (dr, "local");
+%!  ## Constant folding will produce range for 1:13.
+%!  base = 1;
+%!  limit = 13;
+%!  r = base:limit;
+%!endfunction
+
+%!assert (typeinfo (__test_dr__ (false)), "range");
+%!assert (typeinfo (__test_dr__ (true)), "matrix");
+*/
+

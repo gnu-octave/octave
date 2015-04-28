@@ -5,7 +5,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
-    Copyright (C) 2012-2013 Jacob Dawid <jacob.dawid@googlemail.com>
+    Copyright (C) 2012-2015 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -328,6 +328,8 @@ TerminalView::TerminalView(QWidget *parent)
 
   connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent->parent (), SLOT (set_global_shortcuts (bool)));
+  connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
+           parent, SLOT (set_global_shortcuts (bool)));
 
 }
 
@@ -2272,7 +2274,7 @@ void TerminalView::setSelection(const QString& t)
   QApplication::clipboard()->setText(t, QClipboard::Selection);
 }
 
-void TerminalView::copyClipboard()
+void TerminalView::copyClipboard(bool extra_interrupt)
 {
   if ( !_screenWindow || !hasFocus())
     return;
@@ -2280,7 +2282,10 @@ void TerminalView::copyClipboard()
   QString text = _screenWindow->selectedText(_preserveLineBreaks);
 
   if (text.isEmpty ())
-    emit interrupt_signal ();
+    {
+      if (! extra_interrupt)
+        emit interrupt_signal ();
+    }
   else
     QApplication::clipboard()->setText(text);
 }
@@ -2293,10 +2298,25 @@ void TerminalView::pasteClipboard()
     }
 }
 
+void TerminalView::selectAll()
+{
+  if ( !_screenWindow || !hasFocus())
+    return;
+
+  _screenWindow->setSelectionStart(0,-_screenWindow->currentLine(), false);
+  //_screenWindow->setSelectionEnd(_screenWindow->windowColumns(),
+  //                               _screenWindow->windowLines());
+
+  _screenWindow->setSelectionEnd(_screenWindow->columnCount(),
+                                 _screenWindow->windowLines());
+}
+
+
 void TerminalView::pasteSelection()
 {
   emitSelection(true,false);
 }
+
 
 /* ------------------------------------------------------------------------- */
 /*                                                                           */
@@ -2422,45 +2442,6 @@ QVariant TerminalView::inputMethodQuery( Qt::InputMethodQuery query ) const
     }
 
   return QVariant();
-}
-
-bool TerminalView::event( QEvent *e )
-{
-  if ( e->type() == QEvent::ShortcutOverride )
-    {
-      QKeyEvent* keyEvent = static_cast<QKeyEvent *>( e );
-
-      // a check to see if keyEvent->text() is empty is used
-      // to avoid intercepting the press of the modifier key on its own.
-      //
-      // this is important as it allows a press and release of the Alt key
-      // on its own to focus the menu bar, making it possible to
-      // work with the menu without using the mouse
-      if ( (keyEvent->modifiers() == Qt::AltModifier) &&
-           !keyEvent->text().isEmpty() )
-        {
-          keyEvent->accept();
-          return true;
-        }
-
-      // Override any of the following shortcuts because
-      // they are needed by the terminal
-      int keyCode = keyEvent->key() | keyEvent->modifiers();
-      switch ( keyCode )
-        {
-        // list is taken from the QLineEdit::event() code
-        case Qt::Key_Tab:
-        case Qt::Key_Delete:
-        case Qt::Key_Home:
-        case Qt::Key_End:
-        case Qt::Key_Backspace:
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-          keyEvent->accept();
-          return true;
-        }
-    }
-  return QWidget::event( e );
 }
 
 void TerminalView::setBellMode(int mode)
@@ -2612,6 +2593,17 @@ void TerminalView::dropEvent(QDropEvent* event)
   //  KUrl::List urls = KUrl::List::fromMimeData(event->mimeData());
 
   QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+  {
+    foreach (QUrl url, event->mimeData ()->urls ())
+    {
+      if(dropText.length () > 0)
+        dropText += "\n";
+      dropText  += url.toLocalFile ();
+    }
+  }
+
   /*  if (!urls.isEmpty())
   {
     for ( int i = 0 ; i < urls.count() ; i++ )

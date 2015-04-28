@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -103,6 +103,7 @@
 ##
 ## @end ifnottex
 ## @end table
+##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## If both @var{type} and @var{dim} are given they may appear in any order.
@@ -160,8 +161,7 @@ function m = moment (x, p, opt1, opt2)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim)) ||
-        !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim)) || ! (1 <= dim && dim <= nd))
       error ("moment: DIM must be an integer and a valid dimension");
     endif
   endif
@@ -191,7 +191,7 @@ endfunction
 
 %!assert (moment (single ([1 2 3]), 1, "r"), single (2))
 
-%% Test input validation
+## Test input validation
 %!error moment ()
 %!error moment (1)
 %!error moment (1, 2, 3, 4, 5)

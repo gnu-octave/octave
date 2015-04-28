@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Andreas Weingessel
+## Copyright (C) 1995-2015 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -21,8 +21,9 @@
 ## Return the filter coefficients of a Bartlett (triangular) window of
 ## length @var{m}.
 ##
-## For a definition of the Bartlett window, see e.g., A. V. Oppenheim &
-## R. W. Schafer, @cite{Discrete-Time Signal Processing}.
+## For a definition of the Bartlett window, see e.g.,
+## @nospell{A.V. Oppenheim & R. W. Schafer},
+## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -35,7 +36,7 @@ function c = bartlett (m)
   endif
 
   if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
-    error ("bartlett: M has to be an integer > 0");
+    error ("bartlett: M must be a positive integer");
   endif
 
   if (m == 1)
@@ -51,8 +52,8 @@ endfunction
 
 %!assert (bartlett (1), 1)
 %!assert (bartlett (2), zeros (2,1))
-%!assert (bartlett (16), fliplr (bartlett (16)))
-%!assert (bartlett (15), fliplr (bartlett (15)))
+%!assert (bartlett (15), flip (bartlett (15)), 5*eps)
+%!assert (bartlett (16), flip (bartlett (16)), 5*eps)
 %!test
 %! N = 9;
 %! A = bartlett (N);

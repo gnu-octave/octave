@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 Jaroslav Hajek
+Copyright (C) 2008-2015 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -131,7 +131,7 @@ public:
   double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   PermMatrix perm_matrix_value (void) const
   { return matrix; }
@@ -211,12 +211,14 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
   octave_value map (unary_mapper_t umap) const
   { return to_dense ().map (umap); }
+
+  octave_value fast_elem_extract (octave_idx_type n) const;
 
 protected:
 
@@ -228,7 +230,6 @@ protected:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

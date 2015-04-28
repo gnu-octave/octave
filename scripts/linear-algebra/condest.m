@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 Regents of the University of California
+## Copyright (C) 2007-2015 Regents of the University of California
 ##
 ## This file is part of Octave.
 ##
@@ -59,13 +59,13 @@
 ##
 ## @itemize
 ## @item
-## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
+## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. SIMAX vol 21, no 4, pp 1185-1201.
 ## @url{http://dx.doi.org/10.1137/S0895479899356080}
 ##
 ## @item
-## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
+## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. @url{http://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
@@ -124,7 +124,7 @@ function [est, v] = condest (varargin)
   have_t = false;
   have_solve = false;
 
-  if (ismatrix (varargin{1}))
+  if (isnumeric (varargin{1}))
     A = varargin{1};
     if (! issquare (A))
       error ("condest: matrix must be square");
@@ -233,6 +233,7 @@ endfunction
 %! assert (cA, cA_test, -2^-6);
 
 %!test
+%! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! N = 12;
 %! A = hilb (N);
 %! [rcondA, v] = condest (A);

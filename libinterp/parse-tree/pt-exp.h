@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,8 +40,8 @@ tree_expression : public tree
 public:
 
   tree_expression (int l = -1, int c = -1)
-    : tree (l, c), num_parens (0), postfix_indexed (false),
-      print_flag (false) { }
+    : tree (l, c), num_parens (0), postfix_index_type ('\0'),
+      for_cmd_expr (false), print_flag (false) { }
 
   virtual ~tree_expression (void) { }
 
@@ -87,7 +87,9 @@ public:
 
   int paren_count (void) const { return num_parens; }
 
-  bool is_postfix_indexed (void) const { return postfix_indexed; }
+  bool is_postfix_indexed (void) const { return (postfix_index_type != '\0'); }
+
+  char postfix_index (void) const { return postfix_index_type; }
 
   // Check if the result of the expression should be printed.
   // Should normally be used in conjunction with
@@ -100,7 +102,11 @@ public:
 
   virtual std::string original_text (void) const;
 
-  virtual void mark_braindead_shortcircuit (const std::string&) { }
+  virtual void mark_braindead_shortcircuit (void) { }
+
+  void mark_as_for_cmd_expr (void) { for_cmd_expr = true; }
+
+  bool is_for_cmd_expr (void) const { return for_cmd_expr; }
 
   tree_expression *mark_in_parens (void)
   {
@@ -108,9 +114,9 @@ public:
     return this;
   }
 
-  tree_expression *mark_postfix_indexed (void)
+  tree_expression *set_postfix_index (char type)
   {
-    postfix_indexed = true;
+    postfix_index_type = type;
     return this;
   }
 
@@ -123,7 +129,7 @@ public:
   virtual void copy_base (const tree_expression& e)
   {
     num_parens = e.num_parens;
-    postfix_indexed = e.postfix_indexed;
+    postfix_index_type = e.postfix_index_type;
     print_flag = e.print_flag;
   }
 
@@ -137,9 +143,14 @@ protected:
   //                  ==> 0 for expression e2
   int num_parens;
 
-  // A flag that says whether this expression has an index associated
-  // with it.  See the code in tree_identifier::rvalue for the rationale.
-  bool postfix_indexed;
+  // The first index type associated with this expression. This field
+  // is 0 (character '\0') if the expression has no associated index.
+  // See the code in tree_identifier::rvalue for the rationale.
+  char postfix_index_type;
+
+  // TRUE if this expression is the EXPR in for loop:
+  // FOR i = EXPR ... END
+  bool for_cmd_expr;
 
   // Print result of rvalue for this expression?
   bool print_flag;

@@ -1,8 +1,8 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
-Copyright (C) 2011-2013 John P. Swensen
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2015 John P. Swensen
 
 This file is part of Octave.
 
@@ -61,6 +61,7 @@ octave_link::set_workspace (void)
   if (enabled ())
     instance->do_set_workspace ((symbol_table::current_scope ()
                                  == symbol_table::top_scope ()),
+                                instance->debugging, 
                                 symbol_table::workspace_info ());
 }
 
@@ -225,7 +226,7 @@ Undocumented internal function.\n\
       std::string multi_on = args(4).string_value (); // on, off, create
       std::string pathname = args(5).string_value ();
 
-      octave_idx_type nel = flist.numel ();
+      octave_idx_type nel;
       octave_link::filter_list filter_lst;
 
       for (octave_idx_type i = 0; i < flist.rows (); i++)
@@ -400,7 +401,7 @@ Undocumented internal function.\n\
                                          defaults_lst);
 
           nel = items_lst.size ();
-          Cell items (dim_vector (1, nel));
+          Cell items (dim_vector (nel, 1));
           octave_idx_type i = 0;
           for (std::list<std::string>::iterator it = items_lst.begin ();
                it != items_lst.end (); it++)
@@ -432,7 +433,7 @@ Undocumented internal function.\n\
 
 DEFUN (__octave_link_show_doc__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_show_doc__ ( @var{filename} )\n\
+@deftypefn {Built-in Function} {} __octave_link_show_doc__ (@var{filename})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

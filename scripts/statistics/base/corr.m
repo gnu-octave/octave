@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 John W. Eaton
+## Copyright (C) 1996-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -103,7 +103,7 @@ endfunction
 %!assert (corr (5), 1)
 %!assert (corr (single (5)), single (1))
 
-%% Test input validation
+## Test input validation
 %!error corr ()
 %!error corr (1, 2, 3)
 %!error corr ([1; 2], ["A", "B"])

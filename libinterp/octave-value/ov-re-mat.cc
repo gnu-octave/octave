@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -70,7 +71,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<NDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix", "double");
 
@@ -142,13 +142,13 @@ octave_matrix::float_value (bool) const
 Matrix
 octave_matrix::matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return Matrix (matrix);
 }
 
 FloatMatrix
 octave_matrix::float_matrix_value (bool) const
 {
-  return FloatMatrix (matrix.matrix_value ());
+  return FloatMatrix (Matrix (matrix));
 }
 
 Complex
@@ -196,13 +196,13 @@ octave_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_matrix::complex_matrix_value (bool) const
 {
-  return ComplexMatrix (matrix.matrix_value ());
+  return ComplexMatrix (Matrix (matrix));
 }
 
 FloatComplexMatrix
 octave_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (Matrix (matrix));
 }
 
 ComplexNDArray
@@ -244,7 +244,7 @@ octave_matrix::char_array_value (bool) const
 SparseMatrix
 octave_matrix::sparse_matrix_value (bool) const
 {
-  return SparseMatrix (matrix.matrix_value ());
+  return SparseMatrix (Matrix (matrix));
 }
 
 SparseComplexMatrix
@@ -277,7 +277,7 @@ octave_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      Matrix mat = matrix.matrix_value ();
+      Matrix mat (matrix);
 
       retval = mat.diag (m, n);
     }
@@ -664,19 +664,21 @@ octave_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
+bool
+octave_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
+  bool retval = false;
+
 #if defined (HAVE_HDF5)
 
-bool
-octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   NDArray m = array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
@@ -733,13 +735,19 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -795,10 +803,12 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 void
 octave_matrix::print_raw (std::ostream& os,
@@ -934,14 +944,31 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (isna, bool, octave_is_NA);
       ARRAY_MAPPER (xsignbit, double, xsignbit);
 
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return matrix;
+
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xtoascii:
+      {
+        octave_value str_conv = convert_to_str (true, true);
+        return error_state ? octave_value () : str_conv.map (umap);
+      }
+
     default:
-      if (umap >= umap_xisalnum && umap <= umap_xtoupper)
-        {
-          octave_value str_conv = convert_to_str (true, true);
-          return error_state ? octave_value () : str_conv.map (umap);
-        }
-      else
-        return octave_base_value::map (umap);
+      return octave_base_value::map (umap);
     }
 }
 

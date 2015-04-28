@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2013 John W. Eaton
+## Copyright (C) 1993-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -90,7 +90,7 @@ endfunction
 %! assert (size (x3) == [1, 10] && abs (x3(1) - 10) < eps && abs (x3(10) - 0.01) < eps);
 %! assert (size (x4) == [1, 10] && abs (x4(1) - 10) < eps && abs (x4(10) - pi) < sqrt (eps));
 
-%% Test input validation
+## Test input validation
 %!error logspace ()
 %!error logspace (1, 2, 3, 4)
 %!error logspace ([1, 2; 3, 4], 5, 6)

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -64,7 +64,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 
       if (exist (tgz, "file"))
         ## Create a temporary directory.
-        tmpdir = tmpnam ();
+        tmpdir = tempname ();
         tmpdirs{end+1} = tmpdir;
         if (verbose)
           printf ("mkdir (%s)\n", tmpdir);
@@ -322,7 +322,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         nm = descriptions{i}.name;
         for j = 1:length (installed_pkgs_lst)
           if (strcmp (nm, installed_pkgs_lst{j}.name))
-            idx (end + 1) = j;
+            idx(end + 1) = j;
             break;
           endif
         endfor
@@ -332,10 +332,11 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
                                     global_install);
   endif
 
-  ## If there's a NEWS file, mention it
-  ## we are checking if desc exists too because it's possible to ge to this point
+  ## If there is a NEWS file, mention it.
+  ## Check if desc exists too because it's possible to get to this point
   ## without creating it such as giving an invalid filename for the package
-  if (exist ("desc", "var") && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
+  if (exist ("desc", "var")
+      && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
     printf ("For information about changes from previous versions of the %s package, run 'news %s'.\n",
             desc.name, desc.name);
   endif

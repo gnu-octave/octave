@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "load-save.h"
+#include "oct-hdf5-id.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
@@ -247,7 +248,7 @@ hdf5_make_complex_type (hid_t num_type)
 herr_t
 hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 {
-  hdf5_callback_data *d = static_cast <hdf5_callback_data *> (dv);
+  hdf5_callback_data *d = static_cast<hdf5_callback_data *> (dv);
   hid_t type_id = -1;
   hid_t type_class_id = -1;
   hid_t data_id = -1;
@@ -263,7 +264,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   // Allow identifiers as all digits so we can load lists saved by
   // earlier versions of Octave.
 
-  if (! ident_valid )
+  if (! ident_valid)
     {
       // fix the identifier, replacing invalid chars with underscores
       vname = make_valid_identifier (vname);
@@ -528,6 +529,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
         {
           warning ("load: can't read '%s' (unknown datatype)", name);
           retval = 0; // unknown datatype; skip
+          return retval;
         }
 
       // check for OCTAVE_GLOBAL attribute:
@@ -586,6 +588,8 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
                 bool& global, octave_value& tc, std::string& doc,
                 const string_vector& argv, int argv_idx, int argc)
 {
+  check_hdf5_id_type ();
+
   std::string retval;
 
   doc.resize (0);
@@ -615,7 +619,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
       len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, 0, 0);
       var_name.resize (len+1);
-      H5Gget_objname_by_idx( hs.file_id, hs.current_item, &var_name[0], len+1);
+      H5Gget_objname_by_idx (hs.file_id, hs.current_item, &var_name[0], len+1);
 
       for (int i = argv_idx; i < argc; i++)
         {
@@ -738,7 +742,8 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
   hsize_t sz = d.length ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, sz);
   bool empty = false;
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid = -1;
+  hid_t data_hid = -1;
   int retval;
   for (hsize_t i = 0; i < sz; i++)
     {
@@ -865,7 +870,9 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
                bool mark_as_global, bool save_as_floats)
 {
   hsize_t dims[3];
-  hid_t type_id = -1, space_id = -1, data_id = -1, data_type_id = -1;
+  hid_t type_id, space_id, data_id, data_type_id;
+  type_id = space_id = data_id = data_type_id = -1;
+
   bool retval = false;
   octave_value val = tc;
   // FIXME: diagonal & permutation matrices currently don't know how to save
@@ -948,6 +955,8 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
                 bool mark_as_global, bool save_as_floats)
 {
+  check_hdf5_id_type ();
+
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 
   return add_hdf5_data (hs.file_id, tc, name, doc,

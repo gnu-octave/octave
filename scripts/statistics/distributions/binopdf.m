@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -93,12 +93,12 @@ endfunction
 %!assert (binopdf (2, 2, 1), 1);
 %!assert (binopdf (1, 2, 1), 0);
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (binopdf (single ([x, NaN]), 2, 0.5), single ([y, NaN]))
 %!assert (binopdf ([x, NaN], single (2), 0.5), single ([y, NaN]))
 %!assert (binopdf ([x, NaN], 2, single (0.5)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error binopdf ()
 %!error binopdf (1)
 %!error binopdf (1,2)

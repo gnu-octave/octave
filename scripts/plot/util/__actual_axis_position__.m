@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Ben Abbott
+## Copyright (C) 2009-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -66,7 +66,7 @@ function pos = __actual_axis_position__ (h)
                              axis_obj.plotboxaspectratio(3)/sqrt(2)];
     endif
     orig_aspect_ratio_2d = pos_in_pixels(3:4);
-    rel_aspect_ratio_2d =  aspect_ratio_2d ./ orig_aspect_ratio_2d;
+    rel_aspect_ratio_2d = aspect_ratio_2d ./ orig_aspect_ratio_2d;
     rel_aspect_ratio_2d = rel_aspect_ratio_2d ./ max (rel_aspect_ratio_2d);
     if (rel_aspect_ratio_2d(1) < rel_aspect_ratio_2d(2));
       dx = (1.0 - rel_aspect_ratio_2d(1)) * pos_in_pixels(3);
@@ -84,3 +84,6 @@ function pos = __actual_axis_position__ (h)
   endif
 endfunction
 
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)

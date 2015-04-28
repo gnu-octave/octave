@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2013 David Bateman
+Copyright (C) 2005-2015 David Bateman
 Copyright (C) 2002-2005 Paul Kienzle
 
 This file is part of Octave.
@@ -189,12 +189,13 @@ parse_options (regexp::opts& options, const octave_value_list& args,
 
   for (int i = skip; i < nargin; i++)
     {
-      std::string str = args(i).string_value ();
+      std::string str;
 
-      if (error_state)
+      if (args(i).is_string ())
+        str = args(i).string_value ();
+      else
         {
-          error ("%s: optional arguments must be character strings",
-                 who.c_str ());
+          error ("%s: optional arguments must be strings", who.c_str ());
           break;
         }
 
@@ -676,11 +677,12 @@ Match the end of a word\n\
 Match within a word\n\
 @end table\n\
 \n\
-Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
-sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{pat}\n\
-regardless of whether @var{pat} has been defined within single quotes.  Use\n\
-a second backslash to stop interpolation of the escape sequence (e.g.,\n\
-\"\\\\n\") or use the @code{regexptranslate} function.\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences\n\
+in @var{pat} (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are expanded\n\
+even when @var{pat} has been defined with single quotes.  To disable\n\
+expansion use a second backslash before the escape sequence (e.g.,\n\
+\"@xbackslashchar{}@xbackslashchar{}n\") or use the @code{regexptranslate}\n\
+function.\n\
 \n\
 The outputs of @code{regexp} default to the order given below\n\
 \n\
@@ -1308,11 +1310,12 @@ This option is present for compatibility but is ignored.\n\
 \n\
 @end table\n\
 \n\
-Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
-sequences (e.g., @qcode{\"\\n\"} => newline) are processed in both @var{pat}\n\
-and @var{repstr} regardless of whether they were defined within single\n\
-quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
-(e.g., \"\\\\n\") or use the @code{regexptranslate} function.\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences\n\
+in @var{pat} (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are expanded\n\
+even when @var{pat} has been defined with single quotes.  To disable\n\
+expansion use a second backslash before the escape sequence (e.g.,\n\
+\"@xbackslashchar{}@xbackslashchar{}n\") or use the @code{regexptranslate}\n\
+function.\n\
 @seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {

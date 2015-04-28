@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Søren Hauberg
+## Copyright (C) 2009-2015 Søren Hauberg
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -48,7 +48,7 @@ function [n, idx] = histc (x, edges, dim)
     print_usage ();
   endif
 
-  if (!isreal (x))
+  if (! isreal (x))
     error ("histc: X argument must be real-valued, not complex");
   endif
 
@@ -57,12 +57,12 @@ function [n, idx] = histc (x, edges, dim)
     error ("histc: EDGES must not be empty");
   endif
 
-  if (!isreal (edges))
+  if (! isreal (edges))
     error ("histc: EDGES must be real-valued, not complex");
   else
     ## Make sure 'edges' is sorted
     edges = edges(:);
-    if (!issorted (edges) || edges(1) > edges(end))
+    if (! issorted (edges) || edges(1) > edges(end))
       warning ("histc: edge values not sorted on input");
       edges = sort (edges);
     endif
@@ -109,13 +109,13 @@ function [n, idx] = histc (x, edges, dim)
 
     ## Compute the histograms
     for k = 1:num_edges-1
-      b = (edges (k) <= x & x < edges (k+1));
+      b = (edges(k) <= x & x < edges(k+1));
       n(idx1{:}, k, idx2{:}) = sum (b, dim);
       if (nargout > 1)
         idx(b) = k;
       endif
     endfor
-    b = (x == edges (end));
+    b = (x == edges(end));
     n(idx1{:}, num_edges, idx2{:}) = sum (b, dim);
     if (nargout > 1)
       idx(b) = num_edges;

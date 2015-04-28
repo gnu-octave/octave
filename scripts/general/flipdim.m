@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 David Bateman
+## Copyright (C) 2004-2015 David Bateman
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -20,50 +20,22 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} flipdim (@var{x})
 ## @deftypefnx {Function File} {} flipdim (@var{x}, @var{dim})
-## Return a copy of @var{x} flipped about the dimension @var{dim}.
-## @var{dim} defaults to the first non-singleton dimension.
-## For example:
+## Flip array across specific dimension.
 ##
-## @example
-## @group
-## flipdim ([1, 2; 3, 4], 2)
-##       @result{}  2  1
-##           4  3
-## @end group
-## @end example
-## @seealso{fliplr, flipud, rot90, rotdim}
+## This function is an alias for @code{flip} and exists for backwards
+## and @sc{matlab} compatibility.  See @code{flip} for complete usage
+## information.
+##
+## @seealso{flip, fliplr, flipud, rot90, rotdim}
 ## @end deftypefn
 
 ## Author: David Bateman, Jaroslav Hajek
 
-function y = flipdim (x, dim)
-
-  if (nargin != 1 && nargin != 2)
-    print_usage ();
-  endif
-
-  nd = ndims (x);
-  sz = size (x);
-  if (nargin == 1)
-    ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
-  elseif (! (isscalar (dim) && isindex (dim)))
-    error ("flipdim: DIM must be a positive integer");
-  endif
-
-  idx(1:max(nd, dim)) = {':'};
-  idx{dim} = size (x, dim):-1:1;
-  y = x(idx{:});
-
+function y = flipdim (varargin)
+  y = flip (varargin{:});
 endfunction
 
 
-%!assert (flipdim ([1,2;3,4]), flipdim ([1,2 ; 3,4], 1))
-%!assert (flipdim ([1,2;3,4], 2), [2,1;4,3])
-%!assert (flipdim ([1,2;3,4], 3), [1,2;3,4])
-
-## FIXME -- we need tests for multidimensional arrays.
-
-%!error flipdim ()
-%!error flipdim (1, 2, 3)
+## No tests needed for alias.  All tests for functionality are in flip.m
+%!assert (1)
 

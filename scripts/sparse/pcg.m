@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 Piotr Krzyzanowski
+## Copyright (C) 2004-2015 Piotr Krzyzanowski
 ##
 ## This file is part of Octave.
 ##
@@ -124,7 +124,7 @@
 ## n = 10;
 ## A = diag (sparse (1:n));
 ## b = rand (n, 1);
-## [l, u, p, q] = luinc (A, 1.e-3);
+## [l, u, p] = ilu (A, struct ("droptol", 1.e-3));
 ## @end group
 ## @end example
 ##
@@ -203,7 +203,7 @@
 ## SIAM, 1995. (the base PCG algorithm)
 ##
 ## @item
-## Y. Saad, @cite{Iterative Methods for Sparse Linear Systems},
+## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
 ## @nospell{PWS} 1996. (condition number estimate from PCG)
 ## Revised version of this book is available online at
 ## @url{http://www-users.cs.umn.edu/~saad/books.html}
@@ -526,8 +526,8 @@ endfunction
 %!
 %! N = 100;
 %! A = zeros (N, N);
-%! for i = 1 : N - 1 # form 1-D Laplacian matrix
-%!         A (i:i+1, i:i+1) = [2 -1; -1 2];
+%! for i = 1 : N - 1  # form 1-D Laplacian matrix
+%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
 %! endfor
 %! b = ones (N, 1);
 %! X = A \ b;  # X is the true solution

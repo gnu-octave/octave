@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2013 Jaroslav Hajek
+Copyright (C) 2010-2015 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -45,7 +45,7 @@ is_imag_unit (int c)
 static double
 single_num (std::istringstream& is)
 {
-  double num;
+  double num = 0.0;
 
   char c = is.peek ();
 
@@ -60,7 +60,8 @@ single_num (std::istringstream& is)
     {
       // It's infinity.
       is.get ();
-      char c1 = is.get (), c2 = is.get ();
+      char c1 = is.get ();
+      char c2 = is.get ();
       if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
         {
           num = octave_Inf;

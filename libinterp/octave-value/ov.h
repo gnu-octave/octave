@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -35,18 +35,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "idx-vector.h"
 #include "mach-info.h"
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "oct-time.h"
 #include "str-vec.h"
 
-#include "oct-hdf5.h"
 #include "oct-sort.h"
 
 class Cell;
 class mxArray;
 class octave_map;
 class octave_scalar_map;
-class Octave_map;
 class octave_stream;
 class octave_function;
 class octave_user_function;
@@ -57,9 +54,16 @@ class octave_lvalue;
 
 #include "ov-base.h"
 
-// Constants.
+// Forward declarations of friend functions that have default arguments.
 
-class octave_value;
+OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                        const octave_value& limit,
+                                        bool is_for_cmd_expr = false);
+
+OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                        const octave_value& increment,
+                                        const octave_value& limit,
+                                        bool is_for_cmd_expr = false);
 
 class
 OCTINTERP_API
@@ -282,11 +286,12 @@ public:
   octave_value (const Array<std::string>& cellstr);
   octave_value (const idx_vector& idx, bool lazy = true);
   octave_value (double base, double limit, double inc);
-  octave_value (const Range& r);
+  octave_value (const Range& r, bool force_range = false);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
-  octave_value (const Octave_map& m);
-  octave_value (const Octave_map& m, const std::string& id,
+  octave_value (const octave_map& m, const std::string& id,
+                const std::list<std::string>& plist);
+  octave_value (const octave_scalar_map& m, const std::string& id,
                 const std::list<std::string>& plist);
   octave_value (const octave_value_list& m, bool = false);
   octave_value (octave_value::magic_colon);
@@ -455,8 +460,10 @@ public:
 
   octave_value& assign (assign_op, const octave_value& rhs);
 
-  idx_vector index_vector (void) const
-  { return rep->index_vector (); }
+  idx_vector index_vector (bool require_integers = false) const
+  {
+    return rep->index_vector (require_integers);
+  }
 
   // Size.
 
@@ -569,6 +576,9 @@ public:
 
   bool is_object (void) const
   { return rep->is_object (); }
+
+  bool is_classdef_object (void) const
+  { return rep->is_classdef_object (); }
 
   bool is_java (void) const
   { return rep->is_java (); }
@@ -913,6 +923,9 @@ public:
   find_parent_class (const std::string& parent_class_name)
   { return rep->find_parent_class (parent_class_name); }
 
+  bool is_instance_of (const std::string& cls_name) const
+  { return rep->is_instance_of (cls_name); }
+
   octave_function *function_value (bool silent = false) const;
 
   octave_user_function *user_function_value (bool silent = false) const;
@@ -1015,7 +1028,7 @@ public:
   bool print_as_scalar (void) const
   { return rep->print_as_scalar (); }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const
+  void print (std::ostream& os, bool pr_as_read_syntax = false)
   { rep->print (os, pr_as_read_syntax); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
@@ -1057,6 +1070,18 @@ public:
                                                const octave_value& b,
                                                const Array<octave_idx_type>& ra_idx);
 
+  friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                                 const octave_value& limit,
+                                                 bool is_for_cmd_expr)
+  {
+    return do_colon_op (base, octave_value (), limit, is_for_cmd_expr);
+  }
+
+  friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                                 const octave_value& increment,
+                                                 const octave_value& limit,
+                                                 bool is_for_cmd_expr);
+
   const octave_base_value& get_rep (void) const { return *rep; }
 
   bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
@@ -1075,13 +1100,12 @@ public:
                     oct_mach_info::float_format fmt)
   { return rep->load_binary (is, swap, fmt); }
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                  bool save_as_floats)
   { return rep->save_hdf5 (loc_id, name, save_as_floats); }
 
-  bool load_hdf5 (hid_t loc_id, const char *name)
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
   { return rep->load_hdf5 (loc_id, name); }
-#endif
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -1233,7 +1257,6 @@ private:
   // const octave_base_value* which actually silently calls octave_value (bool).
   octave_value (const octave_base_value *);
 
-  DECLARE_OCTAVE_ALLOCATOR
 };
 
 // Publish externally used friend functions.

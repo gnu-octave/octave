@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott
+## Copyright (C) 2010-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -26,12 +26,14 @@
 
 function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
 
+  dos_shell = (ispc () && ! isunix ());
+
   opts.binary = "";
   opts.source = "-";
   opts.output = "-";
   opts.device = "";
   opts.epscrop = false;
-  opts.antialiasing  = false;
+  opts.antialiasing = false;
   opts.antialiasing_textalphabits = 4;,
   opts.antialiasing_graphicsalphabits = 4;
   opts.resolution = 150;
@@ -64,18 +66,18 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     format_for_printer = true;
   endif
 
-  gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s", opts.device);
+  gs_opts = ["-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=" opts.device];
 
   if (! isempty (opts.level) && ismember (opts.level, [1, 2, 3]))
-    gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, round (opts.level));
+    gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, opts.level);
   endif
 
   if (opts.antialiasing && isempty (strfind (opts.device, "write")))
     ## Apply anti-aliasing to all bitmap formats/devices
     gs_opts = sprintf ("%s -dTextAlphaBits=%d -dGraphicsAlphaBits=%d",
-                       gs_opts, opts.antialiasing_textalphabits,
-                       opts.antialiasing_graphicsalphabits);
-    gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
+                       gs_opts, fix (opts.antialiasing_textalphabits),
+                       fix (opts.antialiasing_graphicsalphabits));
+    gs_opts = sprintf ("%s -r%dx%d", gs_opts, fix ([1, 1] * opts.resolution));
   elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
     gs_opts = sprintf ("%s -dEmbedAllFonts=true", gs_opts);
     if (strcmp (opts.device, "pdfwrite"))
@@ -93,7 +95,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
       gs_opts = sprintf ("%s -sPAPERSIZE=%s", gs_opts, opts.papersize);
     elseif (isnumeric (opts.papersize) && numel (opts.papersize) == 2)
       gs_opts = sprintf ("%s -dDEVICEWIDTHPOINTS=%d -dDEVICEHEIGHTPOINTS=%d",
-                         gs_opts, opts.papersize);
+                         gs_opts, fix (opts.papersize));
       if (opts.papersize(1) > opts.papersize(2))
         ## Lanscape mode: This option will result in automatic rotation of the
         ##                document page if the requested page size matches one
@@ -106,14 +108,18 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     gs_opts = sprintf ("%s -dFIXEDMEDIA", gs_opts);
     ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
     str = sprintf ("%s [%d %d] %s", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
-                   opts.pageoffset, ">> setpagedevice");
+                   fix (opts.pageoffset), ">> setpagedevice");
     offset_ps = {"%!PS-Adobe-3.0", str, "%%EOF"};
     if (isfield (opts, "offsetfile"))
       offsetfile = opts.offsetfile;
       cleanup_cmd = "";
     else
-      offsetfile = strcat (tmpnam (), ".ps");
-      cleanup_cmd = sprintf ("rm %s", offsetfile);
+      offsetfile = [tempname() ".ps"];
+      if (dos_shell)
+        cleanup_cmd = ["del " strrep(offsetfile, '/', '\')];
+      else
+        cleanup_cmd = ["rm " offsetfile];
+      endif
     endif
     unwind_protect
       fid = fopen (offsetfile, "w");
@@ -143,14 +149,23 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   endif
   if (! isempty (opts.prepend)
       && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
-    ## FIXME - Fonts get may be mangled when appending ps/ps2.
-    ##         See "How to concatenate several PS files" at the link,
-    ##         http://en.wikibooks.org/wiki/PostScript_FAQ
+    ## FIXME: Fonts get may be mangled when appending ps/ps2.
+    ##        See "How to concatenate several PS files" at the link,
+    ##        http://en.wikibooks.org/wiki/PostScript_FAQ
     cmd = sprintf ("%s %s", cmd, opts.prepend);
     if (isempty (cleanup_cmd))
-      cleanup_cmd = sprintf ("rm %s", opts.prepend);
+      if (dos_shell)
+        cleanup_cmd = ["del " strrep(opts.prepend, '/', '\')];
+      else
+        cleanup_cmd = ["rm " opts.prepend];
+      endif
     else
-      cleanup_cmd = sprintf ("%s ; rm %s", cleanup_cmd, opts.prepend);
+      if (dos_shell)
+        cleanup_cmd = sprintf ("%s & del %s", cleanup_cmd,
+                               strrep (opts.prepend, '/', '\'));
+      else
+        cleanup_cmd = sprintf ("%s ; rm %s", cleanup_cmd, opts.prepend);
+      endif
     endif
   endif
   if (! isempty (offsetfile) && format_for_printer)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 VZLU Prague a.s., Czech Republic
+Copyright (C) 2008-2015 VZLU Prague a.s., Czech Republic
 
 This file is part of Octave.
 
@@ -52,13 +52,13 @@ contains_char (const std::string& str, char c)
 struct icmp_char_lt : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-    { return std::toupper (x) < std::toupper (y); }
+  { return std::toupper (x) < std::toupper (y); }
 };
 
 struct icmp_char_gt : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-    { return std::toupper (x) > std::toupper (y); }
+  { return std::toupper (x) > std::toupper (y); }
 };
 
 // FIXME: maybe these should go elsewhere?
@@ -115,7 +115,8 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
   octave_value retval;
 
   Array<octave_idx_type> idx = array.lookup (values);
-  octave_idx_type n = array.numel (), nval = values.numel ();
+  octave_idx_type n = array.numel ();
+  octave_idx_type nval = values.numel ();
 
   // Post-process.
   if (match_bool)
@@ -246,7 +247,8 @@ at most n-1).\n\
       return retval;
     }
 
-  octave_value table = args(0), y = args(1);
+  octave_value table = args(0);
+  octave_value y = args(1);
   if (table.ndims () > 2 || (table.columns () > 1 && table.rows () > 1))
     warning ("lookup: table is not a vector");
 

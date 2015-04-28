@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,9 +31,10 @@
 ## falling back to the script name without an extension.
 ##
 ## Implementation Note: If @var{script} includes a path component, then
-## @code{run} first changes the directory to the directory where @var{script}
-## is found.  @code{run} then executes the script, and returns to the original
-## directory.
+## @code{run} first changes the working directory to the directory where
+## @var{script} is found.  Next, the script is executed.  Finally, @code{run}
+## returns to the original working directory unless @code{script} has
+## specifically changed directories.
 ## @seealso{path, addpath, source}
 ## @end deftypefn
 
@@ -59,13 +60,16 @@ function run (script)
 
   if (! isempty (d))
     if (exist (d, "dir"))
-      wd = pwd ();
+      startdir = pwd ();
+      d = canonicalize_file_name (d);
       unwind_protect
         cd (d);
-        evalin ("caller", sprintf ('source ("%s%s");', f, ext),
+        evalin ("caller", sprintf ("source ('%s%s');", f, ext),
                 "rethrow (lasterror ())");
       unwind_protect_cleanup
-        cd (wd);
+        if (strcmp (d, pwd ()))
+          cd (startdir);
+        endif
       end_unwind_protect
     else
       error ("run: the path %s doesn't exist", d);
@@ -77,13 +81,13 @@ function run (script)
       ## Search PATH with null extension ('.' will be stripped and ext = "")
       script = which ([script "."]);
     endif
-    evalin ("caller", sprintf ('source ("%s");', script),
+    evalin ("caller", sprintf ("source ('%s');", script),
             "rethrow (lasterror ())");
   endif
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error run ()
 %!error run ("a", "b")
 %!error <SCRIPT must exist> run ("__A_very_#unlikely#_file_name__")

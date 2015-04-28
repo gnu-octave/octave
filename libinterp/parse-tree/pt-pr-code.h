@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -108,6 +108,8 @@ public:
   void visit_constant (tree_constant&);
 
   void visit_fcn_handle (tree_fcn_handle&);
+
+  void visit_funcall (tree_funcall&);
 
   void visit_parameter_list (tree_parameter_list&);
 

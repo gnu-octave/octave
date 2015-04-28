@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -54,7 +54,7 @@ endfunction
 
 %!assert (logit ([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, +Inf, NaN])
 
-%% Test input validation
+## Test input validation
 %!error logit ()
 %!error logit (1, 2)
 

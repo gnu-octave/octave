@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -67,7 +67,7 @@ function retval = orth (A, tol)
     rank = sum (s > tol);
 
     if (rank > 0)
-      retval = -U (:, 1:rank);
+      retval = -U(:, 1:rank);
     else
       retval = zeros (rows, 0);
     endif

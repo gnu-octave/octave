@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -30,31 +30,118 @@
 ## was clicked in the units of the current axes.  The return value @var{button}
 ## is 1, 2, or 3 for the left, middle, or right button.  If a key is pressed
 ## the ASCII value is returned in @var{button}.
+##
+## Implementation Note: @code{ginput} is intenteded for 2-D plots.  For 3-D
+## plots see the @var{currentpoint} property of the current axes which can be
+## transformed with knowledge of the current @code{view} into data units.
 ## @seealso{gtext, waitforbuttonpress}
 ## @end deftypefn
 
-function varargout = ginput (n)
+function varargout = ginput (n = -1)
 
   if (nargin > 1)
     print_usage ();
   endif
 
-  f = gcf ();
-  a = gca ();  # Create an axis, if necessary
+  ## Create an axis, if necessary.
+  fig = gcf ();
+  ax = gca ();
   drawnow ();
-  toolkit = get (f, "__graphics_toolkit__");
 
-  varargout = cell (1, nargout);
-  if (nargin == 0)
-    [varargout{:}] = feval (["__" toolkit "_ginput__"], f);
-  else
-    [varargout{:}] = feval (["__" toolkit "_ginput__"], f, n);
+  if (isempty (ax))
+    error ("ginput: must have at least one axes");
   endif
 
+  toolkit = get (fig, "__graphics_toolkit__");
+  toolkit_fcn = sprintf ("__%s_ginput__", toolkit);
+
+  if (exist (toolkit_fcn))
+    varargout = cell (1, nargout);
+    if (nargin == 0)
+      [varargout{:}] = feval (toolkit_fcn, fig);
+    else
+      [varargout{:}] = feval (toolkit_fcn, fig, n);
+    endif
+    return
+  endif
+
+  x = y = button = [];
+  ginput_accumulator (0, 0, 0, 0);  # initialize accumulator
+
+  orig_windowbuttondownfcn = get (fig, "windowbuttondownfcn");
+  orig_ginput_keypressfcn = get (fig, "keypressfcn");
+
+  unwind_protect
+
+    set (fig, "windowbuttondownfcn", @ginput_windowbuttondownfcn);
+    set (fig, "keypressfcn", @ginput_keypressfcn);
+
+    do
+      if (strcmp (toolkit, "fltk"))
+        __fltk_check__ ();
+      endif
+
+      ## Release CPU.
+      sleep (0.01);
+
+      [x, y, n0, button] = ginput_accumulator (-1, 0, 0, 0);
+    until ((n > -1 && n0 >= n) || n0 < 0)
+
+    if (n0 > n)
+      ## More clicks than requested due to double-click or too fast clicking
+      x = x(1:n);
+      y = y(1:n);
+      button = button(1:n);
+    endif
+
+  unwind_protect_cleanup
+    set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
+    set (fig, "keypressfcn", orig_ginput_keypressfcn);
+  end_unwind_protect
+
+  varargout = {x, y, button};
+
+endfunction
+
+function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
+  persistent x y n button;
+
+  if (mode == 0)
+    ## Initialize.
+    x = y = button = [];
+    n = 0;
+  elseif (mode == 1)
+    ## Append mouse button or key press.
+    x = [x; xn];
+    y = [y; yn];
+    button = [button; btn];
+    n += 1;
+  elseif (mode == 2)
+    ## The end due to Enter.
+    n = -1;
+ endif
+
+endfunction
+
+function ginput_windowbuttondownfcn (src, button)
+  point = get (gca (), "currentpoint");
+  ginput_accumulator (1, point(1,1), point(1,2), button);
+endfunction
+
+function ginput_keypressfcn (src, evt)
+  point = get (gca (), "currentpoint");
+  if (strcmp (evt.Key, "return"))
+    ## Enter key stops ginput.
+    ginput_accumulator (2, NaN, NaN, NaN);
+  else
+    character = evt.Character;
+    if (! isempty (character))
+      ginput_accumulator (1, point(1,1), point(1,2), uint8 (character(1)));
+    endif
+  endif
 endfunction
 
 
 ## Remove from test statistics.  No real tests possible.
 %!test
 %! assert (1);
-

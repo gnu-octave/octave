@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Michael D. Godfrey
+## Copyright (C) 2013-2015 Michael D. Godfrey
 ##
 ## This file is part of Octave.
 ##
@@ -185,7 +185,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   hl = xs(hlidx);               # lower hinge
   hu = xs(huidx);               # upper hinge
   h_spread = hu - hl;           # h_spread: difference between hinges
-  step = 1.5*h_spread;          # step: 1.5 * h_spread
+  step = fix (1.5*h_spread);    # step: 1.5 * h_spread
   i_fence_l = hl - step;        # inner fences: outside hinges + step
   o_fence_l = hl - 2*step;      # outer fences: outside hinges + 2*step
   i_fence_h = hu + step;
@@ -454,7 +454,7 @@ endfunction
 %! "         ______|   46|_______"      ,
 %! "        f|  -35           88|"      ,
 %! "         |    0            0|  out" ,
-%! "        F|  -82          135|"      ,
+%! "        F|  -81          134|"      ,
 %! "         |    0            0|  far" ,
 %! " "                                  ,
 %! "   0 | 20"                          ,
@@ -483,7 +483,7 @@ endfunction
 %! "         ______|   46|_______"      ,
 %! "        f|  -88           35|"      ,
 %! "         |    0            0|  out" ,
-%! "        F| -135           82|"      ,
+%! "        F| -134           81|"      ,
 %! "         |    0            0|  far" ,
 %! " "                                  ,
 %! "  -5 | 2"                           ,
@@ -511,7 +511,7 @@ endfunction
 %! "         ______|   10|_______"      ,
 %! "        f|  -17           10|"      ,
 %! "         |    0            0|  out" ,
-%! "        F|  -28           21|"      ,
+%! "        F|  -27           20|"      ,
 %! "         |    0            0|  far" ,
 %! " "                                  ,
 %! "  -0 | 9700"                        ,
@@ -535,7 +535,7 @@ endfunction
 %! "         ______|   13|_______"        ,
 %! "        f|  -22           13|"        ,
 %! "         |    0            0|  out"   ,
-%! "        F|  -36           27|"        ,
+%! "        F|  -35           26|"        ,
 %! "         |    0            0|  far"   ,
 %! " "                                    ,
 %! "  -0 | 970"                           ,

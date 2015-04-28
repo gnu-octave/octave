@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,6 +32,7 @@ class octave_function;
 
 class tree_walker;
 
+#include "oct-lvalue.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "symtab.h"

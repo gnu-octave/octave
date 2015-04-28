@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -48,9 +48,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "main-window.h"
 #include "octave-gui.h"
 #include "thread-manager.h"
+
+#include "builtin-defun-decls.h"
+#include "__init_qt__.h"
 
 // Allow the Octave interpreter to start as in CLI mode with a
 // QApplication context so that it can use Qt for things like plotting
@@ -88,7 +92,7 @@ private:
 // Disable all Qt messages by default.
 
 static void
-message_handler (QtMsgType type, const char *msg)
+message_handler (QtMsgType, const char *)
 {
 }
 
@@ -106,18 +110,25 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
   if (show_gui_msgs.empty ())
     qInstallMsgHandler (message_handler);
 
+  install___init_qt___functions ();
+
+  Fregister_graphics_toolkit (ovl ("qt"));
+
+  QApplication application (argc, argv);
+  QTranslator gui_tr, qt_tr, qsci_tr;
+
+  // Set the codec for all strings (before wizard)
+#if ! defined (Q_OS_WIN32)
+  QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+#endif
+
   if (start_gui)
     {
-      QApplication application (argc, argv);
-      QTranslator gui_tr, qt_tr, qsci_tr;
-
-      // Set the codec for all strings (before wizard)
-      QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
-
       // show wizard if this is the first run
       if (resource_manager::is_first_run ())
         {
-          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr); // before wizard
+          // before wizard
+          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
           application.installTranslator (&qt_tr);
           application.installTranslator (&qsci_tr);
           application.installTranslator (&gui_tr);
@@ -133,7 +144,8 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
         {
           resource_manager::reload_settings ();  // get settings file
 
-          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr); // after settings
+          // after settings
+          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
           application.installTranslator (&qt_tr);
           application.installTranslator (&qsci_tr);
           application.installTranslator (&gui_tr);
@@ -158,31 +170,29 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
         octave_env::putenv ("TERM", "cygwin");
 #endif
 
-      // Create and show main window.
+      // shortcut manager
+      shortcut_manager::init_data ();
+    }
 
-      main_window w;
+  // Create and show main window.
 
-      w.read_settings ();
+  main_window w (0, start_gui);
 
-      w.focus_command_window ();
+  w.read_settings ();
+
+  if (start_gui)
+    {
+      w.init_terminal_size ();
 
       // Connect signals for changes in visibility not before w
       // is shown.
 
       w.connect_visibility_changed ();
 
-      return application.exec ();
+      w.focus_command_window ();
     }
   else
-    {
-      QApplication application (argc, argv);
+    application.setQuitOnLastWindowClosed (false);
 
-      octave_cli_thread main_thread (argc, argv);
-
-      application.setQuitOnLastWindowClosed (false);
-
-      main_thread.start ();
-
-      return application.exec ();
-    }
+  return application.exec ();
 }

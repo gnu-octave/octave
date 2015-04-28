@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2013 John W. Eaton
+Copyright (C) 1999-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <memory>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "Cell.h"
@@ -147,7 +146,7 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -162,11 +161,9 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   octave_value map (unary_mapper_t umap) const;
 
@@ -183,7 +180,6 @@ private:
 
   mutable std::auto_ptr<Array<std::string> > cellstr_cache;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

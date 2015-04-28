@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 David Bateman
+## Copyright (C) 2005-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ## @end deftypefn
 
 function ret = __prog_output_assert__ (str)
-  global _assert_printf;
+  global _assert_printf = "";
   if (isempty (_assert_printf))
     ret = isempty (str);
   elseif (_assert_printf(end) == "\n")
@@ -32,4 +32,8 @@ function ret = __prog_output_assert__ (str)
   endif
   _assert_printf = "";
 endfunction
+
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
 

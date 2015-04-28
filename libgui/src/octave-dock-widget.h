@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Richard Crozier
+Copyright (C) 2012-2015 Richard Crozier
 
 This file is part of Octave.
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QIcon>
 #include <QMainWindow>
+#include <QToolButton>
 #include <QMouseEvent>
 
 class octave_dock_widget : public QDockWidget
@@ -42,7 +43,7 @@ public:
   void make_window (void);
   void make_widget (bool dock=true);
   void set_title (const QString&);
-
+  void set_predecessor_widget (octave_dock_widget *prev_widget);
 signals:
 
   /** Custom signal that tells whether a user has clicked away
@@ -52,11 +53,7 @@ signals:
 
 protected:
 
-  virtual void closeEvent (QCloseEvent *e)
-  {
-    emit active_changed (false);
-    QDockWidget::closeEvent (e);
-  }
+  virtual void closeEvent (QCloseEvent *e);
 
   QWidget * focusWidget ();
 
@@ -81,6 +78,9 @@ public slots:
   virtual void notice_settings (const QSettings*)
   {
   }
+  void handle_settings (const QSettings*);
+
+  void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
   QMainWindow *main_win () { return _parent; }
 
@@ -93,12 +93,14 @@ protected slots:
       emit active_changed (true);
   }
   /** slots to handle copy & paste */
-  virtual void copyClipboard ()
-  {
-  }
-  virtual void pasteClipboard ()
-  {
-  }
+  virtual void copyClipboard () {  }
+  virtual void pasteClipboard () {  }
+  virtual void selectAll () {  }
+  /** slots to handle undo */
+  virtual void do_undo () {  }
+
+  // event filter for double clicks into the window decoration elements
+  bool eventFilter(QObject *obj, QEvent *e);
 
 private slots:
 
@@ -107,9 +109,29 @@ private slots:
 
 private:
 
+  void set_style (bool active);
+  void set_focus_predecessor ();
+
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
-  QAction *_dock_action;
   bool _floating;
+  bool _custom_style;
+  int _title_3d;
+  int _icon_size;
+  QColor _bg_color;
+  QColor _bg_color_active;
+  QColor _fg_color;
+  QColor _fg_color_active;
+  QString _icon_color;
+  QString _icon_color_active;
+  octave_dock_widget *_predecessor_widget;
+
+#if defined (Q_OS_WIN32)
+  QWidget *_title_widget;
+  QToolButton *_dock_button;
+  QToolButton *_close_button;
+  QAction *_dock_action;
+  QAction *_close_action;
+#endif
 
 };
 

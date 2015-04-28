@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 Copyright (C) 2012 Carlo de Falco
@@ -112,15 +112,15 @@ DEFUN (all, args, ,
 @deftypefn  {Built-in Function} {} all (@var{x})\n\
 @deftypefnx {Built-in Function} {} all (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if all elements of the vector\n\
-are non-zero.\n\
+are nonzero.\n\
 \n\
 For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether all of the elements of the\n\
-corresponding column of the matrix are non-zero.  For example:\n\
+corresponding column of the matrix are nonzero.  For example:\n\
 \n\
 @example\n\
 @group\n\
-all ([2, 3; 1, 0]))\n\
+all ([2, 3; 1, 0])\n\
     @result{} [ 1, 0 ]\n\
 @end group\n\
 @end example\n\
@@ -159,11 +159,11 @@ DEFUN (any, args, ,
 @deftypefn  {Built-in Function} {} any (@var{x})\n\
 @deftypefnx {Built-in Function} {} any (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if any element of the vector\n\
-is non-zero.\n\
+is nonzero.\n\
 \n\
 For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether any of the elements of the\n\
-corresponding column of the matrix are non-zero.  For example:\n\
+corresponding column of the matrix are nonzero.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -333,7 +333,8 @@ do_hypot (const octave_value& x, const octave_value& y)
 {
   octave_value retval;
 
-  octave_value arg0 = x, arg1 = y;
+  octave_value arg0 = x;
+  octave_value arg1 = y;
   if (! arg0.is_numeric_type ())
     gripe_wrong_type_arg ("hypot", arg0);
   else if (! arg1.is_numeric_type ())
@@ -575,8 +576,7 @@ $x = 0$, $f = e = 0$.\n\
 
 DEFUN (rem, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} rem (@var{x}, @var{y})\n\
-@deftypefnx {Mapping Function} {} fmod (@var{x}, @var{y})\n\
+@deftypefn {Mapping Function} {} rem (@var{x}, @var{y})\n\
 Return the remainder of the division @code{@var{x} / @var{y}}, computed\n\
 using the expression\n\
 \n\
@@ -621,7 +621,7 @@ agree, or if either of the arguments is complex.\n\
                     X##NDArray a1 = args(1).X##_array_value (); \
                     retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, rem, "rem"); \
                     } \
-                  break
+                  break;
                 MAKE_INT_BRANCH (int8);
                 MAKE_INT_BRANCH (int16);
                 MAKE_INT_BRANCH (int32);
@@ -676,11 +676,11 @@ agree, or if either of the arguments is complex.\n\
 }
 
 /*
-%!assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
-%!assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
-%!assert (size (fmod (rand (2, 3, 4), 1)), [2, 3, 4])
-%!assert (size (fmod (1, rand (2, 3, 4))), [2, 3, 4])
-%!assert (size (fmod (1, 2)), [1, 1])
+%!assert (size (rem (zeros (0, 2), zeros (0, 2))), [0, 2])
+%!assert (size (rem (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%!assert (size (rem (rand (2, 3, 4), 1)), [2, 3, 4])
+%!assert (size (rem (1, rand (2, 3, 4))), [2, 3, 4])
+%!assert (size (rem (1, 2)), [1, 1])
 
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2), [1, 0, 1; -1, 0, -1])
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3)),[1, 0, 1; -1, 0, -1])
@@ -725,8 +725,6 @@ agree, or if either of the arguments is complex.\n\
 # bug 42627
 %!assert (rem (0.94, 0.01), 0.0);
 */
-
-DEFALIAS (fmod, rem)
 
 DEFUN (mod, args, ,
        "-*- texinfo -*-\n\
@@ -780,7 +778,7 @@ either of the arguments is complex.\n\
                     X##NDArray a1 = args(1).X##_array_value (); \
                     retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, mod, "mod"); \
                     } \
-                  break
+                  break;
                 MAKE_INT_BRANCH (int8);
                 MAKE_INT_BRANCH (int16);
                 MAKE_INT_BRANCH (int32);
@@ -906,16 +904,13 @@ either of the arguments is complex.\n\
     { \
       std::string str = args(nargin - 1).string_value (); \
       \
-      if (! error_state) \
-        { \
-          if (str == "native") \
-            isnative = true; \
-          else if (str == "double") \
-            isdouble = true; \
-          else \
-            error ("sum: unrecognized string argument"); \
-          nargin --; \
-        } \
+      if (str == "native") \
+        isnative = true; \
+      else if (str == "double") \
+        isdouble = true; \
+      else \
+        error ("sum: unrecognized string argument"); \
+      nargin --; \
     } \
   \
   if (nargin == 1 || nargin == 2) \
@@ -1200,16 +1195,13 @@ See @code{sum} for an explanation of the optional parameters\n\
     {
       std::string str = args(nargin - 1).string_value ();
 
-      if (! error_state)
-        {
-          if (str == "native")
-            isnative = true;
-          else if (str == "double")
-            isdouble = true;
-          else
-            error ("sum: unrecognized string argument");
-          nargin --;
-        }
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else
+        error ("cumsum: unrecognized string argument");
+      nargin --;
     }
 
   if (error_state)
@@ -1262,7 +1254,7 @@ See @code{sum} for an explanation of the optional parameters\n\
                 retval = arg.X ## _array_value ().cumsum (dim); \
               else \
                 retval = arg.array_value ().cumsum (dim); \
-              break
+              break;
             MAKE_INT_BRANCH (int8);
             MAKE_INT_BRANCH (int16);
             MAKE_INT_BRANCH (int32);
@@ -1332,8 +1324,8 @@ DEFUN (diag, args, ,
 @deftypefnx {Built-in Function} {@var{v} =} diag (@var{M}, @var{k})\n\
 Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
 second argument is optional.  If it is positive, the vector is placed on\n\
-the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
-@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the\n\
+the @var{k}-th superdiagonal.  If it is negative, it is placed on the\n\
+@var{-k}-th subdiagonal.  The default value of @var{k} is 0, and the\n\
 vector is placed on the main diagonal.  For example:\n\
 \n\
 @example\n\
@@ -1438,6 +1430,11 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
 %!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
 
+## Test out-of-range diagonals
+%!assert (diag (ones (3,3), 4), zeros (0, 1))
+%!assert (diag (cell (3,3), 4), cell (0, 1))
+%!assert (diag (sparse (ones (3,3)), 4), sparse (zeros (0, 1)))
+
 %% Test input validation
 %!error <Invalid call to diag> diag ()
 %!error <Invalid call to diag> diag (1,2,3,4)
@@ -1458,12 +1455,141 @@ DEFUN (prod, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} prod (@var{x})\n\
 @deftypefnx {Built-in Function} {} prod (@var{x}, @var{dim})\n\
-Product of elements along dimension @var{dim}.  If @var{dim} is\n\
-omitted, it defaults to the first non-singleton dimension.\n\
+@deftypefnx {Built-in Function} {} prod (@dots{}, \"native\")\n\
+@deftypefnx {Built-in Function} {} prod (@dots{}, \"double\")\n\
+Product of elements along dimension @var{dim}.\n\
+\n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+\n\
+The optional @qcode{\"type\"} input determines the class of the variable\n\
+used for calculations.  If the argument @qcode{\"native\"} is given, then\n\
+the operation is performed in the same type as the original argument, rather\n\
+than the default double type.\n\
+\n\
+For example:\n\
+\n\
+@example\n\
+@group\n\
+prod ([true, true])\n\
+   @result{} 1\n\
+prod ([true, true], \"native\")\n\
+   @result{} true\n\
+@end group\n\
+@end example\n\
+\n\
+On the contrary, if @qcode{\"double\"} is given, the operation is performed\n\
+in double precision even for single precision inputs.\n\
 @seealso{cumprod, sum}\n\
 @end deftypefn")
 {
-  DATA_REDUCTION (prod);
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  bool isnative = false;
+  bool isdouble = false;
+
+  if (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else
+        error ("prod: unrecognized type argument '%s'", str.c_str ());
+      nargin --;
+    }
+
+  if (error_state)
+    return retval;
+
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_value arg = args(0);
+
+      int dim = -1;
+      if (nargin == 2)
+        {
+          dim = args(1).int_value () - 1;
+          if (dim < 0)
+            error ("prod: invalid dimension DIM = %d", dim + 1);
+        }
+
+      if (! error_state)
+        {
+          switch (arg.builtin_type ())
+            {
+            case btyp_double:
+              if (arg.is_sparse_type ())
+                retval = arg.sparse_matrix_value ().prod (dim);
+              else
+                retval = arg.array_value ().prod (dim);
+              break;
+            case btyp_complex:
+              if (arg.is_sparse_type ())
+                retval = arg.sparse_complex_matrix_value ().prod (dim);
+              else
+                retval = arg.complex_array_value ().prod (dim);
+              break;
+            case btyp_float:
+              if (isdouble)
+                retval = arg.float_array_value ().dprod (dim);
+              else
+                retval = arg.float_array_value ().prod (dim);
+              break;
+            case btyp_float_complex:
+              if (isdouble)
+                retval = arg.float_complex_array_value ().dprod (dim);
+              else
+                retval = arg.float_complex_array_value ().prod (dim);
+              break;
+
+#define MAKE_INT_BRANCH(X) \
+            case btyp_ ## X: \
+              if (isnative) \
+                retval = arg.X ## _array_value ().prod (dim); \
+              else \
+                retval = arg.array_value ().prod (dim); \
+              break;
+            MAKE_INT_BRANCH (int8);
+            MAKE_INT_BRANCH (int16);
+            MAKE_INT_BRANCH (int32);
+            MAKE_INT_BRANCH (int64);
+            MAKE_INT_BRANCH (uint8);
+            MAKE_INT_BRANCH (uint16);
+            MAKE_INT_BRANCH (uint32);
+            MAKE_INT_BRANCH (uint64);
+#undef MAKE_INT_BRANCH
+
+            // GAGME: Accursed Matlab compatibility...
+            case btyp_char:
+              retval = arg.array_value (true).prod (dim);
+              break;
+            case btyp_bool:
+              if (arg.is_sparse_type ())
+                {
+                  if (isnative)
+                    retval = arg.sparse_bool_matrix_value ().all (dim);
+                  else
+                    retval = arg.sparse_matrix_value ().prod (dim);
+                }
+              else if (isnative)
+                retval = arg.bool_array_value ().all (dim);
+              else
+                retval = NDArray (arg.bool_array_value ().all (dim));
+              break;
+
+            default:
+              gripe_wrong_type_arg ("prod", arg);
+            }
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
 }
 
 /*
@@ -1476,6 +1602,13 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (single ([-1; -2; -3])), single (-6))
 %!assert (prod (single ([i, 2+i, -3+2i, 4])), single (-4 - 32i))
 %!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single ([-1+i, -8+8i, -27+27i]))
+
+%% Test sparse
+%!assert (prod (sparse ([1, 2, 3])), sparse (6))
+%!assert (prod (sparse ([-1; -2; -3])), sparse (-6))
+## Commented out until bug #42290 is fixed
+#%!assert (prod (sparse ([i, 2+i, -3+2i, 4])), sparse (-4 - 32i))
+#%!assert (prod (sparse ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), sparse ([-1+i, -8+8i, -27+27i]))
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8])
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12])
@@ -1507,7 +1640,24 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (zeros (0, 2, "single"), 1), single ([1, 1]))
 %!assert (prod (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
 
+%% Test "double" type argument
+%!assert (prod (single ([1, 2, 3]), "double"), 6)
+%!assert (prod (single ([-1; -2; -3]), "double"), -6)
+%!assert (prod (single ([i, 2+i, -3+2i, 4]), "double"), -4 - 32i)
+%!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), "double"), [-1+i, -8+8i, -27+27i])
+
+%% Test "native" type argument
+%!assert (prod (uint8 ([1, 2, 3]), "native"), uint8 (6))
+%!assert (prod (uint8 ([-1; -2; -3]), "native"), uint8 (0))
+%!assert (prod (int8 ([1, 2, 3]), "native"), int8 (6))
+%!assert (prod (int8 ([-1; -2; -3]), "native"), int8 (-6))
+%!assert (prod ([true false; true true], "native"), [true false])
+%!assert (prod ([true false; true true], 2, "native"), [false; true])
+
+%% Test input validation
 %!error prod ()
+%!error prod (1,2,3)
+%!error <unrecognized type argument 'foobar'> prod (1, "foobar")
 */
 
 static bool
@@ -1928,7 +2078,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           // and then directly resize. However, for some types there might
           // be some additional setup needed, and so this should be avoided.
 
-          octave_value tmp = args (0);
+          octave_value tmp = args(0);
           tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
           if (error_state)
@@ -1942,12 +2092,12 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // Can't fast return here to skip empty matrices as something
               // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
-              tmp = do_cat_op (tmp, args (j), ra_idx);
+              tmp = do_cat_op (tmp, args(j), ra_idx);
 
               if (error_state)
                 return retval;
 
-              dim_vector dv_tmp = args (j).dims ();
+              dim_vector dv_tmp = args(j).dims ();
 
               if (dim >= dv_len)
                 {
@@ -2406,8 +2556,8 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4])
 %!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4])
 
-%!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]) )
-%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)) )
+%!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]))
+%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)))
 
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4])
 %!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4])
@@ -2447,6 +2597,27 @@ DEFUN (permute, args, ,
 Return the generalized transpose for an N-D array object @var{A}.\n\
 The permutation vector @var{perm} must contain the elements\n\
 @code{1:ndims (A)} (in any order, but each element must appear only once).\n\
+\n\
+The @var{N}th dimension of @var{A} gets remapped to dimension \n\
+@code{@var{PERM}(@var{N})}.  For example:\n\
+\n\
+@example\n\
+@group\n\
+@var{x} = zeros ([2, 3, 5, 7]);\n\
+size (@var{x})\n\
+   @result{}  2   3   5   7\n\
+\n\
+size (permute (@var{x}, [2, 1, 3, 4]))\n\
+   @result{}  3   2   5   7\n\
+\n\
+size (permute (@var{x}, [1, 3, 4, 2]))\n\
+   @result{}  2   5   7   3\n\
+\n\
+## The identity permutation\n\
+size (permute (@var{x}, [1, 2, 3, 4]))\n\
+   @result{}  2   3   5   7\n\
+@end group\n\
+@end example\n\
 @seealso{ipermute}\n\
 @end deftypefn")
 {
@@ -2693,7 +2864,7 @@ Called with a single or no argument, size_equal returns true.\n\
 DEFUN (nnz, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{n} =} nnz (@var{a})\n\
-Return the number of non-zero elements in @var{a}.\n\
+Return the number of nonzero elements in @var{a}.\n\
 @seealso{nzmax, nonzeros, find}\n\
 @end deftypefn")
 {
@@ -2769,12 +2940,16 @@ DEFUN (sum, args, ,
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"native\")\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"double\")\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"extra\")\n\
-Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
-omitted, it defaults to the first non-singleton dimension.\n\
+Sum of elements along dimension @var{dim}.\n\
 \n\
-If the optional argument @qcode{\"native\"} is given, then the sum is\n\
-performed in the same type as the original argument, rather than in the\n\
-default double type.  For example:\n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+\n\
+The optional @qcode{\"type\"} input determines the class of the variable\n\
+used for calculations.  If the argument @qcode{\"native\"} is given, then\n\
+the operation is performed in the same type as the original argument, rather\n\
+than the default double type.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2788,8 +2963,8 @@ sum ([true, true], \"native\")\n\
 On the contrary, if @qcode{\"double\"} is given, the sum is performed in\n\
 double precision even for single precision inputs.\n\
 \n\
-For double precision inputs, @qcode{\"extra\"} indicates that a more accurate\n\
-algorithm than straightforward summation is to be used.  For single precision\n\
+For double precision inputs, the @qcode{\"extra\"} option will use a more\n\
+accurate algorithm than straightforward summation.  For single precision\n\
 inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 @qcode{\"extra\"} has no effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
@@ -2807,18 +2982,15 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
     {
       std::string str = args(nargin - 1).string_value ();
 
-      if (! error_state)
-        {
-          if (str == "native")
-            isnative = true;
-          else if (str == "double")
-            isdouble = true;
-          else if (str == "extra")
-            isextra = true;
-          else
-            error ("sum: unrecognized string argument");
-          nargin --;
-        }
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else if (str == "extra")
+        isextra = true;
+      else
+        error ("sum: unrecognized type argument '%s'", str.c_str ());
+      nargin --;
     }
 
   if (error_state)
@@ -2883,7 +3055,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
                 retval = arg.X ## _array_value ().sum (dim); \
               else \
                 retval = arg.X ## _array_value ().dsum (dim); \
-              break
+              break;
             MAKE_INT_BRANCH (int8);
             MAKE_INT_BRANCH (int16);
             MAKE_INT_BRANCH (int32);
@@ -2893,7 +3065,8 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
             MAKE_INT_BRANCH (uint32);
             MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-              // GAGME: Accursed Matlab compatibility...
+
+            // GAGME: Accursed Matlab compatibility...
             case btyp_char:
               if (isextra)
                 retval = arg.array_value (true).xsum (dim);
@@ -2926,11 +3099,6 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 }
 
 /*
-%!assert (sum ([true,true]), 2)
-%!assert (sum ([true,true],"native"), true)
-%!assert (sum (int8 ([127,10,-20])), 117)
-%!assert (sum (int8 ([127,10,-20]),'native'), int8 (107))
-
 %!assert (sum ([1, 2, 3]), 6)
 %!assert (sum ([-1; -2; -3]), -6)
 %!assert (sum ([i, 2+i, -3+2i, 4]), 3+4i)
@@ -2981,10 +3149,18 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 4), zeros (2, 2, 0, "single"))
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 7), zeros (2, 2, 0, 3, "single"))
 
+## Test "native"
+%!assert (sum ([true,true]), 2)
+%!assert (sum ([true,true], "native"), true)
+%!assert (sum (int8 ([127,10,-20])), 117)
+%!assert (sum (int8 ([127,10,-20]), "native"), int8 (107))
+
 ;-)
 %!assert (sum ("Octave") + "8", sumsq (primes (17)))
 
 %!error sum ()
+%!error sum (1,2,3)
+%!error <unrecognized type argument 'foobar'> sum (1, "foobar")
 */
 
 DEFUN (sumsq, args, ,
@@ -3495,25 +3671,58 @@ numeric.\n\
 %!assert (isnumeric (sparse ([true, false])), false)
 */
 
-DEFUN (ismatrix, args, ,
+DEFUN (isscalar, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
-Return true if @var{a} is a numeric, logical, or character matrix.\n\
-Scalars (1x1 matrices) and vectors (@nospell{1xN} or @nospell{Nx1} matrices)\n\
-are subsets of the more general N-dimensional matrix and @code{ismatrix}\n\
-will return true for these objects as well.\n\
-@seealso{isscalar, isvector, iscell, isstruct, issparse, isa}\n\
+@deftypefn {Built-in Function} {} isscalar (@var{x})\n\
+Return true if @var{x} is a scalar.\n\
+@seealso{isvector, ismatrix}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).numel () == 1;
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (isscalar (1))
+%!assert (isscalar ([1, 2]), false)
+%!assert (isscalar ([]), false)
+%!assert (isscalar ([1, 2; 3, 4]), false)
+
+%!assert (isscalar ("t"))
+%!assert (isscalar ("test"), false)
+%!assert (isscalar (["test"; "ing"]), false)
+
+%!test
+%! s.a = 1;
+%! assert (isscalar (s));
+
+%% Test input validation
+%!error isscalar ()
+%!error isscalar (1, 2)
+*/
+
+DEFUN (isvector, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} isvector (@var{x})\n\
+Return true if @var{x} is a vector.\n\
+\n\
+A vector is a 2-D array where one of the dimensions is equal to 1.  As a\n\
+consequence a 1x1 array, or scalar, is also a vector.\n\
+@seealso{isscalar, ismatrix, size, rows, columns, length}\n\
+@end deftypefn")
+{
+  octave_value retval;
 
   if (args.length () == 1)
     {
-      octave_value arg = args(0);
-
-      retval = arg.is_matrix_type ()
-               || arg.is_scalar_type ()
-               || arg.is_range ();
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && (sz(0) == 1 || sz(1) == 1);
     }
   else
     print_usage ();
@@ -3522,27 +3731,211 @@ will return true for these objects as well.\n\
 }
 
 /*
-%!assert (ismatrix ([]))
-%!assert (ismatrix (1))
-%!assert (ismatrix ([1, 2, 3]))
-%!assert (ismatrix ([1, 2; 3, 4]))
-%!assert (ismatrix (zeros (3, 2, 4)))
+%!assert (isvector (1), true)
+%!assert (isvector ([1; 2; 3]), true)
+%!assert (isvector ([1, 2, 3]), true)
+%!assert (isvector ([]), false)
+%!assert (isvector ([1, 2; 3, 4]), false)
 
-%!assert (ismatrix (single ([])))
-%!assert (ismatrix (single (1)))
-%!assert (ismatrix (single ([1, 2, 3])))
-%!assert (ismatrix (single ([1, 2; 3, 4])))
-
-%!assert (ismatrix ("t"))
-%!assert (ismatrix ("test"))
-%!assert (ismatrix (["test"; "ing"]))
+%!assert (isvector ("t"), true)
+%!assert (isvector ("test"), true)
+%!assert (isvector (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert (ismatrix (s), false);
+%! assert (isvector (s), true);
+
+%% Test input validation
+%!error isvector ()
+%!error isvector ([1, 2], 2)
+*/
+
+DEFUN (isrow, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} isrow (@var{x})\n\
+Return true if @var{x} is a row vector 1xN with non-negative N.\n\
+@seealso{iscolumn, isscalar, isvector, ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && sz(0) == 1;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (isrow ([1, 2, 3]))
+%!assert (isrow ([1; 2; 3]), false)
+%!assert (isrow (1))
+%!assert (isrow ([]), false)
+%!assert (isrow ([1, 2; 3, 4]), false)
+
+%!assert (isrow (ones (1, 0)), true)
+%!assert (isrow (ones (1, 1)), true)
+%!assert (isrow (ones (1, 2)), true)
+%!assert (isrow (ones (1, 1, 1)), true)
+%!assert (isrow (ones (1, 1, 1, 1)), true)
+
+%!assert (isrow (ones (0, 0)), false)
+%!assert (isrow (ones (1, 1, 0)), false)
+
+
+%!assert (isrow ("t"), true)
+%!assert (isrow ("test"), true)
+%!assert (isrow (["test"; "ing"]), false)
+
+%!test
+%! s.a = 1;
+%! assert (isrow (s), true);
+
+%% Test input validation
+%!error isrow ()
+%!error isrow ([1, 2], 2)
+*/
+
+DEFUN (iscolumn, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} iscolumn (@var{x})\n\
+Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
+@seealso{isrow, isscalar, isvector, ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && sz(1) == 1;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (iscolumn ([1, 2, 3]), false)
+%!assert (iscolumn ([1; 2; 3]), true)
+%!assert (iscolumn (1), true)
+%!assert (iscolumn ([]), false)
+%!assert (iscolumn ([1, 2; 3, 4]), false)
+
+%!assert (iscolumn ("t"), true)
+%!assert (iscolumn ("test"), false)
+%!assert (iscolumn (["test"; "ing"]), false)
+
+%!assert (iscolumn (ones (0, 1)), true)
+%!assert (iscolumn (ones (1, 1)), true)
+%!assert (iscolumn (ones (2, 1)), true)
+%!assert (iscolumn (ones (1, 1, 1)), true)
+%!assert (iscolumn (ones (1, 1, 1, 1)), true)
+
+%!assert (iscolumn (ones (0, 0)), false)
+%!assert (iscolumn (ones (0, 1, 0)), false)
+
+%!test
+%! s.a = 1;
+%! assert (iscolumn (s));
+
+%% Test input validation
+%!error iscolumn ()
+%!error iscolumn ([1, 2], 2)
+*/
+
+DEFUN (ismatrix, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
+Return true if @var{a} is a 2-D array.\n\
+@seealso{isscalar, isvector, iscell, isstruct, issparse, isa}\n\
+@end deftypefn")
+{
+  octave_value retval = false;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = (sz.length () == 2) && (sz(0) >= 0) && (sz(1) >= 0);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (ismatrix ([]), true)
+%!assert (ismatrix (1), true)
+%!assert (ismatrix ([1, 2, 3]), true)
+%!assert (ismatrix ([1, 2; 3, 4]), true)
+
+%!assert (ismatrix (zeros (0)), true)
+%!assert (ismatrix (zeros (0, 0)), true)
+%!assert (ismatrix (zeros (0, 0, 0)), false)
+%!assert (ismatrix (zeros (3, 2, 4)), false)
+
+%!assert (ismatrix (single ([])), true)
+%!assert (ismatrix (single (1)), true)
+%!assert (ismatrix (single ([1, 2, 3])), true)
+%!assert (ismatrix (single ([1, 2; 3, 4])), true)
+
+%!assert (ismatrix ("t"), true)
+%!assert (ismatrix ("test"), true)
+%!assert (ismatrix (["test"; "ing"]), true)
+
+%!test
+%! s.a = 1;
+%! assert (ismatrix (s), true);
 
 %!error ismatrix ()
 %!error ismatrix ([1, 2; 3, 4], 2)
+*/
+
+DEFUN (issquare, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} issquare (@var{x})\n\
+Return true if @var{x} is a square matrix.\n\
+@seealso{isscalar, isvector, ismatrix, size}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && sz(0) == sz(1);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (issquare ([]))
+%!assert (issquare (1))
+%!assert (! issquare ([1, 2]))
+%!assert (issquare ([1, 2; 3, 4]))
+%!assert (! issquare ([1, 2; 3, 4; 5, 6]))
+%!assert (! issquare (ones (3,3,3)))
+%!assert (issquare ("t"))
+%!assert (! issquare ("test"))
+%!assert (issquare (["test"; "ing"; "1"; "2"]))
+%!test
+%! s.a = 1;
+%! assert (issquare (s));
+%!assert (issquare ({1, 2; 3, 4}))
+%!assert (sparse (([1, 2; 3, 4])))
+
+%% Test input validation
+%!error issquare ()
+%!error issquare ([1, 2; 3, 4], 2)
 */
 
 static octave_value
@@ -3814,7 +4207,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
           switch (dt)
             {
             case oct_data_conv::dt_single:
-              retval = FloatNDArray (dims, static_cast <float> (val));
+              retval = FloatNDArray (dims, static_cast<float> (val));
               break;
 
             case oct_data_conv::dt_double:
@@ -4263,8 +4656,8 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                     {
                       int expon;
                       gnulib::frexpf (val, &expon);
-                      epsval(i) = std::pow (static_cast <float> (2.0),
-                                            static_cast <float> (expon - 24));
+                      epsval(i) = std::pow (2.0f,
+                                            static_cast<float> (expon - 24));
                     }
                 }
               retval = epsval;
@@ -4289,8 +4682,8 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                     {
                       int expon;
                       gnulib::frexp (val, &expon);
-                      epsval(i) = std::pow (static_cast <double> (2.0),
-                                            static_cast <double> (expon - 53));
+                      epsval(i) = std::pow (2.0,
+                                            static_cast<double> (expon - 53));
                     }
                   retval = epsval;
                 }
@@ -4690,7 +5083,7 @@ eye (2)\n\
 @equiv{}\n\
 eye (2, 2)\n\
 @equiv{}\n\
-eye (size ([1, 2; 3, 4])\n\
+eye (size ([1, 2; 3, 4]))\n\
 @end group\n\
 @end example\n\
 \n\
@@ -5436,7 +5829,7 @@ compute the norms of each column and return a row vector.\n\
 %!assert (norm (x,"inf"), single (7))
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
-%!assert (norm (single ([1e200, 1])), single (1e200))
+%!assert (norm (single ([1e38, 1])), single (1e38))
 %!assert (norm (single ([3+4i, 3-4i, sqrt(31)])), single (9), -4*eps ("single"))
 %!shared m
 %! m = single (magic (4));
@@ -5485,9 +5878,10 @@ unary_op_defun_body (octave_value::unary_op op,
 
 DEFUN (not, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} not (@var{x})\n\
-Return the logical NOT of @var{x}.  This function is equivalent to\n\
-@code{! x}.\n\
+@deftypefn {Built-in Function} {@var{z} =} not (@var{x})\n\
+Return the logical NOT of @var{x}.\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{! x}}.\n\
 @seealso{and, or, xor}\n\
 @end deftypefn")
 {
@@ -5826,12 +6220,13 @@ This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
 
 DEFUN (and, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} and (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {} and (@var{x1}, @var{x2}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{z} =} and (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {@var{z} =} and (@var{x1}, @var{x2}, @dots{})\n\
 Return the logical AND of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x & y}}.\n\
-If more arguments are given, the logical and is applied\n\
-cumulatively from left to right:\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{x & y}}.  If\n\
+more than two arguments are given, the logical AND is applied cumulatively\n\
+from left to right:\n\
 \n\
 @example\n\
 (@dots{}((x1 & x2) & x3) & @dots{})\n\
@@ -5847,12 +6242,13 @@ At least one argument is required.\n\
 
 DEFUN (or, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} or (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {} or (@var{x1}, @var{x2}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{z} =} or (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {@var{z} =} or (@var{x1}, @var{x2}, @dots{})\n\
 Return the logical OR of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x | y}}.\n\
-If more arguments are given, the logical or is applied\n\
-cumulatively from left to right:\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{x | y}}.  If\n\
+more than two arguments are given, the logical OR is applied cumulatively\n\
+from left to right:\n\
 \n\
 @example\n\
 (@dots{}((x1 | x2) | x3) | @dots{})\n\
@@ -5864,6 +6260,38 @@ At least one argument is required.\n\
 {
   return binary_assoc_op_defun_body (octave_value::op_el_or,
                                      octave_value::op_el_or_eq, args);
+}
+
+DEFUN (colon, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{r} =} colon (@var{base}, @var{limit})\n\
+@deftypefnx {Built-in Function} {@var{r} =} colon (@var{base}, @var{increment}, @var{limit})\n\
+Return the result of the colon expression corresponding to @var{base},\n\
+@var{limit}, and optionally, @var{increment}.\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{base : limit}}\n\
+or @w{@code{base : increment : limit}}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  switch (nargin)
+    {
+    case 2:
+      retval = do_colon_op (args(0), args(1));
+      break;
+
+    case 3:
+      retval = do_colon_op (args(0), args(1), args (2));
+      break;
+
+    default:
+      print_usage ();
+      break;
+    }
+
+  return retval;
 }
 
 static double tic_toc_timestamp = -1.0;
@@ -6465,18 +6893,20 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
   // FIXME: shouldn't these modes be scoped inside a class?
   sortmode smode = UNSORTED;
 
-  std::string mode = arg.string_value ();
-
-  if (error_state)
-    error ("issorted: expecting %s argument to be a character string", argn);
-  else if (mode == "ascending")
-    smode = ASCENDING;
-  else if (mode == "descending")
-    smode = DESCENDING;
-  else if (mode == "either")
-    smode = UNSORTED;
+  if (arg.is_string ())
+    {
+      std::string mode = arg.string_value ();
+      if (mode == "ascending")
+        smode = ASCENDING;
+      else if (mode == "descending")
+        smode = DESCENDING;
+      else if (mode == "either")
+        smode = UNSORTED;
+      else
+        error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
+    }
   else
-    error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
+    error ("issorted: expecting %s argument to be a string", argn);
 
   return smode;
 }
@@ -6520,17 +6950,16 @@ This function does not support sparse matrices.\n\
       if (nargin == 3)
         smode = get_sort_mode_option (args(2), "third");
 
-      std::string tmp = args(1).string_value ();
-
-      if (! error_state)
+      if (args(1).is_string ())
         {
+          std::string tmp = args(1).string_value ();
           if (tmp == "rows")
             by_rows = true;
           else
             smode = get_sort_mode_option (args(1), "second");
         }
       else
-        error ("expecting second argument to be character string");
+        error ("issorted: second argument must be a string");
 
       if (error_state)
         return retval;
@@ -6653,7 +7082,7 @@ it may be better to use @code{sort}.\n\
 #define MAKE_INT_BRANCH(X) \
         case btyp_ ## X: \
           retval = argx.X ## _array_value ().nth_element (n, dim); \
-          break
+          break;
 
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
@@ -6797,7 +7226,8 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 
       if (! error_state)
         {
-          octave_value vals = args(1), zero = args (2);
+          octave_value vals = args(1);
+          octave_value zero = args(2);
 
           switch (vals.builtin_type ())
             {
@@ -6824,7 +7254,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
               retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
                                              n, ismin, \
                                              zero.X ## _scalar_value ()); \
-              break
+              break;
 
             MAKE_INT_BRANCH (int8);
             MAKE_INT_BRANCH (int16);
@@ -6879,7 +7309,8 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
   else if (idx.extent (n) > n)
     error ("accumdim: index out of range");
 
-  dim_vector vals_dim = vals.dims (), rdv = vals_dim;
+  dim_vector vals_dim = vals.dims ();
+  dim_vector rdv = vals_dim;
 
   if (dim < 0)
     dim = vals.dims ().first_non_singleton ();
@@ -6958,7 +7389,8 @@ do_merge (const Array<bool>& mask,
   dim_vector dv = mask.dims ();
   NDT retval (dv);
 
-  bool tscl = tval.numel () == 1, fscl = fval.numel () == 1;
+  bool tscl = tval.numel () == 1;
+  bool fscl = fval.numel () == 1;
 
   if ((! tscl && tval.dims () != dv)
       || (! fscl && fval.dims () != dv))
@@ -6968,14 +7400,16 @@ do_merge (const Array<bool>& mask,
       T *rv = retval.fortran_vec ();
       octave_idx_type n = retval.numel ();
 
-      const T *tv = tval.data (), *fv = fval.data ();
+      const T *tv = tval.data ();
+      const T *fv = fval.data ();
       const bool *mv = mask.data ();
 
       if (tscl)
         {
           if (fscl)
             {
-              T ts = tv[0], fs = fv[0];
+              T ts = tv[0];
+              T fs = fv[0];
               for (octave_idx_type i = 0; i < n; i++)
                 rv[i] = mv[i] ? ts : fs;
             }
@@ -7052,7 +7486,8 @@ it is first converted to logical.\n\
       else
         {
           boolNDArray mask = mask_val.bool_array_value ();
-          octave_value tval = args(1), fval = args(2);
+          octave_value tval = args(1);
+          octave_value fval = args(2);
           if (tval.is_double_type () && fval.is_double_type ())
             {
               if (tval.is_complex_type () || fval.is_complex_type ())
@@ -7330,7 +7765,8 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 
   assert (rep.ndims () == 2 && rep.rows () == 2);
 
-  octave_idx_type n = rep.columns (), l = 0;
+  octave_idx_type n = rep.columns ();
+  octave_idx_type l = 0;
   for (octave_idx_type i = 0; i < n; i++)
     {
       octave_idx_type k = rep(1, i);
@@ -7417,7 +7853,7 @@ endfor\n\
 #define BTYP_BRANCH(X, EX) \
             case btyp_ ## X: \
               retval = do_repelems (x.EX ## _value (), r); \
-              break
+              break;
 
               BTYP_BRANCH (double, array);
               BTYP_BRANCH (float, float_array);

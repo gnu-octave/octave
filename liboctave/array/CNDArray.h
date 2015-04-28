@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_CNDArray_h 1
 
 #include "MArray.h"
-#include "CMatrix.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -36,8 +35,6 @@ ComplexNDArray : public MArray<Complex>
 {
 public:
 
-  typedef ComplexMatrix matrix_type;
-
   ComplexNDArray (void) : MArray<Complex> () { }
 
   ComplexNDArray (const dim_vector& dv) : MArray<Complex> (dv) { }
@@ -46,8 +43,6 @@ public:
     : MArray<Complex> (dv, val) { }
 
   ComplexNDArray (const ComplexNDArray& a) : MArray<Complex> (a) { }
-
-  ComplexNDArray (const ComplexMatrix& a) : MArray<Complex> (a) { }
 
   template <class U>
   ComplexNDArray (const MArray<U>& a) : MArray<Complex> (a) { }
@@ -123,8 +118,6 @@ public:
 
   ComplexNDArray fourierNd (void) const;
   ComplexNDArray ifourierNd (void) const;
-
-  ComplexMatrix matrix_value (void) const;
 
   ComplexNDArray squeeze (void) const { return MArray<Complex>::squeeze (); }
 

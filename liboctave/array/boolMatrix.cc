@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -29,9 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Array-util.h"
+#include "boolMatrix.h"
 #include "lo-error.h"
 #include "str-vec.h"
-#include "mx-base.h"
 #include "mx-inlines.cc"
 #include "mx-op-defs.h"
 
@@ -82,20 +82,6 @@ boolMatrix
 boolMatrix::diag (octave_idx_type k) const
 {
   return Array<bool>::diag (k);
-}
-
-// FIXME: Do these really belong here?  Maybe they should be in a base class?
-
-boolMatrix
-boolMatrix::all (int dim) const
-{
-  return do_mx_red_op<bool, bool> (*this, dim, mx_inline_all);
-}
-
-boolMatrix
-boolMatrix::any (int dim) const
-{
-  return do_mx_red_op<bool, bool> (*this, dim, mx_inline_any);
 }
 
 MM_BOOL_OPS (boolMatrix, boolMatrix)

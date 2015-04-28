@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2013 Mohamed Kamoun
-Copyright (C) 2006-2013 Bill Denney
+Copyright (C) 2005-2015 Mohamed Kamoun
+Copyright (C) 2006-2015 Bill Denney
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -319,9 +319,9 @@ Return 1 for elements of @var{class}.\n\
 \n\
 Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
 in the form of an inline function, function handle, or the name of a\n\
-function (in a character string). The function can take one or more arguments,\n\
-with the inputs arguments given by @var{C}, @var{D}, etc.  Equally the\n\
-function can return one or more output arguments.  For example:\n\
+function (in a character string).  The function can take one or more\n\
+arguments, with the inputs arguments given by @var{C}, @var{D}, etc.  \n\
+Equally the function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -440,7 +440,7 @@ v = cellfun (@@det, a); # faster\n\
 
       if (! valid_identifier (name))
         {
-          std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
+          std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
 
           octave_function *ptr_func
@@ -1193,7 +1193,7 @@ arrayfun (@@str2num, [1234],\n\
 
       if (! valid_identifier (name))
         {
-          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn_");
+          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
 
           octave_function *ptr_func
@@ -1227,7 +1227,7 @@ arrayfun (@@str2num, [1234],\n\
       // fewer polymorphic function calls as the function gets called
       // for each value of the array.
 
-      if (! symbol_table_lookup )
+      if (! symbol_table_lookup)
         {
           if (func.is_function_handle ())
             {
@@ -1240,8 +1240,9 @@ arrayfun (@@str2num, [1234],\n\
               if (f -> is_overloaded ())
                 goto nevermind;
             }
-          octave_value f = symbol_table::find_function (func.function_value ()
-                                                         -> name ());
+          octave_value f
+            = symbol_table::find_function (func.function_value () -> name ());
+
           if (f.is_defined ())
             func = f;
         }
@@ -1783,7 +1784,8 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
 
       NDA parray = array.permute (perm);
 
-      octave_idx_type nela = arraydv.numel (), nelc = celldv.numel ();
+      octave_idx_type nela = arraydv.numel ();
+      octave_idx_type nelc = celldv.numel ();
       parray = parray.reshape (dim_vector (nela, nelc));
 
       Cell retval (celldv);
@@ -1901,7 +1903,7 @@ num2cell ([1,2;3,4],1)\n\
       octave_value array = args(0);
       Array<int> dimv;
       if (nargin > 1)
-        dimv = args (1).int_vector_value (true);
+        dimv = args(1).int_vector_value (true);
 
       if (error_state)
         ;
@@ -2036,7 +2038,8 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
   if (ivec >= 0)
     {
       // Vector split. Use 1D indexing.
-      octave_idx_type l = 0, nidx = (ivec == 0 ? nridx : ncidx);
+      octave_idx_type l = 0;
+      octave_idx_type nidx = (ivec == 0 ? nridx : ncidx);
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);

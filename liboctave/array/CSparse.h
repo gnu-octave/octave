@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dMatrix.h"
 #include "dNDArray.h"
+#include "CMatrix.h"
 #include "CNDArray.h"
 #include "dColVector.h"
 #include "CColVector.h"
@@ -34,7 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "DET.h"
 #include "MSparse.h"
 #include "MSparse-defs.h"
-#include "Sparse-op-defs.h"
+
+#include "Sparse-op-decls.h"
+
 #include "MatrixType.h"
 
 class PermMatrix;

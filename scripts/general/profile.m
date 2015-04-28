@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Daniel Kraft
+## Copyright (C) 2012-2015 Daniel Kraft
 ##
 ## This file is part of Octave.
 ##
@@ -147,7 +147,7 @@ endfunction
 %! assert (size (hier), [0, 1]);
 %! assert (fieldnames (hier), {"Index"; "SelfTime"; "NumCalls"; "Children"});
 
-%% Test input validation
+## Test input validation
 %!error profile ()
 %!error profile ("on", 2)
 %!error profile ("INVALID_OPTION")

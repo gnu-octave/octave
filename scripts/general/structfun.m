@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -106,7 +106,8 @@ function varargout = structfun (func, S, varargin);
   [varargout{:}] = cellfun (func, struct2cell (S), varargin{:});
 
   if (! uniform_output)
-    varargout = cellfun ("cell2struct", varargout, {fieldnames(S)}, {1}, uo_str, false);
+    varargout = cellfun ("cell2struct", varargout, {fieldnames(S)}, {1}, ...
+                         uo_str, false);
   endif
 endfunction
 

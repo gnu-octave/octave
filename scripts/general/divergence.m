@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Kai Habel
+## Copyright (C) 2009-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -72,20 +72,21 @@ function retval = divergence (varargin)
     print_usage ();
   endif
 
-  if ((nargin == 4) || (nargin == 2))
-    if (!size_equal (varargin{fidx},varargin{fidx + 1}))
+  if (nargin == 4 || nargin == 2)
+    if (! size_equal (varargin{fidx},varargin{fidx + 1}))
       error ("divergence: size of X and Y must match");
     elseif (ndims (varargin{fidx}) != 2)
       error ("divergence: expected two-dimensional matrices X and Y");
-    elseif ((length (dx) != columns (varargin{fidx})) || (length (dy) != rows (varargin{fidx})))
+    elseif (length (dx) != columns (varargin{fidx})
+            || length (dy) != rows (varargin{fidx}))
       error ("divergence: size of dx and dy must match the respective dimension of X and Y");
     endif
 
     retval = gradient (varargin{fidx}, dx, dy);
     retval += gradient (varargin{fidx + 1}.', dy, dx).';
 
-  elseif ((nargin == 6) || (nargin == 3))
-    if (!size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))
+  elseif (nargin == 6 || nargin == 3)
+    if (! size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))
       error ("divergence: size of X, Y, and Z must match");
     elseif (ndims (varargin{fidx}) != 3)
       error ("divergence: expected two-dimensional matrices X, Y, and Z");

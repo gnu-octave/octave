@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -448,8 +448,12 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       axis (hax, domain);
     elseif (isplot || ispolar)
       h = feval (pltfunc, hax, X, Z);
-      if (isplot && ! parametric)
-        axis (hax, domain);
+      if (isplot)
+        if (! parametric)
+          axis (hax, domain);
+        else
+          axis ("equal");
+        endif
       endif
     elseif (isplot3)
       if (animate)

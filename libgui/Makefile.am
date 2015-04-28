@@ -1,6 +1,6 @@
 # Makefile for Octave's libgui directory
 #
-# Copyright (C) 2012-2013 John W. Eaton
+# Copyright (C) 2012-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -23,8 +23,9 @@ include $(top_srcdir)/build-aux/common.mk
 MOC_CPPFLAGS =
 
 ## Fix for bug #42839 where -mieee CFLAG option is added to CPPFLAGS by gnulib.
-## Eventually gnulib will be appropriately fixed and this hack removed.
-MOC_OCTAVE_CPPFLAGS = $(filter-out -mieee, $(AM_CPPFLAGS) $(CPPFLAGS))
+## Users may also pass other options in CPPFLAGS that moc does not understand.
+## Only keep moc-compatible options -Idir, -Dmacro, and -Umacro.
+MOC_OCTAVE_CPPFLAGS = $(filter -I% -D% -U%, $(AM_CPPFLAGS) $(CPPFLAGS))
 
 octlib_LTLIBRARIES = liboctgui.la
 
@@ -34,6 +35,8 @@ TRANSLATIONS = \
   languages/en_US.ts \
   languages/es_ES.ts \
   languages/fr_FR.ts \
+  languages/it_IT.ts \
+  languages/ja_JP.ts \
   languages/nl_NL.ts \
   languages/pt_BR.ts \
   languages/pt_PT.ts \
@@ -53,6 +56,7 @@ noinst_HEADERS =
 noinst_LTLIBRARIES =
 
 include src/module.mk
+include graphics/module.mk
 include qterminal-module.mk
 
 ## liboctgui merely collects a bunch of compiled convenience libraries.
@@ -67,12 +71,13 @@ nodist_EXTRA_liboctgui_la_SOURCES = dummy.cc
 liboctgui_la_LIBADD = \
   qterminal/libqterminal.la \
   src/libgui-src.la \
+  graphics/libgui-graphics.la \
   $(top_builddir)/libinterp/liboctinterp.la \
   $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctgui_current = 0
+liboctgui_current = 1
 liboctgui_revision = 0
 liboctgui_age = 0
 
@@ -89,36 +94,43 @@ octetc_DATA = default-qt-settings
 octlocale_DATA = $(LOCALES)
 
 default-qt-settings: default-qt-settings.in
-	$(do_subst_qt_settings)
+	$(AM_V_GEN)$(do_subst_qt_settings)
 
 define moc-command
-( echo '#ifdef HAVE_CONFIG_H'; \
-  echo '#include <config.h>'; \
-  echo '#endif'; \
-  $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t
-mv $@-t $@
+  rm -f $@-t $@ && \
+  ( echo "#ifdef HAVE_CONFIG_H"; \
+    echo "#include <config.h>"; \
+    echo "#endif"; \
+    $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t && \
+  mv $@-t $@
 endef
 
 define rcc-command
-( echo '#ifdef HAVE_CONFIG_H'; \
-  echo '#include <config.h>'; \
-  echo '#endif'; \
-  $(RCC) $< ) > $@-t
-mv $@-t $@
+  rm -f $@-t $@ && \
+  ( echo "#ifdef HAVE_CONFIG_H"; \
+    echo "#include <config.h>"; \
+    echo "#endif"; \
+    $(RCC) -name $(@D) $< ) > $@-t && \
+  mv $@-t $@
 endef
 
 moc-%.cc: %.h
-	$(moc-command)
+	$(AM_V_GEN)$(moc-command)
 
 ui-%.h: %.ui
-	$(UIC) -o $@ $<
+	$(AM_V_GEN)$(UIC) -o $@ $<
 
 qrc-%.cc: %.qrc
-	$(rcc-command)
+	$(AM_V_GEN)$(rcc-command)
+
+AM_V_lrelease = $(am__v_lrelease_$(V))
+am__v_lrelease_ = $(am__v_lrelease_$(AM_DEFAULT_VERBOSITY))
+am__v_lrelease_0 = -silent
+am__v_lrelease_1 = 
 
 %.qm: %.ts
-	$(MKDIR_P) languages
-	$(LRELEASE) -qm $@ $<
+	$(AM_V_GEN)$(MKDIR_P) languages && \
+	$(LRELEASE) $(AM_V_lrelease) -qm $@ $<
 
 DISTCLEANFILES = \
   default-qt-settings \

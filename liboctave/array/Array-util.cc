@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -423,9 +423,11 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
 dim_vector
 zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 {
-  int ial = ia.length (), rhdvl = rhdv.length ();
+  int ial = ia.length ();
+  int rhdvl = rhdv.length ();
   dim_vector rdv = dim_vector::alloc (ial);
-  bool *scalar = new bool [ial], *colon = new bool [ial];
+  bool *scalar = new bool [ial];
+  bool *colon = new bool [ial];
   // Mark scalars and colons, count non-scalar indices.
   int nonsc = 0;
   bool all_colons = true;
@@ -479,7 +481,8 @@ dim_vector
 zero_dims_inquire (const idx_vector& i, const idx_vector& j,
                    const dim_vector& rhdv)
 {
-  bool icol = i.is_colon (), jcol = j.is_colon ();
+  bool icol = i.is_colon ();
+  bool jcol = j.is_colon ();
   dim_vector rdv;
   if (icol && jcol && rhdv.length () == 2)
     {
@@ -563,10 +566,12 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
       else if (all_ranges && clen != 0)
         {
           // All ranges case - the result is a range.
-          octave_idx_type start = 0, step = 0;
+          octave_idx_type start = 0;
+          octave_idx_type step = 0;
           for (octave_idx_type i = len - 1; i >= 0; i--)
             {
-              octave_idx_type xstart = idxa(i)(0), xstep = idxa(i)(1) - xstart;
+              octave_idx_type xstart = idxa(i)(0);
+              octave_idx_type xstep = idxa(i)(1) - xstart;
               start = start * dvx(i) + xstart;
               step = step * dvx(i) + xstep;
             }
@@ -597,7 +602,8 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
 Array<idx_vector>
 ind2sub (const dim_vector& dv, const idx_vector& idx)
 {
-  octave_idx_type len = idx.length (0), n = dv.length ();
+  octave_idx_type len = idx.length (0);
+  octave_idx_type n = dv.length ();
   Array<idx_vector> retval (dim_vector (n, 1));
   octave_idx_type numel = dv.numel ();
 

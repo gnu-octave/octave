@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott
+## Copyright (C) 2010-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{res} =} isprop (@var{h}, "@var{prop}")
-## Return true if @var{prop} is a property of the object with handle @var{h}.
+## @deftypefn {Function File} {@var{res} =} isprop (@var{obj}, "@var{prop}")
+## Return true if @var{prop} is a property of the object @var{obj}.
 ##
-## @var{h} may also be an array of handles in which case @var{res} will be a
+## @var{obj} may also be an array of objects in which case @var{res} will be a
 ## logical array indicating whether each handle has the property @var{prop}.
+##
+## For plotting, @var{obj} is a handle to a graphics object.  Otherwise,
+## @var{obj} should be an instance of a class.
 ## @seealso{get, set, ismethod, isobject}
 ## @end deftypefn
 

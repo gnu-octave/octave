@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -35,7 +35,7 @@ function [t, v, w] = table (x, y)
   endif
 
   if (nargin == 1)
-    if (!isnumeric (x) || !isvector (x))
+    if (! isnumeric (x) || ! isvector (x))
       error ("table: X must be a numeric vector");
     endif
     v = unique (x);
@@ -61,7 +61,7 @@ function [t, v, w] = table (x, y)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error table ()
 %!error table (1, 2, 3)
 %!error table (ones (2))

@@ -1,8 +1,8 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
-Copyright (C) 2011-2013 John P. Swensen
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2015 John P. Swensen
 
 This file is part of Octave.
 
@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QObject>
 #include <QString>
 #include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "octave-link.h"
 #include "octave-interpreter.h"
@@ -39,9 +41,9 @@ along with Octave; see the file COPYING.  If not, see
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
-// \class OctaveLink
-// \brief Provides threadsafe access to octave.
-// \author Jacob Dawid
+// @class OctaveLink
+// @brief Provides threadsafe access to octave.
+// @author Jacob Dawid
 //
 // This class is a wrapper around octave and provides thread safety by
 // buffering access operations to octave and executing them in the
@@ -53,13 +55,16 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (void);
+  octave_qt_link (QWidget *p);
 
   ~octave_qt_link (void);
 
   void execute_interpreter (void);
 
+  bool do_confirm_shutdown (void);
   bool do_exit (int status);
+
+  bool do_copy_image_to_clipboard (const std::string& file);
 
   bool do_edit_file (const std::string& file);
   bool do_prompt_new_edit_file (const std::string& file);
@@ -103,7 +108,7 @@ public:
 
   void do_execute_command_in_terminal (const std::string& command);
 
-  void do_set_workspace (bool top_level,
+  void do_set_workspace (bool top_level, bool debug, 
                          const std::list<workspace_element>& ws);
 
   void do_clear_workspace (void);
@@ -130,9 +135,15 @@ public:
 
   void do_show_doc (const std::string& file);
 
+  QMutex mutex;
+  QWaitCondition waitcondition;
+  void shutdown_confirmation (bool sd) {_shutdown_confirm_result = sd;}
+
+  void update_directory (void);
+
 private:
 
-  // No copying!
+  bool _shutdown_confirm_result;
 
   octave_qt_link (const octave_qt_link&);
 
@@ -146,11 +157,14 @@ private:
 
   octave_interpreter *command_interpreter;
 
+  QString _current_directory;
+  bool    _new_dir;
+
 signals:
 
   void execute_interpreter_signal (void);
 
-  void exit_signal (int status);
+  void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
 
   void edit_file_signal (const QString& file);
 
@@ -159,6 +173,7 @@ signals:
   void execute_command_in_terminal_signal (const QString& command);
 
   void set_workspace_signal (bool top_level,
+                             bool debug,
                              const QString& scopes,
                              const QStringList& symbols,
                              const QStringList& class_names,
@@ -184,6 +199,9 @@ signals:
   void show_preferences_signal (void);
 
   void show_doc_signal (const QString &file);
+
+  void confirm_shutdown_signal (void);
+  void exit_app_signal (int status);
 
 public slots:
 

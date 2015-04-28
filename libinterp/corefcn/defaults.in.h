@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -148,6 +148,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_MANDIR %OCTAVE_MANDIR%
 #endif
 
+#ifndef OCTAVE_OCTDATADIR
+#define OCTAVE_OCTDATADIR %OCTAVE_OCTDATADIR%
+#endif
+
 #ifndef OCTAVE_OCTFILEDIR
 #define OCTAVE_OCTFILEDIR %OCTAVE_OCTFILEDIR%
 #endif
@@ -202,6 +206,7 @@ extern OCTINTERP_API std::string Vlocal_ver_fcn_file_dir;
 extern OCTINTERP_API std::string Vlocal_api_fcn_file_dir;
 extern OCTINTERP_API std::string Vlocal_fcn_file_dir;
 
+extern OCTINTERP_API std::string Voct_data_dir;
 extern OCTINTERP_API std::string Voct_etc_dir;
 extern OCTINTERP_API std::string Voct_locale_dir;
 

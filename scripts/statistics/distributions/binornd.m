@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -45,7 +45,7 @@ function rnd = binornd (n, p, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (n) || !isscalar (p))
+  if (! isscalar (n) || ! isscalar (p))
     [retval, n, p] = common_size (n, p);
     if (retval > 0)
       error ("binornd: N and P must be of common size or scalars");
@@ -67,13 +67,13 @@ function rnd = binornd (n, p, varargin)
       error ("binornd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("binornd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (n) && !isequal (size (n), sz))
+  if (! isscalar (n) && ! isequal (size (n), sz))
     error ("binornd: N and P must be scalar or of size SZ");
   endif
 
@@ -129,14 +129,14 @@ endfunction
 %!assert (size (binornd (2, 1/2, [4 1])), [4, 1])
 %!assert (size (binornd (2, 1/2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (binornd (2, 0.5)), "double")
 %!assert (class (binornd (single (2), 0.5)), "single")
 %!assert (class (binornd (single ([2 2]), 0.5)), "single")
 %!assert (class (binornd (2, single (0.5))), "single")
 %!assert (class (binornd (2, single ([0.5 0.5]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error binornd ()
 %!error binornd (1)
 %!error binornd (ones (3), ones (2))

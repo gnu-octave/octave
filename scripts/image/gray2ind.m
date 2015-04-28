@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -55,7 +55,8 @@ function [I, map] = gray2ind (I, n = 64)
   endif
 
   cls = class (I);
-  if (! any (strcmp (cls, {"logical", "uint8", "uint16", "int16", "single", "double"})))
+  if (! any (strcmp (cls, {"logical", "uint8", "uint16", "int16", ...
+                           "single", "double"})))
     error ("gray2ind: invalid data type '%s'", cls);
   elseif (isfloat (I) && (min (I(:) < 0) || max (I(:) > 1)))
     error ("gray2ind: floating point images may only contain values between 0 and 1");
@@ -75,7 +76,7 @@ function [I, map] = gray2ind (I, n = 64)
 
   ## Note: no separate call to round () necessary because
   ##       type conversion does that automatically.
-  if (n < 256)
+  if (n <= 256)
     I = uint8 (I);
   else
     I = uint16 (I);
@@ -94,7 +95,16 @@ endfunction
 %! g2i = gray2ind (i2g, 100);
 %! assert (g2i, uint8 (0:99));
 
-%% Test input validation
+%!assert (gray2ind ([0 0.25 0.5 1], 256), uint8 ([0 64 128 255]))
+%!assert (gray2ind ([0 (1/511) (1/510) 1-(1/509) 1-(1/510) 1], 256),
+%!        uint8 ([0 0 1 254 255 255]))
+
+%!test
+%! assert (class (gray2ind ([0.0 0.5 1.0], 255)), "uint8")
+%! assert (class (gray2ind ([0.0 0.5 1.0], 256)), "uint8")
+%! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16")
+
+## Test input validation
 %!error gray2ind ()
 %!error gray2ind (1,2,3)
 %!error <I must be a grayscale or binary image> gray2ind ({1})

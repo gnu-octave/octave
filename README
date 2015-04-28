@@ -1,6 +1,6 @@
 GNU Octave -- a high-level language for numerical computations.
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 Overview
 --------
@@ -49,9 +49,9 @@ YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
 features of GNU Make that are not present in other versions of make.
 GNU Make is very portable and easy to install.
 
-See the notes in the files INSTALL and the system-specific README files
-in the etc directory of the Octave source distribution for more specific
-installation instructions.
+See the notes in the files INSTALL.OCTAVE and the system-specific README
+files in the etc directory of the Octave source distribution for more
+specific installation instructions.
 
 Bugs and Patches
 ----------------

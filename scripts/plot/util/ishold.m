@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +44,7 @@ function retval = ishold (h)
         ax = get (fig, "currentaxes");
       elseif (strcmp (get (h, "type"), "axes"))
         ax = h;
-        fig = get (ax, "parent");
+        fig = ancestor (ax, "figure");
       else
         error ("ishold: H must be an axes or figure graphics handle");
       endif

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2015 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -36,13 +36,14 @@ endfunction
 
 
 ## test for equality
-%!assert (isequaln ({1,2,NaN,4},{1,2,NaN,4}), true)
-%!assert (isequaln ([1,2,NaN,4],[1,2,NaN,4]), true)
+%!assert (isequaln ({1,2,NaN,4}, {1,2,NaN,4}), true)
+%!assert (isequaln ([1,2,NaN,4], [1,2,NaN,4]), true)
 ## test for inequality
-%!assert (isequaln ([1,2,NaN,4],[1,NaN,3,4]), false)
-%!assert (isequaln ([1,2,NaN,4],[1,2,3,4]), false)
+%!assert (isequaln ([1,2,NaN,4], [1,NaN,3,4]), false)
+%!assert (isequaln ([1,2,NaN,4], [1,2,3,4]), false)
 ## test for equality (struct)
-%!assert (isequaln (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), true)
+%!assert (isequaln (struct ("a",NaN,"b",2), struct ("a",NaN,"b",2),
+%!                  struct ("a",NaN,"b",2)), true)
 %!assert (isequaln (1,2,1), false)
 
 ## Input validation

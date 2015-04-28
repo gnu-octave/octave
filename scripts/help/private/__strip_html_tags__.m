@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Søren Hauberg
+## Copyright (C) 2009-2015 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -50,9 +50,9 @@ function text = strip_superfluous_endlines (text)
   groups = [els(1), 1]; # list containing [start, length] of each group
   for k = 1:length (dels)
     if (dels (k) == 1)
-      groups (end, 2) ++;
+      groups(end, 2) ++;
     else
-      groups (end+1, 1:2) = [els(k+1), 1];
+      groups(end+1, 1:2) = [els(k+1), 1];
     endif
   endfor
 
@@ -60,20 +60,20 @@ function text = strip_superfluous_endlines (text)
 
   ## Remove end-lines in the beginning
   if (groups (1, 1) == 1)
-    keep (1:groups (1, 2)) = false;
+    keep(1:groups (1, 2)) = false;
   endif
 
   ## Remove end-lines from the end
-  if (sum (groups (end, :)) - 1 == length (text))
-    keep (groups (end, 1):end) = false;
+  if (sum (groups(end, :)) - 1 == length (text))
+    keep(groups(end, 1):end) = false;
   endif
 
   ## Remove groups of end-lines with more than 3 end-lines next to each other
   idx = find (groups (:, 2) >= 3);
   for k = 1:length (idx)
-    start = groups (idx (k), 1);
-    stop = start + groups (idx (k), 2) - 1;
-    keep (start+2:stop) = false;
+    start = groups(idx(k), 1);
+    stop = start + groups(idx(k), 2) - 1;
+    keep(start+2:stop) = false;
   endfor
 
   ## Actually remove the elements

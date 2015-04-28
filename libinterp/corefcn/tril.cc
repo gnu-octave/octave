@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -42,7 +42,8 @@ template <class T>
 static Array<T>
 do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
-  octave_idx_type nr = a.rows (), nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
   const T *avec = a.fortran_vec ();
   octave_idx_type zero = 0;
 
@@ -83,7 +84,8 @@ template <class T>
 static Array<T>
 do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
-  octave_idx_type nr = a.rows (), nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
   const T *avec = a.fortran_vec ();
   octave_idx_type zero = 0;
 
@@ -211,7 +213,7 @@ do_trilu (const std::string& name,
     print_usage ();
   else
     {
-      octave_value arg = args (0);
+      octave_value arg = args(0);
 
       dim_vector dims = arg.dims ();
       if (dims.length () != 2)
@@ -274,7 +276,8 @@ do_trilu (const std::string& name,
                 if (arg.numel () == 0)
                   return arg;
 
-                octave_idx_type nr = dims(0), nc = dims (1);
+                octave_idx_type nr = dims(0);
+                octave_idx_type nc = dims(1);
 
                 // The sole purpose of the below is to force the correct
                 // matrix size. This would not be necessary if the
@@ -364,7 +367,7 @@ starts at an offset of @var{k} diagonals above or below the main\n\
 diagonal; above for positive @var{k} and below for negative @var{k}.\n\
 \n\
 The absolute value of @var{k} must not be greater than the number of\n\
-sub-diagonals or super-diagonals.\n\
+subdiagonals or superdiagonals.\n\
 \n\
 For example:\n\
 \n\

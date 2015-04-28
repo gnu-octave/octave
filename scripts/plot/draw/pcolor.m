@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 Kai Habel
+## Copyright (C) 2007-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -111,10 +111,18 @@ function h = pcolor (varargin)
         endif
       endif
       if (all (xrng == fix (xrng)))
-        xlim ([min(xrng), max(xrng)]);
+        xmin = min (xrng);
+        xmax = max (xrng);
+        if (xmin < xmax)
+          xlim ([xmin, xmax]);
+        endif
       endif
       if (all (yrng == fix (yrng)))
-        ylim ([min(yrng), max(yrng)]);
+        ymin = min (yrng);
+        ymax = max (yrng);
+        if (ymin < ymax)
+          ylim ([ymin, ymax]);
+        endif
       endif
     endif
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -353,6 +353,11 @@ tree_checker::visit_constant (tree_constant& /* val */)
 
 void
 tree_checker::visit_fcn_handle (tree_fcn_handle& /* fh */)
+{
+}
+
+void
+tree_checker::visit_funcall (tree_funcall& /* fc */)
 {
 }
 

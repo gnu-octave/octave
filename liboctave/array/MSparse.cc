@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -68,11 +68,10 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char* op_name)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
-              if ((! jb_lt_max) ||
-                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   r.ridx (jx) = a.ridx (ja);
                   r.data (jx) = op (a.data (ja), 0.);
@@ -80,8 +79,8 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char* op_name)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   r.ridx (jx) = b.ridx (jb);
                   r.data (jx) = op (0., b.data (jb));
@@ -340,11 +339,10 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
-              if ((! jb_lt_max) ||
-                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   r.ridx (jx) = a.ridx (ja);
                   r.data (jx) = op (a.data (ja), 0.);
@@ -352,8 +350,8 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   r.ridx (jx) = b.ridx (jb);
                   r.data (jx) = op (0.,  b.data (jb));
@@ -462,16 +460,15 @@ product (const MSparse<T>& a, const MSparse<T>& b)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
-              if ((! jb_lt_max) ||
-                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   ja++; ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   jb++; jb_lt_max= jb < jb_max;
                 }
@@ -569,7 +566,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
     gripe_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
   else
     {
-      r = MSparse<T>( a_nr, a_nc, (Zero / Zero));
+      r = MSparse<T> (a_nr, a_nc, (Zero / Zero));
 
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
@@ -581,17 +578,16 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
-              if ((! jb_lt_max) ||
-                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   r.elem (a.ridx (ja),i) = a.data (ja) / Zero;
                   ja++; ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   r.elem (b.ridx (jb),i) = Zero / b.data (jb);
                   jb++; jb_lt_max= jb < jb_max;

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -61,7 +61,7 @@ endfunction
 %! str = cellstr (str);
 %! assert (rindex (str, "o"), [5; 2; 3; 2]);
 
-%% Test input validation
+## Test input validation
 %!error rindex ()
 %!error rindex ("foo")
 %!error rindex ("foo", "bar", "last")

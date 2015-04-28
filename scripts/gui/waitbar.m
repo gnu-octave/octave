@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 John W. Eaton
+## Copyright (C) 2012-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -106,7 +106,8 @@ function h = waitbar (varargin)
     ## Save and restore current figure
     cf = get (0, "currentfigure");
 
-    hf = figure ("position", [250, 500, 400, 100],
+    hf = figure ("units", "pixels",
+                 "position", [250, 500, 400, 100],
                  "numbertitle", "off",
                  "menubar", "none", "toolbar", "none",
                  "integerhandle", "off",
@@ -189,7 +190,7 @@ endfunction
 %! close (h1);
 %! close (h2);
 
-%% Test input validation
+## Test input validation
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)
 %!error <FRAC must be between 0 and 1> waitbar (1.5)
 %!error <MSG must be a character string> waitbar (0.5, struct ())

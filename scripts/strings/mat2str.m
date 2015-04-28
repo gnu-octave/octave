@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2013 Rolf Fabian
+## Copyright (C) 2002-2015 Rolf Fabian
 ##
 ## This file is part of Octave.
 ##
@@ -70,6 +70,10 @@ function s = mat2str (x, n = 15, cls = "")
     n = 15;
   elseif (isempty (n))
     n = 15;   # Default precision
+  elseif (numel (n) > 2)
+    error ("mat2str: N must have only 1 or 2 elements");
+  else
+    n = fix (n);
   endif
 
   x_islogical = islogical (x);
@@ -139,9 +143,10 @@ endfunction
 %!assert (mat2str (false), "false")
 %!assert (mat2str (logical (eye (2))), "[true false;false true]")
 
-%% Test input validation
+## Test input validation
 %!error mat2str ()
 %!error mat2str (1,2,3,4)
 %!error mat2str (["Hello"])
 %!error <X must be two dimensional> mat2str (ones (3,3,2))
+%!error <N must have only 1 or 2 elements> mat2str (ones (3,3), [1 2 3])
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,7 +52,7 @@ public:
 
   off_t tell (void);
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const;
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 
 This file is part of Octave.
 
@@ -38,6 +38,7 @@ Open Source Initiative (www.opensource.org)
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
+#include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-inline.h"
@@ -53,7 +54,6 @@ Open Source Initiative (www.opensource.org)
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_fcn_inline);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_inline,
                                      "inline function",
@@ -273,26 +273,30 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
 bool
-octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
+octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                               bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hid_t group_hid = -1;
+
 #if HAVE_HDF5_18
   group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
   size_t len = 0;
   for (int i = 0; i < ifargs.length (); i++)
     if (len < ifargs(i).length ())
       len = ifargs(i).length ();
 
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
-  bool retval = true;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
 
   // FIXME: Is there a better way of saving string vectors,
   //        than a null padded matrix?
@@ -408,12 +412,18 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
   H5Tclose (type_hid);
   H5Gclose (group_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
+octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+#if defined (HAVE_HDF5)
+
   hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
   hsize_t rank;
   int slen;
@@ -423,7 +433,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
 #if HAVE_HDF5_18
   data_hid = H5Dopen (group_hid, "args", H5P_DEFAULT);
@@ -593,11 +603,15 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
   fcn = ftmp.fcn;
 
   return true;
-}
+
+#else
+  gripe_load ("hdf5");
+  return false;
 #endif
+}
 
 void
-octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -745,11 +759,11 @@ functions from strings is through the use of anonymous functions\n\
                             break;
                           }
 
-                      if (! have_arg && tmp_arg != "i" && tmp_arg != "j" &&
-                          tmp_arg != "NaN" && tmp_arg != "nan" &&
-                          tmp_arg != "Inf" && tmp_arg != "inf" &&
-                          tmp_arg != "NA" && tmp_arg != "pi" &&
-                          tmp_arg != "e" && tmp_arg != "eps")
+                      if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
+                          && tmp_arg != "NaN" && tmp_arg != "nan"
+                          && tmp_arg != "Inf" && tmp_arg != "inf"
+                          && tmp_arg != "NA" && tmp_arg != "pi"
+                          && tmp_arg != "e" && tmp_arg != "eps")
                         fargs.append (tmp_arg);
 
                       tmp_arg = std::string ();
@@ -852,9 +866,10 @@ DEFUN (formula, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} formula (@var{fun})\n\
 Return a character string representing the inline function @var{fun}.\n\
+\n\
 Note that @code{char (@var{fun})} is equivalent to\n\
 @code{formula (@var{fun})}.\n\
-@seealso{argnames, inline, vectorize}\n\
+@seealso{char, argnames, inline, vectorize}\n\
 @end deftypefn")
 {
   octave_value retval;

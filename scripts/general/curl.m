@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Kai Habel
+## Copyright (C) 2009-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -74,8 +74,8 @@ function varargout = curl (varargin)
     print_usage ();
   endif
 
-  if ((nargin == 4) || (nargin == 2))
-    if (!size_equal (varargin{fidx}, varargin{fidx + 1}))
+  if (nargin == 4 || nargin == 2)
+    if (! size_equal (varargin{fidx}, varargin{fidx + 1}))
       error ("curl: size of X and Y must match");
     elseif (ndims (varargin{fidx}) != 2)
       error ("curl: expected two-dimensional matrices X and Y");
@@ -95,8 +95,8 @@ function varargout = curl (varargin)
       varargout{2} = av;
     endif
 
-  elseif ((nargin == 6) || (nargin == 3))
-    if (!size_equal (varargin{fidx}, varargin{fidx + 1}, varargin{fidx + 2}))
+  elseif (nargin == 6 || nargin == 3)
+    if (! size_equal (varargin{fidx}, varargin{fidx + 1}, varargin{fidx + 2}))
       error ("curl: size of X, Y, and Z must match");
     elseif (ndims (varargin{fidx}) != 3)
       error ("curl: expected two-dimensional matrices X, Y, and Z");

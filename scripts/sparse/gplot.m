@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Ivana Varekova
+## Copyright (C) 2005-2015 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -79,6 +79,6 @@ endfunction
 %! set (get (gca, ("children")), "markersize", 12);
 %! title ("gplot() of Binary Tree Adjacency matrix");
 
-%% Mark graphical function as tested by demo block
+## Mark graphical function as tested by demo block
 %!assert (1)
 

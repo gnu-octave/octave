@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 John W. Eaton
+Copyright (C) 2007-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "mxarray.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "ov-class.h"
 #ifdef HAVE_JAVA
 #include "ov-java.h"
@@ -57,7 +58,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "variables.h"
 
-DEFINE_OCTAVE_ALLOCATOR(octave_class);
 
 int octave_class::t_id (-1);
 
@@ -268,97 +268,6 @@ gripe_failed_assignment (void)
   error ("assignment to class element failed");
 }
 
-static inline octave_value_list
-sanitize (const octave_value_list& ovl)
-{
-  octave_value_list retval = ovl;
-
-  for (octave_idx_type i = 0; i < ovl.length (); i++)
-    {
-      if (retval(i).is_magic_colon ())
-        retval(i) = ":";
-    }
-
-  return retval;
-}
-
-static inline octave_value
-make_idx_args (const std::string& type,
-               const std::list<octave_value_list>& idx,
-               const std::string& who)
-{
-  octave_value retval;
-
-  size_t len = type.length ();
-
-  if (len == idx.size ())
-    {
-      Cell type_field (1, len);
-      Cell subs_field (1, len);
-
-      std::list<octave_value_list>::const_iterator p = idx.begin ();
-
-      for (size_t i = 0; i < len; i++)
-        {
-          char t = type[i];
-
-          switch (t)
-            {
-            case '(':
-              type_field(i) = "()";
-              subs_field(i) = Cell (sanitize (*p++));
-              break;
-
-            case '{':
-              type_field(i) = "{}";
-              subs_field(i) = Cell (sanitize (*p++));
-              break;
-
-            case '.':
-              {
-                type_field(i) = ".";
-
-                octave_value_list vlist = *p++;
-
-                if (vlist.length () == 1)
-                  {
-                    octave_value val = vlist(0);
-
-                    if (val.is_string ())
-                      subs_field(i) = val;
-                    else
-                      {
-                        error ("expecting character string argument for '.' index");
-                        return retval;
-                      }
-                  }
-                else
-                  {
-                    error ("expecting single argument for '.' index");
-                    return retval;
-                  }
-              }
-              break;
-
-            default:
-              panic_impossible ();
-              break;
-            }
-        }
-
-      octave_map m;
-
-      m.assign ("type", type_field);
-      m.assign ("subs", subs_field);
-
-      retval = m;
-    }
-  else
-    error ("invalid index for %s", who.c_str ());
-
-  return retval;
-}
-
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {
@@ -396,20 +305,6 @@ octave_class::dotref (const octave_value_list& idx)
     gripe_invalid_index1 ();
 
   return retval;
-}
-
-static bool
-called_from_builtin (void)
-{
-  octave_function *fcn = octave_call_stack::caller ();
-
-  // FIXME: we probably need a better check here, or some other
-  // mechanism to avoid overloaded functions when builtin is used.
-  // For example, what if someone overloads the builtin function?
-  // Also, are there other places where using builtin is not properly
-  // avoiding dispatch?
-
-  return (fcn && fcn->name () == "builtin");
 }
 
 Matrix
@@ -991,7 +886,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 }
 
 idx_vector
-octave_class::index_vector (void) const
+octave_class::index_vector (bool require_integers) const
 {
   idx_vector retval;
 
@@ -1014,7 +909,7 @@ octave_class::index_vector (void) const
             // add one to the value returned as the index_vector method
             // expects it to be one based.
             retval = do_binary_op (octave_value::op_add, tmp (0),
-                                   octave_value (1.0)).index_vector ();
+                                   octave_value (1.0)).index_vector (require_integers);
         }
     }
   else
@@ -1120,6 +1015,35 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
   return retval;
 }
 
+bool
+octave_class::is_instance_of (const std::string& cls_name) const
+{
+  bool retval = false;
+
+  if (cls_name == class_name ())
+    retval = true;
+  else
+    {
+      for (std::list<std::string>::const_iterator pit = parent_list.begin ();
+           pit != parent_list.end ();
+           pit++)
+        {
+          octave_map::const_iterator smap = map.seek (*pit);
+
+          const Cell& tmp = map.contents (smap);
+
+          const octave_value& vtmp = tmp(0);
+
+          retval = vtmp.is_instance_of (cls_name);
+
+          if (retval)
+            break;
+        }
+    }
+
+  return retval;
+}
+
 string_vector
 octave_class::all_strings (bool pad) const
 {
@@ -1139,7 +1063,7 @@ octave_class::all_strings (bool pad) const
           if (tmp(0).is_string ())
             retval = tmp(0).all_strings (pad);
           else
-            error ("cname/char method did not return a character string");
+            error ("cname/char method did not return a string");
         }
     }
   else
@@ -1150,7 +1074,7 @@ octave_class::all_strings (bool pad) const
 
 
 void
-octave_class::print (std::ostream& os, bool) const
+octave_class::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -1279,7 +1203,8 @@ octave_class::clear_exemplar_map (void)
 bool
 octave_class::reconstruct_parents (void)
 {
-  bool retval = true, might_have_inheritance = false;
+  bool retval = true;
+  bool might_have_inheritance = false;
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
@@ -1287,10 +1212,10 @@ octave_class::reconstruct_parents (void)
     {
       std::string  key = map.key (p);
       Cell         val = map.contents (p);
-      if ( val(0).is_object () )
+      if (val(0).is_object ())
         {
           dbgstr = "blork";
-          if ( key == val(0).class_name () )
+          if (key == val(0).class_name ())
             {
               might_have_inheritance = true;
               dbgstr = "cork";
@@ -1429,7 +1354,7 @@ octave_class::load_ascii (std::istream& is)
                   success = false;
                 }
             }
-          else if (len == 0 )
+          else if (len == 0)
             {
               map = octave_map (dim_vector (1, 1));
               c_name = classname;
@@ -1573,7 +1498,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           success = false;
         }
     }
-  else if (len == 0 )
+  else if (len == 0)
     map = octave_map (dim_vector (1, 1));
   else
     panic_impossible ();
@@ -1581,11 +1506,11 @@ octave_class::load_binary (std::istream& is, bool swap,
   return success;
 }
 
+bool
+octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
 #if defined (HAVE_HDF5)
 
-bool
-octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   hsize_t hdims[3];
   hid_t group_hid = -1;
   hid_t type_hid = -1;
@@ -1677,12 +1602,19 @@ error_cleanup:
     H5Gclose (group_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_class::load_hdf5 (hid_t loc_id, const char *name)
+octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   hid_t group_hid = -1;
   hid_t data_hid = -1;
@@ -1817,10 +1749,12 @@ error_cleanup:
   if (data_hid > 0)
     H5Gclose (group_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_class::as_mxArray (void) const
@@ -1950,10 +1884,10 @@ derived.\n\
       // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
-      std::string id = args(1).string_value ();
-
-      if (! error_state)
+      if (args(1).is_string ())
         {
+          std::string id = args(1).string_value ();
+
           if (fcn)
             {
               if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
@@ -1998,7 +1932,7 @@ derived.\n\
             error ("class: invalid call from outside class constructor or method");
         }
       else
-        error ("class: ID (class name) must be a character string");
+        error ("class: ID (class name) must be a string");
     }
 
   return retval;
@@ -2016,32 +1950,121 @@ derived.\n\
 %!error class ()
 */
 
-DEFUN (__isa_parent__, args, ,
+DEFUN (isa, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __isa_parent__ (@var{class}, @var{name})\n\
-Undocumented internal function.\n\
+@deftypefn {Function File} {} isa (@var{obj}, @var{classname})\n\
+Return true if @var{obj} is an object from the class @var{classname}.\n\
+\n\
+@var{classname} may also be one of the following class categories:\n\
+\n\
+@table @asis\n\
+@item @qcode{\"float\"}\n\
+Floating point value comprising classes @qcode{\"double\"} and\n\
+@qcode{\"single\"}.\n\
+\n\
+@item @qcode{\"integer\"}\n\
+Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.\n\
+\n\
+@item @qcode{\"numeric\"}\n\
+Numeric value comprising either a floating point or integer value.\n\
+@end table\n\
+\n\
+If @var{classname} is a cell array of string, a logical array of the same\n\
+size is returned, containing true for each class to which @var{obj}\n\
+belongs to.\n\
+\n\
+@seealso{class, typeinfo}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
+  octave_value retval;
 
-  if (args.length () == 2)
+  if (args.length () != 2)
     {
-      octave_value cls = args(0);
-      octave_value nm = args(1);
-
-      if (! error_state)
-        {
-          if (cls.find_parent_class (nm.string_value ()))
-            retval = true;
-        }
-      else
-        error ("__isa_parent__: expecting arguments to be character strings");
+      print_usage ();
+      return retval;
     }
-  else
-    print_usage ();
 
-  return retval;
+  octave_value obj = args(0); // not const because of find_parent_class ()
+  const Array<std::string> cls = args(1).cellstr_value ();
+  if (error_state)
+    {
+      error ("isa: CLASSNAME must be a string or cell array of strings");
+      return retval;
+    }
+
+  boolNDArray matches (cls.dims (), false);
+  const octave_idx_type n = cls.numel ();
+  for (octave_idx_type idx = 0; idx < n; idx++)
+    {
+      const std::string cl = cls(idx);
+      if ((cl == "float"   && obj.is_float_type   ())
+          || (cl == "integer" && obj.is_integer_type ())
+          || (cl == "numeric" && obj.is_numeric_type ())
+          || obj.class_name () == cl || obj.is_instance_of (cl))
+        matches(idx) = true;
+    }
+  return octave_value (matches);
 }
+
+/*
+%!assert (isa ("char", "float"), false)
+%!assert (isa (logical (1), "float"), false)
+%!assert (isa (double (13), "float"), true)
+%!assert (isa (single (13), "float"), true)
+%!assert (isa (int8 (13), "float"), false)
+%!assert (isa (int16 (13), "float"), false)
+%!assert (isa (int32 (13), "float"), false)
+%!assert (isa (int64 (13), "float"), false)
+%!assert (isa (uint8 (13), "float"), false)
+%!assert (isa (uint16 (13), "float"), false)
+%!assert (isa (uint32 (13), "float"), false)
+%!assert (isa (uint64 (13), "float"), false)
+%!assert (isa ("char", "numeric"), false)
+%!assert (isa (logical (1), "numeric"), false)
+%!assert (isa (double (13), "numeric"), true)
+%!assert (isa (single (13), "numeric"), true)
+%!assert (isa (int8 (13), "numeric"), true)
+%!assert (isa (int16 (13), "numeric"), true)
+%!assert (isa (int32 (13), "numeric"), true)
+%!assert (isa (int64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "numeric"), true)
+%!assert (isa (uint16 (13), "numeric"), true)
+%!assert (isa (uint32 (13), "numeric"), true)
+%!assert (isa (uint64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "integer"), true)
+%!assert (isa (double (13), "integer"), false)
+%!assert (isa (single (13), "integer"), false)
+%!assert (isa (single (13), {"integer", "float", "single"}), [false true true])
+
+%!assert (isa (double (13), "double"))
+%!assert (isa (single (13), "single"))
+%!assert (isa (int8 (13), "int8"))
+%!assert (isa (int16 (13), "int16"))
+%!assert (isa (int32 (13), "int32"))
+%!assert (isa (int64 (13), "int64"))
+%!assert (isa (uint8 (13), "uint8"))
+%!assert (isa (uint16 (13), "uint16"))
+%!assert (isa (uint32 (13), "uint32"))
+%!assert (isa (uint64 (13), "uint64"))
+%!assert (isa ("string", "char"))
+%!assert (isa (true, "logical"))
+%!assert (isa (false, "logical"))
+%!assert (isa ({1, 2}, "cell"))
+%!assert (isa ({1, 2}, {"numeric", "integer", "cell"}), [false false true])
+
+%!testif HAVE_JAVA
+%! ## The first and last assert() are equal on purpose.  The assert() in
+%! ## the middle with an invalid class name will cause the java code to
+%! ## throw exceptions which we then must clear properly (or all other calls
+%! ## will fail).  So we test this too.
+%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"))
+%! assert (isa (javaObject ("java.lang.Double", 10), "not_a_class"), false)
+%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"))
+
+%!test
+%! a.b = 1;
+%! assert (isa (a, "struct"));
+*/
 
 DEFUN (__parent_classes__, args, ,
        "-*- texinfo -*-\n\
@@ -2068,7 +2091,7 @@ DEFUN (isobject, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isobject (@var{x})\n\
 Return true if @var{x} is a class object.\n\
-@seealso{class, typeinfo, isa, ismethod}\n\
+@seealso{class, typeinfo, isa, ismethod, isprop}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2083,8 +2106,8 @@ Return true if @var{x} is a class object.\n\
 
 DEFUN (ismethod, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ismethod (@var{x}, @var{method})\n\
-Return true if @var{x} is a class object and the string @var{method}\n\
+@deftypefn {Built-in Function} {} ismethod (@var{obj}, @var{method})\n\
+Return true if @var{obj} is a class object and the string @var{method}\n\
 is a method of this class.\n\
 @seealso{isprop, isobject}\n\
 @end deftypefn")

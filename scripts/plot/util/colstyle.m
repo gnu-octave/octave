@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 David Bateman
+## Copyright (C) 2012-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -36,10 +36,7 @@ function [l, c, m, msg] = colstyle (style)
   try
     opt = __pltopt__ ("colstyle", style);
     l = opt.linestyle;
-    c = opt.color;
-    m = opt.marker;
-    msg = [];
-    switch (c)
+    switch (opt.color)
       case [0 0 0]
         c = "k";
       case [1 0 0]
@@ -56,7 +53,11 @@ function [l, c, m, msg] = colstyle (style)
         c = "c";
       case [0 1 1]
         c = "w";
+      otherwise
+        c = opt.color;
     endswitch
+    m = opt.marker;
+    msg = [];
   catch
     l = c = m = [];
     msg = lasterr ();
@@ -83,8 +84,8 @@ endfunction
 %! [l, c, m, msg] = colstyle ("~");
 %! assert (msg, "colstyle: unrecognized format character: '~'");
 
-%% Test input validation
+## Test input validation
 %!error colstyle ()
 %!error colstyle (1, 2)
-%!error colstyle (1.5)
+%!error <STYLE must be a string> colstyle (1.5)
 

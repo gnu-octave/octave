@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2013 Daniel Heiserer
+## Copyright (C) 1999-2015 Daniel Heiserer
 ## Copyright (C) 2001 Laurent Mazet
 ##
 ## This file is part of Octave.
@@ -54,7 +54,7 @@ function opts = __gnuplot_print__ (opts)
         gp_opts = [gp_opts " level1"];
       endif
       if (opts.tight_flag || ! isempty (opts.preview))
-        tmp_file = strcat (tmpnam (), ".eps");
+        tmp_file = [tempname() ".eps"];
         eps_drawnow (opts, tmp_file, gp_opts);
         if (dos_shell)
           cleanup = [" & del " strrep(tmp_file, '/', '\')];
@@ -119,7 +119,7 @@ function opts = __gnuplot_print__ (opts)
     case opts.ghostscript.device
       gp_opts = font_spec (opts, "devopt", "eps");
       opts.ghostscript.output = opts.name;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
+      opts.ghostscript.source = [tempname() ".eps"];
       eps_drawnow (opts, opts.ghostscript.source, gp_opts);
       [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
       if (opts.send_to_printer || isempty (opts.name))
@@ -220,6 +220,8 @@ function f = font_spec (opts, varargin)
         f = sprintf ("%d", 2 * opts.fontsize);
       endif
     case "svg"
+      ## FIXME: Why does svg format use round on the fontsize while
+      ##        other terminals don't?
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
         fontsize = round (opts.fontsize * 0.75);
         f = sprintf ('fname "%s" fsize %d', opts.font, fontsize);

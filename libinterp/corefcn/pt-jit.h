@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Max Brister
+Copyright (C) 2012-2015 Max Brister
 
 This file is part of Octave.
 
@@ -128,6 +128,8 @@ public:
   void visit_constant (tree_constant&);
 
   void visit_fcn_handle (tree_fcn_handle&);
+
+  void visit_funcall (tree_funcall&);
 
   void visit_parameter_list (tree_parameter_list&);
 
@@ -384,8 +386,13 @@ private:
   size_t trip_count (const octave_value& bounds) const;
 
   llvm::Module *module;
+#ifdef LEGACY_PASSMANAGER
+  llvm::legacy::PassManager *module_pass_manager;
+  llvm::legacy::FunctionPassManager *pass_manager;
+#else
   llvm::PassManager *module_pass_manager;
   llvm::FunctionPassManager *pass_manager;
+#endif
   llvm::ExecutionEngine *engine;
 };
 

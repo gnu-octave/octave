@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -131,6 +131,26 @@ bitopx (const std::string& fname, const Array<T>& x, const Array<T>& y)
   return bitopxx (std::bit_xor<T>(), fname, x, y);
 }
 
+static inline int
+bitop_arg_is_int (const octave_value& arg)
+{
+  return (arg.class_name () != octave_scalar::static_class_name ()
+          && arg.class_name () != octave_float_scalar::static_class_name ()
+          && arg.class_name () != octave_bool::static_class_name ());
+}
+
+static inline int
+bitop_arg_is_bool (const octave_value& arg)
+{
+  return arg.class_name () == octave_bool::static_class_name ();
+}
+
+static inline int
+bitop_arg_is_float (const octave_value& arg)
+{
+  return arg.class_name () == octave_float_scalar::static_class_name ();
+}
+
 octave_value
 bitop (const std::string& fname, const octave_value_list& args)
 {
@@ -140,38 +160,30 @@ bitop (const std::string& fname, const octave_value_list& args)
 
   if (nargin == 2)
     {
-      if ((args(0).class_name () == octave_scalar::static_class_name ())
-          || (args(0).class_name () == octave_float_scalar::static_class_name ())
-          || (args(0).class_name () == octave_bool::static_class_name ())
-          || (args(1).class_name () == octave_scalar::static_class_name ())
-          || (args(1).class_name () == octave_float_scalar::static_class_name ())
-          || (args(1).class_name () == octave_bool::static_class_name ()))
+      if (args(0).class_name () == octave_scalar::static_class_name ()
+          || args(0).class_name () == octave_float_scalar::static_class_name ()
+          || args(0).class_name () == octave_bool::static_class_name ()
+          || args(1).class_name () == octave_scalar::static_class_name ()
+          || args(1).class_name () == octave_float_scalar::static_class_name ()
+          || args(1).class_name () == octave_bool::static_class_name ())
         {
-          bool arg0_is_int = (args(0).class_name () !=
-                              octave_scalar::static_class_name () &&
-                              args(0).class_name () !=
-                              octave_float_scalar::static_class_name () &&
-                              args(0).class_name () !=
-                              octave_bool::static_class_name ());
-          bool arg1_is_int = (args(1).class_name () !=
-                              octave_scalar::static_class_name () &&
-                              args(1).class_name () !=
-                              octave_float_scalar::static_class_name () &&
-                              args(1).class_name () !=
-                              octave_bool::static_class_name ());
-          bool arg0_is_float = args(0).class_name () ==
-                               octave_float_scalar::static_class_name ();
-          bool arg1_is_float = args(1).class_name () ==
-                               octave_float_scalar::static_class_name ();
+          bool arg0_is_int = bitop_arg_is_int (args(0));
+          bool arg1_is_int = bitop_arg_is_int (args(1));
+
+          bool arg0_is_bool = bitop_arg_is_bool (args(0));
+          bool arg1_is_bool = bitop_arg_is_bool (args(1));
+
+          bool arg0_is_float = bitop_arg_is_float (args(0));
+          bool arg1_is_float = bitop_arg_is_float (args(1));
 
           if (! (arg0_is_int || arg1_is_int))
             {
-              if (! (arg0_is_float || arg1_is_float))
+              if (arg0_is_bool && arg1_is_bool)
                 {
-                  uint64NDArray x (args(0).array_value ());
-                  uint64NDArray y (args(1).array_value ());
+                  boolNDArray x (args(0).bool_array_value ());
+                  boolNDArray y (args(1).bool_array_value ());
                   if (! error_state)
-                    retval = bitopx (fname, x, y).array_value ();
+                    retval = bitopx (fname, x, y).bool_array_value ();
                 }
               else if (arg0_is_float && arg1_is_float)
                 {
@@ -179,6 +191,13 @@ bitop (const std::string& fname, const octave_value_list& args)
                   uint64NDArray y (args(1).float_array_value ());
                   if (! error_state)
                     retval = bitopx (fname, x, y).float_array_value ();
+                }
+              else if (! (arg0_is_float || arg1_is_float))
+                {
+                  uint64NDArray x (args(0).array_value ());
+                  uint64NDArray y (args(1).array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).array_value ();
                 }
               else
                 {
@@ -376,6 +395,27 @@ Return the bitwise XOR of non-negative integers.\n\
 {
   return bitop ("bitxor", args);
 }
+
+/*
+%!assert (bitand (true, false), false)
+%!assert (bitor  (true, false), true)
+%!assert (bitxor (true, false), true)
+
+%!assert (bitand (true, true), true)
+%!assert (bitor  (true, true), true)
+%!assert (bitxor (true, true), false)
+
+%!assert (bitand (true, 5), 1)
+
+%!assert (bitand (true, false), false)
+%!assert (bitand (true, true), true)
+%!assert (bitand (true, false), false)
+%!assert (bitand (true, false), false)
+
+## Test idx_arg.length () == 0
+%!error <size of X and Y must match> bitand ([0 0 0], [1 0])
+%!error <size of X and Y must match> bitand ([0; 0; 0], [0 0 0])
+*/
 
 template <typename T>
 static int64_t
@@ -595,7 +635,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
           int bits_in_type = sizeof (double)
                              * std::numeric_limits<unsigned char>::digits;
           NDArray m = m_arg.array_value ();
-          DO_BITSHIFT ( );
+          DO_BITSHIFT ();
         }
       else if (cname == "single")
         {
@@ -620,6 +660,19 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 
   return retval;
 }
+
+/*
+%!assert (bitshift (uint8  (16), 1),  uint8 ( 32))
+%!assert (bitshift (uint16 (16), 2), uint16 ( 64))
+%!assert (bitshift (uint32 (16), 3), uint32 (128))
+%!assert (bitshift (uint64 (16), 4), uint64 (256))
+%!assert (bitshift (uint8 (255), 1), uint8 (254))
+
+%!error <expecting integer as second argument> bitshift (16, 1.5)
+%!error bitshift (16, {1})
+%!error <N must be a scalar integer> bitshift (10, [-2 -1 0 1 2], [1 1 1 1 1])
+%!error <N must be positive> bitshift (10, [-2 -1 0 1 2], -1)
+*/
 
 DEFUN (bitmax, args, ,
        "-*- texinfo -*-\n\

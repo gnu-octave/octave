@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "mxarray.h"
 #include "oct-obj.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
@@ -53,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_scalar<float>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_float_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_scalar, "float scalar",
                                      "single");
@@ -184,15 +184,17 @@ octave_float_scalar::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_float_scalar::save_hdf5 (hid_t loc_id, const char *name,
+octave_float_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                 bool /* save_as_floats */)
 {
+  bool retval = false;
+
+#if defined (HAVE_HDF5)
+
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
@@ -216,12 +218,18 @@ octave_float_scalar::save_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_float_scalar::load_hdf5 (hid_t loc_id, const char *name)
+octave_float_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
+#if defined (HAVE_HDF5)
+
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
 #else
@@ -250,9 +258,12 @@ octave_float_scalar::load_hdf5 (hid_t loc_id, const char *name)
   H5Dclose (data_hid);
 
   return true;
-}
 
+#else
+  gripe_load ("hdf5");
+  return false;
 #endif
+}
 
 mxArray *
 octave_float_scalar::as_mxArray (void) const
@@ -325,6 +336,29 @@ octave_float_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (isna, octave_is_NA);
       SCALAR_MAPPER (isnan, xisnan);
       SCALAR_MAPPER (xsignbit, xsignbit);
+
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return scalar;
+
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xtoascii:
+      {
+        octave_value str_conv = convert_to_str (true, true);
+        return error_state ? octave_value () : str_conv.map (umap);
+      }
 
     default:
       return octave_base_value::map (umap);

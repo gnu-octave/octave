@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Michael Goffioul
+## Copyright (C) 2012-2015 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,16 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ("Name", value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, "Name", value, @dots{})
+## @deftypefn  {Function File} {@var{hui} =} uipanel ("Name", value, @dots{})
+## @deftypefnx {Function File} {@var{hui} =} uipanel (@var{parent}, "Name", value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uipanel (varargin)
+function hui = uipanel (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  [h, args] = __uiobject_split_args__ ("uipanel", varargin,
+                                       {"figure", "uipanel", "uibuttongroup"});
+  hui = __go_uipanel__ (h, args{:});
 
 endfunction
 

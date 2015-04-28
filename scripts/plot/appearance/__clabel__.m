@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -126,4 +126,8 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   endwhile
 
 endfunction
+
+
+## No test needed for internal helper function.
+%!assert (1)
 

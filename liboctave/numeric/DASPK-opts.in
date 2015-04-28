@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2013 John W. Eaton
+# Copyright (C) 2002-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -209,10 +209,10 @@ OPTION
 A vector of the same length as the state vector.  A nonzero element
 indicates that the corresponding element of the state vector is an
 algebraic variable (i.e., its derivative does not appear explicitly
-in the equation set.
+in the equation set).
 
 This option is required by the
-@qcode{compute consistent initial condition\"} and
+@qcode{\"compute consistent initial condition\"} and
 @qcode{\"exclude algebraic variables from error test\"} options.
 
   END_DOC_ITEM

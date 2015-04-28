@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2013 Kai Habel
+## Copyright (C) 2001-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -77,7 +77,7 @@ function ret = pchip (x, y, xi)
 
   ## Check the size and shape of y
   if (isvector (y))
-    y = y(:).'; ##row vector
+    y = y(:).';  # force row vector
     szy = size (y);
     if (! size_equal (x, y))
       error ("pchip: length of X and Y must match");

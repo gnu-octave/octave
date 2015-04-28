@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 1992-2013 John W. Eaton
+Copyright (C) 1992-2015 John W. Eaton
 
 This file is part of Octave.
 

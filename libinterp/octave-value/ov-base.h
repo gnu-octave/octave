@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-hdf5.h"
+#include "oct-hdf5-id.h"
 
 class Cell;
 class mxArray;
@@ -219,7 +219,7 @@ public:
   virtual octave_base_value *
   empty_clone (void) const;
 
-  // Unique clone. Usually clones, but may be overriden to fake the
+  // Unique clone. Usually clones, but may be overridden to fake the
   // cloning when sharing copies is to be controlled from within an
   // instance (see octave_class).
   virtual octave_base_value *
@@ -287,7 +287,7 @@ public:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  virtual idx_vector index_vector (void) const;
+  virtual idx_vector index_vector (bool require_integers = false) const;
 
   virtual dim_vector dims (void) const { return dim_vector (); }
 
@@ -365,6 +365,8 @@ public:
   virtual bool is_map (void) const { return false; }
 
   virtual bool is_object (void) const { return false; }
+
+  virtual bool is_classdef_object (void) const { return false; }
 
   virtual bool is_java (void) const { return false; }
 
@@ -583,6 +585,9 @@ public:
   virtual octave_base_value *unique_parent_class (const std::string&)
   { return 0; }
 
+  virtual bool is_instance_of (const std::string&) const
+  { return false; }
+
   virtual octave_function *function_value (bool silent = false);
 
   virtual octave_user_function *user_function_value (bool silent = false);
@@ -606,7 +611,7 @@ public:
 
   virtual bool print_as_scalar (void) const { return false; }
 
-  virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  virtual void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   virtual void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -631,13 +636,11 @@ public:
   virtual bool load_binary (std::istream& is, bool swap,
                             oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
   virtual bool
-  save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
   virtual bool
-  load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   virtual int
   write (octave_stream& os, int block_size,
@@ -761,7 +764,7 @@ public:
   virtual bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
-  // This is a helper for the above, to be overriden in scalar types.  The
+  // This is a helper for the above, to be overridden in scalar types.  The
   // whole point is to handle the insertion efficiently with just *two* VM
   // calls, which is basically the theoretical minimum.
   virtual bool
@@ -816,6 +819,9 @@ protected:
 
   static const char *get_umap_name (unary_mapper_t);
 
+  void gripe_load (const char *type) const;
+  void gripe_save (const char *type) const;
+
 private:
 
   static int curr_print_indent_level;
@@ -827,5 +833,17 @@ private:
 // TRUE means to perform automatic sparse to real mutation if there
 // is memory to be saved
 extern OCTINTERP_API bool Vsparse_auto_mutate;
+
+// Utility function to convert C++ arguments used in subsref/subsasgn into an
+// octave_value_list object that can be used to call a function/method in the
+// interpreter.
+extern OCTINTERP_API octave_value
+make_idx_args (const std::string& type,
+               const std::list<octave_value_list>& idx,
+               const std::string& who);
+
+// Tells whether some regular octave_value_base methods are being called from
+// within the "builtin" function.
+extern OCTINTERP_API bool called_from_builtin (void);
 
 #endif

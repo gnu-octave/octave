@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -37,7 +37,7 @@ function write_index (desc, dir, index_file, global_install)
   ## Get classes in dir
   class_idx = find (strncmp (files, '@', 1));
   for k = 1:length (class_idx)
-    class_name = files {class_idx (k)};
+    class_name = files {class_idx(k)};
     class_dir = fullfile (dir, class_name);
     if (exist (class_dir, "dir"))
       [files2, err, msg] = readdir (class_dir);

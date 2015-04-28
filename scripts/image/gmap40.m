@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,19 +31,15 @@
 ## PKG_ADD: colormap ("register", "gmap40");
 ## PKG_DEL: colormap ("unregister", "gmap40");
 
-function map = gmap40 (n)
+function map = gmap40 (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = 6;
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("gmap40: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("gmap40: N must be a scalar");
   endif
 
-  if (n > 1)
+  if (n > 0)
     C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
     map = C(rem (0:(n-1), 6) + 1, :);
   else

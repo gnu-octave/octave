@@ -1,12 +1,14 @@
 # List of supported symbols for the TeX interpreter
-# (http://www.mathworks.com/help/matlab/ref/text_props.html):
-# - symbol name
-# - Unicode code
-# - MS symbol code (http://www.kostis.net/charsets/symbol.htm)
-# - Arranged by listings in The TeXbook, Appendix F
-# - Lowercase Greek letters: Greek Upper case: Misc Symbols type Ord: "Large" operators:
-# - Binary operators: Relations: Negated relations: Arrows: Openings: Closings: Alternate names:
-# - Other (not in Appendix F Tables):
+# Reference: http://www.mathworks.com/help/matlab/ref/text_props.html
+#
+# Column 1 : symbol name
+# Column 2 : Unicode code
+# Column 3 : MS symbol code (http://www.kostis.net/charsets/symbol.htm)
+#
+# Arranged by listings in The TeXbook, Appendix F:
+# Greek lower case letters, Greek upper case, Misc Symbols type Ord,
+# "Large" operators, Binary operators, Relations, Negated relations, Arrows,
+# Openings, Closings, Alternate names, and Other (not in Appendix F Tables).
 
 alpha           0x03B1  0xF061
 beta            0x03B2  0xF062
@@ -108,6 +110,6 @@ rangle          0x27E9  0xF0F1
 rceil           0x2309  0xF0F9
 neq             0x2260  0xF0B9
 ldots           0x2026  0xF0BC
-0               0x2298  0xF0C6
+0               0x2205  0xF0C6
 copyright       0x00A9  0xF0E3
 deg             0x00B0  0xF0B0

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 John Eaton and David Bateman
+## Copyright (C) 2004-2015 John Eaton and David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +44,7 @@
 ##    @result{} ns = 1
 ## @end group
 ## @end example
-## @seealso {reshape, permute, ipermute, circshift, squeeze}
+## @seealso{reshape, permute, ipermute, circshift, squeeze}
 ## @end deftypefn
 
 function [y, ns]  = shiftdim (x, n)
@@ -93,7 +93,7 @@ endfunction
 
 %!assert (size (shiftdim (rand (0, 1, 2))), [0 1 2])
 
-%% Test input validation
+## Test input validation
 %!error (shiftdim ())
 %!error (shiftdim (1,2,3))
 %!error (shiftdim (1, ones (2)))

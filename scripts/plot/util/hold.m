@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -56,9 +56,8 @@ function hold (varargin)
   if (nargin > 0 && isscalar (varargin{1}) && isaxes (varargin{1}))
     hax = varargin{1};
     varargin(1) = [];
-    nargs = numel (varargin);
-    ## FIXME: Should this be ancestor (hax, "parent")?
-    hfig = get (hax, "parent");
+    nargs = numel (varargin);    
+    hfig = ancestor (hax, "figure");
   elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}))
     print_usage ();
   else

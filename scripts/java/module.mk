@@ -5,6 +5,7 @@ java_FCN_FILES = \
   java/java_set.m \
   java/javaArray.m \
   java/javaaddpath.m \
+  java/javachk.m \
   java/javaclasspath.m \
   java/javamem.m \
   java/javarmpath.m \
@@ -53,20 +54,22 @@ java_JAVA_IMAGES = $(addprefix java/, $(JAVA_IMAGES))
 srcdir_java_JAVA_IMAGES = $(addprefix $(srcdir)/java/, $(JAVA_IMAGES))
 
 %.class : %.java
-	$(MKDIR_P) java/$(org_octave_dir)
+	$(AM_V_GEN)$(MKDIR_P) java/$(org_octave_dir) && \
 	( cd $(srcdir)/java; "$(JAVAC)" -source 1.3 -target 1.3 -d $(abs_builddir)/java $(org_octave_dir)/$(<F) )
 
 java/images.stamp: $(srcdir_java_JAVA_IMAGES)
-	if [ "x$(srcdir)" != "x." ]; then \
+	$(AM_V_GEN)if [ "x$(srcdir)" != "x." ]; then \
 	  $(MKDIR_P) java/$(org_octave_dir)/images; \
 	  cp $(srcdir_java_JAVA_IMAGES) java/$(org_octave_dir)/images; \
-	fi
+	fi && \
 	touch $@
 
 if AMCOND_HAVE_JAVA
 java/octave.jar: java/images.stamp $(java_JAVA_CLASSES)
-	( cd java; "$(JAR)" cf octave.jar.t $(JAVA_CLASSES) $(JAVA_IMAGES) )
-	mv $@.t $@
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	( cd java; \
+	  "$(JAR)" cf octave.jar-t $(JAVA_CLASSES) $(JAVA_IMAGES) ) && \
+	mv $@-t $@
 endif
 
 EXTRA_DIST += $(JAR_FILES) $(java_JAVA_SRC) $(java_JAVA_IMAGES)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -215,8 +215,8 @@ check_gzip_magic (const std::string& fname)
   std::ifstream file (fname.c_str ());
   OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
-  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f &&
-      magic[1] == 0x8b)
+  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f
+      && magic[1] == 0x8b)
     retval = true;
 
   file.close ();
@@ -498,26 +498,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 std::string
 find_file_to_load (const std::string& name, const std::string& orig_name)
 {
-  std::string fname = name;
-
-  if (! (octave_env::absolute_pathname (fname)
-         || octave_env::rooted_relative_pathname (fname)))
-    {
-      file_stat fs (fname);
-
-      if (! (fs.exists () && fs.is_reg ()))
-        {
-          std::string tmp
-            = octave_env::make_absolute (load_path::find_file (fname));
-
-          if (! tmp.empty ())
-            {
-              warning_with_id ("Octave:load-file-in-path",
-                               "load: file found in load path");
-              fname = tmp;
-            }
-        }
-    }
+  std::string fname = find_data_file_in_load_path ("load", name, true);
 
   size_t dot_pos = fname.rfind (".");
   size_t sep_pos = fname.find_last_of (file_ops::dir_sep_chars ());
@@ -1071,7 +1052,8 @@ parse_save_options (const string_vector &argv,
   string_vector retval;
   int argc = argv.length ();
 
-  bool do_double = false, do_tabs = false;
+  bool do_double = false;
+  bool do_tabs = false;
 
   for (int i = 0; i < argc; i++)
     {
@@ -1224,7 +1206,7 @@ write_header (std::ostream& os, load_save_format format)
         char headertext[128];
 
         time (&now);
-        bdt = *gmtime (&now);
+        bdt = *gnulib::gmtime (&now);
         memset (headertext, ' ', 124);
         // ISO 8601 format date
         nstrftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
@@ -1494,23 +1476,24 @@ dump_octave_core (void)
     }
 }
 
-DEFUN (save, args, ,
+DEFUN (save, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Command} {} save file\n\
 @deftypefnx {Command} {} save options file\n\
 @deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
 @deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
+@deftypefnx {Command} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
+@deftypefnx {Built-in Function} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.  The special filename @samp{-} may be used to write\n\
-output to the terminal.  If no variable names are listed, Octave saves\n\
-all the variables in the current scope.  Otherwise, full variable names or\n\
-pattern syntax can be used to specify the variables to save.\n\
-If the @option{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
-of the scalar structure @var{STRUCT} are saved as if they were variables\n\
-with corresponding names.\n\
-Valid options for the @code{save} command are listed in the following table.\n\
-Options that modify the output format override the format specified by\n\
-@code{save_default_options}.\n\
+@var{file}.  The special filename @samp{-} may be used to return the\n\
+content of the variables as a string.  If no variable names are listed,\n\
+Octave saves all the variables in the current scope.  Otherwise, full\n\
+variable names or pattern syntax can be used to specify the variables to\n\
+save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}\n\
+@dots{} of the scalar structure @var{STRUCT} are saved as if they were\n\
+variables with corresponding names.  Valid options for the @code{save}\n\
+command are listed in the following table.  Options that modify the output\n\
+format override the format specified by @code{save_default_options}.\n\
 \n\
 If save is invoked using the functional form\n\
 \n\
@@ -1521,6 +1504,9 @@ save (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
 @noindent\n\
 then the @var{options}, @var{file}, and variable name arguments\n\
 (@var{v1}, @dots{}) must be specified as character strings.\n\
+\n\
+If called with a filename of @qcode{\"-\"}, write the output to stdout\n\
+if nargout is 0, otherwise return the output in a character string.\n\
 \n\
 @table @code\n\
 @item -append\n\
@@ -1621,8 +1607,6 @@ the file @file{data} in Octave's binary format.\n\
 {
   octave_value_list retval;
 
-  int argc = args.length ();
-
   string_vector argv = args.make_argv ();
 
   if (error_state)
@@ -1646,7 +1630,7 @@ the file @file{data} in Octave's binary format.\n\
   // override from command line
   argv = parse_save_options (argv, format, append, save_as_floats,
                              use_zlib);
-  argc = argv.length ();
+  int argc = argv.length ();
   int i = 0;
 
   if (error_state)
@@ -1679,11 +1663,14 @@ the file @file{data} in Octave's binary format.\n\
           if (append)
             warning ("save: ignoring -append option for output to stdout");
 
-          // FIXME: should things intended for the screen
-          //        end up in an octave_value (string)?
-
-          save_vars (argv, i, argc, octave_stdout, format,
-                     save_as_floats, true);
+          if (nargout == 0)
+            save_vars (argv, i, argc, std::cout, format, save_as_floats, true);
+          else
+            {
+              std::ostringstream output_buf;
+              save_vars (argv, i, argc, output_buf, format, save_as_floats, true);
+              retval = octave_value (output_buf.str());
+            }
         }
     }
 
@@ -1726,8 +1713,8 @@ the file @file{data} in Octave's binary format.\n\
               return retval;
             }
 
-          bool write_header_info = ! (append &&
-                                      H5Fis_hdf5 (fname.c_str ()) > 0);
+          bool write_header_info
+            = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
 

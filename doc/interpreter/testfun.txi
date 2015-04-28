@@ -1,4 +1,4 @@
-@c Copyright (C) 2005-2013 David Bateman
+@c Copyright (C) 2005-2015 David Bateman
 @c Copyright (C) 2002-2005 Paul Kienzle
 @c
 @c This file is part of Octave.
@@ -297,14 +297,14 @@ fail, assert, error and xtest:
 @group
 function output = must_be_zero (@var{input})
   if (@var{input} != 0)
-    error ("Non-zero input!")
+    error ("Nonzero input!")
   endif
   output = input;
 endfunction
 
 %!fail ("must_be_zero (1)");
 %!assert (must_be_zero (0), 0);
-%!error <Non-zero> must_be_zero (1);
+%!error <Nonzero> must_be_zero (1);
 %!xtest error ("This code generates an error");
 @end group
 @end example
@@ -320,7 +320,7 @@ test must_be_zero verbose
 >>>>> /path/to/must_be_zero.m
   ***** fail ("must_be_zero (1)");
   ***** assert (must_be_zero (0), 0);
-  ***** error <Non-zero> must_be_zero (1);
+  ***** error <Nonzero> must_be_zero (1);
   ***** xtest error ("This code generates an error");
 !!!!! known failure
 This code generates an error

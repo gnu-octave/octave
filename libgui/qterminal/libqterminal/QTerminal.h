@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2013 Michael Goffioul.
-Copyright (C) 2012-2013 Jacob Dawid.
+Copyright (C) 2012-2015 Michael Goffioul.
+Copyright (C) 2012-2015 Jacob Dawid.
 
 This file is part of QTerminal.
 
@@ -33,6 +33,9 @@ see <http://www.gnu.org/licenses/>.
 #include <QMenu>
 #include <QClipboard>
 #include <QApplication>
+#include <QAction>
+
+#include "resource-manager.h"
 
 class QTerminal : public QWidget
 {
@@ -55,6 +58,8 @@ public:
   virtual void sendText (const QString& text) = 0;
 
   virtual QString selectedText () = 0;
+
+  virtual void has_extra_interrupt (bool extra) = 0;
 
   enum CursorType
   {
@@ -81,6 +86,8 @@ public:
   virtual void setCursorColor (bool useForegroundColor,
                                const QColor& color) = 0;
 
+  virtual void setScrollBufferSize(int value=1000) = 0;
+
 signals:
 
   void report_status_message (const QString&);
@@ -92,6 +99,8 @@ public slots:
   virtual void copyClipboard (void) = 0;
 
   virtual void pasteClipboard (void) = 0;
+
+  virtual void selectAll (void) = 0;
 
   virtual void handleCustomContextMenuRequested (const QPoint& at)
   {
@@ -106,27 +115,38 @@ public slots:
 
   void notice_settings (const QSettings *settings);
 
+  virtual void init_terminal_size (void) { }
+
   void terminal_interrupt (void) { emit interrupt_signal (); }
+
+  void set_global_shortcuts (bool focus_out);
 
 protected:
 
   QTerminal (QWidget *xparent = 0) : QWidget (xparent)
   {
+    // context menu
     setContextMenuPolicy (Qt::CustomContextMenu);
 
     _contextMenu = new QMenu (this);
 
     _copy_action = _contextMenu->addAction (
-                     QIcon (":/actions/icons/editcopy.png"),
+                     resource_manager::icon ("edit-copy"),
                      tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                      QIcon (":/actions/icons/editpaste.png"),
+                     resource_manager::icon ("edit-paste"),
                       tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 
-    _contextMenu->addAction (tr ("Clear All"), parent (),
+    _selectall_action = _contextMenu->addAction (
+                      tr ("Select All"), this, SLOT (selectAll ()));
+
+
+    _contextMenu->addSeparator ();
+
+    _contextMenu->addAction (tr ("Clear Window"), parent (),
                              SLOT (handle_clear_command_window_request ()));
 
     connect (this, SIGNAL (customContextMenuRequested (QPoint)),
@@ -138,11 +158,27 @@ protected:
     connect (xparent, SIGNAL (settings_changed (const QSettings *)),
              this, SLOT (notice_settings (const QSettings *)));
 
+    connect (xparent, SIGNAL (init_terminal_size_signal ()),
+             this, SLOT (init_terminal_size ()));
+
     connect (xparent, SIGNAL (copyClipboard_signal ()),
              this, SLOT (copyClipboard ()));
 
     connect (xparent, SIGNAL (pasteClipboard_signal ()),
              this, SLOT (pasteClipboard ()));
+
+    connect (xparent, SIGNAL (selectAll_signal ()),
+             this, SLOT (selectAll ()));
+
+    // extra interrupt action
+    _interrupt_action = new QAction (this);
+    addAction (_interrupt_action);
+
+    _interrupt_action->setShortcut (
+            QKeySequence (Qt::ControlModifier + Qt::Key_C));
+
+    connect (_interrupt_action, SIGNAL (triggered ()),
+            this, SLOT (terminal_interrupt ()));
   }
 
 private:
@@ -150,6 +186,9 @@ private:
   QMenu *_contextMenu;
   QAction * _copy_action;
   QAction * _paste_action;
+  QAction * _selectall_action;
+
+  QAction *_interrupt_action;
 };
 
 #endif // QTERMINAL_H

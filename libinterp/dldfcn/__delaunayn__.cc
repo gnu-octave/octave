@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2013 Kai Habel
+Copyright (C) 2000-2015 Kai Habel
 
 This file is part of Octave.
 
@@ -44,6 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 #include <string>
+
+#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
@@ -175,7 +177,8 @@ Undocumented internal function.\n\
 
           facetT *facet;
           vertexT *vertex, **vertexp;
-          octave_idx_type nf = 0, i = 0;
+          octave_idx_type nf = 0;
+          octave_idx_type i = 0;
 
           FORALLfacets
             {

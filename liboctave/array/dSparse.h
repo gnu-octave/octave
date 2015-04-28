@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -33,7 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "DET.h"
 #include "MSparse.h"
 #include "MSparse-defs.h"
-#include "Sparse-op-defs.h"
+
+#include "Sparse-op-decls.h"
+
 #include "MatrixType.h"
 
 class PermMatrix;
@@ -120,10 +122,13 @@ public:
   friend OCTAVE_API SparseMatrix real (const SparseComplexMatrix& a);
   friend OCTAVE_API SparseMatrix imag (const SparseComplexMatrix& a);
 
-  friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y);
-  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y);
+  friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y)
+                                        GCC_ATTR_DEPRECATED ;
+  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y)
+                                        GCC_ATTR_DEPRECATED ;
   friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x,
-                                        const SparseMatrix& y);
+                                        const SparseMatrix& y)
+                                        GCC_ATTR_DEPRECATED ;
 
   SparseMatrix transpose (void) const
   {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -68,7 +68,7 @@ In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where\n\
 \n\
 If four output values are requested, compute @code{@var{AA} =\n\
 @var{CC}*@var{A}*@var{DD}} and @code{@var{BB} = @var{CC}*@var{B}*@var{DD}},\n\
-in which @var{AA} and @var{BB} have non-zero elements of approximately the\n\
+in which @var{AA} and @var{BB} have nonzero elements of approximately the\n\
 same magnitude and @var{CC} and @var{DD} are permuted diagonal matrices as\n\
 in @var{DD} for the algebraic eigenvalue problem.\n\
 \n\
@@ -144,7 +144,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   if (AEPcase)
     {
       // Algebraic eigenvalue problem.
-      bool noperm = false, noscal = false;
+      bool noperm = false;
+      bool noscal = false;
       if (nargin > 1)
         {
           std::string a1s = args(1).string_value ();

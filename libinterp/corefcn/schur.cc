@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -63,7 +63,7 @@ DEFUN (schur, args, nargout,
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"real\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@var{A}, @dots{})\n\
+@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@dots{})\n\
 @cindex Schur decomposition\n\
 Compute the Schur@tie{}decomposition of @var{A}\n\
 @tex\n\
@@ -124,7 +124,7 @@ subspace corresponding to the @var{k} leading eigenvalues of @var{S}.\n\
 The Schur@tie{}decomposition is used to compute eigenvalues of a\n\
 square matrix, and has applications in the solution of algebraic\n\
 Riccati equations in control (see @code{are} and @code{dare}).\n\
-@seealso{rsf2csf, lu, chol, hess, qr, qz, svd}\n\
+@seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -143,9 +143,9 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 
   if (nargin == 2)
     {
-      ord = args(1).string_value ();
-
-      if (error_state)
+      if (args(1).is_string ())
+        ord = args(1).string_value ();
+      else
         {
           error ("schur: second argument must be a string");
           return retval;
@@ -170,7 +170,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
       if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
           && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
         {
-          warning ("schur: incorrect ordered schur argument '%c'",
+          warning ("schur: incorrect ordered schur argument '%s'",
                    ord.c_str ());
           return retval;
         }
@@ -286,11 +286,13 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 %! [u, s] = schur (a);
 %! assert (u' * a * u, s, sqrt (eps ("single")));
 
-%!test
-%! fail ("schur ([1, 2; 3, 4], 2)", "warning");
-
 %!error schur ()
+%!error schur (1,2,3)
+%!error [a,b,c] = schur (1)
 %!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
+%!error <wrong type argument 'cell'> schur ({1})
+%!warning <incorrect ordered schur argument> schur ([1, 2; 3, 4], "bad_opt");
+
 */
 
 DEFUN (rsf2csf, args, nargout,

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -40,8 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-dock-widget.h"
 
 /**
-   \class files_dock_widget
-   \brief Dock widget to display files in the current directory.
+   @class files_dock_widget
+   @brief Dock widget to display files in the current directory.
 */
 class files_dock_widget : public octave_dock_widget
 {
@@ -113,6 +113,7 @@ private slots:
   /* from octave_doc_widget */
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 signals:
 

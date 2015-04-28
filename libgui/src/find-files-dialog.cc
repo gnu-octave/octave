@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013 John Donoghue
+Copyright (C) 2013-2015 John Donoghue
 
 This file is part of Octave.
 
@@ -50,7 +50,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
   : QDialog (p)
 {
   setWindowTitle (tr ("Find Files"));
-  setWindowIcon (QIcon (":/actions/icons/search.png"));
+  setWindowIcon (resource_manager::icon ("edit-find"));
 
   _dir_iterator = 0;
 
@@ -61,7 +61,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
 
   QLabel * file_name_label = new QLabel (tr ("Named:"));
   _file_name_edit = new QLineEdit;
-  _file_name_edit->setToolTip (tr ("Enter the filename expression"));
+  _file_name_edit->setToolTip (tr ("Enter the filename search expression"));
 
   _file_name_edit->setText (settings->value ("findfiles/file_name",
                                              "*").toString ());
@@ -79,13 +79,13 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _browse_button->setToolTip (tr ("Browse for start directory"));
   connect (_browse_button, SIGNAL (clicked ()), this, SLOT (browse_folders ()));
 
-  _recurse_dirs_check = new QCheckBox (tr ("Recurse directories"));
+  _recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
   _recurse_dirs_check->setChecked (settings->value ("findfiles/recurse_dirs",
                                                     false).toBool ());
   _recurse_dirs_check->setToolTip (
     tr ("Search recursively through directories for matching files"));
 
-  _include_dirs_check = new QCheckBox (tr ("Include directories"));
+  _include_dirs_check = new QCheckBox (tr ("Include directory names"));
   _include_dirs_check->setChecked (settings->value ("findfiles/include_dirs",
                                                     false).toBool ());
   _include_dirs_check->setToolTip (
@@ -97,7 +97,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _name_case_check->setToolTip (tr ("Set matching name is case insensitive"));
 
   _contains_text_check = new QCheckBox (tr ("Contains text:"));
-  _contains_text_check->setToolTip (tr ("Search must match text"));
+  _contains_text_check->setToolTip (tr ("Enter the file content search expression"));
   _contains_text_check->setChecked (settings->value ("findfiles/check_text",
                                                       false).toBool ());
 
@@ -304,7 +304,7 @@ find_files_dialog::stop_find ()
   _contains_text_edit->setEnabled (true);
 
   find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
-  QString res_str = QString ("%1 matches").arg (m->rowCount ());
+  QString res_str = QString (tr("%1 match(es)")).arg (m->rowCount ());
 
   _status_bar->showMessage (res_str);
 }

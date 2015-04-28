@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Radek Salac
+## Copyright (C) 2008-2015 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.
@@ -63,10 +63,11 @@
 ##
 ## @item @var{iter} is the number of iterations performed.
 ##
-## @item @var{resvec} is a vector containing the relative residual at each iteration.
+## @item @var{resvec} is a vector containing the relative residual at each
+## iteration.
 ## @end itemize
 ##
-## @seealso{bicg, cgs, gmres, pcg}
+## @seealso{bicg, cgs, gmres, pcg, qmr}
 ##
 ## @end deftypefn
 
@@ -77,7 +78,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
 
     if (ischar (A))
       A = str2func (A);
-    elseif (ismatrix (A))
+    elseif (isnumeric(A) && ismatrix (A))
       Ax  = @(x) A  * x;
     elseif (isa (A, "function_handle"))
       Ax  = @(x) feval (A, x);
@@ -98,7 +99,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
       M1m1x = @(x) x;
     elseif (ischar (M1))
       M1m1x = str2func (M1);
-    elseif (ismatrix (M1))
+    elseif (isnumeric(M1) && ismatrix (M1))
       M1m1x = @(x) M1  \ x;
     elseif (isa (M1, "function_handle"))
       M1m1x = @(x) feval (M1, x);
@@ -111,7 +112,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
       M2m1x = @(x) x;
     elseif (ischar (M2))
       M2m1x = str2func (M2);
-    elseif (ismatrix (M2))
+    elseif (isnumeric(M2) && ismatrix (M2))
       M2m1x = @(x) M2  \ x;
     elseif (isa (M2, "function_handle"))
       M2m1x = @(x) feval (M2, x);

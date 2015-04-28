@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_idx_vector_h 1
 
 #include <cassert>
+#include <cstring>
 
 #include <algorithm>
 #include <iosfwd>
@@ -33,8 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 #include "oct-inttypes.h"
-#include "oct-alloc.h"
-#include "oct-mem.h"
 #include "oct-refcount.h"
 
 template<class T> class Array;
@@ -146,7 +145,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_colon_rep (const idx_colon_rep& idx);
@@ -208,7 +206,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_range_rep (const idx_range_rep& idx);
@@ -265,7 +262,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_scalar_rep (const idx_scalar_rep& idx);
@@ -332,7 +328,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_vector_rep (const idx_vector_rep& idx);
@@ -406,7 +401,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_mask_rep (const idx_mask_rep& idx);
@@ -631,16 +625,17 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        copy_or_memcpy (len, src, dest);
+        std::copy (src, src + len, dest);
         break;
 
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           const T *ssrc = src + start;
           if (step == 1)
-            copy_or_memcpy (len, ssrc, dest);
+            std::copy (ssrc, ssrc + len, dest);
           else if (step == -1)
             std::reverse_copy (ssrc - len + 1, ssrc + 1, dest);
           else if (step == 0)
@@ -704,16 +699,17 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        copy_or_memcpy (len, src, dest);
+        std::copy (src, src + len, dest);
         break;
 
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
-            copy_or_memcpy (len, src, sdest);
+            std::copy (src, src + len, sdest);
           else if (step == -1)
             std::reverse_copy (src, src + len, sdest - len + 1);
           else
@@ -781,7 +777,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
             std::fill (sdest, sdest + len, val);
@@ -850,7 +847,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           octave_idx_type i, j;
           if (step == 1)
             for (i = start, j = start + len; i < j; i++) body (i);
@@ -921,7 +919,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           octave_idx_type i, j;
           if (step == 1)
             for (i = start, j = start + len; i < j && body (i); i++) ;
@@ -954,7 +953,8 @@ public:
         {
           idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
-          octave_idx_type ext = r->extent (0), j = 0;
+          octave_idx_type ext = r->extent (0);
+          octave_idx_type j = 0;
           for (octave_idx_type i = 0; i < ext; i++)
             {
               if (data[i])

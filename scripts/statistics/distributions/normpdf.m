@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@ function pdf = normpdf (x, mu = 0, sigma = 1)
     print_usage ();
   endif
 
-  if (!isscalar (mu) || !isscalar (sigma))
+  if (! isscalar (mu) || ! isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
       error ("normpdf: X, MU, and SIGMA must be of common size or scalars");
@@ -63,7 +63,7 @@ function pdf = normpdf (x, mu = 0, sigma = 1)
     k = isinf (mu) | !(sigma > 0) | !(sigma < Inf);
     pdf(k) = NaN;
 
-    k = !isinf (mu) & (sigma > 0) & (sigma < Inf);
+    k = ! isinf (mu) & (sigma > 0) & (sigma < Inf);
     pdf(k) = stdnormal_pdf ((x(k) - mu(k)) ./ sigma(k)) ./ sigma(k);
   endif
 
@@ -80,12 +80,12 @@ endfunction
 %!assert (normpdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN])
 %!assert (normpdf ([x, NaN], 1, 1), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (normpdf (single ([x, NaN]), 1, 1), single ([y, NaN]), eps ("single"))
 %!assert (normpdf ([x, NaN], single (1), 1), single ([y, NaN]), eps ("single"))
 %!assert (normpdf ([x, NaN], 1, single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error normpdf ()
 %!error normpdf (1,2)
 %!error normpdf (1,2,3,4)

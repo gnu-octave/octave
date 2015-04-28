@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -46,6 +46,9 @@
 ## @item @qcode{"displayrange"}
 ## @var{value1} is the display range as described above.
 ##
+## @item @qcode{"colormap"}
+## @var{value1} is the colormap to use when displaying an indexed image.
+##
 ## @item @qcode{"xdata"}
 ## If @var{value1} is a two element vector, it must contain horizontal axis
 ## limits in the form [xmin xmax]; Otherwise @var{value1} must be a
@@ -75,7 +78,7 @@ function h = imshow (im, varargin)
   endif
 
   display_range = NA;
-  true_color = false;
+  truecolor = false;
   indexed = false;
   xdata = ydata = [];
 
@@ -98,9 +101,9 @@ function h = imshow (im, varargin)
     endif
   elseif (size (im, 3) == 3)
     if (ismember (class (im), {"uint8", "uint16", "double", "single"}))
-      true_color = true;
+      truecolor = true;
     else
-      error ("imshow: color image must be uint8, uint16, double, or single");
+      error ("imshow: TrueColor image must be uint8, uint16, double, or single");
     endif
   else
     error ("imshow: expecting MxN or MxNx3 matrix for image");
@@ -114,34 +117,47 @@ function h = imshow (im, varargin)
         display_range = arg;
       elseif (columns (arg) == 3)
         indexed = true;
-        colormap (arg);
+        if (iscolormap (arg))
+          colormap (arg);
+        else
+          error ("imshow: invalid colormap MAP");
+        endif
       elseif (! isempty (arg))
-        error ("imshow: argument number %d is invalid", narg+1);
+        error ("imshow: argument number %d is invalid", narg);
       endif
     elseif (ischar (arg))
       switch (tolower (arg))
-        case "displayrange";
+        case "colormap"
+          map = varargin{narg++};
+          if (iscolormap (map))
+            colormap (map);
+          else
+            error ("imshow: invalid colormap");
+          endif
+        case "displayrange"
           display_range = varargin{narg++};
-        case "xdata";
+        case "parent"
+          warning ("imshow: parent argument is not implemented");
+        case {"truesize", "initialmagnification"}
+          warning ("image: zoom argument ignored -- use GUI features");
+        case "xdata"
           xdata = varargin{narg++};
           if (! isvector (xdata))
             error ("imshow: xdata must be a vector")
           endif
           xdata = [xdata(1) xdata(end)];
-        case "ydata";
+        case "ydata"
           ydata = varargin{narg++};
           if (! isvector (ydata))
-            error ("imshow: expect a vector for ydata")
+            error ("imshow: ydata must be a vector")
           endif
           ydata = [ydata(1) ydata(end)];
-        case {"truesize", "initialmagnification"}
-          warning ("image: zoom argument ignored -- use GUI features");
         otherwise
           warning ("imshow: unrecognized property %s", arg);
           narg++;
       endswitch
     else
-      error ("imshow: argument number %d is invalid", narg+1);
+      error ("imshow: argument number %d is invalid", narg);
     endif
   endwhile
 
@@ -159,46 +175,45 @@ function h = imshow (im, varargin)
     switch (t)
       case {"double", "single", "logical"}
         display_range = [0, 1];
-      case {"int8", "int16", "int32", "uint8", "uint16", "uint32"}
+      case {"uint8", "uint16", "int16"}
         display_range = [intmin(t), intmax(t)];
       otherwise
         error ("imshow: invalid data type for image");
     endswitch
   endif
 
-  nans = isnan (im(:));
-  if (any (nans))
-    warning ("Octave:imshow-NaN",
-             "imshow: pixels with NaN or NA values are set to minimum pixel value");
-    im(nans) = display_range(1);
+  if (isfloat (im))
+    nans = isnan (im(:));
+    if (any (nans))
+      warning ("Octave:imshow-NaN",
+               "imshow: pixels with NaN or NA values are set to minimum pixel value");
+      im(nans) = display_range(1);
+    endif
   endif
 
-  ## This is for compatibility.
-  if (! (indexed || (true_color && isinteger (im))) || islogical (im))
-    im = double (im);
-  endif
-
+  ## FIXME: Commented out 2014/05/01.  imagesc and 'clim' will automatically
+  ## take care of displaying out-of-range data clamped to the limits.
+  ## Eventually, this can be deleted if no problems arise.
   ## Clamp the image to the range boundaries
-  if (! (true_color || indexed || islogical (im)))
-    low = display_range(1);
-    high = display_range(2);
-    im(im < low) = low;
-    im(im > high) = high;
-  endif
+  ##if (! (truecolor || indexed || islogical (im)))
+  ##  low = display_range(1);
+  ##  high = display_range(2);
+  ##  im(im < low) = low;
+  ##  im(im > high) = high;
+  ##endif
 
-  if (true_color || indexed)
-    tmp = image (xdata, ydata, im);
+  if (truecolor || indexed)
+    htmp = image (xdata, ydata, im);
   else
-    tmp = image (xdata, ydata, im);
-    set (tmp, "cdatamapping", "scaled");
-    ## The backend is responsible for scaling to clim if necessary.
+    htmp = imagesc (xdata, ydata, im, display_range);
     set (gca (), "clim", display_range);
   endif
-  set (gca (), "visible", "off", "ydir", "reverse");
+  set (gca (), "visible", "off", "view", [0, 90],
+               "ydir", "reverse", "layer", "top");
   axis ("image");
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction
@@ -241,8 +256,25 @@ endfunction
 %! imshow (rand (100, 100));
 %! colormap (jet (64));
 
-%% Test input validation
+## Test input validation
 %!error imshow ()
 %!error <IM must be an image> imshow ({"cell"})
+%!error <TrueColor image must be uint8> imshow (ones (3,3,3, "uint32"))
+%!error <TrueColor image must be uint8> imshow (ones (3,3,3, "int16"))
 %!error <expecting MxN or MxNx3 matrix> imshow (ones (4,4,4))
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   fail ("imshow ([1,1], [2 0 0])", "invalid colormap MAP");
+%!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid");
+%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap");
+%!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector");
+%!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector");
+%!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar")
+%!   fail ("imshow ([1,1], {1})", "argument number 2 is invalid");
+%!   fail ("imshow ([1+i,1-i])", "warning", "only showing real part of complex image");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

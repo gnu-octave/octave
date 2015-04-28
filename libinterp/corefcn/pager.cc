@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,7 +52,7 @@ static oprocstream *external_pager = 0;
 static bool write_to_diary_file = false;
 
 // The name of the current diary file.
-static std::string diary_file;
+static std::string diary_file ("diary");
 
 // The diary file.
 static std::ofstream external_diary_file;
@@ -231,7 +231,7 @@ more_than_a_screenful (const char *s, int len)
 int
 octave_pager_buf::sync (void)
 {
-  if (! interactive
+  if (! interactive || forced_interactive
       || really_flush_to_pager
       || (Vpage_screen_output && Vpage_output_immediately)
       || ! Vpage_screen_output)
@@ -240,7 +240,7 @@ octave_pager_buf::sync (void)
 
       int len = pptr () - buf;
 
-      bool bypass_pager = (! interactive
+      bool bypass_pager = (! interactive || forced_interactive
                            || ! Vpage_screen_output
                            || (really_flush_to_pager
                                && Vpage_screen_output
@@ -587,6 +587,24 @@ With no arguments, @code{diary} toggles the current diary state.\n\
     }
 
   return retval;
+}
+
+DEFUN (__diaryfile__, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (diary_file);
+}
+
+DEFUN (__diarystate__, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{state} =} __diarystate__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (write_to_diary_file);
 }
 
 DEFUN (more, args, ,

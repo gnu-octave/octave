@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -48,12 +48,12 @@ endfunction
 %! y = [NaN v(1) v(1) v(end/2) v(end) NaN];
 %!assert (empirical_inv (x, v), y, eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (empirical_inv ([x, NaN], v), [y, NaN], eps)
 %!assert (empirical_inv (single ([x, NaN]), v), single ([y, NaN]), eps)
 %!assert (empirical_inv ([x, NaN], single (v)), single ([y, NaN]), eps)
 
-%% Test input validation
+## Test input validation
 %!error empirical_inv ()
 %!error empirical_inv (1)
 %!error empirical_inv (1,2,3)

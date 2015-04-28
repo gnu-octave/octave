@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Iain Murray
+Copyright (C) 2012-2015 Iain Murray
 
 This file is part of Octave.
 
@@ -87,4 +87,23 @@ variable.\n\
 /*
 ## Must always report at least 1 cpu available
 %!assert (nproc () >= 1);
+%!assert (nproc ("all") >= 1);
+%!assert (nproc ("current") >= 1);
+
+%!test
+%! c = nproc ("current");
+%! unwind_protect
+%!   old_val = getenv ("OMP_NUM_THREADS");
+%!   new_val = c + 1;
+%!   setenv ("OMP_NUM_THREADS", num2str (new_val));
+%!   assert (nproc ("overridable"), new_val);
+%! unwind_protect_cleanup
+%!   if (! isempty (old_val))
+%!     setenv ("OMP_NUM_THREADS", old_val);
+%!   else
+%!     unsetenv ("OMP_NUM_THREADS");
+%!   endif
+%! end_unwind_protect
+
+%!error nproc ("no_valid_option");
 */

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
@@ -24,7 +24,7 @@
 ##
 ## The input image @var{rgb} can be specified as a single matrix of size
 ## @nospell{MxNx3}, or as three separate variables, @var{R}, @var{G}, and
-## @var{B}, its three colour channels, red, green, and blue.
+## @var{B}, its three color channels, red, green, and blue.
 ##
 ## It outputs an indexed image @var{x} and a colormap @var{map} to interpret
 ## an image exactly the same as the input.  No dithering or other form of color
@@ -34,7 +34,7 @@
 ## of rows in @var{map}) in order
 ##
 ## Multi-dimensional indexed images (of size @nospell{MxNx3xK}) are also
-## supported, both via a single input (@var{rgb}) or its three colour channels
+## supported, both via a single input (@var{rgb}) or its three color channels
 ## as separate variables.
 ##
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
@@ -99,7 +99,7 @@ function [x, map] = rgb2ind (R, G, B)
 
 endfunction
 
-%% Test input validation
+## Test input validation
 %!error rgb2ind ()
 %!error rgb2ind (1,2,3,4,5,6,7)
 %!error <RGB> rgb2ind (rand (10, 10, 4))

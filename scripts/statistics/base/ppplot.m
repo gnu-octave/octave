@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -78,7 +78,7 @@ function [p, y] = ppplot (x, dist, varargin)
 endfunction
 
 
-%% Test input validation
+## Test input validation
 %!error ppplot ()
 %!error ppplot (ones (2,2))
 

@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 2012-2013 Daniel Kraft
+Copyright (C) 2014-2015 Julien Bect
+Copyright (C) 2012-2015 Daniel Kraft
 
 This file is part of Octave.
 
@@ -31,29 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include "pager.h"
 #include "profiler.h"
-
-profile_data_accumulator::enter::enter (profile_data_accumulator& a,
-                                        const std::string& f)
-  : acc (a)
-{
-  // FIXME: Add test for f != "" to prevent a blank line showing up
-  //        in profiler statistics.  See bug #39524.  The root cause
-  //        is that the function name is not set for the recurring readline
-  //        hook function.
-  if (acc.is_active () && f != "")
-    {
-      fcn = f;
-      acc.enter_function (fcn);
-    }
-  else
-    fcn = "";
-}
-
-profile_data_accumulator::enter::~enter ()
-{
-  if (fcn != "")
-    acc.exit_function (fcn);
-}
 
 profile_data_accumulator::stats::stats ()
   : time (0.0), calls (0), recursive (false),
@@ -106,7 +84,7 @@ profile_data_accumulator::tree_node::enter (octave_idx_type fcn)
 }
 
 profile_data_accumulator::tree_node*
-profile_data_accumulator::tree_node::exit (octave_idx_type fcn)
+profile_data_accumulator::tree_node::exit (octave_idx_type /* fcn */)
 {
   // FIXME: These assert statements don't make sense if profile() is called
   //        from within a function hierarchy to begin with.  See bug #39587.
@@ -419,7 +397,7 @@ profile_data_accumulator profiler;
 // Enable or disable the profiler data collection.
 DEFUN (__profiler_enable__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_enable__ ()\n\
+@deftypefn {Function File} {} __profiler_enable__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -445,7 +423,7 @@ Undocumented internal function.\n\
 // Clear all collected profiling data.
 DEFUN (__profiler_reset__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_reset__ ()\n\
+@deftypefn {Function File} {} __profiler_reset__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -463,7 +441,7 @@ Undocumented internal function.\n\
 // Query the timings collected by the profiler.
 DEFUN (__profiler_data__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_data__ ()\n\
+@deftypefn {Function File} {} __profiler_data__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

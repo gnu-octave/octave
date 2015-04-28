@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2013 John W. Eaton
+## Copyright (C) 2003-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dir} =} tempdir ()
-## Return the name of the system's directory for temporary files.
+## Return the name of the host system's directory for temporary files.
+##
+## The directory name is taken first from the environment variable
+## @env{TMPDIR}.  If that does not exist the system default returned by
+## @code{P_tmpdir} is used.
+## @seealso{P_tmpdir, tempname, mkstemp, tmpfile}
 ## @end deftypefn
 
 function dirname = tempdir ()
@@ -49,7 +54,11 @@ endfunction
 %!   setenv ("TMPDIR", "__MY_TMP_DIR__");
 %!   assert (tempdir (), ["__MY_TMP_DIR__" filesep()]);
 %! unwind_protect_cleanup
-%!   setenv ("TMPDIR", old_tmpdir);
+%!   if (! isempty (old_tmpdir))
+%!     setenv ("TMPDIR", old_tmpdir);
+%!   else
+%!     unsetenv ("TMPDIR");
+%!   endif
 %!   warning (old_wstate);
 %! end_unwind_protect
 

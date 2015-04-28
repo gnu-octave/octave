@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2013 John W. Eaton
+Copyright (C) 1999-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -212,6 +212,12 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
   return retval;
 }
 
+/*
+%!test
+%! a = {"foo", "bar"};
+%! assert (a(), a)
+*/
+
 void
 Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
               const octave_value& fill_val)
@@ -247,6 +253,12 @@ Cell::nnz (void) const
   gripe_wrong_type_arg ("nnz", "cell array");
   return -1;
 }
+
+/*
+%!error <wrong type argument 'cell array'> nnz ({0, 1, 2})
+%!error <wrong type argument 'cell array'> nnz (cell ())
+%!error <wrong type argument 'cell array'> nnz ({"foo", "bar"})
+*/
 
 Cell
 Cell::column (octave_idx_type i) const

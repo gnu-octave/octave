@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function pdf = tpdf (x, n)
     print_usage ();
   endif
 
-  if (!isscalar (n))
+  if (! isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
       error ("tpdf: X and N must be of common size or scalars");
@@ -77,12 +77,12 @@ endfunction
 %!assert (tpdf (x, 1), y, eps)
 %!assert (tpdf (x, [0 NaN 1 1 1]), [NaN NaN y(3:5)], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (tpdf ([x, NaN], 1), [y, NaN], eps)
 %!assert (tpdf (single ([x, NaN]), 1), single ([y, NaN]), eps ("single"))
 %!assert (tpdf ([x, NaN], single (1)), single ([y, NaN]), eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error tpdf ()
 %!error tpdf (1)
 %!error tpdf (1,2,3)

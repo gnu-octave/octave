@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2013 John W. Eaton
+Copyright (C) 2003-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,12 +23,14 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_chNDArray_h)
 #define octave_chNDArray_h 1
 
+#include <string>
+
 #include "Array.h"
-#include "chMatrix.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 #include "bsxfun-decl.h"
+#include "str-vec.h"
 
 class
 OCTAVE_API
@@ -46,17 +48,15 @@ public:
 
   charNDArray (const charNDArray& a) : Array<char> (a) { }
 
-  charNDArray (const charMatrix& a) : Array<char> (a) { }
-
-  charNDArray (char c) : Array<char> (charMatrix (c)) { }
-
-  charNDArray (const char *s) : Array<char> (charMatrix (s)) { }
-
-  charNDArray (const std::string& s) : Array<char> (charMatrix (s)) { }
-
-  charNDArray (const string_vector& s) : Array<char> (charMatrix (s)) { }
-
   charNDArray (const Array<char>& a) : Array<char> (a) { }
+
+  charNDArray (char c);
+
+  charNDArray (const char *s);
+
+  charNDArray (const std::string& s);
+
+  charNDArray (const string_vector& s, char fill_value = '\0');
 
   charNDArray& operator = (const charNDArray& a)
   {
@@ -83,8 +83,6 @@ public:
                        octave_idx_type r, octave_idx_type c);
   charNDArray& insert (const charNDArray& a,
                        const Array<octave_idx_type>& ra_idx);
-
-  charMatrix matrix_value (void) const;
 
   charNDArray squeeze (void) const { return Array<char>::squeeze (); }
 

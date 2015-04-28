@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ## Copyright (C) 2012 Alexander Klein
 ##
 ## This file is part of Octave.
@@ -152,12 +152,12 @@ endfunction
 %!assert (quadv (@sin, 0, 2 * pi), 0, 1e-5)
 %!assert (quadv (@sin, 0, pi), 2, 1e-5)
 
-%% Handles weak singularities at the edge
+## Handles weak singularities at the edge
 %!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 1e-5)
 
-%% Handles vector-valued functions
+## Handles vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-5)
 
-%% Handles matrix-valued functions
+## Handles matrix-valued functions
 %!assert (quadv (@(x) [ x, x, x; x, 1./sqrt(x), x; x, x, x ], 0, 1 ), [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5)
 

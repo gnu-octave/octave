@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -38,7 +38,7 @@ function pdf = hygepdf (x, t, m, n)
     print_usage ();
   endif
 
-  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
+  if (! isscalar (t) || ! isscalar (m) || ! isscalar (n))
     [retval, x, t, m, n] = common_size (x, t, m, n);
     if (retval > 0)
       error ("hygepdf: X, T, M, and N must be of common size or scalars");
@@ -49,7 +49,8 @@ function pdf = hygepdf (x, t, m, n)
     error ("hygepdf: X, T, M, and N must not be complex");
   endif
 
-  if (isa (x, "single") || isa (t, "single") || isa (m, "single") || isa (n, "single"))
+  if (isa (x, "single") || isa (t, "single")
+      || isa (m, "single") || isa (n, "single"))
     pdf = zeros (size (x), "single");
   else
     pdf = zeros (size (x));
@@ -90,13 +91,13 @@ endfunction
 %!assert (hygepdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN])
 %!assert (hygepdf ([x, NaN], 4, 2, 2), [y, NaN], eps)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (hygepdf (single ([x, NaN]), 4, 2, 2), single ([y, NaN]))
 %!assert (hygepdf ([x, NaN], single (4), 2, 2), single ([y, NaN]))
 %!assert (hygepdf ([x, NaN], 4, single (2), 2), single ([y, NaN]))
 %!assert (hygepdf ([x, NaN], 4, 2, single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error hygepdf ()
 %!error hygepdf (1)
 %!error hygepdf (1,2)

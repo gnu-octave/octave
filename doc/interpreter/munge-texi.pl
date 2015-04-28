@@ -68,7 +68,7 @@ TXI_LINE: while (<STDIN>)
   }
   if (/^\s*\@EXAMPLEFILE\((\S+)\)/)
   {
-    $fname = "$top_srcdir/examples/$1";
+    $fname = "$top_srcdir/examples/code/$1";
     print '@verbatim',"\n";
     open (EXAMPFH, $fname) or die "unable to open example file $fname\n";
     while (<EXAMPFH>)

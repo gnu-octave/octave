@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Michael Goffioul
+## Copyright (C) 2012-2015 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} uiwait (@var{h})
 ## @deftypefnx {Function File} {} uiwait (@var{h}, @var{timeout})
 ## Suspend program execution until the figure with handle @var{h} is
-## deleted or @code{uiresume} is called.  When no figure handle is specified,
-## this function uses the current figure.
+## deleted or @code{uiresume} is called.
 ##
+## When no figure handle is specified this function uses the current figure.
 ## If the figure handle is invalid or there is no current figure, this
 ## functions returns immediately.
 ##

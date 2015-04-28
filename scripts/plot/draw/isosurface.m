@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Martin Helm
+## Copyright (C) 2009-2015 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -134,7 +134,7 @@ function varargout = isosurface (varargin)
     z = varargin{3};
     val = varargin{4};
     iso = varargin{5};
-    if (nargin >= 6 && ismatrix (varargin{6}))
+    if (nargin >= 6 && isnumeric (varargin{6}))
       colors = varargin{6};
       calc_colors = true;
     endif
@@ -152,7 +152,8 @@ function varargout = isosurface (varargin)
     if (nargout == 2)
       warning ("isosurface: colors will be calculated, but no output argument to receive it.");
     endif
-    [fvc.faces, fvc.vertices, fvc.facevertexcdata] = __marching_cube__ (x, y, z, val, iso, colors);
+    [fvc.faces, fvc.vertices, fvc.facevertexcdata] = ...
+      __marching_cube__ (x, y, z, val, iso, colors);
   else
     [fvc.faces, fvc.vertices] = __marching_cube__ (x, y, z, val, iso);
   endif

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -53,11 +53,11 @@ endfunction
 %! x = [-1 0 0.5 1 2];
 %!assert (laplace_inv (x), [NaN -Inf 0 Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (laplace_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN])
 %!assert (laplace_inv (single ([x, NaN])), single ([NaN -Inf 0 Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error laplace_inv ()
 %!error laplace_inv (1,2)
 %!error laplace_inv (i)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -100,11 +100,15 @@ public:
 
   void do_resize_terminal (void);
 
+  void do_set_screen_size (int ht, int wd);
+
   std::string newline_chars (void);
 
   void do_restore_terminal_state (void);
 
   void do_blink_matching_paren (bool flag);
+
+  bool do_erase_empty_line (bool flag);
 
   void do_set_basic_word_break_characters (const std::string& s);
 
@@ -147,6 +151,8 @@ public:
 
   void do_replace_line (const std::string& text, bool clear_undo);
 
+  void do_kill_full_line (void);
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -178,6 +184,8 @@ public:
   bool do_filename_completion_desired (bool);
 
   bool do_filename_quoting_desired (bool);
+
+  bool do_prefer_env_winsize (bool);
 
   void do_interrupt (bool);
 
@@ -265,15 +273,11 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 
   eof = false;
 
-  char *line = 0;
-
   const char *p = prompt.c_str ();
 
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-  line = ::octave_rl_readline (p);
-
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  char *line = ::octave_rl_readline (p);
 
   if (line)
     {
@@ -283,6 +287,8 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
     }
   else
     eof = true;
+
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   return retval;
 }
@@ -351,6 +357,12 @@ gnu_readline::do_resize_terminal (void)
   ::octave_rl_resize_terminal ();
 }
 
+void
+gnu_readline::do_set_screen_size (int ht, int wd)
+{
+  ::octave_rl_set_screen_size (ht, wd);
+}
+
 std::string
 gnu_readline::newline_chars (void)
 {
@@ -367,6 +379,12 @@ void
 gnu_readline::do_blink_matching_paren (bool flag)
 {
   ::octave_rl_enable_paren_matching (flag ? 1 : 0);
+}
+
+bool
+gnu_readline::do_erase_empty_line (bool flag)
+{
+  return ::octave_rl_erase_empty_line (flag ? 1 : 0);
 }
 
 void
@@ -554,6 +572,12 @@ gnu_readline::do_replace_line (const std::string& text, bool clear_undo)
 }
 
 void
+gnu_readline::do_kill_full_line (void)
+{
+  ::octave_rl_kill_full_line ();
+}
+
+void
 gnu_readline::do_insert_text (const std::string& text)
 {
   ::octave_rl_insert_text (text.c_str ());
@@ -649,6 +673,12 @@ bool
 gnu_readline::do_filename_quoting_desired (bool arg)
 {
   return ::octave_rl_filename_quoting_desired (arg);
+}
+
+bool
+gnu_readline::do_prefer_env_winsize (bool arg)
+{
+  return ::octave_rl_prefer_env_winsize (arg);
 }
 
 void
@@ -817,6 +847,8 @@ public:
 
   void do_replace_line (const std::string& text, bool clear_undo);
 
+  void do_kill_full_line (void);
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -891,6 +923,12 @@ default_command_editor::do_get_current_line (void) const
 
 void
 default_command_editor::do_replace_line (const std::string&, bool)
+{
+  // FIXME
+}
+
+void
+default_command_editor::do_kill_full_line (void)
 {
   // FIXME
 }
@@ -1112,6 +1150,13 @@ command_editor::resize_terminal (void)
     instance->do_resize_terminal ();
 }
 
+void
+command_editor::set_screen_size (int ht, int wd)
+{
+  if (instance_ok ())
+    instance->do_set_screen_size (ht, wd);
+}
+
 std::string
 command_editor::decode_prompt_string (const std::string& s)
 {
@@ -1152,6 +1197,12 @@ command_editor::blink_matching_paren (bool flag)
 {
   if (instance_ok ())
     instance->do_blink_matching_paren (flag);
+}
+
+bool
+command_editor::erase_empty_line (bool flag)
+{
+  return instance_ok () ? instance->do_erase_empty_line (flag) : false;
 }
 
 void
@@ -1290,6 +1341,13 @@ command_editor::replace_line (const std::string& text, bool clear_undo)
 {
   if (instance_ok ())
     instance->do_replace_line (text, clear_undo);
+}
+
+void
+command_editor::kill_full_line (void)
+{
+  if (instance_ok ())
+    instance->do_kill_full_line ();
 }
 
 void
@@ -1444,6 +1502,13 @@ command_editor::filename_quoting_desired (bool arg)
 {
   return (instance_ok ())
          ? instance->do_filename_quoting_desired (arg) : false;
+}
+
+bool
+command_editor::prefer_env_winsize (bool arg)
+{
+  return (instance_ok ())
+         ? instance->do_prefer_env_winsize (arg) : false;
 }
 
 bool

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -44,7 +44,7 @@ function rnd = cauchy_rnd (location, scale, varargin)
     print_usage ();
   endif
 
-  if (!isscalar (location) || !isscalar (scale))
+  if (! isscalar (location) || ! isscalar (scale))
     [retval, location, scale] = common_size (location, scale);
     if (retval > 0)
       error ("cauchy_rnd: LOCATION and SCALE must be of common size or scalars");
@@ -66,13 +66,13 @@ function rnd = cauchy_rnd (location, scale, varargin)
       error ("cauchy_rnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 3)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("cauchy_rnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (location) && !isequal (size (location), sz))
+  if (! isscalar (location) && ! isequal (size (location), sz))
     error ("cauchy_rnd: LOCATION and SCALE must be scalar or of size SZ");
   endif
 
@@ -83,7 +83,7 @@ function rnd = cauchy_rnd (location, scale, varargin)
   endif
 
   if (isscalar (location) && isscalar (scale))
-    if (!isinf (location) && (scale > 0) && (scale < Inf))
+    if (! isinf (location) && (scale > 0) && (scale < Inf))
       rnd = location - cot (pi * rand (sz, cls)) * scale;
     else
       rnd = NaN (sz, cls);
@@ -91,8 +91,9 @@ function rnd = cauchy_rnd (location, scale, varargin)
   else
     rnd = NaN (sz, cls);
 
-    k = !isinf (location) & (scale > 0) & (scale < Inf);
-    rnd(k) = location(k)(:) - cot (pi * rand (sum (k(:)), 1, cls)) .* scale(k)(:);
+    k = ! isinf (location) & (scale > 0) & (scale < Inf);
+    rnd(k) = location(k)(:) ...
+             - cot (pi * rand (sum (k(:)), 1, cls)) .* scale(k)(:);
   endif
 
 endfunction
@@ -107,14 +108,14 @@ endfunction
 %!assert (size (cauchy_rnd (1, 2, [4 1])), [4, 1])
 %!assert (size (cauchy_rnd (1, 2, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (cauchy_rnd (1, 2)), "double")
 %!assert (class (cauchy_rnd (single (1), 2)), "single")
 %!assert (class (cauchy_rnd (single ([1 1]), 2)), "single")
 %!assert (class (cauchy_rnd (1, single (2))), "single")
 %!assert (class (cauchy_rnd (1, single ([2 2]))), "single")
 
-%% Test input validation
+## Test input validation
 %!error cauchy_rnd ()
 %!error cauchy_rnd (1)
 %!error cauchy_rnd (ones (3), ones (2))

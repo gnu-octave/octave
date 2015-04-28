@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@ function cdf = unifcdf (x, a = 0, b = 1)
     print_usage ();
   endif
 
-  if (!isscalar (a) || !isscalar (b))
+  if (! isscalar (a) || ! isscalar (b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
       error ("unifcdf: X, A, and B must be of common size or scalars");
@@ -79,13 +79,13 @@ endfunction
 %!assert (unifcdf (x, 1, 2*[0 1 NaN 1 1]), [NaN 0 NaN 1 1])
 %!assert (unifcdf ([x(1:2) NaN x(4:5)], 1, 2), [y(1:2) NaN y(4:5)])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (unifcdf ([x, NaN], 1, 2), [y, NaN])
 %!assert (unifcdf (single ([x, NaN]), 1, 2), single ([y, NaN]))
 %!assert (unifcdf ([x, NaN], single (1), 2), single ([y, NaN]))
 %!assert (unifcdf ([x, NaN], 1, single (2)), single ([y, NaN]))
 
-%% Test input validation
+## Test input validation
 %!error unifcdf ()
 %!error unifcdf (1,2)
 %!error unifcdf (1,2,3,4)

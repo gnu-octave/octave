@@ -1,5 +1,5 @@
-## Copyright (C) 2008-2013 John W. Eaton
-## Copyright (C) 2013 Carnë Draug
+## Copyright (C) 2008-2015 John W. Eaton
+## Copyright (C) 2013-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -60,9 +60,9 @@ function __imwrite__ (img, varargin)
         elseif (size (options.alpha, 3) != 1)
           error ("imwrite: 3rd dimension of matrix for %s must be singleton",
                  param_list{idx});
-        elseif (ndims (options.alpha) > 4 ||
-                any (size (options.alpha)([1 2]) != size (img)([1 2])) ||
-                size (options.alpha, 4) != size (img, 4))
+        elseif (ndims (options.alpha) > 4
+                || any (size (options.alpha)([1 2]) != size (img)([1 2]))
+                || size (options.alpha, 4) != size (img, 4))
           error ("imwrite: matrix for %s must have same dimension as image",
                  param_list{idx});
         endif
@@ -80,15 +80,16 @@ function __imwrite__ (img, varargin)
           error ("imwrite: value for %s must either be a scalar or the number of frames",
                  param_list{idx});
         endif
-        if (any (options.delaytime(:) < 0) || any (options.delaytime(:) > 65535))
+        if (any (options.delaytime(:) < 0)
+            || any (options.delaytime(:) > 65535))
           error ("imwrite: value for %s must be between 0 and 655.35 seconds",
                  param_list{idx});
         endif
 
       case "disposalmethod"
         options.disposalmethod = param_list{idx+1};
-        if (! ischar (options.disposalmethod) &&
-            ! iscellstr (options.disposalmethod))
+        if (! ischar (options.disposalmethod)
+            && ! iscellstr (options.disposalmethod))
           error ("imwrite: value for %s must be a string or cell array of strings",
                  param_list{idx});
         elseif (! iscell (options.disposalmethod))
@@ -96,14 +97,16 @@ function __imwrite__ (img, varargin)
         endif
         options.disposalmethod = tolower (options.disposalmethod);
         matches = ismember (options.disposalmethod,
-                            {"donotspecify", "leaveinplace", "restorebg", "restoreprevious"});
+                            {"donotspecify", "leaveinplace", ...
+                             "restorebg", "restoreprevious"});
         if (any (! matches))
           error ("imwrite: unknow method %s for option %s",
                  options.disposalmethod{find (! matches, 1)},
                  param_list{idx});
         endif
         if (isscalar (options.disposalmethod))
-          options.disposalmethod = repmat (options.disposalmethod, 1, size (img, 4));
+          options.disposalmethod = repmat (options.disposalmethod, ...
+                                           1, size (img, 4));
         elseif (numel (options.disposalmethod) != size (img, 4))
           error ("imwrite: if value %s is a cell array must have same length as number of frames",
                  param_list{idx});
@@ -112,8 +115,8 @@ function __imwrite__ (img, varargin)
       case "loopcount"
         options.loopcount = param_list{idx+1};
         if (! isscalar (options.loopcount) || ! isnumeric (options.loopcount)
-            || (! isinf (options.loopcount) && (options.loopcount < 0 ||
-                                                options.loopcount > 65535)))
+            || (! isinf (options.loopcount)
+                && (options.loopcount < 0 || options.loopcount > 65535)))
           error ("imwrite: value for %s must be Inf or between 0 and 65535",
                  param_list{idx});
         endif

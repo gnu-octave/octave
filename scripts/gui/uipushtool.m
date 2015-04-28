@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Michael Goffioul
+## Copyright (C) 2012-2015 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,15 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipushtool ("Name", value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipushtool (@var{parent}, "Name", value, @dots{})
+## @deftypefn  {Function File} {@var{hui} =} uipushtool ("Name", value, @dots{})
+## @deftypefnx {Function File} {@var{hui} =} uipushtool (@var{parent}, "Name", value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uipushtool (varargin)
+function hui = uipushtool (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uipushtool", varargin, {"uitoolbar"}, 0);
+  [h, args] = __uiobject_split_args__ ("uipushtool", varargin,
+                                       {"uitoolbar"}, 0);
   if (isempty (h))
     h = findobj (gcf, "-depth", 1, "type", "uitoolbar");
     if (isempty (h))
@@ -34,7 +35,7 @@ function handle = uipushtool (varargin)
       h = h(1);
     endif
   endif
-  handle = __go_uipushtool__ (h, args{:});
+  hui = __go_uipushtool__ (h, args{:});
 
 endfunction
 

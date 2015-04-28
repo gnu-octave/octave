@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdarg>
 #include <cstring>
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -40,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
+#include "pt-eval.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
 #include "toplev.h"
@@ -61,13 +63,12 @@ bool Vdebug_on_warning = false;
 
 // TRUE means that Octave will try to display a stack trace when a
 // warning is encountered.
-static bool Vbacktrace_on_warning = false;
+static bool Vbacktrace_on_warning = true;
 
 // TRUE means that Octave will print a verbose warning.  Currently unused.
 static bool Vverbose_warning;
 
-// TRUE means that Octave will print no warnings, but lastwarn will be
-//updated
+// TRUE means that Octave will print no warnings, but lastwarn will be updated
 static bool Vquiet_warning = false;
 
 // A structure containing (most of) the current state of warnings.
@@ -170,13 +171,8 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   std::string msg_string = output_buf.str ();
 
-  if (! warning_state)
-    {
-      // This is the first warning in a possible series.
-
-      Vlast_warning_id = id;
-      Vlast_warning_message = msg_string;
-    }
+  Vlast_warning_id = id;
+  Vlast_warning_message = msg_string;
 
   if (! Vquiet_warning)
     {
@@ -264,6 +260,70 @@ verror (bool save_last_error, std::ostream& os,
     {
       octave_diary << msg_string;
       os << msg_string;
+    }
+}
+
+static void
+pr_where_2 (const char *fmt, va_list args)
+{
+  if (fmt)
+    {
+      if (*fmt)
+        {
+          size_t len = strlen (fmt);
+
+          if (len > 0)
+            {
+              if (fmt[len - 1] == '\n')
+                {
+                  if (len > 1)
+                    {
+                      char *tmp_fmt = strsave (fmt);
+                      tmp_fmt[len - 1] = '\0';
+                      verror (false, std::cerr, 0, "", tmp_fmt, args);
+                      delete [] tmp_fmt;
+                    }
+                }
+              else
+                verror (false, std::cerr, 0, "", fmt, args);
+            }
+        }
+    }
+  else
+    panic ("pr_where_2: invalid format");
+}
+
+static void
+pr_where_1 (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  pr_where_2 (fmt, args);
+  va_end (args);
+}
+
+static void
+pr_where (const char *who)
+{
+  std::list<octave_call_stack::stack_frame> frames
+    = octave_call_stack::backtrace_frames ();
+
+  size_t nframes = frames.size ();
+
+  if (nframes > 0)
+    pr_where_1 ("%s: called from\n", who);
+
+  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
+       p != frames.end (); p++)
+    {
+      const octave_call_stack::stack_frame& elt = *p;
+
+      std::string fcn_name = elt.fcn_name ();
+      int line = elt.line ();
+      int column = elt.column ();
+
+      pr_where_1 ("    %s at line %d column %d\n",
+                  fcn_name.c_str (), line, column);
     }
 }
 
@@ -381,85 +441,18 @@ usage_with_id (const char *id, const char *fmt, ...)
 }
 
 static void
-pr_where_2 (const char *fmt, va_list args)
-{
-  if (fmt)
-    {
-      if (*fmt)
-        {
-          size_t len = strlen (fmt);
-
-          if (len > 0)
-            {
-              if (fmt[len - 1] == '\n')
-                {
-                  if (len > 1)
-                    {
-                      char *tmp_fmt = strsave (fmt);
-                      tmp_fmt[len - 1] = '\0';
-                      verror (false, std::cerr, 0, "", tmp_fmt, args);
-                      delete [] tmp_fmt;
-                    }
-                }
-              else
-                verror (false, std::cerr, 0, "", fmt, args);
-            }
-        }
-    }
-  else
-    panic ("pr_where_2: invalid format");
-}
-
-static void
-pr_where_1 (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  pr_where_2 (fmt, args);
-  va_end (args);
-}
-
-static void
-pr_where (const char *who)
-{
-  octave_idx_type curr_frame = -1;
-
-  octave_map stk = octave_call_stack::backtrace (0, curr_frame);
-
-  octave_idx_type nframes_to_display = stk.numel ();
-
-  if (nframes_to_display > 0)
-    {
-      pr_where_1 ("%s: called from\n", who);
-
-      Cell names = stk.contents ("name");
-      Cell lines = stk.contents ("line");
-      Cell columns = stk.contents ("column");
-
-      for (octave_idx_type i = 0; i < nframes_to_display; i++)
-        {
-          octave_value name = names(i);
-          octave_value line = lines(i);
-          octave_value column = columns(i);
-
-          std::string nm = name.string_value ();
-
-          pr_where_1 ("    %s at line %d column %d\n", nm.c_str (),
-                      line.int_value (), column.int_value ());
-        }
-    }
-}
-
-static void
 error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 {
   int init_state = error_state;
 
   error_1 (std::cerr, "error", id, fmt, args, with_cfn);
 
-  if ((interactive || forced_interactive)
-      && Vdebug_on_error && init_state == 0
-      && octave_call_stack::caller_user_code ())
+  bool in_user_code = octave_call_stack::caller_user_code () != 0;
+
+  if (error_state != -2 && in_user_code && ! discard_error_messages)
+    pr_where ("error");
+
+  if (interactive && Vdebug_on_error && init_state == 0 && in_user_code)
     {
       unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -467,7 +460,9 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 
       error_state = 0;
 
-      pr_where ("error");
+      tree_evaluator::debug_mode = true;
+
+      tree_evaluator::current_frame = octave_call_stack::current_frame ();
 
       do_keyboard (octave_value_list ());
     }
@@ -641,21 +636,29 @@ warning_1 (const char *id, const char *fmt, va_list args)
     {
       vwarning ("warning", id, fmt, args);
 
-      if (! symbol_table::at_top_level ()
-          && Vbacktrace_on_warning
-          && ! warning_state
+      bool in_user_code = octave_call_stack::caller_user_code () != 0;
+
+      bool fmt_suppresses_backtrace = false;
+      size_t fmt_len = fmt ? strlen (fmt) : 0;
+      fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
+
+      if (! fmt_suppresses_backtrace && in_user_code
+          && Vbacktrace_on_warning && ! warning_state
           && ! discard_warning_messages)
         pr_where ("warning");
 
       warning_state = 1;
 
       if ((interactive || forced_interactive)
-          && Vdebug_on_warning
-          && octave_call_stack::caller_user_code ())
+          && Vdebug_on_warning && in_user_code)
         {
           unwind_protect frame;
           frame.protect_var (Vdebug_on_warning);
           Vdebug_on_warning = false;
+
+          tree_evaluator::debug_mode = true;
+
+          tree_evaluator::current_frame = octave_call_stack::current_frame ();
 
           do_keyboard (octave_value_list ());
         }
@@ -1093,11 +1096,12 @@ error (err_msg);\n\
 which will only stop execution if an error has been found.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
-regardless of whether @var{template} has been defined within single quotes\n\
-as long as there are two or more input arguments.\n\
-Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
-\"\\\\n\") or use the @code{regexptranslate} function.\n\
+sequences in @var{template} (e.g., @qcode{\"@xbackslashchar{}n\"} =>\n\
+newline) are processed regardless of whether @var{template} has been defined\n\
+with single quotes, as long as there are two or more input arguments.  To\n\
+disable escape sequence expansion use a second backslash before the sequence\n\
+(e.g., \"@xbackslashchar{}@xbackslashchar{}n\") or use the\n\
+@code{regexptranslate} function.\n\
 @seealso{warning, lasterror}\n\
 @end deftypefn")
 {
@@ -1217,6 +1221,127 @@ warning_query (const std::string& id_arg)
   return retval;
 }
 
+static std::string
+default_warning_state (void)
+{
+  std::string retval = "on";
+
+  Cell ident = warning_options.contents ("identifier");
+  Cell state = warning_options.contents ("state");
+
+  octave_idx_type nel = ident.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      if (ident(i).string_value () == "all")
+        {
+          retval = state(i).string_value ();
+          break;
+        }
+    }
+
+  return retval;
+}
+
+static void
+display_warning_options (std::ostream& os)
+{
+  Cell ident = warning_options.contents ("identifier");
+  Cell state = warning_options.contents ("state");
+
+  octave_idx_type nel = ident.numel ();
+
+  std::string all_state = default_warning_state ();
+
+  if (all_state == "on")
+    os << "By default, warnings are enabled.";
+  else if (all_state == "off")
+    os << "By default, warnings are disabled.";
+  else if (all_state == "error")
+    os << "By default, warnings are treated as errors.";
+  else
+    panic_impossible ();
+
+  if (nel > 1)
+    os << "\n\n";
+
+  // The state for all is always supposed to be first in the list.
+
+  for (octave_idx_type i = 1; i < nel; i++)
+    {
+      std::string tid = ident(i).string_value ();
+      std::string tst = state(i).string_value ();
+
+      os << std::setw (7) << tst << "  " << tid << "\n";
+    }
+
+  os << std::endl;
+}
+
+static void
+set_warning_option (const std::string& state, const std::string& ident)
+{
+  if (ident == "all")
+    {
+      initialize_warning_options (state);
+      return;
+    }
+
+  std::string all_state = default_warning_state ();
+
+  if (state != "on" && state != "off" && state != "error")
+    error ("invalid warning state: %s", state.c_str ());
+
+  Cell tid = warning_options.contents ("identifier");
+  Cell tst = warning_options.contents ("state");
+
+  octave_idx_type nel = tid.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      if (tid(i).string_value () == ident)
+        {
+          // We found it in the current list of options.  If the state
+          // for "all" is same as arg1, we can simply remove the item
+          // from the list.
+
+          if (state == all_state)
+            {
+              for (i = i + 1; i < nel; i++)
+                {
+                  tid(i-1) = tid(i);
+                  tst(i-1) = tst(i);
+                }
+
+              tid.resize (dim_vector (1, nel-1));
+              tst.resize (dim_vector (1, nel-1));
+            }
+          else
+            tst(i) = state;
+
+          warning_options.clear ();
+
+          warning_options.assign ("identifier", tid);
+          warning_options.assign ("state", tst);
+
+          return;
+        }
+    }
+
+  // The option wasn't already in the list.  Append it.
+
+  tid.resize (dim_vector (1, nel+1));
+  tst.resize (dim_vector (1, nel+1));
+
+  tid(nel) = ident;
+  tst(nel) = state;
+
+  warning_options.clear ();
+
+  warning_options.assign ("identifier", tid);
+  warning_options.assign ("state", tst);
+}
+
 DEFUN (warning, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
@@ -1225,6 +1350,7 @@ DEFUN (warning, args, nargout,
 @deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (@var{state}, \"backtrace\")\n\
 @deftypefnx {Built-in Function} {} warning (@var{state}, @var{id}, \"local\")\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
@@ -1255,6 +1381,11 @@ warning (\"error\");\n\
 @end group\n\
 @end example\n\
 \n\
+If the state is @qcode{\"on\"} or @qcode{\"off\"} and the third argument\n\
+is @qcode{\"backtrace\"}, then a stack trace is printed along with the\n\
+warning message when warnings occur inside function calls.  This option\n\
+is enabled by default.\n\
+\n\
 If the state is @qcode{\"on\"}, @qcode{\"off\"}, or @qcode{\"error\"}\n\
 and the third argument is @qcode{\"local\"}, then the warning state\n\
 will be set temporarily, until the end of the current function.\n\
@@ -1265,11 +1396,12 @@ function.  The @qcode{\"local\"} option is ignored if used in the top-level\n\
 workspace.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
-regardless of whether @var{template} has been defined within single quotes\n\
-as long as there are two or more input arguments.\n\
-Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
-\"\\\\n\") or use the @code{regexptranslate} function.\n\
+sequences in @var{template} (e.g., @qcode{\"@xbackslashchar{}n\"} =>\n\
+newline) are processed regardless of whether @var{template} has been defined\n\
+with single quotes, as long as there are two or more input arguments.  To\n\
+disable escape sequence expansion use a second backslash before the sequence\n\
+(e.g., \"@xbackslashchar{}@xbackslashchar{}n\") or use the\n\
+@code{regexptranslate} function.\n\
 @seealso{warning_ids, lastwarn, error}\n\
 @end deftypefn")
 {
@@ -1388,7 +1520,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   // Since internal Octave functions are not
                   // compatible, turning all warnings into errors
                   // should leave the state of
-                  // Octave:matlab-incompatible alone.
+                  // Octave:language-extension alone.
 
                   if (arg1 == "error"
                       && warning_options.contains ("identifier"))
@@ -1406,7 +1538,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                             {
                               std::string key = vid.string_value ();
 
-                              if (key == "Octave:matlab-incompatible"
+                              if (key == "Octave:language-extension"
                                   || key == "Octave:single-quote-string")
                                 {
                                   id.resize (dim_vector (1, n+1));
@@ -1465,49 +1597,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   if (arg2 == "last")
                     arg2 = Vlast_warning_id;
 
-                  if (arg2 == "all")
-                    initialize_warning_options (arg1);
-                  else
-                    {
-                      Cell ident = warning_options.contents ("identifier");
-                      Cell state = warning_options.contents ("state");
-
-                      octave_idx_type nel = ident.numel ();
-
-                      bool found = false;
-
-                      for (octave_idx_type i = 0; i < nel; i++)
-                        {
-                          if (ident(i).string_value () == arg2)
-                            {
-                              // FIXME: if state for "all" is  same as arg1,
-                              //        we can simply remove the item
-                              //        from the list.
-
-                              state(i) = arg1;
-                              warning_options.assign ("state", state);
-                              found = true;
-                              break;
-                            }
-                        }
-
-                      if (! found)
-                        {
-                          // FIXME: if state for "all" is same as arg1,
-                          //        we don't need to do anything.
-
-                          ident.resize (dim_vector (1, nel+1));
-                          state.resize (dim_vector (1, nel+1));
-
-                          ident(nel) = arg2;
-                          state(nel) = arg1;
-
-                          warning_options.clear ();
-
-                          warning_options.assign ("identifier", ident);
-                          warning_options.assign ("state", state);
-                        }
-                    }
+                  set_warning_option (arg1, arg2);
 
                   done = true;
                 }
@@ -1544,7 +1634,10 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
     }
   else if (argc == 1)
     {
-      retval = warning_options;
+      if (nargout > 0)
+        retval = warning_options;
+      else
+        display_warning_options (octave_stdout);
 
       done = true;
     }
@@ -1559,7 +1652,25 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
           octave_map m = arg.map_value ();
 
           if (m.contains ("identifier") && m.contains ("state"))
-            warning_options = m;
+            {
+              // Simply step through the struct elements one at a time.
+
+              Cell ident = m.contents ("identifier");
+              Cell state = m.contents ("state");
+
+              octave_idx_type nel = ident.numel ();
+
+              for (octave_idx_type i = 0; i < nel; i++)
+                {
+                  std::string tst = state(i).string_value ();
+                  std::string tid = ident(i).string_value ();
+
+                  if (error_state)
+                    return retval;
+
+                  set_warning_option (tst, tid);
+                }
+            }
           else
             error ("warning: expecting structure with fields 'identifier' and 'state'");
 
@@ -1614,7 +1725,7 @@ set_warning_state (const octave_value_list& args)
 void
 disable_warning (const std::string& id)
 {
-  set_warning_state (id, "off");
+  set_warning_option ("off", id);
 }
 
 void
@@ -1627,7 +1738,7 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:array-to-scalar");
   disable_warning ("Octave:array-to-vector");
   disable_warning ("Octave:imag-to-real");
-  disable_warning ("Octave:matlab-incompatible");
+  disable_warning ("Octave:language-extension");
   disable_warning ("Octave:missing-semicolon");
   disable_warning ("Octave:neg-dim-as-zero");
   disable_warning ("Octave:resize-on-range-error");
@@ -1636,9 +1747,6 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:str-to-num");
   disable_warning ("Octave:mixed-string-concat");
   disable_warning ("Octave:variable-switch-label");
-
-  // This should be an error unless we are in maximum braindamage mode.
-  set_warning_state ("Octave:noninteger-range-as-index", "error");
 }
 
 DEFUN (lasterror, args, ,
@@ -1855,7 +1963,7 @@ also set the last message identifier.\n\
             }
         }
       else
-        error ("lasterr: expecting arguments to be character strings");
+        error ("lasterr: all arguments must be strings");
     }
   else
     print_usage ();
@@ -1902,7 +2010,7 @@ also set the last message identifier.\n\
             }
         }
       else
-        error ("lastwarn: expecting arguments to be character strings");
+        error ("lastwarn: all arguments must be strings");
     }
   else
     print_usage ();
@@ -1910,7 +2018,7 @@ also set the last message identifier.\n\
   return retval;
 }
 
-DEFUN (usage, args, ,
+DEFUN (__usage__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} usage (@var{msg})\n\
 Print the message @var{msg}, prefixed by the string @samp{usage: }, and\n\
@@ -2006,6 +2114,12 @@ std::string
 last_error_id (void)
 {
   return Vlast_error_id;
+}
+
+octave_map
+last_error_stack (void)
+{
+  return Vlast_error_stack;
 }
 
 std::string

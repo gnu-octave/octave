@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -58,13 +58,13 @@ function rnd = geornd (p, varargin)
       error ("geornd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 2)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("geornd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
   endif
 
-  if (!isscalar (p) && !isequal (size (p), sz))
+  if (! isscalar (p) && ! isequal (size (p), sz))
     error ("geornd: P must be scalar or of size SZ");
   endif
 
@@ -108,14 +108,14 @@ endfunction
 %!assert (size (geornd (0.5, [4 1])), [4, 1])
 %!assert (size (geornd (0.5, 4, 1)), [4, 1])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (class (geornd (0.5)), "double")
 %!assert (class (geornd (single (0.5))), "single")
 %!assert (class (geornd (single ([0.5 0.5]))), "single")
 %!assert (class (geornd (single (0))), "single")
 %!assert (class (geornd (single (1))), "single")
 
-%% Test input validation
+## Test input validation
 %!error geornd ()
 %!error geornd (ones (3), ones (2))
 %!error geornd (ones (2), ones (3))

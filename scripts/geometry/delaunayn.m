@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,7 @@
 ## To append user options to the defaults it is necessary to repeat the
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
-## @seealso{delaunay, delaunay3, convhulln, voronoin, trimesh, tetramesh}
+## @seealso{delaunay, convhulln, voronoin, trimesh, tetramesh}
 ## @end deftypefn
 
 function T = delaunayn (pts, varargin)
@@ -59,9 +59,9 @@ function T = delaunayn (pts, varargin)
   T = __delaunayn__ (pts, varargin{:});
 
   if (isa (pts, "single"))
-    myeps = eps ("single");
+    tol = 1e3 * eps ("single");
   else
-    myeps = eps;
+    tol = 1e3 * eps;
   endif
 
   ## Try to remove the zero volume simplices.  The volume of the i-th simplex is
@@ -75,10 +75,10 @@ function T = delaunayn (pts, varargin)
   ## prod(1:n) is dropped.
   idx = [];
   [nt, n] = size (T);
-  ## FIXME: Vectorize this for loop or convert to delaunayn to .oct function
+  ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
   for i = 1:nt
     X = pts(T(i,1:end-1),:) - pts(T(i,2:end),:);
-    if (abs (det (X)) / sqrt (sum (X .^ 2, 2)) < 1e3 * myeps)
+    if (abs (det (X)) / sqrt (sumsq (X, 2)) < tol)
       idx(end+1) = i;
     endif
   endfor
@@ -87,7 +87,17 @@ function T = delaunayn (pts, varargin)
 endfunction
 
 
-%% FIXME: Need tests for delaunayn
+%!testif HAVE_QHULL
+%! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
+%! assert (sortrows (sort (delaunayn (x), 2)), [1,2,5;1,4,5;2,3,5;3,4,5]);
 
-%% FIXME: Need input validation tests
+## Test 3-D input
+%!testif HAVE_QHULL
+%! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
+%! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)), [1,2,3,4;1,2,4,5])
+
+## FIXME: Need tests for delaunayn
+
+## Input validation tests
+%!error delaunayn ()
 

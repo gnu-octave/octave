@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 John W. Eaton
+## Copyright (C) 2006-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,7 @@ function old_cmd = ls_command (cmd)
       if (ischar (cmd))
         __ls_command__ = cmd;
       else
-        error ("ls_command: expecting argument to be a character string");
+        error ("ls_command: argument must be a character string");
       endif
     endif
 
@@ -64,4 +64,6 @@ endfunction
 %! else
 %!   assert (cmd(1:2), "ls");
 %! endif
+
+%!error <argument must be a character string> ls_command (123)
 

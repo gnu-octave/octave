@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -227,8 +227,7 @@ of a sparse matrix if possible.\n\
         }
 
       if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-        warning ("inverse: matrix singular to machine precision, rcond = %g",
-                 (isfloat ? frcond : rcond));
+        gripe_singular_matrix (isfloat ? frcond : rcond);
     }
 
   return retval;

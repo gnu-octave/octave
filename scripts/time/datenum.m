@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Paul Kienzle
+## Copyright (C) 2006-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -96,8 +96,8 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
   persistent monthlength = [31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31];
 
-  if (nargin == 0 || nargin > 6 ||
-     (nargin > 2 && (ischar (year) || iscellstr (year))))
+  if (nargin == 0 || nargin > 6
+      || (nargin > 2 && (ischar (year) || iscellstr (year))))
     print_usage ();
   endif
 
@@ -118,19 +118,20 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     endif
   endif
 
-  if (! (isa (year, "double") && isa (month, "double") && isa (day, "double") &&
-         isa (hour, "double") && isa (minute, "double") && isa (second, "double")))
+  if (! (isa (year, "double") && isa (month, "double")
+         && isa (day, "double") && isa (hour, "double")
+         && isa (minute, "double") && isa (second, "double")))
     error ("datenum: all inputs must be of class double");
   endif
 
-  month(month<1) = 1;  # For compatibility.  Otherwise allow negative months.
+  month(month < 1) = 1;  # For compatibility.  Otherwise allow negative months.
 
   ## Treat fractional months, by converting the fraction to days
   if (floor (month) != month)
     fracmonth = month - floor (month);
     month = floor (month);
-    if ((mod (month-1,12) + 1) == 2 &&
-        (floor (year/4) - floor (year/100) + floor (year/400)) != 0)
+    if ((mod (month-1,12) + 1) == 2
+        && (floor (year/4) - floor (year/100) + floor (year/400)) != 0)
       ## leap year
       day += fracmonth * 29;
     else
@@ -208,7 +209,7 @@ endfunction
 ## Test string input with format string
 %!assert (datenum ("5-19, 2001", "mm-dd, yyyy"), 730990)
 
-%% Test input validation
+## Test input validation
 %!error datenum ()
 %!error datenum (1,2,3,4,5,6,7)
 %!error <expected date vector containing> datenum ([1, 2])

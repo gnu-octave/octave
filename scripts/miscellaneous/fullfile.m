@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2013 John W. Eaton
+## Copyright (C) 2014-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,49 +17,62 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
-## Return a complete filename constructed from the given components.
-## @seealso{fileparts}
+## @deftypefn  {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefnx {Function File} {@var{filenames} =} fullfile (@dots{}, @var{files})
+## Build complete filename from separate parts.
+##
+## Joins any number of path components intelligently.  The return value
+## is the concatenation of each component with exactly one file separator
+## between each non empty part and at most one leading and/or trailing file
+## separator.
+##
+## If the last component part is a cell array, returns a cell array of
+## filepaths, one for each element in the last component, e.g.:
+##
+## @example
+## @group
+## fullfile ("/home/username", "data", @{"f1.csv", "f2.csv", "f3.csv"@})
+## @result{}  /home/username/data/f1.csv
+##     /home/username/data/f2.csv
+##     /home/username/data/f3.csv
+## @end group
+## @end example
+##
+## On Windows systems, while forward slash file separators do work, they
+## are replaced by backslashes; in addition drive letters are stripped of
+## leading file separators to obtain a valid file path.
+##
+## @seealso{fileparts, filesep}
 ## @end deftypefn
+
+## Author: Carnë Draug <carandraug@octave.org>
 
 function filename = fullfile (varargin)
 
-  if (nargin > 0)
-    ## Discard all empty arguments
-    varargin(cellfun ("isempty", varargin)) = [];
-    nargs = numel (varargin);
-    if (nargs > 1)
-      filename = varargin{1};
-      if (strcmp (filename(end), filesep))
-        filename(end) = "";
-      endif
-      for i = 2:nargs
-        tmp = varargin{i};
-        if (i < nargs && strcmp (tmp(end), filesep))
-          tmp(end) = "";
-        elseif (i == nargs && strcmp (tmp, filesep))
-          tmp = "";
-        endif
-        filename = [filename filesep tmp];
-      endfor
-    elseif (nargs == 1)
-      filename = varargin{1};
-    else
-      filename = "";
-    endif
+  if (nargin && iscell (varargin{end}))
+    filename = cellfun (@(x) fullfile (varargin{1:end-1}, x), varargin{end},
+                                       "UniformOutput", false);
   else
-    print_usage ();
+    non_empty = cellfun ("isempty", varargin);
+    if (ispc && ! isempty (varargin))
+      varargin = strrep (varargin, "/", filesep);
+      varargin(1) = regexprep (varargin{1}, '[\\/]*([a-zA-Z]:[\\/]*)', "$1");
+    endif
+    filename = strjoin (varargin(! non_empty), filesep);
+    filename(strfind (filename, [filesep filesep])) = "";
   endif
 
 endfunction
 
 
-%!shared fs, fsx, xfs, fsxfs, xfsy
+%!shared fs, fsx, xfs, fsxfs, xfsy, xfsyfs
 %! fs = filesep ();
 %! fsx = [fs "x"];
 %! xfs = ["x" fs];
 %! fsxfs = [fs "x" fs];
 %! xfsy = ["x" fs "y"];
+%! xfsyfs = ["x" fs "y" fs];
+
 %!assert (fullfile (""), "")
 %!assert (fullfile (fs), fs)
 %!assert (fullfile ("", fs), fs)
@@ -80,3 +93,27 @@ endfunction
 %!assert (fullfile (fsx, fs), fsxfs)
 %!assert (fullfile (fs, "x", fs), fsxfs)
 
+%!assert (fullfile ("x/", "/", "/", "y", "/", "/"), xfsyfs)
+%!assert (fullfile ("/", "x/", "/", "/", "y", "/", "/"), [fs xfsyfs])
+%!assert (fullfile ("/x/", "/", "/", "y", "/", "/"), [fs xfsyfs])
+
+## different on purpose so that "fullfile (c{:})" works for empty c
+%!assert (fullfile (), "")
+
+%!assert (fullfile ("x", "y", {"c", "d"}), {[xfsyfs "c"], [xfsyfs "d"]})
+
+## Windows specific - drive letters and file sep type
+%!test
+%! if (ispc)
+%!   assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
+%!           ['A:\' xfsyfs]);
+%! endif
+
+## Windows specific - drive letters and file sep type, cell array
+%!test
+%! if (ispc)
+%!  tmp = fullfile ({"\\\/B:\//", "A://c", "\\\C:/g/h/i/j\/"});
+%!  assert (tmp{1}, 'B:\');
+%!  assert (tmp{2}, 'A:\c');
+%!  assert (tmp{3}, 'C:\g\h\i\j\');
+%! endif

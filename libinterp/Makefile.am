@@ -1,6 +1,6 @@
 # Makefile for Octave's libinterp directory
 #
-# Copyright (C) 1993-2013 John W. Eaton
+# Copyright (C) 1993-2015 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -32,7 +32,8 @@ AM_CPPFLAGS = \
   -I$(srcdir)/operators \
   -Iparse-tree -I$(srcdir)/parse-tree \
   -Icorefcn -I$(srcdir)/corefcn \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu \
+  $(HDF5_CPPFLAGS)
 
 AM_CFLAGS += $(WARN_CFLAGS)
 
@@ -40,35 +41,48 @@ AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
 octlib_LTLIBRARIES = liboctinterp.la
 
-## Order matters here.  Leave builtins.cc last, because it depends on
-## $(DEF_FILES), and building those requires all the sources
-## (except builtins.cc) to be available.
-BUILT_SOURCES = \
-  corefcn/mxarray.h \
-  corefcn/oct-errno.cc \
+## This is the subset of $(BUILT_SOURCES) that may be included by source
+## files that are preprocessed to make $(DEF_FILES).  This ensures that
+## files in $(BUILT_SOURCES) are built in the right dependency order.
+GENERATED_MAKE_BUILTINS_INCS = \
   corefcn/defaults.h \
   corefcn/graphics-props.cc \
   corefcn/graphics.h \
+  corefcn/mxarray.h \
+  oct-conf-features.h \
+  oct-conf.h \
+  parse-tree/oct-gperf.h \
+  parse-tree/oct-parse.h \
+  version.h
+
+BUILT_SOURCES = \
+  $(GENERATED_MAKE_BUILTINS_INCS) \
+  builtin-defun-decls.h \
+  builtins.cc \
+  corefcn/oct-errno.cc \
   corefcn/oct-tex-lexer.cc \
   corefcn/oct-tex-parser.cc \
   corefcn/oct-tex-symbols.cc \
   operators/ops.cc \
   parse-tree/lex.cc \
-  parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.cc \
-  oct-conf.h \
-  oct-conf-features.h \
-  version.h \
-  builtin-defun-decls.h \
-  builtins.cc
+  parse-tree/oct-parse.cc
+
+ULT_PARSER_SRC := \
+  corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-parser.in.yy \
+  parse-tree/oct-parse.in.yy
+
+GENERATED_PARSER_FILES := \
+  corefcn/oct-tex-lexer.ll \
+  corefcn/oct-tex-parser.yy \
+  parse-tree/oct-parse.yy
 
 BUILT_DISTFILES = \
-  corefcn/oct-tex-lexer.ll \
+  $(GENERATED_PARSER_FILES) \
   corefcn/oct-tex-parser.h \
   corefcn/oct-tex-symbols.cc \
   parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.h \
-  parse-tree/oct-parse.yy
+  parse-tree/oct-parse.h
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
@@ -146,11 +160,9 @@ $(srcdir)/dldfcn/module.mk: $(srcdir)/dldfcn/config-module.sh $(srcdir)/dldfcn/c
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
-  OCT_STAMP_FILES = $(subst dldfcn/,dldfcn/$(am__leading_dot),$(DLDFCN_LIBS:.la=.oct-stamp))
   DLD_LIBOCTINTERP_LIBADD = liboctinterp.la
 else
   OCT_FILES =
-  OCT_STAMP_FILES =
   DLD_LIBOCTINTERP_LIBADD =
 endif
 
@@ -187,7 +199,7 @@ liboctinterp_la_LIBADD = \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctinterp_current = 2
+liboctinterp_current = 3
 liboctinterp_revision = 0
 liboctinterp_age = 0
 
@@ -202,7 +214,7 @@ liboctinterp_la_LDFLAGS = \
 ## Section for defining and creating DEF_FILES
 
 ULT_DIST_SRC := \
-  $(filter-out corefcn/oct-tex-lexer.ll parse-tree/oct-parse.yy, $(DIST_SRC)) corefcn/oct-tex-lexer.in.ll parse-tree/oct-parse.in.yy
+  $(filter-out $(GENERATED_PARSER_FILES), $(DIST_SRC)) $(ULT_PARSER_SRC)
 
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
@@ -230,13 +242,15 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## Rule to build a DEF file from a .cc file
 ## See also module.mk files for overrides when speciall CPPFLAGS are needed.
 ## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
-%.df: %.cc
+%.df: %.cc $(GENERATED_MAKE_BUILTINS_INCS)
+	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t
-	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
-	rm $@-t
+	  -DMAKE_BUILTINS $< > $@-t1 && \
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t1 > $@-t && \
+	mv $@-t $@ && \
+	rm -f $@-t1
 
 ## Rules to build test files
 
@@ -262,13 +276,15 @@ nobase_libinterptests_DATA = $(TST_FILES)
 ## However, calling configure will also regenerate the Makefiles from
 ## Makefile.am and trigger the rules below.
 oct-conf.h: oct-conf.in.h Makefile
-	@$(do_subst_config_vals)
+	$(AM_V_GEN)$(do_subst_config_vals)
 
 oct-conf-features.h: $(top_builddir)/config.h config-features.sh
-	$(srcdir)/config-features.sh $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/config-features.sh $< > $@-t && \
 	mv $@-t $@
 
 version.h: version.in.h Makefile
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
 	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
@@ -277,39 +293,43 @@ version.h: version.in.h Makefile
           -e "s|%OCTAVE_MINOR_VERSION%|${OCTAVE_MINOR_VERSION}|" \
           -e "s|%OCTAVE_PATCH_VERSION%|${OCTAVE_PATCH_VERSION}|" \
 	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
-	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
+	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t && \
 	mv $@-t $@
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t && \
 	mv $@-t $@
 
 builtin-defun-decls.h: $(SRC_DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t && \
 	mv $@-t $@
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD
 
 dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t && \
 	mv $@-t $@
 endif
 
 if AMCOND_BUILD_DOCS
 .DOCSTRINGS: $(ALL_DEF_FILES) gendoc.pl
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-	fi
-	@echo "creating .DOCSTRINGS from .cc source files"
-	@$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@
-	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
+	fi && \
+	$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@-t && \
+	mv $@-t $@ && \
+	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS && \
 	touch $@
 
-all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS
+all-local: $(OCT_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS
 else
-all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
+all-local: $(OCT_FILES) $(DLDFCN_PKG_ADD_FILE)
 endif
 
 if AMCOND_BUILD_DOCS
@@ -371,7 +391,6 @@ DISTCLEANFILES = \
   DOCSTRINGS \
   $(BUILT_NODISTFILES) \
   $(OCT_FILES) \
-  $(OCT_STAMP_FILES) \
   $(TST_FILES)
 
 MAINTAINERCLEANFILES = \

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -104,7 +104,7 @@ endfunction
 %!        [" a  "; " ab"; "abc "; "abcd"])
 %!assert (strjust (["";""]), "")
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to strjust> strjust ()
 %!error <Invalid call to strjust> strjust (["a";"ab"], "center", 1)
 %!error <S must be a string> strjust (ones (3,3))

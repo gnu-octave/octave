@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 #include "MatrixType.h"
 
@@ -132,7 +131,7 @@ public:
 
   bool is_true (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -147,6 +146,8 @@ public:
   const ST& scalar_ref (void) const { return scalar; }
 
   ST& scalar_ref (void) { return scalar; }
+
+  octave_value fast_elem_extract (octave_idx_type n) const;
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 

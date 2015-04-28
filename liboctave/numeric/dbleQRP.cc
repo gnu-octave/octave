@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -100,7 +100,7 @@ QRP::init (const Matrix& a, qr_type_t qr_type)
 RowVector
 QRP::Pvec (void) const
 {
-  Array<double> pa (p.pvec ());
+  Array<double> pa (p.col_perm_vec ());
   RowVector pv (MArray<double> (pa) + 1.0);
   return pv;
 }

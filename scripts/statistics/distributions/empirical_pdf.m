@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -37,7 +37,16 @@ function pdf = empirical_pdf (x, data)
     error ("empirical_pdf: DATA must be a vector");
   endif
 
-  pdf = discrete_pdf (x, data, ones (size (data)));
+  uniq_vals = unique (data);
+  if (numel (data) != numel (uniq_vals))
+    ## Handle ties, multiple elements with same value
+    p = histc (data, uniq_vals);
+    data = uniq_vals;
+  else
+    p = ones (size (data));
+  endif
+
+  pdf = discrete_pdf (x, data, p);
 
 endfunction
 
@@ -48,11 +57,14 @@ endfunction
 %! y = [0 0.1 0.1 0.1 0];
 %!assert (empirical_pdf (x, v), y)
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (empirical_pdf (single (x), v), single (y))
 %!assert (empirical_pdf (x, single (v)), single (y))
 
-%% Test input validation
+## Test distribution with ties
+%!assert (empirical_pdf (2, [1 2 3 2]), 0.5)
+
+## Test input validation
 %!error empirical_pdf ()
 %!error empirical_pdf (1)
 %!error empirical_pdf (1,2,3)

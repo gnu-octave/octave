@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -22,7 +22,8 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [out1, out2] = installed_packages (local_list, global_list)
+function [out1, out2] = installed_packages (local_list, global_list, pkgname = {})
+
   ## Get the list of installed packages.
   try
     local_packages = load (local_list).local_packages;
@@ -38,41 +39,42 @@ function [out1, out2] = installed_packages (local_list, global_list)
 
   ## Eliminate duplicates in the installed package list.
   ## Locally installed packages take precedence.
-  dup = [];
-  for i = 1:length (installed_pkgs_lst)
-    if (any (dup == i))
-      continue;
+  installed_names = cellfun (@(x) x.name, installed_pkgs_lst,
+                             "uniformoutput", false);
+  [~, idx] = unique (installed_names, "first");
+  installed_names = installed_names(idx);
+  installed_pkgs_lst = installed_pkgs_lst(idx);
+
+  ## Check whether info on a particular package was requested
+  if (! isempty (pkgname))
+    idx = find (strcmp (pkgname{1}, installed_names));
+    if (isempty (idx))
+      installed_names = {};
+      installed_pkgs_lst = {};
+    else
+      installed_names = installed_names(idx);
+      installed_pkgs_lst = installed_pkgs_lst(idx);
     endif
-    for j = (i+1):length (installed_pkgs_lst)
-      if (any (dup == j))
-        continue;
-      endif
-      if (strcmp (installed_pkgs_lst{i}.name, installed_pkgs_lst{j}.name))
-        dup = [dup, j];
-      endif
-    endfor
-  endfor
-  if (! isempty (dup))
-    installed_pkgs_lst(dup) = [];
   endif
 
   ## Now check if the package is loaded.
+  ## FIXME: couldn't dir_in_loadpath() be used here?
   tmppath = strrep (path (), "\\", "/");
-  for i = 1:length (installed_pkgs_lst)
+  for i = 1:numel (installed_pkgs_lst)
     if (strfind (tmppath, strrep (installed_pkgs_lst{i}.dir, '\', '/')))
       installed_pkgs_lst{i}.loaded = true;
     else
       installed_pkgs_lst{i}.loaded = false;
     endif
   endfor
-  for i = 1:length (local_packages)
+  for i = 1:numel (local_packages)
     if (strfind (tmppath, strrep (local_packages{i}.dir, '\', '/')))
       local_packages{i}.loaded = true;
     else
       local_packages{i}.loaded = false;
     endif
   endfor
-  for i = 1:length (global_packages)
+  for i = 1:numel (global_packages)
     if (strfind (tmppath, strrep (global_packages{i}.dir, '\', '/')))
       global_packages{i}.loaded = true;
     else
@@ -90,10 +92,14 @@ function [out1, out2] = installed_packages (local_list, global_list)
     return;
   endif
 
-  ## We shouldn't return something, so we'll print something.
-  num_packages = length (installed_pkgs_lst);
+  ## Don't return anything, instead we'll print something.
+  num_packages = numel (installed_pkgs_lst);
   if (num_packages == 0)
-    printf ("no packages installed.\n");
+    if (isempty (pkgname))
+      printf ("no packages installed.\n");
+    else
+      printf ("package %s is not installed.\n", pkgname{1});
+    endif
     return;
   endif
 
@@ -101,20 +107,13 @@ function [out1, out2] = installed_packages (local_list, global_list)
   h1 = "Package Name";
   h2 = "Version";
   h3 = "Installation directory";
-  max_name_length = length (h1);
-  max_version_length = length (h2);
-  names = cell (num_packages, 1);
-  for i = 1:num_packages
-    max_name_length = max (max_name_length,
-                           length (installed_pkgs_lst{i}.name));
-    max_version_length = max (max_version_length,
-                              length (installed_pkgs_lst{i}.version));
-    names{i} = installed_pkgs_lst{i}.name;
-  endfor
-  max_dir_length = terminal_size ()(2) - max_name_length - ...
-                                             max_version_length - 7;
+  max_name_length = max ([length(h1), cellfun(@length, installed_names)]);
+  version_lengths = cellfun (@(x) length (x.version), installed_pkgs_lst);
+  max_version_length = max ([length(h2), version_lengths]);
+  ncols = terminal_size ()(2);
+  max_dir_length = ncols - max_name_length - max_version_length - 7;
   if (max_dir_length < 20)
-     max_dir_length = Inf;
+    max_dir_length = Inf;
   endif
 
   h1 = postpad (h1, max_name_length + 1, " ");
@@ -129,13 +128,12 @@ function [out1, out2] = installed_packages (local_list, global_list)
   printf ("%s\n", tmp);
 
   ## Print the packages.
-  format = sprintf ("%%%ds %%1s| %%%ds | %%s\n", max_name_length,
-                    max_version_length);
-  [dummy, idx] = sort (names);
+  format = sprintf ("%%%ds %%1s| %%%ds | %%s\n",
+                    max_name_length, max_version_length);
   for i = 1:num_packages
-    cur_name = installed_pkgs_lst{idx(i)}.name;
-    cur_version = installed_pkgs_lst{idx(i)}.version;
-    cur_dir = installed_pkgs_lst{idx(i)}.dir;
+    cur_name = installed_pkgs_lst{i}.name;
+    cur_version = installed_pkgs_lst{i}.version;
+    cur_dir = installed_pkgs_lst{i}.dir;
     if (length (cur_dir) > max_dir_length)
       first_char = length (cur_dir) - max_dir_length + 4;
       first_filesep = strfind (cur_dir(first_char:end), filesep ());
@@ -145,12 +143,13 @@ function [out1, out2] = installed_packages (local_list, global_list)
         cur_dir = ["..." cur_dir(first_char:end)];
       endif
     endif
-    if (installed_pkgs_lst{idx(i)}.loaded)
+    if (installed_pkgs_lst{i}.loaded)
       cur_loaded = "*";
     else
       cur_loaded = " ";
     endif
     printf (format, cur_name, cur_loaded, cur_version, cur_dir);
   endfor
+
 endfunction
 

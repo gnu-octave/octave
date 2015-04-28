@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} mcnemar_test (@var{x})
 ## For a square contingency table @var{x} of data cross-classified on
-## the row and column variables, McNemar's test can be used for testing
-## the null hypothesis of symmetry of the classification probabilities.
+## the row and column variables, @nospell{McNemar's} test can be used for
+## testing the null hypothesis of symmetry of the classification probabilities.
 ##
 ## Under the null, @var{chisq} is approximately distributed as chisquare
 ## with @var{df} degrees of freedom.
@@ -42,7 +42,7 @@ function [pval, chisq, df] = mcnemar_test (x)
 
   if (! (min (size (x)) > 1) && issquare (x))
     error ("mcnemar_test: X must be a square matrix of size > 1");
-  elseif (! (all (all (x >= 0)) && all (all (x == fix (x)))))
+  elseif (! (all ((x(:) >= 0)) && all (x(:) == fix (x(:)))))
     error ("mcnemar_test: all entries of X must be non-negative integers");
   endif
 

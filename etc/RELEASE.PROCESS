@@ -1,0 +1,90 @@
+<!----------------------------------------------------------------------------->
+<! This file contains a list of steps to accomplish before producing a release.
+   The format of the file is wiki markup and can be directly used as a page
+   on wiki.octave.org.
+<!----------------------------------------------------------------------------->
+==4.0.0 Release Tasks==
+
+This page shows the tasks to be completed before the GUI release is finalized.
+
+<!----------------------------------------------------------------------------->
+# File bug reports for all outstanding bugs known, but not reported
+#* Put out a general call for reports on Octave-Maintainers and Octave-Help list
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Review patch tracker/bug list for any patches submitted that may be included before release
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Identify Bugs which *must* be fixed prior to release
+#* Review bugs on tracker for possible inclusion in list
+#* Review bugs and update to correct category, such as Patch submitted
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Clear all bugs identified as must-fix
+#* See [[Bug Fix List - 4.0 Release]]
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# GPL License activities
+#* Update Copyright statements for all source controlled files
+#* Add any new contributors to contributors.in
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Style-check code base
+#* This will produce lots of whitespace changes, but no behavior changes
+#* Must occur after patches have been added since whitespace changes will often prevent patches from applying
+#* m-file style check. Completion Date:
+#* C++ style check.  Completion Date:
+<!----------------------------------------------------------------------------->
+# Run lint checker on code base
+#* cppcheck, Clang sanitize, etc.
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Verify 'make check' is passing
+#* Start discussion on octave-maintainers list about which failing tests must be fixed
+#* Identify and fix any tests determined critical in step above
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Run Octave test suite under [http://valgrind.org Valgrind] to check for memory leaks
+#* Results posted to bug report: 
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Review documentation
+#* Grammar check documentation so that it conforms to Octave standards
+#* Spell check documentation
+#* Verify no functions missing from manual
+#* Verify deprecated functions removed from "see also" links
+#* Verify all formats (Info, HTML, pdf) build correctly
+#* Review NEWS for any features which should be announced
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Localization and Internationalization
+#* Update language translation files (*.ts)
+#* Submit call for translations for GUI strings.
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Verify build process and create release candidates
+#* Update version information in configure.ac/Makefile.am
+#* Verify 'make distcheck' passes
+#* Create release candidate
+#** 'make dist'
+#** hg tag repository with release candidate ID
+#** For Windows, create installer [[Windows Installer]]
+#** Upload release candidate
+#** Announce release candidate to Octave-Maintainers, Octave-Help, on web page
+#** Repeat release candidate cycle until clean
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Final Release
+#* hg tag repository with release
+#* merge default onto stable to become the current stable release
+#* add new release version to Savannah bug tracker
+#* Announce final release on Octave mailing lists and web site
+#: Completion Date:
+<!----------------------------------------------------------------------------->
+# Post-Release
+#* Update configure.ac/Makefile.am versioning to next release cycle
+#* Remove all deprecated functions scheduled for deletion in default branch
+#: Completion Date:
+
+[[Category:Releases]]
+[[Category:Development]]

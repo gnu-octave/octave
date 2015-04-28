@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ## populations.
 ##
 ## The optional argument string @var{alt} describes the alternative
-## hypothesis, and can be @qcode{"!="} or @qcode{"<>"} (non-zero),
+## hypothesis, and can be @qcode{"!="} or @qcode{"<>"} (nonzero),
 ## @qcode{">"} (greater than 0), or @qcode{"<"} (less than 0).  The
 ## default is the two-sided case.
 ##
@@ -67,11 +67,11 @@
 
 function t = cor_test (x, y, alt, method)
 
-  if ((nargin < 2) || (nargin > 4))
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
-  if (!isvector (x) || !isvector (y) || length (x) != length (y))
+  if (! isvector (x) || ! isvector (y) || length (x) != length (y))
     error ("cor_test: X and Y must be vectors of the same length");
   endif
 
@@ -88,7 +88,7 @@ function t = cor_test (x, y, alt, method)
   endif
 
   n = length (x);
-  m = method (1);
+  m = method(1);
 
   if (m == "p")
     r = corr (x, y);
@@ -97,7 +97,7 @@ function t = cor_test (x, y, alt, method)
     t.params = df;
     t.stat = sqrt (df) .* r / sqrt (1 - r.^2);
     t.dist = "t";
-    cdf  = tcdf (t.stat, df);
+    cdf = tcdf (t.stat, df);
   elseif (m == "k")
     tau = kendall (x, y);
     t.method = "Kendall's rank correlation tau";

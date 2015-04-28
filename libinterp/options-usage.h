@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -65,7 +65,8 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define PERSIST_OPTION 17
 #define TEXI_MACROS_FILE_OPTION 18
 #define TRADITIONAL_OPTION 19
-struct option long_opts[] = {
+struct option long_opts[] =
+{
   { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
   { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
   { "debug",                    no_argument,       0, 'd' },

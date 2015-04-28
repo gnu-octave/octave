@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Kai Habel
+## Copyright (C) 2000-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -71,12 +71,13 @@ function varargout = gradient (m, varargin)
   endif
 
   nargout_with_ans = max (1,nargout);
-  if (ismatrix (m))
+  if (isnumeric (m))
     [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
   elseif (isa (m, "function_handle"))
     [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});
   elseif (ischar (m))
-    [varargout{1:nargout_with_ans}] = handle_gradient (str2func (m), varargin{:});
+    [varargout{1:nargout_with_ans}] = handle_gradient (str2func (m), ...
+                                                       varargin{:});
   else
     error ("gradient: first input must be an array or a function");
   endif
@@ -179,7 +180,7 @@ function varargout = handle_gradient (f, p0, varargin)
   endif
 
   if (any (p0_size == 1))
-    p0 = p0 (:);
+    p0 = p0(:);
     dim = 1;
     num_points = numel (p0);
   else
@@ -201,7 +202,7 @@ function varargout = handle_gradient (f, p0, varargin)
 
   if (isscalar (delta))
     delta = repmat (delta, 1, dim);
-  elseif (!isvector (delta))
+  elseif (! isvector (delta))
     error ("gradient: spacing values must be scalars or a vector");
   endif
 
@@ -209,7 +210,7 @@ function varargout = handle_gradient (f, p0, varargin)
   p0 = mat2cell (p0, num_points, ones (1, dim));
   varargout = cell (1, dim);
   for d = 1:dim
-    s = delta (d);
+    s = delta(d);
     df_dx = (f (p0{1:d-1}, p0{d}+s, p0{d+1:end})
            - f (p0{1:d-1}, p0{d}-s, p0{d+1:end})) ./ (2*s);
     if (dim == 1)

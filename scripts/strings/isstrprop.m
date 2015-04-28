@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 John W. Eaton
+## Copyright (C) 2008-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -127,7 +127,7 @@ endfunction
 %!assert (isstrprop (char ("AbC", "123"), "upper"), logical ([1 0 1; 0 0 0]))
 %!assert (isstrprop ({"AbC", "123"}, "lower"), {logical([0 1 0]), logical([0 0 0])})
 
-%%Input Validation
+## Test input validation
 %!error isstrprop ()
 %!error isstrprop ("abc123")
 %!error isstrprop ("abc123", "alpha", "alpha")

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "mxarray.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -47,7 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "pr-output.h"
 
-DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
 
@@ -123,11 +123,11 @@ maybe_warn_invalid_field_name (const std::string& key, const char *who)
   if (! valid_identifier (key))
     {
       if (who)
-        warning_with_id ("Octave:matlab-incompatible",
+        warning_with_id ("Octave:language-extension",
                          "%s: invalid structure field name '%s'",
                          who, key.c_str ());
       else
-        warning_with_id ("Octave:matlab-incompatible",
+        warning_with_id ("Octave:language-extension",
                          "invalid structure field name '%s'",
                          key.c_str ());
     }
@@ -648,7 +648,7 @@ octave_struct::byte_size (void) const
 }
 
 void
-octave_struct::print (std::ostream& os, bool) const
+octave_struct::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -844,7 +844,7 @@ octave_struct::load_ascii (std::istream& is)
               success = false;
             }
         }
-      else if (len == 0 )
+      else if (len == 0)
         map = octave_map (dv);
       else
         panic_impossible ();
@@ -980,11 +980,11 @@ octave_struct::load_binary (std::istream& is, bool swap,
   return success;
 }
 
+bool
+octave_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+{
 #if defined (HAVE_HDF5)
 
-bool
-octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-{
   hid_t data_hid = -1;
 
 #if HAVE_HDF5_18
@@ -1019,12 +1019,19 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   H5Gclose (data_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_struct::load_hdf5 (hid_t loc_id, const char *name)
+octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   hdf5_callback_data dsub;
 
@@ -1067,10 +1074,12 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name)
       retval = true;
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_struct::as_mxArray (void) const
@@ -1132,7 +1141,6 @@ octave_struct::fast_elem_insert (octave_idx_type n,
 
   return retval;
 }
-DEFINE_OCTAVE_ALLOCATOR(octave_scalar_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",
                                     "struct");
@@ -1359,7 +1367,7 @@ octave_scalar_struct::byte_size (void) const
 }
 
 void
-octave_scalar_struct::print (std::ostream& os, bool) const
+octave_scalar_struct::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -1616,12 +1624,12 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
   return success;
 }
 
-#if defined (HAVE_HDF5)
-
 bool
-octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name,
+octave_scalar_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name,
                                  bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   hid_t data_hid = -1;
 
 #if HAVE_HDF5_18
@@ -1656,12 +1664,19 @@ octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name,
   H5Gclose (data_hid);
 
   return true;
+
+#else
+  gripe_save ("hdf5");
+  return false;
+#endif
 }
 
 bool
-octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
+octave_scalar_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   hdf5_callback_data dsub;
 
@@ -1702,10 +1717,12 @@ octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
       retval = true;
     }
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 mxArray *
 octave_scalar_struct::as_mxArray (void) const
@@ -1814,7 +1831,7 @@ to be an empty cell array.\n\
 \n\
 Finally, if the value is a non-scalar cell array, then @code{struct}\n\
 produces a struct @strong{array}.\n\
-@seealso{cell2struct, fieldnames, orderfields, getfield, setfield, rmfield, structfun}\n\
+@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2012,8 +2029,10 @@ DEFUN (isfield, args, ,
 @deftypefn  {Built-in Function} {} isfield (@var{x}, \"@var{name}\")\n\
 @deftypefnx {Built-in Function} {} isfield (@var{x}, @var{name})\n\
 Return true if the @var{x} is a structure and it includes an element named\n\
-@var{name}.  If @var{name} is a cell array of strings then a logical array of\n\
-equal dimension is returned.\n\
+@var{name}.\n\
+\n\
+If @var{name} is a cell array of strings then a logical array of equal\n\
+dimension is returned.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")
 {
@@ -2066,9 +2085,9 @@ equal dimension is returned.\n\
   return retval;
 }
 
-DEFUN (nfields, args, ,
+DEFUN (numfields, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} nfields (@var{s})\n\
+@deftypefn {Built-in Function} {} numfields (@var{s})\n\
 Return the number of fields of the structure @var{s}.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")
@@ -2237,12 +2256,14 @@ extern octave_value_list Fcellstr (const octave_value_list& args, int);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} rmfield (@var{s}, \"@var{f}\")\n\
-@deftypefnx {Built-in Function} {@var{s} =} rmfield (@var{s}, @var{f})\n\
+@deftypefn  {Built-in Function} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
+@deftypefnx {Built-in Function} {@var{sout} =} rmfield (@var{s}, @var{f})\n\
 Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}\n\
-removed.  If @var{f} is a cell array of strings or a character array, remove\n\
-each of the named fields.\n\
-@seealso{orderfields, fieldnames}\n\
+removed.\n\
+\n\
+If @var{f} is a cell array of strings or a character array, remove each of\n\
+the named fields.\n\
+@seealso{orderfields, fieldnames, isfield}\n\
 @end deftypefn")
 {
   octave_value retval;

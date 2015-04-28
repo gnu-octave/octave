@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2013 Ben Sapp
+Copyright (C) 2001-2015 Ben Sapp
 Copyright (C) 2007-2009 John Swensen
 
 This file is part of Octave.
@@ -85,7 +85,6 @@ snarf_file (const std::string& fname)
           if (file.eof ())
             {
               // Expected to read the entire file.
-
               retval = buf;
             }
           else
@@ -99,8 +98,7 @@ snarf_file (const std::string& fname)
 static std::deque<size_t>
 get_line_offsets (const std::string& buf)
 {
-  // This could maybe be smarter.  Is deque the right thing to use
-  // here?
+  // This could maybe be smarter.  Is deque the right thing to use here?
 
   std::deque<size_t> offsets;
 
@@ -207,28 +205,47 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
   if (args.length () == 0)
     return;
 
-  // If we are already in a debugging function.
-  if (octave_call_stack::caller_user_code ())
+  if (args(0).is_string ())
     {
-      idx = 0;
-      symbol_name = get_user_code ()->name ();
+      // string could be function name or line number
+      int isint = atoi (args(0).string_value ().c_str ());
+
+      if (error_state)
+        return;
+
+      if (isint == 0)
+        {
+          // It was a function name
+          symbol_name = args(0).string_value ();
+          if (error_state)
+            return;
+          idx = 1;
+        }
+      else
+        {
+          // It was a line number.  Need to get function name from debugger.
+          if (Vdebugging)
+            {
+              symbol_name = get_user_code ()->name ();
+              idx = 0;
+            }
+          else
+            {
+              error ("%s: no function specified", who);
+            }
+        }
     }
   else if (args(0).is_map ())
     {
-      // Problem because parse_dbfunction_params() can only pass out a
-      // single function
-    }
-  else if (args(0).is_string ())
-    {
-      symbol_name = args(0).string_value ();
-      if (error_state)
-        return;
-      idx = 1;
+      // This is a problem because parse_dbfunction_params()
+      // can only pass out a single function.
+      error ("%s: struct input not implemented", who);
+      return;
     }
   else
     error ("%s: invalid parameter specified", who);
 
-  for (int i = idx; i < nargin; i++ )
+  for (int i = idx; i < nargin; i++)
     {
       if (args(i).is_string ())
         {
@@ -238,7 +255,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
           lines[list_idx++] = line;
         }
       else if (args(i).is_map ())
-        octave_stdout << who << ": accepting a struct" << std::endl;
+        octave_stdout << who << ": skipping struct input" << std::endl;
       else
         {
           const NDArray arg = args(i).array_value ();
@@ -355,7 +372,6 @@ bp_table::do_add_breakpoint (const std::string& fname,
 
   return retval;
 }
-
 
 int
 bp_table::do_remove_breakpoint_1 (octave_user_code *fcn,
@@ -522,9 +538,14 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 void
 bp_table::do_remove_all_breakpoints (void)
 {
-  for (const_bp_set_iterator it = bp_set.begin (); it != bp_set.end (); it++)
-    remove_all_breakpoints_in_file (*it);
-
+  // Odd loop structure required because delete will invalidate bp_set iterators
+  for (const_bp_set_iterator it=bp_set.begin (), it_next=it;
+       it != bp_set.end ();
+       it=it_next)
+    {
+      ++it_next;
+      remove_all_breakpoints_in_file (*it);
+    }
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 }
@@ -537,7 +558,7 @@ do_find_bkpt_list (octave_value_list slist,
 
   for (int i = 0; i < slist.length (); i++)
     {
-      if (slist (i).string_value () == match)
+      if (slist(i).string_value () == match)
         {
           retval = slist(i).string_value ();
           break;
@@ -546,7 +567,6 @@ do_find_bkpt_list (octave_value_list slist,
 
   return retval;
 }
-
 
 bp_table::fname_line_map
 bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
@@ -576,7 +596,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                       bp_table::intmap bkpts_vec;
 
                       for (int i = 0; i < len; i++)
-                        bkpts_vec[i] = bkpts (i).double_value ();
+                        bkpts_vec[i] = bkpts(i).double_value ();
 
                       std::string symbol_name = f->name ();
 
@@ -615,31 +635,36 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
+@deftypefn  {Command} {} dbstop @var{func}\n\
+@deftypefnx {Command} {} dbstop @var{func} @var{line}\n\
+@deftypefnx {Command} {} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {Command} {} dbstop @var{line} @dots{}\n\
+@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
-Set a breakpoint in function @var{func}.\n\
+@deftypefnx {Built-in Function} {} dbstop (\"@var{func}\", [@var{line1}, @dots{}])\n\
+@deftypefnx {Built-in Function} {} dbstop (@var{line}, @dots{})\n\
+Set a breakpoint at line number @var{line} in function @var{func}.\n\
 \n\
 Arguments are\n\
 \n\
 @table @var\n\
 @item func\n\
-Function name as a string variable.  When already in debug\n\
-mode this should be left out and only the line should be given.\n\
+Function name as a string variable.  When already in debug mode this argument\n\
+can be omitted and the current function will be used.\n\
 \n\
 @item line\n\
-Line number where the breakpoint should be set.  Multiple\n\
-lines may be given as separate arguments or as a vector.\n\
+Line number where the breakpoint should be set.  Multiple lines may be given\n\
+as separate arguments or as a vector.\n\
 @end table\n\
 \n\
-When called with a single argument @var{func}, the breakpoint\n\
-is set at the first executable line in the named function.\n\
+When called with a single argument @var{func}, the breakpoint is set at the\n\
+first executable line in the named function.\n\
 \n\
-The optional output @var{rline} is the real line number where the\n\
-breakpoint was set.  This can differ from specified line if\n\
-the line is not executable.  For example, if a breakpoint attempted on a\n\
-blank line then Octave will set the real breakpoint at the\n\
-next executable line.\n\
+The optional output @var{rline} is the real line number where the breakpoint\n\
+was set.  This can differ from the specified line if the line is not\n\
+executable.  For example, if a breakpoint attempted on a blank line then\n\
+Octave will set the real breakpoint at the next executable line.\n\
 @seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}\n\
 @end deftypefn")
 {
@@ -660,28 +685,38 @@ next executable line.\n\
 
 DEFUN (dbclear, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbclear (\"@var{func}\")\n\
-@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
+@deftypefn  {Command} {} dbclear @var{func}\n\
+@deftypefnx {Command} {} dbclear @var{func} @var{line}\n\
+@deftypefnx {Command} {} dbclear @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {Command} {} dbclear @var{line} @dots{}\n\
+@deftypefnx {Command} {} dbclear all\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\")\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line})\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", [@var{line1}, @dots{}])\n\
 @deftypefnx {Built-in Function} {} dbclear (@var{line}, @dots{})\n\
-Delete a breakpoint in the function @var{func}.\n\
+@deftypefnx {Built-in Function} {} dbclear (\"all\")\n\
+Delete a breakpoint at line number @var{line} in the function @var{func}.\n\
 \n\
 Arguments are\n\
 \n\
 @table @var\n\
 @item func\n\
-Function name as a string variable.  When already in debug\n\
-mode this argument should be omitted and only the line number should be\n\
-given.\n\
+Function name as a string variable.  When already in debug mode this argument\n\
+can be omitted and the current function will be used.\n\
 \n\
 @item line\n\
-Line number from which to remove a breakpoint.  Multiple\n\
-lines may be given as separate arguments or as a vector.\n\
+Line number from which to remove a breakpoint.  Multiple lines may be given\n\
+as separate arguments or as a vector.\n\
 @end table\n\
 \n\
-When called without a line number specification all breakpoints\n\
-in the named function are cleared.\n\
+When called without a line number specification all breakpoints in the named\n\
+function are cleared.\n\
 \n\
 If the requested line is not a breakpoint no action is performed.\n\
+\n\
+The special keyword @qcode{\"all\"} will clear all breakpoints from all\n\
+files.\n\
 @seealso{dbstop, dbstatus, dbwhere}\n\
 @end deftypefn")
 {
@@ -689,10 +724,17 @@ If the requested line is not a breakpoint no action is performed.\n\
   std::string symbol_name = "";
   bp_table::intmap lines;
 
+  int nargin = args.length ();
+
   parse_dbfunction_params ("dbclear", args, symbol_name, lines);
 
-  if (! error_state)
-    bp_table::remove_breakpoint (symbol_name, lines);
+  if (nargin == 1 && symbol_name == "all")
+    bp_table::remove_all_breakpoints ();
+  else
+    {
+      if (! error_state)
+        bp_table::remove_breakpoint (symbol_name, lines);
+    }
 
   return retval;
 }
@@ -724,6 +766,9 @@ The name of the m-file where the function code is located.\n\
 A line number, or vector of line numbers, with a breakpoint.\n\
 @end table\n\
 \n\
+Note: When @code{dbstatus} is called from the debug prompt within a function,\n\
+the list of breakpoints is automatically trimmed to the breakpoints in the\n\
+current function.\n\
 @seealso{dbclear, dbwhere}\n\
 @end deftypefn")
 {
@@ -752,11 +797,14 @@ A line number, or vector of line numbers, with a breakpoint.\n\
     }
   else
     {
-      octave_user_code *dbg_fcn = get_user_code ();
-      if (dbg_fcn)
+      if (Vdebugging)
         {
-          symbol_name = dbg_fcn->name ();
-          fcn_list(0) = symbol_name;
+          octave_user_code *dbg_fcn = get_user_code ();
+          if (dbg_fcn)
+            {
+              symbol_name = dbg_fcn->name ();
+              fcn_list(0) = symbol_name;
+            }
         }
 
       bp_list = bp_table::get_breakpoint_list (fcn_list);
@@ -844,7 +892,7 @@ execution is stopped.\n\
 
       if (l > 0)
         {
-          octave_stdout << " line " << l << std::endl;
+          octave_stdout << "line " << l << std::endl;
 
           if (have_file)
             {
@@ -855,7 +903,7 @@ execution is stopped.\n\
             }
         }
       else
-        octave_stdout << " <unknown line>" << std::endl;
+        octave_stdout << "<unknown line>" << std::endl;
     }
   else
     error ("dbwhere: must be inside a user function to use dbwhere\n");
@@ -863,8 +911,6 @@ execution is stopped.\n\
   return retval;
 }
 
-// Copied and modified from the do_type command in help.cc
-// Maybe we could share some code?
 void
 do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 {
@@ -876,29 +922,15 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
       if (fs)
         {
-          char ch;
           int line = 1;
-          bool isnewline = true;
+          std::string text;
 
-          // FIXME: Why not use line-oriented input here [getline()]?
-          while (fs.get (ch) && line <= end)
+          while (std::getline (fs, text) && line <= end)
             {
-              if (isnewline && line >= start)
-                {
-                  os << line << "\t";
-                  isnewline = false;
-                }
-
               if (line >= start)
-                {
-                  os << ch;
-                }
+                os << line << "\t" << text << "\n";
 
-              if (ch == '\n')
-                {
-                  line++;
-                  isnewline = true;
-                }
+              line++;
             }
         }
       else
@@ -946,13 +978,14 @@ numbers.\n\
           dbg_fcn = get_user_code ();
 
           if (dbg_fcn)
-            do_dbtype (octave_stdout, dbg_fcn->name (), 0,
-                       std::numeric_limits<int>::max ());
+            do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                       0, std::numeric_limits<int>::max ());
           else
             error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
+
           break;
 
-        case 1: // (dbtype func) || (dbtype start:end)
+        case 1: // (dbtype start:end) || (dbtype func) || (dbtype lineno)
           {
             std::string arg = argv[1];
 
@@ -975,28 +1008,51 @@ numbers.\n\
                       end = atoi (end_str.c_str ());
 
                     if (std::min (start, end) <= 0)
-                      error ("dbtype: start and end lines must be >= 1\n");
+                      {
+                        error ("dbtype: start and end lines must be >= 1\n");
+                        break;
+                      }
 
                     if (start <= end)
-                      do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
+                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                                 start, end);
                     else
                       error ("dbtype: start line must be less than end line\n");
                   }
               }
-            else  // (dbtype func)
+            else  // (dbtype func) || (dbtype lineno)
               {
-                dbg_fcn = get_user_code (arg);
+                int line = atoi (arg.c_str ());
 
-                if (dbg_fcn)
-                  do_dbtype (octave_stdout, dbg_fcn->name (), 0,
-                             std::numeric_limits<int>::max ());
-                else
-                  error ("dbtype: function <%s> not found\n", arg.c_str ());
+                if (line == 0)  // (dbtype func)
+                  {
+                    dbg_fcn = get_user_code (arg);
+
+                    if (dbg_fcn)
+                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                                 0, std::numeric_limits<int>::max ());
+                    else
+                      error ("dbtype: function <%s> not found\n", arg.c_str ());
+                  }
+                else  // (dbtype lineno)
+                  {
+                    if (line <= 0)
+                      {
+                        error ("dbtype: start and end lines must be >= 1\n");
+                        break;
+                      }
+
+                    dbg_fcn = get_user_code ();
+
+                    if (dbg_fcn)
+                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                                 line, line);
+                  }
               }
           }
           break;
 
-        case 2: // (dbtype func start:end) , (dbtype func start)
+        case 2: // (dbtype func start:end) || (dbtype func start)
           dbg_fcn = get_user_code (argv[1]);
 
           if (dbg_fcn)
@@ -1023,10 +1079,14 @@ numbers.\n\
                 }
 
               if (std::min (start, end) <= 0)
-                error ("dbtype: start and end lines must be >= 1\n");
+                {
+                  error ("dbtype: start and end lines must be >= 1\n");
+                  break;
+                }
 
               if (start <= end)
-                do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
+                do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                           start, end);
               else
                 error ("dbtype: start line must be less than end line\n");
             }
@@ -1096,13 +1156,13 @@ defaults to 10 (+/- 5 lines)\n\
             {
               int l_min = std::max (l - n/2, 0);
               int l_max = l + n/2;
-              do_dbtype (octave_stdout, dbg_fcn->name (), l_min, l-1);
+              do_dbtype (octave_stdout, name, l_min, l-1);
 
               std::string line = get_file_line (name, l);
               if (! line.empty ())
                 octave_stdout << l << "-->\t" << line << std::endl;
 
-              do_dbtype (octave_stdout, dbg_fcn->name (), l+1, l_max);
+              do_dbtype (octave_stdout, name, l+1, l_max);
             }
         }
       else
@@ -1166,10 +1226,9 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   if (! error_state)
     {
-      octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
-
       if (nargout == 0)
         {
+          octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
           octave_idx_type nframes_to_display = stk.numel ();
 
           if (nframes_to_display > 0)
@@ -1215,6 +1274,10 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
         }
       else
         {
+          octave_map stk = octave_call_stack::backtrace (nskip,
+                                                         curr_frame,
+                                                         false);
+
           retval(1) = curr_frame < 0 ? 1 : curr_frame + 1;
           retval(0) = stk;
         }
@@ -1309,8 +1372,8 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 
 DEFUN (dbup, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbup\n\
-@deftypefnx {Built-in Function} {} dbup (@var{n})\n\
+@deftypefn  {Command} {} dbup\n\
+@deftypefnx {Command} {} dbup @var{n}\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move up one frame.\n\
 @seealso{dbstack, dbdown}\n\
@@ -1325,8 +1388,8 @@ If @var{n} is omitted, move up one frame.\n\
 
 DEFUN (dbdown, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbdown\n\
-@deftypefnx {Built-in Function} {} dbdown (@var{n})\n\
+@deftypefn  {Command} {} dbdown\n\
+@deftypefnx {Command} {} dbdown @var{n}\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move down one frame.\n\
 @seealso{dbstack, dbup}\n\
@@ -1371,37 +1434,34 @@ execution to continue until the current function returns.\n\
             {
               std::string arg = args(0).string_value ();
 
-              if (! error_state)
+              if (arg == "in")
                 {
-                  if (arg == "in")
+                  Vdebugging = false;
+
+                  tree_evaluator::dbstep_flag = -1;
+                }
+              else if (arg == "out")
+                {
+                  Vdebugging = false;
+
+                  tree_evaluator::dbstep_flag = -2;
+                }
+              else
+                {
+                  int n = atoi (arg.c_str ());
+
+                  if (n > 0)
                     {
                       Vdebugging = false;
 
-                      tree_evaluator::dbstep_flag = -1;
-                    }
-                  else if (arg == "out")
-                    {
-                      Vdebugging = false;
-
-                      tree_evaluator::dbstep_flag = -2;
+                      tree_evaluator::dbstep_flag = n;
                     }
                   else
-                    {
-                      int n = atoi (arg.c_str ());
-
-                      if (n > 0)
-                        {
-                          Vdebugging = false;
-
-                          tree_evaluator::dbstep_flag = n;
-                        }
-                      else
-                        error ("dbstep: invalid argument");
-                    }
+                    error ("dbstep: invalid argument");
                 }
             }
           else
-            error ("dbstep: input argument must be a character string");
+            error ("dbstep: input argument must be a string");
         }
       else
         {
@@ -1480,6 +1540,42 @@ Return true if in debugging mode, otherwise false.\n\
 
   if (args.length () == 0)
     retval = Vdebugging;
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (__db_next_breakpoint_quiet__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} __db_next_breakpoint_quiet__ ()\n\
+@deftypefnx {Built-in Function} {} __db_next_breakpoint_quiet__ (@var{flag})\n\
+Disable line info printing at the next breakpoint.\n\
+\n\
+With a logical argument @var{flag}, set the state on or off.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0 || nargin == 1)
+    {
+      bool state = true;
+
+      if (nargin == 1)
+        {
+          state = args(0).bool_value ();
+
+          if (error_state)
+            {
+              gripe_wrong_type_arg ("db_next_breakpoint", args(0), true);
+              return retval;
+            }
+        }
+
+      tree_evaluator::quiet_breakpoint_flag = state;
+    }
   else
     print_usage ();
 

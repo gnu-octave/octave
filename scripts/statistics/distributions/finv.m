@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@ function inv = finv (x, m, n)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (n))
+  if (! isscalar (m) || ! isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
       error ("finv: X, M, and N must be of common size or scalars");
@@ -73,13 +73,13 @@ endfunction
 %!assert (finv (x, 2, [2 -Inf NaN Inf 2]), [NaN NaN NaN NaN NaN])
 %!assert (finv ([x(1:2) NaN x(4:5)], 2, 2), [NaN 0 NaN Inf NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (finv ([x, NaN], 2, 2), [NaN 0 1 Inf NaN NaN])
 %!assert (finv (single ([x, NaN]), 2, 2), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (finv ([x, NaN], single (2), 2), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (finv ([x, NaN], 2, single (2)), single ([NaN 0 1 Inf NaN NaN]))
 
-%% Test input validation
+## Test input validation
 %!error finv ()
 %!error finv (1)
 %!error finv (1,2)

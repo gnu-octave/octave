@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -127,7 +127,7 @@ endfunction
 %! axis tight;
 %! title ('feather plot');
 
-%% Test input validation
+## Test input validation
 %!error feather ()
 %!error feather (1,2,3,4)
 %!error feather (1, "-r", 2)

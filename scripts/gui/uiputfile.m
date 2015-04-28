@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Kai Habel
+## Copyright (C) 2010-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -21,8 +21,10 @@
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## Open a GUI dialog for selecting a file.  @var{flt} contains a (list of) file
-## filter string(s) in one of the following formats:
+## Open a GUI dialog for selecting a file.
+##
+## @var{flt} contains a (list of) file filter string(s) in one of the following
+## formats:
 ##
 ## @table @asis
 ## @item @qcode{"/path/to/filename.ext"}
@@ -56,36 +58,17 @@
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
-  if (! __octave_link_enabled__ ())
-    defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
-    funcname = ["__uiputfile_", defaulttoolkit, "__"];
-    functype = exist (funcname);
-    if (! __is_function__ (funcname))
-      funcname = "__uiputfile_fltk__";
-      if (! __is_function__ (funcname))
-        error ("uiputfile: fltk graphics toolkit required");
-      elseif (! strcmp (defaulttoolkit, "gnuplot"))
-        warning ("uiputfile: no implementation for toolkit '%s', using 'fltk' instead",
-               defaulttoolkit);
-      endif
-    endif
-  endif
-
   if (nargin > 3)
     print_usage ();
   endif
 
-  defaultvals = {cell(0, 2),     # File Filter
-                 "Save File",    # Dialog Title
-                 "",             # Default file name
-                 [240, 120],     # Dialog Position (pixel x/y)
-                 "create",
-                 pwd};           # Default directory
-
-  outargs = cell (6, 1);
-  for i = 1 : 6
-    outargs{i} = defaultvals{i};
-  endfor
+  ## Preset default values
+  outargs = {cell(0, 2),     # File Filter
+             "Save File",    # Dialog Title
+             "",             # Default file name
+             [240, 120],     # Dialog Position (pixel x/y)
+             "create",
+             pwd};           # Default directory
 
   if (nargin > 0)
     file_filter = varargin{1};
@@ -107,7 +90,12 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
   if (nargin > 2)
     if (ischar (varargin{3}))
-      [fdir, fname, fext] = fileparts (varargin{3});
+      if (isdir (varargin{3}))
+        fdir = varargin{3};
+        fname = fext = "";
+      else
+        [fdir, fname, fext] = fileparts (varargin{3});
+      endif
       if (! isempty (fdir))
         outargs{6} = fdir;
       endif
@@ -122,7 +110,20 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
   if (__octave_link_enabled__ ())
     [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
   else
+    funcname = __get_funcname__ (mfilename ());
     [retfile, retpath, retindex] = feval (funcname, outargs{:});
+  endif
+
+  ## Append extension to the name if it isn't already added.
+  if (ischar (retfile))
+    ext = outargs{1}{retindex};
+    ext = strrep (ext, "*", "");
+
+    if (length (retfile) >= length (ext))
+      if (! strcmp (retfile(end-length (ext)+1:end), ext))
+        retfile = [retfile ext];
+      endif
+    endif
   endif
 
 endfunction

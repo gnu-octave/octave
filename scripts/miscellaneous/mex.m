@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 David Bateman
+## Copyright (C) 2006-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -19,12 +19,25 @@
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} mex [options] file @dots{}
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
+##
 ## This is equivalent to @code{mkoctfile --mex [options] file}.
-## @seealso{mkoctfile}
+## @seealso{mkoctfile, mexext}
 ## @end deftypefn
 
-function mex (varargin)
-  args = {"--mex", varargin{:}};
-  mkoctfile (args{:});
+function retval = mex (varargin)
+
+  [output, status] = mkoctfile ("--mex", varargin{:});
+
+  if (! isempty (output))
+    disp (output);
+  endif
+  if (nargout > 0)
+    retval = status;
+  endif
+
 endfunction
+
+
+## Remove from test statistics.  All real tests are in mkoctfile.
+%!assert (1)
 

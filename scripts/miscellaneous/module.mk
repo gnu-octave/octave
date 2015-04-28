@@ -2,6 +2,7 @@ FCN_FILE_DIRS += miscellaneous
 
 miscellaneous_PRIVATE_FCN_FILES = \
   miscellaneous/private/display_info_file.m \
+  miscellaneous/private/__w2mpth__.m \
   miscellaneous/private/__xzip__.m
 
 miscellaneous_FCN_FILES = \
@@ -10,7 +11,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/bunzip2.m \
   miscellaneous/bzip2.m \
   miscellaneous/cast.m \
-  miscellaneous/colon.m \
   miscellaneous/citation.m \
   miscellaneous/comma.m \
   miscellaneous/compare_versions.m \
@@ -21,7 +21,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/desktop.m \
   miscellaneous/dir.m \
   miscellaneous/dos.m \
-  miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
   miscellaneous/error_ids.m \
   miscellaneous/fact.m \
@@ -51,6 +50,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/movefile.m \
   miscellaneous/namelengthmax.m \
   miscellaneous/news.m \
+  miscellaneous/open.m \
   miscellaneous/orderfields.m \
   miscellaneous/pack.m \
   miscellaneous/paren.m \
@@ -68,7 +68,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/symvar.m \
   miscellaneous/tar.m \
   miscellaneous/tempdir.m \
-  miscellaneous/tempname.m \
+  miscellaneous/tmpnam.m \
   miscellaneous/unix.m \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \

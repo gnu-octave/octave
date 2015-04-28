@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2013 John W. Eaton
+Copyright (C) 2002-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,15 +23,15 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_quit_h)
 #define octave_quit_h 1
 
-#ifdef __cplusplus
-#include <new>
-extern "C" {
-#endif
-
 #include <stdio.h>
 
 #include <signal.h>
 #include <setjmp.h>
+
+#ifdef __cplusplus
+#include <new>
+extern "C" {
+#endif
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 

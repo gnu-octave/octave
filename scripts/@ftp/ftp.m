@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 David Bateman
+## Copyright (C) 2009-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -51,11 +51,15 @@ function obj = ftp (host = "", username = "anonymous", password = "")
     p.host = host;
     p.username = username;
     p.password = password;
-    p.curlhandle = tmpnam ("ftp-");
+    p.curlhandle = tempname ("ftp-");
     if (nargin > 0)
       p.curlhandle = __ftp__ (host, username, password);
     endif
     obj = class (p, "ftp");
   endif
 endfunction
+
+
+## No test possible for interactive function.
+%!assert (1)
 

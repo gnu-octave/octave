@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 John W. Eaton
+## Copyright (C) 2004-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -21,12 +21,15 @@
 ## @deftypefnx {Function File} {@var{status} =} dos ("@var{command}")
 ## @deftypefnx {Function File} {[@var{status}, @var{text}] =} dos ("@var{command"})
 ## @deftypefnx {Function File} {[@dots{}] =} dos ("@var{command}", "-echo")
-## Execute a system command if running under a Windows-like operating
-## system, otherwise do nothing.  Return the exit status of the program
-## in @var{status} and any output from the command in @var{text}.
+## Execute a system command if running under a Windows-like operating system,
+## otherwise do nothing.
+##
+## Octave waits for the external command to finish before returning the exit
+## status of the program in @var{status} and any output in @var{text}.
+##
 ## When called with no output argument, or the @qcode{"-echo"} argument is
 ## given, then @var{text} is also sent to standard output.
-## @seealso{unix, system, isunix, ispc}
+## @seealso{unix, system, isunix, ismac, ispc}
 ## @end deftypefn
 
 ## Author: octave-forge ???

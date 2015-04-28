@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -101,7 +101,7 @@ xlog2 (const Complex& x)
 #if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
-  static double ln2 = log (2);
+  static double ln2 = gnulib::log (2);
 #endif
 
   return std::log (x) / ln2;
@@ -116,7 +116,7 @@ xexp2 (double x)
 #if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
-  static double ln2 = log (2);
+  static double ln2 = gnulib::log (2);
 #endif
 
   return exp (x * ln2);
@@ -169,12 +169,6 @@ octave_is_NA (double x)
   return lo_ieee_is_NA (x);
 }
 
-bool
-octave_is_NaN_or_NA (double x)
-{
-  return lo_ieee_isnan (x);
-}
-
 // (double, double) -> double mappers.
 
 // complex -> complex mappers.
@@ -184,13 +178,26 @@ acos (const Complex& x)
 {
   static Complex i (0, 1);
 
-  return -i * (log (x + i * (sqrt (1.0 - x*x))));
+  Complex tmp;
+
+  if (imag (x) == 0.0)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      double xr = real (x);
+      tmp = Complex (1.0 - xr*xr);
+    }
+  else
+    tmp = 1.0 - x*x;
+
+  return -i * log (x + i * sqrt (tmp));
 }
 
 Complex
 acosh (const Complex& x)
 {
-  return log (x + sqrt (x*x - 1.0));
+  return log (x + sqrt (x + 1.0) * sqrt (x - 1.0));
 }
 
 Complex
@@ -198,7 +205,20 @@ asin (const Complex& x)
 {
   static Complex i (0, 1);
 
-  return -i * log (i*x + sqrt (1.0 - x*x));
+  Complex tmp;
+
+  if (imag (x) == 0.0)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      double xr = real (x);
+      tmp = Complex (1.0 - xr*xr);
+    }
+  else
+    tmp = 1.0 - x*x;
+
+  return -i * log (i*x + sqrt (tmp));
 }
 
 Complex
@@ -386,12 +406,6 @@ octave_is_NA (float x)
   return lo_ieee_is_NA (x);
 }
 
-bool
-octave_is_NaN_or_NA (float x)
-{
-  return lo_ieee_isnan (x);
-}
-
 // (float, float) -> float mappers.
 
 // complex -> complex mappers.
@@ -401,13 +415,26 @@ acos (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
-  return -i * (log (x + i * (sqrt (static_cast<float>(1.0) - x*x))));
+  FloatComplex tmp;
+
+  if (imag (x) == 0.0f)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      float xr = real (x);
+      tmp = FloatComplex (1.0f - xr*xr);
+    }
+  else
+    tmp = 1.0f - x*x;
+
+  return -i * log (x + i * sqrt (tmp));
 }
 
 FloatComplex
 acosh (const FloatComplex& x)
 {
-  return log (x + sqrt (x*x - static_cast<float>(1.0)));
+  return log (x + sqrt (x + 1.0f) * sqrt (x - 1.0f));
 }
 
 FloatComplex
@@ -415,13 +442,26 @@ asin (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
-  return -i * log (i*x + sqrt (static_cast<float>(1.0) - x*x));
+  FloatComplex tmp;
+
+  if (imag (x) == 0.0f)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      float xr = real (x);
+      tmp = FloatComplex (1.0f - xr*xr);
+    }
+  else
+    tmp = 1.0f - x*x;
+
+  return -i * log (i*x + sqrt (tmp));
 }
 
 FloatComplex
 asinh (const FloatComplex& x)
 {
-  return log (x + sqrt (x*x + static_cast<float>(1.0)));
+  return log (x + sqrt (x*x + 1.0f));
 }
 
 FloatComplex
@@ -429,14 +469,13 @@ atan (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
-  return i * log ((i + x) / (i - x)) / static_cast<float>(2.0);
+  return i * log ((i + x) / (i - x)) / 2.0f;
 }
 
 FloatComplex
 atanh (const FloatComplex& x)
 {
-  return log ((static_cast<float>(1.0) + x) / (static_cast<float>
-              (1.0) - x)) / static_cast<float>(2.0);
+  return log ((1.0f + x) / (1.0f - x)) / 2.0f;
 }
 
 // complex -> bool mappers.
@@ -522,14 +561,16 @@ Complex
 rc_log (double x)
 {
   const double pi = 3.14159265358979323846;
-  return x < 0.0 ? Complex (log (-x), pi) : Complex (log (x));
+  return x < 0.0 ? Complex (gnulib::log (-x), pi) : Complex (gnulib::log (x));
 }
 
 FloatComplex
 rc_log (float x)
 {
   const float pi = 3.14159265358979323846f;
-  return x < 0.0f ? FloatComplex (logf (-x), pi) : FloatComplex (logf (x));
+  return (x < 0.0f
+          ? FloatComplex (gnulib::logf (-x), pi)
+          : FloatComplex (gnulib::logf (x)));
 }
 
 Complex

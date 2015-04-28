@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 John W. Eaton
+## Copyright (C) 2010-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -55,7 +55,7 @@ function retval = chop (x, ndigits, base = 10)
     ## unless base was explicitly provided.
 
     inflate = 10 .^ (ndigits - tmp);
-    deflate = 10 .^ (tmp - ndigits);
+    deflate = 1 ./ inflate;
     if (nargin == 2)
       retval = deflate .* round (x .* inflate);
     else

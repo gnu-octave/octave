@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2013 John W. Eaton
+@c Copyright (C) 2007-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -176,7 +176,3 @@ The result of this code can be seen in @ref{fig:interpn}.
 @end float
 @end ifnotinfo
 
-In additional the support function @code{bicubic} that underlies the
-cubic interpolation of @code{interp2} function can be called directly.
-
-@DOCSTRING(bicubic)

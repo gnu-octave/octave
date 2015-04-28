@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 Shai Ayal
+Copyright (C) 2009-2015 Shai Ayal
 
 This file is part of Octave.
 
@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_gl2ps_renderer_h)
 #define octave_gl2ps_renderer_h 1
 
+#include "graphics.h"
+
 #ifdef HAVE_GL2PS_H
 
 #include "gl-render.h"
@@ -38,7 +40,7 @@ public:
 
   ~glps_renderer (void) { }
 
-  void draw (const graphics_object& go, const std::string print_cmd);
+  void draw (const graphics_object& go, const std::string& print_cmd);
 
 protected:
 
@@ -62,13 +64,18 @@ protected:
       gl2psEnable (GL2PS_LINE_STIPPLE);
   }
 
-  void set_polygon_offset (bool on, double offset = 0.0)
+  void set_polygon_offset (bool on, float offset = 0.0f)
   {
-    opengl_renderer::set_polygon_offset (on, offset);
     if (on)
-      gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
+      {
+        opengl_renderer::set_polygon_offset (on, offset);
+        gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
+      }
     else
-      gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
+      {
+        gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
+        opengl_renderer::set_polygon_offset (on, offset);
+      }
   }
 
   void set_linewidth (float w)
@@ -85,5 +92,9 @@ private:
 };
 
 #endif  // HAVE_GL2PS_H
+
+extern OCTINTERP_API void
+gl2ps_print (const graphics_object& fig, const std::string& cmd,
+             const std::string& term);
 
 #endif

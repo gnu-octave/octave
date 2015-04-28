@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P.L. Lucas
-Copyright (C) 2012-2013 Jacob Dawid
+Copyright (C) 2012-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: Jacob Dawid <jacob.dawid@gmail.com>
+// Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #include <QStringList>
 #include <QIODevice>
@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHash>
 
 /**
- * \class parser
+ * @class parser
  * This class gets nodes and searchs inside of 'info files'.
  * <p>Each info file has nodes. Every node has the documentation.
  * Info files contains a map with position of each node.</p>
@@ -53,7 +53,7 @@ class parser
 
 public:
   parser (QObject *parent = 0);
-  void set_info_path (const QString& _info_path);
+  bool set_info_path (const QString& _info_path);
   QString get_info_path ();
   QString search_node (const QString& node);
   QString global_search (const QString& text, int maxFounds);
@@ -103,9 +103,9 @@ private:
   QIODevice *open_file(QFileInfo & fileInfo);
 
   /** Calculates real position of nodes.
-    * \param pos position from info file.
-    * \param fileInfo returns file what contains that position.
-    * \param realPos returns real position inside of fileInfo.
+    * @param pos position from info file.
+    * @param fileInfo returns file what contains that position.
+    * @param realPos returns real position inside of fileInfo.
     */
   void real_position (int pos, QFileInfo & file_info, int & real_pos);
 

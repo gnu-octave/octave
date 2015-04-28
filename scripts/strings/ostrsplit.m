@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Jaroslav Hajek
+## Copyright (C) 2009-2015 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -108,7 +108,7 @@ endfunction
 %!assert (ostrsplit (["a,bc";",de"], ",", true), {"a", "bc", "de "})
 %!assert (ostrsplit (["a,bc";",de"], ", ", true), {"a", "bc", "de"})
 
-%% Test input validation
+## Test input validation
 %!error ostrsplit ()
 %!error ostrsplit ("abc")
 %!error ostrsplit ("abc", "b", true, 4)

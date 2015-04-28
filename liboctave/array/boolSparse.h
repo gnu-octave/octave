@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -26,7 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Sparse.h"
 #include "MSparse-defs.h"
-#include "Sparse-op-defs.h"
+
+#include "boolMatrix.h"
+#include "boolNDArray.h"
+#include "PermMatrix.h"
+
+#include "Sparse-op-decls.h"
 
 class SparseMatrix;
 

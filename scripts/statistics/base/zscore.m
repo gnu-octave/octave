@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -95,7 +95,7 @@ endfunction
 %!assert (zscore (ones (3,2,2,2)), zeros (3,2,2,2))
 %!assert (zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
 
-%% Test input validation
+## Test input validation
 %!error zscore ()
 %!error zscore (1, 2, 3)
 %!error zscore (['A'; 'B'])

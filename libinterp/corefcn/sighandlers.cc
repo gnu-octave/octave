@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -523,7 +523,8 @@ user_abort (const char *sig_name, int sig_number)
           octave_signal_caught = 1;
           octave_interrupt_state++;
 
-          if (interactive && octave_interrupt_state == 2)
+          if (interactive && ! forced_interactive
+              && octave_interrupt_state == 2)
             std::cerr << "Press Control-C again to abort." << std::endl;
 
           if (octave_interrupt_state >= 3)

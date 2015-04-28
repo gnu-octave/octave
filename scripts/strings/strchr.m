@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Jaroslav Hajek
+## Copyright (C) 2008-2015 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -72,7 +72,7 @@ endfunction
 %!assert (strchr ("Octave is the best software", "best"), [3, 6, 9, 11, 13, 15, 16, 17, 18, 20, 23, 27])
 %!assert (strchr ("Octave is the best software", "software"), [3, 4, 6, 9, 11, 13, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27])
 
-%% Test input validation
+## Test input validation
 %!error strchr ()
 %!error strchr (1)
 %!error <STR argument must be a string> strchr (1, "aeiou")

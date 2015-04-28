@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Carnë Draug
+## Copyright (C) 2013-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -16,54 +16,111 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This function simply connects imread and imfinfo() to the function
-## to be used based on their format. It does it by checking the file extension
-## of the file and redirecting to the appropriate function after checking
-## with imformats.
+## This function the image input functions imread() and imfinfo() to the
+## functions that will actually be used, based on their format.  See below
+## on the details on how it identifies the format, and to what it defaults.
 ##
-## First argument is a function handle for the default imageIO function (what
-## to use if the file extension for the image file is not listed by imformats).
-## Second argument is the fieldname in the struct returned by imformats with a
-## function handle for the function to use. Third argument is a cell array, its
-## first element the filename, and the second, an optional file extension to
-## add to filename, if filename alone does not exist. All the others are the
-## original input arguments passed to the original imageIO function which will
-## be passed on to the destination function.
+## It will change the input arguments that were passed to imread() and
+## imfinfo().  It will change the filename to provide the absolute filepath
+## for the file, it will extract the possible format name from the rest of
+## the input arguments (in case there was one), and will give an error if
+## the file can't be found.
 ##
-## No input checking whatsoever is performed. That should be performed by the
-## function calling it.
+## Usage:
+##
+## func      - Function name to use on error message.
+## core_func - Function handle for the default function to use if we can't
+##             find the format in imformats.
+## fieldname - Name of the field in the struct returned by imformats that
+##             has the function to use.
+## filename  - Most likely the first input argument from the function that
+##             called this. May be missing the file extension which can be
+##             on varargin.
+## varargin  - Followed by all the OTHER arguments passed to imread and
+##             imfinfo.
 
-function varargout = imageIO (core_func, fieldname, filename, varargin)
+function varargout = imageIO (func, core_func, fieldname, filename, varargin)
 
-  ## It should not be this function job to check if the file exists or not.
-  ## However, we need to know the file extension to use with imformats and
-  ## that means we need to know the actual filename that will be used which
-  ## is dependent on whether a file exists.
-  ##
-  ## If a file named filename{1} exists, then that's it, we will use that
-  ## wether it has an extension or not. If it does not exist and we have
-  ## something in filename{2}, then we will consider it the file extension.
-  ## Note the detail that if we find a file using filename{1} only, then we
-  ## should completely ignore filename{2}. It won't even be used by
-  ## imformats() at all, even if filename{1} has no extension to use with
-  ## imformats().
-  if (isscalar (filename) || ! isempty (file_in_path (IMAGE_PATH, filename{1})))
-    [~, ~, ext] = fileparts (filename{1});
-    if (! isempty (ext))
-      ## remove dot from extension
-      ext = ext(2:end);
+  ## First thing: figure out the filename and possibly download it.
+  ## The first attempt is to try the filename and see if it exists.  If it
+  ## does not, we try to add the next argument since the file extension can
+  ## be given as a separate argument.  If we still can't find the file, it
+  ## can be a URL.  Lastly, if we still didn't found a file, try adding the
+  ## extension to the URL
+
+  file_2_delete = false;  # will we have to remove the file in the end?
+  persistent abs_path = @(x) file_in_path (IMAGE_PATH, tilde_expand (x));
+
+  ## Filename was given with file extension
+  fn = abs_path (filename);
+  if (isempty (fn) && ! isempty (varargin))
+    ## Maybe if we add a file extension
+    fn = abs_path ([filename "." varargin{1}]);
+  endif
+
+  ## Maybe we have an URL
+  if (isempty (fn))
+    file_2_delete = true; # mark file for deletion
+    [fn, ~] = urlwrite (filename, tempname ());
+    ## Maybe the URL is missing the file extension
+    if (isempty (fn) && ! isempty (varargin))
+      [fn, ~] = urlwrite ([filename "." varargin{1}], tempname ());
     endif
-  else
-    ext = filename{2};
+
+    if (isempty (fn))
+      error ("%s: unable to find file %s", func, filename);
+    endif
   endif
 
-  fmt = imformats (ext);
-  ## When there is no match, fmt will be a 1x1 structure with no fields,
-  ## so we can't just use `isempty (fmt)'.
-  if (isempty (fieldnames (fmt)))
-    [varargout{1:nargout}] = core_func (varargin{:});
-  else
-    [varargout{1:nargout}] = fmt.(fieldname) (varargin{:});
-  endif
+  ## unwind_protect block because we may have a file to remove in the end
+  unwind_protect
+
+    ## When guessing the format to use, we first check if the second
+    ## argument is a format defined in imformats.  If so, we remove it
+    ## from the rest of arguments before passing them on.  If not, we
+    ## try to guess the format from the file extension.  Finally, if
+    ## we still don't know the format, we use the Octave core functions
+    ## which is the same for all formats.
+    foo = []; # the function we will use
+
+    ## We check if the call to imformats (ext) worked using
+    ## "numfields (fmt) > 0 because when it fails, the returned
+    ## struct is not considered empty.
+
+    ## try the second input argument
+    if (! isempty (varargin) && ischar (varargin{1}))
+      fmt = imformats (varargin{1});
+      if (numfields (fmt) > 0)
+        foo = fmt.(fieldname);
+        varargin(1) = []; # remove format name from arguments
+      endif
+    endif
+
+    ## try extension from file name
+    if (isempty (foo))
+      [~, ~, ext] = fileparts (fn);
+      if (! isempty (ext))
+        ## remove dot from extension
+        ext = ext(2:end);
+      endif
+      fmt = imformats (ext);
+      if (numfields (fmt) > 0)
+        foo = fmt.(fieldname);
+      endif
+    endif
+
+    ## use the core function
+    if (isempty (foo))
+      foo = core_func;
+    endif
+
+    [varargout{1:nargout}] = foo (fn, varargin{:});
+
+  unwind_protect_cleanup
+    if (file_2_delete)
+      unlink (fn);
+    endif
+  end_unwind_protect
+
 endfunction
 

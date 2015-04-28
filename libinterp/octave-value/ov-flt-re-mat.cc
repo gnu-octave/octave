@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -70,7 +71,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<FloatNDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_float_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
                                      "single");
@@ -127,13 +127,13 @@ octave_float_matrix::float_value (bool) const
 Matrix
 octave_float_matrix::matrix_value (bool) const
 {
-  return Matrix (matrix.matrix_value ());
+  return Matrix (FloatMatrix (matrix));
 }
 
 FloatMatrix
 octave_float_matrix::float_matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return FloatMatrix (matrix);
 }
 
 Complex
@@ -181,13 +181,13 @@ octave_float_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_float_matrix::complex_matrix_value (bool) const
 {
-  return ComplexMatrix (matrix.matrix_value ());
+  return ComplexMatrix (FloatMatrix (matrix));
 }
 
 FloatComplexMatrix
 octave_float_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (FloatMatrix (matrix));
 }
 
 ComplexNDArray
@@ -268,7 +268,7 @@ octave_float_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      FloatMatrix mat = matrix.matrix_value ();
+      FloatMatrix mat (matrix);
 
       retval = mat.diag (m, n);
     }
@@ -552,19 +552,21 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
+bool
+octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+{
+  bool retval = false;
+
 #if defined (HAVE_HDF5)
 
-bool
-octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
-{
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
-  bool retval = true;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   FloatNDArray m = array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
@@ -610,13 +612,19 @@ octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
+#else
+  gripe_save ("hdf5");
+#endif
+
   return retval;
 }
 
 bool
-octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
+octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
+
+#if defined (HAVE_HDF5)
 
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
@@ -672,10 +680,12 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
   H5Sclose (space_id);
   H5Dclose (data_hid);
 
+#else
+  gripe_load ("hdf5");
+#endif
+
   return retval;
 }
-
-#endif
 
 void
 octave_float_matrix::print_raw (std::ostream& os,
@@ -810,6 +820,29 @@ octave_float_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (tanh, float, ::tanhf);
       ARRAY_MAPPER (isna, bool, octave_is_NA);
       ARRAY_MAPPER (xsignbit, float, xsignbit);
+
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return matrix;
+
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xtoascii:
+      {
+        octave_value str_conv = convert_to_str (true, true);
+        return error_state ? octave_value () : str_conv.map (umap);
+      }
 
     default:
       return octave_base_value::map (umap);

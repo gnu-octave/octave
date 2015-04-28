@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2013 VZLU Prague
+Copyright (C) 2009-2015 VZLU Prague
 
 This file is part of Octave.
 
@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "Array-util.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 
 #include "defun.h"

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -24,7 +24,7 @@
 
 function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, octfiledir)
   filepath = fullfile (packdir, filename);
-  if (!exist (filepath, "file") && strcmpi (requirement, "optional"))
+  if (! exist (filepath, "file") && strcmpi (requirement, "optional"))
     ## do nothing, it's still OK
   else
     [status, output] = copyfile (filepath, packinfo);

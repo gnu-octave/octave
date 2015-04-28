@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -55,7 +55,7 @@ function pp = mkpp (x, P, d)
     error ("mkpp: at least one interval is needed");
   endif
 
-  if (!isvector (x))
+  if (! isvector (x))
     error ("mkpp: x must be a vector");
   endif
 

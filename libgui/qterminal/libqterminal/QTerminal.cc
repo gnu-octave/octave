@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2013 Michael Goffioul.
-Copyright (C) 2012-2013 Jacob Dawid.
+Copyright (C) 2012-2015 Michael Goffioul.
+Copyright (C) 2012-2015 Jacob Dawid.
 
 This file is part of QTerminal.
 
@@ -71,6 +71,17 @@ QTerminal::color_names (void)
   return names;
 }
 
+// slot for disabling the interrupt action when terminal loses focus
+void
+QTerminal::set_global_shortcuts (bool focus_out)
+  {
+    if (focus_out)
+      _interrupt_action->setShortcut (QKeySequence ());
+    else
+     _interrupt_action->setShortcut (
+              QKeySequence (Qt::ControlModifier + Qt::Key_C));
+  }
+
 void
 QTerminal::notice_settings (const QSettings *settings)
 {
@@ -118,4 +129,22 @@ QTerminal::notice_settings (const QSettings *settings)
     (cursorUseForegroundColor,
      settings->value ("terminal/color_c",
                       QVariant (colors.at (3))).value<QColor> ());
+  setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
+
+  // check whether Copy shoretcut is Ctrl-C
+  int set = settings->value ("shortcuts/set",0).toInt ();
+  QKeySequence copy;
+  QString key = QString ("shortcuts/main_edit:copy");
+  if (set)
+    key.append ("_1");  // if second set is active
+  copy = QKeySequence (settings->value (key).toString ()); // the copy shortcut
+
+  //  dis- or enable extra interrupt action
+  QKeySequence ctrl;
+  ctrl = Qt::ControlModifier;
+
+  bool extra_ir_action = (copy != QKeySequence (ctrl + Qt::Key_C));
+
+  _interrupt_action->setEnabled (extra_ir_action);
+  has_extra_interrupt (extra_ir_action);
 }

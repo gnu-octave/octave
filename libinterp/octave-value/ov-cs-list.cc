@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2013 John W. Eaton
+Copyright (C) 2002-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cs-list.h"
 #include "unwind-prot.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_cs_list);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list", "cs-list");
 

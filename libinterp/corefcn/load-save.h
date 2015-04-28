@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -41,9 +41,7 @@ enum load_save_format_type
   LS_MAT_BINARY,
   LS_MAT5_BINARY,
   LS_MAT7_BINARY,
-#ifdef HAVE_HDF5
   LS_HDF5,
-#endif /* HAVE_HDF5 */
   LS_UNKNOWN
 };
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 
 #include "error.h"
 #include "oct-stream.h"
@@ -88,8 +87,10 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  idx_vector index_vector (void) const
-  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  idx_vector index_vector (bool /* require_integers */ = false) const
+  {
+    return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
+  }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }
 
@@ -133,10 +134,10 @@ public:
   { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-  { return Matrix (matrix.matrix_value ()); }
+  { return Matrix (boolMatrix (matrix)); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (matrix.matrix_value ()); }
+  { return FloatMatrix (boolMatrix (matrix)); }
 
   NDArray array_value (bool = false) const
   { return NDArray (matrix); }
@@ -149,10 +150,10 @@ public:
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (matrix.matrix_value ( )); }
+  { return ComplexMatrix (boolMatrix (matrix)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (matrix.matrix_value ( )); }
+  { return FloatComplexMatrix (boolMatrix (matrix)); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (matrix); }
@@ -174,19 +175,19 @@ public:
   }
 
   boolMatrix bool_matrix_value (bool = false) const
-  { return matrix.matrix_value (); }
+  { return boolMatrix (matrix); }
 
   boolNDArray bool_array_value (bool = false) const
   { return matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const
-  { return SparseMatrix (Matrix (matrix.matrix_value ())); }
+  { return SparseMatrix (Matrix (boolMatrix (matrix))); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-  { return SparseComplexMatrix (ComplexMatrix (matrix.matrix_value ())); }
+  { return SparseComplexMatrix (ComplexMatrix (boolMatrix (matrix))); }
 
   SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
-  { return SparseBoolMatrix (matrix.matrix_value ()); }
+  { return SparseBoolMatrix (boolMatrix (matrix)); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
@@ -204,11 +205,9 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -230,7 +229,6 @@ public:
 
 protected:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

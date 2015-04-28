@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2013 John W. Eaton and David Bateman
+@c Copyright (C) 2007-2015 John W. Eaton and David Bateman
 @c Copyright (C) 2007 Paul Thomas and Christoph Spiel
 @c
 @c This file is part of Octave.
@@ -589,7 +589,7 @@ more similar to Octave's @code{Matrix} class than its @code{NDArray} class.
 @subsubsection Array and Sparse Class Differences
 
 The number of elements in a sparse matrix is considered to be the number
-of non-zero elements rather than the product of the dimensions.  Therefore
+of nonzero elements rather than the product of the dimensions.  Therefore
 
 @example
 @group
@@ -600,13 +600,13 @@ int nel = sm.nelem ();
 @end example
 
 @noindent
-returns the number of non-zero elements.  If the user really requires the
-number of elements in the matrix, including the non-zero elements, they
+returns the number of nonzero elements.  If the user really requires the
+number of elements in the matrix, including the nonzero elements, they
 should use @code{numel} rather than @code{nelem}.  Note that for very
 large matrices, where the product of the two dimensions is larger than
 the representation of an unsigned int, then @code{numel} can overflow.
 An example is @code{speye (1e6)} which will create a matrix with a million
-rows and columns, but only a million non-zero elements.  Therefore the
+rows and columns, but only a million nonzero elements.  Therefore the
 number of rows by the number of columns in this case is more than two
 hundred times the maximum value that can be represented by an unsigned int.
 The use of @code{numel} should therefore be avoided useless it is known
@@ -707,7 +707,7 @@ extremely memory constrained problems this may not be the best
 technique for creating a sparse matrix.
 
 The alternative is to first create a sparse matrix with the desired
-number of non-zero elements and then later fill those elements in.
+number of nonzero elements and then later fill those elements in.
 Sample code:
 
 @example
@@ -748,7 +748,7 @@ it is possible to create a sparse matrix with too much storage, so having
 @var{nz} greater than 4 is also valid.  The disadvantage is that the matrix
 occupies more memory than strictly needed.
 
-It is not always possible to know the number of non-zero elements prior
+It is not always possible to know the number of nonzero elements prior
 to filling a matrix.  For this reason the additional unused storage of
 a sparse matrix can be removed after its creation with the
 @code{maybe_compress} function.  In addition, @code{maybe_compress} can
@@ -850,7 +850,7 @@ for (int j = 1; j < nc; j++)
 sm.maybe_mutate ();  // If don't know a priori the final # of nz.
 @end example
 
-Note that both increasing and decreasing the number of non-zero elements in
+Note that both increasing and decreasing the number of nonzero elements in
 a sparse matrix is expensive as it involves memory reallocation.  Also as
 parts of the matrix, though not its entirety, exist as old and new copies
 at the same time, additional memory is needed.  Therefore, if possible this
@@ -1093,7 +1093,7 @@ It is quite important that each and every function have a sufficient level
 of parameter checking to ensure that Octave behaves well.
 
 The minimum requirement, as previously discussed, is to check the number
-of input arguments before using them to avoid referencing a non-existent
+of input arguments before using them to avoid referencing a nonexistent
 argument.  However, in some cases this might not be sufficient as the
 underlying code imposes further constraints.  For example, an external
 function call might be undefined if the input arguments are not
@@ -1607,6 +1607,7 @@ found in the file @file{mystruct.c} shown below.
 An example of the behavior of this function within Octave is then
 
 @example
+@group
 a(1).f1 = "f11"; a(1).f2 = "f12";
 a(2).f1 = "f21"; a(2).f2 = "f22";
 b = mystruct (a);
@@ -1625,6 +1626,7 @@ b(3)
 
      this = this3
      that = that3
+@end group
 @end example
 
 @node Sparse Matrices with Mex-Files
@@ -1653,11 +1655,11 @@ void mxSetNzmax (mxArray *ptr, mwSize nzmax);
 
 @noindent
 @code{mxGetNzmax} gets the maximum number of elements that can be stored
-in the sparse matrix.  This is not necessarily the number of non-zero
+in the sparse matrix.  This is not necessarily the number of nonzero
 elements in the sparse matrix.  @code{mxGetJc} returns an array with one
 additional value than the number of columns in the sparse matrix.  The
 difference between consecutive values of the array returned by
-@code{mxGetJc} define the number of non-zero elements in each column of
+@code{mxGetJc} define the number of nonzero elements in each column of
 the sparse matrix.  Therefore,
 
 @example
@@ -1673,10 +1675,10 @@ nz = Jc[n];
 @end example
 
 @noindent
-returns the actual number of non-zero elements stored in the matrix in
+returns the actual number of nonzero elements stored in the matrix in
 @code{nz}.  As the arrays returned by @code{mxGetPr} and @code{mxGetPi}
-only contain the non-zero values of the matrix, we also need a pointer
-to the rows of the non-zero elements, and this is given by
+only contain the nonzero values of the matrix, we also need a pointer
+to the rows of the nonzero elements, and this is given by
 @code{mxGetIr}.  A complete example of the use of sparse matrices in
 mex-files is given by the file @file{mysparse.c} shown below.
 
@@ -1692,7 +1694,7 @@ sm = sparse ([1, 0; 0, pi]);
 mysparse (sm)
 @result{}
 Matrix is 2-by-2 real sparse matrix with 2 elements
-last non-zero element (2, 2) = 3.14159
+last nonzero element (2, 2) = 3.14159
 @end group
 @end example
 
@@ -1790,8 +1792,8 @@ functions are collected in the header file @code{builtin-defun-decls.h}.
 This feature should be used with care as the list of built-in functions can
 change.  No guarantees can be made that a function that is currently built in
 won't be implemented as a .m file or as a dynamically linked function in the
-future.  An example of how to call built-in functions from C++ can be seen in the
-code
+future.  An example of how to call built-in functions from C++ can be seen in
+the code
 
 @example
 @EXAMPLEFILE(standalonebuiltin.cc)

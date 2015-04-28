@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -35,7 +35,7 @@ function pdf = geopdf (x, p)
     print_usage ();
   endif
 
-  if (!isscalar (p))
+  if (! isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
       error ("geopdf: X and P must be of common size or scalars");
@@ -73,11 +73,11 @@ endfunction
 %!assert (geopdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)])
 %!assert (geopdf ([x, NaN], 0.5), [y, NaN])
 
-%% Test class of input preserved
+## Test class of input preserved
 %!assert (geopdf (single ([x, NaN]), 0.5), single ([y, NaN]), 5*eps ("single"))
 %!assert (geopdf ([x, NaN], single (0.5)), single ([y, NaN]), 5*eps ("single"))
 
-%% Test input validation
+## Test input validation
 %!error geopdf ()
 %!error geopdf (1)
 %!error geopdf (1,2,3)

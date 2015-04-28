@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 Petr Mikulik
+## Copyright (C) 2004-2015 Petr Mikulik
 ##
 ## This file is part of Octave.
 ##
@@ -61,7 +61,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
   endif
 
   if (use_mkfifo)
-    gpin_name = tmpnam ();
+    gpin_name = tempname ();
 
     ##Mode: 6*8*8 ==  0600
     [err, msg] = mkfifo (gpin_name, 6*8*8);
@@ -117,7 +117,8 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
           endif
           fclear (istream);
         endwhile
-        [x(k), y(k), button(k), count] = sscanf (str{end}(8:end), "%f %f %d", "C");
+        [x(k), y(k), button(k), count] = ...
+          sscanf (str{end}(8:end), "%f %f %d", "C");
       endif
 
       if ([x(k), y(k), button(k)] == [0, 0, -1])

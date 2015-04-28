@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -29,8 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QScrollBar>
+#include <QDesktopWidget>
+#include <QCompleter>
+#include <QLabel>
 
 #include "error.h"
+#include "resource-manager.h"
 
 #include "cmd-hist.h"
 
@@ -71,37 +75,116 @@ history_dock_widget::construct ()
            SIGNAL (customContextMenuRequested (const QPoint &)), this,
            SLOT (ctxMenu (const QPoint &)));
 
-  _filter_line_edit = new QLineEdit (this);
-  _filter_line_edit->setStatusTip (
-    tr ("Enter text to filter the command history."));
-  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  _filter = new QComboBox (this);
+  _filter->setToolTip (tr ("Enter text to filter the command history"));
+  _filter->setEditable (true);
+  _filter->setMaxCount (MaxFilterHistory);
+  _filter->setInsertPolicy (QComboBox::NoInsert);
+  _filter->setSizeAdjustPolicy (
+            QComboBox::AdjustToMinimumContentsLengthWithIcon);
+  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
+  _filter->setSizePolicy (sizePol);
+  _filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
+
+  QLabel *filter_label = new QLabel (tr ("Filter"));
+
+  _filter_checkbox = new QCheckBox ();
 
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("Command History"));
   setWidget (new QWidget ());
 
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  QHBoxLayout *hbox_layout = new QHBoxLayout ();
+  hbox_layout->addWidget (filter_label);
+  hbox_layout->addWidget (_filter_checkbox);
+  hbox_layout->addWidget (_filter);
+  vbox_layout->addLayout (hbox_layout);
   vbox_layout->addWidget (_history_list_view);
-  vbox_layout->addWidget (_filter_line_edit);
   vbox_layout->setMargin (2);
 
   widget ()->setLayout (vbox_layout);
 
-  connect (_filter_line_edit, SIGNAL (textEdited (QString)),
-           &_sort_filter_proxy_model, SLOT (setFilterWildcard (QString)));
+  setFocusProxy (_filter->lineEdit ());
+
+  // Init state of the filter
+  QSettings *settings = resource_manager::get_settings ();
+  _filter->addItems (settings->value ("history_dock_widget/mru_list").toStringList ());
+
+  bool filter_state =
+            settings->value ("history_dock_widget/filter_active", false).toBool ();
+  _filter_checkbox->setChecked (filter_state);
+  filter_activate (filter_state);
+
+  // Connect signals and slots
+  connect (_filter, SIGNAL (editTextChanged (const QString&)),
+           &_sort_filter_proxy_model, SLOT (setFilterWildcard (const QString&)));
+  connect (_filter_checkbox, SIGNAL (toggled (bool)),
+           this, SLOT (filter_activate (bool)));
+  connect (_filter->lineEdit (), SIGNAL (editingFinished ()),
+           this, SLOT (update_filter_history ()));
 
   connect (_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (handle_double_click (QModelIndex)));
 
-  setFocusProxy (_filter_line_edit);
+  // shrink max. displayed entry size to desktop width
+  QSize screen = QDesktopWidget ().screenGeometry ().size ();
+  int w = screen.width ();
+  QFontMetrics fm = _history_list_view->fontMetrics ();
+  int h = fm.height ();
+  _history_list_view->setGridSize (QSize (w,h));
+  _history_list_view->setTextElideMode (Qt::ElideRight);
+}
+
+history_dock_widget::~history_dock_widget ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  settings->setValue ("history_dock_widget/filter_active",
+                      _filter_checkbox->isChecked ());
+
+  QStringList mru;
+  for (int i = 0; i < _filter->count (); i++)
+    mru.append (_filter->itemText (i));
+  settings->setValue ("history_dock_widget/mru_list", mru);
+
+  settings->sync ();
+}
+
+void
+history_dock_widget::filter_activate (bool state)
+{
+  _filter->setEnabled (state);
+  _sort_filter_proxy_model.setDynamicSortFilter (state);
+
+  if (state)
+    _sort_filter_proxy_model.setFilterWildcard (_filter->currentText ());
+  else
+    _sort_filter_proxy_model.setFilterWildcard (QString ());
+}
+
+void
+history_dock_widget::update_filter_history ()
+{
+  QString text = _filter->currentText ();   // get current text
+  int index = _filter->findText (text);     // and its actual index
+
+  if (index > -1)
+    _filter->removeItem (index);    // remove if already existing
+
+  _filter->insertItem (0, text);    // (re)insert at beginning
+  _filter->setCurrentIndex (0);
 }
 
 void history_dock_widget::ctxMenu (const QPoint &xpos)
 {
   QMenu menu (this);
-  menu.addAction (tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
+  menu.addAction (resource_manager::icon ("edit-copy"),
+                  tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
   menu.addAction (tr ("Evaluate"), this,
                   SLOT (handle_contextmenu_evaluate (bool)));
-  menu.addAction (tr ("Create script"), this,
+  menu.addAction (resource_manager::icon ("document-new"),
+                  tr ("Create script"), this,
                   SLOT (handle_contextmenu_create_script (bool)));
   menu.exec (_history_list_view->mapToGlobal (xpos));
 }
@@ -203,22 +286,35 @@ history_dock_widget::copyClipboard ()
 {
   if (_history_list_view->hasFocus ())
     handle_contextmenu_copy (true);
-  if (_filter_line_edit->hasFocus () && _filter_line_edit->hasSelectedText ())
+  if (_filter->lineEdit ()->hasFocus ()
+      && _filter->lineEdit ()->hasSelectedText ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
-      clipboard->setText ( _filter_line_edit->selectedText ());
+      clipboard->setText ( _filter->lineEdit ()->selectedText ());
     }
 }
 
 void
 history_dock_widget::pasteClipboard ()
 {
-  if (_filter_line_edit->hasFocus ())
+  if (_filter->lineEdit ()->hasFocus ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
       QString str =  clipboard->text ();
       if (str.length () > 0)
-        _filter_line_edit->insert (str);
+        _filter->lineEdit ()->insert (str);
     }
 }
 
+void
+history_dock_widget::selectAll ()
+{
+  if (_filter->lineEdit ()->hasFocus ())
+    {
+      _filter->lineEdit ()->selectAll ();
+    }
+  if (_history_list_view->hasFocus ())
+    {
+      _history_list_view->selectAll ();
+    }
+}

@@ -1221,10 +1221,10 @@ char Vt102Emulation::getErase() const
 
 /*! shows the contents of the scan buffer.
 
-    This functions is used for diagnostics. It is called by \e ReportErrorToken
+    This functions is used for diagnostics. It is called by @e ReportErrorToken
     to inform about strings that cannot be decoded or handled by the emulation.
 
-    \sa ReportErrorToken
+    @sa ReportErrorToken
 */
 
 static void hexdump(int* s, int len)

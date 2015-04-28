@@ -1,5 +1,5 @@
-## Copyright (C) 2005-2013 Søren Hauberg
-## Copyright (C) 2010-2013 VZLU Prague, a.s.
+## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2010-2015 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -37,7 +37,8 @@ function [ver, url] = get_forge_pkg (name)
   name = tolower (name);
 
   ## Try to download package's index page.
-  [html, succ] = urlread (sprintf ("http://packages.octave.org/%s/index.html", name));
+  [html, succ] = urlread (sprintf ("http://packages.octave.org/%s/index.html",
+                                   name));
   if (succ)
     ## Remove blanks for simpler matching.
     html(isspace(html)) = [];

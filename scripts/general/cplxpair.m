@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ## Sort the numbers @var{z} into complex conjugate pairs ordered by
 ## increasing real part.  Place the negative imaginary complex number
 ## first within each pair.  Place all the real numbers (those with
-## @code{abs (imag (@var{z}) / @var{z}) < @var{tol})}) after the
+## @code{abs (imag (@var{z}) / @var{z}) < @var{tol}}) after the
 ## complex pairs.
 ##
 ## If @var{tol} is unspecified the default value is 100*@code{eps}.
@@ -92,7 +92,7 @@ function y = cplxpair (z, tol, dim)
   perm = [dim:nd, 1:dim-1];
   z = permute (z, perm);
   sz = size (z);
-  n = sz (1);
+  n = sz(1);
   m = prod (sz) / n;
   z = reshape (z, n, m);
 

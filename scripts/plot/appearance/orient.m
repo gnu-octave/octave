@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2013 Paul Kienzle
+## Copyright (C) 2001-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -156,7 +156,7 @@ endfunction
 %! assert (get (hfig, "papersize"), papersize);
 %! assert (get (hfig, "paperposition"), paperposition);
 
-%% Test input validation
+## Test input validation
 %!error orient (1.73, 2.5)
 %!error <unknown ORIENTATION> orient ("nobody")
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Teemu Ikonen
+## Copyright (C) 2000-2015 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -207,7 +207,7 @@ function h = __errplot__ (fstr, hax, varargin)
           && strcmp (get (fkids(i), "tag"), "legend"))
         udata = get (fkids(i), "userdata");
         if (! isempty (intersect (udata.handle, gca ())))
-          hlegend = fkids (i);
+          hlegend = fkids(i);
           break;
         endif
       endif

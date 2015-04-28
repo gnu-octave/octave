@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ## Copyright (C) 2009-2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -142,8 +142,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     lensubs = cellfun (@length, subs);
 
-    if (any (lensubs != lensubs(1)) ||
-        (lenvals > 1 && lenvals != lensubs(1)))
+    if (any (lensubs != lensubs(1)) || (lenvals > 1 && lenvals != lensubs(1)))
       error ("accumarray: dimension mismatch");
     endif
 
@@ -239,7 +238,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       endif
 
       ## Convert multidimensional subscripts.
-      if (ismatrix (subs))
+      if (isnumeric (subs))
         subs = num2cell (subs, 1);
       endif
       subs = sub2ind (sz, subs{:}); # creates index cache

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Friedrich Leisch
+## Copyright (C) 1995-2015 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
-## Perform one step of the Durbin-Levinson algorithm.
+## Perform one step of the @nospell{Durbin-Levinson} algorithm.
 ##
 ## The vector @var{c} specifies the autocovariances @code{[gamma_0, @dots{},
 ## gamma_t]} from lag 0 to @var{t}, @var{oldphi} specifies the
@@ -34,7 +34,7 @@
 
 function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
 
-  if (! ((nargin == 1) || (nargin == 3)))
+  if (nargin != 1 && nargin != 3)
     print_usage ();
   endif
 

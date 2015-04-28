@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2013 John W. Eaton
+## Copyright (C) 1994-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -69,7 +69,7 @@ function h = image (varargin)
 
   do_new = true;
   if (nargin == 0)
-    img = imread ("default.img");
+    img = get (0, "defaultimagecdata");
     x = y = [];
   elseif (chararg == 1)
     ## Low-Level syntax
@@ -111,6 +111,8 @@ function h = image (varargin)
       hax = newplot (hax);
     elseif (isempty (hax))
       hax = gca ();
+    else
+      hax = hax(1);
     endif
 
     htmp = __img__ (hax, do_new, x, y, img, varargin{chararg:end});
@@ -139,25 +141,19 @@ endfunction
 
 function h = __img__ (hax, do_new, x, y, img, varargin)
 
-  ## FIXME: Hack for integer formats which use zero-based indexing
-  ##        Hack favors correctness of display over size of image in memory.
-  ##        True fix must be done in C++ code for renderer.
-  if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
-    img = single (img) + 1;
-  endif
-
   if (! isempty (img))
 
     if (isempty (x))
-      x = [1, columns(img)];
+      xdata = [];
+    else
+      xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
     endif
 
     if (isempty (y))
-      y = [1, rows(img)];
+      ydata = [];
+    else
+      ydata = y([1, end])(:).';
     endif
-
-    xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
-    ydata = y([1, end])(:).';
 
     if (numel (x) > 2 && numel (y) > 2)
       ## Test data for non-linear spacing which is unsupported
@@ -176,14 +172,13 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
   endif  # ! isempty (img)
 
-  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
-                         "cdatamapping", "direct", varargin{:});
-
   if (do_new && ! ishold (hax))
     ## Set axis properties for new images
-
+    ## NOTE: Do this before calling __go_image__ so that image is not drawn
+    ##       once with default auto-scale axis limits and then a second time
+    ##       with tight axis limits.
     if (! isempty (img))
-      if (isscalar (get (hax, "children")))
+      if (isempty (get (hax, "children")))
         axis (hax, "tight");
       endif
 
@@ -198,9 +193,18 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
     endif  # ! isempty (img)
 
-    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "bottom");
+    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top");
 
   endif  # do_new
+
+  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
+                         "cdatamapping", "direct", varargin{:});
+
+  if (do_new && ! ishold (hax) && ! isempty (img)
+      && isscalar (get (hax, "children")))
+    ## Re-scale axis limits for an image in a new figure or axis.
+    axis (hax, "tight");
+  endif
 
 endfunction
 
@@ -224,5 +228,32 @@ endfunction
 %! subplot (2,2,4);
 %!  h = image (-x, -y, img);
 %!  title ("image (-x, -y, img)");
+
+%!test
+%! ## test hidden properties x/ydatamode (bug #42121)
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   nx = 64; ny = 64;
+%!   cdata = rand (ny, nx)*127;
+%!   hi = image (cdata);             # x/ydatamode is auto
+%!   assert (get (hi, "xdata"), [1 nx])
+%!   assert (get (hi, "ydata"), [1 ny])
+%!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
+%!   assert (get (hi, "xdata"), [1 nx/2])
+%!   assert (get (hi, "ydata"), [1 ny/2])
+%!
+%!   set (hi, "xdata", [10 100])     # xdatamode is now manual
+%!   set (hi, "ydata", [10 1000])    # ydatamode is now manual
+%!   set (hi, "cdata", cdata)
+%!   assert (get (hi, "xdata"), [10 100])
+%!   assert (get (hi, "ydata"), [10 1000])
+%!
+%!   set (hi, "ydata", [])           # ydatamode is now auto
+%!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
+%!   assert (get (hi, "xdata"), [10 100])
+%!   assert (get (hi, "ydata"), [1 ny/2])
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
 
 ## FIXME: Need %!tests for linear

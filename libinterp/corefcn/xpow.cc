@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CColVector.h"
 #include "CDiagMatrix.h"
 #include "fCDiagMatrix.h"
+#include "fCMatrix.h"
 #include "CMatrix.h"
 #include "EIG.h"
 #include "fEIG.h"
@@ -41,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "PermMatrix.h"
 #include "mx-cm-cdm.h"
+#include "mx-fcm-fcdm.h"
 #include "oct-cmplx.h"
 #include "Range.h"
 #include "quit.h"
@@ -51,10 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "xpow.h"
 
 #include "bsxfun.h"
-
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 static inline int
 xisint (double x)

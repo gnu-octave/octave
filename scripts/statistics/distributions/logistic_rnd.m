@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -48,7 +48,7 @@ function rnd = logistic_rnd (varargin)
       error ("logistic_rnd: dimension vector must be row vector of non-negative integers");
     endif
   elseif (nargin > 1)
-    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+    if (any (cellfun (@(x) (! isscalar (x) || x < 0), varargin)))
       error ("logistic_rnd: dimensions must be non-negative integers");
     endif
     sz = [varargin{:}];
@@ -63,7 +63,7 @@ endfunction
 %!assert (size (logistic_rnd ([4 1])), [4, 1])
 %!assert (size (logistic_rnd (4,1)), [4, 1])
 
-%% Test input validation
+## Test input validation
 %!error logistic_rnd ()
 %!error logistic_rnd (-1)
 %!error logistic_rnd (ones (2))

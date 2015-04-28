@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Bill Lash
+## Copyright (C) 2000-2015 Bill Lash
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@ function retval = unwrap (x, tol, dim)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! isnumeric (x))
     error ("unwrap: X must be a numeric matrix or vector");
   endif
 
@@ -78,7 +78,7 @@ function retval = unwrap (x, tol, dim)
   ## Find only the peaks, and multiply them by the appropriate amount
   ## of ranges so that there are kronecker deltas at each wrap point
   ## multiplied by the appropriate amount of range values.
-  p =  ceil (abs (d)./rng) .* rng .* (((d > tol) > 0) - ((d < -tol) > 0));
+  p = ceil (abs (d)./rng) .* rng .* (((d > tol) > 0) - ((d < -tol) > 0));
 
   ## Now need to "integrate" this so that the deltas become steps.
   r = cumsum (p, dim);

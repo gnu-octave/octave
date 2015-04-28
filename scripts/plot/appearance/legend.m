@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 David Bateman
+## Copyright (C) 2010-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -125,7 +125,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (isempty (ca))
       ca = gca ();
     endif
-    fig = get (ca, "parent");
+    fig = ancestor (ca, "figure");
   else
     fig = get (0, "currentfigure");
     if (isempty (fig))
@@ -166,11 +166,27 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   nargs = numel (varargin);
   nkids = numel (kids);
 
+  ## Find any existing legend object on figure
+  hlegend = [];
+  fkids = get (fig, "children");
+  for i = 1 : numel (fkids)
+    if (   strcmp (get (fkids(i), "type"), "axes")
+        && strcmp (get (fkids(i), "tag"), "legend"))
+      udata = get (fkids(i), "userdata");
+      if (any (ismember (udata.handle, ca)))
+        hlegend = fkids(i);
+        break;
+      endif
+    endif
+  endfor
+
   orientation = "default";
   location = "default";
   show = "create";
   textpos = "default";
   box = "default";
+  delete_leg = false;
+  find_leg_hdl = (nargs == 0);
 
   ## Process old way of specifying location with a number rather than a string.
   if (nargs > 0)
@@ -229,20 +245,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       error ("legend: unrecognized legend location");
   endswitch
 
-  ## Find any existing legend object on figure
-  hlegend = [];
-  fkids = get (fig, "children");
-  for i = 1 : numel (fkids)
-    if (   strcmp (get (fkids(i), "type"), "axes")
-        && strcmp (get (fkids(i), "tag"), "legend"))
-      udata = get (fkids(i), "userdata");
-      if (any (udata.handle == ca))
-        hlegend = fkids(i);
-        break;
-      endif
-    endif
-  endfor
-
   if (nargs == 1)
     arg = varargin{1};
     if (ischar (arg))
@@ -250,8 +252,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         str = tolower (strtrim (arg));
         switch (str)
           case "off"
-            delete (hlegend);
-            return;
+            delete_leg = true;
           case "hide"
             show = "off";
             nargs--;
@@ -305,24 +306,26 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endif
 
   have_labels = (nargs > 0);
+  hobjects = [];
+  hplots = [];
+  text_strings = {};
 
-  if (strcmp (show, "off"))
+  if (delete_leg)
+    delete (hlegend);
+    hlegend = [];
+  elseif (find_leg_hdl)
+    ## Don't change anything about legend.
+    ## hleg output will be assigned hlegend value at end of function.
+  elseif (strcmp (show, "off"))
     if (! isempty (hlegend))
       set (findobj (hlegend), "visible", "off");
       hlegend = [];
     endif
-    hobjects = [];
-    hplots  = [];
-    text_strings = {};
   elseif (strcmp (show, "on"))
     if (! isempty (hlegend))
       set (findobj (hlegend), "visible", "on");
-      ## NOTE - Matlab sets both "visible", and "box" to "on"
+      ## NOTE: Matlab sets both "visible" and "box" to "on"
       set (hlegend, "visible", get (hlegend, "box"));
-    else
-      hobjects = [];
-      hplots  = [];
-      text_strings = {};
     endif
   elseif (strcmp (box, "on"))
     if (! isempty (hlegend))
@@ -332,32 +335,31 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (! isempty (hlegend))
       set (hlegend, "box", "off", "visible", "off");
     endif
-  elseif (! have_labels && ! (strcmp (location, "default") &&
-                              strcmp (orientation, "default")))
+  elseif (! have_labels && ! isempty (hlegend)
+          && ! (strcmp (location, "default")
+                && strcmp (orientation, "default")))
     ## Changing location or orientation of existing legend
-    if (! isempty (hlegend))
-      if (strcmp (location, "default"))
-        set (hlegend, "orientation", orientation);
-      elseif (strcmp (orientation, "default"))
-        if (outside)
-          set (hlegend, "location", [location "outside"]);
-        else
-          set (hlegend, "location", location);
-        endif
+    if (strcmp (location, "default"))
+      set (hlegend, "orientation", orientation);
+    elseif (strcmp (orientation, "default"))
+      if (outside)
+        set (hlegend, "location", [location "outside"]);
       else
-        if (outside)
-          set (hlegend, "location", [location "outside"],
-                        "orientation", orientation);
-        else
-          set (hlegend, "location", location,
-                        "orientation", orientation);
-        endif
+        set (hlegend, "location", location);
+      endif
+    else
+      if (outside)
+        set (hlegend, "location", [location "outside"],
+                      "orientation", orientation);
+      else
+        set (hlegend, "location", location,
+                      "orientation", orientation);
       endif
     endif
   else
     ## Create new legend
     hobjects = [];
-    hplots  = [];
+    hplots = [];
     text_strings = {};
 
     if (have_labels)
@@ -498,7 +500,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         delete (fkids(fkids == hlegend));
         hlegend = [];
         hobjects = [];
-        hplots  = [];
+        hplots = [];
         text_strings = {};
       endif
     else
@@ -565,6 +567,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       linelength = 15;
 
       ## Create the axis first
+      oldfig = get (0, "currentfigure");
+      if (oldfig != fig)
+        set (0, "currentfigure", fig);
+      else
+        oldfig = [];
+      endif
       curaxes = get (fig, "currentaxes");
       unwind_protect
         ud = ancestor (hplots, "axes");
@@ -829,10 +837,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
             case "line"
               color = get (hplots(k), "color");
               style = get (hplots(k), "linestyle");
+              lwidth = min (get (hplots(k), "linewidth"), 5);
               if (! strcmp (style, "none"))
                 l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
                            "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", style,
+                           "color", color, "linestyle", style, "linewidth", lwidth,
                            "marker", "none",
                            "userdata", hplots(k));
                 hobjects(end+1) = l1;
@@ -841,11 +850,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               if (! strcmp (marker, "none"))
                 l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
                            "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", "none",
+                           "color", color, "linestyle", "none", "linewidth", lwidth,
                            "marker", marker,
                            "markeredgecolor",get (hplots(k), "markeredgecolor"),
                            "markerfacecolor",get (hplots(k), "markerfacecolor"),
-                           "markersize", get (hplots(k), "markersize"),
+                           "markersize", min (get (hplots(k), "markersize"),10),
                            "userdata", hplots(k));
                 hobjects(end+1) = l1;
               endif
@@ -854,6 +863,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                 addlistener (hplots(k), "color",
                              {@updateline, hlegend, linelength, false});
                 addlistener (hplots(k), "linestyle",
+                             {@updateline, hlegend, linelength, false});
+                addlistener (hplots(k), "linewidth",
                              {@updateline, hlegend, linelength, false});
                 addlistener (hplots(k), "marker",
                              {@updateline, hlegend, linelength, false});
@@ -876,13 +887,24 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                                       xoffset + xk * xstep) / lpos(3),
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                           "facecolor", facecolor, "edgecolor", edgecolor,
-                           "cdata", cdata, "userdata", hplots(k));
-                hobjects(end+1) = p1;
-                ## Copy clim from axes so that colors work out.
-                set (hlegend, "clim", get (ca(1), "clim"));
+                            "facecolor", facecolor, "edgecolor", edgecolor,
+                            "cdata", cdata, "userdata", hplots(k));
+              else
+                ## non-standard patch only making use of marker styles
+                ## such as scatter plot.
+                p1 = patch ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
+                            "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
+                            "marker", get (hplots(k), "marker"),
+                            "markeredgecolor",get (hplots(k),"markeredgecolor"),
+                            "markerfacecolor",get (hplots(k),"markerfacecolor"),
+                            "markersize", min (get (hplots(k),"markersize"),10),
+                            "cdata", cdata, "userdata", hplots(k));
               endif
-              ## FIXME: Probably need listeners, as for line objects
+              hobjects(end+1) = p1;
+              ## Copy clim from axes so that colors work out.
+              set (hlegend, "clim", get (ca(1), "clim"));
+
+              ## FIXME: Need listeners, as for line objects.
               ##        Changing clim, for example, won't update colors
 
             case "surface"
@@ -894,11 +916,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                                       xoffset + xk * xstep) / lpos(3),
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                           "facecolor", facecolor, "edgecolor", edgecolor,
-                           "cdata", cdata, "userdata", hplots(k));
+                            "facecolor", facecolor, "edgecolor", edgecolor,
+                            "cdata", cdata, "userdata", hplots(k));
                 hobjects(end+1) = p1;
               endif
-              ## FIXME: Probably need listeners, as for line objects
+              ## FIXME: Need listeners, as for line objects.
 
           endswitch
 
@@ -1032,6 +1054,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endif
       unwind_protect_cleanup
         set (fig, "currentaxes", curaxes);
+        if (! isempty (oldfig))
+          set (0, "currentfigure", oldfig);
+        endif
       end_unwind_protect
     endif
   endif
@@ -1065,8 +1090,9 @@ function updatelegend (h, ~)
           set (hax, "position", position);
           set (hax, "outerposition", outerposition);
       endswitch
-      set (hax, "units", units);
-      h = legend (hax, hplots, get (h, "string"));
+      set (hax, {"units"}, units);
+
+      h = legend (hax(1), hplots, get (h, "string"));
     unwind_protect_cleanup
       recursive = false;
     end_unwind_protect
@@ -1149,6 +1175,7 @@ function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
     if (ishandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
       dellistener (hplots(i), "color");
       dellistener (hplots(i), "linestyle");
+      dellistener (hplots(i), "linewidth");
       dellistener (hplots(i), "marker");
       dellistener (hplots(i), "markeredgecolor");
       dellistener (hplots(i), "markerfacecolor");
@@ -1163,7 +1190,7 @@ function updateline (h, ~, hlegend, linelength, update_name)
   if (update_name)
     ## When string changes, have to rebuild legend completely
     [hplots, text_strings] = __getlegenddata__ (hlegend);
-    legend (hplots, text_strings);
+    legend (get (hplots(1), "parent"), hplots, text_strings);
   else
     kids = get (hlegend, "children");
     ll = lm = [];
@@ -1198,14 +1225,18 @@ function updateline (h, ~, hlegend, linelength, update_name)
 
     if (! strcmp (linestyle, "none"))
       line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
-            "linestyle", get (h, "linestyle"), "marker", "none",
+            "linestyle", get (h, "linestyle"),
+            "linewidth", min (get (h, "linewidth"), 5),
+            "marker", "none",
             "userdata", h, "parent", hlegend);
     endif
     if (! strcmp (marker, "none"))
       line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
             "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
             "markerfacecolor", get (h, "markerfacecolor"),
-            "markersize", get (h, "markersize"), "linestyle", "none",
+            "markersize", min (get (h, "markersize"), 10),
+            "linestyle", "none",
+            "linewidth", min (get (h, "linewidth"), 5),
             "userdata", h, "parent", hlegend);
     endif
   endif
@@ -1217,22 +1248,22 @@ endfunction
 %! plot (rand (2));
 %! title ('legend called with cellstr and string inputs for labels');
 %! h = legend ({'foo'}, 'bar');
-%! legend location northeastoutside
+%! legend (h, 'location', 'northeastoutside');
 %! set (h, 'fontsize', 20);
 
 %!demo
 %! clf;
 %! plot (rand (3));
-%! title ('legend() without inputs creates default labels');
-%! h = legend ();
+%! title ('legend("show") without inputs creates default labels');
+%! h = legend ('show');
 
 %!demo
 %! clf;
 %! x = 0:1;
 %! plot (x,x,';I am Blue;', x,2*x, x,3*x,';I am Red;');
-%! legend location northeastoutside
+%! h = legend ('location', 'northeastoutside');
 %! ## Placing legend inside should return axes to original size
-%! legend location northeast
+%! legend (h, 'location', 'northeast');
 %! title ('Blue and Red keys, with Green missing');
 
 %!demo
@@ -1368,9 +1399,9 @@ endfunction
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
-%! title ('legend() works for bar graphs (hggroups)');
+%! title ('"left" option places text label west of colors');
 %! legend ('1st Bar', '2nd Bar', '3rd Bar');
-%! legend right;
+%! legend left;
 
 %!demo
 %! clf;
@@ -1596,12 +1627,29 @@ endfunction
 %!   position = get (h, "position");
 %!   plot (rand (3));
 %!   legend ();
-%!   filename = sprintf ("%s.eps", tmpnam ());
+%!   filename = sprintf ("%s.eps", tempname ());
 %!   print (filename);
 %!   unlink (filename);
 %!   assert (get (h, "position"), position);
 %! unwind_protect_cleanup
 %!   close (h);
 %!   graphics_toolkit (toolkit);
+%! end_unwind_protect
+
+%!test
+%! ## bug #42035
+%! h = figure ("visible", "off");
+%! unwind_protect
+%!   hax1 = subplot (1,2,1);
+%!   plot (1:10);
+%!   hax2 = subplot (1,2,2);
+%!   plot (1:10);
+%!   hleg1 = legend (hax1, "foo");
+%!   assert (get (hleg1, "userdata").handle, hax1)
+%!   assert (gca (), hax2);
+%!   hleg2 = legend ("bar");
+%!   assert (get (hleg2, "userdata").handle, gca ())
+%! unwind_protect_cleanup
+%!   close (h);
 %! end_unwind_protect
 

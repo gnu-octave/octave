@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -55,7 +55,7 @@ function yi = interp1q (x, y, xi)
   dy = diff (y);
   dx = diff (x);
   idx = lookup (x, xi, "lr");
-  s = (xi - x (idx)) ./ dx (idx);
+  s = (xi - x(idx)) ./ dx(idx);
   yi = bsxfun (@times, s, dy(idx,:)) + y(idx,:);
   range = xi < x(1) | !(xi <= x(nx));
   yi(range,:) = NA;

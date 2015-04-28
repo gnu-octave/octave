@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -39,7 +39,7 @@ workspace_model::workspace_model (QObject *p)
   _columnNames.append (tr ("Class"));
   _columnNames.append (tr ("Dimension"));
   _columnNames.append (tr ("Value"));
-  _columnNames.append (tr ("Storage Class"));
+  _columnNames.append (tr ("Attribute"));
 
   for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
     _storage_class_colors.append (QColor (Qt::white));
@@ -141,7 +141,7 @@ workspace_model::data (const QModelIndex& idx, int role) const
 
       if (role == Qt::DisplayRole
           || (idx.column () == 0 && role == Qt::EditRole)
-          || (idx.column () == 0 && role == Qt::ToolTipRole) )
+          || (idx.column () == 0 && role == Qt::ToolTipRole))
         {
           switch (idx.column ())
             {
@@ -228,6 +228,7 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 
 void
 workspace_model::set_workspace (bool top_level,
+                                bool /* debug */,
                                 const QString& scopes,
                                 const QStringList& symbols,
                                 const QStringList& class_names,
@@ -244,8 +245,6 @@ workspace_model::set_workspace (bool top_level,
   _complex_flags = complex_flags;
 
   update_table ();
-
-  emit model_changed ();
 }
 
 void
@@ -253,8 +252,6 @@ workspace_model::clear_workspace (void)
 {
   clear_data ();
   update_table ();
-
-  emit model_changed ();
 }
 
 void

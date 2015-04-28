@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2013 John W. Eaton
+Copyright (C) 2002-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -103,8 +103,6 @@ public:
 
   // For backward compatibility.
   void append (const elt_type& s) { lst.push_back (s); }
-
-protected:
 
   octave_base_list (void) : lst () { }
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 David Bateman
+Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -147,7 +147,7 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
@@ -164,6 +164,8 @@ public:
   octave_idx_type *mex_get_ir (void) const { return matrix.mex_get_ir (); }
 
   octave_idx_type *mex_get_jc (void) const { return matrix.mex_get_jc (); }
+
+  octave_value fast_elem_extract (octave_idx_type n) const;
 
 protected:
 

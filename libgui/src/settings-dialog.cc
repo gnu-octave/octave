@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -25,15 +25,19 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
 #include <QDir>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QVector>
 #include <QHash>
 
 #ifdef HAVE_QSCINTILLA
+#include "octave-qscintilla.h"
+#include "octave-txt-lexer.h"
 #include <QScrollArea>
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
@@ -57,7 +61,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->setupUi (this);
 
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME: what should happen if settings is 0?
+
+  // restore last geometry
+  restoreGeometry (settings->value("settings/geometry").toByteArray ());
 
   // look for available language files and the actual settings
   QString qm_dir_name = resource_manager::get_gui_translation_dir ();
@@ -79,10 +85,21 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   else
     ui->comboBox_language->setCurrentIndex (0);  // System is default
 
-  ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",
-                                                    16).toInt ());
+  // icon size
+  QButtonGroup *icon_size_group = new QButtonGroup (this);
+  icon_size_group->addButton (ui->icon_size_small);
+  icon_size_group->addButton (ui->icon_size_normal);
+  icon_size_group->addButton (ui->icon_size_large);
+  int icon_size = settings->value ("toolbar_icon_size", 0).toInt ();
+  ui->icon_size_normal->setChecked (true);  // the default
+  ui->icon_size_small->setChecked (icon_size == -1);
+  ui->icon_size_large->setChecked (icon_size == 1);
 
   // which icon has to be selected
+  QButtonGroup *icon_group = new QButtonGroup (this);
+  icon_group->addButton (ui->general_icon_octave);
+  icon_group->addButton (ui->general_icon_graphic);
+  icon_group->addButton (ui->general_icon_letter);
   QString widget_icon_set =
     settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
   ui->general_icon_octave-> setChecked (true);  // the default (if invalid set)
@@ -90,14 +107,73 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->general_icon_graphic-> setChecked (widget_icon_set == "GRAPHIC");
   ui->general_icon_letter-> setChecked (widget_icon_set == "LETTER");
 
+  // custom title bar of dock widget
+  QVariant default_var = QColor (255,255,255);
+  QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
+                                     default_var).value<QColor> ();
+  _widget_title_bg_color = new color_picker (bg_color);
+  _widget_title_bg_color->setEnabled (false);
+  ui->layout_widget_bgtitle->addWidget (_widget_title_bg_color,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_bg_color, SLOT (setEnabled (bool)));
+
+  default_var = QColor (192,192,192);
+  QColor bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
+                                      default_var).value<QColor> ();
+  _widget_title_bg_color_active = new color_picker (bg_color_active);
+  _widget_title_bg_color_active->setEnabled (false);
+  ui->layout_widget_bgtitle_active->addWidget (_widget_title_bg_color_active,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_bg_color_active, SLOT (setEnabled (bool)));
+
+  default_var = QColor (0,0,0);
+  QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
+                                     default_var).value<QColor> ();
+  _widget_title_fg_color = new color_picker (fg_color);
+  _widget_title_fg_color->setEnabled (false);
+  ui->layout_widget_fgtitle->addWidget (_widget_title_fg_color,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_fg_color, SLOT (setEnabled (bool)));
+
+  default_var = QColor (0,0,0);
+  QColor fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
+                                      default_var).value<QColor> ();
+  _widget_title_fg_color_active = new color_picker (fg_color_active);
+  _widget_title_fg_color_active->setEnabled (false);
+  ui->layout_widget_fgtitle_active->addWidget (_widget_title_fg_color_active,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_fg_color_active, SLOT (setEnabled (bool)));
+
+  ui->sb_3d_title->setValue (
+    settings->value ("DockWidgets/widget_title_3d", 50).toInt ());
+  ui->cb_widget_custom_style->setChecked (
+    settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
+
+  // prompt on exit
+  ui->cb_prompt_to_exit->setChecked (
+    settings->value ("prompt_to_exit",false).toBool ());
+
+  // Main status bar
+  ui->cb_status_bar->setChecked (
+    settings->value ("show_status_bar",true).toBool ());
+
+  // Octave startup
+  ui->cb_restore_octave_dir->setChecked (
+    settings->value ("restore_octave_dir",false).toBool ());
+  ui->le_octave_dir->setText (
+    settings->value ("octave_startup_dir").toString ());
+  connect (ui->pb_octave_dir, SIGNAL (pressed ()),
+           this, SLOT (get_octave_dir ()));
+
+  // editor
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",
                                                         false).toBool ());
   ui->customFileEditor->setText (
     settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (
-    settings->value ("editor/showLineNumbers",true).toBool () );
+    settings->value ("editor/showLineNumbers",true).toBool ());
 
-  QVariant default_var = QColor (240, 240, 240);
+  default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
                                           default_var).value<QColor> ();
   _editor_current_line_color = new color_picker (setting_color);
@@ -107,14 +183,30 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->editor_highlightCurrentLine, SIGNAL (toggled (bool)),
            _editor_current_line_color, SLOT (setEnabled (bool)));
   ui->editor_highlightCurrentLine->setChecked (
-    settings->value ("editor/highlightCurrentLine",true).toBool () );
+    settings->value ("editor/highlightCurrentLine",true).toBool ());
+  ui->editor_long_line_marker->setChecked (
+    settings->value ("editor/long_line_marker",true).toBool ());
+  ui->editor_long_line_column->setValue (
+    settings->value ("editor/long_line_column",80).toInt ());
+  ui->cb_edit_status_bar->setChecked (
+    settings->value ("editor/show_edit_status_bar",true).toBool ());
+  ui->cb_code_folding->setChecked (
+    settings->value ("editor/code_folding",true).toBool ());
 
   ui->editor_codeCompletion->setChecked (
-    settings->value ("editor/codeCompletion", true).toBool () );
+    settings->value ("editor/codeCompletion", true).toBool ());
   ui->editor_spinbox_ac_threshold->setValue (
     settings->value ("editor/codeCompletion_threshold",2).toInt ());
   ui->editor_checkbox_ac_keywords->setChecked (
     settings->value ("editor/codeCompletion_keywords",true).toBool ());
+  ui->editor_checkbox_ac_builtins->setEnabled (
+    ui->editor_checkbox_ac_keywords->isChecked ());
+  ui->editor_checkbox_ac_functions->setEnabled (
+    ui->editor_checkbox_ac_keywords->isChecked ());
+  ui->editor_checkbox_ac_builtins->setChecked (
+    settings->value ("editor/codeCompletion_octave_builtins",true).toBool ());
+  ui->editor_checkbox_ac_functions->setChecked (
+    settings->value ("editor/codeCompletion_octave_functions",true).toBool ());
   ui->editor_checkbox_ac_document->setChecked (
     settings->value ("editor/codeCompletion_document",false).toBool ());
   ui->editor_checkbox_ac_case->setChecked (
@@ -125,6 +217,24 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_white_space", false).toBool ());
   ui->editor_ws_indent_checkbox->setChecked (
     settings->value ("editor/show_white_space_indent",false).toBool ());
+  ui->cb_show_eol->setChecked (
+    settings->value ("editor/show_eol_chars",false).toBool () );
+  ui->cb_show_hscrollbar->setChecked (
+    settings->value ("editor/show_hscroll_bar",true).toBool ());
+
+#ifdef HAVE_QSCINTILLA
+#if defined (Q_OS_WIN32)
+  int eol_mode = QsciScintilla::EolWindows;
+#elif defined (Q_OS_MAC)
+  int eol_mode = QsciScintilla::EolMac;
+#else
+  int eol_mode = QsciScintilla::EolUnix;
+#endif
+#else
+  int eol_mode = 2;
+#endif
+  ui->combo_eol_mode->setCurrentIndex (
+    settings->value ("editor/default_eol_mode",eol_mode).toInt () );
   ui->editor_auto_ind_checkbox->setChecked (
     settings->value ("editor/auto_indent", true).toBool ());
   ui->editor_tab_ind_checkbox->setChecked (
@@ -135,39 +245,38 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_indent_guides",false).toBool ());
   ui->editor_ind_width_spinbox->setValue (
     settings->value ("editor/indent_width", 2).toInt ());
+  ui->editor_ind_uses_tabs_checkbox->setChecked (
+    settings->value ("editor/indent_uses_tabs", false).toBool ());
   ui->editor_tab_width_spinbox->setValue (
     settings->value ("editor/tab_width", 2).toInt ());
   ui->editor_longWindowTitle->setChecked (
     settings->value ("editor/longWindowTitle",false).toBool ());
+  ui->editor_notebook_tab_width_min->setValue (
+    settings->value ("editor/notebook_tab_width_min", 160).toInt ());
+  ui->editor_notebook_tab_width_max->setValue (
+    settings->value ("editor/notebook_tab_width_max", 300).toInt ());
   ui->editor_restoreSession->setChecked (
     settings->value ("editor/restoreSession", true).toBool ());
   ui->editor_create_new_file->setChecked (
     settings->value ("editor/create_new_file",false).toBool ());
+  ui->editor_reload_changed_files->setChecked (
+    settings->value ("editor/always_reload_changed_files",false).toBool ());
+
+  // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
-    settings->value ("terminal/fontName","Courier New").toString ()) );
+      settings->value ("terminal/fontName","Courier New").toString ()));
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
-  ui->showFileSize->setChecked (
-    settings->value ("filesdockwidget/showFileSize", false).toBool ());
-  ui->showFileType->setChecked (
-    settings->value ("filesdockwidget/showFileType", false).toBool ());
-  ui->showLastModified->setChecked (
-    settings->value ("filesdockwidget/showLastModified",false).toBool ());
-  ui->showHiddenFiles->setChecked (
-    settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
-  ui->useAlternatingRowColors->setChecked (
-    settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
-  ui->sync_octave_directory->setChecked (
-    settings->value ("filesdockwidget/sync_octave_directory",true).toBool ());
-  ui->checkbox_allow_web_connect->setChecked (
-    settings->value ("news/allow_web_connection",false).toBool ());
-  ui->useProxyServer->setChecked (
-    settings->value ("useProxyServer", false).toBool ());
-  ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
+  ui->terminal_history_buffer->setValue (
+    settings->value ("terminal/history_buffer",1000).toInt ());
   ui->terminal_cursorBlinking->setChecked (
     settings->value ("terminal/cursorBlinking",true).toBool ());
   ui->terminal_cursorUseForegroundColor->setChecked (
     settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
+  ui->terminal_focus_command->setChecked (
+    settings->value ("terminal/focus_after_command",false).toBool ());
+  ui->terminal_print_dbg_location->setChecked (
+    settings->value ("terminal/print_debug_location",false).toBool ());
 
   QString cursorType
     = settings->value ("terminal/cursorType", "ibeam").toString ();
@@ -186,10 +295,38 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   else if (cursorType == "underline")
     ui->terminal_cursorType->setCurrentIndex (2);
 
+  // file browser
+  ui->showFileSize->setChecked (
+    settings->value ("filesdockwidget/showFileSize", false).toBool ());
+  ui->showFileType->setChecked (
+    settings->value ("filesdockwidget/showFileType", false).toBool ());
+  ui->showLastModified->setChecked (
+    settings->value ("filesdockwidget/showLastModified",false).toBool ());
+  ui->showHiddenFiles->setChecked (
+    settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
+  ui->useAlternatingRowColors->setChecked (
+    settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
+  connect (ui->sync_octave_directory, SIGNAL (toggled (bool)),
+           this, SLOT (set_disabled_pref_file_browser_dir (bool)));
+  ui->sync_octave_directory->setChecked (
+    settings->value ("filesdockwidget/sync_octave_directory",true).toBool ());
+  ui->cb_restore_file_browser_dir->setChecked (
+    settings->value ("filesdockwidget/restore_last_dir",false).toBool ());
+  ui->le_file_browser_dir->setText (
+    settings->value ("filesdockwidget/startup_dir").toString ());
+  connect (ui->pb_file_browser_dir, SIGNAL (pressed ()),
+           this, SLOT (get_file_browser_dir ()));
+
+  ui->checkbox_allow_web_connect->setChecked (
+    settings->value ("news/allow_web_connection",false).toBool ());
+  ui->useProxyServer->setChecked (
+    settings->value ("useProxyServer", false).toBool ());
+  ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
+
   int currentIndex = 0;
   QString proxyTypeString = settings->value ("proxyType").toString ();
-  while ( (currentIndex < ui->proxyType->count ())
-          && (ui->proxyType->currentText () != proxyTypeString))
+  while ((currentIndex < ui->proxyType->count ())
+         && (ui->proxyType->currentText () != proxyTypeString))
     {
       currentIndex++;
       ui->proxyType->setCurrentIndex (currentIndex);
@@ -199,11 +336,37 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->proxyUserName->setText (settings->value ("proxyUserName").toString ());
   ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
 
-  // qorkspace colors
+  // Workspace
+  // colors
   read_workspace_colors (settings);
+  // hide tool tips
+  ui->cb_hide_tool_tips->setChecked (
+    settings->value ("workspaceview/hide_tool_tips",false).toBool ());
 
   // terminal colors
   read_terminal_colors (settings);
+
+  // shortcuts
+
+  ui->cb_prevent_readline_conflicts->setChecked (
+    settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
+  int set = settings->value ("shortcuts/set",0).toInt ();
+  ui->rb_sc_set1->setChecked (set == 0);
+  ui->rb_sc_set2->setChecked (set == 1);
+
+  // initialize the tree view with all shortcut data
+  shortcut_manager::fill_treewidget (ui->shortcuts_treewidget);
+
+  // connect the buttons for import/export of the shortcut sets
+  connect (ui->btn_import_shortcut_set1, SIGNAL (clicked ()),
+           this, SLOT (import_shortcut_set1 ()));
+  connect (ui->btn_export_shortcut_set1, SIGNAL (clicked ()),
+           this, SLOT (export_shortcut_set1 ()));
+  connect (ui->btn_import_shortcut_set2, SIGNAL (clicked ()),
+           this, SLOT (import_shortcut_set2 ()));
+  connect (ui->btn_export_shortcut_set2, SIGNAL (clicked ()),
+           this, SLOT (export_shortcut_set2 ()));
+
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
@@ -232,22 +395,17 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   lexer = new QsciLexerBash ();
   read_lexer_settings (lexer,settings);
   delete lexer;
+  lexer = new octave_txt_lexer ();
+  read_lexer_settings (lexer,settings);
+  delete lexer;
 #endif
 
   // which tab is the desired one?
-  if (desired_tab.isEmpty ())
-    ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
-                                    0).toInt ());
-  else
-    {
-      QHash <QString, QWidget*> tab_hash;
-      tab_hash["editor"] = ui->tab_editor;
-      tab_hash["editor_styles"] = ui->tab_editor_styles;
-      ui->tabWidget->setCurrentIndex (
-        ui->tabWidget->indexOf (tab_hash.value (desired_tab)));
-    }
+  show_tab (desired_tab);
 
-
+  // connect button box signal
+  connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
+           this,           SLOT (button_clicked (QAbstractButton *)));
 }
 
 settings_dialog::~settings_dialog ()
@@ -255,6 +413,24 @@ settings_dialog::~settings_dialog ()
   delete ui;
 }
 
+void
+settings_dialog::show_tab (const QString& tab)
+{
+  if (tab.isEmpty ())
+    {
+      QSettings *settings = resource_manager::get_settings ();
+      ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
+                                      0).toInt ());
+    }
+  else
+    {
+      QHash <QString, QWidget*> tab_hash;
+      tab_hash["editor"] = ui->tab_editor;
+      tab_hash["editor_styles"] = ui->tab_editor_styles;
+      ui->tabWidget->setCurrentIndex (
+        ui->tabWidget->indexOf (tab_hash.value (tab)));
+    }
+}
 
 #ifdef HAVE_QSCINTILLA
 int
@@ -287,6 +463,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   QVector<color_picker*> bg_color (max_style);
   int default_size = 10;
   QFont default_font = QFont ();
+  int label_width;
   QColor default_color = QColor ();
   QColor dummy_color = QColor (255,0,255);
 
@@ -296,12 +473,13 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       QFont   actual_font = lexer->font (styles[i]);
       description[i] = new QLabel (actual_name);
       description[i]->setWordWrap (true);
-      description[i]->setMaximumSize (160,QWIDGETSIZE_MAX);
-      description[i]->setMinimumSize (160,1);
+      label_width = 24*description[i]->fontMetrics ().averageCharWidth ();
+      description[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
+      description[i]->setMinimumSize (label_width,1);
       select_font[i] = new QFontComboBox ();
       select_font[i]->setObjectName (actual_name+"_font");
-      select_font[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
-      select_font[i]->setMinimumSize (180,1);
+      select_font[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
+      select_font[i]->setMinimumSize (label_width,1);
       font_size[i] = new QSpinBox ();
       font_size[i]->setObjectName (actual_name+"_size");
       if (styles[i] == 0) // the default
@@ -446,7 +624,7 @@ settings_dialog::read_terminal_colors (QSettings *settings)
 }
 
 void
-settings_dialog::write_changed_settings ()
+settings_dialog::write_changed_settings (bool closing)
 {
   QSettings *settings = resource_manager::get_settings ();
   // FIXME: what should happen if settings is 0?
@@ -465,8 +643,40 @@ settings_dialog::write_changed_settings ()
     language = "SYSTEM";
   settings->setValue ("language", language);
 
-  // other settings
-  settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
+  // dock widget title bar
+  settings->setValue ("DockWidgets/widget_title_custom_style",
+                      ui->cb_widget_custom_style->isChecked ());
+  settings->setValue ("DockWidgets/widget_title_3d",
+                      ui->sb_3d_title->value ( ));
+  settings->setValue ("Dockwidgets/title_bg_color",
+                      _widget_title_bg_color->color ());
+  settings->setValue ("Dockwidgets/title_bg_color_active",
+                      _widget_title_bg_color_active->color ());
+  settings->setValue ("Dockwidgets/title_fg_color",
+                      _widget_title_fg_color->color ());
+  settings->setValue ("Dockwidgets/title_fg_color_active",
+                      _widget_title_fg_color_active->color ());
+
+  // icon size
+  int icon_size = 0;
+  if (ui->icon_size_small->isChecked ())
+    icon_size = -1;
+  else if (ui->icon_size_large->isChecked ())
+    icon_size = 1;
+  settings->setValue ("toolbar_icon_size", icon_size);
+
+  // promp to exit
+  settings->setValue ("prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
+
+  // status bar
+  settings->setValue ( "show_status_bar", ui->cb_status_bar->isChecked ());
+
+  // Octave startup
+  settings->setValue ("restore_octave_dir",
+                      ui->cb_restore_octave_dir->isChecked ());
+  settings->setValue ("octave_startup_dir", ui->le_octave_dir->text ());
+
+  //editor
   settings->setValue ("useCustomFileEditor",
                       ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
@@ -476,12 +686,24 @@ settings_dialog::write_changed_settings ()
                       ui->editor_highlightCurrentLine->isChecked ());
   settings->setValue ("editor/highlight_current_line_color",
                       _editor_current_line_color->color ());
+  settings->setValue ("editor/long_line_marker",
+                      ui->editor_long_line_marker->isChecked ());
+  settings->setValue ("editor/long_line_column",
+                      ui->editor_long_line_column->value ());
+  settings->setValue ("editor/code_folding",
+                      ui->cb_code_folding->isChecked ());
+  settings->setValue ("editor/show_edit_status_bar",
+                      ui->cb_edit_status_bar->isChecked ());
   settings->setValue ("editor/codeCompletion",
                       ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold",
                       ui->editor_spinbox_ac_threshold->value ());
   settings->setValue ("editor/codeCompletion_keywords",
                       ui->editor_checkbox_ac_keywords->isChecked ());
+  settings->setValue ("editor/codeCompletion_octave_builtins",
+                      ui->editor_checkbox_ac_builtins->isChecked ());
+  settings->setValue ("editor/codeCompletion_octave_functions",
+                      ui->editor_checkbox_ac_functions->isChecked ());
   settings->setValue ("editor/codeCompletion_document",
                       ui->editor_checkbox_ac_document->isChecked ());
   settings->setValue ("editor/codeCompletion_case",
@@ -492,6 +714,12 @@ settings_dialog::write_changed_settings ()
                       ui->editor_ws_checkbox->isChecked ());
   settings->setValue ("editor/show_white_space_indent",
                       ui->editor_ws_indent_checkbox->isChecked ());
+  settings->setValue ("editor/show_eol_chars",
+                      ui->cb_show_eol->isChecked ());
+  settings->setValue ("editor/show_hscroll_bar",
+                      ui->cb_show_hscrollbar->isChecked ());
+  settings->setValue ("editor/default_eol_mode",
+                      ui->combo_eol_mode->currentIndex ());
   settings->setValue ("editor/auto_indent",
                       ui->editor_auto_ind_checkbox->isChecked ());
   settings->setValue ("editor/tab_indents_line",
@@ -502,17 +730,26 @@ settings_dialog::write_changed_settings ()
                       ui->editor_ind_guides_checkbox->isChecked ());
   settings->setValue ("editor/indent_width",
                       ui->editor_ind_width_spinbox->value ());
+  settings->setValue ("editor/indent_uses_tabs",
+                      ui->editor_ind_uses_tabs_checkbox->isChecked ());
   settings->setValue ("editor/tab_width",
                       ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle",
                       ui->editor_longWindowTitle->isChecked ());
+  settings->setValue ("editor/notebook_tab_width_min",
+                      ui->editor_notebook_tab_width_min->value ());
+  settings->setValue ("editor/notebook_tab_width_max",
+                      ui->editor_notebook_tab_width_max->value ());
   settings->setValue ("editor/restoreSession",
                       ui->editor_restoreSession->isChecked ());
   settings->setValue ("editor/create_new_file",
                       ui->editor_create_new_file->isChecked ());
+  settings->setValue ("editor/always_reload_changed_files",
+                      ui->editor_reload_changed_files->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value ());
   settings->setValue ("terminal/fontName",
                       ui->terminal_fontName->currentFont ().family ());
+
   settings->setValue ("filesdockwidget/showFileSize",
                       ui->showFileSize->isChecked ());
   settings->setValue ("filesdockwidget/showFileType",
@@ -525,6 +762,12 @@ settings_dialog::write_changed_settings ()
                       ui->useAlternatingRowColors->isChecked ());
   settings->setValue ("filesdockwidget/sync_octave_directory",
                       ui->sync_octave_directory->isChecked ());
+  settings->setValue ("filesdockwidget/restore_last_dir",
+                      ui->cb_restore_file_browser_dir->isChecked ());
+  settings->setValue ("filesdockwidget/startup_dir",
+                      ui->le_file_browser_dir->text ());
+
+
   settings->setValue ("news/allow_web_connection",
                       ui->checkbox_allow_web_connect->isChecked ());
   settings->setValue ("useProxyServer", ui->useProxyServer->isChecked ());
@@ -537,6 +780,12 @@ settings_dialog::write_changed_settings ()
                       ui->terminal_cursorBlinking->isChecked ());
   settings->setValue ("terminal/cursorUseForegroundColor",
                       ui->terminal_cursorUseForegroundColor->isChecked ());
+  settings->setValue ("terminal/focus_after_command",
+                      ui->terminal_focus_command->isChecked ());
+  settings->setValue ("terminal/print_debug_location",
+                      ui->terminal_print_dbg_location->isChecked ());
+  settings->setValue ("terminal/history_buffer",
+                      ui->terminal_history_buffer->value ());
 
   // the cursor
   QString cursorType;
@@ -547,7 +796,6 @@ settings_dialog::write_changed_settings ()
     case 2: cursorType = "underline";  break;
     }
   settings->setValue ("terminal/cursorType", cursorType);
-  settings->sync ();
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, get dialog contents, and write settings
@@ -576,13 +824,34 @@ settings_dialog::write_changed_settings ()
   lexer = new QsciLexerBash ();
   write_lexer_settings (lexer,settings);
   delete lexer;
+  lexer = new octave_txt_lexer ();
+  write_lexer_settings (lexer,settings);
+  delete lexer;
 #endif
 
+  // Workspace
   write_workspace_colors (settings);
+  // hide tool tips
+  settings->setValue ("workspaceview/hide_tool_tips",
+                      ui->cb_hide_tool_tips->isChecked ());
 
+  // Terminal
   write_terminal_colors (settings);
 
+  // shortcuts
+  settings->setValue ("shortcuts/prevent_readline_conflicts",
+                      ui->cb_prevent_readline_conflicts->isChecked ());
+  int set = 0;
+  if (ui->rb_sc_set2->isChecked ())
+    set = 1;
+  settings->setValue ("shortcuts/set",set);
+  shortcut_manager::write_shortcuts (0, settings, closing); // 0: write both sets
+
+  // settings dialog's geometry
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
+  settings->setValue ("settings/geometry",saveGeometry ());
+
+  settings->sync ();
 }
 
 #ifdef HAVE_QSCINTILLA
@@ -666,6 +935,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
 
   settings->setValue (
     "settings/last_editor_styles_tab",ui->tabs_editor_lexers->currentIndex ());
+  settings->sync ();
 }
 #endif
 
@@ -702,4 +972,89 @@ settings_dialog::write_terminal_colors (QSettings *settings)
                             color->color ());
     }
   settings->sync ();
+}
+
+
+// internal slots
+
+void
+settings_dialog::button_clicked (QAbstractButton *button)
+{
+  QDialogButtonBox::ButtonRole button_role = ui->button_box->buttonRole (button);
+
+  if (button_role == QDialogButtonBox::ApplyRole ||
+      button_role == QDialogButtonBox::AcceptRole)
+    {
+      write_changed_settings (button_role == QDialogButtonBox::AcceptRole);
+      emit apply_new_settings ();
+    }
+
+  if (button_role == QDialogButtonBox::RejectRole ||
+      button_role == QDialogButtonBox::AcceptRole)
+    close ();
+}
+
+void
+settings_dialog::get_dir (QLineEdit *line_edit, const QString& title)
+{
+  QString dir = QFileDialog::getExistingDirectory(this,
+                title, line_edit->text (),
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  line_edit->setText (dir);
+}
+
+void
+settings_dialog::get_octave_dir ()
+{
+  get_dir (ui->le_octave_dir, tr ("Set Octave Startup Directory"));
+}
+
+void
+settings_dialog::get_file_browser_dir ()
+{
+  get_dir (ui->le_file_browser_dir, tr ("Set File Browser Startup Directory"));
+}
+
+void
+settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
+{
+  ui->cb_restore_file_browser_dir->setDisabled (disable);
+
+  if (! disable)
+    {
+      ui->le_file_browser_dir->setDisabled (
+        ui->cb_restore_file_browser_dir->isChecked ());
+      ui->pb_file_browser_dir->setDisabled (
+        ui->cb_restore_file_browser_dir->isChecked ());
+    }
+  else
+    {
+      ui->le_file_browser_dir->setDisabled (disable);
+      ui->pb_file_browser_dir->setDisabled (disable);
+    }
+}
+
+// slots for import/export of shortcut sets
+void
+settings_dialog::import_shortcut_set1 ()
+{
+  shortcut_manager::import_export (true,1);
+}
+
+void
+settings_dialog::export_shortcut_set1 ()
+{
+  shortcut_manager::import_export (false,1);
+}
+
+void
+settings_dialog::import_shortcut_set2 ()
+{
+  shortcut_manager::import_export (true,2);
+}
+
+void
+settings_dialog::export_shortcut_set2 ()
+{
+  shortcut_manager::import_export (false,2);
 }

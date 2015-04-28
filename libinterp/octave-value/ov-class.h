@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 John W. Eaton
+Copyright (C) 2007-2015 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-alloc.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -115,7 +114,7 @@ public:
                                const std::list<octave_value_list>& idx,
                                const octave_value& rhs);
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   dim_vector dims (void) const { return map.dims (); }
 
@@ -167,9 +166,11 @@ public:
 
   octave_base_value *unique_parent_class (const std::string&);
 
+  bool is_instance_of (const std::string&) const;
+
   string_vector all_strings (bool pad) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -193,11 +194,9 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   mxArray *as_mxArray (void) const;
 
@@ -205,7 +204,6 @@ private:
 
   octave_map map;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
 public:
   int type_id (void) const { return t_id; }

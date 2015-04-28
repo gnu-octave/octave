@@ -11,6 +11,7 @@ statistics_base_FCN_FILES = \
   statistics/base/kendall.m \
   statistics/base/kurtosis.m \
   statistics/base/logit.m \
+  statistics/base/lscov.m \
   statistics/base/mahalanobis.m \
   statistics/base/mean.m \
   statistics/base/meansq.m \

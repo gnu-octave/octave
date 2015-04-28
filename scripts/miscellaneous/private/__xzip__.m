@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Thorsten Meyer
+## Copyright (C) 2008-2015 Thorsten Meyer
 ## based on the original gzip function by David Bateman
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{entries} =} __xzip__ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
+## @deftypefn {Function File} {@var{filelist} =} __xzip__ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -30,23 +30,28 @@
 ## are not touched. Existing compressed files are silently overwritten.
 ## This is an internal function. Do not use directly.
 
-function entries = __xzip__ (commandname, extension,
-                             commandtemplate, files, outdir)
+function filelist = __xzip__ (commandname, extension, commandtemplate,
+                              files, outdir)
 
   if (nargin == 5 && ! exist (outdir, "dir"))
-    error ("__xzip__: OUTDIR output directory does not exist");
+    r = mkdir (outdir);
+    if (! r)
+      error ("%s: Failed to create output directory DIR", commandname);
+    endif
   endif
 
   if (ischar (files))
     files = cellstr (files);
-  endif
-  if (! iscellstr (files))
-    error ("__xzip__: FILES must be a character array or cellstr");
+  elseif (! iscellstr (files))
+    error ("%s: FILES must be a character array or cellstr", commandname);
   endif
 
   if (nargin == 4)
-    outdir = tmpnam ();
-    mkdir (outdir);
+    outdir = tempname ();
+    r = mkdir (outdir);
+    if (! r)
+      error ("%s: Failed to create temporary output directory", commandname);
+    endif
   endif
 
   cwd = pwd ();
@@ -61,31 +66,35 @@ function entries = __xzip__ (commandname, extension,
 
     copyfile (files, outdir);
 
-    [d, f] = myfileparts (files);
+    fnames = fname_only (files);
 
     cd (outdir);
 
-    cmd = sprintf (commandtemplate, sprintf (" %s", f{:}));
+    cmd = sprintf (commandtemplate, sprintf (" %s", fnames{:}));
 
     [status, output] = system (cmd);
     if (status)
-      error ("__xzip__: %s command failed with exit status = %d",
-             commandname, status);
+      fcn = evalin ("caller", "mfilename ()");
+      error ("%s: %s command failed with exit status = %d",
+             fcn, commandname, status);
     endif
 
     if (nargin == 5)
       if (nargout > 0)
-        entries = cellfun(
+        ## FIXME: This doesn't work if a directory is compressed
+        filelist = cellfun (
             @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)),
-            f, "uniformoutput", false);
+            fnames, "uniformoutput", false);
       endif
     else
-      movefile (cellfun (@(x) sprintf ("%s.%s", x, extension), f,
-                        "uniformoutput", false), cwd);
+      ## FIXME: This does not work when you try to compress directories
+      ##        The resulting name is dir/.gz which is totally wrong.
+      ##        See bug #43431.
+      movefile (cellfun (@(x) sprintf ("%s.%s", x, extension),
+                         fnames, "uniformoutput", false), cwd);
       if (nargout > 0)
-        ## FIXME this does not work when you try to compress directories
-        entries  = cellfun (@(x) sprintf ("%s.%s", x, extension),
-                            files, "uniformoutput", false);
+        filelist  = cellfun (@(x) sprintf ("%s.%s", x, extension),
+                             files, "uniformoutput", false);
       endif
     endif
 
@@ -99,35 +108,10 @@ function entries = __xzip__ (commandname, extension,
 
 endfunction
 
-function [d, f] = myfileparts (files)
-  [d, f, ext] = cellfun ("fileparts", files, "uniformoutput", false);
-  f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
-               "uniformoutput", false);
+function f = fname_only (files)
+  [~, f, ext] = cellfun ("fileparts", files, "uniformoutput", false);
+  f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext, "uniformoutput", false);
   idx = cellfun ("isdir", files);
-  d(idx) = "";
   f(idx) = files(idx);
 endfunction
-
-
-## FIXME -- reinstate these tests if we invent a way to test private
-## functions directly.
-##
-## %!error <extension has to be a string with finite length>
-## %!  __xzip__ ("gzip", "", "gzip -r %s", "bla");
-## %!error <no files to move>
-## %!  __xzip__ ("gzip", ".gz", "gzip -r %s", tmpnam);
-## %!error <command failed with exit status>
-## %!  # test __xzip__ with invalid compression command
-## %!  unwind_protect
-## %!    filename = tmpnam;
-## %!    dummy    = 1;
-## %!    save (filename, "dummy");
-## %!    dirname  = tmpnam;
-## %!    mkdir (dirname);
-## %!    entry = __xzip__ ("gzip", ".gz", "xxxzipxxx -r %s 2>/dev/null",
-## %!                     filename, dirname);
-## %!  unwind_protect_cleanup
-## %!    delete (filename);
-## %!    rmdir (dirname);
-## %!  end_unwind_protect
 

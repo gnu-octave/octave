@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2013 Paul Kienzle
+## Copyright (C) 2001-2015 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -35,7 +35,7 @@ function x = csvread (filename, varargin)
 endfunction
 
 
-%% Tests for csvread() are in csvwrite()
-%% Mark file as being tested
+## Tests for csvread() are in csvwrite()
+## Mark file as being tested
 %!assert (1)
 

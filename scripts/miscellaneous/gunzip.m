@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Bill Denney
+## Copyright (C) 2006-2015 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,28 +17,42 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gunzip (@var{gzfile}, @var{dir})
-## Unpack the gzip archive @var{gzfile} to the directory @var{dir}.  If
-## @var{dir} is not specified, it defaults to the current directory.  If
-## @var{gzfile} is a directory, all gzfiles in the directory will be
-## recursively gunzipped.
+## @deftypefn  {Function File} {@var{filelist} =} gunzip (@var{gzfile})
+## @deftypefnx {Function File} {@var{filelist} =} gunzip (@var{gzfile}, @var{dir})
+## Unpack the gzip archive @var{gzfile}.
+##
+## If @var{gzfile} is a directory, all gzfiles in the directory will be
+## recursively unpacked.
+##
+## If @var{dir} is specified the files are unpacked in this directory rather
+## than the one where @var{gzfile} is located.
+##
+## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{gzip, unpack, bunzip2, unzip, untar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = gunzip (gzfile, dir = ".")
+function filelist = gunzip (gzfile, dir = [])
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (isempty (dir))
+    dir = fileparts (gzfile);
+  endif
+
   if (nargout > 0)
-    varargout = cell (1, nargout);
-    [varargout{:}] = unpack (gzfile, dir, mfilename ());
+    filelist = unpack (gzfile, dir, "gunzip");
   else
-    unpack (gzfile, dir, mfilename ());
+    unpack (gzfile, dir, "gunzip");
   endif
 
 endfunction
+
+
+## Tests for this m-file are located in gzip.m
+## Remove from test statistics
+%!assert (1)
 

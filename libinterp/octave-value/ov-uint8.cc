@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,12 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-hdf5.h"
 #include "ops.h"
 #include "ov-base.h"
-
-#ifdef HAVE_HDF5
-#define HDF5_SAVE_TYPE H5T_NATIVE_UINT8
-#endif
 
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
@@ -59,7 +56,6 @@ template class octave_base_matrix<uint8NDArray>;
 
 template class octave_base_int_matrix<uint8NDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_uint8_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint8_matrix,
                                      "uint8 matrix", "uint8");
@@ -68,7 +64,6 @@ template class octave_base_scalar<octave_uint8>;
 
 template class octave_base_int_scalar<octave_uint8>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_uint8_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint8_scalar,
                                      "uint8 scalar", "uint8");

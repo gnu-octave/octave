@@ -3,7 +3,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
-    Copyright (C) 2012-2013 Jacob Dawid <jacob.dawid@googlemail.com>
+    Copyright (C) 2012-2015 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -404,7 +404,7 @@ public slots:
     void updateLineProperties();
 
     /** Copies the selected text to the clipboard. */
-    void copyClipboard();
+    void copyClipboard (bool extra_interrupt);
     /**
      * Pastes the content of the clipboard into the
      * display.
@@ -415,6 +415,11 @@ public slots:
      * display.
      */
     void pasteSelection();
+
+    /**
+     * selects all content
+     */
+    void selectAll();
 
 	 /**
 	 * Causes the widget to display or hide a message informing the user that terminal
@@ -485,8 +490,6 @@ signals:
 
 
 protected:
-    virtual bool event( QEvent * );
-
     virtual void paintEvent( QPaintEvent * );
 
     void focusInEvent(QFocusEvent *focusEvent);

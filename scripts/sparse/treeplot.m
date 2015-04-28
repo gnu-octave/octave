@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Ivana Varekova
+## Copyright (C) 2005-2015 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -156,9 +156,9 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
   ## of most left and most right descendants).
   x_coordinate = (x_coordinate_l + x_coordinate_r) / 2;
 
-  ## FIXME -- we should probably stuff all the arguments into a cell
-  ## array and make a single call to plot here so we can avoid
-  ## setting the hold state...
+  ## FIXME: We should probably stuff all the arguments into a cell
+  ##        array and make a single call to plot here so we can avoid
+  ##        setting the hold state...
 
   hold_is_on = ishold ();
   unwind_protect

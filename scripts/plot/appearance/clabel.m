@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -127,7 +127,7 @@ function h = clabel (c, varargin)
       set (htmp, varargin{:});
     endif
   else
-    htmp =  __clabel__ (c, v, hparent, label_spacing, [], varargin{:});
+    htmp = __clabel__ (c, v, hparent, label_spacing, [], varargin{:});
   endif
 
   if (nargout > 0)

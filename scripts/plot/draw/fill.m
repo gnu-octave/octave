@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 David Bateman
+## Copyright (C) 2007-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -92,17 +92,28 @@ function h = fill (varargin)
       set (hax, "nextplot", "add");
 
       for i = 1 : length (iargs)
+        x = varargin{iargs(i)};
+        y = varargin{iargs(i) + 1};
         cdata = varargin{iargs(i) + 2};
 
-        ## Matlab uses flat/interp shading based on orientation of cdata.
-        if (isnumeric (cdata) && isrow (cdata))
-          popt = ["facecolor", "flat", opts];
-        else
-          popt = opts;
+        if (! size_equal (x,y))
+          if (iscolumn (y) && rows (y) == rows (x))
+            y = repmat (y, [1, columns(x)]);
+          elseif (iscolumn (x) && rows (x) == rows (y))
+            x = repmat (x, [1, columns(y)]);
+          else
+            error ("fill: X annd Y must have same number of rows");
+          endif
+        endif
+        ## For Matlab compatibility, replicate cdata to match size of data
+        if (iscolumn (cdata) && ! ischar (cdata))
+          sz = size (x);
+          if (all (sz > 1))
+            cdata = repmat (cdata, [1, sz(2)]);
+          endif
         endif
 
-        [htmp, fail] = __patch__ (hax, varargin{iargs(i)+(0:1)}, cdata,
-                                       popt{:});
+        [htmp, fail] = __patch__ (hax, x, y, cdata, opts{:});
         if (fail)
           print_usage ();
         endif
@@ -145,7 +156,7 @@ function retval = iscolorspec (arg)
     endif
   elseif (isnumeric (arg))
     ## Assume any numeric argument is correctly formatted cdata.
-    ## Let patch worry about the multple different input formats
+    ## Let patch worry about the multple different input formats.
     retval = true;
   endif
 endfunction
@@ -160,4 +171,30 @@ endfunction
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
 %! h = fill (x1,y1,'r', x2,y2,'g');
+%! title ({'fill() function'; 'cdata specified with string'});
+
+%!demo
+%! clf;
+%! t1 = (1/16:1/8:1) * 2*pi;
+%! t2 = ((1/16:1/8:1) + 1/32) * 2*pi;
+%! x1 = sin (t1) - 0.8;
+%! y1 = cos (t1);
+%! x2 = sin (t2) + 0.8;
+%! y2 = cos (t2);
+%! h = fill (x1,y1,1, x2,y2,2);
+%! title ({'fill() function'; 'cdata = row vector produces FaceColor = "flat"'});
+
+%!demo
+%! clf;
+%! x = [0 0
+%!      1 0.5
+%!      1 0.5
+%!      0 0];
+%! y = [0 0
+%!      0 0
+%!      1 0.5
+%!      1 0.5];
+%! c = [1 2 3 4]';
+%! fill (x, y, c);
+%! title ({'fill() function'; 'cdata = column vector produces FaceColor = "interp"'});
 

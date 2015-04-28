@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Bill Denney
+## Copyright (C) 2006-2015 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -21,13 +21,52 @@
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir})
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir}, @var{filetype})
 ## Unpack the archive @var{file} based on its extension to the directory
-## @var{dir}.  If @var{file} is a list of strings, then each file is
-## unpacked individually.  If @var{dir} is not specified, it defaults to
-## the current directory.  If a directory is in the file list, then the
-## @var{filetype} must also be specified.
+## @var{dir}.
+##
+## If @var{file} is a list of strings, then each file is unpacked
+## individually.  Shell wildcards in the filename such as @samp{*} or @samp{?}
+## are accepted and expanded.
+##
+## If @var{dir} is not specified or is empty (@code{[]}), it defaults to the
+## current directory.  If a directory is in the file list, then @var{filetype}
+## must also be specified.
+##
+## The specific archive filetype is inferred from the extension of the file.
+## The @var{filetype} may also be specified directly using a string which
+## corresponds to a known extension.
+##
+## Valid filetype extensions:
+##
+## @table @code
+## @item  bz
+## @itemx bz2
+## bzip archive
+##
+## @item gz
+## gzip archive
+##
+## @item tar
+## tar archive
+##
+## @item  tarbz
+## @itemx tarbz2
+## @itemx tbz
+## @itemx tbz2
+## tar + bzip archive
+##
+## @item  targz
+## @itemx tgz
+## tar + gzip archive
+##
+## @item z
+## compress archive
+##
+## @item zip
+## zip archive
+## @end table
 ##
 ## The optional return value is a list of @var{files} unpacked.
-## @seealso{bzip2, gzip, zip, tar}
+## @seealso{bunzip2, gunzip, unzip, untar, bzip2, gzip, zip, tar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
@@ -39,16 +78,24 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   if (! ischar (file) && ! iscellstr (file))
-    error ("unpack: invalid input file class, %s", class (file));
+    error ("unpack: FILE must be a string or cell array of strings");
   endif
 
-  ## character arrays of more than one string must be treated as cell strings
-  if (ischar (file) && ! isvector (file))
+  ## Convert char arrays to cell strings to simplify further processing
+  if (ischar (file))
     file = cellstr (file);
+  endif
+  if (numel (file) == 1)
+    gfile = glob (file);
+    if (isempty (gfile))
+      error ('unpack: file "%s" not found', file{1});
+    else
+      file = gfile;
+    endif
   endif
 
   ## Recursively unpack cellstr arrays one file at a time
-  if (iscellstr (file))
+  if (numel (file) > 1)
     files = {};
     for i = 1:numel (file)
       tmpfiles = unpack (file{i}, dir);
@@ -59,15 +106,17 @@ function filelist = unpack (file, dir = ".", filetype = "")
     if (nargout > 0)
       filelist = files;
     endif
-
     return;
+
+  else
+    file = file{1};
   endif
 
   if (isdir (file))
     if (isempty (filetype))
       error ("unpack: FILETYPE must be given for a directory");
     elseif (! any (strcmpi (filetype, "gunzip")))
-      error ("unpack: FILETYPE must be gunzip for a directory");
+      error ('unpack: FILETYPE must be "gunzip" for a directory');
     endif
     ext = ".gz";
   else
@@ -84,28 +133,18 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
     ## If the file is a URL, download it and then work with that file.
     if (! isempty (strfind (file, "://")))
-      ## FIXME -- the above is not a perfect test for a URL
+      ## FIXME: The above code is not a perfect test for a URL
       urlfile = file;
-      ## FIXME -- should we name the file that we download with the
-      ## same file name as the URL requests?
-      tmpfile = [tmpnam() ext];
+      tmpfile = [tempname ext];
       [file, success, msg] = urlwrite (urlfile, tmpfile);
       if (! success)
-        error ('unpack: could not get "%s": %s', urlfile, msg);
+        error ('unpack: could not fetch "%s": %s', urlfile, msg);
       endif
     endif
 
   endif
 
-  ## canonicalize_file_name returns empty if the file isn't found, so
-  ## use that to check for existence.
-  cfile = canonicalize_file_name (file);
-
-  if (isempty (cfile))
-    error ('unpack: file "%s" not found', file);
-  else
-    file = cfile;
-  endif
+  file = make_absolute_filename (file);
 
   ## Instructions on what to do for any extension.
   ##
@@ -145,18 +184,27 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   ## Unzip doesn't actually care about the extension
-  if (strcmp (filetype, "unzip"))
+  if (strcmpi (filetype, "unzip"))
     nodotext = "zip";
   else
     nodotext = ext(ext != '.');
   endif
 
-  origdir = pwd ();
+  if (ispc && strcmp (nodotext, "tar"))
+    ## Change file pathname into a mingw style acceptable for tar
+    file = __w2mpth__ (file);
+  endif
 
-  if (isfield (commandlist, nodotext))
-    [commandv, commandq, parser, move] = deal (commandlist.(nodotext){:});
-    cstartdir = canonicalize_file_name (origdir);
-    cenddir = canonicalize_file_name (dir);
+  if (isfield (commandlist, tolower (nodotext)))
+    [commandv, commandq, parsefcn, move] = deal (commandlist.(nodotext){:});
+    origdir = pwd ();
+    if (move)
+      startdir = fileparts (file);
+    else
+      startdir = origdir;
+    endif
+    cstartdir = make_absolute_filename (startdir);
+    cenddir = make_absolute_filename (dir);
     needmove = move && ! strcmp (cstartdir, cenddir);
     if (nargout > 0 || needmove)
       command = commandv;
@@ -164,7 +212,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
       command = commandq;
     endif
   else
-    warning ("unpack:filetype", "unrecognized file type, %s", ext);
+    warning ("unpack: unrecognized FILETYPE <%s>", ext);
     files = file;
     return;
   endif
@@ -193,24 +241,18 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   if (nargout > 0 || needmove)
-    ## Trim the last CR if needed.
-    ## FIXME -- will this need to change to a check for "\r\n" for windows?
-    if (output(end) == "\n")
-      output(end) = [];
-    endif
-    files = parser (ostrsplit (output, "\n"))';
+    ## Trim the last CR or NL if needed.
+    files = parsefcn (ostrsplit (output, "\r\n", true))';
 
-    ## Move files if necessary
+    ## Move files if necessary.
     if (needmove)
-      [st, msg, ~] = movefile (files, dir);
+      [st, msg] = movefile (files, cenddir);
       if (! st)
         error ('unpack: unable to move files to "%s": %s', dir, msg);
       endif
 
-      ## Fix the names for the files since they were moved.
-      for i = 1:numel (files)
-        files{i} = strrep (files{i}, cstartdir, cenddir);
-      endfor
+      ## Fix the names of the files since they were moved.
+      files = strrep (files, cstartdir, cenddir);
     endif
 
     ## Return output if requested.
@@ -224,9 +266,9 @@ endfunction
 function files = __parse_zip__ (output)
   ## Parse the output from zip and unzip.
 
-  ## Skip first line which is Archive header
+  ## Skip first line which is Archive header.
   files = char (output(2:end));
-  ## Trim constant width prefix and return cell array
+  ## Trim constant width prefix and return cell array.
   files = cellstr (files(:,14:end))
 endfunction
 
@@ -248,4 +290,58 @@ function files = __parse_bzip2__ (output)
   ## Strip leading blanks and .bz2 extension from file name
   files = regexprep (output, '^\s+(.*)\.bz2: .*', '$1');
 endfunction
+
+
+%!test
+%! ## Create temporary directory and file for packing and unpacking
+%! dirname = tempname ();
+%! assert (mkdir (dirname));
+%! filename = tempname ();
+%! fid = fopen (filename, "wt");
+%! assert (fid >= 0);
+%! fprintf (fid, "Hello World\n");
+%! fprintf (fid, "123 456 789\n");
+%! fclose (fid);
+%! unwind_protect
+%!   copyfile (filename, [filename ".orig"]);
+%!   gzip (filename, dirname);
+%!   [~, f] = fileparts (filename);
+%!   filelist = unpack (fullfile (dirname, [f ".gz"]), P_tmpdir);
+%!   assert (filelist{1}, filename);
+%!   fid = fopen ([filename ".orig"], "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen (filename, "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
+%!     error ("unpack: Unpacked file does not equal original");
+%!   endif
+%! unwind_protect_cleanup
+%!   unlink (filename);
+%!   unlink ([filename ".orig"]);
+%!   rmdir (dirname);
+%! end_unwind_protect
+
+## Test input validation
+%!error unpack ()
+%!error unpack (1,2,3,4)
+%!error <FILE must be a string or cell array of strings> unpack (1)
+%!error <file "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
+%!error <file "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
+%!error <file "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
+%!error <FILETYPE must be given for a directory>
+%! if (isunix || ismac)
+%!   unpack ("/");
+%! else
+%!   unpack ('C:\');
+%! endif
+%!error <FILETYPE must be "gunzip" for a directory>
+%! if (isunix || ismac)
+%!   unpack ("/", [], "foobar");
+%! else
+%!   unpack ('C:\', [], "foobar");
+%! endif
 

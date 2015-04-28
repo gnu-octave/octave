@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 David Bateman
+Copyright (C) 2007-2015 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -90,10 +90,12 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
 
 DEFUN (typecast, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} typecast (@var{x}, @var{class})\n\
+@deftypefn {Built-in Function} {@var{y} =} typecast (@var{x}, \"@var{class}\")\n\
 Return a new array @var{y} resulting from interpreting the data of\n\
-@var{x} in memory as data of the numeric class @var{class}.  Both the class\n\
-of @var{x} and @var{class} must be one of the built-in numeric classes:\n\
+@var{x} in memory as data of the numeric class @var{class}.\n\
+\n\
+Both the class of @var{x} and @var{class} must be one of the built-in\n\
+numeric classes:\n\
 \n\
 @example\n\
 @group\n\
@@ -120,7 +122,7 @@ complex-valued result is requested.  Complex arrays are stored in memory as\n\
 consecutive pairs of real numbers.  The sizes of integer types are given by\n\
 their bit counts.  Both logical and char are typically one byte wide;\n\
 however, this is not guaranteed by C++.  If your system is IEEE conformant,\n\
-single and double should be 4 bytes and 8 bytes wide, respectively.\n\
+single and double will be 4 bytes and 8 bytes wide, respectively.\n\
 @qcode{\"logical\"} is not allowed for @var{class}.  If the input is a row\n\
 vector, the return value is a row vector, otherwise it is a column vector.  \n\
 If the bit length of @var{x} is not divisible by that of @var{class}, an\n\
@@ -135,7 +137,7 @@ typecast (@var{x}, \"uint8\")\n\
 @result{} [   1,   0, 255, 255]\n\
 @end group\n\
 @end example\n\
-@seealso{cast, bitunpack, bitpack, swapbytes}\n\
+@seealso{cast, bitpack, bitunpack, swapbytes}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -297,12 +299,17 @@ do_bitpack (const boolNDArray& bitp)
 DEFUN (bitpack, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} bitpack (@var{x}, @var{class})\n\
-Return a new array @var{y} resulting from interpreting an array\n\
+Return a new array @var{y} resulting from interpreting the logical array\n\
 @var{x} as raw bit patterns for data of the numeric class @var{class}.\n\
+\n\
 @var{class} must be one of the built-in numeric classes:\n\
 \n\
 @example\n\
 @group\n\
+\"double\"\n\
+\"single\"\n\
+\"double complex\"\n\
+\"single complex\"\n\
 \"char\"\n\
 \"int8\"\n\
 \"int16\"\n\
@@ -312,8 +319,6 @@ Return a new array @var{y} resulting from interpreting an array\n\
 \"uint16\"\n\
 \"uint32\"\n\
 \"uint64\"\n\
-\"double\"\n\
-\"single\"\n\
 @end group\n\
 @end example\n\
 \n\
@@ -327,7 +332,11 @@ it is a column vector.\n\
 {
   octave_value retval;
 
-  if (args.length () == 2 && args(0).is_bool_type ())
+  if (args.length () != 2)
+    print_usage ();
+  else if (! args(0).is_bool_type ())
+    error ("bitpack: X must be a logical array");
+  else
     {
       boolNDArray bitp = args(0).bool_array_value ();
 
@@ -371,8 +380,6 @@ it is a column vector.\n\
       if (! error_state && retval.is_undefined ())
         error ("bitpack: cannot pack to %s class", numclass.c_str ());
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -407,11 +414,15 @@ do_bitunpack (const ArrayType& array)
 DEFUN (bitunpack, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} bitunpack (@var{x})\n\
-Return an array @var{y} corresponding to the raw bit patterns of\n\
-@var{x}.  @var{x} must belong to one of the built-in numeric classes:\n\
+Return a logical array @var{y} corresponding to the raw bit patterns of\n\
+@var{x}.\n\
+\n\
+@var{x} must belong to one of the built-in numeric classes:\n\
 \n\
 @example\n\
 @group\n\
+\"double\"\n\
+\"single\"\n\
 \"char\"\n\
 \"int8\"\n\
 \"int16\"\n\
@@ -421,8 +432,6 @@ Return an array @var{y} corresponding to the raw bit patterns of\n\
 \"uint16\"\n\
 \"uint32\"\n\
 \"uint64\"\n\
-\"double\"\n\
-\"single\"\n\
 @end group\n\
 @end example\n\
 \n\

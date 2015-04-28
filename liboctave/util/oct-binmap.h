@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2013 VZLU Prague
+Copyright (C) 2010-2015 VZLU Prague
 
 This file is part of Octave.
 
@@ -167,7 +167,8 @@ template <class U, class T, class R, class F>
 Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 {
-  dim_vector xad = xa.dims (), yad = ya.dims ();
+  dim_vector xad = xa.dims ();
+  dim_vector yad = ya.dims ();
   if (xa.numel () == 1)
     return binmap<U, T, R, F> (xa(0), ya, fcn);
   else if (ya.numel () == 1)
@@ -225,8 +226,8 @@ binmap (const T& x, const Sparse<R>& ys, F fcn)
     {
       octave_idx_type nz = ys.nnz ();
       Sparse<U> retval (ys.rows (), ys.cols (), nz);
-      copy_or_memcpy (nz, ys.ridx (), retval.ridx ());
-      copy_or_memcpy (ys.cols () + 1, ys.cidx (), retval.cidx ());
+      std::copy (ys.ridx (), ys.ridx () + nz, retval.ridx ());
+      std::copy (ys.cidx (), ys.cidx () + ys.cols () + 1, retval.cidx ());
 
       for (octave_idx_type i = 0; i < nz; i++)
         {
@@ -256,8 +257,8 @@ binmap (const Sparse<T>& xs, const R& y, F fcn)
     {
       octave_idx_type nz = xs.nnz ();
       Sparse<U> retval (xs.rows (), xs.cols (), nz);
-      copy_or_memcpy (nz, xs.ridx (), retval.ridx ());
-      copy_or_memcpy (xs.cols () + 1, xs.cidx (), retval.cidx ());
+      std::copy (xs.ridx (), xs.ridx () + nz, retval.ridx ());
+      std::copy (xs.cidx (), xs.cidx () + xs.cols () + 1, retval.cidx ());
 
       for (octave_idx_type i = 0; i < nz; i++)
         {

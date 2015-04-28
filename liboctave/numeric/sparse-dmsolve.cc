@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2013 David Bateman
+Copyright (C) 2006-2015 David Bateman
 
 This file is part of Octave.
 
@@ -43,7 +43,8 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
                  octave_idx_type cend, octave_idx_type maxnz = -1,
                  bool lazy = false)
 {
-  octave_idx_type nr = rend - rst, nc = cend - cst;
+  octave_idx_type nr = rend - rst;
+  octave_idx_type nc = cend - cst;
   maxnz = (maxnz < 0 ? A.nnz () : maxnz);
   octave_idx_type nz;
 

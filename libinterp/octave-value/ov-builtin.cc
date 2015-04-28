@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "unwind-prot.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_builtin);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
                                      "built-in function",
@@ -127,7 +126,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
       try
         {
-          BEGIN_PROFILER_BLOCK (profiler_name ())
+          BEGIN_PROFILER_BLOCK (octave_builtin)
 
           retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.

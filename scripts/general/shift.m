@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -87,7 +87,7 @@ endfunction
 %! assert (shift (m, 1), [c; a; b]);
 %! assert (shift (m, -2), [c; a; b]);
 
-%% Test input validation
+## Test input validation
 %!error shift ()
 %!error shift (1, 2, 3, 4)
 %!error shift ([], 1)

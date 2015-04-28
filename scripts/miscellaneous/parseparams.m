@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 Alexander Barth
+## Copyright (C) 2006-2015 Alexander Barth
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -52,7 +52,7 @@
 ## name of the caller function.
 ## The matching of options is case-insensitive.
 ##
-## @seealso{varargin}
+## @seealso{varargin, inputParser}
 ## @end deftypefn
 
 ## Author: Alexander Barth <abarth93@users.sourceforge.net>
@@ -104,4 +104,26 @@ function error_as_caller (msg, varargin)
   fname = stack(min (2, end)).name;
   error ([fname, ": ", msg], varargin{:});
 endfunction
+
+
+%!test
+%! [reg, prop] = parseparams ({1, 2, "linewidth", 10});
+%! assert (reg, {[1], [2]});
+%! assert (prop, {"linewidth", 10});
+%!test
+%! [reg, prop] = parseparams ({1, 2, 3});
+%! assert (reg, {[1], [2], [3]});
+%! assert (isempty (prop));
+%!test
+%! [reg, prop] = parseparams ({"prop1", "val1"});
+%! assert (isempty (reg));
+%! assert (prop, {"prop1", "val1"});
+%!test
+%! [reg, prop1] = parseparams ({"linewidth", 5}, "linewidth", 10);
+%! assert (isempty (reg));
+%! assert (prop1, 5);
+
+%!error <needs odd number of arguments> parseparams ({1}, "linewidth")
+%!error <must be given as name-value pairs> parseparams ({1, "color"}, "linewidth", 5)
+%!error <unrecognized option: color> parseparams ({1, "color", 5}, "linewidth", 5)
 

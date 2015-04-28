@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 John W. Eaton
+## Copyright (C) 1995-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## is 0.
 ##
 ## If @var{n} is not specified it defaults to 0.
-## @seealso{lin2mu, loadaudio, saveaudio}
+## @seealso{lin2mu}
 ## @end deftypefn
 
 ## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -63,7 +63,7 @@ function y = mu2lin (x, n = 0)
   ## Set the shape of y to that of x overwrites the contents of y with
   ## ulaw of x.
   y = x;
-  y(:) = ulaw (x + 1);
+  y(:) = ulaw(x + 1);
 
   ## Convert to real or 8-bit.
   if (n == 0)

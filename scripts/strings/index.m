@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -108,7 +108,7 @@ endfunction
 %! assert (index (str, "o"), [5; 2; 2; 2]);
 %! assert (index (str, "o", "last"), [5; 2; 3; 2]);
 
-%% Test input validation
+## Test input validation
 %!error index ()
 %!error index ("a")
 %!error index ("a", "b", "first", "d")

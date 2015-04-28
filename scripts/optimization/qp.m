@@ -1,5 +1,5 @@
-## Copyright (C) 2013 Julien Bect
-## Copyright (C) 2000-2013 Gabriele Pannocchia.
+## Copyright (C) 2013-2015 Julien Bect
+## Copyright (C) 2000-2015 Gabriele Pannocchia.
 ##
 ## This file is part of Octave.
 ##
@@ -273,7 +273,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
         if (! isempty (A_lb) && ! isempty (A_ub))
           rtol = sqrt (eps);
           for i = 1:dimA_in
-            if (abs (A_lb(i) - A_ub(i)) < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
+            if (abs (A_lb(i) - A_ub(i))
+                < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
               ## These are actually an equality constraint
               tmprow = A_in(i,:);
               A = [A;tmprow];
@@ -306,8 +307,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     n_in = numel (bin);
 
     ## Check if the initial guess is feasible.
-    if (isa (x0, "single") || isa (H, "single") || isa (q, "single") || isa (A, "single")
-        || isa (b, "single"))
+    if (isa (x0, "single") || isa (H, "single") || isa (q, "single")
+        || isa (A, "single") || isa (b, "single"))
       rtol = sqrt (eps ("single"));
     else
       rtol = sqrt (eps);
@@ -408,7 +409,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 endfunction
 
 
-%% Test infeasible initial guess (bug #40536)
+## Test infeasible initial guess (bug #40536)
 %!testif HAVE_GLPK
 %!
 %! H = 1;  q = 0;                # objective: x -> 0.5 x^2

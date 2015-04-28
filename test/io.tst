@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 John W. Eaton
+## Copyright (C) 2006-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -74,7 +74,9 @@
 %!
 %!  ret = 0;
 %!
-%!  files = {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"};
+%!  files = cellfun (@fullfile, {P_tmpdir},
+%!                   {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"},
+%!                   "UniformOutput", false);
 %!  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
 %!  tols = {2*eps, 0, 0, 0};
 %!
@@ -197,8 +199,9 @@
 %! STR.struct_fld.x = 0;
 %! STR.struct_fld.y = 1;
 %!
-%! save struct.dat -struct STR;
-%! STR = load ("struct.dat");
+%! struct_dat = fullfile (P_tmpdir, "struct.dat");
+%! save (struct_dat, "-struct", "STR");
+%! STR = load (struct_dat);
 %!
 %! assert (STR.scalar_fld == 1 && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -207,8 +210,9 @@
 %!         STR.struct_fld.y == 1 );
 %!
 %!
-%! save -binary struct.dat -struct STR matrix_fld str*_fld;
-%! STR = load ("struct.dat");
+%! save ("-binary", struct_dat,
+%!       "-struct", "STR", "matrix_fld", "str*_fld");
+%! STR =  load (struct_dat);
 %!
 %! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -216,15 +220,16 @@
 %!         STR.struct_fld.x == 0 && ...
 %!         STR.struct_fld.y == 1);
 %!
-%! delete struct.dat;
+%! delete (struct_dat);
 
 %!test
 %! matrix1 = rand (100, 2);
-%! save -ascii matrix.ascii matrix1
-%! matrix2 = load ("matrix.ascii");
+%! matrix_ascii = fullfile (P_tmpdir, "matrix.ascii");
+%! save ("-ascii", matrix_ascii, "matrix1")
+%! matrix2 = load (matrix_ascii);
 %! assert (matrix1, matrix2, 1e-9);
 %!
-%! delete matrix.ascii;
+%! delete (matrix_ascii);
 
 %!error <unable to find file> load ("")
 
@@ -290,7 +295,7 @@
 
 %% Note use fprintf so output not sent to stdout
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! fid1 = fopen (nm,"w");
 %! x = fprintf (fid1, "%s: %d\n", "test", 1);
 %! fclose (fid1);
@@ -335,7 +340,7 @@
 %!     elseif (j == 4)
 %!       mode_list = {"W+"; "R+"; "A+"};
 %!     endif
-%!     nm = tmpnam ();
+%!     nm = tempname ();
 %!     for k = 1:3
 %!       mode = mode_list{k};
 %!       [id, err] = fopen (nm, mode, arch);
@@ -392,12 +397,12 @@
 %!error fclose (0)
 %!error <Invalid call to fclose> fclose (1, 2)
 
-%!assert (ischar (tmpnam ()))
+%!assert (ischar (tempname ()))
 
-%!warning tmpnam (1);
-%!warning tmpnam ("foo", 1);
+%!error <DIR must be a string> tempname (1);
+%!error <PREFIX must be a string> tempname ("foo", 1);
 
-%!error <Invalid call to tmpnam> tmpnam (1, 2, 3)
+%!error <Invalid call to tempname> tempname (1, 2, 3)
 
 %!test
 %! type_list = ["char"; "char*1"; "integer*1"; "int8";
@@ -408,7 +413,7 @@
 %! "real*8"; "int16"; "integer*2"; "int32"; "integer*4"];
 %!
 %! n = rows (type_list);
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   for i = 1:n
@@ -435,7 +440,7 @@
 
 %!test
 %! x = char (128:255)';
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! fwrite (id, x);
 %! fclose (id);
@@ -446,7 +451,7 @@
 %! assert (x, y);
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   fprintf (id, "%d\n", 1:100);
@@ -613,3 +618,24 @@
 %! assert (data, [97, 99; 98, 100]);
 %! assert (count, 4);
 %! fclose (id);
+
+%!assert (sprintf ("%1s", "foo"), "foo");
+%!assert (sprintf ("%.s", "foo"), char (zeros (1, 0)));
+%!assert (sprintf ("%1.s", "foo"), " ");
+%!assert (sprintf ("%.1s", "foo"), "f");
+%!assert (sprintf ("%1.1s", "foo"), "f");
+%!assert (sprintf ("|%4s|", "foo"), "| foo|");
+%!assert (sprintf ("|%-4s|", "foo"), "|foo |");
+%!assert (sprintf ("|%4.1s|", "foo"), "|   f|");
+%!assert (sprintf ("|%-4.1s|", "foo"), "|f   |");
+
+%!assert (sprintf ("%c ", "foo"), "f o o ");
+%!assert (sprintf ("%s ", "foo"), "foo ");
+
+%!assert (sprintf ("|%d|", "foo"), "|102||111||111|");
+%!assert (sprintf ("|%s|", [102, 111, 111]), "|foo|");
+
+%!assert (sprintf ("%s %d ", [102, 1e5, 111, 1e5, 111]), "f 100000 o 100000 o ");
+
+%!assert (sprintf ("%c,%c,%c,%c", "abcd"), "a,b,c,d");
+%!assert (sprintf ("%s,%s,%s,%s", "abcd"), "abcd,");

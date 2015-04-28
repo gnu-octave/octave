@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013 John Donoghue
+Copyright (C) 2013-2015 John Donoghue
 
 This file is part of Octave.
 
@@ -101,7 +101,7 @@ find_files_model::clear ()
 void
 find_files_model::addFile (const QFileInfo &info)
 {
-  beginInsertRows (QModelIndex (), _files.size (), _files.size () );
+  beginInsertRows (QModelIndex (), _files.size (), _files.size ());
 
   QList<QFileInfo>::Iterator it;
   find_file_less_than less_than (_sortorder);

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 David Bateman and Andy Adler
+## Copyright (C) 2004-2015 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -60,7 +60,7 @@ endfunction
 %! assert (isequal (i, fi) && isequal (j, fj) && isequal (complex (v, j), fv));
 %! assert (size (spconvert ([1, 1, 3; 5, 15, 0])), [5, 15]);
 
-%% Test input validation
+## Test input validation
 %!error spconvert ()
 %!error spconvert (1, 2)
 %!error spconvert ({[1 2 3]})

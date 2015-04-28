@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 John W. Eaton
+## Copyright (C) 2008-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,13 +19,14 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} rundemos ()
 ## @deftypefnx {Function File} {} rundemos (@var{directory})
-## Execute built-in demos for all function files in the specified directory.
-## Also executes demos in any C++ source files found in the directory, for
-## use with dynamically linked functions.
+## Execute built-in demos for all m-files in the specified @var{directory}.
+##
+## Demo blocks in any C++ source files (@file{*.cc}) will also be executed
+## for use with dynamically linked oct-file functions.
 ##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
-## @seealso{runtests, path}
+## @seealso{demo, runtests, path}
 ## @end deftypefn
 
 ## Author: jwe
@@ -36,20 +37,17 @@ function rundemos (directory)
     dirs = ostrsplit (path (), pathsep ());
     do_class_dirs = true;
   elseif (nargin == 1)
-    if (is_absolute_filename (directory))
-      dirs = {directory};
-    elseif (is_rooted_relative_filename (directory))
-      dirs = {canonicalize_file_name(directory)};
-    else
-      if (directory(end) == filesep ())
-        directory = directory(1:end-1);
+    dirs = {canonicalize_file_name(directory)};
+    if (isempty (dirs{1}))
+      ## Search for directory name in path
+      if (directory(end) == '/' || directory(end) == '\')
+        directory(end) = [];
       endif
-      fullname = find_dir_in_path (directory);
-      if (! isempty (fullname))
-        dirs = {fullname};
-      else
+      fullname = dir_in_loadpath (directory);
+      if (isempty (fullname))
         error ("rundemos: DIRECTORY argument must be a valid pathname");
       endif
+      dirs = {fullname};
     endif
     do_class_dirs = false;
   else
@@ -68,14 +66,14 @@ function run_all_demos (directory, do_class_dirs)
   dirs = {};
   for i = 1:numel (flist)
     f = flist{i};
-    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
-        (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
+    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m"))
+        || (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       f = fullfile (directory, f);
       if (has_demos (f))
         try
           demo (f);
         catch
-          printf ("error: %s\n\n", lasterror().message);
+          printf ("error: %s\n\n", lasterror ().message);
         end_try_catch
         if (i != numel (flist))
           input ("Press <enter> to continue: ", "s");

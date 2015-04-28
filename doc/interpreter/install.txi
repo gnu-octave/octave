@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -288,8 +288,7 @@ interpretation and rendering.
 @item Qhull
 Computational geometry library (@url{http://www.qhull.org}).  Qhull is
 required to provide the functions @code{convhull}, @code{convhulln},
-@code{delaunay}, @code{delaunay3}, @code{delaunayn}, @code{voronoi}, and
-@code{voronoin}.
+@code{delaunay}, @code{delaunayn}, @code{voronoi}, and @code{voronoin}.
 
 @item QRUPDATE
 QR factorization updating library
@@ -744,6 +743,7 @@ Other systems may require a different solution.
 Suggestions on how to compile ATLAS would be most welcome.
 
 @item @sc{glpk}
+
 @item Qhull (@url{http://www.qhull.org})
 
 Both @sc{glpk} and Qhull use @code{int} internally so maximum problem
@@ -856,7 +856,7 @@ options      MATH_EMULATE
 
 @noindent
 in the kernel configuration files (typically found in the directory
-@file{/sys/i386/conf}.  After making this change, you'll need to rebuild
+@file{/sys/i386/conf}).  After making this change, you'll need to rebuild
 the kernel, install it, and reboot.
 
 @item
@@ -1036,3 +1036,4 @@ are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O"} and
 @env{FFLAGS} is set to @qcode{"-O"}.
 
 @end itemize
+

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2013 John W. Eaton
+@c Copyright (C) 1996-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -409,7 +409,7 @@ x
 @end example
 
 @noindent
-The warning id @code{Octave:matlab-incompatible} can be enabled to warn
+The warning id @code{Octave:language-extension} can be enabled to warn
 about this usage.  @xref{XREFwarning_ids,,warning_ids}.
 
 More realistically, all of the functions that operate on strings can be used
@@ -507,7 +507,7 @@ structure or a structure array.
 
 Other functions that can manipulate the fields of a structure are given below.
 
-@DOCSTRING(nfields)
+@DOCSTRING(numfields)
 
 @DOCSTRING(fieldnames)
 
@@ -891,7 +891,7 @@ The following string functions support cell arrays of strings:
 Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
 @code{strncmpi} (@pxref{Comparing Strings}), @code{str2double},
 @code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
-@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating
+@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating 
 Strings}) and @code{str2double} (@pxref{String Conversions}).
 
 The function @code{iscellstr} can be used to test if an object is a

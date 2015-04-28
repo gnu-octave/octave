@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 1995-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -112,7 +112,7 @@ endfunction
 %!assert (var ([1,2,3], 1), 2/3, eps)
 %!assert (var ([1,2,3], [], 1), [0,0,0])
 
-%% Test input validation
+## Test input validation
 %!error var ()
 %!error var (1,2,3,4)
 %!error var (['A'; 'B'])

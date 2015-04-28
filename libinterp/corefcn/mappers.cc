@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2013 John W. Eaton
+Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -114,6 +114,20 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 %! v = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
 %! assert (acos (x), v, sqrt (eps ("single")));
 
+## Test values on either side of branch cut
+%!test
+%! rval = 0;
+%! ival = 1.31695789692481635;
+%! obs = acos ([2, 2-i*eps, 2+i*eps]);
+%! exp = [rval + ival*i, rval + ival*i, rval - ival*i];
+%! assert (obs, exp, 2*eps);
+%! rval = pi;
+%! obs = acos ([-2, -2-i*eps, -2+i*eps]);
+%! exp = [rval - ival*i, rval + ival*i, rval - ival*i];
+%! assert (obs, exp, 2*eps);
+%! assert (acos ([2 0]),  [ival*i, pi/2], 2*eps);
+%! assert (acos ([2 0i]), [ival*i, pi/2], 2*eps);
+
 %!error acos ()
 %!error acos (1, 2)
 */
@@ -141,9 +155,21 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 %! assert (acosh (x), v, sqrt (eps));
 
 %!test
+%! re = 2.99822295029797;
+%! im = pi/2;
+%! assert (acosh (10i), re + i*im);
+%! assert (acosh (-10i), re - i*im);
+
+%!test
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
+
+%!test
+%! re = single (2.99822295029797);
+%! im = single (pi/2);
+%! assert (acosh (single (10i)), re + i*im, 5*eps ("single"));
+%! assert (acosh (single (-10i)), re - i*im, 5*eps ("single"));
 
 %!error acosh ()
 %!error acosh (1, 2)
@@ -236,12 +262,32 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
+
+%!test
 %! x = [0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0];
 %! v = [0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0];
-%! assert (all (abs (asin (x) - v) < sqrt (eps)));
+%! assert (asin (x), v, sqrt (eps));
+
+%!test
+%! x = single ([0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0]);
+%! v = single ([0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0]);
+%! assert (asin (x), v, sqrt (eps ("single")));
+
+## Test values on either side of branch cut
+%!test
+%! rval = pi/2;
+%! ival = 1.31695789692481635;
+%! obs = asin ([2, 2-i*eps, 2+i*eps]);
+%! exp = [rval - ival*i, rval - ival*i, rval + ival*i];
+%! assert (obs, exp, 2*eps);
+%! obs = asin ([-2, -2-i*eps, -2+i*eps]);
+%! exp = [-rval + ival*i, -rval - ival*i, -rval + ival*i];
+%! assert (obs, exp, 2*eps);
+%! assert (asin ([2 0]),  [rval - ival*i, 0], 2*eps);
+%! assert (asin ([2 0i]), [rval - ival*i, 0], 2*eps);
 
 %!error asin ()
 %!error asin (1, 2)
@@ -895,15 +941,15 @@ accurately in the neighborhood of zero.\n\
 
 DEFUN (isfinite, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} isfinite (@var{x})\n\
-@deftypefnx {Mapping Function} {} finite (@var{x})\n\
+@deftypefn {Mapping Function} {} isfinite (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 finite values and false where they are not.\n\
+\n\
 For example:\n\
 \n\
 @example\n\
 @group\n\
-finite ([13, Inf, NA, NaN])\n\
+isfinite ([13, Inf, NA, NaN])\n\
      @result{} [ 1, 0, 0, 0 ]\n\
 @end group\n\
 @end example\n\
@@ -920,16 +966,16 @@ finite ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert (!finite (Inf))
-%!assert (!finite (NaN))
-%!assert (finite (rand (1,10)))
+%!assert (!isfinite (Inf))
+%!assert (!isfinite (NaN))
+%!assert (isfinite (rand (1,10)))
 
-%!assert (!finite (single (Inf)))
-%!assert (!finite (single (NaN)))
-%!assert (finite (single (rand (1,10))))
+%!assert (!isfinite (single (Inf)))
+%!assert (!isfinite (single (NaN)))
+%!assert (isfinite (single (rand (1,10))))
 
-%!error finite ()
-%!error finite (1, 2)
+%!error isfinite ()
+%!error isfinite (1, 2)
 */
 
 DEFUN (fix, args, ,
@@ -1024,7 +1070,13 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{gammainc, lgamma}\n\
+\n\
+Programming Note: The gamma function can grow quite large even for small\n\
+input values.  In many cases it may be preferable to use the natural\n\
+logarithm of the gamma function (@code{gammaln}) in calculations to minimize\n\
+loss of precision.  The final result is then\n\
+@code{exp (@var{result_using_gammaln}).}\n\
+@seealso{gammainc, gammaln, factorial}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1574,8 +1626,8 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 
 DEFUN (lgamma, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} lgamma (@var{x})\n\
-@deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
+@deftypefn  {Mapping Function} {} gammaln (@var{x})\n\
+@deftypefnx {Mapping Function} {} lgamma (@var{x})\n\
 Return the natural logarithm of the gamma function of @var{x}.\n\
 @seealso{gamma, gammainc}\n\
 @end deftypefn")
@@ -1592,30 +1644,30 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 /*
 %!test
 %! a = -1i*sqrt (-1/(6.4187*6.4187));
-%! assert (lgamma (a), lgamma (real (a)));
+%! assert (gammaln (a), gammaln (real (a)));
 
 %!test
 %! x = [.5, 1, 1.5, 2, 3, 4, 5];
 %! v = [sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24];
-%! assert (lgamma (x), log (v), sqrt (eps))
+%! assert (gammaln (x), log (v), sqrt (eps))
 
 %!test
 %! a = single (-1i*sqrt (-1/(6.4187*6.4187)));
-%! assert (lgamma (a), lgamma (real (a)));
+%! assert (gammaln (a), gammaln (real (a)));
 
 %!test
 %! x = single ([.5, 1, 1.5, 2, 3, 4, 5]);
 %! v = single ([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
-%! assert (lgamma (x), log (v), sqrt (eps ("single")))
+%! assert (gammaln (x), log (v), sqrt (eps ("single")))
 
 %!test
 %! x = [-1, 0, 1, Inf];
 %! v = [Inf, Inf, 0, Inf];
-%! assert (lgamma (x), v);
-%! assert (lgamma (single (x)), single (v));
+%! assert (gammaln (x), v);
+%! assert (gammaln (single (x)), single (v));
 
-%!error lgamma ()
-%!error lgamma (1,2)
+%!error gammaln ()
+%!error gammaln (1,2)
 */
 
 DEFUN (log, args, ,
@@ -1886,7 +1938,7 @@ DEFUNX ("signbit", Fsignbit, args, ,
 Return logical true if the value of @var{x} has its sign bit set.\n\
 Otherwise return logical false.  This behavior is consistent with the other\n\
 logical functions.  See@ref{Logical Values}.  The behavior differs from the\n\
-C language function which returns non-zero if the sign bit is set.\n\
+C language function which returns nonzero if the sign bit is set.\n\
 \n\
 This is not the same as @code{x < 0.0}, because IEEE 754 floating point\n\
 allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,\n\
@@ -2156,8 +2208,17 @@ DEFALIAS (lower, tolower);
 %!assert (tolower ({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}})
 %!assert (tolower (["ABC"; "DEF"]), ["abc"; "def"])
 %!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
-%!assert (tolower (68), "d")
-%!assert (tolower ({[68, 68; 68, 68]}), {["dd";"dd"]})
+%!assert (tolower (68), 68)
+%!assert (tolower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
+%!test
+%! classes = {@char, @double, @single, ...
+%!            @int8, @int16, @int32, @int64, ...
+%!            @uint8, @uint16, @uint32, @uint64};
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   assert (class (tolower (cls (97))), class (cls (97)));
+%!   assert (class (tolower (cls ([98, 99]))), class (cls ([98, 99])));
+%! endfor
 %!test
 %! a(3,3,3,3) = "D";
 %! assert (tolower (a)(3,3,3,3), "d");
@@ -2207,8 +2268,17 @@ DEFALIAS (upper, toupper);
 %!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}})
 %!assert (toupper (["abc"; "def"]), ["ABC"; "DEF"])
 %!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
-%!assert (toupper (100), "D")
-%!assert (toupper ({[100, 100; 100, 100]}), {["DD";"DD"]})
+%!assert (toupper (100), 100)
+%!assert (toupper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})
+%!test
+%! classes = {@char, @double, @single, ...
+%!            @int8, @int16, @int32, @int64, ...
+%!            @uint8, @uint16, @uint32, @uint64};
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   assert (class (toupper (cls (97))), class (cls (97)));
+%!   assert (class (toupper (cls ([98, 99]))), class (cls ([98, 99])));
+%! endfor
 %!test
 %! a(3,3,3,3) = "d";
 %! assert (toupper (a)(3,3,3,3), "D");
@@ -2225,4 +2295,3 @@ DEFALIAS (upper, toupper);
 
 DEFALIAS (gammaln, lgamma);
 
-DEFALIAS (finite, isfinite);

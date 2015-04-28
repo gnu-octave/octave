@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2013 Ben Abbott
+## Copyright (C) 2007-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -100,9 +100,6 @@ function h = findobj (varargin)
         if (strcmpi (varargin{n1}, "flat"))
           depth = 0;
           n1 = n1 + 1;
-        elseif (strcmpi (varargin{n1}, "-depth"))
-          depth = varargin{n1+1};
-          n1 = n1 + 2;
         endif
       else
         error ("findobj: properties and options must be strings");
@@ -119,6 +116,7 @@ function h = findobj (varargin)
   regularexpression = [];
   property          = [];
   logicaloperator   = {};
+  extranegation     = [];
   pname             = {};
   pvalue            = {};
   np = 1;
@@ -128,9 +126,23 @@ function h = findobj (varargin)
   while (na <= numel (args))
     regularexpression(np) = 0;
     property(np) = 0;
+    if (numel (extranegation) < np)
+      extranegation(np) = false;
+    endif
     logicaloperator{np} = "and";
     if (ischar (args{na}))
-      if (strcmpi (args{na}, "-regexp"))
+      if (strcmpi (args{na}, "-property"))
+        if (na + 1 <= numel (args))
+          na = na + 1;
+          property(np) = 1;
+          pname{np} = args{na};
+          na = na + 1;
+          pvalue{np} = [];
+          np = np + 1;
+        else
+          error ("findobj: inconsistent number of arguments");
+        endif
+      elseif (strcmpi (args{na}, "-regexp"))
         if (na + 2 <= numel (args))
           regularexpression(np) = 1;
           na = na + 1;
@@ -142,14 +154,11 @@ function h = findobj (varargin)
         else
           error ("findobj: inconsistent number of arguments");
         endif
-      elseif (strcmpi (args{na}, "-property"))
+      elseif (strcmpi (args{na}, "-depth"))
         if (na + 1 <= numel (args))
           na = na + 1;
-          property(np) = 1;
-          pname{np} = args{na};
+          depth = args{na};
           na = na + 1;
-          pvalue{np} = [];
-          np = np + 1;
         else
           error ("findobj: inconsistent number of arguments");
         endif
@@ -177,10 +186,8 @@ function h = findobj (varargin)
           error ("findobj: inconsistent number of arguments");
         endif
       else
-        ## This is sloppy ... but works like Matlab.
         if (strcmpi (args{na}, "-not"))
-          h = [];
-          return;
+          extranegation(np) = true;
         endif
         na = na + 1;
       endif
@@ -220,11 +227,11 @@ function h = findobj (varargin)
             match(nh,np) = true;
           else
             if (regularexpression(np))
-              foo = regexp (p.(pname{np}), pvalue{np}, "once");
-              if (isempty (foo))
+              found = regexp (p.(pname{np}), pvalue{np}, "once");
+              if (isempty (found))
                 match(nh,np) = false;
               else
-                match(nh,np) = foo;
+                match(nh,np) = true;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
               if (ischar (pvalue{np}) && ischar (p.(pname{np})))
@@ -240,6 +247,9 @@ function h = findobj (varargin)
           endif
         else
           match(nh,np) = false;
+        endif
+        if (extranegation(np))
+          match(nh,np) = ! match(nh,np);
         endif
       endfor
     endfor

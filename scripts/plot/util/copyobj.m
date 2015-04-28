@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 pdiribarne
+## Copyright (C) 2012-2015 pdiribarne
 ##
 ## This file is part of Octave.
 ##
@@ -46,7 +46,7 @@ function hnew = copyobj (horig, hparent = 0)
 
   ## current figure and axes
   cf = gcf ();
-  ca = gca ();
+  ca = get (cf, "currentaxes");
 
   ## compatibility of input handles
   kididx = find (strcmp (alltypes, get (horig).type));
@@ -65,53 +65,67 @@ function hnew = copyobj (horig, hparent = 0)
 
   ## reset current figure (and eventually axes) to original
   set (0, "currentfigure", cf);
-  if (get (hnew, "parent") == cf)
+  if (ancestor (hnew, "figure") == cf && ! isempty (ca))
     set (cf, "currentaxes", ca)
   endif
 
 endfunction
 
 
+## Absurd number of drawnow() function calls in demos is due to problem
+## with FLTK backend which is not respecting the set ('position') call.
+
 %!demo
-%! hdl = figure (1234);
-%! clf;
+%! hobj = figure ('name', 'Original', 'numbertitle', 'off');
 %! hold on;
 %! x = 1:10;
 %! y = x.^2;
 %! dy = 2 * (.2 * x);
 %! y2 = (x - 3).^2;
-%! hg = errorbar (x, y, dy,'#~');
+%! hg = errorbar (x, y, dy);
 %! set (hg, 'marker', '^', 'markerfacecolor', rand (1,3));
 %! plot (x, y2, 'ok-');
 %! legend ('errorbar', 'line');
-%! hnew = copyobj (hdl);
+%! drawnow ();
+%! pos = get (hobj, 'position');
+%! scrn = get (0, 'screensize');
+%! set (hobj, 'position', [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
+%! hnew = copyobj (hobj);
+%! drawnow ();
+%! set (hnew, 'name', 'Copyobj');
+%! drawnow ();
+%! set (hnew, 'position', [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
 
-%!#demo
-%! ## FIXME: This demo fails for an obscure reason.
-%! ## It appears that there is something wrong with Octave code for patches.
-%! ## This demo must remain commented out until patch() has been reworked.
-%! unwind_protect
-%!   hdl = figure (1234);
-%!   clf;
-%!   subplot (2,2,1);
-%!   hold on;
-%!   contourf (rand (10, 10));
-%!   colorbar ();
-%!   subplot (2,2,2);
-%!   quiver (rand (10, 10), rand (10, 10));
-%!   subplot (2,2,3);
-%!   colormap (jet (64));
-%!   hold on;
-%!   sombrero ();
-%!   colorbar ('peer', gca, 'NorthOutside');
-%!   subplot (2,2,4);
-%!   imagesc (rand (30, 30));
-%!   text (15, 15, 'Rotated text', ...
-%!         'HorizontAlalignment', 'Center', 'Rotation', 30);
-%!   hnew = copyobj (hdl);
-%! unwind_protect_cleanup
-%!   close all;
-%! end_unwind_protect
+%!demo
+%! hobj = figure ('name', 'Original', 'numbertitle', 'off');
+%! subplot (2,2,1);
+%! hold on;
+%! contourf (rand (10, 10));
+%! colorbar ();
+%! subplot (2,2,2);
+%! quiver (rand (10, 10), rand (10, 10));
+%! subplot (2,2,3);
+%! colormap (jet (64));
+%! hold on;
+%! sombrero ();
+%! colorbar ('peer', gca, 'NorthOutside');
+%! subplot (2,2,4);
+%! imagesc (rand (30, 30));
+%! text (15, 15, 'Rotated text', ...
+%!       'HorizontAlalignment', 'Center', 'Rotation', 30);
+%! drawnow ();
+%! pos = get (hobj, 'position');
+%! scrn = get (0, 'screensize');
+%! set (hobj, 'position', [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
+%! hnew = copyobj (hobj);
+%! drawnow ();
+%! set (hnew, 'name', 'Copyobj');
+%! drawnow ();
+%! set (hnew, 'position', [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! drawnow ();
 
 %!testif HAVE_MAGICK
 %! toolkit = graphics_toolkit ();
@@ -134,8 +148,8 @@ endfunction
 %!   s1 = hdl2struct (h1);
 %!   h2 = struct2hdl (s1);
 %!   s2 = hdl2struct (h2);
-%!   png1 = strcat (tmpnam (), ".png");
-%!   png2 = strcat (tmpnam (), ".png");
+%!   png1 = [tempname() ".png"];
+%!   png2 = [tempname() ".png"];
 %!   unwind_protect
 %!     print (h1, png1);
 %!     [img1, map1, alpha1] = imread (png1);
@@ -154,3 +168,17 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
+%!test
+%! unwind_protect
+%!   tag = "foo";
+%!   hf = figure ("visible", "off");
+%!   hax = axes ("tag", tag);
+%!   hpa = patch ();
+%!   set (hpa, "facecolor", [.5 .5 .5], "tag", tag)
+%!   hax2 = copyobj (hax, hf);
+%!   assert (get (hax2, "tag"), tag)
+%!   hpa2 = get (hax2, "children");
+%!   assert (get (hpa2, "facecolor"), [.5 .5 .5])
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 David Bateman
+## Copyright (C) 2008-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -85,7 +85,7 @@ function s = spaugment (A, c)
         c = max (abs (A(:))) / 1000;
       endif
     endif
-  elseif (!isscalar (c))
+  elseif (! isscalar (c))
     error ("spaugment: C must be a scalar");
   endif
 

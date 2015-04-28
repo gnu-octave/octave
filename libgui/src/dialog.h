@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2013 Daniel J. Sebald
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2015 Daniel J. Sebald
 
 This file is part of Octave.
 
@@ -114,11 +114,11 @@ public:
 
   const QString *get_dialog_path (void) { return path_name; }
 
-  void wait (void)
-  {
-    // Wait while the user is responding to message box.
-    waitcondition.wait (&mutex);
-  }
+  // GUI objects cannot be accessed in the non-GUI thread.  However,
+  // signals can be sent to slots across threads with proper
+  // synchronization.  Hence, the use of QWaitCondition.
+  QMutex mutex;
+  QWaitCondition waitcondition;
 
 signals:
 
@@ -159,13 +159,6 @@ private:
 
   QString *path_name;
 
-  // GUI objects cannot be accessed in the non-GUI thread.  However,
-  // signals can be sent to slots across threads with proper
-  // synchronization.  Hence, the use of QWaitCondition.
-
-  QMutex mutex;
-
-  QWaitCondition waitcondition;
 };
 
 extern QUIWidgetCreator uiwidget_creator;
@@ -261,9 +254,9 @@ signals:
 
 private slots:
 
-  void reject (void);
+  void rejectSelection (void);
 
-  void accept (void);
+  void acceptSelection (void);
 };
 
 #endif

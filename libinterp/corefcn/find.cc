@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -61,7 +61,8 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     case 2:
       {
         Array<octave_idx_type> jdx (idx.dims ());
-        octave_idx_type n = idx.length (), nr = nda.rows ();
+        octave_idx_type n = idx.length ();
+        octave_idx_type nr = nda.rows ();
         for (octave_idx_type i = 0; i < n; i++)
           {
             jdx.xelem (i) = idx.xelem (i) / nr;
@@ -88,9 +89,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 {
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
-
-  octave_idx_type nc = v.cols ();
   octave_idx_type nr = v.rows ();
+  octave_idx_type nc = v.cols ();
   octave_idx_type nz = v.nnz ();
 
   // Search in the default range.
@@ -138,21 +138,20 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
   count = (n_to_find > v.cidx (end_nc) - v.cidx (start_nc) ?
            v.cidx (end_nc) - v.cidx (start_nc) : n_to_find);
 
-  // If the original argument was a row vector, force a row vector of
-  // the overall indices to be returned.  But see below for scalar
-  // case...
+  octave_idx_type result_nr;
+  octave_idx_type result_nc;
 
-  octave_idx_type result_nr = count;
-  octave_idx_type result_nc = 1;
-
-  bool scalar_arg = false;
-
-  if (v.rows () == 1)
+  // Default case is to return a column vector, however, if the original
+  // argument was a row vector, then force return of a row vector.
+  if (nr == 1)
     {
       result_nr = 1;
       result_nc = count;
-
-      scalar_arg = (v.columns () == 1);
+    }
+  else
+    {
+      result_nr = count;
+      result_nc = 1;
     }
 
   Matrix idx (result_nr, result_nc);
@@ -164,11 +163,10 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 
   if (count > 0)
     {
-      // Search for elements to return.  Only search the region where
-      // there are elements to be found using the count that we want
-      // to find.
+      // Search for elements to return.  Only search the region where there
+      // are elements to be found using the count that we want to find.
       for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
-        for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++ )
+        for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++)
           {
             OCTAVE_QUIT;
             if (direction < 0 && i < nz - count)
@@ -182,14 +180,19 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
               break;
           }
     }
-  else if (scalar_arg)
+  else
     {
-      idx.resize (0, 0);
+      // No items found.  Fixup return dimensions for Matlab compatibility.
+      // The behavior to match is documented in Array.cc (Array<T>::find).
+      if ((nr == 0 && nc == 0) || (nr == 1 && nc == 1))
+        {
+          idx.resize (0, 0);
 
-      i_idx.resize (0, 0);
-      j_idx.resize (0, 0);
+          i_idx.resize (0, 0);
+          j_idx.resize (0, 0);
 
-      val.resize (dim_vector (0, 0));
+          val.resize (dim_vector (0, 0));
+        }
     }
 
   switch (nargout)
@@ -231,6 +234,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   // There are far fewer special cases to handle for a PermMatrix.
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
+  octave_idx_type nr = v.rows ();
   octave_idx_type nc = v.cols ();
   octave_idx_type start_nc, count;
 
@@ -238,7 +242,6 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   if (n_to_find < 0 || n_to_find >= nc)
     {
       start_nc = 0;
-      n_to_find = nc;
       count = nc;
     }
   else if (direction > 0)
@@ -252,8 +255,6 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
       count = n_to_find;
     }
 
-  bool scalar_arg = (v.rows () == 1 && v.cols () == 1);
-
   Matrix idx (count, 1);
   Matrix i_idx (count, 1);
   Matrix j_idx (count, 1);
@@ -262,42 +263,34 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
   if (count > 0)
     {
-      const octave_idx_type* p = v.data ();
-      if (v.is_col_perm ())
+      const Array<octave_idx_type>& p = v.col_perm_vec ();
+      for (octave_idx_type k = 0; k < count; k++)
         {
-          for (octave_idx_type k = 0; k < count; k++)
-            {
-              OCTAVE_QUIT;
-              const octave_idx_type j = start_nc + k;
-              const octave_idx_type i = p[j];
-              i_idx(k) = static_cast<double> (1+i);
-              j_idx(k) = static_cast<double> (1+j);
-              idx(k) = j * nc + i + 1;
-            }
-        }
-      else
-        {
-          for (octave_idx_type k = 0; k < count; k++)
-            {
-              OCTAVE_QUIT;
-              const octave_idx_type i = start_nc + k;
-              const octave_idx_type j = p[i];
-              // Scatter into the index arrays according to
-              // j adjusted by the start point.
-              const octave_idx_type koff = j - start_nc;
-              i_idx(koff) = static_cast<double> (1+i);
-              j_idx(koff) = static_cast<double> (1+j);
-              idx(koff) = j * nc + i + 1;
-            }
+          OCTAVE_QUIT;
+          const octave_idx_type j = start_nc + k;
+          const octave_idx_type i = p(j);
+          i_idx(k) = static_cast<double> (1+i);
+          j_idx(k) = static_cast<double> (1+j);
+          idx(k) = j * nc + i + 1;
         }
     }
-  else if (scalar_arg)
+  else
     {
-      // Same odd compatibility case as the other overrides.
-      idx.resize (0, 0);
-      i_idx.resize (0, 0);
-      j_idx.resize (0, 0);
-      val.resize (dim_vector (0, 0));
+      // FIXME: Is this case even possible?  A scalar permutation matrix seems
+      // to devolve to a scalar full matrix, at least from the Octave command
+      // line.  Perhaps this function could be called internally from C++ with
+      // such a matrix.
+      // No items found.  Fixup return dimensions for Matlab compatibility.
+      // The behavior to match is documented in Array.cc (Array<T>::find).
+      if ((nr == 0 && nc == 0) || (nr == 1 && nc == 1))
+        {
+          idx.resize (0, 0);
+
+          i_idx.resize (0, 0);
+          j_idx.resize (0, 0);
+
+          val.resize (dim_vector (0, 0));
+        }
     }
 
   switch (nargout)
@@ -383,7 +376,7 @@ If three inputs are given, @var{direction} should be one of\n\
 ascending order.\n\
 \n\
 Note that this function is particularly useful for sparse matrices, as\n\
-it extracts the non-zero elements as vectors, which can then be used to\n\
+it extracts the nonzero elements as vectors, which can then be used to\n\
 create the original matrix.  For example:\n\
 \n\
 @example\n\

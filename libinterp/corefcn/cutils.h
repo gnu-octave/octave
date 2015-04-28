@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 John W. Eaton
+Copyright (C) 2012-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,9 +32,6 @@ extern "C" {
 OCTINTERP_API void octave_sleep (unsigned int seconds);
 
 OCTINTERP_API void octave_usleep (unsigned int useconds);
-
-OCTINTERP_API int
-octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args);
 
 #ifdef __cplusplus
 }

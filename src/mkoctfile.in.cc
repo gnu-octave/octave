@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2008-2013 Michael Goffioul
+Copyright (C) 2008-2015 Michael Goffioul
 
 This file is part of Octave.
 
@@ -167,7 +167,7 @@ initialize (void)
   vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS",
                                        %OCTAVE_CONF_DEPEND_FLAGS%);
   vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN",
-                                       %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
+                                                   %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
 
   vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_MKOCTFILE_DL_LD%);
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
@@ -550,9 +550,14 @@ main (int argc, char **argv)
         {
           pass_on_options += (" " + arg);
         }
+      else if (starts_with (arg, "-"))
+        {
+          // Pass through any unrecognized options
+          pass_on_options += (" " + arg);
+        }
       else
         {
-          std::cerr << "mkoctfile: unrecognized argument " << arg;
+          std::cerr << "mkoctfile: unrecognized argument " << arg << std::endl;
           return 1;
         }
 
@@ -588,9 +593,11 @@ main (int argc, char **argv)
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
           gnulib::unlink (dfile.c_str ());
-          std::string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
-            + vars["CPPFLAGS"] + " " + vars["ALL_CFLAGS"] + " "
-            + incflags  + " " + defs + " " + quote_path (f);
+          std::string cmd = vars["CC"] + " "
+                            + vars["DEPEND_FLAGS"] + " "
+                            + vars["CPPFLAGS"] + " "
+                            + vars["ALL_CFLAGS"] + " "
+                            + incflags  + " " + defs + " " + quote_path (f);
 
           FILE *fd = popen (cmd.c_str (), "r");
           std::ofstream fo (dfile.c_str ());
@@ -602,8 +609,9 @@ main (int argc, char **argv)
                 {
                   size_t spos = line.rfind ('/', pos);
                   std::string ofile =
-                    (spos == std::string::npos ? line.substr (0, pos+2)
-                                          : line.substr (spos+1, pos-spos+1));
+                    (spos == std::string::npos
+                      ? line.substr (0, pos+2)
+                      : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " "
                      << dfile << line.substr (pos) << std::endl;
                 }
@@ -619,9 +627,11 @@ main (int argc, char **argv)
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
           gnulib::unlink (dfile.c_str ());
-          std::string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
-            + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " "
-            + incflags  + " " + defs + " " + quote_path (f);
+          std::string cmd = vars["CC"] + " "
+                            + vars["DEPEND_FLAGS"] + " "
+                            + vars["CPPFLAGS"] + " "
+                            + vars["ALL_CXXFLAGS"] + " "
+                            + incflags  + " " + defs + " " + quote_path (f);
 
           FILE *fd = popen (cmd.c_str (), "r");
           std::ofstream fo (dfile.c_str ());
@@ -633,8 +643,9 @@ main (int argc, char **argv)
                 {
                   size_t spos = line.rfind ('/', pos);
                   std::string ofile =
-                    (spos == std::string::npos ? line.substr (0, pos+2)
-                                          : line.substr (spos+1, pos-spos+1));
+                    (spos == std::string::npos
+                      ? line.substr (0, pos+2)
+                      : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " "
                      << dfile << line.substr (pos+2) << std::endl;
                 }
@@ -664,15 +675,17 @@ main (int argc, char **argv)
           else
             o = b + ".o";
           objfiles += (" " + o);
-          std::string cmd = vars["F77"] + " -c " + vars["FPICFLAG"] + " "
-            + vars["ALL_FFLAGS"] + " " + incflags + " " + defs + " "
-            + pass_on_options + " " + f + " -o " + o;
+          std::string cmd = vars["F77"] + " -c "
+                            + vars["FPICFLAG"] + " "
+                            + vars["ALL_FFLAGS"] + " "
+                            + incflags + " " + defs + " " + pass_on_options
+                            + " " + f + " -o " + o;
           result = run_command (cmd);
         }
       else
         {
-          std::cerr << "mkoctfile: no way to compile Fortran file "
-                    << f << std::endl;
+          std::cerr << "mkoctfile: no way to compile Fortran file " << f
+                    << std::endl;
           return 1;
         }
     }
@@ -693,10 +706,12 @@ main (int argc, char **argv)
           else
             o = b + ".o";
           objfiles += (" " + o);
-          std::string cmd = vars["CC"] + " -c " + vars["CPPFLAGS"] + " "
-            + vars["CPICFLAG"] + " " + vars["ALL_CFLAGS"] + " "
-            + pass_on_options + " " + incflags + " " + defs + " "
-            + quote_path (f) + " -o " + quote_path (o);
+          std::string cmd = vars["CC"] + " -c "
+                            + vars["CPPFLAGS"] + " "
+                            + vars["CPICFLAG"] + " " + vars["ALL_CFLAGS"] + " "
+                            + pass_on_options + " "
+                            + incflags + " " + defs + " "
+                            + quote_path (f) + " -o " + quote_path (o);
           result = run_command (cmd);
         }
       else
@@ -723,10 +738,13 @@ main (int argc, char **argv)
           else
             o = b + ".o";
           objfiles += (" " + o);
-          std::string cmd = vars["CXX"] + " -c " + vars["CPPFLAGS"] + " "
-            + vars["CXXPICFLAG"] + " " + vars["ALL_CXXFLAGS"] + " "
-            + pass_on_options + " " + incflags + " " + defs + " "
-            + quote_path (f) + " -o " + quote_path (o);
+          std::string cmd = vars["CXX"] + " -c "
+                            + vars["CPPFLAGS"] + " "
+                            + vars["CXXPICFLAG"] + " "
+                            + vars["ALL_CXXFLAGS"] + " "
+                            + pass_on_options + " "
+                            + incflags + " " + defs + " "
+                            + quote_path (f) + " -o " + quote_path (o);
           result = run_command (cmd);
         }
       else
@@ -743,15 +761,17 @@ main (int argc, char **argv)
         {
           if (!vars["LD_CXX"].empty ())
             {
-              std::string cmd = vars["LD_CXX"] + " " + vars["CPPFLAGS"] + " "
-                + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"]
-                + " " + vars["ALL_LDFLAGS"] + " "
-                + pass_on_options + " " + output_option + " "
-                + objfiles + " " + libfiles + " "
-                + ldflags + " " + vars["LFLAGS"]
-                + " -loctinterp -loctave "
-                + " " + vars["OCTAVE_LINK_OPTS"]
-                + " " + vars["OCTAVE_LINK_DEPS"];
+              std::string cmd = vars["LD_CXX"] + " "
+                                + vars["CPPFLAGS"] + " "
+                                + vars["ALL_CXXFLAGS"] + " "
+                                + vars["RDYNAMIC_FLAG"] + " "
+                                + vars["ALL_LDFLAGS"] + " "
+                                + pass_on_options + " " + output_option + " "
+                                + objfiles + " " + libfiles + " "
+                                + ldflags + " " + vars["LFLAGS"]
+                                + " -loctinterp -loctave "
+                                + " " + vars["OCTAVE_LINK_OPTS"]
+                                + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
             }
           else
@@ -764,11 +784,15 @@ main (int argc, char **argv)
         }
       else
         {
-          std::string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
-            + pass_on_options + " -o " + octfile + " "
-            + objfiles + " " + libfiles + " " + ldflags + " "
-            + vars["LFLAGS"] + " -loctinterp -loctave "
-            + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
+          std::string cmd = vars["DL_LD"] + " "
+                            + vars["DL_LDFLAGS"] + " "
+                            + pass_on_options
+                            + " -o " + octfile + " "
+                            + objfiles + " " + libfiles + " "
+                            + ldflags + " "
+                            + vars["LFLAGS"] + " -loctinterp -loctave "
+                            + vars["OCT_LINK_OPTS"] + " "
+                            + vars["OCT_LINK_DEPS"];
           result = run_command (cmd);
         }
 

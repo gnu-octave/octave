@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2013 John W. Eaton
+Copyright (C) 2004-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -74,16 +73,14 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& );
+  bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format );
+                    oct_mach_info::float_format);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool);
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 };
 
 // base int scalar values.
@@ -109,6 +106,8 @@ public:
 
   bool is_real_type (void) const { return true; }
 
+  bool is_real_scalar (void) const { return true; }
+
   //  void increment (void) { scalar += 1; }
 
   //  void decrement (void) { scalar -= 1; }
@@ -119,16 +118,14 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& );
+  bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format );
+                    oct_mach_info::float_format);
 
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool );
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
 
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 };
 
 #endif

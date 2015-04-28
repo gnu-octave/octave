@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Laurent Mazet
+## Copyright (C) 2005-2015 Laurent Mazet
 ## Copyright (C) 2010 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -32,15 +32,14 @@ function m = cell2mat (c)
     print_usage ();
   endif
 
-  if (! iscell (c))
-    error ("cell2mat: C is not a cell array");
-  endif
-
   nb = numel (c);
 
   if (nb == 0)
     m = [];
   else
+    if (! iscell (c))
+      error ("cell2mat: C must be a cell array");
+    endif
 
     ## Check first for valid matrix types
     valid = cellfun ("isnumeric", c);
@@ -94,6 +93,7 @@ endfunction
 %! cell2mat (C)
 
 %!assert (cell2mat ({}), []);
+%!assert (cell2mat ([]), []);
 %!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;
@@ -115,7 +115,7 @@ endfunction
 
 %!error cell2mat ()
 %!error cell2mat (1,2)
-%!error <C is not a cell array> cell2mat ([1,2])
+%!error <C must be a cell array> cell2mat ([1,2])
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], struct()})
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], {1}})
 %!error <mixed cells, structs, and matrices> cell2mat ({struct(), {1}})

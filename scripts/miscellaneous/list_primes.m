@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2013 John W. Eaton
+## Copyright (C) 1993-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,73 +19,52 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} list_primes ()
 ## @deftypefnx {Function File} {} list_primes (@var{n})
-## List the first @var{n} primes.  If @var{n} is unspecified, the first
-## 25 primes are listed.
+## List the first @var{n} primes.
 ##
-## The algorithm used is from page 218 of the @TeX{}book.
+## If @var{n} is unspecified, the first 25 primes are listed.
 ## @seealso{primes, isprime}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = list_primes (n)
+function retval = list_primes (n = 25)
 
-  if (nargin > 0)
-    if (! isscalar (n))
-      error ("list_primes: argument must be a scalar");
-    endif
+  if (nargin > 1)
+    print_usage ();
+  elseif (! isreal (n) || ! isscalar (n))
+    error ("list_primes: N must be a real scalar");
   endif
 
-  if (nargin == 0)
-    n = 25;
-  endif
+  n = floor (n);
 
-  if (n == 1)
+  if (n < 1)
+    retval = [];
+    return;
+  elseif (n == 1)
     retval = 2;
     return;
   endif
 
-  if (n == 2)
-    retval = [2; 3];
-    return;
+  list = primes (n * log (5 * n));
+  if (numel (list) < n)
+    ## Algorithm tested up to n=10,000 without failure.
+    error ("list_primes: Algorithm failed.  Try primes (n*log (6*n))(1:n)");
   endif
 
-  retval = zeros (1, n);
-  retval(1) = 2;
-  retval(2) = 3;
-
-  n = n - 2;
-  i = 3;
-  p = 5;
-  while (n > 0)
-
-    is_prime = 1;
-    is_unknown = 1;
-    d = 3;
-    while (is_unknown)
-      a = fix (p / d);
-      if (a <= d)
-        is_unknown = 0;
-      endif
-      if (a * d == p)
-        is_prime = 0;
-        is_unknown = 0;
-      endif
-      d = d + 2;
-    endwhile
-
-    if (is_prime)
-      retval(i++) = p;
-      n--;
-    endif
-    p = p + 2;
-
-  endwhile
+  retval = list(1:n);
 
 endfunction
 
 
 %!assert (list_primes (), [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, ...
 %!                         43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97])
-%!assert (list_primes (5), [2, 3, 5, 7, 11]);
+%!assert (list_primes (5), [2, 3, 5, 7, 11])
+
+%!assert (list_primes (0), [])
+%!assert (list_primes (1), [2])
+
+## Test input validation
+%!error list_primes (1, 2)
+%!error <N must be a real scalar> list_primes (i)
+%!error <N must be a real scalar> list_primes ([1 2])
 

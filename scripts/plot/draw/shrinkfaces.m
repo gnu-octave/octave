@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Martin Helm
+## Copyright (C) 2012-2015 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -23,24 +23,29 @@
 ## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{f}, @var{v}, @var{sf})
 ## @deftypefnx {Function File} {[@var{nf}, @var{nv}] =} shrinkfaces (@dots{})
 ##
-## Reduce the faces area for a given patch, structure or explicit faces
-## and points matrices by a scale factor @var{sf}.  The structure
-## @var{fv} must contain the fields @qcode{"faces"} and @qcode{"vertices"}.
-## If the factor @var{sf} is omitted then a default of 0.3 is used.
+## Reduce the size of faces in a patch by the shrink factor @var{sf}.
 ##
-## Given a patch handle as the first input argument and no output
-## parameters, perform the shrinking of the patch faces in place and
-## redraw the patch.
+## The patch object can be specified by a graphics handle (@var{p}), a patch
+## structure (@var{fv}) with the fields @qcode{"faces"} and @qcode{"vertices"},
+## or as two separate matrices (@var{f}, @var{v}) of faces and vertices.
+##
+## The shrink factor @var{sf} is a positive number specifying the percentage
+## of the original area the new face will occupy.  If no factor is given the
+## default is 0.3 (a reduction to 30% of the original size).  A factor greater
+## than 1.0 will result in the expansion of faces.
+##
+## Given a patch handle as the first input argument and no output parameters,
+## perform the shrinking of the patch faces in place and redraw the patch.
 ##
 ## If called with one output argument, return a structure with fields
 ## @qcode{"faces"}, @qcode{"vertices"}, and @qcode{"facevertexcdata"}
-## containing the data after shrinking which can then directly be used as an
-## input argument for the @code{patch} function.
+## containing the data after shrinking.  This structure can be used directly
+## as an input argument to the @code{patch} function.
 ##
-## Performing the shrinking on faces which are not convex can lead to
-## undesired results.
+## @strong{Caution:}: Performing the shrink operation on faces which are not
+## convex can lead to undesirable results.
 ##
-## For example,
+## Example: a triangulated 3/4 circle and the corresponding shrunken version.
 ##
 ## @example
 ## @group
@@ -56,9 +61,6 @@
 ## @end group
 ## @end example
 ##
-## @noindent
-## draws a triangulated 3/4 circle and the corresponding shrunken
-## version.
 ## @seealso{patch}
 ## @end deftypefn
 
@@ -71,10 +73,11 @@ function [nf, nv] = shrinkfaces (varargin)
   endif
 
   sf = 0.3;
-  p = varargin{1};
   colors = [];
+  p = varargin{1};
 
-  if (ishandle (p) && nargin < 3)
+  if (isscalar (p) && ishandle (p) && nargin < 3
+      && strcmp (get (p, "type"), "patch"))
     faces = get (p, "Faces");
     vertices = get (p, "Vertices");
     colors = get (p, "FaceVertexCData");
@@ -104,8 +107,8 @@ function [nf, nv] = shrinkfaces (varargin)
     error ("shrinkfaces: scale factor must be a positive scalar");
   endif
 
-  n = columns (vertices);
-  if (n < 2 || n > 3)
+  nc = columns (vertices);
+  if (nc < 2 || nc > 3)
     error ("shrinkfaces: only 2-D and 3-D patches are supported");
   endif
 
@@ -120,14 +123,12 @@ function [nf, nv] = shrinkfaces (varargin)
   elseif (rows (colors) == rows (vertices))
     c = colors(faces'(:), :);
   else
-    ## Discard inconsistent color data.
-    c = [];
+    c = [];  # Discard inconsistent color data.
   endif
   sv = rows (v);
-  ## we have to deal with a probably very large number of vertices, so
-  ## use sparse we use as midpoint (1/m, ..., 1/m) in generalized
-  ## barycentric coordinates.
-  midpoints = full (kron ( speye (sv / m), ones (m, m) / m) * sparse (v));
+  ## We have to deal with a possibly very large number of vertices, so use
+  ## sparse as midpoint (1/m, ..., 1/m) in generalized barycentric coordinates.
+  midpoints = full (kron (speye (sv / m), ones (m, m) / m) * sparse (v));
   v = sqrt (sf) * (v - midpoints) + midpoints;
   f = reshape (1:sv, m, sv / m)';
 
@@ -215,4 +216,14 @@ endfunction
 %!assert (size (nfv.faces), [1 3])
 %!assert (size (nfv.vertices), [3 3])
 %!assert (norm (nfv2.vertices - vertices), 0, 2*eps)
+
+## Test input validation
+%!error shrinkfaces ()
+%!error shrinkfaces (1,2,3,4)
+%!error [a,b,c] = shrinkfaces (1)
+%!error <scale factor must be a positive scalar> shrinkfaces (nfv, ones (2))
+%!error <scale factor must be a positive scalar> shrinkfaces (nfv, 0)
+%!error <only 2-D and 3-D patches are supported> shrinkfaces (faces, ones (3,1))
+%!error <only 2-D and 3-D patches are supported> shrinkfaces (faces, ones (3,4))
+%!error <faces must consist of at least 3 vertices> shrinkfaces (faces(1:2), vertices)
 

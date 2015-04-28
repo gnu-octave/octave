@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 template class octave_base_matrix<charNDArray>;
 
 idx_vector
-octave_char_matrix::index_vector (void) const
+octave_char_matrix::index_vector (bool /* require_integers */) const
 {
   const char *p = matrix.data ();
   if (numel () == 1 && *p == ':')

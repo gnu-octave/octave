@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2013 John W. Eaton
+## Copyright (C) 1993-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,6 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} flipud (@var{x})
+## Flip array upside down.
+##
 ## Return a copy of @var{x} with the order of the rows reversed.  In
 ## other words, @var{x} is flipped upside-down about a horizontal axis.  For
 ## example:
@@ -30,9 +32,7 @@
 ## @end group
 ## @end example
 ##
-## Note that @code{flipud} only works with 2-D arrays.  To flip N-D arrays
-## use @code{flipdim} instead.
-## @seealso{fliplr, flipdim, rot90, rotdim}
+## @seealso{fliplr, flip, rot90, rotdim}
 ## @end deftypefn
 
 ## Author: jwe
@@ -42,13 +42,7 @@ function y = flipud (x)
   if (nargin != 1)
     print_usage ();
   endif
-
-  if (ndims (x) > 2)
-    error ("flipud: Only works with 2-d arrays");
-  endif
-
-  nr = rows (x);
-  y = x (nr:-1:1, :);
+  y = flip (x, 1);
 
 endfunction
 
@@ -56,6 +50,29 @@ endfunction
 %!assert (flipud ([1, 2; 3, 4]), [3, 4; 1, 2])
 %!assert (flipud ([1, 2; 3, 4; 5, 6]), [5, 6; 3, 4; 1, 2])
 %!assert (flipud ([1, 2, 3; 4, 5, 6]), [4, 5, 6; 1, 2, 3])
+%!assert (flipud ([1 2 3]), [1 2 3])
+
+## Test NDArrays
+%!test
+%! a(:,:,1) = [ 1  2  3;  4  5  6];
+%! a(:,:,2) = [ 7  8  9; 10 11 12];
+%! b(:,:,1) = [ 4  5  6;  1  2  3];
+%! b(:,:,2) = [10 11 12;  7  8  9];
+%! assert (flipud (a), b)
+
+## Test NDArray with singleton dimensions
+%!test
+%! a(:,:,:,1) = [ 1  2  3;  4  5  6];
+%! a(:,:,:,2) = [ 7  8  9; 10 11 12];
+%! b(:,:,:,1) = [ 4  5  6;  1  2  3];
+%! b(:,:,:,2) = [10 11 12;  7  8  9];
+%! assert (flipud (a), b)
+
+## Test for 1 row, i.e., returns the same
+%!test
+%! a(1,:,:,1) = [ 1  2  3  4];
+%! a(1,:,:,2) = [ 5  6  7  8];
+%! assert (flipud (a), a)
 
 %!error flipud ()
 %!error flipud (1, 2)

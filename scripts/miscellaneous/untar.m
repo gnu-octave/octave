@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2005-2015 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -19,26 +19,38 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} untar (@var{tarfile})
 ## @deftypefnx {Function File} {} untar (@var{tarfile}, @var{dir})
-## Unpack the TAR archive @var{tarfile} to the directory @var{dir}.
-## If @var{dir} is not specified, it defaults to the current directory.
+## Unpack the TAR archive @var{tarfile}.
+##
+## If @var{dir} is specified the files are unpacked in this directory rather
+## than the one where @var{tarfile} is located.
+##
+## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{tar, unpack, bunzip2, gunzip, unzip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
 ## Adapted-By: jwe, Bill Denney
 
-function varargout = untar (tarfile, dir = ".")
+function filelist = untar (tarfile, dir = [])
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (isempty (dir))
+    dir = fileparts (tarfile);
+  endif
+
   if (nargout > 0)
-    varargout = cell (1, nargout);
-    [varargout{:}] = unpack (tarfile, dir, mfilename ());
+    filelist = unpack (tarfile, dir, "untar");
   else
-    unpack (tarfile, dir, mfilename ());
+    unpack (tarfile, dir, "untar");
   endif
 
 endfunction
+
+
+## Tests for this m-file are located in tar.m
+## Remove from test statistics
+%!assert (1)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2005-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -80,12 +80,23 @@ function h = patch (varargin)
 
   if (isempty (hax))
     hax = gca ();
+  else
+    hax = hax(1);
   endif
 
   [htmp, failed] = __patch__ (hax, varargin{:});
 
   if (failed)
     print_usage ();
+  endif
+
+  ## FIXME: This is a hack to get 'layer' command to work for 2D patches
+  ##        Alternative is much more complicated surgery in graphics.cc.
+  ##        of get_children_limits() for 'z' axis and 'patch' object type.
+  if (! ishold ())
+    if (isempty (get (htmp, "zdata")))
+      set (hax, "zlim", [-1 1]);
+    endif
   endif
 
   if (nargout > 0)
@@ -141,7 +152,8 @@ endfunction
 %! y2 = cos (t2);
 %! vert = [x1, y1; x2, y2];
 %! fac = [1:8,NaN(1,8);9:24];
-%! patch ('Faces',fac, 'Vertices',vert, 'FaceVertexCData',[0, 1, 0; 0, 0, 1]);
+%! patch ('Faces',fac, 'Vertices',vert, ...
+%!        'FaceVertexCData',[0, 1, 0; 0, 0, 1], 'FaceColor', 'flat');
 
 %!demo
 %! %% Property change on multiple patches
@@ -223,7 +235,7 @@ endfunction
 %! colormap (jet (64));
 %! x = [ 0 0; 1 1; 1 0 ];
 %! y = [ 0 0; 0 1; 1 1 ];
-%! p = patch (x, y, 'facecolor', 'b');
+%! p = patch (x, y, 'b');
 %! set (p, 'cdatamapping', 'direct', 'facecolor', 'flat', 'cdata', [1 32]);
 %! title ('Direct mapping of colors: Light-Green UL and Blue LR triangles');
 

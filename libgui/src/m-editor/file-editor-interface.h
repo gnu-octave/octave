@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -40,10 +40,11 @@ public:
 
   virtual ~file_editor_interface () { }
 
-  virtual QMenu *get_mru_menu ( ) = 0;
+  virtual QMenu *get_mru_menu () = 0;
   virtual QMenu *debug_menu () = 0;
   virtual QToolBar *toolbar () = 0;
 
+  virtual void insert_new_open_actions (QAction*,QAction*,QAction*) = 0;
   virtual void handle_enter_debug_mode (void) = 0;
   virtual void handle_exit_debug_mode (void) = 0;
 
@@ -59,7 +60,11 @@ public:
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 
-  virtual void set_focus () = 0;
+  virtual bool check_closing (void) = 0;
+
+  virtual void empty_script (bool, bool) = 0;
+
+  virtual void enable_menu_shortcuts (bool enable) = 0;
 
 public slots:
   virtual void request_new_file (const QString& command = QString ()) = 0;

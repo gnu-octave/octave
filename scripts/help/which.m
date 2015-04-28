@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 John W. Eaton
+## Copyright (C) 2009-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -28,9 +28,21 @@ function varargout = which (varargin)
   if (nargin > 0 && iscellstr (varargin))
     m = __which__ (varargin{:});
 
+    ## Check whether each name is a variable, variables take precedence over
+    ## functions in name resolution.
+    for i = 1:nargin
+      m(i).is_variable = evalin ("caller",
+                                 ["exist (\"" m(i).name "\", \"var\")"], false);
+      if (m(i).is_variable)
+        m(i).file = "variable";
+      endif
+    endfor
+
     if (nargout == 0)
       for i = 1:nargin
-        if (isempty (m(i).file))
+        if (m(i).is_variable)
+          printf ("'%s' is a variable\n", m(i).name);
+        elseif (isempty (m(i).file))
           if (! isempty (m(i).type))
             printf ("'%s' is a %s\n",
                     m(i).name, m(i).type);
@@ -64,3 +76,17 @@ endfunction
 
 %!assert (which ("_NO_SUCH_NAME_"), "")
 
+%!test
+%! x = 3;
+%! str = which ("x");
+%! assert (str, "variable");
+
+%!test
+%! str = which ("amd");
+%! assert (str(end-6:end), "amd.oct");
+%! amd = 12;
+%! str = which ("amd");
+%! assert (str, "variable");
+%! clear amd;
+%! str = which ("amd");
+%! assert (str(end-6:end), "amd.oct");

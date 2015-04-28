@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Kurt Hornik
+## Copyright (C) 1996-2015 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -77,7 +77,7 @@ endfunction
 %! [x, state] = str2num ("Hello World");
 %! assert (! state);
 
-%% Test input validation
+## Test input validation
 %!error str2num ()
 %!error str2num ("string", 1)
 %!error <S must be a string> str2num ({"string"})

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2013 John W. Eaton
+## Copyright (C) 2006-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -58,8 +58,8 @@
 %!error <Invalid call to usleep> usleep (1, 2)
 
 %!test
-%! from = tmpnam ();
-%! to = tmpnam ();
+%! from = tempname ();
+%! to = tempname ();
 %! id = fopen (from, "wb");
 %! if (id > 0 && fclose (id) == 0)
 %!   [s, e] = stat (from);
@@ -79,7 +79,7 @@
 %!error <Invalid call to rename> rename ("foo", "bar", 1)
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! if ((id = fopen (nm, "wb")) > 0)
 %!   [s, err] = stat (nm);
 %!   if (! err && fclose (id) == 0 && unlink (nm) == 0)
@@ -90,6 +90,7 @@
 
 %!error <Invalid call to unlink> unlink ()
 %!error <Invalid call to unlink> unlink ("foo", 1)
+%!error <FILE must be a string> unlink ({})
 
 %!test
 %! [files, status, msg] = readdir (filesep);
@@ -99,7 +100,7 @@
 %!error <Invalid call to readdir> readdir ("foo", 1)
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! e1 = mkdir (nm);
 %! [s2, e2] = stat (nm);
 %! e3 = rmdir (nm);
@@ -120,14 +121,14 @@
 %! ## Test makes no sense on Windows systems
 %! if (isunix () || ismac ())
 %!   orig_umask = umask (0);
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   id = fopen (nm, "wb");
 %!   s1 = stat (nm);
 %!   fclose (id);
 %!   unlink (nm);
 %!
 %!   umask (777);
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   id = fopen (nm, "wb");
 %!   s2 = stat (nm);
 %!   fclose (id);
@@ -180,21 +181,47 @@
 %!error <Invalid call to lstat> lstat ()
 %!error <Invalid call to lstat> lstat ("foo", 1)
 
+%!test
+%! if (isunix ())
+%!   assert (S_ISCHR (stat ("/dev/null").mode));
+%!   if (exist ("/dev/initctl"))
+%!     assert (S_ISFIFO (stat ("/dev/initctl").mode));
+%!   endif
+%!   assert (S_ISLNK (lstat ("/dev/core").mode));
+%! endif
+%! nm = tempname ();
+%! fid = fopen (nm, "wb");
+%! fclose (fid);
+%! r = [ S_ISREG(stat(nm).mode)
+%!       S_ISDIR(stat(nm).mode)
+%!       S_ISCHR(stat(nm).mode)
+%!       S_ISBLK(stat(nm).mode)
+%!       S_ISFIFO(stat(nm).mode)
+%!       S_ISLNK(lstat(nm).mode)
+%!       S_ISSOCK(stat(nm).mode) ];
+%! unlink (nm);
+%! assert (r(:), [true; false; false; false; false; false; false]);
+
+%!error <octave_base_value::double_value> S_ISREG ({})
+%!error <octave_base_value::double_value> S_ISDIR ({})
+%!error <octave_base_value::double_value> S_ISCHR ({})
+%!error <octave_base_value::double_value> S_ISBLK ({})
+%!error <octave_base_value::double_value> S_ISFIFO ({})
+%!error <octave_base_value::double_value> S_ISLNK ({})
+%!error <octave_base_value::double_value> S_ISSOCK ({})
+
+%!error <Invalid call to S_ISREG> S_ISREG ()
+%!error <Invalid call to S_ISDIR> S_ISDIR ()
+%!error <Invalid call to S_ISCHR> S_ISCHR ()
+%!error <Invalid call to S_ISBLK> S_ISBLK ()
+%!error <Invalid call to S_ISFIFO> S_ISFIFO ()
+%!error <Invalid call to S_ISLNK> S_ISLNK ()
+%!error <Invalid call to S_ISSOCK> S_ISSOCK ()
+
 %!assert (iscell (glob ([filesep "*"])))
 
 %!error <Invalid call to glob> glob ()
 %!error <Invalid call to glob> glob ("foo", 1)
-
-%!test
-%! string_fill_char = char (0);
-%! assert ((fnmatch ("a*a", {"aba"; "xxxba"; "aa"}) == [1; 0; 1]
-%! && fnmatch ({"a*a"; "b*b"}, "bob")
-%! && fnmatch ("x[0-5]*", {"x1"; "x6"}) == [1; 0]
-%! && fnmatch ("x[0-5]*", {"x1"; "x6"; "x001"}) == [1; 0; 1]
-%! && fnmatch ("x???y", {"xabcy"; "xy"}) == [1; 0]));
-
-%!error <Invalid call to fnmatch> fnmatch ()
-%!error <Invalid call to fnmatch> fnmatch ("foo", "bar", 3)
 
 %!assert (ischar (file_in_path (path (), "date.m")))
 
@@ -241,7 +268,7 @@
 
 %!error <... getgid> getgid (1)
 
-%!assert (getenv ("HOME"), tilde_expand ("~"))
+%!assert (get_home_directory (), tilde_expand ("~"))
 
 %!error <Invalid call to getenv> getenv ()
 %!error <Invalid call to getenv> getenv ("foo", 1)
@@ -253,17 +280,13 @@
 %! warning (wns.state, "Octave:num-to-str");
 
 %!test
-%! putenv ("foobar", "baz");
+%! setenv ("foobar", "baz");
 %! assert (getenv ("foobar"), "baz");
 
-%!error <Invalid call to putenv> putenv ()
-%!error <Invalid call to putenv> putenv ("foo", "bar", 1)
+%!error <Invalid call to setenv> setenv ()
+%!error <Invalid call to setenv> setenv ("foo", "bar", 1)
 
-%!test
-%! wns = warning ("query", "Octave:num-to-str");
-%! warning ("on", "Octave:num-to-str");
-%! fail ("putenv (1, 2)","warning");
-%! warning (wns.state, "Octave:num-to-str");
+%!error <VAR must be a string> setenv (1, 2)
 
 %!test
 %! xdir = pwd ();
@@ -370,4 +393,3 @@
 %!assert (isstruct (octave_config_info ()))
 
 %!assert (isstruct (getrusage ()))
-

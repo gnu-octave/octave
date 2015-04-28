@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2011-2015 Jacob Dawid
 
 This file is part of Octave.
 
@@ -73,6 +73,7 @@ public:
 public slots:
 
   void set_workspace (bool top_level,
+                      bool debug,
                       const QString& scopes,
                       const QStringList& symbols,
                       const QStringList& class_names,

@@ -7,6 +7,7 @@ plot_appearance_PRIVATE_FCN_FILES = \
 plot_appearance_FCN_FILES = \
   plot/appearance/__clabel__.m \
   plot/appearance/__getlegenddata__.m \
+  plot/appearance/annotation.m \
   plot/appearance/axis.m \
   plot/appearance/box.m \
   plot/appearance/caxis.m \

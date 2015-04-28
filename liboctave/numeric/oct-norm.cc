@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2013 VZLU Prague, a.s.
+Copyright (C) 2008-2015 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -36,6 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "mx-cm-s.h"
+#include "mx-s-cm.h"
+#include "mx-fcm-fs.h"
+#include "mx-fs-fcm.h"
 #include "Array.h"
 #include "Array-util.h"
 #include "CMatrix.h"
@@ -73,20 +77,20 @@ public:
 
   template<class U>
   void accum (U val)
-    {
-      octave_quit ();
-      R t = std::abs (val);
-      if (scl == t) // we need this to handle Infs properly
+  {
+    octave_quit ();
+    R t = std::abs (val);
+    if (scl == t) // we need this to handle Infs properly
+      sum += 1;
+    else if (scl < t)
+      {
+        sum *= std::pow (scl/t, p);
         sum += 1;
-      else if (scl < t)
-        {
-          sum *= std::pow (scl/t, p);
-          sum += 1;
-          scl = t;
-        }
-      else if (t != 0)
-        sum += std::pow (t/scl, p);
-    }
+        scl = t;
+      }
+    else if (t != 0)
+      sum += std::pow (t/scl, p);
+  }
   operator R () { return scl * std::pow (sum, 1/p); }
 };
 
@@ -101,20 +105,20 @@ public:
 
   template<class U>
   void accum (U val)
-    {
-      octave_quit ();
-      R t = 1 / std::abs (val);
-      if (scl == t)
+  {
+    octave_quit ();
+    R t = 1 / std::abs (val);
+    if (scl == t)
+      sum += 1;
+    else if (scl < t)
+      {
+        sum *= std::pow (scl/t, p);
         sum += 1;
-      else if (scl < t)
-        {
-          sum *= std::pow (scl/t, p);
-          sum += 1;
-          scl = t;
-        }
-      else if (t != 0)
-        sum += std::pow (t/scl, p);
-    }
+        scl = t;
+      }
+    else if (t != 0)
+      sum += std::pow (t/scl, p);
+  }
   operator R () { return scl * std::pow (sum, -1/p); }
 };
 
@@ -128,25 +132,25 @@ public:
   norm_accumulator_2 () : scl(0), sum(1) {}
 
   void accum (R val)
-    {
-      R t = std::abs (val);
-      if (scl == t)
+  {
+    R t = std::abs (val);
+    if (scl == t)
+      sum += 1;
+    else if (scl < t)
+      {
+        sum *= pow2 (scl/t);
         sum += 1;
-      else if (scl < t)
-        {
-          sum *= pow2 (scl/t);
-          sum += 1;
-          scl = t;
-        }
-      else if (t != 0)
-        sum += pow2 (t/scl);
-    }
+        scl = t;
+      }
+    else if (t != 0)
+      sum += pow2 (t/scl);
+  }
 
   void accum (std::complex<R> val)
-    {
-      accum (val.real ());
-      accum (val.imag ());
-    }
+  {
+    accum (val.real ());
+    accum (val.imag ());
+  }
 
   operator R () { return scl * std::sqrt (sum); }
 };
@@ -160,9 +164,9 @@ public:
   norm_accumulator_1 () : sum (0) {}
   template<class U>
   void accum (U val)
-    {
-      sum += std::abs (val);
-    }
+  {
+    sum += std::abs (val);
+  }
   operator R () { return sum; }
 };
 
@@ -175,9 +179,9 @@ public:
   norm_accumulator_inf () : max (0) {}
   template<class U>
   void accum (U val)
-    {
-      max = std::max (max, std::abs (val));
-    }
+  {
+    max = std::max (max, std::abs (val));
+  }
   operator R () { return max; }
 };
 
@@ -190,9 +194,9 @@ public:
   norm_accumulator_minf () : min (octave_Inf) {}
   template<class U>
   void accum (U val)
-    {
-      min = std::min (min, std::abs (val));
-    }
+  {
+    min = std::min (min, std::abs (val));
+  }
   operator R () { return min; }
 };
 
@@ -205,9 +209,9 @@ public:
   norm_accumulator_0 () : num (0) {}
   template<class U>
   void accum (U val)
-    {
-      if (val != static_cast<U> (0)) ++num;
-    }
+  {
+    if (val != static_cast<U> (0)) ++num;
+  }
   operator R () { return num; }
 };
 
@@ -327,7 +331,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
+      R fi = i * static_cast<R> (M_PI) / nsamp;
+      R lambda1 = cos (fi);
+      R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
@@ -358,7 +364,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
+      R fi = i * static_cast<R> (M_PI) / nsamp;
+      R lambda1 = cos (fi);
+      R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
@@ -375,7 +383,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp;
+      R fi = i * static_cast<R> (M_PI) / nsamp;
       lamcu = CR (cos (fi), sin (fi));
       R nrm1 = vector_norm (lama * lamcu * y + mu * col, p);
       if (nrm1 > nrm)
@@ -415,7 +423,8 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   // the OSE part
   VectorT y(m.rows (), 1, 0), z(m.rows (), 1);
   typedef typename VectorT::element_type RR;
-  RR lambda = 0, mu = 1;
+  RR lambda = 0;
+  RR mu = 1;
   for (octave_idx_type k = 0; k < m.columns (); k++)
     {
       octave_quit ();

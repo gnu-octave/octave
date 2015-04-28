@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2013 John W. Eaton
+Copyright (C) 1996-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "unwind-prot.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_mex_function);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
                                      "mex function", "mex function");
@@ -148,8 +147,10 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       try
         {
-          BEGIN_PROFILER_BLOCK (profiler_name ())
+          BEGIN_PROFILER_BLOCK (octave_mex_function)
+
           retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+
           END_PROFILER_BLOCK
         }
       catch (octave_execution_exception)

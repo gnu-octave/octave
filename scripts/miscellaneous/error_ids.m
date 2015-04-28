@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Juan Pablo Carbajal
+## Copyright (C) 2012-2015 Juan Pablo Carbajal
 ##
 ## This file is part of Octave.
 ##
@@ -34,7 +34,7 @@
 ##
 ## @item Octave:invalid-indexing
 ## Indicates that a data-type was indexed incorrectly, e.g., real-value index
-## for arrays, non-existent field of a structure.
+## for arrays, nonexistent field of a structure.
 ##
 ## @item Octave:bad-alloc
 ## Indicates that memory couldn't be allocated.
@@ -46,12 +46,11 @@
 ## @end table
 ##
 
-
 function error_ids ()
   help ("error_ids");
 endfunction
 
 
-## Remove from test statistics.  No real tests possible
+## Mark file as being tested.  No real test needed for a documentation .m file
 %!assert (1)
 

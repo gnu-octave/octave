@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2013 John W. Eaton
+Copyright (C) 2006-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -2896,7 +2896,7 @@ mxGetNzmax (const mxArray *ptr)
 void
 mxSetIr (mxArray *ptr, mwIndex *ir)
 {
-  ptr->set_ir (static_cast <mwIndex *> (maybe_unmark (ir)));
+  ptr->set_ir (static_cast<mwIndex *> (maybe_unmark (ir)));
 }
 
 void

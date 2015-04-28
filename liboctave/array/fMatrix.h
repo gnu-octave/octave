@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2013 John W. Eaton
+Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_fMatrix_h)
 #define octave_fMatrix_h 1
 
+#include "fNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -33,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatMatrix : public MArray<float>
+FloatMatrix : public FloatNDArray
 {
 public:
 
@@ -42,26 +43,26 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) : MArray<float> () { }
+  FloatMatrix (void) : FloatNDArray () { }
 
   FloatMatrix (octave_idx_type r, octave_idx_type c)
-    : MArray<float> (dim_vector (r, c)) { }
+    : FloatNDArray (dim_vector (r, c)) { }
 
   FloatMatrix (octave_idx_type r, octave_idx_type c, float val)
-    : MArray<float> (dim_vector (r, c), val) { }
+    : FloatNDArray (dim_vector (r, c), val) { }
 
-  FloatMatrix (const dim_vector& dv) : MArray<float> (dv.redim (2)) { }
+  FloatMatrix (const dim_vector& dv) : FloatNDArray (dv.redim (2)) { }
 
   FloatMatrix (const dim_vector& dv, float val)
-    : MArray<float> (dv.redim (2), val) { }
+    : FloatNDArray (dv.redim (2), val) { }
 
-  FloatMatrix (const FloatMatrix& a) : MArray<float> (a) { }
-
-  template <class U>
-  FloatMatrix (const MArray<U>& a) : MArray<float> (a.as_matrix ()) { }
+  FloatMatrix (const FloatMatrix& a) : FloatNDArray (a) { }
 
   template <class U>
-  FloatMatrix (const Array<U>& a) : MArray<float> (a.as_matrix ()) { }
+  FloatMatrix (const MArray<U>& a) : FloatNDArray (a.as_matrix ()) { }
+
+  template <class U>
+  FloatMatrix (const Array<U>& a) : FloatNDArray (a.as_matrix ()) { }
 
   explicit FloatMatrix (const FloatRowVector& rv);
 
@@ -69,18 +70,15 @@ public:
 
   explicit FloatMatrix (const FloatDiagMatrix& a);
 
+  explicit FloatMatrix (const MDiagArray2<float>& a);
+
+  explicit FloatMatrix (const DiagArray2<float>& a);
+
   explicit FloatMatrix (const PermMatrix& a);
 
   explicit FloatMatrix (const boolMatrix& a);
 
   explicit FloatMatrix (const charMatrix& a);
-
-
-  FloatMatrix& operator = (const FloatMatrix& a)
-  {
-    MArray<float>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const FloatMatrix& a) const;
   bool operator != (const FloatMatrix& a) const;
@@ -322,24 +320,6 @@ public:
 
   FloatMatrix& operator += (const FloatDiagMatrix& a);
   FloatMatrix& operator -= (const FloatDiagMatrix& a);
-
-  // unary operations
-
-  boolMatrix operator ! (void) const;
-
-  // other operations
-
-  bool any_element_is_negative (bool = false) const;
-  bool any_element_is_positive (bool = false) const;
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool any_element_not_one_or_zero (void) const;
-  bool all_elements_are_int_or_inf_or_nan (void) const;
-  bool all_integers (float& max_val, float& min_val) const;
-  bool too_large_for_float (void) const;
-
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
 
   FloatMatrix cumprod (int dim = -1) const;
   FloatMatrix cumsum (int dim = -1) const;

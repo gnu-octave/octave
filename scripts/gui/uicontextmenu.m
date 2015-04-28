@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Michael Goffioul
+## Copyright (C) 2012-2015 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{handle} =} uicontextmenu ("Name", value, @dots{})
+## @deftypefn {Function File} {@var{hui} =} uicontextmenu ("Name", value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uicontextmenu (varargin)
+function hui = uicontextmenu (varargin)
 
   [h, args] = __uiobject_split_args__ ("uicontextmenu", varargin, {"figure"});
-  handle = __go_uicontextmenu__ (h, args{:});
+  hui = __go_uicontextmenu__ (h, args{:});
 
 endfunction
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 David Bateman
+## Copyright (C) 2004-2015 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -51,7 +51,7 @@
 ## rotdim ([1, 2; 3, 4], 7, [1, 2])
 ## @end group
 ## @end example
-## @seealso{rot90, flipud, fliplr, flipdim}
+## @seealso{rot90, fliplr, flipud, flip}
 ## @end deftypefn
 
 function y = rotdim (x, n, plane)
@@ -61,7 +61,7 @@ function y = rotdim (x, n, plane)
   endif
 
   if (nargin > 1 && ! isempty (n))
-    if (!isscalar (n) || !isreal (n) || fix (n) != n)
+    if (! isscalar (n) || ! isreal (n) || fix (n) != n)
       error ("rotdim: N must be a scalar integer");
     endif
   else
@@ -107,16 +107,16 @@ function y = rotdim (x, n, plane)
   if (n == 0)
     y = x;
   elseif (n == 2)
-    y = flipdim (flipdim (x, plane(1)), plane(2));
+    y = flip (flip (x, plane(1)), plane(2));
   elseif (n == 1 || n == 3)
     perm = 1:nd;
     perm(plane(1)) = plane(2);
     perm(plane(2)) = plane(1);
     y = permute (x, perm);
     if (n == 1)
-      y = flipdim (y, min (plane));
+      y = flip (y, min (plane));
     else
-      y = flipdim (y, max (plane));
+      y = flip (y, max (plane));
     endif
   else
     error ("rotdim: internal error!");
@@ -152,8 +152,8 @@ endfunction
 %!assert (rotdim (m, 3), rotdim (m, -1))
 %!assert (rotdim (m, 1), rotdim (m))
 
-## FIXME -- we need tests for multidimensional arrays and different
-## values of PLANE.
+## FIXME: We need tests for multidimensional arrays
+##        and different values of PLANE.
 
 %!error rotdim ()
 %!error rotdim (1, 2, 3, 4)

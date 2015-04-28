@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Shai Ayal
+## Copyright (C) 2010-2015 Shai Ayal
 ##
 ## This file is part of Octave.
 ##
@@ -43,7 +43,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.debug = false;
   arg_st.ghostscript.device = "";
   arg_st.ghostscript.epscrop = true;
-  arg_st.ghostscript.level = [];
+  arg_st.ghostscript.level = 2;
   arg_st.ghostscript.output = "";
   arg_st.ghostscript.papersize = "";
   arg_st.ghostscript.pageoffset = [];
@@ -156,6 +156,10 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.ghostscript.resolution = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2num (arg(3:end));
+      elseif (any (strcmp (arg, {"-painters", "-opengl"})))
+        warning ("print: '%s' accepted for Matlab compatibility, but is ignored", arg);
+      elseif (strcmp (arg, "-noui"))
+        warning ("print: option '-noui' not yet implemented");
       elseif (length (arg) >= 1 && arg(1) == "-")
         error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)
@@ -225,7 +229,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "pcx24b", "pcx256", "pcx16", "pgm", "pgmraw", ...
               "ppm", "ppmraw", "pdflatex", "texdraw", ...
               "pdfcairo", "pngcairo", "pstricks", ...
-              "epswrite", "pswrite", "ps2write", "pdfwrite"};
+              "epswrite", "eps2write", "pswrite", "ps2write", "pdfwrite"};
 
   suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
               "gif", "pbm", "pbm", "dxf", "mf", ...
@@ -237,7 +241,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "pcx", "pcx", "pcx", "pgm", "pgm", ...
               "ppm", "ppm", "tex", "tex", ...
               "pdf", "png", "tex", ...
-              "eps", "ps", "ps", "pdf"};
+              "eps", "eps", "ps", "ps", "pdf"};
 
   if (isfigure (arg_st.figure))
     __graphics_toolkit__ = get (arg_st.figure, "__graphics_toolkit__");
@@ -253,7 +257,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   match = strcmpi (dev_list, arg_st.devopt);
   if (any (match))
-    default_suffix = suffixes {match};
+    default_suffix = suffixes{match};
   else
     default_suffix = arg_st.devopt;
   endif
@@ -298,13 +302,6 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = aliases.(arg_st.devopt);
   endif
 
-  ## FIXME - eps2 & epsc2 needs to be handled
-  if (strcmp (arg_st.devopt, "pswrite"))
-    arg_st.ghostscript.level = 1;
-  elseif (strcmp (arg_st.devopt, "ps2write"))
-    arg_st.ghostscript.level = 2;
-  endif
-
   if ((any (strcmp (arg_st.devopt, gs_device_list))
        && ! arg_st.formatted_for_printing)
       || any (strcmp (arg_st.devopt, {"pswrite", "ps2write", "pdfwrite"})))
@@ -334,10 +331,9 @@ function arg_st = __print_parse_opts__ (varargin)
     else
       error ("print: a file name may not specified when spooling to a printer")
     endif
-    if (! any (strcmp (arg_st.devopt, gs_device_list))
-      || ! any (strcmp (arg_st.devopt, {"pswrite", "ps2write"})))
-      ## Only postscript and supported ghostscript devices
-      error ("print: invalid format for spooling to a printer")
+    if (! any (strcmp (arg_st.devopt, gs_device_list)))
+      ## Only supported ghostscript devices
+      error ("print: format must be a valid Ghostscript format for spooling to a printer")
     endif
   elseif (isempty (arg_st.name))
     error ("print: an output file name must be specified")
@@ -353,7 +349,8 @@ function arg_st = __print_parse_opts__ (varargin)
       paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
     endif
     arg_st.canvas_size = paperposition(3:4);
-    if (strcmp (__graphics_toolkit__, "gnuplot") && ! arg_st.ghostscript.epscrop)
+    if (strcmp (__graphics_toolkit__, "gnuplot")
+        && ! arg_st.ghostscript.epscrop)
       arg_st.ghostscript.pageoffset = paperposition(1:2) - 50;
     else
       arg_st.ghostscript.pageoffset = paperposition(1:2);
@@ -490,10 +487,11 @@ function gs = __ghostscript_binary__ ()
     endif
     if (isunix ())
       ## Unix - Includes Mac OSX and Cygwin.
-      gs_binaries = horzcat (gs_binaries, {"gs", "gs.exe"});
+      gs_binaries = [gs_binaries, {"gs", "gs.exe"}];
     else
       ## pc - Includes Win32 and mingw.
-      gs_binaries = horzcat (gs_binaries, {"gs.exe", "gswin32c.exe", "gswin64c.exe", "mgs.exe"});
+      gs_binaries = [gs_binaries, ...
+                     {"gs.exe", "gswin32c.exe", "gswin64c.exe", "mgs.exe"}];
     endif
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))
@@ -581,15 +579,16 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
     paperposition = convert2points (paperposition, paperunits);
   endif
 
-  ## FIXME - This will be obsoleted by listeners for paper properties.
-  ##         Papersize is tall when portrait,and wide when landscape.
+  ## FIXME: This will be obsoleted by listeners for paper properties.
+  ##        Papersize is tall when portrait,and wide when landscape.
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
     papersize = papersize([2,1]);
     paperposition = paperposition([2,1,4,3]);
   endif
 
-  if ((! strcmp (papertype, "<custom>")) && (strcmp (paperorientation, "portrait")))
+  if (! strcmp (papertype, "<custom>")
+      && (strcmp (paperorientation, "portrait")))
     ## For portrait use the ghostscript name
     papersize = papertype;
     papersize(papersize=="-") = "";
@@ -622,15 +621,15 @@ function value = convert2points (value, units)
 endfunction
 
 function device_list = gs_device_list ();
-  ## Graphics formats/languages, not priners.
+  ## Graphics formats/languages, not printers.
   device_list = {"bmp16"; "bmp16m"; "bmp256"; "bmp32b"; "bmpgray"; ...
-                 "epswrite"; "jpeg"; "jpegcymk"; "jpeggray"; "pbm"; ...
-                 "pbmraw"; "pcx16"; "pcx24b"; "pcx256"; "pcx2up"; ...
+                 "epswrite"; "eps2write"; "jpeg"; "jpegcymk"; "jpeggray";
+                 "pbm"; "pbmraw"; "pcx16"; "pcx24b"; "pcx256"; "pcx2up"; ...
                  "pcxcmyk"; "pcxgray"; "pcxmono"; "pdfwrite"; "pgm"; ...
                  "pgmraw"; "pgnm"; "pgnmraw"; "png16"; "png16m"; ...
                  "png256"; "png48"; "pngalpha"; "pnggray"; "pngmono"; ...
-                 "pnm"; "pnmraw"; "ppm"; "ppmraw"; "ps2write"; ...
-                 "pswrite"; "tiff12nc"; "tiff24nc"; "tiff32nc"; ...
+                 "pnm"; "pnmraw"; "ppm"; "ppmraw"; "pswrite"; ...
+                 "ps2write"; "tiff12nc"; "tiff24nc"; "tiff32nc"; ...
                  "tiffcrle"; "tiffg3"; "tiffg32d"; "tiffg4"; ...
                  "tiffgray"; "tifflzw"; "tiffpack"; "tiffsep"};
 endfunction
@@ -641,14 +640,14 @@ function aliases = gs_aliases ();
   ##
   ## eps, epsc, eps2, epsc2 are not included here because those are
   ## are generated by the graphics toolkit.
-  aliases.bmp = "bmp32b";
-  aliases.pdf = "pdfwrite";
-  aliases.png = "png16m";
-  aliases.ps = "pswrite";
-  aliases.ps2 = "ps2write";
-  aliases.psc = "pswrite";
-  aliases.psc2 = "ps2write";
-  aliases.tiff = "tiff24nc";
+  aliases.bmp   = "bmp32b";
+  aliases.pdf   = "pdfwrite";
+  aliases.png   = "png16m";
+  aliases.ps    = "ps2write";
+  aliases.ps2   = "ps2write";
+  aliases.psc   = "ps2write";
+  aliases.psc2  = "ps2write";
+  aliases.tiff  = "tiff24nc";
   aliases.tiffn = "tiff24nc";
 endfunction
 

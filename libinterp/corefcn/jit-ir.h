@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2013 Max Brister
+Copyright (C) 2012-2015 Max Brister
 
 This file is part of Octave.
 
@@ -566,7 +566,7 @@ public:
 
   void replace_in_phi (jit_block *ablock, jit_block *with);
 
-  // we have a new internal list, but we want to stay compatable with jit_value
+  // we have a new internal list, but we want to stay compatible with jit_value
   jit_use *first_use (void) const { return jit_value::first_use (); }
 
   size_t use_count (void) const { return jit_value::use_count (); }

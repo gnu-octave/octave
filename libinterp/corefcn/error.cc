@@ -158,21 +158,22 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   std::ostringstream output_buf;
 
-  if (name)
-    output_buf << name << ": ";
-
   octave_vformat (output_buf, fmt, args);
-
-  output_buf << std::endl;
 
   // FIXME: we really want to capture the message before it has all the
   //        formatting goop attached to it.  We probably also want just the
   //        message, not the traceback information.
 
-  std::string msg_string = output_buf.str ();
+  std::string base_msg = output_buf.str ();
+  std::string msg_string;
+
+  if (name)
+    msg_string = std::string (name) + ": ";
+  
+  msg_string += base_msg + "\n";
 
   Vlast_warning_id = id;
-  Vlast_warning_message = msg_string;
+  Vlast_warning_message = base_msg;
 
   if (! Vquiet_warning)
     {
@@ -337,33 +338,30 @@ error_1 (std::ostream& os, const char *name, const char *id,
 {
   if (error_state != -2)
     {
-      if (fmt)
+      if (fmt && *fmt)
         {
-          if (*fmt)
+          size_t len = strlen (fmt);
+
+          if (len > 0)
             {
-              size_t len = strlen (fmt);
-
-              if (len > 0)
+              if (fmt[len - 1] == '\n')
                 {
-                  if (fmt[len - 1] == '\n')
+                  if (len > 1)
                     {
-                      if (len > 1)
-                        {
-                          char *tmp_fmt = strsave (fmt);
-                          tmp_fmt[len - 1] = '\0';
-                          verror (true, os, name, id, tmp_fmt, args, with_cfn);
-                          delete [] tmp_fmt;
-                        }
-
-                      error_state = -2;
+                      // Strip newline before issuing error
+                      std::string tmp_fmt (fmt, len - 1);
+                      verror (true, os, name, id, tmp_fmt.c_str (),
+                              args, with_cfn);
                     }
-                  else
-                    {
-                      verror (true, os, name, id, fmt, args, with_cfn);
 
-                      if (! error_state)
-                        error_state = 1;
-                    }
+                  error_state = -2;
+                }
+              else
+                {
+                  verror (true, os, name, id, fmt, args, with_cfn);
+
+                  if (! error_state)
+                    error_state = 1;
                 }
             }
         }
@@ -634,13 +632,21 @@ warning_1 (const char *id, const char *fmt, va_list args)
     }
   else if (warn_opt == 1)
     {
-      vwarning ("warning", id, fmt, args);
-
-      bool in_user_code = octave_call_stack::caller_user_code () != 0;
-
       bool fmt_suppresses_backtrace = false;
       size_t fmt_len = fmt ? strlen (fmt) : 0;
       fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
+
+      if (fmt_suppresses_backtrace && fmt_len > 1)
+        {
+          // Strip newline before issuing warning
+          std::string tmp_fmt (fmt, fmt_len - 1);
+          vwarning ("warning", id, tmp_fmt.c_str (), args);
+        }
+      else
+        vwarning ("warning", id, fmt, args);
+
+      bool in_user_code = octave_call_stack::caller_user_code () != 0;
+
 
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning && ! warning_state

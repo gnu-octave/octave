@@ -71,6 +71,8 @@ function retval = close (arg1, arg2)
       figs = figs(isfigure (figs));
     elseif (any (isfigure (arg1)))
       figs = arg1(isfigure (arg1));
+    elseif (isempty (arg1))
+      figs = [];  # Silently accept null argument for Matlab compatibility
     else
       error ('close: first argument must be "all" or a figure handle');
     endif

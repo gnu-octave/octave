@@ -2136,10 +2136,10 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 }
 
 /*
+## The tests below merely check if javaObject() works at all.  Whether it works
+## properly, i.e., creates the right values, is a matter of Java itself.
+## Create a Short and check if it really is a short, i.e., whether it overflows.
 %!testif HAVE_JAVA
-%% The tests below merely check if javaObject works at all. Whether it works
-%% properly, i.e. creates the right values, is a matter of Java itself
-%% Create a Short and check if it really is a short, i.e. whether it overflows
 %! assert (javaObject ("java.lang.Short", 40000).doubleValue < 0);
 */
 
@@ -2214,8 +2214,8 @@ equivalent\n\
 
 /*
 %!testif HAVE_JAVA
-%% Check for valid first two Java version numbers
-%! jver = strsplit (javaMethod ('getProperty', 'java.lang.System', 'java.version'), '.');
+%! ## Check for valid first two Java version numbers
+%! jver = strsplit (javaMethod ("getProperty", "java.lang.System", "java.version"), ".");
 %! assert (isfinite (str2double (jver{1})) && isfinite (str2double (jver{2})));
 */
 
@@ -2470,21 +2470,24 @@ Return true if @var{x} is a Java object.\n\
 }
 
 /*
-## Check automatic conversion of java primitive arrays into octave types
-%!assert (javaObject ("java.lang.String", "hello").getBytes (),
-%!        int8 ([104 101 108 108 111]'))
+## Check automatic conversion of java primitive arrays into octave types.
+%!testif HAVE_JAVA
+%! assert (javaObject ("java.lang.String", "hello").getBytes (),
+%!         int8 ([104 101 108 108 111]'));
 
-## Check automatic conversion of octave types into java primitive arrays
-## Note that uint8 are casted into int8
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", [90 100 255], 255), 2)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 255]), uint8  (255)) < 0)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 128]), uint8  (128)) < 0)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 127]), uint8  (127)), 2)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2)
+## Check automatic conversion of octave types into java primitive arrays.
+## Note that uint8 is casted to int8.
+%!testif HAVE_JAVA
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", [90 100 255], 255), 2);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 255]), uint8 (255)) < 0);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 128]), uint8 (128)) < 0);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 127]), uint8 (127)), 2);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2);
 
-## Check we can create objects that wrap java literals (bug #38821)
-%!assert (class (javaObject ("java.lang.Byte", uint8 (1))), "java.lang.Byte");
-%!assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
-%!assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
-%!assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
+## Check we can create objects that wrap java literals (bug #38821).
+%!testif HAVE_JAVA
+%! assert (class (javaObject ("java.lang.Byte", uint8 (1))), "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
 */

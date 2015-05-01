@@ -139,6 +139,10 @@ QTerminal::notice_settings (const QSettings *settings)
     key.append ("_1");  // if second set is active
   copy = QKeySequence (settings->value (key).toString ()); // the copy shortcut
 
+  // if copy is empty, shortcuts are not yet in the settings (take the default)
+  if (copy.isEmpty ())         // QKeySequence::Copy as second argument in
+    copy = QKeySequence::Copy; // settings->value () does not work!
+
   //  dis- or enable extra interrupt action
   QKeySequence ctrl;
   ctrl = Qt::ControlModifier;

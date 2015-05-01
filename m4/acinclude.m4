@@ -291,7 +291,7 @@ AC_DEFUN([OCTAVE_CHECK_VERSION_2_6_0], [
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         #include <Qsci/qsciglobal.h>
         ]], [[
         #if QSCINTILLA_VERSION < 0x020600

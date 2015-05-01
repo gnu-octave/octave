@@ -43,13 +43,15 @@
 
 function st = cstrcat (varargin)
 
-  if (nargin < 1)
-    print_usage ();
+  if (nargin == 0)
+    ## Special because if varargin is empty, iscellstr still returns
+    ## true but then "[varargin{:}]" would be of class double.
+    st = "";
   elseif (! iscellstr (varargin))
+    st = [varargin{:}];
+  else
     error ("cstrcat: expecting arguments to character strings");
   endif
-
-  st = [varargin{:}];
 
 endfunction
 
@@ -63,7 +65,8 @@ endfunction
 %!assert (cstrcat ("foo", "bar"), "foobar")
 %!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
+%!assert (cstrcat (), "")
+
 ## Test input validation
-%!error cstrcat ()
 %!error cstrcat (1, 2)
 

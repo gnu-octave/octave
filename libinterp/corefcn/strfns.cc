@@ -209,78 +209,70 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
   octave_value retval;
 
   int nargin = args.length ();
+  int n_elts = 0;
+  size_t max_len = 0;
+  std::queue<string_vector> args_as_strings;
 
-  if (nargin > 0)
+  for (int i = 0; i < nargin; i++)
     {
-      int n_elts = 0;
+      string_vector s = args(i).all_strings ();
 
-      size_t max_len = 0;
-
-      std::queue<string_vector> args_as_strings;
-
-      for (int i = 0; i < nargin; i++)
+      if (error_state)
         {
-          string_vector s = args(i).all_strings ();
-
-          if (error_state)
-            {
-              error ("strvcat: unable to convert some args to strings");
-              return retval;
-            }
-
-          size_t n = s.length ();
-
-          // do not count empty strings in calculation of number of elements
-          if (n > 0)
-            {
-              for (size_t j = 0; j < n; j++)
-                {
-                  if (s[j].length () > 0)
-                    n_elts++;
-                }
-            }
-
-          size_t s_max_len = s.max_length ();
-
-          if (s_max_len > max_len)
-            max_len = s_max_len;
-
-          args_as_strings.push (s);
+          error ("strvcat: unable to convert some args to strings");
+          return retval;
         }
 
-      string_vector result (n_elts);
+      size_t n = s.length ();
 
-      octave_idx_type k = 0;
-
-      for (int i = 0; i < nargin; i++)
+      // do not count empty strings in calculation of number of elements
+      if (n > 0)
         {
-          string_vector s = args_as_strings.front ();
-          args_as_strings.pop ();
-
-          size_t n = s.length ();
-
-          if (n > 0)
+          for (size_t j = 0; j < n; j++)
             {
-              for (size_t j = 0; j < n; j++)
-                {
-                  std::string t = s[j];
-                  if (t.length () > 0)
-                    {
-                      size_t t_len = t.length ();
-
-                      if (max_len > t_len)
-                        t += std::string (max_len - t_len, ' ');
-
-                      result[k++] = t;
-                    }
-                }
+              if (s[j].length () > 0)
+                n_elts++;
             }
         }
 
-      retval = octave_value (result, '\'');
+      size_t s_max_len = s.max_length ();
+
+      if (s_max_len > max_len)
+        max_len = s_max_len;
+
+      args_as_strings.push (s);
     }
-  else
-    print_usage ();
+
+  string_vector result (n_elts);
+
+  octave_idx_type k = 0;
+
+  for (int i = 0; i < nargin; i++)
+    {
+      string_vector s = args_as_strings.front ();
+      args_as_strings.pop ();
+
+      size_t n = s.length ();
+
+      if (n > 0)
+        {
+          for (size_t j = 0; j < n; j++)
+            {
+              std::string t = s[j];
+              if (t.length () > 0)
+                {
+                  size_t t_len = t.length ();
+
+                  if (max_len > t_len)
+                    t += std::string (max_len - t_len, ' ');
+
+                  result[k++] = t;
+                }
+            }
+        }
+    }
+
+  retval = octave_value (result, '\'');
 
   return retval;
 }
@@ -297,8 +289,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 %!assert (strvcat ({100,{100, {""}}}), ["d";"d"])
 %!assert (strvcat (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
 %!assert (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
-
-%!error strvcat ()
+%!assert (strvcat (), "")
 */
 
 

@@ -81,10 +81,8 @@
 function st = strcat (varargin)
 
   if (nargin == 0)
-    print_usage ();
-  endif
-
-  if (nargin == 1)
+    st = "";
+  elseif (nargin == 1)
     st = varargin{1};
   else
     ## Convert to cells of strings
@@ -148,5 +146,5 @@ endfunction
 %!assert (strcat (1, 2), strcat (char (1), char (2)))
 %!assert (strcat ("", 2), strcat ([], char (2)))
 
-%!error strcat ()
+%!assert (strcat (), "")
 

@@ -1020,7 +1020,7 @@ if test $check_sndfile = yes; then
     SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
     SNDFILE_LDFLAGS=`$PKG_CONFIG --libs-only-L sndfile`
     SNDFILE_LIBS=`$PKG_CONFIG --libs-only-l sndfile`
-    warn_sndfile=
+    OCTAVE_CHECK_LIB_SNDFILE_OK([warn_sndfile=])
   ])
 fi
 
@@ -1031,6 +1031,7 @@ else
   SNDFILE_LDFLAGS=
   SNDFILE_LIBS=
 fi
+
 AC_SUBST(SNDFILE_CPPFLAGS)
 AC_SUBST(SNDFILE_LDFLAGS)
 AC_SUBST(SNDFILE_LIBS)

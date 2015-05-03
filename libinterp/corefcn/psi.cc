@@ -127,16 +127,16 @@ psi (z) = d (log (gamma (z))) / dx\n\
 
 ## Interesting identities of the digamma function, in section of 5.1.3
 %!assert (psi (1/3), - em - (3/2) * log(3) - ((sqrt (3) / 6) * pi), eps*10)
-%!assert (psi (1/4), - em -3 * log (2) - pi /2, eps*10)
+%!assert (psi (1/4), - em -3 * log (2) - pi /2)
 %!assert (psi (1/6), - em -2 * log (2) - (3/2) * log (3) - ((sqrt (3) / 2) * pi), eps*10)
 
 ## First 6 zeros of the digamma function, in section of 5.1.5 (and also on
 ## Abramowitz and Stegun, page 258, eq 6.3.19)
 %!assert (psi ( 1.46163214496836234126265954232572132846819620400644), 0, eps)
-%!assert (psi (-0.504083008264455409258269304533302498955385182368579), 0, eps*10)
+%!assert (psi (-0.504083008264455409258269304533302498955385182368579), 0, eps)
 %!assert (psi (-1.573498473162390458778286043690434612655040859116846), 0, eps)
 %!assert (psi (-2.610720868444144650001537715718724207951074010873480), 0, eps*10)
-%!assert (psi (-3.635293366436901097839181566946017713948423861193530), 0, eps)
+%!assert (psi (-3.635293366436901097839181566946017713948423861193530), 0, eps*10)
 %!assert (psi (-4.653237761743142441714598151148207363719069416133868), 0, eps*100)
 
 ## Tests for complex values
@@ -150,10 +150,9 @@ psi (z) = d (log (gamma (z))) / dx\n\
 %!assert (imag (psi (i*z)), 1/2 .* 1./z + 1/2 * pi * coth (pi * z), eps *10)
 
 ## Abramowitz and Stegun, page 259 eq 6.3.12
-%!assert (imag (psi (1/2 + i*z)), 1/2 * pi * tanh (pi * z), eps*10)
+%!assert (imag (psi (1/2 + i*z)), 1/2 * pi * tanh (pi * z), eps)
 
 ## Abramowitz and Stegun, page 259 eq 6.3.13
 %!assert (imag (psi (1 + i*z)), - 1./(2*z) + 1/2 * pi * coth (pi * z), eps*10)
 
 */
-

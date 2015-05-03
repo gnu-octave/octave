@@ -21,7 +21,8 @@
 ## @deftypefnx {Function File} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})
 ##
 ## Copy the input parameters into the corresponding output parameters.
-## If only one input parameter is supplied, its value is copied to each
+##
+## If only a single input parameter is supplied, its value is copied to each
 ## of the outputs.
 ##
 ## For example,

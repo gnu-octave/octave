@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isrecording (@var{recorder})
-## Return 1 if the audiorecorder object @var{recorder} is currently
-## recording audio and 0 otherwise.
+## Return true if the audiorecorder object @var{recorder} is currently recording
+## audio and false otherwise.
 ## @end deftypefn
 
 function result = isrecording (recorder)

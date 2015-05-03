@@ -36,8 +36,8 @@
 ##
 ## @noindent
 ## as documented in @url{http://en.wikipedia.org/wiki/YIQ} and truncated to 3
-## significant figures.  Note: The FCC version of NTSC uses only 2
-## significant digits and is slightly different.
+## significant figures.  Note: The FCC version of NTSC uses only 2 significant
+## digits and is slightly different.
 ## @seealso{ntsc2rgb, rgb2hsv, rgb2ind}
 ## @end deftypefn
 

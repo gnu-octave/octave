@@ -19,17 +19,18 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} nthargout (@var{n}, @var{func}, @dots{})
 ## @deftypefnx {Function File} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
-## Return the @var{n}th output argument of function given by the
-## function handle or string @var{func}.  Any arguments after @var{func}
-## are passed to @var{func}.  The total number of arguments to call
-## @var{func} with can be passed in @var{ntot}; by default @var{ntot}
-## is @var{n}.  The input @var{n} can also be a vector of indices of the
-## output, in which case the output will be a cell array of the
+## Return the @var{n}th output argument of the function specified by the
+## function handle or string @var{func}.
+##
+## Any additional arguments are passed directly to @var{func}.  The total
+## number of arguments to call @var{func} with can be passed in @var{ntot}; by
+## default @var{ntot} is @var{n}.  The input @var{n} can also be a vector of
+## indices of the output, in which case the output will be a cell array of the
 ## requested output arguments.
 ##
-## The intended use @code{nthargout} is to avoid intermediate variables.
-## For example, when finding the indices of the maximum entry of a
-## matrix, the following two compositions of nthargout
+## The intended use @code{nthargout} is to avoid intermediate variables.  For
+## example, when finding the indices of the maximum entry of a matrix, the
+## following two compositions of nthargout
 ##
 ## @example
 ## @group
@@ -53,8 +54,8 @@
 ## @end group
 ## @end example
 ##
-## It can also be helpful to have all output arguments in a single cell
-## in the following manner:
+## It can also be helpful to have all output arguments in a single cell in the
+## following manner:
 ##
 ## @example
 ## @var{USV} = nthargout ([1:3], @@svd, hilb (5));

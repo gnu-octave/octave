@@ -29,6 +29,7 @@
 ## @ifnottex
 ## operator.
 ## @end ifnottex
+##
 ## For a 2-dimensional matrix @var{M} this is defined as
 ## @tex
 ## $$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$

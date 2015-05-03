@@ -20,9 +20,8 @@
 ## @deftypefn {Function File} {} fliplr (@var{x})
 ## Flip array left to right.
 ##
-## Return a copy of @var{x} with the order of the columns reversed.  In
-## other words, @var{x} is flipped left-to-right about a vertical axis.  For
-## example:
+## Return a copy of @var{x} with the order of the columns reversed.  In other
+## words, @var{x} is flipped left-to-right about a vertical axis.  For example:
 ##
 ## @example
 ## @group

@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cosd (@var{x})
-## Compute the cosine for each element of @var{x} in degrees.  Returns zero
-## for elements where @code{(@var{x}-90)/180} is an integer.
+## Compute the cosine for each element of @var{x} in degrees.
+##
+## Returns zero for elements where @code{(@var{x}-90)/180} is an integer.
 ## @seealso{acosd, cos}
 ## @end deftypefn
 

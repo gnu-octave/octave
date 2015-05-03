@@ -20,6 +20,7 @@
 ## @deftypefn  {Function File} {@var{map} =} summer ()
 ## @deftypefnx {Function File} {@var{map} =} summer (@var{n})
 ## Create color colormap.  This colormap varies from green to yellow.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

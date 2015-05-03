@@ -22,12 +22,13 @@
 ## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@dots{})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
-## The function is defined by @code{@var{z} = f (@var{x}, @var{y})}.
-## Inputs @code{@var{x}, @var{y}, @var{z}} are vectors of the same length
-## or @code{@var{x}, @var{y}} are vectors and @code{@var{z}} is matrix.
 ##
-## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
-## @var{xi}, @var{yi} are vectors then they are made into a 2-D mesh.
+## The function is defined by @code{@var{z} = f (@var{x}, @var{y})}.  Inputs
+## @code{@var{x}, @var{y}, @var{z}} are vectors of the same length or
+## @code{@var{x}, @var{y}} are vectors and @code{@var{z}} is matrix.
+##
+## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If @var{xi},
+## @var{yi} are vectors then they are made into a 2-D mesh.
 ##
 ## The interpolation method can be @qcode{"nearest"}, @qcode{"cubic"} or
 ## @qcode{"linear"}.  If method is omitted it defaults to @qcode{"linear"}.

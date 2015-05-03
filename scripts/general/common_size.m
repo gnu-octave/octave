@@ -20,11 +20,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
-## Determine if all input arguments are either scalar or of common
-## size.  If so, @var{err} is zero, and @var{yi} is a matrix of the
-## common size with all entries equal to @var{xi} if this is a scalar or
-## @var{xi} otherwise.  If the inputs cannot be brought to a common size,
-## @var{err} is 1, and @var{yi} is @var{xi}.  For example:
+## Determine if all input arguments are either scalar or of common size.
+##
+## If true, @var{err} is zero, and @var{yi} is a matrix of the common size
+## with all entries equal to @var{xi} if this is a scalar or @var{xi}
+## otherwise.  If the inputs cannot be brought to a common size, @var{err} is
+## 1, and @var{yi} is @var{xi}.  For example:
 ##
 ## @example
 ## @group
@@ -36,8 +37,8 @@
 ## @end example
 ##
 ## @noindent
-## This is useful for implementing functions where arguments can either
-## be scalars or of common size.
+## This is useful for implementing functions where arguments can either be
+## scalars or of common size.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

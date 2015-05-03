@@ -23,8 +23,8 @@
 ## the elements of @var{x}.
 ##
 ## If @var{x} is a matrix, do the same for each column of @var{x}.
-## If the optional @var{dim} argument is given, operate along this
-## dimension.
+##
+## If the optional @var{dim} argument is given, operate along this dimension.
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

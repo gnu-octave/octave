@@ -35,17 +35,16 @@
 ## options made during the build of Octave.  Use @code{imformats} to check
 ## the support of the different image formats.
 ##
-## Depending on the file format, it is possible to configure the writing
-## of images with @var{param}, @var{val} pairs.  The following options
-## are supported:
+## Depending on the file format, it is possible to configure the writing of
+## images with @var{param}, @var{val} pairs.  The following options are
+## supported:
 ##
 ## @table @samp
 ## @item Alpha
 ## Alpha (transparency) channel for the image.  This must be a matrix with
 ## same class, and number of rows and columns of @var{img}.  In case of a
 ## multipage image, the size of the 4th dimension must also match and the third
-## dimension must be a singleton.  By default, image will be completely
-## opaque.
+## dimension must be a singleton.  By default, image will be completely opaque.
 ##
 ## @item DelayTime
 ## For formats that accept animations (such as GIF), controls for how long a
@@ -55,8 +54,8 @@
 ## be between 0 and 655.35, and defaults to 0.5.
 ##
 ## @item DisposalMethod
-## For formats that accept animations (such as GIF), controls what happens
-## to a frame before drawing the next one.  Its value can be one of the
+## For formats that accept animations (such as GIF), controls what happens to
+## a frame before drawing the next one.  Its value can be one of the
 ## following strings: "doNotSpecify" (default); "leaveInPlace"; "restoreBG";
 ## and "restorePrevious", or a cell array of those string with length equal
 ## to the number of frames in @var{img}.
@@ -70,21 +69,21 @@
 ## is only a single image at the end of writing the file.
 ##
 ## @item Quality
-## Set the quality of the compression.  The value should be an
-## integer between 0 and 100, with larger values indicating higher visual
-## quality and lower compression.  Defaults to 75.
+## Set the quality of the compression.  The value should be an integer
+## between 0 and 100, with larger values indicating higher visual quality and
+## lower compression.  Defaults to 75.
 ##
 ## @item WriteMode
-## Some file formats, such as TIFF and GIF, are able to store multiple
-## images in a single file.  This option specifies if @var{img} should be
-## appended to the file (if it exists) or if a new file should be created
-## for it (possibly overwriting an existing file).  The value should be
-## the string @qcode{"Overwrite"} (default), or @qcode{"Append"}.
+## Some file formats, such as TIFF and GIF, are able to store multiple images
+## in a single file.  This option specifies if @var{img} should be appended
+## to the file (if it exists) or if a new file should be created for it
+## (possibly overwriting an existing file).  The value should be the string
+## @qcode{"Overwrite"} (default), or @qcode{"Append"}.
 ##
 ## Despite this option, the most efficient method of writing a multipage
-## image is to pass a 4 dimensional @var{img} to @code{imwrite}, the
-## same matrix that could be expected when using @code{imread} with the
-## option @qcode{"Index"} set to @qcode{"all"}.
+## image is to pass a 4 dimensional @var{img} to @code{imwrite}, the same
+## matrix that could be expected when using @code{imread} with the option
+## @qcode{"Index"} set to @qcode{"all"}.
 ##
 ## @end table
 ##

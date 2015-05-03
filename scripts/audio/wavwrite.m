@@ -22,14 +22,19 @@
 ## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{filename})
 ## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{nbits}, @var{filename})
 ## Write the audio signal @var{y} to the RIFF/WAVE sound file @var{filename}.
+##
 ## If @var{y} is a matrix, the columns represent multiple audio channels.
 ##
 ## The optional argument @var{fs} specifies the sample rate of the audio signal
-## in Hz.  The optional argument @var{nbits} specifies the number of bits per
-## sample to write to @var{filename}.  The default sample rate is 8000 Hz and
-## the default bit depth is 16 bits per sample.
+## in Hz.
+## 
+## The optional argument @var{nbits} specifies the number of bits per sample
+## to write to @var{filename}.
 ##
-## @seealso{audioread, audiowrite, wavread}
+## The default sample rate is 8000 Hz and the default bit depth is 16 bits
+## per sample.
+##
+## @seealso{audiowrite, audioread, wavread}
 ## @end deftypefn
 
 function wavwrite (y, varargin)

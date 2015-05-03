@@ -57,9 +57,9 @@
 ## Logical value if format supports multipage (multiple images per file).
 ## @end table
 ##
-## It is possible to change the way Octave manages file formats with the options
-## @qcode{"add"}, @qcode{"remove"}, and @qcode{"update"}, and supplying a
-## structure @var{format} with the required fields.  The option
+## It is possible to change the way Octave manages file formats with the
+## options @qcode{"add"}, @qcode{"remove"}, and @qcode{"update"}, and supplying
+## a structure @var{format} with the required fields.  The option
 ## @qcode{"factory"} resets the configuration to the default.
 ##
 ## This can be used by Octave packages to extend the image reading capabilities

@@ -20,8 +20,11 @@
 ## @deftypefn  {Function File} {@var{map} =} gmap40 ()
 ## @deftypefnx {Function File} {@var{map} =} gmap40 (@var{n})
 ## Create color colormap.  The colormap consists of red, green, blue, yellow,
-## magenta and cyan.  This colormap is specifically designed for users of
-## gnuplot 4.0 where these 6 colors are the allowable ones for patch objects.
+## magenta and cyan.
+##
+## This colormap is specifically designed for users of gnuplot 4.0 where these
+## 6 colors are the allowable ones for patch objects.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, a length of 6 is assumed.  Larger values of @var{n} result
 ## in a repetition of the above colors.

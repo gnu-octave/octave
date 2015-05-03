@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{value} =} subsasgn (@var{recorder}, @var{idx}, @var{rhs})
 ## Perform subscripted assignment on the audio recorder object @var{recorder}.
+##
 ## Assign the value of @var{rhs} to the recorder property named by @var{idx}.
 ## @end deftypefn
 

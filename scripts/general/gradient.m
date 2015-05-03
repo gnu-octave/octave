@@ -25,24 +25,23 @@
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
 ##
-## Calculate the gradient of sampled data or a function.  If @var{m}
-## is a vector, calculate the one-dimensional gradient of @var{m}.  If
-## @var{m} is a matrix the gradient is calculated for each dimension.
+## Calculate the gradient of sampled data or a function.
 ##
-## @code{[@var{dx}, @var{dy}] = gradient (@var{m})} calculates the one
-## dimensional gradient for @var{x} and @var{y} direction if @var{m} is a
+## If @var{m} is a vector, calculate the one-dimensional gradient of @var{m}.
+## If @var{m} is a matrix the gradient is calculated for each dimension.
+##
+## @code{[@var{dx}, @var{dy}] = gradient (@var{m})} calculates the
+## one-dimensional gradient for @var{x} and @var{y} direction if @var{m} is a
 ## matrix.  Additional return arguments can be use for multi-dimensional
 ## matrices.
 ##
-## A constant spacing between two points can be provided by the
-## @var{s} parameter.  If @var{s} is a scalar, it is assumed to be the spacing
-## for all dimensions.
-## Otherwise, separate values of the spacing can be supplied by
+## A constant spacing between two points can be provided by the @var{s}
+## parameter.  If @var{s} is a scalar, it is assumed to be the spacing for all
+## dimensions.  Otherwise, separate values of the spacing can be supplied by
 ## the @var{x}, @dots{} arguments.  Scalar values specify an equidistant
-## spacing.
-## Vector values for the @var{x}, @dots{} arguments specify the coordinate for
-## that
-## dimension.  The length must match their respective dimension of @var{m}.
+## spacing.  Vector values for the @var{x}, @dots{} arguments specify the
+## coordinate for that dimension.  The length must match their respective
+## dimension of @var{m}.
 ##
 ## At boundary points a linear extrapolation is applied.  Interior points
 ## are calculated with the first approximation of the numerical gradient
@@ -52,12 +51,12 @@
 ## @end example
 ##
 ## If the first argument @var{f} is a function handle, the gradient of the
-## function at the points in @var{x0} is approximated using central
-## difference.  For example, @code{gradient (@@cos, 0)} approximates the
-## gradient of the cosine function in the point @math{x0 = 0}.  As with
-## sampled data, the spacing values between the points from which the
-## gradient is estimated can be set via the @var{s} or @var{dx},
-## @var{dy}, @dots{} arguments.  By default a spacing of 1 is used.
+## function at the points in @var{x0} is approximated using central difference.
+## For example, @code{gradient (@@cos, 0)} approximates the gradient of the
+## cosine function in the point @math{x0 = 0}.  As with sampled data, the
+## spacing values between the points from which the gradient is estimated can
+## be set via the @var{s} or @var{dx}, @var{dy}, @dots{} arguments.  By default
+## a spacing of 1 is used.
 ## @seealso{diff, del2}
 ## @end deftypefn
 

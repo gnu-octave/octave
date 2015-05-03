@@ -24,13 +24,11 @@
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@dots{}, @var{datatype})
 ## @deftypefnx {Function File} {@var{sz} =} wavread (@var{filename}, "size")
+## @deftypefnx {Function File} {[@var{n_samp}, @var{n_chan}] =} wavread (@var{filename}, "size")
 ## Read the audio signal @var{y} from the RIFF/WAVE sound file @var{filename}.
+##
 ## If the file contains multichannel data, then @var{y} is a matrix with the
 ## channels represented as columns.
-##
-## The optional return value @var{fs} is the sample rate of the audio file in
-## Hz.  The optional return value @var{nbits} is the number of bits per sample
-## as encoded in the file.
 ##
 ## If @var{n} is specified, only the first @var{n} samples of the file are
 ## returned.  If [@var{n1} @var{n2}] is specified, only the range of samples
@@ -42,6 +40,11 @@
 ## the form [@var{samples} @var{channels}].  If there are two output arguments,
 ## the number of samples is assigned to the first and the number of channels
 ## is assigned to the second.
+##
+## The optional return value @var{fs} is the sample rate of the audio file in
+## Hz.  The optional return value @var{nbits} is the number of bits per sample
+## as encoded in the file.
+##
 ## @seealso{audioread, audiowrite, wavwrite}
 ## @end deftypefn
 

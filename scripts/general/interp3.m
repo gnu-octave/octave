@@ -29,12 +29,11 @@
 ## Interpolate reference data @var{x}, @var{y}, @var{z}, @var{v} to determine
 ## @var{vi} at the coordinates @var{xi}, @var{yi}, @var{zi}.  The reference
 ## data @var{x}, @var{y}, @var{z} can be matrices, as returned by
-## @code{meshgrid}, in which case the sizes of
-## @var{x}, @var{y}, @var{z}, and @var{v} must be equal.  If @var{x}, @var{y},
-## @var{z} are vectors describing a cubic grid then
-## @code{length (@var{x}) == columns (@var{v})},
-## @code{length (@var{y}) == rows (@var{v})},
-## and @code{length (@var{z}) == size (@var{v}, 3)}.  In either case the input
+## @code{meshgrid}, in which case the sizes of @var{x}, @var{y}, @var{z}, and
+## @var{v} must be equal.  If @var{x}, @var{y}, @var{z} are vectors describing
+## a cubic grid then @code{length (@var{x}) == columns (@var{v})},
+## @code{length (@var{y}) == rows (@var{v})}, and
+## @code{length (@var{z}) == size (@var{v}, 3)}.  In either case the input
 ## data must be strictly monotonic.
 ##
 ## If called without @var{x}, @var{y}, @var{z}, and just a single reference

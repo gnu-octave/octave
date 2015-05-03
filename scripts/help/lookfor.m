@@ -21,13 +21,13 @@
 ## @deftypefnx {Command} {} lookfor -all @var{str}
 ## @deftypefnx {Function File} {[@var{fcn}, @var{help1str}] =} lookfor (@var{str})
 ## @deftypefnx {Function File} {[@var{fcn}, @var{help1str}] =} lookfor ("-all", @var{str})
-## Search for the string @var{str} in all functions using the current function
-## search path.
+## Search for the string @var{str} in the documentation of all functions in the
+## current function search path.
 ##
-## By default, @code{lookfor} looks for @var{str} in the first sentence of the
-## help string for each function found.  The entire help text of each function
-## can be searched by using the @qcode{"-all"} argument.  All searches are case
-## insensitive.
+## By default, @code{lookfor} looks for @var{str} in just the first sentence of
+## the help string for each function found.  The entire help text of each
+## function can be searched by using the @qcode{"-all"} argument.  All searches 
+## are case insensitive.
 ##
 ## When called with no output arguments, @code{lookfor} prints the list of
 ## matching functions to the terminal.  Otherwise, the output argument
@@ -40,7 +40,10 @@
 ## not be guaranteed for external packages and user-supplied functions.
 ## Therefore, the use of the @qcode{"-all"} argument may be necessary to find
 ## related functions that are not a part of Octave.
-## @seealso{help, doc, which}
+##
+## The speed of lookup is greatly enhanced by having a cached documentation
+## file.  See @code{doc_cache_create} for more information.
+## @seealso{help, doc, which, path, doc_cache_create}
 ## @end deftypefn
 
 function [fcn, help1str] = lookfor (str, arg2)

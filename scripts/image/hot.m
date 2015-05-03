@@ -21,6 +21,7 @@
 ## @deftypefnx {Function File} {@var{map} =} hot (@var{n})
 ## Create color colormap.  This colormap ranges from black through dark red,
 ## red, orange, yellow, to white.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

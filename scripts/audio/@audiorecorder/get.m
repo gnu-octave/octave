@@ -20,11 +20,12 @@
 ## @deftypefn  {Function File} {@var{value} =} get (@var{recorder}, @var{name})
 ## @deftypefnx {Function File} {@var{values} =} get (@var{recorder})
 ## Return the @var{value} of the property identified by @var{name}.
+##
 ## If @var{name} is a cell array, return the values of the properties
-## corresponding to the elements of the cell array.  Given only the
-## recorder object, return a scalar structure with values of all
-## properties of @var{recorder}.  The field names of the structure
-## correspond to property names.
+## corresponding to the elements of the cell array.  Given only the recorder
+## object, return a scalar structure with values of all properties of
+## @var{recorder}.  The field names of the structure correspond to property
+## names.
 ## @end deftypefn
 
 function retval = get (varargin)

@@ -23,11 +23,12 @@
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
 ## Create an audioplayer object that will play back data @var{y} at sample
-## rate @var{fs}.  The optional arguments @var{nbits}, and @var{id}
-## specify the bit depth and player device id, respectively.  Device IDs
-## may be found using the audiodevinfo function.
-## Given an audioplayer object, use the data from the object to
-## initialize the player.
+## rate @var{fs}.
+##
+## The optional arguments @var{nbits}, and @var{id} specify the bit depth and
+## player device id, respectively.  Device IDs may be found using the
+## audiodevinfo function.  Given an audioplayer object, use the data from the
+## object to initialize the player.
 ##
 ## The signal @var{y} can be a vector or a two-dimensional array.
 ##

@@ -22,17 +22,19 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{P})
 ## @deftypefnx {Function File} {@var{C} =} pol2cart (@dots{})
-## Transform polar or cylindrical to Cartesian coordinates.
+## Transform polar or cylindrical coordinates to Cartesian coordinates.
 ##
-## @var{theta}, @var{r}, (and @var{z}) must be the same shape, or scalar.
+## The inputs @var{theta}, @var{r}, (and @var{z}) must be the same shape, or
+## scalar.  If called with a single matrix argument then each row of @var{P}
+## represents the polar/(cylindrical) coordinate (@var{theta}, @var{r}
+## (, @var{z})).
+##
 ## @var{theta} describes the angle relative to the positive x-axis.
-## @var{r} is the distance to the z-axis (0, 0, z).
-## If called with a single matrix argument then each row of @var{P}
-## represents the polar/(cylindrical) coordinate (@var{theta}, @var{r} (,
-## @var{z})).
 ##
-## If only a single return argument is requested then return a matrix
-## @var{C} where each row represents one Cartesian coordinate
+## @var{r} is the distance to the z-axis (0, 0, z).
+##
+## If only a single return argument is requested then return a matrix @var{C}
+## where each row represents one Cartesian coordinate
 ## (@var{x}, @var{y} (, @var{z})).
 ## @seealso{cart2pol, sph2cart, cart2sph}
 ## @end deftypefn

@@ -21,6 +21,7 @@
 ## @deftypefnx {Function File} {@var{map} =} ocean (@var{n})
 ## Create color colormap.  This colormap varies from black to white with shades
 ## of blue.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

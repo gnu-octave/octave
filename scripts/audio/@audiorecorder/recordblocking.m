@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} recordblocking (@var{recorder}, @var{length})
-## Record audio with blocking (synchronous I/O).  You must specify the
-## length of the recording in seconds.
+## Record audio with blocking (synchronous I/O).
+##
+## The length of the recording in seconds (@var{length}) must be specified.
 ## @end deftypefn
 
 function recordblocking (varargin)

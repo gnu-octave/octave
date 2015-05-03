@@ -20,6 +20,7 @@
 ## @deftypefn {Function File} {} hsv (@var{n})
 ## Create color colormap.  This colormap begins with red, changes through
 ## yellow, green, cyan, blue, and magenta, before returning to red.
+##
 ## It is useful for displaying periodic functions.  The map is obtained by
 ## linearly varying the hue through all possible values while keeping constant
 ## maximum saturation and value.  The equivalent code is

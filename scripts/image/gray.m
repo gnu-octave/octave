@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} gray ()
 ## @deftypefnx {Function File} {@var{map} =} gray (@var{n})
-## Create gray colormap.  This colormap varies from black to white with
-## shades of gray.
+## Create gray colormap.  This colormap varies from black to white with shades
+## of gray.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

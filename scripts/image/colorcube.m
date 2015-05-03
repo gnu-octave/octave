@@ -20,10 +20,12 @@
 ## @deftypefn  {Function File} {@var{map} =} colorcube ()
 ## @deftypefnx {Function File} {@var{map} =} colorcube (@var{n})
 ## Create color colormap.  This colormap is composed of as many equally
-## spaced colors (not grays) in the RGB color space as possible.  If there
-## are not a perfect number @var{n} of regularly spaced colors then the
+## spaced colors (not grays) in the RGB color space as possible.
+##
+## If there are not a perfect number @var{n} of regularly spaced colors then the
 ## remaining entries in the colormap are gradients of pure red, green, blue,
 ## and gray.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

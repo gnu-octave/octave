@@ -24,10 +24,11 @@
 ## @deftypefnx {Function File} {} imagesc ("@var{prop1}", @var{val1}, @dots{})
 ## @deftypefnx {Function File} {} imagesc (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
-## Display a scaled version of the matrix @var{img} as a color image.  The
-## colormap is scaled so that the entries of the matrix occupy the entire
-## colormap.  If @code{@var{climits} = [@var{lo}, @var{hi}]} is given, then that
-## range is set to the @qcode{"clim"} of the current axes.
+## Display a scaled version of the matrix @var{img} as a color image.
+##
+## The colormap is scaled so that the entries of the matrix occupy the entire
+## colormap.  If @code{@var{climits} = [@var{lo}, @var{hi}]} is given, then
+## that range is set to the @qcode{"clim"} of the current axes.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum

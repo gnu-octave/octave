@@ -20,11 +20,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{s}, @var{i}] =} sortrows (@var{A})
 ## @deftypefnx {Function File} {[@var{s}, @var{i}] =} sortrows (@var{A}, @var{c})
-## Sort the rows of the matrix @var{A} according to the order of the
-## columns specified in @var{c}.  If @var{c} is omitted, a
-## lexicographical sort is used.  By default ascending order is used
-## however if elements of @var{c} are negative then the corresponding
-## column is sorted in descending order.
+## Sort the rows of the matrix @var{A} according to the order of the columns
+## specified in @var{c}.
+##
+## If @var{c} is omitted, a lexicographical sort is used.  By default ascending
+## order is used however if elements of @var{c} are negative then the
+## corresponding column is sorted in descending order.
 ## @seealso{sort}
 ## @end deftypefn
 

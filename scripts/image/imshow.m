@@ -27,20 +27,18 @@
 ## Display the image @var{im}, where @var{im} can be a 2-dimensional
 ## (grayscale image) or a 3-dimensional (RGB image) matrix.
 ##
-## If @var{limits} is a 2-element vector @code{[@var{low}, @var{high}]},
-## the image is shown using a display range between @var{low} and
-## @var{high}.  If an empty matrix is passed for @var{limits}, the
-## display range is computed as the range between the minimal and the
-## maximal value in the image.
+## If @var{limits} is a 2-element vector @code{[@var{low}, @var{high}]}, the
+## image is shown using a display range between @var{low} and @var{high}.  If
+## an empty matrix is passed for @var{limits}, the display range is computed
+## as the range between the minimal and the maximal value in the image.
 ##
 ## If @var{map} is a valid color map, the image will be shown as an indexed
 ## image using the supplied color map.
 ##
-## If a file name is given instead of an image, the file will be read and
-## shown.
+## If a file name is given instead of an image, the file will be read and shown.
 ##
-## If given, the parameter @var{string_param1} has value
-## @var{value1}.  @var{string_param1} can be any of the following:
+## If given, the parameter @var{string_param1} has value @var{value1}.  
+## @var{string_param1} can be any of the following:
 ##
 ## @table @asis
 ## @item @qcode{"displayrange"}
@@ -51,15 +49,13 @@
 ##
 ## @item @qcode{"xdata"}
 ## If @var{value1} is a two element vector, it must contain horizontal axis
-## limits in the form [xmin xmax]; Otherwise @var{value1} must be a
-## vector and only the first and last elements will be used for xmin and
-## xmax respectively.
+## limits in the form [xmin xmax]; Otherwise @var{value1} must be a vector and
+## only the first and last elements will be used for xmin and xmax respectively.
 ##
 ## @item @qcode{"ydata"}
 ## If @var{value1} is a two element vector, it must contain vertical axis
-## limits in the form [ymin ymax]; Otherwise @var{value1} must be a
-## vector and only the first and last elements will be used for ymin and
-## ymax respectively.
+## limits in the form [ymin ymax]; Otherwise @var{value1} must be a vector and
+## only the first and last elements will be used for ymin and ymax respectively.
 ##
 ## @end table
 ##

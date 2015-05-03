@@ -663,9 +663,24 @@ extern OCTAVE_API void
 ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
         double& err);
 
+//! Digamma function.
+//!
+//! Only defined for double and float.
 template<class T>
 extern OCTAVE_API T psi (const T& z);
+
+//! Digamma function for complex input.
+//!
+//! Only defined for double and float.
 template<class T>
 extern OCTAVE_API std::complex<T> psi (const std::complex<T>& z);
+
+//! Polygamma function.
+//!
+//! Only defined for double and float.
+//! @param n must be non-negative.  If zero, the digamma function is computed.
+//! @param z must be real and non-negative.
+template<class T>
+extern OCTAVE_API T psi (const octave_idx_type n, const T z);
 
 #endif

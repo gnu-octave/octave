@@ -34,6 +34,7 @@ CRUFT_SOURCES += \
   cruft/slatec-fn/dlnrel.f \
   cruft/slatec-fn/dpchim.f \
   cruft/slatec-fn/dpchst.f \
+  cruft/slatec-fn/dpsifn.f \
   cruft/slatec-fn/erf.f \
   cruft/slatec-fn/gami.f \
   cruft/slatec-fn/gamit.f \
@@ -44,6 +45,7 @@ CRUFT_SOURCES += \
   cruft/slatec-fn/inits.f \
   cruft/slatec-fn/pchim.f \
   cruft/slatec-fn/pchst.f \
+  cruft/slatec-fn/psifn.f \
   cruft/slatec-fn/r9lgmc.f \
   cruft/slatec-fn/r9lgit.f \
   cruft/slatec-fn/r9gmit.f \

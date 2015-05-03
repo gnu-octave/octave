@@ -186,6 +186,16 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (algams, ALGAMS) (const float&, float&, float&);
+
+  F77_RET_T
+  F77_FUNC (psifn, PSIFN) (const float*, const octave_idx_type&,
+                           const octave_idx_type&, const octave_idx_type&,
+                           float*, octave_idx_type*, octave_idx_type*);
+
+  F77_RET_T
+  F77_FUNC (dpsifn, DPSIFN) (const double*, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&,
+                             double*, octave_idx_type*, octave_idx_type*);
 }
 
 #if !defined (HAVE_ACOSH)
@@ -3731,7 +3741,7 @@ ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
 static const double pi = 3.14159265358979323846;
 
 template<class T>
-T
+static T
 Lanczos_approximation_psi (const T zc)
 {
   // Coefficients for C.Lanczos expansion of psi function from XLiFE++ gammaFunctions
@@ -3854,3 +3864,58 @@ psi (const std::complex<T>& z)
 // explicit instantiations
 template Complex psi<double> (const Complex& z);
 template FloatComplex psi<float> (const FloatComplex& z);
+
+
+template<typename T>
+static inline void
+fortran_psifn (const T z, const octave_idx_type n, T* ans,
+               octave_idx_type* ierr);
+
+template<>
+inline void
+fortran_psifn<double> (const double z, const octave_idx_type n,
+                       double* ans, octave_idx_type* ierr)
+{
+  octave_idx_type flag = 0;
+  F77_XFCN (dpsifn, DPSIFN, (&z, n, 1, 1, ans, &flag, ierr));
+}
+
+template<>
+inline void
+fortran_psifn<float> (const float z, const octave_idx_type n,
+                      float* ans, octave_idx_type* ierr)
+{
+  octave_idx_type flag = 0;
+  F77_XFCN (psifn, PSIFN, (&z, n, 1, 1, ans, &flag, ierr));
+}
+
+template<class T>
+T
+psi (const octave_idx_type n, const T z)
+{
+  T ans;
+  octave_idx_type ierr = 0;
+  fortran_psifn<T> (z, n, &ans, &ierr);
+  if (ierr == 0)
+    {
+      // Remember that psifn and dpsifn return scales values
+      // When n is 1: do nothing since ((-1)**(n+1)/gamma(n+1)) == 1
+      // When n is 0: change sign since ((-1)**(n+1)/gamma(n+1)) == -1
+      if (n > 1)
+        // FIXME xgamma here is a killer for our precision since it grows
+        //       way too fast
+        ans = ans / (pow (-1.0, n + 1) / xgamma (double (n+1)));
+      else if (n == 0)
+        ans = -ans;
+    }
+  else if (ierr == 2)
+    ans = - octave_Inf;
+  else // we probably never get here
+    ans = octave_NaN;
+
+  return ans;
+}
+
+// explicit instantiations
+template double psi<double> (const octave_idx_type n, const double z);
+template float  psi<float>  (const octave_idx_type n, const float z);

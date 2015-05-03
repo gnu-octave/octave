@@ -34,8 +34,16 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (psi, args, ,
 "-*- texinfo -*-\n\
-@deftypefn {Function File} {} psi (@var{z})\n\
-Compute the psi (digamma) function.\n\
+@deftypefn  {Function File} {} psi (@var{z})\n\
+@deftypefnx {Function File} {} psi (@var{k}, @var{z})\n\
+Compute the psi (polygamma) function.\n\
+\n\
+The polygamma functions are the @var{k}th derivative of the logarithm\n\
+of the gamma function.  If unspecified, @var{k} defaults to zero.  A value\n\
+of zero computes the digamma function, a value of 1, the trigamma function,\n\
+and so on.\n\
+\n\
+The digamma function is defined:\n\
 \n\
 @tex\n\
 $$\n\
@@ -50,54 +58,105 @@ psi (z) = d (log (gamma (z))) / dx\n\
 @end example\n\
 @end ifnottex\n\
 \n\
+When computing the digamma function (when @var{k} equals zero), @var{z}\n\
+can have any value real or complex value.  However, for polygamma functions\n\
+(@var{k} higher than 0), @var{z} must be real and non-negative.\n\
+\n\
 @seealso{gamma, gammainc, gammaln}\n\
 @end deftypefn")
 {
   octave_value retval;
 
   const octave_idx_type nargin = args.length ();
-
-  if (nargin != 1)
+  if (nargin < 1 || nargin > 2)
     {
       print_usage ();
       return retval;
     }
 
-#define FLOAT_BRANCH(T, A, M, E) \
-  if (args(0).is_ ## T ##_type ()) \
-    { \
-      const A ## NDArray z = args(0).M ## array_value (); \
-      A ## NDArray psi_z (z.dims ()); \
-\
-      const E* zv = z.data (); \
-      E* psi_zv = psi_z.fortran_vec (); \
-      const octave_idx_type n = z.numel (); \
-      for (octave_idx_type i = 0; i < n; i++) \
-        psi_zv[i] = psi (zv[i]); \
-\
-      retval = psi_z; \
-    } 
-
-  if (args(0).is_complex_type ())
+  const octave_value oct_z = (nargin == 1) ? args(0) : args(1);
+  const octave_idx_type k = (nargin == 1) ? 0 : args(0).idx_type_value ();
+  if (error_state || k < 0)
     {
-      FLOAT_BRANCH(double, Complex, complex_, Complex)
-      else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)
+      error ("psi: K must be a non-negative integer");
+      return retval;
+    }
+  else if (k == 0)
+    {
+#define FLOAT_BRANCH(T, A, M, E) \
+      if (oct_z.is_ ## T ##_type ()) \
+        { \
+          const A ## NDArray z = oct_z.M ## array_value (); \
+          A ## NDArray psi_z (z.dims ()); \
+\
+          const E* zv = z.data (); \
+          E* psi_zv = psi_z.fortran_vec (); \
+          const octave_idx_type n = z.numel (); \
+          for (octave_idx_type i = 0; i < n; i++) \
+            *psi_zv++ = psi (*zv++); \
+\
+          retval = psi_z; \
+        }
+
+      if (oct_z.is_complex_type ())
+        {
+          FLOAT_BRANCH(double, Complex, complex_, Complex)
+          else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)
+          else
+            {
+              error ("psi: Z must be a floating point");
+            }
+        }
       else
         {
-          error ("psi: Z must be a floating point");
+          FLOAT_BRANCH(double, , , double)
+          else FLOAT_BRANCH(single, Float, float_, float)
+          else
+            {
+              error ("psi: Z must be a floating point");
+            }
         }
+
+#undef FLOAT_BRANCH
     }
   else
     {
+      if (! oct_z.is_real_type ())
+        {
+          error ("psi: Z must be real value for polygamma (K > 0)");
+          return retval;
+        }
+
+#define FLOAT_BRANCH(T, A, M, E) \
+      if (oct_z.is_ ## T ##_type ()) \
+        { \
+          const A ## NDArray z = oct_z.M ## array_value (); \
+          A ## NDArray psi_z (z.dims ()); \
+\
+          const E* zv = z.data (); \
+          E* psi_zv = psi_z.fortran_vec (); \
+          const octave_idx_type n = z.numel (); \
+          for (octave_idx_type i = 0; i < n; i++) \
+            { \
+              if (*zv < 0) \
+                { \
+                  error ("psi: Z must be non-negative for polygamma (K > 0)"); \
+                  return retval; \
+                } \
+              *psi_zv++ = psi (k, *zv++); \
+            } \
+          retval = psi_z; \
+        }
+
       FLOAT_BRANCH(double, , , double)
       else FLOAT_BRANCH(single, Float, float_, float)
       else
         {
-          error ("psi: Z must be a floating point");
+          error ("psi: Z must be a floating point for polygamma (K > 0)");
         }
-    }
 
 #undef FLOAT_BRANCH
+    }
 
   return retval;
 }
@@ -154,5 +213,28 @@ psi (z) = d (log (gamma (z))) / dx\n\
 
 ## Abramowitz and Stegun, page 259 eq 6.3.13
 %!assert (imag (psi (1 + i*z)), - 1./(2*z) + 1/2 * pi * coth (pi * z), eps*10)
+
+## Abramowitz and Stegun, page 260 eq 6.4.5
+%!test
+%! for z = 0:20
+%!   assert (psi (1, z + 0.5), 0.5 * (pi^2) - 4 * sum ((2*(1:z) -1) .^(-2)), eps*10)
+%! endfor
+
+## Abramowitz and Stegun, page 260 eq 6.4.6
+%!test
+%! z = 0.1:0.1:20;
+%! for n = 0:8
+%!   ## our precision goes down really quick when computing n is too high,
+%!   assert (psi (n, z+1), psi (n, z) + ((-1)^n) * factorial (n) * (z.^(-n-1)), 0.1)
+%! endfor
+
+## Test input validation
+%!error psi ()
+%!error psi (1, 2, 3)
+%!error <Z must be> psi ("non numeric")
+%!error <K must be a non-negative integer> psi (-5, 1)
+%!error <Z must be non-negative for polygamma> psi (5, -1)
+%!error <Z must be a floating point> psi (5, uint8 (-1))
+%!error <Z must be real value for polygamma> psi (5, 5i)
 
 */

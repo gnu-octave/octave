@@ -1,3 +1,11 @@
+Summary of important user-visible changes for version 4.2:
+---------------------------------------------------------
+
+ ** Other new functions added in 4.2:
+
+      psi
+
+
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 
@@ -228,7 +236,6 @@ Summary of important user-visible changes for version 4.0:
       open
       ordschur
       pan
-      psi
       qmr
       rotate
       rotate3d

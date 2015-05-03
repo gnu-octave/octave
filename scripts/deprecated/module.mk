@@ -10,6 +10,7 @@ deprecated_FCN_FILES = \
   deprecated/fmod.m \
   deprecated/fnmatch.m \
   deprecated/gen_doc_cache.m \
+  deprecated/gmap40.m \
   deprecated/interp1q.m \
   deprecated/isequalwithequalnans.m \
   deprecated/isstr.m \

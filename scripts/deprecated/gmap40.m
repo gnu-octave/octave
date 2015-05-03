@@ -19,6 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} gmap40 ()
 ## @deftypefnx {Function File} {@var{map} =} gmap40 (@var{n})
+##
+## @code{gmap40} is deprecated and will be removed in Octave version 4.4.
+##
 ## Create color colormap.  The colormap consists of red, green, blue, yellow,
 ## magenta and cyan.
 ##
@@ -34,7 +37,16 @@
 ## PKG_ADD: colormap ("register", "gmap40");
 ## PKG_DEL: colormap ("unregister", "gmap40");
 
+## Deprecated in 4.0
+
 function map = gmap40 (n = rows (colormap ()))
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "gmap40 is obsolete and will be removed from a future version of Octave");
+  endif
 
   if (nargin > 1)
     print_usage ();

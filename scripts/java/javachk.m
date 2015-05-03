@@ -39,36 +39,34 @@
 ## Swing components for lightweight GUIs.
 ## @end table
 ##
-## If @var{feature} is supported and:
+## If @var{feature} is supported and
 ##
 ## @itemize @bullet
 ## @item
-## No output argument is requested:
+## no output argument is requested:
 ##
 ## Return an empty string
 ##
 ## @item
-## An output argument is requested:
+## an output argument is requested:
 ##
 ## Return a struct with fields @qcode{"feature"} and @qcode{"identifier"}
 ## both empty
-##
 ## @end itemize
 ##
-## If @var{feature} is not supported and:
+## If @var{feature} is not supported and
 ##
 ## @itemize @bullet
 ## @item
-## No output argument is requested:
+## no output argument is requested:
 ##
-## Emit an error message.
+## Emit an error message
 ##
 ## @item
-## An output argument is requested:
+## an output argument is requested:
 ##
-## Return a struct with field @qcode{"feature"} set to @var{feature} and
-## field @qcode{"identifier"} set to @var{component}
-##
+## Return a struct with field @qcode{"feature"} set to @var{feature} and field
+## @qcode{"identifier"} set to @var{component}
 ## @end itemize
 ##
 ## The optional input @var{component} will be used in place of @var{feature}
@@ -81,13 +79,13 @@
 ## Other features may be available if Octave was compiled with the Java
 ## Interface and Java is installed.
 ##
-## @seealso{error, usejava}
+## @seealso{usejava, error}
 ## @end deftypefn
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2014-04-19
 
-function msg = javachk (feature, component="")
+function msg = javachk (feature, component = "")
 
   msg = "";
   chk = false;

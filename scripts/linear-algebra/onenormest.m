@@ -21,8 +21,9 @@
 ## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
 ## Apply @nospell{Higham and Tisseur's} randomized block 1-norm estimator to
-## matrix @var{A} using @var{t} test vectors.  If @var{t} exceeds 5, then
-## only 5 test vectors are used.
+## matrix @var{A} using @var{t} test vectors.
+##
+## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##
 ## If the matrix is not explicit, e.g., when estimating the norm of
 ## @code{inv (@var{A})} given an LU@tie{}factorization, @code{onenormest}
@@ -31,11 +32,10 @@
 ## @var{n} by @var{t}.  The implicit version requires an explicit dimension
 ## @var{n}.
 ##
-## Returns the norm estimate @var{est}, two vectors @var{v} and
-## @var{w} related by norm
-## @code{(@var{w}, 1) = @var{est} * norm (@var{v}, 1)},
-## and the number of iterations @var{iter}.  The number of
-## iterations is limited to 10 and is at least 2.
+## Returns the norm estimate @var{est}, two vectors @var{v} and @var{w} related
+## by norm @code{(@var{w}, 1) = @var{est} * norm (@var{v}, 1)}, and the number
+## of iterations @var{iter}.  The number of iterations is limited to 10 and is
+## at least 2.
 ##
 ## References:
 ##

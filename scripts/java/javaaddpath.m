@@ -20,10 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} javaaddpath (@var{clspath})
 ## @deftypefnx {Function File} {} javaaddpath (@var{clspath1}, @dots{})
-## Add @var{clspath} to the dynamic class path of the Java virtual
-## machine.  @var{clspath} may either be a directory where @file{.class}
-## files are found, or a @file{.jar} file containing Java classes.
-## Multiple paths may be added at once by specifying additional arguments.
+## Add @var{clspath} to the dynamic class path of the Java virtual machine.
+##
+## @var{clspath} may either be a directory where @file{.class} files are
+## found, or a @file{.jar} file containing Java classes.  Multiple paths may
+## be added at once by specifying additional arguments.
 ## @seealso{javarmpath, javaclasspath}
 ## @end deftypefn
 

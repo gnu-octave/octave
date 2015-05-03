@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} rank (@var{A}, @var{tol})
 ## Compute the rank of matrix @var{A}, using the singular value decomposition.
 ##
-## The rank is taken to be the number of singular values of @var{A} that
-## are greater than the specified tolerance @var{tol}.  If the second
-## argument is omitted, it is taken to be
+## The rank is taken to be the number of singular values of @var{A} that are
+## greater than the specified tolerance @var{tol}.  If the second argument is
+## omitted, it is taken to be
 ##
 ## @example
 ## tol = max (size (@var{A})) * sigma(1) * eps;
@@ -33,10 +33,9 @@
 ## where @code{eps} is machine precision and @code{sigma(1)} is the largest
 ## singular value of @var{A}.
 ##
-## The rank of a matrix is the number of linearly independent rows or
-## columns and determines how many particular solutions exist to a system
-## of equations.  Use @code{null} for finding the remaining homogenous
-## solutions.
+## The rank of a matrix is the number of linearly independent rows or columns
+## and determines how many particular solutions exist to a system of equations.
+## Use @code{null} for finding the remaining homogenous solutions.
 ##
 ## Example:
 ##
@@ -51,8 +50,8 @@
 ## @end example
 ##
 ## @noindent
-## The number of linearly independent rows is only 2 because the final row
-## is a linear combination of -1*row1 + 2*row2.
+## The number of linearly independent rows is only 2 because the final row is a
+## linear combination of -1*row1 + 2*row2.
 ##
 ## @seealso{null, sprank, svd}
 ## @end deftypefn

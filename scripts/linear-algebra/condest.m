@@ -23,8 +23,9 @@
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solve}, @var{solve_t}, @var{t})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
 ##
-## Estimate the 1-norm condition number of a matrix @var{A}
-## using @var{t} test vectors using a randomized 1-norm estimator.
+## Estimate the 1-norm condition number of a matrix @var{A} using @var{t} test
+## vectors using a randomized 1-norm estimator.
+##
 ## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##
 ## If the matrix is not explicit, e.g., when estimating the condition
@@ -47,11 +48,10 @@
 ##
 ## The implicit version requires an explicit dimension @var{n}.
 ##
-## @code{condest} uses a randomized algorithm to approximate
-## the 1-norms.
+## @code{condest} uses a randomized algorithm to approximate the 1-norms.
 ##
-## @code{condest} returns the 1-norm condition estimate @var{est} and
-## a vector @var{v} satisfying @code{norm (A*v, 1) == norm (A, 1) * norm
+## @code{condest} returns the 1-norm condition estimate @var{est} and a vector
+## @var{v} satisfying @code{norm (A*v, 1) == norm (A, 1) * norm
 ## (@var{v}, 1) / @var{est}}.  When @var{est} is large, @var{v} is an
 ## approximate null vector.
 ##

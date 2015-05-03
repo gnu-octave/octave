@@ -21,9 +21,11 @@
 ## @deftypefn  {Function File} {} javarmpath (@var{clspath})
 ## @deftypefnx {Function File} {} javarmpath (@var{clspath1}, @dots{})
 ## Remove @var{clspath} from the dynamic class path of the Java virtual
-## machine.  @var{clspath} may either be a directory where @file{.class}
-## files are found, or a @file{.jar} file containing Java classes.
-## Multiple paths may be removed at once by specifying additional arguments.
+## machine.
+##
+## @var{clspath} may either be a directory where @file{.class} files are found,
+## or a @file{.jar} file containing Java classes.  Multiple paths may be
+## removed at once by specifying additional arguments.
 ## @seealso{javaaddpath, javaclasspath}
 ## @end deftypefn
 

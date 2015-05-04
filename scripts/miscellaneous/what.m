@@ -59,9 +59,9 @@
 ## Cell array of package directories (@file{+@var{pkgname}/})
 ## @end table
 ##
-## Compatibility Note: Octave does not support mdl, slx, and p files; nor
-## does it support package directories.  @code{what} will always return an
-## empty list for these categories.
+## Compatibility Note: Octave does not support mdl, slx, and p files; nor does
+## it support package directories.  @code{what} will always return an empty
+## list for these categories.
 ## @seealso{which, ls, exist}
 ## @end deftypefn
 

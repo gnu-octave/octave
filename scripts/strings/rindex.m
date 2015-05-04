@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
 ## Return the position of the last occurrence of the character string
 ## @var{t} in the character string @var{s}, or 0 if no occurrence is
-## found.  @var{s} may also be a string array or cell array of strings.
+## found.
+##
+## @var{s} may also be a string array or cell array of strings.
 ##
 ## For example:
 ##

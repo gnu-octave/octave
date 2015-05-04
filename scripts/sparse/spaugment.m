@@ -46,11 +46,11 @@
 ## @var{r} = @var{b} - @var{A} * @var{x}
 ## @end example
 ##
-## As the matrix @var{s} is symmetric indefinite it can be factorized
-## with @code{lu}, and the minimum norm solution can therefore be found
-## without the need for a @code{qr} factorization.  As the residual
-## error will be @code{zeros (@var{m}, @var{m})} for underdetermined
-## problems, and example can be
+## As the matrix @var{s} is symmetric indefinite it can be factorized with
+## @code{lu}, and the minimum norm solution can therefore be found without the
+## need for a @code{qr} factorization.  As the residual error will be
+## @code{zeros (@var{m}, @var{m})} for underdetermined problems, and example
+## can be
 ##
 ## @example
 ## @group
@@ -65,12 +65,12 @@
 ## @end group
 ## @end example
 ##
-## To find the solution of an overdetermined problem needs an estimate
-## of the residual error @var{r} and so it is more complex to formulate
-## a minimum norm solution using the @code{spaugment} function.
+## To find the solution of an overdetermined problem needs an estimate of the
+## residual error @var{r} and so it is more complex to formulate a minimum norm
+## solution using the @code{spaugment} function.
 ##
-## In general the left division operator is more stable and faster than
-## using the @code{spaugment} function.
+## In general the left division operator is more stable and faster than using
+## the @code{spaugment} function.
 ## @seealso{mldivide}
 ## @end deftypefn
 

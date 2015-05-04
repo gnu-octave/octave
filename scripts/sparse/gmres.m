@@ -20,16 +20,15 @@
 ## @deftypefn  {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@dots{})
-## Solve @code{A x = b} using the Preconditioned GMRES iterative method
-## with restart, a.k.a. PGMRES(m).
+## Solve @code{A x = b} using the Preconditioned GMRES iterative method with
+## restart, a.k.a. PGMRES(m).
 ##
 ## @itemize @minus
 ## @item @var{rtol} is the relative tolerance,
 ## if not given or set to [] the default value 1e-6 is used.
 ##
-## @item @var{maxit} is the maximum number of outer iterations,
-## if not given or set to [] the default value
-## @code{min (10, numel (b) / restart)} is used.
+## @item @var{maxit} is the maximum number of outer iterations, if not given or
+## set to [] the default value @code{min (10, numel (b) / restart)} is used.
 ##
 ## @item @var{x0} is the initial guess,
 ## if not given or set to [] the default value @code{zeros (size (b))} is used.
@@ -38,12 +37,12 @@
 ## if not given or set to [] the default value @code{numel (b)} is used.
 ## @end itemize
 ##
-## Argument @var{A} can be passed as a matrix, function handle, or
-## inline function @code{f} such that @code{f(x) = A*x}.
+## Argument @var{A} can be passed as a matrix, function handle, or inline
+## function @code{f} such that @code{f(x) = A*x}.
 ##
-## The preconditioner @var{P} is given as @code{P = M1 * M2}.
-## Both @var{M1} and @var{M2} can be passed as a matrix, function handle, or
-## inline function @code{g} such that @code{g(x) = M1\x} or @code{g(x) = M2\x}.
+## The preconditioner @var{P} is given as @code{P = M1 * M2}.  Both @var{M1}
+## and @var{M2} can be passed as a matrix, function handle, or inline function
+## @code{g} such that @code{g(x) = M1\x} or @code{g(x) = M2\x}.
 ##
 ## Besides the vector @var{x}, additional outputs are:
 ##

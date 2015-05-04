@@ -84,8 +84,8 @@
 ## @end table
 ##
 ## @noindent
-## When Octave encounters a breakpoint, or other reason to enter debug
-## mode, the prompt changes to @qcode{"debug>"}.  The workspace of the function
+## When Octave encounters a breakpoint, or other reason to enter debug mode,
+## the prompt changes to @qcode{"debug>"}.  The workspace of the function
 ## where the breakpoint was encountered becomes available and any Octave
 ## command that is valid in that workspace context may be executed.
 ##

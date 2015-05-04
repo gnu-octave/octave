@@ -24,8 +24,8 @@
 ## @var{dir}.
 ##
 ## If @var{file} is a list of strings, then each file is unpacked
-## individually.  Shell wildcards in the filename such as @samp{*} or @samp{?}
-## are accepted and expanded.
+## individually.  Shell wildcards in the filename such as @samp{*} or
+## @samp{?} are accepted and expanded.
 ##
 ## If @var{dir} is not specified or is empty (@code{[]}), it defaults to the
 ## current directory.  If a directory is in the file list, then @var{filetype}

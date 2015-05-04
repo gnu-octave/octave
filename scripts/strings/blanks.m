@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} blanks (@var{n})
-## Return a string of @var{n} blanks, for example:
+## Return a string of @var{n} blanks.
+##
+## For example:
 ##
 ## @example
 ## @group

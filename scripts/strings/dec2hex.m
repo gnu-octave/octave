@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2hex (@var{d}, @var{len})
-## Return the hexadecimal string corresponding to the non-negative
-## integer @var{d}.  For example:
+## Return the hexadecimal string corresponding to the non-negative integer
+## @var{d}.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -28,12 +30,12 @@
 ## @end group
 ## @end example
 ##
-## If @var{d} is a matrix or cell array, return a string matrix with one
-## row per element in @var{d}, padded with leading zeros to the width of
-## the largest value.
+## If @var{d} is a matrix or cell array, return a string matrix with one row
+## per element in @var{d}, padded with leading zeros to the width of the
+## largest value.
 ##
-## The optional second argument, @var{len}, specifies the minimum
-## number of digits in the result.
+## The optional second argument, @var{len}, specifies the minimum number of
+## digits in the result.
 ## @seealso{hex2dec, dec2base, dec2bin}
 ## @end deftypefn
 

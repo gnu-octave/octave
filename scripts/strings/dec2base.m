@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} dec2base (@var{d}, @var{base})
 ## @deftypefnx {Function File} {} dec2base (@var{d}, @var{base}, @var{len})
-## Return a string of symbols in base @var{base} corresponding to
-## the non-negative integer @var{d}.
+## Return a string of symbols in base @var{base} corresponding to the
+## non-negative integer @var{d}.
 ##
 ## @example
 ## @group
@@ -29,13 +29,13 @@
 ## @end group
 ## @end example
 ##
-## If @var{d} is a matrix or cell array, return a string matrix with one
-## row per element in @var{d}, padded with leading zeros to the width of
-## the largest value.
+## If @var{d} is a matrix or cell array, return a string matrix with one row
+## per element in @var{d}, padded with leading zeros to the width of the
+## largest value.
 ##
 ## If @var{base} is a string then the characters of @var{base} are used as
-## the symbols for the digits of @var{d}.  Space (' ') may not be used
-## as a symbol.
+## the symbols for the digits of @var{d}.  Space (' ') may not be used as a
+## symbol.
 ##
 ## @example
 ## @group
@@ -44,8 +44,8 @@
 ## @end group
 ## @end example
 ##
-## The optional third argument, @var{len}, specifies the minimum
-## number of digits in the result.
+## The optional third argument, @var{len}, specifies the minimum number of
+## digits in the result.
 ## @seealso{base2dec, dec2bin, dec2hex}
 ## @end deftypefn
 

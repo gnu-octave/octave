@@ -25,7 +25,7 @@
 ## Position numbering for offsets begins with 1.  If @var{offset} is negative,
 ## extraction starts that far from the end of the string.
 ##
-## If @var{len} is omitted, the substring extends to the end of @var{S}.  A
+## If @var{len} is omitted, the substring extends to the end of @var{s}.  A
 ## negative value for @var{len} extracts to within @var{len} characters of
 ## the end of the string
 ##

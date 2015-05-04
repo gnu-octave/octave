@@ -20,16 +20,15 @@
 ## @deftypefn {Function File} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
 ## Compare two version strings using the given @var{operator}.
 ##
-## This function assumes that versions @var{v1} and @var{v2} are
-## arbitrarily long strings made of numeric and period characters
-## possibly followed by an arbitrary string (e.g., @qcode{"1.2.3"},
-## @qcode{"0.3"}, @qcode{"0.1.2+"}, or @qcode{"1.2.3.4-test1"}).
+## This function assumes that versions @var{v1} and @var{v2} are arbitrarily
+## long strings made of numeric and period characters possibly followed by an
+## arbitrary string (e.g., @qcode{"1.2.3"}, @qcode{"0.3"}, @qcode{"0.1.2+"},
+## or @qcode{"1.2.3.4-test1"}).
 ##
-## The version is first split into numeric and character portions
-## and then the parts are padded to be the same length (i.e., @qcode{"1.1"}
-## would be padded to be @qcode{"1.1.0"} when being compared with
-## @qcode{"1.1.1"}, and separately, the character parts of the strings are
-## padded with nulls).
+## The version is first split into numeric and character portions and then
+## the parts are padded to be the same length (i.e., @qcode{"1.1"} would be
+## padded to be @qcode{"1.1.0"} when being compared with @qcode{"1.1.1"}, and
+## separately, the character parts of the strings are padded with nulls).
 ##
 ## The operator can be any logical operator from the set
 ##

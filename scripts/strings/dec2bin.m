@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2bin (@var{d}, @var{len})
-## Return a binary number corresponding to the non-negative integer
-## @var{d}, as a string of ones and zeros.  For example:
+## Return a binary number corresponding to the non-negative integer @var{d},
+## as a string of ones and zeros.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -28,12 +30,12 @@
 ## @end group
 ## @end example
 ##
-## If @var{d} is a matrix or cell array, return a string matrix with one
-## row per element in @var{d}, padded with leading zeros to the width of
-## the largest value.
+## If @var{d} is a matrix or cell array, return a string matrix with one row
+## per element in @var{d}, padded with leading zeros to the width of the
+## largest value.
 ##
-## The optional second argument, @var{len}, specifies the minimum
-## number of digits in the result.
+## The optional second argument, @var{len}, specifies the minimum number of
+## digits in the result.
 ## @seealso{bin2dec, dec2base, dec2hex}
 ## @end deftypefn
 

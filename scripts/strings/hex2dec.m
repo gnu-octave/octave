@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hex2dec (@var{s})
-## Return the integer corresponding to the hexadecimal number represented
-## by the string @var{s}.  For example:
+## Return the integer corresponding to the hexadecimal number represented by
+## the string @var{s}.
+##
+## For example:
 ##
 ## @example
 ## @group

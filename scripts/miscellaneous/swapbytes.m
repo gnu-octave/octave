@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} swapbytes (@var{x})
-## Swap the byte order on values, converting from little endian to big
-## endian and vice versa.
+## Swap the byte order on values, converting from little endian to big endian
+## and vice versa.
 ##
 ## For example:
 ##

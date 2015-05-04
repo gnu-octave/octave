@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {@var{filenames} =} fullfile (@dots{}, @var{files})
 ## Build complete filename from separate parts.
 ##
-## Joins any number of path components intelligently.  The return value
-## is the concatenation of each component with exactly one file separator
+## Joins any number of path components intelligently.  The return value is
+## the concatenation of each component with exactly one file separator
 ## between each non empty part and at most one leading and/or trailing file
 ## separator.
 ##
@@ -38,9 +38,9 @@
 ## @end group
 ## @end example
 ##
-## On Windows systems, while forward slash file separators do work, they
-## are replaced by backslashes; in addition drive letters are stripped of
-## leading file separators to obtain a valid file path.
+## On Windows systems, while forward slash file separators do work, they are
+## replaced by backslashes; in addition drive letters are stripped of leading
+## file separators to obtain a valid file path.
 ##
 ## @seealso{fileparts, filesep}
 ## @end deftypefn

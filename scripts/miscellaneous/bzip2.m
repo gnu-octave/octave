@@ -22,11 +22,11 @@
 ## @deftypefnx {Function File} {@var{filelist} =} bzip2 (@var{files}, @var{dir})
 ## Compress the list of files specified in @var{files}.
 ##
-## @var{files} is a character array or cell array of strings.  Shell
-## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
-## expanded.  Each file is compressed separately and a new file with a
-## @file{".bz2"} extension is created.  The original files are not modified,
-## but existing compressed files will be silently overwritten.
+## @var{files} is a character array or cell array of strings.  Shell wildcards
+## in the filename such as @samp{*} or @samp{?} are accepted and expanded.
+## Each file is compressed separately and a new file with a @file{".bz2"}
+## extension is created.  The original files are not modified, but existing
+## compressed files will be silently overwritten.
 ##
 ## If @var{dir} is defined the compressed files are placed in this directory,
 ## rather than the original directory where the uncompressed file resides.

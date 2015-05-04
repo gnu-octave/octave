@@ -22,21 +22,22 @@
 ## @deftypefnx {Function File} {@var{B} =} spdiags (@var{A}, @var{d})
 ## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
 ## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
-## A generalization of the function @code{diag}.  Called with a single
-## input argument, the nonzero diagonals @var{d} of @var{A} are extracted.
-## With two arguments the diagonals to extract are given by the vector
-## @var{d}.
+## A generalization of the function @code{diag}.
 ##
-## The other two forms of @code{spdiags} modify the input matrix by
-## replacing the diagonals.  They use the columns of @var{v} to replace
-## the diagonals represented by the vector @var{d}.  If the sparse matrix
-## @var{A} is defined then the diagonals of this matrix are replaced.
-## Otherwise a matrix of @var{m} by @var{n} is created with the
-## diagonals given by the columns of @var{v}.
+## Called with a single input argument, the nonzero diagonals @var{d} of
+## @var{A} are extracted.
 ##
-## Negative values of @var{d} represent diagonals below the main
-## diagonal, and positive values of @var{d} diagonals above the main
-## diagonal.
+## With two arguments the diagonals to extract are given by the vector @var{d}.
+##
+## The other two forms of @code{spdiags} modify the input matrix by replacing
+## the diagonals.  They use the columns of @var{v} to replace the diagonals
+## represented by the vector @var{d}.  If the sparse matrix @var{A} is
+## defined then the diagonals of this matrix are replaced.  Otherwise a
+## matrix of @var{m} by @var{n} is created with the diagonals given by the
+## columns of @var{v}.
+##
+## Negative values of @var{d} represent diagonals below the main diagonal, and
+## positive values of @var{d} diagonals above the main diagonal.
 ##
 ## For example:
 ##

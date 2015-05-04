@@ -29,15 +29,14 @@
 ## @end example
 ##
 ## If @var{s} is a string matrix, return a column vector with one value per
-## row of @var{s}.  If a row contains invalid symbols then the
-## corresponding value will be NaN@.
+## row of @var{s}.  If a row contains invalid symbols then the corresponding
+## value will be NaN@.
 ##
 ## If @var{s} is a cell array of strings, return a column vector with one
 ## value per cell element in @var{s}.
 ##
 ## If @var{base} is a string, the characters of @var{base} are used as the
-## symbols for the digits of @var{s}.  Space (' ') may not be used as a
-## symbol.
+## symbols for the digits of @var{s}.  Space (' ') may not be used as a symbol.
 ##
 ## @example
 ## @group

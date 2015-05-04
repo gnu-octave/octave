@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@var{str}, @var{del})
 ## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
 ## @deftypefnx {Function File} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
-## Split the string @var{str} using the delimiters specified by @var{del}
-## and return a cell string array of substrings.
+## Split the string @var{str} using the delimiters specified by @var{del} and
+## return a cell string array of substrings.
 ##
 ## If a delimiter is not specified the string is split at whitespace
 ## @code{@{" ", "\f", "\n", "\r", "\t", "\v"@}}.  Otherwise, the delimiter,

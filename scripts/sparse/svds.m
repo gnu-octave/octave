@@ -24,8 +24,9 @@
 ## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}] =} svds (@dots{})
 ## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
 ##
-## Find a few singular values of the matrix @var{A}.  The singular values
-## are calculated using
+## Find a few singular values of the matrix @var{A}.
+##
+## The singular values are calculated using
 ##
 ## @example
 ## @group

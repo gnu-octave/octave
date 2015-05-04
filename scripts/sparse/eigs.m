@@ -38,8 +38,10 @@
 ## @deftypefnx {Function File} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{A}, @dots{})
 ## @deftypefnx {Function File} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})
 ## Calculate a limited number of eigenvalues and eigenvectors of @var{A},
-## based on a selection criteria.  The number of eigenvalues and eigenvectors to
-## calculate is given by @var{k} and defaults to 6.
+## based on a selection criteria.
+##
+## The number of eigenvalues and eigenvectors to calculate is given by
+## @var{k} and defaults to 6.
 ##
 ## By default, @code{eigs} solve the equation
 ## @tex
@@ -147,13 +149,13 @@
 ##
 ## It is also possible to represent @var{A} by a function denoted @var{af}.
 ## @var{af} must be followed by a scalar argument @var{n} defining the length
-## of the vector argument accepted by @var{af}.  @var{af} can be
-## a function handle, an inline function, or a string.  When @var{af} is a
-## string it holds the name of the function to use.
+## of the vector argument accepted by @var{af}.  @var{af} can be a function
+## handle, an inline function, or a string.  When @var{af} is a string it
+## holds the name of the function to use.
 ##
-## @var{af} is a function of the form @code{y = af (x)}
-## where the required return value of @var{af} is determined by
-## the value of @var{sigma}.  The four possible forms are
+## @var{af} is a function of the form @code{y = af (x)} where the required
+## return value of @var{af} is determined by the value of @var{sigma}.  The
+## four possible forms are
 ##
 ## @table @code
 ## @item A * x
@@ -163,8 +165,8 @@
 ## if @var{sigma} is 0 or "sm".
 ##
 ## @item (A - sigma * I) \ x
-## for the standard eigenvalue problem, where @code{I} is the identity matrix of
-## the same size as @var{A}.
+## for the standard eigenvalue problem, where @code{I} is the identity matrix
+## of the same size as @var{A}.
 ##
 ## @item (A - sigma * B) \ x
 ## for the general eigenvalue problem.

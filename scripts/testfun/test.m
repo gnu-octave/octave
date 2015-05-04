@@ -609,14 +609,13 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
           fflush (__fid);
         endif
         fprintf (__fid, "%s\n", __msg);
-        fflush (__fid);
         ## Show the variable context.
         if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
             && ! all (__shared == " "))
           fputs (__fid, "shared variables ");
           eval (sprintf ("fdisp(__fid,var2struct(%s));", __shared));
-          fflush (__fid);
         endif
+        fflush (__fid);
       endif
       if (! __success && ! __isxtest)
         __all_success = false;

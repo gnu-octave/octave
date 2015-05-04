@@ -703,12 +703,14 @@ DEFUN (allow_noninteger_range_as_index, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether non-integer\n\
-ranges are allowed as indices.  This might be useful for @sc{matlab}\n\
-compatibility; however, it is still not entirely compatible because\n\
-@sc{matlab} treats the range expression differently in different contexts.\n\
+ranges are allowed as indices.\n\
+\n\
+This might be useful for @sc{matlab} compatibility; however, it is still not\n\
+entirely compatible because @sc{matlab} treats the range expression\n\
+differently in different contexts.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

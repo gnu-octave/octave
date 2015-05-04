@@ -1784,16 +1784,17 @@ DEFUN (struct, args, ,
 @deftypefnx {Built-in Function} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
 @deftypefnx {Built-in Function} {@var{s} =} struct (@var{obj})\n\
 \n\
-Create a scalar or array structure and initialize its values.  The\n\
-@var{field1}, @var{field2}, @dots{} variables are strings specifying the\n\
-names of the fields and the @var{value1}, @var{value2}, @dots{}\n\
-variables can be of any type.\n\
+Create a scalar or array structure and initialize its values.\n\
 \n\
-If the values are cell arrays, create a structure array and initialize\n\
-its values.  The dimensions of each cell array of values must match.\n\
-Singleton cells and non-cell values are repeated so that they fill\n\
-the entire array.  If the cells are empty, create an empty structure\n\
-array with the specified field names.\n\
+The @var{field1}, @var{field2}, @dots{} variables are strings specifying the\n\
+names of the fields and the @var{value1}, @var{value2}, @dots{} variables\n\
+can be of any type.\n\
+\n\
+If the values are cell arrays, create a structure array and initialize its\n\
+values.  The dimensions of each cell array of values must match.  Singleton\n\
+cells and non-cell values are repeated so that they fill the entire array.  \n\
+If the cells are empty, create an empty structure array with the specified\n\
+field names.\n\
 \n\
 If the argument is an object, return the underlying struct.\n\
 \n\
@@ -1824,7 +1825,7 @@ struct (\"foo\", @{1, 2, 3@})\n\
 @noindent\n\
 The first case is an ordinary scalar struct---one field, one value.  The\n\
 second produces an empty struct array with one field and no values, since\n\
-s being passed an empty cell array of struct array values.  When the value is\n\
+being passed an empty cell array of struct array values.  When the value is\n\
 a cell array containing a single entry, this becomes a scalar struct with\n\
 that single entry as the value of the field.  That single entry happens\n\
 to be an empty cell array.\n\
@@ -2122,10 +2123,12 @@ DEFUN (cell2struct, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cell2struct (@var{cell}, @var{fields})\n\
 @deftypefnx {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
-Convert @var{cell} to a structure.  The number of fields in @var{fields}\n\
-must match the number of elements in @var{cell} along dimension @var{dim},\n\
-that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.\n\
-If @var{dim} is omitted, a value of 1 is assumed.\n\
+Convert @var{cell} to a structure.\n\
+\n\
+The number of fields in @var{fields} must match the number of elements in\n\
+@var{cell} along dimension @var{dim}, that is\n\
+@code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.  If @var{dim}\n\
+is omitted, a value of 1 is assumed.\n\
 \n\
 @example\n\
 @group\n\
@@ -2329,7 +2332,7 @@ Query or set the internal variable that specifies the number of\n\
 structure levels to display.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{print_struct_array_contents}\n\
 @end deftypefn")
@@ -2346,13 +2349,13 @@ DEFUN (print_struct_array_contents, args, nargout,
 Query or set the internal variable that specifies whether to print struct\n\
 array contents.\n\
 \n\
-If true, values of struct array elements are printed.\n\
-This variable does not affect scalar structures whose elements are always\n\
-printed.  In both cases, however, printing will be limited to\n\
-the number of levels specified by @var{struct_levels_to_print}.\n\
+If true, values of struct array elements are printed.  This variable does\n\
+not affect scalar structures whose elements are always printed.  In both\n\
+cases, however, printing will be limited to the number of levels specified\n\
+by @var{struct_levels_to_print}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{struct_levels_to_print}\n\
 @end deftypefn")

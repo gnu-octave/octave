@@ -194,9 +194,10 @@ DEFUN_DLD (sprank, args, nargout,
 @deftypefn {Loadable Function} {@var{p} =} sprank (@var{S})\n\
 @cindex structural rank\n\
 \n\
-Calculate the structural rank of the sparse matrix @var{S}.  Note that\n\
-only the structure of the matrix is used in this calculation based on\n\
-a @nospell{Dulmage-Mendelsohn} permutation to block triangular form.  As\n\
+Calculate the structural rank of the sparse matrix @var{S}.\n\
+\n\
+Note that only the structure of the matrix is used in this calculation based\n\
+on a @nospell{Dulmage-Mendelsohn} permutation to block triangular form.  As\n\
 such the numerical rank of the matrix @var{S} is bounded by\n\
 @code{sprank (@var{S}) >= rank (@var{S})}.  Ignoring floating point errors\n\
 @code{sprank (@var{S}) == rank (@var{S})}.\n\

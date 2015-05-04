@@ -56,20 +56,18 @@ DEFUN_DLD (audioread, args, ,
 \n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
-Read the audio file @var{filename} and return the audio data and sampling\n\
-rate.  The audio data is stored as matrix with rows corresponding\n\
-to audio frames and columns corresponding to channels.\n\
+Read the audio file @var{filename} and return the audio data @var{y} and\n\
+sampling rate @var{fs}.\n\
+\n\
+The audio data is stored as matrix with rows corresponding to audio frames\n\
+and columns corresponding to channels.\n\
 \n\
 The optional two-element vector argument @var{samples} specifies starting\n\
 and ending frames.\n\
 \n\
 The optional argument @var{datatype} specifies the datatype to return.\n\
-If it is @qcode{\"native\"}, then the type of data depends on how the\n\
-data is stored in the audio file.\n\
-\n\
-Read a file and return a specified range of frames in an array of specified\n\
-type.\n\
-\n\
+If it is @qcode{\"native\"}, then the type of data depends on how the data\n\
+is stored in the audio file.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -258,10 +256,10 @@ DEFUN_DLD (audiowrite, args, ,
 @deftypefn  {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
 @deftypefnx {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
 \n\
-Write audio data from the matrix @var{y} to @var{filename} with the file\n\
-format determined by the file extension.\n\
+Write audio data from the matrix @var{y} to @var{filename} at sampling rate\n\
+@var{fs} with the file format determined by the file extension.\n\
 \n\
-Additional name and value argument pairs may be used to specify the\n\
+Additional name/value argument pairs may be used to specify the\n\
 following options:\n\
 \n\
 @table @samp\n\

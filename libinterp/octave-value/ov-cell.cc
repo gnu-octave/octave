@@ -1301,9 +1301,9 @@ DEFUN (cell, args, ,
 Create a new cell array object.\n\
 \n\
 If invoked with a single scalar integer argument, return a square\n\
-@nospell{NxN} cell array.  If invoked with two or more scalar\n\
-integer arguments, or a vector of integer values, return an array with\n\
-the given dimensions.\n\
+@nospell{NxN} cell array.  If invoked with two or more scalar integer\n\
+arguments, or a vector of integer values, return an array with the given\n\
+dimensions.\n\
 @seealso{cellstr, mat2cell, num2cell, struct2cell}\n\
 @end deftypefn")
 {
@@ -1357,8 +1357,8 @@ the given dimensions.\n\
 DEFUN (iscellstr, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscellstr (@var{cell})\n\
-Return true if every element of the cell array @var{cell} is a\n\
-character string.\n\
+Return true if every element of the cell array @var{cell} is a character\n\
+string.\n\
 @seealso{ischar}\n\
 @end deftypefn")
 {
@@ -1380,8 +1380,8 @@ character string.\n\
 DEFUN (cellstr, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{cstr} =} cellstr (@var{strmat})\n\
-Create a new cell array object from the elements of the string\n\
-array @var{strmat}.\n\
+Create a new cell array object from the elements of the string array\n\
+@var{strmat}.\n\
 \n\
 Each row of @var{strmat} becomes an element of @var{cstr}.  Any trailing\n\
 spaces in a row are deleted before conversion.\n\
@@ -1420,8 +1420,9 @@ DEFUN (struct2cell, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{c} =} struct2cell (@var{s})\n\
 Create a new cell array from the objects stored in the struct object.\n\
-If @var{f} is the number of fields in the structure, the resulting\n\
-cell array will have a dimension vector corresponding to\n\
+\n\
+If @var{f} is the number of fields in the structure, the resulting cell\n\
+array will have a dimension vector corresponding to\n\
 @code{[@var{f} size(@var{s})]}.  For example:\n\
 \n\
 @example\n\

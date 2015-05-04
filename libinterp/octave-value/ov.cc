@@ -3024,17 +3024,15 @@ decode_subscripts (const char* name, const octave_value& arg,
 DEFUN (subsref, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} subsref (@var{val}, @var{idx})\n\
-Perform the subscripted element selection operation according to\n\
-the subscript specified by @var{idx}.\n\
+Perform the subscripted element selection operation according to the\n\
+subscript specified by @var{idx}.\n\
 \n\
-The subscript @var{idx} is expected to be a structure array with\n\
-fields @samp{type} and @samp{subs}.  Valid values for @samp{type}\n\
-are @samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.\n\
-The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
-of index values.\n\
+The subscript @var{idx} is expected to be a structure array with fields\n\
+@samp{type} and @samp{subs}.  Valid values for @samp{type} are\n\
+@samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.  The @samp{subs} field may\n\
+be either @samp{\":\"} or a cell array of index values.\n\
 \n\
-The following example shows how to extract the first two columns of\n\
-a matrix\n\
+The following example shows how to extract the first two columns of a matrix\n\
 \n\
 @example\n\
 @group\n\
@@ -3054,8 +3052,8 @@ subsref (val, idx)\n\
 @noindent\n\
 Note that this is the same as writing @code{val(:,1:2)}.\n\
 \n\
-If @var{idx} is an empty structure array with fields @samp{type}\n\
-and @samp{subs}, return @var{val}.\n\
+If @var{idx} is an empty structure array with fields @samp{type} and\n\
+@samp{subs}, return @var{val}.\n\
 @seealso{subsasgn, substruct}\n\
 @end deftypefn")
 {
@@ -3087,17 +3085,16 @@ and @samp{subs}, return @var{val}.\n\
 DEFUN (subsasgn, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
-Perform the subscripted assignment operation according to\n\
-the subscript specified by @var{idx}.\n\
+Perform the subscripted assignment operation according to the subscript\n\
+specified by @var{idx}.\n\
 \n\
-The subscript @var{idx} is expected to be a structure array with\n\
-fields @samp{type} and @samp{subs}.  Valid values for @samp{type}\n\
-are @samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.\n\
-The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
-of index values.\n\
+The subscript @var{idx} is expected to be a structure array with fields\n\
+@samp{type} and @samp{subs}.  Valid values for @samp{type} are\n\
+@samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.  The @samp{subs} field may\n\
+be either @samp{\":\"} or a cell array of index values.\n\
 \n\
-The following example shows how to set the two first columns of a\n\
-3-by-3 matrix to zero.\n\
+The following example shows how to set the two first columns of a 3-by-3\n\
+matrix to zero.\n\
 \n\
 @example\n\
 @group\n\
@@ -3113,8 +3110,8 @@ subsasgn (val, idx, 0)\n\
 \n\
 Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 \n\
-If @var{idx} is an empty structure array with fields @samp{type}\n\
-and @samp{subs}, return @var{rhs}.\n\
+If @var{idx} is an empty structure array with fields @samp{type} and\n\
+@samp{subs}, return @var{rhs}.\n\
 @seealso{subsref, substruct}\n\
 @end deftypefn")
 {
@@ -3279,9 +3276,10 @@ DEFUN (disable_permutation_matrix, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether permutation\n\
-matrices are stored in a special space-efficient format.  The default\n\
-value is true.  If this option is disabled Octave will store permutation\n\
-matrices as full matrices.\n\
+matrices are stored in a special space-efficient format.\n\
+\n\
+The default value is true.  If this option is disabled Octave will store\n\
+permutation matrices as full matrices.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
@@ -3308,9 +3306,10 @@ DEFUN (disable_diagonal_matrix, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether diagonal\n\
-matrices are stored in a special space-efficient format.  The default\n\
-value is true.  If this option is disabled Octave will store diagonal\n\
-matrices as full matrices.\n\
+matrices are stored in a special space-efficient format.\n\
+\n\
+The default value is true.  If this option is disabled Octave will store\n\
+diagonal matrices as full matrices.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
@@ -3351,8 +3350,10 @@ DEFUN (disable_range, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} disable_range (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} disable_range (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether ranges are stored\n\
-in a special space-efficient format.  The default value is true.  If this\n\
-option is disabled Octave will store ranges as full matrices.\n\
+in a special space-efficient format.\n\
+\n\
+The default value is true.  If this option is disabled Octave will store\n\
+ranges as full matrices.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\

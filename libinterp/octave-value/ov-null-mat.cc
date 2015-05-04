@@ -97,9 +97,11 @@ DEFUN (isnull, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnull (@var{x})\n\
 Return true if @var{x} is a special null matrix, string, or single quoted\n\
-string.  Indexed assignment with such a value on the right-hand side should\n\
-delete array elements.  This function should be used when overloading\n\
-indexed assignment for user-defined classes instead of @code{isempty}, to\n\
+string.\n\
+\n\
+Indexed assignment with such a value on the right-hand side should delete\n\
+array elements.  This function should be used when overloading indexed\n\
+assignment for user-defined classes instead of @code{isempty}, to\n\
 distinguish the cases:\n\
 \n\
 @table @asis\n\

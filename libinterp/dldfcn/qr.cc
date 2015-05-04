@@ -80,7 +80,9 @@ DEFUN_DLD (qr, args, nargout,
 @deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B}, '0')\n\
 @cindex QR factorization\n\
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}\n\
-subroutines.  For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},\n\
+subroutines.\n\
+\n\
+For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
 [@var{Q}, @var{R}] = qr (@var{A})\n\
@@ -124,7 +126,7 @@ $A$\n\
 @ifnottex\n\
 @var{A}\n\
 @end ifnottex\n\
- is a tall, thin matrix).  The QR@tie{}factorization is\n\
+is a tall, thin matrix).  The QR@tie{}factorization is\n\
 @tex\n\
 $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @end tex\n\
@@ -140,8 +142,8 @@ columns of @var{Q}.\n\
 If the matrix @var{A} is full, the permuted QR@tie{}factorization\n\
 @code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} forms the\n\
 QR@tie{}factorization such that the diagonal entries of @var{R} are\n\
-decreasing in magnitude order.  For example, given the matrix @code{a = [1,\n\
-2; 3, 4]},\n\
+decreasing in magnitude order.  For example, given the matrix\n\
+@code{a = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
 [@var{Q}, @var{R}, @var{P}] = qr (@var{A})\n\
@@ -169,15 +171,15 @@ returns\n\
 @end group\n\
 @end example\n\
 \n\
-The permuted @code{qr} factorization @code{[@var{Q}, @var{R}, @var{P}] = qr\n\
-(@var{A})} factorization allows the construction of an orthogonal basis of\n\
-@code{span (A)}.\n\
+The permuted @code{qr} factorization\n\
+@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} factorization allows the\n\
+construction of an orthogonal basis of @code{span (A)}.\n\
 \n\
 If the matrix @var{A} is sparse, then compute the sparse\n\
 QR@tie{}factorization of @var{A}, using @sc{CSparse}.  As the matrix @var{Q}\n\
 is in general a full matrix, this function returns the @var{Q}-less\n\
-factorization @var{R} of @var{A}, such that @code{@var{R} = chol (@var{A}' *\n\
-@var{A})}.\n\
+factorization @var{R} of @var{A}, such that\n\
+@code{@var{R} = chol (@var{A}' * @var{A})}.\n\
 \n\
 If the final argument is the scalar @code{0} and the number of rows is\n\
 larger than the number of columns, then an economy factorization is\n\
@@ -763,15 +765,15 @@ DEFUN_DLD (qrupdate, args, ,
 @deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
-@var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\
-of @w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are\n\
-column vectors (rank-1 update) or matrices with equal number of columns\n\
+@var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
+@w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are column vectors\n\
+(rank-1 update) or matrices with equal number of columns\n\
 (rank-k update).  Notice that the latter case is done as a sequence of rank-1\n\
 updates; thus, for k large enough, it will be both faster and more accurate\n\
 to recompute the factorization from scratch.\n\
 \n\
-The QR@tie{}factorization supplied may be either full\n\
-(Q is square) or economized (R is square).\n\
+The QR@tie{}factorization supplied may be either full (Q is square) or\n\
+economized (R is square).\n\
 \n\
 @seealso{qr, qrinsert, qrdelete, qrshift}\n\
 @end deftypefn")
@@ -944,24 +946,21 @@ DEFUN_DLD (qrinsert, args, ,
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
-@w{[A(:,1:j-1) x A(:,j:n)]}, where @var{u} is a column vector to be\n\
-inserted into @var{A} (if @var{orient} is @qcode{\"col\"}), or the\n\
-QR@tie{}factorization of @w{[A(1:j-1,:);x;A(:,j:n)]}, where @var{x}\n\
-is a row vector to be inserted into @var{A} (if @var{orient} is\n\
-@qcode{\"row\"}).\n\
+@w{[A(:,1:j-1) x A(:,j:n)]}, where @var{u} is a column vector to be inserted\n\
+into @var{A} (if @var{orient} is @qcode{\"col\"}), or the\n\
+QR@tie{}factorization of @w{[A(1:j-1,:);x;A(:,j:n)]}, where @var{x} is a row\n\
+vector to be inserted into @var{A} (if @var{orient} is @qcode{\"row\"}).\n\
 \n\
-The default value of @var{orient} is @qcode{\"col\"}.\n\
-If @var{orient} is @qcode{\"col\"},\n\
-@var{u} may be a matrix and @var{j} an index vector\n\
+The default value of @var{orient} is @qcode{\"col\"}.  If @var{orient} is\n\
+@qcode{\"col\"}, @var{u} may be a matrix and @var{j} an index vector\n\
 resulting in the QR@tie{}factorization of a matrix @var{B} such that\n\
 @w{B(:,@var{j})} gives @var{u} and @w{B(:,@var{j}) = []} gives @var{A}.\n\
 Notice that the latter case is done as a sequence of k insertions;\n\
 thus, for k large enough, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
 \n\
-If @var{orient} is @qcode{\"col\"},\n\
-the QR@tie{}factorization supplied may be either full\n\
-(Q is square) or economized (R is square).\n\
+If @var{orient} is @qcode{\"col\"}, the QR@tie{}factorization supplied may\n\
+be either full (Q is square) or economized (R is square).\n\
 \n\
 If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 @seealso{qr, qrupdate, qrdelete, qrshift}\n\
@@ -1173,17 +1172,14 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 \n\
 The default value of @var{orient} is @qcode{\"col\"}.\n\
 \n\
-If @var{orient} is @qcode{\"col\"},\n\
-@var{j} may be an index vector\n\
+If @var{orient} is @qcode{\"col\"}, @var{j} may be an index vector\n\
 resulting in the QR@tie{}factorization of a matrix @var{B} such that\n\
-@w{A(:,@var{j}) = []} gives @var{B}.\n\
-Notice that the latter case is done as a sequence of k deletions;\n\
-thus, for k large enough, it will be both faster and more accurate to\n\
-recompute the factorization from scratch.\n\
+@w{A(:,@var{j}) = []} gives @var{B}.  Notice that the latter case is done as\n\
+a sequence of k deletions; thus, for k large enough, it will be both faster\n\
+and more accurate to recompute the factorization from scratch.\n\
 \n\
-If @var{orient} is @qcode{\"col\"},\n\
-the QR@tie{}factorization supplied may be either full\n\
-(Q is square) or economized (R is square).\n\
+If @var{orient} is @qcode{\"col\"}, the QR@tie{}factorization supplied may\n\
+be either full (Q is square) or economized (R is square).\n\
 \n\
 If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 @seealso{qr, qrupdate, qrinsert, qrshift}\n\

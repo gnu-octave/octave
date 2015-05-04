@@ -77,8 +77,11 @@ DEFUN_DLD (convhulln, args, nargout,
 @deftypefn  {Loadable Function} {@var{h} =} convhulln (@var{pts})\n\
 @deftypefnx {Loadable Function} {@var{h} =} convhulln (@var{pts}, @var{options})\n\
 @deftypefnx {Loadable Function} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
-Compute the convex hull of the set of points @var{pts} which is a matrix\n\
-of size [n, dim] containing n points in a space of dimension dim.\n\
+Compute the convex hull of the set of points @var{pts}.\n\
+\n\
+@var{pts} is a matrix of size [n, dim] containing n points in a space of\n\
+dimension dim.\n\
+\n\
 The hull @var{h} is an index vector into the set of points and specifies\n\
 which points form the enclosing hull.\n\
 \n\

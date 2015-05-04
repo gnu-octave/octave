@@ -1391,8 +1391,10 @@ DEFUN (string_fill_char, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} string_fill_char (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} string_fill_char (@var{new_val}, \"local\")\n\
 Query or set the internal variable used to pad all rows of a character\n\
-matrix to the same length; It must be a single character.  The default\n\
-value is @qcode{\" \"} (a single space).  For example:\n\
+matrix to the same length.\n\
+\n\
+The value must be a single character and the default is @qcode{\" \"} (a\n\
+single space).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1405,7 +1407,7 @@ string_fill_char (\"X\");\n\
 @end example\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

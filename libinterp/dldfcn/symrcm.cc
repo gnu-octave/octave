@@ -415,15 +415,16 @@ DEFUN_DLD (symrcm, args, ,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} symrcm (@var{S})\n\
 Return the symmetric reverse @nospell{Cuthill-McKee} permutation of @var{S}.\n\
+\n\
 @var{p} is a permutation vector such that\n\
-@code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements\n\
-closer to the diagonal than @var{S}.  This is a good preordering for LU\n\
-or Cholesky@tie{}factorization of matrices that come from ``long, skinny''\n\
+@code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements closer\n\
+to the diagonal than @var{S}.  This is a good preordering for LU or\n\
+Cholesky@tie{}factorization of matrices that come from ``long, skinny''\n\
 problems.  It works for both symmetric and asymmetric @var{S}.\n\
 \n\
-The algorithm represents a heuristic approach to the NP-complete\n\
-bandwidth minimization problem.  The implementation is based in the\n\
-descriptions found in\n\
+The algorithm represents a heuristic approach to the NP-complete bandwidth\n\
+minimization problem.  The implementation is based in the descriptions found\n\
+in\n\
 \n\
 @nospell{E. Cuthill, J. McKee}. @cite{Reducing the Bandwidth of Sparse\n\
 Symmetric Matrices}. Proceedings of the 24th ACM National Conference,\n\

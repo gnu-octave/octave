@@ -55,22 +55,23 @@ DEFUN_DLD (amd, args, nargout,
 @deftypefn  {Loadable Function} {@var{p} =} amd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} amd (@var{S}, @var{opts})\n\
 \n\
-Return the approximate minimum degree permutation of a matrix.  This\n\
-permutation such that the Cholesky@tie{}factorization of @code{@var{S}\n\
-(@var{p}, @var{p})} tends to be sparser than the Cholesky@tie{}factorization\n\
-of @var{S} itself.  @code{amd} is typically faster than @code{symamd} but\n\
-serves a similar purpose.\n\
+Return the approximate minimum degree permutation of a matrix.\n\
 \n\
-The optional parameter @var{opts} is a structure that controls the\n\
-behavior of @code{amd}.  The fields of the structure are\n\
+This is a permutation such that the Cholesky@tie{}factorization of\n\
+@code{@var{S} (@var{p}, @var{p})} tends to be sparser than the\n\
+Cholesky@tie{}factorization of @var{S} itself.  @code{amd} is typically\n\
+faster than @code{symamd} but serves a similar purpose.\n\
+\n\
+The optional parameter @var{opts} is a structure that controls the behavior\n\
+of @code{amd}.  The fields of the structure are\n\
 \n\
 @table @asis\n\
 @item @var{opts}.dense\n\
 Determines what @code{amd} considers to be a dense row or column of the\n\
 input matrix.  Rows or columns with more than @code{max (16, (dense *\n\
 sqrt (@var{n})))} entries, where @var{n} is the order of the matrix @var{S},\n\
-are ignored by @code{amd} during the calculation of the permutation\n\
-The value of dense must be a positive scalar and its default value is 10.0\n\
+are ignored by @code{amd} during the calculation of the permutation.\n\
+The value of dense must be a positive scalar and the default value is 10.0\n\
 \n\
 @item @var{opts}.aggressive\n\
 If this value is a nonzero scalar, then @code{amd} performs aggressive\n\
@@ -78,8 +79,8 @@ absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
 \n\
 The author of the code itself is Timothy A. Davis\n\
-@email{davis@@cise.ufl.edu}, University of Florida (see\n\
-@url{http://www.cise.ufl.edu/research/sparse/amd}).\n\
+@email{davis@@cise.ufl.edu}, University of Florida\n\
+(see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n\
 @seealso{symamd, colamd}\n\
 @end deftypefn")
 {

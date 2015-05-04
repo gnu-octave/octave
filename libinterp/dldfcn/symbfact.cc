@@ -46,7 +46,8 @@ DEFUN_DLD (symbfact, args, nargout,
 @deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
 \n\
 Perform a symbolic factorization analysis on the sparse matrix @var{S}.\n\
-Where\n\
+\n\
+The input variables are\n\
 \n\
 @table @var\n\
 @item S\n\

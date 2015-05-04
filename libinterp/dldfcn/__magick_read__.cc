@@ -724,8 +724,8 @@ DEFUN_DLD (__magick_read__, args, nargout,
 @deftypefn {Loadable Function} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})\n\
 Read image with GraphicsMagick or ImageMagick.\n\
 \n\
-This is a private internal function not intended for direct use.  Instead\n\
-use @code{imread}.\n\
+This is a private internal function not intended for direct use.\n\
+Use @code{imread} instead.\n\
 \n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
@@ -1388,8 +1388,8 @@ DEFUN_DLD (__magick_write__, args, ,
 @deftypefn {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})\n\
 Write image with GraphicsMagick or ImageMagick.\n\
 \n\
-This is a private internal function not intended for direct use.  Instead\n\
-use @code{imwrite}.\n\
+This is a private internal function not intended for direct use.\n\
+Use @code{imwrite} instead.\n\
 \n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
@@ -1789,8 +1789,8 @@ DEFUN_DLD (__magick_finfo__, args, ,
 @deftypefn {Loadable Function} {} __magick_finfo__ (@var{fname})\n\
 Read image information with GraphicsMagick or ImageMagick.\n\
 \n\
-This is a private internal function not intended for direct use.  Instead\n\
-use @code{imfinfo}.\n\
+This is a private internal function not intended for direct use.\n\
+Use @code{imfinfo} instead.\n\
 \n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")

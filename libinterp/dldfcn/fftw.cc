@@ -43,12 +43,14 @@ DEFUN_DLD (fftw, args, ,
 @deftypefnx {Loadable Function} {} fftw (\"threads\", @var{nthreads})\n\
 @deftypefnx {Loadable Function} {@var{nthreads} =} fftw (\"threads\")\n\
 \n\
-Manage @sc{fftw} wisdom data.  Wisdom data can be used to significantly\n\
-accelerate the calculation of the FFTs, but implies an initial cost\n\
-in its calculation.  When the @sc{fftw} libraries are initialized, they read\n\
-a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing\n\
-wisdom to be shared between applications other than Octave.  Alternatively,\n\
-the @code{fftw} function can be used to import wisdom.  For example,\n\
+Manage @sc{fftw} wisdom data.\n\
+\n\
+Wisdom data can be used to significantly accelerate the calculation of the\n\
+FFTs, but implies an initial cost in its calculation.  When the @sc{fftw}\n\
+libraries are initialized, they read a system wide wisdom file (typically in\n\
+@file{/etc/fftw/wisdom}), allowing wisdom to be shared between applications\n\
+other than Octave.  Alternatively, the @code{fftw} function can be used to\n\
+import wisdom.  For example,\n\
 \n\
 @example\n\
 @var{wisdom} = fftw (\"dwisdom\")\n\

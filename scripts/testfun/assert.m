@@ -33,27 +33,35 @@
 ## @itemx assert (@var{cond}, @var{errmsg})
 ## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
 ## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
-## Called with a single argument @var{cond}, @code{assert} produces an
-## error if @var{cond} is false (numeric zero).  Any additional arguments are
-## passed to the @code{error} function for processing.
+## Called with a single argument @var{cond}, @code{assert} produces an error if
+## @var{cond} is false (numeric zero).
+##
+## Any additional arguments are passed to the @code{error} function for
+## processing.
 ##
 ## @item assert (@var{observed}, @var{expected})
-## Produce an error if observed is not the same as expected.  Note that
-## @var{observed} and @var{expected} can be scalars, vectors, matrices,
-## strings, cell arrays, or structures.
+## Produce an error if observed is not the same as expected.
+##
+## Note that @var{observed} and @var{expected} can be scalars, vectors,
+## matrices, strings, cell arrays, or structures.
 ##
 ## @item assert (@var{observed}, @var{expected}, @var{tol})
 ## Produce an error if observed is not the same as expected but equality
 ## comparison for numeric data uses a tolerance @var{tol}.
+## 
 ## If @var{tol} is positive then it is an absolute tolerance which will produce
 ## an error if @code{abs (@var{observed} - @var{expected}) > abs (@var{tol})}.
+## 
 ## If @var{tol} is negative then it is a relative tolerance which will produce
 ## an error if @code{abs (@var{observed} - @var{expected}) >
 ## abs (@var{tol} * @var{expected})}.
+##
 ## If @var{expected} is zero @var{tol} will always be interpreted as an
-## absolute tolerance.  If @var{tol} is not scalar its dimensions must agree
-## with those of @var{observed} and @var{expected} and tests are performed on
-## an element-by-element basis.
+## absolute tolerance.
+##
+## If @var{tol} is not scalar its dimensions must agree with those of
+## @var{observed} and @var{expected} and tests are performed on an
+## element-by-element basis.
 ## @end table
 ## @seealso{fail, test, error, isequal}
 ## @end deftypefn

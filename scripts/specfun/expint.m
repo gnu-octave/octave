@@ -41,7 +41,7 @@
 ## @end ifnottex
 ## Note: For compatibility, this functions uses the @sc{matlab} definition
 ## of the exponential integral.  Most other sources refer to this particular
-## value as @math{E_1 (x)}, and the exponential integral is
+## value as @math{E_1 (x)}, and the exponential integral as
 ## @tex
 ## $$
 ## {\rm Ei} (x) = - \int_{-x}^\infty {e^{-t} \over t} dt.

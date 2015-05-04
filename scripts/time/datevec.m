@@ -31,14 +31,14 @@
 ## @var{f} is the format string used to interpret date strings
 ## (see @code{datestr}).  If @var{date} is a string, but no format is
 ## specified, then a relatively slow search is performed through various
-## formats.  It is always preferable to specify the format string @var{f}
-## if it is known.  Formats which do not specify a particular time component
-## will have the value set to zero.  Formats which do not specify a date will
+## formats.  It is always preferable to specify the format string @var{f} if it
+## is known.  Formats which do not specify a particular time component will
+## have the value set to zero.  Formats which do not specify a date will
 ## default to January 1st of the current year.
 ##
 ## @var{p} is the year at the start of the century to which two-digit years
-## will be referenced.  If not specified, it defaults to the current year
-## minus 50.
+## will be referenced.  If not specified, it defaults to the current year minus
+## 50.
 ## @seealso{datenum, datestr, clock, now, date}
 ## @end deftypefn
 

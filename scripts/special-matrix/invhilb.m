@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} invhilb (@var{n})
-## Return the inverse of the Hilbert matrix of order @var{n}.  This can be
-## computed exactly using
+## Return the inverse of the Hilbert matrix of order @var{n}.
+##
+## This can be computed exactly using
 ## @tex
 ## $$\eqalign{
 ##   A_{ij} &= -1^{i+j} (i+j-1)
@@ -60,10 +61,10 @@
 ## @end example
 ##
 ## @end ifnottex
-## The validity of this formula can easily be checked by expanding
-## the binomial coefficients in both formulas as factorials.  It can
-## be derived more directly via the theory of Cauchy matrices.
-## See @nospell{J. W. Demmel}, @cite{Applied Numerical Linear Algebra}, p. 92.
+## The validity of this formula can easily be checked by expanding the binomial
+## coefficients in both formulas as factorials.  It can be derived more
+## directly via the theory of Cauchy matrices.  See @nospell{J. W. Demmel},
+## @cite{Applied Numerical Linear Algebra}, p. 92.
 ##
 ## Compare this with the numerical calculation of @code{inverse (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the

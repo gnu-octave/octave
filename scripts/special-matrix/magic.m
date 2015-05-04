@@ -19,9 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} magic (@var{n})
 ##
-## Create an @var{n}-by-@var{n} magic square.  A magic square is an arrangement
-## of the integers @code{1:n^2} such that the row sums, column sums, and
-## diagonal sums are all equal to the same value.
+## Create an @var{n}-by-@var{n} magic square.
+##
+## A magic square is an arrangement of the integers @code{1:n^2} such that the
+## row sums, column sums, and diagonal sums are all equal to the same value.
 ##
 ## Note: @var{n} must be greater than 2 for the magic square to exist.
 ## @end deftypefn

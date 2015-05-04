@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rosser ()
-## Return the Rosser matrix.  This is a difficult test case used to evaluate
-## eigenvalue algorithms.
+## Return the Rosser matrix.
 ##
+## This is a difficult test case used to evaluate eigenvalue algorithms.
 ## @seealso{wilkinson, eig}
 ## @end deftypefn
 

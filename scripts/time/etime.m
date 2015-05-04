@@ -19,7 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} etime (@var{t2}, @var{t1})
 ## Return the difference in seconds between two time values returned from
-## @code{clock} (@math{@var{t2} - @var{t1}}).  For example:
+## @code{clock} (@math{@var{t2} - @var{t1}}).
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -30,8 +32,8 @@
 ## @end example
 ##
 ## @noindent
-## will set the variable @code{elapsed_time} to the number of seconds since
-## the variable @code{t0} was set.
+## will set the variable @code{elapsed_time} to the number of seconds since the
+## variable @code{t0} was set.
 ## @seealso{tic, toc, clock, cputime, addtodate}
 ## @end deftypefn
 

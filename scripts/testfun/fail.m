@@ -53,8 +53,8 @@
 ##
 ## The angle brackets are not part of the output.
 ##
-## When called with the @qcode{"warning"} option @code{fail} will produce
-## an error if executing the code produces no warning.
+## When called with the @qcode{"warning"} option @code{fail} will produce an
+## error if executing the code produces no warning.
 ## @seealso{assert, error}
 ## @end deftypefn
 

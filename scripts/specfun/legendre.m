@@ -23,8 +23,9 @@
 ## Compute the Legendre function of degree @var{n} and order
 ## @var{m} = 0 @dots{} @var{n}.
 ##
-## The value @var{n} must be a real non-negative integer.  @var{x} is a
-## vector with real-valued elements in the range [-1, 1].
+## The value @var{n} must be a real non-negative integer.
+##
+## @var{x} is a vector with real-valued elements in the range [-1, 1].
 ##
 ## The optional argument @var{normalization} may be one of @qcode{"unnorm"},
 ## @qcode{"sch"}, or @qcode{"norm"}.  The default if no normalization is given
@@ -88,10 +89,10 @@
 ## @end group
 ## @end example
 ##
-## When the optional argument @code{normalization} is @qcode{"sch"},
-## compute the Schmidt semi-normalized associated Legendre function.
-## The Schmidt semi-normalized associated Legendre function is related
-## to the unnormalized Legendre functions by the following:
+## When the optional argument @code{normalization} is @qcode{"sch"}, compute
+## the Schmidt semi-normalized associated Legendre function.  The Schmidt
+## semi-normalized associated Legendre function is related to the unnormalized
+## Legendre functions by the following:
 ##
 ## For Legendre functions of degree @var{n} and order 0:
 ##
@@ -131,10 +132,10 @@
 ##
 ## @end ifnottex
 ##
-## When the optional argument @var{normalization} is @qcode{"norm"},
-## compute the fully normalized associated Legendre function.
-## The fully normalized associated Legendre function is related
-## to the unnormalized Legendre functions by the following:
+## When the optional argument @var{normalization} is @qcode{"norm"}, compute
+## the fully normalized associated Legendre function.  The fully normalized
+## associated Legendre function is related to the unnormalized Legendre
+## functions by the following:
 ##
 ## For Legendre functions of degree @var{n} and order @var{m}
 ##

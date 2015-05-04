@@ -23,6 +23,7 @@
 ## @deftypefnx {Function File} {} demo ("@var{name}", @var{n})
 ##
 ## Run example code block @var{n} associated with the function @var{name}.
+##
 ## If @var{n} is not specified, all examples are run.
 ##
 ## The preferred location for example code blocks is embedded within the script
@@ -61,20 +62,19 @@
 ## @end example
 ##
 ## @noindent
-## between the sections, but this usage is discouraged.  Other techniques
-## to avoid multiple initialization blocks include using multiple plots
-## with a new @code{figure} command between each plot, or using @code{subplot}
-## to put multiple plots in the same window.
+## between the sections, but this usage is discouraged.  Other techniques to
+## avoid multiple initialization blocks include using multiple plots with a new
+## @code{figure} command between each plot, or using @code{subplot} to put
+## multiple plots in the same window.
 ##
-## Finally, because @code{demo} evaluates within a function context it is
-## not possible to define new functions within the code.  Anonymous functions
-## make a good substitute in most instances.  If function blocks
-## @strong{must} be used then the code @code{eval (example ("function", n))}
-## will allow Octave to see them.  This has its own problems, however, as
-## @code{eval} only evaluates one line or statement at a time.  In this case
-## the function declaration must be wrapped with
-## @qcode{"if 1 <demo stuff> endif"} where @qcode{"if"} is on the same line
-## as @qcode{"demo"}.  For example:
+## Finally, because @code{demo} evaluates within a function context it is not
+## possible to define new functions within the code.  Anonymous functions make
+## a good substitute in most instances.  If function blocks @strong{must} be
+## used then the code @code{eval (example ("function", n))} will allow Octave
+## to see them.  This has its own problems, however, as @code{eval} only
+## evaluates one line or statement at a time.  In this case the function
+## declaration must be wrapped with @qcode{"if 1 <demo stuff> endif"} where
+## @qcode{"if"} is on the same line as @qcode{"demo"}.  For example:
 ##
 ## @example
 ## @group

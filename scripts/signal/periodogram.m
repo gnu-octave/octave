@@ -25,7 +25,6 @@
 ## @deftypefnx {Function File} {[@var{Pxx}, @var{f}] =} periodogram (@var{x}, @var{win}, @var{nfft}, @var{Fs})
 ## @deftypefnx {Function File} {[@var{Pxx}, @var{f}] =} periodogram (@dots{}, "@var{range}")
 ## @deftypefnx {Function File} {} periodogram (@dots{})
-##
 ## Return the periodogram (Power Spectral Density) of @var{x}.
 ##
 ## The possible inputs are:

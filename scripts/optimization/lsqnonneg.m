@@ -28,11 +28,15 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
 ## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
-## @code{@var{x} >= 0}.  @var{c} and @var{d} must be real.  @var{x0} is an
-## optional initial guess for @var{x}.
-## Currently, @code{lsqnonneg}
-## recognizes these options: @qcode{"MaxIter"}, @qcode{"TolX"}.
-## For a description of these options, see @ref{XREFoptimset,,optimset}.
+## @code{@var{x} >= 0}.
+##
+## @var{c} and @var{d} must be real.
+##
+## @var{x0} is an optional initial guess for @var{x}.
+##
+## Currently, @code{lsqnonneg} recognizes these options: @qcode{"MaxIter"},
+## @qcode{"TolX"}.  For a description of these options, see
+## @ref{XREFoptimset,,optimset}.
 ##
 ## Outputs:
 ##
@@ -47,10 +51,10 @@
 ##
 ## @item exitflag
 ##
-## An indicator of convergence.  0 indicates that the iteration count
-## was exceeded, and therefore convergence was not reached; >0 indicates
-## that the algorithm converged.  (The algorithm is stable and will
-## converge given enough iterations.)
+## An indicator of convergence.  0 indicates that the iteration count was
+## exceeded, and therefore convergence was not reached; >0 indicates that the
+## algorithm converged.  (The algorithm is stable and will converge given
+## enough iterations.)
 ##
 ## @item output
 ##

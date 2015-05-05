@@ -22,48 +22,53 @@
 ## @deftypefn  {Function File} {} fsolve (@var{fcn}, @var{x0}, @var{options})
 ## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
+##
 ## @var{fcn} should accept a vector (array) defining the unknown variables,
 ## and return a vector of left-hand sides of the equations.  Right-hand sides
-## are defined to be zeros.
-## In other words, this function attempts to determine a vector @var{x} such
-## that @code{@var{fcn} (@var{x})} gives (approximately) all zeros.
+## are defined to be zeros.  In other words, this function attempts to
+## determine a vector @var{x} such that @code{@var{fcn} (@var{x})} gives
+## (approximately) all zeros.
+##
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
-## @var{options} is a structure specifying additional options.
-## Currently, @code{fsolve} recognizes these options:
+##
+## @var{options} is a structure specifying additional options.  Currently,
+## @code{fsolve} recognizes these options:
 ## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
 ## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
 ## @qcode{"Jacobian"}, @qcode{"Updating"}, @qcode{"ComplexEqn"}
 ## @qcode{"TypicalX"}, @qcode{"AutoScaling"} and @qcode{"FinDiffType"}.
 ##
-## If @qcode{"Jacobian"} is @qcode{"on"}, it specifies that @var{fcn},
-## called with 2 output arguments, also returns the Jacobian matrix
-## of right-hand sides at the requested point.  @qcode{"TolX"} specifies
-## the termination tolerance in the unknown variables, while
-## @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
-## for both @qcode{"TolX"} and @qcode{"TolFun"}.
+## If @qcode{"Jacobian"} is @qcode{"on"}, it specifies that @var{fcn}, called
+## with 2 output arguments also returns the Jacobian matrix of right-hand sides
+## at the requested point.  @qcode{"TolX"} specifies the termination tolerance
+## in the unknown variables, while @qcode{"TolFun"} is a tolerance for
+## equations.  Default is @code{1e-7} for both @qcode{"TolX"} and
+## @qcode{"TolFun"}.
 ##
 ## If @qcode{"AutoScaling"} is on, the variables will be automatically scaled
 ## according to the column norms of the (estimated) Jacobian.  As a result,
-## TolF becomes scaling-independent.  By default, this option is off, because
+## TolF becomes scaling-independent.  By default, this option is off because
 ## it may sometimes deliver unexpected (though mathematically correct) results.
 ##
 ## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
 ## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
 ## amount of Jacobian calculations.  If your user function always calculates the
-## Jacobian (regardless of number of output arguments), this option provides
+## Jacobian (regardless of number of output arguments) then this option provides
 ## no advantage and should be set to false.
 ##
 ## @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
-## complex equations in complex variables, assuming that the equations possess a
-## complex derivative (i.e., are holomorphic).  If this is not what you want,
-## should unpack the real and imaginary parts of the system to get a real
+## complex equations in complex variables, assuming that the equations possess
+## a complex derivative (i.e., are holomorphic).  If this is not what you want,
+## you should unpack the real and imaginary parts of the system to get a real
 ## system.
 ##
 ## For description of the other options, see @code{optimset}.
 ##
 ## On return, @var{fval} contains the value of the function @var{fcn}
-## evaluated at @var{x}, and @var{info} may be one of the following values:
+## evaluated at @var{x}.
+##
+## @var{info} may be one of the following values:
 ##
 ## @table @asis
 ## @item 1
@@ -87,8 +92,8 @@
 ## @code{fzero} is usually a much better idea.
 ##
 ## Note about user-supplied Jacobians:
-## As an inherent property of the algorithm, Jacobian is always requested for a
-## solution vector whose residual vector is already known, and it is the last
+## As an inherent property of the algorithm, a Jacobian is always requested for
+## a solution vector whose residual vector is already known, and it is the last
 ## accepted successful step.  Often this will be one of the last two calls, but
 ## not always.  If the savings by reusing intermediate results from residual
 ## calculation in Jacobian calculation are significant, the best strategy is to

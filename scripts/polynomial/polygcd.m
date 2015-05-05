@@ -20,9 +20,12 @@
 ## @deftypefn  {Function File} {@var{q} =} polygcd (@var{b}, @var{a})
 ## @deftypefnx {Function File} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
 ##
-## Find the greatest common divisor of two polynomials.  This is equivalent
-## to the polynomial found by multiplying together all the common roots.
-## Together with deconv, you can reduce a ratio of two polynomials.
+## Find the greatest common divisor of two polynomials.
+##
+## This is equivalent to the polynomial found by multiplying together all the
+## common roots.  Together with deconv, you can reduce a ratio of two
+## polynomials.
+##
 ## The tolerance @var{tol} defaults to @code{sqrt (eps)}.
 ##
 ## @strong{Caution:} This is a numerically unstable algorithm and should not

@@ -23,8 +23,11 @@
 ## Solve the polynomial eigenvalue problem of degree @var{l}.
 ##
 ## Given an @var{n*n} matrix polynomial
+##
 ## @code{@var{C}(s) = @var{C0} + @var{C1} s + @dots{} + @var{Cl} s^l}
-## polyeig solves the eigenvalue problem
+##
+## @code{polyeig} solves the eigenvalue problem
+##
 ## @code{(@var{C0} + @var{C1} + @dots{} + @var{Cl})v = 0}.
 ##
 ## Note that the eigenvalues @var{z} are the zeros of the matrix polynomial.

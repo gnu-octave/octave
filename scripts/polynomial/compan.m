@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} compan (@var{c})
-## Compute the companion matrix corresponding to polynomial coefficient
-## vector @var{c}.
+## Compute the companion matrix corresponding to polynomial coefficient vector
+## @var{c}.
 ##
 ## The companion matrix is
 ## @tex

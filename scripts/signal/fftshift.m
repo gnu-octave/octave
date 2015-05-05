@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} fftshift (@var{x})
 ## @deftypefnx {Function File} {} fftshift (@var{x}, @var{dim})
-## Perform a shift of the vector @var{x}, for use with the @code{fft}
-## and @code{ifft} functions, in order the move the frequency 0 to the
-## center of the vector or matrix.
+## Perform a shift of the vector @var{x}, for use with the @code{fft} and
+## @code{ifft} functions, in order the move the frequency 0 to the center of
+## the vector or matrix.
 ##
-## If @var{x} is a vector of @math{N} elements corresponding to @math{N}
-## time samples spaced by @nospell{@math{dt}}, then
+## If @var{x} is a vector of @math{N} elements corresponding to @math{N} time
+## samples spaced by @nospell{@math{dt}}, then
 ## @code{fftshift (fft (@var{x}))} corresponds to frequencies
 ##
 ## @example
@@ -34,11 +34,12 @@
 ## @noindent
 ## where @nospell{@math{df} = 1 / @math{dt}}.
 ##
-## If @var{x} is a matrix, the same holds for rows and columns.  If
-## @var{x} is an array, then the same holds along each dimension.
+## If @var{x} is a matrix, the same holds for rows and columns.  If @var{x}
+## is an array, then the same holds along each dimension.
 ##
-## The optional @var{dim} argument can be used to limit the dimension
-## along which the permutation occurs.
+## The optional @var{dim} argument can be used to limit the dimension along
+## which the permutation occurs.
+## @seealso{ifftshift}
 ## @end deftypefn
 
 ## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>

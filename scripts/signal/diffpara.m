@@ -23,14 +23,15 @@
 ##
 ## The frequencies from @math{[2*pi*a/t, 2*pi*b/T]} are used for the
 ## estimation.  If @var{b} is omitted, the interval
-## @math{[2*pi/T, 2*pi*a/T]} is used.  If both @var{b} and @var{a} are
-## omitted then @math{a = 0.5 * sqrt (T)} and @math{b = 1.5 * sqrt (T)}
-## is used, where @math{T} is the sample size.  If @var{x} is a matrix,
-## the differencing parameter of each column is estimated.
+## @math{[2*pi/T, 2*pi*a/T]} is used.  If both @var{b} and @var{a} are omitted
+## then @math{a = 0.5 * sqrt (T)} and @math{b = 1.5 * sqrt (T)} is used, where
+## @math{T} is the sample size.  If @var{x} is a matrix, the differencing
+## parameter of each column is estimated.
 ##
-## The estimators for all frequencies in the intervals
-## described above is returned in @var{dd}.  The value of @var{d} is
-## simply the mean of @var{dd}.
+## The estimators for all frequencies in the intervals described above is
+## returned in @var{dd}.
+##
+## The value of @var{d} is simply the mean of @var{dd}.
 ##
 ## Reference: @nospell{P.J. Brockwell & R.A. Davis}. @cite{Time Series:
 ## Theory and Methods}. Springer 1987.

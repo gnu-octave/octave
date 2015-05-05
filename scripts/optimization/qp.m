@@ -24,7 +24,9 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub})
 ## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{A_in}, @var{A_ub})
 ## @deftypefnx {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@dots{}, @var{options})
-## Solve the quadratic program
+## Solve a quadratic program (QP).
+##
+## Solve the quadratic program defined by
 ## @tex
 ## $$
 ##  \min_x {1 \over 2} x^T H x + x^T q
@@ -60,16 +62,16 @@
 ## @noindent
 ## using a null-space active-set method.
 ##
-## Any bound (@var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb},
-## @var{A_ub}) may be set to the empty matrix (@code{[]}) if not
-## present.  If the initial guess is feasible the algorithm is faster.
+## Any bound (@var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{A_ub})
+## may be set to the empty matrix (@code{[]}) if not present.  If the initial
+## guess is feasible the algorithm is faster.
 ##
 ## @table @var
 ## @item options
-## An optional structure containing the following
-## parameter(s) used to define the behavior of the solver.  Missing elements
-## in the structure take on default values, so you only need to set the
-## elements that you wish to change from the default.
+## An optional structure containing the following parameter(s) used to define
+## the behavior of the solver.  Missing elements in the structure take on
+## default values, so you only need to set the elements that you wish to
+## change from the default.
 ##
 ## @table @code
 ## @item MaxIter (default: 200)

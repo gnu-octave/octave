@@ -29,8 +29,9 @@
 ## @qcode{"MaxIter"}, @qcode{"MaxFunEvals"}.  For a description of these
 ## options, see @ref{XREFoptimset,,optimset}.
 ##
-## On exit, the function returns @var{x}, the approximate minimum point
-## and @var{fval}, the function value thereof.
+## On exit, the function returns @var{x}, the approximate minimum point and
+## @var{fval}, the function value thereof.
+##
 ## @var{info} is an exit flag that can have these values:
 ##
 ## @itemize
@@ -44,11 +45,11 @@
 ## The algorithm has been terminated from user output function.
 ## @end itemize
 ##
-## Notes: The search for a minimum is restricted to be in the interval
-## bound by @var{a} and @var{b}.  If you only have an initial point
-## to begin searching from you will need to use an unconstrained
-## minimization algorithm such as @code{fminunc} or @code{fminsearch}.
-## @code{fminbnd} internally uses a Golden Section search strategy.
+## Notes: The search for a minimum is restricted to be in the interval bound by
+## @var{a} and @var{b}.  If you only have an initial point to begin searching
+## from you will need to use an unconstrained minimization algorithm such as
+## @code{fminunc} or @code{fminsearch}.  @code{fminbnd} internally uses a
+## Golden Section search strategy.
 ## @seealso{fzero, fminunc, fminsearch, optimset}
 ## @end deftypefn
 

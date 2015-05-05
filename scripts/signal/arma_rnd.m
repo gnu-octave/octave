@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} arma_rnd (@var{a}, @var{b}, @var{v}, @var{t}, @var{n})
-## Return a simulation of the ARMA model
+## Return a simulation of the ARMA model.
+##
+## The ARMA model is defined by
 ##
 ## @example
 ## @group
@@ -28,14 +30,14 @@
 ## @end example
 ##
 ## @noindent
-## in which @var{k} is the length of vector @var{a}, @var{l} is the
-## length of vector @var{b} and @var{e} is Gaussian white noise with
-## variance @var{v}.  The function returns a vector of length @var{t}.
+## in which @var{k} is the length of vector @var{a}, @var{l} is the length of
+## vector @var{b} and @var{e} is Gaussian white noise with variance @var{v}. 
+## The function returns a vector of length @var{t}.
 ##
-## The optional parameter @var{n} gives the number of dummy
-## @var{x}(@var{i}) used for initialization, i.e., a sequence of length
-## @var{t}+@var{n} is generated and @var{x}(@var{n}+1:@var{t}+@var{n})
-## is returned.  If @var{n} is omitted, @var{n} = 100 is used.
+## The optional parameter @var{n} gives the number of dummy @var{x}(@var{i})
+## used for initialization, i.e., a sequence of length @var{t}+@var{n} is
+## generated and @var{x}(@var{n}+1:@var{t}+@var{n}) is returned.  If @var{n}
+## is omitted, @var{n} = 100 is used.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

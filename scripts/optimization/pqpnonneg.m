@@ -25,9 +25,12 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
-## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >= 0}.  @var{c}
-## and @var{d} must be real, and @var{c} must be symmetric and positive
-## definite.  @var{x0} is an optional initial guess for @var{x}.
+## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >= 0}.
+##
+## @var{c} ## and @var{d} must be real, and @var{c} must be symmetric and
+## positive definite.
+##
+## @var{x0} is an optional initial guess for @var{x}.
 ##
 ## Outputs:
 ##
@@ -38,10 +41,10 @@
 ##
 ## @item exitflag
 ##
-## An indicator of convergence.  0 indicates that the iteration count
-## was exceeded, and therefore convergence was not reached; >0 indicates
-## that the algorithm converged.  (The algorithm is stable and will
-## converge given enough iterations.)
+## An indicator of convergence.  0 indicates that the iteration count was
+## exceeded, and therefore convergence was not reached; >0 indicates that the
+## algorithm converged.  (The algorithm is stable and will converge given
+## enough iterations.)
 ##
 ## @item output
 ##

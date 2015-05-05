@@ -23,19 +23,19 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
 ##
 ## Find a value of @var{x} which minimizes the function @var{fun}.
+##
 ## The search begins at the point @var{x0} and iterates using the
 ## @nospell{Nelder & Mead} Simplex algorithm (a derivative-free method).  This
 ## algorithm is better-suited to functions which have discontinuities or for
 ## which a gradient-based search such as @code{fminunc} fails.
 ##
-## Options for the search are provided in the parameter @var{options} using
-## the function @code{optimset}.  Currently, @code{fminsearch} accepts the
-## options: @qcode{"TolX"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
-## @qcode{"Display"}.  For a description of these options, see
-## @code{optimset}.
+## Options for the search are provided in the parameter @var{options} using the
+## function @code{optimset}.  Currently, @code{fminsearch} accepts the options:
+## @qcode{"TolX"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"}, @qcode{"Display"}.
+## For a description of these options, see @code{optimset}.
 ##
-## On exit, the function returns @var{x}, the minimum point,
-## and @var{fval}, the function value thereof.
+## On exit, the function returns @var{x}, the minimum point, and @var{fval},
+## the function value thereof.
 ##
 ## Example usages:
 ##

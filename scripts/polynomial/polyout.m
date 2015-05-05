@@ -20,7 +20,9 @@
 ## @deftypefn  {Function File} {} polyout (@var{c})
 ## @deftypefnx {Function File} {} polyout (@var{c}, @var{x})
 ## @deftypefnx {Function File} {@var{str} =} polyout (@dots{})
-## Write formatted polynomial
+## Display a formatted version of the polynomial @var{c}.
+##
+## The formatted polynomial
 ## @tex
 ## $$ c(x) = c_1 x^n + \ldots + c_n x + c_{n+1} $$
 ## @end tex
@@ -31,8 +33,10 @@
 ## @end example
 ##
 ## @end ifnottex
-## and return it as a string or write it to the screen (if @var{nargout} is
-## zero).  @var{x} defaults to the string @qcode{"s"}.
+## is returned as a string or written to the screen if @code{nargout} is zero.
+##
+## The second argument @var{x} specifies the variable name to use for each term
+## and defaults to the string @qcode{"s"}.
 ## @seealso{polyreduce}
 ## @end deftypefn
 

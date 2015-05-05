@@ -19,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{errnum}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
-## Solve a linear program using the GNU @sc{glpk} library.  Given three
-## arguments, @code{glpk} solves the following standard LP:
+## Solve a linear program using the GNU @sc{glpk} library.
+##
+## Given three arguments, @code{glpk} solves the following standard LP:
 ## @tex
 ## $$
 ##   \min_x C^T x
@@ -90,23 +91,21 @@
 ## A matrix containing the constraints coefficients.
 ##
 ## @item b
-## A column array containing the right-hand side value for each constraint
-## in the constraint matrix.
+## A column array containing the right-hand side value for each constraint in
+## the constraint matrix.
 ##
 ## @item lb
-## An array containing the lower bound on each of the variables.  If
-## @var{lb} is not supplied, the default lower bound for the variables is
-## zero.
+## An array containing the lower bound on each of the variables.  If @var{lb}
+## is not supplied, the default lower bound for the variables is zero.
 ##
 ## @item ub
-## An array containing the upper bound on each of the variables.  If
-## @var{ub} is not supplied, the default upper bound is assumed to be
-## infinite.
+## An array containing the upper bound on each of the variables.  If @var{ub}
+## is not supplied, the default upper bound is assumed to be infinite.
 ##
 ## @item ctype
 ## An array of characters containing the sense of each constraint in the
-## constraint matrix.  Each element of the array may be one of the
-## following values
+## constraint matrix.  Each element of the array may be one of the following
+## values
 ##
 ## @table @asis
 ## @item @qcode{"F"}
@@ -138,14 +137,14 @@
 ## @end table
 ##
 ## @item sense
-## If @var{sense} is 1, the problem is a minimization.  If @var{sense} is
-## -1, the problem is a maximization.  The default value is 1.
+## If @var{sense} is 1, the problem is a minimization.  If @var{sense} is -1,
+## the problem is a maximization.  The default value is 1.
 ##
 ## @item param
 ## A structure containing the following parameters used to define the
 ## behavior of solver.  Missing elements in the structure take on default
-## values, so you only need to set the elements that you wish to change
-## from the default.
+## values, so you only need to set the elements that you wish to change from
+## the default.
 ##
 ## Integer parameters:
 ##
@@ -220,9 +219,8 @@
 ## stop the search.
 ##
 ## @item outfrq (default: 200)
-## Output frequency, in iterations.  This parameter specifies how
-## frequently the solver sends information about the solution to the
-## standard output.
+## Output frequency, in iterations.  This parameter specifies how frequently
+## the solver sends information about the solution to the standard output.
 ##
 ## @item branch (default: 4)
 ## Branching technique option (for MIP only):
@@ -293,13 +291,12 @@
 ##
 ## @item outdly (default: 0)
 ## Output delay, in seconds.  This parameter specifies how long the solver
-## should delay sending information about the solution to the standard
-## output.
+## should delay sending information about the solution to the standard output.
 ##
 ## @item save (default: 0)
-## If this parameter is nonzero, save a copy of the problem in
-## CPLEX LP format to the file @file{"outpb.lp"}.  There is currently no
-## way to change the name of the output file.
+## If this parameter is nonzero, save a copy of the problem in CPLEX LP
+## format to the file @file{"outpb.lp"}.  There is currently no way to change
+## the name of the output file.
 ## @end table
 ##
 ## Real parameters:
@@ -316,30 +313,30 @@
 ## have a detailed understanding of its purpose.
 ##
 ## @item tolpiv (default: 1e-10)
-## Relative tolerance used to choose eligible pivotal elements of the
-## simplex table.  It is not recommended that you change this parameter unless
-## you have a detailed understanding of its purpose.
+## Relative tolerance used to choose eligible pivotal elements of the simplex
+## table.  It is not recommended that you change this parameter unless you have
+## a detailed understanding of its purpose.
 ##
 ## @item objll (default: -DBL_MAX)
-## Lower limit of the objective function.  If the objective
-## function reaches this limit and continues decreasing, the solver stops
-## the search.  This parameter is used in the dual simplex method only.
+## Lower limit of the objective function.  If the objective function reaches
+## this limit and continues decreasing, the solver stops the search.  This
+## parameter is used in the dual simplex method only.
 ##
 ## @item objul (default: +DBL_MAX)
-## Upper limit of the objective function.  If the objective
-## function reaches this limit and continues increasing, the solver stops
-## the search.  This parameter is used in the dual simplex only.
+## Upper limit of the objective function.  If the objective function reaches
+## this limit and continues increasing, the solver stops the search.  This
+## parameter is used in the dual simplex only.
 ##
 ## @item tolint (default: 1e-5)
 ## Relative tolerance used to check if the current basic solution is integer
-## feasible.  It is not recommended that you change this parameter unless
-## you have a detailed understanding of its purpose.
+## feasible.  It is not recommended that you change this parameter unless you
+## have a detailed understanding of its purpose.
 ##
 ## @item tolobj (default: 1e-7)
-## Relative tolerance used to check if the value of the objective function
-## is not better than in the best known integer feasible solution.  It is
-## not recommended that you change this parameter unless you have a
-## detailed understanding of its purpose.
+## Relative tolerance used to check if the value of the objective function is
+## not better than in the best known integer feasible solution.  It is not
+## recommended that you change this parameter unless you have a detailed
+## understanding of its purpose.
 ## @end table
 ## @end table
 ##

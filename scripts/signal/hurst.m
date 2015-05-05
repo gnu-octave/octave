@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hurst (@var{x})
 ## Estimate the Hurst parameter of sample @var{x} via the rescaled range
-## statistic.  If @var{x} is a matrix, the parameter is estimated for
-## every single column.
+## statistic.
+##
+## If @var{x} is a matrix, the parameter is estimated for every column.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

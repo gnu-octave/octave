@@ -47,7 +47,7 @@ function st = cstrcat (varargin)
     ## Special because if varargin is empty, iscellstr still returns
     ## true but then "[varargin{:}]" would be of class double.
     st = "";
-  elseif (! iscellstr (varargin))
+  elseif (iscellstr (varargin))
     st = [varargin{:}];
   else
     error ("cstrcat: expecting arguments to character strings");

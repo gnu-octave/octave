@@ -115,7 +115,8 @@ function retval = num2str (x, arg)
         fmt = "%3d";
       endif
     endif
-    fmt = [deblank(repmat(fmt, 1, columns(x))), "\n"];
+    fmt = do_string_escapes (fmt);  # required now that '\n' is interpreted.
+    fmt = [deblank(repmat (fmt, 1, columns (x))), "\n"];
     nd = ndims (x);
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
     retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
@@ -203,6 +204,9 @@ endfunction
 ##        16 digits of precision.
 %!xtest
 %! assert (num2str (1e23), "100000000000000000000000");
+
+## Test for bug #44864, extra rows generated from newlines in format
+%!assert (rows (num2str (magic (3), '%3d %3d %3d\n')), 3)
 
 %!error num2str ()
 %!error num2str (1, 2, 3)

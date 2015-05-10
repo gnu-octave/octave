@@ -25,12 +25,12 @@
 ## For two data vectors @var{x} and @var{y}, Spearman's @var{rho} is the
 ## correlation coefficient of the ranks of @var{x} and @var{y}.
 ##
-## If @var{x} and @var{y} are drawn from independent distributions,
-## @var{rho} has zero mean and variance @code{1 / (n - 1)}, and is
-## asymptotically normally distributed.
+## If @var{x} and @var{y} are drawn from independent distributions, @var{rho}
+## has zero mean and variance @code{1 / (n - 1)}, and is asymptotically
+## normally distributed.
 ##
-## @code{spearman (@var{x})} is equivalent to @code{spearman (@var{x},
-## @var{x})}.
+## @code{spearman (@var{x})} is equivalent to
+## @code{spearman (@var{x}, @var{x})}.
 ## @seealso{ranks, kendall}
 ## @end deftypefn
 

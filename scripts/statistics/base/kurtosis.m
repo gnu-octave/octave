@@ -21,7 +21,9 @@
 ## @deftypefn  {Function File} {} kurtosis (@var{x})
 ## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{flag})
 ## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{flag}, @var{dim})
-## Compute the sample kurtosis of the elements of @var{x}:
+## Compute the sample kurtosis of the elements of @var{x}.
+##
+## The sample kurtosis is defined as
 ## @tex
 ## $$
 ## \kappa_1 = {{{1\over N}\,

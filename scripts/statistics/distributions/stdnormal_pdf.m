@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_pdf (@var{x})
-## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the standard normal distribution (mean = 0,
-## standard deviation = 1).
+## For each element of @var{x}, compute the probability density function (PDF)
+## at @var{x} of the standard normal distribution
+## (mean = 0, standard deviation = 1).
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>

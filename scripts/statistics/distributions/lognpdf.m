@@ -20,11 +20,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} lognpdf (@var{x})
 ## @deftypefnx {Function File} {} lognpdf (@var{x}, @var{mu}, @var{sigma})
-## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the lognormal distribution with parameters
-## @var{mu} and @var{sigma}.  If a random variable follows this distribution,
-## its logarithm is normally distributed with mean @var{mu} and standard
-## deviation @var{sigma}.
+## For each element of @var{x}, compute the probability density function (PDF)
+## at @var{x} of the lognormal distribution with parameters
+## @var{mu} and @var{sigma}.
+##
+## If a random variable follows this distribution, its logarithm is normally
+## distributed with mean @var{mu} and standard deviation @var{sigma}.
 ##
 ## Default values are @var{mu} = 0, @var{sigma} = 1.
 ## @end deftypefn

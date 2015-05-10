@@ -19,20 +19,22 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{z}] =} wilcoxon_test (@var{x}, @var{y}, @var{alt})
 ## For two matched-pair sample vectors @var{x} and @var{y}, perform a
-## Wilcoxon signed-rank test of the null hypothesis PROB (@var{x} >
-## @var{y}) == 1/2.  Under the null, the test statistic @var{z}
-## approximately follows a standard normal distribution when @var{n} > 25.
+## Wilcoxon signed-rank test of the null hypothesis
+## PROB (@var{x} > @var{y}) == 1/2.
+##
+## Under the null, the test statistic @var{z} approximately follows a
+## standard normal distribution when @var{n} > 25.
 ##
 ## @strong{Caution:} This function assumes a normal distribution for @var{z}
 ## and thus is invalid for @var{n} @leq{} 25.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative
 ## PROB (@var{x} > @var{y}) != 1/2.  If alt is @qcode{">"}, the one-sided
-## alternative PROB (@var{x} > @var{y}) > 1/2 is considered.  Similarly
-## for @qcode{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) <
-## 1/2 is considered.  The default is the two-sided case.
+## alternative PROB (@var{x} > @var{y}) > 1/2 is considered.  Similarly for
+## @qcode{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) < 1/2 is
+## considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

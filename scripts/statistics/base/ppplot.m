@@ -21,26 +21,29 @@
 ## Perform a PP-plot (probability plot).
 ##
 ## If F is the CDF of the distribution @var{dist} with parameters
-## @var{params} and @var{x} a sample vector of length @var{n}, the
-## PP-plot graphs ordinate @var{y}(@var{i}) = F (@var{i}-th largest
-## element of @var{x}) versus abscissa @var{p}(@var{i}) = (@var{i} -
-## 0.5)/@var{n}.  If the sample comes from F, the pairs will
-## approximately follow a straight line.
+## @var{params} and @var{x} a sample vector of length @var{n}, the PP-plot
+## graphs ordinate @var{y}(@var{i}) = F (@var{i}-th largest element of
+## @var{x}) versus abscissa @var{p}(@var{i}) = (@var{i} - 0.5)/@var{n}.  If
+## the sample comes from F, the pairs will approximately follow a straight
+## line.
 ##
-## The default for @var{dist} is the standard normal distribution.  The
-## optional argument @var{params} contains a list of parameters of
-## @var{dist}.  For example, for a probability plot of the uniform
-## distribution on [2,4] and @var{x}, use
+## The default for @var{dist} is the standard normal distribution.
+##
+## The optional argument @var{params} contains a list of parameters of
+## @var{dist}.
+##
+## For example, for a probability plot of the uniform distribution on [2,4]
+## and @var{x}, use
 ##
 ## @example
 ## ppplot (x, "uniform", 2, 4)
 ## @end example
 ##
 ## @noindent
-## @var{dist} can be any string for which a function @var{dist_cdf}
-## that calculates the CDF of distribution @var{dist} exists.
+## @var{dist} can be any string for which a function @var{dist_cdf} that
+## calculates the CDF of distribution @var{dist} exists.
 ##
-## If no output arguments are given, the data are plotted directly.
+## If no output is requested then the data are plotted immediately.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

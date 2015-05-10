@@ -20,21 +20,20 @@
 ## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{rr}, @var{r}, @var{alt})
 ## Perform a t test for the null hypothesis
 ## @nospell{@code{@var{rr} * @var{b} = @var{r}}} in a classical normal
-## regression model @code{@var{y} = @var{x} * @var{b} + @var{e}}.  Under the
-## null, the test statistic @var{t} follows a @var{t} distribution with
-## @var{df} degrees of freedom.
+## regression model @code{@var{y} = @var{x} * @var{b} + @var{e}}.
+##
+## Under the null, the test statistic @var{t} follows a @var{t} distribution
+## with @var{df} degrees of freedom.
 ##
 ## If @var{r} is omitted, a value of 0 is assumed.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
-## @nospell{@code{@var{rr} * @var{b} != @var{r}}}.  If @var{alt} is @qcode{">"},
-## the one-sided alternative
-## @nospell{@code{@var{rr} * @var{b} > @var{r}}} is used.  Similarly for
-## @var{"<"}, the one-sided alternative
-## @nospell{@code{@var{rr} * @var{b} < @var{r}}} is used.  The default is the
-## two-sided case.
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative @nospell{@code{@var{rr} *
+## @var{b} != @var{r}}}.  If @var{alt} is @qcode{">"}, the one-sided
+## alternative @nospell{@code{@var{rr} * @var{b} > @var{r}}} is used. 
+## Similarly for @var{"<"}, the one-sided alternative @nospell{@code{@var{rr}
+## * @var{b} < @var{r}}} is used.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

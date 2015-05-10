@@ -20,29 +20,27 @@
 ## @deftypefn {Function File} {[@var{pval}, @var{k}, @var{df}] =} kruskal_wallis_test (@var{x1}, @dots{})
 ## Perform a @nospell{Kruskal-Wallis} one-factor analysis of variance.
 ##
-## Suppose a variable is observed for @var{k} > 1 different groups, and
-## let @var{x1}, @dots{}, @var{xk} be the corresponding data vectors.
+## Suppose a variable is observed for @var{k} > 1 different groups, and let
+## @var{x1}, @dots{}, @var{xk} be the corresponding data vectors.
 ##
 ## Under the null hypothesis that the ranks in the pooled sample are not
 ## affected by the group memberships, the test statistic @var{k} is
-## approximately chi-square with @var{df} = @var{k} - 1 degrees of
-## freedom.
+## approximately chi-square with @var{df} = @var{k} - 1 degrees of freedom.
 ##
 ## If the data contains ties (some value appears more than once)
 ## @var{k} is divided by
 ##
 ## 1 - @var{sum_ties} / (@var{n}^3 - @var{n})
 ##
-## where @var{sum_ties} is the sum of @var{t}^2 - @var{t} over each group
-## of ties where @var{t} is the number of ties in the group and @var{n}
-## is the total number of values in the input data.  For more info on
-## this adjustment see @nospell{William H. Kruskal and W. Allen Wallis},
+## where @var{sum_ties} is the sum of @var{t}^2 - @var{t} over each group of
+## ties where @var{t} is the number of ties in the group and @var{n} is the
+## total number of values in the input data.  For more info on this
+## adjustment see @nospell{William H. Kruskal and W. Allen Wallis},
 ## @cite{Use of Ranks in One-Criterion Variance Analysis},
-## Journal of the American Statistical Association, Vol. 47,
-## No. 260 (Dec 1952).
+## Journal of the American Statistical Association, Vol. 47, No. 260 (Dec 1952).
 ##
-## The p-value (1 minus the CDF of this distribution at @var{k}) is
-## returned in @var{pval}.
+## The p-value (1 minus the CDF of this distribution at @var{k}) is returned
+## in @var{pval}.
 ##
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn

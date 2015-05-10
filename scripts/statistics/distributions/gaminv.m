@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gaminv (@var{x}, @var{a}, @var{b})
-## For each element of @var{x}, compute the quantile (the inverse of
-## the CDF) at @var{x} of the Gamma distribution with shape parameter
-## @var{a} and scale @var{b}.
+## For each element of @var{x}, compute the quantile (the inverse of the CDF)
+## at @var{x} of the Gamma distribution with shape parameter @var{a} and
+## scale @var{b}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

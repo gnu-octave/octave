@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unidcdf (@var{x}, @var{n})
-## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of a discrete uniform distribution which assumes
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of a discrete uniform distribution which assumes
 ## the integer values 1--@var{n} with equal probability.
 ## @end deftypefn
 

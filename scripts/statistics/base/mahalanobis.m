@@ -19,9 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mahalanobis (@var{x}, @var{y})
 ## Return the Mahalanobis' D-square distance between the multivariate
-## samples @var{x} and @var{y}, which must have the same number of
-## components (columns), but may have a different number of observations
-## (rows).
+## samples @var{x} and @var{y}.
+##
+## The data @var{x} and @var{y} must have the same number of components
+## (columns), but may have a different number of observations (rows).
 ## @end deftypefn
 
 ## Author: Friedrich Leisch <leisch@ci.tuwien.ac.at>

@@ -18,24 +18,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{z}] =} z_test (@var{x}, @var{m}, @var{v}, @var{alt})
-## Perform a Z-test of the null hypothesis @code{mean (@var{x}) ==
-## @var{m}} for a sample @var{x} from a normal distribution with unknown
-## mean and known variance @var{v}.  Under the null, the test statistic
-## @var{z} follows a standard normal distribution.
+## Perform a Z-test of the null hypothesis @code{mean (@var{x}) == @var{m}}
+## for a sample @var{x} from a normal distribution with unknown mean and known
+## variance @var{v}.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
+## Under the null, the test statistic @var{z} follows a standard normal
+## distribution.
+##
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative
 ## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @qcode{">"}, the
 ## one-sided alternative @code{mean (@var{x}) > @var{m}} is considered.
-## Similarly for @qcode{"<"}, the one-sided alternative @code{mean
-## (@var{x}) < @var{m}} is considered.  The default is the two-sided
+## Similarly for @qcode{"<"}, the one-sided alternative
+## @code{mean (@var{x}) < @var{m}} is considered.  The default is the two-sided
 ## case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
-## If no output argument is given, the p-value of the test is displayed
-## along with some information.
+## If no output argument is given, the p-value of the test is displayed along
+## with some information.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -18,8 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{lst} =} dir (@var{f})
-## List the current directory in verbose form for the FTP connection
-## @var{f}.
+## List the current directory in verbose form for the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn

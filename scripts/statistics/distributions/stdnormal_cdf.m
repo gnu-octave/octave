@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_cdf (@var{x})
-## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of the standard normal distribution
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the standard normal distribution
 ## (mean = 0, standard deviation = 1).
 ## @end deftypefn
 

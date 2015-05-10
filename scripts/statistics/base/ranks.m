@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ranks (@var{x}, @var{dim})
 ## Return the ranks of @var{x} along the first non-singleton dimension
-## adjusted for ties.  If the optional argument @var{dim} is
-## given, operate along this dimension.
+## adjusted for ties.
+##
+## If the optional argument @var{dim} is given, operate along this dimension.
 ## @seealso{spearman, kendall}
 ## @end deftypefn
 

@@ -20,10 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} cauchy_pdf (@var{x})
 ## @deftypefnx {Function File} {} cauchy_pdf (@var{x}, @var{location}, @var{scale})
-## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the Cauchy distribution with location parameter
-## @var{location} and scale parameter @var{scale} > 0.  Default values are
-## @var{location} = 0, @var{scale} = 1.
+## For each element of @var{x}, compute the probability density function (PDF)
+## at @var{x} of the Cauchy distribution with location parameter
+## @var{location} and scale parameter @var{scale} > 0.
+##
+## Default values are @var{location} = 0, @var{scale} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

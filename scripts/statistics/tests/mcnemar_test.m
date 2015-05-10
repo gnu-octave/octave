@@ -18,12 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} mcnemar_test (@var{x})
-## For a square contingency table @var{x} of data cross-classified on
-## the row and column variables, @nospell{McNemar's} test can be used for
-## testing the null hypothesis of symmetry of the classification probabilities.
+## For a square contingency table @var{x} of data cross-classified on the row
+## and column variables, @nospell{McNemar's} test can be used for testing the
+## null hypothesis of symmetry of the classification probabilities.
 ##
-## Under the null, @var{chisq} is approximately distributed as chisquare
-## with @var{df} degrees of freedom.
+## Under the null, @var{chisq} is approximately distributed as chisquare with
+## @var{df} degrees of freedom.
 ##
 ## The p-value (1 minus the CDF of this distribution at @var{chisq}) is
 ## returned in @var{pval}.

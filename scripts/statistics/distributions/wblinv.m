@@ -22,8 +22,8 @@
 ## @deftypefnx {Function File} {} wblinv (@var{x}, @var{scale})
 ## @deftypefnx {Function File} {} wblinv (@var{x}, @var{scale}, @var{shape})
 ## Compute the quantile (the inverse of the CDF) at @var{x} of the
-## Weibull distribution with scale parameter @var{scale} and shape
-## parameter @var{shape}.
+## Weibull distribution with scale parameter @var{scale} and
+## shape parameter @var{shape}.
 ##
 ## Default values are @var{scale} = 1, @var{shape} = 1.
 ## @end deftypefn

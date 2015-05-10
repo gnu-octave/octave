@@ -18,24 +18,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{z}] =} z_test_2 (@var{x}, @var{y}, @var{v_x}, @var{v_y}, @var{alt})
-## For two samples @var{x} and @var{y} from normal distributions with
-## unknown means and known variances @var{v_x} and @var{v_y}, perform a
-## Z-test of the hypothesis of equal means.  Under the null, the test
-## statistic @var{z} follows a standard normal distribution.
+## For two samples @var{x} and @var{y} from normal distributions with unknown
+## means and known variances @var{v_x} and @var{v_y}, perform a Z-test of the
+## hypothesis of equal means.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
+## Under the null, the test statistic @var{z} follows a standard normal
+## distribution.
+##
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative
 ## @code{mean (@var{x}) != mean (@var{y})}.  If alt is @qcode{">"}, the
 ## one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is used.
-## Similarly for @qcode{"<"}, the one-sided alternative @code{mean
-## (@var{x}) < mean (@var{y})} is used.  The default is the two-sided
-## case.
+## Similarly for @qcode{"<"}, the one-sided alternative
+## @code{mean (@var{x}) < mean (@var{y})} is used.  The default is the
+## two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
-## If no output argument is given, the p-value of the test is displayed
-## along with some information.
+## If no output argument is given, the p-value of the test is displayed along
+## with some information.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

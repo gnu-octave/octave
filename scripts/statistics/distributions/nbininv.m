@@ -19,16 +19,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nbininv (@var{x}, @var{n}, @var{p})
-## For each element of @var{x}, compute the quantile (the inverse of
-## the CDF) at @var{x} of the negative binomial distribution
-## with parameters @var{n} and @var{p}.
+## For each element of @var{x}, compute the quantile (the inverse of the CDF)
+## at @var{x} of the negative binomial distribution with parameters
+## @var{n} and @var{p}.
 ##
-## When @var{n} is integer this is the Pascal distribution.  When
-## @var{n} is extended to real numbers this is the Polya distribution.
+## When @var{n} is integer this is the Pascal distribution.
+## When @var{n} is extended to real numbers this is the Polya distribution.
 ##
-## The number of failures in a Bernoulli experiment with success
-## probability @var{p} before the @var{n}-th success follows this
-## distribution.
+## The number of failures in a Bernoulli experiment with success probability
+## @var{p} before the @var{n}-th success follows this distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -21,17 +21,19 @@
 ## @deftypefnx {Function File} {@var{q} =} prctile (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} prctile (@var{x}, @var{p}, @var{dim})
 ## For a sample @var{x}, compute the quantiles, @var{q}, corresponding
-## to the cumulative probability values, @var{p}, in percent.  All non-numeric
-## values (NaNs) of @var{x} are ignored.
+## to the cumulative probability values, @var{p}, in percent.
 ##
-## If @var{x} is a matrix, compute the percentiles for each column and
-## return them in a matrix, such that the i-th row of @var{y} contains the
+## If @var{x} is a matrix, compute the percentiles for each column and return
+## them in a matrix, such that the i-th row of @var{y} contains the
 ## @var{p}(i)th percentiles of each column of @var{x}.
 ##
 ## If @var{p} is unspecified, return the quantiles for @code{[0 25 50 75 100]}.
-## The optional argument @var{dim} determines the dimension along which
-## the percentiles are calculated.  If @var{dim} is omitted it defaults to the
-## the first non-singleton dimension.
+##
+## The optional argument @var{dim} determines the dimension along which the
+## percentiles are calculated.  If @var{dim} is omitted it defaults to the
+## first non-singleton dimension.
+##
+## Programming Note: All non-numeric values (NaNs) of @var{x} are ignored.
 ## @seealso{quantile}
 ## @end deftypefn
 

@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} laplace_pdf (@var{x})
-## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the Laplace distribution.
+## For each element of @var{x}, compute the probability density function (PDF)
+## at @var{x} of the Laplace distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

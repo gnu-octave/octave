@@ -21,8 +21,8 @@
 ## @deftypefn  {Function File} {} median (@var{x})
 ## @deftypefnx {Function File} {} median (@var{x}, @var{dim})
 ## Compute the median value of the elements of the vector @var{x}.
-## If the elements of @var{x} are sorted, the median is defined
-## as
+##
+## When the elements of @var{x} are sorted, the median is defined as
 ## @tex
 ## $$
 ## {\rm median} (x) =
@@ -41,9 +41,10 @@
 ## @end example
 ##
 ## @end ifnottex
-## If @var{x} is a matrix, compute the median value for each
-## column and return them in a row vector.  If the optional @var{dim}
-## argument is given, operate along this dimension.
+## If @var{x} is a matrix, compute the median value for each column and
+## return them in a row vector.
+##
+## If the optional @var{dim} argument is given, operate along this dimension.
 ## @seealso{mean, mode}
 ## @end deftypefn
 

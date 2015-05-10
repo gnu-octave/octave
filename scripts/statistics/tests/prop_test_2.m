@@ -18,19 +18,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{z}] =} prop_test_2 (@var{x1}, @var{n1}, @var{x2}, @var{n2}, @var{alt})
-## If @var{x1} and @var{n1} are the counts of successes and trials in
-## one sample, and @var{x2} and @var{n2} those in a second one, test the
-## null hypothesis that the success probabilities @var{p1} and @var{p2}
-## are the same.  Under the null, the test statistic @var{z}
-## approximately follows a standard normal distribution.
+## If @var{x1} and @var{n1} are the counts of successes and trials in one
+## sample, and @var{x2} and @var{n2} those in a second one, test the null
+## hypothesis that the success probabilities @var{p1} and @var{p2} are the
+## same.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
-## @var{p1} != @var{p2}.  If @var{alt} is @qcode{">"}, the one-sided
-## alternative @var{p1} > @var{p2} is used.  Similarly for @qcode{"<"},
-## the one-sided alternative @var{p1} < @var{p2} is used.
-## The default is the two-sided case.
+## Under the null, the test statistic @var{z} approximately follows a
+## standard normal distribution.
+##
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative @var{p1} != @var{p2}.  If
+## @var{alt} is @qcode{">"}, the one-sided alternative @var{p1} > @var{p2} is
+## used.  Similarly for @qcode{"<"}, the one-sided alternative
+## @var{p1} < @var{p2} is used.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

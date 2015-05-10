@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logit (@var{p})
-## For each component of @var{p}, return the logit of @var{p} defined as
+## Compute the logit for each value of @var{p}
+##
+## The logit is defined as
 ## @tex
 ## $$
 ## {\rm logit}(p) = \log\Big({p \over 1-p}\Big)
@@ -31,7 +33,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## @seealso{logistic_cdf}
+## @seealso{probit, logistic_cdf}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

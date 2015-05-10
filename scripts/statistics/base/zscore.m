@@ -17,21 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x})
-## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt})
-## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt}, @var{dim})
+## @deftypefn  {Function File} {@var{z} =} zscore (@var{x})
+## @deftypefnx {Function File} {@var{z} =} zscore (@var{x}, @var{opt})
+## @deftypefnx {Function File} {@var{z} =} zscore (@var{x}, @var{opt}, @var{dim})
+## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@dots{})
+## Compute the Z score of @var{x}
+##
 ## If @var{x} is a vector, subtract its mean and divide by its standard
 ## deviation.  If the standard deviation is zero, divide by 1 instead.
-## The optional parameter @var{opt} determines the normalization to use
-## when computing the standard deviation and is the same as the
+##
+## The optional parameter @var{opt} determines the normalization to use when
+## computing the standard deviation and has the same definition as the
 ## corresponding parameter for @code{std}.
 ##
-## If @var{x} is a matrix, do the above along the first non-singleton
-## dimension.  If the third optional argument @var{dim} is given, operate
-## along this dimension.
+## If @var{x} is a matrix, calculate along the first non-singleton dimension.
+## If the third optional argument @var{dim} is given, operate along this
+## dimension.
 ##
-## The mean and standard deviation along @var{dim} are given in @var{mu}
-## and @var{sigma} respectively.
+## The optional outputs @var{mu} and @var{sigma} contain the mean and standard
+## deviation.
 ##
 ## @seealso{mean, std, center}
 ## @end deftypefn

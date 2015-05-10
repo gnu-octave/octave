@@ -19,11 +19,13 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} wienrnd (@var{t}, @var{d}, @var{n})
 ## Return a simulated realization of the @var{d}-dimensional Wiener Process
-## on the interval [0, @var{t}].  If @var{d} is omitted, @var{d} = 1 is
-## used.  The first column of the return matrix contains time, the
-## remaining columns contain the Wiener process.
+## on the interval [0, @var{t}].
 ##
-## The optional parameter @var{n} gives the number of summands used for
+## If @var{d} is omitted, @var{d} = 1 is used.  The first column of the
+## return matrix contains time, the remaining columns contain the Wiener
+## process.
+##
+## The optional parameter @var{n} defines the number of summands used for
 ## simulating the process over an interval of length 1.  If @var{n} is
 ## omitted, @var{n} = 1000 is used.
 ## @end deftypefn

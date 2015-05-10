@@ -20,8 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gampdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, return the probability density function
-## (PDF) at @var{x} of the Gamma distribution with shape parameter
-## @var{a} and scale @var{b}.
+## (PDF) at @var{x} of the Gamma distribution with shape parameter @var{a} and
+## scale @var{b}.
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>

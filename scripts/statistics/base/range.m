@@ -21,9 +21,11 @@
 ## @deftypefn  {Function File} {} range (@var{x})
 ## @deftypefnx {Function File} {} range (@var{x}, @var{dim})
 ## Return the range, i.e., the difference between the maximum and the minimum
-## of the input data.  If @var{x} is a vector, the range is calculated over
-## the elements of @var{x}.  If @var{x} is a matrix, the range is calculated
-## over each column of @var{x}.
+## of the input data.
+##
+## If @var{x} is a vector, the range is calculated over the elements of
+## @var{x}.  If @var{x} is a matrix, the range is calculated over each column
+## of @var{x}.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##

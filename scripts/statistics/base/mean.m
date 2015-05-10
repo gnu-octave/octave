@@ -22,6 +22,9 @@
 ## @deftypefnx {Function File} {} mean (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {} mean (@var{x}, @var{dim}, @var{opt})
 ## Compute the mean of the elements of the vector @var{x}.
+##
+## The mean is defined as
+##
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## @end tex
@@ -34,6 +37,8 @@
 ## @end ifnottex
 ## If @var{x} is a matrix, compute the mean for each column and return them
 ## in a row vector.
+##
+## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## The optional argument @var{opt} selects the type of mean to compute.
 ## The following options are recognized:
@@ -49,10 +54,8 @@
 ## Compute the harmonic mean.
 ## @end table
 ##
-## If the optional argument @var{dim} is given, operate along this dimension.
-##
-## Both @var{dim} and @var{opt} are optional.  If both are supplied,
-## either may appear first.
+## Both @var{dim} and @var{opt} are optional.  If both are supplied, either
+## may appear first.
 ## @seealso{median, mode}
 ## @end deftypefn
 

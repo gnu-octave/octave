@@ -19,18 +19,20 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{z}] =} u_test (@var{x}, @var{y}, @var{alt})
 ## For two samples @var{x} and @var{y}, perform a Mann-Whitney U-test of
-## the null hypothesis PROB (@var{x} > @var{y}) == 1/2 == PROB (@var{x}
-## < @var{y}).  Under the null, the test statistic @var{z} approximately
-## follows a standard normal distribution.  Note that this test is
-## equivalent to the Wilcoxon rank-sum test.
+## the null hypothesis
+## PROB (@var{x} > @var{y}) == 1/2 == PROB (@var{x} < @var{y}).
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
-## PROB (@var{x} > @var{y}) != 1/2.  If @var{alt} is @qcode{">"}, the
-## one-sided alternative PROB (@var{x} > @var{y}) > 1/2 is considered.
-## Similarly for @qcode{"<"}, the one-sided alternative PROB (@var{x} >
-## @var{y}) < 1/2 is considered.  The default is the two-sided case.
+## Under the null, the test statistic @var{z} approximately follows a
+## standard normal distribution.  Note that this test is equivalent to the
+## Wilcoxon rank-sum test.
+##
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative
+## PROB (@var{x} > @var{y}) != 1/2.  If @var{alt} is @qcode{">"}, the one-sided
+## alternative PROB (@var{x} > @var{y}) > 1/2 is considered.  Similarly for
+## @qcode{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) < 1/2 is
+## considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

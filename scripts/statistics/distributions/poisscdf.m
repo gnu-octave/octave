@@ -19,9 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} poisscdf (@var{x}, @var{lambda})
-## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of the Poisson distribution with parameter
-## lambda.
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the Poisson distribution with parameter @var{lambda}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

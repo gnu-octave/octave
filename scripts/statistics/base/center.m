@@ -20,9 +20,19 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} center (@var{x})
 ## @deftypefnx {Function File} {} center (@var{x}, @var{dim})
+## Center data by subtracting its mean.
+##
 ## If @var{x} is a vector, subtract its mean.
+##
 ## If @var{x} is a matrix, do the above for each column.
+##
 ## If the optional argument @var{dim} is given, operate along this dimension.
+##
+## Programming Note: @code{center} has obvious application for normalizing
+## statistical data.  It is also useful for improving the precision of general
+## numerical calculations.  Whenever there is a large value that is common
+## to a batch of data, the mean can be subtracted off, the calculation
+## performed, and then the mean added back to obtain the final answer.
 ## @seealso{zscore}
 ## @end deftypefn
 

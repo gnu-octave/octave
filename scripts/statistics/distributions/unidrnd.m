@@ -24,6 +24,7 @@
 ## @deftypefnx {Function File} {} unidrnd (@var{n}, [@var{sz}])
 ## Return a matrix of random samples from the discrete uniform distribution
 ## which assumes the integer values 1--@var{n} with equal probability.
+##
 ## @var{n} may be a scalar or a multi-dimensional array.
 ##
 ## When called with a single size argument, return a square matrix with

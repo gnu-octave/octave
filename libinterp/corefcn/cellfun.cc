@@ -283,8 +283,10 @@ DEFUN (cellfun, args, nargout,
 @deftypefnx {Built-in Function} {} cellfun (@dots{}, \"UniformOutput\", @var{val})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
-@var{C}.  Elements in @var{C} are passed on to the named function\n\
-individually.  The function @var{name} can be one of the functions\n\
+@var{C}.\n\
+\n\
+Elements in @var{C} are passed on to the named function individually.  The\n\
+function @var{name} can be one of the functions\n\
 \n\
 @table @code\n\
 @item isempty\n\
@@ -320,7 +322,7 @@ Return 1 for elements of @var{class}.\n\
 Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
 in the form of an inline function, function handle, or the name of a\n\
 function (in a character string).  The function can take one or more\n\
-arguments, with the inputs arguments given by @var{C}, @var{D}, etc.  \n\
+arguments, with the inputs arguments given by @var{C}, @var{D}, etc.\n\
 Equally the function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
@@ -1066,9 +1068,11 @@ DEFUN (arrayfun, args, nargout,
 @deftypefnx {Function File} {} arrayfun (@dots{}, \"UniformOutput\", @var{val})\n\
 @deftypefnx {Function File} {} arrayfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
 \n\
-Execute a function on each element of an array.  This is useful for\n\
-functions that do not accept array arguments.  If the function does\n\
-accept array arguments it is better to call the function directly.\n\
+Execute a function on each element of an array.\n\
+\n\
+This is useful for functions that do not accept array arguments.  If the\n\
+function does accept array arguments it is better to call the function\n\
+directly.\n\
 \n\
 The first input argument @var{func} can be a string, a function\n\
 handle, an inline function, or an anonymous function.  The input\n\
@@ -1863,9 +1867,11 @@ DEFUN (num2cell, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} num2cell (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
-Convert the numeric matrix @var{A} to a cell array.  If @var{dim} is\n\
-defined, the value @var{C} is of dimension 1 in this dimension and the\n\
-elements of @var{A} are placed into @var{C} in slices.  For example:\n\
+Convert the numeric matrix @var{A} to a cell array.\n\
+\n\
+If @var{dim} is defined, the value @var{C} is of dimension 1 in this\n\
+dimension and the elements of @var{A} are placed into @var{C} in slices.\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2194,12 +2200,14 @@ DEFUN (mat2cell, args, ,
 @deftypefn  {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
 @deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
-Convert the matrix @var{A} to a cell array.  If @var{A} is 2-D, then\n\
-it is required that @code{sum (@var{m}) == size (@var{A}, 1)} and\n\
+Convert the matrix @var{A} to a cell array.\n\
+\n\
+If @var{A} is 2-D, then it is required that\n\
+@code{sum (@var{m}) == size (@var{A}, 1)} and\n\
 @code{sum (@var{n}) == size (@var{A}, 2)}.  Similarly, if @var{A} is\n\
-multi-dimensional and the number of dimensional arguments is equal\n\
-to the dimensions of @var{A}, then it is required that @code{sum (@var{di})\n\
-== size (@var{A}, i)}.\n\
+multi-dimensional and the number of dimensional arguments is equal to the\n\
+dimensions of @var{A}, then it is required that\n\
+@code{sum (@var{di}) == size (@var{A}, i)}.\n\
 \n\
 Given a single dimensional argument @var{r}, the other dimensional\n\
 arguments are assumed to equal @code{size (@var{A},@var{i})}.\n\
@@ -2365,8 +2373,9 @@ DEFUN (cellslices, args, ,
 @deftypefn {Built-in Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
 Given an array @var{x}, this function produces a cell array of slices from\n\
 the array determined by the index vectors @var{lb}, @var{ub}, for lower and\n\
-upper bounds, respectively.  In other words, it is equivalent to the\n\
-following code:\n\
+upper bounds, respectively.\n\
+\n\
+In other words, it is equivalent to the following code:\n\
 \n\
 @example\n\
 @group\n\
@@ -2498,6 +2507,8 @@ slicing is done along the first non-singleton dimension.\n\
 DEFUN (cellindexmat, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
+Perform indexing of matrices in a cell array.\n\
+\n\
 Given a cell array of matrices @var{x}, this function computes\n\
 \n\
 @example\n\

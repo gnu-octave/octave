@@ -764,21 +764,21 @@ Pick a number, any number!\n\
 \n\
 @noindent\n\
 and waits for the user to enter a value.  The string entered by the user\n\
-is evaluated as an expression, so it may be a literal constant, a\n\
-variable name, or any other valid Octave code.\n\
+is evaluated as an expression, so it may be a literal constant, a variable\n\
+name, or any other valid Octave code.\n\
 \n\
 The number of return arguments, their size, and their class depend on the\n\
 expression entered.\n\
 \n\
-If you are only interested in getting a literal string value, you can\n\
-call @code{input} with the character string @qcode{\"s\"} as the second\n\
-argument.  This tells Octave to return the string entered by the user\n\
-directly, without evaluating it first.\n\
+If you are only interested in getting a literal string value, you can call\n\
+@code{input} with the character string @qcode{\"s\"} as the second argument.\n\
+This tells Octave to return the string entered by the user directly, without\n\
+evaluating it first.\n\
 \n\
-Because there may be output waiting to be displayed by the pager, it is\n\
-a good idea to always call @code{fflush (stdout)} before calling\n\
-@code{input}.  This will ensure that all pending output is written to\n\
-the screen before your prompt.\n\
+Because there may be output waiting to be displayed by the pager, it is a\n\
+good idea to always call @code{fflush (stdout)} before calling @code{input}.\n\
+ This will ensure that all pending output is written to the screen before\n\
+your prompt.\n\
 @seealso{yes_or_no, kbhit, pause, menu, listdlg}\n\
 @end deftypefn")
 {
@@ -820,6 +820,7 @@ DEFUN (yes_or_no, args, ,
 Ask the user a yes-or-no question.\n\
 \n\
 Return logical true if the answer is yes or false if the answer is no.\n\
+\n\
 Takes one argument, @var{prompt}, which is the string to display when asking\n\
 the question.  @var{prompt} should end in a space; @code{yes-or-no} adds the\n\
 string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
@@ -897,9 +898,10 @@ DEFUN (keyboard, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} keyboard ()\n\
 @deftypefnx {Built-in Function} {} keyboard (\"@var{prompt}\")\n\
-This function is normally used for simple debugging.  When the\n\
-@code{keyboard} function is executed, Octave prints a prompt and waits\n\
-for user input.  The input strings are then evaluated and the results\n\
+Stop m-file execution and enter debug mode.\n\
+\n\
+When the @code{keyboard} function is executed, Octave prints a prompt and\n\
+waits for user input.  The input strings are then evaluated and the results\n\
 are printed.  This makes it possible to examine the values of variables\n\
 within a function, and to assign new values if necessary.  To leave the\n\
 prompt and return to normal execution type @samp{return} or @samp{dbcont}.\n\
@@ -940,8 +942,9 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 DEFUN (echo, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Command} {} echo options\n\
-Control whether commands are displayed as they are executed.  Valid\n\
-options are:\n\
+Control whether commands are displayed as they are executed.\n\
+\n\
+Valid options are:\n\
 \n\
 @table @code\n\
 @item on\n\
@@ -1109,9 +1112,10 @@ a feature, not a bug.\n\
 DEFUN (readline_read_init_file, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} readline_read_init_file (@var{file})\n\
-Read the readline library initialization file @var{file}.  If\n\
-@var{file} is omitted, read the default initialization file (normally\n\
-@file{~/.inputrc}).\n\
+Read the readline library initialization file @var{file}.\n\
+\n\
+If @var{file} is omitted, read the default initialization file\n\
+(normally @file{~/.inputrc}).\n\
 \n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
 for details.\n\
@@ -1141,6 +1145,7 @@ DEFUN (readline_re_read_init_file, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} readline_re_read_init_file ()\n\
 Re-read the last readline library initialization file that was read.\n\
+\n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
 for details.\n\
 @seealso{readline_read_init_file}\n\
@@ -1172,18 +1177,18 @@ DEFUN (add_input_event_hook, args, ,
 @deftypefn  {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn})\n\
 @deftypefnx {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
 Add the named function or function handle @var{fcn} to the list of functions\n\
-to call periodically when Octave is waiting for input.  The function should\n\
-have the form\n\
+to call periodically when Octave is waiting for input.\n\
+\n\
+The function should have the form\n\
 \n\
 @example\n\
 @var{fcn} (@var{data})\n\
 @end example\n\
 \n\
-If @var{data} is omitted, Octave calls the function without any\n\
-arguments.\n\
+If @var{data} is omitted, Octave calls the function without any arguments.\n\
 \n\
-The returned identifier may be used to remove the function handle from\n\
-the list of input hook functions.\n\
+The returned identifier may be used to remove the function handle from the\n\
+list of input hook functions.\n\
 @seealso{remove_input_event_hook}\n\
 @end deftypefn")
 {
@@ -1266,8 +1271,10 @@ DEFUN (PS1, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} PS1 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PS1 (@var{new_val}, \"local\")\n\
-Query or set the primary prompt string.  When executing interactively,\n\
-Octave displays the primary prompt when it is ready to read a command.\n\
+Query or set the primary prompt string.\n\
+\n\
+When executing interactively, Octave displays the primary prompt when it is\n\
+ready to read a command.\n\
 \n\
 The default value of the primary prompt string is @qcode{\"octave:\\#> \"}.\n\
 To change it, use a command like\n\
@@ -1293,7 +1300,7 @@ PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\\\]\")\n\
 will give the default Octave prompt a red coloring.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
@@ -1306,15 +1313,16 @@ DEFUN (PS2, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} PS2 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PS2 (@var{new_val}, \"local\")\n\
-Query or set the secondary prompt string.  The secondary prompt is\n\
-printed when Octave is expecting additional input to complete a\n\
-command.  For example, if you are typing a @code{for} loop that spans several\n\
-lines, Octave will print the secondary prompt at the beginning of\n\
-each line after the first.  The default value of the secondary prompt\n\
+Query or set the secondary prompt string.\n\
+\n\
+The secondary prompt is printed when Octave is expecting additional input to\n\
+complete a command.  For example, if you are typing a @code{for} loop that\n\
+spans several lines, Octave will print the secondary prompt at the beginning\n\
+of each line after the first.  The default value of the secondary prompt\n\
 string is @qcode{\"> \"}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{PS1, PS4}\n\
 @end deftypefn")
@@ -1329,11 +1337,12 @@ DEFUN (PS4, args, nargout,
 @deftypefnx {Built-in Function} {} PS4 (@var{new_val}, \"local\")\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands is enabled.\n\
+\n\
 The default value is @qcode{\"+ \"}.\n\
 @xref{Diary and Echo Commands}, for a description of echoing commands.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{echo, echo_executing_commands, PS1, PS2}\n\
 @end deftypefn")
@@ -1347,11 +1356,12 @@ DEFUN (completion_append_char, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} completion_append_char (@var{new_val}, \"local\")\n\
 Query or set the internal character variable that is appended to\n\
-successful command-line completion attempts.  The default\n\
-value is @qcode{\" \"} (a single space).\n\
+successful command-line completion attempts.\n\
+\n\
+The default value is @qcode{\" \"} (a single space).\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
@@ -1364,6 +1374,7 @@ DEFUN (echo_executing_commands, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} echo_executing_commands (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls the echo state.\n\
+\n\
 It may be the sum of the following values:\n\
 \n\
 @table @asis\n\
@@ -1384,7 +1395,7 @@ The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
 command or the command line option @option{--echo-commands}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
@@ -1438,7 +1449,9 @@ DEFUN (filemarker, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} filemarker (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\
 Query or set the character used to separate the filename from the subfunction\n\
-names contained within the file.  By default this is the character @samp{>}.\n\
+names contained within the file.\n\
+\n\
+By default this is the character @samp{>}.\n\
 This can be used in a generic manner to interact with subfunctions.\n\
 For example,\n\
 \n\

@@ -342,8 +342,10 @@ DEFUN (fgetl, args, ,
 @deftypefn  {Built-in Function} {@var{str} =} fgetl (@var{fid})\n\
 @deftypefnx {Built-in Function} {@var{str} =} fgetl (@var{fid}, @var{len})\n\
 Read characters from a file, stopping after a newline, or EOF,\n\
-or @var{len} characters have been read.  The characters read, excluding\n\
-the possible trailing newline, are returned as a string.\n\
+or @var{len} characters have been read.\n\
+\n\
+The characters read, excluding the possible trailing newline, are returned\n\
+as a string.\n\
 \n\
 If @var{len} is omitted, @code{fgetl} reads until the next newline character.\n\
 \n\
@@ -392,8 +394,10 @@ DEFUN (fgets, args, ,
 @deftypefn  {Built-in Function} {@var{str} =} fgets (@var{fid})\n\
 @deftypefnx {Built-in Function} {@var{str} =} fgets (@var{fid}, @var{len})\n\
 Read characters from a file, stopping after a newline, or EOF,\n\
-or @var{len} characters have been read.  The characters read, including\n\
-the possible trailing newline, are returned as a string.\n\
+or @var{len} characters have been read.\n\
+\n\
+The characters read, including the possible trailing newline, are returned\n\
+as a string.\n\
 \n\
 If @var{len} is omitted, @code{fgets} reads until the next newline character.\n\
 \n\
@@ -591,6 +595,8 @@ DEFUN (fopen, args, nargout,
 @deftypefnx {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@dots{})\n\
 @deftypefnx {Built-in Function} {@var{fid_list} =} fopen (\"all\")\n\
 @deftypefnx {Built-in Function} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})\n\
+Open a file for low-level I/O or query open files and file descriptors.\n\
+\n\
 The first form of the @code{fopen} function opens the named file with\n\
 the specified mode (read-write, read-only, etc.) and architecture\n\
 interpretation (IEEE big endian, IEEE little endian, etc.), and returns\n\
@@ -747,7 +753,9 @@ DEFUN (freport, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} freport ()\n\
 Print a list of which files have been opened, and whether they are open\n\
-for reading, writing, or both.  For example:\n\
+for reading, writing, or both.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1063,10 +1071,11 @@ DEFUN (sprintf, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sprintf (@var{template}, @dots{})\n\
 This is like @code{printf}, except that the output is returned as a\n\
-string.  Unlike the C library function, which requires you to provide a\n\
-suitably sized string as an argument, Octave's @code{sprintf} function\n\
-returns the string, automatically sized to hold all of the items\n\
-converted.\n\
+string.\n\
+\n\
+Unlike the C library function, which requires you to provide a suitably\n\
+sized string as an argument, Octave's @code{sprintf} function returns the\n\
+string, automatically sized to hold all of the items converted.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
 the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
@@ -1159,8 +1168,7 @@ of @var{nr}, the last column is padded with zeros.\n\
 @noindent\n\
 If @var{size} is omitted, a value of @code{Inf} is assumed.\n\
 \n\
-A string is returned if @var{template} specifies only character\n\
-conversions.\n\
+A string is returned if @var{template} specifies only character conversions.\n\
 \n\
 The number of items successfully read is returned in @var{count}.\n\
 \n\
@@ -1263,10 +1271,11 @@ DEFUN (sscanf, args, ,
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
 @deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
-string @var{string} instead of from a stream.  Reaching the end of the\n\
-string is treated as an end-of-file condition.  In addition to the values\n\
-returned by @code{fscanf}, the index of the next character to be read\n\
-is returned in @var{pos}.\n\
+string @var{string} instead of from a stream.\n\
+\n\
+Reaching the end of the string is treated as an end-of-file condition.  In\n\
+addition to the values returned by @code{fscanf}, the index of the next\n\
+character to be read is returned in @var{pos}.\n\
 @seealso{fscanf, scanf, sprintf}\n\
 @end deftypefn")
 {
@@ -1805,14 +1814,14 @@ Query the error status of the stream specified by file descriptor @var{fid}\n\
 If an error condition exists then return a string @var{msg} describing the\n\
 error.  Otherwise, return an empty string @qcode{\"\"}.\n\
 \n\
+The second input @qcode{\"clear\"} is optional.  If supplied, the error\n\
+state on the stream will be cleared.\n\
+\n\
 The optional second output is a numeric indication of the error status.\n\
 @var{err} is 1 if an error condition has been encountered and 0 otherwise.\n\
 \n\
 Note that @code{ferror} indicates if an error has already occurred, not\n\
 whether the next operation will result in an error condition.\n\
-\n\
-The second input @qcode{\"clear\"} is optional.  If supplied, the error\n\
-state on the stream will be cleared.\n\
 @seealso{fclear, fopen}\n\
 @end deftypefn")
 {
@@ -1855,9 +1864,9 @@ state on the stream will be cleared.\n\
 DEFUNX ("popen", Fpopen, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{fid} =} popen (@var{command}, @var{mode})\n\
-Start a process and create a pipe.  The name of the command to run is\n\
-given by @var{command}.  The file identifier corresponding to the input\n\
-or output stream of the process is returned in @var{fid}.  The argument\n\
+Start a process and create a pipe.\n\
+\n\
+The name of the command to run is given by @var{command}.  The argument\n\
 @var{mode} may be\n\
 \n\
 @table @code\n\
@@ -1869,6 +1878,9 @@ open for reading.\n\
 The pipe will be connected to the standard input of the process, and\n\
 open for writing.\n\
 @end table\n\
+\n\
+The file identifier corresponding to the input or output stream of the\n\
+process is returned in @var{fid}.\n\
 \n\
 For example:\n\
 \n\
@@ -1957,6 +1969,7 @@ DEFUN (tempname, args, ,
 Return a unique temporary file name as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
+\n\
 If @var{dir} is also omitted, the default directory for temporary files\n\
 (@code{P_tmpdir}) is used.  If @var{dir} is provided, it must exist,\n\
 otherwise the default directory for temporary files is used.\n\
@@ -2222,8 +2235,9 @@ DEFUNX ("umask", Fumask, args, ,
 @deftypefn {Built-in Function} {} umask (@var{mask})\n\
 Set the permission mask for file creation.\n\
 \n\
-The parameter @var{mask} is an integer, interpreted as an octal number.  If\n\
-successful, returns the previous value of the mask (as an integer to be\n\
+The parameter @var{mask} is an integer, interpreted as an octal number.\n\
+\n\
+If successful, returns the previous value of the mask (as an integer to be\n\
 interpreted as an octal number); otherwise an error message is printed.\n\
 @seealso{fopen, mkdir}\n\
 @end deftypefn")

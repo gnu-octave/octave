@@ -482,12 +482,11 @@ DEFUN (EDITOR, args, nargout,
 Query or set the internal variable that specifies the default text editor.\n\
 \n\
 The default value is taken from the environment variable @w{@env{EDITOR}}\n\
-when Octave starts.  If the\n\
-environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
-@qcode{\"emacs\"}.\n\
+when Octave starts.  If the environment variable is not initialized,\n\
+@w{@env{EDITOR}} will be set to @qcode{\"emacs\"}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 \n\
 @seealso{edit, edit_history}\n\
@@ -515,12 +514,14 @@ DEFUN (EXEC_PATH, args, nargout,
 @deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories to append to the shell PATH when executing external\n\
-programs.  The initial value of is taken from the environment variable\n\
-@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by\n\
-the command line argument @option{--exec-path PATH}.\n\
+programs.\n\
+\n\
+The initial value of is taken from the environment variable\n\
+@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by the command\n\
+line argument @option{--exec-path PATH}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 \n\
 @seealso{IMAGE_PATH, OCTAVE_HOME}\n\
@@ -555,7 +556,7 @@ Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 \n\
 @seealso{EXEC_PATH, OCTAVE_HOME}\n\
@@ -580,7 +581,6 @@ DEFUN (OCTAVE_HOME, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
 Return the name of the top-level Octave installation directory.\n\
-\n\
 @seealso{EXEC_PATH, IMAGE_PATH}\n\
 @end deftypefn")
 {

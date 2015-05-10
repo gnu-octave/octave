@@ -37,11 +37,12 @@ DEFUN (hex2num, args, ,
 @deftypefn  {Built-in Function} {@var{n} =} hex2num (@var{s})\n\
 @deftypefnx {Built-in Function} {@var{n} =} hex2num (@var{s}, @var{class})\n\
 Typecast the 16 character hexadecimal character string to an IEEE 754\n\
-double precision number.  If fewer than 16 characters are given the\n\
-strings are right padded with @qcode{'0'} characters.\n\
+double precision number.\n\
 \n\
-Given a string matrix, @code{hex2num} treats each row as a separate\n\
-number.\n\
+If fewer than 16 characters are given the strings are right padded with\n\
+@qcode{'0'} characters.\n\
+\n\
+Given a string matrix, @code{hex2num} treats each row as a separate number.\n\
 \n\
 @example\n\
 @group\n\
@@ -53,7 +54,7 @@ hex2num ([\"4005bf0a8b145769\"; \"4024000000000000\"])\n\
 The optional argument @var{class} can be passed as the string\n\
 @qcode{\"single\"} to specify that the given string should be interpreted as\n\
 a single precision number.  In this case, @var{s} should be an 8 character\n\
-hexadecimal string.  For example: \n\
+hexadecimal string.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -201,6 +202,7 @@ DEFUN (num2hex, args, ,
 @deftypefn {Built-in Function} {@var{s} =} num2hex (@var{n})\n\
 Typecast a double or single precision number or vector to a 8 or 16\n\
 character hexadecimal string of the IEEE 754 representation of the number.\n\
+\n\
 For example:\n\
 \n\
 @example\n\

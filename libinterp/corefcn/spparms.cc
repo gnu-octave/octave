@@ -44,10 +44,12 @@ DEFUN (spparms, args, nargout,
 @deftypefnx {Built-in Function} { } spparms (\"tight\")\n\
 @deftypefnx {Built-in Function} { } spparms (@var{key}, @var{val})\n\
 Query or set the parameters used by the sparse solvers and factorization\n\
-functions.  The first four calls above get information about the current\n\
-settings, while the others change the current settings.  The parameters are\n\
-stored as pairs of keys and values, where the values are all floats and the\n\
-keys are one of the following strings:\n\
+functions.\n\
+\n\
+The first four calls above get information about the current settings, while\n\
+the others change the current settings.  The parameters are stored as pairs\n\
+of keys and values, where the values are all floats and the keys are one of\n\
+the following strings:\n\
 \n\
 @table @samp\n\
 @item spumoni\n\

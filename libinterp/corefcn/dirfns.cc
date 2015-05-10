@@ -174,8 +174,8 @@ strings.\n\
 \n\
 If an error occurs, return an empty cell array in @var{files}.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
+error message.\n\
 @seealso{ls, dir, glob, what}\n\
 @end deftypefn")
 {
@@ -310,13 +310,14 @@ DEFUNX ("rmdir", Frmdir, args, ,
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})\n\
 Remove the directory named @var{dir}.\n\
 \n\
+If the optional second parameter is supplied with value @qcode{\"s\"},\n\
+recursively remove all subdirectories as well.\n\
+\n\
 If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
 character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
 system-dependent error message, and @var{msgid} contains a unique message\n\
 identifier.\n\
 \n\
-If the optional second parameter is supplied with value @qcode{\"s\"},\n\
-recursively remove all subdirectories as well.\n\
 @seealso{mkdir, confirm_recursive_rmdir, pwd}\n\
 @end deftypefn")
 {
@@ -386,8 +387,8 @@ DEFUNX ("link", Flink, args, ,
 Create a new link (also known as a hard link) to an existing file.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
+error message.\n\
 @seealso{symlink, unlink, readlink, lstat}\n\
 @end deftypefn")
 {
@@ -433,8 +434,8 @@ DEFUNX ("symlink", Fsymlink, args, ,
 Create a symbolic link @var{new} which contains the string @var{old}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
+error message.\n\
 @seealso{link, unlink, readlink, lstat}\n\
 @end deftypefn")
 {
@@ -524,8 +525,8 @@ DEFUNX ("rename", Frename, args, ,
 Change the name of file @var{old} to @var{new}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
+error message.\n\
 @seealso{movefile, copyfile, ls, dir}\n\
 @end deftypefn")
 {
@@ -569,8 +570,11 @@ DEFUN (glob, args, ,
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
 Given an array of pattern strings (as a char array or a cell array) in\n\
 @var{pattern}, return a cell array of file names that match any of\n\
-them, or an empty cell array if no patterns match.  The pattern strings are\n\
-interpreted as filename globbing patterns (as they are used by Unix shells).\n\
+them, or an empty cell array if no patterns match.\n\
+\n\
+The pattern strings are interpreted as filename globbing patterns (as they\n\
+are used by Unix shells).\n\
+\n\
 Within a pattern\n\
 \n\
 @table @code\n\
@@ -670,6 +674,7 @@ DEFUN (__fnmatch__, args, ,
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return true or false for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\
+\n\
 filename pattern matching.  For example:\n\
 \n\
 @example\n\
@@ -794,7 +799,7 @@ Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{rmdir}\n\
 @end deftypefn")

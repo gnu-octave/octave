@@ -65,7 +65,9 @@ DEFUN (schur, args, nargout,
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
 @deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@dots{})\n\
 @cindex Schur decomposition\n\
-Compute the Schur@tie{}decomposition of @var{A}\n\
+Compute the Schur@tie{}decomposition of @var{A}.\n\
+\n\
+The Schur@tie{}decomposition is defined as\n\
 @tex\n\
 $$\n\
  S = U^T A U\n\
@@ -86,10 +88,10 @@ where @var{U} is a unitary matrix\n\
 (@code{@var{U}'* @var{U}} is identity)\n\
 @end ifnottex\n\
 and @var{S} is upper triangular.  The eigenvalues of @var{A} (and @var{S})\n\
-are the diagonal elements of @var{S}.  If the matrix @var{A}\n\
-is real, then the real Schur@tie{}decomposition is computed, in which the\n\
-matrix @var{U} is orthogonal and @var{S} is block upper triangular\n\
-with blocks of size at most\n\
+are the diagonal elements of @var{S}.  If the matrix @var{A} is real, then\n\
+the real Schur@tie{}decomposition is computed, in which the matrix @var{U}\n\
+is orthogonal and @var{S} is block upper triangular with blocks of size at\n\
+most\n\
 @tex\n\
 $2 \\times 2$\n\
 @end tex\n\
@@ -110,20 +112,19 @@ The default for real matrices is a real Schur@tie{}decomposition.\n\
 A complex decomposition may be forced by passing the flag\n\
 @qcode{\"complex\"}.\n\
 \n\
-The eigenvalues are optionally ordered along the diagonal according to\n\
-the value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all\n\
-eigenvalues with negative real parts should be moved to the leading\n\
-block of @var{S}\n\
-(used in @code{are}), @code{@var{opt} = \"d\"} indicates that all eigenvalues\n\
-with magnitude less than one should be moved to the leading block of @var{S}\n\
-(used in @code{dare}), and @code{@var{opt} = \"u\"}, the default, indicates\n\
-that no ordering of eigenvalues should occur.  The leading @var{k}\n\
-columns of @var{U} always span the @var{A}-invariant\n\
+The eigenvalues are optionally ordered along the diagonal according to the\n\
+value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all eigenvalues\n\
+with negative real parts should be moved to the leading block of @var{S}\n\
+(used in @code{are}), @code{@var{opt} = \"d\"} indicates that all\n\
+eigenvalues with magnitude less than one should be moved to the leading\n\
+block of @var{S} (used in @code{dare}), and @code{@var{opt} = \"u\"}, the\n\
+default, indicates that no ordering of eigenvalues should occur.  The\n\
+leading @var{k} columns of @var{U} always span the @var{A}-invariant\n\
 subspace corresponding to the @var{k} leading eigenvalues of @var{S}.\n\
 \n\
-The Schur@tie{}decomposition is used to compute eigenvalues of a\n\
-square matrix, and has applications in the solution of algebraic\n\
-Riccati equations in control (see @code{are} and @code{dare}).\n\
+The Schur@tie{}decomposition is used to compute eigenvalues of a square\n\
+matrix, and has applications in the solution of algebraic Riccati equations\n\
+in control (see @code{are} and @code{dare}).\n\
 @seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}\n\
 @end deftypefn")
 {

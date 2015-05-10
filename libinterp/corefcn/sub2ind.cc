@@ -69,10 +69,9 @@ DEFUN (sub2ind, args, ,
 @deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
 Convert subscripts to a linear index.\n\
 \n\
-The following example shows how to convert the two-dimensional\n\
-index @code{(2,3)} of a 3-by-3 matrix to a linear index.  The matrix\n\
-is linearly indexed moving from one column to next, filling up\n\
-all rows in each column.\n\
+The following example shows how to convert the two-dimensional index\n\
+@code{(2,3)} of a 3-by-3 matrix to a linear index.  The matrix is linearly\n\
+indexed moving from one column to next, filling up all rows in each column.\n\
 \n\
 @example\n\
 @group\n\

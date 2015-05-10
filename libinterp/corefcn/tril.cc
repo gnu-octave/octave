@@ -355,16 +355,17 @@ DEFUN (tril, args, ,
 @deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
 Return a new matrix formed by extracting the lower (@code{tril})\n\
 or upper (@code{triu}) triangular part of the matrix @var{A}, and\n\
-setting all other elements to zero.  The second argument is optional,\n\
-and specifies how many diagonals above or below the main diagonal should\n\
-also be set to zero.\n\
+setting all other elements to zero.\n\
 \n\
-The default value of @var{k} is zero, so that @code{triu} and\n\
-@code{tril} normally include the main diagonal as part of the result.\n\
+The second argument is optional, and specifies how many diagonals above or\n\
+below the main diagonal should also be set to zero.\n\
 \n\
-If the value of @var{k} is nonzero integer, the selection of elements\n\
-starts at an offset of @var{k} diagonals above or below the main\n\
-diagonal; above for positive @var{k} and below for negative @var{k}.\n\
+The default value of @var{k} is zero, so that @code{triu} and @code{tril}\n\
+normally include the main diagonal as part of the result.\n\
+\n\
+If the value of @var{k} is nonzero integer, the selection of elements starts\n\
+at an offset of @var{k} diagonals above or below the main diagonal; above\n\
+for positive @var{k} and below for negative @var{k}.\n\
 \n\
 The absolute value of @var{k} must not be greater than the number of\n\
 subdiagonals or superdiagonals.\n\
@@ -407,6 +408,7 @@ DEFUN (triu, args, ,
 @deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
 See the documentation for the @code{tril} function (@pxref{tril}).\n\
+@seealso{tril}\n\
 @end deftypefn")
 {
   return do_trilu ("triu", args);

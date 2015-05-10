@@ -163,9 +163,11 @@ DEFUN (dlmread, args, ,
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@dots{}, \"emptyvalue\", @var{EMPTYVAL})\n\
-Read the matrix @var{data} from a text file.  If not defined the separator\n\
-between fields is determined from the file itself.  Otherwise the\n\
-separation character is defined by @var{sep}.\n\
+Read the matrix @var{data} from a text file which uses the delimiter\n\
+@var{sep} between data values.\n\
+\n\
+If @var{sep} is not defined the separator between fields is determined from\n\
+the file itself.\n\
 \n\
 Given two scalar arguments @var{r0} and @var{c0}, these define the starting\n\
 row and column of the data to be read.  These values are indexed from zero,\n\

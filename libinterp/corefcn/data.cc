@@ -214,8 +214,9 @@ DEFUN (atan2, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
 Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
-and @var{x}.  Signal an error if @var{y} and @var{x} do not match in size\n\
-and orientation.\n\
+and @var{x}.\n\
+\n\
+@var{y} and @var{x} must match in size and orientation.\n\
 @seealso{tan, tand, tanh, atanh}\n\
 @end deftypefn")
 {
@@ -384,9 +385,12 @@ DEFUN (hypot, args, ,
 @deftypefn  {Built-in Function} {} hypot (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} hypot (@var{x}, @var{y}, @var{z}, @dots{})\n\
 Compute the element-by-element square root of the sum of the squares of\n\
-@var{x} and @var{y}.  This is equivalent to\n\
-@code{sqrt (@var{x}.^2 + @var{y}.^2)}, but calculated in a manner that\n\
+@var{x} and @var{y}.\n\
+\n\
+This is equivalent to\n\
+@code{sqrt (@var{x}.^2 + @var{y}.^2)}, but is calculated in a manner that\n\
 avoids overflows for large values of @var{x} or @var{y}.\n\
+\n\
 @code{hypot} can also be called with more than 2 arguments; in this case,\n\
 the arguments are accumulated from left to right:\n\
 \n\
@@ -577,15 +581,16 @@ $x = 0$, $f = e = 0$.\n\
 DEFUN (rem, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} rem (@var{x}, @var{y})\n\
-Return the remainder of the division @code{@var{x} / @var{y}}, computed\n\
-using the expression\n\
+Return the remainder of the division @code{@var{x} / @var{y}}.\n\
+\n\
+The remainder is computed using the expression\n\
 \n\
 @example\n\
 x - y .* fix (x ./ y)\n\
 @end example\n\
 \n\
-An error message is printed if the dimensions of the arguments do not\n\
-agree, or if either of the arguments is complex.\n\
+An error message is printed if the dimensions of the arguments do not agree,\n\
+or if either of the arguments is complex.\n\
 @seealso{mod}\n\
 @end deftypefn")
 {
@@ -729,16 +734,18 @@ agree, or if either of the arguments is complex.\n\
 DEFUN (mod, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} mod (@var{x}, @var{y})\n\
-Compute the modulo of @var{x} and @var{y}.  Conceptually this is given by\n\
+Compute the modulo of @var{x} and @var{y}.\n\
+\n\
+Conceptually this is given by\n\
 \n\
 @example\n\
 x - y .* floor (x ./ y)\n\
 @end example\n\
 \n\
 @noindent\n\
-and is written such that the correct modulus is returned for\n\
-integer types.  This function handles negative values correctly.  That\n\
-is, @code{mod (-1, 3)} is 2, not -1, as @code{rem (-1, 3)} returns.\n\
+and is written such that the correct modulus is returned for integer types.\n\
+This function handles negative values correctly.  That is,\n\
+@code{mod (-1, 3)} is 2, not -1, as @code{rem (-1, 3)} returns.\n\
 @code{mod (@var{x}, 0)} returns @var{x}.\n\
 \n\
 An error results if the dimensions of the arguments do not agree, or if\n\
@@ -1140,9 +1147,9 @@ DEFUN (cumprod, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cumprod (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumprod (@var{x}, @var{dim})\n\
-Cumulative product of elements along dimension @var{dim}.  If\n\
-@var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+Cumulative product of elements along dimension @var{dim}.\n\
 \n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
 @seealso{prod, cumsum}\n\
 @end deftypefn")
 {
@@ -1176,8 +1183,9 @@ DEFUN (cumsum, args, ,
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, \"native\")\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, \"double\")\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, \"extra\")\n\
-Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
-is omitted, it defaults to the first non-singleton dimension.\n\
+Cumulative sum of elements along dimension @var{dim}.\n\
+\n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 See @code{sum} for an explanation of the optional parameters\n\
 @qcode{\"native\"}, @qcode{\"double\"}, and @qcode{\"extra\"}.\n\
@@ -1322,11 +1330,12 @@ DEFUN (diag, args, ,
 @deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{v} =} diag (@var{M})\n\
 @deftypefnx {Built-in Function} {@var{v} =} diag (@var{M}, @var{k})\n\
-Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
-second argument is optional.  If it is positive, the vector is placed on\n\
+Return a diagonal matrix with vector @var{v} on diagonal @var{k}.\n\
+\n\
+The second argument is optional.  If it is positive, the vector is placed on\n\
 the @var{k}-th superdiagonal.  If it is negative, it is placed on the\n\
-@var{-k}-th subdiagonal.  The default value of @var{k} is 0, and the\n\
-vector is placed on the main diagonal.  For example:\n\
+@var{-k}-th subdiagonal.  The default value of @var{k} is 0, and the vector\n\
+is placed on the main diagonal.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2595,10 +2604,11 @@ DEFUN (permute, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} permute (@var{A}, @var{perm})\n\
 Return the generalized transpose for an N-D array object @var{A}.\n\
+\n\
 The permutation vector @var{perm} must contain the elements\n\
 @code{1:ndims (A)} (in any order, but each element must appear only once).\n\
 \n\
-The @var{N}th dimension of @var{A} gets remapped to dimension \n\
+The @var{N}th dimension of @var{A} gets remapped to dimension\n\
 @code{@var{PERM}(@var{N})}.  For example:\n\
 \n\
 @example\n\
@@ -2627,7 +2637,9 @@ size (permute (@var{x}, [1, 2, 3, 4]))\n\
 DEFUN (ipermute, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ipermute (@var{A}, @var{iperm})\n\
-The inverse of the @code{permute} function.  The expression\n\
+The inverse of the @code{permute} function.\n\
+\n\
+The expression\n\
 \n\
 @example\n\
 ipermute (permute (A, perm), perm)\n\
@@ -2667,7 +2679,8 @@ DEFUN (ndims, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ndims (@var{a})\n\
 Return the number of dimensions of @var{a}.\n\
-For any array, the result will always be larger than or equal to 2.\n\
+\n\
+For any array, the result will always be greater than or equal to 2.\n\
 Trailing singleton dimensions are not counted.\n\
 \n\
 @example\n\
@@ -2694,6 +2707,7 @@ DEFUN (numel, args, ,
 @deftypefn  {Built-in Function} {} numel (@var{a})\n\
 @deftypefnx {Built-in Function} {} numel (@var{a}, @var{idx1}, @var{idx2}, @dots{})\n\
 Return the number of elements in the object @var{a}.\n\
+\n\
 Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,\n\
 return the number of elements that would result from the indexing\n\
 \n\
@@ -2831,8 +2845,9 @@ DEFUN (size_equal, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b}, @dots{})\n\
 Return true if the dimensions of all arguments agree.\n\
+\n\
 Trailing singleton dimensions are ignored.\n\
-Called with a single or no argument, size_equal returns true.\n\
+When called with a single or no argument @code{size_equal} returns true.\n\
 @seealso{size, numel, ndims}\n\
 @end deftypefn")
 {
@@ -3167,8 +3182,9 @@ DEFUN (sumsq, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} sumsq (@var{x})\n\
 @deftypefnx {Built-in Function} {} sumsq (@var{x}, @var{dim})\n\
-Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
-is omitted, it defaults to the first non-singleton dimension.\n\
+Sum of squares of elements along dimension @var{dim}.\n\
+\n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 This function is conceptually equivalent to computing\n\
 \n\
@@ -3240,6 +3256,7 @@ DEFUN (isinteger, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isinteger (@var{x})\n\
 Return true if @var{x} is an integer object (int8, uint8, int16, etc.).\n\
+\n\
 Note that @w{@code{isinteger (14)}} is false because numeric constants in\n\
 Octave are double precision floating point values.\n\
 @seealso{isfloat, ischar, islogical, isnumeric, isa}\n\
@@ -3276,6 +3293,7 @@ DEFUN (isfloat, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isfloat (@var{x})\n\
 Return true if @var{x} is a floating-point numeric object.\n\
+\n\
 Objects of class double or single are floating-point objects.\n\
 @seealso{isinteger, ischar, islogical, isnumeric, isa}\n\
 @end deftypefn")
@@ -3297,10 +3315,13 @@ DEFUN (complex, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} complex (@var{x})\n\
 @deftypefnx {Built-in Function} {} complex (@var{re}, @var{im})\n\
-Return a complex result from real arguments.  With 1 real argument @var{x},\n\
-return the complex result @code{@var{x} + 0i}.  With 2 real arguments,\n\
-return the complex result @code{@var{re} + @var{im}}.  @code{complex} can\n\
-often be more convenient than expressions such as @code{a + i*b}.\n\
+Return a complex value from real arguments.\n\
+\n\
+With 1 real argument @var{x}, return the complex result @code{@var{x} + 0i}.\n\
+\n\
+With 2 real arguments, return the complex result @code{@var{re} + @var{im}}.\n\
+@code{complex} can often be more convenient than expressions such as\n\
+@code{a + i*b}.\n\
 For example:\n\
 \n\
 @example\n\
@@ -3598,6 +3619,7 @@ DEFUN (isreal, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isreal (@var{x})\n\
 Return true if @var{x} is a non-complex matrix or scalar.\n\
+\n\
 For compatibility with @sc{matlab}, this includes logical and character\n\
 matrices.\n\
 @seealso{iscomplex, isnumeric, isa}\n\
@@ -3617,7 +3639,7 @@ DEFUN (isempty, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isempty (@var{a})\n\
 Return true if @var{a} is an empty matrix (any one of its dimensions is\n\
-zero).  Otherwise, return false.\n\
+zero).\n\
 @seealso{isnull, isa}\n\
 @end deftypefn")
 {
@@ -3640,8 +3662,9 @@ DEFUN (isnumeric, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
 Return true if @var{x} is a numeric object, i.e., an integer, real, or\n\
-complex array.  Logical and character arrays are not considered to be\n\
-numeric.\n\
+complex array.\n\
+\n\
+Logical and character arrays are not considered to be numeric.\n\
 @seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct, isa}\n\
 @end deftypefn")
 {
@@ -4366,13 +4389,15 @@ DEFUN (ones, args, ,
 @deftypefnx {Built-in Function} {} ones ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 1.\n\
-If invoked with a single scalar integer argument @var{n}, return a square\n\
-@nospell{NxN} matrix.  If invoked with two or more scalar\n\
-integer arguments, or a vector of integer values, return an array with\n\
-the given dimensions.\n\
 \n\
-If you need to create a matrix whose values are all the same, you should\n\
-use an expression like\n\
+If invoked with a single scalar integer argument @var{n}, return a square\n\
+@nospell{NxN} matrix.\n\
+\n\
+If invoked with two or more scalar integer arguments, or a vector of integer\n\
+values, return an array with the given dimensions.\n\
+\n\
+To create a constant matrix whose values are all the same use an expression\n\
+such as\n\
 \n\
 @example\n\
 val_matrix = val * ones (m, n)\n\
@@ -4415,10 +4440,12 @@ DEFUN (zeros, args, ,
 @deftypefnx {Built-in Function} {} zeros ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
+\n\
 If invoked with a single scalar integer argument, return a square\n\
-@nospell{NxN} matrix.  If invoked with two or more scalar\n\
-integer arguments, or a vector of integer values, return an array with\n\
-the given dimensions.\n\
+@nospell{NxN} matrix.\n\
+\n\
+If invoked with two or more scalar integer arguments, or a vector of integer\n\
+values, return an array with the given dimensions.\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
 and defaults to double.  For example:\n\
@@ -4474,10 +4501,14 @@ produce infinity are division by zero and overflow.\n\
 @end example\n\
 \n\
 When called with no arguments, return a scalar with the value @samp{Inf}.\n\
+\n\
 When called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{isinf, NaN}\n\
@@ -4518,6 +4549,7 @@ DEFUN (NaN, args, ,
 @deftypefnx {Built-in Function} {} NaN (@dots{}, @var{class})\n\
 Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
 to the IEEE symbol NaN (Not a Number).\n\
+\n\
 NaN is the result of operations which do not produce a well defined numerical\n\
 result.  Common operations which produce a NaN are arithmetic with infinity\n\
 @tex\n\
@@ -4529,14 +4561,19 @@ result.  Common operations which produce a NaN are arithmetic with infinity\n\
 and any operation involving another NaN value (5 + NaN).\n\
 \n\
 Note that NaN always compares not equal to NaN (NaN != NaN).  This behavior\n\
-is specified by the IEEE standard for floating point arithmetic.  To\n\
-find NaN values, use the @code{isnan} function.\n\
+is specified by the IEEE standard for floating point arithmetic.  To find\n\
+NaN values, use the @code{isnan} function.\n\
 \n\
 When called with no arguments, return a scalar with the value @samp{NaN}.\n\
+\n\
 When called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{isnan, Inf}\n\
@@ -4573,7 +4610,9 @@ DEFUN (e, args, ,
 @deftypefnx {Built-in Function} {} e (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} e (@dots{}, @var{class})\n\
 Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the base of natural logarithms.  The constant\n\
+to the base of natural logarithms.\n\
+\n\
+The constant\n\
 @tex\n\
 $e$ satisfies the equation $\\log (e) = 1$.\n\
 @end tex\n\
@@ -4581,11 +4620,15 @@ $e$ satisfies the equation $\\log (e) = 1$.\n\
 @samp{e} satisfies the equation @code{log} (e) = 1.\n\
 @end ifnottex\n\
 \n\
-When called with no arguments, return a scalar with the value @math{e}.  When\n\
-called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+When called with no arguments, return a scalar with the value @math{e}.\n\
+\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{log, exp, pi, I}\n\
@@ -4608,10 +4651,12 @@ DEFUN (eps, args, ,
 @deftypefnx {Built-in Function} {} eps (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} eps (@dots{}, @var{class})\n\
 Return a scalar, matrix or N-dimensional array whose elements are all eps,\n\
-the machine precision.  More precisely, @code{eps} is the relative spacing\n\
-between any two adjacent numbers in the machine's floating point system.\n\
-This number is obviously system dependent.  On machines that support IEEE\n\
-floating point arithmetic, @code{eps} is approximately\n\
+the machine precision.\n\
+\n\
+More precisely, @code{eps} is the relative spacing between any two adjacent\n\
+numbers in the machine's floating point system.  This number is obviously\n\
+system dependent.  On machines that support IEEE floating point arithmetic,\n\
+@code{eps} is approximately\n\
 @tex\n\
 $2.2204\\times10^{-16}$ for double precision and $1.1921\\times10^{-7}$\n\
 @end tex\n\
@@ -4622,13 +4667,14 @@ for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
 @code{eps (1.0)}.\n\
-Given a single argument @var{x}, return the distance between @var{x} and\n\
-the next largest value.\n\
+\n\
+Given a single argument @var{x}, return the distance between @var{x} and the\n\
+next largest value.\n\
+\n\
 When called with more than one argument the first two arguments are taken as\n\
-the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
+the number of rows and columns and any further arguments specify additional\n\
+matrix dimensions.  The optional argument @var{class} specifies the return\n\
+type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmax, realmin, intmax, bitmax}\n\
 @end deftypefn")
 {
@@ -4738,6 +4784,7 @@ diameter($\\pi$).\n\
 @ifnottex\n\
 diameter.\n\
 @end ifnottex\n\
+\n\
 Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
 \n\
 When called with no arguments, return a scalar with the value of\n\
@@ -4747,10 +4794,14 @@ $\\pi$.\n\
 @ifnottex\n\
 pi.\n\
 @end ifnottex\n\
+\n\
 When called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{e, I}\n\
@@ -4772,9 +4823,10 @@ DEFUN (realmax, args, ,
 @deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} realmax (@dots{}, @var{class})\n\
-Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
-to the largest floating point number that is representable.  The actual\n\
-value is system dependent.  On machines that support IEEE\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
+to the largest floating point number that is representable.\n\
+\n\
+The actual value is system dependent.  On machines that support IEEE\n\
 floating point arithmetic, @code{realmax} is approximately\n\
 @tex\n\
 $1.7977\\times10^{308}$ for double precision and $3.4028\\times10^{38}$\n\
@@ -4786,10 +4838,14 @@ for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
 @code{realmax (@qcode{\"double\"})}.\n\
+\n\
 When called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmin, intmax, bitmax, eps}\n\
@@ -4806,8 +4862,9 @@ DEFUN (realmin, args, ,
 @deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} realmin (@dots{}, @var{class})\n\
-Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
+Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
 to the smallest normalized floating point number that is representable.\n\
+\n\
 The actual value is system dependent.  On machines that support\n\
 IEEE floating point arithmetic, @code{realmin} is approximately\n\
 @tex\n\
@@ -4820,10 +4877,14 @@ for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
 @code{realmin (@qcode{\"double\"})}.\n\
+\n\
 When called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmax, intmin, eps}\n\
@@ -4857,11 +4918,15 @@ $\\sqrt{-1}$.\n\
 I, and its equivalents i, j, and J, are functions so any of the names may\n\
 be reused for other purposes (such as i for a counter variable).\n\
 \n\
-When called with no arguments, return a scalar with the value @math{i}.  When\n\
-called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+When called with no arguments, return a scalar with the value @math{i}.\n\
+\n\
+When called with a single argument, return a square matrix with the dimension\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{e, pi, log, exp}\n\
@@ -4888,10 +4953,14 @@ Note that NA always compares not equal to NA (NA != NA).\n\
 To find NA values, use the @code{isna} function.\n\
 \n\
 When called with no arguments, return a scalar with the value @samp{NA}.\n\
+\n\
 When called with a single argument, return a square matrix with the dimension\n\
-specified.  When called with more than one scalar argument the first two\n\
-arguments are taken as the number of rows and columns and any further\n\
-arguments specify additional matrix dimensions.\n\
+specified.\n\
+\n\
+When called with more than one scalar argument the first two arguments are\n\
+taken as the number of rows and columns and any further arguments specify\n\
+additional matrix dimensions.\n\
+\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{isna}\n\
@@ -4912,10 +4981,12 @@ DEFUN (false, args, ,
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m}, @var{k}, @dots{})\n\
 Return a matrix or N-dimensional array whose elements are all logical 0.\n\
+\n\
 If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.  If invoked with two or more scalar\n\
-integer arguments, or a vector of integer values, return an array with\n\
-given dimensions.\n\
+matrix of the specified size.\n\
+\n\
+If invoked with two or more scalar integer arguments, or a vector of integer\n\
+values, return an array with given dimensions.\n\
 @seealso{true}\n\
 @end deftypefn")
 {
@@ -4928,10 +4999,12 @@ DEFUN (true, args, ,
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m}, @var{k}, @dots{})\n\
 Return a matrix or N-dimensional array whose elements are all logical 1.\n\
+\n\
 If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.  If invoked with two or more scalar\n\
-integer arguments, or a vector of integer values, return an array with\n\
-given dimensions.\n\
+matrix of the specified size.\n\
+\n\
+If invoked with two or more scalar integer arguments, or a vector of integer\n\
+values, return an array with given dimensions.\n\
 @seealso{false}\n\
 @end deftypefn")
 {
@@ -5059,12 +5132,15 @@ DEFUN (eye, args, ,
 @deftypefnx {Built-in Function} {} eye (@var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} eye ([@var{m} @var{n}])\n\
 @deftypefnx {Built-in Function} {} eye (@dots{}, @var{class})\n\
-Return an identity matrix.  If invoked with a single scalar argument @var{n},\n\
-return a square @nospell{NxN} identity matrix.  If\n\
-supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them to be\n\
-the number of rows and columns.  If given a vector with two elements,\n\
-@code{eye} uses the values of the elements as the number of rows and columns,\n\
-respectively.  For example:\n\
+Return an identity matrix.\n\
+\n\
+If invoked with a single scalar argument @var{n}, return a square\n\
+@nospell{NxN} identity matrix.\n\
+\n\
+If supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them\n\
+to be the number of rows and columns.  If given a vector with two elements,\n\
+@code{eye} uses the values of the elements as the number of rows and\n\
+columns, respectively.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -5094,9 +5170,9 @@ the specified type, like\n\
 val = zeros (n,m, \"uint8\")\n\
 @end example\n\
 \n\
-Calling @code{eye} with no arguments is equivalent to calling it\n\
-with an argument of 1.  Any negative dimensions are treated as zero. \n\
-These odd definitions are for compatibility with @sc{matlab}.\n\
+Calling @code{eye} with no arguments is equivalent to calling it with an\n\
+argument of 1.  Any negative dimensions are treated as zero.  These odd\n\
+definitions are for compatibility with @sc{matlab}.\n\
 @seealso{speye, ones, zeros}\n\
 @end deftypefn")
 {
@@ -5215,15 +5291,16 @@ DEFUN (linspace, args, ,
 @deftypefn  {Built-in Function} {} linspace (@var{base}, @var{limit})\n\
 @deftypefnx {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
 Return a row vector with @var{n} linearly spaced elements between\n\
-@var{base} and @var{limit}.  If the number of elements is greater than one,\n\
-then the endpoints @var{base} and @var{limit} are always included in\n\
-the range.  If @var{base} is greater than @var{limit}, the elements are\n\
-stored in decreasing order.  If the number of points is not specified, a\n\
-value of 100 is used.\n\
+@var{base} and @var{limit}.\n\
 \n\
-The @code{linspace} function always returns a row vector if both\n\
-@var{base} and @var{limit} are scalars.  If one, or both, of them are column\n\
-vectors, @code{linspace} returns a matrix.\n\
+If the number of elements is greater than one, then the endpoints @var{base}\n\
+and @var{limit} are always included in the range.  If @var{base} is greater\n\
+than @var{limit}, the elements are stored in decreasing order.  If the\n\
+number of points is not specified, a value of 100 is used.\n\
+\n\
+The @code{linspace} function always returns a row vector if both @var{base}\n\
+and @var{limit} are scalars.  If one, or both, of them are column vectors,\n\
+@code{linspace} returns a matrix.\n\
 \n\
 For compatibility with @sc{matlab}, return the second argument (@var{limit})\n\
 if fewer than two values are requested.\n\
@@ -5400,8 +5477,10 @@ DEFUN (reshape, args, ,
 @deftypefnx {Built-in Function} {} reshape (@var{A}, @dots{}, [], @dots{})\n\
 @deftypefnx {Built-in Function} {} reshape (@var{A}, @var{size})\n\
 Return a matrix with the specified dimensions (@var{m}, @var{n}, @dots{})\n\
-whose elements are taken from the matrix @var{A}.  The elements of the\n\
-matrix are accessed in column-major order (like Fortran arrays are stored).\n\
+whose elements are taken from the matrix @var{A}.\n\
+\n\
+The elements of the matrix are accessed in column-major order (like Fortran\n\
+arrays are stored).\n\
 \n\
 The following code demonstrates reshaping a 1x4 row vector into a 2x2 square\n\
 matrix.\n\
@@ -5415,8 +5494,8 @@ reshape ([1, 2, 3, 4], 2, 2)\n\
 @end example\n\
 \n\
 @noindent\n\
-Note that the total number of elements in the original\n\
-matrix (@code{prod (size (@var{A}))}) must match the total number of elements\n\
+Note that the total number of elements in the original matrix\n\
+(@code{prod (size (@var{A}))}) must match the total number of elements\n\
 in the new matrix (@code{prod ([@var{m} @var{n} @dots{}])}).\n\
 \n\
 A single dimension of the return matrix may be left unspecified and Octave\n\
@@ -5548,10 +5627,13 @@ DEFUN (vec, args, ,
 @deftypefn  {Built-in Function} {@var{v} =} vec (@var{x})\n\
 @deftypefnx {Built-in Function} {@var{v} =} vec (@var{x}, @var{dim})\n\
 Return the vector obtained by stacking the columns of the matrix @var{x}\n\
-one above the other.  Without @var{dim} this is equivalent to\n\
-@code{@var{x}(:)}.  If @var{dim} is supplied, the dimensions of @var{v}\n\
-are set to @var{dim} with all elements along the last dimension.\n\
-This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
+one above the other.\n\
+\n\
+Without @var{dim} this is equivalent to @code{@var{x}(:)}.\n\
+\n\
+If @var{dim} is supplied, the dimensions of @var{v} are set to @var{dim}\n\
+with all elements along the last dimension.  This is equivalent to\n\
+@code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
 @seealso{vech, resize, cat}\n\
 @end deftypefn")
 {
@@ -5613,6 +5695,7 @@ DEFUN (squeeze, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\
 Remove singleton dimensions from @var{x} and return the result.\n\
+\n\
 Note that for compatibility with @sc{matlab}, all objects have\n\
 a minimum of two dimensions and row vectors are left unchanged.\n\
 @seealso{reshape}\n\
@@ -5631,7 +5714,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 DEFUN (full, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{FM} =} full (@var{SM})\n\
-Return a full storage matrix from a sparse, diagonal, permutation matrix,\n\
+Return a full storage matrix from a sparse, diagonal, or permutation matrix,\n\
 or a range.\n\
 @seealso{sparse, issparse}\n\
 @end deftypefn")
@@ -5653,8 +5736,9 @@ DEFUN (norm, args, ,
 @deftypefn  {Built-in Function} {} norm (@var{A})\n\
 @deftypefnx {Built-in Function} {} norm (@var{A}, @var{p})\n\
 @deftypefnx {Built-in Function} {} norm (@var{A}, @var{p}, @var{opt})\n\
-Compute the p-norm of the matrix @var{A}.  If the second argument is\n\
-missing, @code{p = 2} is assumed.\n\
+Compute the p-norm of the matrix @var{A}.\n\
+\n\
+If the second argument is missing, @code{p = 2} is assumed.\n\
 \n\
 If @var{A} is a matrix (or sparse matrix):\n\
 \n\
@@ -5912,6 +5996,7 @@ DEFUN (transpose, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
 Return the transpose of @var{x}.\n\
+\n\
 This function and @tcode{x.'} are equivalent.\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
@@ -5943,6 +6028,7 @@ DEFUN (ctranspose, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
 Return the complex conjugate transpose of @var{x}.\n\
+\n\
 This function and @tcode{x'} are equivalent.\n\
 @seealso{transpose}\n\
 @end deftypefn")
@@ -6018,6 +6104,7 @@ DEFUN (plus, args, ,
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
 This function and @w{@tcode{x + y}} are equivalent.\n\
+\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -6048,6 +6135,7 @@ DEFUN (mtimes, args, ,
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
+\n\
 This function and @w{@tcode{x * y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
@@ -6068,6 +6156,7 @@ DEFUN (mrdivide, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
+\n\
 This function and @w{@tcode{x / y}} are equivalent.\n\
 @seealso{mldivide, rdivide, plus, minus}\n\
 @end deftypefn")
@@ -6079,6 +6168,7 @@ DEFUN (mpower, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
+\n\
 This function and @w{@tcode{x ^ y}} are equivalent.\n\
 @seealso{power, mtimes, plus, minus}\n\
 @end deftypefn")
@@ -6090,6 +6180,7 @@ DEFUN (mldivide, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
+\n\
 This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.\n\
 @seealso{mrdivide, ldivide, rdivide}\n\
 @end deftypefn")
@@ -6121,6 +6212,7 @@ DEFUN (eq, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eq (@var{x}, @var{y})\n\
 Return true if the two inputs are equal.\n\
+\n\
 This function is equivalent to @w{@code{x == y}}.\n\
 @seealso{ne, isequal, le, ge, gt, ne, lt}\n\
 @end deftypefn")
@@ -6152,6 +6244,7 @@ DEFUN (ne, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ne (@var{x}, @var{y})\n\
 Return true if the two inputs are not equal.\n\
+\n\
 This function is equivalent to @w{@code{x != y}}.\n\
 @seealso{eq, isequal, le, ge, lt}\n\
 @end deftypefn")
@@ -6164,6 +6257,7 @@ DEFUN (times, args, ,
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
+\n\
 This function and @w{@tcode{x .* y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
@@ -6184,6 +6278,7 @@ DEFUN (rdivide, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
+\n\
 This function and @w{@tcode{x ./ y}} are equivalent.\n\
 @seealso{ldivide, mrdivide, times, plus}\n\
 @end deftypefn")
@@ -6195,12 +6290,14 @@ DEFUN (power, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
-@var{y} power.  If several complex results are possible,\n\
-returns the one with smallest non-negative argument (angle).  Use\n\
-@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
-real result is preferred.\n\
+@var{y} power.\n\
 \n\
 This function and @w{@tcode{x .^ y}} are equivalent.\n\
+\n\
+If several complex results are possible, returns the one with smallest\n\
+non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},\n\
+@code{cbrt}, or @code{nthroot} if a real result is preferred.\n\
+\n\
 @seealso{mpower, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn")
 {
@@ -6211,6 +6308,7 @@ DEFUN (ldivide, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
+\n\
 This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
 @seealso{rdivide, mldivide, times, plus}\n\
 @end deftypefn")
@@ -6303,9 +6401,11 @@ DEFUN (tic, args, nargout,
 @deftypefnx {Built-in Function} {} toc ()\n\
 @deftypefnx {Built-in Function} {} toc (@var{id})\n\
 @deftypefnx {Built-in Function} {@var{val} =} toc (@dots{})\n\
-Set or check a wall-clock timer.  Calling @code{tic} without an\n\
-output argument sets the internal timer state.  Subsequent calls\n\
-to @code{toc} return the number of seconds since the timer was set.\n\
+Set or check a wall-clock timer.\n\
+\n\
+Calling @code{tic} without an output argument sets the internal timer state.\n\
+Subsequent calls to @code{toc} return the number of seconds since the timer\n\
+was set.\n\
 For example,\n\
 \n\
 @example\n\
@@ -6434,12 +6534,16 @@ DEFUN (toc, args, nargout,
 DEFUN (cputime, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{total}, @var{user}, @var{system}] =} cputime ();\n\
-Return the CPU time used by your Octave session.  The first output is\n\
-the total time spent executing your process and is equal to the sum of\n\
-second and third outputs, which are the number of CPU seconds spent\n\
-executing in user mode and the number of CPU seconds spent executing in\n\
-system mode, respectively.  If your system does not have a way to report\n\
-CPU time usage, @code{cputime} returns 0 for each of its output values.\n\
+Return the CPU time used by your Octave session.\n\
+\n\
+The first output is the total time spent executing your process and is equal\n\
+to the sum of second and third outputs, which are the number of CPU seconds\n\
+spent executing in user mode and the number of CPU seconds spent executing\n\
+in system mode, respectively.\n\
+\n\
+If your system does not have a way to report CPU time usage, @code{cputime}\n\
+returns 0 for each of its output values.\n\
+\n\
 Note that because Octave used some CPU time to start, it is reasonable\n\
 to check to see if @code{cputime} works by checking to see if the total\n\
 CPU time used is nonzero.\n\
@@ -6505,8 +6609,9 @@ DEFUN (sort, args, nargout,
 @deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
 @deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
-Return a copy of @var{x} with the elements arranged in increasing\n\
-order.  For matrices, @code{sort} orders the elements within columns\n\
+Return a copy of @var{x} with the elements arranged in increasing order.\n\
+\n\
+For matrices, @code{sort} orders the elements within columns\n\
 \n\
 For example:\n\
 \n\
@@ -6918,8 +7023,10 @@ DEFUN (issorted, args, ,
 @deftypefnx {Built-in Function} {} issorted (@var{a}, \"rows\", @var{mode})\n\
 Return true if the array is sorted according to @var{mode}, which\n\
 may be either @qcode{\"ascending\"}, @qcode{\"descending\"}, or\n\
-@qcode{\"either\"}.  By default,  @var{mode} is @qcode{\"ascending\"}.  NaNs\n\
-are treated in the same manner as @code{sort}.\n\
+@qcode{\"either\"}.\n\
+\n\
+By default,  @var{mode} is @qcode{\"ascending\"}.  NaNs are treated in the\n\
+same manner as @code{sort}.\n\
 \n\
 If the optional argument @qcode{\"rows\"} is supplied, check whether\n\
 the array is sorted by rows as output by the function @code{sortrows}\n\
@@ -7026,20 +7133,22 @@ DEFUN (nth_element, args, ,
 @deftypefn  {Built-in Function} {} nth_element (@var{x}, @var{n})\n\
 @deftypefnx {Built-in Function} {} nth_element (@var{x}, @var{n}, @var{dim})\n\
 Select the n-th smallest element of a vector, using the ordering defined by\n\
-@code{sort}.  In other words, the result is equivalent to\n\
-@code{sort(@var{x})(@var{n})}.\n\
+@code{sort}.\n\
+\n\
+The result is equivalent to @code{sort(@var{x})(@var{n})}.\n\
+\n\
 @var{n} can also be a contiguous range, either ascending @code{l:u}\n\
 or descending @code{u:-1:l}, in which case a range of elements is returned.\n\
+\n\
 If @var{x} is an array, @code{nth_element} operates along the dimension\n\
 defined by @var{dim}, or the first non-singleton dimension if @var{dim} is\n\
 not given.\n\
 \n\
-nth_element encapsulates the C++ standard library algorithms nth_element and\n\
-partial_sort.  On average, the complexity of the operation is O(M*log(K)),\n\
-where @w{@code{M = size (@var{x}, @var{dim})}} and\n\
-@w{@code{K = length (@var{n})}}.\n\
-This function is intended for cases where the ratio K/M is small; otherwise,\n\
-it may be better to use @code{sort}.\n\
+Programming Note: nth_element encapsulates the C++ standard library\n\
+algorithms nth_element and partial_sort.  On average, the complexity of the\n\
+operation is O(M*log(K)), where @w{@code{M = size (@var{x}, @var{dim})}} and\n\
+@w{@code{K = length (@var{n})}}.  This function is intended for cases where\n\
+the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
 @seealso{sort, min, max}\n\
 @end deftypefn")
 {
@@ -7452,11 +7561,13 @@ DEFUN (merge, args, ,
 @deftypefn  {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
 @deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
 Merge elements of @var{true_val} and @var{false_val}, depending on the\n\
-value of @var{mask}.  If @var{mask} is a logical scalar, the other two\n\
-arguments can be arbitrary values.  Otherwise, @var{mask} must be a logical\n\
-array, and @var{tval}, @var{fval} should be arrays of matching class, or\n\
-cell arrays.  In the scalar mask case, @var{tval} is returned if @var{mask}\n\
-is true, otherwise @var{fval} is returned.\n\
+value of @var{mask}.\n\
+\n\
+If @var{mask} is a logical scalar, the other two arguments can be arbitrary\n\
+values.  Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
+@var{fval} should be arrays of matching class, or cell arrays.  In the\n\
+scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise\n\
+@var{fval} is returned.\n\
 \n\
 In the array mask case, both @var{tval} and @var{fval} must be either\n\
 scalars or arrays with dimensions equal to @var{mask}.  The result is\n\
@@ -7469,8 +7580,8 @@ result(! mask) = fval(! mask);\n\
 @end group\n\
 @end example\n\
 \n\
-@var{mask} can also be arbitrary numeric type, in which case\n\
-it is first converted to logical.\n\
+@var{mask} can also be arbitrary numeric type, in which case it is first\n\
+converted to logical.\n\
 @seealso{logical, diff}\n\
 @end deftypefn")
 {
@@ -7795,15 +7906,14 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 DEFUN (repelems, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} repelems (@var{x}, @var{r})\n\
-Construct a vector of repeated elements from @var{x}.  @var{r}\n\
-is a 2x@var{N} integer matrix specifying which elements to repeat and\n\
-how often to repeat each element.\n\
+Construct a vector of repeated elements from @var{x}.\n\
 \n\
-Entries in the first row, @var{r}(1,j), select an element to repeat.\n\
-The corresponding entry in the second row, @var{r}(2,j), specifies\n\
-the repeat count.  If @var{x} is a matrix then the columns of @var{x} are\n\
-imagined to be stacked on top of each other for purposes of the selection\n\
-index.  A row vector is always returned.\n\
+@var{r} is a 2x@var{N} integer matrix specifying which elements to repeat and\n\
+how often to repeat each element.  Entries in the first row, @var{r}(1,j),\n\
+select an element to repeat.  The corresponding entry in the second row,\n\
+@var{r}(2,j), specifies the repeat count.  If @var{x} is a matrix then the\n\
+columns of @var{x} are imagined to be stacked on top of each other for\n\
+purposes of the selection index.  A row vector is always returned.\n\
 \n\
 Conceptually the result is calculated as follows:\n\
 \n\
@@ -7993,8 +8103,10 @@ DEFUN (base64_decode, args, ,
 @deftypefn  {Built-in Function} {@var{x} =} base64_decode (@var{s})\n\
 @deftypefnx {Built-in Function} {@var{x} =} base64_decode (@var{s}, @var{dims})\n\
 Decode the double matrix or array @var{x} from the base64 encoded string\n\
-@var{s}.  The optional input parameter @var{dims} should be a vector\n\
-containing the dimensions of the decoded array.\n\
+@var{s}.\n\
+\n\
+The optional input parameter @var{dims} should be a vector containing the\n\
+dimensions of the decoded array.\n\
 @seealso{base64_encode}\n\
 @end deftypefn")
 {

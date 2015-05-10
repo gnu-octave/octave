@@ -37,7 +37,9 @@ DEFUN (gammainc, args, ,
 @deftypefn  {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
 @deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"lower\")\n\
 @deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"upper\")\n\
-Compute the normalized incomplete gamma function,\n\
+Compute the normalized incomplete gamma function.\n\
+\n\
+This is defined as\n\
 @tex\n\
 $$\n\
  \\gamma (x, a) = {1 \\over {\\Gamma (a)}}\\displaystyle{\\int_0^x t^{a-1} e^{-t} dt}\n\

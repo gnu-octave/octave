@@ -296,7 +296,9 @@ DEFUN (qz, args, nargout,
 @deftypefn  {Built-in Function} {@var{lambda} =} qz (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
 QZ@tie{}decomposition of the generalized eigenvalue problem\n\
-(@math{A x = s B x}).  There are three ways to call this function:\n\
+(@math{A x = s B x}).\n\
+\n\
+There are three ways to call this function:\n\
 @enumerate\n\
 @item @code{@var{lambda} = qz (@var{A}, @var{B})}\n\
 \n\
@@ -311,8 +313,8 @@ of @math{(A - s B)}.\n\
 \n\
 @item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}\n\
 \n\
-Computes QZ@tie{}decomposition, generalized eigenvectors, and\n\
-generalized eigenvalues of @math{(A - s B)}\n\
+Computes QZ@tie{}decomposition, generalized eigenvectors, and generalized\n\
+eigenvalues of @math{(A - s B)}\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\
 $$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
@@ -335,16 +337,15 @@ with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 \n\
 @item @code{[AA,BB,Z@{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}\n\
 \n\
-As in form [2], but allows ordering of generalized eigenpairs\n\
-for (e.g.) solution of discrete time algebraic Riccati equations.\n\
-Form 3 is not available for complex matrices, and does not compute\n\
-the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix\n\
-@var{Q}.\n\
+As in form [2], but allows ordering of generalized eigenpairs for, e.g.,\n\
+solution of discrete time algebraic Riccati equations.  Form 3 is not\n\
+available for complex matrices, and does not compute the generalized\n\
+eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
 \n\
 @table @var\n\
 @item opt\n\
-for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block\n\
-of the revised pencil contains all eigenvalues that satisfy:\n\
+for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block of\n\
+the revised pencil contains all eigenvalues that satisfy:\n\
 \n\
 @table @asis\n\
 @item @qcode{\"N\"}\n\

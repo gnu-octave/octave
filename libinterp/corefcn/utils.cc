@@ -295,15 +295,16 @@ DEFUN (file_in_loadpath, args, ,
 \n\
 Return the absolute name of @var{file} if it can be found in\n\
 the list of directories specified by @code{path}.\n\
+\n\
 If no file is found, return an empty character string.\n\
 \n\
-If the first argument is a cell array of strings, search each\n\
-directory of the loadpath for element of the cell array and return\n\
-the first that matches.\n\
+If the first argument is a cell array of strings, search each directory of\n\
+the loadpath for element of the cell array and return the first that\n\
+matches.\n\
 \n\
-If the second optional argument @qcode{\"all\"} is supplied, return\n\
-a cell array containing the list of all files that have the same\n\
-name in the path.  If no files are found, return an empty cell array.\n\
+If the second optional argument @qcode{\"all\"} is supplied, return a cell\n\
+array containing the list of all files that have the same name in the path. \n\
+If no files are found, return an empty cell array.\n\
 @seealso{file_in_path, dir_in_loadpath, path}\n\
 @end deftypefn")
 {
@@ -364,10 +365,11 @@ DEFUN (file_in_path, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
-Return the absolute name of @var{file} if it can be found in\n\
-@var{path}.  The value of @var{path} should be a colon-separated list of\n\
-directories in the format described for @code{path}.  If no file\n\
-is found, return an empty character string.  For example:\n\
+Return the absolute name of @var{file} if it can be found in @var{path}.\n\
+\n\
+The value of @var{path} should be a colon-separated list of directories in\n\
+the format described for @code{path}.  If no file is found, return an empty\n\
+character string.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -376,13 +378,12 @@ file_in_path (EXEC_PATH, \"sh\")\n\
 @end group\n\
 @end example\n\
 \n\
-If the second argument is a cell array of strings, search each\n\
-directory of the path for element of the cell array and return\n\
-the first that matches.\n\
+If the second argument is a cell array of strings, search each directory of\n\
+the path for element of the cell array and return the first that matches.\n\
 \n\
-If the third optional argument @qcode{\"all\"} is supplied, return\n\
-a cell array containing the list of all files that have the same\n\
-name in the path.  If no files are found, return an empty cell array.\n\
+If the third optional argument @qcode{\"all\"} is supplied, return a cell\n\
+array containing the list of all files that have the same name in the path. \n\
+If no files are found, return an empty cell array.\n\
 @seealso{file_in_loadpath, dir_in_loadpath, path}\n\
 @end deftypefn")
 {
@@ -694,11 +695,21 @@ do_string_escapes (const std::string& s)
 
   return retval;
 }
+/*
+Escape sequences begin with a leading backslash (@qcode{"@xbackslashchar{}"})\n\
+followed by 1--3 characters (.e.g., @qcode{"@xbackslashchar{}n"} => newline).\n\
 
+
+   */
 DEFUN (do_string_escapes, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} do_string_escapes (@var{string})\n\
-Convert special characters in @var{string} to their escaped forms.\n\
+Convert escape sequences in @var{string} to the characters they represent.\n\
+\n\
+Escape sequences begin with a leading backslash\n\
+(@qcode{'@xbackslashchar{}'}) followed by 1--3 characters\n\
+(.e.g., @qcode{\"@xbackslashchar{}n\"} => newline).\n\
+@seealso{undo_string_escapes}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -806,20 +817,21 @@ undo_string_escapes (const std::string& s)
 DEFUN (undo_string_escapes, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} undo_string_escapes (@var{s})\n\
-Convert special characters in strings back to their escaped forms.  For\n\
-example, the expression\n\
+Convert special characters in strings back to their escaped forms.\n\
+\n\
+For example, the expression\n\
 \n\
 @example\n\
 bell = \"\\a\";\n\
 @end example\n\
 \n\
 @noindent\n\
-assigns the value of the alert character (control-g, ASCII code 7) to\n\
-the string variable @code{bell}.  If this string is printed, the\n\
-system will ring the terminal bell (if it is possible).  This is\n\
-normally the desired outcome.  However, sometimes it is useful to be\n\
-able to print the original representation of the string, with the\n\
-special characters replaced by their escape sequences.  For example,\n\
+assigns the value of the alert character (control-g, ASCII code 7) to the\n\
+string variable @code{bell}.  If this string is printed, the system will\n\
+ring the terminal bell (if it is possible).  This is normally the desired\n\
+outcome.  However, sometimes it is useful to be able to print the original\n\
+representation of the string, with the special characters replaced by their\n\
+escape sequences.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -829,8 +841,8 @@ ans = \\a\n\
 @end example\n\
 \n\
 @noindent\n\
-replaces the unprintable alert character with its printable\n\
-representation.\n\
+replaces the unprintable alert character with its printable representation.\n\
+@seealso{do_string_escapes}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -926,7 +938,9 @@ DEFUN (make_absolute_filename, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} make_absolute_filename (@var{file})\n\
 Return the full name of @var{file} beginning from the root of the file\n\
-system.  No check is done for the existence of @var{file}.\n\
+system.\n\
+\n\
+No check is done for the existence of @var{file}.\n\
 @seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isdir}\n\
 @end deftypefn")
 {
@@ -958,15 +972,16 @@ DEFUN (dir_in_loadpath, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} dir_in_loadpath (@var{dir})\n\
 @deftypefnx {Built-in Function} {} dir_in_loadpath (@var{dir}, \"all\")\n\
-Return the full name of the path element matching @var{dir}.  The\n\
-match is performed at the end of each path element.  For example, if\n\
+Return the full name of the path element matching @var{dir}.\n\
+\n\
+The match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @qcode{\"foo/bar\"}, it matches the path element\n\
 @nospell{@qcode{\"/some/dir/foo/bar\"}}, but not\n\
 @nospell{@qcode{\"/some/dir/foo/bar/baz\"}}\n\
 @nospell{@qcode{\"/some/dir/allfoo/bar\"}}.\n\
 \n\
-The second argument is optional.  If it is supplied, return a cell array\n\
-containing all name matches rather than just the first.\n\
+If the optional second argument is supplied, return a cell array containing\n\
+all name matches rather than just the first.\n\
 @seealso{file_in_path, file_in_loadpath, path}\n\
 @end deftypefn")
 {
@@ -1023,6 +1038,7 @@ Return the current value of the system-dependent variable errno,\n\
 set its value to @var{val} and return the previous value, or return\n\
 the named error code given @var{name} as a character string, or -1\n\
 if @var{name} is not found.\n\
+@seealso{errno_list}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1074,6 +1090,7 @@ DEFUN (errno_list, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} errno_list ()\n\
 Return a structure containing the system-dependent errno values.\n\
+@seealso{errno}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1359,9 +1376,11 @@ DEFUN (isindex, args, ,
 Return true if @var{ind} is a valid index.\n\
 \n\
 Valid indices are either positive integers (although possibly of real data\n\
-type), or logical arrays.  If present, @var{n} specifies the maximum extent\n\
-of the dimension to be indexed.  When possible the internal result is cached\n\
-so that subsequent indexing using @var{ind} will not perform the check again.\n\
+type), or logical arrays.\n\
+\n\
+If present, @var{n} specifies the maximum extent of the dimension to be\n\
+indexed.  When possible the internal result is cached so that subsequent\n\
+indexing using @var{ind} will not perform the check again.\n\
 \n\
 Implementation Note: Strings are first converted to double values before the\n\
 checks for valid indices are made.  Unless a string contains the NULL\n\
@@ -1525,7 +1544,6 @@ DEFUN (isstudent, args, ,
 Return true if running in the student edition of @sc{matlab}.\n\
 \n\
 @code{isstudent} always returns false in Octave.\n\
-\n\
 @seealso{false}\n\
 @end deftypefn")
 {

@@ -35,10 +35,10 @@
 ##
 ## @var{y} can be either a vector or array.  If @var{y} is a vector it must
 ## have a length of either @var{n} or @code{@var{n} + 2}.  If the length of
-## @var{y} is @var{n}, then the "not-a-knot" end condition is used.  If the
-## length of @var{y} is @code{@var{n} + 2}, then the first and last values of
-## the vector @var{y} are the values of the first derivative of the cubic
-## spline at the endpoints.
+## @var{y} is @var{n}, then the @qcode{"not-a-knot"} end condition is used. 
+## If the length of @var{y} is @code{@var{n} + 2}, then the first and last
+## values of the vector @var{y} are the values of the first derivative of the
+## cubic spline at the endpoints.
 ##
 ## If @var{y} is an array, then the size of @var{y} must have the form
 ## @tex

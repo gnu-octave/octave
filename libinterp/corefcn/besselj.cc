@@ -549,8 +549,7 @@ See besselj.\n\
 DEFUN (airy, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})\n\
-Compute Airy functions of the first and second kind, and their\n\
-derivatives.\n\
+Compute Airy functions of the first and second kind, and their derivatives.\n\
 \n\
 @example\n\
 @group\n\

@@ -472,7 +472,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 DEFUN (__iluc__, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}) \n\
+@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __iluc__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\

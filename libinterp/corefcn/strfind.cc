@@ -153,18 +153,19 @@ DEFUN (strfind, args, ,
 @deftypefn  {Built-in Function} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} strfind (@dots{}, \"overlaps\", @var{val})\n\
-Search for @var{pattern} in the string @var{str} and return the\n\
-starting index of every such occurrence in the vector @var{idx}.\n\
+Search for @var{pattern} in the string @var{str} and return the starting\n\
+index of every such occurrence in the vector @var{idx}.\n\
 \n\
-If there is no such occurrence, or if @var{pattern} is longer\n\
-than @var{str}, or if @var{pattern} itself is empty, then @var{idx} is the\n\
-empty array @code{[]}.\n\
+If there is no such occurrence, or if @var{pattern} is longer than\n\
+@var{str}, or if @var{pattern} itself is empty, then @var{idx} is the empty\n\
+array @code{[]}.\n\
+\n\
 The optional argument @qcode{\"overlaps\"} determines whether the pattern\n\
 can match at every position in @var{str} (true), or only for unique\n\
 occurrences of the complete pattern (false).  The default is true.\n\
 \n\
-If a cell array of strings @var{cellstr} is specified\n\
-then @var{idx} is a cell array of vectors, as specified above.\n\
+If a cell array of strings @var{cellstr} is specified then @var{idx} is a\n\
+cell array of vectors, as specified above.\n\
 \n\
 Examples:\n\
 \n\

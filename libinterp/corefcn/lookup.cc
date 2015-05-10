@@ -191,14 +191,15 @@ DEFUN (lookup, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
-Lookup values in a sorted table.  Usually used as a prelude to\n\
-interpolation.\n\
+Lookup values in a sorted table.\n\
+\n\
+This function is usually used as a prelude to interpolation.\n\
 \n\
 If table is increasing and @code{idx = lookup (table, y)}, then\n\
-@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)}\n\
-within the table.  If @code{y(i) < table(1)} then\n\
-@code{idx(i)} is 0. If @code{y(i) >= table(end)} or @code{isnan (y(i))} then\n\
-@code{idx(i)} is @code{n}.\n\
+@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within\n\
+the table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If\n\
+@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is\n\
+@code{n}.\n\
 \n\
 If the table is decreasing, then the tests are reversed.\n\
 For non-strictly monotonic tables, empty intervals are always skipped.\n\

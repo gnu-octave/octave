@@ -234,8 +234,9 @@ dispatch_kron (const octave_value& a, const octave_value& b)
 DEFUN (kron, args, , "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} kron (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {} kron (@var{A1}, @var{A2}, @dots{})\n\
-Form the Kronecker product of two or more matrices, defined block by \n\
-block as\n\
+Form the Kronecker product of two or more matrices.\n\
+\n\
+This is defined block by block as\n\
 \n\
 @example\n\
 x = [ a(i,j)*b ]\n\
@@ -252,7 +253,7 @@ kron (1:4, ones (3, 1))\n\
 @end group\n\
 @end example\n\
 \n\
-If there are more than two input arguments @var{A1}, @var{A2}, @dots{}, \n\
+If there are more than two input arguments @var{A1}, @var{A2}, @dots{},\n\
 @var{An} the Kronecker product is computed as\n\
 \n\
 @example\n\

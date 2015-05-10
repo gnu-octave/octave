@@ -587,8 +587,7 @@ DEFUN (edit_history, args, ,
 @deftypefn  {Command} {} edit_history\n\
 @deftypefnx {Command} {} edit_history @var{cmd_number}\n\
 @deftypefnx {Command} {} edit_history @var{first} @var{last}\n\
-Edit the history list using the editor named by the variable\n\
-@w{@env{EDITOR}}.\n\
+Edit the history list using the editor named by the variable @env{EDITOR}.\n\
 \n\
 The commands to be edited are first copied to a temporary file.  When you\n\
 exit the editor, Octave executes the commands that remain in the file.  It\n\
@@ -615,7 +614,7 @@ edit_history -1\n\
 When using ranges, specifying a larger number for the first command than the\n\
 last command reverses the list of commands before they are placed in the\n\
 buffer to be edited.\n\
-@seealso{run_history}\n\
+@seealso{run_history, history}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -632,7 +631,9 @@ DEFUN (history, args, nargout,
 @deftypefnx {Built-in Function} {@var{h} =} history ()\n\
 @deftypefnx {Built-in Function} {@var{h} =} history (@var{opt1}, @dots{})\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
-that you have executed.  Valid options are:\n\
+that you have executed.\n\
+\n\
+Valid options are:\n\
 \n\
 @table @code\n\
 @item   @var{n}\n\
@@ -662,6 +663,7 @@ typed without displaying line numbers, use the command\n\
 \n\
 If invoked with a single output argument, the history will be saved to that\n\
 argument as a cell string and will not be output to screen.\n\
+@seealso{edit_history, run_history}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -682,11 +684,12 @@ DEFUN (run_history, args, ,
 Run commands from the history list.\n\
 \n\
 When invoked with no arguments, run the previously executed command;\n\
+\n\
 With one argument, run the specified command @var{cmd_number};\n\
+\n\
 With two arguments, run the list of commands between @var{first} and\n\
 @var{last}.  Command number specifiers may also be negative where -1\n\
-refers to the most recently executed command.\n\
-For example, the command\n\
+refers to the most recently executed command.  For example, the command\n\
 \n\
 @example\n\
 @group\n\
@@ -722,7 +725,7 @@ run_history -1 -2\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{edit_history}\n\
+@seealso{edit_history, history}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -737,9 +740,10 @@ DEFUN (history_control, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} history_control ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_control (@var{new_val})\n\
 Query or set the internal variable that specifies how commands are saved\n\
-to the history list.  The default value is an empty character string,\n\
-but may be overridden by the environment variable\n\
-@w{@env{OCTAVE_HISTCONTROL}}.\n\
+to the history list.\n\
+\n\
+The default value is an empty character string, but may be overridden by the\n\
+environment variable @w{@env{OCTAVE_HISTCONTROL}}.\n\
 \n\
 The value of @code{history_control} is a colon-separated list of values\n\
 controlling how commands are saved on the history list.  If the list\n\
@@ -774,8 +778,10 @@ DEFUN (history_size, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
 Query or set the internal variable that specifies how many entries\n\
-to store in the history file.  The default value is @code{1000},\n\
-but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
+to store in the history file.\n\
+\n\
+The default value is @code{1000}, but may be overridden by the environment\n\
+variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 @seealso{history_file, history_timestamp_format_string, history_save}\n\
 @end deftypefn")
 {
@@ -800,9 +806,10 @@ DEFUN (history_file, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} history_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
-file used to store command history.  The default value is\n\
-@file{~/.octave_hist}, but may be overridden by the environment\n\
-variable @w{@env{OCTAVE_HISTFILE}}.\n\
+file used to store command history.\n\
+\n\
+The default value is @file{~/.octave_hist}, but may be overridden by the\n\
+environment variable @w{@env{OCTAVE_HISTFILE}}.\n\
 @seealso{history_size, history_save, history_timestamp_format_string}\n\
 @end deftypefn")
 {
@@ -827,15 +834,16 @@ DEFUN (history_timestamp_format_string, args, nargout,
 @deftypefnx {Built-in Function} {} history_timestamp_format_string (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the format string\n\
 for the comment line that is written to the history file when Octave\n\
-exits.  The format string is passed to @code{strftime}.  The default\n\
-value is\n\
+exits.\n\
+\n\
+The format string is passed to @code{strftime}.  The default value is\n\
 \n\
 @example\n\
 \"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{strftime, history_file, history_size, history_save}\n\
 @end deftypefn")
@@ -852,7 +860,7 @@ Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")

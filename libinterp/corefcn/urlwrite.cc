@@ -295,7 +295,9 @@ DEFUN (urlwrite, args, nargout,
 @deftypefnx {Loadable Function} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
 @deftypefnx {Loadable Function} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})\n\
 Download a remote file specified by its @var{url} and save it as\n\
-@var{localfile}.  For example:\n\
+@var{localfile}.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -304,15 +306,17 @@ urlwrite (\"ftp://ftp.octave.org/pub/README\",\n\
 @end group\n\
 @end example\n\
 \n\
-The full path of the downloaded file is returned in @var{f}.  The\n\
-variable @var{success} is 1 if the download was successful,\n\
-otherwise it is 0 in which case @var{message} contains an error\n\
-message.  If no output argument is specified and an error occurs,\n\
-then the error is signaled through Octave's error handling mechanism.\n\
+The full path of the downloaded file is returned in @var{f}.\n\
 \n\
-This function uses libcurl.  Curl supports, among others, the HTTP,\n\
-FTP and FILE protocols.  Username and password may be specified in\n\
-the URL, for example:\n\
+The variable @var{success} is 1 if the download was successful,\n\
+otherwise it is 0 in which case @var{message} contains an error message.\n\
+ \n\
+If no output argument is specified and an error occurs, then the error is\n\
+signaled through Octave's error handling mechanism.\n\
+\n\
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP and\n\
+FILE protocols.  Username and password may be specified in the URL, for\n\
+example:\n\
 \n\
 @example\n\
 @group\n\
@@ -322,8 +326,8 @@ urlwrite (\"http://username:password@@example.com/file.txt\",\n\
 @end example\n\
 \n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @samp{post}\n\
-and @var{param} is a cell array of parameter and value pairs.\n\
+The parameter @var{method} is either @samp{get} or @samp{post} and\n\
+@var{param} is a cell array of parameter and value pairs.\n\
 For example:\n\
 \n\
 @example\n\
@@ -458,7 +462,9 @@ DEFUN (urlread, args, nargout,
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
 Download a remote file specified by its @var{url} and return its content\n\
-in string @var{s}.  For example:\n\
+in string @var{s}.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 s = urlread (\"ftp://ftp.octave.org/pub/README\");\n\
@@ -466,20 +472,22 @@ s = urlread (\"ftp://ftp.octave.org/pub/README\");\n\
 \n\
 The variable @var{success} is 1 if the download was successful,\n\
 otherwise it is 0 in which case @var{message} contains an error\n\
-message.  If no output argument is specified and an error occurs,\n\
-then the error is signaled through Octave's error handling mechanism.\n\
+message.\n\
 \n\
-This function uses libcurl.  Curl supports, among others, the HTTP,\n\
-FTP and FILE protocols.  Username and password may be specified in the\n\
-URL@.  For example:\n\
+If no output argument is specified and an error occurs, then the error is\n\
+signaled through Octave's error handling mechanism.\n\
+\n\
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP and\n\
+FILE protocols.  Username and password may be specified in the URL@.  For\n\
+example:\n\
 \n\
 @example\n\
 s = urlread (\"http://user:password@@example.com/file.txt\");\n\
 @end example\n\
 \n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @samp{post}\n\
-and @var{param} is a cell array of parameter and value pairs.\n\
+The parameter @var{method} is either @samp{get} or @samp{post} and\n\
+@var{param} is a cell array of parameter and value pairs.\n\
 For example:\n\
 \n\
 @example\n\

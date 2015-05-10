@@ -71,10 +71,12 @@ DEFUN (lu, args, nargout,
 @deftypefnx {Built-in Function} {@var{y} =} lu (@dots{})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} lu (@dots{}, \"vector\")\n\
 @cindex LU decomposition\n\
-Compute the LU@tie{}decomposition of @var{A}.  If @var{A} is full\n\
-subroutines from\n\
-@sc{lapack} are used and if @var{A} is sparse then @sc{umfpack} is used.  The\n\
-result is returned in a permuted form, according to the optional return\n\
+Compute the LU@tie{}decomposition of @var{A}.\n\
+\n\
+If @var{A} is full subroutines from @sc{lapack} are used and if @var{A} is\n\
+sparse then @sc{umfpack} is used.\n\
+\n\
+The result is returned in a permuted form, according to the optional return\n\
 value @var{P}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
@@ -607,11 +609,11 @@ Given an LU@tie{}factorization of a real or complex matrix\n\
 of @w{@var{A} + @var{x}*@var{y}.'}, where @var{x} and @var{y} are\n\
 column vectors (rank-1 update) or matrices with equal number of columns\n\
 (rank-k update).\n\
-Optionally, row-pivoted updating can be used by supplying\n\
-a row permutation (pivoting) matrix @var{P};\n\
-in that case, an updated permutation matrix is returned.\n\
-Note that if @var{L}, @var{U}, @var{P} is a pivoted LU@tie{}factorization\n\
-as obtained by @code{lu}:\n\
+\n\
+Optionally, row-pivoted updating can be used by supplying a row permutation\n\
+(pivoting) matrix @var{P}; in that case, an updated permutation matrix is\n\
+returned.  Note that if @var{L}, @var{U}, @var{P} is a pivoted\n\
+LU@tie{}factorization as obtained by @code{lu}:\n\
 \n\
 @example\n\
 [@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
@@ -636,9 +638,9 @@ The first form uses the unpivoted algorithm, which is faster, but less\n\
 stable.  The second form uses a slower pivoted algorithm, which is more\n\
 stable.\n\
 \n\
-The matrix case is done as a sequence of rank-1 updates;\n\
-thus, for large enough k, it will be both faster and more accurate to\n\
-recompute the factorization from scratch.\n\
+The matrix case is done as a sequence of rank-1 updates; thus, for large\n\
+enough k, it will be both faster and more accurate to recompute the\n\
+factorization from scratch.\n\
 @seealso{lu, cholupdate, qrupdate}\n\
 @end deftypefn")
 {

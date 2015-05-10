@@ -612,8 +612,10 @@ DEFUN (more, args, ,
 @deftypefn  {Command} {} more\n\
 @deftypefnx {Command} {} more on\n\
 @deftypefnx {Command} {} more off\n\
-Turn output pagination on or off.  Without an argument, @code{more}\n\
-toggles the current state.\n\
+Turn output pagination on or off.\n\
+\n\
+Without an argument, @code{more} toggles the current state.\n\
+\n\
 The current state can be determined via @code{page_screen_output}.\n\
 @seealso{page_screen_output, page_output_immediately, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
@@ -649,8 +651,8 @@ The current state can be determined via @code{page_screen_output}.\n\
 DEFUN (terminal_size, , ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} terminal_size ()\n\
-Return a two-element row vector containing the current size of the\n\
-terminal window in characters (rows and columns).\n\
+Return a two-element row vector containing the current size of the terminal\n\
+window in characters (rows and columns).\n\
 @seealso{list_in_columns}\n\
 @end deftypefn")
 {
@@ -668,12 +670,13 @@ DEFUN (page_output_immediately, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} page_output_immediately (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} page_output_immediately (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave sends\n\
-output to the pager as soon as it is available.  Otherwise, Octave\n\
-buffers its output and waits until just before the prompt is printed to\n\
-flush it to the pager.\n\
+output to the pager as soon as it is available.\n\
+\n\
+Otherwise, Octave buffers its output and waits until just before the prompt\n\
+is printed to flush it to the pager.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{page_screen_output, more, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
@@ -688,12 +691,14 @@ DEFUN (page_screen_output, args, nargout,
 @deftypefnx {Built-in Function} {} page_screen_output (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether output intended\n\
 for the terminal window that is longer than one page is sent through a\n\
-pager.  This allows you to view one screenful at a time.  Some pagers\n\
+pager.\n\
+\n\
+This allows you to view one screenful at a time.  Some pagers\n\
 (such as @code{less}---see @ref{Installation}) are also capable of moving\n\
 backward on the output.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
@@ -707,13 +712,14 @@ DEFUN (PAGER, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} PAGER (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PAGER (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the program to use\n\
-to display terminal output on your system.  The default value is\n\
-normally @qcode{\"less\"}, @qcode{\"more\"}, or\n\
+to display terminal output on your system.\n\
+\n\
+The default value is normally @qcode{\"less\"}, @qcode{\"more\"}, or\n\
 @qcode{\"pg\"}, depending on what programs are installed on your system.\n\
 @xref{Installation}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}\n\
 @end deftypefn")
@@ -730,7 +736,7 @@ Query or set the internal variable that specifies the options to pass\n\
 to the pager.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{PAGER, more, page_screen_output, page_output_immediately}\n\
 @end deftypefn")

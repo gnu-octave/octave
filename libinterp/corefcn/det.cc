@@ -55,8 +55,8 @@ Compute the determinant of @var{A}.\n\
 \n\
 Return an estimate of the reciprocal condition number if requested.\n\
 \n\
-Routines from @sc{lapack} are used for full matrices and code from\n\
-@sc{umfpack} is used for sparse matrices.\n\
+Programming Notes: Routines from @sc{lapack} are used for full matrices and\n\
+code from @sc{umfpack} is used for sparse matrices.\n\
 \n\
 The determinant should not be used to check a matrix for singularity.\n\
 For that, use any of the condition number functions: @code{cond},\n\

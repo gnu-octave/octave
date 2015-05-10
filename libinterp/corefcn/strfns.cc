@@ -47,19 +47,19 @@ DEFUN (char, args, ,
 @deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
 @deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
 Create a string array from one or more numeric matrices, character\n\
-matrices, or cell arrays.  Arguments are concatenated vertically.\n\
-The returned values are padded with blanks as needed to make each row\n\
-of the string array have the same length.  Empty input strings are\n\
-significant and will concatenated in the output.\n\
+matrices, or cell arrays.\n\
 \n\
-For numerical input, each element is converted\n\
-to the corresponding ASCII character.  A range error results if an input\n\
-is outside the ASCII range (0-255).\n\
+Arguments are concatenated vertically.  The returned values are padded with\n\
+blanks as needed to make each row of the string array have the same length. \n\
+Empty input strings are significant and will concatenated in the output.\n\
+\n\
+For numerical input, each element is converted to the corresponding ASCII\n\
+character.  A range error results if an input is outside the ASCII range\n\
+(0-255).\n\
 \n\
 For cell arrays, each element is concatenated separately.  Cell arrays\n\
-converted through\n\
-@code{char} can mostly be converted back with @code{cellstr}.\n\
-For example:\n\
+converted through @code{char} can mostly be converted back with\n\
+@code{cellstr}.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -178,19 +178,20 @@ DEFUN (strvcat, args, ,
 @deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
 @deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
 Create a character array from one or more numeric matrices, character\n\
-matrices, or cell arrays.  Arguments are concatenated vertically.\n\
-The returned values are padded with blanks as needed to make each row\n\
-of the string array have the same length.  Unlike @code{char}, empty\n\
-strings are removed and will not appear in the output.\n\
+matrices, or cell arrays.\n\
 \n\
-For numerical input, each element is converted\n\
-to the corresponding ASCII character.  A range error results if an input\n\
-is outside the ASCII range (0-255).\n\
+Arguments are concatenated vertically.  The returned values are padded with\n\
+blanks as needed to make each row of the string array have the same length. \n\
+Unlike @code{char}, empty strings are removed and will not appear in the\n\
+output.\n\
+\n\
+For numerical input, each element is converted to the corresponding ASCII\n\
+character.  A range error results if an input is outside the ASCII range\n\
+(0-255).\n\
 \n\
 For cell arrays, each element is concatenated separately.  Cell arrays\n\
-converted through\n\
-@code{strvcat} can mostly be converted back with @code{cellstr}.\n\
-For example:\n\
+converted through @code{strvcat} can mostly be converted back with\n\
+@code{cellstr}.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -870,14 +871,15 @@ This is just the opposite of the corresponding C library function.\n\
 DEFUN (list_in_columns, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
-Return a string containing the elements of @var{arg} listed in\n\
-columns with an overall maximum width of @var{width} and optional\n\
-prefix @var{prefix}.  The argument @var{arg} must be a cell array\n\
-of character strings or a character array.  If @var{width} is not\n\
-specified or is an empty matrix, or less than or equal to zero,\n\
-the width of the terminal screen is used.\n\
-Newline characters are used to break the lines in the output string.\n\
-For example:\n\
+Return a string containing the elements of @var{arg} listed in columns with\n\
+an overall maximum width of @var{width} and optional prefix @var{prefix}.\n\
+\n\
+The argument @var{arg} must be a cell array of character strings or a\n\
+character array.\n\
+\n\
+If @var{width} is not specified or is an empty matrix, or less than or equal\n\
+to zero, the width of the terminal screen is used.  Newline characters are\n\
+used to break the lines in the output string.  For example:\n\
 @c Set example in small font to prevent overfull line\n\
 \n\
 @smallexample\n\

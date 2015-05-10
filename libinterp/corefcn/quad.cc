@@ -179,10 +179,11 @@ DEFUN (quad, args, nargout,
 @deftypefnx {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 @deftypefnx {Built-in Function} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using\n\
-Fortran routines from @w{@sc{quadpack}}.  @var{f} is a function handle,\n\
-inline function, or a string containing the name of the function to\n\
-evaluate.  The function must have the form @code{y = f (x)} where @var{y} and\n\
-@var{x} are scalars.\n\
+Fortran routines from @w{@sc{quadpack}}.\n\
+\n\
+@var{f} is a function handle, inline function, or a string containing the\n\
+name of the function to evaluate.  The function must have the form @code{y =\n\
+f (x)} where @var{y} and @var{x} are scalars.\n\
 \n\
 @var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
 or both may be infinite.\n\
@@ -198,14 +199,18 @@ approximately @math{1.5e^{-8}}.\n\
 The optional argument @var{sing} is a vector of values at which the\n\
 integrand is known to be singular.\n\
 \n\
-The result of the integration is returned in @var{q}.  @var{ier}\n\
-contains an integer error code (0 indicates a successful integration).\n\
-@var{nfun} indicates the number of function evaluations that were\n\
-made, and @var{err} contains an estimate of the error in the\n\
-solution.\n\
+The result of the integration is returned in @var{q}.\n\
 \n\
-The function @code{quad_options} can set other optional\n\
-parameters for @code{quad}.\n\
+@var{ier} contains an integer error code (0 indicates a successful\n\
+integration).\n\
+\n\
+@var{nfun} indicates the number of function evaluations that were\n\
+made.\n\
+\n\
+@var{err} contains an estimate of the error in the solution.\n\
+\n\
+The function @code{quad_options} can set other optional parameters for\n\
+@code{quad}.\n\
 \n\
 Note: because @code{quad} is written in Fortran it cannot be called\n\
 recursively.  This prevents its use in integrating over more than one\n\

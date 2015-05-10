@@ -2520,11 +2520,11 @@ DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),
 @deftypefn  {Built-in Function} {@var{val} =} jit_failcnt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} jit_failcnt (@var{new_val}, \"local\")\n\
-Query or set the internal variable that counts the number of\n\
-JIT fail exceptions for Octave's JIT compiler.\n\
+Query or set the internal variable that counts the number of JIT fail\n\
+exceptions for Octave's JIT compiler.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{jit_enable, jit_startcnt, debug_jit}\n\
 @end deftypefn")
@@ -2547,7 +2547,7 @@ Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{jit_enable, jit_startcnt}\n\
 @end deftypefn")
@@ -2569,7 +2569,7 @@ DEFUN (jit_enable, UNUSED_WITHOUT_LLVM (args),
 Query or set the internal variable that enables Octave's JIT compiler.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{jit_startcnt, debug_jit}\n\
 @end deftypefn")
@@ -2589,14 +2589,16 @@ DEFUN (jit_startcnt, UNUSED_WITHOUT_LLVM (args),
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} jit_startcnt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that determines whether JIT compilation\n\
-will take place for a specific loop.  Because compilation is a costly\n\
-operation it does not make sense to employ JIT when the loop count is low.\n\
-By default only loops with greater than 1000 iterations will be accelerated.\n\
+will take place for a specific loop.\n\
+\n\
+Because compilation is a costly operation it does not make sense to employ\n\
+JIT when the loop count is low.  By default only loops with greater than\n\
+1000 iterations will be accelerated.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, debug_jit}\n\
+@seealso{jit_enable, jit_failcnt, debug_jit}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)

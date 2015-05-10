@@ -599,7 +599,9 @@ DEFALIAS (home, clc);
 DEFUN (getenv, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} getenv (@var{var})\n\
-Return the value of the environment variable @var{var}.  For example,\n\
+Return the value of the environment variable @var{var}.\n\
+\n\
+For example,\n\
 \n\
 @example\n\
 getenv (\"PATH\")\n\
@@ -720,8 +722,11 @@ DEFUN (kbhit, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} kbhit ()\n\
 @deftypefnx {Built-in Function} {} kbhit (1)\n\
-Read a single keystroke from the keyboard.  If called with an\n\
-argument, don't wait for a keypress.  For example,\n\
+Read a single keystroke from the keyboard.\n\
+\n\
+If called with an argument, don't wait for a keypress.\n\
+\n\
+For example,\n\
 \n\
 @example\n\
 x = kbhit ();\n\
@@ -769,6 +774,7 @@ DEFUN (pause, args, ,
 Suspend the execution of the program for @var{n} seconds.\n\
 \n\
 @var{n} is a positive real value and may be a fraction of a second.\n\
+\n\
 If invoked without an input arguments then the program is suspended until a\n\
 character is typed.\n\
 \n\
@@ -876,9 +882,11 @@ DEFUN (usleep, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} usleep (@var{microseconds})\n\
 Suspend the execution of the program for the given number of\n\
-microseconds.  On systems where it is not possible to sleep for periods\n\
-of time less than one second, @code{usleep} will pause the execution for\n\
-@code{round (@var{microseconds} / 1e6)} seconds.\n\
+microseconds.\n\
+\n\
+On systems where it is not possible to sleep for periods of time less than\n\
+one second, @code{usleep} will pause the execution for @code{round\n\
+(@var{microseconds} / 1e6)} seconds.\n\
 @seealso{sleep, pause}\n\
 @end deftypefn")
 {
@@ -924,7 +932,9 @@ DEFUN (isieee, , ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isieee ()\n\
 Return true if your computer @emph{claims} to conform to the IEEE standard\n\
-for floating point calculations.  No actual tests are performed.\n\
+for floating point calculations.\n\
+\n\
+No actual tests are performed.\n\
 @end deftypefn")
 {
   oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
@@ -940,7 +950,7 @@ for floating point calculations.  No actual tests are performed.\n\
 DEFUN (native_float_format, , ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} native_float_format ()\n\
-Return the native floating point format as a string\n\
+Return the native floating point format as a string.\n\
 @end deftypefn")
 {
   oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
@@ -955,13 +965,16 @@ Return the native floating point format as a string\n\
 DEFUN (tilde_expand, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} tilde_expand (@var{string})\n\
-Perform tilde expansion on @var{string}.  If @var{string} begins with a\n\
-tilde character, (@samp{~}), all of the characters preceding the first\n\
-slash (or all characters, if there is no slash) are treated as a\n\
-possible user name, and the tilde and the following characters up to the\n\
-slash are replaced by the home directory of the named user.  If the\n\
-tilde is followed immediately by a slash, the tilde is replaced by the\n\
-home directory of the user running Octave.  For example:\n\
+Perform tilde expansion on @var{string}.\n\
+\n\
+If @var{string} begins with a tilde character, (@samp{~}), all of the\n\
+characters preceding the first slash (or all characters, if there is no\n\
+slash) are treated as a possible user name, and the tilde and the following\n\
+characters up to the slash are replaced by the home directory of the named\n\
+user.  If the tilde is followed immediately by a slash, the tilde is\n\
+replaced by the home directory of the user running Octave.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\

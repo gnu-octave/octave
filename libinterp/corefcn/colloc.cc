@@ -37,10 +37,10 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN (colloc, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
-Compute derivative and integral weight matrices for orthogonal\n\
-collocation using the subroutines given in @nospell{J. Villadsen} and\n\
-@nospell{M. L. Michelsen}, @cite{Solution of Differential Equation Models by\n\
-Polynomial Approximation}.\n\
+Compute derivative and integral weight matrices for orthogonal collocation.\n\
+\n\
+Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
+@cite{Solution of Differential Equation Models by Polynomial Approximation}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

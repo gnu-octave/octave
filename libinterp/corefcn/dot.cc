@@ -106,10 +106,13 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
 DEFUN (dot, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
-Compute the dot product of two vectors.  If @var{x} and @var{y}\n\
-are matrices, calculate the dot products along the first\n\
-non-singleton dimension.  If the optional argument @var{dim} is\n\
-given, calculate the dot products along this dimension.\n\
+Compute the dot product of two vectors.\n\
+\n\
+If @var{x} and @var{y} are matrices, calculate the dot products along the\n\
+first non-singleton dimension.\n\
+\n\
+If the optional argument @var{dim} is given, calculate the dot products\n\
+along this dimension.\n\
 \n\
 This is equivalent to\n\
 @code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},\n\
@@ -281,11 +284,12 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 DEFUN (blkmm, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} blkmm (@var{A}, @var{B})\n\
-Compute products of matrix blocks.  The blocks are given as\n\
-2-dimensional subarrays of the arrays @var{A}, @var{B}.\n\
-The size of @var{A} must have the form @code{[m,k,@dots{}]} and\n\
-size of @var{B} must be @code{[k,n,@dots{}]}.  The result is\n\
-then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
+Compute products of matrix blocks.\n\
+\n\
+The blocks are given as 2-dimensional subarrays of the arrays @var{A},\n\
+@var{B}.  The size of @var{A} must have the form @code{[m,k,@dots{}]} and\n\
+size of @var{B} must be @code{[k,n,@dots{}]}.  The result is then of size\n\
+@code{[m,n,@dots{}]} and is computed as follows:\n\
 \n\
 @example\n\
 @group\n\

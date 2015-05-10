@@ -3407,7 +3407,8 @@ DEFUN (rats, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rats (@var{x}, @var{len})\n\
 Convert @var{x} into a rational approximation represented as a string.\n\
-You can convert the string back into a matrix as follows:\n\
+\n\
+The string can be converted back into a matrix as follows:\n\
 \n\
 @example\n\
 @group\n\
@@ -3489,7 +3490,9 @@ If the length of the smallest possible rational approximation exceeds\n\
 DEFUN (disp, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} disp (@var{x})\n\
-Display the value of @var{x}.  For example:\n\
+Display the value of @var{x}.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -3503,8 +3506,8 @@ disp (\"The value of pi is:\"), disp (pi)\n\
 @noindent\n\
 Note that the output from @code{disp} always ends with a newline.\n\
 \n\
-If an output value is requested, @code{disp} prints nothing and\n\
-returns the formatted output in a string.\n\
+If an output value is requested, @code{disp} prints nothing and returns the\n\
+formatted output in a string.\n\
 @seealso{fdisp}\n\
 @end deftypefn")
 {
@@ -3534,7 +3537,9 @@ returns the formatted output in a string.\n\
 DEFUN (fdisp, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fdisp (@var{fid}, @var{x})\n\
-Display the value of @var{x} on the stream @var{fid}.  For example:\n\
+Display the value of @var{x} on the stream @var{fid}.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -3890,10 +3895,12 @@ DEFUN (format, args, ,
 @deftypefn  {Command} {} format\n\
 @deftypefnx {Command} {} format options\n\
 Reset or specify the format of the output produced by @code{disp} and\n\
-Octave's normal echoing mechanism.  This command only affects the display\n\
-of numbers but not how they are stored or computed.  To change the internal\n\
-representation from the default double use one of the conversion functions\n\
-such as @code{single}, @code{uint8}, @code{int64}, etc.\n\
+Octave's normal echoing mechanism.\n\
+\n\
+This command only affects the display of numbers but not how they are stored\n\
+or computed.  To change the internal representation from the default double\n\
+use one of the conversion functions such as @code{single}, @code{uint8},\n\
+@code{int64}, etc.\n\
 \n\
 By default, Octave displays 5 significant digits in a human readable form\n\
 (option @samp{short} paired with @samp{loose} format for matrices).\n\
@@ -4053,7 +4060,7 @@ matrices producing more compact output with more data per page.\n\
 Insert blank lines above and below column number labels and between matrices\n\
 to produce a more readable output with less data per page.  (default).\n\
 @end table\n\
-@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, rats}\n\
+@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4122,7 +4129,7 @@ of the possibility for confusion you should be careful about enabling\n\
 @code{fixed_point_format}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{format, output_max_field_width, output_precision}\n\
 @end deftypefn")
@@ -4135,9 +4142,10 @@ DEFUN (print_empty_dimensions, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether the\n\
-dimensions of empty matrices are printed along with the empty matrix\n\
-symbol, @samp{[]}.  For example, the expression\n\
+Query or set the internal variable that controls whether the dimensions of\n\
+empty matrices are printed along with the empty matrix symbol, @samp{[]}.\n\
+\n\
+For example, the expression\n\
 \n\
 @example\n\
 zeros (3, 0)\n\
@@ -4151,7 +4159,7 @@ ans = [](3x0)\n\
 @end example\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{format}\n\
 @end deftypefn")
@@ -4165,11 +4173,12 @@ DEFUN (split_long_rows, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} split_long_rows (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether rows of a matrix\n\
-may be split when displayed to a terminal window.  If the rows are split,\n\
-Octave will display the matrix in a series of smaller pieces, each of\n\
-which can fit within the limits of your terminal width and each set of\n\
-rows is labeled so that you can easily see which columns are currently\n\
-being displayed.  For example:\n\
+may be split when displayed to a terminal window.\n\
+\n\
+If the rows are split, Octave will display the matrix in a series of smaller\n\
+pieces, each of which can fit within the limits of your terminal width and\n\
+each set of rows is labeled so that you can easily see which columns are\n\
+currently being displayed.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -4189,7 +4198,7 @@ ans =\n\
 @end example\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{format}\n\
 @end deftypefn")
@@ -4206,7 +4215,7 @@ Query or set the internal variable that specifies the maximum width\n\
 of a numeric output field.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_precision}\n\
 @end deftypefn")
@@ -4224,7 +4233,7 @@ Query or set the internal variable that specifies the minimum number of\n\
 significant figures to display for numeric output.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_max_field_width}\n\
 @end deftypefn")

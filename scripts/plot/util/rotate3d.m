@@ -28,9 +28,8 @@
 ##
 ## With no arguments, toggle the current rotate mode on or off.
 ##
-## If the first argument @var{hfig} is a figure, then operate on
-## the given figure rather than the current figure as returned by
-## @code{gcf}.
+## If the first argument @var{hfig} is a figure, then operate on the given
+## figure rather than the current figure as returned by @code{gcf}.
 ##
 ## @seealso{pan, zoom}
 ## @end deftypefn

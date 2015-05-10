@@ -25,9 +25,11 @@
 ## @deftypefnx {Function File} {} quiver (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
 ##
+## Plot a 2-D vector field with arrows.
+##
 ## Plot the (@var{u}, @var{v}) components of a vector field in
-## an (@var{x}, @var{y}) meshgrid.  If the grid is uniform, you can
-## specify @var{x} and @var{y} as vectors.
+## an (@var{x}, @var{y}) meshgrid.  If the grid is uniform then @var{x} and
+## @var{y} can be specified as vectors.
 ##
 ## If @var{x} and @var{y} are undefined they are assumed to be
 ## @code{(1:@var{m}, 1:@var{n})} where

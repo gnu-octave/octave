@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} linkaxes (@var{hax})
 ## @deftypefnx {Function File} {} linkaxes (@var{hax}, @var{optstr})
-## Link the axis limits of 2-D plots such that a change in one is
-## propagated to the others.
+## Link the axis limits of 2-D plots such that a change in one is propagated
+## to the others.
 ##
 ## The axes handles to be linked are passed as the first argument @var{hax}.
 ##

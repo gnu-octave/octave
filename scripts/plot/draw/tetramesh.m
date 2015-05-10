@@ -23,10 +23,10 @@
 ## @deftypefnx {Function File} {@var{h} =} tetramesh (@dots{})
 ## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D patches.
 ##
-## @var{T} is typically the output of a Delaunay triangulation
-## of a 3-D set of points.  Every row of @var{T} contains four indices into
-## the n-by-3 matrix @var{X} of the vertices of a tetrahedron.  Every row in
-## @var{X} represents one point in 3-D space.
+## @var{T} is typically the output of a Delaunay triangulation of a 3-D set
+## of points.  Every row of @var{T} contains four indices into the n-by-3
+## matrix @var{X} of the vertices of a tetrahedron.  Every row in @var{X}
+## represents one point in 3-D space.
 ##
 ## The vector @var{C} specifies the color of each tetrahedron as an index
 ## into the current colormap.  The default value is 1:m where m is the number

@@ -24,7 +24,7 @@
 ## Plot a 3-D unit sphere.
 ##
 ## The optional input @var{n} determines the number of faces around the
-## the circumference of the sphere.  The default value is 20.
+## circumference of the sphere.  The default value is 20.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

@@ -22,10 +22,11 @@
 ## @deftypefnx {Function File} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
 ## Display @var{msg} using an error dialog box.
 ##
-## The message may have multiple lines separated by newline characters
-## ("\n"), or it may be a cellstr array with one element for each
-## line.  The optional input @var{title} (character string) can be used to
-## set the dialog caption.  The default title is @qcode{"Error Dialog"}.
+## The message may have multiple lines separated by newline characters ("\n"),
+## or it may be a cellstr array with one element for each line.
+##
+## The optional input @var{title} (character string) can be used to set the
+## dialog caption.  The default title is @qcode{"Error Dialog"}.
 ##
 ## The return value is always 1.
 ##

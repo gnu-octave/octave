@@ -25,7 +25,6 @@
 ## @deftypefnx {Function File} {} surfl (@dots{}, "light")
 ## @deftypefnx {Function File} {} surfl (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} surfl (@dots{})
-##
 ## Plot a 3-D surface using shading based on various lighting models.
 ##
 ## The surface mesh is plotted using shaded rectangles.  The vertices of the

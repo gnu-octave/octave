@@ -23,14 +23,15 @@
 ## Construct a graphics handle object @var{h} from the structure @var{s}.
 ##
 ## The structure must contain the fields @qcode{"handle"}, @qcode{"type"},
-## @qcode{"children"}, @qcode{"properties"}, and @qcode{"special"}.  If the
-## handle of an existing figure or axes is specified, @var{p}, the new object
-## will be created as a child of that object.  If no parent handle is provided
-## then a new figure and the necessary children will be constructed using the
-## default values from the root figure.
+## @qcode{"children"}, @qcode{"properties"}, and @qcode{"special"}.
 ##
-## A third boolean argument @var{hilev} can be passed to specify whether
-## the function should preserve listeners/callbacks, e.g., for legends or
+## If the handle of an existing figure or axes is specified, @var{p}, the new
+## object will be created as a child of that object.  If no parent handle is
+## provided then a new figure and the necessary children will be constructed
+## using the default values from the root figure.
+##
+## A third boolean argument @var{hilev} can be passed to specify whether the
+## function should preserve listeners/callbacks, e.g., for legends or
 ## hggroups.  The default is false.
 ## @seealso{hdl2struct, hgload, findobj}
 ## @end deftypefn

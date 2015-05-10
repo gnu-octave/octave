@@ -39,9 +39,8 @@
 ## With one output argument, @code{@var{limits} = axis} returns the current
 ## axis limits.
 ##
-## The vector argument specifying limits is optional, and additional
-## string arguments may be used to specify various axis properties.  For
-## example,
+## The vector argument specifying limits is optional, and additional string
+## arguments may be used to specify various axis properties.  For example,
 ##
 ## @example
 ## axis ([1, 2, 3, 4], "square");
@@ -55,8 +54,7 @@
 ## @end example
 ##
 ## @noindent
-## turns tic marks on for all axes and tic mark labels on for the y-axis
-## only.
+## turns tic marks on for all axes and tic mark labels on for the y-axis only.
 ##
 ## @noindent
 ## The following options control the aspect ratio of the axes.
@@ -77,8 +75,8 @@
 ##
 ## @table @asis
 ## @item @qcode{"auto"}
-## Set the specified axes to have nice limits around the data
-## or all if no axes are specified.
+## Set the specified axes to have nice limits around the data or all if no
+## axes are specified.
 ##
 ## @item @qcode{"manual"}
 ## Fix the current axes limits.
@@ -101,12 +99,12 @@
 ## Turn tic marks off for all axes.
 ##
 ## @item @qcode{"tic[xyz]"}
-## Turn tic marks on for all axes, or turn them on for the
-## specified axes and off for the remainder.
+## Turn tic marks on for all axes, or turn them on for the specified axes and
+## off for the remainder.
 ##
 ## @item @qcode{"label[xyz]"}
-## Turn tic labels on for all axes, or turn them on for the
-## specified axes and off for the remainder.
+## Turn tic labels on for all axes, or turn them on for the specified axes
+## and off for the remainder.
 ##
 ## @item @qcode{"nolabel"}
 ## Turn tic labels off for all axes.
@@ -125,8 +123,8 @@
 ## Restore y-axis, so higher values are nearer the top.
 ## @end table
 ##
-## If the first argument @var{hax} is an axes handle, then operate on
-## this axes rather than the current axes returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then operate on this
+## axes rather than the current axes returned by @code{gca}.
 ##
 ## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid}
 ## @end deftypefn

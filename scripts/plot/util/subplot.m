@@ -29,8 +29,8 @@
 ## current axes for plotting (@code{gca}) to the location given by @var{index}.
 ##
 ## If only one numeric argument is supplied, then it must be a three digit
-## value specifying the number of rows in digit 1, the number of
-## columns in digit 2, and the plot index in digit 3.
+## value specifying the number of rows in digit 1, the number of columns in
+## digit 2, and the plot index in digit 3.
 ##
 ## The plot index runs row-wise; First, all columns in a row are numbered
 ## and then the next row is filled.

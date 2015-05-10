@@ -24,9 +24,11 @@
 ## @var{fmt}.
 ##
 ## If unspecified, @var{h} is the current figure as returned by @code{gcf}.
+##
 ## When @var{filename} does not have an extension the default filename
-## extension @file{.ofig} will be appended.  If present, @var{fmt} should
-## should be one of the following:
+## extension @file{.ofig} will be appended.
+##
+## If present, @var{fmt} should be one of the following:
 ##
 ## @itemize @bullet
 ## @item @option{-binary}, @option{-float-binary}

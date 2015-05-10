@@ -26,7 +26,9 @@
 ## Query or set the limits of the z-axis for the current plot.
 ##
 ## Called without arguments @code{zlim} returns the z-axis limits of the
-## current plot.  With the input query @qcode{"mode"}, return the current
+## current plot.
+##
+## With the input query @qcode{"mode"}, return the current
 ## z-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{z_lo} @var{z_hi}], the limits of the

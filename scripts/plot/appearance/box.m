@@ -26,8 +26,8 @@
 ## The argument may be either @qcode{"on"} or @qcode{"off"}.  If it is
 ## omitted, the current box state is toggled.
 ##
-## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then operate on this
+## axis rather than the current axes returned by @code{gca}.
 ## @seealso{axis, grid}
 ## @end deftypefn
 

@@ -27,8 +27,8 @@
 ## @deftypefnx {Function File} {} semilogyerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
 ## @deftypefnx {Function File} {} semilogyerr (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} semilogyerr (@dots{})
-## Produce 2-D plots using a logarithmic scale for the y-axis and
-## errorbars at each data point.
+## Produce 2-D plots using a logarithmic scale for the y-axis and errorbars
+## at each data point.
 ##
 ## Many different combinations of arguments are possible.  The most common
 ## form is

@@ -26,7 +26,9 @@
 ## Query or set the limits of the y-axis for the current plot.
 ##
 ## Called without arguments @code{ylim} returns the y-axis limits of the
-## current plot.  With the input query @qcode{"mode"}, return the current
+## current plot.
+##
+## With the input query @qcode{"mode"}, return the current
 ## y-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{y_lo} @var{y_hi}], the limits of the

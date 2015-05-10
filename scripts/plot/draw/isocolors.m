@@ -24,6 +24,8 @@
 ## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@dots{}, @var{p})
 ## @deftypefnx {Function File} {} isocolors (@dots{})
 ##
+## Compute isosurface colors.
+##
 ## If called with one output argument and the first input argument
 ## @var{c} is a three-dimensional array that contains color values and
 ## the second input argument @var{v} keeps the vertices of a geometry

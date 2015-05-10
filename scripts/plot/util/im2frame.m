@@ -25,8 +25,9 @@
 ## @qcode{"colormap"}.
 ##
 ## Support for N-dimensional images is given when each image projection,
-## matrix sizes of @nospell{MxN and MxNx3} for RGB images, is concatenated on
-## the fourth dimension.  In such cases, the returned value is a struct array.
+## matrix sizes of @nospell{MxN and MxNx3} for RGB images, is concatenated
+## along the fourth dimension.  In such cases, the returned value is a struct
+## array.
 ##
 ## @seealso{frame2im}
 ## @end deftypefn

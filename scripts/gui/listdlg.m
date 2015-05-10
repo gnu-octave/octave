@@ -18,11 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
-## Return user inputs from a list dialog box in a vector of
-## selection indices @var{sel} and a flag @var{ok} indicating how the
-## user closed the dialog box.  The value of @var{ok} is 1 if the user
-## closed the box with the OK button, otherwise it is 0 and @var{sel} is
-## empty.
+## Return user inputs from a list dialog box in a vector of selection indices
+## @var{sel} and a flag @var{ok} indicating how the user closed the dialog
+## box.
+##
+## The value of @var{ok} is 1 if the user closed the box with the OK button,
+## otherwise it is 0 and @var{sel} is empty.
 ##
 ## The indices in @var{sel} are 1-based.
 ##
@@ -39,19 +40,19 @@
 ## can be either @qcode{"Single"} or @qcode{"Multiple"} (default).
 ##
 ## @item @qcode{"ListSize"}
-## a vector with two elements @var{width} and @var{height} defining
-## the size of the list field in pixels.  Default is [160 300].
+## a vector with two elements @var{width} and @var{height} defining the size
+## of the list field in pixels.  Default is [160 300].
 ##
 ## @item @qcode{"InitialValue"}
-## a vector containing 1-based indices of preselected elements.  Default
-## is 1 (first item).
+## a vector containing 1-based indices of preselected elements.
+## Default is 1 (first item).
 ##
 ## @item @qcode{"Name"}
 ## a string to be used as the dialog caption.  Default is "".
 ##
 ## @item @qcode{"PromptString"}
-## a cell array of strings to be displayed above the list field.  Default
-## is @{@}.
+## a cell array of strings to be displayed above the list field.
+## Default is @{@}.
 ##
 ## @item @qcode{"OKString"}
 ## a string used to label the OK button.  Default is @qcode{"OK"}.

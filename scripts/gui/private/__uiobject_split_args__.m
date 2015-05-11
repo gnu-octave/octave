@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
+## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: goffioul

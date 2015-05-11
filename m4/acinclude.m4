@@ -1059,6 +1059,28 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
     :
   fi
 ])
+dnl 
+dnl Check whether sndfile library is modern enough to include things like Ogg
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
+  AC_CACHE_CHECK([whether sndfile library is modern enough],
+    [octave_cv_lib_sndfile_ok],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <sndfile.h>
+        ]], [[
+        int x = SF_FORMAT_OGG;
+      ]])],
+      octave_cv_lib_sndfile_ok=yes,
+      octave_cv_lib_sndfile_ok=no)
+  ])
+  if test $octave_cv_lib_sndfile_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
 dnl
 dnl Find a suitable termlib to use.
 dnl

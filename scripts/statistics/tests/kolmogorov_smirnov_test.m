@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test (@var{x}, @var{dist}, @var{params}, @var{alt})
 ## Perform a Kolmogorov-Smirnov test of the null hypothesis that the
-## sample @var{x} comes from the (continuous) distribution dist.  I.e.,
+## sample @var{x} comes from the (continuous) distribution @var{dist}.
+##
 ## if F and G are the CDFs corresponding to the sample and dist,
 ## respectively, then the null is that F == G.
 ##
@@ -32,18 +33,18 @@
 ## @end example
 ##
 ## @noindent
-## @var{dist} can be any string for which a function @var{dist_cdf}
+## @var{dist} can be any string for which a function @var{distcdf}
 ## that calculates the CDF of distribution @var{dist} exists.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative F
-## != G@.  In this case, the test statistic @var{ks} follows a two-sided
-## Kolmogorov-Smirnov distribution.  If @var{alt} is @qcode{">"}, the
-## one-sided alternative F > G is considered.  Similarly for @qcode{"<"},
-## the one-sided alternative F > G is considered.  In this case, the
-## test statistic @var{ks} has a one-sided Kolmogorov-Smirnov
-## distribution.  The default is the two-sided case.
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative F != G@.  In this case, the
+## test statistic @var{ks} follows a two-sided Kolmogorov-Smirnov
+## distribution.  If @var{alt} is @qcode{">"}, the one-sided alternative F >
+## G is considered.  Similarly for @qcode{"<"}, the one-sided alternative F >
+## G is considered.  In this case, the test statistic @var{ks} has a
+## one-sided Kolmogorov-Smirnov distribution.  The default is the two-sided
+## case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

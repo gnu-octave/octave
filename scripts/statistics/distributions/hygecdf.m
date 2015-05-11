@@ -20,11 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hygecdf (@var{x}, @var{t}, @var{m}, @var{n})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
-## hypergeometric distribution with parameters @var{t}, @var{m}, and
-## @var{n}.  This is the probability of obtaining not more than @var{x}
-## marked items when randomly drawing a sample of size @var{n} without
-## replacement from a population of total size @var{t} containing
-## @var{m} marked items.
+## hypergeometric distribution with parameters @var{t}, @var{m}, and @var{n}.
+##
+## This is the probability of obtaining not more than @var{x} marked items
+## when randomly drawing a sample of size @var{n} without replacement from a
+## population of total size @var{t} containing @var{m} marked items.
 ##
 ## The parameters @var{t}, @var{m}, and @var{n} must be positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.

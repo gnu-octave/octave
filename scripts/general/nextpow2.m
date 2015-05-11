@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nextpow2 (@var{x})
-## Compute exponent for smallest power of two larger than input.
+## Compute the exponent for the smallest power of two larger than the input.
 ##
-## For each element in the input array @var{x}, returns the first integer
+## For each element in the input array @var{x}, return the first integer
 ## @var{n} such that
 ## @tex
 ## $2^n \ge |x|$.

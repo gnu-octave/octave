@@ -654,17 +654,16 @@ DEFUNX ("inline", Finline, args, ,
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
 \n\
-If called with a single argument, the arguments of the generated\n\
-function are extracted from the function itself.  The generated\n\
-function arguments will then be in alphabetical order.  It should\n\
-be noted that i, and j are ignored as arguments due to the\n\
-ambiguity between their use as a variable or their use as an inbuilt\n\
-constant.  All arguments followed by a parenthesis are considered\n\
-to be functions.  If no arguments are found, a function taking a single\n\
-argument named @code{x} will be created.\n\
+If called with a single argument, the arguments of the generated function\n\
+are extracted from the function itself.  The generated function arguments\n\
+will then be in alphabetical order.  It should be noted that i and j are\n\
+ignored as arguments due to the ambiguity between their use as a variable or\n\
+their use as an built-in constant.  All arguments followed by a parenthesis\n\
+are considered to be functions.  If no arguments are found, a function\n\
+taking a single argument named @code{x} will be created.\n\
 \n\
-If the second and subsequent arguments are character strings,\n\
-they are the names of the arguments of the function.\n\
+If the second and subsequent arguments are character strings, they are the\n\
+names of the arguments of the function.\n\
 \n\
 If the second argument is an integer @var{n}, the arguments are\n\
 @qcode{\"x\"}, @qcode{\"P1\"}, @dots{}, @qcode{\"P@var{N}\"}.\n\
@@ -904,8 +903,8 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 DEFUN (argnames, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} argnames (@var{fun})\n\
-Return a cell array of character strings containing the names of\n\
-the arguments of the inline function @var{fun}.\n\
+Return a cell array of character strings containing the names of the\n\
+arguments of the inline function @var{fun}.\n\
 @seealso{inline, formula, vectorize}\n\
 @end deftypefn")
 {
@@ -951,13 +950,11 @@ the arguments of the inline function @var{fun}.\n\
 DEFUN (vectorize, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
-Create a vectorized version of the inline function @var{fun}\n\
-by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
-@code{.*}, @code{./}, etc.\n\
+Create a vectorized version of the inline function @var{fun} by replacing\n\
+all occurrences of @code{*}, @code{/}, etc., with @code{.*}, @code{./}, etc.\n\
 \n\
-This may be useful, for example, when using inline functions with\n\
-numerical integration or optimization where a vector-valued function\n\
-is expected.\n\
+This may be useful, for example, when using inline functions with numerical\n\
+integration or optimization where a vector-valued function is expected.\n\
 \n\
 @example\n\
 @group\n\

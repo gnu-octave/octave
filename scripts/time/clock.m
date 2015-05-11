@@ -18,10 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} clock ()
-## Return the current local date and time as a date vector.  The date vector
-## contains the following fields: current year, month (1-12), day (1-31),
-## hour (0-23), minute (0-59), and second (0-61).  The seconds field has
-## a fractional part after the decimal point for extended accuracy.
+## Return the current local date and time as a date vector.
+##
+## The date vector contains the following fields: current year, month (1-12),
+## day (1-31), hour (0-23), minute (0-59), and second (0-61).  The seconds
+## field has a fractional part after the decimal point for extended accuracy.
 ##
 ## For example:
 ##
@@ -32,8 +33,8 @@
 ## @end group
 ## @end example
 ##
-## The function clock is more accurate on systems that have the
-## @code{gettimeofday} function.
+## @code{clock} is more accurate on systems that have the @code{gettimeofday}
+## function.
 ## @seealso{now, date, datevec}
 ## @end deftypefn
 

@@ -2233,8 +2233,9 @@ DEFUN (genpath, args, ,
 @deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
 @deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
-If additional string parameters are given, the resulting path will\n\
-exclude directories with those names.\n\
+\n\
+If additional string parameters are given, the resulting path will exclude\n\
+directories with those names.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2399,8 +2400,9 @@ DEFUN (addpath, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
-Add named directories to the function search path.  If\n\
-@var{option} is @qcode{\"-begin\"} or 0 (the default), prepend the\n\
+Add named directories to the function search path.\n\
+\n\
+If @var{option} is @qcode{\"-begin\"} or 0 (the default), prepend the\n\
 directory name to the current path.  If @var{option} is @qcode{\"-end\"}\n\
 or 1, append the directory name to the current path.\n\
 Directories added to the path must exist.\n\

@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} laplace_cdf (@var{x})
-## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of the Laplace distribution.
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the Laplace distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

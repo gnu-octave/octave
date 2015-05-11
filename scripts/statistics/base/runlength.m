@@ -17,9 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[count, value] =} runlength (@var{x})
-## Find the lengths of all sequences of common values.  Return the
-## vector of lengths and the value that was repeated.
+## @deftypefn  {Function File} {count =} runlength (@var{x})
+## @deftypefnx {Function File} {[count, value] =} runlength (@var{x})
+## Find the lengths of all sequences of common values.
+##
+## @var{count} is a vector with the lengths of each repeated value.
+##
+## The optional output @var{value} contains the value that was repeated in
+## the sequence.
 ##
 ## @example
 ## @group
@@ -27,6 +32,7 @@
 ## @result{}  [2, 1, 3, 1, 4]
 ## @end group
 ## @end example
+## @seealso{run_count}
 ## @end deftypefn
 
 function [count, value] = runlength (x)

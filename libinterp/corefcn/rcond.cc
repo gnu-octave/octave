@@ -34,8 +34,10 @@ DEFUN (rcond, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{c} =} rcond (@var{A})\n\
 Compute the 1-norm estimate of the reciprocal condition number as returned\n\
-by @sc{lapack}.  If the matrix is well-conditioned then @var{c} will be near\n\
-1 and if the matrix is poorly conditioned it will be close to zero.\n\
+by @sc{lapack}.\n\
+\n\
+If the matrix is well-conditioned then @var{c} will be near 1 and if the\n\
+matrix is poorly conditioned it will be close to 0.\n\
 \n\
 The matrix @var{A} must not be sparse.  If the matrix is sparse then\n\
 @code{condest (@var{A})} or @code{rcond (full (@var{A}))} should be used\n\

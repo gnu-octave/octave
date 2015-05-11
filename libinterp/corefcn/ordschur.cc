@@ -68,6 +68,7 @@ DEFUN (ordschur, args, ,
 Reorders the real Schur factorization (@var{U},@var{S}) obtained with the\n\
 @code{schur} function, so that selected eigenvalues appear in the upper left\n\
 diagonal blocks of the quasi triangular Schur matrix.\n\
+\n\
 The logical vector @var{select} specifies the selected eigenvalues as they\n\
 appear along @var{S}'s diagonal.\n\
 \n\

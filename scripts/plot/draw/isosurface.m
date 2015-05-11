@@ -25,6 +25,8 @@
 ## @deftypefnx {Function File} {[@var{f}, @var{v}, @var{c}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ## @deftypefnx {Function File} {} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col}, @var{opt})
 ##
+## Calculate isosurface of 3-D data.
+##
 ## If called with one output argument and the first input argument
 ## @var{val} is a three-dimensional array that contains the data of an
 ## isosurface geometry and the second input argument @var{iso} keeps the

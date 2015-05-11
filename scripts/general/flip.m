@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} flip (@var{x})
 ## @deftypefnx {Function File} {} flip (@var{x}, @var{dim})
-## Flip array across specific dimension.
+## Flip array across dimension @var{dim}.
 ##
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.
 ## @var{dim} defaults to the first non-singleton dimension.

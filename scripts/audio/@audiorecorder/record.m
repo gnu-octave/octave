@@ -20,9 +20,10 @@
 ## @deftypefn  {Function File} {} record (@var{recorder})
 ## @deftypefnx {Function File} {} record (@var{recorder}, @var{length})
 ## Record audio without blocking using the audiorecorder object
-## @var{recorder} until stopped or paused by the @var{stop} or
-## @var{pause} method.  Given the optional argument @var{length}, record
-## for @var{length} seconds.
+## @var{recorder} until stopped or paused by the @var{stop} or @var{pause}
+## method.
+##
+## Given the optional argument @var{length}, record for @var{length} seconds.
 ## @end deftypefn
 
 function record (varargin)

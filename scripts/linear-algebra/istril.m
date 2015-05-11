@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {} istril (@var{A})
 ## Return true if @var{A} is a lower triangular matrix.
 ##
-## A lower triangular matrix has nonzero entries only on the main diagonal
-## and below.
+## A lower triangular matrix has nonzero entries only on the main diagonal and
+## below.
 ## @seealso{istriu, isbanded, isdiag, tril, bandwidth}
 ## @end deftypefn
 

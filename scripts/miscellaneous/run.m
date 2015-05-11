@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} run ("@var{script}")
 ## Run @var{script} in the current workspace.
 ##
-## Scripts which reside in directories specified in Octave's load
-## path, and which end with the extension @file{".m"}, can be run simply by
-## typing their name.  For scripts not located on the load path, use @code{run}.
+## Scripts which reside in directories specified in Octave's load path, and
+## which end with the extension @file{".m"}, can be run simply by typing
+## their name.  For scripts not located on the load path, use @code{run}.
 ##
 ## The file name @var{script} can be a bare, fully qualified, or relative
 ## filename and with or without a file extension.  If no extension is specified,

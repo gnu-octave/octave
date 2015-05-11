@@ -174,14 +174,13 @@ DEFUN (fft2, args, ,
 Compute the two-dimensional discrete Fourier transform of @var{A} using\n\
 a Fast Fourier Transform (FFT) algorithm.\n\
 \n\
-The optional arguments @var{m} and @var{n} may be used specify the\n\
-number of rows and columns of @var{A} to use.  If either of these is\n\
-larger than the size of @var{A}, @var{A} is resized and padded with\n\
-zeros.\n\
+The optional arguments @var{m} and @var{n} may be used specify the number of\n\
+rows and columns of @var{A} to use.  If either of these is larger than the\n\
+size of @var{A}, @var{A} is resized and padded with zeros.\n\
 \n\
 If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
 of @var{A} is treated separately.\n\
-@seealso {ifft2, fft, fftn, fftw}\n\
+@seealso{ifft2, fft, fftn, fftw}\n\
 @end deftypefn")
 {
   return do_fft2 (args, "fft2", 0);
@@ -195,14 +194,13 @@ DEFUN (ifft2, args, ,
 Compute the inverse two-dimensional discrete Fourier transform of @var{A}\n\
 using a Fast Fourier Transform (FFT) algorithm.\n\
 \n\
-The optional arguments @var{m} and @var{n} may be used specify the\n\
-number of rows and columns of @var{A} to use.  If either of these is\n\
-larger than the size of @var{A}, @var{A} is resized and padded with\n\
-zeros.\n\
+The optional arguments @var{m} and @var{n} may be used specify the number of\n\
+rows and columns of @var{A} to use.  If either of these is larger than the\n\
+size of @var{A}, @var{A} is resized and padded with zeros.\n\
 \n\
 If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
 of @var{A} is treated separately\n\
-@seealso {fft2, ifft, ifftn, fftw}\n\
+@seealso{fft2, ifft, ifftn, fftw}\n\
 @end deftypefn")
 {
   return do_fft2 (args, "ifft2", 1);

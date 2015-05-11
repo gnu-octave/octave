@@ -26,18 +26,18 @@
 ##
 ## Additional arguments determine the shape of the return matrix.  When no
 ## arguments are specified a single random integer is returned.  If one
-## argument @var{n} is specified then a square matrix @w{(@var{n} x @var{n})} is
-## returned.  Two or more arguments will return a multi-dimensional
-## matrix @w{(@var{m} x @var{n} x @dots{})}.
+## argument @var{n} is specified then a square matrix @w{(@var{n} x @var{n})}
+## is returned.  Two or more arguments will return a multi-dimensional matrix
+## @w{(@var{m} x @var{n} x @dots{})}.
 ##
-## The integer range may optionally be described by a two element matrix
-## with a lower and upper bound in which case the returned integers will be
-## on the interval @w{[@var{imin}, @var{imax}]}.
+## The integer range may optionally be described by a two element matrix with a
+## lower and upper bound in which case the returned integers will be on the
+## interval @w{[@var{imin}, @var{imax}]}.
 ##
 ## The optional argument @var{class} will return a matrix of the requested
 ## type.  The default is @qcode{"double"}.
 ##
-## The following example returns 150 integers in the range 1-10.
+## The following example returns 150 integers in the range 1--10.
 ##
 ## @example
 ## ri = randi (10, 150, 1)

@@ -39,7 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN (abs, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} abs (@var{z})\n\
-Compute the magnitude of @var{z}, defined as\n\
+Compute the magnitude of @var{z}.\n\
+\n\
+The magnitude is defined as\n\
 @tex\n\
 $|z| = \\sqrt{x^2 + y^2}$.\n\
 @end tex\n\
@@ -55,6 +57,7 @@ abs (3 + 4i)\n\
      @result{} 5\n\
 @end group\n\
 @end example\n\
+@seealso{arg}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -157,7 +160,6 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 %!test
 %! re = 2.99822295029797;
 %! im = pi/2;
-%! assert (acosh (10i), re + i*im);
 %! assert (acosh (-10i), re - i*im);
 
 %!test
@@ -178,7 +180,8 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 DEFUN (angle, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} angle (@var{z})\n\
-See arg.\n\
+See @code{arg}.\n\
+@seealso{arg}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -194,7 +197,9 @@ DEFUN (arg, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
-Compute the argument of @var{z}, defined as,\n\
+Compute the argument, i.e., angle of @var{z}.\n\
+\n\
+This is defined as,\n\
 @tex\n\
 $\\theta = atan2 (y, x),$\n\
 @end tex\n\
@@ -211,6 +216,7 @@ arg (3 + 4i)\n\
      @result{} 0.92730\n\
 @end group\n\
 @end example\n\
+@seealso{abs}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -394,6 +400,7 @@ DEFUN (cbrt, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cbrt (@var{x})\n\
 Compute the real cube root of each element of @var{x}.\n\
+\n\
 Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is\n\
 negative.\n\
 @seealso{nthroot}\n\
@@ -425,9 +432,12 @@ negative.\n\
 DEFUN (ceil, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\
-Return the smallest integer not less than @var{x}.  This is equivalent to\n\
-rounding towards positive infinity.  If @var{x} is\n\
-complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
+Return the smallest integer not less than @var{x}.\n\
+\n\
+This is equivalent to rounding towards positive infinity.\n\
+\n\
+If @var{x} is complex, return\n\
+@code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 \n\
 @example\n\
 @group\n\
@@ -467,7 +477,9 @@ ceil ([-2.7, 2.7])\n\
 DEFUN (conj, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} conj (@var{z})\n\
-Return the complex conjugate of @var{z}, defined as\n\
+Return the complex conjugate of @var{z}.\n\
+\n\
+The complex conjugate is defined as\n\
 @tex\n\
 $\\bar{z} = x - iy$.\n\
 @end tex\n\
@@ -574,7 +586,9 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 DEFUN (erf, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erf (@var{z})\n\
-Compute the error function,\n\
+Compute the error function.\n\
+\n\
+The error function is defined as\n\
 @tex\n\
 $$\n\
  {\\rm erf} (z) = {2 \\over \\sqrt{\\pi}}\\int_0^z e^{-t^2} dt\n\
@@ -644,7 +658,9 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 DEFUN (erfinv, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfinv (@var{x})\n\
-Compute the inverse error function, i.e., @var{y} such that\n\
+Compute the inverse error function.\n\
+\n\
+The inverse error function is defined such that\n\
 \n\
 @example\n\
 erf (@var{y}) == @var{x}\n\
@@ -682,7 +698,9 @@ erf (@var{y}) == @var{x}\n\
 DEFUN (erfcinv, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfcinv (@var{x})\n\
-Compute the inverse complementary error function, i.e., @var{y} such that\n\
+Compute the inverse complementary error function.\n\
+\n\
+The inverse complementary error function is defined such that\n\
 \n\
 @example\n\
 erfc (@var{y}) == @var{x}\n\
@@ -720,7 +738,9 @@ erfc (@var{y}) == @var{x}\n\
 DEFUN (erfc, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
-Compute the complementary error function,\n\
+Compute the complementary error function.\n\
+\n\
+The complementary error function is defined as\n\
 @tex\n\
 $1 - {\\rm erf} (z)$.\n\
 @end tex\n\
@@ -751,7 +771,9 @@ $1 - {\\rm erf} (z)$.\n\
 DEFUN (erfcx, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfcx (@var{z})\n\
-Compute the scaled complementary error function,\n\
+Compute the scaled complementary error function.\n\
+\n\
+The scaled complementary error function is defined as\n\
 @tex\n\
 $$\n\
  e^{z^2} {\\rm erfc} (z) \\equiv e^{z^2} (1 - {\\rm erf} (z))\n\
@@ -794,10 +816,12 @@ exp (z^2) * erfc (z)\n\
 DEFUN (erfi, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfi (@var{z})\n\
-Compute the imaginary error function,\n\
+Compute the imaginary error function.\n\
+\n\
+The imaginary error function is defined as\n\
 @tex\n\
 $$\n\
- -i {\\rm erf} (iz) \n\
+ -i {\\rm erf} (iz)\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
@@ -832,7 +856,9 @@ $$\n\
 DEFUN (dawson, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} dawson (@var{z})\n\
-Compute the Dawson (scaled imaginary error) function,\n\
+Compute the Dawson (scaled imaginary error) function.\n\
+\n\
+The Dawson function is defined as\n\
 @tex\n\
 $$\n\
  {\\sqrt{\\pi} \\over 2} e^{-z^2} {\\rm erfi} (z) \\equiv -i {\\sqrt{\\pi} \\over 2} e^{-z^2} {\\rm erf} (iz)\n\
@@ -879,8 +905,9 @@ $e^{x}$\n\
 @ifnottex\n\
 @code{e^x}\n\
 @end ifnottex\n\
-for each element of @var{x}.  To compute the matrix\n\
-exponential, see @ref{Linear Algebra}.\n\
+for each element of @var{x}.\n\
+\n\
+To compute the matrix exponential, see @ref{Linear Algebra}.\n\
 @seealso{log}\n\
 @end deftypefn")
 {
@@ -981,8 +1008,9 @@ isfinite ([13, Inf, NA, NaN])\n\
 DEFUN (fix, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fix (@var{x})\n\
-Truncate fractional portion of @var{x} and return the integer portion.  This\n\
-is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
+Truncate fractional portion of @var{x} and return the integer portion.\n\
+\n\
+This is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
 \n\
 @example\n\
@@ -1016,8 +1044,9 @@ fix ([-2.7, 2.7])\n\
 DEFUN (floor, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} floor (@var{x})\n\
-Return the largest integer not greater than @var{x}.  This is equivalent to\n\
-rounding towards negative infinity.  If @var{x} is\n\
+Return the largest integer not greater than @var{x}.\n\
+\n\
+This is equivalent to rounding towards negative infinity.  If @var{x} is\n\
 complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
 \n\
 @example\n\
@@ -1051,7 +1080,9 @@ floor ([-2.7, 2.7])\n\
 DEFUN (gamma, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gamma (@var{z})\n\
-Compute the Gamma function,\n\
+Compute the Gamma function.\n\
+\n\
+The Gamma function is defined as\n\
 @tex\n\
 $$\n\
  \\Gamma (z) = \\int_0^\\infty t^{z-1} e^{-t} dt.\n\
@@ -1153,8 +1184,9 @@ DEFUNX ("isalnum", Fisalnum, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalnum (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
-letters or digits and false where they are not.  This is equivalent to\n\
-(@code{isalpha (@var{s}) | isdigit (@var{s})}).\n\
+letters or digits and false where they are not.\n\
+\n\
+This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).\n\
 @seealso{isalpha, isdigit, ispunct, isspace, iscntrl}\n\
 @end deftypefn")
 {
@@ -1184,8 +1216,9 @@ DEFUNX ("isalpha", Fisalpha, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalpha (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
-letters and false where they are not.  This is equivalent to\n\
-(@code{islower (@var{s}) | isupper (@var{s})}).\n\
+letters and false where they are not.\n\
+\n\
+This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).\n\
 @seealso{isdigit, ispunct, isspace, iscntrl, isalnum, islower, isupper}\n\
 @end deftypefn")
 {
@@ -1299,6 +1332,7 @@ DEFUN (isinf, args, ,
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 are infinite and false where they are not.\n\
+\n\
 For example:\n\
 \n\
 @example\n\
@@ -1398,6 +1432,7 @@ DEFUN (isna, args, ,
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 NA (missing) values and false where they are not.\n\
+\n\
 For example:\n\
 \n\
 @example\n\
@@ -1440,6 +1475,7 @@ DEFUN (isnan, args, ,
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 NaN values and false where they are not.\n\
+\n\
 NA values are also considered NaN values.  For example:\n\
 \n\
 @example\n\
@@ -1680,8 +1716,9 @@ $\\ln{(x)},$\n\
 @ifnottex\n\
 @code{ln (@var{x})},\n\
 @end ifnottex\n\
-for each element of @var{x}.  To compute the\n\
-matrix logarithm, see @ref{Linear Algebra}.\n\
+for each element of @var{x}.\n\
+\n\
+To compute the matrix logarithm, see @ref{Linear Algebra}.\n\
 @seealso{exp, log1p, log2, log10, logspace}\n\
 @end deftypefn")
 {
@@ -1794,7 +1831,9 @@ Return the real part of @var{z}.\n\
 DEFUN (round, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
-Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
+Return the integer nearest to @var{x}.\n\
+\n\
+If @var{x} is complex, return\n\
 @code{round (real (@var{x})) + round (imag (@var{x})) * I}.  If there\n\
 are two nearest integers, return the one further away from zero.\n\
 \n\
@@ -1841,7 +1880,9 @@ DEFUN (roundb, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} roundb (@var{x})\n\
 Return the integer nearest to @var{x}.  If there are two nearest\n\
-integers, return the even one (banker's rounding).  If @var{x} is complex,\n\
+integers, return the even one (banker's rounding).\n\
+\n\
+If @var{x} is complex,\n\
 return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 @seealso{round}\n\
 @end deftypefn")
@@ -1881,7 +1922,9 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 DEFUN (sign, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sign (@var{x})\n\
-Compute the @dfn{signum} function, which is defined as\n\
+Compute the @dfn{signum} function.\n\
+\n\
+This is defined as\n\
 @tex\n\
 $$\n\
 {\\rm sign} (@var{x}) = \\cases{1,&$x>0$;\\cr 0,&$x=0$;\\cr -1,&$x<0$.\\cr}\n\
@@ -1901,8 +1944,7 @@ sign (x) =  0, x = 0;\n\
 \n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 \n\
-Note that @code{sign (-0.0)} is 0.\n\
-Although IEEE 754 floating point\n\
+Note that @code{sign (-0.0)} is 0.  Although IEEE 754 floating point\n\
 allows zero to be signed, 0.0 and -0.0 compare equal.  If you must test\n\
 whether zero is signed, use the @code{signbit} function.\n\
 @seealso{signbit}\n\
@@ -1935,10 +1977,12 @@ whether zero is signed, use the @code{signbit} function.\n\
 DEFUNX ("signbit", Fsignbit, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} signbit (@var{x})\n\
-Return logical true if the value of @var{x} has its sign bit set.\n\
-Otherwise return logical false.  This behavior is consistent with the other\n\
-logical functions.  See@ref{Logical Values}.  The behavior differs from the\n\
-C language function which returns nonzero if the sign bit is set.\n\
+Return logical true if the value of @var{x} has its sign bit set and false\n\
+otherwise.\n\
+\n\
+This behavior is consistent with the other logical functions.\n\
+See @ref{Logical Values}.  The behavior differs from the C language function\n\
+which returns nonzero if the sign bit is set.\n\
 \n\
 This is not the same as @code{x < 0.0}, because IEEE 754 floating point\n\
 allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,\n\
@@ -2042,9 +2086,11 @@ Compute the hyperbolic sine for each element of @var{x}.\n\
 DEFUN (sqrt, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
-Compute the square root of each element of @var{x}.  If @var{x} is negative,\n\
-a complex result is returned.  To compute the matrix square root, see\n\
-@ref{Linear Algebra}.\n\
+Compute the square root of each element of @var{x}.\n\
+\n\
+If @var{x} is negative, a complex result is returned.\n\
+\n\
+To compute the matrix square root, see @ref{Linear Algebra}.\n\
 @seealso{realsqrt, nthroot}\n\
 @end deftypefn")
 {
@@ -2141,7 +2187,9 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 DEFUNX ("toascii", Ftoascii, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} toascii (@var{s})\n\
-Return ASCII representation of @var{s} in a matrix.  For example:\n\
+Return ASCII representation of @var{s} in a matrix.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2180,7 +2228,9 @@ DEFUNX ("tolower", Ftolower, args, ,
 @deftypefnx {Mapping Function} {} lower (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each uppercase\n\
 character replaced by the corresponding lowercase one; non-alphabetic\n\
-characters are left unchanged.  For example:\n\
+characters are left unchanged.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2240,7 +2290,9 @@ DEFUNX ("toupper", Ftoupper, args, ,
 @deftypefnx {Mapping Function} {} upper (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each lowercase\n\
 character replaced by the corresponding uppercase one; non-alphabetic\n\
-characters are left unchanged.  For example:\n\
+characters are left unchanged.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\

@@ -24,20 +24,23 @@
 ## @deftypefnx {Function File} {@var{h} =} voronoi (@dots{})
 ## @deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
 ## Plot the Voronoi diagram of points @code{(@var{x}, @var{y})}.
-## The Voronoi facets with points at infinity are not drawn.
 ##
-## If @qcode{"linespec"} is given it is used to set the color and line style
-## of the plot.  If an axis graphics handle @var{hax} is supplied then the
-## Voronoi diagram is drawn on the specified axis rather than in a new
-## figure.
+## The Voronoi facets with points at infinity are not drawn.
 ##
 ## The @var{options} argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.
 ## See the documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
 ##
+## If @qcode{"linespec"} is given it is used to set the color and line style of
+## the plot.
+##
+## If an axis graphics handle @var{hax} is supplied then the Voronoi diagram is
+## drawn on the specified axis rather than in a new figure.
+##
 ## If a single output argument is requested then the Voronoi diagram will be
 ## plotted and a graphics handle @var{h} to the plot is returned.
+##
 ## [@var{vx}, @var{vy}] = voronoi (@dots{}) returns the Voronoi vertices
 ## instead of plotting the diagram.
 ##

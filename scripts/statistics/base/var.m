@@ -21,6 +21,8 @@
 ## @deftypefnx {Function File} {} var (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {} var (@var{x}, @var{opt}, @var{dim})
 ## Compute the variance of the elements of the vector @var{x}.
+##
+## The variance is defined as
 ## @tex
 ## $$
 ## {\rm var} (x) = \sigma^2 = {\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}
@@ -36,8 +38,8 @@
 ## @end example
 ##
 ## @end ifnottex
-## If @var{x} is a matrix, compute the variance for each column
-## and return them in a row vector.
+## If @var{x} is a matrix, compute the variance for each column and return
+## them in a row vector.
 ##
 ## The argument @var{opt} determines the type of normalization to use.
 ## Valid values are
@@ -51,8 +53,8 @@
 ##   normalizes with @math{N}, this provides the second moment around the mean
 ## @end table
 ##
-## If @math{N==1} the value of @var{opt} is ignored and normalization
-## by @math{N} is used.
+## If @math{N==1} the value of @var{opt} is ignored and normalization by
+## @math{N} is used.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ## @seealso{cov, std, skewness, kurtosis, moment}

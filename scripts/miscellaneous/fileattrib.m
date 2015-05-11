@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {[@var{status}, @var{result}, @var{msgid}] =} fileattrib (@var{file})
 ## Return information about @var{file}.
 ##
-## If successful, @var{status} is 1, with @var{result} containing a
-## structure with the following fields:
+## If successful, @var{status} is 1, with @var{result} containing a structure
+## with the following fields:
 ##
 ## @table @code
 ## @item Name
@@ -42,30 +42,26 @@
 ## @item  UserRead
 ## @itemx GroupRead
 ## @itemx OtherRead
-## True if the user (group; other users) has read permission for
-## @var{file}.
+## True if the user (group; other users) has read permission for @var{file}.
 ##
 ## @item  UserWrite
 ## @itemx GroupWrite
 ## @itemx OtherWrite
-## True if the user (group; other users) has write permission for
-## @var{file}.
+## True if the user (group; other users) has write permission for @var{file}.
 ##
 ## @item  UserExecute
 ## @itemx GroupExecute
 ## @itemx OtherExecute
-## True if the user (group; other users) has execute permission for
-## @var{file}.
+## True if the user (group; other users) has execute permission for @var{file}.
 ## @end table
 ##
-## If an attribute does not apply (i.e., archive on a Unix system) then
-## the field is set to NaN.
+## If an attribute does not apply (i.e., archive on a Unix system) then the
+## field is set to NaN.
 ##
-## With no input arguments, return information about the current
-## directory.
+## With no input arguments, return information about the current directory.
 ##
-## If @var{file} contains globbing characters, return information about
-## all the matching files.
+## If @var{file} contains globbing characters, return information about all
+## the matching files.
 ## @seealso{glob}
 ## @end deftypefn
 

@@ -40,19 +40,21 @@ DEFUN (inv, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} inv (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inv (@var{A})\n\
-Compute the inverse of the square matrix @var{A}.  Return an estimate\n\
-of the reciprocal condition number if requested, otherwise warn of an\n\
-ill-conditioned matrix if the reciprocal condition number is small.\n\
+Compute the inverse of the square matrix @var{A}.\n\
 \n\
-In general it is best to avoid calculating the inverse of a matrix\n\
-directly.  For example, it is both faster and more accurate to solve\n\
-systems of equations (@var{A}*@math{x} = @math{b}) with\n\
+Return an estimate of the reciprocal condition number if requested,\n\
+otherwise warn of an ill-conditioned matrix if the reciprocal condition\n\
+number is small.\n\
+\n\
+In general it is best to avoid calculating the inverse of a matrix directly.\n\
+For example, it is both faster and more accurate to solve systems of\n\
+equations (@var{A}*@math{x} = @math{b}) with\n\
 @code{@var{y} = @var{A} \\ @math{b}}, rather than\n\
 @code{@var{y} = inv (@var{A}) * @math{b}}.\n\
 \n\
 If called with a sparse matrix, then in general @var{x} will be a full\n\
-matrix requiring significantly more storage.  Avoid forming the inverse\n\
-of a sparse matrix if possible.\n\
+matrix requiring significantly more storage.  Avoid forming the inverse of a\n\
+sparse matrix if possible.\n\
 @seealso{ldivide, rdivide}\n\
 @end deftypefn")
 {

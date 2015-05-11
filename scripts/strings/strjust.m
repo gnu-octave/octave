@@ -21,11 +21,12 @@
 ## @deftypefn  {Function File} {} strjust (@var{s})
 ## @deftypefnx {Function File} {} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
-## be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.  If @var{pos}
-## is omitted it defaults to @qcode{"right"}.
+## be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.
 ##
-## Null characters are replaced by spaces.  All other character
-## data are treated as non-white space.
+## If @var{pos} is omitted it defaults to @qcode{"right"}.
+##
+## Null characters are replaced by spaces.  All other character data are
+## treated as non-white space.
 ##
 ## Example:
 ##

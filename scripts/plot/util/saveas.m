@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} saveas (@var{h}, @var{filename})
 ## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{fmt})
-## Save graphic object @var{h} to the file @var{filename} in graphic
-## format @var{fmt}.
+## Save graphic object @var{h} to the file @var{filename} in graphic format
+## @var{fmt}.
 ##
 ## @var{fmt} should be one of the following formats:
 ##

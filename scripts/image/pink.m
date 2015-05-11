@@ -20,7 +20,10 @@
 ## @deftypefn  {Function File} {@var{map} =} pink ()
 ## @deftypefnx {Function File} {@var{map} =} pink (@var{n})
 ## Create color colormap.  This colormap varies from black to white with
-## shades of gray-pink.  It gives a sepia tone when used on grayscale images.
+## shades of gray-pink.
+##
+## This colormap gives a sepia tone when used on grayscale images.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

@@ -19,14 +19,14 @@ dnl Copyright (C) 1993-2015 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.63])
-AC_INIT([GNU Octave], [4.0.0-rc3], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [4.0.0-rc4], [http://octave.org/bugs.html], [octave])
 
 dnl Note that the version number is duplicated here and in AC_INIT
 dnl because AC_INIT requires it to be static, not computed from
 dnl shell variables.
 OCTAVE_MAJOR_VERSION=4
 OCTAVE_MINOR_VERSION=0
-OCTAVE_PATCH_VERSION=0-rc3
+OCTAVE_PATCH_VERSION=0-rc4
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -1020,7 +1020,7 @@ if test $check_sndfile = yes; then
     SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
     SNDFILE_LDFLAGS=`$PKG_CONFIG --libs-only-L sndfile`
     SNDFILE_LIBS=`$PKG_CONFIG --libs-only-l sndfile`
-    warn_sndfile=
+    OCTAVE_CHECK_LIB_SNDFILE_OK([warn_sndfile=])
   ])
 fi
 
@@ -1031,6 +1031,7 @@ else
   SNDFILE_LDFLAGS=
   SNDFILE_LIBS=
 fi
+
 AC_SUBST(SNDFILE_CPPFLAGS)
 AC_SUBST(SNDFILE_LDFLAGS)
 AC_SUBST(SNDFILE_LIBS)

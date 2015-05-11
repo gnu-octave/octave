@@ -26,8 +26,8 @@
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
 ## Area plot of the columns of @var{y}.
 ##
-## This plot shows the contributions of each column value to the row sum.  It
-## is functionally similar to @code{plot (@var{x}, cumsum (@var{y}, 2))},
+## This plot shows the contributions of each column value to the row sum.
+## It is functionally similar to @code{plot (@var{x}, cumsum (@var{y}, 2))},
 ## except that the area under the curve is shaded.
 ##
 ## If the @var{x} argument is omitted it defaults to @code{1:rows (@var{y})}.

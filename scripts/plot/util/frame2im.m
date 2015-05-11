@@ -25,8 +25,8 @@
 ##
 ## Support for N-dimensional images or movies is given when @var{f} is a
 ## struct array.  In such cases, @var{x} will be a @nospell{MxNx1xK or MxNx3xK}
-## for indexed and RGB movies respectively, with each frame concatenated on
-## the 4th dimension.
+## for indexed and RGB movies respectively, with each frame concatenated
+## along the 4th dimension.
 ##
 ## @seealso{im2frame}
 ## @end deftypefn

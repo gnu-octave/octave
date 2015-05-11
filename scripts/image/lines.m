@@ -22,6 +22,7 @@
 ## Create color colormap.  This colormap is composed of the list of colors
 ## in the current axes @qcode{"ColorOrder"} property.  The default is blue,
 ## green, red, cyan, pink, yellow, and gray.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

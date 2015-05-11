@@ -19,8 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} cross (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} cross (@var{x}, @var{y}, @var{dim})
-## Compute the vector cross product of two 3-dimensional vectors
-## @var{x} and @var{y}.
+## Compute the vector cross product of two 3-dimensional vectors @var{x} and
+## @var{y}.
+##
+## If @var{x} and @var{y} are matrices, the cross product is applied along the
+## first dimension with three elements.
+##
+## The optional argument  @var{dim} forces the cross product to be calculated
+## along the specified dimension.
+##
+## Example Code:
 ##
 ## @example
 ## @group
@@ -29,10 +37,6 @@
 ## @end group
 ## @end example
 ##
-## If @var{x} and @var{y} are matrices, the cross product is applied
-## along the first dimension with 3 elements.  The optional argument
-## @var{dim} forces the cross product to be calculated along
-## the specified dimension.
 ## @seealso{dot, curl, divergence}
 ## @end deftypefn
 

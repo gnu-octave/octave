@@ -20,8 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} unifcdf (@var{x})
 ## @deftypefnx {Function File} {} unifcdf (@var{x}, @var{a}, @var{b})
-## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of the uniform distribution on the interval
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the uniform distribution on the interval
 ## [@var{a}, @var{b}].
 ##
 ## Default values are @var{a} = 0, @var{b} = 1.

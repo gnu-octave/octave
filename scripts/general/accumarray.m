@@ -22,12 +22,13 @@
 ## @deftypefnx {Function File} {} accumarray (@var{subs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
-## positions defined by their subscripts.  The subscripts are defined by
-## the rows of the matrix @var{subs} and the values by @var{vals}.  Each
-## row of @var{subs} corresponds to one of the values in @var{vals}.  If
-## @var{vals} is a scalar, it will be used for each of the row of
-## @var{subs}.  If @var{subs} is a cell array of vectors, all vectors
-## must be of the same length, and the subscripts in the @var{k}th
+## positions defined by their subscripts.
+##
+## The subscripts are defined by the rows of the matrix @var{subs} and the
+## values by @var{vals}.  Each row of @var{subs} corresponds to one of the
+## values in @var{vals}.  If @var{vals} is a scalar, it will be used for each
+## of the row of @var{subs}.  If @var{subs} is a cell array of vectors, all
+## vectors must be of the same length, and the subscripts in the @var{k}th
 ## vector must correspond to the @var{k}th dimension of the result.
 ##
 ## The size of the matrix will be determined by the subscripts

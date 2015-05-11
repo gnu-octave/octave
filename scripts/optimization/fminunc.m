@@ -25,31 +25,34 @@
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ##
-## @var{fcn} should accept a vector (array) defining the unknown variables,
-## and return the objective function value, optionally with gradient.
+## @var{fcn} should accept a vector (array) defining the unknown variables, and
+## return the objective function value, optionally with gradient.
 ## @code{fminunc} attempts to determine a vector @var{x} such that
-## @code{@var{fcn} (@var{x})} is a local minimum.  @var{x0} determines a
-## starting guess.  The shape of @var{x0} is preserved in all calls to
-## @var{fcn}, but otherwise is treated as a column vector.
-## @var{options} is a structure specifying additional options.
-## Currently, @code{fminunc} recognizes these options:
+## @code{@var{fcn} (@var{x})} is a local minimum.
+##
+## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved in
+## all calls to @var{fcn}, but otherwise is treated as a column vector.
+##
+## @var{options} is a structure specifying additional options.  Currently,
+## @code{fminunc} recognizes these options:
 ## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
 ## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
-## @qcode{"GradObj"}, @qcode{"FinDiffType"},
-## @qcode{"TypicalX"}, @qcode{"AutoScaling"}.
+## @qcode{"GradObj"}, @qcode{"FinDiffType"}, @qcode{"TypicalX"},
+## @qcode{"AutoScaling"}.
 ##
-## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn},
-## when called with 2 output arguments, also returns the Jacobian matrix
-## of partial first derivatives at the requested point.
-## @code{TolX} specifies the termination tolerance for the unknown variables
-## @var{x}, while @code{TolFun} is a tolerance for the objective function
-## value @var{fval}.  The default is @code{1e-7} for both options.
+## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}, when
+## called with 2 output arguments, also returns the Jacobian matrix of partial
+## first derivatives at the requested point.  @code{TolX} specifies the
+## termination tolerance for the unknown variables @var{x}, while @code{TolFun}
+## is a tolerance for the objective function value @var{fval}.  The default is
+## @code{1e-7} for both options.
 ##
 ## For a description of the other options, see @code{optimset}.
 ##
 ## On return, @var{x} is the location of the minimum and @var{fval} contains
-## the value of the objective function at @var{x}.  @var{info} may be one of the
-## following values:
+## the value of the objective function at @var{x}.
+##
+## @var{info} may be one of the following values:
 ##
 ## @table @asis
 ## @item 1
@@ -77,11 +80,13 @@
 ## (@var{output}), the output gradient (@var{grad}) at the solution @var{x},
 ## and approximate Hessian (@var{hess}) at the solution @var{x}.
 ##
-## Notes: If have only a single nonlinear equation of one variable then using
-## @code{fminbnd} is usually a much better idea.  The algorithm used is a
-## gradient search which depends on the objective function being differentiable.
-## If the function has discontinuities it may be better to use a derivative-free
-## algorithm such as @code{fminsearch}.
+## Application Notes: If have only a single nonlinear equation of one variable
+## then using @code{fminbnd} is usually a better choice.
+##
+## The algorithm used by @code{fminsearch} is a gradient search which depends
+## on the objective function being differentiable.  If the function has
+## discontinuities it may be better to use a derivative-free algorithm such as
+## @code{fminsearch}.
 ## @seealso{fminbnd, fminsearch, optimset}
 ## @end deftypefn
 

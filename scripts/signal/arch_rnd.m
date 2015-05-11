@@ -18,9 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} arch_rnd (@var{a}, @var{b}, @var{t})
-## Simulate an ARCH sequence of length @var{t} with AR
-## coefficients @var{b} and CH coefficients @var{a}.  I.e., the result
-## @math{y(t)} follows the model
+## Simulate an ARCH sequence of length @var{t} with AR coefficients @var{b} and
+## CH coefficients @var{a}.
+##
+## The result @math{y(t)} follows the model
 ## @c Set example in small font to prevent overfull line
 ##
 ## @smallexample

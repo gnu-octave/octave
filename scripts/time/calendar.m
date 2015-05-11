@@ -23,8 +23,8 @@
 ## @deftypefnx {Function File} {} calendar (@dots{})
 ## Return the current monthly calendar in a 6x7 matrix.
 ##
-## If @var{d} is specified, return the calendar for the month containing
-## the date @var{d}, which must be a serial date number or a date string.
+## If @var{d} is specified, return the calendar for the month containing the
+## date @var{d}, which must be a serial date number or a date string.
 ##
 ## If @var{y} and @var{m} are specified, return the calendar for year @var{y}
 ## and month @var{m}.

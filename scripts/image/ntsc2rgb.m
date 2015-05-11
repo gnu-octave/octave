@@ -23,15 +23,15 @@
 ## red-green-blue (RGB) color space.
 ##
 ## Implementation Note:
-## The conversion matrix is chosen to be the inverse of the
-## matrix used for rgb2ntsc such that
+## The conversion matrix is chosen to be the inverse of the matrix used for
+## rgb2ntsc such that
 ##
 ## @example
 ## x == ntsc2rgb (rgb2ntsc (x))
 ## @end example
 ##
-## @sc{matlab} uses a slightly different matrix where rounding
-## means the equality above does not hold.
+## @sc{matlab} uses a slightly different matrix where rounding means the
+## equality above does not hold.
 ## @seealso{rgb2ntsc, hsv2rgb, ind2rgb}
 ## @end deftypefn
 

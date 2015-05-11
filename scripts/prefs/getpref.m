@@ -17,26 +17,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} getpref (@var{group}, @var{pref}, @var{default})
-## Return the preference value corresponding to the named preference
-## @var{pref} in the preference group @var{group}.
+## @deftypefn  {Function File} {} getpref (@var{group}, @var{pref})
+## @deftypefnx {Function File} {} getpref (@var{group}, @var{pref}, @var{default})
+## @deftypefnx {Function File} {} getpref (@var{group})
+## Return the preference value corresponding to the named preference @var{pref}
+## in the preference group @var{group}.
 ##
 ## The named preference group must be a character string.
 ##
 ## If @var{pref} does not exist in @var{group} and @var{default} is
 ## specified, return @var{default}.
 ##
-## The preference @var{pref} may be a character string or a cell array
-## of character strings.  The corresponding default value @var{default}
-## may be any value, or, if @var{pref} is a cell array of strings,
-## @var{default} must be a cell array of values with the same size as
-## @var{pref}.
+## The preference @var{pref} may be a character string or a cell array of
+## character strings.
 ##
-## If neither @var{pref} nor @var{default} are specified, return a
-## structure of preferences for the preference group @var{group}.
+## The corresponding default value @var{default} may be any value, or, if
+## @var{pref} is a cell array of strings, @var{default} must be a cell array
+## of values with the same size as @var{pref}.
 ##
-## If no arguments are specified, return a structure containing all
-## groups of preferences and their values.
+## If neither @var{pref} nor @var{default} are specified, return a structure
+## of preferences for the preference group @var{group}.
+##
+## If no arguments are specified, return a structure containing all groups of
+## preferences and their values.
 ## @seealso{addpref, setpref, ispref, rmpref}
 ## @end deftypefn
 

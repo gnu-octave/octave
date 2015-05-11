@@ -448,7 +448,7 @@ or scalar.  In this case the greatest common divisor is calculated for each\n\
 element individually.  All elements must be ordinary or Gaussian (complex)\n\
 integers.  Note that for Gaussian integers, the gcd is only unique up to a\n\
 phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest\n\
-common divisor amongst four possible is returned.\n\
+common divisor among the four possible is returned.\n\
 \n\
 Optional return arguments @var{v1}, @dots{}, contain integer vectors such\n\
 that,\n\

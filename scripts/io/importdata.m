@@ -44,8 +44,8 @@
 ## @itemize
 ## @item ASCII table
 ##
-## Import ASCII table using the specified number of header rows and
-## the specified delimiter.
+## Import ASCII table using the specified number of header rows and the
+## specified delimiter.
 ##
 ## @item Image file
 ##

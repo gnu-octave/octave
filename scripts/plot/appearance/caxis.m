@@ -24,10 +24,10 @@
 ## @deftypefnx {Function File} {@var{limits} =} caxis ()
 ## Query or set color axis limits for plots.
 ##
-## The limits argument should be a 2-element vector specifying the
-## lower and upper limits to assign to the first and last value in the
-## colormap.  Data values outside this range are clamped to the first and last
-## colormap entries.
+## The limits argument should be a 2-element vector specifying the lower and
+## upper limits to assign to the first and last value in the colormap.  Data
+## values outside this range are clamped to the first and last colormap
+## entries.
 ##
 ## If the @qcode{"auto"} option is given then automatic colormap limits are
 ## applied.  The automatic algorithm sets @var{cmin} to the minimum data value

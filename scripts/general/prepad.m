@@ -23,16 +23,15 @@
 ## Prepend the scalar value @var{c} to the vector @var{x} until it is of length
 ## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##
-## If @code{length (@var{x}) > @var{l}}, elements from the beginning of
-## @var{x} are removed until a vector of length @var{l} is obtained.
+## If @code{length (@var{x}) > @var{l}}, elements from the beginning of @var{x}
+## are removed until a vector of length @var{l} is obtained.
 ##
 ## If @var{x} is a matrix, elements are prepended or removed from each row.
 ##
-## If the optional argument @var{dim} is given, operate along this
-## dimension.
+## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## If @var{dim} is larger than the dimensions of @var{x}, the result will
-## have @var{dim} dimensions.
+## If @var{dim} is larger than the dimensions of @var{x}, the result will have
+## @var{dim} dimensions.
 ## @seealso{postpad, cat, resize}
 ## @end deftypefn
 

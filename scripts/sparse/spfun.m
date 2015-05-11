@@ -19,9 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} spfun (@var{f}, @var{S})
 ## Compute @code{f(@var{S})} for the nonzero values of @var{S}.
-## This results in a sparse matrix with the same structure as
-## @var{S}.  The function @var{f} can be passed as a string, a
-## function handle, or an inline function.
+##
+## This results in a sparse matrix with the same structure as @var{S}.  The
+## function @var{f} can be passed as a string, a function handle, or an
+## inline function.
 ## @seealso{arrayfun, cellfun, structfun}
 ## @end deftypefn
 

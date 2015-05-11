@@ -746,9 +746,10 @@ DEFUN (dbstatus, args, nargout,
 @deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
 Report the location of active breakpoints.\n\
 \n\
-When called with no input or output arguments, print the list of\n\
-all functions with breakpoints and the line numbers where those\n\
-breakpoints are set.\n\
+When called with no input or output arguments, print the list of all\n\
+functions with breakpoints and the line numbers where those breakpoints are\n\
+set.\n\
+\n\
 If a function name @var{func} is specified then only report breakpoints\n\
 for the named function.\n\
 \n\
@@ -864,8 +865,8 @@ current function.\n\
 DEFUN (dbwhere, , ,
        "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbwhere\n\
-In debugging mode, report the current file and line number where\n\
-execution is stopped.\n\
+In debugging mode, report the current file and line number where execution\n\
+is stopped.\n\
 @seealso{dbstatus, dbcont, dbstep, dbup}\n\
 @end deftypefn")
 {
@@ -955,9 +956,11 @@ DEFUN (dbtype, args, ,
 Display a script file with line numbers.\n\
 \n\
 When called with no arguments in debugging mode, display the script file\n\
-currently being debugged.  An optional range specification can be used to\n\
-list only a portion of the file.  The special keyword @qcode{\"end\"} is a\n\
-valid line number specification for the last line of the file.\n\
+currently being debugged.\n\
+\n\
+An optional range specification can be used to list only a portion of the\n\
+file.  The special keyword @qcode{\"end\"} is a valid line number\n\
+specification for the last line of the file.\n\
 \n\
 When called with the name of a function, list that script file with line\n\
 numbers.\n\
@@ -1108,8 +1111,9 @@ DEFUN (dblist, args, ,
 @deftypefn  {Command} {} dblist\n\
 @deftypefnx {Command} {} dblist @var{n}\n\
 In debugging mode, list @var{n} lines of the function being debugged\n\
-centered around the current line to be executed.  If unspecified @var{n}\n\
-defaults to 10 (+/- 5 lines)\n\
+centered around the current line to be executed.\n\
+\n\
+If unspecified @var{n} defaults to 10 (+/- 5 lines)\n\
 @seealso{dbwhere, dbtype}\n\
 @end deftypefn")
 {
@@ -1304,11 +1308,14 @@ DEFUN (dbstack, args, nargout,
 @deftypefnx {Command} {} dbstack @var{-completenames}\n\
 @deftypefnx {Built-in Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
 Display or return current debugging function stack information.\n\
+\n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
 \n\
 Although accepted, the argument @var{-completenames} is silently ignored.\n\
-Octave always returns absolute file names.  The arguments @var{n} and\n\
-@var{-completenames} can be both specified in any order.\n\
+Octave always returns absolute file names.\n\
+\n\
+The arguments @var{n} and @var{-completenames} can be both specified in any\n\
+order.\n\
 \n\
 The optional return argument @var{stack} is a struct array with the\n\
 following fields:\n\
@@ -1375,6 +1382,7 @@ DEFUN (dbup, args, ,
 @deftypefn  {Command} {} dbup\n\
 @deftypefnx {Command} {} dbup @var{n}\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
+\n\
 If @var{n} is omitted, move up one frame.\n\
 @seealso{dbstack, dbdown}\n\
 @end deftypefn")
@@ -1391,6 +1399,7 @@ DEFUN (dbdown, args, ,
 @deftypefn  {Command} {} dbdown\n\
 @deftypefnx {Command} {} dbdown @var{n}\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
+\n\
 If @var{n} is omitted, move down one frame.\n\
 @seealso{dbstack, dbup}\n\
 @end deftypefn")
@@ -1410,13 +1419,16 @@ DEFUN (dbstep, args, ,
 @deftypefnx {Command} {} dbstep out\n\
 @deftypefnx {Command} {} dbnext @dots{}\n\
 In debugging mode, execute the next @var{n} lines of code.\n\
-If @var{n} is omitted, execute the next single line of code.\n\
-If the next line of code is itself defined in terms of an m-file remain in\n\
-the existing function.\n\
+\n\
+If @var{n} is omitted, execute the next single line of code.  If the next\n\
+line of code is itself defined in terms of an m-file remain in the existing\n\
+function.\n\
 \n\
 Using @code{dbstep in} will cause execution of the next line to step into\n\
-any m-files defined on the next line.  Using @code{dbstep out} will cause\n\
-execution to continue until the current function returns.\n\
+any m-files defined on the next line.\n\
+\n\
+Using @code{dbstep out} will cause execution to continue until the current\n\
+function returns.\n\
 \n\
 @code{dbnext} is an alias for @code{dbstep}.\n\
 @seealso{dbcont, dbquit}\n\
@@ -1505,8 +1517,8 @@ Leave command-line debugging mode and continue code execution normally.\n\
 DEFUN (dbquit, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbquit\n\
-Quit debugging mode immediately without further code execution and\n\
-return to the Octave prompt.\n\
+Quit debugging mode immediately without further code execution and return to\n\
+the Octave prompt.\n\
 @seealso{dbcont, dbstep}\n\
 @end deftypefn")
 {

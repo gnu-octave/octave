@@ -24,6 +24,8 @@
 ## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
 ## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
 ## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tol})
+## Minimize an objective function using sequential quadratic programming (SQP).
+##
 ## Solve the nonlinear program
 ## @tex
 ## $$
@@ -62,31 +64,29 @@
 ##
 ## The first argument is the initial guess for the vector @var{x0}.
 ##
-## The second argument is a function handle pointing to the objective
-## function @var{phi}.  The objective function must accept one vector
-## argument and return a scalar.
+## The second argument is a function handle pointing to the objective function
+## @var{phi}.  The objective function must accept one vector argument and
+## return a scalar.
 ##
-## The second argument may also be a 2- or 3-element cell array of
-## function handles.  The first element should point to the objective
-## function, the second should point to a function that computes the
-## gradient of the objective function, and the third should point to a
-## function that computes the Hessian of the objective function.  If the
-## gradient function is not supplied, the gradient is computed by finite
-## differences.  If the Hessian function is not supplied, a BFGS update
-## formula is used to approximate the Hessian.
+## The second argument may also be a 2- or 3-element cell array of function
+## handles.  The first element should point to the objective function, the
+## second should point to a function that computes the gradient of the
+## objective function, and the third should point to a function that computes
+## the Hessian of the objective function.  If the gradient function is not
+## supplied, the gradient is computed by finite differences.  If the Hessian
+## function is not supplied, a BFGS update formula is used to approximate the
+## Hessian.
 ##
-## When supplied, the gradient function @code{@var{phi}@{2@}} must accept
-## one vector argument and return a vector.  When supplied, the Hessian
-## function @code{@var{phi}@{3@}} must accept one vector argument and
-## return a matrix.
+## When supplied, the gradient function @code{@var{phi}@{2@}} must accept one
+## vector argument and return a vector.  When supplied, the Hessian function
+## @code{@var{phi}@{3@}} must accept one vector argument and return a matrix.
 ##
-## The third and fourth arguments @var{g} and @var{h} are function
-## handles pointing to functions that compute the equality constraints
-## and the inequality constraints, respectively.  If the problem does
-## not have equality (or inequality) constraints, then use an empty
-## matrix ([]) for @var{g} (or @var{h}).  When supplied, these equality
-## and inequality constraint functions must accept one vector argument
-## and return a vector.
+## The third and fourth arguments @var{g} and @var{h} are function handles
+## pointing to functions that compute the equality constraints and the
+## inequality constraints, respectively.  If the problem does not have
+## equality (or inequality) constraints, then use an empty matrix ([]) for
+## @var{g} (or @var{h}).  When supplied, these equality and inequality
+## constraint functions must accept one vector argument and return a vector.
 ##
 ## The third and fourth arguments may also be 2-element cell arrays of
 ## function handles.  The first element should point to the constraint
@@ -110,20 +110,19 @@
 ## @end example
 ##
 ## @end ifnottex
-## The fifth and sixth arguments, @var{lb} and @var{ub}, contain lower
-## and upper bounds on @var{x}.  These must be consistent with the
-## equality and inequality constraints @var{g} and @var{h}.  If the
-## arguments are vectors then @var{x}(i) is bound by @var{lb}(i) and
-## @var{ub}(i).  A bound can also be a scalar in which case all elements
-## of @var{x} will share the same bound.  If only one bound (lb, ub) is
-## specified then the other will default to (-@var{realmax},
-## +@var{realmax}).
+## The fifth and sixth arguments, @var{lb} and @var{ub}, contain lower and
+## upper bounds on @var{x}.  These must be consistent with the equality and
+## inequality constraints @var{g} and @var{h}.  If the arguments are vectors
+## then @var{x}(i) is bound by @var{lb}(i) and @var{ub}(i).  A bound can also
+## be a scalar in which case all elements of @var{x} will share the same
+## bound.  If only one bound (lb, ub) is specified then the other will
+## default to (-@var{realmax}, +@var{realmax}).
 ##
 ## The seventh argument @var{maxiter} specifies the maximum number of
 ## iterations.  The default value is 100.
 ##
-## The eighth argument @var{tol} specifies the tolerance for the
-## stopping criteria.  The default value is @code{sqrt (eps)}.
+## The eighth argument @var{tol} specifies the tolerance for the stopping
+## criteria.  The default value is @code{sqrt (eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
 ##

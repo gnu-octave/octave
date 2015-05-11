@@ -53,8 +53,8 @@
 ##
 ## The angle brackets are not part of the output.
 ##
-## When called with the @qcode{"warning"} option @code{fail} will produce
-## an error if executing the code produces no warning.
+## When called with the @qcode{"warning"} option @code{fail} will produce an
+## error if executing the code produces no warning.
 ## @seealso{assert, error}
 ## @end deftypefn
 
@@ -67,11 +67,20 @@ function retval = fail (code, pattern, warning_pattern)
   endif
 
   ## Parse input arguments
-  test_warning = (nargin > 1 && strcmp (pattern, "warning"));
-  if (nargin == 3)
-    pattern = warning_pattern;
-  elseif (nargin == 1 || (nargin == 2 && test_warning))
+  test_warning = false;
+  if (nargin == 1)
     pattern = "";
+  elseif (nargin == 2 && ! strcmp (pattern, "warning"))
+    ## Normal error test
+  elseif (nargin >= 2 && strcmp (pattern, "warning"))
+    test_warning = true;
+    if (nargin == 2)
+      pattern = "";
+    else
+      pattern = warning_pattern;
+    endif
+  else
+    print_usage ();
   endif
 
   ## Match any nonempty message
@@ -89,28 +98,24 @@ function retval = fail (code, pattern, warning_pattern)
     ## Clear old warnings.
     lastwarn ("");
     ## Make sure warnings are turned on.
-    state = warning ("query", "quiet");
+    wstate = warning ("query", "quiet");
     warning ("on", "quiet");
     try
       evalin ("caller", [code ";"]);
       ## Retrieve new warnings.
       warn = lastwarn ();
-      warning (state.state, "quiet");
+      warning (wstate.state, "quiet");
       if (isempty (warn))
         msg = sprintf ("expected warning <%s> but got none", pattern);
       else
-        ## Transform "warning: ...\n" to "...".
-        warn([1:9, end]) = [];
         if (! isempty (regexp (warn, pattern, "once")))
           return;
         endif
         msg = sprintf ("expected warning <%s>\nbut got <%s>", pattern, warn);
       endif
     catch
-      warning (state.state, "quiet");
-      err = lasterr;
-      ## Transform "error: ...\n", to "...".
-      err([1:6, end]) = [];
+      warning (wstate.state, "quiet");
+      err = lasterr ();
       msg = sprintf ("expected warning <%s>\nbut got error <%s>", pattern, err);
     end_try_catch
 
@@ -121,9 +126,6 @@ function retval = fail (code, pattern, warning_pattern)
       msg = sprintf ("expected error <%s> but got none", pattern);
     catch
       err = lasterr ();
-      if (strcmp (err(1:7), "error:"))
-         err([1:6, end]) = []; # transform "error: ...\n", to "..."
-      endif
       if (! isempty (regexp (err, pattern, "once")))
         return;
       endif
@@ -153,4 +155,5 @@ endfunction
 ## Test input validation
 %!error fail ()
 %!error fail (1,2,3,4)
+%!error fail (1, "nowarning", "foo")
 

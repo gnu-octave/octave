@@ -22,24 +22,23 @@
 ## @deftypefnx {Command} {@var{value} =} edit get @var{field}
 ## Edit the named function, or change editor settings.
 ##
-## If @code{edit} is called with the name of a file or function as
-## its argument it will be opened in the text editor defined by @env{EDITOR}.
+## If @code{edit} is called with the name of a file or function as its
+## argument it will be opened in the text editor defined by @env{EDITOR}.
 ##
 ## @itemize @bullet
 ## @item
-## If the function @var{name} is available in a file on your path and
-## that file is modifiable, then it will be edited in place.  If it
-## is a system function, then it will first be copied to the directory
-## @env{HOME} (see below) and then edited.
-## If no file is found, then the m-file
-## variant, ending with ".m", will be considered.  If still no file
-## is found, then variants with a leading "@@" and then with both a
-## leading "@@" and trailing ".m" will be considered.
+## If the function @var{name} is available in a file on your path and that
+## file is modifiable, then it will be edited in place.  If it is a system
+## function, then it will first be copied to the directory @env{HOME} (see
+## below) and then edited.  If no file is found, then the m-file variant,
+## ending with @qcode{".m"}, will be considered.  If still no file is found,
+## then variants with a leading @qcode{"@@"} and then with both a leading
+## @qcode{"@@"} and trailing @qcode{".m"} will be considered.
 ##
 ## @item
-## If @var{name} is the name of a function defined in the interpreter but
-## not in an m-file, then an m-file will be created in @env{HOME}
-## to contain that function along with its current definition.
+## If @var{name} is the name of a function defined in the interpreter but not
+## in an m-file, then an m-file will be created in @env{HOME} to contain that
+## function along with its current definition.
 ##
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
@@ -55,34 +54,35 @@
 ## it will be copied to @env{HOME} before editing.
 ##
 ## @strong{Warning:} You may need to clear @var{name} before the new definition
-## is available.  If you are editing a .cc file, you will need
-## to execute @code{mkoctfile @file{@var{name}.cc}} before the definition
-## will be available.
+## is available.  If you are editing a .cc file, you will need to execute
+## @code{mkoctfile @file{@var{name}.cc}} before the definition will be
+## available.
 ## @end itemize
 ##
-## If @code{edit} is called with @var{field} and @var{value} variables,
-## the value of the control field @var{field} will be set to @var{value}.
-## If an output argument is requested and the first input argument is @code{get}
-## then @code{edit} will return the value of the control field @var{field}.
+## If @code{edit} is called with @var{field} and @var{value} variables, the
+## value of the control field @var{field} will be set to @var{value}.  If an
+## output argument is requested and the first input argument is @code{get}
+## then @code{edit} will return the value of the control field @var{field}. 
 ## If the control field does not exist, edit will return a structure
-## containing all fields and values.  Thus, @code{edit get all} returns
-## a complete control structure.
+## containing all fields and values.  Thus, @code{edit get all} returns a
+## complete control structure.
+##
 ## The following control fields are used:
 ##
 ## @table @samp
 ## @item home
-## This is the location of user local m-files.  Be sure it is in your
-## path.  The default is @file{~/octave}.
+## This is the location of user local m-files.  Be sure it is in your path. 
+## The default is @file{~/octave}.
 ##
 ## @item author
-## This is the name to put after the "## Author:" field of new functions.
-## By default it guesses from the @code{gecos} field of the password database.
+## This is the name to put after the "## Author:" field of new functions.  By
+## default it guesses from the @code{gecos} field of the password database.
 ##
 ## @item email
-## This is the e-mail address to list after the name in the author field.
-## By default it guesses @code{<$LOGNAME@@$HOSTNAME>}, and if @code{$HOSTNAME}
-## is not defined it uses @code{uname -n}.  You probably want to override this.
-## Be sure to use the format @code{<user@@host>}.
+## This is the e-mail address to list after the name in the author field.  By
+## default it guesses @code{<$LOGNAME@@$HOSTNAME>}, and if @code{$HOSTNAME}
+## is not defined it uses @code{uname -n}.  You probably want to override
+## this.  Be sure to use the format @code{@email{user@@host}}.
 ##
 ## @item license
 ##

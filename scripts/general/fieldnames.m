@@ -24,8 +24,8 @@
 ## Return a cell array of strings with the names of the fields in the
 ## specified input.
 ##
-## When the input is a structure @var{struct}, the names are the elements
-## of the structure.
+## When the input is a structure @var{struct}, the names are the elements of
+## the structure.
 ##
 ## When the input is an Octave object @var{obj}, the names are the public
 ## properties of the object.

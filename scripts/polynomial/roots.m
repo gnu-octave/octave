@@ -17,19 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} roots (@var{v})
+## @deftypefn {Function File} {} roots (@var{c})
 ##
-## For a vector @var{v} with @math{N} components, return
-## the roots of the polynomial
+## Compute the roots of the polynomial @var{c}.
+##
+## For a vector @var{c} with @math{N} components, return the roots of the
+## polynomial
 ## @tex
 ## $$
-## v_1 z^{N-1} + \cdots + v_{N-1} z + v_N.
+## c_1 x^{N-1} + \cdots + c_{N-1} x + c_N.
 ## $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-## v(1) * z^(N-1) + @dots{} + v(N-1) * z + v(N)
+## c(1) * x^(N-1) + @dots{} + c(N-1) * x + c(N)
 ## @end example
 ##
 ## @end ifnottex

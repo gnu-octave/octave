@@ -81,12 +81,12 @@
 ##
 ## @table @asis
 ## @item @qcode{"lower"} (default)
-## Use only the lower triangle of @var{A} and return a lower triangular
-## factor @var{L} such that @tcode{L*L'} approximates @var{A}.
+## Use only the lower triangle of @var{A} and return a lower triangular factor
+## @var{L} such that @tcode{L*L'} approximates @var{A}.
 ##
 ## @item @qcode{"upper"}
-## Use only the upper triangle of @var{A} and return an upper triangular
-## factor @var{U} such that @code{U'*U} approximates @var{A}.
+## Use only the upper triangle of @var{A} and return an upper triangular factor
+## @var{U} such that @code{U'*U} approximates @var{A}.
 ## @end table
 ## @end table
 ##

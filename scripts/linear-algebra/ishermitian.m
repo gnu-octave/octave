@@ -24,6 +24,7 @@
 ## @var{tol}.
 ##
 ## The default tolerance is zero (uses faster code).
+##
 ## Matrix @var{A} is considered symmetric if
 ## @code{norm (@var{A} - @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{issymmetric, isdefinite}

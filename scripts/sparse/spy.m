@@ -23,8 +23,10 @@
 ## Plot the sparsity pattern of the sparse matrix @var{x}.
 ##
 ## If the argument @var{markersize} is given as a scalar value, it is used to
-## determine the point size in the plot.  If the string @var{line_spec} is
-## given it is passed to @code{plot} and determines the appearance of the plot.
+## determine the point size in the plot.
+##
+## If the string @var{line_spec} is given it is passed to @code{plot} and
+## determines the appearance of the plot.
 ## @seealso{plot, gplot}
 ## @end deftypefn
 

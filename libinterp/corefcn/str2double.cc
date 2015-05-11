@@ -299,8 +299,8 @@ DEFUN (str2double, args, ,
 @deftypefn {Built-in Function} {} str2double (@var{s})\n\
 Convert a string to a real or complex number.\n\
 \n\
-The string must be in one of the following formats where\n\
-a and b are real numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:\n\
+The string must be in one of the following formats where a and b are real\n\
+numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:\n\
 \n\
 @itemize\n\
 @item a + bi\n\
@@ -321,12 +321,12 @@ the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
 more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
 are also accepted.\n\
 \n\
-@var{s} may be a character string, character matrix, or cell array.\n\
-For character arrays the conversion is repeated for every row, and\n\
-a double or complex array is returned.  Empty rows in @var{s} are deleted\n\
-and not returned in the numeric array.  For cell arrays each character\n\
-string element is processed and a double or complex array of the same\n\
-dimensions as @var{s} is returned.\n\
+@var{s} may be a character string, character matrix, or cell array.  For\n\
+character arrays the conversion is repeated for every row, and a double or\n\
+complex array is returned.  Empty rows in @var{s} are deleted and not\n\
+returned in the numeric array.  For cell arrays each character string\n\
+element is processed and a double or complex array of the same dimensions as\n\
+@var{s} is returned.\n\
 \n\
 For unconvertible scalar or character string input @code{str2double} returns\n\
 a NaN@.  Similarly, for character array input @code{str2double} returns a\n\

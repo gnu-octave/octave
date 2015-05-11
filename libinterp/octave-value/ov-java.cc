@@ -2041,8 +2041,9 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 
 DEFUN (__java_init__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_init ()\n\
+@deftypefn {Built-in Function} {} __java_init__ ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
+\n\
 Function will directly call initialize_java() to create an instance of a JVM.\n\
 @end deftypefn")
 {
@@ -2066,8 +2067,9 @@ Function will directly call initialize_java() to create an instance of a JVM.\n\
 
 DEFUN (__java_exit__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_exit ()\n\
+@deftypefn {Built-in Function} {} __java_exit__ ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
+\n\
 Function will directly call terminate_jvm() to destroy the current JVM\n\
 instance.\n\
 @end deftypefn")
@@ -2088,8 +2090,8 @@ DEFUN (javaObject, args, ,
 Create a Java object of class @var{classsname}, by calling the class\n\
 constructor with the arguments @var{arg1}, @dots{}\n\
 \n\
-The first example below creates an uninitialized object,\n\
-while the second example supplies an initial argument to the constructor.\n\
+The first example below creates an uninitialized object, while the second\n\
+example supplies an initial argument to the constructor.\n\
 \n\
 @example\n\
 @group\n\
@@ -2136,10 +2138,10 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 }
 
 /*
+## The tests below merely check if javaObject() works at all.  Whether it works
+## properly, i.e., creates the right values, is a matter of Java itself.
+## Create a Short and check if it really is a short, i.e., whether it overflows.
 %!testif HAVE_JAVA
-%% The tests below merely check if javaObject works at all. Whether it works
-%% properly, i.e. creates the right values, is a matter of Java itself
-%% Create a Short and check if it really is a short, i.e. whether it overflows
 %! assert (javaObject ("java.lang.Short", 40000).doubleValue < 0);
 */
 
@@ -2148,9 +2150,10 @@ DEFUN (javaMethod, args, ,
 @deftypefn  {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
 @deftypefnx {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
 Invoke the method @var{methodname} on the Java object @var{obj} with the\n\
-arguments @var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
-representing the fully qualified name of the corresponding class.  The\n\
-function returns the result of the method invocation.\n\
+arguments @var{arg1}, @dots{}.\n\
+\n\
+For static methods, @var{obj} can be a string representing the fully\n\
+qualified name of the corresponding class.\n\
 \n\
 When @var{obj} is a regular Java object, structure-like indexing can be\n\
 used as a shortcut syntax.  For instance, the two following statements are\n\
@@ -2162,6 +2165,8 @@ equivalent\n\
   ret = x.method1 (1.0, \"a string\")\n\
 @end group\n\
 @end example\n\
+\n\
+@code{javaMethod} returns the result of the method invocation.\n\
 \n\
 @seealso{methods, javaObject}\n\
 @end deftypefn")
@@ -2214,20 +2219,21 @@ equivalent\n\
 
 /*
 %!testif HAVE_JAVA
-%% Check for valid first two Java version numbers
-%! jver = strsplit (javaMethod ('getProperty', 'java.lang.System', 'java.version'), '.');
+%! ## Check for valid first two Java version numbers
+%! jver = strsplit (javaMethod ("getProperty", "java.lang.System", "java.version"), ".");
 %! assert (isfinite (str2double (jver{1})) && isfinite (str2double (jver{2})));
 */
 
 DEFUN (__java_get__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
-Get the value of the field @var{name} of the Java object @var{obj}.  For\n\
-static fields, @var{obj} can be a string representing the fully qualified\n\
+Get the value of the field @var{name} of the Java object @var{obj}.\n\
+\n\
+For static fields, @var{obj} can be a string representing the fully qualified\n\
 name of the corresponding class.\n\
 \n\
-When @var{obj} is a regular Java object, structure-like indexing can be\n\
-used as a shortcut syntax.  For instance, the two following statements are\n\
+When @var{obj} is a regular Java object, structure-like indexing can be used\n\
+as a shortcut syntax.  For instance, the two following statements are\n\
 equivalent\n\
 \n\
 @example\n\
@@ -2286,8 +2292,10 @@ DEFUN (__java_set__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})\n\
 Set the value of the field @var{name} of the Java object @var{obj} to\n\
-@var{val}.  For static fields, @var{obj} can be a string representing the\n\
-fully qualified named of the corresponding Java class.\n\
+@var{val}.\n\
+\n\
+For static fields, @var{obj} can be a string representing the fully\n\
+qualified named of the corresponding Java class.\n\
 \n\
 When @var{obj} is a regular Java object, structure-like indexing can be\n\
 used as a shortcut syntax.  For instance, the two following statements are\n\
@@ -2387,10 +2395,12 @@ DEFUN (java_matrix_autoconversion, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} java_matrix_autoconversion (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Java arrays are\n\
-automatically converted to Octave matrices.  The default value is false.\n\
+automatically converted to Octave matrices.\n\
+\n\
+The default value is false.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{java_unsigned_autoconversion, debug_java}\n\
 @end deftypefn")
@@ -2409,12 +2419,13 @@ DEFUN (java_unsigned_autoconversion, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls how integer classes are\n\
-converted when @code{java_matrix_autoconversion} is enabled.  When enabled,\n\
-Java arrays of class Byte or Integer are converted to matrices of class\n\
-uint8 or uint32 respectively.  The default value is true.\n\
+converted when @code{java_matrix_autoconversion} is enabled.\n\
+\n\
+When enabled, Java arrays of class Byte or Integer are converted to matrices\n\
+of class uint8 or uint32 respectively.  The default value is true.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{java_matrix_autoconversion, debug_java}\n\
 @end deftypefn")
@@ -2437,7 +2448,7 @@ information regarding the initialization of the JVM and any Java exceptions\n\
 is printed.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{java_matrix_autoconversion, java_unsigned_autoconversion}\n\
 @end deftypefn")
@@ -2470,21 +2481,24 @@ Return true if @var{x} is a Java object.\n\
 }
 
 /*
-## Check automatic conversion of java primitive arrays into octave types
-%!assert (javaObject ("java.lang.String", "hello").getBytes (),
-%!        int8 ([104 101 108 108 111]'))
+## Check automatic conversion of java primitive arrays into octave types.
+%!testif HAVE_JAVA
+%! assert (javaObject ("java.lang.String", "hello").getBytes (),
+%!         int8 ([104 101 108 108 111]'));
 
-## Check automatic conversion of octave types into java primitive arrays
-## Note that uint8 are casted into int8
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", [90 100 255], 255), 2)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 255]), uint8  (255)) < 0)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 128]), uint8  (128)) < 0)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint8  ([90 100 127]), uint8  (127)), 2)
-%!assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2)
+## Check automatic conversion of octave types into java primitive arrays.
+## Note that uint8 is casted to int8.
+%!testif HAVE_JAVA
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", [90 100 255], 255), 2);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 255]), uint8 (255)) < 0);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 128]), uint8 (128)) < 0);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 127]), uint8 (127)), 2);
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2);
 
-## Check we can create objects that wrap java literals (bug #38821)
-%!assert (class (javaObject ("java.lang.Byte", uint8 (1))), "java.lang.Byte");
-%!assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
-%!assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
-%!assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
+## Check we can create objects that wrap java literals (bug #38821).
+%!testif HAVE_JAVA
+%! assert (class (javaObject ("java.lang.Byte", uint8 (1))), "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
 */

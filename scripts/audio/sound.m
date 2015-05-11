@@ -21,15 +21,19 @@
 ## @deftypefnx {Function File} {} sound (@var{y}, @var{fs})
 ## @deftypefnx {Function File} {} sound (@var{y}, @var{fs}, @var{nbits})
 ## Play audio data @var{y} at sample rate @var{fs} to the default audio
-## device.  If @var{fs} is not given, a default sample rate of 8000 samples
-## per second is used.  The optional argument @var{nbits} specifies the bit
-## depth to play to the audio device and defaults to 8 bits.
+## device.
 ##
 ## The audio signal @var{y} can be a vector or a two-column array, representing
 ## mono or stereo audio, respectively.
 ##
+## If @var{fs} is not given, a default sample rate of 8000 samples per second
+## is used.
+##
+## The optional argument @var{nbits} specifies the bit depth to play to the
+## audio device and defaults to 8 bits.
+##
 ## For more control over audio playback, use the @code{audioplayer} class.
-## @seealso{record, soundsc}
+## @seealso{soundsc, record}
 ## @end deftypefn
 
 function sound (y, fs, nbits)

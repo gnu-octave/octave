@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hilb (@var{n})
-## Return the Hilbert matrix of order @var{n}.  The @math{i,j} element
-## of a Hilbert matrix is defined as
+## Return the Hilbert matrix of order @var{n}.
+##
+## The @math{i,j} element of a Hilbert matrix is defined as
 ## @tex
 ## $$
 ## H(i, j) = {1 \over (i + j - 1)}
@@ -34,9 +35,9 @@
 ## @end ifnottex
 ##
 ## Hilbert matrices are close to being singular which make them difficult to
-## invert with numerical routines.
-## Comparing the condition number of a random matrix 5x5 matrix with that of
-## a Hilbert matrix of order 5 reveals just how difficult the problem is.
+## invert with numerical routines.  Comparing the condition number of a random
+## matrix 5x5 matrix with that of a Hilbert matrix of order 5 reveals just how
+## difficult the problem is.
 ##
 ## @example
 ## @group

@@ -232,10 +232,13 @@ sub process_data
   if (not defined $DOC_STRING)
     {
       $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.\\n\\
+\\n\\
 When called with no arguments, the names of all available options and\\n\\
 their current values are displayed.\\n\\
-Given one argument, return the value of the corresponding option.\\n\\
-When called with two arguments, \@code{$OPT_FCN_NAME} set the option\\n\\
+\\n\\
+Given one argument, return the value of the option \@var{opt}.\\n\\
+\\n\\
+When called with two arguments, \@code{$OPT_FCN_NAME} sets the option\\n\\
 \@var{opt} to value \@var{val}.";
     }
 }

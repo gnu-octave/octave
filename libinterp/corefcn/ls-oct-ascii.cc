@@ -420,8 +420,8 @@ DEFUN (save_precision, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} save_precision ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} save_precision (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} save_precision (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the number of\n\
-digits to keep when saving data in text format.\n\
+Query or set the internal variable that specifies the number of digits to\n\
+keep when saving data in text format.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\

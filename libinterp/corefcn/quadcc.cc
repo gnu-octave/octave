@@ -1492,13 +1492,12 @@ DEFUN (quadcc, args, nargout,
 @deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 @deftypefnx {Function File} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
-using the doubly-adaptive @nospell{Clenshaw-Curtis} quadrature described by\n\
-@nospell{P. Gonnet} in @cite{Increasing the Reliability of Adaptive\n\
-Quadrature Using Explicit Interpolants}.\n\
-@var{f} is a function handle, inline function, or string\n\
-containing the name of the function to evaluate.\n\
-The function @var{f} must be vectorized and must return a vector of output\n\
-values if given a vector of input values.  For example,\n\
+using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.\n\
+\n\
+@var{f} is a function handle, inline function, or string containing the name\n\
+of the function to evaluate.  The function @var{f} must be vectorized and\n\
+must return a vector of output values if given a vector of input values. \n\
+For example,\n\
 \n\
 @example\n\
 f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
@@ -1525,27 +1524,30 @@ int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
 @end example\n\
 \n\
 The result of the integration is returned in @var{q}.\n\
-@var{err} is an estimate of the absolute integration error and\n\
+\n\
+@var{err} is an estimate of the absolute integration error.\n\
+\n\
 @var{nr_points} is the number of points at which the integrand was evaluated.\n\
-If the adaptive integration did not converge, the value of\n\
-@var{err} will be larger than the requested tolerance.  Therefore, it is\n\
-recommended to verify this value for difficult integrands.\n\
 \n\
-@code{quadcc} is capable of dealing with non-numeric\n\
-values of the integrand such as @code{NaN} or @code{Inf}.\n\
-If the integral diverges, and @code{quadcc} detects this,\n\
-then a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
+If the adaptive integration did not converge, the value of @var{err} will be\n\
+larger than the requested tolerance.  Therefore, it is recommended to verify\n\
+this value for difficult integrands.\n\
 \n\
-Note: @code{quadcc} is a general purpose quadrature algorithm\n\
-and, as such, may be less efficient for a smooth or otherwise\n\
-well-behaved integrand than other methods such as @code{quadgk}.\n\
+@code{quadcc} is capable of dealing with non-numeric values of the integrand\n\
+such as @code{NaN} or @code{Inf}.  If the integral diverges, and\n\
+@code{quadcc} detects this, then a warning is issued and @code{Inf} or\n\
+@code{-Inf} is returned.\n\
+\n\
+Note: @code{quadcc} is a general purpose quadrature algorithm and, as such,\n\
+may be less efficient for a smooth or otherwise well-behaved integrand than\n\
+other methods such as @code{quadgk}.\n\
 \n\
 The algorithm uses @nospell{Clenshaw-Curtis} quadrature rules of increasing\n\
-degree in each interval and bisects the interval if either the\n\
-function does not appear to be smooth or a rule of maximum\n\
-degree has been reached.  The error estimate is computed from the\n\
-L2-norm of the difference between two successive interpolations\n\
-of the integrand over the nodes of the respective quadrature rules.\n\
+degree in each interval and bisects the interval if either the function does\n\
+not appear to be smooth or a rule of maximum degree has been reached.  The\n\
+error estimate is computed from the L2-norm of the difference between two\n\
+successive interpolations of the integrand over the nodes of the respective\n\
+quadrature rules.\n\
 \n\
 Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive\n\
 Quadrature Using Explicit Interpolants}, ACM Transactions on\n\

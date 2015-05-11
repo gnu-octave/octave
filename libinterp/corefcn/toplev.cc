@@ -958,15 +958,16 @@ DEFUN (system, args, nargout,
 @deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} system (@dots{})\n\
 Execute a shell command specified by @var{string}.\n\
-If the optional argument @var{type} is @qcode{\"async\"}, the process\n\
-is started in the background and the process ID of the child process\n\
-is returned immediately.  Otherwise, the child process is started and\n\
-Octave waits until it exits.  If the @var{type} argument is omitted, it\n\
-defaults to the value @qcode{\"sync\"}.\n\
+\n\
+If the optional argument @var{type} is @qcode{\"async\"}, the process is\n\
+started in the background and the process ID of the child process is\n\
+returned immediately.  Otherwise, the child process is started and Octave\n\
+waits until it exits.  If the @var{type} argument is omitted, it defaults to\n\
+the value @qcode{\"sync\"}.\n\
 \n\
 If @var{system} is called with one or more output arguments, or if the\n\
 optional argument @var{return_output} is true and the subprocess is started\n\
-synchronously, then the output from the command is returned as a variable.  \n\
+synchronously, then the output from the command is returned as a variable.\n\
 Otherwise, if the subprocess is executed synchronously, its output is sent\n\
 to the standard output.  To send the output of a command executed with\n\
 @code{system} through the pager, use a command like\n\
@@ -1188,11 +1189,11 @@ atexit (\"last_words\");\n\
 @noindent\n\
 will print the message @qcode{\"Bye bye\"} when Octave exits.\n\
 \n\
-The additional argument @var{flag} will register or unregister\n\
-@var{fcn} from the list of functions to be called when Octave\n\
-exits.  If @var{flag} is true, the function is registered, and if\n\
-@var{flag} is false, it is unregistered.  For example,\n\
-after registering the function @code{last_words} above,\n\
+The additional argument @var{flag} will register or unregister @var{fcn}\n\
+from the list of functions to be called when Octave exits.  If @var{flag} is\n\
+true, the function is registered, and if @var{flag} is false, it is\n\
+unregistered.  For example, after registering the function @code{last_words}\n\
+above,\n\
 \n\
 @example\n\
 atexit (\"last_words\", false);\n\
@@ -1203,9 +1204,8 @@ will remove the function from the list and Octave will not call\n\
 @code{last_words} when it exits.\n\
 \n\
 Note that @code{atexit} only removes the first occurrence of a function\n\
-from the list, so if a function was placed in the list multiple\n\
-times with @code{atexit}, it must also be removed from the list\n\
-multiple times.\n\
+from the list, so if a function was placed in the list multiple times with\n\
+@code{atexit}, it must also be removed from the list multiple times.\n\
 @seealso{quit}\n\
 @end deftypefn")
 {

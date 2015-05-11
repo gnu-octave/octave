@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} chop (@var{x}, @var{ndigits}, @var{base})
 ## Truncate elements of @var{x} to a length of @var{ndigits} such that the
-## resulting numbers are exactly divisible by @var{base}.  If @var{base} is not
-## specified it defaults to 10.
+## resulting numbers are exactly divisible by @var{base}.
+##
+## If @var{base} is not specified it defaults to 10.
 ##
 ## @example
 ## @group

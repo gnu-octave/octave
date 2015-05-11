@@ -21,8 +21,9 @@
 ## Return an @var{m}-element vector with @var{i}-th element given by
 ## @code{sin (2 * pi * (@var{i}+@var{d}-1) / @var{n})}.
 ##
-## The default value for @var{d} is 0 and the default value for @var{n}
-## is @var{m}.
+## The default value for @var{d} is 0 and the default value for @var{n} is
+## @var{m}.
+## @seealso{sinetone}
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

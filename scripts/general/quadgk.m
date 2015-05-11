@@ -25,40 +25,33 @@
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
 ## using adaptive Gauss-Konrod quadrature.
-## @var{f} is a function handle, inline function, or string
-## containing the name of the function to evaluate.
-## The formulation is based on a proposal by @nospell{L.F. Shampine},
-## @cite{"Vectorized adaptive quadrature in @sc{matlab}", Journal of
-## Computational and Applied Mathematics, pp131-140, Vol 211, Issue 2,
-## Feb 2008} where all function evaluations at an iteration are
-## calculated with a single call to @var{f}.  Therefore, the function
-## @var{f} must be vectorized and must accept a vector of input values @var{x}
-## and return an output vector representing the function evaluations at the
-## given values of @var{x}.
+##
+## @var{f} is a function handle, inline function, or string containing the name
+## of the function to evaluate.  The function @var{f} must be vectorized and
+## return a vector of output values when given a vector of input values.
 ##
 ## @var{a} and @var{b} are the lower and upper limits of integration.  Either
-## or both limits may be infinite or contain weak end singularities.
-## Variable transformation will be used to treat any infinite intervals and
-## weaken the singularities.  For example:
+## or both limits may be infinite or contain weak end singularities.  Variable
+## transformation will be used to treat any infinite intervals and weaken the
+## singularities.  For example:
 ##
 ## @example
 ## quadgk (@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
 ## @end example
 ##
 ## @noindent
-## Note that the formulation of the integrand uses the
-## element-by-element operator @code{./} and all user functions to
-## @code{quadgk} should do the same.
+## Note that the formulation of the integrand uses the element-by-element
+## operator @code{./} and all user functions to @code{quadgk} should do the
+## same.
 ##
 ## The optional argument @var{tol} defines the absolute tolerance used to stop
-## the integration procedure.  The default value is @math{1e^{-10}}.
+## the integration procedure.  The default value is 1e-10.
 ##
-## The algorithm used by @code{quadgk} involves subdividing the
-## integration interval and evaluating each subinterval.
-## If @var{trace} is true then after computing each of these partial
-## integrals display: (1) the number of subintervals at this step,
-## (2) the current estimate of the error @var{err}, (3) the current estimate
-## for the integral @var{q}.
+## The algorithm used by @code{quadgk} involves subdividing the integration
+## interval and evaluating each subinterval.  If @var{trace} is true then after
+## computing each of these partial integrals display: (1) the number of
+## subintervals at this step, (2) the current estimate of the error @var{err},
+## (3) the current estimate for the integral @var{q}.
 ##
 ## Alternatively, properties of @code{quadgk} can be passed to the function as
 ## pairs @qcode{"@var{prop}", @var{val}}.  Valid properties are
@@ -73,18 +66,18 @@
 ## relative tolerance is 1e-5.
 ##
 ## @item MaxIntervalCount
-## @code{quadgk} initially subdivides the interval on which to perform
-## the quadrature into 10 intervals.  Subintervals that have an
-## unacceptable error are subdivided and re-evaluated.  If the number of
-## subintervals exceeds 650 subintervals at any point then a poor
-## convergence is signaled and the current estimate of the integral is
-## returned.  The property @qcode{"MaxIntervalCount"} can be used to alter the
-## number of subintervals that can exist before exiting.
+## @code{quadgk} initially subdivides the interval on which to perform the
+## quadrature into 10 intervals.  Subintervals that have an unacceptable error
+## are subdivided and re-evaluated.  If the number of subintervals exceeds 650
+## subintervals at any point then a poor convergence is signaled and the
+## current estimate of the integral is returned.  The property
+## @qcode{"MaxIntervalCount"} can be used to alter the number of subintervals
+## that can exist before exiting.
 ##
 ## @item WayPoints
 ## Discontinuities in the first derivative of the function to integrate can be
-## flagged with the @qcode{"WayPoints"} property.  This forces the ends of
-## a subinterval to fall on the breakpoints of the function and can result in
+## flagged with the @qcode{"WayPoints"} property.  This forces the ends of a
+## subinterval to fall on the breakpoints of the function and can result in
 ## significantly improved estimation of the error in the integral, faster
 ## computation, or both.  For example,
 ##
@@ -96,14 +89,14 @@
 ## signals the breakpoint in the integrand at @code{@var{x} = 1}.
 ##
 ## @item Trace
-## If logically true @code{quadgk} prints information on the
-## convergence of the quadrature at each iteration.
+## If logically true @code{quadgk} prints information on the convergence of the
+## quadrature at each iteration.
 ## @end table
 ##
 ## If any of @var{a}, @var{b}, or @var{waypoints} is complex then the
-## quadrature is treated as a contour integral along a piecewise
-## continuous path defined by the above.  In this case the integral is
-## assumed to have no edge singularities.  For example,
+## quadrature is treated as a contour integral along a piecewise continuous
+## path defined by the above.  In this case the integral is assumed to have no
+## edge singularities.  For example,
 ##
 ## @example
 ## @group
@@ -113,13 +106,19 @@
 ## @end example
 ##
 ## @noindent
-## integrates @code{log (z)} along the square defined by @code{[1+1i,
-##  1-1i, -1-1i, -1+1i]}
+## integrates @code{log (z)} along the square defined by
+## @code{[1+1i, 1-1i, -1-1i, -1+1i]}.
 ##
 ## The result of the integration is returned in @var{q}.
+##
 ## @var{err} is an approximate bound on the error in the integral
 ## @code{abs (@var{q} - @var{I})}, where @var{I} is the exact value of the
 ## integral.
+##
+## Reference: @nospell{L.F. Shampine},
+## @cite{"Vectorized adaptive quadrature in @sc{matlab}"}, Journal of
+## Computational and Applied Mathematics, pp. 131--140, Vol 211, Issue 2,
+## Feb 2008.
 ##
 ## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn

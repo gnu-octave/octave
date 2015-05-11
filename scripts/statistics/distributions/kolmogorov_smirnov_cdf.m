@@ -20,7 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
 ## Return the cumulative distribution function (CDF) at @var{x} of the
-## Kolmogorov-Smirnov distribution,
+## Kolmogorov-Smirnov distribution.
+##
+## This is defined as
 ## @tex
 ## $$ Q(x) = \sum_{k=-\infty}^\infty (-1)^k \exp (-2 k^2 x^2) $$
 ## @end tex

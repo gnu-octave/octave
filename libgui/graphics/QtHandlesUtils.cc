@@ -152,7 +152,11 @@ toRgb (const QColor& c)
   Matrix rgb (1, 3);
   double* rgbData = rgb.fortran_vec ();
 
-  c.getRgbF (rgbData, rgbData+1, rgbData+2);
+  // qreal is a typedef for double except for ARM CPU architectures
+  // where it is a typedef for float (Bug #44970).
+  qreal tmp[3];
+  c.getRgbF (tmp, tmp+1, tmp+2);
+  rgbData[0] = tmp[0]; rgbData[1] = tmp[1]; rgbData[2] = tmp[2];
 
   return rgb;
 }

@@ -157,9 +157,9 @@
 ## The second input is a matrix of dimensions describing the size of the output.
 ## The dimensions can also be input as comma-separated arguments.
 ##
-## The input @var{j} is an integer index in the range [0, 2^32-1].  The
-## values of the output matrix are always exactly the same
-## (reproducibility) for a given size input and @var{j} index.
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The values
+## of the output matrix are always exactly the same (reproducibility) for a
+## given size input and @var{j} index.
 ##
 ## The final optional argument determines the class of the resulting matrix.
 ## Possible values for @var{class}: @qcode{"uint8"}, @qcode{"uint16"},
@@ -181,7 +181,7 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("ipjfact", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("ipjfact", @var{n}, @var{k})
-## Create an Hankel matrix with factorial elements.
+## Create a Hankel matrix with factorial elements.
 ##
 ## @end deftypefn
 ##
@@ -257,9 +257,9 @@
 ## The first input is a matrix of dimensions describing the size of the output.
 ## The dimensions can also be input as comma-separated arguments.
 ##
-## The input @var{j} is an integer index in the range [0, 2^32-1].  The
-## values of the output matrix are always exactly the same
-## (reproducibility) for a given size input and @var{j} index.
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The values
+## of the output matrix are always exactly the same (reproducibility) for a
+## given size input and @var{j} index.
 ##
 ## The final optional argument determines the class of the resulting matrix.
 ## Possible values for @var{class}: @qcode{"single"}, @qcode{"double"}.
@@ -380,9 +380,9 @@
 ## The first input is a matrix of dimensions describing the size of the output.
 ## The dimensions can also be input as comma-separated arguments.
 ##
-## The input @var{j} is an integer index in the range [0, 2^32-1].  The
-## values of the output matrix are always exactly the same
-## (reproducibility) for a given size input and @var{j} index.
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The values
+## of the output matrix are always exactly the same (reproducibility) for a
+## given size input and @var{j} index.
 ##
 ## The final optional argument determines the class of the resulting matrix.
 ## Possible values for @var{class}: @qcode{"single"}, @qcode{"double"}.

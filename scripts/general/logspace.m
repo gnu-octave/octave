@@ -27,6 +27,7 @@
 ## @ifnottex
 ## 10^@var{a} to 10^@var{b}.
 ## @end ifnottex
+##
 ## If @var{n} is unspecified it defaults to 50.
 ##
 ## If @var{b} is equal to

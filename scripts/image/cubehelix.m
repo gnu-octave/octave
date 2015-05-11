@@ -31,12 +31,12 @@
 ## rgbplot (cubehelix (256))
 ## @end example
 ##
-## The argument @var{n} must be a scalar and corresponds to the lenght of the
-## colormap.  Defaults to the length of the current colormap.
+## The argument @var{n} must be a scalar.
+## If unspecified, the length of the current colormap, or 64, is used.
 ##
-## Development of this colormap is described in @cite{Green, D. A., 2011,
-## "A @nospell{colour} scheme for the display of astronomical intensity images",
-## Bulletin of the Astronomical Society of India, 39, 289.}.
+## Reference: Green, D. A., 2011,
+## @cite{"A @nospell{colour} scheme for the display of astronomical intensity
+## images"}, Bulletin of the Astronomical Society of India, 39, 289.
 ##
 ## @seealso{colormap}
 ## @end deftypefn

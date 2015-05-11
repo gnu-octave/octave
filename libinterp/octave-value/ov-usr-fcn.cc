@@ -1049,7 +1049,7 @@ If true, Octave will attempt to eliminate the redundant copying when calling\n\
 the subsasgn method of a user-defined class.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

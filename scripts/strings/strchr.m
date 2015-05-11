@@ -22,8 +22,10 @@
 ## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n}, @var{direction})
 ## @deftypefnx {Function File} {[@var{i}, @var{j}] =} strchr (@dots{})
 ## Search for the string @var{str} for occurrences of characters from
-## the set @var{chars}.  The return value(s), as well as the @var{n} and
-## @var{direction} arguments behave identically as in @code{find}.
+## the set @var{chars}.
+##
+## The return value(s), as well as the @var{n} and @var{direction} arguments
+## behave identically as in @code{find}.
 ##
 ## This will be faster than using regexp in most cases.
 ##

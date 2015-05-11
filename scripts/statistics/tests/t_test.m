@@ -19,19 +19,19 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test (@var{x}, @var{m}, @var{alt})
 ## For a sample @var{x} from a normal distribution with unknown mean and
-## variance, perform a t-test of the null hypothesis @code{mean
-## (@var{x}) == @var{m}}.  Under the null, the test statistic @var{t}
-## follows a Student distribution with @code{@var{df} = length (@var{x})
-## - 1} degrees of freedom.
+## variance, perform a t-test of the null hypothesis
+## @code{mean (@var{x}) == @var{m}}.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
-## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @qcode{">"}, the
-## one-sided alternative @code{mean (@var{x}) > @var{m}} is considered.
-## Similarly for @var{"<"}, the one-sided alternative @code{mean
-## (@var{x}) < @var{m}} is considered.  The default is the two-sided
-## case.
+## Under the null, the test statistic @var{t} follows a Student distribution
+## with @code{@var{df} = length (@var{x}) - 1} degrees of freedom.
+##
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative @code{mean (@var{x}) !=
+## @var{m}}.  If @var{alt} is @qcode{">"}, the one-sided alternative
+## @code{mean (@var{x}) > @var{m}} is considered.  Similarly for @var{"<"},
+## the one-sided alternative @code{mean (@var{x}) < @var{m}} is considered. 
+## The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

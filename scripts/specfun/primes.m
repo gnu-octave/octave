@@ -20,14 +20,13 @@
 ## @deftypefn {Function File} {} primes (@var{n})
 ## Return all primes up to @var{n}.
 ##
-## The output data class (double, single, uint32, etc.) is the same as
-## the input class of @var{n}.  The algorithm used is the Sieve of
-## Eratosthenes.
+## The output data class (double, single, uint32, etc.) is the same as the
+## input class of @var{n}.  The algorithm used is the Sieve of Eratosthenes.
 ##
-## Notes: If you need a specific number of primes you can use the
-## fact that the distance from one prime to the next is, on average,
-## proportional to the logarithm of the prime.  Integrating, one finds
-## that there are about @math{k} primes less than
+## Notes: If you need a specific number of primes you can use the fact that the
+## distance from one prime to the next is, on average, proportional to the
+## logarithm of the prime.  Integrating, one finds that there are about
+## @math{k} primes less than
 ## @tex
 ## $k \log (5 k)$.
 ## @end tex
@@ -35,8 +34,7 @@
 ## k*log (5*k).
 ## @end ifnottex
 ##
-## See also @code{list_primes} if you need a specific number @var{n} of
-## primes.
+## See also @code{list_primes} if you need a specific number @var{n} of primes.
 ## @seealso{list_primes, isprime}
 ## @end deftypefn
 

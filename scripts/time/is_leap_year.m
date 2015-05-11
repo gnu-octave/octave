@@ -19,8 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} is_leap_year ()
 ## @deftypefnx {Function File} {} is_leap_year (@var{year})
-## Return true if @var{year} is a leap year and false otherwise.  If no
-## year is specified, @code{is_leap_year} uses the current year.
+## Return true if @var{year} is a leap year and false otherwise.
+##
+## If no year is specified, @code{is_leap_year} uses the current year.
+##
 ## For example:
 ##
 ## @example

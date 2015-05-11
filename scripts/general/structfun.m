@@ -27,18 +27,17 @@
 ## @var{S}.  The fields of @var{S} are passed to the function @var{func}
 ## individually.
 ##
-## @code{structfun} accepts an arbitrary function @var{func} in the form of
-## an inline function, function handle, or the name of a function (in a
-## character string).  In the case of a character string argument, the
-## function must accept a single argument named @var{x}, and it must return
-## a string value.  If the function returns more than one argument, they are
-## returned as separate output variables.
+## @code{structfun} accepts an arbitrary function @var{func} in the form of an
+## inline function, function handle, or the name of a function (in a character
+## string).  In the case of a character string argument, the function must
+## accept a single argument named @var{x}, and it must return a string value.
+## If the function returns more than one argument, they are returned as
+## separate output variables.
 ##
-## If the parameter @qcode{"UniformOutput"} is set to true (the default),
-## then the function must return a single element which will be concatenated
-## into the return value.  If @qcode{"UniformOutput"} is false, the outputs
-## are placed into a structure with the same fieldnames as the input
-## structure.
+## If the parameter @qcode{"UniformOutput"} is set to true (the default), then
+## the function must return a single element which will be concatenated into
+## the return value.  If @qcode{"UniformOutput"} is false, the outputs are
+## placed into a structure with the same fieldnames as the input structure.
 ##
 ## @example
 ## @group
@@ -54,9 +53,8 @@
 ## @end group
 ## @end example
 ##
-## Given the parameter @qcode{"ErrorHandler"}, @var{errfunc} defines a
-## function to call in case @var{func} generates an error.  The form of the
-## function is
+## Given the parameter @qcode{"ErrorHandler"}, @var{errfunc} defines a function
+## to call in case @var{func} generates an error.  The form of the function is
 ##
 ## @example
 ## function [@dots{}] = errfunc (@var{se}, @dots{})

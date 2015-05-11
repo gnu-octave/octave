@@ -22,12 +22,12 @@
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
 ##
-## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
-## using an adaptive Lobatto rule.
-## @var{f} is a function handle, inline function, or string
-## containing the name of the function to evaluate.
-## The function @var{f} must be vectorized and return a vector of output values
-## if given a vector of input values.
+## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
+## an adaptive Lobatto rule.
+##
+## @var{f} is a function handle, inline function, or string containing the name
+## of the function to evaluate.  The function @var{f} must be vectorized and
+## return a vector of output values when given a vector of input values.
 ##
 ## @var{a} and @var{b} are the lower and upper limits of integration.  Both
 ## limits must be finite.
@@ -36,10 +36,9 @@
 ## to perform the integration.  The default value is @code{eps}.
 ##
 ## The algorithm used by @code{quadl} involves recursively subdividing the
-## integration interval.
-## If @var{trace} is defined then for each subinterval display: (1) the left
-## end of the subinterval, (2) the length of the subinterval, (3) the
-## approximation of the integral over the subinterval.
+## integration interval.  If @var{trace} is defined then for each subinterval
+## display: (1) the left end of the subinterval, (2) the length of the
+## subinterval, (3) the approximation of the integral over the subinterval.
 ##
 ## Additional arguments @var{p1}, etc., are passed directly to the function
 ## @var{f}.  To use default values for @var{tol} and @var{trace}, one may pass

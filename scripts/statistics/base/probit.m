@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} probit (@var{p})
-## For each component of @var{p}, return the probit (the quantile of the
-## standard normal distribution) of @var{p}.
+## Return the probit (the quantile of the standard normal distribution) for
+## each element of @var{p}.
+## @seealso{logit}
 ## @end deftypefn
 
 ## Written by KH <Kurt.Hornik@wu-wien.ac.at> on 1995/02/04

@@ -589,9 +589,10 @@ DEFUN (regexp, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
-Regular expression string matching.  Search for @var{pat} in @var{str} and\n\
-return the positions and substrings of any matches, or empty values if there\n\
-are none.\n\
+Regular expression string matching.\n\
+\n\
+Search for @var{pat} in @var{str} and return the positions and substrings of\n\
+any matches, or empty values if there are none.\n\
 \n\
 The matched pattern @var{pat} can include any of the standard regex\n\
 operators, including:\n\
@@ -629,9 +630,8 @@ List operators.  The pattern will match any character listed between \"[\"\n\
 and \"]\".  If the first character is \"^\" then the pattern is inverted and\n\
 any character except those listed between brackets will match.\n\
 \n\
-Escape sequences defined below can also be used inside list\n\
-operators.  For example, a template for a floating point number might be\n\
-@code{[-+.\\d]+}.\n\
+Escape sequences defined below can also be used inside list operators.  For\n\
+example, a template for a floating point number might be @code{[-+.\\d]+}.\n\
 \n\
 @item () (?:)\n\
 Grouping operator.  The first form, parentheses only, also creates a token.\n\
@@ -1072,10 +1072,11 @@ DEFUN (regexpi, args, nargout,
 @deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 \n\
-Case insensitive regular expression string matching.  Search for @var{pat} in\n\
-@var{str} and return the positions and substrings of any matches, or empty\n\
-values if there are none.  @xref{XREFregexp,,regexp}, for details on the\n\
-syntax of the search pattern.\n\
+Case insensitive regular expression string matching.\n\
+\n\
+Search for @var{pat} in @var{str} and return the positions and substrings of\n\
+any matches, or empty values if there are none.  @xref{XREFregexp,,regexp},\n\
+for details on the syntax of the search pattern.\n\
 @seealso{regexp}\n\
 @end deftypefn")
 {
@@ -1288,8 +1289,8 @@ Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
 The pattern is a regular expression as documented for @code{regexp}.\n\
 @xref{XREFregexp,,regexp}.\n\
 \n\
-The replacement string may contain @code{$i}, which substitutes\n\
-for the ith set of parentheses in the match string.  For example,\n\
+The replacement string may contain @code{$i}, which substitutes for the ith\n\
+set of parentheses in the match string.  For example,\n\
 \n\
 @example\n\
 regexprep (\"Bill Dunn\", '(\\w+) (\\w+)', '$2, $1')\n\

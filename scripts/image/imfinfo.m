@@ -66,8 +66,8 @@
 ## @qcode{"Centimeter"}, or @qcode{"undefined"}.
 ##
 ## @item DelayTime
-## Time in 1/100ths of a second (0 to 65535) which must expire before displaying
-## the next image in an animated sequence.
+## Time in 1/100ths of a second (0 to 65535) which must expire before
+## displaying the next image in an animated sequence.
 ##
 ## @item LoopCount
 ## Number of iterations to loop an animation.
@@ -120,8 +120,8 @@
 ## the image.
 ##
 ## @item Model
-## The model name or model number of the recording equipment as mentioned
-## on the field @qcode{"Make"}.
+## The model name or model number of the recording equipment as mentioned on
+## the field @qcode{"Make"}.
 ##
 ## @item DateTime
 ## The date and time of image creation as defined by the Exif standard, i.e.,

@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} discrete_pdf (@var{x}, @var{v}, @var{p})
-## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of a univariate discrete distribution which assumes
-## the values in @var{v} with probabilities @var{p}.
+## For each element of @var{x}, compute the probability density function (PDF)
+## at @var{x} of a univariate discrete distribution which assumes the values
+## in @var{v} with probabilities @var{p}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

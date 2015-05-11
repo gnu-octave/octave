@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+// FIXME: Deprecated in 4.0 and should be removed in 4.4.
 DEFUN (__luinc__, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
@@ -44,6 +45,7 @@ DEFUN (__luinc__, args, nargout,
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
 @cindex LU decomposition\n\
 Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.\n\
+\n\
 Two types of incomplete factorization are possible, and the type\n\
 is determined by the second argument to @code{luinc}.\n\
 \n\

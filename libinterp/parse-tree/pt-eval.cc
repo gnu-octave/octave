@@ -1259,8 +1259,10 @@ DEFUN (max_recursion_depth, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} max_recursion_depth (@var{new_val}, \"local\")\n\
 Query or set the internal limit on the number of times a function may\n\
-be called recursively.  If the limit is exceeded, an error message is\n\
-printed and control returns to the top level.\n\
+be called recursively.\n\
+\n\
+If the limit is exceeded, an error message is printed and control returns to\n\
+the top level.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
@@ -1288,9 +1290,11 @@ DEFUN (silent_functions, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} silent_functions (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether internal\n\
-output from a function is suppressed.  If this option is disabled,\n\
-Octave will display the results produced by evaluating expressions\n\
-within a function body that are not terminated with a semicolon.\n\
+output from a function is suppressed.\n\
+\n\
+If this option is disabled, Octave will display the results produced by\n\
+evaluating expressions within a function body that are not terminated with\n\
+a semicolon.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\

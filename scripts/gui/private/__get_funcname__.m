@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {@var{funcname} =} __get_funcname__ (@var{basename})
 ## Internal function.
 ##
-## Build function name for the current graphics toolkit according to schema
+## Build function name for the current graphics toolkit according to the schema
 ## __[basename]_[graphics_toolkit]__, use fltk as default.
 ## @end deftypefn
 

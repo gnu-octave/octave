@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{properties} =} __get_properties__ (@var{player})
-## Return a struct containing all named properties of the audioplayer
-## object @var{player}.
+## Return a struct containing all named properties of the audioplayer object
+## @var{player}.
 ## @end deftypefn
 
 function props = __get_properties__ (player)

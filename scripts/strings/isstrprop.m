@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isstrprop (@var{str}, @var{prop})
-## Test character string properties.  For example:
+## Test character string properties.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -27,8 +29,8 @@
 ## @end group
 ## @end example
 ##
-## If @var{str} is a cell array, @code{isstrpop} is applied recursively
-## to each element of the cell array.
+## If @var{str} is a cell array, @code{isstrpop} is applied recursively to
+## each element of the cell array.
 ##
 ## Numeric arrays are converted to character strings.
 ##
@@ -56,12 +58,12 @@
 ##
 ## @item  @qcode{"space"}
 ## @itemx @qcode{"wspace"}
-## True for whitespace characters (space, formfeed, newline, carriage
-## return, tab, vertical tab).
+## True for whitespace characters (space, formfeed, newline, carriage return,
+## tab, vertical tab).
 ##
 ## @item @qcode{"punct"}
-## True for punctuation characters (printing characters except space
-## or letter or digit).
+## True for punctuation characters (printing characters except space or
+## letter or digit).
 ##
 ## @item @qcode{"cntrl"}
 ## True for control characters.

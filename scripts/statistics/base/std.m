@@ -21,6 +21,8 @@
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt}, @var{dim})
 ## Compute the standard deviation of the elements of the vector @var{x}.
+##
+## The standard deviation is defined as
 ## @tex
 ## $$
 ## {\rm std} (x) = \sigma = \sqrt{{\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}}
@@ -39,8 +41,8 @@
 ## where @math{N} is the number of elements.
 ## @end ifnottex
 ##
-## If @var{x} is a matrix, compute the standard deviation for
-## each column and return them in a row vector.
+## If @var{x} is a matrix, compute the standard deviation for each column and
+## return them in a row vector.
 ##
 ## The argument @var{opt} determines the type of normalization to use.
 ## Valid values are

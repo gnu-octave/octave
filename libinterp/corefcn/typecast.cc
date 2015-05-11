@@ -91,8 +91,8 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
 DEFUN (typecast, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} typecast (@var{x}, \"@var{class}\")\n\
-Return a new array @var{y} resulting from interpreting the data of\n\
-@var{x} in memory as data of the numeric class @var{class}.\n\
+Return a new array @var{y} resulting from interpreting the data of @var{x}\n\
+in memory as data of the numeric class @var{class}.\n\
 \n\
 Both the class of @var{x} and @var{class} must be one of the built-in\n\
 numeric classes:\n\
@@ -117,14 +117,17 @@ numeric classes:\n\
 @end example\n\
 \n\
 @noindent\n\
-the last two are reserved for @var{class}; they indicate that a\n\
+the last two are only used with @var{class}; they indicate that a\n\
 complex-valued result is requested.  Complex arrays are stored in memory as\n\
 consecutive pairs of real numbers.  The sizes of integer types are given by\n\
 their bit counts.  Both logical and char are typically one byte wide;\n\
 however, this is not guaranteed by C++.  If your system is IEEE conformant,\n\
 single and double will be 4 bytes and 8 bytes wide, respectively.\n\
-@qcode{\"logical\"} is not allowed for @var{class}.  If the input is a row\n\
-vector, the return value is a row vector, otherwise it is a column vector.  \n\
+@qcode{\"logical\"} is not allowed for @var{class}.\n\
+\n\
+If the input is a row vector, the return value is a row vector, otherwise it\n\
+is a column vector.\n\
+\n\
 If the bit length of @var{x} is not divisible by that of @var{class}, an\n\
 error occurs.\n\
 \n\
@@ -325,8 +328,10 @@ Return a new array @var{y} resulting from interpreting the logical array\n\
 The number of elements of @var{x} should be divisible by the bit length of\n\
 @var{class}.  If it is not, excess bits are discarded.  Bits come in\n\
 increasing order of significance, i.e., @code{x(1)} is bit 0, @code{x(2)} is\n\
-bit 1, etc.  The result is a row vector if @var{x} is a row vector, otherwise\n\
-it is a column vector.\n\
+bit 1, etc.\n\
+\n\
+The result is a row vector if @var{x} is a row vector, otherwise it is a\n\
+column vector.\n\
 @seealso{bitunpack, typecast}\n\
 @end deftypefn")
 {

@@ -145,7 +145,7 @@
 ##  See @qcode{"rectangle"} annotations for customization.
 ## @end table
 ##
-## @seealso{xlabel, title}
+## @seealso{xlabel, title, legend, colorbar}
 ## @end deftypefn
 
 function varargout = annotation (varargin)

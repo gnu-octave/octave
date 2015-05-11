@@ -25,24 +25,22 @@
 ## Conjugate Gradients Squared method.
 ##
 ## @itemize @minus
-## @item @var{rtol} is the relative tolerance, if not given or set to []
-## the default value 1e-6 is used.
+## @item @var{rtol} is the relative tolerance, if not given or set to [] the
+## default value 1e-6 is used.
 ##
-## @item @var{maxit} the maximum number of outer iterations, if not
-## given or set to [] the default value @code{min (20, numel (b))} is
-## used.
+## @item @var{maxit} the maximum number of outer iterations, if not given or
+## set to [] the default value @code{min (20, numel (b))} is used.
 ##
-## @item @var{x0} the initial guess, if not given or set to [] the
-## default value @code{zeros (size (b))} is used.
+## @item @var{x0} the initial guess, if not given or set to [] the default
+## value @code{zeros (size (b))} is used.
 ## @end itemize
 ##
-## @var{A} can be passed as a matrix or as a function handle or
-## inline function @code{f} such that @code{f(x) = A*x}.
+## @var{A} can be passed as a matrix or as a function handle or inline
+## function @code{f} such that @code{f(x) = A*x}.
 ##
-## The preconditioner @var{P} is given as @code{P = M1 * M2}.
-## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
-## handle or inline function @code{g} such that @code{g(x) = M1 \ x} or
-## @code{g(x) = M2 \ x}.
+## The preconditioner @var{P} is given as @code{P = M1 * M2}.  Both @var{M1}
+## and @var{M2} can be passed as a matrix or as a function handle or inline
+## function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
 ##
 ## If called with more than one output parameter
 ##

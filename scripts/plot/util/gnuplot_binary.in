@@ -19,10 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Loadable Function} {[@var{prog}, @var{args}] =} gnuplot_binary ()
 ## @deftypefnx {Loadable Function} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @var{arg1}, @dots{})
-## Query or set the name of the program invoked by the plot command
-## when the graphics toolkit is set to "gnuplot".  Additional arguments to
-## pass to the external plotting program may also be given.
-## The default value is @qcode{"gnuplot"} with no additional arguments.
+## Query or set the name of the program invoked by the plot command when the
+## graphics toolkit is set to "gnuplot".
+##
+## Additional arguments to pass to the external plotting program may also be
+## given.  The default value is @qcode{"gnuplot"} with no additional arguments.
 ## @xref{Installation}.
 ## @seealso{graphics_toolkit}
 ## @end deftypefn

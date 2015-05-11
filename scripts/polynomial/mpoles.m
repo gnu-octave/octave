@@ -20,17 +20,17 @@
 ## @deftypefn  {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p})
 ## @deftypefnx {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol})
 ## @deftypefnx {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
-## Identify unique poles in @var{p} and their associated multiplicity.  The
-## output is ordered from largest pole to smallest pole.
+## Identify unique poles in @var{p} and their associated multiplicity.
 ##
-## If the relative difference of two poles is less than @var{tol} then
-## they are considered to be multiples.  The default value for @var{tol}
-## is 0.001.
+## The output is ordered from largest pole to smallest pole.
+##
+## If the relative difference of two poles is less than @var{tol} then they are
+## considered to be multiples.  The default value for @var{tol} is 0.001.
 ##
 ## If the optional parameter @var{reorder} is zero, poles are not sorted.
 ##
-## The output @var{multp} is a vector specifying the multiplicity of the
-## poles.  @code{@var{multp}(n)} refers to the multiplicity of the Nth pole
+## The output @var{multp} is a vector specifying the multiplicity of the poles.
+## @code{@var{multp}(n)} refers to the multiplicity of the Nth pole
 ## @code{@var{p}(@var{idxp}(n))}.
 ##
 ## For example:

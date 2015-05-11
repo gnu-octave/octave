@@ -75,15 +75,14 @@
 ## Days can be fractional.
 ## @end itemize
 ##
-## @strong{Caution:} this function does not attempt to handle Julian
-## calendars so dates before October 15, 1582 are wrong by as much
-## as eleven days.  Also, be aware that only Roman Catholic countries
-## adopted the calendar in 1582.  It took until 1924 for it to be
-## adopted everywhere.  See the Wikipedia entry on the Gregorian
-## calendar for more details.
+## @strong{Caution:} this function does not attempt to handle Julian calendars
+## so dates before October 15, 1582 are wrong by as much as eleven days.  Also,
+## be aware that only Roman Catholic countries adopted the calendar in 1582.
+## It took until 1924 for it to be adopted everywhere.  See the Wikipedia entry
+## on the Gregorian calendar for more details.
 ##
-## @strong{Warning:} leap seconds are ignored.  A table of leap seconds
-## is available on the Wikipedia entry for leap seconds.
+## @strong{Warning:} leap seconds are ignored.  A table of leap seconds is
+## available on the Wikipedia entry for leap seconds.
 ## @seealso{datestr, datevec, now, clock, date}
 ## @end deftypefn
 

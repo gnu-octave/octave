@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} flag ()
 ## @deftypefnx {Function File} {@var{map} =} flag (@var{n})
-## Create color colormap.  This colormap cycles through red, white, blue,
-## and black with each index change.
+## Create color colormap.  This colormap cycles through red, white, blue, and
+## black with each index change.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

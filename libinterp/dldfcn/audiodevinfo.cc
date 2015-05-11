@@ -77,25 +77,28 @@ DEFUN_DLD (audiodevinfo, args, ,
 \n\
 @deftypefnx {Loadable Function} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})\n\
 \n\
-Return a structure with fields \"input\" and \"output\".\n\
-The value of each field is a structure array with fields\n\
-\"Name\", @nospell{\"DriverVersion\"} and \"ID\" describing an audio device.\n\
+Return a structure describing the available audio input and output devices.\n\
+\n\
+The @var{devinfo} structure has two fields @qcode{\"input\"} and\n\
+@qcode{\"output\"}.  The value of each field is a structure array with fields\n\
+@qcode{\"Name\"}, @nospell{\"DriverVersion\"} and @qcode{\"ID\"} describing\n\
+an audio device.\n\
 \n\
 If the optional argument @var{io} is 1, return information about input\n\
 devices only.  If it is 0, return information about output devices only.\n\
 \n\
 If the optional argument @var{id} is provided, return information about\n\
-corresponding device.\n\
+the corresponding device.\n\
 \n\
 If the optional argument @var{name} is provided, return the id of the\n\
 named device.\n\
 \n\
-Given a sampling rate, bits per sample, and number of channels for\n\
-an input or output device, return the ID of the first device that\n\
-supports playback or recording using the specified parameters.\n\
+Given a sampling rate, bits per sample, and number of channels for an input\n\
+or output device, return the ID of the first device that supports playback\n\
+or recording using the specified parameters.\n\
 \n\
-If also given a device ID, return true if the device supports playback\n\
-or recording using those parameters.\n\
+If also given a device ID, return true if the device supports playback or\n\
+recording using those parameters.\n\
 @end deftypefn")
 {
   octave_value retval;

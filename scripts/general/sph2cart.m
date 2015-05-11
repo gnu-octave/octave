@@ -20,17 +20,20 @@
 ## @deftypefn  {Function File} {[@var{x}, @var{y}, @var{z}] =} sph2cart (@var{theta}, @var{phi}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} sph2cart (@var{S})
 ## @deftypefnx {Function File} {@var{C} =} sph2cart (@dots{})
-## Transform spherical to Cartesian coordinates.
+## Transform spherical coordinates to Cartesian coordinates.
 ##
-## @var{theta} describes the angle relative to the positive x-axis.
-## @var{phi} is the angle relative to the xy-plane.
-## @var{r} is the distance to the origin @w{(0, 0, 0)}.
-## @var{theta}, @var{phi}, and @var{r} must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{S}
+## The inputs @var{theta}, @var{phi}, and @var{r} must be the same shape, or
+## scalar.  If called with a single matrix argument then each row of @var{S}
 ## represents the spherical coordinate (@var{theta}, @var{phi}, @var{r}).
 ##
-## If only a single return argument is requested then return a matrix
-## @var{C} where each row represents one Cartesian coordinate
+## @var{theta} describes the angle relative to the positive x-axis.
+##
+## @var{phi} is the angle relative to the xy-plane.
+##
+## @var{r} is the distance to the origin @w{(0, 0, 0)}.
+##
+## If only a single return argument is requested then return a matrix @var{C}
+## where each row represents one Cartesian coordinate
 ## (@var{x}, @var{y}, @var{z}).
 ## @seealso{cart2sph, pol2cart, cart2pol}
 ## @end deftypefn

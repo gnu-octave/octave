@@ -377,28 +377,27 @@ DEFUN (rand, args, ,
 @deftypefnx {Built-in Function} {} rand (@dots{}, \"single\")\n\
 @deftypefnx {Built-in Function} {} rand (@dots{}, \"double\")\n\
 Return a matrix with random elements uniformly distributed on the\n\
-interval (0, 1).  The arguments are handled the same as the arguments\n\
-for @code{eye}.\n\
+interval (0, 1).\n\
 \n\
-You can query the state of the random number generator using the\n\
-form\n\
+The arguments are handled the same as the arguments for @code{eye}.\n\
+\n\
+You can query the state of the random number generator using the form\n\
 \n\
 @example\n\
 v = rand (\"state\")\n\
 @end example\n\
 \n\
-This returns a column vector @var{v} of length 625.  Later, you can\n\
-restore the random number generator to the state @var{v}\n\
-using the form\n\
+This returns a column vector @var{v} of length 625.  Later, you can restore\n\
+the random number generator to the state @var{v} using the form\n\
 \n\
 @example\n\
 rand (\"state\", v)\n\
 @end example\n\
 \n\
 @noindent\n\
-You may also initialize the state vector from an arbitrary vector of\n\
-length @leq{} 625 for @var{v}.  This new state will be a hash based on the\n\
-value of @var{v}, not @var{v} itself.\n\
+You may also initialize the state vector from an arbitrary vector of length\n\
+@leq{} 625 for @var{v}.  This new state will be a hash based on the value of\n\
+@var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
 available, otherwise from CPU time, wall clock time, and the current\n\
@@ -408,24 +407,24 @@ behavior comparable to @sc{matlab}, initialize with a deterministic state\n\
 vector in Octave's startup files (@pxref{Startup Files}).\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
-Twister with a period of @math{2^{19937}-1} (See\n\
-@nospell{M. Matsumoto and T. Nishimura},\n\
+Twister with a period of @math{2^{19937}-1}\n\
+(See @nospell{M. Matsumoto and T. Nishimura},\n\
 @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform\n\
-pseudorandom number generator}, ACM Trans. on\n\
-Modeling and Computer Simulation Vol. 8, No. 1, pp. 3-30, January 1998,\n\
+pseudorandom number generator},\n\
+ACM Trans. on Modeling and Computer Simulation Vol. 8, No. 1, pp. 3--30,\n\
+January 1998,\n\
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
-Do @strong{not} use for cryptography without securely hashing\n\
-several returned values together, otherwise the generator state\n\
-can be learned after reading 624 consecutive values.\n\
+Do @strong{not} use for cryptography without securely hashing several\n\
+returned values together, otherwise the generator state can be learned after\n\
+reading 624 consecutive values.\n\
 \n\
 Older versions of Octave used a different random number generator.\n\
-The new generator is used by default\n\
-as it is significantly faster than the old generator, and produces\n\
-random numbers with a significantly longer cycle time.  However, in\n\
-some circumstances it might be desirable to obtain the same random\n\
-sequences as used by the old generators.  To do this the keyword\n\
-@qcode{\"seed\"} is used to specify that the old generators should be use,\n\
-as in\n\
+The new generator is used by default as it is significantly faster than the\n\
+old generator, and produces random numbers with a significantly longer cycle\n\
+time.  However, in some circumstances it might be desirable to obtain the\n\
+same random sequences as produced by the old generators.  To do this the\n\
+keyword @qcode{\"seed\"} is used to specify that the old generators should\n\
+be used, as in\n\
 \n\
 @example\n\
 rand (\"seed\", val)\n\
@@ -440,13 +439,12 @@ s = rand (\"seed\")\n\
 @end example\n\
 \n\
 However, it should be noted that querying the seed will not cause\n\
-@code{rand} to use the old generators, only setting the seed will.\n\
-To cause @code{rand} to once again use the new generators, the\n\
-keyword @qcode{\"state\"} should be used to reset the state of the\n\
-@code{rand}.\n\
+@code{rand} to use the old generators, only setting the seed will.  To cause\n\
+@code{rand} to once again use the new generators, the keyword\n\
+@qcode{\"state\"} should be used to reset the state of the @code{rand}.\n\
 \n\
-The state or seed of the generator can be reset to a new random value\n\
-using the @qcode{\"reset\"} keyword.\n\
+The state or seed of the generator can be reset to a new random value using\n\
+the @qcode{\"reset\"} keyword.\n\
 \n\
 The class of the value returned can be controlled by a trailing\n\
 @qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
@@ -563,9 +561,10 @@ DEFUN (randn, args, ,
 @deftypefnx {Built-in Function} {} randn (\"seed\", \"reset\")\n\
 @deftypefnx {Built-in Function} {} randn (@dots{}, \"single\")\n\
 @deftypefnx {Built-in Function} {} randn (@dots{}, \"double\")\n\
-Return a matrix with normally distributed random\n\
-elements having zero mean and variance one.  The arguments are\n\
-handled the same as the arguments for @code{rand}.\n\
+Return a matrix with normally distributed random elements having zero mean\n\
+and variance one.\n\
+\n\
+The arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
 ``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
@@ -635,8 +634,9 @@ DEFUN (rande, args, ,
 @deftypefnx {Built-in Function} {} rande (\"seed\", \"reset\")\n\
 @deftypefnx {Built-in Function} {} rande (@dots{}, \"single\")\n\
 @deftypefnx {Built-in Function} {} rande (@dots{}, \"double\")\n\
-Return a matrix with exponentially distributed random elements.  The\n\
-arguments are handled the same as the arguments for @code{rand}.\n\
+Return a matrix with exponentially distributed random elements.\n\
+\n\
+The arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
 ``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
@@ -709,8 +709,9 @@ DEFUN (randg, args, ,
 @deftypefnx {Built-in Function} {} randg (@dots{}, \"single\")\n\
 @deftypefnx {Built-in Function} {} randg (@dots{}, \"double\")\n\
 Return a matrix with @code{gamma (@var{a},1)} distributed random elements.\n\
-The arguments are handled the same as the arguments for @code{rand},\n\
-except for the argument @var{a}.\n\
+\n\
+The arguments are handled the same as the arguments for @code{rand}, except\n\
+for the argument @var{a}.\n\
 \n\
 This can be used to generate many distributions:\n\
 \n\
@@ -986,12 +987,13 @@ DEFUN (randp, args, ,
 @deftypefnx {Built-in Function} {} randp (@dots{}, \"single\")\n\
 @deftypefnx {Built-in Function} {} randp (@dots{}, \"double\")\n\
 Return a matrix with Poisson distributed random elements with mean value\n\
-parameter given by the first argument, @var{l}.  The arguments\n\
-are handled the same as the arguments for @code{rand}, except for the\n\
-argument @var{l}.\n\
+parameter given by the first argument, @var{l}.\n\
 \n\
-Five different algorithms are used depending on the range of @var{l}\n\
-and whether or not @var{l} is a scalar or a matrix.\n\
+The arguments are handled the same as the arguments for @code{rand}, except\n\
+for the argument @var{l}.\n\
+\n\
+Five different algorithms are used depending on the range of @var{l} and\n\
+whether or not @var{l} is a scalar or a matrix.\n\
 \n\
 @table @asis\n\
 @item For scalar @var{l} @leq{} 12, use direct method.\n\
@@ -1125,11 +1127,14 @@ DEFUN (randperm, args, ,
 @deftypefn  {Built-in Function} {} randperm (@var{n})\n\
 @deftypefnx {Built-in Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
+\n\
 If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
-replacement from @code{1:@var{n}}.  The complexity is O(@var{n}) in\n\
-memory and O(@var{m}) in time, unless @var{m} < @var{n}/5, in which case\n\
-O(@var{m}) memory is used as well.  The randomization is performed using\n\
-rand().  All permutations are equally likely.\n\
+replacement from @code{1:@var{n}}.\n\
+\n\
+The complexity is O(@var{n}) in memory and O(@var{m}) in time, unless\n\
+@var{m} < @var{n}/5, in which case O(@var{m}) memory is used as well.  The\n\
+randomization is performed using rand().  All permutations are equally\n\
+likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {

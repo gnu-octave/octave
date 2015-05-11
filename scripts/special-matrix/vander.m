@@ -21,8 +21,9 @@
 ## @deftypefn  {Function File} {} vander (@var{c})
 ## @deftypefnx {Function File} {} vander (@var{c}, @var{n})
 ## Return the Vandermonde matrix whose next to last column is @var{c}.
-## If @var{n} is specified, it determines the number of columns;
-## otherwise, @var{n} is taken to be equal to the length of @var{c}.
+##
+## If @var{n} is specified, it determines the number of columns; otherwise,
+## @var{n} is taken to be equal to the length of @var{c}.
 ##
 ## A Vandermonde matrix has the form:
 ## @tex

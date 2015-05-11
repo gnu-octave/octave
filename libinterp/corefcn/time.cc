@@ -104,10 +104,11 @@ extract_tm (const octave_scalar_map& m)
 DEFUN (time, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{seconds} =} time ()\n\
-Return the current time as the number of seconds since the epoch.  The\n\
-epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
-1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the\n\
-value returned by @code{time} was 856163706.\n\
+Return the current time as the number of seconds since the epoch.\n\
+\n\
+The epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
+1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the value\n\
+returned by @code{time} was 856163706.\n\
 @seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
@@ -132,6 +133,7 @@ DEFUN (gmtime, args, ,
 @deftypefn {Built-in Function} {@var{tm_struct} =} gmtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
 return a time structure corresponding to CUT (Coordinated Universal Time).\n\
+\n\
 For example:\n\
 \n\
 @example\n\
@@ -253,8 +255,10 @@ localtime (time ())\n\
 DEFUN (mktime, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{seconds} =} mktime (@var{tm_struct})\n\
-Convert a time structure corresponding to the local time to the number\n\
-of seconds since the epoch.  For example:\n\
+Convert a time structure corresponding to the local time to the number of\n\
+seconds since the epoch.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -309,15 +313,16 @@ mktime (localtime (time ()))\n\
 DEFUN (strftime, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strftime (@var{fmt}, @var{tm_struct})\n\
-Format the time structure @var{tm_struct} in a flexible way using the\n\
-format string @var{fmt} that contains @samp{%} substitutions\n\
-similar to those in @code{printf}.  Except where noted, substituted\n\
-fields have a fixed size; numeric fields are padded if necessary.\n\
-Padding is with zeros by default; for fields that display a single\n\
-number, padding can be changed or inhibited by following the @samp{%}\n\
-with one of the modifiers described below.  Unknown field specifiers are\n\
-copied as normal characters.  All other characters are copied to the\n\
-output without change.  For example:\n\
+Format the time structure @var{tm_struct} in a flexible way using the format\n\
+string @var{fmt} that contains @samp{%} substitutions similar to those in\n\
+@code{printf}.\n\
+\n\
+Except where noted, substituted fields have a fixed size; numeric fields are\n\
+padded if necessary.  Padding is with zeros by default; for fields that\n\
+display a single number, padding can be changed or inhibited by following\n\
+the @samp{%} with one of the modifiers described below.  Unknown field\n\
+specifiers are copied as normal characters.  All other characters are copied\n\
+to the output without change.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -326,8 +331,8 @@ strftime (\"%r (%Z) %A %e %B %Y\", localtime (time ()))\n\
 @end group\n\
 @end example\n\
 \n\
-Octave's @code{strftime} function supports a superset of the ANSI C\n\
-field specifiers.\n\
+Octave's @code{strftime} function supports a superset of the ANSI C field\n\
+specifiers.\n\
 \n\
 @noindent\n\
 Literal character fields:\n\

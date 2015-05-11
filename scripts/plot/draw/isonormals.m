@@ -24,6 +24,8 @@
 ## @deftypefnx {Function File} {[@var{n}] =} isonormals (@dots{}, "negate")
 ## @deftypefnx {Function File} {} isonormals (@dots{}, @var{p})
 ##
+## Calculate normals to an isosurface.
+##
 ## If called with one output argument and the first input argument
 ## @var{val} is a three-dimensional array that contains the data for an
 ## isosurface geometry and the second input argument @var{v} keeps the

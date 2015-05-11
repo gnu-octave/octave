@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {} istriu (@var{A})
 ## Return true if @var{A} is an upper triangular matrix.
 ##
-## An upper triangular matrix has nonzero entries only on the main diagonal
-## and above.
+## An upper triangular matrix has nonzero entries only on the main diagonal and
+## above.
 ## @seealso{isdiag, isbanded, istril, triu, bandwidth}
 ## @end deftypefn
 

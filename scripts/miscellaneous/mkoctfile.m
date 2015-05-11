@@ -20,15 +20,15 @@
 ## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
 ## @deftypefnx {Function File} {[@var{output}, @var{status}] =} mkoctfile (@dots{})
 ##
-## The @code{mkoctfile} function compiles source code written in C,
-## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the
+## The @code{mkoctfile} function compiles source code written in C, C++, or
+## Fortran.  Depending on the options used with @code{mkoctfile}, the
 ## compiled code can be called within Octave or can be used as a stand-alone
 ## application.
 ##
 ## @code{mkoctfile} can be called from the shell prompt or from the Octave
-## prompt.  Calling it from the Octave prompt simply delegates the
-## call to the shell prompt.  The output is stored in the @var{output}
-## variable and the exit status in the @var{status} variable.
+## prompt.  Calling it from the Octave prompt simply delegates the call to
+## the shell prompt.  The output is stored in the @var{output} variable and
+## the exit status in the @var{status} variable.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
 ## except for the file name of the code you wish to compile:
@@ -69,9 +69,8 @@
 ##
 ## @item  -o FILE
 ## @itemx --output FILE
-## Output file name.  Default extension is .oct
-## (or .mex if @samp{--mex} is specified) unless linking
-## a stand-alone executable.
+## Output file name.  Default extension is .oct (or .mex if @samp{--mex} is
+## specified) unless linking a stand-alone executable.
 ##
 ## @item  -p VAR
 ## @itemx --print VAR
@@ -111,8 +110,8 @@
 ## Link a stand-alone executable file.
 ##
 ## @item --mex
-## Assume we are creating a MEX file.  Set the default output extension
-## to ".mex".
+## Assume we are creating a MEX file.  Set the default output extension to
+## ".mex".
 ##
 ## @item  -s
 ## @itemx --strip

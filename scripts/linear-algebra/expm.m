@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} expm (@var{A})
-## Return the exponential of a matrix, defined as the infinite Taylor
-## series
+## Return the exponential of a matrix.
+##
+## The matrix exponential is defined as the infinite Taylor series
 ## @tex
 ## $$
 ##  \exp (A) = I + A + {A^2 \over 2!} + {A^3 \over 3!} + \cdots
@@ -32,7 +33,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## The Taylor series is @emph{not} the way to compute the matrix
+## However, the Taylor series is @emph{not} the way to compute the matrix
 ## exponential; see @nospell{Moler and Van Loan}, @cite{Nineteen Dubious Ways
 ## to Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
 ## uses Ward's diagonal Pad@'e approximation method with three step

@@ -26,20 +26,19 @@
 ## Both output formatted for printing (PDF and PostScript), and many bitmapped
 ## and vector image formats are supported.
 ##
-## @var{filename} defines the name of the output file.  If the
-## file name has no suffix, one is inferred from the specified
-## device and appended to the file name.  If no filename is
-## specified, the output is sent to the printer.
+## @var{filename} defines the name of the output file.  If the file name has
+## no suffix, one is inferred from the specified device and appended to the
+## file name.  If no filename is specified, the output is sent to the
+## printer.
 ##
 ## @var{h} specifies the handle of the figure to print.  If no handle is
 ## specified the current figure is used.
 ##
-## For output to a printer, PostScript file, or PDF file,
-## the paper size is specified by the figure's @code{papersize}
-## property.  The location and size of the image on the page are
-## specified by the figure's @code{paperposition} property.  The
-## orientation of the page is specified by the figure's
-## @code{paperorientation} property.
+## For output to a printer, PostScript file, or PDF file, the paper size is
+## specified by the figure's @code{papersize} property.  The location and
+## size of the image on the page are specified by the figure's
+## @code{paperposition} property.  The orientation of the page is specified
+## by the figure's @code{paperorientation} property.
 ##
 ## The width and height of images are specified by the figure's
 ## @code{paperpositon(3:4)} property values.
@@ -48,16 +47,16 @@
 ##
 ## @table @code
 ## @item -f@var{h}
-##   Specify the handle, @var{h}, of the figure to be printed.  The
-## default is the current figure.
+##   Specify the handle, @var{h}, of the figure to be printed.  The default
+## is the current figure.
 ##
 ## @item -P@var{printer}
 ##   Set the @var{printer} name to which the plot is sent if no
 ## @var{filename} is specified.
 ##
 ## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript.  For Unix and Windows
-## the defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
+##   Specify the command for calling Ghostscript.  For Unix and Windows the
+## defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
 ##
 ## @item  -color
 ## @itemx -mono
@@ -69,24 +68,23 @@
 ##
 ## @item  -portrait
 ## @itemx -landscape
-##   Specify the orientation of the plot for printed output.  For
-## non-printed output the aspect ratio of the output corresponds to
-## the plot area defined by the @qcode{"paperposition"} property in the
-## orientation specified.  This option is equivalent to changing
-## the figure's @qcode{"paperorientation"} property.
+##   Specify the orientation of the plot for printed output.
+## For non-printed output the aspect ratio of the output corresponds to the
+## plot area defined by the @qcode{"paperposition"} property in the
+## orientation specified.  This option is equivalent to changing the figure's
+## @qcode{"paperorientation"} property.
 ##
 ## @item  -TextAlphaBits=@var{n}
 ## @itemx -GraphicsAlphaBits=@var{n}
 ##   Octave is able to produce output for various printers, bitmaps, and
-## vector formats by using Ghostscript.
-## For bitmap and printer output anti-aliasing is applied using
-## Ghostscript's TextAlphaBits and GraphicsAlphaBits options.
-## The default number of bits for each is 4.
+## vector formats by using Ghostscript.  For bitmap and printer output
+## anti-aliasing is applied using Ghostscript's TextAlphaBits and
+## GraphicsAlphaBits options.  The default number of bits for each is 4. 
 ## Allowed values for @var{N} are 1, 2, or 4.
 ##
 ## @item -d@var{device}
-##   The available output format is specified by the option @var{device},
-## and is one of:
+##   The available output format is specified by the option @var{device}, and
+## is one of:
 ##
 ##   @table @code
 ##   @item  ps
@@ -148,9 +146,7 @@
 ##
 ##   @item fig
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
-## @option{-textspecial} or @option{-textnormal} can be used to control
-## whether the special flag should be set for the text in
-## the figure.  (default is @option{-textnormal})
+## @option{-textspecial} or @option{-textnormal} can be used to control whether the special flag should be set for the text in the figure.  (default is @option{-textnormal})
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -202,18 +198,18 @@
 ##   For a complete list, type @code{system ("gs -h")} to see what formats
 ## and devices are available.
 ##
-##   When Ghostscript output is sent to a printer the size is determined
-## by the figure's @qcode{"papersize"} property.  When the output
-## is sent to a file the size is determined by the plot box defined by
-## the figure's @qcode{"paperposition"} property.
+##   When Ghostscript output is sent to a printer the size is determined by
+## the figure's @qcode{"papersize"} property.  When the output is sent to a
+## file the size is determined by the plot box defined by the figure's
+## @qcode{"paperposition"} property.
 ##
 ## @item -append
 ##   Append PostScript or PDF output to a pre-existing file of the same type.
 ##
 ## @item -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch.  For both metafiles and
-## SVG the default is the screen resolution; for other formats it is 150 dpi.
-## To specify screen resolution, use @qcode{"-r0"}.
+##   Resolution of bitmaps in pixels per inch.  For both metafiles and SVG
+## the default is the screen resolution; for other formats it is 150 dpi.  To
+## specify screen resolution, use @qcode{"-r0"}.
 ##
 ## @item  -loose
 ## @itemx -tight
@@ -237,12 +233,12 @@
 ##   @end table
 ##
 ## @item -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.  For
-## PS, EPS, PDF, and other vector formats the plot size is in points.
-## This option is equivalent to changing the size of the plot box
-## associated with the @qcode{"paperposition"} property.  When using the
-## command form of the print function you must quote the
-## @var{xsize},@var{ysize} option.  For example, by writing @w{"-S640,480"}.
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.
+## For PS, EPS, PDF, and other vector formats the plot size is in points.
+## This option is equivalent to changing the size of the plot box associated
+## with the @qcode{"paperposition"} property.  When using the command form of
+## the print function you must quote the @var{xsize},@var{ysize} option.  For
+## example, by writing @w{"-S640,480"}.
 ##
 ## @item  -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}

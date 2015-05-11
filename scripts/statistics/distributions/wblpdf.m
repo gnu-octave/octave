@@ -22,8 +22,10 @@
 ## @deftypefnx {Function File} {} wblpdf (@var{x}, @var{scale})
 ## @deftypefnx {Function File} {} wblpdf (@var{x}, @var{scale}, @var{shape})
 ## Compute the probability density function (PDF) at @var{x} of the
-## Weibull distribution with scale parameter @var{scale} and shape
-## parameter @var{shape} which is given by
+## Weibull distribution with scale parameter @var{scale} and
+## shape parameter @var{shape}.
+##
+## This is given by
 ## @tex
 ## $$  {shape \over scale^{shape}} \cdot x^{shape-1} \cdot e^{-({x \over scale})^{shape}} $$
 ## @end tex

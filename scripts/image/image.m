@@ -25,6 +25,7 @@
 ## Display a matrix as an indexed color image.
 ##
 ## The elements of @var{img} are indices into the current colormap.
+##
 ## @var{x} and @var{y} are optional 2-element vectors, @w{@code{[min, max]}},
 ## which specify the range for the axis labels.  If a range is specified as
 ## @w{@code{[max, min]}} then the image will be reversed along that axis.  For

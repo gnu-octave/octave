@@ -20,11 +20,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated
-## horizontally.  If the arguments are cell strings, @code{strcat}
-## returns a cell string with the individual cells concatenated.
-## For numerical input, each element is converted to the
-## corresponding ASCII character.  Trailing white space for any
-## character string input is eliminated before the strings are
+## horizontally.
+##
+## If the arguments are cell strings, @code{strcat} returns a cell string
+## with the individual cells concatenated.  For numerical input, each element
+## is converted to the corresponding ASCII character.  Trailing white space
+## for any character string input is eliminated before the strings are
 ## concatenated.  Note that cell string values do @strong{not} have
 ## whitespace trimmed.
 ##

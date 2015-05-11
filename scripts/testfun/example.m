@@ -24,8 +24,9 @@
 ## @deftypefnx {Function File} {[@var{s}, @var{idx}] =} example (@dots{})
 ##
 ## Display the code for example @var{n} associated with the function
-## @var{name}, but do not run it.  If @var{n} is not specified, all examples
-## are displayed.
+## @var{name}, but do not run it.
+##
+## If @var{n} is not specified, all examples are displayed.
 ##
 ## When called with output arguments, the examples are returned in the form of
 ## a string @var{s}, with @var{idx} indicating the ending position of the

@@ -20,8 +20,9 @@
 ## @deftypefn  {Function File} {} index (@var{s}, @var{t})
 ## @deftypefnx {Function File} {} index (@var{s}, @var{t}, @var{direction})
 ## Return the position of the first occurrence of the string @var{t} in the
-## string @var{s}, or 0 if no occurrence is found.  @var{s} may also be a
-## string array or cell array of strings.
+## string @var{s}, or 0 if no occurrence is found.
+##
+## @var{s} may also be a string array or cell array of strings.
 ##
 ## For example:
 ##

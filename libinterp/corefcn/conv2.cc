@@ -39,9 +39,10 @@ DEFUN (conv2, args, ,
 @deftypefn  {Built-in Function} {} conv2 (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
 @deftypefnx {Built-in Function} {} conv2 (@dots{}, @var{shape})\n\
-Return the 2-D convolution of @var{A} and @var{B}.  The size of the result\n\
-is determined by the optional @var{shape} argument which takes the following\n\
-values\n\
+Return the 2-D convolution of @var{A} and @var{B}.\n\
+\n\
+The size of the result is determined by the optional @var{shape} argument\n\
+which takes the following values\n\
 \n\
 @table @asis\n\
 @item @var{shape} = @qcode{\"full\"}\n\
@@ -294,9 +295,10 @@ DEFUN (convn, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} convn (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
-Return the n-D convolution of @var{A} and @var{B}.  The size of the result\n\
-is determined by the optional @var{shape} argument which takes the following\n\
-values\n\
+Return the n-D convolution of @var{A} and @var{B}.\n\
+\n\
+The size of the result is determined by the optional @var{shape} argument\n\
+which takes the following values\n\
 \n\
 @table @asis\n\
 @item @var{shape} = @qcode{\"full\"}\n\

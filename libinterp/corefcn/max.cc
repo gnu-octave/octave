@@ -431,11 +431,10 @@ DEFUN (min, args, nargout,
 @deftypefnx {Built-in Function} {} min (@var{x}, @var{y})\n\
 Find minimum values in the array @var{x}.\n\
 \n\
-For a vector argument, return the minimum value.\n\
-For a matrix argument, return a row vector with the minimum value of each\n\
-column.\n\
-For a multi-dimensional array, @code{min} operates along the first\n\
-non-singleton dimension.\n\
+For a vector argument, return the minimum value.  For a matrix argument,\n\
+return a row vector with the minimum value of each column.  For a\n\
+multi-dimensional array, @code{min} operates along the first non-singleton\n\
+dimension.\n\
 \n\
 If the optional third argument @var{dim} is present then operate along\n\
 this dimension.  In this case the second argument is ignored and should be\n\
@@ -460,8 +459,8 @@ min (2:5, pi)\n\
 @end example\n\
 \n\
 @noindent\n\
-compares each element of the range @code{2:5} with @code{pi}, and\n\
-returns a row vector of the minimum values.\n\
+compares each element of the range @code{2:5} with @code{pi}, and returns a\n\
+row vector of the minimum values.\n\
 \n\
 For complex arguments, the magnitude of the elements are used for\n\
 comparison.  If the magnitudes are identical, then the results are ordered\n\
@@ -478,9 +477,8 @@ min ([-1 i 1 -i])\n\
 because all entries have magnitude 1, but -i has the smallest phase angle\n\
 with value -pi/2.\n\
 \n\
-If called with one input and two output arguments,\n\
-@code{min} also returns the first index of the\n\
-minimum value(s).  Thus,\n\
+If called with one input and two output arguments, @code{min} also returns\n\
+the first index of the minimum value(s).  Thus,\n\
 \n\
 @example\n\
 @group\n\
@@ -654,11 +652,10 @@ DEFUN (max, args, nargout,
 @deftypefnx {Built-in Function} {} max (@var{x}, @var{y})\n\
 Find maximum values in the array @var{x}.\n\
 \n\
-For a vector argument, return the maximum value.\n\
-For a matrix argument, return a row vector with the maximum value of each\n\
-column.\n\
-For a multi-dimensional array, @code{max} operates along the first\n\
-non-singleton dimension.\n\
+For a vector argument, return the maximum value.  For a matrix argument,\n\
+return a row vector with the maximum value of each column.  For a\n\
+multi-dimensional array, @code{max} operates along the first non-singleton\n\
+dimension.\n\
 \n\
 If the optional third argument @var{dim} is present then operate along\n\
 this dimension.  In this case the second argument is ignored and should be\n\
@@ -701,9 +698,8 @@ max ([-1 i 1 -i])\n\
 because all entries have magnitude 1, but -1 has the largest phase angle\n\
 with value pi.\n\
 \n\
-If called with one input and two output arguments,\n\
-@code{max} also returns the first index of the\n\
-maximum value(s).  Thus,\n\
+If called with one input and two output arguments, @code{max} also returns\n\
+the first index of the maximum value(s).  Thus,\n\
 \n\
 @example\n\
 @group\n\

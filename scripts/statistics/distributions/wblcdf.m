@@ -23,7 +23,9 @@
 ## @deftypefnx {Function File} {} wblcdf (@var{x}, @var{scale}, @var{shape})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## Weibull distribution with scale parameter @var{scale} and shape
-## parameter @var{shape}, which is
+## parameter @var{shape}.
+##
+## This is defined as
 ## @tex
 ## $$ 1 - e^{-({x \over scale})^{shape}} $$
 ## for $x \geq 0$.

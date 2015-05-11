@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logistic_inv (@var{x})
-## For each element of @var{x}, compute the quantile (the inverse of
-## the CDF) at @var{x} of the logistic distribution.
+## For each element of @var{x}, compute the quantile (the inverse of the CDF)
+## at @var{x} of the logistic distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

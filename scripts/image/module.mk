@@ -21,7 +21,6 @@ image_FCN_FILES = \
   image/copper.m \
   image/cubehelix.m \
   image/flag.m \
-  image/gmap40.m \
   image/gray.m \
   image/gray2ind.m \
   image/hot.m \

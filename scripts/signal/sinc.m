@@ -18,6 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sinc (@var{x})
+## Compute the sinc function.
+##
 ## Return
 ## @tex
 ## $ \sin (\pi x)/(\pi x)$.

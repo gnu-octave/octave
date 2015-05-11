@@ -5381,7 +5381,7 @@ public:
     {
       position.add_constraint (dim_vector (1, 2));
       position.add_constraint (dim_vector (2, 1));
-      visible.set (octave_value (true));
+      visible.set (octave_value (false));
     }
 
   private:

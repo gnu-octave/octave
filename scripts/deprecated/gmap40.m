@@ -19,9 +19,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} gmap40 ()
 ## @deftypefnx {Function File} {@var{map} =} gmap40 (@var{n})
+##
+## @code{gmap40} is deprecated and will be removed in Octave version 4.4.
+##
 ## Create color colormap.  The colormap consists of red, green, blue, yellow,
-## magenta and cyan.  This colormap is specifically designed for users of
-## gnuplot 4.0 where these 6 colors are the allowable ones for patch objects.
+## magenta and cyan.
+##
+## This colormap is specifically designed for users of gnuplot 4.0 where these
+## 6 colors are the allowable ones for patch objects.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, a length of 6 is assumed.  Larger values of @var{n} result
 ## in a repetition of the above colors.
@@ -31,7 +37,16 @@
 ## PKG_ADD: colormap ("register", "gmap40");
 ## PKG_DEL: colormap ("unregister", "gmap40");
 
+## Deprecated in 4.0
+
 function map = gmap40 (n = rows (colormap ()))
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "gmap40 is obsolete and will be removed from a future version of Octave");
+  endif
 
   if (nargin > 1)
     print_usage ();

@@ -4316,15 +4316,15 @@ DEFUN (autoload, args, ,
 @deftypefnx {Built-in Function} {} autoload (@dots{}, \"remove\")\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
-The second argument, @var{file}, should be an absolute file name or\n\
-a file name in the same directory as the function or script from which\n\
-the autoload command was run.  @var{file} @emph{should not} depend on the\n\
-Octave load path.\n\
+The second argument, @var{file}, should be an absolute file name or a file\n\
+name in the same directory as the function or script from which the autoload\n\
+command was run.  @var{file} @emph{should not} depend on the Octave load\n\
+path.\n\
 \n\
-Normally, calls to @code{autoload} appear in PKG_ADD script files that\n\
-are evaluated when a directory is added to Octave's load path.  To\n\
-avoid having to hardcode directory names in @var{file}, if @var{file}\n\
-is in the same directory as the PKG_ADD script then\n\
+Normally, calls to @code{autoload} appear in PKG_ADD script files that are\n\
+evaluated when a directory is added to Octave's load path.  To avoid having\n\
+to hardcode directory names in @var{file}, if @var{file} is in the same\n\
+directory as the PKG_ADD script then\n\
 \n\
 @example\n\
 autoload (\"foo\", \"bar.oct\");\n\
@@ -4543,10 +4543,13 @@ DEFUN (mfilename, args, ,
 @deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
 Return the name of the currently executing file.\n\
 \n\
-When called from outside an m-file return the empty string.  Given the\n\
-argument @qcode{\"fullpath\"}, include the directory part of the file name,\n\
-but not the extension.  Given the argument @qcode{\"fullpathext\"}, include\n\
-the directory part of the file name and the extension.\n\
+When called from outside an m-file return the empty string.\n\
+\n\
+Given the argument @qcode{\"fullpath\"}, include the directory part of the\n\
+file name, but not the extension.\n\
+\n\
+Given the argument @qcode{\"fullpathext\"}, include the directory part of\n\
+the file name and the extension.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4732,8 +4735,10 @@ feval (const octave_value_list& args, int nargout)
 DEFUN (feval, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} feval (@var{name}, @dots{})\n\
-Evaluate the function named @var{name}.  Any arguments after the first\n\
-are passed as inputs to the named function.  For example,\n\
+Evaluate the function named @var{name}.\n\
+\n\
+Any arguments after the first are passed as inputs to the named function.\n\
+For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -4745,11 +4750,10 @@ feval (\"acos\", -1)\n\
 @noindent\n\
 calls the function @code{acos} with the argument @samp{-1}.\n\
 \n\
-The function @code{feval} can also be used with function handles of\n\
-any sort (@pxref{Function Handles}).  Historically, @code{feval} was\n\
-the only way to call user-supplied functions in strings, but\n\
-function handles are now preferred due to the cleaner syntax they\n\
-offer.  For example,\n\
+The function @code{feval} can also be used with function handles of any sort\n\
+(@pxref{Function Handles}).  Historically, @code{feval} was the only way to\n\
+call user-supplied functions in strings, but function handles are now\n\
+preferred due to the cleaner syntax they offer.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -4783,12 +4787,12 @@ instead.\n\
 DEFUN (builtin, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
-Call the base function @var{f} even if @var{f} is overloaded to\n\
-another function for the given type signature.\n\
+Call the base function @var{f} even if @var{f} is overloaded to another\n\
+function for the given type signature.\n\
 \n\
-This is normally useful when doing object-oriented programming and there\n\
-is a requirement to call one of Octave's base functions rather than\n\
-the overloaded one of a new class.\n\
+This is normally useful when doing object-oriented programming and there is\n\
+a requirement to call one of Octave's base functions rather than the\n\
+overloaded one of a new class.\n\
 \n\
 A trivial example which redefines the @code{sin} function to be the\n\
 @code{cos} function shows how @code{builtin} works.\n\
@@ -4945,9 +4949,12 @@ DEFUN (eval, args, nargout,
 @deftypefn  {Built-in Function} {} eval (@var{try})\n\
 @deftypefnx {Built-in Function} {} eval (@var{try}, @var{catch})\n\
 Parse the string @var{try} and evaluate it as if it were an Octave\n\
-program.  If that fails, evaluate the optional string @var{catch}.\n\
-The string @var{try} is evaluated in the current context,\n\
-so any results remain available after @code{eval} returns.\n\
+program.\n\
+\n\
+If execution fails, evaluate the optional string @var{catch}.\n\
+\n\
+The string @var{try} is evaluated in the current context, so any results\n\
+remain available after @code{eval} returns.\n\
 \n\
 The following example creates the variable @var{A} with the approximate\n\
 value of 3.1416 in the current workspace.\n\
@@ -5113,9 +5120,8 @@ DEFUN (evalin, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} evalin (@var{context}, @var{try})\n\
 @deftypefnx {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
-Like @code{eval}, except that the expressions are evaluated in the\n\
-context @var{context}, which may be either @qcode{\"caller\"} or\n\
-@qcode{\"base\"}.\n\
+Like @code{eval}, except that the expressions are evaluated in the context\n\
+@var{context}, which may be either @qcode{\"caller\"} or @qcode{\"base\"}.\n\
 @seealso{eval, assignin}\n\
 @end deftypefn")
 {

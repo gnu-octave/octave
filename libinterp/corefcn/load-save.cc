@@ -546,7 +546,9 @@ DEFUN (load, args, nargout,
 @deftypefnx {Command} {} load file options v1 v2 @dots{}\n\
 @deftypefnx {Command} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
-@var{file}.  If no variables are specified then all variables found in the\n\
+@var{file}.\n\
+\n\
+If no variables are specified then all variables found in the\n\
 file will be loaded.  As with @code{save}, the list of variables to extract\n\
 can be full names or use a pattern syntax.  The format of the file is\n\
 automatically detected but may be overridden by supplying the appropriate\n\
@@ -1485,7 +1487,9 @@ DEFUN (save, args, nargout,
 @deftypefnx {Command} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
 @deftypefnx {Built-in Function} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.  The special filename @samp{-} may be used to return the\n\
+@var{file}.\n\
+\n\
+The special filename @samp{-} may be used to return the\n\
 content of the variables as a string.  If no variable names are listed,\n\
 Octave saves all the variables in the current scope.  Otherwise, full\n\
 variable names or pattern syntax can be used to specify the variables to\n\
@@ -1792,7 +1796,7 @@ to save all current variables to the file @file{octave-workspace} if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
@@ -1807,11 +1811,12 @@ DEFUN (save_default_options, args, nargout,
 @deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
+\n\
 Typical values include @qcode{\"-ascii\"}, @qcode{\"-text -zip\"}.\n\
 The default value is @option{-text}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{save}\n\
 @end deftypefn")
@@ -1827,14 +1832,15 @@ DEFUN (octave_core_file_limit, args, nargout,
 Query or set the internal variable that specifies the maximum amount\n\
 of memory (in kilobytes) of the top-level workspace that Octave will\n\
 attempt to save when writing data to the crash dump file (the name of\n\
-the file is specified by @var{octave_core_file_name}).  If\n\
-@var{octave_core_file_options} flags specify a binary format,\n\
+the file is specified by @var{octave_core_file_name}).\n\
+\n\
+If @var{octave_core_file_options} flags specify a binary format,\n\
 then @var{octave_core_file_limit} will be approximately the maximum\n\
 size of the file.  If a text file format is used, then the file could\n\
 be much larger than the limit.  The default value is -1 (unlimited)\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
@@ -1849,10 +1855,11 @@ DEFUN (octave_core_file_name, args, nargout,
 @deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
+\n\
 The default value is @qcode{\"octave-workspace\"}\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
@@ -1866,13 +1873,14 @@ DEFUN (octave_core_file_options, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} octave_core_file_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the options used for\n\
-saving the workspace data if Octave aborts.  The value of\n\
-@code{octave_core_file_options} should follow the same format as the\n\
-options for the @code{save} function.  The default value is Octave's binary\n\
-format.\n\
+saving the workspace data if Octave aborts.\n\
+\n\
+The value of @code{octave_core_file_options} should follow the same format\n\
+as the options for the @code{save} function.  The default value is Octave's\n\
+binary format.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
 @end deftypefn")
@@ -1887,12 +1895,12 @@ DEFUN (save_header_format_string, args, nargout,
 @deftypefnx {Built-in Function} {} save_header_format_string (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the format\n\
 string used for the comment line written at the beginning of\n\
-text-format data files saved by Octave.  The format string is\n\
-passed to @code{strftime} and should begin with the character\n\
-@samp{#} and contain no newline characters.  If the value of\n\
-@code{save_header_format_string} is the empty string,\n\
-the header comment is omitted from text-format data files.  The\n\
-default value is\n\
+text-format data files saved by Octave.\n\
+\n\
+The format string is passed to @code{strftime} and should begin with the\n\
+character @samp{#} and contain no newline characters.  If the value of\n\
+@code{save_header_format_string} is the empty string, the header comment is\n\
+omitted from text-format data files.  The default value is\n\
 @c Set example in small font to prevent overfull line\n\
 \n\
 @smallexample\n\
@@ -1900,7 +1908,7 @@ default value is\n\
 @end smallexample\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{strftime, save}\n\
 @end deftypefn")

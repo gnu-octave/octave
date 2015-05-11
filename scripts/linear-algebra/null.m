@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} null (@var{A}, @var{tol})
 ## Return an orthonormal basis of the null space of @var{A}.
 ##
-## The dimension of the null space is taken as the number of singular
-## values of @var{A} not greater than @var{tol}.  If the argument @var{tol}
-## is missing, it is computed as
+## The dimension of the null space is taken as the number of singular values of
+## @var{A} not greater than @var{tol}.  If the argument @var{tol} is missing,
+## it is computed as
 ##
 ## @example
 ## max (size (@var{A})) * max (svd (@var{A})) * eps

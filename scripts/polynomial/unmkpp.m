@@ -20,6 +20,7 @@
 ## @deftypefn {Function File} {[@var{x}, @var{p}, @var{n}, @var{k}, @var{d}] =} unmkpp (@var{pp})
 ##
 ## Extract the components of a piecewise polynomial structure @var{pp}.
+##
 ## The components are:
 ##
 ## @table @asis
@@ -27,11 +28,11 @@
 ## Sample points.
 ##
 ## @item @var{p}
-## Polynomial coefficients for points in sample interval.  @code{@var{p}
-## (@var{i}, :)} contains the coefficients for the polynomial over
-## interval @var{i} ordered from highest to lowest.  If @code{@var{d} >
-## 1}, @code{@var{p} (@var{r}, @var{i}, :)} contains the coefficients for
-## the r-th polynomial defined on interval @var{i}.
+## Polynomial coefficients for points in sample interval.
+## @code{@var{p} (@var{i}, :)} contains the coefficients for the polynomial 
+## over interval @var{i} ordered from highest to lowest.  If
+## @code{@var{d} > 1}, @code{@var{p} (@var{r}, @var{i}, :)} contains the
+## coefficients for the r-th polynomial defined on interval @var{i}.
 ##
 ## @item @var{n}
 ## Number of polynomial pieces.

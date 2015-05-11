@@ -22,8 +22,9 @@
 ## @deftypefnx {Function File} {} comet (@var{x}, @var{y}, @var{p})
 ## @deftypefnx {Function File} {} comet (@var{hax}, @dots{})
 ## Produce a simple comet style animation along the trajectory provided by
-## the input coordinate vectors (@var{x}, @var{y}).  If @var{x} is not
-## specified it defaults to the indices of @var{y}.
+## the input coordinate vectors (@var{x}, @var{y}).
+##
+## If @var{x} is not specified it defaults to the indices of @var{y}.
 ##
 ## The speed of the comet may be controlled by @var{p}, which represents the
 ## time each point is displayed before moving to the next one.  The default for

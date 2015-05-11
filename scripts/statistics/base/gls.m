@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{beta}, @var{v}, @var{r}] =} gls (@var{y}, @var{x}, @var{o})
-## Generalized least squares estimation for the multivariate model
+## Generalized least squares model.
+##
+## Perform a generalized least squares estimation for the multivariate model
 ## @tex
 ## $y = x b + e$
 ## with $\bar{e} = 0$ and cov(vec($e$)) = $(s^2)o$,

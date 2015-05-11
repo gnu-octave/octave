@@ -27,7 +27,7 @@
 ## @var{m}+1 with the last coefficient removed.  The optional argument
 ## @qcode{"symmetric"} is equivalent to not specifying a second argument.
 ##
-## For a definition of the Hamming window, see e.g.,
+## For a definition of the Hamming window see, e.g.,
 ## @nospell{A.V. Oppenheim & R. W. Schafer},
 ## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn

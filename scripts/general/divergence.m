@@ -23,6 +23,7 @@
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy})
 ## Calculate divergence of a vector field given by the arrays @var{fx},
 ## @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively.
+##
 ## @tex
 ## $$
 ## div F(x,y,z) = \partial_x{F} + \partial_y{F} + \partial_z{F}

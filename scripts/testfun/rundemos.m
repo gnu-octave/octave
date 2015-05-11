@@ -24,8 +24,8 @@
 ## Demo blocks in any C++ source files (@file{*.cc}) will also be executed
 ## for use with dynamically linked oct-file functions.
 ##
-## If no directory is specified, operate on all directories in Octave's
-## search path for functions.
+## If no directory is specified, operate on all directories in Octave's search
+## path for functions.
 ## @seealso{demo, runtests, path}
 ## @end deftypefn
 

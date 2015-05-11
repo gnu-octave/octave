@@ -56,8 +56,8 @@
 ## @item @tab outside @tab can be appended to any location string
 ## @end multitable
 ##
-## The optional parameter @var{orient} determines if the key elements
-## are placed vertically or horizontally.  The allowed values are
+## The optional parameter @var{orient} determines if the key elements are
+## placed vertically or horizontally.  The allowed values are
 ## @qcode{"vertical"} (default) or @qcode{"horizontal"}.
 ##
 ## The following customizations are available using @var{option}:

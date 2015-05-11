@@ -19,20 +19,21 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{b}, @var{n}] =} sign_test (@var{x}, @var{y}, @var{alt})
 ## For two matched-pair samples @var{x} and @var{y}, perform a sign test
-## of the null hypothesis PROB (@var{x} > @var{y}) == PROB (@var{x} <
-## @var{y}) == 1/2.  Under the null, the test statistic @var{b} roughly
-## follows a binomial distribution with parameters @code{@var{n} = sum
-## (@var{x} != @var{y})} and @var{p} = 1/2.
+## of the null hypothesis
+## PROB (@var{x} > @var{y}) == PROB (@var{x} < @var{y}) == 1/2.
 ##
-## With the optional argument @code{alt}, the alternative of interest
-## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the
-## null hypothesis is tested against the two-sided alternative PROB
-## (@var{x} < @var{y}) != 1/2.  If @var{alt} is @qcode{">"}, the
-## one-sided alternative PROB (@var{x} > @var{y}) > 1/2 ("x is
-## stochastically greater than y") is considered.  Similarly for
-## @qcode{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) < 1/2
-## ("x is stochastically less than y") is considered.  The default is
-## the two-sided case.
+## Under the null, the test statistic @var{b} roughly follows a
+## binomial distribution with parameters
+## @code{@var{n} = sum (@var{x} != @var{y})} and @var{p} = 1/2.
+##
+## With the optional argument @code{alt}, the alternative of interest can be
+## selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## hypothesis is tested against the two-sided alternative
+## PROB (@var{x} < @var{y}) != 1/2.  If @var{alt} is @qcode{">"}, the one-sided
+## alternative PROB (@var{x} > @var{y}) > 1/2 ("x is stochastically greater
+## than y") is considered.  Similarly for @qcode{"<"}, the one-sided
+## alternative PROB (@var{x} > @var{y}) < 1/2 ("x is stochastically less than
+## y") is considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

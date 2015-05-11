@@ -23,6 +23,7 @@
 ##
 ## Return a cell array containing the names of the methods for the
 ## object @var{obj} or the named class @var{classname}.
+##
 ## @var{obj} may be an Octave class object or a Java object.
 ##
 ## @seealso{fieldnames}

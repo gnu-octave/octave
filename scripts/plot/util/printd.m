@@ -22,12 +22,14 @@
 ## @deftypefn  {Function File} {} printd (@var{obj}, @var{filename})
 ## @deftypefnx {Function File} {@var{out_file} =} printd (@dots{})
 ##
-## Convert any object acceptable to @code{disp} into the format
-## selected by the suffix of @var{filename}.  If the return argument
-## @var{out_file} is given, the name of the created file is returned.
+## Convert any object acceptable to @code{disp} into the format selected by
+## the suffix of @var{filename}.
 ##
-## This function is intended to facilitate manipulation of the output
-## of functions such as @code{stemleaf}.
+## If the return argument @var{out_file} is given, the name of the created
+## file is returned.
+##
+## This function is intended to facilitate manipulation of the output of
+## functions such as @code{stemleaf}.
 ## @seealso{stemleaf}
 ## @end deftypefn
 

@@ -70,7 +70,9 @@ DEFUN_DLD (chol, args, nargout,
 @deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
 @cindex Cholesky factorization\n\
 Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive definite\n\
-matrix @var{A}, where\n\
+matrix @var{A}.\n\
+\n\
+The Cholesky@tie{}factor is defined by\n\
 @tex\n\
 $ R^T R = A $.\n\
 @end tex\n\
@@ -89,8 +91,8 @@ zero value indicated that the matrix was positive definite and the @var{R}\n\
 gives the factorization, and @var{p} will have a positive value otherwise.\n\
 \n\
 If called with 3 outputs then a sparsity preserving row/column permutation\n\
-is applied to @var{A} prior to the factorization.  That is @var{R}\n\
-is the factorization of @code{@var{A}(@var{Q},@var{Q})} such that\n\
+is applied to @var{A} prior to the factorization.  That is @var{R} is the\n\
+factorization of @code{@var{A}(@var{Q},@var{Q})} such that\n\
 @tex\n\
 $ R^T R = Q^T A Q$.\n\
 @end tex\n\
@@ -390,8 +392,8 @@ sparse matrices.\n\
 DEFUN_DLD (cholinv, args, ,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cholinv (@var{A})\n\
-Use the Cholesky@tie{}factorization to compute the inverse of the\n\
-symmetric positive definite matrix @var{A}.\n\
+Compute the inverse of the symmetric positive definite matrix @var{A} using\n\
+the Cholesky@tie{}factorization.\n\
 @seealso{chol, chol2inv, inv}\n\
 @end deftypefn")
 {
@@ -538,10 +540,11 @@ DEFUN_DLD (chol2inv, args, ,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} chol2inv (@var{U})\n\
 Invert a symmetric, positive definite square matrix from its Cholesky\n\
-decomposition, @var{U}.  Note that @var{U} should be an upper-triangular\n\
-matrix with positive diagonal elements.  @code{chol2inv (@var{U})}\n\
-provides @code{inv (@var{U}'*@var{U})} but it is much faster than\n\
-using @code{inv}.\n\
+decomposition, @var{U}.\n\
+\n\
+Note that @var{U} should be an upper-triangular matrix with positive\n\
+diagonal elements.  @code{chol2inv (@var{U})} provides\n\
+@code{inv (@var{U}'*@var{U})} but it is much faster than using @code{inv}.\n\
 @seealso{chol, cholinv, inv}\n\
 @end deftypefn")
 {
@@ -629,9 +632,10 @@ using @code{inv}.\n\
 DEFUN_DLD (cholupdate, args, nargout,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
-Update or downdate a Cholesky@tie{}factorization.  Given an upper triangular\n\
-matrix @var{R} and a column vector @var{u}, attempt to determine another\n\
-upper triangular matrix @var{R1} such that\n\
+Update or downdate a Cholesky@tie{}factorization.\n\
+\n\
+Given an upper triangular matrix @var{R} and a column vector @var{u},\n\
+attempt to determine another upper triangular matrix @var{R1} such that\n\
 \n\
 @itemize @bullet\n\
 @item\n\
@@ -844,6 +848,7 @@ positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
 triangular, return the Cholesky@tie{}factorization of\n\
 @var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
 @w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.\n\
+\n\
 On return, @var{info} is set to\n\
 \n\
 @itemize\n\

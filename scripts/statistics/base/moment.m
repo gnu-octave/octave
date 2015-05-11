@@ -42,6 +42,8 @@
 ## If @var{x} is a matrix, return the row vector containing the @var{p}-th
 ## central moment of each column.
 ##
+## If the optional argument @var{dim} is given, operate along this dimension.
+##
 ## The optional string @var{type} specifies the type of moment to be computed.
 ## Valid options are:
 ##
@@ -103,8 +105,6 @@
 ##
 ## @end ifnottex
 ## @end table
-##
-## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## If both @var{type} and @var{dim} are given they may appear in any order.
 ## @seealso{var, skewness, kurtosis}

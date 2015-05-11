@@ -26,9 +26,12 @@
 ## Return a handle @var{h} to a new waitbar object.
 ##
 ## The waitbar is filled to fraction @var{frac} which must be in the range
-## [0, 1].  The optional message @var{msg} is centered and displayed above the
-## waitbar.  The appearance of the waitbar figure window can be configured by
-## passing property/value pairs to the function.
+## [0, 1].
+##
+## The optional message @var{msg} is centered and displayed above the waitbar.
+##
+## The appearance of the waitbar figure window can be configured by passing
+## property/value pairs to the function.
 ##
 ## When called with a single input the current waitbar, if it exists, is
 ## updated to the new value @var{frac}.  If there are multiple outstanding

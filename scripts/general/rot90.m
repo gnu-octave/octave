@@ -22,9 +22,11 @@
 ## Rotate array by 90 degree increments.
 ##
 ## Return a copy of @var{A} with the elements rotated counterclockwise in
-## 90-degree increments.  The second argument is optional, and specifies
-## how many 90-degree rotations are to be applied (the default value is 1).
-## Negative values of @var{k} rotate the matrix in a clockwise direction.
+## 90-degree increments.
+##
+## The second argument is optional, and specifies how many 90-degree rotations
+## are to be applied (the default value is 1).  Negative values of @var{k}
+## rotate the matrix in a clockwise direction.
 ## For example,
 ##
 ## @example

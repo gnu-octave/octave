@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@var{name})
-## @deftypefnx {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@var{name}, @var{max_len})
+## @deftypefn  {Function File} {@var{text} =} get_first_help_sentence (@var{name})
+## @deftypefnx {Function File} {@var{text} =} get_first_help_sentence (@var{name}, @var{max_len})
+## @deftypefnx {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@dots{})
 ## Return the first sentence of a function's help text.
 ##
-## The first sentence is defined as the text after the function
-## declaration until either the first period (".") or the first appearance of
-## two consecutive newlines ("\n\n").  The text is truncated to a maximum
-## length of @var{max_len}, which defaults to 80.
+## The first sentence is defined as the text after the function declaration
+## until either the first period (".") or the first appearance of two
+## consecutive newlines ("\n\n").  The text is truncated to a maximum length of 
+## @var{max_len}, which defaults to 80.
 ##
 ## The optional output argument @var{status} returns the status reported by
 ## @code{makeinfo}.  If only one output argument is requested, and @var{status}

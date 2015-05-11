@@ -24,14 +24,14 @@
 ## @deftypefnx {Function File} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
 ## Scatter plot of the columns of one matrix against another.
 ##
-## Given the arguments @var{x} and @var{y}, that have a matching number of
+## Given the arguments @var{x} and @var{y} that have a matching number of
 ## rows, @code{plotmatrix} plots a set of axes corresponding to
 ##
 ## @example
 ## plot (@var{x}(:, i), @var{y}(:, j))
 ## @end example
 ##
-## Given a single argument @var{x} this is equivalent to
+## When called with a single argument @var{x} this is equivalent to
 ##
 ## @example
 ## plotmatrix (@var{x}, @var{x})
@@ -49,11 +49,14 @@
 ##
 ## The optional return value @var{h} provides handles to the individual
 ## graphics objects in the scatter plots, whereas @var{ax} returns the
-## handles to the scatter plot axis objects.  @var{bigax} is a hidden
-## axis object that surrounds the other axes, such that the commands
-## @code{xlabel}, @code{title}, etc., will be associated with this hidden
-## axis.  Finally, @var{p} returns the graphics objects associated with
-## the histogram and @var{pax} the corresponding axes objects.
+## handles to the scatter plot axis objects.
+##
+## @var{bigax} is a hidden axis object that surrounds the other axes, such
+## that the commands @code{xlabel}, @code{title}, etc., will be associated
+## with this hidden axis.
+##
+## Finally, @var{p} returns the graphics objects associated with the histogram
+## and @var{pax} the corresponding axes objects.
 ##
 ## Example:
 ##

@@ -17,17 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} doc @var{function_name}
-## Display documentation for the function @var{function_name}
-## directly from an online version of
-## the printed manual, using the GNU Info browser.  If invoked without
-## any arguments, the manual is shown from the beginning.
+## @deftypefn  {Command} {} doc @var{function_name}
+## @deftypefnx {Command} {} doc
+## Display documentation for the function @var{function_name} directly from an
+## online version of the printed manual, using the GNU Info browser.
 ##
-## For example, the command @kbd{doc rand} starts the GNU Info browser
-## at the @code{rand} node in the online version of the manual.
+## If invoked without an argument, the manual is shown from the beginning.
 ##
-## Once the GNU Info browser is running, help for using it is available
-## using the command @kbd{C-h}.
+## For example, the command @kbd{doc rand} starts the GNU Info browser at the
+## @code{rand} node in the online version of the manual.
+##
+## Once the GNU Info browser is running, help for using it is available using
+## the command @kbd{C-h}.
 ## @seealso{help}
 ## @end deftypefn
 

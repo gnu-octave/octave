@@ -40,8 +40,9 @@ DEFUN (pinv, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} pinv (@var{x})\n\
 @deftypefnx {Built-in Function} {} pinv (@var{x}, @var{tol})\n\
-Return the pseudoinverse of @var{x}.  Singular values less than\n\
-@var{tol} are ignored.\n\
+Return the pseudoinverse of @var{x}.\n\
+\n\
+Singular values less than @var{tol} are ignored.\n\
 \n\
 If the second argument is omitted, it is taken to be\n\
 \n\

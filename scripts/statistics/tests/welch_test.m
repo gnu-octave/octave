@@ -21,16 +21,17 @@
 ## For two samples @var{x} and @var{y} from normal distributions with
 ## unknown means and unknown and not necessarily equal variances,
 ## perform a Welch test of the null hypothesis of equal means.
+##
 ## Under the null, the test statistic @var{t} approximately follows a
 ## Student distribution with @var{df} degrees of freedom.
 ##
-## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @qcode{"!="} or
-## @qcode{"<>"}, the null is tested against the two-sided alternative
+## With the optional argument string @var{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
+## is tested against the two-sided alternative
 ## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @qcode{">"}, the
 ## one-sided alternative mean(x) > @var{m} is considered.  Similarly for
-## @qcode{"<"}, the one-sided alternative mean(x) < @var{m} is
-## considered.  The default is the two-sided case.
+## @qcode{"<"}, the one-sided alternative mean(x) < @var{m} is considered.
+## The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

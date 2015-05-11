@@ -561,9 +561,9 @@ DEFUN (logical, args, ,
 @deftypefn {Built-in Function} {} logical (@var{x})\n\
 Convert the numeric object @var{x} to logical type.\n\
 \n\
-Any nonzero values will be converted to true (1) while zero values\n\
-will be converted to false (0).  The non-numeric value NaN cannot be\n\
-converted and will produce an error.\n\
+Any nonzero values will be converted to true (1) while zero values will be\n\
+converted to false (0).  The non-numeric value NaN cannot be converted and\n\
+will produce an error.\n\
 \n\
 Compatibility Note: Octave accepts complex values as input, whereas\n\
 @sc{matlab} issues an error.\n\

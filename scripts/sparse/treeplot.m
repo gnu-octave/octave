@@ -19,10 +19,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} treeplot (@var{tree})
 ## @deftypefnx {Function File} {} treeplot (@var{tree}, @var{node_style}, @var{edge_style})
-## Produce a graph of tree or forest.  The first argument is vector of
-## predecessors, optional parameters @var{node_style} and @var{edge_style}
-## define the output style.  The complexity of the algorithm is O(n) in
-## terms of is time and memory requirements.
+## Produce a graph of tree or forest.
+##
+## The first argument is vector of predecessors.
+##
+## The optional parameters @var{node_style} and @var{edge_style} define the
+## output plot style.
+##
+## The complexity of the algorithm is O(n) in terms of is time and memory
+## requirements.
 ## @seealso{etreeplot, gplot}
 ## @end deftypefn
 

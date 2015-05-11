@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cstrcat (@var{s1}, @var{s2}, @dots{})
-## Return a string containing all the arguments concatenated
-## horizontally.  Trailing white space is preserved.  For example:
+## Return a string containing all the arguments concatenated horizontally
+## with trailing white space preserved.
+##
+## For example:
 ##
 ## @example
 ## @group

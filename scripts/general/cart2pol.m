@@ -23,16 +23,18 @@
 ## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{C})
 ## @deftypefnx {Function File} {@var{P} =} cart2pol (@dots{})
 ##
-## Transform Cartesian to polar or cylindrical coordinates.
+## Transform Cartesian coordinates to polar or cylindrical coordinates.
 ##
-## @var{theta} describes the angle relative to the positive x-axis.
-## @var{r} is the distance to the z-axis @w{(0, 0, z)}.
-## @var{x}, @var{y} (, and @var{z}) must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{C}
+## The inputs @var{x}, @var{y} (, and @var{z}) must be the same shape, or
+## scalar.  If called with a single matrix argument then each row of @var{C}
 ## represents the Cartesian coordinate (@var{x}, @var{y} (, @var{z})).
 ##
-## If only a single return argument is requested then return a matrix
-## @var{P} where each row represents one polar/(cylindrical) coordinate
+## @var{theta} describes the angle relative to the positive x-axis.
+##
+## @var{r} is the distance to the z-axis @w{(0, 0, z)}.
+##
+## If only a single return argument is requested then return a matrix @var{P}
+## where each row represents one polar/(cylindrical) coordinate
 ## (@var{theta}, @var{phi} (, @var{z})).
 ## @seealso{pol2cart, cart2sph, sph2cart}
 ## @end deftypefn

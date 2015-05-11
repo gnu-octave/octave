@@ -27,8 +27,9 @@
 ##
 ## Return the complex frequency response @var{h} of the rational IIR filter
 ## whose numerator and denominator coefficients are @var{b} and @var{a},
-## respectively.  The response is evaluated at @var{n} angular frequencies
-## between 0 and
+## respectively.
+##
+## The response is evaluated at @var{n} angular frequencies between 0 and
 ## @ifnottex
 ## 2*pi.
 ## @end ifnottex
@@ -42,9 +43,8 @@
 ## If @var{a} is omitted, the denominator is assumed to be 1 (this
 ## corresponds to a simple FIR filter).
 ##
-## If @var{n} is omitted, a value of 512 is assumed.
-## For fastest computation, @var{n} should factor into a small number of
-## small primes.
+## If @var{n} is omitted, a value of 512 is assumed.  For fastest computation,
+## @var{n} should factor into a small number of small primes.
 ##
 ## If the fourth argument, @qcode{"whole"}, is omitted the response is
 ## evaluated at frequencies between 0 and

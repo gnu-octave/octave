@@ -157,12 +157,12 @@ DEFUN (fftn, args, ,
 Compute the N-dimensional discrete Fourier transform of @var{A} using\n\
 a Fast Fourier Transform (FFT) algorithm.\n\
 \n\
-The optional vector argument @var{size} may be used specify the\n\
-dimensions of the array to be used.  If an element of @var{size} is\n\
-smaller than the corresponding dimension of @var{A}, then the dimension of\n\
-@var{A} is truncated prior to performing the FFT@.  Otherwise, if an element\n\
-of @var{size} is larger than the corresponding dimension then @var{A}\n\
-is resized and padded with zeros.\n\
+The optional vector argument @var{size} may be used specify the dimensions\n\
+of the array to be used.  If an element of @var{size} is smaller than the\n\
+corresponding dimension of @var{A}, then the dimension of @var{A} is\n\
+truncated prior to performing the FFT@.  Otherwise, if an element of\n\
+@var{size} is larger than the corresponding dimension then @var{A} is\n\
+resized and padded with zeros.\n\
 @seealso{ifftn, fft, fft2, fftw}\n\
 @end deftypefn")
 {
@@ -176,12 +176,12 @@ DEFUN (ifftn, args, ,
 Compute the inverse N-dimensional discrete Fourier transform of @var{A}\n\
 using a Fast Fourier Transform (FFT) algorithm.\n\
 \n\
-The optional vector argument @var{size} may be used specify the\n\
-dimensions of the array to be used.  If an element of @var{size} is\n\
-smaller than the corresponding dimension of @var{A}, then the dimension of\n\
-@var{A} is truncated prior to performing the inverse FFT@.  Otherwise, if an\n\
-element of @var{size} is larger than the corresponding dimension then @var{A}\n\
-is resized and padded with zeros.\n\
+The optional vector argument @var{size} may be used specify the dimensions\n\
+of the array to be used.  If an element of @var{size} is smaller than the\n\
+corresponding dimension of @var{A}, then the dimension of @var{A} is\n\
+truncated prior to performing the inverse FFT@.  Otherwise, if an element of\n\
+@var{size} is larger than the corresponding dimension then @var{A} is\n\
+resized and padded with zeros.\n\
 @seealso{fftn, ifft, ifft2, fftw}\n\
 @end deftypefn")
 {

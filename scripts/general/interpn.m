@@ -25,6 +25,7 @@
 ## @deftypefnx {Function File} {@var{vi} =} interpn (@dots{}, @var{method}, @var{extrapval})
 ##
 ## Perform @var{n}-dimensional interpolation, where @var{n} is at least two.
+##
 ## Each element of the @var{n}-dimensional array @var{v} represents a value
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either

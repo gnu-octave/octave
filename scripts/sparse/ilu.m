@@ -134,8 +134,8 @@
 ## @end group
 ## @end example
 ##
-## This shows that @var{A} has 7,840 nonzeros, the complete LU factorization has
-## 126,478 nonzeros, and the incomplete LU factorization, with 0 level of
+## This shows that @var{A} has 7,840 nonzeros, the complete LU factorization
+## has 126,478 nonzeros, and the incomplete LU factorization, with 0 level of
 ## fill-in, has 7,840 nonzeros, the same amount as @var{A}.  Taken from:
 ## http://www.mathworks.com/help/matlab/ref/ilu.html
 ##

@@ -239,7 +239,8 @@ read_inf_nan_na (std::istream& is, char c0)
             else
               {
                 val = octave_numeric_limits<T>::NA ();
-                is.putback (c2);
+                if (c2 != EOF)
+                  is.putback (c2);
               }
           }
         else

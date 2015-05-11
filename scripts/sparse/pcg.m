@@ -21,8 +21,9 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
 ## Solve the linear system of equations @w{@code{@var{A} * @var{x} = @var{b}}}
-## by means of the Preconditioned Conjugate Gradient iterative method.  The
-## input arguments are
+## by means of the Preconditioned Conjugate Gradient iterative method.
+##
+## The input arguments are
 ##
 ## @itemize
 ## @item
@@ -52,14 +53,13 @@
 ## the iteration is (theoretically) equivalent to solving by @code{pcg}
 ## @w{@code{@var{P} * @var{x} = @var{m} \ @var{b}}}, with
 ## @w{@code{@var{P} = @var{m} \ @var{A}}}.
-## Note that a proper choice of the preconditioner may dramatically
-## improve the overall performance of the method.  Instead of matrices
-## @var{m1} and @var{m2}, the user may pass two functions which return
-## the results of applying the inverse of @var{m1} and @var{m2} to
-## a vector (usually this is the preferred way of using the preconditioner).
-## If @var{m1} is omitted or empty @code{[]} then no preconditioning is
-## applied.  If @var{m2} is omitted, @var{m} = @var{m1} will be used as
-## a preconditioner.
+## Note that a proper choice of the preconditioner may dramatically improve
+## the overall performance of the method.  Instead of matrices @var{m1} and
+## @var{m2}, the user may pass two functions which return the results of
+## applying the inverse of @var{m1} and @var{m2} to a vector (usually this is
+## the preferred way of using the preconditioner).  If @var{m1} is omitted or
+## empty @code{[]} then no preconditioning is applied.  If @var{m2} is
+## omitted, @var{m} = @var{m1} will be used as a preconditioner.
 ##
 ## @item
 ## @var{x0} is the initial guess.  If @var{x0} is omitted or empty then the
@@ -154,16 +154,16 @@
 ## @end example
 ##
 ## @sc{Example 4:} @code{pcg} with a preconditioner: @var{l} * @var{u}.
-## Faster than @sc{Example 3} since lower and upper triangular matrices
-## are easier to invert
+## Faster than @sc{Example 3} since lower and upper triangular matrices are
+## easier to invert
 ##
 ## @example
 ## x = pcg (A, b, 1.e-6, 500, l, u)
 ## @end example
 ##
 ## @sc{Example 5:} Preconditioned iteration, with full diagnostics.  The
-## preconditioner (quite strange, because even the original matrix
-## @var{A} is trivial) is defined as a function
+## preconditioner (quite strange, because even the original matrix @var{A} is
+## trivial) is defined as a function
 ##
 ## @example
 ## @group
@@ -179,8 +179,8 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 6:} Finally, a preconditioner which depends on a
-## parameter @var{k}.
+## @sc{Example 6:} Finally, a preconditioner which depends on a parameter
+## @var{k}.
 ##
 ## @example
 ## @group

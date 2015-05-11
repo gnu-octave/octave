@@ -19,7 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following
-## format: @qcode{"ddd mmm mm HH:MM:SS yyyy"}.  For example:
+## format: @qcode{"ddd mmm mm HH:MM:SS yyyy"}.
+##
+## For example:
 ##
 ## @example
 ## @group

@@ -216,7 +216,8 @@ DEFUN_DLD (colamd, args, nargout,
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{S})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{S}, @var{knobs})\n\
 \n\
-Column approximate minimum degree permutation.\n\
+Compute the column approximate minimum degree permutation.\n\
+\n\
 @code{@var{p} = colamd (@var{S})} returns the column approximate minimum\n\
 degree permutation vector for the sparse matrix @var{S}.  For a\n\
 non-symmetric matrix @var{S}, @code{@var{S}(:,@var{p})} tends to have\n\
@@ -258,7 +259,7 @@ is printed, and no output arguments (@var{p} or @var{stats}) are returned.\n\
 @sc{colamd} is thus a simple way to check a sparse matrix to see if it's\n\
 valid.\n\
 \n\
-@code{@var{stats}(4:7)} provide information if COLAMD was able to\n\
+@code{@var{stats}(4:7)} provide information if @sc{colamd} was able to\n\
 continue.  The matrix is OK if @code{@var{stats}(4)} is zero, or 1 if\n\
 invalid.  @code{@var{stats}(5)} is the rightmost column index that is\n\
 unsorted or contains duplicate entries, or zero if no such column exists.\n\
@@ -458,25 +459,27 @@ DEFUN_DLD (symamd, args, nargout,
 \n\
 For a symmetric positive definite matrix @var{S}, returns the permutation\n\
 vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
-sparser Cholesky@tie{}factor than @var{S}.  Sometimes @code{symamd} works\n\
-well for symmetric indefinite matrices too.  The matrix @var{S} is assumed\n\
-to be symmetric; only the strictly lower triangular part is referenced.\n\
-@var{S} must be square.\n\
+sparser Cholesky@tie{}factor than @var{S}.\n\
+\n\
+Sometimes @code{symamd} works well for symmetric indefinite matrices too.  \n\
+The matrix @var{S} is assumed to be symmetric; only the strictly lower\n\
+triangular part is referenced.  @var{S} must be square.\n\
 \n\
 @var{knobs} is an optional one- to two-element input vector.  If @var{S} is\n\
 n-by-n, then rows and columns with more than\n\
 @code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
 and ordered last in the output permutation @var{p}.  No rows/columns are\n\
 removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,\n\
-@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs}\n\
-= [10 0]}.  Note that @var{knobs} differs from earlier versions of symamd.\n\
+@code{stats} and @var{knobs} are printed.  The default is\n\
+@code{@var{knobs} = [10 0]}.  Note that @var{knobs} differs from earlier\n\
+versions of @code{symamd}.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{S}.  Ordering\n\
-statistics are in @code{@var{stats}(1:3)}.  @code{@var{stats}(1) =\n\
-@var{stats}(2)} is the number of dense or empty rows and columns\n\
-ignored by SYMAMD and @code{@var{stats}(3)} is the number of garbage\n\
-collections performed on the internal data structure used by SYMAMD\n\
+statistics are in @code{@var{stats}(1:3)}.\n\
+@code{@var{stats}(1) = @var{stats}(2)} is the number of dense or empty rows\n\
+and columns ignored by SYMAMD and @code{@var{stats}(3)} is the number of\n\
+garbage collections performed on the internal data structure used by SYMAMD\n\
 (roughly of size @code{8.4 * nnz (tril (@var{S}, -1)) + 9 * @var{n}}\n\
 integers).\n\
 \n\
@@ -648,9 +651,10 @@ DEFUN_DLD (etree, args, nargout,
 @deftypefnx {Loadable Function} {@var{p} =} etree (@var{S}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\
 \n\
-Return the elimination tree for the matrix @var{S}.  By default @var{S}\n\
-is assumed to be symmetric and the symmetric elimination tree is\n\
-returned.  The argument @var{typ} controls whether a symmetric or\n\
+Return the elimination tree for the matrix @var{S}.\n\
+\n\
+By default @var{S} is assumed to be symmetric and the symmetric elimination\n\
+tree is returned.  The argument @var{typ} controls whether a symmetric or\n\
 column elimination tree is returned.  Valid values of @var{typ} are\n\
 @qcode{\"sym\"} or @qcode{\"col\"}, for symmetric or column elimination tree\n\
 respectively.\n\

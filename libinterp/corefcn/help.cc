@@ -665,7 +665,7 @@ endparfor\n\
 Declare variables as persistent.  A variable that has been declared\n\
 persistent within a function will retain its contents in memory between\n\
 subsequent calls to the same function.  The difference between persistent\n\
-variables and global variables is that persistent variables are local in \n\
+variables and global variables is that persistent variables are local in\n\
 scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
 @end deftypefn"),
@@ -958,13 +958,14 @@ DEFUN (built_in_docstrings_file, args, nargout,
 @deftypefnx {Built-in Function} {} built_in_docstrings_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 file containing docstrings for built-in Octave functions.\n\
+\n\
 The default value is\n\
 @file{@var{octave-home}/share/octave/@var{version}/etc/built-in-docstrings},\n\
 in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.\n\
-The default value may be overridden by the environment variable\n\
+and @var{version} is the Octave version number.  The default value may be\n\
+overridden by the environment variable\n\
 @w{@env{OCTAVE_BUILT_IN_DOCSTRINGS_FILE}}, or the command line argument\n\
-@samp{--built-in-docstrings-file FNAME}.\n\
+@option{--built-in-docstrings-file FNAME}.\n\
 \n\
 Note: This variable is only used when Octave is initializing itself.\n\
 Modifying it during a running session of Octave will have no effect.\n\
@@ -1084,6 +1085,7 @@ Return the raw help text of function @var{name}.\n\
 The raw help text is returned in @var{text} and the format in @var{format}\n\
 The format is a string which is one of @qcode{\"texinfo\"},\n\
 @qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
+@seealso{get_help_text_from_file}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1153,6 +1155,7 @@ Return the raw help text from the file @var{fname}.\n\
 The raw help text is returned in @var{text} and the format in @var{format}\n\
 The format is a string which is one of @qcode{\"texinfo\"},\n\
 @qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
+@seealso{get_help_text}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1405,19 +1408,22 @@ DEFUN (doc_cache_file, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
-Octave documentation cache file.  A cache file significantly improves\n\
-the performance of the @code{lookfor} command.  The default value is \n\
+Octave documentation cache file.\n\
+\n\
+A cache file significantly improves the performance of the @code{lookfor}\n\
+command.  The default value is\n\
 @file{@var{octave-home}/share/octave/@var{version}/etc/doc-cache},\n\
 in which @var{octave-home} is the root directory of the Octave installation,\n\
 and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
-@samp{--doc-cache-file FNAME}.\n\
+@option{--doc-cache-file FNAME}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}\n\
+@seealso{lookfor}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);
@@ -1430,16 +1436,18 @@ DEFUN (texi_macros_file, args, nargout,
 @deftypefnx {Built-in Function} {} texi_macros_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 file containing Texinfo macros that are prepended to documentation strings\n\
-before they are passed to makeinfo.  The default value is \n\
+before they are passed to makeinfo.\n\
+\n\
+The default value is\n\
 @file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},\n\
 in which @var{octave-home} is the root directory of the Octave installation,\n\
 and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument\n\
-@samp{--texi-macros-file FNAME}.\n\
+@option{--texi-macros-file FNAME}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{makeinfo_program}\n\
 @end deftypefn")
@@ -1453,15 +1461,17 @@ DEFUN (info_file, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
-Octave info file.  The default value is\n\
+Octave info file.\n\
+\n\
+The default value is\n\
 @file{@var{octave-home}/info/octave.info}, in\n\
 which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
-@samp{--info-file FNAME}.\n\
+@option{--info-file FNAME}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
@@ -1475,17 +1485,19 @@ DEFUN (info_program, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
-info program to run.  The default value is\n\
+info program to run.\n\
+\n\
+The default value is\n\
 @file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
 in which @var{octave-home} is the root directory of the Octave installation,\n\
-@var{version} is the Octave version number, and @var{arch}\n\
-is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
-default value may be overridden by the environment variable\n\
+@var{version} is the Octave version number, and @var{arch} is the system\n\
+type (for example, @code{i686-pc-linux-gnu}).  The default value may be\n\
+overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
-@samp{--info-program NAME}.\n\
+@option{--info-program NAME}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
@@ -1500,10 +1512,12 @@ DEFUN (makeinfo_program, args, nargout,
 @deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
-Texinfo markup commands.  The default value is @code{makeinfo}.\n\
+Texinfo markup commands.\n\
+\n\
+The default value is @code{makeinfo}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{texi_macros_file, info_file, info_program, doc, help}\n\
 @end deftypefn")
@@ -1521,7 +1535,7 @@ will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

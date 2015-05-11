@@ -20,11 +20,12 @@
 ## @deftypefn  {Function File} {} num2str (@var{x})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
-## Convert a number (or array) to a string (or a character array).  The
-## optional second argument may either give the number of significant
-## digits (@var{precision}) to be used in the output or a format
-## template string (@var{format}) as in @code{sprintf} (@pxref{Formatted
-## Output}).  @code{num2str} can also handle complex numbers.
+## Convert a number (or array) to a string (or a character array).
+##
+## The optional second argument may either give the number of significant
+## digits (@var{precision}) to be used in the output or a format template
+## string (@var{format}) as in @code{sprintf} (@pxref{Formatted Output}).
+## @code{num2str} can also process complex numbers.
 ##
 ## Examples:
 ##
@@ -59,9 +60,9 @@
 ## The @code{num2str} function is not very flexible.  For better control
 ## over the results, use @code{sprintf} (@pxref{Formatted Output}).
 ##
-## For complex @var{x}, the format string may only contain one
-## output conversion specification and nothing else.  Otherwise, results
-## will be unpredictable.
+## For complex @var{x}, the format string may only contain one output
+## conversion specification and nothing else.  Otherwise, results will be
+## unpredictable.
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 

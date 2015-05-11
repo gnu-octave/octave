@@ -291,12 +291,14 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 
 DEFUN (filter, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {y =} filter (@var{b}, @var{a}, @var{x})\n\
+@deftypefn  {Built-in Function} {@var{y} =} filter (@var{b}, @var{a}, @var{x})\n\
 @deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
 @deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
 @deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
-Return the solution to the following linear, time-invariant difference\n\
-equation:\n\
+Apply a 1-D digital filter to the data @var{x}.\n\
+\n\
+@code{filter} returns the solution to the following linear, time-invariant\n\
+difference equation:\n\
 @tex\n\
 $$\n\
 \\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n\
@@ -363,9 +365,9 @@ equal to the length of the longest coefficient vector minus one.\n\
 If @var{si} is not supplied, the initial state vector is set to all\n\
 zeros.\n\
 \n\
-In terms of the Z Transform, y is the result of passing the discrete-\n\
-time signal x through a system characterized by the following rational\n\
-system function:\n\
+In terms of the Z Transform, @var{y} is the result of passing the\n\
+discrete-time signal @var{x} through a system characterized by the following\n\
+rational system function:\n\
 @tex\n\
 $$\n\
 H(z) = {\\displaystyle\\sum_{k=0}^M d_{k+1} z^{-k}\n\

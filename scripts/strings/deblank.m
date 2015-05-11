@@ -18,10 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} deblank (@var{s})
-## Remove trailing whitespace and nulls from @var{s}.  If @var{s}
-## is a matrix, @var{deblank} trims each row to the length of longest
-## string.  If @var{s} is a cell array of strings, operate recursively on each
-## string element.
+## Remove trailing whitespace and nulls from @var{s}.
+##
+## If @var{s} is a matrix, @var{deblank} trims each row to the length of
+## longest string.  If @var{s} is a cell array of strings, operate
+## recursively on each string element.
 ##
 ## Examples:
 ##

@@ -27,8 +27,8 @@
 ## returns the indexed image @var{Y} which is the equivalent of the original
 ## input image @var{X} when displayed using @var{newmap}.
 ##
-## When called with an optional third argument the order of colors in the
-## new colormap is defined by @var{index}.
+## When called with an optional third argument the order of colors in the new
+## colormap is defined by @var{index}.
 ##
 ## @strong{Caution:} @code{index} should not have repeated elements or the
 ## function will fail.

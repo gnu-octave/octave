@@ -17,18 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rmpref (@var{group})
-## @deftypefnx {Function File} {} rmpref (@var{group}, @var{pref})
-## Remove the named preference @var{pref} from the preference group
-## @var{group}.
+## @deftypefn  {Function File} {} rmpref (@var{group}, @var{pref})
+## @deftypefnx {Function File} {} rmpref (@var{group})
+## Remove the named preference @var{pref} from the preference group @var{group}.
 ##
 ## The named preference group must be a character string.
 ##
-## The preference @var{pref} may be a character string or cell array
-## of strings.
+## The preference @var{pref} may be a character string or cell array of strings.
 ##
-## If @var{pref} is not specified, remove the preference group
-## @var{group}.
+## If @var{pref} is not specified, remove the preference group @var{group}.
 ##
 ## It is an error to remove a nonexistent preference or group.
 ## @seealso{addpref, ispref, setpref, getpref}

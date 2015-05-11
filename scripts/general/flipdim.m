@@ -20,11 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} flipdim (@var{x})
 ## @deftypefnx {Function File} {} flipdim (@var{x}, @var{dim})
-## Flip array across specific dimension.
+## Flip array across dimension @var{dim}.
 ##
-## This function is an alias for @code{flip} and exists for backwards
-## and @sc{matlab} compatibility.  See @code{flip} for complete usage
-## information.
+## This function is an alias for @code{flip} and exists for backwards and
+## @sc{matlab} compatibility.  See @code{flip} for complete usage information.
 ##
 ## @seealso{flip, fliplr, flipud, rot90, rotdim}
 ## @end deftypefn

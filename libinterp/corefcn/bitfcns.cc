@@ -367,6 +367,7 @@ DEFUN (bitand, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of non-negative integers.\n\
+\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
 @end deftypefn")
@@ -378,6 +379,7 @@ DEFUN (bitor, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
 Return the bitwise OR of non-negative integers.\n\
+\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
 @end deftypefn")
@@ -389,6 +391,7 @@ DEFUN (bitxor, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
 Return the bitwise XOR of non-negative integers.\n\
+\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
 @seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
 @end deftypefn")
@@ -539,10 +542,11 @@ DEFUN (bitshift, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
-Return a @var{k} bit shift of @var{n}-digit unsigned\n\
-integers in @var{a}.  A positive @var{k} leads to a left shift;\n\
-A negative value to a right shift.  If @var{n} is omitted it defaults\n\
-to log2(bitmax)+1.\n\
+Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{a}.\n\
+\n\
+A positive @var{k} leads to a left shift; A negative value to a right shift.\n\
+\n\
+If @var{n} is omitted it defaults to log2(bitmax)+1.\n\
 @var{n} must be in the range [1,log2(bitmax)+1] usually [1,33].\n\
 \n\
 @example\n\
@@ -680,7 +684,9 @@ DEFUN (bitmax, args, ,
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
 Return the largest integer that can be represented within a floating point\n\
-value.  The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
+value.\n\
+\n\
+The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
 valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
 @w{@math{2^{53} - 1}} for @qcode{\"double\"} and @w{@math{2^{24} -1}} for\n\
 @qcode{\"single\"}.\n\
@@ -715,10 +721,11 @@ DEFUN (flintmax, args, ,
 @deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
 Return the largest integer that can be represented consecutively in a\n\
-floating point value.  The default class is @qcode{\"double\"}, but\n\
-@qcode{\"single\"} is a valid option.  On IEEE-754 compatible systems,\n\
-@code{flintmax} is @w{@math{2^53}} for @qcode{\"double\"} and\n\
-@w{@math{2^24}} for @qcode{\"single\"}.\n\
+floating point value.\n\
+\n\
+The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a valid\n\
+option.  On IEEE-754 compatible systems, @code{flintmax} is @w{@math{2^53}}\n\
+for @qcode{\"double\"} and @w{@math{2^24}} for @qcode{\"single\"}.\n\
 @seealso{bitmax, intmax, realmax, realmin}\n\
 @end deftypefn")
 {
@@ -748,6 +755,7 @@ DEFUN (intmax, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmax (@var{type})\n\
 Return the largest integer that can be represented in an integer type.\n\
+\n\
 The variable @var{type} can be\n\
 \n\
 @table @code\n\
@@ -818,6 +826,7 @@ DEFUN (intmin, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmin (@var{type})\n\
 Return the smallest integer that can be represented in an integer type.\n\
+\n\
 The variable @var{type} can be\n\
 \n\
 @table @code\n\
@@ -888,6 +897,7 @@ DEFUN (sizemax, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizemax ()\n\
 Return the largest value allowed for the size of an array.\n\
+\n\
 If Octave is compiled with 64-bit indexing, the result is of class int64,\n\
 otherwise it is of class int32.  The maximum array size is slightly\n\
 smaller than the maximum value allowable for the relevant class as reported\n\

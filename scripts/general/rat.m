@@ -20,8 +20,10 @@
 ## @deftypefn  {Function File} {@var{s} =} rat (@var{x}, @var{tol})
 ## @deftypefnx {Function File} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
 ##
-## Find a rational approximation to @var{x} within the tolerance defined
-## by @var{tol} using a continued fraction expansion.  For example:
+## Find a rational approximation to @var{x} within the tolerance defined by
+## @var{tol} using a continued fraction expansion.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -31,8 +33,8 @@
 ## @end group
 ## @end example
 ##
-## Called with two arguments returns the numerator and denominator separately
-## as two matrices.
+## When called with two output arguments return the numerator and denominator
+## separately as two matrices.
 ## @seealso{rats}
 ## @end deftypefn
 

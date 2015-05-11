@@ -18,16 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} regexptranslate (@var{op}, @var{s})
-## Translate a string for use in a regular expression.  This may
-## include either wildcard replacement or special character escaping.
+## Translate a string for use in a regular expression.
+##
+## This may include either wildcard replacement or special character escaping.
+##
 ## The behavior is controlled by @var{op} which can take the following
 ## values
 ##
 ## @table @asis
 ## @item @qcode{"wildcard"}
-## The wildcard characters @code{.}, @code{*}, and @code{?} are replaced
-## with wildcards that are appropriate for a regular expression.
-## For example:
+## The wildcard characters @code{.}, @code{*}, and @code{?} are replaced with
+## wildcards that are appropriate for a regular expression.  For example:
 ##
 ## @example
 ## @group

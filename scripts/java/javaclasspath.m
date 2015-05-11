@@ -31,12 +31,12 @@
 ## @item If no output is requested, the dynamic and static classpaths are
 ## printed to the standard output.
 ##
-## @item If one output value @var{dpath} is requested, the result is
-## the dynamic classpath.
+## @item If one output value @var{dpath} is requested, the result is the
+## dynamic classpath.
 ##
-## @item If two output values@var{dpath} and @var{spath} are
-## requested, the first variable will contain the dynamic classpath and
-## the second will be contain the static classpath.
+## @item If two output values@var{dpath} and @var{spath} are requested, the
+## first variable will contain the dynamic classpath and the second will
+## contain the static classpath.
 ## @end itemize
 ##
 ## If called with a single input parameter @var{what}:

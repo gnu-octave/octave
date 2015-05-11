@@ -20,8 +20,9 @@
 ## @deftypefn  {Function File} {@var{map} =} white ()
 ## @deftypefnx {Function File} {@var{map} =} white (@var{n})
 ## Create color colormap.  This colormap is completely white.
-## The argument @var{n} should be a scalar.  If it
-## is omitted, the length of the current colormap or 64 is assumed.
+##
+## The argument @var{n} must be a scalar.
+## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
 

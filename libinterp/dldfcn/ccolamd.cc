@@ -59,16 +59,16 @@ DEFUN_DLD (ccolamd, args, nargout,
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} ccolamd (@dots{})\n\
 \n\
 Constrained column approximate minimum degree permutation.\n\
+\n\
 @code{@var{p} = ccolamd (@var{S})} returns the column approximate minimum\n\
 degree permutation vector for the sparse matrix @var{S}.  For a non-symmetric\n\
-matrix\n\
-@var{S},\n\
-@code{@var{S}(:, @var{p})} tends to have sparser LU@tie{}factors than\n\
-@var{S}.  @code{chol (@var{S}(:, @var{p})' * @var{S}(:, @var{p}))} also\n\
-tends to be sparser than @code{chol (@var{S}' * @var{S})}.  @code{@var{p} =\n\
-ccolamd (@var{S}, 1)} optimizes the ordering for @code{lu (@var{S}(:,\n\
-@var{p}))}.  The ordering is followed by a column elimination tree\n\
-post-ordering.\n\
+matrix @var{S}, @code{@var{S}(:, @var{p})} tends to have sparser\n\
+LU@tie{}factors than @var{S}.\n\
+@code{chol (@var{S}(:, @var{p})' * @var{S}(:, @var{p}))} also tends to be\n\
+sparser than @code{chol (@var{S}' * @var{S})}.\n\
+@code{@var{p} = ccolamd (@var{S}, 1)} optimizes the ordering for\n\
+@code{lu (@var{S}(:, @var{p}))}.  The ordering is followed by a column\n\
+elimination tree post-ordering.\n\
 \n\
 @var{knobs} is an optional 1-element to 5-element input vector, with a\n\
 default value of @code{[0 10 10 1 0]} if not present or empty.  Entries not\n\
@@ -77,16 +77,17 @@ present are set to their defaults.\n\
 @table @code\n\
 @item @var{knobs}(1)\n\
 if nonzero, the ordering is optimized for @code{lu (S(:, p))}.  It will be a\n\
-poor ordering for @code{chol (@var{S}(:, @var{p})' * @var{S}(:,\n\
-@var{p}))}.  This is the most important knob for ccolamd.\n\
+poor ordering for @code{chol (@var{S}(:, @var{p})' * @var{S}(:, @var{p}))}.\n\
+This is the most important knob for ccolamd.\n\
 \n\
 @item @var{knobs}(2)\n\
-if @var{S} is m-by-n, rows with more than @code{max (16, @var{knobs}(2) *\n\
-sqrt (n))} entries are ignored.\n\
+if @var{S} is m-by-n, rows with more than\n\
+@code{max (16, @var{knobs}(2) * sqrt (n))} entries are ignored.\n\
 \n\
 @item @var{knobs}(3)\n\
-columns with more than @code{max (16, @var{knobs}(3) * sqrt (min (@var{m},\n\
-@var{n})))} entries are ignored and ordered last in the output permutation\n\
+columns with more than\n\
+@code{max (16, @var{knobs}(3) * sqrt (min (@var{m}, @var{n})))} entries are\n\
+ignored and ordered last in the output permutation\n\
 (subject to the cmember constraints).\n\
 \n\
 @item @var{knobs}(4)\n\
@@ -344,17 +345,18 @@ DEFUN_DLD (csymamd, args, nargout,
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs}, @var{cmember})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} csymamd (@dots{})\n\
 \n\
-For a symmetric positive definite matrix @var{S}, returns the permutation\n\
+For a symmetric positive definite matrix @var{S}, return the permutation\n\
 vector @var{p} such that @code{@var{S}(@var{p},@var{p})} tends to have a\n\
-sparser Cholesky@tie{}factor than @var{S}.  Sometimes @code{csymamd} works\n\
-well for symmetric indefinite matrices too.  The matrix @var{S} is assumed\n\
-to be symmetric; only the strictly lower triangular part is referenced.\n\
-@var{S} must be square.  The ordering is followed by an elimination tree\n\
-post-ordering.\n\
+sparser Cholesky@tie{}factor than @var{S}.\n\
+\n\
+Sometimes @code{csymamd} works well for symmetric indefinite matrices too.  \n\
+The matrix @var{S} is assumed to be symmetric; only the strictly lower\n\
+triangular part is referenced.  @var{S} must be square.  The ordering is\n\
+followed by an elimination tree post-ordering.\n\
 \n\
 @var{knobs} is an optional 1-element to 3-element input vector, with a\n\
-default value of @code{[10 1 0]} if present or empty.  Entries not\n\
-present are set to their defaults.\n\
+default value of @code{[10 1 0]}.  Entries not present are set to their\n\
+defaults.\n\
 \n\
 @table @code\n\
 @item @var{knobs}(1)\n\
@@ -377,8 +379,9 @@ output permutation @var{p}, rows/columns in set 1 appear first, followed\n\
 by all rows/columns in set 2, and so on.  @code{@var{cmember} = ones (1,n)}\n\
 if not present or empty.  @code{csymamd (@var{S},[],1:n)} returns @code{1:n}.\n\
 \n\
-@code{@var{p} = csymamd (@var{S})} is about the same as @code{@var{p} =\n\
-symamd (@var{S})}.  @var{knobs} and its default values differ.\n\
+@code{@var{p} = csymamd (@var{S})} is about the same as\n\
+@code{@var{p} = symamd (@var{S})}.  @var{knobs} and its default values\n\
+differ.\n\
 \n\
 @code{@var{stats}(4:7)} provide information if CCOLAMD was able to\n\
 continue.  The matrix is OK if @code{@var{stats}(4)} is zero, or 1 if\n\

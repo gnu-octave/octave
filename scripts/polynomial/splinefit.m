@@ -26,12 +26,10 @@
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
 ##
 ## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
-## noisy data, @var{x} and @var{y}.  @var{x} is a vector, and @var{y}
-## is a vector or N-D array.  If @var{y} is an N-D array, then @var{x}(j)
-## is matched to @var{y}(:,@dots{},:,j).
+## noisy data, @var{x} and @var{y}.
 ##
-## The fitted spline is returned as a piecewise polynomial, @var{pp}, and
-## may be evaluated using @code{ppval}.
+## @var{x} is a vector, and @var{y} is a vector or N-D array.  If @var{y} is an
+## N-D array, then @var{x}(j) is matched to @var{y}(:,@dots{},:,j).
 ##
 ## @var{p} is a positive integer defining the number of intervals along @var{x},
 ## and @var{p}+1 is the number of breaks.  The number of points in each interval
@@ -47,19 +45,22 @@
 ## data points.  Three iterations of weighted least squares are performed.
 ## Weights are computed from previous residuals.  The sensitivity of outlier
 ## identification is controlled by the property @var{beta}.  The value of
-## @var{beta} is stricted to the range, 0 < @var{beta} < 1.  The default
+## @var{beta} is restricted to the range, 0 < @var{beta} < 1.  The default
 ## value is @var{beta} = 1/2.  Values close to 0 give all data equal
 ## weighting.  Increasing values of @var{beta} reduce the influence of
 ## outlying data.  Values close to unity may cause instability or rank
 ## deficiency.
+##
+## The fitted spline is returned as a piecewise polynomial, @var{pp}, and
+## may be evaluated using @code{ppval}.
 ##
 ## The splines are constructed of polynomials with degree @var{order}.
 ## The default is a cubic, @var{order}=3.  A spline with P pieces has
 ## P+@var{order} degrees of freedom.  With periodic boundary conditions
 ## the degrees of freedom are reduced to P.
 ##
-## The optional property, @var{constaints}, is a structure specifying
-## linear constraints on the fit.  The structure has three fields, @qcode{"xc"},
+## The optional property, @var{constaints}, is a structure specifying linear
+## constraints on the fit.  The structure has three fields, @qcode{"xc"},
 ## @qcode{"yc"}, and @qcode{"cc"}.
 ##
 ## @table @asis

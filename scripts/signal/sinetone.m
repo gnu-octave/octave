@@ -18,11 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sinetone (@var{freq}, @var{rate}, @var{sec}, @var{ampl})
-## Return a sinetone of frequency @var{freq} with length of @var{sec}
+## Return a sinetone of frequency @var{freq} with a length of @var{sec}
 ## seconds at sampling rate @var{rate} and with amplitude @var{ampl}.
+##
 ## The arguments @var{freq} and @var{ampl} may be vectors of common size.
 ##
-## Defaults are @var{rate} = 8000, @var{sec} = 1 and @var{ampl} = 64.
+## The defaults are @var{rate} = 8000, @var{sec} = 1, and @var{ampl} = 64.
+## @seealso{sinewave}
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

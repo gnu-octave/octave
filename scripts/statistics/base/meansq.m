@@ -21,6 +21,8 @@
 ## @deftypefn  {Function File} {} meansq (@var{x})
 ## @deftypefnx {Function File} {} meansq (@var{x}, @var{dim})
 ## Compute the mean square of the elements of the vector @var{x}.
+##
+## The mean square is defined as
 ## @tex
 ## $$
 ## {\rm meansq} (x) = {\sum_{i=1}^N {x_i}^2 \over N}

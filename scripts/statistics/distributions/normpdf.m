@@ -20,8 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} normpdf (@var{x})
 ## @deftypefnx {Function File} {} normpdf (@var{x}, @var{mu}, @var{sigma})
-## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the normal distribution with mean @var{mu} and
+## For each element of @var{x}, compute the probability density function (PDF)
+## at @var{x} of the normal distribution with mean @var{mu} and
 ## standard deviation @var{sigma}.
 ##
 ## Default values are @var{mu} = 0, @var{sigma} = 1.

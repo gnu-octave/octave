@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} autumn ()
 ## @deftypefnx {Function File} {@var{map} =} autumn (@var{n})
-## Create color colormap.  This colormap ranges from red through orange
-## to yellow.
+## Create color colormap.
+## This colormap ranges from red through orange to yellow.
+##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}

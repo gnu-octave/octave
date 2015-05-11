@@ -20,13 +20,14 @@
 ## @deftypefn  {Function File} {@var{T} =} delaunayn (@var{pts})
 ## @deftypefnx {Function File} {@var{T} =} delaunayn (@var{pts}, @var{options})
 ## Compute the Delaunay triangulation for an N-dimensional set of points.
-## The Delaunay triangulation is a tessellation of the convex hull of a set
-## of points such that no N-sphere defined by the N-triangles contains
-## any other points from the set.
+##
+## The Delaunay triangulation is a tessellation of the convex hull of a set of
+## points such that no N-sphere defined by the N-triangles contains any other
+## points from the set.
 ##
 ## The input matrix @var{pts} of size [n, dim] contains n points in a space of
-## dimension dim.  The return matrix @var{T} has size [m, dim+1].  Each row
-## of @var{T} contains a set of indices back into the original set of points
+## dimension dim.  The return matrix @var{T} has size [m, dim+1].  Each row of
+## @var{T} contains a set of indices back into the original set of points
 ## @var{pts} which describes a simplex of dimension dim.  For example, a 2-D
 ## simplex is a triangle and 3-D simplex is a tetrahedron.
 ##

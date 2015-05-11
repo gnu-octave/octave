@@ -17,10 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
-## Search for the enclosing Delaunay convex hull.  For @code{@var{t} =
-## delaunayn (@var{x})}, finds the index in @var{t} containing the
-## points @var{xi}.  For points outside the convex hull, @var{idx} is NaN.
+## @deftypefn  {Function File} {@var{idx} =} tsearchn (@var{x}, @var{t}, @var{xi})
+## @deftypefnx {Function File} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
+## Search for the enclosing Delaunay convex hull.
+##
+## For @code{@var{t} = delaunayn (@var{x})}, finds the index in @var{t}
+## containing the points @var{xi}.  For points outside the convex hull,
+## @var{idx} is NaN.
+##
 ## If requested @code{tsearchn} also returns the Barycentric coordinates @var{p}
 ## of the enclosing triangles.
 ## @seealso{delaunay, delaunayn}

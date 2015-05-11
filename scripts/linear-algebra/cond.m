@@ -31,8 +31,8 @@
 ##
 ## By default, @code{@var{p} = 2} is used which implies a (relatively slow)
 ## singular value decomposition.  Other possible selections are
-## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  See
-## @code{norm} for a full discussion of possible @var{p} values.
+## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  See @code{norm}
+## for a full discussion of possible @var{p} values.
 ##
 ## The condition number of a matrix quantifies the sensitivity of the matrix
 ## inversion operation when small changes are made to matrix elements.  Ideally

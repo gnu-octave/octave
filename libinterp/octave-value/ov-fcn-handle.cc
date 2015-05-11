@@ -1676,7 +1676,7 @@ DEFUN (functions, args, ,
 Return a structure containing information about the function handle\n\
 @var{fcn_handle}.\n\
 \n\
-The structure @var{s} always contains these 3 fields:\n\
+The structure @var{s} always contains these three fields:\n\
 \n\
 @table @asis\n\
 @item function\n\
@@ -1811,8 +1811,8 @@ particular output.\n\
 DEFUN (func2str, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} func2str (@var{fcn_handle})\n\
-Return a string containing the name of the function referenced by\n\
-the function handle @var{fcn_handle}.\n\
+Return a string containing the name of the function referenced by the\n\
+function handle @var{fcn_handle}.\n\
 @seealso{str2func, functions}\n\
 @end deftypefn")
 {
@@ -1851,6 +1851,7 @@ DEFUN (str2func, args, ,
 @deftypefn  {Built-in Function} {} str2func (@var{fcn_name})\n\
 @deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
 Return a function handle constructed from the string @var{fcn_name}.\n\
+\n\
 If the optional @qcode{\"global\"} argument is passed, locally visible\n\
 functions are ignored in the lookup.\n\
 @seealso{func2str, inline}\n\

@@ -20,13 +20,14 @@
 ## @deftypefn  {Function File} {[@var{n}, @var{s}] =} weekday (@var{d})
 ## @deftypefnx {Function File} {[@var{n}, @var{s}] =} weekday (@var{d}, @var{format})
 ## Return the day of the week as a number in @var{n} and as a string in @var{s}.
+##
 ## The days of the week are numbered 1--7 with the first day being Sunday.
 ##
 ## @var{d} is a serial date number or a date string.
 ##
-## If the string @var{format} is not present or is equal to @qcode{"short"} then
-## @var{s} will contain the abbreviated name of the weekday.  If @var{format}
-## is @qcode{"long"} then @var{s} will contain the full name.
+## If the string @var{format} is not present or is equal to @qcode{"short"}
+## then @var{s} will contain the abbreviated name of the weekday.  If
+## @var{format} is @qcode{"long"} then @var{s} will contain the full name.
 ##
 ## Table of return values based on @var{format}:
 ##

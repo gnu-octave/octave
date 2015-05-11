@@ -21,10 +21,12 @@
 ## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
 ## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
-## sample rate.  The optional arguments @var{fs}, @var{nbits},
-## @var{channels}, and @var{id} specify the sample rate, bit depth,
-## number of channels and recording device id, respectively.  Device IDs
-## may be found using the audiodevinfo function.
+## sample rate.
+##
+## The optional arguments @var{fs}, @var{nbits}, @var{channels}, and @var{id}
+## specify the sample rate, bit depth, number of channels and recording
+## device id, respectively.  Device IDs may be found using the audiodevinfo
+## function.
 ## @end deftypefn
 
 ## FIXME: callbacks don't work properly, apparently because portaudio

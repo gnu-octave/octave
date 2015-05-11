@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} expinv (@var{x}, @var{lambda})
-## For each element of @var{x}, compute the quantile (the inverse of the
-## CDF) at @var{x} of the exponential distribution with mean @var{lambda}.
+## For each element of @var{x}, compute the quantile (the inverse of the CDF)
+## at @var{x} of the exponential distribution with mean @var{lambda}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

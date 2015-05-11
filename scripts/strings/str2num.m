@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{x} =} str2num (@var{s})
 ## @deftypefnx {Function File} {[@var{x}, @var{state}] =} str2num (@var{s})
-## Convert the string (or character array) @var{s} to a number (or an
-## array).  Examples:
+## Convert the string (or character array) @var{s} to a number (or an array).
+##
+## Examples:
 ##
 ## @example
 ## @group
@@ -37,10 +38,9 @@
 ## conversion is successful.  If the conversion fails the numeric output,
 ## @var{x}, is empty and @var{state} is false.
 ##
-## @strong{Caution:} As @code{str2num} uses the @code{eval} function
-## to do the conversion, @code{str2num} will execute any code contained
-## in the string @var{s}.  Use @code{str2double} for a safer and faster
-## conversion.
+## @strong{Caution:} As @code{str2num} uses the @code{eval} function to do the
+## conversion, @code{str2num} will execute any code contained in the string
+## @var{s}.  Use @code{str2double} for a safer and faster conversion.
 ##
 ## For cell array of strings use @code{str2double}.
 ## @seealso{str2double, eval}

@@ -20,6 +20,7 @@
 ## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
 ## Create an array by accumulating the slices of an array into the
 ## positions defined by their subscripts along a specified dimension.
+##
 ## The subscripts are defined by the index vector @var{subs}.
 ## The dimension is specified by @var{dim}.  If not given, it defaults
 ## to the first non-singleton dimension.  The length of @var{subs} must

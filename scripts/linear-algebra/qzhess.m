@@ -22,7 +22,9 @@
 ## @code{(@var{A}, @var{B})}, returning
 ## @code{@var{aa} = @var{q} * @var{A} * @var{z}},
 ## @code{@var{bb} = @var{q} * @var{B} * @var{z}}, with @var{q} and @var{z}
-## orthogonal.  For example:
+## orthogonal.
+##
+## For example:
 ##
 ## @example
 ## @group

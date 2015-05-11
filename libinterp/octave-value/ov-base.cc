@@ -1684,6 +1684,7 @@ DEFUN (sparse_auto_mutate, args, nargout,
 @deftypefnx {Built-in Function} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 automatically mutate sparse matrices to full matrices to save memory.\n\
+\n\
 For example:\n\
 \n\
 @example\n\
@@ -1701,7 +1702,7 @@ typeinfo (s)\n\
 @end example\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

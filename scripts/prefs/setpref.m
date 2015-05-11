@@ -18,15 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} setpref (@var{group}, @var{pref}, @var{val})
-## Set a preference @var{pref} to the given @var{val} in the named
-## preference group @var{group}.
+## Set a preference @var{pref} to the given @var{val} in the named preference
+## group @var{group}.
 ##
 ## The named preference group must be a character string.
 ##
-## The preference @var{pref} may be a character string or a cell array
-## of character strings.  The corresponding value @var{val} may be any
-## value, or, if @var{pref} is a cell array of strings, @var{val}
-## must be a cell array of values with the same size as @var{pref}.
+## The preference @var{pref} may be a character string or a cell array of
+## character strings.
+##
+## The corresponding value @var{val} may be any value, or, if @var{pref} is a
+## cell array of strings, @var{val} must be a cell array of values with the
+## same size as @var{pref}.
 ##
 ## If the named preference or group does not exist, it is added.
 ## @seealso{addpref, getpref, ispref, rmpref}

@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
 ## Create valid unique variable name(s) from @var{str}.
 ##
-## If @var{str} is a cellstr, then a unique variable is created for each
-## cell in @var{str}.
+## If @var{str} is a cellstr, then a unique variable is created for each cell
+## in @var{str}.
 ##
 ## @example
 ## @group
@@ -36,8 +36,8 @@
 ## @end example
 ##
 ## If @var{exclusions} is given, then the variable(s) will be unique to each
-## other and to @var{exclusions} (@var{exclusions} may be either a string or
-## a cellstr).
+## other and to @var{exclusions} (@var{exclusions} may be either a string or a
+## cellstr).
 ##
 ## @example
 ## @group
@@ -48,8 +48,8 @@
 ## @end example
 ##
 ## Note that the result is a char array or cell array of strings, not the
-## variables themselves.  To define a variable, @code{eval()} can be
-## used.  The following trivial example sets @code{x} to @code{42}.
+## variables themselves.  To define a variable, @code{eval()} can be used. 
+## The following trivial example sets @code{x} to @code{42}.
 ##
 ## @example
 ## @group
@@ -78,8 +78,8 @@
 ##
 ## Since variable names may only contain letters, digits, and underscores,
 ## @code{genvarname} will replace any sequence of disallowed characters with
-## an underscore.  Also, variables may not begin with a digit; in this
-## case an @samp{x} is added before the variable name.
+## an underscore.  Also, variables may not begin with a digit; in this case
+## an @samp{x} is added before the variable name.
 ##
 ## Variable names beginning and ending with two underscores @qcode{"__"} are
 ## valid, but they are used internally by Octave and should generally be

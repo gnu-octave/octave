@@ -54,6 +54,9 @@ DEFUN (balance, args, nargout,
 @deftypefnx {Built-in Function} {[@var{D}, @var{P}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
 @deftypefnx {Built-in Function} {[@var{CC}, @var{DD}, @var{AA}, @var{BB}] =} balance (@var{A}, @var{B}, @var{opt})\n\
 \n\
+Balance the matrix @var{A} to reduce numerical errors in future\n\
+calculations.\n\
+\n\
 Compute @code{@var{AA} = @var{DD} \\ @var{A} * @var{DD}} in which @var{AA}\n\
 is a matrix whose row and column norms are roughly equal in magnitude, and\n\
 @code{@var{DD} = @var{P} * @var{D}}, in which @var{P} is a permutation\n\

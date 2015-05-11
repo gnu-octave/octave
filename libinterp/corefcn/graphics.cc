@@ -9767,9 +9767,9 @@ DEFUN (ishandle, args, ,
 @deftypefn {Built-in Function} {} ishandle (@var{h})\n\
 Return true if @var{h} is a graphics handle and false otherwise.\n\
 \n\
-@var{h} may also be a matrix of handles in which case a logical\n\
-array is returned that is true where the elements of @var{h} are\n\
-graphics handles and false where they are not.\n\
+@var{h} may also be a matrix of handles in which case a logical array is\n\
+returned that is true where the elements of @var{h} are graphics handles and\n\
+false where they are not.\n\
 @seealso{isaxes, isfigure}\n\
 @end deftypefn")
 {
@@ -10008,6 +10008,7 @@ DEFUN (set, args, nargout,
 @deftypefnx {Built-in Function} {@var{all_value_list} =} set (@var{h})\n\
 Set named property values for the graphics handle (or vector of graphics\n\
 handles) @var{h}.\n\
+\n\
 There are three ways to give the property names and values:\n\
 \n\
 @itemize\n\
@@ -10200,9 +10201,12 @@ DEFUN (get, args, ,
 @deftypefn  {Built-in Function} {@var{val} =} get (@var{h})\n\
 @deftypefnx {Built-in Function} {@var{val} =} get (@var{h}, @var{p})\n\
 Return the value of the named property @var{p} from the graphics handle\n\
-@var{h}.  If @var{p} is omitted, return the complete property list for\n\
-@var{h}.  If @var{h} is a vector, return a cell array including the property\n\
-values or lists respectively.\n\
+@var{h}.\n\
+\n\
+If @var{p} is omitted, return the complete property list for @var{h}.\n\
+\n\
+If @var{h} is a vector, return a cell array including the property values or\n\
+lists respectively.\n\
 @seealso{set}\n\
 @end deftypefn")
 {
@@ -10649,8 +10653,9 @@ calc_dimensions (const graphics_object& go)
 DEFUN (__calc_dimensions__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __calc_dimensions__ (@var{axes})\n\
-Internal function.  Determine the number of dimensions in a graphics\n\
-object, whether 2 or 3.\n\
+Internal function.\n\
+\n\
+Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -11163,12 +11168,16 @@ DEFUN (drawnow, args, ,
 @deftypefn  {Built-in Function} {} drawnow ()\n\
 @deftypefnx {Built-in Function} {} drawnow (\"expose\")\n\
 @deftypefnx {Built-in Function} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
-Update figure windows and their children.  The event queue is flushed and\n\
-any callbacks generated are executed.  With the optional argument\n\
-@qcode{\"expose\"}, only graphic objects are updated and no other events or\n\
-callbacks are processed.\n\
+Update figure windows and their children.\n\
+\n\
+The event queue is flushed and any callbacks generated are executed.\n\
+\n\
+With the optional argument @qcode{\"expose\"}, only graphic objects are\n\
+updated and no other events or callbacks are processed.\n\
+\n\
 The third calling form of @code{drawnow} is for debugging and is\n\
 undocumented.\n\
+@seealso{refresh}\n\
 @end deftypefn")
 {
   static int drawnow_executing = 0;
@@ -11351,9 +11360,10 @@ DEFUN (addlistener, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
 Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
-object @var{h}.  Property listeners are executed (in order of registration)\n\
-when the property is set.  The new value is already available when the\n\
-listeners are executed.\n\
+object @var{h}.\n\
+\n\
+Property listeners are executed (in order of registration) when the property\n\
+is set.  The new value is already available when the listeners are executed.\n\
 \n\
 @var{prop} must be a string naming a valid property in @var{h}.\n\
 \n\
@@ -11430,9 +11440,10 @@ DEFUN (dellistener, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
 Remove the registration of @var{fcn} as a listener for the property\n\
-@var{prop} of the graphics object @var{h}.  The function @var{fcn} must\n\
-be the same variable (not just the same value), as was passed to the\n\
-original call to @code{addlistener}.\n\
+@var{prop} of the graphics object @var{h}.\n\
+\n\
+The function @var{fcn} must be the same variable (not just the same value),\n\
+as was passed to the original call to @code{addlistener}.\n\
 \n\
 If @var{fcn} is not defined then all listener functions of @var{prop}\n\
 are removed.\n\
@@ -11511,6 +11522,7 @@ DEFUN (addproperty, args, ,
 @deftypefn  {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type})\n\
 @deftypefnx {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})\n\
 Create a new property named @var{name} in graphics object @var{h}.\n\
+\n\
 @var{type} determines the type of the property to create.  @var{args}\n\
 usually contains the default value of the property, but additional\n\
 arguments might be given, depending on the type of the property.\n\
@@ -11805,10 +11817,10 @@ DEFUN (waitfor, args, ,
 Suspend the execution of the current program until a condition is\n\
 satisfied on the graphics handle @var{h}.\n\
 \n\
-While the program is suspended graphics events are still being processed\n\
-normally, allowing callbacks to modify the state of graphics objects.  This\n\
-function is reentrant and can be called from a callback, while another\n\
-@code{waitfor} call is pending at the top-level.\n\
+While the program is suspended graphics events are still processed normally,\n\
+allowing callbacks to modify the state of graphics objects.  This function\n\
+is reentrant and can be called from a callback, while another @code{waitfor}\n\
+call is pending at the top-level.\n\
 \n\
 In the first form, program execution is suspended until the graphics object\n\
 @var{h} is destroyed.  If the graphics handle is invalid, the function\n\

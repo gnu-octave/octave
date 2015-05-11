@@ -36,7 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN (betainc, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})\n\
-Return the regularized incomplete Beta function,\n\
+Compute the regularized incomplete Beta function.\n\
+\n\
+The regularized incomplete Beta function is defined by\n\
 @tex\n\
 $$\n\
  I (x, a, b) = {1 \\over {B (a, b)}} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
@@ -330,10 +332,12 @@ compatible dimensions.\n\
 DEFUN (betaincinv, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} betaincinv (@var{y}, @var{a}, @var{b})\n\
-Compute the inverse of the incomplete Beta function, i.e., @var{x} such that\n\
+Compute the inverse of the incomplete Beta function.\n\
+\n\
+The inverse is the value @var{x} such that\n\
 \n\
 @example\n\
-@var{y} == betainc (@var{x}, @var{a}, @var{b}) \n\
+@var{y} == betainc (@var{x}, @var{a}, @var{b})\n\
 @end example\n\
 @seealso{betainc, beta, betaln}\n\
 @end deftypefn")

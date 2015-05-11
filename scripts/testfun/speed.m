@@ -21,12 +21,14 @@
 ## @deftypefnx {Function File} {[@var{order}, @var{n}, @var{T_f}, @var{T_f2}] =} speed (@dots{})
 ##
 ## Determine the execution time of an expression (@var{f}) for various input
-## values (@var{n}).  The @var{n} are log-spaced from 1 to @var{max_n}.  For
-## each @var{n}, an initialization expression (@var{init}) is computed to
-## create any data needed for the test.  If a second expression (@var{f2}) is
-## given then the execution times of the two expressions are compared.  When
-## called without output arguments the results are printed to stdout and
-## displayed graphically.
+## values (@var{n}).
+##
+## The @var{n} are log-spaced from 1 to @var{max_n}.  For each @var{n}, an
+## initialization expression (@var{init}) is computed to create any data needed
+## for the test.  If a second expression (@var{f2}) is given then the
+## execution times of the two expressions are compared.  When called without
+## output arguments the results are printed to stdout and displayed
+## graphically.
 ##
 ## @table @code
 ## @item @var{f}
@@ -38,10 +40,10 @@
 ## @code{[n1, n2, @dots{}, nk]}.
 ##
 ## @item @var{init}
-## Initialization expression for function argument values.  Use @var{k}
-## for the test number and @var{n} for the size of the test.  This should
-## compute values for all variables used by @var{f}.  Note that @var{init} will
-## be evaluated first for @math{k = 0}, so things which are constant throughout
+## Initialization expression for function argument values.  Use @var{k} for
+## the test number and @var{n} for the size of the test.  This should compute
+## values for all variables used by @var{f}.  Note that @var{init} will be
+## evaluated first for @math{k = 0}, so things which are constant throughout
 ## the test series can be computed once.  The default value is
 ## @code{@var{x} = randn (@var{n}, 1)}.
 ##
@@ -56,8 +58,8 @@
 ## @code{eps}.  If @var{tol} is @code{Inf}, then no comparison will be made.
 ##
 ## @item @var{order}
-## The time complexity of the expression @math{O(a*n^p)}.  This
-## is a structure with fields @code{a} and @code{p}.
+## The time complexity of the expression @math{O(a*n^p)}.  This is a
+## structure with fields @code{a} and @code{p}.
 ##
 ## @item @var{n}
 ## The values @var{n} for which the expression was calculated @strong{AND}
@@ -72,17 +74,15 @@
 ##
 ## @end table
 ##
-## The slope of the execution time graph shows the approximate
-## power of the asymptotic running time @math{O(n^p)}.  This
-## power is plotted for the region over which it is approximated
-## (the latter half of the graph).  The estimated power is not
-## very accurate, but should be sufficient to determine the
-## general order of an algorithm.  It should indicate if, for
-## example, the implementation is unexpectedly @math{O(n^2)}
-## rather than @math{O(n)} because it extends a vector each
-## time through the loop rather than pre-allocating storage.
-## In the current version of Octave, the following is not the
-## expected @math{O(n)}.
+## The slope of the execution time graph shows the approximate power of the
+## asymptotic running time @math{O(n^p)}.  This power is plotted for the
+## region over which it is approximated (the latter half of the graph).  The
+## estimated power is not very accurate, but should be sufficient to
+## determine the general order of an algorithm.  It should indicate if, for
+## example, the implementation is unexpectedly @math{O(n^2)} rather than
+## @math{O(n)} because it extends a vector each time through the loop rather
+## than pre-allocating storage.  In the current version of Octave, the
+## following is not the expected @math{O(n)}.
 ##
 ## @example
 ## speed ("for i = 1:n, y@{i@} = x(i); endfor", "", [1000, 10000])
@@ -98,21 +98,19 @@
 ## @end group
 ## @end example
 ##
-## An attempt is made to approximate the cost of individual
-## operations, but it is wildly inaccurate.  You can improve the
-## stability somewhat by doing more work for each @code{n}.  For
-## example:
+## An attempt is made to approximate the cost of individual operations, but
+## it is wildly inaccurate.  You can improve the stability somewhat by doing
+## more work for each @code{n}.  For example:
 ##
 ## @example
 ## speed ("airy(x)", "x = rand (n, 10)", [10000, 100000])
 ## @end example
 ##
-## When comparing two different expressions (@var{f}, @var{f2}), the slope
-## of the line on the speedup ratio graph should be larger than 1 if the new
+## When comparing two different expressions (@var{f}, @var{f2}), the slope of
+## the line on the speedup ratio graph should be larger than 1 if the new
 ## expression is faster.  Better algorithms have a shallow slope.  Generally,
-## vectorizing an algorithm will not change the slope of the execution
-## time graph, but will shift it relative to the original.  For
-## example:
+## vectorizing an algorithm will not change the slope of the execution time
+## graph, but will shift it relative to the original.  For example:
 ##
 ## @example
 ## @group
@@ -135,12 +133,12 @@
 ## @end group
 ## @end example
 ##
-## Assuming one of the two versions is in xcorr_orig, this
-## would compare their speed and their output values.  Note that the
-## FFT version is not exact, so one must specify an acceptable tolerance on
-## the comparison @code{100*eps}.  In this case, the comparison should be
-## computed relatively, as @code{abs ((@var{x} - @var{y}) ./ @var{y})} rather
-## than absolutely as @code{abs (@var{x} - @var{y})}.
+## Assuming one of the two versions is in xcorr_orig, this would compare their
+## speed and their output values.  Note that the FFT version is not exact, so
+## one must specify an acceptable tolerance on the comparison @code{100*eps}.
+## In this case, the comparison should be computed relatively, as
+## @code{abs ((@var{x} - @var{y}) ./ @var{y})} rather than absolutely as
+## @code{abs (@var{x} - @var{y})}.
 ##
 ## Type @kbd{example ("speed")} to see some real examples or
 ## @kbd{demo ("speed")} to run them.

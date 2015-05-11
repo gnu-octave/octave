@@ -19,10 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} findstr (@var{s}, @var{t})
 ## @deftypefnx {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
-## Return the vector of all positions in the longer of the two strings
-## @var{s} and @var{t} where an occurrence of the shorter of the two starts.
-## If the optional argument @var{overlap} is true, the returned vector
-## can include overlapping positions (this is the default).  For example:
+## Return the vector of all positions in the longer of the two strings @var{s}
+## and @var{t} where an occurrence of the shorter of the two starts.
+##
+## If the optional argument @var{overlap} is true (default), the returned
+## vector can include overlapping positions.  For example:
 ##
 ## @example
 ## @group

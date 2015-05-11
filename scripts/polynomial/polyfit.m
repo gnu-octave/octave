@@ -22,9 +22,10 @@
 ## @deftypefnx {Function File} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes the least-squares-error of the fit to the points
-## @code{[@var{x}, @var{y}]}.  If @var{n} is a logical vector, it is used
-## as a mask to selectively force the corresponding polynomial
-## coefficients to be used or ignored.
+## @code{[@var{x}, @var{y}]}.
+##
+## If @var{n} is a logical vector, it is used as a mask to selectively force
+## the corresponding polynomial coefficients to be used or ignored.
 ##
 ## The polynomial coefficients are returned in a row vector.
 ##
@@ -54,15 +55,18 @@
 ##
 ## The second output may be used by @code{polyval} to calculate the
 ## statistical error limits of the predicted values.  In particular, the
-## standard deviation of @var{p} coefficients is given by @*
+## standard deviation of @var{p} coefficients is given by
+##
 ## @code{sqrt (diag (s.C)/s.df)*s.normr}.
 ##
-## When the third output, @var{mu}, is present the
-## coefficients, @var{p}, are associated with a polynomial in
-## @var{xhat} = (@var{x}-@var{mu}(1))/@var{mu}(2).
-## Where @var{mu}(1) = mean (@var{x}), and @var{mu}(2) = std (@var{x}).
-## This linear transformation of @var{x} improves the numerical
-## stability of the fit.
+## When the third output, @var{mu}, is present the coefficients, @var{p}, are
+## associated with a polynomial in
+##
+## @code{@var{xhat} = (@var{x} - @var{mu}(1)) / @var{mu}(2)} @*
+## where @var{mu}(1) = mean (@var{x}), and @var{mu}(2) = std (@var{x}).
+##
+## This linear transformation of @var{x} improves the numerical stability of
+## the fit.
 ## @seealso{polyval, polyaffine, roots, vander, zscore}
 ## @end deftypefn
 

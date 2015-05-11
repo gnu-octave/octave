@@ -55,8 +55,8 @@
 ## wildcard character the wildcard must be escaped using the backslash operator
 ## @samp{\}.
 ##
-## Note that for symbolic links, @code{dir} returns information about
-## the file that the symbolic link points to rather than the link itself.
+## Note that for symbolic links, @code{dir} returns information about the
+## file that the symbolic link points to rather than the link itself. 
 ## However, if the link points to a nonexistent file, @code{dir} returns
 ## information about the link.
 ## @seealso{ls, readdir, glob, what, stat, lstat}

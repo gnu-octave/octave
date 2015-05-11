@@ -21,7 +21,9 @@
 ## @deftypefn  {Function File} {} skewness (@var{x})
 ## @deftypefnx {Function File} {} skewness (@var{x}, @var{flag})
 ## @deftypefnx {Function File} {} skewness (@var{x}, @var{flag}, @var{dim})
-## Compute the sample skewness of the elements of @var{x}:
+## Compute the sample skewness of the elements of @var{x}.
+##
+## The sample skewness is defined as
 ## @tex
 ## $$
 ## {\rm skewness} (@var{x}) = {{{1\over N}\,

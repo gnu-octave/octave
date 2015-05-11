@@ -18,27 +18,28 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_b}, @var{df_w}] =} anova (@var{y}, @var{g})
-## Perform a one-way analysis of variance (ANOVA).  The goal is to test
-## whether the population means of data taken from @var{k} different
-## groups are all equal.
+## Perform a one-way analysis of variance (ANOVA).
 ##
-## Data may be given in a single vector @var{y} with groups specified by
-## a corresponding vector of group labels @var{g} (e.g., numbers from 1
-## to @var{k}).  This is the general form which does not impose any
-## restriction on the number of data in each group or the group labels.
+## The goal is to test whether the population means of data taken from
+## @var{k} different groups are all equal.
 ##
-## If @var{y} is a matrix and @var{g} is omitted, each column of @var{y}
-## is treated as a group.  This form is only appropriate for balanced
-## ANOVA in which the numbers of samples from each group are all equal.
+## Data may be given in a single vector @var{y} with groups specified by a
+## corresponding vector of group labels @var{g} (e.g., numbers from 1 to
+## @var{k}).  This is the general form which does not impose any restriction
+## on the number of data in each group or the group labels.
+##
+## If @var{y} is a matrix and @var{g} is omitted, each column of @var{y} is
+## treated as a group.  This form is only appropriate for balanced ANOVA in
+## which the numbers of samples from each group are all equal.
 ##
 ## Under the null of constant means, the statistic @var{f} follows an F
 ## distribution with @var{df_b} and @var{df_w} degrees of freedom.
 ##
-## The p-value (1 minus the CDF of this distribution at @var{f}) is
-## returned in @var{pval}.
+## The p-value (1 minus the CDF of this distribution at @var{f}) is returned
+## in @var{pval}.
 ##
-## If no output argument is given, the standard one-way ANOVA table is
-## printed.
+## If no output argument is given, the standard one-way ANOVA table is printed.
+## @seealso{manova}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

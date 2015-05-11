@@ -18,18 +18,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} manova (@var{x}, @var{g})
-## Perform a one-way multivariate analysis of variance (MANOVA).  The
-## goal is to test whether the p-dimensional population means of data
-## taken from @var{k} different groups are all equal.  All data are
-## assumed drawn independently from p-dimensional normal distributions
-## with the same covariance matrix.
+## Perform a one-way multivariate analysis of variance (MANOVA).
 ##
-## The data matrix is given by @var{x}.  As usual, rows are observations
-## and columns are variables.  The vector @var{g} specifies the
-## corresponding group labels (e.g., numbers from 1 to @var{k}).
+## The goal is to test whether the p-dimensional population means of data
+## taken from @var{k} different groups are all equal.  All data are assumed
+## drawn independently from p-dimensional normal distributions with the same
+## covariance matrix.
+##
+## The data matrix is given by @var{x}.  As usual, rows are observations and
+## columns are variables.  The vector @var{g} specifies the corresponding
+## group labels (e.g., numbers from 1 to @var{k}).
 ##
 ## The LR test statistic (@nospell{Wilks' Lambda}) and approximate p-values are
 ## computed and displayed.
+## @seealso{anova}
 ## @end deftypefn
 
 ## The Hotelling-Lawley and Pillai-Bartlett test statistics are coded.

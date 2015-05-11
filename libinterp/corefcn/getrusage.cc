@@ -63,10 +63,11 @@ DEFUN (getrusage, , ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} getrusage ()\n\
 Return a structure containing a number of statistics about the current\n\
-Octave process.  Not all fields are available on all systems.  If it is\n\
-not possible to get CPU time statistics, the CPU time slots are set to\n\
-zero.  Other missing data are replaced by NaN@.  The list of possible\n\
-fields is:\n\
+Octave process.\n\
+\n\
+Not all fields are available on all systems.  If it is not possible to get\n\
+CPU time statistics, the CPU time slots are set to zero.  Other missing data\n\
+are replaced by NaN@.  The list of possible fields is:\n\
 \n\
 @table @code\n\
 @item idrss\n\

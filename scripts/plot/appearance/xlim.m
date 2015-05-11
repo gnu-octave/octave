@@ -26,8 +26,10 @@
 ## Query or set the limits of the x-axis for the current plot.
 ##
 ## Called without arguments @code{xlim} returns the x-axis limits of the
-## current plot.  With the input query @qcode{"mode"}, return the current
-## x-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
+## current plot.
+##
+## With the input query @qcode{"mode"}, return the current x-limit
+## calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{x_lo} @var{x_hi}], the limits of the
 ## x-axis are set to these values and the mode is set to @qcode{"manual"}.

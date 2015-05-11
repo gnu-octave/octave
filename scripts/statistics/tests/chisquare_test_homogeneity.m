@@ -24,8 +24,8 @@
 ## (strictly increasing) entries of @var{c}.
 ##
 ## For large samples, the test statistic @var{chisq} approximately follows a
-## chisquare distribution with @var{df} = @code{length (@var{c})}
-## degrees of freedom.
+## chisquare distribution with @var{df} = @code{length (@var{c})} degrees of
+## freedom.
 ##
 ## The p-value (1 minus the CDF of this distribution at @var{chisq}) is
 ## returned in @var{pval}.

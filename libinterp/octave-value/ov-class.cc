@@ -1863,10 +1863,11 @@ DEFUN (class, args, ,
 @deftypefn  {Function File} {@var{classname} =} class (@var{obj})\n\
 @deftypefnx {Function File} {} class (@var{s}, @var{id})\n\
 @deftypefnx {Function File} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
-Return the class of the object @var{obj} or create a class with\n\
-fields from structure @var{s} and name (string) @var{id}.  Additional\n\
-arguments name a list of parent classes from which the new class is\n\
-derived.\n\
+Return the class of the object @var{obj}, or create a class with\n\
+fields from structure @var{s} and name (string) @var{id}.\n\
+\n\
+Additional arguments name a list of parent classes from which the new class\n\
+is derived.\n\
 @seealso{typeinfo, isa}\n\
 @end deftypefn")
 {
@@ -2209,6 +2210,7 @@ DEFUN (superiorto, args, ,
 @deftypefn {Built-in Function} {} superiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a higher precedence than @var{class_name}.\n\
+\n\
 More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
 @seealso{inferiorto}\n\
@@ -2254,6 +2256,7 @@ DEFUN (inferiorto, args, ,
 @deftypefn {Built-in Function} {} inferiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a lower precedence than @var{class_name}.\n\
+\n\
 More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
 @seealso{superiorto}\n\

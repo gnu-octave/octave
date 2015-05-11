@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title})
 ## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols})
 ## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
-## Return user input from a multi-textfield dialog box in a cell array
-## of strings, or an empty cell array if the dialog is closed by the
-## Cancel button.
+## Return user input from a multi-textfield dialog box in a cell array of
+## strings, or an empty cell array if the dialog is closed by the Cancel
+## button.
 ##
 ## Inputs:
 ##
@@ -32,28 +32,23 @@
 ## A cell array with strings labeling each text field.  This input is required.
 ##
 ## @item title
-## String to use for the caption of the dialog.  The default is @qcode{"Input
-## Dialog"}.
+## String to use for the caption of the dialog.  The default is
+## @qcode{"Input Dialog"}.
 ##
 ## @item rowscols
 ## Specifies the size of the text fields and can take three forms:
 ##
 ## @enumerate
-## @item a scalar value which defines the number of rows used for each
-## text field.
+## @item a scalar value which defines the number of rows used for each text field.
 ##
-## @item a vector which defines the individual number of rows
-## used for each text field.
+## @item a vector which defines the individual number of rows used for each text field.
 ##
-## @item a matrix which defines the individual number of rows and
-## columns used for each text field.  In the matrix each row describes
-## a single text field.  The first column specifies the number of input
-## rows to use and the second column specifies the text field width.
+## @item a matrix which defines the individual number of rows and columns used for each text field.  In the matrix each row describes a single text field.  The first column specifies the number of input rows to use and the second column specifies the text field width.
 ## @end enumerate
 ##
 ## @item defaults
-## A list of default values to place in each text fields.  It must be
-## a cell array of strings with the same size as @var{prompt}.
+## A list of default values to place in each text fields.  It must be a cell
+## array of strings with the same size as @var{prompt}.
 ## @end table
 ## @seealso{errordlg, helpdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn

@@ -27,7 +27,7 @@
 ## be normally distributed with a mean of zero and a variance of 1.
 ##
 ## If called with a single matrix argument, a random sparse matrix is generated
-## wherever the matrix @var{S} is nonzero in its lower triangular part.
+## wherever the matrix @var{s} is nonzero in its lower triangular part.
 ## @seealso{sprand, sprandn, spones, sparse}
 ## @end deftypefn
 

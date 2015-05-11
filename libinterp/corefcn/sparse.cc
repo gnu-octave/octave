@@ -65,7 +65,7 @@ DEFUN (sparse, args, ,
 @deftypefnx {Built-in Function} {@var{s} =} sparse (@var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
 @deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
-Create a sparse matrix from a full matrix or row, column, value triplets.\n\
+Create a sparse matrix from a full matrix, or row, column, value triplets.\n\
 \n\
 If @var{a} is a full matrix, convert it to a sparse matrix representation,\n\
 removing all zero values in the process.\n\
@@ -101,7 +101,7 @@ Example 1 (sum at repeated indices):\n\
 @group\n\
 @var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];\n\
 sparse (@var{i}, @var{j}, @var{sv}, 3, 4)\n\
-@result{} \n\
+@result{}\n\
 Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 \n\
   (1, 1) ->  7\n\
@@ -115,7 +115,7 @@ Example 2 (\"unique\" option):\n\
 @group\n\
 @var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];\n\
 sparse (@var{i}, @var{j}, @var{sv}, 3, 4, \"unique\")\n\
-@result{} \n\
+@result{}\n\
 Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 \n\
   (1, 1) ->  4\n\

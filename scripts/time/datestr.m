@@ -21,16 +21,18 @@
 ## @deftypefnx {Function File} {@var{str} =} datestr (@var{date}, @var{f})
 ## @deftypefnx {Function File} {@var{str} =} datestr (@var{date}, @var{f}, @var{p})
 ## Format the given date/time according to the format @code{f} and return
-## the result in @var{str}.  @var{date} is a serial date number (see
-## @code{datenum}) or a date vector (see @code{datevec}).  The value of
-## @var{date} may also be a string or cell array of strings.
+## the result in @var{str}.
 ##
-## @var{f} can be an integer which corresponds to one of the codes in
-## the table below, or a date format string.
+## @var{date} is a serial date number (see @code{datenum}) or a date vector
+## (see @code{datevec}).  The value of @var{date} may also be a string or cell
+## array of strings.
 ##
-## @var{p} is the year at the start of the century in which two-digit years
-## are to be interpreted in.  If not specified, it defaults to the current
-## year minus 50.
+## @var{f} can be an integer which corresponds to one of the codes in the table
+## below, or a date format string.
+##
+## @var{p} is the year at the start of the century in which two-digit years are
+## to be interpreted in.  If not specified, it defaults to the current year
+## minus 50.
 ##
 ## For example, the date 730736.65149 (2000-09-07 15:38:09.0934) would be
 ## formatted as follows:
@@ -94,9 +96,8 @@
 ## @item PM   @tab Use 12-hour time format                      @tab 11:30 PM
 ## @end multitable
 ##
-## If @var{f} is not specified or is @code{-1}, then use 0, 1 or 16,
-## depending on whether the date portion or the time portion of
-## @var{date} is empty.
+## If @var{f} is not specified or is @code{-1}, then use 0, 1 or 16, depending
+## on whether the date portion or the time portion of @var{date} is empty.
 ##
 ## If @var{p} is nor specified, it defaults to the current year minus 50.
 ##

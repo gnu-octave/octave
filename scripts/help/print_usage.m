@@ -19,9 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} print_usage ()
 ## @deftypefnx {Function File} {} print_usage (@var{name})
-## Print the usage message for a function.  When called with no input arguments
-## the @code{print_usage} function displays the usage message of the currently
-## executing function.
+## Print the usage message for the function @var{name}.
+##
+## When called with no input arguments the @code{print_usage} function displays
+## the usage message of the currently executing function.
 ## @seealso{help}
 ## @end deftypefn
 

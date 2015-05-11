@@ -22,8 +22,8 @@
 ## @deftypefnx {Function File} {} nbinrnd (@var{n}, @var{p}, @var{r})
 ## @deftypefnx {Function File} {} nbinrnd (@var{n}, @var{p}, @var{r}, @var{c}, @dots{})
 ## @deftypefnx {Function File} {} nbinrnd (@var{n}, @var{p}, [@var{sz}])
-## Return a matrix of random samples from the negative binomial
-## distribution with parameters @var{n} and @var{p}.
+## Return a matrix of random samples from the negative binomial distribution
+## with parameters @var{n} and @var{p}.
 ##
 ## When called with a single size argument, return a square matrix with
 ## the dimension specified.  When called with more than one scalar argument the

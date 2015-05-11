@@ -22,10 +22,10 @@
 ## @cindex Kendall's Tau
 ## Compute Kendall's @var{tau}.
 ##
-## For two data vectors @var{x}, @var{y} of common length @var{n},
-## Kendall's @var{tau} is the correlation of the signs of all rank
-## differences of @var{x} and @var{y}; i.e., if both @var{x} and
-## @var{y} have distinct entries, then
+## For two data vectors @var{x}, @var{y} of common length @var{n}, Kendall's
+## @var{tau} is the correlation of the signs of all rank differences of
+## @var{x} and @var{y}; i.e., if both @var{x} and @var{y} have distinct
+## entries, then
 ##
 ## @tex
 ## $$ \tau = {1 \over n(n-1)} \sum_{i,j} {\rm sign}(q_i-q_j) {\rm sign}(r_i-r_j) $$

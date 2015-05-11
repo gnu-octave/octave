@@ -22,11 +22,11 @@
 ## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf})
 ## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf}, @dots{})
 ## Numerically evaluate the double integral of @var{f}.
-## @var{f} is a function handle, inline function, or string
-## containing the name of the function to evaluate.  The function @var{f} must
-## have the form @math{z = f(x,y)} where @var{x} is a vector and @var{y} is a
-## scalar.  It should return a vector of the same length and orientation as
-## @var{x}.
+##
+## @var{f} is a function handle, inline function, or string containing the name
+## of the function to evaluate.  The function @var{f} must have the form
+## @math{z = f(x,y)} where @var{x} is a vector and @var{y} is a scalar.  It
+## should return a vector of the same length and orientation as @var{x}.
 ##
 ## @var{xa}, @var{ya} and @var{xb}, @var{yb} are the lower and upper limits of
 ## integration for x and y respectively.  The underlying integrator determines

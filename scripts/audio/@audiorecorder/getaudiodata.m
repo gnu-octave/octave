@@ -21,6 +21,7 @@
 ## @deftypefnx {Function File} {@var{data} =} getaudiodata (@var{recorder}, @var{datatype})
 ## Return recorder audio data as a matrix with values between -1.0 and 1.0
 ## and with as many columns as there are channels in the recorder.
+##
 ## Given the optional argument @var{datatype}, convert the recorded data
 ## to the specified type, which may be one of @qcode{"double"},
 ## @qcode{"single"}, @qcode{"int16"}, @qcode{"int8"} or @qcode{"uint8"}.

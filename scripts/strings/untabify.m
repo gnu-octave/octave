@@ -20,17 +20,18 @@
 ## @deftypefn  {Function File} {} untabify (@var{t})
 ## @deftypefnx {Function File} {} untabify (@var{t}, @var{tw})
 ## @deftypefnx {Function File} {} untabify (@var{t}, @var{tw}, @var{deblank})
-## Replace TAB characters in @var{t}, with spaces.
-## The tab width is specified by @var{tw}, or defaults to eight.
-## The input, @var{t}, may be either a 2-D character array, or a cell
-## array of character strings.  The output is the same class
-## as the input.
+## Replace TAB characters in @var{t} with spaces.
 ##
-## If the optional argument @var{deblank} is true, then the spaces will
-## be removed from the end of the character data.
+## The input, @var{t}, may be either a 2-D character array, or a cell array of
+## character strings.  The output is the same class as the input.
+## 
+## The tab width is specified by @var{tw}, and defaults to eight.
 ##
-## The following example reads a file and writes an untabified version
-## of the same file with trailing spaces stripped.
+## If the optional argument @var{deblank} is true, then the spaces will be
+## removed from the end of the character data.
+##
+## The following example reads a file and writes an untabified version of the
+## same file with trailing spaces stripped.
 ##
 ## @example
 ## @group

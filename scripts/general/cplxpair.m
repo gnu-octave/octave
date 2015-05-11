@@ -21,21 +21,23 @@
 ## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol})
 ## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol}, @var{dim})
 ## Sort the numbers @var{z} into complex conjugate pairs ordered by
-## increasing real part.  Place the negative imaginary complex number
-## first within each pair.  Place all the real numbers (those with
-## @code{abs (imag (@var{z}) / @var{z}) < @var{tol}}) after the
+## increasing real part.
+##
+## The negative imaginary complex numbers are placed first within each pair.
+## All real numbers (those with
+## @code{abs (imag (@var{z}) / @var{z}) < @var{tol}}) are placed after the
 ## complex pairs.
 ##
 ## If @var{tol} is unspecified the default value is 100*@code{eps}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
-## dimension of @var{z}.  If @var{dim} is specified, then the complex
-## pairs are sorted along this dimension.
+## dimension of @var{z}.  If @var{dim} is specified, then the complex pairs are
+## sorted along this dimension.
 ##
 ## Signal an error if some complex numbers could not be paired.  Signal an
-## error if all complex numbers are not exact conjugates (to within
-## @var{tol}).  Note that there is no defined order for pairs with identical
-## real parts but differing imaginary parts.
+## error if all complex numbers are not exact conjugates (to within @var{tol}).
+## Note that there is no defined order for pairs with identical real parts but
+## differing imaginary parts.
 ## @c Set example in small font to prevent overfull line
 ##
 ## @smallexample

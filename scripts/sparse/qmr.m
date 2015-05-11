@@ -19,30 +19,29 @@
 ## @deftypefn  {Function File} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} qmr (@var{A}, @var{b}, @dots{})
-## Solve @code{A x = b} using the Quasi-Minimal Residual iterative
-## method (without look-ahead).
+## Solve @code{A x = b} using the Quasi-Minimal Residual iterative method
+## (without look-ahead).
 ##
 ## @itemize @minus
-## @item @var{rtol} is the relative tolerance, if not given
-## or set to [] the default value 1e-6 is used.
+## @item @var{rtol} is the relative tolerance, if not given or set to [] the
+## default value 1e-6 is used.
 ##
-## @item @var{maxit} the maximum number of outer iterations,
-## if not given or set to [] the default value
-## @code{min (20, numel (b))} is used.
+## @item @var{maxit} the maximum number of outer iterations, if not given or
+## set to [] the default value @code{min (20, numel (b))} is used.
 ##
-## @item @var{x0} the initial guess, if not given or set to []
-## the default value @code{zeros (size (b))} is used.
+## @item @var{x0} the initial guess, if not given or set to [] the default
+## value @code{zeros (size (b))} is used.
 ## @end itemize
 ##
-## @var{A} can be passed as a matrix or as a function handle or
-## inline function @code{f} such that @code{f(x, "notransp") = A*x}
-## and @code{f(x, "transp") = A'*x}.
+## @var{A} can be passed as a matrix or as a function handle or inline
+## function @code{f} such that @code{f(x, "notransp") = A*x} and
+## @code{f(x, "transp") = A'*x}.
 ##
-## The preconditioner @var{P} is given as @code{P = M1 * M2}.
-## Both @var{M1} and @var{M2} can be passed as a matrix or as
-## a function handle or inline function @code{g} such that
-## @code{g(x, "notransp") = M1 \ x} or @code{g(x, "notransp") = M2 \ x} and
-## @code{g(x, "transp") = M1' \ x} or @code{g(x, "transp") = M2' \ x}.
+## The preconditioner @var{P} is given as @code{P = M1 * M2}.  Both @var{M1}
+## and @var{M2} can be passed as a matrix or as a function handle or inline
+## function @code{g} such that @code{g(x, "notransp") = M1 \ x} or
+## @code{g(x, "notransp") = M2 \ x} and @code{g(x, "transp") = M1' \ x} or
+## @code{g(x, "transp") = M2' \ x}.
 ##
 ## If called with more than one output parameter
 ##

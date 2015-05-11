@@ -21,11 +21,11 @@
 ## Perform an F test for the null hypothesis @nospell{rr * b = r} in a
 ## classical normal regression model y = X * b + e.
 ##
-## Under the null, the test statistic @var{f} follows an F distribution
-## with @var{df_num} and @var{df_den} degrees of freedom.
+## Under the null, the test statistic @var{f} follows an F distribution with
+## @var{df_num} and @var{df_den} degrees of freedom.
 ##
-## The p-value (1 minus the CDF of this distribution at @var{f}) is
-## returned in @var{pval}.
+## The p-value (1 minus the CDF of this distribution at @var{f}) is returned
+## in @var{pval}.
 ##
 ## If not given explicitly, @var{r} = 0.
 ##

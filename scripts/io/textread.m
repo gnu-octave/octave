@@ -38,14 +38,14 @@
 ## @item @qcode{"endofline"}:
 ## Specify a single character or
 ## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"}.  If no value is given, it
-## will be inferred from the file.  If set to "" (empty string) EOLs are
-## ignored as delimiters.
+## will be inferred from the file.  If set to @qcode{""} (empty string) EOLs
+## are ignored as delimiters.
 ## @end itemize
 ##
 ## The optional input @var{n} specifies the number of data lines to read; in
 ## this sense it differs slightly from the format repeat count in strread.
 ##
-## If the format string is empty (not: omitted) and the file contains only
+## If the format string is empty (not just omitted) and the file contains only
 ## numeric data (excluding headerlines), textread will return a rectangular
 ## matrix with the number of columns matching the number of numeric fields on
 ## the first data line of the file.  Empty fields are returned as zero values.

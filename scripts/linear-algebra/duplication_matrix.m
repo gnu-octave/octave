@@ -23,35 +23,35 @@
 ##  $D_n$
 ## @end tex
 ## @ifnottex
-##  @nospell{@math{Dn}}
+## @nospell{@math{Dn}}
 ## @end ifnottex
-##  which is the unique
+## which is the unique
 ## @tex
 ##  $n^2 \times n(n+1)/2$
 ## @end tex
 ## @ifnottex
-##  @math{n^2} by @math{n*(n+1)/2}
+## @math{n^2} by @math{n*(n+1)/2}
 ## @end ifnottex
-##  matrix such that
+## matrix such that
 ## @tex
 ##  $D_n * {\rm vech} (A) = {\rm vec} (A)$
 ## @end tex
 ## @ifnottex
-##  @nospell{@math{Dn vech (A) = vec (A)}}
+## @nospell{@math{Dn vech (A) = vec (A)}}
 ## @end ifnottex
-##  for all symmetric
+## for all symmetric
 ## @tex
 ##  $n \times n$
 ## @end tex
 ## @ifnottex
-##  @math{n} by @math{n}
+## @math{n} by @math{n}
 ## @end ifnottex
-##  matrices
+## matrices
 ## @tex
 ##  $A$.
 ## @end tex
 ## @ifnottex
-##  @math{A}.
+## @math{A}.
 ## @end ifnottex
 ##
 ## See @nospell{Magnus and Neudecker} (1988), @cite{Matrix Differential

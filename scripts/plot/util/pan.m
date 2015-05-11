@@ -33,9 +33,8 @@
 ## Given the option @qcode{"xon"} or @qcode{"yon"}, enable pan mode
 ## for the x or y axis only.
 ##
-## If the first argument @var{hfig} is a figure, then operate on
-## the given figure rather than the current figure as returned by
-## @code{gcf}.
+## If the first argument @var{hfig} is a figure, then operate on the given
+## figure rather than the current figure as returned by @code{gcf}.
 ##
 ## @seealso{rotate3d, zoom}
 ## @end deftypefn

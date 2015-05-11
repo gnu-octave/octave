@@ -21,10 +21,13 @@
 ## @deftypefn  {Function File} {} record (@var{sec})
 ## @deftypefnx {Function File} {} record (@var{sec}, @var{fs})
 ## Record @var{sec} seconds of audio from the system's default audio input at
-## a sampling rate of 8000 samples per second.  If the optional argument
-## @var{fs} is given, it specifies the sampling rate for recording.
+## a sampling rate of 8000 samples per second.
+##
+## If the optional argument @var{fs} is given, it specifies the sampling rate
+## for recording.
 ##
 ## For more control over audio recording, use the @code{audiorecorder} class.
+## @seealso{sound, soundsc}
 ## @end deftypefn
 
 function x = record (sec, fs)

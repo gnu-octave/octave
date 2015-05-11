@@ -40,8 +40,8 @@
 ## Example: @code{uigetfile ("*.ext")}
 ##
 ## @item A 2-column cell array
-## containing a file extension in the first column and a brief description
-## in the second column.
+## containing a file extension in the first column and a brief description in
+## the second column.
 ## Example: @code{uigetfile (@{"*.ext", "My Description";"*.xyz",
 ## "XYZ-Format"@})}
 ##
@@ -52,6 +52,7 @@
 ## @end table
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
+##
 ## If @var{default_file} is given then it will be selected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
 ##

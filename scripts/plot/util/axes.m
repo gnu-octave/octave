@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {} axes (@var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} axes (@var{hax})
 ## @deftypefnx {Function File} {@var{h} =} axes (@dots{})
-## Create an axes object and return a handle to it, or set the current
-## axes to @var{hax}.
+## Create an axes object and return a handle to it, or set the current axes
+## to @var{hax}.
 ##
 ## Called without any arguments, or with @var{property}/@var{value} pairs,
 ## construct a new axes.  For accepted properties and corresponding

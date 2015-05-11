@@ -184,6 +184,7 @@ DEFUN (onCleanup, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{obj} =} onCleanup (@var{function})\n\
 Create a special object that executes a given function upon destruction.\n\
+\n\
 If the object is copied to multiple variables (or cell or struct array\n\
 elements) or returned from a function, @var{function} will be executed after\n\
 clearing the last copy of the object.  Note that if multiple local onCleanup\n\

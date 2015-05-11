@@ -26,15 +26,15 @@
 ## For example, the command @kbd{help help} prints a short message describing
 ## the @code{help} command.
 ##
-## Given the single argument @code{--list}, list all operators,
-## keywords, built-in functions, and loadable functions available
-## in the current session of Octave.
+## Given the single argument @code{--list}, list all operators, keywords,
+## built-in functions, and loadable functions available in the current session
+## of Octave.
 ##
-## Given the single argument @code{.}, list all operators available
-## in the current session of Octave.
+## Given the single argument @code{.}, list all operators available in the
+## current session of Octave.
 ##
-## If invoked without any arguments, @code{help} display instructions
-## on how to access help from the command line.
+## If invoked without any arguments, @code{help} display instructions on how to
+## access help from the command line.
 ##
 ## The help command can provide information about most operators, for example
 ## @code{help +}, but not the comma and semicolon characters which are used

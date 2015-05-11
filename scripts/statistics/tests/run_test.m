@@ -18,9 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{chisq}] =} run_test (@var{x})
-## Perform a chi-square test with 6 degrees of freedom based on the
-## upward runs in the columns of @var{x}.  Can be used to test whether
-## @var{x} contains independent data.
+## Perform a chi-square test with 6 degrees of freedom based on the upward
+## runs in the columns of @var{x}.
+##
+## @code{run_test} can be used to decide whether @var{x} contains independent
+## data.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

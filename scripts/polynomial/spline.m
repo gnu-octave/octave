@@ -24,18 +24,21 @@
 ##
 ## When called with two arguments, return the piecewise polynomial @var{pp}
 ## that may be used with @code{ppval} to evaluate the polynomial at specific
-## points.  When called with a third input argument, @code{spline} evaluates
-## the spline at the points @var{xi}.  The third calling form @code{spline
-## (@var{x}, @var{y}, @var{xi})} is equivalent to @code{ppval (spline
-## (@var{x}, @var{y}), @var{xi})}.
+## points.
 ##
-## The variable @var{x} must be a vector of length @var{n}.  @var{y} can be
-## either a vector or array.  If @var{y} is a vector it must have a length of
-## either @var{n} or @code{@var{n} + 2}.  If the length of @var{y} is
-## @var{n}, then the "not-a-knot" end condition is used.  If the length of
-## @var{y} is @code{@var{n} + 2}, then the first and last values of the
-## vector @var{y} are the values of the first derivative of the cubic spline
-## at the endpoints.
+## When called with a third input argument, @code{spline} evaluates the spline
+## at the points @var{xi}.  The third calling form
+## @code{spline (@var{x}, @var{y}, @var{xi})} is equivalent to
+## @code{ppval (spline (@var{x}, @var{y}), @var{xi})}.
+##
+## The variable @var{x} must be a vector of length @var{n}.
+##
+## @var{y} can be either a vector or array.  If @var{y} is a vector it must
+## have a length of either @var{n} or @code{@var{n} + 2}.  If the length of
+## @var{y} is @var{n}, then the @qcode{"not-a-knot"} end condition is used. 
+## If the length of @var{y} is @code{@var{n} + 2}, then the first and last
+## values of the vector @var{y} are the values of the first derivative of the
+## cubic spline at the endpoints.
 ##
 ## If @var{y} is an array, then the size of @var{y} must have the form
 ## @tex
@@ -59,8 +62,8 @@
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
-## and each row of this matrix is then treated separately.  Note that this
-## is exactly opposite to @code{interp1} but is done for @sc{matlab}
+## and each row of this matrix is then treated separately.  Note that this is
+## exactly the opposite of @code{interp1} but is done for @sc{matlab}
 ## compatibility.
 ##
 ## @seealso{pchip, ppval, mkpp, unmkpp}

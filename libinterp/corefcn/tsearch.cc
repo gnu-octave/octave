@@ -62,10 +62,11 @@ inline double min (double a, double b, double c)
 DEFUN (tsearch, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
-Search for the enclosing Delaunay convex hull.  For @code{@var{t} =\n\
-delaunay (@var{x}, @var{y})}, finds the index in @var{t} containing the\n\
-points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
-@var{idx} is NaN.\n\
+Search for the enclosing Delaunay convex hull.\n\
+\n\
+For @code{@var{t} = delaunay (@var{x}, @var{y})}, finds the index in @var{t}\n\
+containing the points @code{(@var{xi}, @var{yi})}.  For points outside the\n\
+convex hull, @var{idx} is NaN.\n\
 @seealso{delaunay, delaunayn}\n\
 @end deftypefn")
 {

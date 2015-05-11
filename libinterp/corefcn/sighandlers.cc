@@ -1080,11 +1080,13 @@ DEFUN (debug_on_interrupt, args, nargout,
 @deftypefnx {Built-in Function} {} debug_on_interrupt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter debugging mode when it receives an interrupt signal (typically\n\
-generated with @kbd{C-c}).  If a second interrupt signal is received\n\
-before reaching the debugging mode, a normal interrupt will occur.\n\
+generated with @kbd{C-c}).\n\
+\n\
+If a second interrupt signal is received before reaching the debugging mode,\n\
+a normal interrupt will occur.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @seealso{debug_on_error, debug_on_warning}\n\
 @end deftypefn")
@@ -1114,7 +1116,7 @@ to save all current variables to the file @file{octave-workspace} if it\n\
 receives a hangup signal.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
@@ -1143,7 +1145,7 @@ to save all current variables to the file @file{octave-workspace} if it\n\
 receives a terminate signal.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

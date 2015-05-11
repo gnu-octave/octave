@@ -22,6 +22,7 @@
 ## @deftypefnx {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
+##
 ## The function is defined by @code{@var{y} = f (@var{x})}.
 ## The interpolation points are all @var{xi}.
 ##

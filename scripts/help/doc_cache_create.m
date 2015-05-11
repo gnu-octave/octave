@@ -17,13 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} doc_cache_create (@var{out_file}, @var{directory})
-## Generate documentation caches for all functions in a given directory.
+## @deftypefn  {Function File} {} doc_cache_create (@var{out_file}, @var{directory})
+## @deftypefnx {Function File} {} doc_cache_create (@var{out_file})
+## @deftypefnx {Function File} {} doc_cache_create ()
+## Generate documentation cache for all functions in @var{directory}.
 ##
-## A documentation cache is generated for all functions in @var{directory}.
-## The
-## resulting cache is saved in the file @var{out_file}.
-## The cache is used to speed up @code{lookfor}.
+## A documentation cache is generated for all functions in @var{directory}
+## which may be a single string or a cell array of strings.  The cache is used
+## to speed up the function @code{lookfor}.
+##
+## The cache is saved in the file @var{out_file} which defaults to the value
+## @file{doc-cache} if not given.
 ##
 ## If no directory is given (or it is the empty matrix), a cache for built-in
 ## operators, etc. is generated.

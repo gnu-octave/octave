@@ -96,7 +96,7 @@ DEFUN (cd, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Command} {} cd @var{dir}\n\
 @deftypefnx {Command} {} cd\n\
-@deftypefnx {Built-in Function} {@var{old_dir} =} cd @var{dir}\n\
+@deftypefnx {Built-in Function} {@var{old_dir} =} cd (@var{dir})\n\
 @deftypefnx {Command} {} chdir @dots{}\n\
 Change the current working directory to @var{dir}.\n\
 \n\

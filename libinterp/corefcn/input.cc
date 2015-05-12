@@ -941,7 +941,11 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
 DEFUN (echo, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Command} {} echo options\n\
+@deftypefn  {Command} {} echo\n\
+@deftypefnx {Command} {} echo on\n\
+@deftypefnx {Command} {} echo off\n\
+@deftypefnx {Command} {} echo on all\n\
+@deftypefnx {Command} {} echo off all\n\
 Control whether commands are displayed as they are executed.\n\
 \n\
 Valid options are:\n\

@@ -1898,7 +1898,7 @@ DEFUN (whos, args, nargout,
 @deftypefn  {Command} {} whos\n\
 @deftypefnx {Command} {} whos pattern @dots{}\n\
 @deftypefnx {Command} {} whos option pattern @dots{}\n\
-@deftypefnx {Command} {S =} whos (\"pattern\", @dots{})\n\
+@deftypefnx {Built-in Function} {S =} whos (\"pattern\", @dots{})\n\
 Provide detailed information on currently defined variables matching the\n\
 given patterns.\n\
 \n\

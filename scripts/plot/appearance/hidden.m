@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} hidden
-## @deftypefnx {Command} {} hidden "on"
-## @deftypefnx {Command} {} hidden "off"
+## @deftypefnx {Command} {} hidden on
+## @deftypefnx {Command} {} hidden off
 ## @deftypefnx {Function File} {@var{mode} =} hidden (@dots{})
 ## Control mesh hidden line removal.
 ##

@@ -37,7 +37,7 @@
 ##
 ## If a file name is given instead of an image, the file will be read and shown.
 ##
-## If given, the parameter @var{string_param1} has value @var{value1}.  
+## If given, the parameter @var{string_param1} has value @var{value1}.
 ## @var{string_param1} can be any of the following:
 ##
 ## @table @asis

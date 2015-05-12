@@ -126,7 +126,7 @@ qrc-%.cc: %.qrc
 AM_V_lrelease = $(am__v_lrelease_$(V))
 am__v_lrelease_ = $(am__v_lrelease_$(AM_DEFAULT_VERBOSITY))
 am__v_lrelease_0 = -silent
-am__v_lrelease_1 = 
+am__v_lrelease_1 =
 
 %.qm: %.ts
 	$(AM_V_GEN)$(MKDIR_P) languages && \

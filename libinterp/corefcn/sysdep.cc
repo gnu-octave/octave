@@ -1040,7 +1040,7 @@ equivalent to\n\
 /*
 %!test
 %! if (! ispc ())
-%!   assert (get_home_directory (), getenv ("HOME")); 
+%!   assert (get_home_directory (), getenv ("HOME"));
 %! endif
 */
 

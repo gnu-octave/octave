@@ -25,7 +25,7 @@
 ##
 ## If a pair of polynomials is given, return the derivative of the product
 ## @math{@var{a}*@var{b}}.
-## 
+##
 ## If two inputs and two outputs are given, return the derivative of the
 ## polynomial quotient @math{@var{b}/@var{a}}.  The quotient numerator is
 ## in @var{q} and the denominator in @var{d}.

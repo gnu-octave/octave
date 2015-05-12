@@ -136,7 +136,7 @@ Example:\n\
 \n\
 @example\n\
 @group\n\
-@var{x} = [ 1 2 3 \n\
+@var{x} = [ 1 2 3\n\
       4 5 6 ];\n\
 @var{x}(1,end)\n\
     @result{} 3\n\

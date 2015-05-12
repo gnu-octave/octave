@@ -39,11 +39,11 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
   m_actions.append (new QAction (QIcon (":/images/rotate.png"),
                                  tr ("Rotate"), this));
   QAction *zoom_in = new QAction ("Z+", this);
-  zoom_in->setToolTip (tr ("Zoom In")); 
+  zoom_in->setToolTip (tr ("Zoom In"));
   m_actions.append (zoom_in);
 
   QAction *zoom_out = new QAction ("Z-", this);
-  zoom_out->setToolTip (tr ("Zoom Out")); 
+  zoom_out->setToolTip (tr ("Zoom Out"));
   m_actions.append (zoom_out);
 
   m_actions.append (new QAction (QIcon (":/images/pan.png"),
@@ -108,5 +108,5 @@ MouseModeActionGroup::setMode (MouseMode mode)
   if (mode == SelectMode)
     m_actions[SelectMode-1]->setChecked (false);
 }
-  
+
 };

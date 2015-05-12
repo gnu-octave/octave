@@ -448,7 +448,7 @@ octave_qt_link::do_execute_command_in_terminal (const std::string& command)
 }
 
 void
-octave_qt_link::do_set_workspace (bool top_level, bool debug, 
+octave_qt_link::do_set_workspace (bool top_level, bool debug,
                                   const std::list<workspace_element>& ws)
 {
   if (! top_level && ! debug)

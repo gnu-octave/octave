@@ -25,7 +25,7 @@
 ## The inputs @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.
 ## If called with a single matrix argument then each row of @var{C} represents
 ## the Cartesian coordinate (@var{x}, @var{y}, @var{z}).
-## 
+##
 ## @var{theta} describes the angle relative to the positive x-axis.
 ##
 ## @var{phi} is the angle relative to the xy-plane.

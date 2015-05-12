@@ -31,7 +31,7 @@
 ##
 ## @noindent
 ## in which @var{k} is the length of vector @var{a}, @var{l} is the length of
-## vector @var{b} and @var{e} is Gaussian white noise with variance @var{v}. 
+## vector @var{b} and @var{e} is Gaussian white noise with variance @var{v}.
 ## The function returns a vector of length @var{t}.
 ##
 ## The optional parameter @var{n} gives the number of dummy @var{x}(@var{i})

@@ -204,7 +204,7 @@ Canvas::annotation_callback (const octave_value_list& args)
 
   redraw ();
 }
-  
+
 void
 Canvas::canvasToggleAxes (const graphics_handle& handle)
 {
@@ -785,11 +785,11 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
   else if (m_mouseMode == TextMode)
     {
       gh_manager::auto_lock lock;
-      
-      graphics_object figObj = 
+
+      graphics_object figObj =
         gh_manager::get_object (m_handle).get_ancestor ("figure");
       if (figObj.valid_object ())
-        {          
+        {
           QWidget *w = qWidget ();
           if (w)
             {
@@ -802,7 +802,7 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
               octave_value_list props = ovl("textbox", bb);
 
               annotation_dialog anno_dlg (w, props);
-            
+
               if (anno_dlg.exec () == QDialog::Accepted)
                 {
                   props = anno_dlg.get_properties ();

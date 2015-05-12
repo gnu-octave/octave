@@ -228,9 +228,9 @@ glps_renderer::set_font (const base_properties& props)
   fontsize = props.get ("fontsize_points").double_value ();
 
   caseless_str fn = props.get ("fontname").xtolower ().string_value ();
-  bool isbold = 
+  bool isbold =
     (props.get ("fontweight").xtolower ().string_value () == "bold");
-  bool isitalic = 
+  bool isitalic =
     (props.get ("fontangle").xtolower ().string_value () == "italic");
 
   fontname = "";

@@ -551,7 +551,7 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 #else
   gripe_save ("hdf5");
 #endif
-  
+
   return retval;
 }
 

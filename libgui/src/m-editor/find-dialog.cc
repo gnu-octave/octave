@@ -297,7 +297,7 @@ find_dialog::find (bool forward)
              {
                int currpos = _edit_area->positionFromLineIndex(line,col);
                currpos -= (_search_line_edit->text ().length ());
-               if (currpos < 0) 
+               if (currpos < 0)
                  currpos = 0;
                _edit_area->lineIndexFromPosition(currpos, &line,&col);
              }

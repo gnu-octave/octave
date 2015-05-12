@@ -865,7 +865,7 @@ octave_sparse_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 #else
   gripe_load ("hdf5");
 #endif
-  
+
   return retval;
 }
 

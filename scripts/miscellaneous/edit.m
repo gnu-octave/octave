@@ -62,7 +62,7 @@
 ## If @code{edit} is called with @var{field} and @var{value} variables, the
 ## value of the control field @var{field} will be set to @var{value}.  If an
 ## output argument is requested and the first input argument is @code{get}
-## then @code{edit} will return the value of the control field @var{field}. 
+## then @code{edit} will return the value of the control field @var{field}.
 ## If the control field does not exist, edit will return a structure
 ## containing all fields and values.  Thus, @code{edit get all} returns a
 ## complete control structure.
@@ -71,7 +71,7 @@
 ##
 ## @table @samp
 ## @item home
-## This is the location of user local m-files.  Be sure it is in your path. 
+## This is the location of user local m-files.  Be sure it is in your path.
 ## The default is @file{~/octave}.
 ##
 ## @item author

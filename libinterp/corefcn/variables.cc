@@ -648,10 +648,10 @@ not on the search path you should use some combination of the functions\n\
 %!assert (exist ("./plot.m", "file"), 0);
 %!assert (exist ("./%nonexistentfile%", "file"), 0);
 %!assert (exist ("%nonexistentfile%", "file"), 0);
- 
+
 ## Don't search path for absolute file names
 %!test
-%! tname = tempname (pwd ()); 
+%! tname = tempname (pwd ());
 %! unwind_protect
 %!   ## open/close file to create it, equivalent of touch
 %!   fid = fopen (tname, "w");

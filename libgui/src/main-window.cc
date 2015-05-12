@@ -1760,7 +1760,7 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   edit_menu->addSeparator ();
 
-  _find_files_action 
+  _find_files_action
     = edit_menu->addAction (resource_manager::icon ("edit-find"),
                              tr ("Find Files..."));
 
@@ -1805,8 +1805,8 @@ QAction *
 main_window::construct_debug_menu_item (const char *icon, const QString& item,
                                         const char *member)
 {
-  QAction *action = add_action (_debug_menu, 
-                                  resource_manager::icon (QString (icon)), 
+  QAction *action = add_action (_debug_menu,
+                                  resource_manager::icon (QString (icon)),
                                 item, member);
 
   action->setEnabled (false);

@@ -135,7 +135,7 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   createFigureToolBarAndMenuBar ();
 
   int offset = 0;
-  if (fp.toolbar_is ("figure") || 
+  if (fp.toolbar_is ("figure") ||
       (fp.toolbar_is ("auto") && fp.menubar_is ("figure") &&
        ! hasUiControlChildren (fp)))
     offset += m_figureToolBar->sizeHint ().height ();
@@ -275,7 +275,7 @@ Figure::mouseMode (void)
       std::string direction = zm.getfield ("Direction").string_value ();
 
       mode += " " + direction;
-    }    
+    }
 
   return mouse_mode_from_string (mode);
 }
@@ -835,7 +835,7 @@ Figure::copy_figure_callback (const std::string& format)
 
   octave_link::copy_image_to_clipboard (file);
 }
-  
+
 void
 Figure::fileSaveFigureAs (void)
 {
@@ -936,7 +936,7 @@ Figure::toggleAxes (void)
   if (canvas)
     canvas->toggleAxes (m_handle);
 }
-  
+
 void
 Figure::toggleGrid (void)
 {
@@ -945,7 +945,7 @@ Figure::toggleGrid (void)
   if (canvas)
     canvas->toggleGrid (m_handle);
 }
-  
+
 void
 Figure::autoAxes (void)
 {
@@ -954,5 +954,5 @@ Figure::autoAxes (void)
   if (canvas)
     canvas->autoAxes (m_handle);
 }
-  
+
 }; // namespace QtHandles

@@ -10,14 +10,14 @@ keyboard "Linux console"
 # This configuration table allows to customize the
 # meaning of the keys.
 #
-# The syntax is that each entry has the form : 
+# The syntax is that each entry has the form :
 #
 #   "key" Keyname { ("+"|"-") Modename } ":" (String|Operation)
 #
 # Keynames are those defined in <qnamespace.h> with the
 # "Qt::Key_" removed. (We'd better insert the list here)
 #
-# Mode names are : 
+# Mode names are :
 #
 # - Shift
 # - Alt
@@ -26,7 +26,7 @@ keyboard "Linux console"
 #   The VT100 emulation has two modes that can affect the
 #   sequences emitted by certain keys. These modes are
 #   under control of the client program.
-#   
+#
 # - Newline     : effects Return and Enter key.
 # - Application : effects Up and Down key.
 #
@@ -53,7 +53,7 @@ key Tab    : "\t"
 # VT100 can add an extra \n after return.
 # The NewLine mode is set by an escape sequence.
 
-key Return-NewLine : "\r"  
+key Return-NewLine : "\r"
 key Return+NewLine : "\r\n"
 
 # Some desperately try to save the ^H.
@@ -86,31 +86,31 @@ key Left -Shift+Ansi-AppCuKeys : "\E[D"
 
 # linux functions keys F1-F5 differ from xterm
 
-key F1 : "\E[[A" 
-key F2 : "\E[[B" 
-key F3 : "\E[[C" 
-key F4 : "\E[[D" 
-key F5 : "\E[[E" 
+key F1 : "\E[[A"
+key F2 : "\E[[B"
+key F3 : "\E[[C"
+key F4 : "\E[[D"
+key F5 : "\E[[E"
 
-key F6     : "\E[17~" 
-key F7     : "\E[18~" 
-key F8     : "\E[19~" 
-key F9     : "\E[20~" 
-key F10    : "\E[21~" 
-key F11    : "\E[23~" 
-key F12    : "\E[24~" 
+key F6     : "\E[17~"
+key F7     : "\E[18~"
+key F8     : "\E[19~"
+key F9     : "\E[20~"
+key F10    : "\E[21~"
+key F11    : "\E[23~"
+key F12    : "\E[24~"
 
-key Home   : "\E[1~"  
-key End    : "\E[4~"  
+key Home   : "\E[1~"
+key End    : "\E[4~"
 
-key Prior -Shift : "\E[5~"  
-key Next  -Shift : "\E[6~"  
-key Insert-Shift : "\E[2~"  
+key Prior -Shift : "\E[5~"
+key Next  -Shift : "\E[6~"
+key Insert-Shift : "\E[2~"
 
 # Keypad-Enter. See comment on Return above.
 
 key Enter+NewLine : "\r\n"
-key Enter-NewLine : "\r"  
+key Enter-NewLine : "\r"
 
 key Space +Control : "\x00"
 

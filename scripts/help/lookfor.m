@@ -26,7 +26,7 @@
 ##
 ## By default, @code{lookfor} looks for @var{str} in just the first sentence of
 ## the help string for each function found.  The entire help text of each
-## function can be searched by using the @qcode{"-all"} argument.  All searches 
+## function can be searched by using the @qcode{"-all"} argument.  All searches
 ## are case insensitive.
 ##
 ## When called with no output arguments, @code{lookfor} prints the list of

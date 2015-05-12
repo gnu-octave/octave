@@ -182,9 +182,9 @@ function [cstr, matches] = strsplit (str, del, varargin)
   endif
 
   if (strncmpi (args.delimitertype, "simple", length_deltype))
-    is_simple = true; 
+    is_simple = true;
   elseif (strncmpi (args.delimitertype, "regularexpression", length_deltype))
-    is_simple = false; 
+    is_simple = false;
   else
     error ("strsplit:invalid_delimitertype", "strsplit: Invalid DELIMITERTYPE");
   endif
@@ -298,8 +298,8 @@ endfunction
 %! assert (strsplit ("aaa", "a"), {"", ""})
 
 ## Bug #44641
-%!assert (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"}) 
-%!assert (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"}) 
+%!assert (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})
+%!assert (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"})
 
 ## Test input validation
 %!error strsplit ()

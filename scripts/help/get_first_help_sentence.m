@@ -24,7 +24,7 @@
 ##
 ## The first sentence is defined as the text after the function declaration
 ## until either the first period (".") or the first appearance of two
-## consecutive newlines ("\n\n").  The text is truncated to a maximum length of 
+## consecutive newlines ("\n\n").  The text is truncated to a maximum length of
 ## @var{max_len}, which defaults to 80.
 ##
 ## The optional output argument @var{status} returns the status reported by

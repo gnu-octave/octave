@@ -48,7 +48,7 @@
 ## @end example
 ##
 ## Note that the result is a char array or cell array of strings, not the
-## variables themselves.  To define a variable, @code{eval()} can be used. 
+## variables themselves.  To define a variable, @code{eval()} can be used.
 ## The following trivial example sets @code{x} to @code{42}.
 ##
 ## @example

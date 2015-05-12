@@ -7,7 +7,7 @@ EXTRA_DIST += \
   graphics/images/select.png \
   graphics/images/zoom-in.png \
   graphics/images/zoom-out.png \
-  $(octave_gui_graphics_UI) 
+  $(octave_gui_graphics_UI)
 
 octave_gui_MOC += \
   graphics/moc-annotation-dialog.cc \

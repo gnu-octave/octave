@@ -5357,13 +5357,13 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-  
-    void add_dependent_obj (graphics_handle gh) 
+
+    void add_dependent_obj (graphics_handle gh)
     { dependent_obj_list.push_back (gh); }
 
-    // FIXME: the list may contain duplicates. 
-    //        Should we return only unique elements? 
-    const std::list<graphics_handle> get_dependent_obj_list (void) 
+    // FIXME: the list may contain duplicates.
+    //        Should we return only unique elements?
+    const std::list<graphics_handle> get_dependent_obj_list (void)
     { return dependent_obj_list; }
 
     // See the genprops.awk script for an explanation of the

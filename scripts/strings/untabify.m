@@ -24,7 +24,7 @@
 ##
 ## The input, @var{t}, may be either a 2-D character array, or a cell array of
 ## character strings.  The output is the same class as the input.
-## 
+##
 ## The tab width is specified by @var{tw}, and defaults to eight.
 ##
 ## If the optional argument @var{deblank} is true, then the spaces will be

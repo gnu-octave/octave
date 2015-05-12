@@ -60,7 +60,7 @@ annotation_dialog::init ()
            this, SLOT (button_clicked (QAbstractButton *)));
 
 
-  connect (ui->edit_string, SIGNAL (textChanged (const QString&)), 
+  connect (ui->edit_string, SIGNAL (textChanged (const QString&)),
            this, SLOT (edit_string_changed (const QString&)));
 
   connect (ui->btn_color, SIGNAL (clicked ()),
@@ -127,7 +127,7 @@ annotation_dialog::get_gui_props ()
   position(2) = ui->sb_width->value ();
   position(3) = ui->sb_height->value ();
   props.append (ovl ("textbox", position));
- 
+
   props.append (ovl ("string", ui->edit_string->text ().toStdString ()));
   props.append (ovl ("fitboxtotext", ui->cb_fit_box_to_text->isChecked() ? "on" : "off" ));
   props.append (ovl ("units", ui->cb_units->currentText ().toStdString () ));
@@ -179,14 +179,14 @@ annotation_dialog::set_gui_props ()
       else if (name == "string")
         {
           // FIXME: handle if is array of strings ?
-          ui->edit_string->setText (props(2*i +1).string_value ().c_str ()); 
+          ui->edit_string->setText (props(2*i +1).string_value ().c_str ());
         }
       else if (name == "fitboxtotext")
         {
           ui->cb_fit_box_to_text->setChecked ( props(1*i +1).string_value () == "on" );
         }
       else if (name == "units")
-        { 
+        {
           ui->cb_units->setCurrentIndex ( ui->cb_units->findText(props(1*i +1).string_value ().c_str ()) );
         }
       else if (name == "horizontalalignment")
@@ -229,7 +229,7 @@ annotation_dialog::set_gui_props ()
 
   edit_string_changed (ui->edit_string->text ());
 }
- 
+
 void
 annotation_dialog::edit_string_changed (const QString &str)
 {
@@ -243,7 +243,7 @@ annotation_dialog::prompt_for_color ()
   if (widg)
     {
       QColor color = widg->palette ().color (QPalette::Button);
- 
+
       color = QColorDialog::getColor(color, this);
 
       if (color.isValid ())
@@ -253,7 +253,7 @@ annotation_dialog::prompt_for_color ()
         QString css = QString ("background-color: %1; border: 1px solid %2;")
                 .arg (color.name ())
                 .arg ("#000000");
-  
+
         widg->setStyleSheet (css);
         widg->update ();
       }

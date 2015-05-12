@@ -168,7 +168,7 @@ DEFUNX ("exec", Fexec, args, ,
 Replace current process with a new process.\n\
 \n\
 Calling @code{exec} without first calling @code{fork} will terminate your\n\
-current Octave process and replace it with the program named by @var{file}. \n\
+current Octave process and replace it with the program named by @var{file}.\n\
 For example,\n\
 \n\
 @example\n\
@@ -1386,7 +1386,7 @@ This value may not be meaningful on all systems.\n\
 \n\
 If the returned value of @var{pid} is greater than 0, it is the process ID\n\
 of the child process that exited.  If an error occurs, @var{pid} will be\n\
-less than zero and @var{msg} will contain a system-dependent error message. \n\
+less than zero and @var{msg} will contain a system-dependent error message.\n\
 The value of @var{status} contains additional system-dependent information\n\
 about the subprocess that exited.\n\
 @seealso{WCONTINUE, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED, WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}\n\
@@ -1538,7 +1538,7 @@ DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
 Given @var{status} from a call to @code{waitpid}, return\n\
 true if the child produced a core dump.\n\
 \n\
-This function should only be employed if @code{WIFSIGNALED} returned true. \n\
+This function should only be employed if @code{WIFSIGNALED} returned true.\n\
 The macro used to implement this function is not specified in POSIX.1-2001\n\
 and is not available on some Unix implementations (e.g., AIX, SunOS).\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\

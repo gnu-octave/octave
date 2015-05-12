@@ -108,7 +108,7 @@ public:
 
   void do_execute_command_in_terminal (const std::string& command);
 
-  void do_set_workspace (bool top_level, bool debug, 
+  void do_set_workspace (bool top_level, bool debug,
                          const std::list<workspace_element>& ws);
 
   void do_clear_workspace (void);

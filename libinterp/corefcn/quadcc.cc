@@ -1496,7 +1496,7 @@ using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.\n\
 \n\
 @var{f} is a function handle, inline function, or string containing the name\n\
 of the function to evaluate.  The function @var{f} must be vectorized and\n\
-must return a vector of output values if given a vector of input values. \n\
+must return a vector of output values if given a vector of input values.\n\
 For example,\n\
 \n\
 @example\n\

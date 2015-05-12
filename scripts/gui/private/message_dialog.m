@@ -68,7 +68,7 @@ function retval = message_dialog (caller, msg, title = "", icon, createmode)
         error ("%s: CREATEMODE is not a valid type", caller);
     endswitch
   endif
-  
+
   if (__octave_link_enabled__ ())
     retval = __octave_link_message_dialog__ (icon, msg, title);
   elseif (__have_feature__ ("JAVA"))

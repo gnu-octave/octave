@@ -55,7 +55,7 @@ function [n, c] = normest (A, tol = 1e-6)
   tol = max (tol, eps (class (A)));
   ## Set random number generator to depend on target matrix
   v = rand ("state");
-  rand ("state", trace (A));
+  rand ("state", full (trace (A)));
   ncols = columns (A);
   ## Randomize y to avoid bad guesses for important matrices.
   y = rand (ncols, 1);

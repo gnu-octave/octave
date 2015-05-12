@@ -2900,7 +2900,7 @@ Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
 \n\
 Note that Octave tends to crop unused memory at the first opportunity\n\
 for sparse objects.  Thus, in general the value of @code{nzmax} will be the\n\
-the same as @code{nnz} except for some cases of user-created sparse objects.\n\
+same as @code{nnz} except for some cases of user-created sparse objects.\n\
 @seealso{nnz, spalloc, sparse}\n\
 @end deftypefn")
 {
@@ -4490,8 +4490,8 @@ Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
 to the IEEE representation for positive infinity.\n\
 \n\
 Infinity is produced when results are too large to be represented using the\n\
-the IEEE floating point format for numbers.  Two common examples which\n\
-produce infinity are division by zero and overflow.\n\
+IEEE floating point format for numbers.  Two common examples which produce\n\
+infinity are division by zero and overflow.\n\
 \n\
 @example\n\
 @group\n\

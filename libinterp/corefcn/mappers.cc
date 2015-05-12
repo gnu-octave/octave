@@ -1331,7 +1331,7 @@ DEFUN (isinf, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
-are infinite and false where they are not.\n\
+infinite and false where they are not.\n\
 \n\
 For example:\n\
 \n\

@@ -50,7 +50,7 @@
 ## length of @var{lenn}.
 ##
 ## The optional return value @var{lev} is a vector with the Z values of
-## of the contour levels.
+## the contour levels.
 ##
 ## Example:
 ##

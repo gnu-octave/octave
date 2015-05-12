@@ -64,11 +64,11 @@ function y = regexptranslate (op, s)
 
   op = tolower (op);
   if (strcmp ("wildcard", op))
-    y = regexprep (regexprep (regexprep (s, '\.', '\.'),
-                                            '\*', '.*'),
-                                            '\?', '.');
+    y = strrep (strrep (strrep (s, '.', '\.'),
+                                   '*', '.*'),
+                                   '?', '.');
   elseif (strcmp ("escape", op))
-    y = regexprep (s, '([^\w])', '\\$1');
+    y = regexprep (s, '([][(){}.*+?^$|\\])', '\\$1');
   else
     error ("regexptranslate: invalid operation OP");
   endif
@@ -77,7 +77,7 @@ endfunction
 
 
 %!assert (regexptranslate ("wildcard", "/a*b?c."), "/a.*b.c\\.")
-%!assert (regexptranslate ("escape", '$.?[abc]'), '\$\.\?\[abc\]')
+%!assert (regexptranslate ("escape", '^.?[abc]$'), '\^\.\?\[abc\]\$')
 
 ## Test input validation
 %!error <Invalid call to regexptranslate> regexptranslate ()

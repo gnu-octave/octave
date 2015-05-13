@@ -908,7 +908,7 @@
     <message>
         <location line="-318"/>
         <source>Octave Files (*.m);;All Files (*)</source>
-        <translation>Octave ファイル;;全てのファイル (*)</translation>
+        <translation>Octave ファイル (*.m);;全てのファイル (*)</translation>
     </message>
     <message>
         <location line="-40"/>
@@ -949,7 +949,7 @@ is already open in the editor</source>
     <message>
         <location line="+14"/>
         <source>Print...</source>
-        <translation type="unfinished">陰圧...</translation>
+        <translation>プリント...</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1111,22 +1111,22 @@ is already open in the editor</source>
     <message>
         <location line="+5"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished"></translation>
+        <translation>単語の始まりまで削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished"></translation>
+        <translation>単語の終わりまで削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished"></translation>
+        <translation>行の始まりまで削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished"></translation>
+        <translation>行末まで削除</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1141,22 +1141,22 @@ is already open in the editor</source>
     <message>
         <location line="+5"/>
         <source>&amp;Show Completion List</source>
-        <translation type="unfinished"></translation>
+        <translation>補完リストの表示(&amp;s)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Format</source>
-        <translation>フォーマット (&amp;)</translation>
+        <translation>フォーマット (&amp;F)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>大文字を選択(&amp;U)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Lowercase Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>小文字を選択(&amp;L)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1236,7 +1236,7 @@ is already open in the editor</source>
     <message>
         <location line="+4"/>
         <source>Show &amp;Indentation Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>インデンテーションのガイドを表示 (&amp;I)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2217,7 +2217,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="-84"/>
         <source>Step In</source>
-        <translation type="unfinished"></translation>
+        <translation>ステップイン</translation>
     </message>
     <message>
         <location line="-152"/>
@@ -2232,7 +2232,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+153"/>
         <source>Step Out</source>
-        <translation type="unfinished"></translation>
+        <translation>ステップアウト</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -2257,7 +2257,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+3"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished">Octave 開発チーム</translation>
+        <translation>Octave 開発者のリソース</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -3030,7 +3030,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+489"/>
         <location filename="../src/ui-settings-dialog.h" line="+31"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;フォントの種類, サイズ (既定のサイズからの差), フォントのスタイル (ボールド(&lt;b&gt;b&lt;/b&gt;), イタリック(&lt;b&gt;i&lt;/b&gt;), 下線(&lt;b&gt;u&lt;/b&gt;)), テキストの色, 背景色 (後者について, マジェンダ (255,0,255) は既定の背景色のプレースホルダー).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -3198,7 +3198,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+106"/>
         <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Colors for variable attributes </source>
-        <translation type="unfinished"></translation>
+        <translation>変数の属性の色</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -3210,13 +3210,13 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+31"/>
         <location filename="../src/ui-settings-dialog.h" line="-18"/>
         <source>Select this option to prevent conflicts with readline shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Realineのショートカットとのコンフリクトを防ぐためにこのオプションを選択する</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Disable global shortcuts when terminal window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>端末のウィンドウがフォーカスされている時グローバルなショートカットを無効にする</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3264,7 +3264,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+10"/>
         <location filename="../src/ui-settings-dialog.h" line="-1"/>
         <source>Set 1 Default</source>
-        <translation type="unfinished"></translation>
+        <translation>セット 1 を既定にする</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3276,7 +3276,7 @@ Octave GUI はオープンできませんでした．</translation>
         <location line="+5"/>
         <location filename="../src/ui-settings-dialog.h" line="-1"/>
         <source>Set 2 Default</source>
-        <translation type="unfinished"></translation>
+        <translation>セット 2 を既定にする</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3702,22 +3702,22 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished"></translation>
+        <translation>単語の始まりまで削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished"></translation>
+        <translation>単語の終わりまで削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished"></translation>
+        <translation>行の始まりまで削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished"></translation>
+        <translation>行末まで削除</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3757,12 +3757,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Uppercase Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>選択部を大文字にする</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Lowercase Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>選択部を小文字にする</translation>
     </message>
     <message>
         <location line="+4"/>

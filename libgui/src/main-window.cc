@@ -1430,6 +1430,15 @@ main_window::construct (void)
       octave_link::post_event (this, &main_window::resize_command_window_callback);
 
       configure_shortcuts ();
+
+      // actions that should be available in floating dock widgets, too
+      QList<QAction *> action_list;
+      action_list.append (_copy_action);
+      action_list.append (_paste_action);
+      action_list.append (_select_all_action);
+      action_list.append (_undo_action);
+      emit add_actions_signal (action_list);  // signal for adding these actions
+
     }
 }
 

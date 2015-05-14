@@ -1476,17 +1476,26 @@ cdef_object_scalar::subsref (const std::string& type,
 
     case '(':
       {
-        refcount++;
+        const octave_value_list& ival = idx.front ();
 
+        refcount++;
         cdef_object this_obj (this);
 
-        Array<cdef_object> arr (dim_vector (1, 1), this_obj);
+        if (ival.empty ())
+          {
+            skip++;
+            retval(0) = to_ov (this_obj);
+          }
+        else
+          {
+            Array<cdef_object> arr (dim_vector (1, 1), this_obj);
 
-        cdef_object new_obj = cdef_object (new cdef_object_array (arr));
+            cdef_object new_obj = cdef_object (new cdef_object_array (arr));
 
-        new_obj.set_class (get_class ());
+            new_obj.set_class (get_class ());
 
-        retval = new_obj.subsref (type, idx, nargout, skip, cls, auto_add);
+            retval = new_obj.subsref (type, idx, nargout, skip, cls, auto_add);
+          }
       }
       break;
 
@@ -1626,15 +1635,16 @@ cdef_object_array::subsref (const std::string& type,
     case '(':
       {
         const octave_value_list& ival = idx.front ();
-        bool is_scalar = true;
-        Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
         if (ival.empty ())
           {
-            ::error ("can't index %s object(s) with empty parentheses",
-                     class_name ().c_str ());
+            refcount++;
+            retval(0) = to_ov (cdef_object (this));
             break;
           }
+
+        bool is_scalar = true;
+        Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
         for (int i = 0; ! error_state && i < ival.length (); i++)
           {

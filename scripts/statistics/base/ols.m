@@ -30,7 +30,7 @@
 ## @w{@math{y = x*b + e}} with
 ## @math{mean (e) = 0} and @math{cov (vec (e)) = kron (s, I)}.
 ## @end ifnottex
-##  where
+## where
 ## @tex
 ## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix,
 ## $b$ is a $k \times p$ matrix, and $e$ is a $t \times p$ matrix.

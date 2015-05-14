@@ -26,9 +26,9 @@
 
 ## reference:
 ## [1]  Andrew V. Knyazev, Merico E. Argentati:
-##   Principal Angles between Subspaces in an A-Based Scalar Product:
-##  Algorithms and Perturbation Estimates.
-##  SIAM Journal on Scientific Computing, Vol. 23 no. 6, pp. 2008-2040
+## Principal Angles between Subspaces in an A-Based Scalar Product:
+## Algorithms and Perturbation Estimates.
+## SIAM Journal on Scientific Computing, Vol. 23 no. 6, pp. 2008-2040
 ##
 ## other texts are also around...
 

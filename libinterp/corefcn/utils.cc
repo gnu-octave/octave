@@ -695,12 +695,7 @@ do_string_escapes (const std::string& s)
 
   return retval;
 }
-/*
-Escape sequences begin with a leading backslash (@qcode{"@xbackslashchar{}"})\n\
-followed by 1--3 characters (.e.g., @qcode{"@xbackslashchar{}n"} => newline).\n\
 
-
-   */
 DEFUN (do_string_escapes, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} do_string_escapes (@var{string})\n\

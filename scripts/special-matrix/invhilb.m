@@ -40,11 +40,11 @@
 ## @example
 ## @group
 ##
-##             (i+j)         /n+i-1\  /n+j-1\   /i+j-2\ 2
-##  A(i,j) = -1      (i+j-1)(       )(       ) (       )
-##                           \ n-j /  \ n-i /   \ i-2 /
+##            (i+j)         /n+i-1\  /n+j-1\   /i+j-2\ 2
+## A(i,j) = -1      (i+j-1)(       )(       ) (       )
+##                          \ n-j /  \ n-i /   \ i-2 /
 ##
-##         = p(i) p(j) / (i+j-1)
+##        = p(i) p(j) / (i+j-1)
 ##
 ## @end group
 ## @end example
@@ -54,9 +54,9 @@
 ##
 ## @example
 ## @group
-##              k  /k+n-1\   /n\
-##     p(k) = -1  (       ) (   )
-##                 \ k-1 /   \k/
+##          k  /k+n-1\   /n\
+## p(k) = -1  (       ) (   )
+##             \ k-1 /   \k/
 ## @end group
 ## @end example
 ##

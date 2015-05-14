@@ -352,7 +352,7 @@ function varargout = strread (str, format = "%f", varargin)
   ## Remove comments in str
   if (comment_flag)
     ## Expand 'eol_char' here, after option processing which may have set value
-    comment_end = regexprep (comment_end, "eol_char", eol_char);
+    comment_end = strrep (comment_end, "eol_char", eol_char);
     cstart = strfind (str, comment_start);
     cstop  = strfind (str, comment_end);
     ## Treat end of string as additional comment stop

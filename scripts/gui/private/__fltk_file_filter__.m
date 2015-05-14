@@ -37,7 +37,7 @@ function retval = __fltk_file_filter__ (file_filter)
     curr_ext = ostrsplit (curr_ext, ";");
 
     if (length (curr_ext) > 1)
-      curr_ext = regexprep (curr_ext, '\*\.', ',');
+      curr_ext = strrep (curr_ext, '*.', ',');
       curr_ext = strcat (curr_ext{:})(2 : end);
       curr_ext = strcat ("*.{", curr_ext, "}");
     else
@@ -48,8 +48,8 @@ function retval = __fltk_file_filter__ (file_filter)
 
     if (c == 2)
       curr_desc = file_filter{idx, 2};
-      curr_desc = regexprep (curr_desc, '\(', '<');
-      curr_desc = regexprep (curr_desc, '\)', '>');
+      curr_desc = strrep (curr_desc, '(', '<');
+      curr_desc = strrep (curr_desc, ')', '>');
     endif
 
     if (length (fltk_str) > 0)

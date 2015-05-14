@@ -2345,12 +2345,12 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         ## FIXME: The symbol font doesn't seem to support bold or italic
         ##if (bld)
         ##  if (it)
-        ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
+        ##    g = strrep (g, '/Symbol', '/Symbol-bolditalic');
         ##  else
-        ##    g = regexprep (g, '/Symbol', '/Symbol-bold');
+        ##    g = strrep (g, '/Symbol', '/Symbol-bold');
         ##  endif
         ##elseif (it)
-        ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
+        ##  g = strrep (g, '/Symbol', '/Symbol-italic');
         ##endif
         str = [str(1:s(i) - 1) g str(e(i) + 1:end)];
       elseif (strncmp (f, "rm", 2))
@@ -2406,12 +2406,12 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
             ## FIXME: The symbol font doesn't seem to support bold or italic
             ##if (bld)
             ##  if (it)
-            ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
+            ##    g = strrep (g, '/Symbol', '/Symbol-bolditalic');
             ##  else
-            ##    g = regexprep (g, '/Symbol', '/Symbol-bold');
+            ##    g = strrep (g, '/Symbol', '/Symbol-bold');
             ##  endif
             ##elseif (it)
-            ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
+            ##  g = strrep (g, '/Symbol', '/Symbol-italic');
             ##endif
             str = [str(1:s(i) - 1) g str(s(i) + length (flds{j}) + 1:end)];
             break;

@@ -113,7 +113,7 @@ function html_compare_plot_demos (toolkits, varargin)
           fprintf (fid, "<img src='%s' style='width: %dpx;'>", ...
                         ffn, in.column_width);
         else
-          err_fn = regexprep(ffn, ".png", ".err");
+          err_fn = strrep (ffn, ".png", ".err");
           if (! exist (err_fn, "file"))
             warning("File %s doesn't exist...", err_fn);
           else

@@ -225,7 +225,7 @@ opengl_selector::draw_image (const image::properties& props)
 
   p4(0) = xd(0) - x_pix_size/2;
   p4(1) = yd(1) + y_pix_size/2;
-  
+
   glBegin (GL_QUADS);
   glVertex3dv (p1.data ());
   glVertex3dv (p2.data ());

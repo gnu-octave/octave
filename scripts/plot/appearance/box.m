@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} box on
+## @deftypefn  {Command} {} box
+## @deftypefnx {Command} {} box on
 ## @deftypefnx {Command} {} box off
-## @deftypefnx {Command} {} box
 ## @deftypefnx {Function File} {} box (@var{hax}, @dots{})
 ## Control display of the axis border.
 ##

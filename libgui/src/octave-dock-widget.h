@@ -102,6 +102,8 @@ protected slots:
   // event filter for double clicks into the window decoration elements
   bool eventFilter(QObject *obj, QEvent *e);
 
+  virtual void add_actions (QList<QAction *> action_list);
+
 private slots:
 
   void change_floating (bool);

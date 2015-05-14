@@ -30,7 +30,7 @@
 ## is tested against the two-sided alternative @code{mean (@var{x}) !=
 ## @var{m}}.  If @var{alt} is @qcode{">"}, the one-sided alternative
 ## @code{mean (@var{x}) > @var{m}} is considered.  Similarly for @var{"<"},
-## the one-sided alternative @code{mean (@var{x}) < @var{m}} is considered. 
+## the one-sided alternative @code{mean (@var{x}) < @var{m}} is considered.
 ## The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.

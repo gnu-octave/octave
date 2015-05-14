@@ -50,7 +50,7 @@
 ## limited available physical memory or if you get Java memory errors.
 ##
 ## @qcode{"Total memory"} is what the operating system has currently assigned
-## to the JVM and depends on actual and active memory usage.  
+## to the JVM and depends on actual and active memory usage.
 ## @qcode{"Free memory"} is self-explanatory.  During operation of Java-based
 ## Octave functions the amount of Total and Free memory will vary, due to
 ## Java's own cleaning up and your operating system's memory management.

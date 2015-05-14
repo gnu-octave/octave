@@ -26,7 +26,7 @@
 ## an @var{n}-by-2 matrix containing the coordinates of the nodes of the graph.
 ##
 ## The optional parameter @var{line_style} defines the output style for the
-## plot.  Called with no output arguments the graph is plotted directly. 
+## plot.  Called with no output arguments the graph is plotted directly.
 ## Otherwise, return the coordinates of the plot in @var{x} and @var{y}.
 ## @seealso{treeplot, etreeplot, spy}
 ## @end deftypefn

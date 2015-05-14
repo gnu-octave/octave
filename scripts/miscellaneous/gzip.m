@@ -30,7 +30,7 @@
 ## directory.
 ##
 ## If @var{dir} is defined the compressed files are placed in this directory,
-## rather than the original directory where the uncompressed file resides. 
+## rather than the original directory where the uncompressed file resides.
 ## If @var{dir} does not exist it is created.
 ##
 ## The optional output @var{filelist} is a list of the compressed files.

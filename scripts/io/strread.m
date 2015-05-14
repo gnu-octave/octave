@@ -149,7 +149,7 @@
 ## processing of special characters like @qcode{"@xbackslashchar{}t"}.  The
 ## default value for whitespace is
 ## @c Note: the next line specifically has a newline which generates a space
-## @c       in the output of qcode, but keeps the next line < 80 characters. 
+## @c       in the output of qcode, but keeps the next line < 80 characters.
 ## @qcode{"
 ## @xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t"}
 ## (note the space).  Unless whitespace is set to @qcode{""} (empty) AND at

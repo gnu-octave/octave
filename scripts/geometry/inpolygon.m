@@ -81,7 +81,7 @@ function [in, on] = inpolygon (x, y, xv, yv)
     j = i;
   endfor
 
-  ## Matlab definition include both in polygon and on polygon points. 
+  ## Matlab definition include both in polygon and on polygon points.
   in |= on;
 
 endfunction

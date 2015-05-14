@@ -31,7 +31,7 @@
 ## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the null
 ## is tested against the two-sided alternative @nospell{@code{@var{rr} *
 ## @var{b} != @var{r}}}.  If @var{alt} is @qcode{">"}, the one-sided
-## alternative @nospell{@code{@var{rr} * @var{b} > @var{r}}} is used. 
+## alternative @nospell{@code{@var{rr} * @var{b} > @var{r}}} is used.
 ## Similarly for @var{"<"}, the one-sided alternative @nospell{@code{@var{rr}
 ## * @var{b} < @var{r}}} is used.  The default is the two-sided case.
 ##

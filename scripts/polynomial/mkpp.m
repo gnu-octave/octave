@@ -25,7 +25,7 @@
 ##
 ## @var{breaks} must be a vector of strictly increasing values.  The number of
 ## intervals is given by @code{@var{ni} = length (@var{breaks}) - 1}.
-## 
+##
 ## When @var{m} is the polynomial order @var{coefs} must be of size:
 ## @var{ni} x @var{m} + 1.
 ##

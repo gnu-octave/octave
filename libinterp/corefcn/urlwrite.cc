@@ -310,7 +310,7 @@ The full path of the downloaded file is returned in @var{f}.\n\
 \n\
 The variable @var{success} is 1 if the download was successful,\n\
 otherwise it is 0 in which case @var{message} contains an error message.\n\
- \n\
+\n\
 If no output argument is specified and an error occurs, then the error is\n\
 signaled through Octave's error handling mechanism.\n\
 \n\

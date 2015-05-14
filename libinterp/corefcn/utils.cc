@@ -303,7 +303,7 @@ the loadpath for element of the cell array and return the first that\n\
 matches.\n\
 \n\
 If the second optional argument @qcode{\"all\"} is supplied, return a cell\n\
-array containing the list of all files that have the same name in the path. \n\
+array containing the list of all files that have the same name in the path.\n\
 If no files are found, return an empty cell array.\n\
 @seealso{file_in_path, dir_in_loadpath, path}\n\
 @end deftypefn")
@@ -382,7 +382,7 @@ If the second argument is a cell array of strings, search each directory of\n\
 the path for element of the cell array and return the first that matches.\n\
 \n\
 If the third optional argument @qcode{\"all\"} is supplied, return a cell\n\
-array containing the list of all files that have the same name in the path. \n\
+array containing the list of all files that have the same name in the path.\n\
 If no files are found, return an empty cell array.\n\
 @seealso{file_in_loadpath, dir_in_loadpath, path}\n\
 @end deftypefn")

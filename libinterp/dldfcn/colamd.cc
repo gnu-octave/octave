@@ -461,7 +461,7 @@ For a symmetric positive definite matrix @var{S}, returns the permutation\n\
 vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
 sparser Cholesky@tie{}factor than @var{S}.\n\
 \n\
-Sometimes @code{symamd} works well for symmetric indefinite matrices too.  \n\
+Sometimes @code{symamd} works well for symmetric indefinite matrices too. \n\
 The matrix @var{S} is assumed to be symmetric; only the strictly lower\n\
 triangular part is referenced.  @var{S} must be square.\n\
 \n\

@@ -48,10 +48,10 @@
 ## @item assert (@var{observed}, @var{expected}, @var{tol})
 ## Produce an error if observed is not the same as expected but equality
 ## comparison for numeric data uses a tolerance @var{tol}.
-## 
+##
 ## If @var{tol} is positive then it is an absolute tolerance which will produce
 ## an error if @code{abs (@var{observed} - @var{expected}) > abs (@var{tol})}.
-## 
+##
 ## If @var{tol} is negative then it is a relative tolerance which will produce
 ## an error if @code{abs (@var{observed} - @var{expected}) >
 ## abs (@var{tol} * @var{expected})}.

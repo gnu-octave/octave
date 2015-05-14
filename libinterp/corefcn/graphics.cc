@@ -3102,7 +3102,7 @@ base_properties::update_uicontextmenu (void) const
 {
   if (uicontextmenu.get ().is_empty ())
     return;
-  
+
   graphics_object obj = gh_manager::get_object (uicontextmenu.get ());
   if (obj && obj.isa ("uicontextmenu"))
     {
@@ -3233,7 +3233,7 @@ base_graphics_object::remove_all_listeners (void)
     }
 }
 
-void 
+void
 base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def, const std::string go_name) const
 {
   property_list local_defaults = get_defaults_list ();
@@ -8841,14 +8841,14 @@ hggroup::update_axis_limits (const std::string& axis_type)
 // ---------------------------------------------------------------------
 
 uicontextmenu::~uicontextmenu (void)
-{ 
+{
   std::list<graphics_handle> lst = xproperties.get_dependent_obj_list ();
   std::list<graphics_handle>::const_iterator it;
-  
+
   for (it = lst.begin (); it != lst.end (); it++)
     {
       graphics_object go = gh_manager::get_object (*it);
-      
+
       if (go.valid_object () &&
           go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
         go.set ("uicontextmenu", Matrix ());

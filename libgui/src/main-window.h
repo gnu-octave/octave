@@ -105,6 +105,8 @@ signals:
   void selectAll_signal (void);
   void undo_signal (void);
 
+  void add_actions_signal (QList <QAction *> action_list);
+
 public slots:
 
   void focus_changed (QWidget *w_old, QWidget *w_new);

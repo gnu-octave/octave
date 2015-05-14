@@ -50,7 +50,7 @@ Create a string array from one or more numeric matrices, character\n\
 matrices, or cell arrays.\n\
 \n\
 Arguments are concatenated vertically.  The returned values are padded with\n\
-blanks as needed to make each row of the string array have the same length. \n\
+blanks as needed to make each row of the string array have the same length.\n\
 Empty input strings are significant and will concatenated in the output.\n\
 \n\
 For numerical input, each element is converted to the corresponding ASCII\n\
@@ -181,7 +181,7 @@ Create a character array from one or more numeric matrices, character\n\
 matrices, or cell arrays.\n\
 \n\
 Arguments are concatenated vertically.  The returned values are padded with\n\
-blanks as needed to make each row of the string array have the same length. \n\
+blanks as needed to make each row of the string array have the same length.\n\
 Unlike @code{char}, empty strings are removed and will not appear in the\n\
 output.\n\
 \n\

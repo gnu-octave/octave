@@ -37,7 +37,7 @@
 ##
 ## Compatibility Note: The optional argument @var{createmode} is accepted for
 ## @sc{matlab} compatibility, but is not implemented.
-## 
+##
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}
 ## @end deftypefn
 

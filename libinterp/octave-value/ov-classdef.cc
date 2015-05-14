@@ -3091,7 +3091,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                     prop.put (ait->first, ait->second);
 
                   // Install property access methods, if any. Remove the
-                  // accessor methods from the temporary storage map, so we can 
+                  // accessor methods from the temporary storage map, so we can
                   // detect which ones are invalid and do not correspond to a
                   // defined property.
 

@@ -36,7 +36,7 @@ namespace Ui
 
 class annotation_dialog : public QDialog
 {
-  Q_OBJECT 
+  Q_OBJECT
 public:
   explicit annotation_dialog (QWidget * parent, const octave_value_list &pr);
   ~annotation_dialog ();

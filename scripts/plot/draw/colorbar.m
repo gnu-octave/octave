@@ -180,7 +180,7 @@ function h = colorbar (varargin)
     obj = get (ax);
     obj.__cbar_hax__ = ax;
     position = obj.position;
-    
+
     hpar = ancestor (ax, "figure");
     clen = rows (get (hpar, "colormap"));
     cext = get (ax, "clim");

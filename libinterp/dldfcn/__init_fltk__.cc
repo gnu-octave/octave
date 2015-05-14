@@ -586,7 +586,7 @@ public:
             // if no pos yet, delay adding menu until after other menus
             int pos = kprop.get_position ();
             if (pos <= 0)
-              delayed_menus.push_back ((len - (ii + 1))); 
+              delayed_menus.push_back ((len - (ii + 1)));
             else
              {
                add_to_menu (kprop);
@@ -628,7 +628,7 @@ public:
             // if no pos yet, delay adding menu until after other menus
             int pos = kprop.get_position ();
             if (pos <= 0)
-              delayed_menus.push_back ((len - (ii + 1))); 
+              delayed_menus.push_back ((len - (ii + 1)));
             else
              {
                add_to_menu (kprop);

@@ -27,7 +27,7 @@
 ##
 ## The optional argument @var{fs} specifies the sample rate of the audio signal
 ## in Hz.
-## 
+##
 ## The optional argument @var{nbits} specifies the number of bits per sample
 ## to write to @var{filename}.
 ##

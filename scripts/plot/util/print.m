@@ -79,7 +79,7 @@
 ##   Octave is able to produce output for various printers, bitmaps, and
 ## vector formats by using Ghostscript.  For bitmap and printer output
 ## anti-aliasing is applied using Ghostscript's TextAlphaBits and
-## GraphicsAlphaBits options.  The default number of bits for each is 4. 
+## GraphicsAlphaBits options.  The default number of bits for each is 4.
 ## Allowed values for @var{N} are 1, 2, or 4.
 ##
 ## @item -d@var{device}

@@ -217,7 +217,7 @@ EditControl::textChanged (void)
   m_textChanged = true;
 }
 
-void 
+void
 EditControl::returnPressed (void)
 {
   QString txt = (m_multiLine

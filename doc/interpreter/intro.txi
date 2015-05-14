@@ -26,10 +26,9 @@ linear and nonlinear equations, numerical linear algebra, statistical
 analysis, and for performing other numerical experiments.  It may also
 be used as a batch-oriented language for automated data processing.
 
-Until recently GNU Octave provided a command-line interface with
-graphical results displayed in separate windows.  The current version
-(version 3.8, released in late 2013) also provides, by default, a
-graphical user interface.
+Until recently GNU Octave provided a command-line interface only with
+graphical plots displayed in separate windows.  However, by default
+the current version runs with a graphical user interface.
 
 GNU Octave is freely redistributable software.  You may redistribute
 it and/or modify it under the terms of the GNU General Public License
@@ -52,12 +51,12 @@ This document corresponds to Octave version @value{VERSION}.
 @section Running Octave
 
 On most systems, Octave is started with the shell command @samp{octave}.
-This, by default, starts the graphical user interface (GUI).  The central
-window in the GUI is the Octave command-line interface.  Octave displays
-an initial message and then a prompt indicating it is ready to accept
-input.  If you have chosen the traditional command-line interface only
-the command prompt appears.  In any case, you can immediately begin
-typing Octave commands.
+This starts the graphical user interface (GUI).  The central window in
+the GUI is the Octave command-line interface.  In this window Octave
+displays an initial message and then a prompt indicating it is ready to
+accept input.  If you have chosen the traditional command-line interface
+then only the command prompt appears in the same window that was running
+a shell.  In any case, you can immediately begin typing Octave commands.
 
 If you get into trouble, you can usually interrupt Octave by typing
 @kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets
@@ -67,7 +66,7 @@ prompt.
 
 @cindex exiting octave
 @cindex quitting octave
-To exit Octave, type @kbd{quit}, or @kbd{exit} at the Octave prompt.
+To exit Octave, type @kbd{quit} or @kbd{exit} at the Octave prompt.
 
 On systems that support job control, you can suspend Octave by sending
 it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
@@ -79,7 +78,7 @@ The following chapters describe all of Octave's features in detail, but
 before doing that, it might be helpful to give a sampling of some of its
 capabilities.
 
-If you are new to Octave, I recommend that you try these examples to
+If you are new to Octave, we recommend that you try these examples to
 begin learning Octave by using it.  Lines marked like so, @samp{octave:13>},
 are lines you type, ending each with a carriage return.  Octave will
 respond with an answer, or by displaying a graph.
@@ -356,12 +355,12 @@ To save a plot once it has been displayed on the screen, use the print
 command.  For example,
 
 @example
-print -deps foo.eps
+print -dpdf foo.pdf
 @end example
 
 @noindent
-will create a file called @file{foo.eps} that contains a rendering of
-the current plot in Encapsulated PostScript format.  The command
+will create a file called @file{foo.pdf} that contains a rendering of
+the current plot in Portable Document Format.  The command
 
 @example
 help print
@@ -393,12 +392,12 @@ because both forms of the documentation are created from the same input
 file.
 
 In order to get good help you first need to know the name of the command
-that you want to use.  This name of the function may not always be
+that you want to use.  The name of this function may not always be
 obvious, but a good place to start is to type @code{help --list}.
 This will show you all the operators, keywords, built-in functions,
 and loadable functions available in the current session of Octave.  An
 alternative is to search the documentation using the @code{lookfor}
-function.  This function is described in @ref{Getting Help}.
+function (described in @ref{Getting Help}).
 
 Once you know the name of the function you wish to use, you can get more
 help on the function by simply including the name as an argument to help.
@@ -413,7 +412,7 @@ will display the help text for the @code{plot} function.
 
 Octave sends output that is too long to fit on one screen through a
 pager like @code{less} or @code{more}.  Type a @key{RET} to advance one
-line, a @key{SPC} to advance one page, and @key{q} to exit the pager.
+line, a @key{SPC} to advance one page, and @key{q} to quit the pager.
 
 The part of Octave's help facility that allows you to read the complete
 text of the printed manual from within Octave normally uses a separate
@@ -445,7 +444,7 @@ in this font or form: @var{first-number}.  Commands that you type at the
 shell prompt appear in this font or form: @samp{octave --no-init-file}.
 Commands that you type at the Octave prompt sometimes appear in this font
 or form: @kbd{foo --bar --baz}.  Specific keys on your keyboard appear
-in this font or form: @key{ANY}.
+in this font or form: @key{RET}.
 
 @node Evaluation Notation
 @subsection Evaluation Notation
@@ -552,6 +551,9 @@ beginning of the line.
 The category---function, command, or whatever---is printed next to the
 right margin.
 @end iftex
+If there are multiple ways to invoke the function then each allowable
+form is listed.
+
 The description follows on succeeding lines, sometimes with examples.
 
 @menu
@@ -568,14 +570,25 @@ appears first.  It is followed on the same line by a list of parameters.
 The names used for the parameters are also used in the body of the
 description.
 
+After all of the calling forms have been enumerated, the next line is a
+concise one-sentence summary of the function.
+
+After the summary there may be documentation on the inputs and outputs,
+examples of function usage, notes about the algorithm used, and references
+to related functions.
+
 Here is a description of an imaginary function @code{foo}:
 
+@need 4000
 @deftypefn  {Function File} {} foo (@var{x})
 @deftypefnx {Function File} {} foo (@var{x}, @var{y})
 @deftypefnx {Function File} {} foo (@var{x}, @var{y}, @dots{})
 The function @code{foo} subtracts @var{x} from @var{y}, then adds the
-remaining arguments to the result.  If @var{y} is not supplied, then the
-number 19 is used by default.
+remaining arguments to the result.
+
+If @var{y} is not supplied, then the number 19 is used by default.
+
+Example:
 
 @example
 @group
@@ -595,6 +608,7 @@ foo (@var{w}, @var{x}, @var{y}, @dots{})
 @var{x} - @var{w} + @var{y} + @dots{}
 @end group
 @end example
+@b{See also:} bar
 @end deftypefn
 
 Any parameter whose name contains the name of a type (e.g.,
@@ -606,7 +620,7 @@ features common to parameters of several functions are described at the
 beginning.
 
 Functions in Octave may be defined in several different ways.  The
-category name for functions may include another name that indicates the
+category name for functions may include a tag that indicates the
 way that the function is defined.  These additional tags include
 
 @table @asis
@@ -641,13 +655,30 @@ Command descriptions have a format similar to function descriptions,
 except that the word `Function' is replaced by `Command'.  Commands are
 functions that may be called without surrounding their arguments in
 parentheses.  For example, here is the description for Octave's
-@code{cd} command:
+@code{diary} command:
 
-@deftypefn  {Command} {} cd dir
-@deftypefnx {Command} {} chdir dir
-Change the current working directory to @var{dir}.  For example,
-@kbd{cd ~/octave} changes the current working directory to
-@file{~/octave}.  If the directory does not exist, an error message is
-printed and the working directory is not changed.
+@need 4000
+@deftypefn  {Command} {} diary
+@deftypefnx {Command} {} diary on
+@deftypefnx {Command} {} diary off
+@deftypefnx {Command} {} diary @var{filename}
+Record a list of all commands @emph{and} the output they produce, mixed
+together just as they appear on the terminal.
+
+Valid options are:
+
+@table @asis
+@item on
+Start recording a session in a file called @file{diary} in the
+current working directory.
+
+@item off
+Stop recording the session in the diary file.
+
+@item @var{filename}
+Record the session in the file named @var{filename}.
+@end table
+
+With no arguments, @code{diary} toggles the current diary state.
+@seealso{history}
 @end deftypefn
-

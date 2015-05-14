@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*- 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{mingwpath} =} __w2mpth__ (@var{winpath})
 ## Convert a Windows-style relative or full path name to MinGW style.
 ##

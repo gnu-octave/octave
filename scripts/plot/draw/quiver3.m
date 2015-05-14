@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {@var{h} =} quiver3 (@dots{})
 ##
 ## Plot a 3-D vector field with arrows.
-## 
+##
 ## Plot the (@var{u}, @var{v}, @var{w}) components of a vector field in
 ## an (@var{x}, @var{y}, @var{z}) meshgrid.  If the grid is uniform then
 ## @var{x}, @var{y}, and @var{z} can be specified as vectors.

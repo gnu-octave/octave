@@ -367,17 +367,17 @@ function h = buildannot (hax, objtype, pos)
 
       linemenu (hui, h);
       set (hli, "uicontextmenu", hui);
-      
+
       ## create patch(s) and text
       if (strcmp (objtype, "arrow"))
         [x, y] = arrowcoordinates (h);
         hpa = patch (x, y, get (h, "color"), "parent", h,
                     "edgecolor",  get (h, "color"));
         update_arrow (h, {}, "position", hpa);
-        
+
         arrowmenu (hui, h);
         set (hpa, "uicontextmenu", hui);
-        
+
       elseif (strcmp (objtype, "doublearrow"))
         [x, y] = arrowcoordinates (h, 1);
         hpa = patch (x, y, get (h, "color"), "parent", h,
@@ -388,10 +388,10 @@ function h = buildannot (hax, objtype, pos)
                     "edgecolor",  get (h, "color"));
 
         update_arrow (h, {}, "position", hpa);
-        
+
         dblarrowmenu (hui, h);
         set (hpa, "uicontextmenu", hui);
-        
+
       elseif (strcmp (objtype, "textarrow"))
         [x, y] = arrowcoordinates (h);
         hpa = patch (x, y, get (h, "color"), "parent", h,
@@ -412,7 +412,7 @@ function h = buildannot (hax, objtype, pos)
         textmenu (hui, h);
         set (hpa, "uicontextmenu", hui);
         set (hte, "uicontextmenu", hui);
-        
+
       endif
 
       ## updaters
@@ -513,7 +513,7 @@ function h = buildannot (hax, objtype, pos)
       for ii = 1:numel (propnames)
         update_textbox (h, {}, propnames{ii}, [hte hpa]);
       endfor
-      
+
       textboxmenu (hui, h);
       set (hpa, "uicontextmenu", hui);
       set (hte, "uicontextmenu", hui);
@@ -534,7 +534,7 @@ function h = buildannot (hax, objtype, pos)
 endfunction
 
 function props = lineprops (varargin)
-  ## FIXME: Use "axesx(y)lim" instead of "linex(y)data" 
+  ## FIXME: Use "axesx(y)lim" instead of "linex(y)data"
   props = {"color", "color", [0 0 0], ...
            "linestyle",  "linelinestyle", "-", ...
            "linewidth", "linelinewidth", 0.5, ...
@@ -552,11 +552,11 @@ endfunction
 
 function linemenu (hui, hpar)
   hm = uimenu ("parent", hui, "label", "Line");
-  
+
   ## Color
   vals = basecolors ();
   addbasemenu (hm, hpar, "Color", vals);
-  
+
 
   ## Linestyle
   vals = set (hpar, "linestyle");
@@ -578,7 +578,7 @@ endfunction
 
 function arrowmenu (hui, hpar)
   hm = uimenu ("parent", hui, "label", "Arrowhead");
-  
+
   ## Headlength/width
   vals = 6:2:16;
   addbasemenu (hm, hpar, "headlength", vals, "Length");
@@ -604,7 +604,7 @@ endfunction
 function dblarrowmenu (hui, hpar)
   hm1 = uimenu ("parent", hui, "label", "Arrowhead #1");
   hm2 = uimenu ("parent", hui, "label", "Arrowhead #2");
-  
+
   ## Headlength/width
   vals = 6:2:16;
   addbasemenu (hm1, hpar, "head1length", vals, "Length");
@@ -648,9 +648,9 @@ function stringdlg (hpar, prop)
     prompt = "";
     def = {def};
   endif
-  
+
   cstr = inputdlg (prompt, prop, 1, def);
-  
+
   if (! isempty (cstr))
     set (hpar, prop, cstr)
   endif
@@ -663,7 +663,7 @@ function textmenu (hui, hpar)
   prop = "String";
   fcn = @() stringdlg (hpar, prop);
   uimenu (hm, "label", prop, "callback", fcn);
-  
+
   ## Font properties
   prop = "textcolor";
   vals = basecolors ();
@@ -680,7 +680,7 @@ function textmenu (hui, hpar)
   prop = "textrotation";
   vals = 0:90:270;
   addbasemenu (hm, hpar, prop, vals, "Rotation");
-  
+
   prop = "horizontalalignment";
   vals = set (hpar, prop);
   addbasemenu (hm, hpar, prop, vals, "Horizontal Alignment", ...
@@ -690,7 +690,7 @@ function textmenu (hui, hpar)
   addbasemenu (hm, hpar, prop, vals, "Vertical Alignment");
 
   ## FIXME: Add text background properties when they are supported
-  
+
   prop = "interpreter";
   vals = set (hpar, prop);
   addbasemenu (hm, hpar, prop, vals, "Interpreter", ...
@@ -724,11 +724,11 @@ endfunction
 function textboxmenu (hui, hpar)
   ## Text properties
   hm1 = uimenu ("parent", hui, "label", "Text");
-  
+
   prop = "String";
   fcn = @() stringdlg (hpar, prop);
   uimenu (hm1, "label", prop, "callback", fcn);
-  
+
   prop = "Color";
   vals = basecolors ();
   addbasemenu (hm1, hpar, prop, vals);
@@ -741,7 +741,7 @@ function textboxmenu (hui, hpar)
   prop = "fontweight";
   vals = set (hpar, prop);
   addbasemenu (hm1, hpar, prop, vals, "Weight");
-  
+
   prop = "horizontalalignment";
   vals = set (hpar, prop);
   addbasemenu (hm1, hpar, prop, vals, "Horizontal Alignment", ...
@@ -752,7 +752,7 @@ function textboxmenu (hui, hpar)
   prop = "Margin";
   vals = 2:2:10;
   addbasemenu (hm1, hpar, prop, vals);
-  
+
   prop = "interpreter";
   vals = set (hpar, prop);
   addbasemenu (hm1, hpar, prop, vals, "Interpreter", ...
@@ -760,7 +760,7 @@ function textboxmenu (hui, hpar)
 
   ## Background properties
   hm2 = uimenu ("parent", hui, "label", "Background");
-  
+
   prop = "fitboxtotext";
   vals = set (hpar, prop);
   addbasemenu (hm2, hpar, prop, vals, "Fit box to text");
@@ -813,7 +813,7 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
   if (isempty (mainlabel))
     mainlabel = pname;
   endif
-  
+
   h = uimenu ("parent", hm, "label", mainlabel);
 
   is_numeric = ! iscell (vals);
@@ -826,7 +826,7 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
       val = vals(ii);
       label = num2str (val);
     endif
-    
+
     fcn = @() set (hpar, pname, val);
     htmp(ii) = uimenu (h, "label", label, "callback", fcn);
   endfor
@@ -840,7 +840,7 @@ function handle_check (h, dummy, hmenus, prop, is_numeric)
   if (is_numeric)
     current = num2str (current);
   endif
-  
+
   idx = strcmp (vals, current);
   set (hmenus(idx), "checked", "on");
   set (hmenus(! idx), "checked", "off");

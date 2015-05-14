@@ -137,7 +137,7 @@ private:
 
     shortcut_t (const shortcut_t& x)
       : tree_item (x.tree_item), description (x.description),
-        settings_key (x.settings_key), 
+        settings_key (x.settings_key),
         actual_sc (new QKeySequence[2]), default_sc (new QKeySequence[2])
     {
       actual_sc[0] = x.actual_sc[0];

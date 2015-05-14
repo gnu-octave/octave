@@ -336,7 +336,7 @@ Return a vector of indices of nonzero elements of a matrix, as a row if\n\
 @var{x} is a row vector or as a column otherwise.\n\
 \n\
 To obtain a single index for each matrix element, Octave pretends that the\n\
-columns of a matrix form one long vector (like Fortran arrays are stored). \n\
+columns of a matrix form one long vector (like Fortran arrays are stored).\n\
 For example:\n\
 \n\
 @example\n\

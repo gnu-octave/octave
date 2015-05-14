@@ -27,7 +27,7 @@
 ## The precision of the values is given by @var{n}.  If @var{n} is a scalar
 ## then both real and imaginary parts of the matrix are printed to the same
 ## precision.  Otherwise @code{@var{n}(1)} defines the precision of the real
-## part and @code{@var{n}(2)} defines the precision of the imaginary part. 
+## part and @code{@var{n}(2)} defines the precision of the imaginary part.
 ## The default for @var{n} is 15.
 ##
 ## If the argument @qcode{"class"} is given then the class of @var{x} is

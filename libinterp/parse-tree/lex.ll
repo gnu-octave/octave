@@ -2893,16 +2893,9 @@ octave_base_lexer::handle_identifier (void)
 
   std::string tok = yytxt;
 
-  // If tok is a keyword token, then is_keyword_token will set
-  // at_beginning_of_statement.  For example, if tok is an IF
-  // token, then at_beginning_of_statement will be false.
-
-  int kw_token = is_keyword_token (tok);
-
   // If we are expecting a structure element, avoid recognizing
   // keywords and other special names and return STRUCT_ELT, which is
-  // a string that is also a valid identifier.  But first, we have to
-  // decide whether to insert a comma.
+  // a string that is also a valid identifier.
 
   if (looking_at_indirect_ref)
     {
@@ -2913,21 +2906,14 @@ octave_base_lexer::handle_identifier (void)
 
       current_input_column += flex_yyleng ();
 
-      if (kw_token)
-        {
-          error ("structure fields may not be keywords");
-          return LEXICAL_ERROR;
-        }
-
-      if (at_beginning_of_statement)
-        {
-          error ("invalid syntax for structure reference");
-
-          return LEXICAL_ERROR;
-        }
-
       return STRUCT_ELT;
     }
+
+  // If tok is a keyword token, then is_keyword_token will set
+  // at_beginning_of_statement.  For example, if tok is an IF
+  // token, then at_beginning_of_statement will be false.
+
+  int kw_token = is_keyword_token (tok);
 
   if (looking_at_function_handle)
     {

@@ -69,12 +69,15 @@ function varargout = ginput (n = -1)
   ginput_accumulator (0, 0, 0, 0);  # initialize accumulator
 
   orig_windowbuttondownfcn = get (fig, "windowbuttondownfcn");
-  orig_ginput_keypressfcn = get (fig, "keypressfcn");
+  orig_keypressfcn = get (fig, "keypressfcn");
+  orig_closerequestfcn = get (fig, "closerequestfcn");
 
   unwind_protect
 
     set (fig, "windowbuttondownfcn", @ginput_windowbuttondownfcn);
     set (fig, "keypressfcn", @ginput_keypressfcn);
+    set (fig, "closerequestfcn", {@ginput_closerequestfcn,
+                                  orig_closerequestfcn});
 
     do
       if (strcmp (toolkit, "fltk"))
@@ -95,8 +98,11 @@ function varargout = ginput (n = -1)
     endif
 
   unwind_protect_cleanup
-    set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
-    set (fig, "keypressfcn", orig_ginput_keypressfcn);
+    if (isfigure (fig))
+      ## Only execute if window still exists
+      set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
+      set (fig, "keypressfcn", orig_keypressfcn);
+    endif
   end_unwind_protect
 
   varargout = {x, y, button};
@@ -123,12 +129,12 @@ function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
 
 endfunction
 
-function ginput_windowbuttondownfcn (src, button)
+function ginput_windowbuttondownfcn (~, button)
   point = get (gca (), "currentpoint");
   ginput_accumulator (1, point(1,1), point(1,2), button);
 endfunction
 
-function ginput_keypressfcn (src, evt)
+function ginput_keypressfcn (~, evt)
   point = get (gca (), "currentpoint");
   if (strcmp (evt.Key, "return"))
     ## Enter key stops ginput.
@@ -139,6 +145,11 @@ function ginput_keypressfcn (src, evt)
       ginput_accumulator (1, point(1,1), point(1,2), uint8 (character(1)));
     endif
   endif
+endfunction
+
+function ginput_closerequestfcn (hfig, ~, orig_closerequestfcn)
+  ginput_accumulator (2, NaN, NaN, NaN);  # Stop ginput
+  feval (orig_closerequestfcn);           # Close window with original fcn
 endfunction
 
 

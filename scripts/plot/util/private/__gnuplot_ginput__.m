@@ -63,8 +63,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
   if (use_mkfifo)
     gpin_name = tempname ();
 
-    ##Mode: 6*8*8 ==  0600
-    [err, msg] = mkfifo (gpin_name, 6*8*8);
+    [err, msg] = mkfifo (gpin_name, 600);
 
     if (err)
       error ("ginput: Can not open fifo (%s)", msg);

@@ -2204,6 +2204,8 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
   return retval;
 }
 
+// FIXME: This routine also exists verbatim in syscalls.cc.
+//        Maybe change to be a general utility routine.
 static int
 convert (int x, int ibase, int obase)
 {

@@ -819,15 +819,45 @@ The function outputs are described in the documentation for @code{stat}.\n\
   return retval;
 }
 
+// FIXME: This routine also exists verbatim in file-io.cc.
+//        Maybe change to be a general utility routine.
+static int
+convert (int x, int ibase, int obase)
+{
+  int retval = 0;
+
+  int tmp = x % obase;
+
+  if (tmp > ibase - 1)
+    ::error ("mkfifo: invalid digit");
+  else
+    {
+      retval = tmp;
+      int mult = ibase;
+      while ((x = (x - tmp) / obase))
+        {
+          tmp = x % obase;
+          if (tmp > ibase - 1)
+            {
+              ::error ("mkfifo: invalid digit");
+              break;
+            }
+          retval += mult * tmp;
+          mult *= ibase;
+        }
+    }
+
+  return retval;
+}
+
 DEFUNX ("mkfifo", Fmkfifo, args, ,
         "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{err} =} mkfifo (@var{name}, @var{mode})\n\
 @deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
 Create a FIFO special file named @var{name} with file mode @var{mode}.\n\
 \n\
-@var{mode} is interpreted as a decimal number (@emph{not} octal) and is\n\
-subject to umask processing.  The final calculated mode is\n\
-@code{@var{mode} - @var{umask}}.\n\
+@var{mode} is interpreted as an octal number and is subject to umask\n\
+processing.  The final calculated mode is @code{@var{mode} - @var{umask}}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
@@ -835,7 +865,7 @@ error message.\n\
 @seealso{pipe, umask}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value_list retval (2);
 
   retval(1) = std::string ();
   retval(0) = -1;
@@ -848,23 +878,28 @@ error message.\n\
         {
           std::string name = args(0).string_value ();
 
-          if (args(1).is_scalar_type ())
+          int octal_mode = args(1).int_value ();
+
+          if (! error_state)
             {
-              long mode = args(1).long_value ();
-
-              if (! error_state)
-                {
-                  std::string msg;
-
-                  int status = octave_mkfifo (name, mode, msg);
-
-                  retval(0) = status;
-
-                  if (status < 0)
-                    retval(1) = msg;
-                }
+              if (octal_mode < 0)
+                error ("mkfifo: MODE must be a positive integer value");
               else
-                error ("mkfifo: invalid MODE");
+                {
+                  int mode = convert (octal_mode, 8, 10);
+
+                  if (! error_state)
+                    {
+                      std::string msg;
+
+                      int status = octave_mkfifo (name, mode, msg);
+
+                      retval(0) = status;
+
+                      if (status < 0)
+                        retval(1) = msg;
+                    }
+                }
             }
           else
             error ("mkfifo: MODE must be an integer");
@@ -877,6 +912,19 @@ error message.\n\
 
   return retval;
 }
+
+/*
+
+## Test input validation
+%!error mkfifo ()
+%!error mkfifo ("abc")
+%!error mkfifo ("abc", 777, 123)
+%!error <FILE must be a string> mkfifo (123, 456)
+## FIXME: These tests should work, but lasterr is not being set correctly.
+#%!error <MODE must be an integer> mkfifo ("abc", {456})
+#%!error <MODE must be a positive integer value> mkfifo ("abc", -1)
+
+*/
 
 DEFUNX ("pipe", Fpipe, args, ,
         "-*- texinfo -*-\n\

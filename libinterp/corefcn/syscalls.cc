@@ -821,14 +821,18 @@ The function outputs are described in the documentation for @code{stat}.\n\
 
 DEFUNX ("mkfifo", Fmkfifo, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} mkfifo (@var{name}, @var{mode})\n\
+@deftypefn  {Built-in Function} {@var{err} =} mkfifo (@var{name}, @var{mode})\n\
 @deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
-Create a FIFO special file named @var{name} with file mode @var{mode}\n\
+Create a FIFO special file named @var{name} with file mode @var{mode}.\n\
+\n\
+@var{mode} is interpreted as a decimal number (@emph{not} octal) and is\n\
+subject to umask processing.  The final calculated mode is\n\
+@code{@var{mode} - @var{umask}}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
 error message.\n\
-@seealso{pipe}\n\
+@seealso{pipe, umask}\n\
 @end deftypefn")
 {
   octave_value_list retval;

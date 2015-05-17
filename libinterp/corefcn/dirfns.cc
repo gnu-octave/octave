@@ -230,7 +230,10 @@ If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
 character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
 system-dependent error message, and @var{msgid} contains a unique message\n\
 identifier.\n\
-@seealso{rmdir, pwd, cd}\n\
+\n\
+When creating a directory permissions will be set to\n\
+@code{0777 - @var{umask}}.\n\
+@seealso{rmdir, pwd, cd, umask}\n\
 @end deftypefn")
 {
   octave_value_list retval;

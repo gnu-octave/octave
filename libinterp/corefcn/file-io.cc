@@ -682,7 +682,10 @@ IEEE little endian format.\n\
 @noindent\n\
 however, conversions are currently only supported for @samp{native}\n\
 @samp{ieee-be}, and @samp{ieee-le} formats.\n\
-@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport}\n\
+\n\
+When opening a new file that does not yet exist, permissions will be set to\n\
+@code{0666 - @var{umask}}.\n\
+@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2239,7 +2242,13 @@ The parameter @var{mask} is an integer, interpreted as an octal number.\n\
 \n\
 If successful, returns the previous value of the mask (as an integer to be\n\
 interpreted as an octal number); otherwise an error message is printed.\n\
-@seealso{fopen, mkdir}\n\
+\n\
+The permission mask is a UNIX concept used when creating new objects on a\n\
+file system such as files, directories, or named FIFOs.  The object to be\n\
+created has base permissions in an octal number @var{mode} which are\n\
+modified according to the octal value of @var{mask}.  The final permissions\n\
+for the new object are @code{@var{mode} - @var{mask}}.\n\
+@seealso{fopen, mkdir, mkfifo}\n\
 @end deftypefn")
 {
   octave_value_list retval;

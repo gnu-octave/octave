@@ -608,6 +608,7 @@ foo (@var{w}, @var{x}, @var{y}, @dots{})
 @var{x} - @var{w} + @var{y} + @dots{}
 @end group
 @end example
+
 @b{See also:} bar
 @end deftypefn
 

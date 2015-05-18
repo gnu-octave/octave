@@ -102,7 +102,7 @@ public:
 
   void decrement (void) { --scalar; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
 private:
 
@@ -113,10 +113,10 @@ private:
 };
 
 void
-octave_integer::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_integer::print (std::ostream& os, bool pr_as_read_syntax)
 {
   os << scalar;
-  // octave_print_internal (os, scalar, pr_as_read_syntax);
+  newline (os);
 }
 
 #ifdef DEFUNOP_OP

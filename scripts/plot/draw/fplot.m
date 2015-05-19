@@ -60,10 +60,18 @@
 ## @end group
 ## @end example
 ##
-## Note: @code{fplot} works best with continuous functions.  Functions with
+## Programming Notes:
+##
+## @code{fplot} works best with continuous functions.  Functions with
 ## discontinuities are unlikely to plot well.  This restriction may be removed
 ## in the future.
-## @seealso{ezplot, plot}
+##
+## @code{fplot} requires that the function accept and return a vector argument.
+## Consider this when writing user-defined functions and use @code{.*},
+## @code{./}, etc.  See the function @code{vectorize} for potentially
+## converting inline or anonymous functions to vectorized versions.
+##  
+## @seealso{ezplot, plot, vectorize}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

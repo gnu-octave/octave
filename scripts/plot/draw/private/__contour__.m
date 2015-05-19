@@ -28,40 +28,42 @@ function [c, hg] = __contour__ (varargin)
 
   linespec.color = "auto";
   linespec.linestyle = "-";
-  for i = 3:2:nargin
-    arg = varargin{i};
-    if (ischar (arg) || iscellstr (arg))
-      [lspec, valid] = __pltopt__ ("__contour__", arg, false);
-      if (valid)
-        have_line_spec = true;
-        varargin(i) = [];
-        linespec = lspec;
-        if (isempty (linespec.color))
-          linespec.color = "auto";
-        endif
-        if (isempty (linespec.linestyle))
-          linespec.linestyle = "-";
-        endif
-        break;
-      endif
-    endif
-  endfor
-
   opts = {};
   i = 3;
-  while (i < length (varargin))
-    if (ischar (varargin{i}))
-      if (strcmpi (varargin{i}, "fill"))
-        filled = varargin{i+1};
-        varargin(i:i+1) = [];
-      elseif (strcmpi (varargin{i}, "linecolor"))
-        linespec.color = varargin{i+1};
-        varargin(i:i+1) = [];
-      else
-        opts(end+(1:2)) = varargin(i:i+1);
-        varargin(i:i+1) = [];
+  while (i <= length (varargin))
+    if (ischar (varargin{i}) || iscellstr (varargin{i}))
+      arg = varargin{i};
+      if (i < length (varargin))
+        if (strcmpi (arg, "fill"))
+          filled = varargin{i+1};
+          varargin(i:i+1) = [];
+          continue;
+        elseif (strcmpi (arg, "linecolor"))
+          linespec.color = varargin{i+1};
+          varargin(i:i+1) = [];
+          continue;
+        endif
       endif
-    else
+
+      [lspec, valid] = __pltopt__ ("__contour__", arg, false);
+      if (valid)
+        varargin(i) = [];
+        if (! isempty (lspec.color))
+          linespec.color = lspec.color;
+        endif
+        if (! isempty (lspec.linestyle))
+          linespec.linestyle = lspec.linestyle;
+        endif
+      else  # unrecognized option, pass unmodified in opts cell array
+        if (i < length (varargin))
+          opts(end+(1:2)) = varargin(i:i+1);
+          varargin(i:i+1) = [];
+        else
+          error ("__contour__: Uneven number of PROP/VAL pairs");
+        endif
+      endif
+
+    else  # skip numeric arguments
       i++;
     endif
   endwhile

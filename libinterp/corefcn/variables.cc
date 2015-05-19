@@ -395,6 +395,14 @@ symbol_exist (const std::string& name, const std::string& type)
   bool search_dir = type == "dir";
   bool search_file = type == "file";
   bool search_builtin = type == "builtin";
+  bool search_class = type == "class";
+
+  if (! (search_any || search_var || search_dir || search_file ||
+         search_builtin || search_class))
+    {
+      error ("exist: unrecognized type argument \"%s\"", type.c_str ());
+      return 0;
+    }
 
   if (search_any || search_var)
     {
@@ -682,6 +690,7 @@ not on the search path you should use some combination of the functions\n\
 %!warning <"class" type argument is not implemented> exist ("a", "class");
 %!error <TYPE must be a string> exist ("a", 1)
 %!error <NAME must be a string> exist (1)
+%!error <unrecognized type argument "foobar"> exist ("a", "foobar")
 
 */
 

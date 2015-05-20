@@ -97,6 +97,19 @@ function text = type (varargin)
       txt = sprintf ("%s is a dynamically-linked function", name);
     elseif (e == 5)
       txt = sprintf ("%s is a built-in function", name);
+    elseif (e == 103)
+      contents = __get_cmdline_fcn_txt__ (name);
+      if (isempty (contents))
+        txt = sprintf ("%s is a command-line function with no definition",
+                       name);
+      else
+        if (quiet)
+          txt = contents;
+        else
+          txt = sprintf ("%s is the command-line function:\n\n%s",
+                         name, contents);
+        endif
+      endif
     elseif (any (strcmp (__operators__ (), name)))
       txt = sprintf ("%s is an operator", name);
     elseif (any (strcmp (__keywords__ (), name)))

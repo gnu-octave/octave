@@ -1548,6 +1548,14 @@ public:
            ? p->second.find_user_function () : octave_value ();
   }
 
+  static octave_value find_cmdline_function (const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    return (p != fcn_table.end ())
+           ? p->second.find_cmdline_function () : octave_value ();
+  }
+
   static void install_cmdline_function (const std::string& name,
                                         const octave_value& fcn)
   {

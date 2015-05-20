@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pt-arg-list.h"
+#include "pt-pr-code.h"
 #include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -1803,6 +1804,44 @@ Undocumented internal function.\n\
           else
             error ("__dump_symtab_info__: expecting string or scope id");
         }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (__get_cmdline_fcn_txt__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} __get_cmdline_fcn_txt__ (@var{name})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+        {
+          octave_value ov = symbol_table::find_cmdline_function (name);
+
+          octave_user_function *f = ov.user_function_value ();
+
+          if (f)
+            {
+              std::ostringstream buf;
+
+              tree_print_code tpc (buf);
+
+              f->accept (tpc);
+
+              retval = buf.str ();
+            }
+        }
+      else
+        error ("__get_cmd_line_function_text__: expecting function name");
     }
   else
     print_usage ();

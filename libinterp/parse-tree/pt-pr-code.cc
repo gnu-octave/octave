@@ -329,7 +329,7 @@ tree_print_code::visit_octave_user_function (octave_user_function& fcn)
 
       cmd_list->accept (*this);
 
-      decrement_indent_level ();
+      // endfunction will decrement the indent level.
     }
 
   visit_octave_user_function_trailer (fcn);
@@ -719,6 +719,9 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 void
 tree_print_code::visit_no_op_command (tree_no_op_command& cmd)
 {
+  if (cmd.is_end_of_fcn_or_script ())
+    decrement_indent_level ();
+
   indent ();
 
   os << cmd.original_command ();
@@ -873,13 +876,7 @@ tree_print_code::visit_statement (tree_statement& stmt)
     {
       cmd->accept (*this);
 
-      if (! stmt.print_result ())
-        {
-          os << ";";
-          newline (" ");
-        }
-      else
-        newline ();
+      newline ();
     }
   else
     {

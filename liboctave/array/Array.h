@@ -249,11 +249,29 @@ public:
   void clear (octave_idx_type r, octave_idx_type c)
   { clear (dim_vector (r, c)); }
 
+  // Number of elements in the array. These are all synonyms.
   //@{
-  //! Number of elements in the array. These are all synonyms.
+  //! Number of elements in the array.
+  //! Synonymous with length(), nelem(), and numel().
   octave_idx_type capacity (void) const { return slice_len; }
+
+  //! Number of elements in the array.
+  /*! Synonymous with capacity(), nelem(), and numel().
+
+      @note
+      This is @em not the same as @c %length() at the Octave interpreter.
+      At the Octave interpreter, the function @c %length() returns the
+      length of the greatest dimension.  This method returns the total
+      number of elements.
+   */
   octave_idx_type length (void) const { return capacity (); }
+
+  //! Number of elements in the array.
+  //! Synonymous with capacity(), length(), and numel().
   octave_idx_type nelem (void) const { return capacity (); }
+
+  //! Number of elements in the array.
+  //! Synonymous with capacity(), length(), and nelem().
   octave_idx_type numel (void) const { return nelem (); }
   //@}
 

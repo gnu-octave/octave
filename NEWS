@@ -6,6 +6,12 @@ Summary of important user-visible changes for version 4.2:
     The *printf family of functions now supports octal and hex escape
     sequences in single-quoted strings for Matlab compatibility.
 
+ ** Special octal and hex escape sequences for the pattern and replacement
+    strings in regular expressions are now interpreted for Matlab compatibility.
+
+    octal: '\oNNN' or '\o{NNN}'
+    hex  : '\xNN'  or '\x{NN}'
+
  ** mkfifo now interprets the MODE argument as an octal, not decimal, integer.
     This is consistent with the equivalent shell command. 
 

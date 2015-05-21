@@ -77,13 +77,38 @@ do_regexp_ptn_string_escapes (const std::string& s)
               retval[++i] = 'b';
               break;
 
-#if 0
-// FIXME: To be complete, we need to handle \oN, \o{N}.
-//        The PCRE library already handles \N where N
-//        is an octal number.  New code needs to merely
-//        replace \oN or \o{N} with \N.
-            case 'o': // octal number
-#endif
+            case 'o': // octal input
+            {
+              bool bad_esc_seq = (j+1 >= len);
+
+              bool brace = false;
+              if (! bad_esc_seq && s[++j] == '{')
+                {
+                  brace = true;
+                  j++;
+                }
+
+              int tmpi = 0;
+              size_t k;
+              for (k = j; k < std::min (j+3+brace, len); k++)
+                {
+                  int digit = s[k] - '0';
+                  if (digit < 0 || digit > 7)
+                    break;
+                  tmpi <<= 3;
+                  tmpi += digit;
+                }
+              if (bad_esc_seq || (brace && s[k++] != '}'))
+                {
+                  bad_esc_seq = true;
+                  tmpi = 0;
+                  warning ("malformed octal escape sequence '\\o' --\
+ converting to '\\0'");
+                }
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
 
             default:  // pass escape sequence through
               retval[i] = '\\';
@@ -150,14 +175,75 @@ do_regexp_rep_string_escapes (const std::string& s)
               retval[i] = '\v';
               break;
 
-#if 0
-// FIXME: to be complete, we need to handle \oN, \o{N}, \xN, and
-// \x{N}.  Hex digits may be upper or lower case.  Brackets are
-// optional, so \x5Bz is the same as \x{5B}z.
+            case 'o': // octal input
+            {
+              bool bad_esc_seq = (j+1 >= len);
 
-            case 'o': // octal number
-            case 'x': // hex number
-#endif
+              bool brace = false;
+              if (! bad_esc_seq && s[++j] == '{')
+                {
+                  brace = true;
+                  j++;
+                }
+
+              int tmpi = 0;
+              size_t k;
+              for (k = j; k < std::min (j+3+brace, len); k++)
+                {
+                  int digit = s[k] - '0';
+                  if (digit < 0 || digit > 7)
+                    break;
+                  tmpi <<= 3;
+                  tmpi += digit;
+                }
+              if (bad_esc_seq || (brace && s[k++] != '}'))
+                {
+                  warning ("malformed octal escape sequence '\\o' --\
+ converting to '\\0'");
+                  tmpi = 0;
+                }
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
+
+            case 'x': // hex input
+            {
+              bool bad_esc_seq = (j+1 >= len);
+
+              bool brace = false;
+              if (! bad_esc_seq && s[++j] == '{')
+                {
+                  brace = true;
+                  j++;
+                }
+
+              int tmpi = 0;
+              size_t k;
+              for (k = j; k < std::min (j+2+brace, len); k++)
+                {
+                  if (! isxdigit (s[k]))
+                    break;
+
+                  tmpi <<= 4;
+                  int digit = s[k];
+                  if (digit >= 'a')
+                    tmpi += digit - 'a' + 10;
+                  else if (digit >= 'A')
+                    tmpi += digit - 'A' + 10;
+                  else
+                    tmpi += digit - '0';
+                }
+              if (bad_esc_seq || (brace && s[k++] != '}'))
+                {
+                  warning ("malformed hex escape sequence '\\x' --\
+ converting to '\\0'");
+                  tmpi = 0;
+                }
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
 
             default:  // pass escape sequence through
               retval[i] = '\\';

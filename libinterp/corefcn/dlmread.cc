@@ -474,11 +474,14 @@ fill empty fields.  The default is zero.\n\
       if (c1 >= c)
         c1 = c - 1;
 
-      // Now take the subset of the matrix.
-      if (iscmplx)
-        cdata = cdata.extract (0, c0, r1, c1);
-      else
-        rdata = rdata.extract (0, c0, r1, c1);
+      // Now take the subset of the matrix if there are any values.
+      if (i > 0 || j > 0)
+        {
+          if (iscmplx)
+            cdata = cdata.extract (0, c0, r1, c1);
+          else
+            rdata = rdata.extract (0, c0, r1, c1);
+        }
 
       if (iscmplx)
         retval(0) = cdata;

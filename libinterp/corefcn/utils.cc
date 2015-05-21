@@ -631,11 +631,7 @@ do_string_escapes (const std::string& s)
         {
           switch (s[++j])
             {
-            case '0':
-              retval[i] = '\0';
-              break;
-
-            case 'a':
+            case 'a': // alarm
               retval[i] = '\a';
               break;
 
@@ -674,6 +670,58 @@ do_string_escapes (const std::string& s)
             case '"': // double quote
               retval[i] = '"';
               break;
+
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7': // octal input
+            {
+              size_t k;
+              int tmpi = s[j] - '0';
+              for (k = j+1; k < std::min (j+3, len); k++)
+                {
+                  int digit = s[k] - '0';
+                  if (digit < 0 || digit > 7)
+                    break;
+                  tmpi <<= 3;
+                  tmpi += digit;
+                }
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
+
+            case 'x': // hex input
+            {
+              size_t k;
+              int tmpi = 0;
+              for (k = j+1; k < std::min (j+3, len); k++)
+                {
+                  if (! isxdigit (s[k]))
+                    break;
+
+                  tmpi <<= 4;
+                  int digit = s[k];
+                  if (digit >= 'a')
+                    tmpi += digit - 'a' + 10;
+                  else if (digit >= 'A')
+                    tmpi += digit - 'A' + 10;
+                  else
+                    tmpi += digit - '0';
+                }
+
+              if (k == j+1)
+                warning ("malformed hex escape sequence '\\x' --\
+ converting to '\\0'");
+
+              retval[i] = tmpi;
+              j = k - 1;
+              break;
+            }
 
             default:
               warning ("unrecognized escape sequence '\\%c' --\
@@ -745,9 +793,20 @@ Escape sequences begin with a leading backslash\n\
 %!assert (do_string_escapes ('\"double-quoted\"'), "\"double-quoted\"")
 %!assert (do_string_escapes ("\\\"double-quoted\\\""), "\"double-quoted\"")
 
+%!assert (do_string_escapes ('A\4B'), ["A" char(4) "B"])
+%!assert (do_string_escapes ('A\45B'), ["A" char(37) "B"])
+%!assert (do_string_escapes ('A\123B'), ["A" char(83) "B"])
+%!assert (sprintf ('\117\143\164\141\166\145'), "Octave")
+
+%!assert (do_string_escapes ('A\x4G'), ["A" char(4) "G"])
+%!assert (do_string_escapes ('A\x4AG'), ["A" char(74) "G"])
+%!assert (sprintf ('\x4f\x63\x74\x61\x76\x65'), "Octave")
+
 %!error do_string_escapes ()
 %!error do_string_escapes ("foo", "bar")
-%!error do_string_escapes (3)
+%!error <STRING argument> do_string_escapes (3)
+%!warning <malformed hex escape sequence> do_string_escapes ('\xG');
+%!warning <unrecognized escape sequence> do_string_escapes ('\G');
 */
 
 const char *

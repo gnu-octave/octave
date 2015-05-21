@@ -1,6 +1,11 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
+ ** Octal ('\NNN') and hex ('\xNN') escape sequences in single quoted
+    strings are now interpreted by the function do_string_escapes().
+    The *printf family of functions now supports octal and hex escape
+    sequences in single-quoted strings for Matlab compatibility.
+
  ** mkfifo now interprets the MODE argument as an octal, not decimal, integer.
     This is consistent with the equivalent shell command. 
 

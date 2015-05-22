@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "BaseControl.h"
 
 class QListWidget;
+class QListWidgetItem;
+class QModelIndex;
 
 namespace QtHandles
 {
@@ -42,12 +44,17 @@ namespace QtHandles
 
   protected:
     void update (int pId);
+    bool eventFilter (QObject* watched, QEvent* e);
+    void sendSelectionChange();
 
   private slots:
     void itemSelectionChanged (void);
+    void itemActivated (const QModelIndex &);
+    void itemPressed (QListWidgetItem*);
 
   private:
     bool m_blockCallback;
+    bool m_selectionChanged;
   };
 
 }

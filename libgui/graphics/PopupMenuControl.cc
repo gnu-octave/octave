@@ -58,7 +58,7 @@ namespace QtHandles
 
     update (uicontrol::properties::ID_VALUE);
 
-    connect (box, SIGNAL (currentIndexChanged (int)),
+    connect (box, SIGNAL (activated (int)),
              SLOT (currentIndexChanged (int)));
   }
 

@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QListWidget>
+#include <QEvent>
+#include <QMouseEvent>
 
 #include "Container.h"
 #include "ListBoxControl.h"
@@ -79,7 +81,7 @@ namespace QtHandles
   }
 
   ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
-    : BaseControl (go, list), m_blockCallback (false)
+    : BaseControl (go, list), m_blockCallback (false), m_selectionChanged (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 
@@ -109,11 +111,14 @@ namespace QtHandles
           }
       }
 
-    list->removeEventFilter (this);
     list->viewport ()->installEventFilter (this);
 
     connect (list, SIGNAL (itemSelectionChanged (void)),
              SLOT (itemSelectionChanged (void)));
+    connect (list, SIGNAL (activated (const QModelIndex &)),
+             SLOT (itemActivated (const QModelIndex &)));
+    connect (list, SIGNAL (itemPressed (QListWidgetItem*)),
+           SLOT (itemPressed (QListWidgetItem*)));
   }
 
   ListBoxControl::~ListBoxControl (void)
@@ -157,7 +162,7 @@ namespace QtHandles
   }
 
   void
-  ListBoxControl::itemSelectionChanged (void)
+  ListBoxControl::sendSelectionChange()
   {
     if (! m_blockCallback)
       {
@@ -173,7 +178,95 @@ namespace QtHandles
         gh_manager::post_set (m_handle, "value", octave_value (value), false);
         gh_manager::post_callback (m_handle, "callback");
       }
+
+      m_selectionChanged = false;
   }
 
+  void
+  ListBoxControl::itemSelectionChanged (void)
+  {
+    if (! m_blockCallback)
+      m_selectionChanged = true;
+  }
+
+  void 
+  ListBoxControl::itemActivated (const QModelIndex &)
+  {
+    m_selectionChanged = true;
+  }
+  void 
+  ListBoxControl::itemPressed (QListWidgetItem*)
+  {
+    m_selectionChanged = true;
+  }
+
+  bool 
+  ListBoxControl::eventFilter (QObject* watched, QEvent* e)
+  {
+    // listbox change
+    if (watched == m_qobject)
+      {
+        switch (e->type ())
+          {
+            case QEvent::KeyRelease:
+              if (m_selectionChanged)
+                sendSelectionChange ();
+              m_selectionChanged = false;
+              break;
+ 
+            default:
+              break;
+          } 
+          
+        return Object::eventFilter (watched, e);
+      }
+    // listbox viewport
+    else
+      {
+        bool override_return = false;
+        QListWidget* list = qWidget<QListWidget> ();
+
+        switch (e->type ())
+          {
+            case QEvent::MouseButtonPress: 
+              {
+                QMouseEvent* m = dynamic_cast<QMouseEvent*> (e);
+
+                if (m->button () & Qt::RightButton)
+                  override_return = true;
+                else
+                  {
+                    if(!list->indexAt(m->pos()).isValid()) override_return = true;
+                    m_selectionChanged = true;
+                  }
+                break;
+              }
+            case QEvent::MouseButtonRelease:
+              {
+                QMouseEvent* m = dynamic_cast<QMouseEvent*> (e);
+  
+                if (m->button () & Qt::RightButton)
+                  override_return = true;
+
+                else if(!list->indexAt(m->pos()).isValid()) 
+                  {
+                    list->setCurrentRow(list->count()-1); 
+                    override_return = true;
+                  }
+
+                if (m_selectionChanged)
+                  sendSelectionChange ();
+                m_selectionChanged = false;
+              
+                break;
+              }
+            default:
+              break;
+ 
+          }
+        return BaseControl::eventFilter (watched, e) || override_return;
+      }
+  }
 }
+
 

@@ -133,14 +133,12 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
     error ("griddata: unknown interpolation METHOD");
   endif
 
-  if (nargout == 3)
+  if (nargout > 1)
     rx = xi;
     ry = yi;
     rz = zi;
-  elseif (nargout == 1)
+  else
     rx = zi;
-  elseif (nargout == 0)
-    mesh (xi, yi, zi);
   endif
 
 endfunction
@@ -153,7 +151,8 @@ endfunction
 %! y = 2*rand (size (x)) - 1;
 %! z = sin (2*(x.^2 + y.^2));
 %! [xx,yy] = meshgrid (linspace (-1,1,32));
-%! griddata (x,y,z,xx,yy);
+%! zz = griddata (x,y,z,xx,yy);
+%! mesh (xx, yy, zz);
 %! title ("nonuniform grid sampled at 100 points");
 
 %!demo
@@ -163,7 +162,8 @@ endfunction
 %! y = 2*rand (size (x)) - 1;
 %! z = sin (2*(x.^2 + y.^2));
 %! [xx,yy] = meshgrid (linspace (-1,1,32));
-%! griddata (x,y,z,xx,yy);
+%! zz = griddata (x,y,z,xx,yy);
+%! mesh (xx, yy, zz);
 %! title ("nonuniform grid sampled at 1000 points");
 
 %!demo
@@ -173,7 +173,8 @@ endfunction
 %! y = 2*rand (size (x)) - 1;
 %! z = sin (2*(x.^2 + y.^2));
 %! [xx,yy] = meshgrid (linspace (-1,1,32));
-%! griddata (x,y,z,xx,yy,"nearest");
+%! zz = griddata (x,y,z,xx,yy,"nearest");
+%! mesh (xx, yy, zz);
 %! title ("nonuniform grid sampled at 1000 points with nearest neighbor");
 
 %!testif HAVE_QHULL

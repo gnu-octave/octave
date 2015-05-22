@@ -15,6 +15,10 @@ Summary of important user-visible changes for version 4.2:
  ** mkfifo now interprets the MODE argument as an octal, not decimal, integer.
     This is consistent with the equivalent shell command. 
 
+ ** The griddata function no longer plots the interpolated mesh if no output
+    argument is requested, instead the vector or array of interpolated values
+    is always returned for Matlab compatibility.
+
  ** Other new functions added in 4.2:
 
       psi

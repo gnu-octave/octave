@@ -703,6 +703,9 @@ function varargout = strread (str, format = "%f", varargin)
         lastline = ...
           min (num_words_per_line * format_repeat_count + m - 1, numel (words));
         data = words(m:num_words_per_line:lastline);
+        if (num_lines > format_repeat_count)
+          num_lines = format_repeat_count;
+        endif
       endif
 
       ## Map to format
@@ -879,6 +882,18 @@ endfunction
 %! a = strread ("a b c, d e, , f", "%s", "delimiter", ",");
 %! assert (a, {"a b c"; "d e"; ""; "f"});
 
+%! ## Format repeat counters w & w/o trailing EOL even within partly read files
+%!test
+%! [a, b] = strread ("10 a 20 b\n 30 c 40", "%d %s", 4);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"});
+%! [a, b] = strread ("10 a 20 b\n 30 c 40\n", "%d %s", 4);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; ""});
+%! [a, b] = strread ("10 a 20 b\n 30 c 40", "%d %s", 1);
+%! assert (a, int32 (10));
+%! assert (b, {"a"});
+
 %!test
 %! ## Bug #33536
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
@@ -1040,7 +1055,7 @@ endfunction
 %! assert (b, [2; 5; 8]);
 %! assert (c, [3; 6; 9]);
 
-## Test #3 bug #42609
+## Test #4 bug #42609
 %!test
 %! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", '%f %f\n%f');
 %! assert (a, [1;4;7]);

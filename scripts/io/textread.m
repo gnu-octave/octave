@@ -115,7 +115,12 @@ function varargout = textread (filename, format = "%f", varargin)
   endofline = find (strcmpi (varargin, "endofline"), 1);
   if (! isempty (endofline))
     ## 'endofline' option set by user.
-    if (! ischar (varargin{endofline + 1}));
+    if (ischar (varargin{endofline + 1}))
+      eol_char = varargin{endofline + 1};
+      if (! any (strcmp (eol_char, {"", "\n", "\r", "\r\n"})))
+        error ("textscan: illegal EndOfLine character value specified");
+      endif
+    else
       error ("character value required for EndOfLine");
     endif
   else
@@ -309,6 +314,20 @@ endfunction
 %! A = textread (f, "", "delimiter", ",");
 %! unlink (f);
 %! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
+
+## Test endofline
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "a\rb\rc");
+%! fclose (fid);
+%! ## Test EOL detection
+%! d = textread (f, "%s");
+%! assert (d, {"a";"b";"c"});
+%! ## Test explicit EOL specification (bug #45046)
+%! d = textread (f, "%s", "endofline", "\r");
+%! assert (d, {"a"; "b"; "c"});
+%! unlink (f);
 
 ## Test input validation
 %!error textread ()

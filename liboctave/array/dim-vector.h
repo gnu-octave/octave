@@ -140,6 +140,8 @@ private:
 
 public:
 
+// There are constructors for up to 7 dimensions initialized this way.
+// More can be added if necessary.
 #define ASSIGN_REP(i) rep[i] = d ## i;
 #define DIM_VECTOR_CTOR(N) \
   dim_vector (OCT_MAKE_DECL_LIST (octave_idx_type, d, N)) \
@@ -148,12 +150,54 @@ public:
     OCT_ITERATE_MACRO (ASSIGN_REP, N) \
   }
 
-  // Add more if needed.
+  //! Construct dim_vector for 2 dimensional array.
+  /*!
+    It can be used to construct a 2D array.  Example:
+
+    @code{.cc}
+    dim_vector dv (7, 5);
+    Matrix mat (dv);
+    @endcode
+
+    The constructed dim_vector @c dv will have two elements, @f$[7, 5]@f$,
+    one for each dimension.  It can then be used to construct a Matrix
+    with such dimensions, i.e., 7 rows and 5 columns.
+
+    There are constructors available for up to 7 dimensions.  For a higher
+    number of dimensions, use redim() or resize().
+
+    Note that that there is no constructor for a 1 element dim_vector.
+    This is because there are no 1 dimensional Array in liboctave.  Such
+    constructor did exist in liboctave but was removed in version 4.0.0
+    due to its potential for confusion.
+  */
   DIM_VECTOR_CTOR (2)
+
+  //! Construct dim_vector for 3 dimensional array.
+  /*!
+    It can be used to construct a 3D array.  Example:
+
+    @code{.cc}
+    NDArray A (dim_vector (7, 5, 4));
+    @endcode
+
+    This will construct a 3 dimensional NDArray of lengths 7, 5, and 4,
+    on the first, second, and third dimension (rows, columns, and pages)
+    respectively.
+  */
   DIM_VECTOR_CTOR (3)
+
+  //! Construct dim_vector for 4 dimensional array.
+  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
   DIM_VECTOR_CTOR (4)
+  //! Construct dim_vector for 5 dimensional array.
+  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
   DIM_VECTOR_CTOR (5)
+  //! Construct dim_vector for 6 dimensional array.
+  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
   DIM_VECTOR_CTOR (6)
+  //! Construct dim_vector for 7 dimensional array.
+  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
   DIM_VECTOR_CTOR (7)
 
 #undef ASSIGN_REP

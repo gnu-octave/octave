@@ -253,24 +253,22 @@ Canvas::canvasToggleGrid (const graphics_handle& handle)
         {
           axes::properties& ap = Utils::properties<axes> (ax);
 
-          if (ap.handlevisibility_is ("on") && ap.is_visible ())
-            {
-              std::string tmp;
+          std::string tmp;
 
-              // If any grid is off, then turn them all on.  If they are all
-              // on, then turn them off.
+          // If any grid is off, then turn them all on.  If they are all
+          // on, then turn them off.
 
-              std::string state = ((ap.get_xgrid () == "off"
-                                    || ap.get_ygrid () == "off"
-                                    || ap.get_zgrid () == "off")
-                                   ? "on" : "off");
+          std::string state = ((ap.get_xgrid () == "off"
+                                || ap.get_ygrid () == "off"
+                                || ap.get_zgrid () == "off")
+                               ? "on" : "off");
 
-              ap.set_xgrid (state);
-              ap.set_ygrid (state);
-              ap.set_zgrid (state);
+          ap.set_xgrid (state);
+          ap.set_ygrid (state);
+          ap.set_zgrid (state);
 
-              redraw (true);
-            }
+          redraw (true);
+            
         }
     }
 }
@@ -304,12 +302,9 @@ Canvas::canvasAutoAxes (const graphics_handle& handle)
         {
           axes::properties& ap = Utils::properties<axes> (ax);
 
-          if (ap.handlevisibility_is ("on") && ap.is_visible ())
-            {
-              autoscale_axes (ap);
+          autoscale_axes (ap);
 
-              redraw (true);
-            }
+          redraw (true);
         }
     }
 }

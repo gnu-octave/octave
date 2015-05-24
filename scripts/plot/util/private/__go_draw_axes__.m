@@ -1425,26 +1425,23 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     return;
   endif
   if (strcmpi (axis_obj.xdir, "reverse"))
-    xdir = "reverse";
-  else
-    xdir = "noreverse";
+    xlim = flip (xlim);
   endif
-  fprintf (plot_stream, "set xrange [%.15e:%.15e] %s;\n", xlim, xdir);
+
+  fprintf (plot_stream, "set xrange [%.15e:%.15e];\n", xlim);
   if (strcmpi (axis_obj.xaxislocation, "top"))
-    fprintf (plot_stream, "set x2range [%.15e:%.15e] %s;\n", xlim, xdir);
+    fprintf (plot_stream, "set x2range [%.15e:%.15e];\n", xlim);
   endif
 
   if (isempty (ylim))
     return;
   endif
   if (strcmpi (axis_obj.ydir, "reverse"))
-    ydir = "reverse";
-  else
-    ydir = "noreverse";
+    ylim = flip (ylim);
   endif
-  fprintf (plot_stream, "set yrange [%.15e:%.15e] %s;\n", ylim, ydir);
+  fprintf (plot_stream, "set yrange [%.15e:%.15e];\n", ylim);
   if (strcmpi (axis_obj.yaxislocation, "right"))
-    fprintf (plot_stream, "set y2range [%.15e:%.15e] %s;\n", ylim, ydir);
+    fprintf (plot_stream, "set y2range [%.15e:%.15e];\n", ylim);
   endif
 
   if (nd == 3)
@@ -1452,11 +1449,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       return;
     endif
     if (strcmpi (axis_obj.zdir, "reverse"))
-      zdir = "reverse";
-    else
-      zdir = "noreverse";
+      zlim = flip (zlim);
     endif
-    fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
+    fprintf (plot_stream, "set zrange [%.15e:%.15e];\n", zlim);
   endif
 
   cmap = parent_figure_obj.colormap;

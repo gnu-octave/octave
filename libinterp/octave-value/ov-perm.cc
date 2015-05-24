@@ -439,7 +439,7 @@ octave_perm_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  if (matrix.nelem () == 1)
+  if (matrix.numel () == 1)
     retval = new octave_scalar (matrix (0, 0));
 
   return retval;

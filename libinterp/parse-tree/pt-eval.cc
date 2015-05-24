@@ -337,7 +337,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       {
         Range rng = rhs.range_value ();
 
-        octave_idx_type steps = rng.nelem ();
+        octave_idx_type steps = rng.numel ();
 
         for (octave_idx_type i = 0; i < steps; i++)
           {

@@ -121,7 +121,7 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
 }
 
 idx_vector::idx_range_rep::idx_range_rep (const Range& r)
-  : start (0), len (r.nelem ()), step (1)
+  : start (0), len (r.numel ()), step (1)
 {
   if (len < 0)
     {

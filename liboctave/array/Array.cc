@@ -2231,7 +2231,7 @@ octave_idx_type
 Array<T>::nnz (void) const
 {
   const T *src = data ();
-  octave_idx_type nel = nelem ();
+  octave_idx_type nel = numel ();
   octave_idx_type retval = 0;
   const T zero = T ();
   for (octave_idx_type i = 0; i < nel; i++)
@@ -2247,7 +2247,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
 {
   Array<octave_idx_type> retval;
   const T *src = data ();
-  octave_idx_type nel = nelem ();
+  octave_idx_type nel = numel ();
   const T zero = T ();
   if (n < 0 || n >= nel)
     {

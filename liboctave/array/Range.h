@@ -35,33 +35,34 @@ Range
 public:
 
   Range (void)
-    : rng_base (0), rng_limit (0), rng_inc (0), rng_nelem (0), cache (1, 0) { }
+    : rng_base (0), rng_limit (0), rng_inc (0), rng_numel (0), cache (1, 0) { }
 
   Range (const Range& r)
     : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
-      rng_nelem (r.rng_nelem), cache (r.cache) { }
+      rng_numel (r.rng_numel), cache (r.cache) { }
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),
-      rng_nelem (nelem_internal ()), cache () { }
+      rng_numel (numel_internal ()), cache () { }
 
   Range (double b, double l, double i)
     : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_nelem (nelem_internal ()), cache () { }
+      rng_numel (numel_internal ()), cache () { }
 
   // For operators' usage (to preserve element count).
   Range (double b, double i, octave_idx_type n)
     : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
-      rng_nelem (n), cache ()
+      rng_numel (n), cache ()
   {
     if (! xfinite (b) || ! xfinite (i) || ! xfinite (rng_limit))
-      rng_nelem = -2;
+      rng_numel = -2;
   }
 
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
-  octave_idx_type nelem (void) const { return rng_nelem; }
+  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
+  octave_idx_type numel (void) const { return rng_numel; }
 
   bool all_elements_are_ints (void) const;
 
@@ -137,11 +138,11 @@ private:
   double rng_limit;
   double rng_inc;
 
-  octave_idx_type rng_nelem;
+  octave_idx_type rng_numel;
 
   mutable Matrix cache;
 
-  octave_idx_type nelem_internal (void) const;
+  octave_idx_type numel_internal (void) const;
 
   void clear_cache (void) const { cache.resize (0, 0); }
 
@@ -150,10 +151,10 @@ protected:
   // For operators' usage (to allow all values to be set directly).
   Range (double b, double l, double i, octave_idx_type n)
     : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_nelem (n), cache ()
+      rng_numel (n), cache ()
   {
     if (! xfinite (b) || ! xfinite (i) || ! xfinite (l))
-      rng_nelem = -2;
+      rng_numel = -2;
   }
 };
 

@@ -154,12 +154,12 @@ values of @var{p} @var{q} as vector values.\n\
                 {
                   thresh = tmp.matrix_value ();
 
-                  if (thresh.nelem () == 1)
+                  if (thresh.numel () == 1)
                     {
                       thresh.resize (1,2);
                       thresh(1) = thresh(0);
                     }
-                  else if (thresh.nelem () != 2)
+                  else if (thresh.numel () != 2)
                     {
                       error ("luinc: expecting 2-element vector for thresh");
                       return retval;

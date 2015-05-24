@@ -2664,7 +2664,7 @@ octave_print_internal (std::ostream& os, const Range& r,
   double base = r.base ();
   double increment = r.inc ();
   double limit = r.limit ();
-  octave_idx_type num_elem = r.nelem ();
+  octave_idx_type num_elem = r.numel ();
 
   if (plus_format && ! pr_as_read_syntax)
     {

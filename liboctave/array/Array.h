@@ -252,11 +252,13 @@ public:
   // Number of elements in the array. These are all synonyms.
   //@{
   //! Number of elements in the array.
-  //! Synonymous with length(), nelem(), and numel().
-  octave_idx_type capacity (void) const { return slice_len; }
+  //! Synonymous with numel().
+  octave_idx_type capacity (void) const { return numel (); }
 
   //! Number of elements in the array.
-  /*! Synonymous with capacity(), nelem(), and numel().
+  /*! Synonymous with capacity() and numel().
+
+      @note This method is deprecated in favour of numel().
 
       @note
       This is @em not the same as @c %length() at the Octave interpreter.
@@ -264,15 +266,16 @@ public:
       length of the greatest dimension.  This method returns the total
       number of elements.
    */
-  octave_idx_type length (void) const { return capacity (); }
+  octave_idx_type length (void) const { return numel (); }
 
   //! Number of elements in the array.
-  //! Synonymous with capacity(), length(), and numel().
-  octave_idx_type nelem (void) const { return capacity (); }
+  //! Synonymous with capacity() and numel().
+  //! @note This method is deprecated in favour of numel().
+  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
 
   //! Number of elements in the array.
-  //! Synonymous with capacity(), length(), and nelem().
-  octave_idx_type numel (void) const { return nelem (); }
+  //! Synonymous with capacity().
+  octave_idx_type numel (void) const { return slice_len; }
   //@}
 
   //! Return the array as a column vector.

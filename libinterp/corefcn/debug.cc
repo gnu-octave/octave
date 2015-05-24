@@ -263,7 +263,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
           if (error_state)
             break;
 
-          for (octave_idx_type j = 0; j < arg.nelem (); j++)
+          for (octave_idx_type j = 0; j < arg.numel (); j++)
             {
               int line = static_cast<int> (arg.elem (j));
               if (error_state)

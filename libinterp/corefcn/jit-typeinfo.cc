@@ -257,7 +257,7 @@ octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
                                 double value)
 {
   NDArray *array = mat->array;
-  if (array->nelem () < index)
+  if (array->numel () < index)
     array->resize1 (index);
 
   double *data = array->fortran_vec ();

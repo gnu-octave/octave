@@ -271,7 +271,7 @@ do_minmax_body (const octave_value_list& args,
             if (arg.is_range () && (dim == -1 || dim == 1))
               {
                 Range range = arg.range_value ();
-                if (range.nelem () < 1)
+                if (range.numel () < 1)
                   {
                     retval(0) = arg;
                     if (nargout > 1)
@@ -282,14 +282,14 @@ do_minmax_body (const octave_value_list& args,
                     retval(0) = range.min ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.inc () < 0 ? range.nelem () : 1);
+                                  (range.inc () < 0 ? range.numel () : 1);
                   }
                 else
                   {
                     retval(0) = range.max ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.inc () >= 0 ? range.nelem () : 1);
+                                  (range.inc () >= 0 ? range.numel () : 1);
                   }
               }
             else if (arg.is_sparse_type ())

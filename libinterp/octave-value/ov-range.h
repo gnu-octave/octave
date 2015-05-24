@@ -58,14 +58,14 @@ public:
   octave_range (double base, double limit, double inc)
     : octave_base_value (), range (base, limit, inc), idx_cache ()
   {
-    if (range.nelem () < 0)
+    if (range.numel () < 0)
       ::error ("invalid range");
   }
 
   octave_range (const Range& r)
     : octave_base_value (), range (r), idx_cache ()
   {
-    if (range.nelem () < 0 && range.nelem () != -2)
+    if (range.numel () < 0 && range.numel () != -2)
       ::error ("invalid range");
   }
 
@@ -107,7 +107,7 @@ public:
 
   dim_vector dims (void) const
   {
-    octave_idx_type n = range.nelem ();
+    octave_idx_type n = range.numel ();
     return dim_vector (n > 0, n);
   }
 

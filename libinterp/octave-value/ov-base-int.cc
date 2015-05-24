@@ -129,7 +129,7 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  if (this->matrix.nelem () == 1)
+  if (this->matrix.numel () == 1)
     retval = new typename octave_value_int_traits<T>::scalar_type
                (this->matrix (0));
 

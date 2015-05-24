@@ -498,7 +498,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       Range r = tc.range_value ();
       double base = r.base ();
       double inc = r.inc ();
-      octave_idx_type nel = r.nelem ();
+      octave_idx_type nel = r.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
         {
           double x = base + i * inc;

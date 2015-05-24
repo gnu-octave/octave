@@ -61,8 +61,8 @@ public:
   // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const
   { return perm_length (); }
-  octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
-  octave_idx_type numel (void) const { return nelem (); }
+  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
+  octave_idx_type numel (void) const { return dim1 () * dim2 (); }
 
   size_t byte_size (void) const
   { return Array<octave_idx_type>::byte_size (); }

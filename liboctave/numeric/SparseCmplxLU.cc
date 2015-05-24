@@ -58,7 +58,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   double tmp = octave_sparse_params::get_key ("spumoni");
   if (!xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
-  if (piv_thres.nelem () == 2)
+  if (piv_thres.numel () == 2)
     {
       tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
       if (!xisnan (tmp))
@@ -267,7 +267,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
       double tmp = octave_sparse_params::get_key ("spumoni");
       if (!xisnan (tmp))
         Control (UMFPACK_PRL) = tmp;
-      if (piv_thres.nelem () == 2)
+      if (piv_thres.numel () == 2)
         {
           tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
           if (!xisnan (tmp))

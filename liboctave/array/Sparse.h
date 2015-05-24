@@ -254,7 +254,7 @@ public:
     return dimensions.safe_numel ();
   }
 
-  octave_idx_type nelem (void) const { return capacity (); }
+  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return capacity (); }
   octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }

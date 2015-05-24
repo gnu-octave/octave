@@ -177,8 +177,8 @@ calculate_region (const octave_scalar_map& options)
                         (region["row_cache"] + rows.inc () -1) - cols.inc ();
 
   // The actual height and width of the output image
-  region["row_out"] = rows.nelem ();
-  region["col_out"] = cols.nelem ();
+  region["row_out"] = rows.numel ();
+  region["col_out"] = cols.numel ();
 
   return region;
 }
@@ -776,7 +776,7 @@ Use @code{imread} instead.\n\
         }
       // Fix indexes from base 1 to base 0, and at the same time, make
       // sure none of the indexes is outside the range of image number.
-      const octave_idx_type n = frameidx.nelem ();
+      const octave_idx_type n = frameidx.numel ();
       for (octave_idx_type i = 0; i < n; i++)
         {
           frameidx(i)--;
@@ -798,7 +798,7 @@ Use @code{imread} instead.\n\
   {
     const unsigned int nRows = imvec[frameidx(0)].rows ();
     const unsigned int nCols = imvec[frameidx(0)].columns ();
-    const octave_idx_type n = frameidx.nelem ();
+    const octave_idx_type n = frameidx.numel ();
     for (octave_idx_type frame = 0; frame < n; frame++)
       {
         if (nRows != imvec[frameidx(frame)].rows ()

@@ -49,7 +49,7 @@ template <class T>
 bool
 intNDArray<T>::any_element_not_one_or_zero (void) const
 {
-  octave_idx_type nel = this->nelem ();
+  octave_idx_type nel = this->numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -143,7 +143,7 @@ template <class T>
 std::ostream&
 operator << (std::ostream& os, const intNDArray<T>& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     os << " " << a.elem (i) << "\n";
@@ -155,7 +155,7 @@ template <class T>
 std::istream&
 operator >> (std::istream& is, intNDArray<T>& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   if (nel > 0)
     {
@@ -183,7 +183,7 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::abs (void) const
 {
-  octave_idx_type nel = this->nelem ();
+  octave_idx_type nel = this->numel ();
   intNDArray<T> ret (this->dims ());
 
   for (octave_idx_type i = 0; i < nel; i++)
@@ -199,7 +199,7 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::signum (void) const
 {
-  octave_idx_type nel = this->nelem ();
+  octave_idx_type nel = this->numel ();
   intNDArray<T> ret (this->dims ());
 
   for (octave_idx_type i = 0; i < nel; i++)

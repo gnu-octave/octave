@@ -190,7 +190,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             if (r.all_elements_are_ints ())
               {
-                octave_idx_type n = r.nelem ();
+                octave_idx_type n = r.numel ();
 
                 dims.resize (n);
 

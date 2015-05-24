@@ -115,7 +115,7 @@ is stored in the audio file.\n\
       if (error_state)
         return retval;
 
-      if (range.nelem () != 2)
+      if (range.numel () != 2)
         {
           error ("audioread: invalid specification for range of frames");
           return retval;

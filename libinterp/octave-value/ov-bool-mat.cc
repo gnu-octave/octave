@@ -252,7 +252,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
 
                       if (is)
                         {
-                          for (octave_idx_type i = 0; i < btmp.nelem (); i++)
+                          for (octave_idx_type i = 0; i < btmp.numel (); i++)
                             btmp.elem (i) = (tmp.elem (i) != 0.);
 
                           matrix = btmp;
@@ -344,7 +344,7 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
   boolNDArray m = bool_array_value ();
   bool *mtmp = m.fortran_vec ();
-  octave_idx_type nel = m.nelem ();
+  octave_idx_type nel = m.numel ();
   OCTAVE_LOCAL_BUFFER (char, htmp, nel);
 
   for (octave_idx_type i = 0; i < nel; i++)
@@ -448,7 +448,7 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave_idx_type nel = m.nelem ();
+  octave_idx_type nel = m.numel ();
   bool *mtmp = m.fortran_vec ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
 

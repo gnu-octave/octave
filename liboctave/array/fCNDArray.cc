@@ -532,7 +532,7 @@ FloatComplexNDArray::all_elements_are_real (void) const
 bool
 FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
 {
-  octave_idx_type nel = nelem ();
+  octave_idx_type nel = numel ();
 
   if (nel > 0)
     {
@@ -857,7 +857,7 @@ FloatComplexNDArray::diag (octave_idx_type m, octave_idx_type n) const
 std::ostream&
 operator << (std::ostream& os, const FloatComplexNDArray& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -871,7 +871,7 @@ operator << (std::ostream& os, const FloatComplexNDArray& a)
 std::istream&
 operator >> (std::istream& is, FloatComplexNDArray& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   if (nel > 0)
     {

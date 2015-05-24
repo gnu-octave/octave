@@ -72,7 +72,7 @@ octave_range::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  switch (range.nelem ())
+  switch (range.numel ())
     {
     case 1:
       retval = new octave_scalar (range.base ());
@@ -131,7 +131,7 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
       idx_vector i = idx(0).index_vector ();
       if (! error_state)
         {
-          if (i.is_scalar () && i(0) < range.nelem ())
+          if (i.is_scalar () && i(0) < range.numel ())
             retval = range.elem (i(0));
           else
             retval = range.index (i);
@@ -173,7 +173,7 @@ octave_range::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  octave_idx_type nel = range.nelem ();
+  octave_idx_type nel = range.numel ();
 
   if (nel > 0)
     {
@@ -193,7 +193,7 @@ octave_range::float_value (bool) const
 {
   float retval = lo_ieee_float_nan_value ();
 
-  octave_idx_type nel = range.nelem ();
+  octave_idx_type nel = range.numel ();
 
   if (nel > 0)
     {
@@ -264,7 +264,7 @@ octave_range::is_true (void) const
 {
   bool retval = false;
 
-  if (range.nelem () != 0)
+  if (range.numel () != 0)
     {
       // FIXME: this is a potential waste of memory.
 
@@ -283,7 +283,7 @@ octave_range::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  octave_idx_type nel = range.nelem ();
+  octave_idx_type nel = range.numel ();
 
   if (nel > 0)
     {
@@ -305,7 +305,7 @@ octave_range::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  octave_idx_type nel = range.nelem ();
+  octave_idx_type nel = range.numel ();
 
   if (nel > 0)
     {
@@ -370,7 +370,7 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
 {
   bool retval = false;
 
-  octave_idx_type n = range.nelem ();
+  octave_idx_type n = range.numel ();
 
   indent (os);
 
@@ -392,7 +392,7 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
 void
 octave_range::short_disp (std::ostream& os) const
 {
-  octave_idx_type len = range.nelem ();
+  octave_idx_type len = range.numel ();
 
   if (len == 0)
     os << "[]";
@@ -434,7 +434,7 @@ octave_range::save_ascii (std::ostream& os)
   double base = r.base ();
   double limit = r.limit ();
   double inc = r.inc ();
-  octave_idx_type len = r.nelem ();
+  octave_idx_type len = r.numel ();
 
   if (inc != 0)
     os << "# base, limit, increment\n";
@@ -487,7 +487,7 @@ octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
   double lim = r.limit ();
   double inc = r.inc ();
   if (inc == 0)
-    lim = r.nelem ();
+    lim = r.numel ();
 
   os.write (reinterpret_cast<char *> (&bas), 8);
   os.write (reinterpret_cast<char *> (&lim), 8);
@@ -583,13 +583,13 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   Range r = range_value ();
   double range_vals[3];
   range_vals[0] = r.base ();
-  range_vals[1] = r.inc () != 0 ? r.limit () : r.nelem ();
+  range_vals[1] = r.inc () != 0 ? r.limit () : r.numel ();
   range_vals[2] = r.inc ();
 
   if (H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                 range_vals) >= 0)
     {
-      octave_idx_type nel = r.nelem ();
+      octave_idx_type nel = r.numel ();
       retval = hdf5_add_scalar_attr (data_hid, H5T_NATIVE_IDX,
                                      "OCTAVE_RANGE_NELEM", &nel) >= 0;
     }
@@ -693,7 +693,7 @@ octave_range::as_mxArray (void) const
 octave_value
 octave_range::fast_elem_extract (octave_idx_type n) const
 {
-  return (n < range.nelem ()) ? octave_value (range.elem (n))
+  return (n < range.numel ()) ? octave_value (range.elem (n))
                               : octave_value ();
 }
 

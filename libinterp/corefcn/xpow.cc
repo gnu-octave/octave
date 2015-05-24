@@ -705,10 +705,10 @@ elem_xpow (double a, const Range& r)
 
   // Only optimize powers with ranges that are integer and monotonic in
   // magnitude.
-  if (r.nelem () > 1 && r.all_elements_are_ints ()
+  if (r.numel () > 1 && r.all_elements_are_ints ()
       && same_sign (r.base (), r.limit ()))
     {
-      octave_idx_type n = r.nelem ();
+      octave_idx_type n = r.numel ();
       Matrix result (1, n);
       if (same_sign (r.base (), r.inc ()))
         {
@@ -940,10 +940,10 @@ elem_xpow (const Complex& a, const Range& r)
 
   // Only optimize powers with ranges that are integer and monotonic in
   // magnitude.
-  if (r.nelem () > 1 && r.all_elements_are_ints ()
+  if (r.numel () > 1 && r.all_elements_are_ints ()
       && same_sign (r.base (), r.limit ()))
     {
-      octave_idx_type n = r.nelem ();
+      octave_idx_type n = r.numel ();
       ComplexMatrix result (1, n);
 
       if (same_sign (r.base (), r.inc ()))

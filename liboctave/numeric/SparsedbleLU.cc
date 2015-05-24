@@ -57,7 +57,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
   if (!xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
 
-  if (piv_thres.nelem () == 2)
+  if (piv_thres.numel () == 2)
     {
       tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
       if (!xisnan (tmp))
@@ -253,7 +253,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       if (!xisnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
-      if (piv_thres.nelem () == 2)
+      if (piv_thres.numel () == 2)
         {
           tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
           if (!xisnan (tmp))

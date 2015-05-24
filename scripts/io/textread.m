@@ -42,13 +42,60 @@
 ## are ignored as delimiters.
 ## @end itemize
 ##
-## The optional input @var{n} specifies the number of data lines to read; in
-## this sense it differs slightly from the format repeat count in strread.
+## The optional input @var{n} (format repeat count) specifies the number of
+## times the format string is to be used or the number of lines to be read,
+## whichever happens first while reading.  The former is equivalent to
+## requesting that the data output vectors should be of length @var{N}.
+## Note that when reading files with format strings referring to multiple
+## lines, @var{n} should rather be the number of lines to be read than the
+## number of format string uses.
 ##
 ## If the format string is empty (not just omitted) and the file contains only
 ## numeric data (excluding headerlines), textread will return a rectangular
 ## matrix with the number of columns matching the number of numeric fields on
 ## the first data line of the file.  Empty fields are returned as zero values.
+##
+## Examples:
+##
+## @example
+##   Assume a data file like:
+##   1 a 2 b
+##   3 c 4 d
+##   5 e
+## @end example
+##
+## @example
+##   [a, b] = textread (f, "%f %s")
+##   returns two columns of data, one with doubles, the other a
+##   cellstr array:
+##   a = [1; 2; 3; 4; 5]´
+##   b = {"a"; "b"; "c"; "d"; "e"}
+## @end example
+##
+## @example
+##   [a, b] = textread (f, "%f %s", 3)
+##   (read data into two culumns, try to use the format string
+##   three times)
+##   returns
+##   a = [1; 2; 3]´
+##   b = {"a"; "b"; "c"}
+##
+## @end example
+##
+## @example
+##   With a data file like:
+##   1
+##   a
+##   2
+##   b
+##
+##   [a, b] = textread (f, "%f %s", 2)
+##   returns a = 1 and b = {"a"}; i.e., the format string is used
+##   only once because the format string refers to 2 lines of the
+##   data file. To obtain 2x1 data output columns, specify N = 4
+##   (number of data lines containing all requested data) rather
+##   than 2.
+## @end example
 ##
 ## @seealso{strread, load, dlmread, fscanf, textscan}
 ## @end deftypefn
@@ -126,6 +173,7 @@ function varargout = textread (filename, format = "%f", varargin)
   else
     ## Determine EOL from file.
     ## Search for EOL candidates in the first BUFLENGTH chars
+    ## FIXME Ignore risk of 2-byte EOL (\r\n) being split at exactly BUFLENGTH
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
@@ -163,9 +211,13 @@ function varargout = textread (filename, format = "%f", varargin)
         ++nblks;
       endif
     endwhile
+    ## Handle case of missing or incomplete trailing EOL
+    if (! strcmp (str(end - length (eol_char) + 1 : end), eol_char))
+      eoi = [ eoi (length (str)) ];
+      ++n_eoi;
+    endif
     ## Found EOL delimiting last requested line. Compute ptr (incl. EOL)
     if (isempty (eoi))
-      disp ("textread: format repeat count specified but no endofline found");
       eoi_pos = nblks * BUFLENGTH + count;
     else
       eoi_pos = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi);
@@ -277,6 +329,104 @@ endfunction
 %! A = textread (f, "");
 %! unlink (f);
 %! assert (A, d, 1e-6);
+
+## Tests with format repeat count #1
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "%2d %s %2d %s\n %2d %s %2d %s \n", ...
+%!                10, "a", 20, "b", 30, "c", 40, "d");
+%! fclose (fid);
+%! [a, b] = textread (f, "%d %s", 1);
+%! assert (a, int32 (10));
+%! assert (b, {"a"});
+%! [a, b] = textread (f, "%d %s", 2);
+%! assert (a, int32 ([10; 20]));
+%! assert (b, {"a"; "b"});
+%! [a, b] = textread (f, "%d %s", 3);
+%! assert (a, int32 ([10; 20; 30]));
+%! assert (b, {"a"; "b"; "c"});
+%! [a, b] = textread (f, "%d %s", 4);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; "d"});
+%! [a, b] = textread (f, "%d %s", 5);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; "d"});
+%! unlink (f);
+
+## Tests with format repeat count #2, missing last EOL
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "%2d %s %2d %s\n %2d %s %2d %s", ...
+%!                10, "a", 20, "b", 30, "c", 40, "d");
+%! fclose (fid);
+%! [a, b] = textread (f, "%d %s", 1);
+%! assert (a, int32 (10));
+%! assert (b, {"a"});
+%! [a, b] = textread (f, "%d %s", 2);
+%! assert (a, int32 ([10; 20]));
+%! assert (b, {"a"; "b"});
+%! [a, b] = textread (f, "%d %s", 3);
+%! assert (a, int32 ([10; 20; 30]));
+%! assert (b, {"a"; "b"; "c"});
+%! [a, b] = textread (f, "%d %s", 4);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; "d"});
+%! [a, b] = textread (f, "%d %s", 5);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; "d"});
+%! unlink (f);
+
+## Tests with format repeat count #3, incomplete last line
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "%2d %s %2d %s\n %2d %s %2d", ...
+%!                10, "a", 20, "b", 30, "c", 40);
+%! fclose (fid);
+%! [a, b] = textread (f, "%d %s", 1);
+%! assert (a, int32 (10));
+%! assert (b, {"a"});
+%! [a, b] = textread (f, "%d %s", 2);
+%! assert (a, int32 ([10; 20]));
+%! assert (b, {"a"; "b"});
+%! [a, b] = textread (f, "%d %s", 3);
+%! assert (a, int32 ([10; 20; 30]));
+%! assert (b, {"a"; "b"; "c"});
+%! [a, b] = textread (f, "%d %s", 4);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"});
+%! [a, b] = textread (f, "%d %s", 5);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"});
+%! unlink (f);
+
+## Tests with format repeat count #4, incomplete last line but with trailing EOL
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "%2d %s %2d %s\n %2d %s %2d\n", ...
+%!                10, "a", 20, "b", 30, "c", 40);
+%! fclose (fid);
+%! [a, b] = textread (f, "%d %s", 4);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; ""});
+#%! [a, b] = textread (f, "%d %s", 5);
+#%! assert (a, int32 ([10; 20; 30; 40]));
+#%! assert (b, {"a"; "b"; "c"; ""});
+%! unlink (f);
+
+## Tests with format repeat count #5, nr of data lines = limiting factor
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "%2d\n%s\n%2dn%s", ...
+%!                1, "a", 2, "b");
+%! fclose (fid);
+%! [a, b] = textread (f, "%d %s", 2);
+%! assert (a, int32 (1));
+%! assert (b, {"a"});
 
 ## Read multiple lines using empty format string, missing data (should be 0)
 %!test

@@ -275,6 +275,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
           ++nblks;
         endif
       endwhile
+      ## Handle case of missing trailing EOL
+      if (! strcmp (str(end - length (eol_char) + 1 : end), eol_char))
+        eoi = [ eoi (length (str)) ];
+        ++n_eoi;
+      endif
       ## OK, found EOL delimiting last requested line. Compute ptr (incl. EOL)
       if (isempty (eoi))
         disp ("textscan: format repeat count specified but no endofline found");

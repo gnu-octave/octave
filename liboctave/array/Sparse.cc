@@ -1879,7 +1879,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
               octave_idx_type rnz = rhs.nnz ();
               octave_idx_type new_nz = nz - (ui - li) + rnz;
 
-              if (new_nz >= nz && new_nz <= capacity ())
+              if (new_nz >= nz && new_nz <= nzmax ())
                 {
                   // Adding/overwriting elements, enough capacity allocated.
 
@@ -2062,7 +2062,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
               octave_idx_type rnz = rhs.nnz ();
               octave_idx_type new_nz = nz - (ui - li) + rnz;
 
-              if (new_nz >= nz && new_nz <= capacity ())
+              if (new_nz >= nz && new_nz <= nzmax ())
                 {
                   // Adding/overwriting elements, enough capacity allocated.
 

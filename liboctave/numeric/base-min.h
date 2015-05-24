@@ -114,7 +114,7 @@ public:
     return do_minimize (objf, inform, lambda);
   }
 
-  octave_idx_type size (void) const { return x.capacity (); }
+  octave_idx_type size (void) const { return x.numel (); }
 
 protected:
 

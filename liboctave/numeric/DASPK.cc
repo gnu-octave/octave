@@ -538,7 +538,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -583,7 +583,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -597,7 +597,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
           xdot_out.elem (0, i) = xdot.elem (i);
         }
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {

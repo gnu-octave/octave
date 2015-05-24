@@ -393,7 +393,7 @@ DASRT::integrate (const ColumnVector& tout)
   Matrix xdot_out;
   ColumnVector t_out = tout;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -452,7 +452,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   Matrix xdot_out;
   ColumnVector t_outs = tout;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -460,7 +460,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
       x_out.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {

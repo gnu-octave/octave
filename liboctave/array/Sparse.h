@@ -240,11 +240,13 @@ public:
 
   Sparse<T>& operator = (const Sparse<T>& a);
 
-  // Note that nzmax and capacity are the amount of storage for
-  // nonzero elements, while nnz is the actual number of nonzero
-  // terms.
+  //! Amount of storage for nonzero elements.
+  //! This may differ from the actual number of elements, see nnz().
   octave_idx_type nzmax (void) const { return rep->length (); }
-  octave_idx_type capacity (void) const { return nzmax (); }
+  //! Amount of storage for nonzero elements.
+  //! Synonymous with nzmax().
+  GCC_ATTR_DEPRECATED octave_idx_type capacity (void) const { return nzmax (); }
+  //!Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
   // Querying the number of elements (incl. zeros) may overflow the index type,
@@ -254,7 +256,7 @@ public:
     return dimensions.safe_numel ();
   }
 
-  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return capacity (); }
+  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return nzmax (); }
   octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
@@ -276,7 +278,7 @@ public:
   size_t byte_size (void) const
   {
     return (static_cast<size_t>(cols () + 1) * sizeof (octave_idx_type)
-            + static_cast<size_t> (capacity ())
+            + static_cast<size_t> (nzmax ())
             * (sizeof (T) + sizeof (octave_idx_type)));
   }
 

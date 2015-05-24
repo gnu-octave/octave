@@ -143,7 +143,7 @@ public:
 
   bool is_true (void) const;
 
-  octave_idx_type capacity (void) const { return matrix.capacity (); }
+  GCC_ATTR_DEPRECATED octave_idx_type capacity (void) const { return nzmax (); }
 
   bool print_as_scalar (void) const;
 

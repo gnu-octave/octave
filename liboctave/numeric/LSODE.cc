@@ -383,7 +383,7 @@ LSODE::do_integrate (const ColumnVector& tout)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -413,7 +413,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -423,7 +423,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
       for (octave_idx_type i = 0; i < n; i++)
         retval.elem (0, i) = x.elem (i);
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {

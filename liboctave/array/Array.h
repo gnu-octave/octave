@@ -253,11 +253,11 @@ public:
   //@{
   //! Number of elements in the array.
   //! Synonymous with numel().
-  octave_idx_type capacity (void) const { return numel (); }
+  //! @note This method is deprecated in favour of numel().
+  GCC_ATTR_DEPRECATED octave_idx_type capacity (void) const { return numel (); }
 
   //! Number of elements in the array.
-  /*! Synonymous with capacity() and numel().
-
+  /*! Synonymous with numel().
       @note This method is deprecated in favour of numel().
 
       @note
@@ -269,12 +269,11 @@ public:
   octave_idx_type length (void) const { return numel (); }
 
   //! Number of elements in the array.
-  //! Synonymous with capacity() and numel().
+  //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
   GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
 
   //! Number of elements in the array.
-  //! Synonymous with capacity().
   octave_idx_type numel (void) const { return slice_len; }
   //@}
 

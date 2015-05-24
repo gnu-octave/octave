@@ -79,7 +79,7 @@ jit_array
   {
     ref_count = array->jit_ref_count ();
     slice_data = array->jit_slice_data () - 1;
-    slice_len = array->capacity ();
+    slice_len = array->numel ();
     dimensions = array->jit_dimensions ();
   }
 

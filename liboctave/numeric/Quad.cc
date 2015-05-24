@@ -126,7 +126,7 @@ double
 DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr)
 {
-  octave_idx_type npts = singularities.capacity () + 2;
+  octave_idx_type npts = singularities.numel () + 2;
   double *points = singularities.fortran_vec ();
   double result = 0.0;
 
@@ -224,7 +224,7 @@ float
 FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                             float& abserr)
 {
-  octave_idx_type npts = singularities.capacity () + 2;
+  octave_idx_type npts = singularities.numel () + 2;
   float *points = singularities.fortran_vec ();
   float result = 0.0;
 

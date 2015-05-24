@@ -1256,7 +1256,7 @@ private:
                   break;
 
                 case 'e':
-                  os << varval.capacity ();
+                  os << varval.numel ();
                   break;
 
                 case 'n':
@@ -1404,7 +1404,7 @@ public:
 
             octave_value val = p->varval;
 
-            elements += val.capacity ();
+            elements += val.numel ();
             bytes += val.byte_size ();
           }
 
@@ -1476,7 +1476,7 @@ public:
                                 > static_cast<size_t> (param_length(pos_t)))
                                ? str.length () : param_length(pos_t));
 
-        elements1 = val.capacity ();
+        elements1 = val.numel ();
         ss1 << elements1;
         str = ss1.str ();
         param_length(pos_e) = ((str.length ()

@@ -312,7 +312,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
               if (error_state)
                 QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
 
-              switch (tol.capacity ())
+              switch (tol.numel ())
                 {
                 case 2:
                   quad_opts.set_single_precision_relative_tolerance (tol (1));
@@ -421,7 +421,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
               if (error_state)
                 QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
 
-              switch (tol.capacity ())
+              switch (tol.numel ())
                 {
                 case 2:
                   quad_opts.set_relative_tolerance (tol (1));

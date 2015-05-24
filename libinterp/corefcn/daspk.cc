@@ -63,7 +63,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  assert (x.capacity () == xdot.capacity ());
+  assert (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -111,7 +111,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  assert (x.capacity () == xdot.capacity ());
+  assert (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -426,7 +426,7 @@ parameters for @code{daspk}.\n\
           crit_times_set = 1;
         }
 
-      if (state.capacity () != deriv.capacity ())
+      if (state.numel () != deriv.numel ())
         DASPK_ABORT1 ("x and xdot must have the same size");
 
       double tzero = out_times (0);

@@ -483,8 +483,8 @@ public:
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
-  octave_idx_type capacity (void) const
-  { return rep->capacity (); }
+  GCC_ATTR_DEPRECATED octave_idx_type capacity (void) const
+  { return rep->numel (); }
 
   size_t byte_size (void) const
   { return rep->byte_size (); }

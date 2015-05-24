@@ -173,7 +173,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       FloatComplexNDArray x = argx.float_complex_array_value ();
                       FloatComplexNDArray y = argy.float_complex_array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      FloatComplexNDArray z(dimz);
+                      FloatComplexNDArray z (dimz);
                       if (! error_state)
                         F77_XFCN (cdotc3, CDOTC3, (m, n, k,
                                                    x.data (), y.data (),
@@ -185,7 +185,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       ComplexNDArray x = argx.complex_array_value ();
                       ComplexNDArray y = argy.complex_array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      ComplexNDArray z(dimz);
+                      ComplexNDArray z (dimz);
                       if (! error_state)
                         F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
                                                    x.data (), y.data (),
@@ -200,7 +200,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       FloatNDArray x = argx.float_array_value ();
                       FloatNDArray y = argy.float_array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      FloatNDArray z(dimz);
+                      FloatNDArray z (dimz);
                       if (! error_state)
                         F77_XFCN (sdot3, SDOT3, (m, n, k, x.data (), y.data (),
                                                  z.fortran_vec ()));
@@ -211,7 +211,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       NDArray x = argx.array_value ();
                       NDArray y = argy.array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      NDArray z(dimz);
+                      NDArray z (dimz);
                       if (! error_state)
                         F77_XFCN (ddot3, DDOT3, (m, n, k, x.data (), y.data (),
                                                  z.fortran_vec ()));
@@ -340,7 +340,7 @@ endfor\n\
                 {
                   FloatComplexNDArray x = argx.float_complex_array_value ();
                   FloatComplexNDArray y = argy.float_complex_array_value ();
-                  FloatComplexNDArray z(dimz);
+                  FloatComplexNDArray z (dimz);
                   if (! error_state)
                     F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
                                                x.data (), y.data (),
@@ -351,7 +351,7 @@ endfor\n\
                 {
                   ComplexNDArray x = argx.complex_array_value ();
                   ComplexNDArray y = argy.complex_array_value ();
-                  ComplexNDArray z(dimz);
+                  ComplexNDArray z (dimz);
                   if (! error_state)
                     F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
                                                x.data (), y.data (),
@@ -365,7 +365,7 @@ endfor\n\
                 {
                   FloatNDArray x = argx.float_array_value ();
                   FloatNDArray y = argy.float_array_value ();
-                  FloatNDArray z(dimz);
+                  FloatNDArray z (dimz);
                   if (! error_state)
                     F77_XFCN (smatm3, SMATM3, (m, n, k, np,
                                                x.data (), y.data (),
@@ -376,7 +376,7 @@ endfor\n\
                 {
                   NDArray x = argx.array_value ();
                   NDArray y = argy.array_value ();
-                  NDArray z(dimz);
+                  NDArray z (dimz);
                   if (! error_state)
                     F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
                                                x.data (), y.data (),

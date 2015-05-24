@@ -1179,9 +1179,9 @@ get_extent_triplet (const dim_vector& dims, int& dim,
       // calculate extent triplet.
       l = 1, n = dims(dim), u = 1;
       for (octave_idx_type i = 0; i < dim; i++)
-        l *= dims (i);
+        l *= dims(i);
       for (octave_idx_type i = dim + 1; i < ndims; i++)
-        u *= dims (i);
+        u *= dims(i);
     }
 }
 
@@ -1199,7 +1199,7 @@ do_mx_red_op (const Array<T>& src, int dim,
   dim_vector dims = src.dims ();
   // M*b inconsistency: sum ([]) = 0 etc.
   if (dims.length () == 2 && dims(0) == 0 && dims(1) == 0)
-    dims (1) = 1;
+    dims(1) = 1;
 
   get_extent_triplet (dims, dim, l, n, u);
 
@@ -1327,7 +1327,7 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
 
   if (dims(dim) <= order)
     {
-      dims (dim) = 0;
+      dims(dim) = 0;
       return Array<R> (dims);
     }
   else

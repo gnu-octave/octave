@@ -735,7 +735,7 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
 static bool
 scalar (const dim_vector& dims)
 {
-  return dims.length () == 2 && dims (0) == 1 && dims (1) == 1;
+  return dims.length () == 2 && dims(0) == 1 && dims(1) == 1;
 }
 
 
@@ -751,7 +751,7 @@ octave_struct::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.length () << "\n";
 
   for (int i = 0; i < dv.length (); i++)
-    os << " " << dv (i);
+    os << " " << dv(i);
   os << "\n";
 
   os << "# length: " << nf << "\n";
@@ -1461,7 +1461,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
   os << "# ndims: " << dv.length () << "\n";
 
   for (int i = 0; i < dv.length (); i++)
-    os << " " << dv (i);
+    os << " " << dv(i);
   os << "\n";
 
   os << "# length: " << nf << "\n";

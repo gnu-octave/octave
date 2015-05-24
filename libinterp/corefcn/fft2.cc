@@ -96,14 +96,14 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
       return retval;
 
   if (n_rows < 0)
-    n_rows = dims (0);
+    n_rows = dims(0);
   else
-    dims (0) = n_rows;
+    dims(0) = n_rows;
 
   if (n_cols < 0)
-    n_cols = dims (1);
+    n_cols = dims(1);
   else
-    dims (1) = n_cols;
+    dims(1) = n_cols;
 
   if (dims.all_zero () || n_rows == 0 || n_cols == 0)
     {

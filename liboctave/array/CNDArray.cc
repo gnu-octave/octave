@@ -69,9 +69,9 @@ ComplexNDArray::fourier (int dim) const
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  octave_idx_type howmany = numel () / dv (dim);
+  octave_idx_type howmany = numel () / dv(dim);
   howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
-  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv (dim) / stride);
+  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
   const Complex *in (fortran_vec ());
@@ -100,9 +100,9 @@ ComplexNDArray::ifourier (int dim) const
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  octave_idx_type howmany = numel () / dv (dim);
+  octave_idx_type howmany = numel () / dv(dim);
   howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
-  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv (dim) / stride);
+  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
   const Complex *in (fortran_vec ());
@@ -124,7 +124,7 @@ ComplexNDArray::fourier2d (void) const
   if (dv.length () < 2)
     return ComplexNDArray ();
 
-  dim_vector dv2(dv(0), dv(1));
+  dim_vector dv2 (dv(0), dv(1));
   const Complex *in = fortran_vec ();
   ComplexNDArray retval (dv);
   Complex *out = retval.fortran_vec ();
@@ -144,7 +144,7 @@ ComplexNDArray::ifourier2d (void) const
   if (dv.length () < 2)
     return ComplexNDArray ();
 
-  dim_vector dv2(dv(0), dv(1));
+  dim_vector dv2 (dv(0), dv(1));
   const Complex *in = fortran_vec ();
   ComplexNDArray retval (dv);
   Complex *out = retval.fortran_vec ();
@@ -765,7 +765,7 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
 
       for (int i = 0; i < n; i++)
         {
-          if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
+          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
             {
               (*current_liboctave_error_handler)
                 ("Array<T>::insert: range error for insert");
@@ -778,14 +778,14 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
 
       octave_idx_type n_elt = a.numel ();
 
-      // IS make_unique () NECCESSARY HERE??
+      // IS make_unique () NECESSARY HERE?
 
       for (octave_idx_type i = 0; i < n_elt; i++)
         {
           Array<octave_idx_type> ra_idx = a_ra_idx;
 
-          ra_idx.elem (0) = a_ra_idx (0) + r;
-          ra_idx.elem (1) = a_ra_idx (1) + c;
+          ra_idx.elem (0) = a_ra_idx(0) + r;
+          ra_idx.elem (1) = a_ra_idx(1) + c;
 
           elem (ra_idx) = a.elem (a_ra_idx);
 

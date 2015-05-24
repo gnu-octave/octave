@@ -338,7 +338,7 @@ octave_float_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << d.length () << "\n";
 
       for (int i=0; i < d.length (); i++)
-        os << " " << d (i);
+        os << " " << d(i);
 
       os << "\n" << tmp;
     }
@@ -573,7 +573,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = dv (rank-i-1);
+    hdims[i] = dv(rank-i-1);
 
   space_hid = H5Screate_simple (rank, hdims, 0);
 

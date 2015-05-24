@@ -1115,7 +1115,7 @@ Array<T>::index (const Array<idx_vector>& ia,
       int ial = ia.length ();
       dim_vector dv = dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
-      for (int i = 0; i < ial; i++) dvx(i) = ia(i).extent (dv (i));
+      for (int i = 0; i < ial; i++) dvx(i) = ia(i).extent (dv(i));
       if (! (dvx == dv))
         {
           bool all_scalars = true;
@@ -1439,7 +1439,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
       return;
     }
 
-  octave_idx_type n = dimensions (dim);
+  octave_idx_type n = dimensions(dim);
   if (i.is_colon ())
     {
       *this = Array<T> ();
@@ -1594,7 +1594,7 @@ Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
   Array<idx_vector> idx (dim_vector (n, 1));
   const dim_vector dva = a.dims ().redim (n);
   for (octave_idx_type k = 0; k < n; k++)
-    idx(k) = idx_vector (ra_idx (k), ra_idx (k) + dva(k));
+    idx(k) = idx_vector (ra_idx(k), ra_idx(k) + dva(k));
 
   assign (idx, a);
 
@@ -2533,8 +2533,8 @@ Array<T>::diag (octave_idx_type k) const
     (*current_liboctave_error_handler) ("Matrix must be 2-dimensional");
   else
     {
-      octave_idx_type nnr = dv (0);
-      octave_idx_type nnc = dv (1);
+      octave_idx_type nnr = dv(0);
+      octave_idx_type nnc = dv(1);
 
       if (nnr == 0 && nnc == 0)
         ; // do nothing for empty matrix

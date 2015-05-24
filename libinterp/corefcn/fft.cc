@@ -112,9 +112,9 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
     }
 
   if (n_points < 0)
-    n_points = dims (dim);
+    n_points = dims(dim);
   else
-    dims (dim) = n_points;
+    dims(dim) = n_points;
 
   if (dims.any_zero () || n_points == 0)
     {

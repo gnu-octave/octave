@@ -89,7 +89,7 @@ get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims)
 
       while (--n >= 0)
         {
-          retval *= dims (n);
+          retval *= dims(n);
 
           retval += idx(n);
         }
@@ -104,7 +104,7 @@ num_ones (const Array<octave_idx_type>& ra_idx)
 
   for (octave_idx_type i = 0; i < ra_idx.length (); i++)
     {
-      if (ra_idx (i) == 1)
+      if (ra_idx(i) == 1)
         retval++;
     }
 
@@ -126,7 +126,7 @@ is_scalar (const dim_vector& dim)
     {
       for (int i = 0; i < n; i ++)
         {
-          if (dim (i) != 1)
+          if (dim(i) != 1)
             {
               retval = false;
 
@@ -148,7 +148,7 @@ is_vector (const dim_vector& dim)
   else
     {
       for (int i = 0; i < n; i ++)
-        if (dim (i) > 1)
+        if (dim(i) > 1)
           m++;
         else if (dim(i) < 1)
           m += 2;

@@ -967,7 +967,7 @@ Matrix::ifourier (void) const
 ComplexMatrix
 Matrix::fourier2d (void) const
 {
-  dim_vector dv(rows (), cols ());
+  dim_vector dv (rows (), cols ());
 
   const double *in = fortran_vec ();
   ComplexMatrix retval (rows (), cols ());
@@ -979,7 +979,7 @@ Matrix::fourier2d (void) const
 ComplexMatrix
 Matrix::ifourier2d (void) const
 {
-  dim_vector dv(rows (), cols ());
+  dim_vector dv (rows (), cols ());
 
   ComplexMatrix retval (*this);
   Complex *out (retval.fortran_vec ());

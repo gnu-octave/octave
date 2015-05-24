@@ -178,8 +178,8 @@ do_bessel (enum bessel_type type, const char *fn,
               dim_vector dv0 = args(0).dims ();
               dim_vector dv1 = args(1).dims ();
 
-              bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
-              bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
+              bool args0_is_row_vector = (dv0(1) == dv0.numel ());
+              bool args1_is_col_vector = (dv1(0) == dv1.numel ());
 
               if (args0_is_row_vector && args1_is_col_vector)
                 {
@@ -314,8 +314,8 @@ do_bessel (enum bessel_type type, const char *fn,
               dim_vector dv0 = args(0).dims ();
               dim_vector dv1 = args(1).dims ();
 
-              bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
-              bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
+              bool args0_is_row_vector = (dv0(1) == dv0.numel ());
+              bool args1_is_col_vector = (dv1(0) == dv1.numel ());
 
               if (args0_is_row_vector && args1_is_col_vector)
                 {

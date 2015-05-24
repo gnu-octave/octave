@@ -394,8 +394,8 @@ octave_base_sparse<T>::save_ascii (std::ostream& os)
   matrix.maybe_compress ();
 
   os << "# nnz: "      << nnz () << "\n";
-  os << "# rows: "     << dv (0) << "\n";
-  os << "# columns: "  << dv (1) << "\n";
+  os << "# rows: "     << dv(0) << "\n";
+  os << "# columns: "  << dv(1) << "\n";
 
   os << this->matrix;
 

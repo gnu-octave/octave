@@ -767,7 +767,7 @@ octave_cell::save_ascii (std::ostream& os)
       os << "# ndims: " << d.length () << "\n";
 
       for (int i = 0; i < d.length (); i++)
-        os << " " << d (i);
+        os << " " << d(i);
       os << "\n";
 
       Cell tmp = cell_value ();
@@ -1470,7 +1470,7 @@ c(2,1,:)(:)\n\
           // except if the struct is a column vector.
 
           dim_vector result_dv;
-          if (m_dv (m_dv.length () - 1) == 1)
+          if (m_dv(m_dv.length () - 1) == 1)
             result_dv.resize (m_dv.length ());
           else
             result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.

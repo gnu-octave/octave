@@ -1320,7 +1320,7 @@ ComplexMatrix::ifourier (void) const
 ComplexMatrix
 ComplexMatrix::fourier2d (void) const
 {
-  dim_vector dv(rows (), cols ());
+  dim_vector dv (rows (), cols ());
 
   ComplexMatrix retval (rows (), cols ());
   const Complex *in (data ());
@@ -1334,7 +1334,7 @@ ComplexMatrix::fourier2d (void) const
 ComplexMatrix
 ComplexMatrix::ifourier2d (void) const
 {
-  dim_vector dv(rows (), cols ());
+  dim_vector dv (rows (), cols ());
 
   ComplexMatrix retval (rows (), cols ());
   const Complex *in (data ());

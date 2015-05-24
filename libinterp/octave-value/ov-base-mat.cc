@@ -358,7 +358,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
                 for (octave_idx_type i = 0; i < n_idx; i++)
                   {
                     j += idx_vec(i)(0) * k;
-                    k *= dv (i);
+                    k *= dv(i);
                   }
                 matrix(j) = rhs;
               }

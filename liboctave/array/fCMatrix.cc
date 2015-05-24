@@ -1327,7 +1327,7 @@ FloatComplexMatrix::ifourier (void) const
 FloatComplexMatrix
 FloatComplexMatrix::fourier2d (void) const
 {
-  dim_vector dv(rows (), cols ());
+  dim_vector dv (rows (), cols ());
 
   FloatComplexMatrix retval (rows (), cols ());
   const FloatComplex *in (data ());
@@ -1341,7 +1341,7 @@ FloatComplexMatrix::fourier2d (void) const
 FloatComplexMatrix
 FloatComplexMatrix::ifourier2d (void) const
 {
-  dim_vector dv(rows (), cols ());
+  dim_vector dv (rows (), cols ());
 
   FloatComplexMatrix retval (rows (), cols ());
   const FloatComplex *in (data ());

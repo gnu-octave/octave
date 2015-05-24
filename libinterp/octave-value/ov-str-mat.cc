@@ -292,7 +292,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
       charNDArray tmp = char_array_value ();
       os << "# ndims: " << d.length () << "\n";
       for (int i=0; i < d.length (); i++)
-        os << " " << d (i);
+        os << " " << d(i);
       os << "\n";
       os.write (tmp.fortran_vec (), d.numel ());
       os << "\n";
@@ -592,7 +592,7 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = dv (rank-i-1);
+    hdims[i] = dv(rank-i-1);
 
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0)

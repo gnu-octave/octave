@@ -237,12 +237,12 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
       idx(0) = octave_value (':');
       for (octave_idx_type j = 1; j < nd; j++)
         {
-          if (dva (j) == 1)
+          if (dva(j) == 1)
             idx(j) = octave_value (1);
           else
             idx(j) = octave_value ((i % dvc(j)) + 1);
 
-          i = i / dvc (j);
+          i = i / dvc(j);
         }
 
       Ac = A;
@@ -256,14 +256,14 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
       octave_idx_type k1 = i - 1;
       for (octave_idx_type j = 1; j < nd; j++)
         {
-          if (dva(j) != 1 && k % dvc (j) != k1 % dvc (j))
+          if (dva(j) != 1 && k % dvc(j) != k1 % dvc(j))
             {
               idx (j) = octave_value ((k % dvc(j)) + 1);
               is_changed = true;
             }
 
-          k = k / dvc (j);
-          k1 = k1 / dvc (j);
+          k = k / dvc(j);
+          k1 = k1 / dvc(j);
         }
 
       if (is_changed)
@@ -294,8 +294,8 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
     {
       for (octave_idx_type j = 1; j < nd; j++)
         {
-          idx (j) = octave_value (i % dv (j) + 1);
-          i = i / dv (j);
+          idx (j) = octave_value (i % dv(j) + 1);
+          i = i / dv(j);
         }
     }
 }
@@ -309,8 +309,8 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
   idx(0) = 0;
   for (octave_idx_type j = 1; j < nd; j++)
     {
-      idx (j) = i % dv (j);
-      i = i / dv (j);
+      idx(j) = i % dv(j);
+      i = i / dv(j);
     }
 }
 
@@ -391,7 +391,7 @@ dimensionality as the other array.\n\
             }
 
           for (octave_idx_type i = 0; i < nd; i++)
-            if (dva (i) != dvb (i) && dva (i) != 1 && dvb (i) != 1)
+            if (dva(i) != dvb(i) && dva(i) != 1 && dvb(i) != 1)
               {
                 error ("bsxfun: dimensions of A and B must match");
                 break;
@@ -404,10 +404,10 @@ dimensionality as the other array.\n\
               dvc.resize (nd);
 
               for (octave_idx_type i = 0; i < nd; i++)
-                dvc (i) = (dva (i) < 1 ? dva (i)
-                                       : (dvb (i) < 1 ? dvb (i)
-                                                      : (dva (i) > dvb (i)
-                                                        ? dva (i) : dvb (i))));
+                dvc(i) = (dva(i) < 1 ? dva(i)
+                                     : (dvb(i) < 1 ? dvb(i)
+                                                   : (dva(i) > dvb(i)
+                                                       ? dva(i) : dvb(i))));
 
               if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
                 {
@@ -427,7 +427,7 @@ dimensionality as the other array.\n\
                 {
                   octave_idx_type ncount = 1;
                   for (octave_idx_type i = 1; i < nd; i++)
-                    ncount *= dvc (i);
+                    ncount *= dvc(i);
 
 #define BSXDEF(T) \
                   T result_ ## T; \

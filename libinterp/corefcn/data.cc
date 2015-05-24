@@ -2051,7 +2051,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
         retval = do_single_type_concat_map (args, dim);
       else
         {
-          dim_vector  dv = args(0).dims ();
+          dim_vector dv = args(0).dims ();
 
           // Default concatenation.
           bool (dim_vector::*concat_rule) (const dim_vector&, int)
@@ -2115,8 +2115,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
                   break;
                 }
               else
-                ra_idx (dim) += (dim < dv_tmp.length () ?
-                                 dv_tmp (dim) : 1);
+                ra_idx(dim) += (dim < dv_tmp.length () ? dv_tmp(dim) : 1);
             }
           retval = tmp;
         }
@@ -4065,8 +4064,8 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
             case oct_data_conv::dt_double:
               {
-                if (val == 1 && dims.length () == 2 && dims (0) == 1)
-                  retval = Range (1.0, 0.0, dims (1)); // packed form
+                if (val == 1 && dims.length () == 2 && dims(0) == 1)
+                  retval = Range (1.0, 0.0, dims(1));  // packed form
                 else
                   retval = NDArray (dims, val);
               }

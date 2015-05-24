@@ -218,7 +218,7 @@ do_trilu (const std::string& name,
       dim_vector dims = arg.dims ();
       if (dims.length () != 2)
         error ("%s: need a 2-D matrix", name.c_str ());
-      else if (k < -dims (0) || k > dims(1))
+      else if (k < -dims(0) || k > dims(1))
         error ("%s: requested diagonal out of range", name.c_str ());
       else
         {

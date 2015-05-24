@@ -153,7 +153,7 @@ void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
   dim_vector ddv = Array<T>::dims ().redim (nd);
   dim_vector sdv = vals.dims ().redim (nd);
 
-  octave_idx_type ext = idx.extent (ddv (dim));
+  octave_idx_type ext = idx.extent (ddv(dim));
 
   if (ext > ddv(dim))
     {

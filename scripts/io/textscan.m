@@ -292,6 +292,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       endif
       fseek (fid, st_pos, "bof");
       str = fscanf (fid, "%c", data_size);
+      args{1} = Inf;
     else
       fseek (fid, st_pos, "bof");
       str = fread (fid, "char=>char").';

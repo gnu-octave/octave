@@ -711,7 +711,7 @@ maybe_initialize_magick (void)
 
       if (QuantumDepth < 32)
         warning_with_id ("Octave:GraphicsMagic-Quantum-Depth",
-                         "your version of %s limits images to %d bits per pixel",
+                         "your version of %s limits images to %d bits per pixel\n",
                          MagickPackageName, QuantumDepth);
 
       initialized = true;

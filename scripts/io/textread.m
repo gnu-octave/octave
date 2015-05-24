@@ -68,8 +68,8 @@
 ##   [a, b] = textread (f, "%f %s")
 ##   returns two columns of data, one with doubles, the other a
 ##   cellstr array:
-##   a = [1; 2; 3; 4; 5]´
-##   b = {"a"; "b"; "c"; "d"; "e"}
+##   a = [1; 2; 3; 4; 5]
+##   b = @{"a"; "b"; "c"; "d"; "e"@}
 ## @end example
 ##
 ## @example
@@ -77,8 +77,8 @@
 ##   (read data into two culumns, try to use the format string
 ##   three times)
 ##   returns
-##   a = [1; 2; 3]´
-##   b = {"a"; "b"; "c"}
+##   a = [1; 2; 3]
+##   b = @{"a"; "b"; "c"@}
 ##
 ## @end example
 ##
@@ -90,7 +90,7 @@
 ##   b
 ##
 ##   [a, b] = textread (f, "%f %s", 2)
-##   returns a = 1 and b = {"a"}; i.e., the format string is used
+##   returns a = 1 and b = @{"a"@}; i.e., the format string is used
 ##   only once because the format string refers to 2 lines of the
 ##   data file. To obtain 2x1 data output columns, specify N = 4
 ##   (number of data lines containing all requested data) rather

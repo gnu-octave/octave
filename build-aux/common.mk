@@ -537,7 +537,6 @@ define do_subst_config_vals
     -e "s|%OCTAVE_CONF_CXXCPP%|\"${CXXCPP}\"|" \
     -e "s|%OCTAVE_CONF_CXXFLAGS%|\"${CXXFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_CXXPICFLAG%|\"${CXXPICFLAG}\"|" \
-    -e "s|%OCTAVE_CONF_CXX_VERSION%|\"${CXX_VERSION}\"|" \
     -e "s|%OCTAVE_CONF_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
     -e "s|%OCTAVE_CONF_DEFS%|\"${DEFS}\"|" \
     -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \
@@ -707,7 +706,6 @@ define do_subst_cross_config_vals
     -e "s|%OCTAVE_CONF_CXXCPP%|\"${CXXCPP}\"|" \
     -e "s|%OCTAVE_CONF_CXXFLAGS%|\"${CXXFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_CXXPICFLAG%|\"${CXXPICFLAG}\"|" \
-    -e "s|%OCTAVE_CONF_CXX_VERSION%|\"${CXX_VERSION}\"|" \
     -e "s|%OCTAVE_CONF_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
     -e "s|%OCTAVE_CONF_DEFS%|\"${DEFS}\"|" \
     -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \

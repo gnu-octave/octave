@@ -9,7 +9,6 @@ deprecated_FCN_FILES = \
   deprecated/fmod.m \
   deprecated/fnmatch.m \
   deprecated/gmap40.m \
-  deprecated/interp1q.m \
   deprecated/isstr.m \
   deprecated/loadaudio.m \
   deprecated/luinc.m \

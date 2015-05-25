@@ -41,7 +41,13 @@
 ##
 ## If output arguments are requested then the components of the normal
 ## vectors are returned in @var{nx}, @var{ny}, and @var{nz} and no plot is
-## made.
+## made.  The normal vectors are unnormalized (magnitude != 1).  To normalize,
+## use
+##
+## @example
+## mag = sqrt (nx.^2 + ny.^2 + nz.^2);
+## nx ./= len;  ny ./= len;  nz ./= len;
+## @end example
 ##
 ## An example of the use of @code{surfnorm} is
 ##
@@ -50,10 +56,14 @@
 ## @end example
 ##
 ## Algorithm: The normal vectors are calculated by taking the cross product
-## of the diagonals of each of the quadrilaterals in the meshgrid to find the
-## normal vectors of the centers of these quadrilaterals.  The four nearest
-## normal vectors to the meshgrid points are then averaged to obtain the
-## normal to the surface at the meshgridded points.
+## of the diagonals of each of the quadrilateral faces in the meshgrid to find
+## the normal vectors at the center of each face.  Next, for each meshgrid
+## point the four nearest normal vectors are averaged to obtain the final
+## normal to the surface at the meshgrid point.
+##
+## For surface objects, the @qcode{"VertexNormals"} property contains
+## equivalent information, except possibly near the boundary of the surface
+## where different interpolation schemes may yield slightly different values.
 ##
 ## @seealso{isonormals, quiver3, surf, meshgrid}
 ## @end deftypefn
@@ -84,6 +94,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
     error ("surfnorm: X, Y, and Z must have the same dimensions");
   endif
 
+  ## FIXME: Matlab uses a bicubic interpolation, not linear, along the boundary.
   ## Do a linear extrapolation for mesh points on the boundary so that the mesh
   ## is increased by 1 on each side.  This allows each original meshgrid point
   ## to be surrounded by four quadrilaterals and the same calculation can be
@@ -116,14 +127,6 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
   nz = (w.z(1:end-1,1:end-1) + w.z(1:end-1,2:end) +
         w.z(2:end,1:end-1) + w.z(2:end,2:end)) / 4;
 
-  ## FIXME: According to Matlab documentation the vertex normals
-  ##        returned are not normalized.
-  ## Normalize the normal vectors
-  len = sqrt (nx.^2 + ny.^2 + nz.^2);
-  nx ./= len;
-  ny ./= len;
-  nz ./= len;
-
   if (nargout == 0)
     oldfig = [];
     if (! isempty (hax))
@@ -137,21 +140,20 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
       unwind_protect
         set (hax, "nextplot", "add");
 
-        ## FIXME: Scale unit normals by data aspect ratio in order for
-        ##        normals to appear correct.
-        ##daratio = daspect (hax);
-        ##daspect ("manual");
-        ##len = norm (daratio);
-        ## This assumes an even meshgrid which isn't a great assumption
-        ##dx = x(1,2) - x(1,1);
-        ##dy = y(2,1) - y(1,1);
-        ##nx *= daratio(1);
-        ##ny *= daratio(2);
-        ##nz *= daratio(3);
-        ##len = sqrt (nx.^2 + ny.^2 + nz.^2);
-        ##nx ./= len;
-        ##ny ./= len;
-        ##nz ./= len;
+        ## Normalize the normal vectors
+        nmag = sqrt (nx.^2 + ny.^2 + nz.^2);
+
+        ## And correct for the aspect ratio of the display
+        daratio = daspect (hax);
+        damag = sqrt (sumsq (daratio)); 
+
+        ## FIXME: May also want to normalize the vectors relative to the size
+        ##        of the diagonal.
+
+        nx ./= nmag / (daratio(1)^2 / damag);
+        ny ./= nmag / (daratio(2)^2 / damag);
+        nz ./= nmag / (daratio(3)^2 / damag);
+
         plot3 ([x(:).'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
                [y(:).'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
                [z(:).'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
@@ -177,10 +179,10 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! surfnorm (peaks (32));
-%! shading interp;
+%! surfnorm (peaks (19));
+%! shading faceted;
 %! title ({'surfnorm() shows surface and normals at each vertex', ...
-%!         'peaks() function with 32 faces'});
+%!         'peaks() function with 19 faces'});
 
 %!demo
 %! clf;

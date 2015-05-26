@@ -45,7 +45,7 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 
   h(Vc) = xnorm (x);
   if (real (h(Vc)) > 0)
-    x = x / h(Vc);
+    x /= h(Vc);
 }
 
 DEFUN (mgorth, args, nargout,

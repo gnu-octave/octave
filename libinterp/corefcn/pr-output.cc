@@ -393,8 +393,8 @@ rational_approx (double val, int len)
             }
 
           frac = flip - step;
-          n = n * step + lastn;
-          d = d * step + lastd;
+          n = step * n + lastn;
+          d = step * d + lastd;
           lastn = nextn;
           lastd = nextd;
 

@@ -457,15 +457,14 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
                 }
               tmp.xcidx (n) = n;
 
-              AminusSigmaB = AminusSigmaB - sigma * tmp *
-                             b.transpose () * b * tmp.transpose ();
+              AminusSigmaB -= sigma * tmp *
+                              b.transpose () * b * tmp.transpose ();
             }
           else
-            AminusSigmaB = AminusSigmaB - sigma *
-                           b.transpose () * b;
+            AminusSigmaB -= sigma * b.transpose () * b;
         }
       else
-        AminusSigmaB = AminusSigmaB - sigma * b;
+        AminusSigmaB -= sigma * b;
     }
   else
     {
@@ -480,7 +479,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
           sigmat.xcidx (i+1) = i + 1;
         }
 
-      AminusSigmaB = AminusSigmaB - sigmat;
+      AminusSigmaB -= sigmat;
     }
 
   SparseLU fact (AminusSigmaB);
@@ -552,10 +551,10 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
                                      static_cast<octave_idx_type>(pB[j]));
             }
           else
-            AminusSigmaB = AminusSigmaB - tmp;
+            AminusSigmaB -= tmp;
         }
       else
-        AminusSigmaB = AminusSigmaB - sigma * b;
+        AminusSigmaB -= sigma * b;
     }
   else
     {
@@ -622,14 +621,14 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
                 }
               tmp.xcidx (n) = n;
 
-              AminusSigmaB = AminusSigmaB - tmp * b.hermitian () * b *
-                             tmp.transpose () * sigma;
+              AminusSigmaB -= tmp * b.hermitian () * b *
+                              tmp.transpose () * sigma;
             }
           else
-            AminusSigmaB = AminusSigmaB - sigma * b.hermitian () * b;
+            AminusSigmaB -= sigma * b.hermitian () * b;
         }
       else
-        AminusSigmaB = AminusSigmaB - sigma * b;
+        AminusSigmaB -= sigma * b;
     }
   else
     {
@@ -644,7 +643,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
           sigmat.xcidx (i+1) = i + 1;
         }
 
-      AminusSigmaB = AminusSigmaB - sigmat;
+      AminusSigmaB -= sigmat;
     }
 
   SparseComplexLU fact (AminusSigmaB);
@@ -716,10 +715,10 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
                                      static_cast<octave_idx_type>(pB[j]));
             }
           else
-            AminusSigmaB = AminusSigmaB - tmp;
+            AminusSigmaB -= tmp;
         }
       else
-        AminusSigmaB = AminusSigmaB - sigma * b;
+        AminusSigmaB -= sigma * b;
     }
   else
     {

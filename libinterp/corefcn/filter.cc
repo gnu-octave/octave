@@ -127,8 +127,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   if (norm != static_cast<T> (1.0))
     {
-      a = a / norm;
-      b = b / norm;
+      a /= norm;
+      b /= norm;
     }
 
   if (a_len <= 1 && si_len <= 0)

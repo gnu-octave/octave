@@ -560,7 +560,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
           // All scalars case - the result is a scalar.
           octave_idx_type idx = idxa(len-1)(0);
           for (octave_idx_type i = len - 2; i >= 0; i--)
-            idx = idx * dvx(i) + idxa(i)(0);
+            idx = dvx(i) * idx + idxa(i)(0);
           retval = idx_vector (idx);
         }
       else if (all_ranges && clen != 0)
@@ -572,8 +572,8 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
             {
               octave_idx_type xstart = idxa(i)(0);
               octave_idx_type xstep = idxa(i)(1) - xstart;
-              start = start * dvx(i) + xstart;
-              step = step * dvx(i) + xstep;
+              start = dvx(i) * start + xstart;
+              step = dvx(i) * step + xstep;
             }
           retval = idx_vector::make_range (start, step, clen);
         }

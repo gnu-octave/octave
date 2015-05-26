@@ -175,9 +175,9 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
             dif2[i] = (ab + ap + z1) / z / z / (z + 1.0);
           else
             {
-              z = z * z;
+              z *= z;
               double y = z1 * (ab + z1);
-              y = y * (ap + y);
+              y *= (ap + y);
               dif2[i] = y / z / (z - 1.0);
             }
         }
@@ -218,11 +218,11 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
           if (i != 0)
             {
               for (octave_idx_type j = 1; j <= i; j++)
-                zc = zc - z / (x - root[j-1]);
+                zc -= z / (x - root[j-1]);
             }
 
-          z = z / zc;
-          x = x - z;
+          z /= zc;
+          x -= z;
 
           // Famous last words:  100 iterations should be more than
           // enough in all cases.
@@ -235,7 +235,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
         }
 
       root[i] = x;
-      x = x + sqrt (std::numeric_limits<double>::epsilon ());
+      x += sqrt (std::numeric_limits<double>::epsilon ());
     }
 
   // Add interpolation points at x = 0 and/or x = 1.
@@ -362,7 +362,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
           vect[j] = ax / (dif1[j] * dif1[j]);
 
-          y = y + vect[j];
+          y += vect[j];
         }
 
       for (octave_idx_type j = 0; j < nt; j++)

@@ -242,7 +242,7 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
           else
             idx(j) = octave_value ((i % dvc(j)) + 1);
 
-          i = i / dvc(j);
+          i /= dvc(j);
         }
 
       Ac = A;
@@ -262,8 +262,8 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
               is_changed = true;
             }
 
-          k = k / dvc(j);
-          k1 = k1 / dvc(j);
+          k /= dvc(j);
+          k1 /= dvc(j);
         }
 
       if (is_changed)
@@ -295,7 +295,7 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
       for (octave_idx_type j = 1; j < nd; j++)
         {
           idx (j) = octave_value (i % dv(j) + 1);
-          i = i / dv(j);
+          i /= dv(j);
         }
     }
 }
@@ -310,7 +310,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
   for (octave_idx_type j = 1; j < nd; j++)
     {
       idx(j) = i % dv(j);
-      i = i / dv(j);
+      i /= dv(j);
     }
 }
 

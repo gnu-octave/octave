@@ -3250,14 +3250,14 @@ betain (double x, double p, double q, double beta, bool& err)
 
   for ( ; ; )
     {
-      term = term * temp * rx / (pp + ai);
-      value = value + term;
+      term *= temp * rx / (pp + ai);
+      value += term;
       temp = fabs (term);
 
       if (temp <= acu && temp <= acu * value)
         {
-          value = value * exp (pp * gnulib::log (xx)
-                               + (qq - 1.0) * gnulib::log (cx) - beta) / pp;
+          value *= exp (pp * gnulib::log (xx)
+                        + (qq - 1.0) * gnulib::log (cx) - beta) / pp;
 
           if (indx)
             {
@@ -3266,8 +3266,8 @@ betain (double x, double p, double q, double beta, bool& err)
           break;
         }
 
-      ai = ai + 1.0;
-      ns = ns - 1;
+      ai += 1.0;
+      ns -= 1;
 
       if (0 <= ns)
         {
@@ -3280,7 +3280,7 @@ betain (double x, double p, double q, double beta, bool& err)
       else
         {
           temp = psq;
-          psq = psq + 1.0;
+          psq += 1.0;
         }
     }
 
@@ -3452,7 +3452,7 @@ betaincinv (double y, double p, double q)
                       break;
                     }
                 }
-              g = g / 3.0;
+              g /= 3.0;
             }
 
           if (prev <= acu)
@@ -3478,7 +3478,7 @@ betaincinv (double y, double p, double q)
               break;
             }
 
-          g = g / 3.0;
+          g /= 3.0;
         }
 
       if (tx == value)

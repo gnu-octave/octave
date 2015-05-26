@@ -482,12 +482,12 @@ file_editor_tab::update_lexer ()
           _prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
 
           if (octave_builtins)
-            _prep_apis_file = _prep_apis_file + "b";  // use builtins, too
+            _prep_apis_file += "b";  // use builtins, too
 
           if (octave_functions)
-            _prep_apis_file = _prep_apis_file + "f";  // use keywords, too
+            _prep_apis_file += "f";  // use keywords, too
 
-          _prep_apis_file = _prep_apis_file + ".pap"; // final name of apis file
+          _prep_apis_file += ".pap"; // final name of apis file
 
           // check whether the APIs info needs to be prepared and saved
           QFileInfo apis_file = QFileInfo (_prep_apis_file);

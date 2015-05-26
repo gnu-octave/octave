@@ -458,7 +458,7 @@ public:
   {
     octave_idx_type k = 0;
     for (int i = length () - 1; i >= 0; i--)
-      k = k * rep[i] + idx[i];
+      k = rep[i] * k + idx[i];
 
     return k;
   }
@@ -469,7 +469,7 @@ public:
   {
     octave_idx_type k = 0;
     for (int i = nidx - 1; i >= 0; i--)
-      k = k * rep[i] + idx[i];
+      k = rep[i] * k + idx[i];
 
     return k;
   }

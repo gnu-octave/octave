@@ -519,7 +519,7 @@ void FileDialog::acceptSelection (void)
 
   // if not showing only dirs, add end slash for the path component
   if (testOption (QFileDialog::ShowDirsOnly)  == false)
-    path = path + "/";
+    path += "/";
 
   // convert to native slashes
   path = QDir::toNativeSeparators (path);

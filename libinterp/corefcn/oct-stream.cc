@@ -342,13 +342,13 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
           else
             {
               char c = s[i++];
-              width = width * 10 + c - '0';
+              width = 10 * width + c - '0';
               have_width = true;
               *buf << c;
               while (i < n && isdigit (s[i]))
                 {
                   c = s[i++];
-                  width = width * 10 + c - '0';
+                  width = 10 * width + c - '0';
                   *buf << c;
                 }
             }

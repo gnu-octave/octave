@@ -747,7 +747,7 @@ main_window::notice_settings (const QSettings *settings)
         { // if children has a name
           icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
           if (widget_icon_data[icon_set_found].name != "NONE")
-            icon = icon + name + ".png"; // add widget name and ext.
+            icon += name + ".png"; // add widget name and ext.
           widget->setWindowIcon (QIcon (icon));
         }
     }

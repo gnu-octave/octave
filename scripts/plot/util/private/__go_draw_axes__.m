@@ -414,7 +414,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   ## preserved the original order.
   [jnk, k] = setdiff (kids, [axis_obj.xlabel; axis_obj.ylabel; ...
                              axis_obj.zlabel; axis_obj.title]);
-  kids = kids (sort (k));
+  kids = kids(sort (k));
 
   if (nd == 3)
     fputs (plot_stream, "set parametric;\n");
@@ -1631,7 +1631,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   fputs (plot_stream, "set style data lines;\n");
 
   cmap = [cmap; addedcmap];
-  cmap_sz = cmap_sz + rows (addedcmap);
+  cmap_sz += rows (addedcmap);
   if (mono == false && length (cmap) > 0)
     fprintf (plot_stream,
              "set palette positive color model RGB maxcolors %i;\n",
@@ -2449,7 +2449,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
             si++;
           endif
         endwhile
-        l1 = l1 (min (length (l1), si));
+        l1 = l1(min (length (l1), si));
         if (s(i) + l1 + 1 == s(i+1))
           if (str(s(i + 1) + p + 1) == "{")
             s2 = strfind (str(s(i + 1) + p + 2:end),'{');
@@ -2466,7 +2466,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                 si++;
               endif
             endwhile
-            l2 = l2 (min (length (l2), si));
+            l2 = l2(min (length (l2), si));
             if (length_string (str(s(i)+p+2:s(i)+p+l1-1)) <=
                 length_string (str(s(i+1)+p+2:s(i+1)+p+l2-1)))
               ## Shortest already first!
@@ -2507,7 +2507,7 @@ function l = length_string (s)
   l = length (s) - length (strfind (s,'{')) - length (strfind (s,'}'));
   m = regexp (s, '/([\w-]+|[\w-]+=\d+)', 'matches');
   if (! isempty (m))
-    l = l - sum (cellfun ("length", m));
+    l -= sum (cellfun ("length", m));
   endif
 endfunction
 

@@ -128,16 +128,16 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
   ## maximize likelihood using Levenberg modified Newton's method
   iter = 0;
   while (abs (dl' * (d2l \ dl) / length (dl)) > tol)
-    iter = iter + 1;
+    iter += 1;
     tbold = tb;
     devold = dev;
     tb = tbold - d2l \ dl;
     [g, g1, p, dev] = logistic_regression_likelihood (y, x, tb, z, z1);
     if ((dev - devold) / (dl' * (tb - tbold)) < 0)
-      epsilon = epsilon / decr;
+      epsilon /= decr;
     else
       while ((dev - devold) / (dl' * (tb - tbold)) > 0)
-        epsilon = epsilon * incr;
+        epsilon *= incr;
          if (epsilon > 1e+15)
            error ("logistic_regression: epsilon too large");
          endif

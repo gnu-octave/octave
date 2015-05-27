@@ -181,9 +181,9 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     for iter=1:1:maxit
       ## If rho0 == 0 or xi1 == 0, method fails.
       v = vt / rho0;
-      y = y / rho0;
+      y /= rho0;
       w = wt / xi1;
-      z = z / xi1;
+      z /= xi1;
 
       delta1 = z' * y;   # If delta1 == 0, method fails.
 

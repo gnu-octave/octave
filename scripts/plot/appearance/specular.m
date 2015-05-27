@@ -88,7 +88,7 @@ function retval = specular (sx, sy, sz, lv, vv, se)
 
   ## Allow postive values only
   retval(retval < 0) = 0;
-  retval = retval .^ se;
+  retval .^= se;
 
 endfunction
 

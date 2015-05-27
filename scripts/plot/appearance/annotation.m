@@ -1096,7 +1096,7 @@ function XY = textcoordinates (hte, pos)
   ## the vertical alignment of the arrow.
 
   ang = angle (complex (pos(3), pos(4)));
-  rot = rot / 180 * pi;
+  rot *= pi / 180;
 
   [~, pt] = min (abs ((-pi:pi/4:pi) - ang));
   pt -= floor (rot / (pi/4));

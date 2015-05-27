@@ -135,7 +135,7 @@ function S = __sprand_impl__ (varargin)
           V = Vinit;
           V(i, i) = cv;  V(i, j) = sv;
           V(j, i) = -sv; V(j, j) = cv;
-          S = S * V;
+          S *= V;
         endif
       endwhile
     endif

@@ -595,7 +595,7 @@ function C = chebspec (n, k = 0)
       error ("gallery: unknown K '%d' for chebspec matrix.", k);
   endswitch
 
-  n = n-1;
+  n -= 1;
   C = zeros (n+1);
 
   one    = ones (n+1, 1);
@@ -773,7 +773,7 @@ function A = clement (n, k = 0)
     error ("gallery: K must be a numeric scalar for clement matrix.");
   endif
 
-  n = n-1;
+  n -= 1;
   x = n:-1:1;
   z = 1:n;
 
@@ -1493,13 +1493,13 @@ function [A, detA] = ipjfact (n, k = 0)
 
     if (k == 0)
       for i = 1:n-1
-        d = d * prod (1:i+1) * prod (1:n-i);
+        d *= prod (1:i+1) * prod (1:n-i);
       endfor
-      d = d * prod (1:n+1);
+      d *= prod (1:n+1);
 
     elseif (k == 1)
       for i = 0:n-1
-        d = d * prod (1:i) / prod (1:n+1+i);
+        d *= prod (1:i) / prod (1:n+1+i);
       endfor
       if (rem (n*(n-1)/2, 2))
         d = -d;
@@ -2218,7 +2218,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
   ## If A will be a vector
   if (p == 1)
     A = randn (m, n);
-    A = A / norm (A);
+    A /= norm (A);
     return;
   endif
 
@@ -2339,7 +2339,7 @@ function A = riemann (n)
     error ("gallery: N must be an integer for riemann matrix.");
   endif
 
-  n = n+1;
+  n += 1;
   i = (2:n)' * ones (1, n-1);
   j = i';
   A = i .* (! rem (j, i)) - ones (n-1);
@@ -2435,7 +2435,7 @@ function T = toeppd (n, m = n, w = rand (m,1), theta = rand (m,1))
   E = 2*pi * ((1:n)' * ones (1, n) - ones (n, 1) * (1:n));
 
   for i = 1:m
-    T = T + w(i) * cos (theta(i)*E);
+    T += w(i) * cos (theta(i)*E);
   endfor
 endfunction
 

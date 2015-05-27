@@ -42,7 +42,7 @@ function c = bartlett (m)
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    m -= 1;
     n = fix (m / 2);
     c = [2*(0:n)/m, 2-2*(n+1:m)/m]';
   endif

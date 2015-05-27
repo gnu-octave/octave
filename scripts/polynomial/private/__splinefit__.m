@@ -151,7 +151,7 @@ else
     % Solve constraints
     [Z,u0] = solvecon(B,constr);
     % Solve Min norm(u*A-y), subject to u*B = yc
-    y = y - u0*A;
+    y -= u0*A;
     A = Z*A;
     v = lsqsolve(A,y,beta);
     u = u0 + v*Z;
@@ -487,7 +487,7 @@ for k = 1:n-1
 end
 
 % Reduce number of pieces
-pieces = pieces - 2*deg;
+pieces -= 2*deg;
 
 % Sort coefficients by interval number
 ii = [n*(1:pieces); deg*ones(deg,pieces)];
@@ -517,7 +517,7 @@ nx = numel(xc);
 B0 = zeros(n,nx);
 for k = 1:size(cc,1)
     if any(cc(k,:))
-        B0 = B0 + repmat(cc(k,:),n,1).*ppval(base,xc);
+        B0 += repmat(cc(k,:),n,1).*ppval(base,xc);
     end
     % Differentiate base
     coefs = base.coefs(:,1:n-k);

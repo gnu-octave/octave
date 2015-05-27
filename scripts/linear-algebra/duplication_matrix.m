@@ -82,7 +82,7 @@ function d = duplication_matrix (n)
       d((j - 1) * n + i, count + i) = 1;
       d((i - 1) * n + j, count + i) = 1;
     endfor
-    count = count + n - j;
+    count += n - j;
   endfor
 
 endfunction

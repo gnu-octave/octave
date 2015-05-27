@@ -69,8 +69,8 @@ function [q, d] = polyder (p, a)
         endif
 
         ## move all the gain into the numerator
-        q = q/d(1);
-        d = d/d(1);
+        q /= d(1);
+        d /= d(1);
       endif
     else
       lp = numel (p);

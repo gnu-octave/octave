@@ -192,7 +192,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
   else
     caller = "stem";
   endif
-  nargin = nargin - 1;  # account for have_z argument
+  nargin = nargin () - 1;  # account for have_z argument
 
   num_numeric = find (cellfun ("isclass", varargin, "char"), 1) - 1;
   if (isempty (num_numeric))

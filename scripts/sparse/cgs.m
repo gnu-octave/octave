@@ -147,9 +147,9 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       ## Cache.
       q = Ax (p);
       alpha = ro / (p' * q);
-      x = x + alpha * p;
+      x += alpha * p;
 
-      res = res - alpha * q;
+      res -= alpha * q;
       relres = norm (res) / norm_b;
       resvec = [resvec; relres];
 

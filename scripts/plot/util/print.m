@@ -412,7 +412,7 @@ function print (varargin)
         endif
         if (! isempty (opts.scalefontsize) && ! opts.scalefontsize != 1)
           ## This is done to work around the bbox being whole numbers.
-          fontsize = fontsize * opts.scalefontsize;
+          fontsize *= opts.scalefontsize;
         endif
         ## FIXME: legend child objects need to be acted on first.
         ##        or legend fontsize callback will destroy them.

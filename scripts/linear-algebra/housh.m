@@ -72,7 +72,7 @@ function [housv, beta, zer] = housh (x, j, z)
     housv = x;
     m = max (abs (housv));
     if (m != 0.0)
-      housv = housv / m;
+      housv /= m;
       alpha = norm (housv);
       if (alpha > z)
         beta = 1.0 / (alpha * (alpha + abs (housv(j))));

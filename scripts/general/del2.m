@@ -156,7 +156,7 @@ function D = del2 (M, varargin)
     endif
   endfor
 
-  D = D ./ nd;
+  D ./= nd;
 endfunction
 
 

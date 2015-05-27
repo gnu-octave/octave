@@ -163,7 +163,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
 
       t = Ax (shat);
       omega = (s' * t) / (t' * t);
-      x = x + alpha * phat + omega * shat;
+      x += alpha * phat + omega * shat;
       res = s - omega * t;
       rho_2 = rho_1;
 

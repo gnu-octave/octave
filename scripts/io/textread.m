@@ -97,7 +97,6 @@ function varargout = textread (filename, format = "%f", varargin)
     if (varargin{headerlines + 1} > 0)
       fskipl (fid, varargin{headerlines + 1});
       varargin(headerlines:headerlines+1) = [];
-      nargin = nargin - 2;
     elseif (varargin{headerlines + 1} < 0)
       warning ("textread: negative headerline value ignored");
     endif

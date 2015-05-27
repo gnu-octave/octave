@@ -133,7 +133,7 @@ function [est, v, w, iter] = onenormest (varargin)
 
   ## Initial test vectors X.
   X = rand (n, t);
-  X = X ./ (ones (n,1) * sum (abs (X), 1));
+  X ./= ones (n,1) * sum (abs (X), 1);
 
   ## Track if a vertex has been visited.
   been_there = zeros (n, 1);

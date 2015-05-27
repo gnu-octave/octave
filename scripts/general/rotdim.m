@@ -78,7 +78,7 @@ function y = rotdim (x, n, plane)
       plane = [];
       dim = 0;
       while (dim < nd)
-        dim = dim + 1;
+        dim += 1;
         if (sz (dim) != 1)
           plane = [plane, dim];
           if (length (plane) == 2)
@@ -104,7 +104,7 @@ function y = rotdim (x, n, plane)
 
   n = rem (n, 4);
   if (n < 0)
-    n = n + 4;
+    n += 4;
   endif
   if (n == 0)
     y = x;

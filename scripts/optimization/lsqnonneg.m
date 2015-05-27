@@ -144,7 +144,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
         x += alpha*(xx - x);
         ## LH11: move from P to Z all X == 0.
         ## This corresponds to those indices where minimum of sf is attained.
-        idx = idx (sf == alpha);
+        idx = idx(sf == alpha);
         p(idx) = [];
         if (useqr)
           ## update the QR factorization.

@@ -50,7 +50,7 @@ function settable = set (varargin)
       index = 1;
       for property = varargin{2}
         setproperty (player, char (property), varargin{3}{index});
-        index = index + 1;
+        index += 1;
       endfor
     else
       setproperty (player, varargin{2}, varargin{3});

@@ -495,7 +495,7 @@ function gs = __ghostscript_binary__ ()
     endif
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))
-      n = n + 1;
+      n += 1;
       ghostscript_binary = file_in_path (getenv ("PATH"), gs_binaries{n});
     endwhile
     if (warn_on_no_ghostscript && isempty (ghostscript_binary))
@@ -529,7 +529,7 @@ function bin = __find_binary__ (binary)
     endif
     n = 0;
     while (n < numel (binaries) && isempty (data.(binary).bin))
-      n = n + 1;
+      n += 1;
       data.(binary).bin = file_in_path (getenv ("PATH"), binaries{n});
     endwhile
     if (isempty (data.(binary).bin) && data.(binary).warn_on_absence)
@@ -574,7 +574,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   endif
 
   if (strcmp (paperunits, "normalized"))
-    paperposition = paperposition .* papersize([1,2,1,2]);
+    paperposition .*= papersize([1,2,1,2]);
   else
     paperposition = convert2points (paperposition, paperunits);
   endif
@@ -611,9 +611,9 @@ endfunction
 function value = convert2points (value, units)
   switch (units)
     case "inches"
-      value = value * 72;
+      value *= 72;
     case "centimeters"
-      value = value * 72 / 2.54;
+      value *= 72 / 2.54;
     case "normalized"
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");

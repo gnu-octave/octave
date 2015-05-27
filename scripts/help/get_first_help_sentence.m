@@ -117,9 +117,9 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     ## Remove the @end ... that corresponds to the @def we removed above
     def1 = def_idx(1);
     space_idx = find (help_text == " ");
-    space_idx = space_idx (find (space_idx > def1, 1));
+    space_idx = space_idx(find (space_idx > def1, 1));
     bracket_idx = find (help_text == "{" | help_text == "}");
-    bracket_idx = bracket_idx (find (bracket_idx > def1, 1));
+    bracket_idx = bracket_idx(find (bracket_idx > def1, 1));
     if (isempty (space_idx) && isempty (bracket_idx))
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif

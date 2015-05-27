@@ -77,6 +77,6 @@ function text = strip_superfluous_endlines (text)
   endfor
 
   ## Actually remove the elements
-  text = text (keep);
+  text = text(keep);
 endfunction
 

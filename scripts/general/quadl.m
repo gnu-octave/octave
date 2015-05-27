@@ -133,7 +133,7 @@ function q = quadl (f, a, b, tol = [], trace = false, varargin)
     R = 1;
   endif
   if (R > 0 && R < 1)
-    tol = tol/R;
+    tol /= R;
   endif
   is = s * abs (is) * tol/myeps;
   if (is == 0)

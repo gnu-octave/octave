@@ -105,7 +105,7 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
         if (rv == 0)
           return;
         elseif (rv > 1)
-          rv = rv - 1;
+          rv -= 1;
           return;
         else
           assert (rv == 1);

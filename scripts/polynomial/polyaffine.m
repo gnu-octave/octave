@@ -56,7 +56,7 @@ function g = polyaffine (f, mu)
 
    ## Scale.
    if (mu(2) != 1)
-     g = g ./ (mu(2) .^ (lf-1:-1:0));
+     g ./= mu(2) .^ (lf-1:-1:0);
    endif
 
    ## Translate.

@@ -101,7 +101,7 @@ function [nn, xx] = hist (varargin)
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
     x = [0.5:n]'/n;
-    x = x * (max_val - min_val) + ones (size (x)) * min_val;
+    x = (max_val - min_val) * x + min_val * ones (size (x));
   else
     ## nargin is either 2 or 3
     x = varargin{iarg++};
@@ -111,7 +111,7 @@ function [nn, xx] = hist (varargin)
         error ("hist: number of bins NBINS must be positive");
       endif
       x = [0.5:n]'/n;
-      x = x * (max_val - min_val) + ones (size (x)) * min_val;
+      x = (max_val - min_val) * x  + min_val * ones (size (x));
     elseif (isreal (x))
       if (isvector (x))
         x = x(:);

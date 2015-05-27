@@ -170,8 +170,8 @@ function [r, p, k, e] = residue (b, a, varargin)
   a = polyreduce (a);
   b = polyreduce (b);
 
-  b = b / a(1);
-  a = a / a(1);
+  b /= a(1);
+  a /= a(1);
 
   la = length (a);
   lb = length (b);
@@ -329,13 +329,13 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
     endfor
     pn = deconv (pden, pm);
     pn = r(n) * pn;
-    pnum = pnum + prepad (pn, N+1, 0, 2);
+    pnum += prepad (pn, N+1, 0, 2);
   endfor
 
   ## Add the direct term.
 
   if (numel (k))
-    pnum = pnum + conv (pden, k);
+    pnum += conv (pden, k);
   endif
 
   ## Check for leading zeros and trim the polynomial coefficients.

@@ -209,7 +209,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     for i = 1:nu
       hv = U(:,i);
       av = alpha(i);
-      V = V - av*hv*(hv'*V);
+      V -= av*hv*(hv'*V);
       H(i,nu-columns(V)+(1:columns(V))) = V(pivot_vec(i),:);
     endfor
 

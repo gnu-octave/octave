@@ -183,9 +183,9 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
     srnd = 2 .^ floor (- log2 (tmps));
     s = round (86400 * fracd .* srnd) ./ srnd;
     h = floor (s / 3600);
-    s = s - 3600 * h;
+    s -= 3600 * h;
     mi = floor (s / 60);
-    s = s - 60 * mi;
+    s -= 60 * mi;
 
   endif
 

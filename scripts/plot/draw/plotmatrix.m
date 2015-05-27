@@ -138,7 +138,7 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
         have_line_spec = true;
         linespec = varargin(i);
         varargin(i) = [];
-        nargin = nargin - 1;
+        nargin -= 1;
         break;
       else
         print_usage ("plotmatrix");

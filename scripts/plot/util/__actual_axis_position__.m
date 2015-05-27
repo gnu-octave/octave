@@ -67,13 +67,13 @@ function pos = __actual_axis_position__ (h)
     endif
     orig_aspect_ratio_2d = pos_in_pixels(3:4);
     rel_aspect_ratio_2d = aspect_ratio_2d ./ orig_aspect_ratio_2d;
-    rel_aspect_ratio_2d = rel_aspect_ratio_2d ./ max (rel_aspect_ratio_2d);
+    rel_aspect_ratio_2d ./= max (rel_aspect_ratio_2d);
     if (rel_aspect_ratio_2d(1) < rel_aspect_ratio_2d(2));
       dx = (1.0 - rel_aspect_ratio_2d(1)) * pos_in_pixels(3);
-      pos_in_pixels = pos_in_pixels + dx*[0.5, 0.0, -1.0, 0.0];
+      pos_in_pixels += dx*[0.5, 0.0, -1.0, 0.0];
     elseif (rel_aspect_ratio_2d(1) > rel_aspect_ratio_2d(2))
       dy = (1.0 - rel_aspect_ratio_2d(2)) * pos_in_pixels(4);
-      pos_in_pixels = pos_in_pixels + dy*[0.0, 0.5, 0.0, -1.0];
+      pos_in_pixels += dy*[0.0, 0.5, 0.0, -1.0];
     endif
     pos = pos_in_pixels ./ fig_position([3, 4, 3, 4]);
   elseif (strcmp (get (axis_obj.parent, "__graphics_toolkit__"), "gnuplot")

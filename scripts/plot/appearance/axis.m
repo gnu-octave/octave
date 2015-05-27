@@ -375,13 +375,13 @@ function __do_tight_option__ (ca)
   if (all (xlim == 0))
     xlim = eps () * [-1 1];
   elseif (diff (xlim == 0))
-    xlim = xlim .* (1 + eps () * [-1, 1]);
+    xlim .*= (1 + eps () * [-1, 1]);
   endif
   ylim = __get_tight_lims__ (ca, "y");
   if (all (ylim == 0))
     ylim = eps () * [-1 1];
   elseif (diff (ylim == 0))
-    ylim = ylim .* (1 + eps () * [-1, 1]);
+    ylim .*= (1 + eps () * [-1, 1]);
   endif
   set (ca, "xlim", xlim, "ylim", ylim)
   nd = __calc_dimensions__ (ca);
@@ -391,7 +391,7 @@ function __do_tight_option__ (ca)
     if (all (zlim == 0))
       zlim = eps () * [-1 1];
     elseif (diff (zlim == 0))
-      zlim = zlim .* (1 + eps () * [-1, 1]);
+      zlim .*= (1 + eps () * [-1, 1]);
     endif
     set (ca, "zlim", zlim);
   endif

@@ -73,7 +73,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
   k = 0;
   j = 0;
   for i = 1 : m;
-    k = k + (sum (r ((j + 1) : (j + n(i))))) ^ 2 / n(i);
+    k += (sum (r ((j + 1) : (j + n(i))))) ^ 2 / n(i);
     j = j + n(i);
   endfor
 
@@ -82,7 +82,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
 
   ## Adjust the result to takes ties into account.
   sum_ties = sum (polyval ([1, 0, -1, 0], runlength (sort (p))));
-  k = k / (1 - sum_ties / (n^3 - n));
+  k /= (1 - sum_ties / (n^3 - n));
 
   df = m - 1;
   pval = 1 - chi2cdf (k, df);

@@ -63,14 +63,14 @@ function y = arch_rnd (a, b, t)
   a  = reshape (a, 1, la);
   if (la == 1)
     a  = [a, 0];
-    la = la + 1;
+    la += 1;
   endif
 
   lb = length (b);
   b  = reshape (b, 1, lb);
   if (lb == 1)
     b  = [b, 0];
-    lb = lb + 1;
+    lb += 1;
   endif
   m = max ([la, lb]);
 

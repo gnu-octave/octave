@@ -162,7 +162,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     b_opts.issym = true;
     b_sigma = sigma;
     if (! ischar (b_sigma))
-      b_sigma = b_sigma / max_a;
+      b_sigma /= max_a;
     endif
 
     if (b_sigma == 0)
@@ -225,7 +225,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       endif
     endif
 
-    s = s * max_a;
+    s *= max_a;
   endif
 
   if (nargout < 2)

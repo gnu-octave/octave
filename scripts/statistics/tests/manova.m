@@ -69,7 +69,7 @@ function manova (x, g)
     group_label = s ([1, (reshape (i, 1, k - 1) + 1)]);
   endif
 
-  x = x - ones (n, 1) * mean (x);
+  x -= ones (n, 1) * mean (x);
   SST = x' * x;
 
   s = zeros (1, p);
@@ -77,7 +77,7 @@ function manova (x, g)
   for i = 1 : k;
     v = x (find (g == group_label (i)), :);
     s = sum (v);
-    SSB = SSB + s' * s / rows (v);
+    SSB += s' * s / rows (v);
   endfor
   n_b = k - 1;
 

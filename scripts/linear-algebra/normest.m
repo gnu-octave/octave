@@ -68,7 +68,7 @@ function [n, c] = normest (A, tol = 1e-6)
     if (normx == 0)
       x = rand (ncols, 1);
     else
-      x = x / normx;
+      x /= normx;
     endif
     y = A' * x;
     n = norm (y);

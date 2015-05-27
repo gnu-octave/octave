@@ -237,13 +237,13 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
             tmprow(i) = 1;
             A = [A;tmprow];
             b = [b; 0.5*(lb(i) + ub(i))];
-            n_eq = n_eq + 1;
+            n_eq += 1;
           else
             tmprow = zeros (1,n);
             tmprow(i) = 1;
             Ain = [Ain; tmprow; -tmprow];
             bin = [bin; lb(i); -ub(i)];
-            n_in = n_in + 2;
+            n_in += 2;
           endif
         endfor
       endif
@@ -281,12 +281,12 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
               tmprow = A_in(i,:);
               A = [A;tmprow];
               b = [b; 0.5*(A_lb(i) + A_ub(i))];
-              n_eq = n_eq + 1;
+              n_eq += 1;
             else
               tmprow = A_in(i,:);
               Ain = [Ain; tmprow; -tmprow];
               bin = [bin; A_lb(i); -A_ub(i)];
-              n_in = n_in + 2;
+              n_in += 2;
             endif
           endfor
         endif

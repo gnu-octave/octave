@@ -60,7 +60,7 @@ function c = blackman (m, opt)
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    m -= 1;
     k = (0 : m)' / N;
     c = 0.42 - 0.5 * cos (2 * pi * k) + 0.08 * cos (4 * pi * k);
   endif

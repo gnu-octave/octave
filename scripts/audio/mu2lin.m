@@ -69,7 +69,7 @@ function y = mu2lin (x, n = 0)
   ## Convert to real or 8-bit.
   if (n == 0)
     ## [ -32768, 32767 ] -> [ -1, 1)
-    y = y/32768;
+    y /= 32768;
   elseif (n == 8)
     ld = max (abs (y (:)));
     if (ld < 16384 && ld > 0)

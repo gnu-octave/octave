@@ -265,14 +265,14 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
     vr = (1 + alpha)*vbar - alpha*V(:,n+1);
     x(:) = vr;
     fr = dirn * feval (fun,x,varargin{:});
-    nf = nf + 1;
+    nf += 1;
     vk = vr;  fk = fr; how = "reflect, ";
     if (fr > f(n))
       if (fr > f(1))
         ve = gamma*vr + (1-gamma)*vbar;
         x(:) = ve;
         fe = dirn * feval (fun,x,varargin{:});
-        nf = nf + 1;
+        nf += 1;
         if (fe > f(1))
           vk = ve;
           fk = fe;
@@ -289,7 +289,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
       vc = beta*vt + (1-beta)*vbar;
       x(:) = vc;
       fc = dirn * feval (fun,x,varargin{:});
-      nf = nf + 1;
+      nf += 1;
       if (fc > f(n))
         vk = vc; fk = fc;
         how = "contract,";
@@ -299,11 +299,11 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
           x(:) = V(:,j);
           f(j) = dirn * feval (fun,x,varargin{:});
         endfor
-        nf = nf + n-1;
+        nf += n-1;
         vk = (V(:,1) + V(:,n+1))/2;
         x(:) = vk;
         fk = dirn * feval (fun,x,varargin{:});
-        nf = nf + 1;
+        nf += 1;
         how = "shrink,  ";
       endif
     endif

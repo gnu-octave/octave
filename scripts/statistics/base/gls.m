@@ -99,7 +99,7 @@ function [beta, v, r] = gls (y, x, o)
   endif
 
   ## Start of algorithm
-  o = o^(-1/2);
+  o ^= -1/2;
   z = kron (eye (cy), x);
   z = o * z;
   y1 = o * reshape (y, ry*cy, 1);

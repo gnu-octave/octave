@@ -86,7 +86,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   while (k < opt_iters)
     tau = norm (s - eye (size (s)),1);
     if (tau <= theta (7))
-      p = p + 1;
+      p += 1;
       j(1) = find (tau <= theta, 1);
       j(2) = find (tau / 2 <= theta, 1);
       if (j(1) - j(2) <= 1 || p == 2)
@@ -94,7 +94,7 @@ function [s, iters] = logm (A, opt_iters = 100)
         break
       endif
     endif
-    k = k + 1;
+    k += 1;
     s = sqrtm (s);
   endwhile
 
@@ -102,7 +102,7 @@ function [s, iters] = logm (A, opt_iters = 100)
     warning ("logm: maximum number of square roots exceeded; results may still be accurate");
   endif
 
-  s = s - eye (size (s));
+  s -= eye (size (s));
 
   if (m > 1)
     s = logm_pade_pf (s, m);
@@ -136,7 +136,7 @@ function s = logm_pade_pf (A, m)
   [nodes, wts] = gauss_legendre (m);
   ## Convert from [-1,1] to [0,1].
   nodes = (nodes+1)/2;
-  wts = wts/2;
+  wts /= 2;
 
   n = length (A);
   s = zeros (n);

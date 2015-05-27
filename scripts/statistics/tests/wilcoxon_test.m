@@ -58,11 +58,11 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   x = reshape (x, 1, n);
   y = reshape (y, 1, n);
   d = x - y;
-  d = d (find (d != 0));
+  d = d(find (d != 0));
   n = length (d);
   if (n > 25)
     r = ranks (abs (d));
-    z = sum (r (find (d > 0)));
+    z = sum (r(find (d > 0)));
     z = ((z - n * (n + 1) / 4) / sqrt (n * (n + 1) * (2 * n + 1) / 24));
   else
     error ("wilcoxon_test: implementation requires more than 25 different pairs");

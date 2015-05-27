@@ -102,7 +102,7 @@ function [n,d] = rat (x,tol)
 
   if (nargout == 2)
     ## Move the minus sign to the top.
-    n = n .* sign (d);
+    n .*= sign (d);
     d = abs (d);
 
     ## Return the same shape as you receive.

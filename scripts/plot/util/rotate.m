@@ -111,7 +111,7 @@ function rotate (h, direction, alpha, origin)
     origin = [a, b, c];
   endif
 
-  direction = direction / norm (direction);
+  direction /= norm (direction);
 
   u = direction(1);
   v = direction(2);

@@ -62,7 +62,7 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
 
     fract = ((0:n-1) / (n-1))';
     angle = 2 * pi * (start/3 + 1 + rots*fract);
-    fract = fract .^ gamma;
+    fract .^= gamma;
     amp   = hue * fract .* (1-fract) /2;
     map   = fract + amp .* ([cos(angle) sin(angle)] * coeff);
 

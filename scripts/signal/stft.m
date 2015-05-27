@@ -101,7 +101,7 @@ function [y, c] = stft (x, win_size = 80, inc = 24, num_coef = 64, win_type = 1)
   start = 1;
   for i = 0:num_win
     z(1:win_size, i+1) = x(start:start+win_size-1) .* win_coef;
-    start = start + inc;
+    start += inc;
   endfor
 
   y = fft (z);

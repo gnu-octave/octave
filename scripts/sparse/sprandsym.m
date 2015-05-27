@@ -41,7 +41,7 @@ function S = sprandsym (n, d)
     [i, j] = find (tril (n));
     [nr, nc] = size (n);
     S = sparse (i, j, randn (size (i)), nr, nc);
-    S = S + tril (S, -1)';
+    S += tril (S, -1)';
     return;
   endif
 

@@ -398,48 +398,48 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
   switch (cbox)
     case "northoutside"
       origin = pos(1:2) + [0., 0.9] .* sz + [1, -1] .* off;
-      sz = sz .* [1.0, 0.06];
+      sz .*= [1.0, 0.06];
       pos(4) = 0.8 * pos(4);
       mirr = true;
       vertical = false;
     case "north"
       origin = pos(1:2) + [0.05, 0.9] .* sz + [1, -1] .* off;
-      sz = sz .* [1.0, 0.06] * 0.9;
+      sz .*= [1.0, 0.06] * 0.9;
       mirr = false;
       vertical = false;
     case "southoutside"
       origin = pos(1:2) + off;
-      sz = sz .* [1.0, 0.06];
+      sz .*= [1.0, 0.06];
       pos(2) = pos(2) + pos(4) * 0.2;
       pos(4) = 0.8 * pos(4);
       mirr = false;
       vertical = false;
     case "south"
       origin = pos(1:2) + [0.05, 0.05] .* sz + off;
-      sz = sz .* [1.0, 0.06] * 0.9;
+      sz .*= [1.0, 0.06] * 0.9;
       mirr = true;
       vertical = false;
     case "eastoutside"
       origin = pos(1:2) + [0.9, 0] .* sz + [-1, 1] .* off;
-      sz = sz .* [0.06, 1.0];
+      sz .*= [0.06, 1.0];
       pos(3) = 0.8 * pos(3);
       mirr = true;
       vertical = true;
     case "east"
       origin = pos(1:2) + [0.9, 0.05] .* sz + [-1, 1] .* off;
-      sz = sz .* [0.06, 1.0] * 0.9;
+      sz .*= [0.06, 1.0] * 0.9;
       mirr = false;
       vertical = true;
     case "westoutside"
       origin = pos(1:2) + off;
-      sz = sz .* [0.06, 1.0];
+      sz .*= [0.06, 1.0];
       pos(1) = pos(1) + pos(3) * 0.2;
       pos(3) = 0.8 * pos(3);
       mirr = false;
       vertical = true;
     case "west"
       origin = pos(1:2) + [0.05, 0.05] .* sz + off;
-      sz = sz .* [0.06, 1.0] .* 0.9;
+      sz .*= [0.06, 1.0] .* 0.9;
       mirr = true;
       vertical = true;
   endswitch

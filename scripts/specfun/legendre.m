@@ -192,7 +192,7 @@ function retval = legendre (n, x, normalization)
       error ('legendre: NORMALIZATION option must be "unnorm", "norm", or "sch"');
   endswitch
 
-  scale = scale * ones (size (x));
+  scale *= ones (size (x));
 
   ## Based on the recurrence relation below
   ##            m                 m              m

@@ -116,7 +116,7 @@ function ret = pchip (x, y, xi)
   del2 = (d2 - delta) / h;
   c3 = del1 + del2;
   c2 = -c3 - del1;
-  c3 = c3 / h;
+  c3 /= h;
   coeffs = cat (3, c3, c2, d1, f1);
 
   ret = mkpp (x, coeffs, szy(1:end-1));

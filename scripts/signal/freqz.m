@@ -152,7 +152,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     k = max (length (b), length (a));
     if (k > n/2 && nargout == 0)
       ## Ensure a causal phase response.
-      n = n * 2 .^ ceil (log2 (2*k/n));
+      n *= 2 .^ ceil (log2 (2*k/n));
     endif
 
     if (whole_region)
@@ -178,8 +178,8 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     ha = zeros (n, 1);
 
     for i = 1:N:pad_sz
-      hb = hb + fft (postpad (b(i:i+N-1), N))(1:n);
-      ha = ha + fft (postpad (a(i:i+N-1), N))(1:n);
+      hb += fft (postpad (b(i:i+N-1), N))(1:n);
+      ha += fft (postpad (a(i:i+N-1), N))(1:n);
     endfor
 
   endif

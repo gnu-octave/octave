@@ -715,7 +715,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           ## This implies that a change in fontsize should trigger a listener
           ## to update the legend.  The "2" was determined using a long legend
           ## key in the absence of any subplots.
-          gnuplot_offset = gnuplot_offset - 2 * fontsize;
+          gnuplot_offset -= 2 * fontsize;
         else
           gnuplot_offset = 0;
         endif

@@ -93,8 +93,6 @@ private:
 
   octave_idx_type *rep;
 
-  octave_idx_type& ndims (void) const { return rep[-1]; }
-
   octave_idx_type& count (void) const { return rep[-2]; }
 
   //! Construct a new rep with count = 1 and ndims given.
@@ -322,6 +320,21 @@ public:
       freerep ();
   }
 
+  //! Number of dimensions.
+  /*!
+      Returns the number of dimensions of the dim_vector.  This is number of
+      elements in the dim_vector including trailing singetons.  It is also
+      the number of dimensions an Array with this dim_vector would have.
+  */
+  octave_idx_type& ndims (void) const { return rep[-1]; }
+
+  //! Number of dimensions.
+  //! Synonymous with ndims().
+  /*!
+    While this method is not officially deprecated, consider using ndims()
+    instead to avoid confusion.  Array does not have length because of its
+    odd definition as length of the longest dimension.
+  */
   int length (void) const { return ndims (); }
 
   octave_idx_type& operator () (int i) { return elem (i); }

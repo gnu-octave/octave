@@ -34,21 +34,54 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-macros.h"
 #include "oct-refcount.h"
 
-// Rationale: This implementation is more tricky than Array, but the
-// big plus is that dim_vector requires only one allocation instead of
-// two.  It is (slightly) patterned after GCC's basic_string
-// implementation.  rep is a pointer to an array of memory, comprising
-// count, length, and the data:
-//
-//          <count>
-//          <ndims>
-//  rep --> <dims[0]>
-//          <dims[1]>
-//          ...
-//
-// The inlines count(), ndims() recover this data from the rep.  Note
-// that rep points to the beginning of dims to grant faster access
-// (reinterpret_cast is assumed to be an inexpensive operation).
+//! Vector representing the dimensions (size) of an Array.
+/*!
+  A dim_vector is used to represent dimensions of an Array.  It is used
+  on its constructor to specify its size, or when reshaping it.
+
+  @code{.cc}
+  // Matrix with 10 rows and 20 columns.
+  Matrix m Matrix (dim_vector (10, 20));
+
+  // Change its size to 5 rows and 40 columns.
+  Matrix m2 = m.reshape (dim_vector (5, 40));
+
+  // Five dimensional Array of length 10, 20, 3, 8, 7 on each dimension.
+  NDArray a (dim_vector (10, 20, 3, 8, 7));
+
+  // Uninitialized array of same size as other.
+  NDArray b (a.dims ());
+  @endcode
+
+  The main thing to understand about this class, is that methods such as
+  ndims() and numel(), return the value for an Array of these dimensions,
+  not the actual number of elements in the dim_vector.
+
+  @code{.cc}
+  dim_vector d (10, 5, 3);
+  octave_idx_type n = d.numel (); // returns 150
+  octave_idx_type nd = d.ndims (); // returns 2
+  @endcode
+
+  ## Implementation details ##
+
+  This implementation is more tricky than Array, but the big plus is that
+  dim_vector requires only one allocation instead of two.  It is (slightly)
+  patterned after GCC's basic_string implementation.  rep is a pointer to an
+  array of memory, comprising count, length, and the data:
+
+  @verbatim
+          <count>
+          <ndims>
+  rep --> <dims[0]>
+          <dims[1]>
+          ...
+  @endverbatim
+
+  The inlines count(), ndims() recover this data from the rep.  Note
+  that rep points to the beginning of dims to grant faster access
+  (reinterpret_cast is assumed to be an inexpensive operation).
+*/
 
 class
 OCTAVE_API

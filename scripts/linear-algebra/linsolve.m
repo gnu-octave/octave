@@ -79,12 +79,13 @@ function [x, R] = linsolve (A, b, opts)
     error ("linsolve: A and B must be numeric");
   endif
 
+  trans_A = false;
+
   ## Process any opts
   if (nargin > 2)
     if (! isstruct (opts))
       error ("linsolve: OPTS must be a structure");
     endif
-    trans_A = false;
     if (isfield (opts, "TRANSA") && opts.TRANSA)
       trans_A = true;
     endif
@@ -116,6 +117,14 @@ function [x, R] = linsolve (A, b, opts)
 
 endfunction
 
+
+%!test
+%! n = 10;
+%! A = rand (n);
+%! x = rand (n, 1);
+%! b = A * x;
+%! assert (linsolve (A, b), A \ b);
+%! assert (linsolve (A, b, struct ()), A \ b);
 
 %!test
 %! n = 10;

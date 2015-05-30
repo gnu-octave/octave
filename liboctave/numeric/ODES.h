@@ -35,11 +35,11 @@ public:
     : base_diff_eqn (), ODESFunc (), xdot (), theta () { }
 
   ODES (const ColumnVector& s, double tm, ODESFunc& f)
-    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0), theta () { }
+    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.numel (), 0.0), theta () { }
 
   ODES (const ColumnVector& s, const ColumnVector& xtheta, double tm,
         ODESFunc& f)
-    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0),
+    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.numel (), 0.0),
       theta (xtheta) { }
 
   ODES (const ODES& a)

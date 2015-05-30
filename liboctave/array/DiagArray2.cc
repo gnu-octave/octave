@@ -42,7 +42,7 @@ DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,
   : Array<T> (a.as_column ()), d1 (r), d2 (c)
 {
   octave_idx_type rcmin = std::min (r, c);
-  if (rcmin != a.length ())
+  if (rcmin != a.numel ())
     Array<T>::resize (dim_vector (rcmin, 1));
 }
 

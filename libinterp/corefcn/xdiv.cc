@@ -289,7 +289,7 @@ x_el_div (double a, const NDArray& b)
 {
   NDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -303,7 +303,7 @@ x_el_div (double a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -317,7 +317,7 @@ x_el_div (const Complex a, const NDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -331,7 +331,7 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -590,7 +590,7 @@ x_el_div (float a, const FloatNDArray& b)
 {
   FloatNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -604,7 +604,7 @@ x_el_div (float a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -618,7 +618,7 @@ x_el_div (const FloatComplex a, const FloatNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -632,7 +632,7 @@ x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);

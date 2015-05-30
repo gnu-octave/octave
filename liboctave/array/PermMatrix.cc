@@ -41,7 +41,7 @@ PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
 {
   if (check)
     {
-      if (! idx_vector (p).is_permutation (p.length ()))
+      if (! idx_vector (p).is_permutation (p.numel ()))
         {
           gripe_invalid_permutation ();
           Array<octave_idx_type>::operator = (Array<octave_idx_type> ());
@@ -104,7 +104,7 @@ PermMatrix::PermMatrix (octave_idx_type n)
 octave_idx_type
 PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 {
-  octave_idx_type len = Array<octave_idx_type>::length ();
+  octave_idx_type len = Array<octave_idx_type>::numel ();
   if (i < 0 || j < 0 || i > len || j > len)
     {
       (*current_liboctave_error_handler) ("index out of range");
@@ -118,7 +118,7 @@ PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 PermMatrix
 PermMatrix::transpose (void) const
 {
-  octave_idx_type len = Array<octave_idx_type>::length ();
+  octave_idx_type len = Array<octave_idx_type>::numel ();
 
   PermMatrix retval (len);
 

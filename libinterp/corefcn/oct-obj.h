@@ -86,7 +86,7 @@ public:
 
   const octave_value& operator () (octave_idx_type n) const { return elem (n); }
 
-  octave_idx_type length (void) const { return data.length (); }
+  octave_idx_type length (void) const { return data.numel (); }
 
   bool empty (void) const { return length () == 0; }
 
@@ -113,9 +113,9 @@ public:
     octave_value_list retval
       = data.linear_slice (offset, std::min (offset + len, length ()));
 
-    if (tags && len > 0 && names.length () > 0)
+    if (tags && len > 0 && names.numel () > 0)
       retval.names = names.linear_slice (offset, std::min (offset + len,
-                                                           names.length ()));
+                                                           names.numel ()));
 
     return retval;
   }

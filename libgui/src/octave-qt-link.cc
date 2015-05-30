@@ -490,7 +490,7 @@ octave_qt_link::do_set_history (const string_vector& hist)
 {
   QStringList qt_hist;
 
-  for (octave_idx_type i = 0; i < hist.length (); i++)
+  for (octave_idx_type i = 0; i < hist.numel (); i++)
     qt_hist.append (QString::fromStdString (hist[i]));
 
   emit set_history_signal (qt_hist);

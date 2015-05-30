@@ -60,8 +60,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 {
   MArray<T> y;
 
-  octave_idx_type a_len  = a.length ();
-  octave_idx_type b_len  = b.length ();
+  octave_idx_type a_len  = a.numel ();
+  octave_idx_type b_len  = b.numel ();
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
@@ -275,8 +275,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
       return MArray<T> ();
     }
 
-  octave_idx_type a_len = a.length ();
-  octave_idx_type b_len = b.length ();
+  octave_idx_type a_len = a.numel ();
+  octave_idx_type b_len = b.numel ();
 
   octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
   dim_vector si_dims = x.dims ();
@@ -451,8 +451,8 @@ H(z) = ---------------------\n\
 
               if (nargin == 3 || args(3).is_empty ())
                 {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+                  octave_idx_type a_len = a.numel ();
+                  octave_idx_type b_len = b.numel ();
 
                   octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
@@ -499,8 +499,8 @@ H(z) = ---------------------\n\
 
               if (nargin == 3 || args(3).is_empty ())
                 {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+                  octave_idx_type a_len = a.numel ();
+                  octave_idx_type b_len = b.numel ();
 
                   octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
@@ -550,8 +550,8 @@ H(z) = ---------------------\n\
 
               if (nargin == 3 || args(3).is_empty ())
                 {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+                  octave_idx_type a_len = a.numel ();
+                  octave_idx_type b_len = b.numel ();
 
                   octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
@@ -598,8 +598,8 @@ H(z) = ---------------------\n\
 
               if (nargin == 3 || args(3).is_empty ())
                 {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+                  octave_idx_type a_len = a.numel ();
+                  octave_idx_type b_len = b.numel ();
 
                   octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 

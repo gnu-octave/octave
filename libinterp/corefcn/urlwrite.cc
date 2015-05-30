@@ -712,7 +712,7 @@ Undocumented internal function\n\
           else
             {
               string_vector sv = curl.list ();
-              octave_idx_type n = sv.length ();
+              octave_idx_type n = sv.numel ();
 
               if (n == 0)
                 {
@@ -1050,7 +1050,7 @@ Undocumented internal function\n\
               glob_match pattern (file_ops::tilde_expand (pat));
               string_vector files = pattern.glob ();
 
-              for (octave_idx_type i = 0; i < files.length (); i++)
+              for (octave_idx_type i = 0; i < files.numel (); i++)
                 {
                   std::string file = files (i);
 
@@ -1145,7 +1145,7 @@ Undocumented internal function\n\
               glob_match pattern (file);
 
 
-              for (octave_idx_type i = 0; i < sv.length (); i++)
+              for (octave_idx_type i = 0; i < sv.numel (); i++)
                 {
                   if (pattern.match (sv(i)))
                     {

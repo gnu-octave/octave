@@ -62,7 +62,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
       double tol = tmp * s(0) * std::numeric_limits<double>::epsilon ();
 
-      octave_idx_type n = s.length ();
+      octave_idx_type n = s.numel ();
 
       for (octave_idx_type i = 0; i < n; i++)
         {
@@ -97,11 +97,11 @@ qp (const Matrix& H, const ColumnVector& q,
   double rtol = sqrt (std::numeric_limits<double>::epsilon ());
 
   // Problem dimension.
-  octave_idx_type n = x.length ();
+  octave_idx_type n = x.numel ();
 
   // Dimension of constraints.
-  octave_idx_type n_eq = beq.length ();
-  octave_idx_type n_in = bin.length ();
+  octave_idx_type n_eq = beq.numel ();
+  octave_idx_type n_in = bin.numel ();
 
   // Filling the current active set.
 

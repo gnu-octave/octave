@@ -434,11 +434,11 @@ regexp::is_match (const std::string& buffer)
 Array<bool>
 regexp::is_match (const string_vector& buffer)
 {
-  octave_idx_type len = buffer.length ();
+  octave_idx_type len = buffer.numel ();
 
   Array<bool> retval (dim_vector (len, 1));
 
-  for (octave_idx_type i = 0; i < buffer.length (); i++)
+  for (octave_idx_type i = 0; i < buffer.numel (); i++)
     retval(i) = is_match (buffer(i));
 
   return retval;

@@ -646,7 +646,7 @@ Sparse<T>::Sparse (const Array<T>& a)
     {
       octave_idx_type nr = rows ();
       octave_idx_type nc = cols ();
-      octave_idx_type len = a.length ();
+      octave_idx_type len = a.numel ();
       octave_idx_type new_nzmx = 0;
 
       // First count the number of nonzero terms
@@ -704,7 +704,7 @@ Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 
   octave_idx_type n = dimensions.length ();
 
-  if (n > 0 && n == ra_idx.length ())
+  if (n > 0 && n == ra_idx.numel ())
     {
       retval = ra_idx(--n);
 
@@ -767,7 +767,7 @@ Sparse<T>::range_error (const char *fcn,
 
   buf << fcn << " (";
 
-  octave_idx_type n = ra_idx.length ();
+  octave_idx_type n = ra_idx.numel ();
 
   if (n > 0)
     buf << ra_idx(0);
@@ -792,7 +792,7 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 
   buf << fcn << " (";
 
-  octave_idx_type n = ra_idx.length ();
+  octave_idx_type n = ra_idx.numel ();
 
   if (n > 0)
     buf << ra_idx(0);
@@ -886,7 +886,7 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
   bool fail = false;
   bool trans = false;
 
-  if (perm_vec.length () == 2)
+  if (perm_vec.numel () == 2)
     {
       if (perm_vec(0) == 0 && perm_vec(1) == 1)
         /* do nothing */;
@@ -1082,7 +1082,7 @@ Sparse<T>&
 Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
 {
 
-  if (ra_idx.length () != 2)
+  if (ra_idx.numel () != 2)
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -2244,7 +2244,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  if (m.length () < 1 || dim > 1)
+  if (m.numel () < 1 || dim > 1)
     return m;
 
   if (dim > 0)
@@ -2310,7 +2310,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  if (m.length () < 1 || dim > 1)
+  if (m.numel () < 1 || dim > 1)
     {
       sidx = Array<octave_idx_type> (dim_vector (nr, nc), 1);
       return m;

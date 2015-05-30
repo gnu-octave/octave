@@ -61,7 +61,7 @@ QStringList
 fromStringVector (const string_vector& v)
 {
   QStringList l;
-  octave_idx_type n = v.length ();
+  octave_idx_type n = v.numel ();
 
   for (octave_idx_type i = 0; i < n; i++)
     l << fromStdString (v[i]);

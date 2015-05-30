@@ -84,7 +84,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 
   if (ires >= 0)
     {
-      if (tmp_delta.length () == 0)
+      if (tmp_delta.numel () == 0)
         ires = -2;
       else
         {
@@ -175,7 +175,7 @@ DASSL::do_integrate (double tout)
 
           ColumnVector res = (*user_fun) (x, xdot, t, ires);
 
-          if (res.length () != x.length ())
+          if (res.numel () != x.numel ())
             {
               (*current_liboctave_error_handler)
                 ("dassl: inconsistent sizes for state and residual vectors");
@@ -251,8 +251,8 @@ DASSL::do_integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
-      octave_idx_type rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
+      octave_idx_type rel_tol_len = rel_tol.numel ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {

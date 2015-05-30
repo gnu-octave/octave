@@ -297,7 +297,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
       if (nargin == 2)
         {
           NDArray User_knobs = args(1).array_value ();
-          int nel_User_knobs = User_knobs.length ();
+          int nel_User_knobs = User_knobs.numel ();
 
           if (nel_User_knobs > 0)
             knobs[COLAMD_DENSE_ROW] = User_knobs(0);
@@ -534,7 +534,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
       if (nargin == 2)
         {
           NDArray User_knobs = args(1).array_value ();
-          int nel_User_knobs = User_knobs.length ();
+          int nel_User_knobs = User_knobs.numel ();
 
           if (nel_User_knobs > 0)
             knobs[COLAMD_DENSE_ROW] = User_knobs(COLAMD_DENSE_ROW);

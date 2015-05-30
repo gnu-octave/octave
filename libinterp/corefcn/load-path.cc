@@ -180,7 +180,7 @@ load_path::dir_info::get_file_list (const std::string& d)
     {
       string_vector flist = dir.read ();
 
-      octave_idx_type len = flist.length ();
+      octave_idx_type len = flist.numel ();
 
       all_files.resize (len);
       fcn_files.resize (len);
@@ -250,7 +250,7 @@ get_fcn_files (const std::string& d)
     {
       string_vector flist = dir.read ();
 
-      octave_idx_type len = flist.length ();
+      octave_idx_type len = flist.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -408,7 +408,7 @@ void
 load_path::loader::move_fcn_map (const std::string& dir_name,
                                  const string_vector& fcn_files, bool at_end)
 {
-  octave_idx_type len = fcn_files.length ();
+  octave_idx_type len = fcn_files.numel ();
 
   for (octave_idx_type k = 0; k < len; k++)
     {
@@ -803,7 +803,7 @@ void
 load_path::loader::remove_fcn_map (const std::string& dir,
                                    const string_vector& fcn_files)
 {
-  octave_idx_type len = fcn_files.length ();
+  octave_idx_type len = fcn_files.numel ();
 
   for (octave_idx_type k = 0; k < len; k++)
     {
@@ -1373,7 +1373,7 @@ load_path::do_find_file (const std::string& file) const
         {
           string_vector all_files = p->all_files;
 
-          octave_idx_type len = all_files.length ();
+          octave_idx_type len = all_files.numel ();
 
           for (octave_idx_type i = 0; i < len; i++)
             {
@@ -1488,7 +1488,7 @@ load_path::do_find_first_of (const string_vector& flist) const
   std::string dir_name;
   std::string file_name;
 
-  octave_idx_type flen = flist.length ();
+  octave_idx_type flen = flist.numel ();
   octave_idx_type rel_flen = 0;
 
   string_vector rel_flist (flen);
@@ -1534,7 +1534,7 @@ load_path::do_find_first_of (const string_vector& flist) const
     {
       string_vector all_files = p->all_files;
 
-      octave_idx_type len = all_files.length ();
+      octave_idx_type len = all_files.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -1567,7 +1567,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
   std::string dir_name;
   std::string file_name;
 
-  octave_idx_type flen = flist.length ();
+  octave_idx_type flen = flist.numel ();
   octave_idx_type rel_flen = 0;
 
   string_vector rel_flist (flen);
@@ -1612,7 +1612,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
     {
       string_vector all_files = p->all_files;
 
-      octave_idx_type len = all_files.length ();
+      octave_idx_type len = all_files.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -1670,7 +1670,7 @@ load_path::do_files (const std::string& dir, bool omit_exts) const
 
   if (omit_exts)
     {
-      octave_idx_type len = retval.length ();
+      octave_idx_type len = retval.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -1716,7 +1716,7 @@ load_path::do_path (void) const
 
   string_vector xdirs = load_path::dirs ();
 
-  octave_idx_type len = xdirs.length ();
+  octave_idx_type len = xdirs.numel ();
 
   if (len > 0)
     xpath = xdirs[0];
@@ -1893,7 +1893,7 @@ load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
 
   string_vector fcn_files = di.fcn_files;
 
-  octave_idx_type len = fcn_files.length ();
+  octave_idx_type len = fcn_files.numel ();
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -2150,7 +2150,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
       string_vector dirlist = dir.read ().sort (false);
 
-      octave_idx_type len = dirlist.length ();
+      octave_idx_type len = dirlist.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -2161,7 +2161,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
           if (! skip_p)
             {
-              for (octave_idx_type j = 0; j < skip.length (); j++)
+              for (octave_idx_type j = 0; j < skip.numel (); j++)
                 {
                   skip_p = (elt == skip[j]);
                   if (skip_p)

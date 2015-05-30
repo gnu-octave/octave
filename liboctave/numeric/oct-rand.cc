@@ -690,7 +690,7 @@ double2uint32 (double d)
 void
 octave_rand::set_internal_state (const ColumnVector& s)
 {
-  octave_idx_type len = s.length ();
+  octave_idx_type len = s.numel ();
   octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
 
   OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);

@@ -261,7 +261,7 @@ octave_perm_matrix::save_ascii (std::ostream& os)
   os << "# orient: c\n";
 
   Array<octave_idx_type> pvec = matrix.col_perm_vec ();
-  octave_idx_type n = pvec.length ();
+  octave_idx_type n = pvec.numel ();
   ColumnVector tmp (n);
   for (octave_idx_type i = 0; i < n; i++) tmp(i) = pvec(i) + 1;
   os << tmp;

@@ -162,7 +162,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       if (nargin > 1)
         {
           NDArray User_knobs = args(1).array_value ();
-          int nel_User_knobs = User_knobs.length ();
+          int nel_User_knobs = User_knobs.numel ();
 
           if (nel_User_knobs > 0)
             knobs[CCOLAMD_LU] = (User_knobs(0) != 0);
@@ -273,7 +273,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       if (nargin > 2)
         {
           NDArray in_cmember = args(2).array_value ();
-          octave_idx_type cslen = in_cmember.length ();
+          octave_idx_type cslen = in_cmember.numel ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
           for (octave_idx_type i = 0; i < cslen; i++)
             // convert cmember from 1-based to 0-based
@@ -422,7 +422,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       if (nargin > 1)
         {
           NDArray User_knobs = args(1).array_value ();
-          int nel_User_knobs = User_knobs.length ();
+          int nel_User_knobs = User_knobs.numel ();
 
           if (nel_User_knobs > 0)
             knobs[CCOLAMD_DENSE_ROW] = User_knobs(0);
@@ -511,7 +511,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       if (nargin > 2)
         {
           NDArray in_cmember = args(2).array_value ();
-          octave_idx_type cslen = in_cmember.length ();
+          octave_idx_type cslen = in_cmember.numel ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
           for (octave_idx_type i = 0; i < cslen; i++)
             // convert cmember from 1-based to 0-based

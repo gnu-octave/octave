@@ -292,7 +292,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                             error ("matrix_type: Invalid permutation vector PERM");
                           else
                             {
-                              octave_idx_type len = perm.length ();
+                              octave_idx_type len = perm.numel ();
                               dim_vector dv = args(0).dims ();
 
                               if (len != dv(0))
@@ -465,7 +465,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                             error ("matrix_type: Invalid permutation vector PERM");
                           else
                             {
-                              octave_idx_type len = perm.length ();
+                              octave_idx_type len = perm.numel ();
                               dim_vector dv = args(0).dims ();
 
                               if (len != dv(0))

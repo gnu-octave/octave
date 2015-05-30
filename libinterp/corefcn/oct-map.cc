@@ -142,7 +142,7 @@ octave_fields::equal_up_to_order (const octave_fields& other,
                                   Array<octave_idx_type>& perm) const
 {
   octave_idx_type n = nfields ();
-  if (perm.length () != n)
+  if (perm.numel () != n)
     perm.clear (1, n);
 
   return equal_up_to_order (other, perm.fortran_vec ());

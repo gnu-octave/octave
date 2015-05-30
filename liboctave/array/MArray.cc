@@ -56,7 +56,7 @@ template <class T>
 void
 MArray<T>::idx_add (const idx_vector& idx, T val)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -74,7 +74,7 @@ template <class T>
 void
 MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -84,7 +84,7 @@ MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 
   octave_quit ();
 
-  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  octave_idx_type len = std::min (idx.length (n), vals.numel ());
   idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
 }
 
@@ -103,7 +103,7 @@ template <class T>
 void
 MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -113,7 +113,7 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 
   octave_quit ();
 
-  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  octave_idx_type len = std::min (idx.length (n), vals.numel ());
   idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (),
                                             vals.data ()));
 }
@@ -122,7 +122,7 @@ template <class T>
 void
 MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -132,7 +132,7 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 
   octave_quit ();
 
-  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  octave_idx_type len = std::min (idx.length (n), vals.numel ());
   idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (),
                                             vals.data ()));
 }

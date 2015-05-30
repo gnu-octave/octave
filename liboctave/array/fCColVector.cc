@@ -60,8 +60,8 @@ FloatComplexColumnVector::FloatComplexColumnVector (const FloatColumnVector& a)
 bool
 FloatComplexColumnVector::operator == (const FloatComplexColumnVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -77,9 +77,9 @@ FloatComplexColumnVector::operator != (const FloatComplexColumnVector& a) const
 FloatComplexColumnVector&
 FloatComplexColumnVector::insert (const FloatColumnVector& a, octave_idx_type r)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (r < 0 || r + a_len > length ())
+  if (r < 0 || r + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -100,9 +100,9 @@ FloatComplexColumnVector&
 FloatComplexColumnVector::insert (const FloatComplexColumnVector& a,
                                   octave_idx_type r)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (r < 0 || r + a_len > length ())
+  if (r < 0 || r + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -122,7 +122,7 @@ FloatComplexColumnVector::insert (const FloatComplexColumnVector& a,
 FloatComplexColumnVector&
 FloatComplexColumnVector::fill (float val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -138,7 +138,7 @@ FloatComplexColumnVector::fill (float val)
 FloatComplexColumnVector&
 FloatComplexColumnVector::fill (const FloatComplex& val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -156,7 +156,7 @@ FloatComplexColumnVector&
 FloatComplexColumnVector::fill (float val,
                                 octave_idx_type r1, octave_idx_type r2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
     {
@@ -181,7 +181,7 @@ FloatComplexColumnVector&
 FloatComplexColumnVector::fill (const FloatComplex& val,
                                 octave_idx_type r1, octave_idx_type r2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
     {
@@ -205,9 +205,9 @@ FloatComplexColumnVector::fill (const FloatComplex& val,
 FloatComplexColumnVector
 FloatComplexColumnVector::stack (const FloatColumnVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nr_insert = len;
-  FloatComplexColumnVector retval (len + a.length ());
+  FloatComplexColumnVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nr_insert);
   return retval;
@@ -216,9 +216,9 @@ FloatComplexColumnVector::stack (const FloatColumnVector& a) const
 FloatComplexColumnVector
 FloatComplexColumnVector::stack (const FloatComplexColumnVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nr_insert = len;
-  FloatComplexColumnVector retval (len + a.length ());
+  FloatComplexColumnVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nr_insert);
   return retval;
@@ -282,9 +282,9 @@ FloatComplexColumnVector::extract_n (octave_idx_type r1,
 FloatComplexColumnVector&
 FloatComplexColumnVector::operator += (const FloatColumnVector& a)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     {
@@ -304,9 +304,9 @@ FloatComplexColumnVector::operator += (const FloatColumnVector& a)
 FloatComplexColumnVector&
 FloatComplexColumnVector::operator -= (const FloatColumnVector& a)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     {
@@ -340,7 +340,7 @@ operator * (const FloatComplexMatrix& m, const FloatComplexColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     gripe_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -384,7 +384,7 @@ operator * (const FloatDiagMatrix& m, const FloatComplexColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     {
@@ -412,7 +412,7 @@ operator * (const FloatComplexDiagMatrix& m, const FloatColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     {
@@ -440,7 +440,7 @@ operator * (const FloatComplexDiagMatrix& m, const FloatComplexColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     {
@@ -467,7 +467,7 @@ operator * (const FloatComplexDiagMatrix& m, const FloatComplexColumnVector& a)
 FloatComplex
 FloatComplexColumnVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0.0;
 
@@ -487,7 +487,7 @@ FloatComplexColumnVector::min (void) const
 FloatComplex
 FloatComplexColumnVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0.0;
 
@@ -510,7 +510,7 @@ std::ostream&
 operator << (std::ostream& os, const FloatComplexColumnVector& a)
 {
 //  int field_width = os.precision () + 7;
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << /* setw (field_width) << */ a.elem (i) << "\n";
   return os;
 }
@@ -518,7 +518,7 @@ operator << (std::ostream& os, const FloatComplexColumnVector& a)
 std::istream&
 operator >> (std::istream& is, FloatComplexColumnVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {

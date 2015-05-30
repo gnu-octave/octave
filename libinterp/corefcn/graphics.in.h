@@ -536,10 +536,10 @@ public:
   {
     std::string s;
 
-    for (octave_idx_type i = 0; i < str.length (); i++)
+    for (octave_idx_type i = 0; i < str.numel (); i++)
       {
         s += str[i];
-        if (i != str.length () - 1)
+        if (i != str.numel () - 1)
           s += separator;
       }
 
@@ -636,9 +636,9 @@ protected:
 
         string_vector strings = new_cell.cellstr_value ();
 
-        octave_idx_type nel = strings.length ();
+        octave_idx_type nel = strings.numel ();
 
-        if (nel != str.length ())
+        if (nel != str.numel ())
           replace = true;
         else
           {

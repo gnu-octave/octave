@@ -667,7 +667,7 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
 
   // Clear background
 
-  if (c.length () >= 3)
+  if (c.numel () >= 3)
     {
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

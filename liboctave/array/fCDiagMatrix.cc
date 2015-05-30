@@ -111,7 +111,7 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -127,7 +127,7 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -143,7 +143,7 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatRowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -159,7 +159,7 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -174,7 +174,7 @@ FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a)
 FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatColumnVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -191,7 +191,7 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a,
                               octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -207,7 +207,7 @@ FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a,
 FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -224,7 +224,7 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a,
                               octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");

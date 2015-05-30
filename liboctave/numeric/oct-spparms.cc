@@ -177,7 +177,7 @@ octave_sparse_params::do_get_bandden (void)
 bool
 octave_sparse_params::do_set_vals (const NDArray& vals)
 {
-  octave_idx_type len = vals.length ();
+  octave_idx_type len = vals.numel ();
 
   if (len > OCTAVE_SPARSE_CONTROLS_SIZE)
     {

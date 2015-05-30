@@ -257,7 +257,7 @@ public:
       return *this;
     }
 
-    octave_idx_type nfields (void) const { return field_names.length (); }
+    octave_idx_type nfields (void) const { return field_names.numel (); }
 
     size_t nparents (void) const { return parent_class_names.size (); }
 

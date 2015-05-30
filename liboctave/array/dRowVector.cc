@@ -58,8 +58,8 @@ extern "C"
 bool
 RowVector::operator == (const RowVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -73,9 +73,9 @@ RowVector::operator != (const RowVector& a) const
 RowVector&
 RowVector::insert (const RowVector& a, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (c < 0 || c + a_len > length ())
+  if (c < 0 || c + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -95,7 +95,7 @@ RowVector::insert (const RowVector& a, octave_idx_type c)
 RowVector&
 RowVector::fill (double val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -111,7 +111,7 @@ RowVector::fill (double val)
 RowVector&
 RowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
@@ -135,9 +135,9 @@ RowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 RowVector
 RowVector::append (const RowVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nc_insert = len;
-  RowVector retval (len + a.length ());
+  RowVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nc_insert);
   return retval;
@@ -194,7 +194,7 @@ operator * (const RowVector& v, const Matrix& a)
 {
   RowVector retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -229,7 +229,7 @@ operator * (const RowVector& v, const Matrix& a)
 double
 RowVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0;
 
@@ -245,7 +245,7 @@ RowVector::min (void) const
 double
 RowVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0;
 
@@ -263,7 +263,7 @@ operator << (std::ostream& os, const RowVector& a)
 {
 //  int field_width = os.precision () + 7;
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;
 }
@@ -271,7 +271,7 @@ operator << (std::ostream& os, const RowVector& a)
 std::istream&
 operator >> (std::istream& is, RowVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {
@@ -313,9 +313,9 @@ operator * (const RowVector& v, const ColumnVector& a)
 {
   double retval = 0.0;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     gripe_nonconformant ("operator *", len, a_len);

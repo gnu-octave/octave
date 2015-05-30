@@ -218,7 +218,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             if (! error_state)
               {
-                octave_idx_type len = iv.length ();
+                octave_idx_type len = iv.numel ();
 
                 dims.resize (len);
 
@@ -317,7 +317,7 @@ gen_matrix:
     {
       if (additional_arg)
         {
-          if (a.length () == 1)
+          if (a.numel () == 1)
             return octave_rand::float_nd_array (dims, a(0));
           else
             {
@@ -326,7 +326,7 @@ gen_matrix:
                   error ("%s: mismatch in argument size", fcn);
                   return retval;
                 }
-              octave_idx_type len = a.length ();
+              octave_idx_type len = a.numel ();
               FloatNDArray m (dims);
               float *v = m.fortran_vec ();
               for (octave_idx_type i = 0; i < len; i++)
@@ -341,7 +341,7 @@ gen_matrix:
     {
       if (additional_arg)
         {
-          if (a.length () == 1)
+          if (a.numel () == 1)
             return octave_rand::nd_array (dims, a(0));
           else
             {
@@ -350,7 +350,7 @@ gen_matrix:
                   error ("%s: mismatch in argument size", fcn);
                   return retval;
                 }
-              octave_idx_type len = a.length ();
+              octave_idx_type len = a.numel ();
               NDArray m (dims);
               double *v = m.fortran_vec ();
               for (octave_idx_type i = 0; i < len; i++)

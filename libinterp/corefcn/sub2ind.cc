@@ -39,7 +39,7 @@ get_dim_vector (const octave_value& val, const char *name)
 {
   RowVector dimsv = val.row_vector_value (false, true);
   dim_vector dv;
-  octave_idx_type n = dimsv.length ();
+  octave_idx_type n = dimsv.numel ();
 
   if (n < 1)
     error ("%s: dimension vector DIMS must not be empty", name);

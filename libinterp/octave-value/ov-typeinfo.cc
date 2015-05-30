@@ -193,7 +193,7 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
     if (t_name == types (i))
       return i;
 
-  int len = types.length ();
+  int len = types.numel ();
 
   if (i == len)
     {

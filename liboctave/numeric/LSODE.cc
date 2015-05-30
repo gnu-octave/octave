@@ -74,7 +74,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
 
   tmp_deriv = (*user_fun) (*tmp_x, time);
 
-  if (tmp_deriv.length () == 0)
+  if (tmp_deriv.numel () == 0)
     ierr = -1;
   else
     {
@@ -208,7 +208,7 @@ LSODE::do_integrate (double tout)
 
       ColumnVector xdot = (*user_fun) (x, t);
 
-      if (x.length () != xdot.length ())
+      if (x.numel () != xdot.numel ())
         {
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and derivative vectors");
@@ -224,7 +224,7 @@ LSODE::do_integrate (double tout)
       rel_tol = relative_tolerance ();
       abs_tol = absolute_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
 
       if (abs_tol_len == 1)
         itol = 1;

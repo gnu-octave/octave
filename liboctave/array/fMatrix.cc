@@ -309,7 +309,7 @@ FloatMatrix::operator == (const FloatMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (length (), data (), a.data ());
+  return mx_inline_equal (numel (), data (), a.data ());
 }
 
 bool
@@ -346,7 +346,7 @@ FloatMatrix&
 FloatMatrix::insert (const FloatRowVector& a,
                      octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
@@ -369,7 +369,7 @@ FloatMatrix&
 FloatMatrix::insert (const FloatColumnVector& a,
                      octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
@@ -493,7 +493,7 @@ FloatMatrix::append (const FloatRowVector& a) const
     }
 
   octave_idx_type nc_insert = nc;
-  FloatMatrix retval (nr, nc + a.length ());
+  FloatMatrix retval (nr, nc + a.numel ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -504,7 +504,7 @@ FloatMatrix::append (const FloatColumnVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nr != a.length ())
+  if (nr != a.numel ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return FloatMatrix ();
@@ -559,7 +559,7 @@ FloatMatrix::stack (const FloatRowVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nc != a.length ())
+  if (nc != a.numel ())
     {
       (*current_liboctave_error_handler)
         ("column dimension mismatch for stack");
@@ -586,7 +586,7 @@ FloatMatrix::stack (const FloatColumnVector& a) const
     }
 
   octave_idx_type nr_insert = nr;
-  FloatMatrix retval (nr + a.length (), nc);
+  FloatMatrix retval (nr + a.numel (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -884,7 +884,7 @@ FloatMatrix::pseudo_inverse (float tol) const
 
   FloatColumnVector sigma = S.extract_diag ();
 
-  octave_idx_type r = sigma.length () - 1;
+  octave_idx_type r = sigma.numel () - 1;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -2491,7 +2491,7 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m != b.length ())
+  if (m != b.numel ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
   else if (m == 0 || n == 0)
@@ -2659,11 +2659,11 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
 {
   FloatMatrix retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   if (len != 0)
     {
-      octave_idx_type a_len = a.length ();
+      octave_idx_type a_len = a.numel ();
 
       retval = FloatMatrix (len, a_len);
       float *c = retval.fortran_vec ();
@@ -3337,9 +3337,9 @@ FloatMatrix linspace (const FloatColumnVector& x1,
 {
   if (n < 1) n = 1;
 
-  octave_idx_type m = x1.length ();
+  octave_idx_type m = x1.numel ();
 
-  if (x2.length () != m)
+  if (x2.numel () != m)
     (*current_liboctave_error_handler)
       ("linspace: vectors must be of equal length");
 

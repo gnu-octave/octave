@@ -2886,7 +2886,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
-  else if (nda.length () == 1)
+  else if (nda.numel () == 1)
     {
       os << nda(0);
     }
@@ -3155,7 +3155,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
-  else if (nda.length () == 1)
+  else if (nda.numel () == 1)
     octave_print_internal_template (os, nda(0), pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {

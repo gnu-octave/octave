@@ -78,7 +78,7 @@ FloatDiagMatrix&
 FloatDiagMatrix::fill (const FloatColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -94,7 +94,7 @@ FloatDiagMatrix&
 FloatDiagMatrix::fill (const FloatRowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -109,7 +109,7 @@ FloatDiagMatrix::fill (const FloatRowVector& a)
 FloatDiagMatrix&
 FloatDiagMatrix::fill (const FloatColumnVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -125,7 +125,7 @@ FloatDiagMatrix::fill (const FloatColumnVector& a, octave_idx_type beg)
 FloatDiagMatrix&
 FloatDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");

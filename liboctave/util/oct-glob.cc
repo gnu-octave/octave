@@ -51,7 +51,7 @@ bool
 octave_fnmatch (const string_vector& pat, const std::string& str,
                 int fnmatch_flags)
 {
-  int npat = pat.length ();
+  int npat = pat.numel ();
 
   const char *cstr = str.c_str ();
 
@@ -67,7 +67,7 @@ octave_glob (const string_vector& pat)
 {
   string_vector retval;
 
-  int npat = pat.length ();
+  int npat = pat.numel ();
 
   int k = 0;
 

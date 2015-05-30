@@ -116,7 +116,7 @@ public:
   // the list is 3 because of the characters that appear after the
   // last conversion.
 
-  octave_idx_type length (void) { return list.length (); }
+  octave_idx_type length (void) { return list.numel (); }
 
   const scanf_format_elt *first (void)
   {
@@ -125,13 +125,13 @@ public:
   }
 
   const scanf_format_elt *current (void) const
-  { return list.length () > 0 ? list.elem (curr_idx) : 0; }
+  { return list.numel () > 0 ? list.elem (curr_idx) : 0; }
 
   const scanf_format_elt *next (bool cycle = true)
   {
     curr_idx++;
 
-    if (curr_idx >= list.length ())
+    if (curr_idx >= list.numel ())
       {
         if (cycle)
           curr_idx = 0;
@@ -260,13 +260,13 @@ public:
   }
 
   const printf_format_elt *current (void) const
-  { return list.length () > 0 ? list.elem (curr_idx) : 0; }
+  { return list.numel () > 0 ? list.elem (curr_idx) : 0; }
 
   const printf_format_elt *next (bool cycle = true)
   {
     curr_idx++;
 
-    if (curr_idx >= list.length ())
+    if (curr_idx >= list.numel ())
       {
         if (cycle)
           curr_idx = 0;
@@ -277,7 +277,7 @@ public:
     return current ();
   }
 
-  bool last_elt_p (void) { return (curr_idx + 1 == list.length ()); }
+  bool last_elt_p (void) { return (curr_idx + 1 == list.numel ()); }
 
   void printme (void) const;
 

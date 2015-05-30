@@ -2998,7 +2998,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             {
               Cell subs_cell = subs(k).cell_value ();
 
-              for (int n = 0; n < subs_cell.length (); n++)
+              for (int n = 0; n < subs_cell.numel (); n++)
                 {
                   if (subs_cell(n).is_string ()
                       && subs_cell(n).string_value () == ":")

@@ -88,7 +88,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
           retval = ColumnVector (tmp(0).vector_value ());
 
-          if (error_state || retval.length () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("lsode");
         }
       else
@@ -127,7 +127,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
           retval = tmp(0).matrix_value ();
 
-          if (error_state || retval.length () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("lsode");
         }
       else
@@ -300,9 +300,9 @@ parameters for @code{lsode}.\n\
       if (f_arg.is_cell ())
         {
           Cell c = f_arg.cell_value ();
-          if (c.length () == 1)
+          if (c.numel () == 1)
             f_arg = c(0);
-          else if (c.length () == 2)
+          else if (c.numel () == 2)
             {
               if (c(0).is_function_handle () || c(0).is_inline_function ())
                 lsode_fcn = c(0).function_value ();

@@ -87,9 +87,9 @@ public:
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
-  octave_idx_type diag_length (void) const { return Array<T>::length (); }
+  octave_idx_type diag_length (void) const { return Array<T>::numel (); }
   // FIXME: a dangerous ambiguity?
-  octave_idx_type length (void) const { return Array<T>::length (); }
+  octave_idx_type length (void) const { return Array<T>::numel (); }
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 

@@ -98,7 +98,7 @@ void ComplexLU::update (const ComplexColumnVector& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.length () == m && v.length () == n)
+  if (u.numel () == m && v.numel () == n)
     {
       ComplexColumnVector utmp = u;
       ComplexColumnVector vtmp = v;
@@ -149,7 +149,7 @@ void ComplexLU::update_piv (const ComplexColumnVector& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.length () == m && v.length () == n)
+  if (u.numel () == m && v.numel () == n)
     {
       ComplexColumnVector utmp = u;
       ComplexColumnVector vtmp = v;

@@ -157,7 +157,7 @@ octave_struct::subsref (const std::string& type,
               {
                 const Cell t = tmp.index (idx.front ());
 
-                retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+                retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
 
                 // We handled two index elements, so tell
                 // next_subsref to skip both of them.
@@ -176,7 +176,7 @@ octave_struct::subsref (const std::string& type,
           {
             const Cell t = dotref (idx.front ());
 
-            retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+            retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
           }
       }
       break;
@@ -223,7 +223,7 @@ octave_struct::subsref (const std::string& type,
               {
                 const Cell t = tmp.index (idx.front (), auto_add);
 
-                retval = (t.length () == 1) ? t(0) : octave_value (t, true);
+                retval = (t.numel () == 1) ? t(0) : octave_value (t, true);
 
                 // We handled two index elements, so tell
                 // next_subsref to skip both of them.
@@ -242,7 +242,7 @@ octave_struct::subsref (const std::string& type,
           {
             const Cell t = dotref (idx.front (), auto_add);
 
-            retval = (t.length () == 1) ? t(0) : octave_value (t, true);
+            retval = (t.numel () == 1) ? t(0) : octave_value (t, true);
           }
       }
       break;
@@ -679,7 +679,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       string_vector key_list = map.fieldnames ();
 
-      for (octave_idx_type i = 0; i < key_list.length (); i++)
+      for (octave_idx_type i = 0; i < key_list.numel (); i++)
         {
           std::string key = key_list[i];
 
@@ -1400,7 +1400,7 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
       string_vector key_list = map.fieldnames ();
 
-      for (octave_idx_type i = 0; i < key_list.length (); i++)
+      for (octave_idx_type i = 0; i < key_list.numel (); i++)
         {
           std::string key = key_list[i];
 
@@ -2017,7 +2017,7 @@ Implements @code{fieldnames()} for structures and Octave objects.\n\
 
   string_vector keys = m.fieldnames ();
 
-  if (keys.length () == 0)
+  if (keys.numel () == 0)
     retval = Cell (0, 1);
   else
     retval = Cell (keys);

@@ -316,7 +316,7 @@ Undocumented internal function.\n\
         {
           contourc.resize (2, 0);
 
-          for (int i = 0; i < L.length (); i++)
+          for (int i = 0; i < L.numel (); i++)
             cntr (X, Y, Z, L (i));
 
           end_contour ();

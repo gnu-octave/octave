@@ -82,7 +82,7 @@ base_url_transfer::mget_directory (const std::string& directory,
 
       string_vector sv = list ();
 
-      for (octave_idx_type i = 0; i < sv.length (); i++)
+      for (octave_idx_type i = 0; i < sv.numel (); i++)
         {
           time_t ftime;
           bool fisdir;
@@ -153,7 +153,7 @@ base_url_transfer::mput_directory (const std::string& base,
         {
           string_vector files = dirlist.read ();
 
-          for (octave_idx_type i = 0; i < files.length (); i++)
+          for (octave_idx_type i = 0; i < files.numel (); i++)
             {
               std::string file = files (i);
 

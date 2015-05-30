@@ -58,8 +58,8 @@ extern "C"
 bool
 FloatRowVector::operator == (const FloatRowVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -73,9 +73,9 @@ FloatRowVector::operator != (const FloatRowVector& a) const
 FloatRowVector&
 FloatRowVector::insert (const FloatRowVector& a, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (c < 0 || c + a_len > length ())
+  if (c < 0 || c + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -95,7 +95,7 @@ FloatRowVector::insert (const FloatRowVector& a, octave_idx_type c)
 FloatRowVector&
 FloatRowVector::fill (float val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -111,7 +111,7 @@ FloatRowVector::fill (float val)
 FloatRowVector&
 FloatRowVector::fill (float val, octave_idx_type c1, octave_idx_type c2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
@@ -135,9 +135,9 @@ FloatRowVector::fill (float val, octave_idx_type c1, octave_idx_type c2)
 FloatRowVector
 FloatRowVector::append (const FloatRowVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nc_insert = len;
-  FloatRowVector retval (len + a.length ());
+  FloatRowVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nc_insert);
   return retval;
@@ -194,7 +194,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
 {
   FloatRowVector retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -229,7 +229,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
 float
 FloatRowVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0;
 
@@ -245,7 +245,7 @@ FloatRowVector::min (void) const
 float
 FloatRowVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0;
 
@@ -263,7 +263,7 @@ operator << (std::ostream& os, const FloatRowVector& a)
 {
 //  int field_width = os.precision () + 7;
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;
 }
@@ -271,7 +271,7 @@ operator << (std::ostream& os, const FloatRowVector& a)
 std::istream&
 operator >> (std::istream& is, FloatRowVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {
@@ -313,9 +313,9 @@ operator * (const FloatRowVector& v, const FloatColumnVector& a)
 {
   float retval = 0.0;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     gripe_nonconformant ("operator *", len, a_len);

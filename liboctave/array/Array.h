@@ -88,7 +88,7 @@ protected:
 
     ~ArrayRep (void) { delete [] data; }
 
-    octave_idx_type length (void) const { return len; }
+    octave_idx_type numel (void) const { return len; }
 
   private:
 
@@ -203,7 +203,7 @@ public:
   template <class U>
   Array (const Array<U>& a)
     : dimensions (a.dims ()),
-      rep (new typename Array<T>::ArrayRep (a.data (), a.length ())),
+      rep (new typename Array<T>::ArrayRep (a.data (), a.numel ())),
       slice_data (rep->data), slice_len (rep->len)
   { }
 
@@ -266,7 +266,7 @@ public:
       length of the greatest dimension.  This method returns the total
       number of elements.
    */
-  octave_idx_type length (void) const { return numel (); }
+  GCC_ATTR_DEPRECATED octave_idx_type length (void) const { return numel (); }
 
   //! Number of elements in the array.
   //! Synonymous with numel().
@@ -348,7 +348,7 @@ public:
 
   octave_idx_type compute_index_unchecked (const Array<octave_idx_type>& ra_idx)
   const
-  { return dimensions.compute_index (ra_idx.data (), ra_idx.length ()); }
+  { return dimensions.compute_index (ra_idx.data (), ra_idx.numel ()); }
 
   // No checking, even for multiple references, ever.
 
@@ -660,7 +660,7 @@ public:
   Array<U>
   map (F fcn) const
   {
-    octave_idx_type len = length ();
+    octave_idx_type len = numel ();
 
     const T *m = data ();
 
@@ -703,7 +703,7 @@ public:
   template <class F, bool zero>
   bool test (F fcn) const
   {
-    return any_all_test<F, T, zero> (fcn, data (), length ());
+    return any_all_test<F, T, zero> (fcn, data (), numel ());
   }
 
   //@{

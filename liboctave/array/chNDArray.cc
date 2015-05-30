@@ -70,7 +70,7 @@ charNDArray::charNDArray (const std::string& s)
 }
 
 charNDArray::charNDArray (const string_vector& s, char fill_value)
-  : Array<char> (dim_vector (s.length (), s.max_length ()), fill_value)
+  : Array<char> (dim_vector (s.numel (), s.max_length ()), fill_value)
 {
   octave_idx_type nr = rows ();
 

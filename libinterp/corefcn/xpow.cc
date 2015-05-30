@@ -1121,7 +1121,7 @@ elem_xpow (double a, const NDArray& b)
     {
       Complex atmp (a);
       ComplexNDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (atmp, b(i));
@@ -1132,7 +1132,7 @@ elem_xpow (double a, const NDArray& b)
   else
     {
       NDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result (i) = std::pow (a, b(i));
@@ -1150,7 +1150,7 @@ elem_xpow (double a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -1171,7 +1171,7 @@ elem_xpow (const NDArray& a, double b)
         {
           ComplexNDArray result (a.dims ());
 
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
 
@@ -1185,7 +1185,7 @@ elem_xpow (const NDArray& a, double b)
       else
         {
           NDArray result (a.dims ());
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), b);
@@ -1201,22 +1201,22 @@ elem_xpow (const NDArray& a, double b)
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = 1.0 / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), ib);
@@ -1257,7 +1257,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
         }
     }
 
-  int len = a.length ();
+  int len = a.numel ();
 
   bool convert_to_complex = false;
 
@@ -1310,7 +1310,7 @@ elem_xpow (const NDArray& a, const Complex& b)
 {
   ComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -1341,7 +1341,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   ComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -1356,7 +1356,7 @@ elem_xpow (const Complex& a, const NDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       double btmp = b(i);
@@ -1375,7 +1375,7 @@ elem_xpow (const Complex& a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -1394,12 +1394,12 @@ elem_xpow (const ComplexNDArray& a, double b)
     {
       if (b == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result.xelem (i) = 1.0 / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), static_cast<int> (b));
@@ -1408,7 +1408,7 @@ elem_xpow (const ComplexNDArray& a, double b)
     }
   else
     {
-      for (octave_idx_type i = 0; i < a.length (); i++)
+      for (octave_idx_type i = 0; i < a.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (a(i), b);
@@ -1440,7 +1440,7 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   ComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       double btmp = b(i);
@@ -1459,7 +1459,7 @@ elem_xpow (const ComplexNDArray& a, const Complex& b)
 {
   ComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -1490,7 +1490,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   ComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -2471,7 +2471,7 @@ elem_xpow (float a, const FloatNDArray& b)
     {
       FloatComplex atmp (a);
       FloatComplexNDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (atmp, b(i));
@@ -2482,7 +2482,7 @@ elem_xpow (float a, const FloatNDArray& b)
   else
     {
       FloatNDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result (i) = std::pow (a, b(i));
@@ -2500,7 +2500,7 @@ elem_xpow (float a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -2521,7 +2521,7 @@ elem_xpow (const FloatNDArray& a, float b)
         {
           FloatComplexNDArray result (a.dims ());
 
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
 
@@ -2535,7 +2535,7 @@ elem_xpow (const FloatNDArray& a, float b)
       else
         {
           FloatNDArray result (a.dims ());
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), b);
@@ -2551,22 +2551,22 @@ elem_xpow (const FloatNDArray& a, float b)
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = 1.0f / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), ib);
@@ -2607,7 +2607,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
         }
     }
 
-  int len = a.length ();
+  int len = a.numel ();
 
   bool convert_to_complex = false;
 
@@ -2660,7 +2660,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplex& b)
 {
   FloatComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -2691,7 +2691,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   FloatComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -2706,7 +2706,7 @@ elem_xpow (const FloatComplex& a, const FloatNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       float btmp = b(i);
@@ -2725,7 +2725,7 @@ elem_xpow (const FloatComplex& a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -2744,12 +2744,12 @@ elem_xpow (const FloatComplexNDArray& a, float b)
     {
       if (b == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result.xelem (i) = 1.0f / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), static_cast<int> (b));
@@ -2758,7 +2758,7 @@ elem_xpow (const FloatComplexNDArray& a, float b)
     }
   else
     {
-      for (octave_idx_type i = 0; i < a.length (); i++)
+      for (octave_idx_type i = 0; i < a.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (a(i), b);
@@ -2790,7 +2790,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   FloatComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       float btmp = b(i);
@@ -2809,7 +2809,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplex& b)
 {
   FloatComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -2840,7 +2840,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   FloatComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));

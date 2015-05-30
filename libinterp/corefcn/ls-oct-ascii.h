@@ -158,7 +158,7 @@ extract_keyword (std::istream& is, const string_vector& keywords,
 
           std::string tmp = buf.str ();
 
-          for (int i = 0; i < keywords.length (); i++)
+          for (int i = 0; i < keywords.numel (); i++)
             {
               int match = (tmp == keywords[i]);
 

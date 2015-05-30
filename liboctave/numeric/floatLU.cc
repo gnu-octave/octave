@@ -97,7 +97,7 @@ void FloatLU::update (const FloatColumnVector& u, const FloatColumnVector& v)
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.length () == m && v.length () == n)
+  if (u.numel () == m && v.numel () == n)
     {
       FloatColumnVector utmp = u;
       FloatColumnVector vtmp = v;
@@ -149,7 +149,7 @@ void FloatLU::update_piv (const FloatColumnVector& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.length () == m && v.length () == n)
+  if (u.numel () == m && v.numel () == n)
     {
       FloatColumnVector utmp = u;
       FloatColumnVector vtmp = v;

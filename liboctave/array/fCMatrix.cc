@@ -369,7 +369,7 @@ FloatComplexMatrix::operator == (const FloatComplexMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (length (), data (), a.data ());
+  return mx_inline_equal (numel (), data (), a.data ());
 }
 
 bool
@@ -428,7 +428,7 @@ FloatComplexMatrix&
 FloatComplexMatrix::insert (const FloatRowVector& a,
                             octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
@@ -451,7 +451,7 @@ FloatComplexMatrix&
 FloatComplexMatrix::insert (const FloatColumnVector& a,
                             octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
@@ -510,7 +510,7 @@ FloatComplexMatrix&
 FloatComplexMatrix::insert (const FloatComplexRowVector& a,
                             octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
@@ -527,7 +527,7 @@ FloatComplexMatrix&
 FloatComplexMatrix::insert (const FloatComplexColumnVector& a,
                             octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
@@ -699,7 +699,7 @@ FloatComplexMatrix::append (const FloatRowVector& a) const
     }
 
   octave_idx_type nc_insert = nc;
-  FloatComplexMatrix retval (nr, nc + a.length ());
+  FloatComplexMatrix retval (nr, nc + a.numel ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -710,7 +710,7 @@ FloatComplexMatrix::append (const FloatColumnVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nr != a.length ())
+  if (nr != a.numel ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
@@ -771,7 +771,7 @@ FloatComplexMatrix::append (const FloatComplexRowVector& a) const
     }
 
   octave_idx_type nc_insert = nc;
-  FloatComplexMatrix retval (nr, nc + a.length ());
+  FloatComplexMatrix retval (nr, nc + a.numel ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -782,7 +782,7 @@ FloatComplexMatrix::append (const FloatComplexColumnVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nr != a.length ())
+  if (nr != a.numel ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
@@ -837,7 +837,7 @@ FloatComplexMatrix::stack (const FloatRowVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nc != a.length ())
+  if (nc != a.numel ())
     {
       (*current_liboctave_error_handler)
         ("column dimension mismatch for stack");
@@ -864,7 +864,7 @@ FloatComplexMatrix::stack (const FloatColumnVector& a) const
     }
 
   octave_idx_type nr_insert = nr;
-  FloatComplexMatrix retval (nr + a.length (), nc);
+  FloatComplexMatrix retval (nr + a.numel (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -913,7 +913,7 @@ FloatComplexMatrix::stack (const FloatComplexRowVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nc != a.length ())
+  if (nc != a.numel ())
     {
       (*current_liboctave_error_handler)
         ("column dimension mismatch for stack");
@@ -940,7 +940,7 @@ FloatComplexMatrix::stack (const FloatComplexColumnVector& a) const
     }
 
   octave_idx_type nr_insert = nr;
-  FloatComplexMatrix retval (nr + a.length (), nc);
+  FloatComplexMatrix retval (nr + a.numel (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -1236,7 +1236,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
 
   FloatColumnVector sigma = S.extract_diag ();
 
-  octave_idx_type r = sigma.length () - 1;
+  octave_idx_type r = sigma.numel () - 1;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -2862,7 +2862,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m != b.length ())
+  if (m != b.numel ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
   else if (m == 0 || n == 0 || b.cols () == 0)
@@ -2975,11 +2975,11 @@ operator * (const FloatComplexColumnVector& v, const FloatComplexRowVector& a)
 {
   FloatComplexMatrix retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   if (len != 0)
     {
-      octave_idx_type a_len = a.length ();
+      octave_idx_type a_len = a.numel ();
 
       retval = FloatComplexMatrix (len, a_len);
       FloatComplex *c = retval.fortran_vec ();
@@ -3103,7 +3103,7 @@ FloatComplexMatrix::operator += (const FloatMatrix& a)
 
   FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
-  mx_inline_add2 (length (), d, a.data ());
+  mx_inline_add2 (numel (), d, a.data ());
   return *this;
 }
 
@@ -3127,7 +3127,7 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
 
   FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
-  mx_inline_sub2 (length (), d, a.data ());
+  mx_inline_sub2 (numel (), d, a.data ());
   return *this;
 }
 
@@ -4021,9 +4021,9 @@ FloatComplexMatrix linspace (const FloatComplexColumnVector& x1,
 {
   if (n < 1) n = 1;
 
-  octave_idx_type m = x1.length ();
+  octave_idx_type m = x1.numel ();
 
-  if (x2.length () != m)
+  if (x2.numel () != m)
     (*current_liboctave_error_handler)
       ("linspace: vectors must be of equal length");
 

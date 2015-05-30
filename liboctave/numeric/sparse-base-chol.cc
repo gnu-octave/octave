@@ -280,7 +280,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
   MatrixType mattype (MatrixType::Upper);
   chol_type linv = L ().hermitian ().inverse (mattype, info, rcond2, 1, 0);
 
-  if (perms.length () == n)
+  if (perms.numel () == n)
     {
       p_type Qc = Q ();
       retval = Qc * linv * linv.hermitian () * Qc.transpose ();

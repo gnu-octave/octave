@@ -1052,7 +1052,7 @@ parse_save_options (const string_vector &argv,
                     bool &save_as_floats, bool &use_zlib)
 {
   string_vector retval;
-  int argc = argv.length ();
+  int argc = argv.numel ();
 
   bool do_double = false;
   bool do_tabs = false;
@@ -1634,7 +1634,7 @@ the file @file{data} in Octave's binary format.\n\
   // override from command line
   argv = parse_save_options (argv, format, append, save_as_floats,
                              use_zlib);
-  int argc = argv.length ();
+  int argc = argv.numel ();
   int i = 0;
 
   if (error_state)

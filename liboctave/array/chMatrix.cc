@@ -45,7 +45,7 @@ charMatrix::operator == (const charMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return mx_inline_equal (length (), data (), a.data ());
+  return mx_inline_equal (numel (), data (), a.data ());
 }
 
 bool

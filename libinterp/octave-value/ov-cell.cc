@@ -156,7 +156,7 @@ octave_cell::subsref (const std::string& type,
           {
             Cell tcell = tmp.cell_value ();
 
-            if (tcell.length () == 1)
+            if (tcell.numel () == 1)
               retval(0) = tcell(0,0);
             else
               retval = octave_value (octave_value_list (tcell), true);
@@ -208,7 +208,7 @@ octave_cell::subsref (const std::string& type,
           {
             const Cell tcell = tmp.cell_value ();
 
-            if (tcell.length () == 1)
+            if (tcell.numel () == 1)
               retval = tcell(0,0);
             else
               retval = octave_value (octave_value_list (tcell), true);
@@ -617,7 +617,7 @@ octave_cell::all_strings (bool pad) const
       if (error_state)
         return retval;
 
-      octave_idx_type s_len = s.length ();
+      octave_idx_type s_len = s.numel ();
 
       n_elts += s_len ? s_len : 1;
 
@@ -638,7 +638,7 @@ octave_cell::all_strings (bool pad) const
       const string_vector s = strvec_queue.front ();
       strvec_queue.pop ();
 
-      octave_idx_type s_len = s.length ();
+      octave_idx_type s_len = s.numel ();
 
       if (s_len)
         {

@@ -87,7 +87,7 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 
   ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, ires);
 
-  if (tmp_fval.length () == 0)
+  if (tmp_fval.numel () == 0)
     ires = -2;
   else
     {
@@ -182,7 +182,7 @@ DASRT::integrate (double tout)
       if (user_csub)
         {
           ColumnVector tmp = (*user_csub) (x, t);
-          ng = tmp.length ();
+          ng = tmp.numel ();
         }
       else
         ng = 0;
@@ -233,7 +233,7 @@ DASRT::integrate (double tout)
 
           ColumnVector fval = (*user_fsub) (x, xdot, t, ires);
 
-          if (fval.length () != x.length ())
+          if (fval.numel () != x.numel ())
             {
               (*current_liboctave_error_handler)
                 ("dasrt: inconsistent sizes for state and residual vectors");
@@ -290,8 +290,8 @@ DASRT::integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
-      octave_idx_type rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
+      octave_idx_type rel_tol_len = rel_tol.numel ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {

@@ -600,7 +600,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
         case '.':
           {
             string_vector nm = *p_arg_names;
-            assert (nm.length () == 1);
+            assert (nm.numel () == 1);
             os << "." << nm(0);
           }
           break;

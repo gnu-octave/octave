@@ -72,7 +72,7 @@ Array<T>::fill (const T& val)
   if (rep->count > 1)
     {
       --rep->count;
-      rep = new ArrayRep (length (), val);
+      rep = new ArrayRep (numel (), val);
       slice_data = rep->data;
     }
   else
@@ -313,7 +313,7 @@ public:
     : n (dv.length ()), top (0), dim (new octave_idx_type [2*n]),
       stride (dim + n), use_blk (false)
   {
-    assert (n == perm.length ());
+    assert (n == perm.numel ());
 
     // Get cumulative dimensions.
     OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, n+1);
@@ -446,7 +446,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
   dim_vector dv = dims ();
 
-  int perm_vec_len = perm_vec_arg.length ();
+  int perm_vec_len = perm_vec_arg.numel ();
 
   if (perm_vec_len < dv.length ())
     (*current_liboctave_error_handler)
@@ -532,7 +532,7 @@ class rec_index_helper
 
 public:
   rec_index_helper (const dim_vector& dv, const Array<idx_vector>& ia)
-    : n (ia.length ()), top (0), dim (new octave_idx_type [2*n]),
+    : n (ia.numel ()), top (0), dim (new octave_idx_type [2*n]),
       cdim (dim + n), idx (new idx_vector [n])
   {
     assert (n > 0 && (dv.length () == std::max (n, 2)));
@@ -837,7 +837,7 @@ template <class T>
 Array<T>
 Array<T>::index (const Array<idx_vector>& ia) const
 {
-  int ial = ia.length ();
+  int ial = ia.numel ();
   Array<T> retval;
 
   // FIXME: is this dispatching necessary?
@@ -1112,7 +1112,7 @@ Array<T>::index (const Array<idx_vector>& ia,
   Array<T> tmp = *this;
   if (resize_ok)
     {
-      int ial = ia.length ();
+      int ial = ia.numel ();
       dim_vector dv = dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
       for (int i = 0; i < ial; i++) dvx(i) = ia(i).extent (dv(i));
@@ -1290,7 +1290,7 @@ void
 Array<T>::assign (const Array<idx_vector>& ia,
                   const Array<T>& rhs, const T& rfv)
 {
-  int ial = ia.length ();
+  int ial = ia.numel ();
 
   // FIXME: is this dispatching necessary / desirable?
   if (ial == 1)
@@ -1492,7 +1492,7 @@ template <class T>
 void
 Array<T>::delete_elements (const Array<idx_vector>& ia)
 {
-  int ial = ia.length ();
+  int ial = ia.numel ();
 
   if (ial == 1)
     delete_elements (ia(0));
@@ -1590,7 +1590,7 @@ template <class T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
-  octave_idx_type n = ra_idx.length ();
+  octave_idx_type n = ra_idx.numel ();
   Array<idx_vector> idx (dim_vector (n, 1));
   const dim_vector dva = a.dims ().redim (n);
   for (octave_idx_type k = 0; k < n; k++)
@@ -1776,7 +1776,7 @@ Array<T>::sort (int dim, sortmode mode) const
 
   dim_vector dv = m.dims ();
 
-  if (m.length () < 1)
+  if (m.numel () < 1)
     return m;
 
   if (dim >= dv.length ())
@@ -1897,7 +1897,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
 
   dim_vector dv = m.dims ();
 
-  if (m.length () < 1)
+  if (m.numel () < 1)
     {
       sidx = Array<octave_idx_type> (dv);
       return m;
@@ -2317,7 +2317,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
       || (rows () == 0 && dims ().numel (1) == 0))
     retval.dimensions = dim_vector ();
   else if (rows () == 1 && ndims () == 2)
-    retval.dimensions = dim_vector (1, retval.length ());
+    retval.dimensions = dim_vector (1, retval.numel ());
 
   return retval;
 }

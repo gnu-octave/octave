@@ -563,7 +563,7 @@ public:
   {
     std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (uimenup);
-    int len = kids.length ();
+    int len = kids.numel ();
     std::string fltk_label = uimenup.get_fltk_label ();
     int count = 0;
 
@@ -613,7 +613,7 @@ public:
   {
     std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (figp);
-    int len = kids.length ();
+    int len = kids.numel ();
     int count = 0;
     menubar->clear ();
     for (octave_idx_type ii = 0; ii < len; ii++)
@@ -658,7 +658,7 @@ public:
     Matrix kids;
     std::string type = prop.get_type ();
     kids = find_uimenu_children (prop);
-    int len = kids.length ();
+    int len = kids.numel ();
 
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
@@ -1113,7 +1113,7 @@ private:
   graphics_handle pixel2axes_or_ca (int px, int py)
   {
     Matrix kids = fp.get_children ();
-    int len = kids.length ();
+    int len = kids.numel ();
 
     for (int k = 0; k < len; k++)
       {

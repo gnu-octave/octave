@@ -71,7 +71,7 @@ public:
 
   virtual void draw (const Matrix& hlist, bool toplevel = false)
   {
-    int len = hlist.length ();
+    int len = hlist.numel ();
 
     for (int i = len-1; i >= 0; i--)
       {

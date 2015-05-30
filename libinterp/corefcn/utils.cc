@@ -267,7 +267,7 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
 
   string_vector sv = p.find_all_first_of (names);
 
-  octave_idx_type len = sv.length ();
+  octave_idx_type len = sv.numel ();
 
   for (octave_idx_type i = 0; i < len; i++)
     sv[i] = octave_env::make_absolute (sv[i]);
@@ -278,7 +278,7 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
 static string_vector
 make_absolute (const string_vector& sv)
 {
-  octave_idx_type len = sv.length ();
+  octave_idx_type len = sv.numel ();
 
   string_vector retval (len);
 
@@ -316,7 +316,7 @@ If no files are found, return an empty cell array.\n\
     {
       string_vector names = args(0).all_strings ();
 
-      if (! error_state && names.length () > 0)
+      if (! error_state && names.numel () > 0)
         {
           if (nargin == 1)
             retval =
@@ -399,7 +399,7 @@ If no files are found, return an empty cell array.\n\
 
           string_vector names = args(1).all_strings ();
 
-          if (! error_state && names.length () > 0)
+          if (! error_state && names.numel () > 0)
             {
               if (nargin == 2)
                 retval = search_path_for_file (path, names);
@@ -1218,7 +1218,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
           if (error_state)
             return;
 
-          octave_idx_type n = v.length ();
+          octave_idx_type n = v.numel ();
           dim.resize (n);
           for (octave_idx_type i = 0; i < n; i++)
             dim(i) = static_cast<int> (fix (v(i)));

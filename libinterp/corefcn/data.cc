@@ -2583,7 +2583,7 @@ do_permute (const octave_value_list& args, bool inv)
       // FIXME: maybe we should create an idx_vector object
       // here and pass that to permute?
 
-      int n = vec.length ();
+      int n = vec.numel ();
 
       for (int i = 0; i < n; i++)
         vec(i)--;
@@ -5262,7 +5262,7 @@ do_linspace (const octave_value& base, const octave_value& limit,
       else
         {
           CVT lv = octave_value_extract<CVT> (limit);
-          CVT bv (lv.length (), bs);
+          CVT bv (lv.numel (), bs);
           retval = linspace (bv, lv, n);
         }
     }
@@ -5272,7 +5272,7 @@ do_linspace (const octave_value& base, const octave_value& limit,
       if (limit.is_scalar_type ())
         {
           T ls = octave_value_extract<T> (limit);
-          CVT lv (bv.length (), ls);
+          CVT lv (bv.numel (), ls);
           retval = linspace (bv, lv, n);
         }
       else
@@ -5432,7 +5432,7 @@ Resizing an object to fewer dimensions is not possible.\n\
   if (nargin == 2)
     {
       Array<double> vec = args(1).vector_value ();
-      int ndim = vec.length ();
+      int ndim = vec.numel ();
       if (ndim == 1)
         {
           octave_idx_type m = static_cast<octave_idx_type> (vec(0));
@@ -5513,15 +5513,15 @@ the unspecified dimension.\n\
     {
       Array<octave_idx_type> new_size = args(1).octave_idx_type_vector_value ();
 
-      if (new_size.length () < 2)
+      if (new_size.numel () < 2)
         {
           error ("reshape: SIZE must have 2 or more dimensions");
           return retval;
         }
 
-      new_dims = dim_vector::alloc (new_size.length ());
+      new_dims = dim_vector::alloc (new_size.numel ());
 
-      for (octave_idx_type i = 0; i < new_size.length (); i++)
+      for (octave_idx_type i = 0; i < new_size.numel (); i++)
         {
           if (new_size(i) < 0)
             {
@@ -8126,8 +8126,8 @@ dimensions of the decoded array.\n\
 
           if (! error_state)
             {
-              dims = dim_vector::alloc (size.length ());
-              for (octave_idx_type i = 0; i < size.length (); i++)
+              dims = dim_vector::alloc (size.numel ());
+              for (octave_idx_type i = 0; i < size.numel (); i++)
                 dims(i) = size(i);
             }
         }

@@ -39,7 +39,7 @@ intNDArray<T>::operator ! (void) const
 {
   boolNDArray b (this->dims ());
 
-  for (octave_idx_type i = 0; i < this->length (); i++)
+  for (octave_idx_type i = 0; i < this->numel (); i++)
     b.elem (i) = ! this->elem (i);
 
   return b;

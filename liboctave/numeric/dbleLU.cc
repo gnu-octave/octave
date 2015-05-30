@@ -97,7 +97,7 @@ void LU::update (const ColumnVector& u, const ColumnVector& v)
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.length () == m && v.length () == n)
+  if (u.numel () == m && v.numel () == n)
     {
       ColumnVector utmp = u;
       ColumnVector vtmp = v;
@@ -147,7 +147,7 @@ void LU::update_piv (const ColumnVector& u, const ColumnVector& v)
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.length () == m && v.length () == n)
+  if (u.numel () == m && v.numel () == n)
     {
       ColumnVector utmp = u;
       ColumnVector vtmp = v;

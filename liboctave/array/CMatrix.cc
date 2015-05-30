@@ -366,7 +366,7 @@ ComplexMatrix::operator == (const ComplexMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return mx_inline_equal (length (), data (), a.data ());
+  return mx_inline_equal (numel (), data (), a.data ());
 }
 
 bool
@@ -423,7 +423,7 @@ ComplexMatrix::insert (const Matrix& a, octave_idx_type r, octave_idx_type c)
 ComplexMatrix&
 ComplexMatrix::insert (const RowVector& a, octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
@@ -446,7 +446,7 @@ ComplexMatrix&
 ComplexMatrix::insert (const ColumnVector& a,
                        octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
@@ -505,7 +505,7 @@ ComplexMatrix&
 ComplexMatrix::insert (const ComplexRowVector& a,
                        octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
@@ -522,7 +522,7 @@ ComplexMatrix&
 ComplexMatrix::insert (const ComplexColumnVector& a,
                        octave_idx_type r, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r + a_len > rows () || c < 0 || c >= cols ())
     {
@@ -693,7 +693,7 @@ ComplexMatrix::append (const RowVector& a) const
     }
 
   octave_idx_type nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.length ());
+  ComplexMatrix retval (nr, nc + a.numel ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -704,7 +704,7 @@ ComplexMatrix::append (const ColumnVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nr != a.length ())
+  if (nr != a.numel ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
@@ -765,7 +765,7 @@ ComplexMatrix::append (const ComplexRowVector& a) const
     }
 
   octave_idx_type nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.length ());
+  ComplexMatrix retval (nr, nc + a.numel ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -776,7 +776,7 @@ ComplexMatrix::append (const ComplexColumnVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nr != a.length ())
+  if (nr != a.numel ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
@@ -831,7 +831,7 @@ ComplexMatrix::stack (const RowVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nc != a.length ())
+  if (nc != a.numel ())
     {
       (*current_liboctave_error_handler)
         ("column dimension mismatch for stack");
@@ -858,7 +858,7 @@ ComplexMatrix::stack (const ColumnVector& a) const
     }
 
   octave_idx_type nr_insert = nr;
-  ComplexMatrix retval (nr + a.length (), nc);
+  ComplexMatrix retval (nr + a.numel (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -907,7 +907,7 @@ ComplexMatrix::stack (const ComplexRowVector& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  if (nc != a.length ())
+  if (nc != a.numel ())
     {
       (*current_liboctave_error_handler)
         ("column dimension mismatch for stack");
@@ -934,7 +934,7 @@ ComplexMatrix::stack (const ComplexColumnVector& a) const
     }
 
   octave_idx_type nr_insert = nr;
-  ComplexMatrix retval (nr + a.length (), nc);
+  ComplexMatrix retval (nr + a.numel (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -1229,7 +1229,7 @@ ComplexMatrix::pseudo_inverse (double tol) const
 
   ColumnVector sigma = S.extract_diag ();
 
-  octave_idx_type r = sigma.length () - 1;
+  octave_idx_type r = sigma.numel () - 1;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -2844,7 +2844,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m != b.length ())
+  if (m != b.numel ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
   else if (m == 0 || n == 0 || b.cols () == 0)
@@ -2957,11 +2957,11 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
 {
   ComplexMatrix retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   if (len != 0)
     {
-      octave_idx_type a_len = a.length ();
+      octave_idx_type a_len = a.numel ();
 
       retval = ComplexMatrix (len, a_len);
       Complex *c = retval.fortran_vec ();
@@ -3085,7 +3085,7 @@ ComplexMatrix::operator += (const Matrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_add2 (length (), d, a.data ());
+  mx_inline_add2 (numel (), d, a.data ());
   return *this;
 }
 
@@ -3109,7 +3109,7 @@ ComplexMatrix::operator -= (const Matrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  mx_inline_sub2 (length (), d, a.data ());
+  mx_inline_sub2 (numel (), d, a.data ());
   return *this;
 }
 
@@ -4001,9 +4001,9 @@ ComplexMatrix linspace (const ComplexColumnVector& x1,
 {
   if (n < 1) n = 1;
 
-  octave_idx_type m = x1.length ();
+  octave_idx_type m = x1.numel ();
 
-  if (x2.length () != m)
+  if (x2.numel () != m)
     (*current_liboctave_error_handler)
       ("linspace: vectors must be of equal length");
 

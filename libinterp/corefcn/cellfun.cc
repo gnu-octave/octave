@@ -1714,7 +1714,7 @@ do_num2cell_helper (const dim_vector& dv,
                     dim_vector& celldv, dim_vector& arraydv,
                     Array<int>& perm)
 {
-  int dvl = dimv.length ();
+  int dvl = dimv.numel ();
   int maxd = dv.length ();
   celldv = dv;
   for (int i = 0; i < dvl; i++)
@@ -1981,7 +1981,7 @@ mat2cell_mismatch (const dim_vector& dv,
   for (int i = 0; i < nd; i++)
     {
       octave_idx_type s = 0;
-      for (octave_idx_type j = 0; j < d[i].length (); j++)
+      for (octave_idx_type j = 0; j < d[i].numel (); j++)
         s += d[i](j);
 
       octave_idx_type r = i < dv.length () ? dv(i) : 1;
@@ -2031,8 +2031,8 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
 
-  octave_idx_type nridx = d[0].length ();
-  octave_idx_type ncidx = nd == 1 ? 1 : d[1].length ();
+  octave_idx_type nridx = d[0].numel ();
+  octave_idx_type ncidx = nd == 1 ? 1 : d[1].numel ();
   retval.clear (nridx, ncidx);
 
   int ivec = -1;
@@ -2092,7 +2092,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
   octave_idx_type idxtot = 0;
   for (int i = 0; i < nd; i++)
     {
-      rdv(i) = nidx[i] = d[i].length ();
+      rdv(i) = nidx[i] = d[i].numel ();
       idxtot += nidx[i];
     }
 
@@ -2156,7 +2156,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
   octave_idx_type idxtot = 0;
   for (int i = 0; i < nd; i++)
     {
-      rdv(i) = nidx[i] = d[i].length ();
+      rdv(i) = nidx[i] = d[i].numel ();
       idxtot += nidx[i];
     }
 
@@ -2339,7 +2339,7 @@ do_cellslices_nda (const NDA& array,
                    const Array<octave_idx_type>& ub,
                    int dim = -1)
 {
-  octave_idx_type n = lb.length ();
+  octave_idx_type n = lb.numel ();
   Cell retval (1, n);
   if (array.is_vector () && (dim == -1
                              || (dim == 0 && array.columns () == 1)
@@ -2409,7 +2409,7 @@ slicing is done along the first non-singleton dimension.\n\
 
       if (! error_state)
         {
-          if (lb.length () != ub.length ())
+          if (lb.numel () != ub.numel ())
             error ("cellslices: the lengths of LB and UB must match");
           else
             {
@@ -2472,7 +2472,7 @@ slicing is done along the first non-singleton dimension.\n\
               else
                 {
                   // generic code.
-                  octave_idx_type n = lb.length ();
+                  octave_idx_type n = lb.numel ();
                   retcell = Cell (1, n);
                   const dim_vector dv = x.dims ();
                   int ndims = dv.length ();

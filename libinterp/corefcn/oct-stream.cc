@@ -123,7 +123,7 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
   double dnr = -1.0;
   double dnc = -1.0;
 
-  octave_idx_type sz_len = size.length ();
+  octave_idx_type sz_len = size.numel ();
 
   if (sz_len == 1)
     {
@@ -235,7 +235,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
 
 scanf_format_list::~scanf_format_list (void)
 {
-  octave_idx_type n = list.length ();
+  octave_idx_type n = list.numel ();
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -259,7 +259,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
             = new scanf_format_elt (text.c_str (), width, discard, type,
                                     modifier, char_class);
 
-          if (num_elts == list.length ())
+          if (num_elts == list.numel ())
             list.resize (dim_vector (2 * num_elts, 1));
 
           list(num_elts++) = elt;
@@ -489,7 +489,7 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
 void
 scanf_format_list::printme (void) const
 {
-  octave_idx_type n = list.length ();
+  octave_idx_type n = list.numel ();
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -517,7 +517,7 @@ scanf_format_list::printme (void) const
 bool
 scanf_format_list::all_character_conversions (void)
 {
-  octave_idx_type n = list.length ();
+  octave_idx_type n = list.numel ();
 
   if (n > 0)
     {
@@ -547,7 +547,7 @@ scanf_format_list::all_character_conversions (void)
 bool
 scanf_format_list::all_numeric_conversions (void)
 {
-  octave_idx_type n = list.length ();
+  octave_idx_type n = list.numel ();
 
   if (n > 0)
     {
@@ -664,7 +664,7 @@ printf_format_list::printf_format_list (const std::string& s)
 
 printf_format_list::~printf_format_list (void)
 {
-  octave_idx_type n = list.length ();
+  octave_idx_type n = list.numel ();
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -688,7 +688,7 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
             = new printf_format_elt (text.c_str (), args, fw, prec, flags,
                                      type, modifier);
 
-          if (num_elts == list.length ())
+          if (num_elts == list.numel ())
             list.resize (dim_vector (2 * num_elts, 1));
 
           list(num_elts++) = elt;
@@ -871,7 +871,7 @@ printf_format_list::finish_conversion (const std::string& s, size_t& i,
 void
 printf_format_list::printme (void) const
 {
-  int n = list.length ();
+  int n = list.numel ();
 
   for (int i = 0; i < n; i++)
     {

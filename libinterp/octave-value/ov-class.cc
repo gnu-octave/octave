@@ -406,7 +406,7 @@ octave_class::subsref (const std::string& type,
                   {
                     Cell t = tmp.index (idx.front ());
 
-                    retval(0) = (t.length () == 1) ? t(0)
+                    retval(0) = (t.numel () == 1) ? t(0)
                                                    : octave_value (t, true);
 
                     // We handled two index elements, so tell
@@ -427,7 +427,7 @@ octave_class::subsref (const std::string& type,
               {
                 Cell t = dotref (idx.front ());
 
-                retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+                retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
               }
           }
           break;
@@ -508,7 +508,7 @@ octave_class::numeric_conv (const Cell& val, const std::string& type)
 {
   octave_value retval;
 
-  if (val.length () == 1)
+  if (val.numel () == 1)
     {
       retval = val(0);
 

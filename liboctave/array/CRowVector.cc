@@ -59,8 +59,8 @@ extern "C"
 bool
 ComplexRowVector::operator == (const ComplexRowVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -76,9 +76,9 @@ ComplexRowVector::operator != (const ComplexRowVector& a) const
 ComplexRowVector&
 ComplexRowVector::insert (const RowVector& a, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (c < 0 || c + a_len > length ())
+  if (c < 0 || c + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -98,9 +98,9 @@ ComplexRowVector::insert (const RowVector& a, octave_idx_type c)
 ComplexRowVector&
 ComplexRowVector::insert (const ComplexRowVector& a, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (c < 0 || c + a_len > length ())
+  if (c < 0 || c + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -120,7 +120,7 @@ ComplexRowVector::insert (const ComplexRowVector& a, octave_idx_type c)
 ComplexRowVector&
 ComplexRowVector::fill (double val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -136,7 +136,7 @@ ComplexRowVector::fill (double val)
 ComplexRowVector&
 ComplexRowVector::fill (const Complex& val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -152,7 +152,7 @@ ComplexRowVector::fill (const Complex& val)
 ComplexRowVector&
 ComplexRowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
@@ -177,7 +177,7 @@ ComplexRowVector&
 ComplexRowVector::fill (const Complex& val,
                         octave_idx_type c1, octave_idx_type c2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
     {
@@ -201,9 +201,9 @@ ComplexRowVector::fill (const Complex& val,
 ComplexRowVector
 ComplexRowVector::append (const RowVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nc_insert = len;
-  ComplexRowVector retval (len + a.length ());
+  ComplexRowVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nc_insert);
   return retval;
@@ -212,9 +212,9 @@ ComplexRowVector::append (const RowVector& a) const
 ComplexRowVector
 ComplexRowVector::append (const ComplexRowVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nc_insert = len;
-  ComplexRowVector retval (len + a.length ());
+  ComplexRowVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nc_insert);
   return retval;
@@ -271,9 +271,9 @@ ComplexRowVector::extract_n (octave_idx_type r1, octave_idx_type n) const
 ComplexRowVector&
 ComplexRowVector::operator += (const RowVector& a)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     {
@@ -293,9 +293,9 @@ ComplexRowVector::operator += (const RowVector& a)
 ComplexRowVector&
 ComplexRowVector::operator -= (const RowVector& a)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     {
@@ -319,7 +319,7 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
 {
   ComplexRowVector retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -361,7 +361,7 @@ operator * (const RowVector& v, const ComplexMatrix& a)
 Complex
 ComplexRowVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return Complex (0.0);
 
@@ -381,7 +381,7 @@ ComplexRowVector::min (void) const
 Complex
 ComplexRowVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return Complex (0.0);
 
@@ -404,7 +404,7 @@ std::ostream&
 operator << (std::ostream& os, const ComplexRowVector& a)
 {
 //  int field_width = os.precision () + 7;
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;
 }
@@ -412,7 +412,7 @@ operator << (std::ostream& os, const ComplexRowVector& a)
 std::istream&
 operator >> (std::istream& is, ComplexRowVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {
@@ -445,9 +445,9 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 {
   Complex retval (0.0, 0.0);
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     gripe_nonconformant ("operator *", len, a_len);

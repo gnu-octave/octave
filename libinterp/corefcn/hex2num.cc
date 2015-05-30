@@ -242,7 +242,7 @@ num2hex (single ([-1, 1, e, Inf]))\n\
       if (! error_state)
         {
           octave_idx_type nchars = 8;
-          octave_idx_type nr = v.length ();
+          octave_idx_type nr = v.numel ();
           charMatrix m (nr, nchars);
           const float *pv = v.fortran_vec ();
 
@@ -279,7 +279,7 @@ num2hex (single ([-1, 1, e, Inf]))\n\
       if (! error_state)
         {
           octave_idx_type nchars = 16;
-          octave_idx_type nr = v.length ();
+          octave_idx_type nr = v.numel ();
           charMatrix m (nr, nchars);
           const double *pv = v.fortran_vec ();
 

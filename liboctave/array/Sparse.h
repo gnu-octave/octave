@@ -257,7 +257,7 @@ public:
   }
 
   GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return nzmax (); }
-  octave_idx_type length (void) const { return numel (); }
+  GCC_ATTR_DEPRECATED octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
   octave_idx_type dim2 (void) const { return dimensions(1); }

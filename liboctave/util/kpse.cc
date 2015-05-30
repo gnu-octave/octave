@@ -427,7 +427,7 @@ hash_lookup (hash_table_type table, const std::string& key)
         gnulib::fputs (" (nil)\n", stderr);
       else
         {
-          int len = ret.length ();
+          int len = ret.numel ();
           for (int i = 0; i < len; i++)
             {
               gnulib::putc (' ', stderr);
@@ -704,7 +704,7 @@ log_search (const string_vector& filenames)
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file)
     {
       /* FILENAMES should never be null, but safety doesn't hurt.  */
-      for (int e = 0; e < filenames.length () && ! filenames[e].empty (); e++)
+      for (int e = 0; e < filenames.numel () && ! filenames[e].empty (); e++)
         {
           std::string filename = filenames[e];
 
@@ -1010,7 +1010,7 @@ path_find_first_of (const std::string& path, const string_vector& names,
         {
           const std::string dir = STR_LLIST (*dirs_elt);
 
-          int len = names.length ();
+          int len = names.numel ();
           for (int i = 0; i < len && !done; i++)
             {
               std::string name = names[i];
@@ -1076,7 +1076,7 @@ find_first_of (const std::string& path, const string_vector& names,
     {
       gnulib::fputs ("start find_first_of ((", stderr);
 
-      int len = names.length ();
+      int len = names.numel ();
 
       for (int i = 0; i < len; i++)
         {
@@ -1090,7 +1090,7 @@ find_first_of (const std::string& path, const string_vector& names,
                        path.c_str (), must_exist);
     }
 
-  for (int i = 0; i < names.length (); i++)
+  for (int i = 0; i < names.numel (); i++)
     {
       std::string name = names[i];
 
@@ -1125,7 +1125,7 @@ find_first_of (const std::string& path, const string_vector& names,
         {
           gnulib::fputs ("find_first_of (", stderr);
 
-          int len = names.length ();
+          int len = names.numel ();
 
           for (int i = 0; i < len; i++)
             {
@@ -1337,7 +1337,7 @@ kpse_brace_expand_element (const std::string& elt)
 
   string_vector expansions = brace_expand (elt);
 
-  for (int i = 0; i < expansions.length (); i++)
+  for (int i = 0; i < expansions.numel (); i++)
     {
       /* Do $ and ~ expansion on each element.  */
       std::string x = kpse_expand (expansions[i]);
@@ -1511,8 +1511,8 @@ array_concat (const string_vector& arr1, const string_vector& arr2)
     result = arr1;
   else
     {
-      int len1 = arr1.length ();
-      int len2 = arr2.length ();
+      int len1 = arr1.numel ();
+      int len2 = arr2.numel ();
 
       result = string_vector (len1 * len2);
 
@@ -1886,7 +1886,7 @@ kpse_db_search (const std::string& name_arg,
      extra couple of hash lookups matter -- they don't -- but rather
      because we want to return NULL in this case, so path_search can
      know to do a disk search.  */
-  for (int e = 0; ! relevant && e < db_dir_list.length (); e++)
+  for (int e = 0; ! relevant && e < db_dir_list.numel (); e++)
     relevant = elt_in_db (db_dir_list[e], path_elt);
 
   if (! relevant)
@@ -1897,14 +1897,14 @@ kpse_db_search (const std::string& name_arg,
     aliases = hash_lookup (alias_db, name);
 
   /* Push aliases up by one and insert the original name at the front.  */
-  int len = aliases.length ();
+  int len = aliases.numel ();
   aliases.resize (len+1);
   for (int i = len; i > 0; i--)
     aliases[i] = aliases[i - 1];
   aliases[0] = name;
 
   done = false;
-  len = aliases.length ();
+  len = aliases.numel ();
   for (int i = 0; i < len && !done; i++)
     {
       std::string atry = aliases[i];
@@ -1916,7 +1916,7 @@ kpse_db_search (const std::string& name_arg,
          example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
          and the path looks like .../cx, we don't want the ricoh file.  */
 
-      int db_dirs_len = db_dirs.length ();
+      int db_dirs_len = db_dirs.numel ();
       for (int j = 0; j < db_dirs_len && !done; j++)
         {
           std::string db_file = db_dirs[j] + atry;
@@ -1946,7 +1946,7 @@ kpse_db_search (const std::string& name_arg,
                      and shouldn't hurt.  The upshot is that if one of
                      the aliases actually exists, we use that.  */
 
-                  int aliases_len = aliases.length ();
+                  int aliases_len = aliases.numel ();
 
                   for (int k = 1; k < aliases_len && found.empty (); k++)
                     {

@@ -216,7 +216,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   octave_value_list retval (3, Matrix ());
 
   std::map<std::string, octave_idx_type> region = calculate_region (options);
-  const octave_idx_type nFrames = frameidx.length ();
+  const octave_idx_type nFrames = frameidx.numel ();
   const octave_idx_type nRows = region["row_out"];
   const octave_idx_type nCols = region["col_out"];
 
@@ -311,7 +311,7 @@ read_images (std::vector<Magick::Image>& imvec,
   octave_value_list retval (3, Matrix ());
 
   std::map<std::string, octave_idx_type> region = calculate_region (options);
-  const octave_idx_type nFrames = frameidx.length ();
+  const octave_idx_type nFrames = frameidx.numel ();
   const octave_idx_type nRows = region["row_out"];
   const octave_idx_type nCols = region["col_out"];
   T img;

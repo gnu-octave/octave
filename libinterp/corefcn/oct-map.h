@@ -161,7 +161,7 @@ public:
   octave_scalar_map (void) : xkeys (), xvals () { }
 
   octave_scalar_map (const string_vector& k)
-    : xkeys (k), xvals (k.length ()) { }
+    : xkeys (k), xvals (k.numel ()) { }
 
   octave_scalar_map (const octave_scalar_map& m)
     : xkeys (m.xkeys), xvals(m.xvals) { }
@@ -277,10 +277,10 @@ public:
   octave_map (const dim_vector& dv) : xkeys (), xvals (), dimensions (dv) { }
 
   octave_map (const string_vector& k)
-    : xkeys (k), xvals (k.length (), Cell (1, 1)), dimensions (1, 1) { }
+    : xkeys (k), xvals (k.numel (), Cell (1, 1)), dimensions (1, 1) { }
 
   octave_map (const dim_vector& dv, const string_vector& k)
-    : xkeys (k), xvals (k.length (), Cell (dv)), dimensions (dv) { }
+    : xkeys (k), xvals (k.numel (), Cell (dv)), dimensions (dv) { }
 
   octave_map (const octave_map& m)
     : xkeys (m.xkeys), xvals (m.xvals), dimensions (m.dimensions) { }

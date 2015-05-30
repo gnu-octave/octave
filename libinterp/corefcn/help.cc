@@ -797,22 +797,22 @@ const static string_vector keyword_names = names (keywords_map);
 string_vector
 make_name_list (void)
 {
-  const int key_len = keyword_names.length ();
+  const int key_len = keyword_names.numel ();
 
   const string_vector bif = symbol_table::built_in_function_names ();
-  const int bif_len = bif.length ();
+  const int bif_len = bif.numel ();
 
   const string_vector cfl = symbol_table::cmdline_function_names ();
-  const int cfl_len = cfl.length ();
+  const int cfl_len = cfl.numel ();
 
   const string_vector lcl = symbol_table::variable_names ();
-  const int lcl_len = lcl.length ();
+  const int lcl_len = lcl.numel ();
 
   const string_vector ffl = load_path::fcn_names ();
-  const int ffl_len = ffl.length ();
+  const int ffl_len = ffl.numel ();
 
   const string_vector afl = autoloaded_functions ();
-  const int afl_len = afl.length ();
+  const int afl_len = afl.numel ();
 
   const int total_len
     = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len;
@@ -1303,7 +1303,7 @@ Undocumented internal function.\n\
 
   if (! error_state)
     {
-      int argc = argv.length ();
+      int argc = argv.numel ();
 
       if (argc > 1)
         {

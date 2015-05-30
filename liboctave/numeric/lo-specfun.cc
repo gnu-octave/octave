@@ -1277,8 +1277,8 @@ do_bessel (dptr f, const char *, const RowVector& alpha,
            const ComplexColumnVector& x, bool scaled,
            Array<octave_idx_type>& ierr)
 {
-  octave_idx_type nr = x.length ();
-  octave_idx_type nc = alpha.length ();
+  octave_idx_type nr = x.numel ();
+  octave_idx_type nc = alpha.numel ();
 
   ComplexMatrix retval (nr, nc);
 
@@ -1888,8 +1888,8 @@ do_bessel (fptr f, const char *, const FloatRowVector& alpha,
            const FloatComplexColumnVector& x, bool scaled,
            Array<octave_idx_type>& ierr)
 {
-  octave_idx_type nr = x.length ();
-  octave_idx_type nc = alpha.length ();
+  octave_idx_type nr = x.numel ();
+  octave_idx_type nc = alpha.numel ();
 
   FloatComplexMatrix retval (nr, nc);
 

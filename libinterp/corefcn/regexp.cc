@@ -368,14 +368,14 @@ octregexp (const octave_value_list &args, int nargout,
         {
           string_vector named_tokens = rx_lst.begin ()->named_tokens ();
 
-          for (int j = 0; j < named_pats.length (); j++)
+          for (int j = 0; j < named_pats.numel (); j++)
             nmap.assign (named_pats(j), named_tokens(j));
 
           retval(5) = nmap;
         }
       else
         {
-          for (int j = 0; j < named_pats.length (); j++)
+          for (int j = 0; j < named_pats.numel (); j++)
             {
               Cell tmp (dim_vector (1, sz));
 
@@ -440,7 +440,7 @@ octregexp (const octave_value_list &args, int nargout,
               double e = p->end ();
 
               string_vector tmp = p->tokens ();
-              tokens(i) = Cell (dim_vector (1, tmp.length ()), tmp);
+              tokens(i) = Cell (dim_vector (1, tmp.numel ()), tmp);
               match_string(i) = p->match_string ();
               token_extents(i) = p->token_extents ();
               end(i) = e;

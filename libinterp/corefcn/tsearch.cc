@@ -103,7 +103,7 @@ convex hull, @var{idx} is NaN.\n\
       maxy(k) = max (REF (y, k, 0), REF (y, k, 1), REF (y, k, 2)) + eps;
     }
 
-  const octave_idx_type np = xi.length ();
+  const octave_idx_type np = xi.numel ();
   ColumnVector values (np);
 
   double x0, y0, a11, a12, a21, a22, det;

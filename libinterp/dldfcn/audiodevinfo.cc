@@ -1086,7 +1086,7 @@ audioplayer::get_sample_number (void)
 unsigned int
 audioplayer::get_total_samples (void)
 {
-  return left.length ();
+  return left.numel ();
 }
 
 void
@@ -1104,7 +1104,7 @@ audioplayer::get_end_sample (void)
 void
 audioplayer::reset_end_sample (void)
 {
-  set_end_sample (left.length ());
+  set_end_sample (left.numel ());
 }
 
 void

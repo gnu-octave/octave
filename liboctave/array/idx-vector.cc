@@ -405,7 +405,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
     {
       octave_idx_type *d = new octave_idx_type [len];
 
-      octave_idx_type ntot = bnda.length ();
+      octave_idx_type ntot = bnda.numel ();
 
       octave_idx_type k = 0;
       for (octave_idx_type i = 0; i < ntot; i++)

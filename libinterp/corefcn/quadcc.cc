@@ -1713,7 +1713,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           return retval;
         }
       Matrix effex = fvals(0).matrix_value ();
-      if (effex.length () != ex.length ())
+      if (effex.numel () != ex.numel ())
         {
           error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
           return retval;
@@ -1832,12 +1832,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 return retval;
               }
             Matrix effex = fvals(0).matrix_value ();
-            if (effex.length () != ex.length ())
+            if (effex.numel () != ex.numel ())
               {
                 error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
                 return retval;
               }
-            neval += effex.length ();
+            neval += effex.numel ();
             for (i = 0; i < n[d] / 2; i++)
               {
                 j = (2 * i + 1) * skip[d];
@@ -1980,12 +1980,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 return retval;
               }
             Matrix effex = fvals(0).matrix_value ();
-            if (effex.length () != ex.length ())
+            if (effex.numel () != ex.numel ())
               {
                 error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
                 return retval;
               }
-            neval += effex.length ();
+            neval += effex.numel ();
             for (i = 0; i < n[0] - 1; i++)
               {
                 j = (i + 1) * skip[0];
@@ -2076,12 +2076,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 return retval;
               }
             Matrix effex = fvals(0).matrix_value ();
-            if (effex.length () != ex.length ())
+            if (effex.numel () != ex.numel ())
               {
                 error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
                 return retval;
               }
-            neval += effex.length ();
+            neval += effex.numel ();
             for (i = 0; i < n[0] - 1; i++)
               {
                 j = (i + 1) * skip[0];

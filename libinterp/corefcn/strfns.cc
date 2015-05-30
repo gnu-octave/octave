@@ -103,8 +103,8 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
               return retval;
             }
 
-          if (s.length () > 0)
-            n_elts += s.length ();
+          if (s.numel () > 0)
+            n_elts += s.numel ();
           else
             n_elts += 1;
 
@@ -125,7 +125,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
           string_vector s = args_as_strings.front ();
           args_as_strings.pop ();
 
-          int n = s.length ();
+          int n = s.numel ();
 
           if (n > 0)
             {
@@ -224,7 +224,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
           return retval;
         }
 
-      size_t n = s.length ();
+      size_t n = s.numel ();
 
       // do not count empty strings in calculation of number of elements
       if (n > 0)
@@ -253,7 +253,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
       string_vector s = args_as_strings.front ();
       args_as_strings.pop ();
 
-      size_t n = s.length ();
+      size_t n = s.numel ();
 
       if (n > 0)
         {
@@ -365,7 +365,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
       const Cell cell = cell_val.cell_value ();
       const string_vector str = str_val.all_strings ();
-      octave_idx_type r = str.length ();
+      octave_idx_type r = str.numel ();
 
       if (r == 0 || r == 1)
         {
@@ -378,13 +378,13 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
           if (cell_val.is_cellstr ())
             {
               const Array<std::string> cellstr = cell_val.cellstr_value ();
-              for (octave_idx_type i = 0; i < cellstr.length (); i++)
+              for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                 output(i) = str_op (cellstr(i), s, n);
             }
           else
             {
               // FIXME: should we warn here?
-              for (octave_idx_type i = 0; i < cell.length (); i++)
+              for (octave_idx_type i = 0; i < cell.numel (); i++)
                 {
                   if (cell(i).is_string ())
                     output(i) = str_op (cell(i).string_value (), s, n);
@@ -395,7 +395,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
         }
       else if (r > 1)
         {
-          if (cell.length () == 1)
+          if (cell.numel () == 1)
             {
               // Broadcast the cell.
 
@@ -418,13 +418,13 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
               boolNDArray output (cell.dims (), false);
 
-              if (cell.length () == r)
+              if (cell.numel () == r)
                 {
                   if (cell_val.is_cellstr ())
                     {
                       const Array<std::string> cellstr
                         = cell_val.cellstr_value ();
-                      for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                      for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                         output(i) = str_op (str[i], cellstr(i), n);
                     }
                   else
@@ -484,7 +484,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
               if (cell1_val.is_cellstr ())
                 {
                   const Array<std::string> cellstr = cell1_val.cellstr_value ();
-                  for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                  for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                     output(i) = str_op (cellstr(i), str2, n);
                 }
               else

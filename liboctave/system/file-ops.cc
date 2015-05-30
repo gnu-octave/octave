@@ -152,7 +152,7 @@ tilde_find_prefix (const std::string& s, size_t& len)
     {
       for (size_t i = 0; i < s_len; i++)
         {
-          for (int j = 0; j < prefixes.length (); j++)
+          for (int j = 0; j < prefixes.numel (); j++)
             {
               size_t pfx_len = prefixes[j].length ();
 
@@ -187,7 +187,7 @@ tilde_find_suffix (const std::string& s)
 
       if (! suffixes.empty ())
         {
-          for (int j = 0; j < suffixes.length (); j++)
+          for (int j = 0; j < suffixes.numel (); j++)
             {
               size_t sfx_len = suffixes[j].length ();
 
@@ -346,7 +346,7 @@ file_ops::tilde_expand (const string_vector& names)
 {
   string_vector retval;
 
-  int n = names.length ();
+  int n = names.numel ();
 
   retval.resize (n);
 
@@ -580,7 +580,7 @@ octave_recursive_rmdir (const std::string& name, std::string& msg)
     {
       string_vector dirlist = dir.read ();
 
-      for (octave_idx_type i = 0; i < dirlist.length (); i++)
+      for (octave_idx_type i = 0; i < dirlist.numel (); i++)
         {
           octave_quit ();
 

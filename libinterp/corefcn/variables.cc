@@ -2217,7 +2217,7 @@ do_clear_functions (const string_vector& argv, int argc, int idx,
         {
           string_vector fcns = symbol_table::user_function_names ();
 
-          int fcount = fcns.length ();
+          int fcount = fcns.numel ();
 
           for (int i = 0; i < fcount; i++)
             {
@@ -2243,7 +2243,7 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
     {
       string_vector gvars = symbol_table::global_variable_names ();
 
-      int gcount = gvars.length ();
+      int gcount = gvars.numel ();
 
       for (int i = 0; i < gcount; i++)
         symbol_table::clear_global (gvars[i]);
@@ -2254,7 +2254,7 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
         {
           string_vector gvars = symbol_table::global_variable_names ();
 
-          int gcount = gvars.length ();
+          int gcount = gvars.numel ();
 
           for (int i = 0; i < gcount; i++)
             {
@@ -2284,7 +2284,7 @@ do_clear_variables (const string_vector& argv, int argc, int idx,
         {
           string_vector lvars = symbol_table::variable_names ();
 
-          int lcount = lvars.length ();
+          int lcount = lvars.numel ();
 
           for (int i = 0; i < lcount; i++)
             {

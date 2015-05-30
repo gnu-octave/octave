@@ -48,16 +48,16 @@ public:
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 
   octave_idx_type dim1 (void) const
-  { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::numel (); }
   octave_idx_type dim2 (void) const
-  { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::numel (); }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
   octave_idx_type perm_length (void) const
-  { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::numel (); }
   // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const
   { return perm_length (); }

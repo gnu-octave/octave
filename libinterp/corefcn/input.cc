@@ -408,13 +408,13 @@ generate_completion (const std::string& text, int state)
       else
         name_list = generate_possible_completions (text, prefix, hint);
 
-      name_list_len = name_list.length ();
+      name_list_len = name_list.numel ();
 
       file_name_list = command_editor::generate_filename_completions (text);
 
       name_list.append (file_name_list);
 
-      name_list_total_len = name_list.length ();
+      name_list_total_len = name_list.numel ();
 
       hint_len = hint.length ();
 
@@ -1098,7 +1098,7 @@ a feature, not a bug.\n\
               // because it will be easier for Emacs if the names
               // appear in a single column.
 
-              int len = list.length ();
+              int len = list.numel ();
 
               for (int i = 0; i < len; i++)
                 octave_stdout << list[i] << "\n";

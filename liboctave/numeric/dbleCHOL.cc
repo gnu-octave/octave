@@ -205,7 +205,7 @@ CHOL::update (const ColumnVector& u)
 {
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       ColumnVector utmp = u;
 
@@ -225,7 +225,7 @@ CHOL::downdate (const ColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       ColumnVector utmp = u;
 
@@ -247,7 +247,7 @@ CHOL::insert_sym (const ColumnVector& u, octave_idx_type j)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n + 1)
+  if (u.numel () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");
@@ -309,7 +309,7 @@ CHOL::update (const ColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       init (chol_mat.transpose () * chol_mat
             + Matrix (u) * Matrix (u).transpose (), false);
@@ -335,7 +335,7 @@ CHOL::downdate (const ColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       if (singular (chol_mat))
         info = 2;
@@ -361,7 +361,7 @@ CHOL::insert_sym (const ColumnVector& u, octave_idx_type j)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n + 1)
+  if (u.numel () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");

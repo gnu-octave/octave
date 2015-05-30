@@ -91,7 +91,7 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 
   if (ires >= 0)
     {
-      if (tmp_delta.length () == 0)
+      if (tmp_delta.numel () == 0)
         ires = -2;
       else
         {
@@ -196,7 +196,7 @@ DASPK::do_integrate (double tout)
 
           ColumnVector res = (*user_fun) (x, xdot, t, ires);
 
-          if (res.length () != x.length ())
+          if (res.numel () != x.numel ())
             {
               (*current_liboctave_error_handler)
                 ("daspk: inconsistent sizes for state and residual vectors");
@@ -240,8 +240,8 @@ DASPK::do_integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
-      octave_idx_type rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
+      octave_idx_type rel_tol_len = rel_tol.numel ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -302,7 +302,7 @@ DASPK::do_integrate (double tout)
           {
             Array<octave_idx_type> ict = inequality_constraint_types ();
 
-            if (ict.length () == n)
+            if (ict.numel () == n)
               {
                 for (octave_idx_type i = 0; i < n; i++)
                   {
@@ -347,7 +347,7 @@ DASPK::do_integrate (double tout)
 
               Array<octave_idx_type> av = algebraic_variables ();
 
-              if (av.length () == n)
+              if (av.numel () == n)
                 {
                   octave_idx_type lid;
                   if (eiq == 0 || eiq == 2)
@@ -387,7 +387,7 @@ DASPK::do_integrate (double tout)
 
           Array<octave_idx_type> av = algebraic_variables ();
 
-          if (av.length () == n)
+          if (av.numel () == n)
             {
               octave_idx_type lid;
               if (eiq == 0 || eiq == 2)
@@ -406,7 +406,7 @@ DASPK::do_integrate (double tout)
         {
           Array<double> ich = initial_condition_heuristics ();
 
-          if (ich.length () == 6)
+          if (ich.numel () == 6)
             {
               iwork(31) = NINTbig (ich(0));
               iwork(32) = NINTbig (ich(1));

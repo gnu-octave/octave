@@ -95,7 +95,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
           if (tlen > 1)
             ires = tmp(1).int_value ();
 
-          if (error_state || retval.length () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("dassl");
         }
       else
@@ -141,7 +141,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
           retval = tmp(0).matrix_value ();
 
-          if (error_state || retval.length () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("dassl");
         }
       else
@@ -298,9 +298,9 @@ parameters for @code{dassl}.\n\
       if (f_arg.is_cell ())
         {
           Cell c = f_arg.cell_value ();
-          if (c.length () == 1)
+          if (c.numel () == 1)
             f_arg = c(0);
-          else if (c.length () == 2)
+          else if (c.numel () == 2)
             {
               if (c(0).is_function_handle () || c(0).is_inline_function ())
                 dassl_fcn = c(0).function_value ();

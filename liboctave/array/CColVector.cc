@@ -60,8 +60,8 @@ ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
 bool
 ComplexColumnVector::operator == (const ComplexColumnVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -77,9 +77,9 @@ ComplexColumnVector::operator != (const ComplexColumnVector& a) const
 ComplexColumnVector&
 ComplexColumnVector::insert (const ColumnVector& a, octave_idx_type r)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (r < 0 || r + a_len > length ())
+  if (r < 0 || r + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -99,9 +99,9 @@ ComplexColumnVector::insert (const ColumnVector& a, octave_idx_type r)
 ComplexColumnVector&
 ComplexColumnVector::insert (const ComplexColumnVector& a, octave_idx_type r)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (r < 0 || r + a_len > length ())
+  if (r < 0 || r + a_len > numel ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -121,7 +121,7 @@ ComplexColumnVector::insert (const ComplexColumnVector& a, octave_idx_type r)
 ComplexColumnVector&
 ComplexColumnVector::fill (double val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -137,7 +137,7 @@ ComplexColumnVector::fill (double val)
 ComplexColumnVector&
 ComplexColumnVector::fill (const Complex& val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -154,7 +154,7 @@ ComplexColumnVector::fill (const Complex& val)
 ComplexColumnVector&
 ComplexColumnVector::fill (double val, octave_idx_type r1, octave_idx_type r2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
     {
@@ -179,7 +179,7 @@ ComplexColumnVector&
 ComplexColumnVector::fill (const Complex& val,
                            octave_idx_type r1, octave_idx_type r2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
     {
@@ -203,9 +203,9 @@ ComplexColumnVector::fill (const Complex& val,
 ComplexColumnVector
 ComplexColumnVector::stack (const ColumnVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nr_insert = len;
-  ComplexColumnVector retval (len + a.length ());
+  ComplexColumnVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nr_insert);
   return retval;
@@ -214,9 +214,9 @@ ComplexColumnVector::stack (const ColumnVector& a) const
 ComplexColumnVector
 ComplexColumnVector::stack (const ComplexColumnVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nr_insert = len;
-  ComplexColumnVector retval (len + a.length ());
+  ComplexColumnVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nr_insert);
   return retval;
@@ -279,9 +279,9 @@ ComplexColumnVector::extract_n (octave_idx_type r1, octave_idx_type n) const
 ComplexColumnVector&
 ComplexColumnVector::operator += (const ColumnVector& a)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     {
@@ -301,9 +301,9 @@ ComplexColumnVector::operator += (const ColumnVector& a)
 ComplexColumnVector&
 ComplexColumnVector::operator -= (const ColumnVector& a)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
     {
@@ -337,7 +337,7 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     gripe_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -382,7 +382,7 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     {
@@ -410,7 +410,7 @@ operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     {
@@ -438,7 +438,7 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
     {
@@ -465,7 +465,7 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 Complex
 ComplexColumnVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0.0;
 
@@ -485,7 +485,7 @@ ComplexColumnVector::min (void) const
 Complex
 ComplexColumnVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0.0;
 
@@ -508,7 +508,7 @@ std::ostream&
 operator << (std::ostream& os, const ComplexColumnVector& a)
 {
 //  int field_width = os.precision () + 7;
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << /* setw (field_width) << */ a.elem (i) << "\n";
   return os;
 }
@@ -516,7 +516,7 @@ operator << (std::ostream& os, const ComplexColumnVector& a)
 std::istream&
 operator >> (std::istream& is, ComplexColumnVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {

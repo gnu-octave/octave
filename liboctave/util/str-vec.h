@@ -70,11 +70,11 @@ public:
 
   ~string_vector (void) { }
 
-  bool empty (void) const { return length () == 0; }
+  bool empty (void) const { return numel () == 0; }
 
   octave_idx_type max_length (void) const
   {
-    octave_idx_type n = length ();
+    octave_idx_type n = numel ();
     octave_idx_type longest = 0;
 
     for (octave_idx_type i = 0; i < n; i++)

@@ -250,7 +250,7 @@ do_history (const octave_value_list& args, int nargout)
 
   hlist = command_history::list (limit, numbered_output);
 
-  int len = hlist.length ();
+  int len = hlist.numel ();
 
   if (nargout == 0)
     {
@@ -360,7 +360,7 @@ mk_tmp_hist_file (const octave_value_list& args,
 
   string_vector hlist = command_history::list ();
 
-  int hist_count = hlist.length () - 1;  // switch to zero-based indexing
+  int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
 
   // The current command line is already part of the history list by
   // the time we get to this point.  Delete the cmd from the list when

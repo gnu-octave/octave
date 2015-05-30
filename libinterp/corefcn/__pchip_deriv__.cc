@@ -68,7 +68,7 @@ Undocumented internal function.\n\
           FloatColumnVector xvec (args(0).float_vector_value ());
           FloatMatrix ymat (args(1).float_matrix_value ());
 
-          octave_idx_type nx = xvec.length ();
+          octave_idx_type nx = xvec.numel ();
 
           if (nx < 2)
             {
@@ -115,7 +115,7 @@ Undocumented internal function.\n\
           ColumnVector xvec (args(0).vector_value ());
           Matrix ymat (args(1).matrix_value ());
 
-          octave_idx_type nx = xvec.length ();
+          octave_idx_type nx = xvec.numel ();
 
           if (nx < 2)
             {

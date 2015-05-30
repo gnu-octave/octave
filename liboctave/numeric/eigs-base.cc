@@ -445,7 +445,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
     {
       if (cholB)
         {
-          if (permB.length ())
+          if (permB.numel ())
             {
               SparseMatrix tmp(n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -541,7 +541,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
           const double *pB = permB.fortran_vec ();
           double *p = AminusSigmaB.fortran_vec ();
 
-          if (permB.length ())
+          if (permB.numel ())
             {
               for (octave_idx_type j = 0;
                    j < b.cols (); j++)
@@ -609,7 +609,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
     {
       if (cholB)
         {
-          if (permB.length ())
+          if (permB.numel ())
             {
               SparseMatrix tmp(n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -705,7 +705,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
           const double *pB = permB.fortran_vec ();
           Complex *p = AminusSigmaB.fortran_vec ();
 
-          if (permB.length ())
+          if (permB.numel ())
             {
               for (octave_idx_type j = 0;
                    j < b.cols (); j++)
@@ -829,10 +829,10 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.length () != 0)
+  if (have_b && cholB && permB.numel () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length () != n)
+      if (permB.numel () != n)
         {
           (*current_liboctave_error_handler)
             ("eigs: permB vector invalid");
@@ -880,7 +880,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.transpose ();
-          if (permB.length () == 0)
+          if (permB.numel () == 0)
             {
               permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -1153,10 +1153,10 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       return -1;
     }
 
-  if (have_b && cholB && permB.length () != 0)
+  if (have_b && cholB && permB.numel () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length () != n)
+      if (permB.numel () != n)
         {
           (*current_liboctave_error_handler) ("eigs: permB vector invalid");
           return -1;
@@ -1743,10 +1743,10 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.length () != 0)
+  if (have_b && cholB && permB.numel () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length () != n)
+      if (permB.numel () != n)
         {
           (*current_liboctave_error_handler)
             ("eigs: permB vector invalid");
@@ -1794,7 +1794,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.transpose ();
-          if (permB.length () == 0)
+          if (permB.numel () == 0)
             {
               permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -2116,10 +2116,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       return -1;
     }
 
-  if (have_b && cholB && permB.length () != 0)
+  if (have_b && cholB && permB.numel () != 0)
     {
       // Check that we really have a permutation vector
-      if (permB.length () != n)
+      if (permB.numel () != n)
         {
           (*current_liboctave_error_handler) ("eigs: permB vector invalid");
           return -1;
@@ -2811,10 +2811,10 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.length () != 0)
+  if (have_b && cholB && permB.numel () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length () != n)
+      if (permB.numel () != n)
         {
           (*current_liboctave_error_handler)
             ("eigs: permB vector invalid");
@@ -2862,7 +2862,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.hermitian ();
-          if (permB.length () == 0)
+          if (permB.numel () == 0)
             {
               permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -3136,10 +3136,10 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       return -1;
     }
 
-  if (have_b && cholB && permB.length () != 0)
+  if (have_b && cholB && permB.numel () != 0)
     {
       // Check that we really have a permutation vector
-      if (permB.length () != n)
+      if (permB.numel () != n)
         {
           (*current_liboctave_error_handler) ("eigs: permB vector invalid");
           return -1;

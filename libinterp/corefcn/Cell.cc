@@ -40,7 +40,7 @@ Cell::Cell (const octave_value_list& ovl)
 Cell::Cell (const string_vector& sv, bool trim)
   : Array<octave_value> ()
 {
-  octave_idx_type n = sv.length ();
+  octave_idx_type n = sv.numel ();
 
   if (n > 0)
     {
@@ -99,7 +99,7 @@ Cell::Cell (const Array<std::string>& sa)
 Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
   : Array<octave_value> (dv, Matrix ())
 {
-  octave_idx_type n = sv.length ();
+  octave_idx_type n = sv.numel ();
 
   if (n > 0)
     {

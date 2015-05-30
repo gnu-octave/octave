@@ -72,7 +72,7 @@ public:
 
   Array<bool> match (const string_vector& str) const
   {
-    int n = str.length ();
+    int n = str.numel ();
 
     Array<bool> retval (dim_vector (n, 1));
 

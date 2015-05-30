@@ -70,7 +70,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
   buf << "@(";
 
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       if (i > 0)
         buf << ", ";
@@ -128,12 +128,12 @@ octave_fcn_inline::map_value (void) const
 
   string_vector args = fcn_arg_names ();
 
-  m.assign ("numArgs", args.length ());
+  m.assign ("numArgs", args.numel ());
   m.assign ("args", args);
 
   std::ostringstream buf;
 
-  for (int i = 0; i < args.length (); i++)
+  for (int i = 0; i < args.numel (); i++)
     buf << args(i) << " = INLINE_INPUTS_{" << i + 1 << "}; ";
 
   m.assign ("inputExpr", buf.str ());
@@ -144,8 +144,8 @@ octave_fcn_inline::map_value (void) const
 bool
 octave_fcn_inline::save_ascii (std::ostream& os)
 {
-  os << "# nargs: " <<  ifargs.length () << "\n";
-  for (int i = 0; i < ifargs.length (); i++)
+  os << "# nargs: " <<  ifargs.numel () << "\n";
+  for (int i = 0; i < ifargs.numel (); i++)
     os << ifargs(i) << "\n";
   if (nm.length () < 1)
     // Write an invalid value to flag empty fcn handle name.
@@ -195,9 +195,9 @@ octave_fcn_inline::load_ascii (std::istream& is)
 bool
 octave_fcn_inline::save_binary (std::ostream& os, bool&)
 {
-  int32_t tmp = ifargs.length ();
+  int32_t tmp = ifargs.numel ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       tmp = ifargs(i).length ();
       os.write (reinterpret_cast<char *> (&tmp), 4);
@@ -291,7 +291,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (group_hid < 0) return false;
 
   size_t len = 0;
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     if (len < ifargs(i).length ())
       len = ifargs(i).length ();
 
@@ -304,7 +304,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
-  hdims[1] = ifargs.length ();
+  hdims[1] = ifargs.numel ();
   hdims[0] = len + 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);
@@ -327,10 +327,10 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (char, s, ifargs.length () * (len + 1));
+  OCTAVE_LOCAL_BUFFER (char, s, ifargs.numel () * (len + 1));
 
   // Save the args as a null teminated list
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       const char * cptr = ifargs(i).c_str ();
       for (size_t j = 0; j < ifargs(i).length (); j++)
@@ -627,7 +627,7 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   else
     buf << nm << "(";
 
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       if (i)
         buf << ", ";
@@ -751,7 +751,7 @@ functions from strings is through the use of anonymous functions\n\
                     {
                       bool have_arg = false;
 
-                      for (int j = 0; j < fargs.length (); j++)
+                      for (int j = 0; j < fargs.numel (); j++)
                         if (tmp_arg == fargs (j))
                           {
                             have_arg = true;
@@ -773,7 +773,7 @@ functions from strings is through the use of anonymous functions\n\
               // Sort the arguments into ascii order.
               fargs.sort ();
 
-              if (fargs.length () == 0)
+              if (fargs.numel () == 0)
                 fargs.append (std::string ("x"));
 
             }
@@ -920,9 +920,9 @@ arguments of the inline function @var{fun}.\n\
         {
           string_vector t1 = fn->fcn_arg_names ();
 
-          Cell t2 (dim_vector (t1.length (), 1));
+          Cell t2 (dim_vector (t1.numel (), 1));
 
-          for (int i = 0; i < t1.length (); i++)
+          for (int i = 0; i < t1.numel (); i++)
             t2(i) = t1(i);
 
           retval = t2;

@@ -79,7 +79,7 @@ dir_path::all_directories (void)
 
   if (initialized)
     {
-      int len = pv.length ();
+      int len = pv.numel ();
 
       int nmax = len > 32 ? len : 32;
 

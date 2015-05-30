@@ -61,7 +61,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     case 2:
       {
         Array<octave_idx_type> jdx (idx.dims ());
-        octave_idx_type n = idx.length ();
+        octave_idx_type n = idx.numel ();
         octave_idx_type nr = nda.rows ();
         for (octave_idx_type i = 0; i < n; i++)
           {

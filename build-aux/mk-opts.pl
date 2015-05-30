@@ -676,14 +676,14 @@ print_$CLASS_NAME (std::ostream& os)
               $elt_type = "octave_idx_type";
             }
           print qq|    Array<$elt_type> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
-          print qq|    if (val.length () == 1)
+          print qq|    if (val.numel () == 1)
       {
         os << val(0) << "\\n";
       }
     else
       {
         os << "\\n\\n";
-        octave_idx_type len = val.length ();
+        octave_idx_type len = val.numel ();
         Matrix tmp (len, 1);
         for (octave_idx_type i = 0; i < len; i++)
           tmp(i,0) = val(i);
@@ -694,7 +694,7 @@ print_$CLASS_NAME (std::ostream& os)
       elsif ($TYPE[$i] eq "Array<double>")
         {
           print qq|    Array<double> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
-          print qq|    if (val.length () == 1)
+          print qq|    if (val.numel () == 1)
       {
         os << val(0) << "\\n";
       }
@@ -709,7 +709,7 @@ print_$CLASS_NAME (std::ostream& os)
       elsif ($TYPE[$i] eq "Array<float>")
         {
           print qq|    Array<float> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
-          print qq|    if (val.length () == 1)
+          print qq|    if (val.numel () == 1)
       {
         os << val(0) << "\\n";
       }
@@ -856,13 +856,13 @@ show_$CLASS_NAME (const std::string& keyword)
               $elt_type = "octave_idx_type";
             }
           print "      Array<$elt_type> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
-          print "      if (val.length () == 1)
+          print "      if (val.numel () == 1)
         {
           retval = static_cast<double> (val(0));
         }
       else
         {
-          octave_idx_type len = val.length ();
+          octave_idx_type len = val.numel ();
           ColumnVector tmp (len);
           for (octave_idx_type i = 0; i < len; i++)
             tmp(i) = val(i);
@@ -872,7 +872,7 @@ show_$CLASS_NAME (const std::string& keyword)
       elsif ($TYPE[$i] eq "Array<double>")
         {
           print "      Array<double> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
-          print "      if (val.length () == 1)
+          print "      if (val.numel () == 1)
         {
           retval = val(0);
         }
@@ -884,7 +884,7 @@ show_$CLASS_NAME (const std::string& keyword)
       elsif ($TYPE[$i] eq "Array<float>")
         {
           print "      Array<float> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
-          print "      if (val.length () == 1)
+          print "      if (val.numel () == 1)
         {
           retval = val(0);
         }

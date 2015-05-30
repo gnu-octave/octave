@@ -2052,7 +2052,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    size_t len = patterns.length ();
+    size_t len = patterns.numel ();
 
     for (size_t i = 0; i < len; i++)
       {
@@ -2069,7 +2069,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    size_t len = patterns.length ();
+    size_t len = patterns.numel ();
 
     for (size_t i = 0; i < len; i++)
       {

@@ -9566,7 +9566,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           fcn = c(0).function_value ();
           if (! error_state)
             {
-              for (int i = 1; i < c.length () ; i++)
+              for (int i = 1; i < c.numel () ; i++)
                 args(1+i) = c(i);
             }
         }
@@ -9865,7 +9865,7 @@ each individual object will be reset.\n\
       if (! error_state)
         {
           // loop over graphics objects
-          for (octave_idx_type n = 0; n < hcv.length (); n++)
+          for (octave_idx_type n = 0; n < hcv.numel (); n++)
             gh_manager::get_object (hcv(n)).reset_default_properties ();
 
           if (! error_state)
@@ -10080,7 +10080,7 @@ being @qcode{\"portrait\"}.\n\
           bool request_drawnow = false;
 
           // loop over graphics objects
-          for (octave_idx_type n = 0; n < hcv.length (); n++)
+          for (octave_idx_type n = 0; n < hcv.numel (); n++)
             {
               graphics_object obj = gh_manager::get_object (hcv(n));
 
@@ -10094,7 +10094,7 @@ being @qcode{\"portrait\"}.\n\
                           obj.set (args(1).cellstr_value (),
                                    args(2).cell_value (), 0);
                         }
-                      else if (hcv.length () == args(2).cell_value ().rows ())
+                      else if (hcv.numel () == args(2).cell_value ().rows ())
                         {
                           obj.set (args(1).cellstr_value (),
                                    args(2).cell_value (), n);
@@ -10102,7 +10102,7 @@ being @qcode{\"portrait\"}.\n\
                       else
                         {
                           error ("set: number of graphics handles must match number of value rows (%d != %d)",
-                                 hcv.length (), args(2).cell_value ().rows ());
+                                 hcv.numel (), args(2).cell_value ().rows ());
                           break;
 
                         }
@@ -10232,7 +10232,7 @@ lists respectively.\n\
 
       if (! error_state)
         {
-          octave_idx_type len = hcv.length ();
+          octave_idx_type len = hcv.numel ();
 
           if (nargin == 1 && len > 1)
             {
@@ -10396,7 +10396,7 @@ Undocumented internal function.\n\
 
       if (! error_state)
         {
-          octave_idx_type len = hcv.length ();
+          octave_idx_type len = hcv.numel ();
 
           vals.resize (dim_vector (len, 1));
 
@@ -10630,7 +10630,7 @@ calc_dimensions (const graphics_object& go)
     {
       Matrix kids = go.get_properties ().get_children ();
 
-      for (octave_idx_type i = 0; i < kids.length (); i++)
+      for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
           graphics_handle hnd = gh_manager::lookup (kids(i));
 
@@ -11197,7 +11197,7 @@ undocumented.\n\
         {
           Matrix hlist = gh_manager::figure_handle_list (true);
 
-          for (int i = 0; ! error_state && i < hlist.length (); i++)
+          for (int i = 0; ! error_state && i < hlist.numel (); i++)
             {
               graphics_handle h = gh_manager::lookup (hlist(i));
 

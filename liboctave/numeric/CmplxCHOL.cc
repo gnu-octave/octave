@@ -200,7 +200,7 @@ ComplexCHOL::update (const ComplexColumnVector& u)
 {
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       ComplexColumnVector utmp = u;
 
@@ -220,7 +220,7 @@ ComplexCHOL::downdate (const ComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       ComplexColumnVector utmp = u;
 
@@ -242,7 +242,7 @@ ComplexCHOL::insert_sym (const ComplexColumnVector& u, octave_idx_type j)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n + 1)
+  if (u.numel () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");
@@ -305,7 +305,7 @@ ComplexCHOL::update (const ComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       init (chol_mat.hermitian () * chol_mat
             + ComplexMatrix (u) * ComplexMatrix (u).hermitian (), false);
@@ -331,7 +331,7 @@ ComplexCHOL::downdate (const ComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
+  if (u.numel () == n)
     {
       if (singular (chol_mat))
         info = 2;
@@ -358,7 +358,7 @@ ComplexCHOL::insert_sym (const ComplexColumnVector& u, octave_idx_type j)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n + 1)
+  if (u.numel () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");

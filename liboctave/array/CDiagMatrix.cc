@@ -110,7 +110,7 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -126,7 +126,7 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -142,7 +142,7 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const RowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -158,7 +158,7 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexRowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
+  if (a.numel () != len)
     {
       (*current_liboctave_error_handler) ("range error for fill");
       return *this;
@@ -173,7 +173,7 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ColumnVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -189,7 +189,7 @@ ComplexDiagMatrix::fill (const ColumnVector& a, octave_idx_type beg)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexColumnVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -205,7 +205,7 @@ ComplexDiagMatrix::fill (const ComplexColumnVector& a, octave_idx_type beg)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");
@@ -221,7 +221,7 @@ ComplexDiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexRowVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
     {
       (*current_liboctave_error_handler) ("range error for fill");

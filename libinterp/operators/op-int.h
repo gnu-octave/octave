@@ -370,7 +370,7 @@ along with Octave; see the file COPYING.  If not, see
   elem_xpow (const octave_ ## T1& a, const T2 ## NDArray& b) \
   { \
     T2 ## NDArray result (b.dims ()); \
-    for (int i = 0; i < b.length (); i++) \
+    for (int i = 0; i < b.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = pow (a, b(i)); \
@@ -382,7 +382,7 @@ along with Octave; see the file COPYING.  If not, see
   elem_xpow (const octave_ ## T1& a, const NDArray& b) \
   { \
     T1 ## NDArray result (b.dims ()); \
-    for (int i = 0; i < b.length (); i++) \
+    for (int i = 0; i < b.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = pow (a, b(i)); \
@@ -394,7 +394,7 @@ along with Octave; see the file COPYING.  If not, see
   elem_xpow (double a, const T2 ## NDArray& b) \
   { \
     T2 ## NDArray result (b.dims ()); \
-    for (int i = 0; i < b.length (); i++) \
+    for (int i = 0; i < b.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = pow (a, b(i)); \
@@ -406,7 +406,7 @@ along with Octave; see the file COPYING.  If not, see
   elem_xpow (const octave_ ## T1& a, const FloatNDArray& b) \
   { \
     T1 ## NDArray result (b.dims ()); \
-    for (int i = 0; i < b.length (); i++) \
+    for (int i = 0; i < b.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = powf (a, b(i)); \
@@ -418,7 +418,7 @@ along with Octave; see the file COPYING.  If not, see
   elem_xpow (float a, const T2 ## NDArray& b) \
   { \
     T2 ## NDArray result (b.dims ()); \
-    for (int i = 0; i < b.length (); i++) \
+    for (int i = 0; i < b.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = powf (a, b(i)); \
@@ -536,7 +536,7 @@ along with Octave; see the file COPYING.  If not, see
 octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
 { \
   T1 ## NDArray result (a.dims ()); \
-  for (int i = 0; i < a.length (); i++) \
+  for (int i = 0; i < a.numel (); i++) \
     { \
       OCTAVE_QUIT; \
       result (i) = pow (a(i), b);               \
@@ -547,7 +547,7 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
 octave_value elem_xpow (T1 ## NDArray a, double  b) \
 { \
   T1 ## NDArray result (a.dims ()); \
-  for (int i = 0; i < a.length (); i++) \
+  for (int i = 0; i < a.numel (); i++) \
     { \
       OCTAVE_QUIT; \
       result (i) = pow (a(i), b);               \
@@ -558,7 +558,7 @@ octave_value elem_xpow (T1 ## NDArray a, double  b) \
 octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
 { \
   T2 ## NDArray result (a.dims ()); \
-  for (int i = 0; i < a.length (); i++) \
+  for (int i = 0; i < a.numel (); i++) \
     { \
       OCTAVE_QUIT; \
       result (i) = pow (a(i), b);               \
@@ -569,7 +569,7 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
 octave_value elem_xpow (T1 ## NDArray a, float  b) \
 { \
   T1 ## NDArray result (a.dims ()); \
-  for (int i = 0; i < a.length (); i++) \
+  for (int i = 0; i < a.numel (); i++) \
     { \
       OCTAVE_QUIT; \
       result (i) = powf (a(i), b);              \
@@ -580,7 +580,7 @@ octave_value elem_xpow (T1 ## NDArray a, float  b) \
 octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
 { \
   T2 ## NDArray result (a.dims ()); \
-  for (int i = 0; i < a.length (); i++) \
+  for (int i = 0; i < a.numel (); i++) \
     { \
       OCTAVE_QUIT; \
       result (i) = powf (a(i), b);              \
@@ -715,7 +715,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
           } \
       } \
     T1 ## NDArray result (a_dims); \
-    for (int i = 0; i < a.length (); i++) \
+    for (int i = 0; i < a.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = pow (a(i), b(i)); \
@@ -741,7 +741,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
           } \
       } \
     T1 ## NDArray result (a_dims); \
-    for (int i = 0; i < a.length (); i++) \
+    for (int i = 0; i < a.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = pow (a(i), b(i)); \
@@ -767,7 +767,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
           } \
       } \
     T2 ## NDArray result (a_dims); \
-    for (int i = 0; i < a.length (); i++) \
+    for (int i = 0; i < a.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = pow (a(i), b(i)); \
@@ -793,7 +793,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
           } \
       } \
     T1 ## NDArray result (a_dims); \
-    for (int i = 0; i < a.length (); i++) \
+    for (int i = 0; i < a.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = powf (a(i), b(i)); \
@@ -819,7 +819,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
           } \
       } \
     T2 ## NDArray result (a_dims); \
-    for (int i = 0; i < a.length (); i++) \
+    for (int i = 0; i < a.numel (); i++) \
       { \
         OCTAVE_QUIT; \
         result (i) = powf (a(i), b(i)); \

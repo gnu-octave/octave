@@ -204,7 +204,7 @@ error message.\n\
 
               if (! error_state)
                 {
-                  int len = tmp.length ();
+                  int len = tmp.numel ();
 
                   exec_args.resize (len + 1);
 
@@ -316,7 +316,7 @@ exit status, it will linger until Octave exits.\n\
 
               if (! error_state)
                 {
-                  int len = tmp.length ();
+                  int len = tmp.numel ();
 
                   arg_list.resize (len + 1);
 

@@ -25,15 +25,15 @@ dnl Note that the version number is duplicated here and in AC_INIT
 dnl because AC_INIT requires it to be static, not computed from
 dnl shell variables.
 OCTAVE_MAJOR_VERSION=4
-OCTAVE_MINOR_VERSION=0
-OCTAVE_PATCH_VERSION=0-rc4
+OCTAVE_MINOR_VERSION=1
+OCTAVE_PATCH_VERSION=0+
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
 OCTAVE_COPYRIGHT="Copyright (C) 2015 John W. Eaton and others."
 
-OCTAVE_RELEASE_DATE="2015-03-20"
+OCTAVE_RELEASE_DATE="2015-05-26"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly

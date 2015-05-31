@@ -1028,6 +1028,53 @@ With no arguments, @code{echo} toggles the current echo state.\n\
   return retval;
 }
 
+/*
+%!test
+%! state = echo_executing_commands ();
+%! unwind_protect
+%!   echo ();
+%!   s1 = echo_executing_commands ();
+%!   assert (s1 != state);
+%!   echo ();
+%!   s2 = echo_executing_commands ();
+%!   assert (s2 != s1);
+%! unwind_protect_cleanup
+%!   echo_executing_commands (state);
+%! end_unwind_protect
+
+%!test
+%! state = echo_executing_commands ();
+%! unwind_protect
+%!   echo ("off");
+%!   assert (echo_executing_commands () == 0);
+%!   echo ("on");
+%!   assert (echo_executing_commands () != 0);
+%!   echo ("off");
+%!   assert (echo_executing_commands () == 0);
+%! unwind_protect_cleanup
+%!   echo_executing_commands (state);
+%! end_unwind_protect
+
+%!#test  # FIXME: Uncommend when ug #45209 is fixed
+%! state = echo_executing_commands ();
+%! unwind_protect
+%!   echo ("on", "all");
+%!   assert (echo_executing_commands () != 0);
+%!   echo ("off", "all");
+%!   assert (echo_executing_commands () == 0);
+%! unwind_protect_cleanup
+%!   echo_executing_commands (state);
+%! end_unwind_protect
+
+%!error echo ([])
+%!error echo (0)
+%!error echo ("")
+%!error echo ("Octave")
+%!error echo ("off", "invalid")
+%!error echo ("on", "invalid")
+%!error echo ("on", "all", "all")
+*/
+
 DEFUN (__echostate__, , ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{state} =} __echostate__ ()\n\
@@ -1112,6 +1159,21 @@ a feature, not a bug.\n\
 
   return retval;
 }
+
+/*
+%!assert (ischar (completion_matches ("")))
+%!assert (ischar (completion_matches ("a")))
+%!assert (ischar (completion_matches (" ")))
+%!assert (isempty (completion_matches (" ")))
+%!assert (any (strcmp ("abs", deblank (cellstr (completion_matches (""))))))
+%!assert (any (strcmp ("abs", deblank (cellstr (completion_matches ("a"))))))
+%!assert (any (strcmp ("abs", deblank (cellstr (completion_matches ("ab"))))))
+%!assert (any (strcmp ("abs", deblank (cellstr (completion_matches ("abs"))))))
+%!assert (! any (strcmp ("abs", deblank (cellstr (completion_matches ("absa"))))))
+
+%!error completion_matches ()
+%!error completion_matches (1, 2)
+*/
 
 DEFUN (readline_read_init_file, args, ,
        "-*- texinfo -*-\n\

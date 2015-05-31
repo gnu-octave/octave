@@ -189,6 +189,23 @@ ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION = YES
 EXPAND_ONLY_PREDEF = NO
 
+# We need to specify INCLUDE_PATH otherwise preprocessor will fail to
+# include, and macro expansion will not work.
+
+INCLUDE_PATH = \
+  @top_srcdir@/libgnu \
+  @top_srcdir@/libinterp/corefcn \
+  @top_srcdir@/libinterp/octave-value \
+  @top_srcdir@/libinterp/operators \
+  @top_srcdir@/libinterp/parse-tree \
+  @top_srcdir@/libinterp/template-inst \
+  @top_srcdir@/liboctave/array \
+  @top_srcdir@/liboctave/numeric \
+  @top_srcdir@/liboctave/operators \
+  @top_srcdir@/liboctave/system \
+  @top_srcdir@/liboctave/util \
+  @top_srcdir@/src
+
 # So that features that are behind #ifdef HAVE_FOO macros get processed by Doxygen
 
 PREDEFINED = HAVE_ARPACK=1          \

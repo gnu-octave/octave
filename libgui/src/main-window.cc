@@ -1502,6 +1502,10 @@ main_window::construct_octave_qt_link (void)
   connect (_octave_qt_link, SIGNAL (confirm_shutdown_signal ()),
            this, SLOT (confirm_shutdown_octave ()));
 
+  connect (_octave_qt_link,
+           SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+           this, SLOT (copy_image_to_clipboard (const QString&, bool)));
+
   if (_start_gui)
     {
       connect (_octave_qt_link,
@@ -1550,10 +1554,6 @@ main_window::construct_octave_qt_link (void)
       connect (_octave_qt_link,
                SIGNAL (show_preferences_signal (void)),
                this, SLOT (process_settings_dialog_request ()));
-
-      connect (_octave_qt_link,
-               SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-               this, SLOT (copy_image_to_clipboard (const QString&, bool)));
 
 #ifdef HAVE_QSCINTILLA
       connect (_octave_qt_link,

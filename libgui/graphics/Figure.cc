@@ -813,7 +813,10 @@ Figure::fileSaveFigure (bool prompt)
 void
 Figure::save_figure_callback (const std::string& file)
 {
-  Ffeval (ovl ("print", file));
+  figure::properties& fp = properties<figure> ();
+  octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
+
+  Ffeval (ovl ("print", fnum, file));
 }
 
 void
@@ -829,9 +832,7 @@ Figure::copy_figure_callback (const std::string& format)
       return;
     }
 
-  std::string device = "-d" + format;
-
-  Ffeval (ovl ("print", file, device));
+  save_figure_callback (file);
 
   octave_link::copy_image_to_clipboard (file);
 }

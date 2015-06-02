@@ -794,13 +794,14 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
               bb(2) = (event->x () - m_mouseAnchor.x ()) / bb(2);
               bb(3) = (m_mouseAnchor.y () - event->y ()) / bb(3);
 
-              octave_value_list props = ovl("textbox", bb);
+              octave_value_list props = ovl ("textbox", bb);
 
               annotation_dialog anno_dlg (w, props);
 
               if (anno_dlg.exec () == QDialog::Accepted)
                 {
                   props = anno_dlg.get_properties ();
+                  props.prepend (figObj.get_handle ().as_octave_value ());
 
                   octave_link::post_event (this, &Canvas::annotation_callback,
                                            props);

@@ -401,14 +401,14 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
   gh_manager::auto_lock lock;
   graphics_object ax = gh_manager::get_object (m_mouseAxes);
 
-  if (m_mouseMode != NoMode && ax.valid_object ())
+  if (m_mouseMode != NoMode && (ax.valid_object () || m_mouseMode == TextMode))
     {
-      axes::properties& ap = Utils::properties<axes> (ax);
-
       switch (m_mouseMode)
         {
         case RotateMode:
           {
+            axes::properties& ap = Utils::properties<axes> (ax);
+
             ap.rotate3d (m_mouseCurrent.x (), event->x (),
                          m_mouseCurrent.y (), event->y ());
 
@@ -428,6 +428,8 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 
         case PanMode:
           {
+            axes::properties& ap = Utils::properties<axes> (ax);
+
             graphics_object figObj (ax.get_ancestor ("figure"));
 
             std::string mode = pan_mode (figObj);
@@ -617,7 +619,6 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
                   {
                   case Qt::LeftButton:
                     m_mouseAnchor = m_mouseCurrent = event->pos ();
-                    m_mouseAxes = axesObj.get_handle ();
                     m_mouseMode = newMouseMode;
                     m_rectMode = true;
                   }

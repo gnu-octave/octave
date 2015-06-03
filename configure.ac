@@ -584,11 +584,6 @@ AC_CHECK_LIB(m, sin)
 
 ### Determine the Fortran compiler and how to invoke it
 
-## Default FFLAGS is -O.
-if test -z "$FFLAGS"; then
-  FFLAGS="-O"
-fi
-
 ## Prefer gfortran, but the user's F77 environment variable will override.
 AC_PROG_F77([gfortran])
 if test -z "$F77"; then

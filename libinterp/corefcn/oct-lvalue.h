@@ -90,6 +90,10 @@ public:
 
   void clear_index (void) { type = std::string (); idx.clear (); }
 
+  std::string index_type (void) const { return type; }
+
+  bool index_is_empty (void) const;
+
   void do_unary_op (octave_value::unary_op op);
 
   octave_value value (void) const;

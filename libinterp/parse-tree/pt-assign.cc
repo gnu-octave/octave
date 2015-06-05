@@ -260,6 +260,33 @@ tree_multi_assignment::rvalue (int)
 
           if (nel != 1)
             {
+              // Huge kluge so that wrapper scripts with lines like
+              //
+              //   [varargout{1:nargout}] = fcn (args);
+              //
+              // Will work the same as calling fcn directly when nargout
+              // is 0 and fcn produces more than one output even when
+              // nargout is 0.  This only works if varargout has not yet
+              // been defined.  See also bug #43813.
+
+              if (lvalue_list.size () == 1 && nel == 0 && n > 0
+                  && ! ult.is_black_hole () && ult.is_undefined ()
+                  && ult.index_type () == "{" && ult.index_is_empty ())
+                {
+                  // Convert undefined lvalue with empty index to a cell
+                  // array with a single value and indexed by 1 to
+                  // handle a single output.
+
+                  nel = 1;
+
+                  ult.define (Cell (1, 1));
+
+                  ult.clear_index ();
+                  std::list<octave_value_list> idx;
+                  idx.push_back (octave_value_list (octave_value (1)));
+                  ult.set_index ("{", idx);
+                }
+
               if (k + nel <= n)
                 {
                   // This won't do a copy.

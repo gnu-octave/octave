@@ -54,6 +54,21 @@ octave_lvalue::set_index (const std::string& t,
     error ("invalid index expression in assignment");
 }
 
+bool
+octave_lvalue::index_is_empty (void) const
+{
+  bool retval = false;
+
+  if (idx.size () == 1)
+    {
+      octave_value_list tmp = idx.front ();
+
+      retval = (tmp.length () == 1 && tmp(0).is_empty ());
+    }
+
+  return retval;
+}
+
 void
 octave_lvalue::do_unary_op (octave_value::unary_op op)
 {

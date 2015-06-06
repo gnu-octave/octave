@@ -102,6 +102,7 @@ function varargout = ginput (n = -1)
       ## Only execute if window still exists
       set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
       set (fig, "keypressfcn", orig_keypressfcn);
+      set (fig, "closerequestfcn", orig_closerequestfcn);
     endif
   end_unwind_protect
 

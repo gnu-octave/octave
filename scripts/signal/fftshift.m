@@ -52,6 +52,10 @@ function retval = fftshift (x, dim)
     print_usage ();
   endif
 
+  if (! (isnumeric (x) || islogical (x) || ischar (x)))
+    error ("fftshift: X must be a vector or matrix");
+  endif
+
   if (nargin == 2)
     if (! (isscalar (dim) && dim > 0 && dim == fix (dim)))
       error ("fftshift: dimension DIM must be a positive integer");
@@ -68,7 +72,7 @@ function retval = fftshift (x, dim)
       xl = length (x);
       xx = ceil (xl/2);
       retval = x([xx+1:xl, 1:xx]);
-    elseif (ismatrix (x))
+    else
       nd = ndims (x);
       sz = size (x);
       sz2 = ceil (sz ./ 2);
@@ -77,8 +81,6 @@ function retval = fftshift (x, dim)
         idx{i} = [sz2(i)+1:sz(i), 1:sz2(i)];
       endfor
       retval = x(idx{:});
-    else
-      error ("fftshift: expecting vector or matrix argument");
     endif
   endif
 
@@ -129,4 +131,25 @@ endfunction
 %! y = fftshift (x,2);
 %! assert (y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
 %! assert (fftshift (y,2), x);
+
+%!test
+%! x = "abcdefg";
+%! y = fftshift (x);
+%! assert (y, "efgabcd");
+%! assert (fftshift (y), "bcdefga");
+
+## Test N-dimensional input (bug #45207)
+%!test
+%! x = [0:3];
+%! x = x + x' + reshape (x, [1 1 4]);
+%! y1 = [4 5 2 3; 5 6 3 4; 2 3 0 1; 3 4 1 2];
+%! y = fftshift (x);
+%! assert (y, reshape ([y1 + 2, y1 + 3, y1, y1 + 1], [4 4 4]));
+%! assert (fftshift (y), x);
+
+%% Test input validation
+%!error fftshift ()
+%!error fftshift (1, 2, 3)
+%!error fftshift (0:3, -1)
+%!error fftshift (0:3, 0:3)
 

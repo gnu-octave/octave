@@ -2435,7 +2435,7 @@ ok_for_signed_int_conv (const octave_value& val)
   uint64_t limit = std::numeric_limits<int64_t>::max ();
 
   if (val.is_string ())
-    return false;
+    return true;
   else if (val.is_integer_type ())
     {
       if (val.is_uint64_type ())
@@ -2463,7 +2463,7 @@ static bool
 ok_for_unsigned_int_conv (const octave_value& val)
 {
   if (val.is_string ())
-    return false;
+    return true;
   else if (val.is_integer_type ())
     {
       // Easier than dispatching here...

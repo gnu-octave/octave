@@ -87,6 +87,42 @@ octave_char_matrix::float_value (bool) const
   return retval;
 }
 
+octave_int64
+octave_char_matrix::int64_scalar_value () const
+{
+  octave_int64 retval = 0;
+
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-to-scalar",
+                                 "character matrix", "int64 scalar");
+
+      retval = octave_int64 (matrix (0, 0));
+    }
+  else
+    gripe_invalid_conversion ("character matrix", "int64 scalar");
+
+  return retval;
+}
+
+octave_uint64
+octave_char_matrix::uint64_scalar_value () const
+{
+  octave_uint64 retval = 0;
+
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-to-scalar",
+                                 "character matrix", "uint64 scalar");
+
+      retval = octave_uint64 (matrix (0, 0));
+    }
+  else
+    gripe_invalid_conversion ("character matrix", "uint64 scalar");
+
+  return retval;
+}
+
 Complex
 octave_char_matrix::complex_value (bool) const
 {

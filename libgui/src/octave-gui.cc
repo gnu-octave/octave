@@ -122,35 +122,37 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
   QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 #endif
 
+  // show wizard if this is the first run
+  if (resource_manager::is_first_run ())
+    {
+      // before wizard
+      resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
+      application.installTranslator (&qt_tr);
+      application.installTranslator (&gui_tr);
+      if (start_gui)
+        application.installTranslator (&qsci_tr);
+
+      welcome_wizard welcomeWizard;
+
+      if (welcomeWizard.exec () == QDialog::Rejected)
+        exit (1);
+
+      resource_manager::reload_settings ();  // install settings file
+    }
+  else
+    {
+      resource_manager::reload_settings ();  // get settings file
+
+      // after settings
+      resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
+      application.installTranslator (&qt_tr);
+      application.installTranslator (&gui_tr);
+      if (start_gui)
+        application.installTranslator (&qsci_tr);
+    }
+
   if (start_gui)
     {
-      // show wizard if this is the first run
-      if (resource_manager::is_first_run ())
-        {
-          // before wizard
-          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
-          application.installTranslator (&qt_tr);
-          application.installTranslator (&qsci_tr);
-          application.installTranslator (&gui_tr);
-
-          welcome_wizard welcomeWizard;
-
-          if (welcomeWizard.exec () == QDialog::Rejected)
-            exit (1);
-
-          resource_manager::reload_settings ();  // install settings file
-        }
-      else
-        {
-          resource_manager::reload_settings ();  // get settings file
-
-          // after settings
-          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
-          application.installTranslator (&qt_tr);
-          application.installTranslator (&qsci_tr);
-          application.installTranslator (&gui_tr);
-        }
-
       // update network-settings
       resource_manager::update_network_settings ();
 
@@ -178,10 +180,10 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 
   main_window w (0, start_gui);
 
-  w.read_settings ();
-
   if (start_gui)
     {
+      w.read_settings ();
+
       w.init_terminal_size ();
 
       // Connect signals for changes in visibility not before w

@@ -61,7 +61,7 @@ function run (script)
   if (! isempty (d))
     if (exist (d, "dir"))
       startdir = pwd ();
-      d = canonicalize_file_name (d);
+      d = make_absolute_filename (d);
       unwind_protect
         cd (d);
         evalin ("caller", sprintf ("source ('%s%s');", f, ext),

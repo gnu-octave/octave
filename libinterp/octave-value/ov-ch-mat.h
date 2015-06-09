@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
+#include "ov-int64.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 
@@ -104,6 +105,9 @@ public:
 
   float float_scalar_value (bool frc_str_conv = false) const
   { return float_value (frc_str_conv); }
+
+  octave_int64 int64_scalar_value () const;
+  octave_uint64 uint64_scalar_value () const;
 
   Matrix matrix_value (bool = false) const
   { return Matrix (charMatrix (matrix)); }

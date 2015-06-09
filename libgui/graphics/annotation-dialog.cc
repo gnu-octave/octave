@@ -53,7 +53,8 @@ annotation_dialog::init ()
   QSettings *settings = resource_manager::get_settings ();
 
   // restore last geometry
-  restoreGeometry (settings->value("annotation/geometry").toByteArray ());
+  if (settings)
+    restoreGeometry (settings->value("annotation/geometry").toByteArray ());
 
   // connect signals
   connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
@@ -96,7 +97,8 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   QSettings *settings = resource_manager::get_settings ();
 
   // save position
-  settings->setValue ("annotation/geometry",saveGeometry ());
+  if (settings)
+    settings->setValue ("annotation/geometry",saveGeometry ());
 
   if (button_role == QDialogButtonBox::ApplyRole ||
       button_role == QDialogButtonBox::AcceptRole)

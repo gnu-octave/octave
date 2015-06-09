@@ -1296,7 +1296,8 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
 
       // Note that we do NOT handle char here because they are unboxed
       // into a String[], not into a char array
-           IF_UNBOX_PRIMITIVE_ARRAY(bool,   bool_,   bool,   jboolean, Boolean)
+           IF_UNBOX_PRIMITIVE_ARRAY(double,      ,       ,   jdouble,  Double)
+      else IF_UNBOX_PRIMITIVE_ARRAY(bool,   bool_,   bool,   jboolean, Boolean)
       else IF_UNBOX_PRIMITIVE_ARRAY(float,  float_,  Float,  jfloat,   Float)
       else IF_UNBOX_PRIMITIVE_ARRAY(int8,   int8_,   int8,   jbyte,    Byte)
       else IF_UNBOX_PRIMITIVE_ARRAY(uint8,  uint8_,  uint8,  jbyte,    Byte)

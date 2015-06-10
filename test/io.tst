@@ -639,3 +639,8 @@
 
 %!assert (sprintf ("%c,%c,%c,%c", "abcd"), "a,b,c,d");
 %!assert (sprintf ("%s,%s,%s,%s", "abcd"), "abcd,");
+
+%!assert (sprintf ("|%x|", "Octave"), "|4f||63||74||61||76||65|");
+%!assert (sprintf ("|%X|", "Octave"), "|4F||63||74||61||76||65|");
+%!assert (sprintf ("|%o|", "Octave"), "|117||143||164||141||166||145|");
+

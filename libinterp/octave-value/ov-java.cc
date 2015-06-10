@@ -1060,14 +1060,14 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
           break; \
         }
 
-BOX_PRIMITIVE_ARRAY (jboolean, "[Z", Boolean, bool)
-BOX_PRIMITIVE_ARRAY (jchar,    "[C", Char,    char)
-BOX_PRIMITIVE_ARRAY (jbyte,    "[B", Byte,    int8)
-BOX_PRIMITIVE_ARRAY (jshort,   "[S", Short,   int16)
-BOX_PRIMITIVE_ARRAY (jint,     "[I", Int,     int32)
-BOX_PRIMITIVE_ARRAY (jlong,    "[J", Long,    int64)
-BOX_PRIMITIVE_ARRAY (jfloat,   "[F", Float,   Float)
-BOX_PRIMITIVE_ARRAY (jdouble,  "[D", Double,  )
+      BOX_PRIMITIVE_ARRAY (jdouble,  "[D", Double,  )
+      BOX_PRIMITIVE_ARRAY (jboolean, "[Z", Boolean, bool)
+      BOX_PRIMITIVE_ARRAY (jfloat,   "[F", Float,   Float)
+      BOX_PRIMITIVE_ARRAY (jchar,    "[C", Char,    char)
+      BOX_PRIMITIVE_ARRAY (jbyte,    "[B", Byte,    int8)
+      BOX_PRIMITIVE_ARRAY (jshort,   "[S", Short,   int16)
+      BOX_PRIMITIVE_ARRAY (jint,     "[I", Int,     int32)
+      BOX_PRIMITIVE_ARRAY (jlong,    "[J", Long,    int64)
 
 #undef BOX_PRIMITIVE_ARRAY
 
@@ -1324,8 +1324,8 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
          }
 
            IF_UNBOX_PRIMITIVE_SCALAR(double, double,   double,        "java/lang/Double",  "(D)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(float,  float,    float,         "java/lang/Float",   "(F)V")
       else IF_UNBOX_PRIMITIVE_SCALAR(bool,   bool,     bool,          "java/lang/Boolean", "(Z)V")
+      else IF_UNBOX_PRIMITIVE_SCALAR(float,  float,    float,         "java/lang/Float",   "(F)V")
       else IF_UNBOX_PRIMITIVE_SCALAR(int8,   int8_t,   int8_scalar,   "java/lang/Byte",    "(B)V")
       else IF_UNBOX_PRIMITIVE_SCALAR(uint8,  uint8_t,  uint8_scalar,  "java/lang/Byte",    "(B)V")
       else IF_UNBOX_PRIMITIVE_SCALAR(int16,  int16_t,  int16_scalar,  "java/lang/Short",   "(S)V")

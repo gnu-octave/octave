@@ -191,6 +191,35 @@
 %!
 %! assert (save_status && load_status);
 
+%!testif HAVE_HDF5
+%!
+%! s8  =   int8 (fix ((2^8  - 1) * (rand (2, 2) - 0.5)));
+%! u8  =  uint8 (fix ((2^8  - 1) * (rand (2, 2) - 0.5)));
+%! s16 =  int16 (fix ((2^16 - 1) * (rand (2, 2) - 0.5)));
+%! u16 = uint16 (fix ((2^16 - 1) * (rand (2, 2) - 0.5)));
+%! s32 =  int32 (fix ((2^32 - 1) * (rand (2, 2) - 0.5)));
+%! u32 = uint32 (fix ((2^32 - 1) * (rand (2, 2) - 0.5)));
+%! s64 =  int64 (fix ((2^64 - 1) * (rand (2, 2) - 0.5)));
+%! u64 = uint64 (fix ((2^64 - 1) * (rand (2, 2) - 0.5)));
+%! s8t = s8; u8t = u8; s16t = s16; u16t = u16; s32t = s32; u32t = u32;
+%! s64t = s64; u64t = u64;
+%! h5file = tempname ();
+%! unwind_protect
+%!   eval (sprintf ("save -hdf5 %s %s", h5file, "s8 u8 s16 u16 s32 u32 s64 u64"));
+%!   clear s8 u8 s16 u16 s32 u32 s64 u64;
+%!   load (h5file);
+%!   assert (s8, s8t);
+%!   assert (u8, u8t);
+%!   assert (s16, s16t);
+%!   assert (u16, u16t);
+%!   assert (s32, s32t);
+%!   assert (u32, u32t);
+%!   assert (s64, s64t);
+%!   assert (u64, u64t);
+%! unwind_protect_cleanup
+%!   unlink (h5file);
+%! end_unwind_protect
+
 %!test
 %!
 %! STR.scalar_fld = 1;

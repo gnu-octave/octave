@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <hdf5.h>
 
-#define HDF5_SAVE_TYPE H5T_NATIVE_UINT8
-
 #endif
 
 #endif

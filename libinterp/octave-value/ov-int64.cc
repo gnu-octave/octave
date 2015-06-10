@@ -40,6 +40,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 #include "ov-base.h"
 
+#if defined (HAVE_HDF5)
+#define HDF5_SAVE_TYPE H5T_NATIVE_INT64
+#endif
+
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
 #include "ov-int64.h"

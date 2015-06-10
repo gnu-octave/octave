@@ -3217,10 +3217,16 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // FIXME: Properties that still dont have callbacks are:
-    // language, monitorpositions, pointerlocation, pointerwindow.
+    // FIXME: Properties that still don't have callbacks are:
+    // monitorpositions, pointerlocation, pointerwindow.
     // Note that these properties are not yet used by Octave, so setting
     // them will have no effect.
+
+    // FIXME: Several properties have been deleted from Matlab.
+    //        We should either immediately remove them or figure out a way
+    //        to deprecate them for a release or two.
+    // Obsolete properties: commandwindowsize, diary, diaryfile, echo,
+    // errormessage, format, formatspacing, language, recursionlimit.
 
     // Programming note: Keep property list sorted if new ones are added.
 
@@ -3236,7 +3242,7 @@ public:
       radio_property format GS , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rat|{short}|shorte|shorteng|shortg"
       radio_property formatspacing GS , "compact|{loose}"
       string_property language , "ascii"
-      array_property monitorpositions , Matrix (1, 4, 0)
+      array_property monitorpositions r , Matrix (1, 4, 0)
       array_property pointerlocation , Matrix (1, 2, 0)
       double_property pointerwindow r , 0.0
       double_property recursionlimit GS , 256.0
@@ -3448,6 +3454,12 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // FIXME: Several properties have been deleted from Matlab.
+    //        We should either immediately remove them or figure out a way
+    //        to deprecate them for a release or two.
+    // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
+    // xdisplay, xvisual, xvisualmode
+
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (figure)
@@ -3463,6 +3475,7 @@ public:
       bool_property dockcontrols , "off"
       bool_property doublebuffer , "on"
       string_property filename , ""
+      bool_property graphicssmoothing , "on"
       bool_property integerhandle S , "on"
       bool_property inverthardcopy , "off"
       callback_property keypressfcn , Matrix ()
@@ -3470,6 +3483,8 @@ public:
       radio_property menubar , "none|{figure}"
       double_property mincolormap , 64
       string_property name , ""
+      // FIXME: Need RO property which returns current figure number.
+      // double_property number r ,
       radio_property nextplot , "new|{add}|replacechildren|replace"
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)
@@ -3488,6 +3503,9 @@ public:
       bool_property resize , "on"
       callback_property resizefcn , Matrix ()
       radio_property selectiontype , "{normal}|open|alt|extend"
+      // FIXME: This is the new name for the resizefcn from Matlab.
+      //        Need to try supporting both for some amount of time.
+      callback_property sizechangedfcn , Matrix ()
       radio_property toolbar , "none|{auto}|figure"
       radio_property units Su , "inches|centimeters|normalized|points|{pixels}|characters"
       callback_property windowbuttondownfcn , Matrix ()
@@ -3503,14 +3521,14 @@ public:
       string_property xvisual , ""
       radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
-      radio_property __mouse_mode__ hS , "{none}|pan|rotate|select|text|zoom"
-      any_property __pan_mode__ h , Matrix ()
-      any_property __rotate_mode__ h , Matrix ()
-      any_property __zoom_mode__ h , Matrix ()
       bool_property __enhanced__ h , "on"
       string_property __graphics_toolkit__ hs , gtk_manager::default_toolkit ()
       any_property __guidata__ h , Matrix ()
+      radio_property __mouse_mode__ hS , "{none}|pan|rotate|select|text|zoom"
+      any_property __pan_mode__ h , Matrix ()
       any_property __plot_stream__ h , Matrix ()
+      any_property __rotate_mode__ h , Matrix ()
+      any_property __zoom_mode__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -3866,6 +3884,12 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+
+    // FIXME: Several properties have been deleted from Matlab.
+    //        We should either immediately remove them or figure out a way
+    //        to deprecate them for a release or two.
+    // Obsolete properties: drawmode
+
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (axes)
@@ -3874,53 +3898,73 @@ public:
       radio_property alimmode , "{auto}|manual"
       color_property ambientlightcolor , color_values (1, 1, 1)
       bool_property box , "on"
+      radio_property boxstyle , "{back}|full"
       array_property cameraposition m , Matrix (1, 3, 0.0)
       radio_property camerapositionmode , "{auto}|manual"
       array_property cameratarget m , Matrix (1, 3, 0.0)
       radio_property cameratargetmode , "{auto}|manual"
       array_property cameraupvector m , Matrix (1, 3, 0.0)
       radio_property cameraupvectormode , "{auto}|manual"
-      double_property cameraviewangle m , 10.0
+      double_property cameraviewangle m , 6.6086
       radio_property cameraviewanglemode , "{auto}|manual"
       row_vector_property clim m , default_lim ()
       radio_property climmode al , "{auto}|manual"
+      radio_property clippingstyle , "{3dbox}|rectangle"
       color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
       array_property colororder , default_colororder ()
+      double_property colororderindex , 1.0
       array_property currentpoint , Matrix (2, 3, 0.0)
       array_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
       radio_property drawmode , "{normal}|fast"
-      radio_property fontangle u , "{normal}|italic|oblique"
+      radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
-      radio_property fontunits SU , "{points}|normalized|inches|centimeters|pixels"
-      radio_property fontweight u , "{normal}|light|demi|bold"
-      radio_property gridlinestyle , "-|--|{:}|-.|none"
+      radio_property fontunits SU , "{points}|inches|centimeters|normalized|pixels"
+      bool_property fontsmoothing , "on"
+      radio_property fontweight u , "{normal}|bold"
+      double_property gridalpha , 0.15
+      radio_property gridalphamode , "{auto}|manual"
+      color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
+      radio_property gridcolormode , "{auto}|manual"
+      radio_property gridlinestyle , "{:}|-|--|-.|none"
       // NOTE: interpreter is not a Matlab axis property, but it makes
       //       more sense to have it so that axis ticklabels can use it.
-      radio_property interpreter , "tex|{none}|latex"
+      radio_property interpreter , "{tex}|latex|{none}"
+      double_property labelfontsizemultiplier , 1.1
       radio_property layer u , "{bottom}|top"
       // FIXME: should be kind of string array.
       any_property linestyleorder S , "-"
+      double_property linestyleorderindex , 1.0
       double_property linewidth , 0.5
-      radio_property minorgridlinestyle , "-|--|{:}|-.|none"
-      double_property mousewheelzoom , 0.5
-      radio_property nextplot , "add|replacechildren|{replace}"
+      double_property minorgridalpha , 0.25
+      radio_property minorgridalphamode , "{auto}|manual"
+      color_property minorgridcolor , color_property (color_values (0.1, 0.1, 0.1), radio_values ("none"))
+      radio_property minorgridcolormode , "{auto}|manual"
+      radio_property minorgridlinestyle , "{:}|-|--|-.|none"
+      radio_property nextplot , "{replace}|add|replacechildren"
       array_property outerposition u , default_axes_outerposition ()
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
+      radio_property pickableparts , "{visible}|all|none"
       array_property position u , default_axes_position ()
       radio_property projection , "{orthographic}|perspective"
+      radio_property sortmethod , "{depth}|childorder"
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
+      // FIXME: Added recently to Matlab, should replace interpreter property.
+      radio_property ticklabelinterpreter , "{tex}|latex|{none}"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      double_property titlefontsizemultiplier , 1.1
+      radio_property titlefontweight , "{bold}|normal"
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|zero"
       color_property xcolor , color_values (0, 0, 0)
+      radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
       handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
@@ -3933,9 +3977,11 @@ public:
       // FIXME: should be kind of string array.
       any_property xticklabel S , ""
       radio_property xticklabelmode u , "{auto}|manual"
+      double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
       radio_property yaxislocation u , "{left}|right|zero"
       color_property ycolor , color_values (0, 0, 0)
+      radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
       handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
@@ -3947,8 +3993,10 @@ public:
       row_vector_property ytick mu , default_axes_tick ()
       any_property yticklabel S , ""
       radio_property yticklabelmode u , "{auto}|manual"
+      double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
       color_property zcolor , color_values (0, 0, 0)
+      radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"
       handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
@@ -3960,8 +4008,10 @@ public:
       row_vector_property ztick mu , default_axes_tick ()
       any_property zticklabel S , ""
       radio_property zticklabelmode u , "{auto}|manual"
+      double_property zticklabelrotation , 0.0
       radio_property ztickmode u , "{auto}|manual"
       // Octave-specific properties
+      double_property mousewheelzoom , 0.5
       bool_property __hold_all__ h , "off"
       // hidden properties for alignment of subplots
       radio_property autopos_tag h , "{none}|subplot"

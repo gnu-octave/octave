@@ -123,6 +123,7 @@ __prop__ is unused.";
       case "busyaction"
       case "buttondownfcn"
         s.valid = valid_fcn;
+
       case "children"
         s.doc = "Graphics handles of the __objname__'s children.";
         s.valid = "vector of graphics handles";
@@ -195,9 +196,9 @@ is always empty.";
 
       ## Specific properties
       case "callbackobject"
+        s.doc = "Graphics handle of the current object whose callback is executing.";
         s.valid = valid_handle;
 
-      case "commandwindowsize"
       case "currentfigure"
         s.doc = "Graphics handle of the current figure.";
         s.valid = valid_handle;
@@ -282,6 +283,7 @@ are visible in their parents' children list, regardless of the value of their \
       ## Specific properties
       case "alphamap"
         s.doc = sprintf (doc_notimpl, "Transparency");
+
       case "closerequestfcn"
         s.valid = valid_fcn;
 
@@ -325,9 +327,13 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
         s.doc = doc_unused;
 
       case "doublebuffer"
+
       case "filename"
-        s.doc = "The filename used when saving the plot figure";
+        s.doc = "The filename used when saving the plot figure.";
         s.valid = valid_string;
+
+      case "graphicssmoothing"
+        s.doc = doc_unused;
 
       case "integerhandle"
         s.doc = "Assign the next lowest unused integer as the Figure number.";
@@ -363,6 +369,10 @@ displayed to the right of any title determined by the @code{numbertitle} \
 property.";
         s.valid = valid_string;
 
+      ## FIXME: Uncomment when support added in graphics.in.h
+      #case "number"
+      #  s.doc = "Number of current figure (RO).";
+
       case "nextplot"
 
       case "numbertitle"
@@ -388,7 +398,7 @@ on the output page.";
       case "papersize"
         s.doc = "Vector @code{[width height]} defining the size of the \
 paper for printing.  Setting this property forces the @code{papertype} \
-property to be set to @qcode{\"<custom>\"}.";
+property to the value @qcode{\"<custom>\"}.";
         s.valid = valid_2elvec;
 
       case "papertype"
@@ -410,15 +420,23 @@ Setting __prop__ also changes @code{papersize} accordingly.";
 
       case "renderer"
       case "renderermode"
+
       case "resize"
+        s.doc = doc_unused;
+
       case "resizefcn"
         s.valid = valid_fcn;
 
       case "selectiontype"
-        s.doc = doc_unused;
+        ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
+
+      case "sizechangedfcn"
+        s.valid = valid_fcn;
 
       case "toolbar"
-        s.doc = doc_unused;
+        s.doc = "Control the display of the toolbar along the bottom of the \
+figure window.  When set to @qcode{\"auto\"}, the display is based on the \
+value of the @code{menubar} property.";
 
       case "units"
         s.doc = "The unit used to compute the @code{position} and \
@@ -452,6 +470,9 @@ released respectively.  When these callback functions are executed, the \
         s.valid = valid_fcn;
 
       case "windowstyle"
+        s.doc = doc_unused;
+
+      ## FIXME: Need to deprecate these for 4.2
       case "wvisual"
       case "wvisualmode"
       case "xdisplay"
@@ -471,11 +492,16 @@ released respectively.  When these callback functions are executed, the \
       case "activepositionproperty"
       case "alim"
         s.doc = sprintf (doc_notimpl, "Transparency");
+
       case "alimmode"
       case "ambientlightcolor"
         s.doc = sprintf (doc_notimpl, "Light");
+
       case "box"
         s.doc = "Control whether the axes has a surrounding box.";
+
+      case "boxstyle"
+        s.doc = doc_unused;
 
       case "cameraposition"
         s.valid = valid_3elvec;
@@ -500,6 +526,9 @@ __modemsg__.  @xref{XREFpcolor, , @w{pcolor function}}.";
 
       case "climmode"
 
+      case "clippingstyle"
+        s.doc = doc_unused;
+
       case "color"
         s.doc = "Color of the axes background.  @xref{Colors, , colorspec}.";
         s.valid = valid_color;
@@ -508,6 +537,9 @@ __modemsg__.  @xref{XREFpcolor, , @w{pcolor function}}.";
         s.doc = "RGB values used by plot function for automatic line \
 coloring.";
         s.valid = "N-by-3 RGB matrix";
+
+      case "colororderindex"
+        s.doc = doc_unused;
 
       case "currentpoint"
         s.doc = "Matrix @code{[xf, yf, zf; xb, yb, zb]} which holds the \
@@ -528,7 +560,6 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
         s.valid = valid_3elvec;
 
       case "dataaspectratiomode"
-      case "drawmode"
       case "fontangle"
       case "fontname"
         s.doc = "Name of the font used for axes annotations.";
@@ -542,18 +573,53 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
       case "fontunits"
         s.doc = "Unit used to interpret @code{fontsize} property.";
 
+      case "fontsmoothing"
+        s.doc = doc_unused;
+
       case "fontweight"
+
+      case "gridalpha"
+        s.doc = sprintf (doc_notimpl, "Transparency");
+
+      case "gridalphamode"
+        s.doc = doc_unused;
+
+      case "gridcolor"
+        s.doc = doc_unused;
+
+      case "gridcolormode"
+        s.doc = doc_unused;
 
       case "gridlinestyle"
       case "interpreter"
+
+      case "labelfontsizemultiplier"
+        s.doc = doc_unused;
 
       case "layer"
         s.doc = "Control whether the axes is drawn below child graphics \
 objects (ticks, labels, etc. covered by plotted objects) or above.";
 
       case "linestyleorder"
+        s.doc = doc_unused;
+
+      case "linestyleorderindex"
+        s.doc = doc_unused;
 
       case "linewidth"
+
+      case "minorgridalpha"
+        s.doc = sprintf (doc_notimpl, "Transparency");
+
+      case "minorgridalphamode"
+        s.doc = doc_unused;
+
+      case "minorgridcolor"
+        s.doc = doc_unused;
+
+      case "minorgridcolormode"
+        s.doc = doc_unused;
+
       case "minorgridlinestyle"
       case "mousewheelzoom"
         s.doc = "Fraction of axes limits to zoom for each wheel movement."; 
@@ -571,6 +637,9 @@ height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesposition, , @w{position property}}.";
         s.valid = valid_4elvec;
 
+      case "pickableparts"
+        s.doc = doc_unused;
+
       case "plotboxaspectratio"
       case "plotboxaspectratiomode"
       case "position"
@@ -585,6 +654,10 @@ height to be 0.4 and 0.5 respectively.  \
         s.valid = valid_4elvec;
 
       case "projection"
+        s.doc = doc_unused;
+
+      case "sortmethod"
+        s.doc = doc_unused;
 
       case "tickdir"
         s.doc = "Control whether axes tick marks project \"in\" to the plot \
@@ -602,6 +675,12 @@ length of the tickmarks relative to the longest visible axis.";
         s.doc = "Graphics handle of the title text object.";
         s.valid = valid_handle;
 
+      case "titlefontsizemultiplier"
+        s.doc = doc_unused;
+
+      case "titlefontweight"
+        s.doc = doc_unused;
+
       case "units"
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
@@ -612,6 +691,9 @@ the viewpoint for three-dimensional plots";
       case "xcolor"
         s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
+
+      case "xcolormode"
+        s.doc = doc_unused;
 
       case "xdir"
       case "xgrid"
@@ -641,11 +723,17 @@ for the x-axis.  __modemsg__.  @xref{XREFxlim, , @w{xlim function}}.";
         s.valid = valid_cellstring;
 
       case "xticklabelmode"
+      case "xticklabelrotation"
+        s.doc = doc_unused;
+
       case "xtickmode"
       case "yaxislocation"
       case "ycolor"
         s.doc = "Color of the y-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
+
+      case "ycolormode"
+        s.doc = doc_unused;
 
       case "ydir"
       case "ygrid"
@@ -675,10 +763,16 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = valid_cellstring;
 
       case "yticklabelmode"
+      case "yticklabelrotation"
+        s.doc = doc_unused;
+
       case "ytickmode"
       case "zcolor"
         s.doc = "Color of the z-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
+
+      case "zcolormode"
+        s.doc = doc_unused;
 
       case "zdir"
       case "zgrid"
@@ -708,6 +802,9 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_cellstring;
 
       case "zticklabelmode"
+      case "zticklabelrotation"
+        s.doc = doc_unused;
+
       case "ztickmode"
     endswitch
 
@@ -1335,4 +1432,5 @@ function str = print_options (val, default)
   elseif (! isempty (default))
     str = ["def. " default];
   endif
+
 endfunction

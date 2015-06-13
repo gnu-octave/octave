@@ -129,20 +129,32 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
 {
   m_container = new Container (win);
   win->setCentralWidget (m_container);
-
+  
   figure::properties& fp = properties<figure> ();
 
-  createFigureToolBarAndMenuBar ();
+  // Enable mouse tracking
+  m_container->setMouseTracking (true);
+  foreach (QWidget* w, m_container->findChildren<QWidget*> ())
+    { w->setMouseTracking (true); }
+  
+  // Status bar
+  m_statusBar = win->statusBar ();
+  m_statusBar->setVisible (true);
+  int boffset = m_statusBar->sizeHint ().height ();
+  
 
-  int offset = 0;
+  // Toolbar and menubar
+  createFigureToolBarAndMenuBar ();
+  int toffset = 0;
+
   if (fp.toolbar_is ("figure") ||
       (fp.toolbar_is ("auto") && fp.menubar_is ("figure") &&
        ! hasUiControlChildren (fp)))
-    offset += m_figureToolBar->sizeHint ().height ();
+    toffset += m_figureToolBar->sizeHint ().height ();
   else
     m_figureToolBar->hide ();
   if (fp.menubar_is ("figure") || hasUiMenuChildren (fp))
-    offset += m_menuBar->sizeHint ().height () + 1;
+    toffset += m_menuBar->sizeHint ().height () + 1;
   else
     m_menuBar->hide ();
 
@@ -150,7 +162,7 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
 
   //qDebug () << "Figure::Figure:" << m_innerRect;
-  win->setGeometry (m_innerRect.adjusted (0, -offset, 0, 0));
+  win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
   //qDebug () << "Figure::Figure(adjusted)" << m_innerRect.adjusted (0, -offset, 0, 0);
   win->setWindowTitle (Utils::fromStdString (fp.get_title ()));
 
@@ -411,17 +423,20 @@ Figure::update (int pId)
     case figure::properties::ID_POSITION:
         {
           m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
-          //qDebug () << "Figure::update(position):" << m_innerRect;
-          int offset = 0;
+          int toffset = 0;
+          int boffset = 0;
 
           foreach (QToolBar* tb, win->findChildren<QToolBar*> ())
             if (! tb->isHidden ())
-              offset += tb->sizeHint ().height ();
+              toffset += tb->sizeHint ().height ();
+
           if (! m_menuBar->isHidden ())
-            offset += m_menuBar->sizeHint ().height () + 1;
-          //qDebug () << "Figure::update(position)(adjusted):" << m_innerRect.adjusted (0, -offset, 0, 0);
-          win->setGeometry (m_innerRect.adjusted (0, -offset, 0, 0));
-          //qDebug () << "Figure::update(position): done";
+            toffset += m_menuBar->sizeHint ().height () + 1;
+          
+          if (! m_statusBar->isHidden ())
+            boffset += m_statusBar->sizeHint ().height () + 1;
+
+          win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
         }
       break;
 
@@ -471,9 +486,7 @@ Figure::update (int pId)
         {
           bool hasCallback = ! fp.get_windowbuttonmotionfcn ().is_empty ();
 
-          m_container->setMouseTracking (hasCallback);
-          foreach (QWidget* w, m_container->findChildren<QWidget*> ())
-            { w->setMouseTracking (hasCallback); }
+          m_container->canvas (m_handle)->enableCurrentPointUpdates (hasCallback);
         }
       break;
 
@@ -549,6 +562,15 @@ Figure::updateMenuBar (void)
 
   if (go.valid_object ())
     showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"));
+}
+
+void
+Figure::updateStatusBar (ColumnVector pt)
+{
+  if (! m_statusBar->isHidden ())
+    m_statusBar->showMessage (QString ("(%1, %2)")
+                              .arg (pt(0), 0, 'g', 5)
+                              .arg (pt(1), 0, 'g', 5));
 }
 
 QWidget*

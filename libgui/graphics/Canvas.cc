@@ -395,6 +395,63 @@ zoom_direction (const graphics_object figObj)
   return zm.contents ("Direction").string_value ();
 }
 
+void 
+Canvas::select_object (graphics_object obj, QMouseEvent* event, 
+                       graphics_object &currentObj, graphics_object &axesObj)
+{
+  QList<graphics_object> axesList;
+  Matrix children = obj.get_properties ().get_all_children ();
+  octave_idx_type num_children = children.numel ();
+
+  for (int i = 0; i < num_children; i++)
+    {
+      graphics_object childObj (gh_manager::get_object (children(i)));
+
+      if (childObj.isa ("axes"))
+        axesList.append (childObj);
+      else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel"))
+        {
+          Matrix bb = childObj.get_properties ().get_boundingbox (false);
+          QRectF r (bb(0), bb(1), bb(2), bb(3));
+
+          r.adjust (-5, -5, 5, 5);
+          if (r.contains (event->posF ()))
+            {
+              currentObj = childObj;
+              break;
+            }
+        }
+    }
+
+  if (! currentObj)
+    {
+      for (QList<graphics_object>::ConstIterator it = axesList.begin ();
+           it != axesList.end (); ++it)
+        {
+          graphics_object go = selectFromAxes (*it, event->pos ());
+
+          if (go)
+            {
+              currentObj = go;
+              axesObj = *it;
+            }
+          // FIXME: is this really necessary? the axes object should
+          //        have been selected through selectFromAxes anyway
+          else if (it->get_properties ().is_hittest ())
+            {
+              Matrix bb = it->get_properties ().get_boundingbox (true);
+              QRectF r (bb(0), bb(1), bb(2), bb(3));
+
+              if (r.contains (event->posF ()))
+                axesObj = *it;
+            }
+
+          if (axesObj && currentObj)
+            break;
+        }
+    }
+}
+
 void
 Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 {
@@ -452,7 +509,7 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
           break;
         }
     }
-  else if (m_mouseMode == NoMode)
+  else if (m_mouseMode == NoMode && m_updateCurrentPoint)
     {
       graphics_object obj = gh_manager::get_object (m_handle);
 
@@ -465,6 +522,23 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
                                      "windowbuttonmotionfcn");
         }
     }
+
+  // Update mouse coordinates in the figure window status bar 
+  graphics_object obj = gh_manager::get_object (m_handle);
+
+  if (obj.valid_object ())
+    {
+      graphics_object currentObj, axesObj;
+      select_object (obj, event, currentObj, axesObj);
+
+      if (axesObj.valid_object ())
+        {
+          Figure* fig = 
+            dynamic_cast<Figure*> (Backend::toolkitObject (obj));
+          axes::properties& ap = Utils::properties<axes> (axesObj);
+          fig->updateStatusBar (ap.pixel2coord (event->x (), event->y ()));
+        }
+    }    
 }
 
 void
@@ -512,66 +586,16 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
     {
       graphics_object figObj (obj.get_ancestor ("figure"));
       graphics_object currentObj, axesObj;
-      QList<graphics_object> axesList;
+      
+      select_object (obj, event, currentObj, axesObj);
 
-      Matrix children = obj.get_properties ().get_all_children ();
-      octave_idx_type num_children = children.numel ();
-
-      for (int i = 0; i < num_children; i++)
+      if (axesObj)
         {
-          graphics_object childObj (gh_manager::get_object (children(i)));
-
-          if (childObj.isa ("axes"))
-            axesList.append (childObj);
-          else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel"))
-            {
-              Matrix bb = childObj.get_properties ().get_boundingbox (false);
-              QRectF r (bb(0), bb(1), bb(2), bb(3));
-
-              r.adjust (-5, -5, 5, 5);
-              if (r.contains (event->posF ()))
-                {
-                  currentObj = childObj;
-                  break;
-                }
-            }
-        }
-
-      if (! currentObj)
-        {
-          for (QList<graphics_object>::ConstIterator it = axesList.begin ();
-               it != axesList.end (); ++it)
-            {
-              graphics_object go = selectFromAxes (*it, event->pos ());
-
-              if (go)
-                {
-                  currentObj = go;
-                  axesObj = *it;
-                }
-              // FIXME: is this really necessary? the axes object should
-              //        have been selected through selectFromAxes anyway
-              else if (it->get_properties ().is_hittest ())
-                {
-                  Matrix bb = it->get_properties ().get_boundingbox (true);
-                  QRectF r (bb(0), bb(1), bb(2), bb(3));
-
-                  if (r.contains (event->posF ()))
-                    axesObj = *it;
-                }
-
-              if (axesObj && currentObj)
-                break;
-            }
-
-          if (axesObj)
-            {
-              if (axesObj.get_properties ().handlevisibility_is ("on"))
-                Utils::properties<figure> (figObj)
-                  .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-              if (! currentObj)
-                currentObj = axesObj;
-            }
+          if (axesObj.get_properties ().handlevisibility_is ("on"))
+            Utils::properties<figure> (figObj)
+              .set_currentaxes (axesObj.get_handle ().as_octave_value ());
+          if (! currentObj)
+            currentObj = axesObj;
         }
 
       if (! currentObj)

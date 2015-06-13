@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define __QtHandles_Figure__ 1
 
 #include <QRect>
+#include <QStatusBar>
 
 #include "GenericEventNotify.h"
 #include "MenuContainer.h"
@@ -78,6 +79,7 @@ public:
 
   Container* innerContainer (void);
   QWidget* menu (void);
+  void updateStatusBar (ColumnVector pt);
 
   bool eventNotifyBefore (QObject* watched, QEvent* event);
   void eventNotifyAfter (QObject* watched, QEvent* event);
@@ -132,6 +134,7 @@ private:
   bool m_blockUpdates;
   QToolBar* m_figureToolBar;
   MenuBar* m_menuBar;
+  QStatusBar* m_statusBar;
   QRect m_innerRect;
   QRect m_outerRect;
   MouseModeActionGroup* m_mouseModeGroup;

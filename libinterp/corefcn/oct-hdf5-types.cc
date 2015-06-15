@@ -26,10 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "oct-hdf5.h"
-#include "oct-hdf5-id.h"
+#include "oct-hdf5-types.h"
 
 bool
-check_hdf5_id_type (bool warn)
+check_hdf5_types (bool warn)
 {
   static bool checked = false;
   static bool ok = false;
@@ -43,6 +43,13 @@ check_hdf5_id_type (bool warn)
         warning_with_id
           ("Octave:internal",
            "the size of octave_hdf5_id is smaller than the size of HDF5 hid_t");
+
+      ok = sizeof (octave_hdf5_err) >= sizeof (herr_t);
+
+      if (warn && ! ok)
+        warning_with_id
+          ("Octave:internal",
+           "the size of octave_hdf5_err is smaller than the size of HDF5 herr_t");
 #else
       warning_with_id
         ("Octave:internal",

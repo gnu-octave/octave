@@ -27,7 +27,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <hdf5.h>
 
+#include "oct-hdf5-types.h"
+
 #define HDF5_SAVE_TYPE H5T_NATIVE_UINT8
+
+#ifdef USE_64_BIT_IDX_T
+#define H5T_NATIVE_IDX H5T_NATIVE_INT64
+#else
+#define H5T_NATIVE_IDX H5T_NATIVE_INT
+#endif
 
 #endif
 

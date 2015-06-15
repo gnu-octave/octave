@@ -82,7 +82,7 @@ COREFCN_INC = \
   corefcn/oct-fstrm.h \
   corefcn/oct-handle.h \
   corefcn/oct-hdf5.h \
-  corefcn/oct-hdf5-id.h \
+  corefcn/oct-hdf5-types.h \
   corefcn/oct-hist.h \
   corefcn/oct-iostrm.h \
   corefcn/oct-lvalue.h \
@@ -216,7 +216,7 @@ COREFCN_SRC = \
   corefcn/mgorth.cc \
   corefcn/nproc.cc \
   corefcn/oct-fstrm.cc \
-  corefcn/oct-hdf5-id.cc \
+  corefcn/oct-hdf5-types.cc \
   corefcn/oct-hist.cc \
   corefcn/oct-iostrm.cc \
   corefcn/oct-lvalue.cc \

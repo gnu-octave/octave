@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_HDF5)
 
-#include "oct-hdf5.h"
+#include "oct-hdf5-types.h"
 
 // first, we need to define our own dummy stream subclass, since
 // HDF5 needs to do its own file i/o
@@ -38,7 +38,7 @@ class hdf5_fstreambase : virtual public std::ios
 public:
 
   // HDF5 uses an "id" to refer to an open file
-  hid_t file_id;
+  octave_hdf5_id file_id;
 
   // keep track of current item index in the file
   int current_item;
@@ -47,54 +47,11 @@ public:
 
   ~hdf5_fstreambase () { close (); }
 
-  hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0)
-    : file_id (-1), current_item (-1)
-  {
-    if (mode & std::ios::in)
-      file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
-    else if (mode & std::ios::out)
-      {
-        if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-          file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
-        else
-          file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT,
-                               H5P_DEFAULT);
-      }
-    if (file_id < 0)
-      std::ios::setstate (std::ios::badbit);
+  hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0);
 
-    current_item = 0;
-  }
+  void close (void);
 
-  void close ()
-  {
-    if (file_id >= 0)
-      {
-        if (H5Fclose (file_id) < 0)
-          std::ios::setstate (std::ios::badbit);
-        file_id = -1;
-      }
-  }
-
-  void open (const char *name, int mode, int)
-  {
-    clear ();
-
-    if (mode & std::ios::in)
-      file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
-    else if (mode & std::ios::out)
-      {
-        if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-          file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
-        else
-          file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT,
-                               H5P_DEFAULT);
-      }
-    if (file_id < 0)
-      std::ios::setstate (std::ios::badbit);
-
-    current_item = 0;
-  }
+  void open (const char *name, int mode, int);
 };
 
 // input and output streams, subclassing istream and ostream
@@ -154,29 +111,29 @@ hdf5_callback_data
 };
 
 #if HAVE_HDF5_INT2FLOAT_CONVERSIONS
-extern OCTINTERP_API hid_t
+extern OCTINTERP_API octave_hdf5_id
 save_type_to_hdf5 (save_type st)
 #endif
 
-extern OCTINTERP_API hid_t
-hdf5_make_complex_type (hid_t num_type);
+extern OCTINTERP_API octave_hdf5_id
+hdf5_make_complex_type (octave_hdf5_id num_type);
 
 extern OCTINTERP_API bool
-hdf5_types_compatible (hid_t t1, hid_t t2);
+hdf5_types_compatible (octave_hdf5_id t1, octave_hdf5_id t2);
 
-extern OCTINTERP_API herr_t
-hdf5_read_next_data (hid_t group_id, const char *name, void *dv);
+extern OCTINTERP_API octave_hdf5_err
+hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv);
 
 extern OCTINTERP_API bool
-add_hdf5_data (hid_t loc_id, const octave_value& tc,
+add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
                bool mark_as_global, bool save_as_floats);
 
 extern OCTINTERP_API int
-save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d);
+save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d);
 
 extern OCTINTERP_API int
-load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d);
+load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d);
 
 extern OCTINTERP_API std::string
 read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
@@ -189,25 +146,19 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
                 bool mark_as_global, bool save_as_floats);
 
 extern OCTINTERP_API bool
-hdf5_check_attr (hid_t loc_id, const char *attr_name);
+hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name);
 
 extern OCTINTERP_API bool
-hdf5_get_scalar_attr (hid_t loc_id, hid_t type_id, const char *attr_name,
-                      void *buf);
-
-extern OCTINTERP_API herr_t
-hdf5_add_attr (hid_t loc_id, const char *attr_name);
-
-
-extern OCTINTERP_API herr_t
-hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
+hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
                       const char *attr_name, void *buf);
 
-#ifdef USE_64_BIT_IDX_T
-#define H5T_NATIVE_IDX H5T_NATIVE_INT64
-#else
-#define H5T_NATIVE_IDX H5T_NATIVE_INT
-#endif
+extern OCTINTERP_API octave_hdf5_err
+hdf5_add_attr (octave_hdf5_id loc_id, const char *attr_name);
+
+
+extern OCTINTERP_API octave_hdf5_err
+hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
+                      const char *attr_name, void *buf);
 
 #endif
 

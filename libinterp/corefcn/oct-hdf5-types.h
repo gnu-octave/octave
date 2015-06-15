@@ -20,11 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_hdf5_id_h)
-#define octave_oct_hdf5_id_h 1
+#if !defined (octave_oct_hdf5_types_h)
+#define octave_oct_hdf5_types_h 1
 
 typedef int octave_hdf5_id;
+typedef int octave_hdf5_err;
 
-extern bool check_hdf5_id_type (bool warn = true);
+extern bool check_hdf5_types (bool warn = true);
 
 #endif

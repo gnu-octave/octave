@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-hdf5-id.h"
+#include "oct-hdf5-types.h"
 
 class Cell;
 class mxArray;

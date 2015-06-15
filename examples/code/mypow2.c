@@ -8,8 +8,8 @@ mexFunction (int nlhs, mxArray* plhs[],
   mwIndex i;
   double *vri, *vro;
 
-  if (nrhs != 1 || ! mxIsNumeric (prhs[0]))
-    mexErrMsgTxt ("ARG1 must be a matrix");
+  if (nrhs != 1 || ! mxIsDouble (prhs[0]))
+    mexErrMsgTxt ("ARG1 must be a double matrix");
 
   n = mxGetNumberOfElements (prhs[0]);
   plhs[0] = mxCreateNumericArray (mxGetNumberOfDimensions (prhs[0]),

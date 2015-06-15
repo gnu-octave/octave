@@ -10,7 +10,7 @@ mexFunction (int nlhs, mxArray* plhs[],
   const char *keys[] = { "this", "that" };
 
   if (nrhs != 1 || ! mxIsStruct (prhs[0]))
-    mexErrMsgTxt ("expects struct");
+    mexErrMsgTxt ("ARG1 must be a struct");
 
   for (i = 0; i < mxGetNumberOfFields (prhs[0]); i++)
     for (j = 0; j < mxGetNumberOfElements (prhs[0]); j++)

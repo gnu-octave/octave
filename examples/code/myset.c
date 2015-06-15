@@ -6,29 +6,32 @@ mexFunction (int nlhs, mxArray* plhs[],
 {
   char *str;
   mxArray *v;
+  int found = 0;
 
-  if (nrhs != 2 || ! mxIsString (prhs[0]))
-    mexErrMsgTxt ("expects symbol name and value");
+  if (nrhs != 2 || ! mxIsChar (prhs[0]))
+    mexErrMsgTxt ("Arguments must be a symbol name and a value");
 
   str = mxArrayToString (prhs[0]);
 
+  // FIXME: If variable does not exist, error is reported which prevents
+  //        subsequent mexGetArray function from working.
   v = mexGetArray (str, "global");
-
   if (v)
     {
       mexPrintf ("%s is a global variable with the following value:\n", str);
       mexCallMATLAB (0, NULL, 1, &v, "disp");
+      found = 1;
     }
 
-  v = mexGetArray (str, "caller");
+  if (! found)
+    v = mexGetArray (str, "caller");
 
-  if (v)
+  if (! found && v)
     {
       mexPrintf ("%s is a caller variable with the following value:\n", str);
       mexCallMATLAB (0, NULL, 1, &v, "disp");
     }
 
   // WARNING!! Can't do this in MATLAB!  Must copy variable first.
-  mxSetName (prhs[1], str);
-  mexPutArray (prhs[1], "caller");
+  mexPutVariable ("caller", str, prhs[1]);
 }

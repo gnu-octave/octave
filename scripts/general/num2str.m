@@ -116,10 +116,14 @@ function retval = num2str (x, arg)
       endif
     endif
     fmt = do_string_escapes (fmt);  # required now that '\n' is interpreted.
-    fmt = [deblank(repmat (fmt, 1, columns (x))), "\n"];
     nd = ndims (x);
-    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
-    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
+    nc = columns (x);
+    x  = permute (x, [2, 1, 3:nd]);
+    if (! (sum (fmt == "%") > 1 || any (strcmp (fmt, {"%s", "%c"}))))
+      fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
+    endif
+    tmp    = sprintf (fmt, x);
+    retval = strtrim (char (ostrsplit (tmp, "\n", true)));
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
@@ -207,6 +211,9 @@ endfunction
 
 ## Test for bug #44864, extra rows generated from newlines in format
 %!assert (rows (num2str (magic (3), '%3d %3d %3d\n')), 3)
+
+## Test for bug #45174
+%!assert (num2str ([65 66 67], '%s'), "ABC")
 
 %!error num2str ()
 %!error num2str (1, 2, 3)

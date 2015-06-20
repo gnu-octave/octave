@@ -7087,6 +7087,14 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         }
       lims = tmp_lims;
     }
+  else
+    {
+      // adjust min and max tics to be within limits
+      if (i1*tick_sep < lo)
+        i1++;
+      if (i2*tick_sep > hi)
+        i2--;
+    }
 
   Matrix tmp_ticks (1, i2-i1+1);
   for (int i = 0; i <= i2-i1; i++)
@@ -7118,6 +7126,19 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     }
   mticks = tmp_mticks;
 }
+
+/*
+%!test  # Bug #45356
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (1:10);
+%!   xlim ([4.75, 8.5]);
+%!   tics = get (gca, "xtick");
+%!   assert (tics, [5 6 7 8]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
 
 void
 axes::properties::calc_ticklabels (const array_property& ticks,

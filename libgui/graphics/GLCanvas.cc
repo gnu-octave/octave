@@ -46,6 +46,7 @@ GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& gh)
 #endif
 {
   setFocusPolicy (Qt::ClickFocus);
+  setFocus();
 }
 
 GLCanvas::~GLCanvas (void)

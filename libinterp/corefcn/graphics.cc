@@ -144,12 +144,10 @@ jet_colormap (void)
 
   for (octave_idx_type i = 0; i < 64; i++)
     {
-      // This is the jet colormap.  It would be nice to be able
-      // to feval the jet function but since there is a static
-      // property object that includes a colormap_property
-      // object, we need to initialize this before main is even
-      // called, so calling an interpreted function is not
-      // possible.
+      // This is the jet colormap.  It would be nice to be able to feval the
+      // jet function but since there is a static property object that includes
+      // a colormap_property object, we need to initialize this before main is
+      // even called, so calling an interpreted function is not possible.
 
       double x = i*delta;
 
@@ -187,8 +185,10 @@ default_screendepth (void)
 static Matrix
 default_screensize (void)
 {
-  Matrix retval (1, 4, 1.0);
+  Matrix retval (1, 4);
 
+  retval(0) = 1.0;
+  retval(1) = 1.0;
   retval(2) = display_info::width ();
   retval(3) = display_info::height ();
 
@@ -231,7 +231,7 @@ default_colororder (void)
 static Matrix
 default_lim (bool logscale = false)
 {
-  Matrix m (1, 2, 0);
+  Matrix m (1, 2);
 
   if (logscale)
     {
@@ -239,7 +239,10 @@ default_lim (bool logscale = false)
       m(1) = 1.0;
     }
   else
-    m(1) = 1;
+    {
+      m(0) = 0.0;
+      m(1) = 1.0;
+    }
 
   return m;
 }
@@ -258,7 +261,8 @@ default_data (void)
 static Matrix
 default_image_cdata (void)
 {
-  Matrix m (64, 64, 0.0);
+  Matrix m (64, 64);
+
   int i = 0;
   for (int col = 0; col < 64; col++)
     for (int row = 0; row < 64; row++)
@@ -273,7 +277,8 @@ default_image_cdata (void)
 static Matrix
 default_surface_xdata (void)
 {
-  Matrix m (3, 3, 0.0);
+  Matrix m (3, 3);
+
   for (int col = 0; col < 3; col++)
     for (int row = 0; row < 3; row++)
       m(row,col) = col+1;
@@ -284,7 +289,8 @@ default_surface_xdata (void)
 static Matrix
 default_surface_ydata (void)
 {
-  Matrix m (3, 3, 0.0);
+  Matrix m (3, 3);
+
   for (int row = 0; row < 3; row++)
     for (int col = 0; col < 3; col++)
       m(row,col) = row+1;
@@ -296,8 +302,10 @@ static Matrix
 default_surface_zdata (void)
 {
   Matrix m (3, 3, 0.0);
+
   for (int row = 0; row < 3; row++)
     m(row,row) = 1.0;
+
   return m;
 }
 
@@ -310,19 +318,24 @@ default_surface_cdata (void)
 static Matrix
 default_patch_faces (void)
 {
-  Matrix m (1, 3, 1.0);
+  Matrix m (1, 3);
+
+  m(0) = 1.0;
   m(1) = 2.0;
   m(2) = 3.0;
+
   return m;
 }
 
 static Matrix
 default_patch_vertices (void)
 {
-  Matrix m (3, 2, 0);
+  Matrix m (3, 2, 0.0);
+
   m(1) = 1.0;
   m(3) = 1.0;
   m(4) = 1.0;
+
   return m;
 }
 
@@ -330,7 +343,9 @@ static Matrix
 default_patch_xdata (void)
 {
   Matrix m (3, 1, 0.0);
+
   m(1) = 1.0;
+
   return m;
 }
 
@@ -338,94 +353,116 @@ static Matrix
 default_patch_ydata (void)
 {
   Matrix m (3, 1, 1.0);
+
   m(2) = 0.0;
+
   return m;
 }
 
 static Matrix
 default_axes_position (void)
 {
-  Matrix m (1, 4, 0.0);
+  Matrix m (1, 4);
+
   m(0) = 0.13;
   m(1) = 0.11;
   m(2) = 0.775;
   m(3) = 0.815;
+
   return m;
 }
 
 static Matrix
 default_axes_outerposition (void)
 {
-  Matrix m (1, 4, 0.0);
-  m(2) = m(3) = 1.0;
+  Matrix m (1, 4);
+
+  m(0) = 0.0;
+  m(1) = 0.0;
+  m(2) = 1.0;
+  m(3) = 1.0;
+
   return m;
 }
 
 static Matrix
 default_axes_view (void)
 {
-  Matrix m (1, 2, 0.0);
+  Matrix m (1, 2);
+
+  m(0) = 0.0;
   m(1) = 90.0;
+
   return m;
 }
 
 static Matrix
 default_axes_tick (void)
 {
-  Matrix m (1, 6, 0.0);
+  Matrix m (1, 6);
+
   m(0) = 0.0;
   m(1) = 0.2;
   m(2) = 0.4;
   m(3) = 0.6;
   m(4) = 0.8;
   m(5) = 1.0;
+
   return m;
 }
 
 static Matrix
 default_axes_ticklength (void)
 {
-  Matrix m (1, 2, 0.0);
+  Matrix m (1, 2);
+
   m(0) = 0.01;
   m(1) = 0.025;
+
   return m;
 }
 
 static Matrix
 default_figure_position (void)
 {
-  Matrix m (1, 4, 0.0);
+  Matrix m (1, 4);
+
   m(0) = 300;
   m(1) = 200;
   m(2) = 560;
   m(3) = 420;
+
   return m;
 }
 
 static Matrix
 default_figure_papersize (void)
 {
-  Matrix m (1, 2, 0.0);
+  Matrix m (1, 2);
+
   m(0) = 8.5;
   m(1) = 11.0;
+
   return m;
 }
 
 static Matrix
 default_figure_paperposition (void)
 {
-  Matrix m (1, 4, 0.0);
+  Matrix m (1, 4);
+
   m(0) = 0.25;
   m(1) = 2.50;
   m(2) = 8.00;
   m(3) = 6.00;
+
   return m;
 }
 
 static Matrix
 default_control_position (void)
 {
-  Matrix retval (1, 4, 0.0);
+  Matrix retval (1, 4);
 
   retval(0) = 0;
   retval(1) = 0;
@@ -438,7 +475,7 @@ default_control_position (void)
 static Matrix
 default_control_sliderstep (void)
 {
-  Matrix retval (1, 2, 0.0);
+  Matrix retval (1, 2);
 
   retval(0) = 0.01;
   retval(1) = 0.1;
@@ -449,7 +486,7 @@ default_control_sliderstep (void)
 static Matrix
 default_panel_position (void)
 {
-  Matrix retval (1, 4, 0.0);
+  Matrix retval (1, 4);
 
   retval(0) = 0;
   retval(1) = 0;
@@ -548,7 +585,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
       double f = 0.0;
 
       // FIXME: this assumes the system font is Helvetica 10pt
-      //          (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
+      //        (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
       f = 12.0 * res / 74.951;
 
       if (f > 0)
@@ -1047,7 +1084,6 @@ base_property::set (const octave_value& v, bool do_run, bool do_notify_toolkit)
 {
   if (do_set (v))
     {
-
       // Notify graphics toolkit.
       if (id >= 0 && do_notify_toolkit)
         {
@@ -1559,7 +1595,6 @@ children_property::do_delete_children (bool clear)
 
       if (go.valid_object ())
         gh_manager::free (*p);
-
     }
 
   if (clear)
@@ -1569,30 +1604,28 @@ children_property::do_delete_children (bool clear)
 bool
 callback_property::validate (const octave_value& v) const
 {
-  // case 1: function handle
-  // case 2: cell array with first element being a function handle
+  // case 1: empty matrix
+  // case 2: function handle
   // case 3: string corresponding to known function name
-  // case 4: evaluatable string
-  // case 5: empty matrix
+  // case 4: string that can be eval()'ed
+  // case 5: cell array with first element being a function handle
 
-  if (v.is_function_handle ())
+  if (v.is_empty ())
+    return true;
+  else if (v.is_function_handle ())
     return true;
   else if (v.is_string ())
     // complete validation will be done at execution-time
     return true;
-  else if (v.is_cell () && v.length () > 0
-           && (v.rows () == 1 || v.columns () == 1)
+  else if (v.is_cell () && (v.rows () == 1 || v.columns () == 1)
            && v.cell_value ()(0).is_function_handle ())
-    return true;
-  else if (v.is_empty ())
     return true;
 
   return false;
 }
 
-// If TRUE, we are executing any callback function, or the functions it
-// calls.  Used to determine handle visibility inside callback
-// functions.
+// If TRUE, we are executing any callback function, or the functions it calls.
+// Used to determine handle visibility inside callback functions.
 static bool executing_callback = false;
 
 void
@@ -1619,8 +1652,8 @@ callback_property::execute (const octave_value& data) const
     }
 }
 
-// Used to cache dummy graphics objects from which dynamic
-// properties can be cloned.
+// Used to cache dummy graphics objects from which dynamic properties can be
+// cloned.
 static std::map<caseless_str, graphics_object> dprop_obj_map;
 
 property
@@ -1631,27 +1664,29 @@ property::create (const std::string& name, const graphics_handle& h,
 
   if (type.compare ("string"))
     {
-      std::string val = (args.length () > 0 ? args(0).string_value () : "");
+      std::string sv = (args.length () > 0 ? args(0).string_value () : "");
 
       if (! error_state)
-        retval = property (new string_property (name, h, val));
+        retval = property (new string_property (name, h, sv));
     }
   else if (type.compare ("any"))
     {
-      octave_value val = args.length () > 0 ? args(0)
-                                            : octave_value (Matrix ());
+      octave_value ov = args.length () > 0 ? args(0)
+                                           : octave_value (Matrix ());
 
-      retval = property (new any_property (name, h, val));
+      retval = property (new any_property (name, h, ov));
     }
   else if (type.compare ("radio"))
     {
-      if (args.length () > 0)
+      if (args.length () < 1)
+        error ("addproperty: missing possible values for radio property");
+      else
         {
-          std::string vals = args(0).string_value ();
+          std::string sv = args(0).string_value ();
 
           if (! error_state)
             {
-              retval = property (new radio_property (name, h, vals));
+              retval = property (new radio_property (name, h, sv));
 
               if (args.length () > 1)
                 retval.set (args(1));
@@ -1659,23 +1694,21 @@ property::create (const std::string& name, const graphics_handle& h,
           else
             error ("addproperty: invalid argument for radio property, expected a string value");
         }
-      else
-        error ("addproperty: missing possible values for radio property");
     }
   else if (type.compare ("double"))
     {
-      double d = (args.length () > 0 ? args(0).double_value () : 0);
+      double dv = (args.length () > 0 ? args(0).double_value () : 0.0);
 
       if (! error_state)
-        retval = property (new double_property (name, h, d));
+        retval = property (new double_property (name, h, dv));
     }
   else if (type.compare ("handle"))
     {
-      double hh = (args.length () > 0 ? args(0).double_value () : octave_NaN);
+      double hv = (args.length () > 0 ? args(0).double_value () : octave_NaN);
 
       if (! error_state)
         {
-          graphics_handle gh (hh);
+          graphics_handle gh (hv);
 
           retval = property (new handle_property (name, h, gh));
         }
@@ -1694,7 +1727,6 @@ property::create (const std::string& name, const graphics_handle& h,
       if (args.length () > 0)
         {
           retval.set (args(0));
-
           // FIXME: additional argument could define constraints,
           //        but is this really useful?
         }
@@ -1963,6 +1995,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
           bool has_property = false;
           if (pfx == "axes")
             has_property = axes::properties::has_core_property (pname);
+          else if (pfx == "figure")
+            has_property = figure::properties::has_core_property (pname);
           else if (pfx == "line")
             has_property = line::properties::has_core_property (pname);
           else if (pfx == "text")
@@ -1971,8 +2005,6 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = image::properties::has_core_property (pname);
           else if (pfx == "patch")
             has_property = patch::properties::has_core_property (pname);
-          else if (pfx == "figure")
-            has_property = figure::properties::has_core_property (pname);
           else if (pfx == "surface")
             has_property = surface::properties::has_core_property (pname);
           else if (pfx == "hggroup")
@@ -1995,9 +2027,9 @@ property_list::set (const caseless_str& name, const octave_value& val)
               bool remove = false;
               if (val.is_string ())
                 {
-                  std::string tval = val.string_value ();
+                  std::string sval = val.string_value ();
 
-                  remove = (tval.compare ("remove") == 0);
+                  remove = (sval.compare ("remove") == 0);
                 }
 
               pval_map_type& pval_map = plist_map[pfx];
@@ -2143,17 +2175,19 @@ graphics_object::set (const octave_value_list& args)
 
   if (nargin == 0)
     error ("graphics_object::set: Nothing to set");
-  else if (nargin % 2 == 0)
+  else if (nargin % 2 != 0)
+    error ("set: invalid number of arguments");
+  else
     {
       for (int i = 0; i < nargin; i += 2)
         {
-          caseless_str name = args(i).string_value ();
+          caseless_str pname = args(i).string_value ();
 
           if (! error_state)
             {
               octave_value val = args(i+1);
 
-              set_value_or_default (name, val);
+              set_value_or_default (pname, val);
 
               if (error_state)
                 break;
@@ -2162,8 +2196,6 @@ graphics_object::set (const octave_value_list& args)
             error ("set: expecting argument %d to be a property name", i);
         }
     }
-  else
-    error ("set: invalid number of arguments");
 }
 
 /*
@@ -2181,23 +2213,23 @@ graphics_object::set (const octave_value_list& args)
 
 // Set properties given in two cell arrays containing names and values.
 void
-graphics_object::set (const Array<std::string>& names,
+graphics_object::set (const Array<std::string>& pnames,
                       const Cell& values, octave_idx_type row)
 {
-  if (names.numel () != values.columns ())
+  if (pnames.numel () != values.columns ())
     {
       error ("set: number of names must match number of value columns (%d != %d)",
-             names.numel (), values.columns ());
+             pnames.numel (), values.columns ());
     }
 
-  octave_idx_type k = names.columns ();
+  octave_idx_type k = pnames.columns ();
 
   for (octave_idx_type column = 0; column < k; column++)
     {
-      caseless_str name = names(column);
+      caseless_str pname = pnames(column);
       octave_value val  = values(row, column);
 
-      set_value_or_default (name, val);
+      set_value_or_default (pname, val);
 
       if (error_state)
         break;
@@ -2256,11 +2288,13 @@ graphics_object::set (const octave_map& m)
 {
   for (octave_idx_type p = 0; p < m.nfields (); p++)
     {
-      caseless_str name  = m.keys ()[p];
+      // FIXME: Would it be better to extract all the keys at once rather than
+      //        repeatedly call keys() inside a for loop? 
+      caseless_str pname = m.keys ()[p];
 
-      octave_value val = octave_value (m.contents (name).elem (m.numel () - 1));
+      octave_value val = octave_value (m.contents (pname).elem (m.numel () - 1));
 
-      set_value_or_default (name, val);
+      set_value_or_default (pname, val);
 
       if (error_state)
         break;
@@ -2351,46 +2385,46 @@ graphics_object::set (const octave_map& m)
 // Set a property to a value or to its (factory) default value.
 
 void
-graphics_object::set_value_or_default (const caseless_str& name,
+graphics_object::set_value_or_default (const caseless_str& pname,
                                        const octave_value& val)
 {
   if (val.is_string ())
     {
-      std::string tval = val.string_value ();
+      std::string sval = val.string_value ();
 
       octave_value default_val;
 
-      if (tval.compare ("default") == 0)
+      if (sval.compare ("default") == 0)
         {
-          default_val = get_default (name);
+          default_val = get_default (pname);
 
           if (error_state)
             return;
 
-          rep->set (name, default_val);
+          rep->set (pname, default_val);
         }
-      else if (tval.compare ("factory") == 0)
+      else if (sval.compare ("factory") == 0)
         {
-          default_val = get_factory_default (name);
+          default_val = get_factory_default (pname);
 
           if (error_state)
             return;
 
-          rep->set (name, default_val);
+          rep->set (pname, default_val);
         }
       else
         {
           // Matlab specifically uses "\default" to escape string setting
-          if (tval.compare ("\\default") == 0)
-            rep->set (name, "default");
-          else if (tval.compare ("\\factory") == 0)
-            rep->set (name, "factory");
+          if (sval.compare ("\\default") == 0)
+            rep->set (pname, "default");
+          else if (sval.compare ("\\factory") == 0)
+            rep->set (pname, "factory");
           else
-            rep->set (name, val);
+            rep->set (pname, val);
         }
     }
   else
-    rep->set (name, val);
+    rep->set (pname, val);
 }
 
 /*
@@ -2426,8 +2460,8 @@ gh_manager::do_get_handle (bool integer_figure_handle)
 
   if (integer_figure_handle)
     {
-      // Figure handles are positive integers corresponding to the
-      // figure number.
+      // Figure handles are positive integers corresponding
+      // to the figure number.
 
       // We always want the lowest unused figure number.
 
@@ -2439,9 +2473,8 @@ gh_manager::do_get_handle (bool integer_figure_handle)
   else
     {
       // Other graphics handles are negative integers plus some random
-      // fractional part.  To avoid running out of integers, we
-      // recycle the integer part but tack on a new random part each
-      // time.
+      // fractional part.  To avoid running out of integers, we recycle the
+      // integer part but tack on a new random part each time.
 
       free_list_iterator p = handle_free_list.begin ();
 
@@ -2485,8 +2518,8 @@ gh_manager::do_free (const graphics_handle& h)
               // Notify graphics toolkit.
               p->second.finalize ();
 
-              // Note: this will be valid only for first explicitly
-              // deleted object.  All its children will then have an
+              // Note: this will be valid only for first explicitly deleted
+              // object.  All its children will then have an
               // unknown graphics toolkit.
 
               // Graphics handles for non-figure objects are negative
@@ -2543,11 +2576,11 @@ gh_manager::do_renumber_figure (const graphics_handle& old_gh,
 gh_manager *gh_manager::instance = 0;
 
 static void
-xset (const graphics_handle& h, const caseless_str& name,
+xset (const graphics_handle& h, const caseless_str& pname,
       const octave_value& val)
 {
-  graphics_object obj = gh_manager::get_object (h);
-  obj.set (name, val);
+  graphics_object go = gh_manager::get_object (h);
+  go.set (pname, val);
 }
 
 static void
@@ -2555,53 +2588,53 @@ xset (const graphics_handle& h, const octave_value_list& args)
 {
   if (args.length () > 0)
     {
-      graphics_object obj = gh_manager::get_object (h);
-      obj.set (args);
+      graphics_object go = gh_manager::get_object (h);
+      go.set (args);
     }
 }
 
 static octave_value
-xget (const graphics_handle& h, const caseless_str& name)
+xget (const graphics_handle& h, const caseless_str& pname)
 {
-  graphics_object obj = gh_manager::get_object (h);
-  return obj.get (name);
+  graphics_object go = gh_manager::get_object (h);
+  return go.get (pname);
 }
 
 static graphics_handle
 reparent (const octave_value& ov, const std::string& who,
-          const std::string& property, const graphics_handle& new_parent,
+          const std::string& pname, const graphics_handle& new_parent,
           bool adopt = true)
 {
   graphics_handle h = octave_NaN;
 
-  double val = ov.double_value ();
+  double hv = ov.double_value ();
 
   if (! error_state)
     {
-      h = gh_manager::lookup (val);
+      h = gh_manager::lookup (hv);
 
       if (h.ok ())
         {
-          graphics_object obj = gh_manager::get_object (h);
+          graphics_object go = gh_manager::get_object (h);
 
-          graphics_handle parent_h = obj.get_parent ();
+          graphics_handle parent_h = go.get_parent ();
 
-          graphics_object parent_obj = gh_manager::get_object (parent_h);
+          graphics_object parent_go = gh_manager::get_object (parent_h);
 
-          parent_obj.remove_child (h);
+          parent_go.remove_child (h);
 
           if (adopt)
-            obj.set ("parent", new_parent.value ());
+            go.set ("parent", new_parent.value ());
           else
-            obj.reparent (new_parent);
+            go.reparent (new_parent);
         }
       else
         error ("%s: invalid graphics handle (= %g) for %s",
-               who.c_str (), val, property.c_str ());
+               who.c_str (), hv, pname.c_str ());
     }
   else
     error ("%s: expecting %s to be a graphics handle",
-           who.c_str (), property.c_str ());
+           who.c_str (), pname.c_str ());
 
   return h;
 }
@@ -2629,27 +2662,24 @@ delete_graphics_object (const graphics_handle& h)
 {
   if (h.ok ())
     {
-      graphics_object obj = gh_manager::get_object (h);
+      graphics_object go = gh_manager::get_object (h);
 
       // Don't do recursive deleting, due to callbacks
-      if (! obj.get_properties ().is_beingdeleted ())
+      if (! go.get_properties ().is_beingdeleted ())
         {
-          graphics_handle parent_h = obj.get_parent ();
+          graphics_handle parent_h = go.get_parent ();
 
-          graphics_object parent_obj =
-            gh_manager::get_object (parent_h);
+          graphics_object parent_go = gh_manager::get_object (parent_h);
 
-          // NOTE: free the handle before removing it from its
-          //       parent's children, such that the object's
-          //       state is correct when the deletefcn callback
-          //       is executed
+          // NOTE: free the handle before removing it from its parent's
+          //       children, such that the object's state is correct when the
+          //       deletefcn callback is executed
 
           gh_manager::free (h);
 
-          // A callback function might have already deleted
-          // the parent
-          if (parent_obj.valid_object ())
-            parent_obj.remove_child (h);
+          // A callback function might have already deleted the parent
+          if (parent_go.valid_object ())
+            parent_go.remove_child (h);
 
           Vdrawnow_requested = true;
         }
@@ -2670,23 +2700,23 @@ delete_graphics_objects (const NDArray vals)
 }
 
 static void
-close_figure (const graphics_handle& handle)
+close_figure (const graphics_handle& h)
 {
-  octave_value closerequestfcn = xget (handle, "closerequestfcn");
+  octave_value closerequestfcn = xget (h, "closerequestfcn");
 
-  OCTAVE_SAFE_CALL (gh_manager::execute_callback, (handle, closerequestfcn));
+  OCTAVE_SAFE_CALL (gh_manager::execute_callback, (h, closerequestfcn));
 }
 
 static void
-force_close_figure (const graphics_handle& handle)
+force_close_figure (const graphics_handle& h)
 {
-  // Remove the deletefcn and closerequestfcn callbacks and delete the
-  // object directly.
+  // Remove the deletefcn and closerequestfcn callbacks
+  // and delete the object directly.
 
-  xset (handle, "deletefcn", Matrix ());
-  xset (handle, "closerequestfcn", Matrix ());
+  xset (h, "deletefcn", Matrix ());
+  xset (h, "closerequestfcn", Matrix ());
 
-  delete_graphics_object (handle);
+  delete_graphics_object (h);
 }
 
 void
@@ -2733,10 +2763,10 @@ gh_manager::do_close_all_figures (void)
 }
 
 static void
-adopt (const graphics_handle& p, const graphics_handle& h)
+adopt (const graphics_handle& parent_h, const graphics_handle& h)
 {
-  graphics_object parent_obj = gh_manager::get_object (p);
-  parent_obj.adopt (h);
+  graphics_object parent_go = gh_manager::get_object (parent_h);
+  parent_go.adopt (h);
 }
 
 static bool
@@ -2769,7 +2799,7 @@ is_handle (const octave_value& val)
           boolNDArray result (handles.dims ());
 
           for (octave_idx_type i = 0; i < handles.numel (); i++)
-            result.xelem (i) = is_handle (handles (i));
+            result.xelem (i) = is_handle (handles(i));
 
           retval = result;
         }
@@ -2781,16 +2811,16 @@ is_handle (const octave_value& val)
 static bool
 is_figure (double val)
 {
-  graphics_object obj = gh_manager::get_object (val);
+  graphics_object go = gh_manager::get_object (val);
 
-  return obj && obj.isa ("figure");
+  return go && go.isa ("figure");
 }
 
 static void
 xcreatefcn (const graphics_handle& h)
 {
-  graphics_object obj = gh_manager::get_object (h);
-  obj.get_properties ().execute_createfcn  ();
+  graphics_object go = gh_manager::get_object (h);
+  go.get_properties ().execute_createfcn  ();
 }
 
 static void
@@ -2829,22 +2859,21 @@ base_graphics_toolkit::finalize (const graphics_handle& h)
 }
 
 static void
-xreset_default_properties (graphics_handle gh,
+xreset_default_properties (graphics_handle h,
                            property_list::pval_map_type factory_pval)
 {
-  graphics_object obj = gh_manager::get_object (gh);
+  graphics_object go = gh_manager::get_object (h);
 
   // Replace factory defaults by user defined ones
-  std::string go_name = obj.get_properties ().graphics_object_name ();
+  std::string go_name = go.get_properties ().graphics_object_name ();
   property_list::pval_map_type pval;
-  obj.build_user_defaults_map (pval, go_name);
+  go.build_user_defaults_map (pval, go_name);
 
   for (property_list::pval_map_const_iterator p = pval.begin ();
        p != pval.end (); p++)
     {
       factory_pval[p->first] = p->second;
     }
-
 
   // Reset defaults
   for (property_list::pval_map_const_iterator it = factory_pval.begin ();
@@ -2853,7 +2882,7 @@ xreset_default_properties (graphics_handle gh,
       std::string pname = it->first;
 
       // Don't reset internal properties and handle_properties
-      if (! obj.has_readonly_property (pname)
+      if (! go.has_readonly_property (pname)
           && pname.find ("__") != 0 && pname.find ("current") != 0
           && pname != "uicontextmenu" && pname != "parent")
         {
@@ -2861,20 +2890,20 @@ xreset_default_properties (graphics_handle gh,
           if (pname.find ("mode") == (pname.length () - 4))
             pval[pname] = it->second;
           else
-            obj.set (pname, it->second);
+            go.set (pname, it->second);
         }
     }
 
   // set *mode properties
   for (property_list::pval_map_const_iterator it = pval.begin ();
        it != pval.end (); it++)
-    obj.set (it->first, it->second);
+    go.set (it->first, it->second);
 }
 
 // ---------------------------------------------------------------------
 
 void
-base_properties::set_from_list (base_graphics_object& obj,
+base_properties::set_from_list (base_graphics_object& bgo,
                                 property_list& defaults)
 {
   std::string go_name = graphics_object_name ();
@@ -2891,7 +2920,7 @@ base_properties::set_from_list (base_graphics_object& obj,
         {
           std::string pname = q->first;
 
-          obj.set (pname, q->second);
+          bgo.set (pname, q->second);
 
           if (error_state)
             {
@@ -2919,17 +2948,17 @@ base_properties::set_from_list (base_graphics_object& obj,
 */
 
 octave_value
-base_properties::get_dynamic (const caseless_str& name) const
+base_properties::get_dynamic (const caseless_str& pname) const
 {
   octave_value retval;
 
   std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
-    all_props.find (name);
+    all_props.find (pname);
 
   if (it != all_props.end ())
     retval = it->second.get ();
   else
-    error ("get: unknown property \"%s\"", name.c_str ());
+    error ("get: unknown property \"%s\"", pname.c_str ());
 
   return retval;
 }
@@ -2985,14 +3014,14 @@ base_properties::set_dynamic (const caseless_str& pname,
 }
 
 property
-base_properties::get_property_dynamic (const caseless_str& name)
+base_properties::get_property_dynamic (const caseless_str& pname)
 {
   std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
-    all_props.find (name);
+    all_props.find (pname);
 
   if (it == all_props.end ())
     {
-      error ("get_property: unknown property \"%s\"", name.c_str ());
+      error ("get_property: unknown property \"%s\"", pname.c_str ());
       return property ();
     }
   else
@@ -3002,38 +3031,36 @@ base_properties::get_property_dynamic (const caseless_str& name)
 void
 base_properties::set_parent (const octave_value& val)
 {
-  double hnp = val.double_value ();
+  double hp = val.double_value ();
 
   graphics_handle new_parent = octave_NaN;
 
   if (! error_state)
     {
-      if (hnp == __myhandle__)
+      if (hp == __myhandle__)
         error ("set: can not set object parent to be object itself");
       else
         {
-          new_parent = gh_manager::lookup (hnp);
+          new_parent = gh_manager::lookup (hp);
 
           if (new_parent.ok ())
             {
               // Remove child from current parent
-              graphics_object old_parent_obj;
-              old_parent_obj = gh_manager::get_object (get_parent ());
+              graphics_object old_parent_go;
+              old_parent_go = gh_manager::get_object (get_parent ());
 
-
-              if (old_parent_obj.get_handle () != hnp)
-                old_parent_obj.remove_child (__myhandle__);
+              if (old_parent_go.get_handle () != hp)
+                old_parent_go.remove_child (__myhandle__);
               else
-                // Do nothing more
-                return;
+                return;  // Do nothing more
 
               // Check new parent's parent is not this child to avoid recursion
-              graphics_object new_parent_obj;
-              new_parent_obj = gh_manager::get_object (new_parent);
-              if (new_parent_obj.get_parent () == __myhandle__)
+              graphics_object new_parent_go;
+              new_parent_go = gh_manager::get_object (new_parent);
+              if (new_parent_go.get_parent () == __myhandle__)
                 {
                   // new parent's parent gets child's original parent
-                  new_parent_obj.get_properties ().set_parent (get_parent ().as_octave_value ());
+                  new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
                 }
 
               // Set parent property to new_parent and do adoption
@@ -3041,7 +3068,7 @@ base_properties::set_parent (const octave_value& val)
               ::adopt (parent.handle_value (), __myhandle__);
             }
           else
-            error ("set: invalid graphics handle (= %g) for parent", hnp);
+            error ("set: invalid graphics handle (= %g) for parent", hp);
         }
     }
   else
@@ -3063,38 +3090,40 @@ base_properties::set_parent (const octave_value& val)
 void
 base_properties::mark_modified (void)
 {
-  __modified__ = "on";
-  graphics_object parent_obj = gh_manager::get_object (get_parent ());
-  if (parent_obj)
-    parent_obj.mark_modified ();
+  // Mark existing object as modified
+  __modified__ = "on";  
+  // Attempt to mark parent object as modified if it exists
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  if (parent_go)
+    parent_go.mark_modified ();
 }
 
 void
 base_properties::override_defaults (base_graphics_object& obj)
 {
-  graphics_object parent_obj = gh_manager::get_object (get_parent ());
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
 
-  if (parent_obj)
-    parent_obj.override_defaults (obj);
+  if (parent_go)
+    parent_go.override_defaults (obj);
 }
 
 void
 base_properties::update_axis_limits (const std::string& axis_type) const
 {
-  graphics_object obj = gh_manager::get_object (__myhandle__);
+  graphics_object go = gh_manager::get_object (__myhandle__);
 
-  if (obj)
-    obj.update_axis_limits (axis_type);
+  if (go)
+    go.update_axis_limits (axis_type);
 }
 
 void
 base_properties::update_axis_limits (const std::string& axis_type,
                                      const graphics_handle& h) const
 {
-  graphics_object obj = gh_manager::get_object (__myhandle__);
+  graphics_object go = gh_manager::get_object (__myhandle__);
 
-  if (obj)
-    obj.update_axis_limits (axis_type, h);
+  if (go)
+    go.update_axis_limits (axis_type, h);
 }
 
 void
@@ -3103,11 +3132,11 @@ base_properties::update_uicontextmenu (void) const
   if (uicontextmenu.get ().is_empty ())
     return;
 
-  graphics_object obj = gh_manager::get_object (uicontextmenu.get ());
-  if (obj && obj.isa ("uicontextmenu"))
+  graphics_object go = gh_manager::get_object (uicontextmenu.get ());
+  if (go && go.isa ("uicontextmenu"))
     {
       uicontextmenu::properties& props =
-        reinterpret_cast<uicontextmenu::properties&> (obj.get_properties ());
+        reinterpret_cast<uicontextmenu::properties&> (go.get_properties ());
       props.add_dependent_obj (__myhandle__);
     }
 }
@@ -3147,30 +3176,32 @@ base_properties::update_boundingbox (void)
 void
 base_properties::update_autopos (const std::string& elem_type)
 {
-  graphics_object parent_obj = gh_manager::get_object (get_parent ());
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
 
-  if (parent_obj.valid_object ())
-    parent_obj.get_properties ().update_autopos (elem_type);
+  if (parent_go.valid_object ())
+    parent_go.get_properties ().update_autopos (elem_type);
 }
 
 void
-base_properties::add_listener (const caseless_str& nm, const octave_value& v,
+base_properties::add_listener (const caseless_str& pname,
+                               const octave_value& val,
                                listener_mode mode)
 {
-  property p = get_property (nm);
+  property p = get_property (pname);
 
   if (! error_state && p.ok ())
-    p.add_listener (v, mode);
+    p.add_listener (val, mode);
 }
 
 void
-base_properties::delete_listener (const caseless_str& nm,
-                                  const octave_value& v, listener_mode mode)
+base_properties::delete_listener (const caseless_str& pname,
+                                  const octave_value& val,
+                                  listener_mode mode)
 {
-  property p = get_property (nm);
+  property p = get_property (pname);
 
   if (! error_state && p.ok ())
-    p.delete_listener (v, mode);
+    p.delete_listener (val, mode);
 }
 
 // ---------------------------------------------------------------------
@@ -3180,10 +3211,10 @@ base_graphics_object::update_axis_limits (const std::string& axis_type)
 {
   if (valid_object ())
     {
-      graphics_object parent_obj = gh_manager::get_object (get_parent ());
+      graphics_object parent_go = gh_manager::get_object (get_parent ());
 
-      if (parent_obj)
-        parent_obj.update_axis_limits (axis_type);
+      if (parent_go)
+        parent_go.update_axis_limits (axis_type);
     }
   else
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
@@ -3193,15 +3224,15 @@ void
 base_graphics_object::update_axis_limits (const std::string& axis_type,
                                           const graphics_handle& h)
 {
-  if (valid_object ())
-    {
-      graphics_object parent_obj = gh_manager::get_object (get_parent ());
-
-      if (parent_obj)
-        parent_obj.update_axis_limits (axis_type, h);
-    }
-  else
+  if (! valid_object ())
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
+  else
+    {
+      graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+      if (parent_go)
+        parent_go.update_axis_limits (axis_type, h);
+    }
 }
 
 void
@@ -3252,11 +3283,10 @@ base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def
         }
     }
 
-  graphics_object parent_obj = gh_manager::get_object (get_parent ());
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
 
-  if (parent_obj)
-    parent_obj.build_user_defaults_map (def, go_name);
-
+  if (parent_go)
+    parent_go.build_user_defaults_map (def, go_name);
 }
 
 void
@@ -3277,15 +3307,16 @@ base_graphics_object::values_as_string (void)
 {
   std::string retval;
 
-  if (valid_object ())
+  if (! valid_object ())
+    error ("base_graphics_object::values_as_string: invalid graphics object");
+  else
     {
       octave_map m = get ().map_value ();
-      graphics_object obj = gh_manager::get_object (get_handle ());
+      graphics_object go = gh_manager::get_object (get_handle ());
 
       for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
         {
-          if (pa->first != "children"
-              && ! obj.has_readonly_property (pa->first))
+          if (pa->first != "children" && ! go.has_readonly_property (pa->first))
             {
               property p = get_properties ().get_property (pa->first);
 
@@ -3301,8 +3332,6 @@ base_graphics_object::values_as_string (void)
       if (! retval.empty ())
         retval += "\n";
     }
-  else
-    error ("base_graphics_object::values_as_string: invalid graphics object");
 
   return retval;
 }
@@ -3312,11 +3341,13 @@ base_graphics_object::value_as_string (const std::string& prop)
 {
   std::string retval;
 
-  if (valid_object ())
+  if (! valid_object ())
+    error ("base_graphics_object::value_as_string: invalid graphics object");
+  else
     {
-      graphics_object obj = gh_manager::get_object (get_handle ());
+      graphics_object go = gh_manager::get_object (get_handle ());
 
-      if (prop != "children" && ! obj.has_readonly_property (prop))
+      if (prop != "children" && ! go.has_readonly_property (prop))
         {
           property p = get_properties ().get_property (prop);
 
@@ -3330,8 +3361,6 @@ base_graphics_object::value_as_string (const std::string& prop)
       if (! retval.empty ())
         retval += "\n";
     }
-  else
-    error ("base_graphics_object::value_as_string: invalid graphics object");
 
   return retval;
 }
@@ -3341,16 +3370,18 @@ base_graphics_object::values_as_struct (void)
 {
   octave_scalar_map retval;
 
-  if (valid_object ())
+  if (! valid_object ())
+    error ("base_graphics_object::values_as_struct: invalid graphics object");
+  else
     {
       octave_scalar_map m = get ().scalar_map_value ();
-      graphics_object obj = gh_manager::get_object (get_handle ());
+      graphics_object go = gh_manager::get_object (get_handle ());
 
       for (octave_scalar_map::const_iterator pa = m.begin ();
            pa != m.end (); pa++)
         {
           if (pa->first != "children"
-              && ! obj.has_readonly_property (pa->first))
+              && ! go.has_readonly_property (pa->first))
             {
               property p = get_properties ().get_property (pa->first);
 
@@ -3364,8 +3395,6 @@ base_graphics_object::values_as_struct (void)
             }
         }
     }
-  else
-    error ("base_graphics_object::values_as_struct: invalid graphics object");
 
   return retval;
 }
@@ -3597,7 +3626,6 @@ root_figure::properties::set_formatspacing (const octave_value& val)
     }
 }
 
-
 double
 root_figure::properties::get_recursionlimit (void) const
 {
@@ -3667,56 +3695,57 @@ figure::properties::set_integerhandle (const octave_value& val)
     }
 }
 
-// FIXME: This should update monitorpositions and pointerlocation, but
-// as these properties are yet used, and so it doesn't matter that they
-// aren't set yet.
+// FIXME: This should update monitorpositions and pointerlocation, but as these
+// properties aren't yet used, it doesn't matter that they aren't set either.
 void
 root_figure::properties::update_units (void)
 {
   caseless_str xunits = get_units ();
 
-  Matrix ss = default_screensize ();
+  Matrix scrn_sz = default_screensize ();
 
   double dpi = get_screenpixelsperinch ();
 
   if (xunits.compare ("inches"))
     {
-      ss(0) = 0;
-      ss(1) = 0;
-      ss(2) /= dpi;
-      ss(3) /= dpi;
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+      scrn_sz(2) /= dpi;
+      scrn_sz(3) /= dpi;
     }
   else if (xunits.compare ("centimeters"))
     {
-      ss(0) = 0;
-      ss(1) = 0;
-      ss(2) *= 2.54 / dpi;
-      ss(3) *= 2.54 / dpi;
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+      scrn_sz(2) *= 2.54 / dpi;
+      scrn_sz(3) *= 2.54 / dpi;
     }
   else if (xunits.compare ("normalized"))
     {
-      ss = Matrix (1, 4, 1.0);
-      ss(0) = 0;
-      ss(1) = 0;
+      scrn_sz = Matrix (1, 4, 1.0);
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
     }
   else if (xunits.compare ("points"))
     {
-      ss(0) = 0;
-      ss(1) = 0;
-      ss(2) *= 72 / dpi;
-      ss(3) *= 72 / dpi;
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+      scrn_sz(2) *= 72 / dpi;
+      scrn_sz(3) *= 72 / dpi;
     }
 
-  set_screensize (ss);
+  set_screensize (scrn_sz);
 }
 
 Matrix
 root_figure::properties::get_boundingbox (bool, const Matrix&) const
 {
   Matrix screen_size = screen_size_pixels ();
-  Matrix pos = Matrix (1, 4, 0);
+  Matrix pos = Matrix (1, 4, 0.0);
+
   pos(2) = screen_size(0);
   pos(3) = screen_size(1);
+
   return pos;
 }
 
@@ -3743,15 +3772,15 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 */
 
 void
-root_figure::properties::remove_child (const graphics_handle& gh)
+root_figure::properties::remove_child (const graphics_handle& h)
 {
-  gh_manager::pop_figure (gh);
+  gh_manager::pop_figure (h);
 
   graphics_handle cf = gh_manager::current_figure ();
 
   xset (0, "currentfigure", cf.value ());
 
-  base_properties::remove_child (gh);
+  base_properties::remove_child (h);
 }
 
 property_list
@@ -3770,25 +3799,25 @@ root_figure::reset_default_properties (void)
 // ---------------------------------------------------------------------
 
 void
-figure::properties::set_currentaxes (const octave_value& v)
+figure::properties::set_currentaxes (const octave_value& val)
 {
-  graphics_handle val (v);
+  graphics_handle hax (val);
 
   if (error_state)
     return;
 
-  if (xisnan (val.value ()) || is_handle (val))
-    currentaxes = val;
+  if (xisnan (hax.value ()) || is_handle (hax))
+    currentaxes = hax;
   else
     gripe_set_invalid ("currentaxes");
 }
 
 void
-figure::properties::remove_child (const graphics_handle& gh)
+figure::properties::remove_child (const graphics_handle& h)
 {
-  base_properties::remove_child (gh);
+  base_properties::remove_child (h);
 
-  if (gh == currentaxes.handle_value ())
+  if (h == currentaxes.handle_value ())
     {
       graphics_handle new_currentaxes;
 
@@ -3846,11 +3875,11 @@ figure::properties::adopt (const graphics_handle& h)
 void
 figure::properties::set_visible (const octave_value& val)
 {
-  std::string s = val.string_value ();
+  std::string sval = val.string_value ();
 
   if (! error_state)
     {
-      if (s == "on")
+      if (sval == "on")
         xset (0, "currentfigure", __myhandle__.value ());
 
       visible = val;
@@ -3896,7 +3925,7 @@ Matrix
 figure::properties::map_from_boundingbox (double x, double y) const
 {
   Matrix bb = get_boundingbox (true);
-  Matrix pos (1, 2, 0);
+  Matrix pos (1, 2, 0.0);
 
   pos(0) = x;
   pos(1) = y;
@@ -3913,7 +3942,7 @@ Matrix
 figure::properties::map_to_boundingbox (double x, double y) const
 {
   Matrix bb = get_boundingbox (true);
-  Matrix pos (1, 2, 0);
+  Matrix pos (1, 2, 0.0);
 
   pos(0) = x;
   pos(1) = y;
@@ -3973,20 +4002,20 @@ figure::properties::set_outerposition (const octave_value& v,
 }
 
 void
-figure::properties::set_paperunits (const octave_value& v)
+figure::properties::set_paperunits (const octave_value& val)
 {
   if (! error_state)
     {
-      caseless_str typ = get_papertype ();
-      caseless_str punits = v.string_value ();
+      caseless_str punits = val.string_value ();
+      caseless_str ptype = get_papertype ();
       if (! error_state)
         {
-          if (punits.compare ("normalized") && typ.compare ("<custom>"))
-            error ("set: can't set the paperunits to normalized when the papertype is custom");
+          if (punits.compare ("normalized") && ptype.compare ("<custom>"))
+            error ("set: can't set paperunits to normalized when papertype is custom");
           else
             {
               caseless_str old_paperunits = get_paperunits ();
-              if (paperunits.set (v, true))
+              if (paperunits.set (val, true))
                 {
                   update_paperunits (old_paperunits);
                   mark_modified ();
@@ -3997,19 +4026,19 @@ figure::properties::set_paperunits (const octave_value& v)
 }
 
 void
-figure::properties::set_papertype (const octave_value& v)
+figure::properties::set_papertype (const octave_value& val)
 {
   if (! error_state)
     {
-      caseless_str typ = v.string_value ();
+      caseless_str ptype = val.string_value ();
       caseless_str punits = get_paperunits ();
       if (! error_state)
         {
-          if (punits.compare ("normalized") && typ.compare ("<custom>"))
-            error ("set: can't set the paperunits to normalized when the papertype is custom");
+          if (punits.compare ("normalized") && ptype.compare ("<custom>"))
+            error ("set: can't set paperunits to normalized when papertype is custom");
           else
             {
-              if (papertype.set (v, true))
+              if (papertype.set (val, true))
                 {
                   update_papertype ();
                   mark_modified ();
@@ -4020,9 +4049,9 @@ figure::properties::set_papertype (const octave_value& v)
 }
 
 static Matrix
-papersize_from_type (const caseless_str punits, const caseless_str typ)
+papersize_from_type (const caseless_str punits, const caseless_str ptype)
 {
-  Matrix ret (1, 2, 1.0);
+  Matrix retval (1, 2, 1.0);
 
   if (! punits.compare ("normalized"))
     {
@@ -4045,134 +4074,134 @@ papersize_from_type (const caseless_str punits, const caseless_str typ)
           mm2units = 72.0 / 25.4;
         }
 
-      if (typ.compare ("usletter"))
+      if (ptype.compare ("usletter"))
         {
-          ret (0) = 8.5 * in2units;
-          ret (1) = 11.0 * in2units;
+          retval(0) = 8.5 * in2units;
+          retval(1) = 11.0 * in2units;
         }
-      else if (typ.compare ("uslegal"))
+      else if (ptype.compare ("uslegal"))
         {
-          ret (0) = 8.5 * in2units;
-          ret (1) = 14.0 * in2units;
+          retval(0) = 8.5 * in2units;
+          retval(1) = 14.0 * in2units;
         }
-      else if (typ.compare ("tabloid"))
+      else if (ptype.compare ("tabloid"))
         {
-          ret (0) = 11.0 * in2units;
-          ret (1) = 17.0 * in2units;
+          retval(0) = 11.0 * in2units;
+          retval(1) = 17.0 * in2units;
         }
-      else if (typ.compare ("a0"))
+      else if (ptype.compare ("a0"))
         {
-          ret (0) = 841.0 * mm2units;
-          ret (1) = 1189.0 * mm2units;
+          retval(0) = 841.0 * mm2units;
+          retval(1) = 1189.0 * mm2units;
         }
-      else if (typ.compare ("a1"))
+      else if (ptype.compare ("a1"))
         {
-          ret (0) = 594.0 * mm2units;
-          ret (1) = 841.0 * mm2units;
+          retval(0) = 594.0 * mm2units;
+          retval(1) = 841.0 * mm2units;
         }
-      else if (typ.compare ("a2"))
+      else if (ptype.compare ("a2"))
         {
-          ret (0) = 420.0 * mm2units;
-          ret (1) = 594.0 * mm2units;
+          retval(0) = 420.0 * mm2units;
+          retval(1) = 594.0 * mm2units;
         }
-      else if (typ.compare ("a3"))
+      else if (ptype.compare ("a3"))
         {
-          ret (0) = 297.0 * mm2units;
-          ret (1) = 420.0 * mm2units;
+          retval(0) = 297.0 * mm2units;
+          retval(1) = 420.0 * mm2units;
         }
-      else if (typ.compare ("a4"))
+      else if (ptype.compare ("a4"))
         {
-          ret (0) = 210.0 * mm2units;
-          ret (1) = 297.0 * mm2units;
+          retval(0) = 210.0 * mm2units;
+          retval(1) = 297.0 * mm2units;
         }
-      else if (typ.compare ("a5"))
+      else if (ptype.compare ("a5"))
         {
-          ret (0) = 148.0 * mm2units;
-          ret (1) = 210.0 * mm2units;
+          retval(0) = 148.0 * mm2units;
+          retval(1) = 210.0 * mm2units;
         }
-      else if (typ.compare ("b0"))
+      else if (ptype.compare ("b0"))
         {
-          ret (0) = 1029.0 * mm2units;
-          ret (1) = 1456.0 * mm2units;
+          retval(0) = 1029.0 * mm2units;
+          retval(1) = 1456.0 * mm2units;
         }
-      else if (typ.compare ("b1"))
+      else if (ptype.compare ("b1"))
         {
-          ret (0) = 728.0 * mm2units;
-          ret (1) = 1028.0 * mm2units;
+          retval(0) = 728.0 * mm2units;
+          retval(1) = 1028.0 * mm2units;
         }
-      else if (typ.compare ("b2"))
+      else if (ptype.compare ("b2"))
         {
-          ret (0) = 514.0 * mm2units;
-          ret (1) = 728.0 * mm2units;
+          retval(0) = 514.0 * mm2units;
+          retval(1) = 728.0 * mm2units;
         }
-      else if (typ.compare ("b3"))
+      else if (ptype.compare ("b3"))
         {
-          ret (0) = 364.0 * mm2units;
-          ret (1) = 514.0 * mm2units;
+          retval(0) = 364.0 * mm2units;
+          retval(1) = 514.0 * mm2units;
         }
-      else if (typ.compare ("b4"))
+      else if (ptype.compare ("b4"))
         {
-          ret (0) = 257.0 * mm2units;
-          ret (1) = 364.0 * mm2units;
+          retval(0) = 257.0 * mm2units;
+          retval(1) = 364.0 * mm2units;
         }
-      else if (typ.compare ("b5"))
+      else if (ptype.compare ("b5"))
         {
-          ret (0) = 182.0 * mm2units;
-          ret (1) = 257.0 * mm2units;
+          retval(0) = 182.0 * mm2units;
+          retval(1) = 257.0 * mm2units;
         }
-      else if (typ.compare ("arch-a"))
+      else if (ptype.compare ("arch-a"))
         {
-          ret (0) = 9.0 * in2units;
-          ret (1) = 12.0 * in2units;
+          retval(0) = 9.0 * in2units;
+          retval(1) = 12.0 * in2units;
         }
-      else if (typ.compare ("arch-b"))
+      else if (ptype.compare ("arch-b"))
         {
-          ret (0) = 12.0 * in2units;
-          ret (1) = 18.0 * in2units;
+          retval(0) = 12.0 * in2units;
+          retval(1) = 18.0 * in2units;
         }
-      else if (typ.compare ("arch-c"))
+      else if (ptype.compare ("arch-c"))
         {
-          ret (0) = 18.0 * in2units;
-          ret (1) = 24.0 * in2units;
+          retval(0) = 18.0 * in2units;
+          retval(1) = 24.0 * in2units;
         }
-      else if (typ.compare ("arch-d"))
+      else if (ptype.compare ("arch-d"))
         {
-          ret (0) = 24.0 * in2units;
-          ret (1) = 36.0 * in2units;
+          retval(0) = 24.0 * in2units;
+          retval(1) = 36.0 * in2units;
         }
-      else if (typ.compare ("arch-e"))
+      else if (ptype.compare ("arch-e"))
         {
-          ret (0) = 36.0 * in2units;
-          ret (1) = 48.0 * in2units;
+          retval(0) = 36.0 * in2units;
+          retval(1) = 48.0 * in2units;
         }
-      else if (typ.compare ("a"))
+      else if (ptype.compare ("a"))
         {
-          ret (0) = 8.5 * in2units;
-          ret (1) = 11.0 * in2units;
+          retval(0) = 8.5 * in2units;
+          retval(1) = 11.0 * in2units;
         }
-      else if (typ.compare ("b"))
+      else if (ptype.compare ("b"))
         {
-          ret (0) = 11.0 * in2units;
-          ret (1) = 17.0 * in2units;
+          retval(0) = 11.0 * in2units;
+          retval(1) = 17.0 * in2units;
         }
-      else if (typ.compare ("c"))
+      else if (ptype.compare ("c"))
         {
-          ret (0) = 17.0 * in2units;
-          ret (1) = 22.0 * in2units;
+          retval(0) = 17.0 * in2units;
+          retval(1) = 22.0 * in2units;
         }
-      else if (typ.compare ("d"))
+      else if (ptype.compare ("d"))
         {
-          ret (0) = 22.0 * in2units;
-          ret (1) = 34.0 * in2units;
+          retval(0) = 22.0 * in2units;
+          retval(1) = 34.0 * in2units;
         }
-      else if (typ.compare ("e"))
+      else if (ptype.compare ("e"))
         {
-          ret (0) = 34.0 * in2units;
-          ret (1) = 43.0 * in2units;
+          retval(0) = 34.0 * in2units;
+          retval(1) = 43.0 * in2units;
         }
     }
 
-  return ret;
+  return retval;
 }
 
 
@@ -4304,9 +4333,9 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
 
   std::string porient = get_paperorientation ();
   caseless_str punits = get_paperunits ();
-  caseless_str typ = get_papertype ();
+  caseless_str ptype = get_papertype ();
 
-  if (typ.compare ("<custom>"))
+  if (ptype.compare ("<custom>"))
     {
       if (old_paperunits.compare ("centimeters"))
         {
@@ -4332,7 +4361,7 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
     }
   else
     {
-      sz = papersize_from_type (punits, typ);
+      sz = papersize_from_type (punits, ptype);
       if (porient == "landscape")
         std::swap (sz(0), sz(1));
     }
@@ -4356,7 +4385,7 @@ figure::properties::update_papertype (void)
       if (get_paperorientation () == "landscape")
         std::swap (sz(0), sz(1));
       // Call papersize.set rather than set_papersize to avoid loops
-      // between update_papersize and update_papertype
+      // between update_papersize and update_papertype.
       papersize.set (octave_value (sz));
     }
 
@@ -4378,6 +4407,7 @@ figure::properties::update_papersize (void)
     {
       paperorientation.set ("portrait");
     }
+
   std::string punits = get_paperunits ();
   if (punits == "centimeters")
     {
@@ -4391,93 +4421,93 @@ figure::properties::update_papersize (void)
     }
   if (punits == "normalized")
     {
-      caseless_str typ = get_papertype ();
       if (get_papertype () == "<custom>")
         error ("set: can't set the papertype to <custom> when the paperunits is normalized");
     }
   else
     {
-      // TODO - the papersizes info is also in papersize_from_type().
-      // Both should be rewritten to avoid the duplication.
-      std::string typ = "<custom>";
+      // FIXME: The papersizes info is also in papersize_from_type().
+      //        Both should be rewritten to avoid the duplication.
+      //        Don't Repeat Yourself (DRY) principle.
+      std::string ptype = "<custom>";
       const double mm2in = 1.0 / 25.4;
       const double tol = 0.01;
 
       if (std::abs (sz(0) - 8.5) + std::abs (sz(1) - 11.0) < tol)
-        typ = "usletter";
+        ptype = "usletter";
       else if (std::abs (sz(0) - 8.5) + std::abs (sz(1) - 14.0) < tol)
-        typ = "uslegal";
+        ptype = "uslegal";
       else if (std::abs (sz(0) - 11.0) + std::abs (sz(1) - 17.0) < tol)
-        typ = "tabloid";
+        ptype = "tabloid";
       else if (std::abs (sz(0) - 841.0 * mm2in)
                + std::abs (sz(1) - 1198.0 * mm2in) < tol)
-        typ = "a0";
+        ptype = "a0";
       else if (std::abs (sz(0) - 594.0 * mm2in)
                + std::abs (sz(1) - 841.0 * mm2in) < tol)
-        typ = "a1";
+        ptype = "a1";
       else if (std::abs (sz(0) - 420.0 * mm2in)
                + std::abs (sz(1) - 594.0 * mm2in) < tol)
-        typ = "a2";
+        ptype = "a2";
       else if (std::abs (sz(0) - 297.0 * mm2in)
                + std::abs (sz(1) - 420.0 * mm2in) < tol)
-        typ = "a3";
+        ptype = "a3";
       else if (std::abs (sz(0) - 210.0 * mm2in)
                + std::abs (sz(1) - 297.0 * mm2in) < tol)
-        typ = "a4";
+        ptype = "a4";
       else if (std::abs (sz(0) - 148.0 * mm2in)
                + std::abs (sz(1) - 210.0 * mm2in) < tol)
-        typ = "a5";
+        ptype = "a5";
       else if (std::abs (sz(0) - 1029.0 * mm2in)
                + std::abs (sz(1) - 1456.0 * mm2in) < tol)
-        typ = "b0";
+        ptype = "b0";
       else if (std::abs (sz(0) - 728.0 * mm2in)
                + std::abs (sz(1) - 1028.0 * mm2in) < tol)
-        typ = "b1";
+        ptype = "b1";
       else if (std::abs (sz(0) - 514.0 * mm2in)
                + std::abs (sz(1) - 728.0 * mm2in) < tol)
-        typ = "b2";
+        ptype = "b2";
       else if (std::abs (sz(0) - 364.0 * mm2in)
                + std::abs (sz(1) - 514.0 * mm2in) < tol)
-        typ = "b3";
+        ptype = "b3";
       else if (std::abs (sz(0) - 257.0 * mm2in)
                + std::abs (sz(1) - 364.0 * mm2in) < tol)
-        typ = "b4";
+        ptype = "b4";
       else if (std::abs (sz(0) - 182.0 * mm2in)
                + std::abs (sz(1) - 257.0 * mm2in) < tol)
-        typ = "b5";
+        ptype = "b5";
       else if (std::abs (sz(0) - 9.0)
                + std::abs (sz(1) - 12.0) < tol)
-        typ = "arch-a";
+        ptype = "arch-a";
       else if (std::abs (sz(0) - 12.0)
                + std::abs (sz(1) - 18.0) < tol)
-        typ = "arch-b";
+        ptype = "arch-b";
       else if (std::abs (sz(0) - 18.0)
                + std::abs (sz(1) - 24.0) < tol)
-        typ = "arch-c";
+        ptype = "arch-c";
       else if (std::abs (sz(0) - 24.0)
                + std::abs (sz(1) - 36.0) < tol)
-        typ = "arch-d";
+        ptype = "arch-d";
       else if (std::abs (sz(0) - 36.0)
                + std::abs (sz(1) - 48.0) < tol)
-        typ = "arch-e";
+        ptype = "arch-e";
       else if (std::abs (sz(0) - 8.5)
                + std::abs (sz(1) - 11.0) < tol)
-        typ = "a";
+        ptype = "a";
       else if (std::abs (sz(0) - 11.0)
                + std::abs (sz(1) - 17.0) < tol)
-        typ = "b";
+        ptype = "b";
       else if (std::abs (sz(0) - 17.0)
                + std::abs (sz(1) - 22.0) < tol)
-        typ = "c";
+        ptype = "c";
       else if (std::abs (sz(0) - 22.0)
                + std::abs (sz(1) - 34.0) < tol)
-        typ = "d";
+        ptype = "d";
       else if (std::abs (sz(0) - 34.0)
                + std::abs (sz(1) - 43.0) < tol)
-        typ = "e";
+        ptype = "e";
       // Call papertype.set rather than set_papertype to avoid loops between
       // update_papersize and update_papertype
-      papertype.set (typ);
+      papertype.set (ptype);
     }
   if (punits == "centimeters")
     {
@@ -4581,12 +4611,12 @@ figure::properties::update_paperorientation (void)
 */
 
 void
-figure::properties::set_units (const octave_value& v)
+figure::properties::set_units (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_units = get_units ();
-      if (units.set (v, true))
+      if (units.set (val, true))
         {
           update_units (old_units);
           mark_modified ();
@@ -4644,10 +4674,10 @@ figure::get_default (const caseless_str& name) const
 
   if (retval.is_undefined ())
     {
-      graphics_handle parent = get_parent ();
-      graphics_object parent_obj = gh_manager::get_object (parent);
+      graphics_handle parent_h = get_parent ();
+      graphics_object parent_go = gh_manager::get_object (parent_h);
 
-      retval = parent_obj.get_default (name);
+      retval = parent_go.get_default (name);
     }
 
   return retval;
@@ -4682,6 +4712,8 @@ axes::properties::init (void)
   colororder.add_constraint (dim_vector (-1, 3));
   dataaspectratio.add_constraint (dim_vector (1, 3));
   plotboxaspectratio.add_constraint (dim_vector (1, 3));
+  // FIXME: Should these use dimension vectors?  Currently can set 'xlim' to
+  // any matrix size, but only first two elements are used.
   alim.add_constraint (2);
   clim.add_constraint (2);
   xlim.add_constraint (2);
@@ -4766,8 +4798,8 @@ Matrix
 axes::properties::calc_tightbox (const Matrix& init_pos)
 {
   Matrix pos = init_pos;
-  graphics_object obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
+  graphics_object go = gh_manager::get_object (get_parent ());
+  Matrix parent_bb = go.get_properties ().get_boundingbox (true);
   Matrix ext = get_extent (true, true);
   ext(1) = parent_bb(3) - ext(1) - ext(3);
   ext(0)++;
@@ -4789,6 +4821,7 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
     }
   if (ext(1)+ext(3) > pos(1)+pos(3))
     pos(3) = ext(1)+ext(3)-pos(1);
+
   return pos;
 }
 
@@ -4975,7 +5008,7 @@ axes::properties::set_title (const octave_value& v)
 }
 
 void
-axes::properties::set_defaults (base_graphics_object& obj,
+axes::properties::set_defaults (base_graphics_object& bgo,
                                 const std::string& mode)
 {
   box = "on";
@@ -4986,15 +5019,14 @@ axes::properties::set_defaults (base_graphics_object& obj,
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
+  alim = tlim;
   xlim = tlim;
   ylim = tlim;
   zlim = tlim;
 
-  Matrix cl (1, 2, 0);
+  Matrix cl (1, 2, 0.0);
   cl(1) = 1;
   clim = cl;
-
-  alim = tlim;
 
   xlimmode = "auto";
   ylimmode = "auto";
@@ -5169,7 +5201,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
 
   update_transform ();
   sync_positions ();
-  override_defaults (obj);
+  override_defaults (bgo);
 }
 
 void
@@ -5234,8 +5266,10 @@ inline Matrix
 xform_matrix (void)
 {
   Matrix m (4, 4, 0.0);
+
   for (int i = 0; i < 4; i++)
     m(i,i) = 1;
+
   return m;
 }
 
@@ -5243,7 +5277,9 @@ inline ColumnVector
 xform_vector (void)
 {
   ColumnVector v (4, 0.0);
+
   v(3) = 1;
+
   return v;
 }
 
@@ -5251,7 +5287,11 @@ inline ColumnVector
 xform_vector (double x, double y, double z)
 {
   ColumnVector v (4, 1.0);
-  v(0) = x; v(1) = y; v(2) = z;
+
+  v(0) = x;
+  v(1) = y;
+  v(2) = z;
+
   return v;
 }
 
@@ -5265,7 +5305,12 @@ inline Matrix
 xform_scale (double x, double y, double z)
 {
   Matrix m (4, 4, 0.0);
-  m(0,0) = x; m(1,1) = y; m(2,2) = z; m(3,3) = 1;
+
+  m(0,0) = x;
+  m(1,1) = y;
+  m(2,2) = z;
+  m(3,3) = 1;
+
   return m;
 }
 
@@ -5273,7 +5318,12 @@ inline Matrix
 xform_translate (double x, double y, double z)
 {
   Matrix m = xform_matrix ();
-  m(0,3) = x; m(1,3) = y; m(2,3) = z; m(3,3) = 1;
+
+  m(0,3) = x;
+  m(1,3) = y;
+  m(2,3) = z;
+  m(3,3) = 1;
+
   return m;
 }
 
@@ -5292,7 +5342,7 @@ translate (Matrix& m, double x, double y, double z)
 inline void
 xform (ColumnVector& v, const Matrix& m)
 {
-  v = m*v;
+  v = m * v;
 }
 
 inline void
@@ -5334,9 +5384,11 @@ inline ColumnVector
 cross (const ColumnVector& v1, const ColumnVector& v2)
 {
   ColumnVector r = xform_vector ();
-  r(0) = v1(1)*v2(2)-v1(2)*v2(1);
-  r(1) = v1(2)*v2(0)-v1(0)*v2(2);
-  r(2) = v1(0)*v2(1)-v1(1)*v2(0);
+
+  r(0) = v1(1)*v2(2) - v1(2)*v2(1);
+  r(1) = v1(2)*v2(0) - v1(0)*v2(2);
+  r(2) = v1(0)*v2(1) - v1(1)*v2(0);
+
   return r;
 }
 
@@ -5355,7 +5407,9 @@ unit_cube (void)
     1,1,1,1
   };
   Matrix m (4, 8);
+
   memcpy (m.fortran_vec (), data, sizeof (double)*32);
+
   return m;
 }
 
@@ -5363,7 +5417,9 @@ inline ColumnVector
 cam2xform (const Array<double>& m)
 {
   ColumnVector retval (4, 1.0);
+
   memcpy (retval.fortran_vec (), m.fortran_vec (), sizeof (double)*3);
+
   return retval;
 }
 
@@ -5403,9 +5459,9 @@ axes::properties::update_camera (void)
 
   if (cameratargetmode_is ("auto"))
     {
-      c_center(0) = (xlimits(0)+xlimits(1))/2;
-      c_center(1) = (ylimits(0)+ylimits(1))/2;
-      c_center(2) = (zlimits(0)+zlimits(1))/2;
+      c_center(0) = (xlimits(0) + xlimits(1)) / 2;
+      c_center(1) = (ylimits(0) + ylimits(1)) / 2;
+      c_center(2) = (zlimits(0) + zlimits(1)) / 2;
 
       cameratarget = xform2cam (c_center);
     }
@@ -5417,7 +5473,7 @@ axes::properties::update_camera (void)
       Matrix tview = get_view ().matrix_value ();
       double az = tview(0);
       double el = tview(1);
-      double d = 5 * sqrt (pb(0)*pb(0)+pb(1)*pb(1)+pb(2)*pb(2));
+      double d = 5 * sqrt (pb(0)*pb(0) + pb(1)*pb(1) + pb(2)*pb(2));
 
       if (el == 90 || el == -90)
         c_eye(2) = d*signum (el);
@@ -5486,7 +5542,7 @@ axes::properties::update_camera (void)
 
   if (std::abs (dot (f, UP)) > 1e-15)
     {
-      double fa = 1 / sqrt(1-f(2)*f(2));
+      double fa = 1 / sqrt (1 - f(2)*f(2));
       scale (UP, fa, fa, fa);
     }
 
@@ -5506,8 +5562,8 @@ axes::properties::update_camera (void)
   Matrix x_cube = x_view * unit_cube ();
   ColumnVector cmin = x_cube.row_min ();
   ColumnVector cmax = x_cube.row_max ();
-  double xM = cmax(0)-cmin(0);
-  double yM = cmax(1)-cmin(1);
+  double xM = cmax(0) - cmin(0);
+  double yM = cmax(1) - cmin(1);
 
   Matrix bb = get_boundingbox (true);
 
@@ -5584,9 +5640,8 @@ axes::properties::update_camera (void)
 
   x_render_inv = x_render.inverse ();
 
-  // Note: these matrices are a slight modified version of the regular
-  // matrices, more suited for OpenGL rendering (x_gl_mat1 => light
-  // => x_gl_mat2)
+  // Note: these matrices are a slight modified version of the regular matrices,
+  // more suited for OpenGL rendering (x_gl_mat1 => light => x_gl_mat2)
   x_gl_mat1 = x_view;
   scale (x_gl_mat1, xd/(xlimits(1)-xlimits(0)), yd/(ylimits(1)-ylimits(0)),
          zd/(zlimits(1)-zlimits(0)));
@@ -5623,9 +5678,9 @@ axes::properties::update_axes_layout (void)
 
   p1 = xform.transform (x_min, (y_min+y_max)/2, (z_min+z_max)/2, false);
   p2 = xform.transform (x_max, (y_min+y_max)/2, (z_min+z_max)/2, false);
-  dir(0) = xround (p2(0)-p1(0));
-  dir(1) = xround (p2(1)-p1(1));
-  dir(2) = (p2(2)-p1(2));
+  dir(0) = xround (p2(0) - p1(0));
+  dir(1) = xround (p2(1) - p1(1));
+  dir(2) = (p2(2) - p1(2));
   if (dir(0) == 0 && dir(1) == 0)
     xstate = AXE_DEPTH_DIR;
   else if (dir(2) == 0)
@@ -5647,13 +5702,13 @@ axes::properties::update_axes_layout (void)
     xPlane = (dir(2) < 0 ? x_min : x_max);
 
   xPlaneN = (xPlane == x_min ? x_max : x_min);
-  fx = (x_max-x_min) / sqrt (dir(0)*dir(0)+dir(1)*dir(1));
+  fx = (x_max - x_min) / sqrt (dir(0)*dir(0) + dir(1)*dir(1));
 
-  p1 = xform.transform ((x_min+x_max)/2, y_min, (z_min+z_max)/2, false);
-  p2 = xform.transform ((x_min+x_max)/2, y_max, (z_min+z_max)/2, false);
-  dir(0) = xround (p2(0)-p1(0));
-  dir(1) = xround (p2(1)-p1(1));
-  dir(2) = (p2(2)-p1(2));
+  p1 = xform.transform ((x_min + x_max)/2, y_min, (z_min + z_max)/2, false);
+  p2 = xform.transform ((x_min + x_max)/2, y_max, (z_min + z_max)/2, false);
+  dir(0) = xround (p2(0) - p1(0));
+  dir(1) = xround (p2(1) - p1(1));
+  dir(2) = (p2(2) - p1(2));
   if (dir(0) == 0 && dir(1) == 0)
     ystate = AXE_DEPTH_DIR;
   else if (dir(2) == 0)
@@ -5675,13 +5730,13 @@ axes::properties::update_axes_layout (void)
     yPlane = (dir(2) < 0 ? y_min : y_max);
 
   yPlaneN = (yPlane == y_min ? y_max : y_min);
-  fy = (y_max-y_min) / sqrt (dir(0)*dir(0)+dir(1)*dir(1));
+  fy = (y_max - y_min) / sqrt (dir(0)*dir(0) + dir(1)*dir(1));
 
-  p1 = xform.transform ((x_min+x_max)/2, (y_min+y_max)/2, z_min, false);
-  p2 = xform.transform ((x_min+x_max)/2, (y_min+y_max)/2, z_max, false);
-  dir(0) = xround (p2(0)-p1(0));
-  dir(1) = xround (p2(1)-p1(1));
-  dir(2) = (p2(2)-p1(2));
+  p1 = xform.transform ((x_min + x_max)/2, (y_min + y_max)/2, z_min, false);
+  p2 = xform.transform ((x_min + x_max)/2, (y_min + y_max)/2, z_max, false);
+  dir(0) = xround (p2(0) - p1(0));
+  dir(1) = xround (p2(1) - p1(1));
+  dir(2) = (p2(2) - p1(2));
   if (dir(0) == 0 && dir(1) == 0)
     zstate = AXE_DEPTH_DIR;
   else if (dir(2) == 0)
@@ -5703,7 +5758,7 @@ axes::properties::update_axes_layout (void)
     zPlane = (dir(2) < 0 ? z_min : z_max);
 
   zPlaneN = (zPlane == z_min ? z_max : z_min);
-  fz = (z_max-z_min) / sqrt (dir(0)*dir(0)+dir(1)*dir(1));
+  fz = (z_max - z_min) / sqrt (dir(0)*dir(0) + dir(1)*dir(1));
 
   unwind_protect frame;
   frame.protect_var (updating_axes_layout);
@@ -5769,8 +5824,8 @@ axes::properties::update_ticklength (void)
 
   Matrix bbox = get_boundingbox (true);
   Matrix ticklen = get_ticklength ().matrix_value ();
-  ticklen(0) = ticklen(0) * std::max (bbox(2), bbox(3));
-  ticklen(1) = ticklen(1) * std::max (bbox(2), bbox(3));
+  ticklen(0) *= std::max (bbox(2), bbox(3));
+  ticklen(1) *= std::max (bbox(2), bbox(3));
 
   xticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
   yticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
@@ -5841,13 +5896,13 @@ axes::properties::update_xlabel_position (void)
   if (updating_xlabel_position)
     return;
 
-  graphics_object obj = gh_manager::get_object (get_xlabel ());
+  graphics_object go = gh_manager::get_object (get_xlabel ());
 
-  if (! obj.valid_object ())
+  if (! go.valid_object ())
     return;
 
   text::properties& xlabel_props
-    = reinterpret_cast<text::properties&> (obj.get_properties ());
+    = reinterpret_cast<text::properties&> (go.get_properties ());
 
   bool is_empty = xlabel_props.get_string ().is_empty ();
 
@@ -5860,8 +5915,7 @@ axes::properties::update_xlabel_position (void)
       if (xlabel_props.horizontalalignmentmode_is ("auto"))
         {
           xlabel_props.set_horizontalalignment
-            (xstate > AXE_DEPTH_DIR
-             ? "center" : (xyzSym ? "left" : "right"));
+            (xstate > AXE_DEPTH_DIR ? "center" : (xyzSym ? "left" : "right"));
 
           xlabel_props.set_horizontalalignmentmode ("auto");
         }
@@ -5887,15 +5941,15 @@ axes::properties::update_xlabel_position (void)
 
       double wmax = ext(0);
       double hmax = ext(1);
-      double angle = 0;
+      double angle = 0.0;
       ColumnVector p =
-        graphics_xform::xform_vector ((xpTickN+xpTick)/2, ypTick, zpTick);
+        graphics_xform::xform_vector ((xpTickN + xpTick)/2, ypTick, zpTick);
 
       bool tick_along_z = nearhoriz || xisinf (fy);
       if (tick_along_z)
-        p(2) += (signum (zpTick-zpTickN)*fz*xtickoffset);
+        p(2) += (signum (zpTick - zpTickN) * fz * xtickoffset);
       else
-        p(1) += (signum (ypTick-ypTickN)*fy*xtickoffset);
+        p(1) += (signum (ypTick - ypTickN) * fy * xtickoffset);
 
       p = xform.transform (p(0), p(1), p(2), false);
 
@@ -5943,13 +5997,13 @@ axes::properties::update_ylabel_position (void)
   if (updating_ylabel_position)
     return;
 
-  graphics_object obj = gh_manager::get_object (get_ylabel ());
+  graphics_object go = gh_manager::get_object (get_ylabel ());
 
-  if (! obj.valid_object ())
+  if (! go.valid_object ())
     return;
 
   text::properties& ylabel_props
-    = reinterpret_cast<text::properties&> (obj.get_properties ());
+    = reinterpret_cast<text::properties&> (go.get_properties ());
 
   bool is_empty = ylabel_props.get_string ().is_empty ();
 
@@ -5962,8 +6016,7 @@ axes::properties::update_ylabel_position (void)
       if (ylabel_props.horizontalalignmentmode_is ("auto"))
         {
           ylabel_props.set_horizontalalignment
-            (ystate > AXE_DEPTH_DIR
-             ? "center" : (!xyzSym ? "left" : "right"));
+            (ystate > AXE_DEPTH_DIR ? "center" : (!xyzSym ? "left" : "right"));
 
           ylabel_props.set_horizontalalignmentmode ("auto");
         }
@@ -5998,15 +6051,15 @@ axes::properties::update_ylabel_position (void)
 
       double wmax = ext(0)+4;
       double hmax = ext(1);
-      double angle = 0;
+      double angle = 0.0;
       ColumnVector p =
-        graphics_xform::xform_vector (xpTick, (ypTickN+ypTick)/2, zpTick);
+        graphics_xform::xform_vector (xpTick, (ypTickN + ypTick)/2, zpTick);
 
       bool tick_along_z = nearhoriz || xisinf (fx);
       if (tick_along_z)
-        p(2) += (signum (zpTick-zpTickN)*fz*ytickoffset);
+        p(2) += (signum (zpTick - zpTickN) * fz * ytickoffset);
       else
-        p(0) += (signum (xpTick-xpTickN)*fx*ytickoffset);
+        p(0) += (signum (xpTick - xpTickN) * fx * ytickoffset);
 
       p = xform.transform (p(0), p(1), p(2), false);
 
@@ -6054,13 +6107,13 @@ axes::properties::update_zlabel_position (void)
   if (updating_zlabel_position)
     return;
 
-  graphics_object obj = gh_manager::get_object (get_zlabel ());
+  graphics_object go = gh_manager::get_object (get_zlabel ());
 
-  if (! obj.valid_object ())
+  if (! go.valid_object ())
     return;
 
   text::properties& zlabel_props
-    = reinterpret_cast<text::properties&> (obj.get_properties ());
+    = reinterpret_cast<text::properties&> (go.get_properties ());
 
   bool camAuto = cameraupvectormode_is ("auto");
   bool is_empty = zlabel_props.get_string ().is_empty ();
@@ -6101,26 +6154,26 @@ axes::properties::update_zlabel_position (void)
 
       double wmax = ext(0);
       double hmax = ext(1);
-      double angle = 0;
+      double angle = 0.0;
       ColumnVector p;
 
       if (xySym)
         {
           p = graphics_xform::xform_vector (xPlaneN, yPlane,
-                                            (zpTickN+zpTick)/2);
+                                            (zpTickN + zpTick)/2);
           if (xisinf (fy))
-            p(0) += (signum (xPlaneN-xPlane)*fx*ztickoffset);
+            p(0) += (signum (xPlaneN - xPlane) * fx * ztickoffset);
           else
-            p(1) += (signum (yPlane-yPlaneN)*fy*ztickoffset);
+            p(1) += (signum (yPlane - yPlaneN) * fy * ztickoffset);
         }
       else
         {
           p = graphics_xform::xform_vector (xPlane, yPlaneN,
-                                            (zpTickN+zpTick)/2);
+                                            (zpTickN + zpTick)/2);
           if (xisinf (fx))
-            p(1) += (signum (yPlaneN-yPlane)*fy*ztickoffset);
+            p(1) += (signum (yPlaneN - yPlane) * fy * ztickoffset);
           else
-            p(0) += (signum (xPlane-xPlaneN)*fx*ztickoffset);
+            p(0) += (signum (xPlane - xPlaneN) * fx * ztickoffset);
         }
 
       p = xform.transform (p(0), p(1), p(2), false);
@@ -6178,13 +6231,13 @@ axes::properties::update_title_position (void)
   if (updating_title_position)
     return;
 
-  graphics_object obj = gh_manager::get_object (get_title ());
+  graphics_object go = gh_manager::get_object (get_title ());
 
-  if (! obj.valid_object ())
+  if (! go.valid_object ())
     return;
 
   text::properties& title_props
-    = reinterpret_cast<text::properties&> (obj.get_properties ());
+    = reinterpret_cast<text::properties&> (go.get_properties ());
 
   unwind_protect frame;
   frame.protect_var (updating_title_position);
@@ -6198,9 +6251,9 @@ axes::properties::update_title_position (void)
       Matrix bbox = get_extent (false);
 
       ColumnVector p =
-        graphics_xform::xform_vector (bbox(0)+bbox(2)/2,
-                                      bbox(1)-10,
-                                      (x_zlim(0)+x_zlim(1))/2);
+        graphics_xform::xform_vector (bbox(0) + bbox(2)/2,
+                                      bbox(1) - 10,
+                                      (x_zlim(0) + x_zlim(1))/2);
 
       if (x2Dtop)
         {
@@ -6239,15 +6292,15 @@ static void
 normalized_aspectratios (Matrix& aspectratios, const Matrix& scalefactors,
                          double xlength, double ylength, double zlength)
 {
-  double xval = xlength/scalefactors(0);
-  double yval = ylength/scalefactors(1);
-  double zval = zlength/scalefactors(2);
+  double xval = xlength / scalefactors(0);
+  double yval = ylength / scalefactors(1);
+  double zval = zlength / scalefactors(2);
 
   double minval = xmin (xmin (xval, yval), zval);
 
-  aspectratios(0) = xval/minval;
-  aspectratios(1) = yval/minval;
-  aspectratios(2) = zval/minval;
+  aspectratios(0) = xval / minval;
+  aspectratios(1) = yval / minval;
+  aspectratios(2) = zval / minval;
 }
 
 static void
@@ -6265,11 +6318,11 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
         {
           limits(0) = minval;
           limits(1) = maxval;
-          s = xmax(s, (maxval - minval) / (pbfactor * dafactor));
+          s = xmax (s, (maxval - minval) / (pbfactor * dafactor));
         }
     }
   else
-    s = xmax(s, (limits(1) - limits(0)) / (pbfactor * dafactor));
+    s = xmax (s, (limits(1) - limits(0)) / (pbfactor * dafactor));
 }
 
 static std::set<double> updating_aspectratios;
@@ -6285,9 +6338,9 @@ axes::properties::update_aspectratios (void)
   Matrix ylimits = get_ylim ().matrix_value ();
   Matrix zlimits = get_zlim ().matrix_value ();
 
-  double dx = (xlimits(1)-xlimits(0));
-  double dy = (ylimits(1)-ylimits(0));
-  double dz = (zlimits(1)-zlimits(0));
+  double dx = (xlimits(1) - xlimits(0));
+  double dy = (ylimits(1) - ylimits(0));
+  double dz = (zlimits(1) - zlimits(0));
 
   Matrix da = get_dataaspectratio ().matrix_value ();
   Matrix pba = get_plotboxaspectratio ().matrix_value ();
@@ -6340,15 +6393,14 @@ axes::properties::update_aspectratios (void)
 
       if (modified_limits)
         {
-
           unwind_protect frame;
           frame.protect_var (updating_aspectratios);
 
           updating_aspectratios.insert (get___myhandle__ ().value ());
 
-          dx = pba(0) *da(0);
-          dy = pba(1) *da(1);
-          dz = pba(2) *da(2);
+          dx = pba(0) * da(0);
+          dy = pba(1) * da(1);
+          dz = pba(2) * da(2);
           if (xisinf (s))
             s = 1 / xmin (xmin (dx, dy), dz);
 
@@ -6410,13 +6462,13 @@ axes::properties::get_boundingbox (bool internal,
                         : get_outerposition ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.numel () == 0)
+  if (parent_size.is_empty ())
     {
-      graphics_object obj = gh_manager::get_object (get_parent ());
+      graphics_object go = gh_manager::get_object (get_parent ());
 
-      if (obj.valid_object ())
+      if (go.valid_object ())
         parent_size =
-          obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+          go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
       else
         parent_size = default_figure_position ();
     }
@@ -6436,10 +6488,8 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
   graphics_xform xform = get_transform ();
 
   Matrix ext (1, 4, 0.0);
-  ext(0) = octave_Inf;
-  ext(1) = octave_Inf;
-  ext(2) = -octave_Inf;
-  ext(3) = -octave_Inf;
+  ext(0) = ext(1) = octave_Inf;
+  ext(2) = ext(3) = -octave_Inf;
   for (int i = 0; i <= 1; i++)
     for (int j = 0; j <= 1; j++)
       for (int k = 0; k <= 1; k++)
@@ -6457,19 +6507,19 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
     {
       for (int i = 0; i < 4; i++)
         {
-          graphics_handle text_handle;
+          graphics_handle htext;
           if (i == 0)
-            text_handle = get_title ();
+            htext = get_title ();
           else if (i == 1)
-            text_handle = get_xlabel ();
+            htext = get_xlabel ();
           else if (i == 2)
-            text_handle = get_ylabel ();
+            htext = get_ylabel ();
           else if (i == 3)
-            text_handle = get_zlabel ();
+            htext = get_zlabel ();
 
           text::properties& text_props
             = reinterpret_cast<text::properties&>
-                (gh_manager::get_object (text_handle).get_properties ());
+                (gh_manager::get_object (htext).get_properties ());
 
           Matrix text_pos = text_props.get_data_position ();
           text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
@@ -6512,8 +6562,8 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
         }
     }
 
-  ext(2) = ext(2)-ext(0);
-  ext(3) = ext(3)-ext(1);
+  ext(2) = ext(2) - ext(0);
+  ext(3) = ext(3) - ext(1);
 
   return ext;
 }
@@ -6525,7 +6575,7 @@ convert_ticklabel_string (const octave_value& val)
 
   if (val.is_cellstr ())
     {
-      // Always return a column vector for Matlab Compatibility
+      // Always return a column vector for Matlab compatibility
       if (val.columns () > 1)
         retval = val.reshape (dim_vector (val.numel (), 1));
     }
@@ -6570,11 +6620,11 @@ convert_ticklabel_string (const octave_value& val)
 }
 
 void
-axes::properties::set_xticklabel (const octave_value& v)
+axes::properties::set_xticklabel (const octave_value& val)
 {
-  if (!error_state)
+  if (! error_state)
     {
-      if (xticklabel.set (convert_ticklabel_string (v), false))
+      if (xticklabel.set (convert_ticklabel_string (val), false))
         {
           set_xticklabelmode ("manual");
           xticklabel.run_listeners (POSTSET);
@@ -6588,11 +6638,11 @@ axes::properties::set_xticklabel (const octave_value& v)
 }
 
 void
-axes::properties::set_yticklabel (const octave_value& v)
+axes::properties::set_yticklabel (const octave_value& val)
 {
-  if (!error_state)
+  if (! error_state)
     {
-      if (yticklabel.set (convert_ticklabel_string (v), false))
+      if (yticklabel.set (convert_ticklabel_string (val), false))
         {
           set_yticklabelmode ("manual");
           yticklabel.run_listeners (POSTSET);
@@ -6606,11 +6656,11 @@ axes::properties::set_yticklabel (const octave_value& v)
 }
 
 void
-axes::properties::set_zticklabel (const octave_value& v)
+axes::properties::set_zticklabel (const octave_value& val)
 {
-  if (!error_state)
+  if (! error_state)
     {
-      if (zticklabel.set (convert_ticklabel_string (v), false))
+      if (zticklabel.set (convert_ticklabel_string (val), false))
         {
           set_zticklabelmode ("manual");
           zticklabel.run_listeners (POSTSET);
@@ -6665,21 +6715,21 @@ convert_linestyleorder_string (const octave_value& val)
 }
 
 void
-axes::properties::set_linestyleorder (const octave_value& v)
+axes::properties::set_linestyleorder (const octave_value& val)
 {
-  if (!error_state)
+  if (! error_state)
     {
-      linestyleorder.set (convert_linestyleorder_string (v), false);
+      linestyleorder.set (convert_linestyleorder_string (val), false);
     }
 }
 
 void
-axes::properties::set_units (const octave_value& v)
+axes::properties::set_units (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_units = get_units ();
-      if (units.set (v, true))
+      if (units.set (val, true))
         {
           update_units (old_units);
           mark_modified ();
@@ -6690,9 +6740,9 @@ axes::properties::set_units (const octave_value& v)
 void
 axes::properties::update_units (const caseless_str& old_units)
 {
-  graphics_object obj = gh_manager::get_object (get_parent ());
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
   Matrix parent_bb
-    = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    = parent_go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
   caseless_str new_units = get_units ();
   position.set (octave_value (convert_position (get_position ().matrix_value (),
                                                 old_units, new_units,
@@ -6713,12 +6763,12 @@ axes::properties::update_units (const caseless_str& old_units)
 }
 
 void
-axes::properties::set_fontunits (const octave_value& v)
+axes::properties::set_fontunits (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (v, true))
+      if (fontunits.set (val, true))
         {
           update_fontunits (old_fontunits);
           mark_modified ();
@@ -6731,23 +6781,23 @@ axes::properties::update_fontunits (const caseless_str& old_units)
 {
   caseless_str new_units = get_fontunits ();
   double parent_height = get_boundingbox (true).elem (3);
-  double fsz = get_fontsize ();
+  double fontsz = get_fontsize ();
 
-  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
 
-  set_fontsize (octave_value (fsz));
+  set_fontsize (octave_value (fontsz));
 }
 
 double
 axes::properties::get_fontsize_points (double box_pix_height) const
 {
-  double fs = get_fontsize ();
+  double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
     parent_height = get_boundingbox (true).elem (3);
 
-  return convert_font_size (fs, get_fontunits (), "points", parent_height);
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
 }
 
 ColumnVector
@@ -6763,8 +6813,7 @@ graphics_xform::xform_eye (void)
 }
 
 ColumnVector
-graphics_xform::transform (double x, double y, double z,
-                           bool use_scale) const
+graphics_xform::transform (double x, double y, double z, bool use_scale) const
 {
   if (use_scale)
     {
@@ -6793,16 +6842,16 @@ graphics_xform::untransform (double x, double y, double z,
 }
 
 octave_value
-axes::get_default (const caseless_str& name) const
+axes::get_default (const caseless_str& pname) const
 {
-  octave_value retval = default_properties.lookup (name);
+  octave_value retval = default_properties.lookup (pname);
 
   if (retval.is_undefined ())
     {
-      graphics_handle parent = get_parent ();
-      graphics_object parent_obj = gh_manager::get_object (parent);
+      graphics_handle parent_h = get_parent ();
+      graphics_object parent_go = gh_manager::get_object (parent_h);
 
-      retval = parent_obj.get_default (name);
+      retval = parent_go.get_default (pname);
     }
 
   return retval;
@@ -6863,8 +6912,8 @@ check_limit_vals (double& min_val, double& max_val,
     }
 }
 
-// magform(x) Returns (a, b), where x = a * 10^b, abs (a) >= 1., and b is
-// integer.
+// magform(x) Returns (a, b),
+// where x = a * 10^b, abs (a) >= 1., and b is integer.
 
 static void
 magform (double x, double& a, int& b)
@@ -6890,15 +6939,15 @@ axes::properties::calc_tick_sep (double lo, double hi)
 {
   int ticint = 5;
 
-  // Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and
-  // SCALE3 for Determination of Scales on Computer Generated
-  // Plots", Communications of the ACM, 10 (1973), 639-640.
+  // Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and SCALE3 for
+  // Determination of Scales on Computer Generated Plots", Communications of
+  // the ACM, 10 (1973), 639-640.
   // Also cited as ACM Algorithm 463.
 
   double a;
   int b, x;
 
-  magform ((hi-lo)/ticint, a, b);
+  magform ((hi - lo) / ticint, a, b);
 
   static const double sqrt_2 = sqrt (2.0);
   static const double sqrt_10 = sqrt (10.0);
@@ -6914,12 +6963,10 @@ axes::properties::calc_tick_sep (double lo, double hi)
     x = 10;
 
   return x * std::pow (10., b);
-
 }
 
-// Attempt to make "nice" limits from the actual max and min of the
-// data.  For log plots, we will also use the smallest strictly positive
-// value.
+// Attempt to make "nice" limits from the actual max and min of the data.
+// For log plots, we will also use the smallest strictly positive value.
 
 Matrix
 axes::properties::get_axis_limits (double xmin, double xmax,
@@ -6942,15 +6989,15 @@ axes::properties::get_axis_limits (double xmin, double xmax,
         {
           if (xisinf (min_pos) && xisinf (max_neg))
             {
-              // TODO -- max_neg is needed for "loglog ([0 -Inf])"
-              //         This is the only place where max_neg is needed.
-              //         Is there another way?
+              // FIXME: max_neg is needed for "loglog ([0 -Inf])"
+              //        This is the *only* place where max_neg is needed.
+              //        Is there another way?
               retval = default_lim ();
               retval(0) = pow (10., retval(0));
               retval(1) = pow (10., retval(1));
               return retval;
             }
-          if ((min_val <= 0 && max_val > 0))
+          if (min_val <= 0 && max_val > 0)
             {
               warning ("axis: omitting non-positive data in log plot");
               min_val = min_pos;
@@ -6999,7 +7046,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               max_val += 0.1 * std::abs (max_val);
             }
 
-          double tick_sep = calc_tick_sep (min_val , max_val);
+          double tick_sep = calc_tick_sep (min_val, max_val);
           double min_tick = gnulib::floor (min_val / tick_sep);
           double max_tick = std::ceil (max_val / tick_sep);
           // Prevent round-off from cropping ticks
@@ -7027,8 +7074,8 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   if (lims.get ().is_empty ())
     return;
 
-  double lo = (lims.get ().matrix_value ()) (0);
-  double hi = (lims.get ().matrix_value ()) (1);
+  double lo = (lims.get ().matrix_value ())(0);
+  double hi = (lims.get ().matrix_value ())(1);
   bool is_negative = lo < 0 && hi < 0;
   double tmp;
   // FIXME: should this be checked for somewhere else? (i.e. set{x,y,z}lim)
@@ -7060,22 +7107,22 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         tick_sep = 0;
     }
   else
-    tick_sep = calc_tick_sep (lo , hi);
+    tick_sep = calc_tick_sep (lo, hi);
 
   int i1 = static_cast<int> (gnulib::floor (lo / tick_sep));
   int i2 = static_cast<int> (std::ceil (hi / tick_sep));
 
   if (limmode_is_auto)
     {
-      // adjust limits to include min and max tics
+      // Adjust limits to include min and max tics
       Matrix tmp_lims (1,2);
       tmp_lims(0) = std::min (tick_sep * i1, lo);
       tmp_lims(1) = std::max (tick_sep * i2, hi);
 
       if (is_logscale)
         {
-          tmp_lims(0) = std::pow (10.,tmp_lims(0));
-          tmp_lims(1) = std::pow (10.,tmp_lims(1));
+          tmp_lims(0) = std::pow (10., tmp_lims(0));
+          tmp_lims(1) = std::pow (10., tmp_lims(1));
           if (tmp_lims(0) <= 0)
             tmp_lims(0) = std::pow (10., lo);
           if (is_negative)
@@ -7099,16 +7146,16 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   Matrix tmp_ticks (1, i2-i1+1);
   for (int i = 0; i <= i2-i1; i++)
     {
-      tmp_ticks (i) = tick_sep * (i+i1);
+      tmp_ticks(i) = tick_sep * (i+i1);
       if (is_logscale)
-        tmp_ticks (i) = std::pow (10., tmp_ticks (i));
+        tmp_ticks(i) = std::pow (10., tmp_ticks(i));
     }
   if (is_logscale && is_negative)
     {
       Matrix rev_ticks (1, i2-i1+1);
       rev_ticks = -tmp_ticks;
       for (int i = 0; i <= i2-i1; i++)
-        tmp_ticks (i) = rev_ticks (i2-i1-i);
+        tmp_ticks(i) = rev_ticks(i2-i1-i);
     }
 
   ticks = tmp_ticks;
@@ -7118,10 +7165,10 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   for (int i = 0; i < tmp_ticks.numel ()-1; i++)
     {
-      double d = (tmp_ticks (i+1) - tmp_ticks (i)) / (n+1);
+      double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
       for (int j = 0; j < n; j++)
         {
-          tmp_mticks (n*i+j) = tmp_ticks (i) + d * (j+1);
+          tmp_mticks(n*i+j) = tmp_ticks(i) + d * (j+1);
         }
     }
   mticks = tmp_mticks;
@@ -7152,8 +7199,8 @@ axes::properties::calc_ticklabels (const array_property& ticks,
     {
       double significand;
       double exponent;
-      double exp_max = 0.;
-      double exp_min = 0.;
+      double exp_max = 0.0;
+      double exp_min = 0.0;
 
       for (int i = 0; i < values.numel (); i++)
         {
@@ -7163,14 +7210,14 @@ axes::properties::calc_ticklabels (const array_property& ticks,
 
       for (int i = 0; i < values.numel (); i++)
         {
-          if (values(i) < 0.)
+          if (values(i) < 0.0)
             exponent = gnulib::floor (std::log10 (-values(i)));
           else
             exponent = gnulib::floor (std::log10 (values(i)));
           significand = values(i) * std::pow (10., -exponent);
           os.str (std::string ());
           os << significand;
-          if (exponent < 0.)
+          if (exponent < 0.0)
             {
               os << "e-";
               exponent = -exponent;
@@ -7207,7 +7254,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 
   Matrix ext (1, 2, 0.0);
   double wmax, hmax;
-  wmax = hmax = 0.;
+  wmax = hmax = 0.0;
   int n = std::min (ticklabels.numel (), ticks.numel ());
   for (int i = 0; i < n; i++)
     {
@@ -7247,11 +7294,11 @@ get_children_limits (double& min_val, double& max_val,
     case 'x':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object obj = gh_manager::get_object (kids(i));
+          graphics_object go = gh_manager::get_object (kids(i));
 
-          if (obj.is_xliminclude ())
+          if (go.is_xliminclude ())
             {
-              octave_value lim = obj.get_xlim ();
+              octave_value lim = go.get_xlim ();
 
               check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
@@ -7261,11 +7308,11 @@ get_children_limits (double& min_val, double& max_val,
     case 'y':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object obj = gh_manager::get_object (kids(i));
+          graphics_object go = gh_manager::get_object (kids(i));
 
-          if (obj.is_yliminclude ())
+          if (go.is_yliminclude ())
             {
-              octave_value lim = obj.get_ylim ();
+              octave_value lim = go.get_ylim ();
 
               check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
@@ -7275,11 +7322,11 @@ get_children_limits (double& min_val, double& max_val,
     case 'z':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object obj = gh_manager::get_object (kids(i));
+          graphics_object go = gh_manager::get_object (kids(i));
 
-          if (obj.is_zliminclude ())
+          if (go.is_zliminclude ())
             {
-              octave_value lim = obj.get_zlim ();
+              octave_value lim = go.get_zlim ();
 
               check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
@@ -7289,11 +7336,11 @@ get_children_limits (double& min_val, double& max_val,
     case 'c':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object obj = gh_manager::get_object (kids(i));
+          graphics_object go = gh_manager::get_object (kids(i));
 
-          if (obj.is_climinclude ())
+          if (go.is_climinclude ())
             {
-              octave_value lim = obj.get_clim ();
+              octave_value lim = go.get_clim ();
 
               check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
@@ -7303,11 +7350,11 @@ get_children_limits (double& min_val, double& max_val,
     case 'a':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object obj = gh_manager::get_object (kids(i));
+          graphics_object go = gh_manager::get_object (kids(i));
 
-          if (obj.is_aliminclude ())
+          if (go.is_aliminclude ())
             {
-              octave_value lim = obj.get_alim ();
+              octave_value lim = go.get_alim ();
 
               check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
@@ -7522,7 +7569,6 @@ axes::update_axis_limits (const std::string& axis_type,
     }
 
   xproperties.update_transform ();
-
 }
 
 void
@@ -7965,11 +8011,10 @@ axes::properties::rotate3d (double x0, double x1, double y0, double y1,
     new_view(0) += 360.0;
 
   // Snapping
-  double snapMargin = 1.0;
+  double snapmargin = 1.0;
   for (int a = -90; a <= 90; a += 90)
     {
-      if ((a - snapMargin) < new_view(1)
-          && new_view(1) < (a + snapMargin))
+      if ((a - snapmargin) < new_view(1) && new_view(1) < (a + snapmargin))
         {
           new_view(1) = a;
           break;
@@ -7977,8 +8022,7 @@ axes::properties::rotate3d (double x0, double x1, double y0, double y1,
     }
 
   for (int a = -180; a <= 180; a += 180)
-    if ((a - snapMargin) < new_view(0)
-        && new_view(0) < (a + snapMargin))
+    if ((a - snapmargin) < new_view(0) && new_view(0) < (a + snapmargin))
       {
         if (a == 180)
           new_view(0) = -180;
@@ -8149,12 +8193,12 @@ text::properties::get_extent (void) const
 }
 
 void
-text::properties::set_fontunits (const octave_value& v)
+text::properties::set_fontunits (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (v, true))
+      if (fontunits.set (val, true))
         {
           update_fontunits (old_fontunits);
           mark_modified ();
@@ -8167,7 +8211,7 @@ text::properties::update_fontunits (const caseless_str& old_units)
 {
   caseless_str new_units = get_fontunits ();
   double parent_height = 0;
-  double fsz = get_fontsize ();
+  double fontsz = get_fontsize ();
 
   if (new_units == "normalized")
     {
@@ -8177,9 +8221,9 @@ text::properties::update_fontunits (const caseless_str& old_units)
       parent_height = ax.get_properties ().get_boundingbox (true).elem (3);
     }
 
-  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
 
-  set_fontsize (octave_value (fsz));
+  set_fontsize (octave_value (fontsz));
 }
 
 void
@@ -8264,9 +8308,8 @@ text::properties::update_units (void)
 
   pos = convert_text_position (pos, *this, cached_units, get_units ());
 
-  // FIXME: if the current axes view is 2D, then one should
-  // probably drop the z-component of "pos" and leave "zliminclude"
-  // to "off".
+  // FIXME: if the current axes view is 2D, then one should probably drop
+  // the z-component of "pos" and leave "zliminclude" to "off".
 
   bool autopos = positionmode_is ("auto");
 
@@ -8289,7 +8332,7 @@ text::properties::update_units (void)
 double
 text::properties::get_fontsize_points (double box_pix_height) const
 {
-  double fs = get_fontsize ();
+  double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
@@ -8300,7 +8343,7 @@ text::properties::get_fontsize_points (double box_pix_height) const
       parent_height = ax.get_properties ().get_boundingbox (true).elem (3);
     }
 
-  return convert_font_size (fs, get_fontunits (), "points", parent_height);
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
 }
 
 // ---------------------------------------------------------------------
@@ -8308,8 +8351,7 @@ text::properties::get_fontsize_points (double box_pix_height) const
 octave_value
 image::properties::get_color_data (void) const
 {
-  return convert_cdata (*this, get_cdata (),
-                        cdatamapping_is ("scaled"), 3);
+  return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
 }
 
 // ---------------------------------------------------------------------
@@ -8341,7 +8383,7 @@ patch::properties::update_fvc (void)
   if (xd.dims () != yd.dims ()
       || (xd.dims () != zd.dims () && ! zd.is_empty ()))
     {
-      bad_data_msg = "x/y/zdata should have the same dimensions";
+      bad_data_msg = "x/y/zdata must have the same dimensions";
       return;
     }
 
@@ -8486,7 +8528,6 @@ patch::properties::update_data (void)
       has_zd = true;
     }
 
-
   for (octave_idx_type jj = 0; jj < nfaces; jj++)
     {
       for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
@@ -8629,30 +8670,30 @@ surface::properties::update_normals (void)
 void
 hggroup::properties::update_limits (void) const
 {
-  graphics_object obj = gh_manager::get_object (__myhandle__);
+  graphics_object go = gh_manager::get_object (__myhandle__);
 
-  if (obj)
+  if (go)
     {
-      obj.update_axis_limits ("xlim");
-      obj.update_axis_limits ("ylim");
-      obj.update_axis_limits ("zlim");
-      obj.update_axis_limits ("clim");
-      obj.update_axis_limits ("alim");
+      go.update_axis_limits ("xlim");
+      go.update_axis_limits ("ylim");
+      go.update_axis_limits ("zlim");
+      go.update_axis_limits ("clim");
+      go.update_axis_limits ("alim");
     }
 }
 
 void
 hggroup::properties::update_limits (const graphics_handle& h) const
 {
-  graphics_object obj = gh_manager::get_object (__myhandle__);
+  graphics_object go = gh_manager::get_object (__myhandle__);
 
-  if (obj)
+  if (go)
     {
-      obj.update_axis_limits ("xlim", h);
-      obj.update_axis_limits ("ylim", h);
-      obj.update_axis_limits ("zlim", h);
-      obj.update_axis_limits ("clim", h);
-      obj.update_axis_limits ("alim", h);
+      go.update_axis_limits ("xlim", h);
+      go.update_axis_limits ("ylim", h);
+      go.update_axis_limits ("zlim", h);
+      go.update_axis_limits ("clim", h);
+      go.update_axis_limits ("alim", h);
     }
 }
 
@@ -8720,7 +8761,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
     }
   else
     {
-      limits.resize (4,1);
+      limits.resize (4, 1);
       limits(0) = min_val;
       limits(1) = max_val;
       limits(2) = min_pos;
@@ -8902,7 +8943,7 @@ uicontextmenu::~uicontextmenu (void)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect;
- */
+*/
 
 // ---------------------------------------------------------------------
 
@@ -8911,10 +8952,9 @@ uicontrol::properties::get_extent (void) const
 {
   Matrix m = extent.get ().matrix_value ();
 
-  graphics_object parent_obj =
-    gh_manager::get_object (get_parent ());
-  Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
-         parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+  Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
   return convert_position (m, "pixels", get_units (), parent_size);
 }
@@ -8941,7 +8981,7 @@ uicontrol::properties::update_text_extent (void)
   box = text_renderer.get_extent (elt, 0);
   delete elt;
 
-  Matrix ext (1, 4, 0.0);
+  Matrix ext (1, 4);
 
   // FIXME: also handle left and bottom components
 
@@ -8959,9 +8999,9 @@ uicontrol::properties::update_units (void)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_object parent_obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
-         parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+  Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
   pos = convert_position (pos, cached_units, get_units (), parent_size);
   set_position (pos);
@@ -8985,13 +9025,13 @@ uicontrol::properties::get_boundingbox (bool,
   Matrix pos = get_position ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.numel () == 0)
+  if (parent_size.is_empty ())
     {
-      graphics_object obj = gh_manager::get_object (get_parent ());
+      graphics_object go = gh_manager::get_object (get_parent ());
 
-      if (obj.valid_object ())
+      if (go.valid_object ())
         parent_size =
-          obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+          go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
       else
         parent_size = default_figure_position ();
     }
@@ -9006,12 +9046,12 @@ uicontrol::properties::get_boundingbox (bool,
 }
 
 void
-uicontrol::properties::set_fontunits (const octave_value& v)
+uicontrol::properties::set_fontunits (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (v, true))
+      if (fontunits.set (val, true))
         {
           update_fontunits (old_fontunits);
           mark_modified ();
@@ -9024,23 +9064,23 @@ uicontrol::properties::update_fontunits (const caseless_str& old_units)
 {
   caseless_str new_units = get_fontunits ();
   double parent_height = get_boundingbox (false).elem (3);
-  double fsz = get_fontsize ();
+  double fontsz = get_fontsize ();
 
-  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
 
-  fontsize.set (octave_value (fsz), true);
+  fontsize.set (octave_value (fontsz), true);
 }
 
 double
 uicontrol::properties::get_fontsize_points (double box_pix_height) const
 {
-  double fs = get_fontsize ();
+  double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
     parent_height = get_boundingbox (false).elem (3);
 
-  return convert_font_size (fs, get_fontunits (), "points", parent_height);
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
 }
 
 // ---------------------------------------------------------------------
@@ -9052,12 +9092,12 @@ uipanel::properties::get_boundingbox (bool internal,
   Matrix pos = get_position ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
-  if (parent_size.numel () == 0)
+  if (parent_size.is_empty ())
     {
-      graphics_object obj = gh_manager::get_object (get_parent ());
+      graphics_object go = gh_manager::get_object (get_parent ());
 
       parent_size =
-        obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);
@@ -9088,26 +9128,26 @@ uipanel::properties::get_boundingbox (bool internal,
 
       if (! get_title ().empty ())
         {
-          double fs = get_fontsize ();
+          double fontsz = get_fontsize ();
 
           if (! fontunits_is ("pixels"))
             {
               double res = xget (0, "screenpixelsperinch").double_value ();
 
               if (fontunits_is ("points"))
-                fs *= (res / 72.0);
+                fontsz *= (res / 72.0);
               else if (fontunits_is ("inches"))
-                fs *= res;
+                fontsz *= res;
               else if (fontunits_is ("centimeters"))
-                fs *= (res / 2.54);
+                fontsz *= (res / 2.54);
               else if (fontunits_is ("normalized"))
-                fs *= outer_height;
+                fontsz *= outer_height;
             }
 
           if (titleposition_is ("lefttop") || titleposition_is ("centertop")
               || titleposition_is ("righttop"))
-            pos(1) += (fs / 2);
-          pos(3) -= (fs / 2);
+            pos(1) += (fontsz / 2);
+          pos(3) -= (fontsz / 2);
         }
     }
 
@@ -9115,12 +9155,12 @@ uipanel::properties::get_boundingbox (bool internal,
 }
 
 void
-uipanel::properties::set_units (const octave_value& v)
+uipanel::properties::set_units (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_units = get_units ();
-      if (units.set (v, true))
+      if (units.set (val, true))
         {
           update_units (old_units);
           mark_modified ();
@@ -9133,21 +9173,21 @@ uipanel::properties::update_units (const caseless_str& old_units)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_object parent_obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
-         parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+  Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
   pos = convert_position (pos, old_units, get_units (), parent_size);
   set_position (pos);
 }
 
 void
-uipanel::properties::set_fontunits (const octave_value& v)
+uipanel::properties::set_fontunits (const octave_value& val)
 {
   if (! error_state)
     {
       caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (v, true))
+      if (fontunits.set (val, true))
         {
           update_fontunits (old_fontunits);
           mark_modified ();
@@ -9160,38 +9200,38 @@ uipanel::properties::update_fontunits (const caseless_str& old_units)
 {
   caseless_str new_units = get_fontunits ();
   double parent_height = get_boundingbox (false).elem (3);
-  double fsz = get_fontsize ();
+  double fontsz = get_fontsize ();
 
-  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
 
-  set_fontsize (octave_value (fsz));
+  set_fontsize (octave_value (fontsz));
 }
 
 double
 uipanel::properties::get_fontsize_points (double box_pix_height) const
 {
-  double fs = get_fontsize ();
+  double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
     parent_height = get_boundingbox (false).elem (3);
 
-  return convert_font_size (fs, get_fontunits (), "points", parent_height);
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
 }
 
 // ---------------------------------------------------------------------
 
 octave_value
-uitoolbar::get_default (const caseless_str& name) const
+uitoolbar::get_default (const caseless_str& pname) const
 {
-  octave_value retval = default_properties.lookup (name);
+  octave_value retval = default_properties.lookup (pname);
 
   if (retval.is_undefined ())
     {
-      graphics_handle parent = get_parent ();
-      graphics_object parent_obj = gh_manager::get_object (parent);
+      graphics_handle parent_h = get_parent ();
+      graphics_object parent_go = gh_manager::get_object (parent_h);
 
-      retval = parent_obj.get_default (name);
+      retval = parent_go.get_default (pname);
     }
 
   return retval;
@@ -9203,27 +9243,26 @@ uitoolbar::reset_default_properties (void)
   // empty list of local defaults
   default_properties = property_list ();
 
-  xreset_default_properties (get_handle (),
-                             xproperties.factory_defaults ());
+  xreset_default_properties (get_handle (), xproperties.factory_defaults ());
 }
 
 // ---------------------------------------------------------------------
 
 octave_value
-base_graphics_object::get_default (const caseless_str& name) const
+base_graphics_object::get_default (const caseless_str& pname) const
 {
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_handle parent_h = get_parent ();
+  graphics_object parent_go = gh_manager::get_object (parent_h);
 
-  return parent_obj.get_default (type () + name);
+  return parent_go.get_default (type () + pname);
 }
 
 octave_value
 base_graphics_object::get_factory_default (const caseless_str& name) const
 {
-  graphics_object parent_obj = gh_manager::get_object (0);
+  graphics_object parent_go = gh_manager::get_object (0);
 
-  return parent_obj.get_factory_default (type () + name);
+  return parent_go.get_factory_default (type () + name);
 }
 
 // We use a random value for the handle to avoid issues with plots and
@@ -9258,19 +9297,19 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 {
   graphics_handle h = get_handle (integer_figure_handle);
 
-  base_graphics_object *go = 0;
+  base_graphics_object *bgo = 0;
 
-  go = make_graphics_object_from_type (go_name, h, p);
+  bgo = make_graphics_object_from_type (go_name, h, p);
 
-  if (go)
+  if (bgo)
     {
-      graphics_object obj (go);
+      graphics_object go (bgo);
 
-      handle_map[h] = obj;
+      handle_map[h] = go;
 
       // Overriding defaults will work now because the handle is valid
       // and we can find parent objects (not just handles).
-      obj.override_defaults ();
+      go.override_defaults ();
 
       if (go_name == "axes")
         {
@@ -9279,7 +9318,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
           // constructed.
 
           axes::properties& props =
-            dynamic_cast<axes::properties&> (obj.get_properties ());
+            dynamic_cast<axes::properties&> (go.get_properties ());
 
           graphics_object tgo;
 
@@ -9297,11 +9336,11 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
         }
 
       if (do_createfcn)
-        go->get_properties ().execute_createfcn ();
+        bgo->get_properties ().execute_createfcn ();
 
       // Notify graphics toolkit.
       if (do_notify_toolkit)
-        obj.initialize ();
+        go.initialize ();
     }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type '%s'",
@@ -9315,16 +9354,16 @@ gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
 {
   graphics_handle h = val;
 
-  base_graphics_object* go = new figure (h, 0);
-  graphics_object obj (go);
+  base_graphics_object* bgo = new figure (h, 0);
+  graphics_object go (bgo);
 
-  handle_map[h] = obj;
+  handle_map[h] = go;
 
   // Notify graphics toolkit.
   if (do_notify_toolkit)
-    obj.initialize ();
+    go.initialize ();
 
-  obj.override_defaults ();
+  go.override_defaults ();
 
   return h;
 }
@@ -9517,8 +9556,7 @@ gh_manager::do_restore_gcbo (void)
   callback_objects.pop_front ();
 
   xset_gcbo (callback_objects.empty ()
-             ? graphics_handle ()
-             : callback_objects.front ().get_handle ());
+             ? graphics_handle () : callback_objects.front ().get_handle ());
 }
 
 void
@@ -9834,7 +9872,7 @@ is_handle_visible (const octave_value& val)
           boolNDArray result (handles.dims ());
 
           for (octave_idx_type i = 0; i < handles.numel (); i++)
-            result.xelem (i) = is_handle_visible (handles (i));
+            result.xelem (i) = is_handle_visible (handles(i));
 
           retval = result;
         }
@@ -10103,22 +10141,22 @@ being @qcode{\"portrait\"}.\n\
           // loop over graphics objects
           for (octave_idx_type n = 0; n < hcv.numel (); n++)
             {
-              graphics_object obj = gh_manager::get_object (hcv(n));
+              graphics_object go = gh_manager::get_object (hcv(n));
 
-              if (obj)
+              if (go)
                 {
-                  if (nargin == 3 && args(1).is_cellstr ()
-                      && args(2).is_cell ())
+                  if (nargin == 3
+                      && args(1).is_cellstr () && args(2).is_cell ())
                     {
                       if (args(2).cell_value ().rows () == 1)
                         {
-                          obj.set (args(1).cellstr_value (),
-                                   args(2).cell_value (), 0);
+                          go.set (args(1).cellstr_value (),
+                                  args(2).cell_value (), 0);
                         }
                       else if (hcv.numel () == args(2).cell_value ().rows ())
                         {
-                          obj.set (args(1).cellstr_value (),
-                                   args(2).cell_value (), n);
+                          go.set (args(1).cellstr_value (),
+                                  args(2).cell_value (), n);
                         }
                       else
                         {
@@ -10130,15 +10168,15 @@ being @qcode{\"portrait\"}.\n\
                     }
                   else if (nargin == 2 && args(1).is_map ())
                     {
-                      obj.set (args(1).map_value ());
+                      go.set (args(1).map_value ());
                     }
                   else if (nargin == 2 && args(1).is_string ())
                     {
                       std::string property = args(1).string_value ();
 
-                      octave_map pmap = obj.values_as_struct ();
+                      octave_map pmap = go.values_as_struct ();
 
-                      if (obj.has_readonly_property (property))
+                      if (go.has_readonly_property (property))
                         if (nargout != 0)
                           retval = Matrix ();
                         else
@@ -10150,7 +10188,7 @@ being @qcode{\"portrait\"}.\n\
                             retval = pmap.getfield (property)(0);
                           else
                             {
-                              std::string s = obj.value_as_string (property);
+                              std::string s = go.value_as_string (property);
                               if (! error_state)
                                 octave_stdout << s;
                             }
@@ -10164,17 +10202,17 @@ being @qcode{\"portrait\"}.\n\
                   else if (nargin == 1)
                     {
                       if (nargout != 0)
-                        retval = obj.values_as_struct ();
+                        retval = go.values_as_struct ();
                       else
                         {
-                          std::string s = obj.values_as_string ();
+                          std::string s = go.values_as_string ();
                           if (! error_state)
                             octave_stdout << s;
                         }
                     }
                   else
                     {
-                      obj.set (args.splice (0, 1));
+                      go.set (args.splice (0, 1));
                       request_drawnow = true;
                     }
                 }
@@ -10207,10 +10245,10 @@ get_graphics_object_type (double val)
 {
   std::string retval;
 
-  graphics_object obj = gh_manager::get_object (val);
+  graphics_object go = gh_manager::get_object (val);
 
-  if (obj)
-    retval = obj.type ();
+  if (go)
+    retval = go.type ();
   else
     error ("get: invalid handle (= %g)", val);
 
@@ -10257,18 +10295,18 @@ lists respectively.\n\
 
           if (nargin == 1 && len > 1)
             {
-              std::string t0 = get_graphics_object_type (hcv(0));
+              std::string typ0 = get_graphics_object_type (hcv(0));
 
               if (! error_state)
                 {
                   for (octave_idx_type n = 1; n < len; n++)
                     {
-                      std::string t = get_graphics_object_type (hcv(n));
+                      std::string typ = get_graphics_object_type (hcv(n));
 
                       if (error_state)
                         break;
 
-                      if (t != t0)
+                      if (typ != typ0)
                         {
                           error ("get: vector of handles must all have same type");
                           break;
@@ -10294,9 +10332,9 @@ lists respectively.\n\
 
                       for (octave_idx_type n = 0; ! error_state && n < len; n++)
                         {
-                          graphics_object obj = gh_manager::get_object (hcv(n));
+                          graphics_object go = gh_manager::get_object (hcv(n));
 
-                          if (obj)
+                          if (go)
                             {
                               for (octave_idx_type m = 0;
                                    ! error_state && m < plen;
@@ -10304,7 +10342,7 @@ lists respectively.\n\
                                 {
                                   caseless_str property = plist(m);
 
-                                  vals(n, m) = obj.get (property);
+                                  vals(n, m) = go.get (property);
                                 }
                             }
                           else
@@ -10335,14 +10373,14 @@ lists respectively.\n\
                     {
                       for (octave_idx_type n = 0; ! error_state && n < len; n++)
                         {
-                          graphics_object obj = gh_manager::get_object (hcv(n));
+                          graphics_object go = gh_manager::get_object (hcv(n));
 
-                          if (obj)
+                          if (go)
                             {
                               if (nargin == 1)
-                                vals(n) = obj.get ();
+                                vals(n) = go.get ();
                               else
-                                vals(n) = obj.get (property);
+                                vals(n) = go.get (property);
                             }
                           else
                             {
@@ -10423,10 +10461,10 @@ Undocumented internal function.\n\
 
           for (octave_idx_type n = 0; n < len; n++)
             {
-              graphics_object obj = gh_manager::get_object (hcv(n));
+              graphics_object go = gh_manager::get_object (hcv(n));
 
-              if (obj)
-                vals(n) = obj.get (true);
+              if (go)
+                vals(n) = go.get (true);
               else
                 {
                   error ("get: invalid handle (= %g)", hcv(n));
@@ -10467,8 +10505,7 @@ make_graphics_object (const std::string& go_name,
   caseless_str p ("parent");
 
   for (int i = 0; i < xargs.length (); i++)
-    if (xargs(i).is_string ()
-        && p.compare (xargs(i).string_value ()))
+    if (xargs(i).is_string () && p.compare (xargs(i).string_value ()))
       {
         if (i < (xargs.length () - 1))
           {
@@ -10559,12 +10596,12 @@ Undocumented internal function.\n\
 
               if (xisnan (val))
                 {
-                  caseless_str p ("integerhandle");
+                  caseless_str pname ("integerhandle");
 
                   for (int i = 0; i < xargs.length (); i++)
                     {
                       if (xargs(i).is_string ()
-                          && p.compare (xargs(i).string_value ()))
+                          && pname.compare (xargs(i).string_value ()))
                         {
                           if (i < (xargs.length () - 1))
                             {
@@ -10587,10 +10624,9 @@ Undocumented internal function.\n\
 
                   if (! int_fig_handle)
                     {
-                      // We need to intiailize the integerhandle
-                      // property without calling the set_integerhandle
-                      // method, because doing that will generate a new
-                      // handle value...
+                      // We need to initialize the integerhandle property
+                      // without calling the set_integerhandle method,
+                      // because doing that will generate a new handle value...
 
                       graphics_object go = gh_manager::get_object (h);
                       go.get_properties ().init_integerhandle ("off");
@@ -10639,7 +10675,6 @@ Undocumented internal function.\n\
 int
 calc_dimensions (const graphics_object& go)
 {
-
   int nd = 2;
 
   if (go.isa ("surface"))
@@ -10653,11 +10688,11 @@ calc_dimensions (const graphics_object& go)
 
       for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
-          graphics_handle hnd = gh_manager::lookup (kids(i));
+          graphics_handle hkid = gh_manager::lookup (kids(i));
 
-          if (hnd.ok ())
+          if (hkid.ok ())
             {
-              const graphics_object& kid = gh_manager::get_object (hnd);
+              const graphics_object& kid = gh_manager::get_object (hkid);
 
               if (kid.valid_object ())
                 nd = calc_dimensions (kid);
@@ -10843,17 +10878,15 @@ Undocumented internal function.\n\
 
       if (! error_state)
         {
-          // Check is all the handles to delete are valid first
-          // as callbacks might delete one of the handles we
-          // later want to delete
+          // Check all the handles to delete are valid first, as callbacks
+          // might delete one of the handles we later want to delete
           for (octave_idx_type i = 0; i < vals.numel (); i++)
             {
-              h = gh_manager::lookup (vals.elem (i));
+              h = gh_manager::lookup (vals(i));
 
               if (! h.ok ())
                 {
-                  error ("delete: invalid graphics object (= %g)",
-                         vals.elem (i));
+                  error ("delete: invalid graphics object (= %g)", vals(i));
                   break;
                 }
             }
@@ -10904,9 +10937,9 @@ Undocumented internal function.\n\
 
           if (h.ok ())
             {
-              graphics_object obj = gh_manager::get_object (h);
+              graphics_object go = gh_manager::get_object (h);
 
-              obj.set_defaults (mode);
+              go.set_defaults (mode);
 
               h = gh_manager::lookup (val);
               if (! h.ok ())
@@ -11019,15 +11052,15 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 
       if (! error_state)
         {
-          graphics_object fobj = gh_manager::get_object (h);
-          if (fobj &&  fobj.isa ("image"))
+          graphics_object go = gh_manager::get_object (h);
+          if (go && go.isa ("image"))
             {
               image::properties& ip =
-                dynamic_cast<image::properties&> (fobj.get_properties ());
+                dynamic_cast<image::properties&> (go.get_properties ());
 
-              Matrix dp =  Matrix (1, 2, 0);
-              dp(0, 0) = ip.pixel_xsize ();
-              dp(0, 1) = ip.pixel_ysize ();
+              Matrix dp = Matrix (1, 2);
+              dp(0) = ip.pixel_xsize ();
+              dp(1) = ip.pixel_ysize ();
               retval = dp;
             }
           else
@@ -11670,11 +11703,11 @@ get_property_from_handle (double handle, const std::string& property,
 {
   gh_manager::auto_lock guard;
 
-  graphics_object obj = gh_manager::get_object (handle);
   octave_value retval;
+  graphics_object go = gh_manager::get_object (handle);
 
-  if (obj)
-    retval = obj.get (caseless_str (property));
+  if (go)
+    retval = go.get (caseless_str (property));
   else
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
@@ -11687,12 +11720,12 @@ set_property_in_handle (double handle, const std::string& property,
 {
   gh_manager::auto_lock guard;
 
-  graphics_object obj = gh_manager::get_object (handle);
   int ret = false;
+  graphics_object go = gh_manager::get_object (handle);
 
-  if (obj)
+  if (go)
     {
-      obj.set (caseless_str (property), arg);
+      go.set (caseless_str (property), arg);
 
       if (! error_state)
         ret = true;
@@ -11704,12 +11737,12 @@ set_property_in_handle (double handle, const std::string& property,
 }
 
 static bool
-compare_property_values (const octave_value& o1, const octave_value& o2)
+compare_property_values (const octave_value& ov1, const octave_value& ov2)
 {
   octave_value_list args(2);
 
-  args(0) = o1;
-  args(1) = o2;
+  args(0) = ov1;
+  args(1) = ov2;
 
   octave_value_list result = feval ("isequal", args, 1);
 
@@ -11745,11 +11778,11 @@ do_cleanup_waitfor_listener (const octave_value& listener,
             {
               gh_manager::auto_lock guard;
 
-              graphics_handle handle = gh_manager::lookup (h);
+              graphics_handle gh = gh_manager::lookup (h);
 
-              if (handle.ok ())
+              if (gh.ok ())
                 {
-                  graphics_object go = gh_manager::get_object (handle);
+                  graphics_object go = gh_manager::get_object (gh);
 
                   if (go.get_properties ().has_property (pname))
                     {
@@ -11794,11 +11827,11 @@ waitfor_listener (const octave_value_list& args, int)
                     {
                       gh_manager::auto_lock guard;
 
-                      graphics_handle handle = gh_manager::lookup (h);
+                      graphics_handle gh = gh_manager::lookup (h);
 
-                      if (handle.ok ())
+                      if (gh.ok ())
                         {
-                          graphics_object go = gh_manager::get_object (handle);
+                          graphics_object go = gh_manager::get_object (gh);
                           octave_value pvalue = go.get (pname);
 
                           if (compare_property_values (pvalue, args(5)))
@@ -11893,8 +11926,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
             {
               pname = args(1).string_value ();
               if (! error_state
-                  && ! pname.empty ()
-                  && ! pname.compare ("timeout"))
+                  && ! pname.empty () && ! pname.compare ("timeout"))
                 {
                   if (pname.compare ("\\timeout"))
                     pname = "timeout";
@@ -11940,11 +11972,11 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
                   gh_manager::auto_lock guard;
 
-                  graphics_handle handle = gh_manager::lookup (h);
+                  graphics_handle gh = gh_manager::lookup (h);
 
-                  if (handle.ok ())
+                  if (gh.ok ())
                     {
-                      graphics_object go = gh_manager::get_object (handle);
+                      graphics_object go = gh_manager::get_object (gh);
 
                       if (max_arg_index >= 2
                           && compare_property_values (go.get (pname),
@@ -11993,8 +12025,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
             }
 
           if (! error_state
-              && timeout_index < 0
-              && args.length () > (max_arg_index + 1))
+              && timeout_index < 0 && args.length () > (max_arg_index + 1))
             {
               caseless_str s = args(max_arg_index + 1).string_value ();
 
@@ -12033,10 +12064,10 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
           // FIXME: There is still a "hole" in the following loop. The code
           //        assumes that an object handle is unique, which is a fair
-          //        assumption, except for figures. If a figure is destroyed
+          //        assumption, except for figures.  If a figure is destroyed
           //        then recreated with the same figure ID, within the same
           //        run of event hooks, then the figure destruction won't be
-          //        caught and the loop will not stop. This is an unlikely
+          //        caught and the loop will not stop.  This is an unlikely
           //        possibility in practice, though.
           //
           //        Using deletefcn callback is also unreliable as it could be
@@ -12057,9 +12088,9 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                 {
                   gh_manager::auto_lock guard;
 
-                  graphics_handle handle = gh_manager::lookup (h);
+                  graphics_handle gh = gh_manager::lookup (h);
 
-                  if (handle.ok ())
+                  if (gh.ok ())
                     {
                       if (! pname.empty () && waitfor_results[id])
                         break;
@@ -12144,7 +12175,6 @@ Undocumented internal function.\n\
             }
           else
             ax_props.clear_zoom_stack (false);
-
         }
     }
   else
@@ -12161,3 +12191,4 @@ Undocumented internal function.\n\
 
   return retval;
 }
+

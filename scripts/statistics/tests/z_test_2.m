@@ -88,3 +88,57 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
 endfunction
+
+#!test
+%! ## Two-sided (also the default option)
+%! x = randn (100, 1); v_x = 2; x = v_x * x;
+%! [pval, z] = z_test_2 (x, x, v_x, v_x);
+%! zval_exp = 0; pval_exp = 1.0;
+%! assert (zval, zval_exp, eps);
+%! assert (pval, pval_exp, eps);
+
+#!test
+%! ## Two-sided (also the default option)
+%! x = randn (10000, 1); v_x = 2; x = v_x * x; n_x = length (x);
+%! y = randn (20000, 1); v_y = 3; y = v_y * y; n_y = length (y);
+%! [pval, z] = z_test_2 (x, y, v_x, v_y);
+%! if (mean (x) >= mean (y))
+%!   zval = abs (norminv (0.5*pval));
+%! else
+%!   zval = -abs (norminv (0.5*pval));
+%! endif
+%! unew = zval * sqrt (v_x/n_x + v_y/n_y);
+%! delmu = mean (x) - mean (y);
+%! assert (delmu, unew, 100*eps);
+
+#!test
+%! x = randn (100, 1); v_x = 2; x = v_x * x;
+%! [pval, z] = z_test_2 (x, x, v_x, v_x, ">");
+%! zval_exp = 0; pval_exp = 0.5;
+%! assert (zval, zval_exp, eps);
+%! assert (pval, pval_exp, eps);
+
+%!test
+%! x = randn (10000, 1); v_x = 2; x = v_x * x; n_x = length (x);
+%! y = randn (20000, 1); v_y = 3; y = v_y * y; n_y = length (y);
+%! [pval, z] = z_test_2 (x, y, v_x, v_y, ">");
+%! zval = norminv (1-pval);
+%! unew = zval * sqrt (v_x/n_x + v_y/n_y);
+%! delmu = mean (x) - mean (y);
+%! assert (delmu, unew, 100*eps);
+
+%!test
+%! x = randn (100, 1); v_x = 2; x = v_x * x;
+%! [pval, zval] = z_test_2 (x, x, v_x, v_x, "<");
+%! zval_exp = 0; pval_exp = 0.5;
+%! assert (zval, zval_exp, eps);
+%! assert (pval, pval_exp, eps);
+
+%!test
+%! x = randn (10000, 1); v_x = 2; x = v_x * x; n_x = length (x);
+%! y = randn (20000, 1); v_y = 3; y = v_y * y; n_y = length (y);
+%! [pval, z] = z_test_2 (x, y, v_x, v_y, "<");
+%! zval = norminv (pval);
+%! unew = zval * sqrt (v_x/n_x + v_y/n_y);
+%! delmu = mean (x) - mean (y);
+%! assert (delmu, unew, 100*eps);

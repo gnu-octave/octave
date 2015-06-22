@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{h} =} waitbar (@var{frac})
 ## @deftypefnx {Function File} {@var{h} =} waitbar (@var{frac}, @var{msg})
-## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, "FigureProperty", "Value", @dots{})
+## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, "createcancelbtn", @var{fcn}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} waitbar (@var{frac})
 ## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar})
 ## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
@@ -30,8 +31,13 @@
 ##
 ## The optional message @var{msg} is centered and displayed above the waitbar.
 ##
+## A cancel button can be added to the bottom of the waitbar using the
+## "createcancelbtn" property of waitbar figures. The action to be
+## executed when the user presses the button is specified using a string or
+## function handle @var{fcn}.
+## 
 ## The appearance of the waitbar figure window can be configured by passing
-## property/value pairs to the function.
+## @var{prop}/@var{val} pairs to the function.
 ##
 ## When called with a single input the current waitbar, if it exists, is
 ## updated to the new value @var{frac}.  If there are multiple outstanding
@@ -115,14 +121,21 @@ function h = waitbar (varargin)
                  "menubar", "none", "toolbar", "none",
                  "integerhandle", "off",
                  "handlevisibility", "callback",
-                 "tag", "waitbar",
-                 varargin{:});
-
+                 "tag", "waitbar");
+    
     ax = axes ("parent", hf,
                "xtick", [], "ytick", [],
                "xlim", [0, 1], "ylim", [0, 1],
                "position", [0.1, 0.3, 0.8, 0.2]);
 
+    ## Add createcancelbtn property
+    addproperty ("createcancelbtn", hf, "figurebuttondownfcn");
+    addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
+
+    if (! isempty (varargin))
+      set (hf, varargin{:});
+    endif
+    
     hp = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
     ## Cache the axes and patch handles.
@@ -145,6 +158,47 @@ function h = waitbar (varargin)
   ## If there were no errors, update current waitbar.
   curr_waitbar = hf;
 
+endfunction
+
+function updatecancelbutton (hf, dummy, hax)
+  if (! strcmpi (get (hf, "__graphics_toolkit__"), "qt"))
+    return
+  endif
+
+  hbtn = findobj (hf, "type", "uicontrol", "-and", "style", "pushbutton");
+  cb = get (hf, "createcancelbtn");
+  if (! isempty (cb))
+    if (isempty (hbtn))
+      units =  get (hax, "units");
+      fpos = get (hf, "position");
+      set (hax, "units", "pixels");
+      apos = get (hax, "position");
+      
+      fpos (2) -= 40;
+      fpos (4) += 40;
+      apos (2) += 40;
+      set (hf, "position", fpos);
+      set (hax, "position", apos, "units", units);
+      
+      hbtn = uicontrol ("style", "pushbutton", "string", "Cancel", ...
+                        "position", [fpos(3)-100 10 60 25],...
+                        "callback", cb, "parent", hf);
+    else
+      set (hbtn, "callback", cb)
+    endif
+  elseif (! isempty (hbtn))
+    delete (hbtn);
+    units =  get (hax, "units");
+    fpos = get (hf, "position");
+    set (hax, "units", "pixels");
+    apos = get (hax, "position");
+    
+    fpos (2) += 40;
+    fpos (4) -= 40;
+    apos (2) -= 40;
+    set (hf, "position", fpos);
+    set (hax, "position", apos, "units", units);
+  endif
 endfunction
 
 
@@ -192,6 +246,51 @@ endfunction
 %! pause (0.5);
 %! close (h1);
 %! close (h2);
+ 
+%!demo
+%! clf ();
+%! niter = 9;
+%! l = 1;
+%! xx = [0 l];
+%! yy = [0 0];
+%! hli = plot (xx, yy);
+%! 
+%! disp ("Push the cancel to stop the process.")
+%! hf = waitbar(0,"0","Name","Building Koch curve ...",...
+%!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
+%! for ii = 1:niter
+%!   ## Check cancel request
+%!   if (! ishandle (hf))
+%!     break
+%!   elseif (getappdata (hf, "interrupt"))
+%!     delete (hf)
+%!     break
+%!   else
+%!     waitbar (ii/niter, hf, sprintf ("Step %d/%d", ii, niter));
+%!   endif
+%! 
+%!   ## Increasingly lengthy computation
+%!   l /= 3;
+%!   theta = angle (complex (diff (xx), diff (yy)));
+%!   
+%!   xy = @(th, x0, y0) [cos(th) -sin(th) x0
+%!                       sin(th) cos(th) y0] * [0 l l*3/2      2*l; 
+%!                                              0 0 l*(3)^.5/2 0;
+%!                                              1 1 1          1];
+%!   tmp = arrayfun (xy, theta, xx(1:end-1), yy(1:end-1),
+%!                  "uniformoutput", false);
+%! 
+%!   tmp = cell2mat (tmp);
+%!   xx = [tmp(1,:) xx(end)];
+%!   yy = [tmp(2,:) yy(end)];
+%!   set (hli, "xdata", xx, "ydata", yy)
+%!   drawnow ();
+%!   pause (0.5)
+%! endfor
+%! 
+%! if (ishandle (hf))
+%!   delete (hf)
+%! endif
 
 ## Test input validation
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)

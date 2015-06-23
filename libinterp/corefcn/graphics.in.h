@@ -1461,6 +1461,7 @@ public:
   {
     size_constraints.remove (dim_vector (1, -1));
     size_constraints.remove (dim_vector (-1, 1));
+    size_constraints.remove (dim_vector (0, 0));
 
     add_constraint (dim_vector (1, len));
     add_constraint (dim_vector (len, 1));
@@ -4692,7 +4693,9 @@ public:
     void init (void)
     {
       xdata.add_constraint (2);
+      xdata.add_constraint (dim_vector (0, 0));
       ydata.add_constraint (2);
+      ydata.add_constraint (dim_vector (0, 0));
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
       cdata.add_constraint ("logical");

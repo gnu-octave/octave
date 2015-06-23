@@ -616,6 +616,7 @@ figure window, call the @code{close} function.
 @DOCSTRING(closereq)
 
 @node Use of the @code{interpreter} Property
+@anchor{XREFinterpreterusage}
 @subsection Use of the @code{interpreter} Property
 
 All text objects---such as titles, labels, legends, and text---include

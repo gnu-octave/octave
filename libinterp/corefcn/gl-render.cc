@@ -1475,6 +1475,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
   draw_axes_boxes (props);
 
   set_font (props);
+  set_interpreter (props.get_ticklabelinterpreter ());
 
   draw_axes_x_grid (props);
   draw_axes_y_grid (props);
@@ -3229,7 +3230,7 @@ opengl_renderer::text_to_pixels (const std::string& txt,
 {
 #if HAVE_FREETYPE
   text_renderer.text_to_pixels (txt, pixels, bbox,
-                                halign, valign, rotation, "none");
+                                halign, valign, rotation, interpreter);
 #endif
 }
 

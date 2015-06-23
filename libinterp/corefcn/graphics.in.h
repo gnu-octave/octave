@@ -3931,7 +3931,7 @@ public:
       radio_property gridlinestyle , "{:}|-|--|-.|none"
       // NOTE: interpreter is not a Matlab axis property, but it makes
       //       more sense to have it so that axis ticklabels can use it.
-      radio_property interpreter , "{tex}|latex|{none}"
+      radio_property interpreter , "{tex}|latex|none"
       double_property labelfontsizemultiplier , 1.1
       radio_property layer u , "{bottom}|top"
       // FIXME: should be kind of string array.
@@ -3954,7 +3954,7 @@ public:
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       // FIXME: Added recently to Matlab, should replace interpreter property.
-      radio_property ticklabelinterpreter , "{tex}|latex|{none}"
+      radio_property ticklabelinterpreter , "{tex}|latex|none"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)

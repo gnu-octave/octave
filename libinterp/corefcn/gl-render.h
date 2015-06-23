@@ -59,7 +59,7 @@ public:
   opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
     zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-    camera_pos (), camera_dir ()
+    camera_pos (), camera_dir (), interpreter ("none")
 #if HAVE_FREETYPE
     , text_renderer ()
 #endif
@@ -108,6 +108,10 @@ protected:
                             double z1, double z2);
   virtual void set_clipping (bool on);
   virtual void set_font (const base_properties& props);
+  virtual void set_interpreter (const caseless_str interp) 
+  {
+    interpreter = interp;
+  }
 
   virtual void init_marker (const std::string& m, double size, float width);
   virtual void end_marker (void);
@@ -206,6 +210,9 @@ private:
 
   // camera information for primitive sorting
   ColumnVector camera_pos, camera_dir;
+
+  // interpreter to be used by text_to_pixels
+  caseless_str interpreter;
 
 #if HAVE_FREETYPE
   // FreeType render, used for text rendering

@@ -5056,7 +5056,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   yticklabelmode = "auto";
   zticklabelmode = "auto";
 
-  interpreter = "none";
+  ticklabelinterpreter = "tex";
 
   color = color_values ("white");
   xcolor = color_values ("black");

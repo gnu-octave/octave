@@ -665,6 +665,10 @@ box or \"out\".";
 
       case "tickdirmode"
 
+      case "ticklabelinterpreter"
+        s.doc = "Control the way x/y/zticklabel properties are interpreted.\n\
+@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+        
       case "ticklength"
         s.doc = "Two-element vector @code{[2Dlen 3Dlen]} specifying the \
 length of the tickmarks relative to the longest visible axis.";
@@ -828,6 +832,7 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.doc = doc_unused;
 
       case "interpreter"
+        
       case "linestyle"
         s.doc = "@xref{Line Styles}.";
 
@@ -930,6 +935,10 @@ z data.";
 
       case "horizontalalignment"
       case "interpreter"
+        s.doc = "Control the way the @qcode{\"string\"} property is \
+interpreted.\n\
+@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+        
       case "linestyle"
         s.doc = sprintf (doc_notimpl, "Background area");
 

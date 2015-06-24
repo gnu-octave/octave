@@ -338,12 +338,12 @@ Summary of important user-visible changes for version 4.0:
     the second major release after 4.0).  Use the Fatan2 function with sparse
     inputs as a replacement.
 
- ** The internal class <Octave_map> was deprecated in Octave 3.8 and has
+ ** The internal class Octave_map was deprecated in Octave 3.8 and has
     been removed from Octave 4.0.  Replacement classes are
-    <octave_map> (struct array) or <octave_scalar_map> for a single structure.
+    octave_map (struct array) or octave_scalar_map for a single structure.
 
  ** The configure option --enable-octave-allocator has been removed.
-    The internal class <octave_allocator> declared in oct-alloc.h has
+    The internal class octave_allocator declared in oct-alloc.h has
     been removed.  The header remains, but is deprecated.  The macros to
     access the class (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
     and DEFINE_OCTAVE_ALLOCATOR2) are now unconditionally defined to be

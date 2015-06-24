@@ -29,10 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "color-picker.h"
 
-#ifdef HAVE_QSCINTILLA
-class QsciLexer;
-#endif
-
 namespace Ui
 {
   class settings_dialog;
@@ -66,13 +62,6 @@ private slots:
 
 private:
   Ui::settings_dialog * ui;
-#ifdef HAVE_QSCINTILLA
-  void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
-  void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
-  int  get_valid_lexer_styles (QsciLexer *lexer, int styles[]);
-  enum { MaxLexerStyles = 64,
-         MaxStyleNumber = 128 };
-#endif
 
   void write_changed_settings (bool closing);
 

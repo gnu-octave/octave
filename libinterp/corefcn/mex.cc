@@ -617,8 +617,8 @@ protected:
   {
     if (ndims_arg < 2)
       {
-        dims[0] = 1;
-        dims[1] = 1;
+        dims[0] = 0;
+        dims[1] = 0;
       }
 
     for (mwIndex i = 0; i < ndims_arg; i++)

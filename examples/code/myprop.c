@@ -9,10 +9,10 @@ mexFunction (int nlhs, mxArray* plhs[],
 
   if (nrhs < 2 || nrhs > 3)
     mexErrMsgTxt ("incorrect number of arguments");
-  if (!mxIsDouble (prhs[0]))
-    mexErrMsgTxt ("handle expected to be a double scalar");
-  if (!mxIsChar (prhs[1]))
-    mexErrMsgTxt ("expected property to be a string");
+  if (! mxIsDouble (prhs[0]))
+    mexErrMsgTxt ("handle must be a double scalar");
+  if (! mxIsChar (prhs[1]))
+    mexErrMsgTxt ("property must be a string");
 
   handle = mxGetScalar (prhs[0]);
   mxGetString (prhs[1], property, 256);

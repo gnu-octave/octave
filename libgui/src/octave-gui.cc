@@ -123,14 +123,13 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 #endif
 
   // show wizard if this is the first run
-  if (resource_manager::is_first_run ())
+  if (resource_manager::is_first_run () && start_gui)
     {
       // before wizard
       resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
       application.installTranslator (&qt_tr);
       application.installTranslator (&gui_tr);
-      if (start_gui)
-        application.installTranslator (&qsci_tr);
+      application.installTranslator (&qsci_tr);
 
       welcome_wizard welcomeWizard;
 

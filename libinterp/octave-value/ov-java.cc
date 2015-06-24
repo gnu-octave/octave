@@ -1281,6 +1281,20 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jobj = jni_env->NewStringUTF (s.c_str ());
       jcls = jni_env->GetObjectClass (jobj);
     }
+  else if (val.is_cellstr ())
+    {
+      const Array<std::string> str_arr = val.cellstr_value ();
+      const octave_idx_type n = str_arr.numel ();
+      jclass_ref scls (jni_env, jni_env->FindClass ("java/lang/String"));
+      jobjectArray array = jni_env->NewObjectArray (n, scls, NULL);
+      for (octave_idx_type i = 0; i < n; i++)
+        {
+          jstring_ref jstr (jni_env, jni_env->NewStringUTF (str_arr(i).c_str ()));
+          jni_env->SetObjectArrayElement (array, i, jstr);
+        }
+      jobj = array;
+      jcls = jni_env->GetObjectClass (jobj);
+    }
   else if (val.numel () > 1 && val.dims ().is_vector ())
     {
 #define IF_UNBOX_PRIMITIVE_ARRAY(CHECK_TYPE, METHOD_TYPE, OCTAVE_TYPE, JAVA_TYPE, JAVA_TYPE_CAP) \
@@ -1413,20 +1427,6 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
           found = false;
           error ("cannot convert matrix of type '%s'", val.class_name ().c_str ());
         }
-    }
-  else if (val.is_cellstr ())
-    {
-      Cell cellStr = val.cell_value ();
-      jclass_ref scls (jni_env, jni_env->FindClass ("java/lang/String"));
-      jobjectArray array = jni_env->NewObjectArray (cellStr.numel (), scls, 0);
-      for (int i = 0; i < cellStr.numel (); i++)
-        {
-          jstring_ref jstr (jni_env,
-                            jni_env->NewStringUTF (cellStr(i).string_value().c_str ()));
-          jni_env->SetObjectArrayElement (array, i, jstr);
-        }
-      jobj = array;
-      jcls = jni_env->GetObjectClass (jobj);
     }
   else
     {
@@ -2502,4 +2502,10 @@ Return true if @var{x} is a Java object.\n\
 %! assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
 %! assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
 %! assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
+
+## Automatic conversion from string cell array into String[] (bug #45290)
+%!testif HAVE_JAVA
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "aaa"), 0)
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "zzz"), 3)
+%! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "hhh") < 0)
 */

@@ -33,13 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 
 // FIXME: this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
 
-#ifdef HAVE_CHOLMOD
-
 void
 SparseCholError (int status, char *file, int line, char *message)
 {
   SparseCholError (status, file, line, message);
 }
+
+#ifdef HAVE_CHOLMOD
 
 void
 SparseCholError (int status, const char *file, int line, const char *message)
@@ -53,6 +53,15 @@ SparseCholError (int status, const char *file, int line, const char *message)
        status, line, file, message);
 }
 
+#else
+
+void
+SparseCholError (int status, const char *, int, const char *)
+{
+}
+
+#endif //HAVE_CHOLMOD
+
 int
 SparseCholPrint (const char *fmt, ...)
 {
@@ -63,8 +72,6 @@ SparseCholPrint (const char *fmt, ...)
   va_end (args);
   return ret;
 }
-
-#endif //HAVE_CHOLMOD
 
 bool
 sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,

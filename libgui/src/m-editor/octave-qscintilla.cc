@@ -183,11 +183,11 @@ octave_qscintilla::context_run ()
     contextmenu_run (true);
 }
 
-#ifdef HAVE_QSCI_VERSION_2_6_0
 // context menu requested
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 {
+#ifdef HAVE_QSCI_VERSION_2_6_0
   QPoint global_pos, local_pos;                         // the menu's position
   QMenu *context_menu = createStandardContextMenu ();  // standard menu
 
@@ -235,8 +235,8 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 
   // finaly show the menu
   context_menu->exec (global_pos);
-}
 #endif
+}
 
 
 // handle the menu entry for calling help or doc

@@ -176,14 +176,12 @@ KPtyPrivate::~KPtyPrivate()
 {
 }
 
-#ifndef HAVE_OPENPTY
 bool KPtyPrivate::chownpty(bool)
 {
 //    return !QProcess::execute(KStandardDirs::findExe("kgrantpty"),
 //        QStringList() << (grant?"--grant":"--revoke") << QString::number(masterFd));
     return true;
 }
-#endif
 
 /////////////////////////////
 // public member functions //

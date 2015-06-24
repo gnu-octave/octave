@@ -586,8 +586,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                           "xtick", [], "ytick", [],
                           "xlim", [0, 1], "ylim", [0, 1],
                           "visible", ifelse (strcmp (box, "on"), "on", "off"),
-                          "activepositionproperty", "position",
-                          "interpreter", "tex");
+                          "activepositionproperty", "position");
           ## Inherit properties from current axis
           ## "fontunits" shoud be first because it affects interpretation
           ## of "fontsize" property
@@ -613,6 +612,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           addproperty ("orientation", hlegend, "radio",
                        "{vertical}|horizontal");
           addproperty ("string", hlegend, "any", text_strings);
+          addproperty ("interpreter", hlegend, "textinterpreter");
           addproperty ("textposition", hlegend, "radio", "left|{right}");
         endif
         ## Inherit visual properties from legend object

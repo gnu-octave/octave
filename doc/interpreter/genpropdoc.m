@@ -591,8 +591,7 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
         s.doc = doc_unused;
 
       case "gridlinestyle"
-      case "interpreter"
-
+           
       case "labelfontsizemultiplier"
         s.doc = doc_unused;
 

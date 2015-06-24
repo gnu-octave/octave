@@ -127,7 +127,8 @@ function h = polar (varargin)
       addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
       addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
       addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
-      addlistener (hax, "interpreter", {@__update_text__, hg, "interpreter"});
+      addlistener (hax, "ticklabelinterpreter",
+                   {@__update_text__, hg, "interpreter"});
       addlistener (hax, "layer", {@__update_layer__, hg});
       addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
       addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
@@ -320,8 +321,10 @@ function __update_polar_grid__ (hax, ~, hg)
             "linewidth", get(hax, "linewidth")};
   ## "fontunits" should be first because it affects "fontsize" property.
   tprops(1:2:12) = {"fontunits", "fontangle", "fontname", "fontsize", ...
-                    "fontweight", "interpreter"};
+                    "fontweight", "ticklabelinterpreter"};
   tprops(2:2:12) = get (hax, tprops(1:2:12));
+  tprops(1:2:12) = strrep (tprops(1:2:12), "ticklabelinterpreter",
+                           "interpreter");
 
   ## The number of points used for a circle
   circle_points = 50;
@@ -376,7 +379,7 @@ function resetaxis (~, ~, hax)
     dellistener (hax, "fontsize");
     dellistener (hax, "fontunits");
     dellistener (hax, "fontweight");
-    dellistener (hax, "interpreter");
+    dellistener (hax, "ticklabelinterpreter");
     dellistener (hax, "layer");
     dellistener (hax, "gridlinestyle");
     dellistener (hax, "linewidth");

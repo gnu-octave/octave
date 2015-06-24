@@ -3929,9 +3929,6 @@ public:
       color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{:}|-|--|-.|none"
-      // NOTE: interpreter is not a Matlab axis property, but it makes
-      //       more sense to have it so that axis ticklabels can use it.
-      radio_property interpreter , "{tex}|latex|none"
       double_property labelfontsizemultiplier , 1.1
       radio_property layer u , "{bottom}|top"
       // FIXME: should be kind of string array.

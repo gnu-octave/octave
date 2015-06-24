@@ -92,16 +92,16 @@ endfunction
 %! unwind_protect
 %!   hax = gca;
 %!   plot (hax, 1:10);
-%!   set (hax, "interpreter", "tex");
+%!   set (hax, "ticklabelinterpreter", "none");
 %!   cla (hax);
 %!   kids = get (hax, "children");
 %!   assert (numel (kids), 0);
-%!   assert (get (hax, "interpreter"), "tex");
+%!   assert (get (hax, "ticklabelinterpreter"), "none");
 %!   plot (hax, 1:10);
 %!   cla (hax, "reset");
 %!   kids = get (hax, "children");
 %!   assert (numel (kids), 0);
-%!   assert (get (hax, "interpreter"), "none");
+%!   assert (get (hax, "ticklabelinterpreter"), "tex");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -306,19 +306,9 @@ private:
   documentation_dock_widget *doc_browser_window;
   file_editor_interface *editor_window;
   workspace_view *workspace_window;
-  QList<octave_dock_widget *> dock_widget_list ()
-  {
-    QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
-    list.append (static_cast<octave_dock_widget *> (command_window));
-    list.append (static_cast<octave_dock_widget *> (history_window));
-    list.append (static_cast<octave_dock_widget *> (file_browser_window));
-    list.append (static_cast<octave_dock_widget *> (doc_browser_window));
-#ifdef HAVE_QSCINTILLA
-    list.append (static_cast<octave_dock_widget *> (editor_window));
-#endif
-    list.append (static_cast<octave_dock_widget *> (workspace_window));
-    return list;
-  }
+
+  QList<octave_dock_widget *> dock_widget_list ();
+
   octave_dock_widget *_active_dock;
 
   QString _release_notes_icon;

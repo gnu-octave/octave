@@ -2407,6 +2407,21 @@ main_window::set_global_shortcuts (bool set_shortcuts)
     }
 }
 
+QList<octave_dock_widget *>
+main_window::dock_widget_list ()
+{
+  QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
+  list.append (static_cast<octave_dock_widget *> (command_window));
+  list.append (static_cast<octave_dock_widget *> (history_window));
+  list.append (static_cast<octave_dock_widget *> (file_browser_window));
+  list.append (static_cast<octave_dock_widget *> (doc_browser_window));
+#ifdef HAVE_QSCINTILLA
+  list.append (static_cast<octave_dock_widget *> (editor_window));
+#endif
+  list.append (static_cast<octave_dock_widget *> (workspace_window));
+  return list;
+}
+
 void
 main_window::set_screen_size (int ht, int wd)
 {

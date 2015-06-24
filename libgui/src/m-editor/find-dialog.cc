@@ -203,17 +203,19 @@ find_dialog::handle_search_text_changed (QString)
     _find_result_available = false;
 }
 
-#ifdef HAVE_QSCI_FINDSELECTION
 void
 find_dialog::handle_sel_search_changed (int selected)
 {
+#ifdef HAVE_QSCI_FINDSELECTION
   _from_start_check_box->setEnabled (! selected);
   _find_result_available = false;
+#endif
 }
 
 void
 find_dialog::handle_selection_changed (bool has_selected)
 {
+#ifdef HAVE_QSCI_FINDSELECTION
   if (_rep_active)
     return;
 
@@ -221,8 +223,8 @@ find_dialog::handle_selection_changed (bool has_selected)
   _find_result_available = false;
   if (! has_selected)
     _search_selection_check_box->setChecked (false);
-}
 #endif
+}
 
 // initialize search text with selected text if this is in one single line
 void

@@ -7114,7 +7114,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   if (limmode_is_auto)
     {
-      // Adjust limits to include min and max tics
+      // Adjust limits to include min and max ticks
       Matrix tmp_lims (1,2);
       tmp_lims(0) = std::min (tick_sep * i1, lo);
       tmp_lims(1) = std::max (tick_sep * i2, hi);
@@ -7136,10 +7136,10 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     }
   else
     {
-      // adjust min and max tics to be within limits
+      // adjust min and max ticks to be within limits
       if (i1*tick_sep < lo)
         i1++;
-      if (i2*tick_sep > hi)
+      if (i2*tick_sep > hi && i2 > i1)
         i2--;
     }
 

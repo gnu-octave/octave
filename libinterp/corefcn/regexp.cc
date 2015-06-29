@@ -245,9 +245,20 @@ do_regexp_rep_string_escapes (const std::string& s)
               break;
             }
 
-            default:  // pass escape sequence through
-              retval[i] = '\\';
-              retval[++i] = s[j];
+            // Both dollar sign (for capture buffer) and backslash are
+            // passed through with their escape backslash.  The processing
+            // for these must occur during the actual replacement operation
+            // in lo-regexp.cc.
+            case '$':  // pass dollar sign through with escape
+              retval[i] = '\\'; retval[++i] = '$';
+              break;
+
+            case '\\': // pass backslash through with escape
+              retval[i] = '\\'; retval[++i] = '\\';
+              break;
+
+            default:   // convert escaped character to unescaped char
+              retval[i] = s[j];
               break;
             }
         }
@@ -1151,6 +1162,12 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 
 %!assert (regexp ("\n", '\n'), 1);
 %!assert (regexp ("\n", "\n"), 1);
+
+%!test  # Bug #45407, escape sequences are silently converted
+%! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
+%! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
+%! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');
+
 */
 
 DEFUN (regexpi, args, nargout,

@@ -12,6 +12,13 @@ Summary of important user-visible changes for version 4.2:
     octal: '\oNNN' or '\o{NNN}'
     hex  : '\xNN'  or '\x{NN}'
 
+ ** Unknown escape sequences in the replacement string for regexprep are now
+    substituted with their unescaped version and no warning is emitted.
+    This change was made for Matlab compatibility.
+
+    Example: regexprep ('a', 'a', 'x\yz')
+             => 'xyz'
+
  ** mkfifo now interprets the MODE argument as an octal, not decimal, integer.
     This is consistent with the equivalent shell command. 
 

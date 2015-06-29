@@ -82,6 +82,14 @@ function retval = graphics_toolkit (name, hlist = [])
   endif
 
   if (! any (strcmp (loaded_graphics_toolkits (), name)))
+    ## FIXME: Special gnuplot handling for versions < 4.2.5 (bug #44978).
+    ## This can probably be deleted in the future once RHEL upgrades gnuplot.
+    if (strcmp (name, "gnuplot"))
+      valid_version = __gnuplot_has_feature__ ("minimum_version");
+      if (valid_version != 1)
+        error ("graphics_toolkit: gnuplot version to old.");
+      endif
+    endif
     feval (["__init_", name, "__"]);
     if (! any (strcmp (loaded_graphics_toolkits (), name)))
       error ("graphics_toolkit: %s toolkit was not correctly loaded", name);

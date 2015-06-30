@@ -102,6 +102,8 @@ workspace_view::workspace_view (QWidget *p)
   // Initialize column order and width of the workspace
   view->horizontalHeader ()->restoreState (
     settings->value ("workspaceview/column_state").toByteArray ());
+  // Make the header clickable to enable sorting
+  view->horizontalHeader ()->setClickable (true);
 
   // Init state of the filter
   _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());

@@ -146,6 +146,12 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
   file = make_absolute_filename (file);
 
+  if (isempty (dir))
+    dir = ".";
+  else
+    dir = tilde_expand (dir);
+  endif
+
   ## Instructions on what to do for any extension.
   ##
   ## The field names are the file extension without periods.
@@ -157,12 +163,12 @@ function filelist = unpack (file, dir = ".", filetype = "")
   ##    bzip2 and gzip decompress the file at its location).
   persistent commandlist;
   if (isempty (commandlist))
-    commandlist.gz = {'gzip -d -v -r "%s"', ...
-                      'gzip -d -r "%s"', ...
+    commandlist.gz = {'gzip -d -v -f -r "%s"', ...
+                      'gzip -d -f -r "%s"', ...
                       @__parse_gzip__, true};
     commandlist.z = commandlist.gz;
-    commandlist.bz2 = {'bzip2 -d -v "%s"', ...
-                       'bzip2 -d "%s"', ...
+    commandlist.bz2 = {'bzip2 -d -v -f "%s"', ...
+                       'bzip2 -d -f "%s"', ...
                        @__parse_bzip2__, true};
     commandlist.bz = commandlist.bz2;
     commandlist.tar = {'tar xvf "%s"', ...
@@ -205,6 +211,9 @@ function filelist = unpack (file, dir = ".", filetype = "")
     endif
     cstartdir = make_absolute_filename (startdir);
     cenddir = make_absolute_filename (dir);
+    if (cenddir(end) == filesep)
+      cenddir(end) = [];
+    endif
     needmove = move && ! strcmp (cstartdir, cenddir);
     if (nargout > 0 || needmove)
       command = commandv;

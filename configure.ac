@@ -3004,9 +3004,6 @@ AC_CONFIG_FILES([
   doc/liboctave/Makefile
   doc/refcard/Makefile
   etc/icons/Makefile
-  examples/Makefile
-  examples/code/Makefile
-  examples/data/Makefile
   libgnu/Makefile
   libgui/Makefile
   libinterp/Makefile

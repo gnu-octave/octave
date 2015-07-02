@@ -24,6 +24,9 @@ include build-aux/common.mk
 ## to a confusing error message stream
 .NOTPARALLEL:
 
+octdata_DATA =
+octetc_DATA =
+
 ACLOCAL_AMFLAGS = -I m4
 
 BUILT_DISTFILES = AUTHORS BUGS ChangeLog INSTALL.OCTAVE
@@ -65,6 +68,7 @@ EXTRA_DIST = \
   etc/gdbinit \
   run-octave.in
 
+include examples/module.mk
 include m4/module.mk
 
 # Subdirectories in which to run `make all'.  Including "." before
@@ -81,7 +85,7 @@ SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts . @DOCDIR@ examples etc/icons test .
+SUBDIRS += src scripts . @DOCDIR@ etc/icons test .
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:
@@ -171,7 +175,7 @@ ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
 
-octetc_DATA = \
+octetc_DATA += \
   CITATION \
   NEWS
 

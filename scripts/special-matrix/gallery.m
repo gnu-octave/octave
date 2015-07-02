@@ -592,7 +592,7 @@ function C = chebspec (n, k = 0)
     case (0), # do nothing
     case (1), n = n + 1;
     otherwise
-      error ("gallery: unknown K '%d' for chebspec matrix.", k);
+      error ("gallery: K should be either 0 or 1 for chebspec matrix.");
   endswitch
 
   n -= 1;
@@ -911,7 +911,7 @@ function A = condex (n, k = 4, theta = 100)
   endif
 endfunction
 
-function A = cycol (n, k)
+function A = cycol (n, k = max (round (n/4), 1))
   ## CYCOL   Matrix whose columns repeat cyclically.
   ##   A = CYCOL([M N], K) is an M-by-N matrix of the form A = B(1:M,1:N)
   ##   where B = [C C C...] and C = RANDN(M, K).  Thus A's columns repeat
@@ -933,10 +933,6 @@ function A = cycol (n, k)
   ## Parameter n specifies dimension: m-by-n
   m = n(1);
   n = n(end);
-
-  if (nargin < 2)
-    k = max (round (n/4), 1);
-  endif
 
   A = randn (m, k);
   for i = 2:ceil (n/k)
@@ -1215,9 +1211,9 @@ function A = gearmat (n, i = n, j = -n)
     error ("gallery: 1 to 3 arguments are required for gearmat matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for gearmat matrix.");
-  elseif (! isnumeric (i) || ! isscalar (i) || i == 0 || abs (i) <= n)
+  elseif (! isnumeric (i) || ! isscalar (i) || i == 0 || abs (i) > n)
     error ("gallery: I must be a nonzero scalar, and abs (I) <= N for gearmat matrix.");
-  elseif (! isnumeric (j) || ! isscalar (j) || i == 0 || abs (j) <= n)
+  elseif (! isnumeric (j) || ! isscalar (j) || i == 0 || abs (j) > n)
     error ("gallery: J must be a nonzero scalar, and abs (J) <= N for gearmat matrix.");
   endif
 
@@ -1271,7 +1267,7 @@ function A = hanowa (n, d = -1)
     error ("gallery: N must be an integer for hanowa matrix.");
   elseif (rem (n, 2) != 0)
     error ("gallery: N must be even for hanowa matrix.");
-  elseif (! isnumeric (lambda) || ! isscalar (lambda))
+  elseif (! isnumeric (d) || ! isscalar (d))
     error ("gallery: D must be a numeric scalar for hanowa matrix.");
   endif
 
@@ -1605,8 +1601,8 @@ function A = kms (n, rho = 0.5)
     error ("gallery: 1 to 2 arguments are required for lauchli matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for lauchli matrix.")
-  elseif (! isscalar (mu))
-    error ("gallery: MU must be a scalar for lauchli matrix.")
+  elseif (! isscalar (rho))
+    error ("gallery: RHO must be a scalar for lauchli matrix.")
   endif
 
   A = (1:n)'*ones (1,n);
@@ -2015,7 +2011,7 @@ function P = pei (n, alpha = 1)
     error ("gallery: 1 to 2 arguments are required for pei matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for pei matrix.");
-  elseif (! isnumeric (w) || ! isscalar (w))
+  elseif (! isnumeric (alpha) || ! isscalar (alpha))
     error ("gallery: ALPHA must be a scalar for pei matrix.");
   endif
 

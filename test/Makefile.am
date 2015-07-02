@@ -91,7 +91,8 @@ GENERATED_BC_OVERLOADS_FILES := \
   $(shell $(srcdir)/build-bc-overload-tests.sh --list-files)
 
 bc-overload-tests.stamp: build-bc-overload-tests.sh bc-overloads-expected
-	$(srcdir)/build-bc-overload-tests.sh $(srcdir)/bc-overloads-expected
+	$(AM_V_GEN)rm -f $@ && \
+	$(srcdir)/build-bc-overload-tests.sh $(top_builddir)/test $(srcdir)/bc-overloads-expected && \
 	touch $@
 
 BUILT_SOURCES = bc-overload-tests.stamp

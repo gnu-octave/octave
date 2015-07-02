@@ -57,28 +57,32 @@ if [ $# -eq 1 ]; then
       exit
     ;;
     *)
-      expected_results_file="$1"
+      echo "usage: build-bc-overload-tests.sh option" 1>&2
+      exit 1
     ;;
   esac
+elif [ $# -eq 2 ]; then
+    output_dir="$1"
+    expected_results_file="$2"
 else
-  echo "usage: build_bc_overload_tests.sh expected-results-file" 1>&2
+  echo "usage: build-bc-overload-tests.sh expected-results-file" 1>&2
   exit 1
 fi
 
 for class in $CLASSES; do
-  DIR="@$class"
+  DIR="$output_dir/@$class"
   test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR"; exit; }
   cat > $DIR/tbcover.m << EOF
 % !!! DO NOT EDIT !!!
-% generated automatically by build_bc_overload_tests.sh
+% generated automatically by build-bc-overload-tests.sh
 function s = tbcover (x, y)
   s = '$class';
 EOF
 done
 
-cat > tbcover.m << EOF
+cat > $output_dir/tbcover.m << EOF
 % !!! DO NOT EDIT !!!
-% generated automatically by build_bc_overload_tests.sh
+% generated automatically by build-bc-overload-tests.sh
 function s = tbcover (x, y)
   s = 'none';
 EOF
@@ -87,10 +91,10 @@ if test "$1" = "overloads_only" ; then
   exit
 fi
 
-cat > bc-overloads.tst << EOF
+cat > $output_dir/bc-overloads.tst << EOF
 ## !!! DO NOT EDIT !!!
 ## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify build_bc_overload_tests.sh to generate the tests you need.
+## modify build-bc-overload-tests.sh to generate the tests you need.
 
 %!shared ex
 %! ex.double = 1;
@@ -113,7 +117,7 @@ EOF
 
 cat $expected_results_file | \
 while read cl1 cl2 clr ; do
-  cat >> bc-overloads.tst << EOF
+  cat >> $output_dir/bc-overloads.tst << EOF
 %% Name call
 %!assert (tbcover (ex.$cl1, ex.$cl2), "$clr")
 %% Handle call
@@ -122,7 +126,7 @@ while read cl1 cl2 clr ; do
 EOF
 done
 
-cat >> bc-overloads.tst << EOF
+cat >> $output_dir/bc-overloads.tst << EOF
 %%test handles through cellfun
 %!test
 %! f = fieldnames (ex);

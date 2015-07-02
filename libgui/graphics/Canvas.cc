@@ -348,18 +348,6 @@ pan_mode (const graphics_object figObj)
 }
 
 static bool
-rotate_enabled (const graphics_object figObj)
-{
-  // Getting rotate mode property:
-  octave_value ov_rm
-    = Utils::properties<figure> (figObj).get___rotate_mode__ ();
-
-  octave_scalar_map rm = ov_rm.scalar_map_value ();
-
-  return rm.contents ("Enable").string_value () == "on";
-}
-
-static bool
 zoom_enabled (const graphics_object figObj)
 {
   // Getting zoom mode property:
@@ -381,18 +369,6 @@ zoom_mode (const graphics_object figObj)
   octave_scalar_map zm = ov_zm.scalar_map_value ();
 
   return zm.contents ("Motion").string_value ();
-}
-
-static std::string
-zoom_direction (const graphics_object figObj)
-{
-  // Getting zoom mode property:
-  octave_value ov_zm
-    = Utils::properties<figure> (figObj).get___zoom_mode__ ();
-
-  octave_scalar_map zm = ov_zm.scalar_map_value ();
-
-  return zm.contents ("Direction").string_value ();
 }
 
 void 

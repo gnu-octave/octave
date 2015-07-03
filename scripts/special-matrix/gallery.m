@@ -911,7 +911,7 @@ function A = condex (n, k = 4, theta = 100)
   endif
 endfunction
 
-function A = cycol (n, k = max (round (n/4), 1))
+function A = cycol (n, k = max (round (n(end)/4), 1))
   ## CYCOL   Matrix whose columns repeat cyclically.
   ##   A = CYCOL([M N], K) is an M-by-N matrix of the form A = B(1:M,1:N)
   ##   where B = [C C C...] and C = RANDN(M, K).  Thus A's columns repeat

@@ -1303,7 +1303,7 @@ function [v, beta] = house (x)
 
   if (nargin != 1)
     error ("gallery: 1 argument is required for house matrix.");
-  elseif (! isnumeric (x) || ! isvector (x) || numel (x) <= 1)
+  elseif (! isnumeric (x) || ! isvector (x))
     error ("gallery: X must be a vector for house matrix.");
   endif
 

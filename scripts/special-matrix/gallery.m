@@ -2915,3 +2915,167 @@ endfunction
 %!assert (gallery ("minij", 1), 1)
 %!assert (gallery ("minij", 0), [])
 %!assert (gallery ("minij", -1), [])
+
+%!assert (size (gallery ("cauchy", 5)), [5 5])
+%!assert (size (gallery ("cauchy", 2:5, 5:8)), [4 4])
+
+%!assert (size (gallery ("chebspec", 5)), [5 5])
+%!assert (size (gallery ("chebspec", 5, 1)), [5 5])
+%!assert (size (gallery ("chebspec", 5, 0)), [5 5])
+
+%!assert (size (gallery ("chebvand", 7)), [7 7])
+%!assert (size (gallery ("chebvand", 1:7)), [7 7])
+%!assert (size (gallery ("chebvand", 5, 7)), [5 7])
+
+%!assert (size (gallery ("chow", 5)), [5 5])
+%!assert (size (gallery ("chow", 5, 6)), [5 5])
+%!assert (size (gallery ("chow", 5, 6, 7)), [5 5])
+
+%!assert (gallery ("circul", 3), [1 2 3; 3 1 2; 2 3 1])
+%!assert (gallery ("circul", [1 3 6]), [1 3 6; 6 1 3; 3 6 1])
+
+%!assert (size (gallery ("clement", 5)), [5 5])
+%!assert (size (gallery ("clement", 5, 1)), [5 5])
+%!assert (size (gallery ("clement", 5, 0)), [5 5])
+
+%!assert (size (gallery ("compar", ones (5))), [5 5])
+%!assert (size (gallery ("compar", ones (5), 0)), [5 5])
+%!assert (size (gallery ("compar", ones (5), 1)), [5 5])
+
+%!assert (size (gallery ("condex", 4)), [4 4])
+%!assert (size (gallery ("condex", 4, 1)), [4 4])
+%!assert (size (gallery ("condex", 4, 1, 50)), [4 4])
+
+%!assert (size (gallery ("cycol", [4 5])), [4 5])
+%!assert (size (gallery ("cycol", [4 5], 1)), [4 5])
+%!assert (size (gallery ("cycol", 4)), [4 4])
+%!assert (size (gallery ("cycol", 4, 1)), [4 4])
+
+%!assert (size (gallery ("dorr", 4)), [4 4])
+%!assert (cellfun (@rows, nthargout (1:3, @gallery, "dorr", 4)), [3 4 3])
+
+%!assert (size (gallery ("dramadah", 5)), [5 5])
+%!assert (size (gallery ("dramadah", 5, 2)), [5 5])
+
+%!assert (size (gallery ("fiedler", 5)), [5 5])
+%!assert (size (gallery ("fiedler", 2:5)), [4 4])
+
+%!assert (size (gallery ("forsythe", 5)), [5 5])
+%!assert (size (gallery ("forsythe", 5, 1, 0.5)), [5 5])
+%!assert (size (gallery ("forsythe", 5, 4, 7)), [5 5])
+
+%!assert (size (gallery ("frank", 5)), [5 5])
+%!assert (size (gallery ("frank", 5, 1)), [5 5])
+
+%!assert (size (gallery ("gcdmat", 5)), [5 5])
+
+%!assert (size (gallery ("gearmat", 5)), [5 5])
+%!assert (size (gallery ("gearmat", 5, 4)), [5 5])
+%!assert (size (gallery ("gearmat", 5, 4, 3)), [5 5])
+
+%!assert (size (gallery ("grcar", 5)), [5 5])
+%!assert (size (gallery ("grcar", 5, 2)), [5 5])
+
+%!error <N must be even> gallery ("hanowa", 5)
+%!assert (size (gallery ("hanowa", 6, 5)), [6 6])
+%!assert (size (gallery ("hanowa", 6, 5)), [6 6])
+
+%!assert (size (gallery ("house", [1:5]')), [5 1])
+%!assert (cellfun (@rows, nthargout (1:2, @gallery, "house", [1:5]')), [5 1])
+
+%!assert (size (gallery ("integerdata", 5, [3 2], 5)), [3 2])
+%!assert (size (gallery ("integerdata", 5, [3 2 6], 5)), [3 2 6])
+
+%!assert (size (gallery ("invhess", 1:4, 1:3)), [4 4])
+
+%!assert (size (gallery ("invol", 4)), [4 4])
+
+%!assert (size (gallery ("ipjfact", 4)), [4 4])
+%!assert (size (gallery ("ipjfact", 4, 0)), [4 4])
+%!assert (size (gallery ("ipjfact", 4, 1)), [4 4])
+
+%!assert (size (gallery ("jordbloc", 4)), [4 4])
+%!assert (size (gallery ("jordbloc", 4, 1)), [4 4])
+%!assert (size (gallery ("jordbloc", 4, 3)), [4 4])
+
+%!assert (size (gallery ("kahan", 4)), [4 4])
+%!assert (size (gallery ("kahan", [4 5])), [4 5])
+%!assert (size (gallery ("kahan", [4 5], 1)), [4 5])
+%!assert (size (gallery ("kahan", [4 5], 1, 30)), [4 5])
+
+%!assert (size (gallery ("kms", 5)), [5 5])
+%!assert (size (gallery ("kms", 5, 0.2)), [5 5])
+
+%!assert (size (gallery ("krylov", 4)), [4 4])
+%!assert (size (gallery ("krylov", ones (4)), [4 4]))
+%!assert (size (gallery ("krylov", ones (4), [.2 .3 .4 .5], 3), [4 4]))
+
+%!assert (size (gallery ("lauchli", 5)), [6 5])
+%!assert (size (gallery ("lauchli", 5, 3)), [6 5])
+
+%!assert (size (gallery ("lehmer", 5)), [5 5])
+
+%!assert (size (gallery ("lesp", 5)), [5 5])
+
+%!assert (size (gallery ("lotkin", 5)), [5 5])
+
+%!assert (size (gallery ("minij", 5)), [5 5])
+
+%!assert (size (gallery ("moler", 5)), [5 5])
+%!assert (size (gallery ("moler", 5, 0.2)), [5 5])
+
+%!assert (size (gallery ("neumann", 4)), [4 4])
+
+%!assert (size (gallery ("normaldata", [5 4 6], 3)), [5 4 6])
+
+%!assert (size (gallery ("orthog", 5)), [5 5])
+%!assert (size (gallery ("orthog", 5, 2)), [5 5])
+%!assert (size (gallery ("orthog", 5, -2)), [5 5])
+
+%!assert (size (gallery ("parter", 5)), [5 5])
+
+%!assert (size (gallery ("pei", 5)), [5 5])
+%!assert (size (gallery ("pei", 5, 4)), [5 5])
+
+%!assert (size (gallery ("poisson", 1)), [1 1])
+%!assert (size (gallery ("poisson", 4)), [16 16])
+%!assert (size (gallery ("poisson", 5)), [25 25])
+
+%!assert (size (gallery ("prolate", 5)), [5 5])
+%!assert (size (gallery ("prolate", 5, 0.5)), [5 5])
+
+%!assert (size (gallery ("randhess", 5)), [5 5])
+%!assert (size (gallery ("randhess", 2:5)), [4 4])
+
+%!assert (size (gallery ("rando", 5)), [5 5])
+%!assert (size (gallery ("rando", 5, 2)), [5 5])
+
+%!assert (size (gallery ("randsvd", 5)), [5 5])
+%!assert (size (gallery ("randsvd", [5 3])), [5 3])
+
+%!assert (size (gallery ("redheff", 5)), [5 5])
+%!assert (size (gallery ("riemann", 5)), [5 5])
+%!assert (size (gallery ("ris", 5)), [5 5])
+
+%!assert (size (gallery ("smoke", 5)), [5 5])
+%!assert (size (gallery ("smoke", 5, 1)), [5 5])
+%!assert (gallery ("smoke", 5, 1)(5, 1), 0)
+
+%!assert (size (gallery ("toeppd", 5)), [5 5])
+
+%!assert (size (gallery ("toeppen", 5)), [5 5])
+
+%!assert (size (gallery ("tridiag", 5)), [5 5])
+%!assert (size (gallery ("tridiag", 1:4, 1:5, 1:4)), [5 5])
+%!assert (gallery ("tridiag", 5), gallery ("tridiag", 5, -1, 2, -1))
+
+%!assert (size (gallery ("triw", 5)), [5 5])
+
+%!assert (size (gallery ("uniformdata", [5 3 4], 3)), [5 3 4])
+
+%!assert (size (gallery ("wathen", 2, 3)), [29 29])
+
+%!assert (cellfun (@rows, nthargout (1:2, @gallery, "wilk", 3)), [3 3])
+%!assert (cellfun (@rows, nthargout (1:2, @gallery, "wilk", 4)), [4 4])
+%!assert (size (gallery ("wilk", 5)), [5 5])
+%!assert (size (gallery ("wilk", 21)), [21 21])

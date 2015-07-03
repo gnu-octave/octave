@@ -269,7 +269,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     endif
 
     ## Set the gnuplot terminal (type, enhanced, title, options & size).
-    term_str = ["set terminal " term];
+    term_str = ["set encoding utf8;\nset terminal " term];
     if (__gnuplot_has_feature__ ("needs_color_with_postscript") ...
         && strcmp (term, "postscript"))
       term_str = [term_str, " color"];

@@ -1398,7 +1398,7 @@ function A = invhess (x, y)
     n = x;
     x = 1:n;
   elseif (! isscalar (x) && isvector (x))
-    n = numel (n);
+    n = numel (x);
   else
     error ("gallery: X must be an integer scalar, or a vector for invhess matrix.");
   endif

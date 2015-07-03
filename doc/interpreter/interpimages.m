@@ -16,10 +16,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function interpimages (nm, typ)
+function interpimages (d, nm, typ)
   graphics_toolkit ("gnuplot");
   set_print_size ();
   hide_output ();
+  outfile = fullfile (d, strcat (nm, ".", typ));
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -30,7 +31,7 @@ function interpimages (nm, typ)
   endif
 
   if (strcmp (typ, "txt"))
-    image_as_txt (nm);
+    image_as_txt (d, nm);
   elseif (strcmp (nm, "interpft"))
     t = 0 : 0.3 : pi; dt = t(2)-t(1);
     n = length (t); k = 100;
@@ -40,7 +41,7 @@ function interpimages (nm, typ)
     plot (ti, yp, "g", ti, interp1 (t, y, ti, "spline"), "b", ...
           ti, interpft (y, k), "c", t, y, "r+");
     legend ("sin(4t+0.3)cos(3t-0.1)", "spline", "interpft", "data");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "interpn"))
     x = y = z = -1:1;
     f = @(x,y,z) x.^2 - y - z.^2;
@@ -50,7 +51,7 @@ function interpimages (nm, typ)
     [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
     vi = interpn (x, y, z, v, xxi, yyi, zzi, "spline");
     mesh (zi, yi, squeeze (vi(1,:,:)));
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "interpderiv1"))
     t = -2:2;
     dt = 1;
@@ -61,7 +62,7 @@ function interpimages (nm, typ)
     yp = interp1 (t,y,ti,"pchip");
     plot (ti, ys,"r-", ti, yp,"g-");
     legend ("spline","pchip", 4);
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "interpderiv2"))
     t = -2:2;
     dt = 1;
@@ -72,7 +73,7 @@ function interpimages (nm, typ)
     ddyp = diff (diff (interp1 (t,y,ti,"pchip"))./dti)./dti;
     plot (ti(2:end-1),ddys,"r*", ti(2:end-1),ddyp,"g+");
     legend ("spline", "pchip");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   endif
   hide_output ();
 endfunction
@@ -95,8 +96,8 @@ function hide_output ()
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(nm)
-  fid = fopen (sprintf ("%s.txt", nm), "wt");
+function image_as_txt(d, nm)
+  fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");

@@ -20,24 +20,21 @@
 
 include build-aux/common.mk
 
-## Avoid making multiple subdirs in parallel which can lead
-## to a confusing error message stream
-.NOTPARALLEL:
-
 octdata_DATA =
 octetc_DATA =
 
 ACLOCAL_AMFLAGS = -I m4
 
-BUILT_DISTFILES = AUTHORS BUGS ChangeLog INSTALL.OCTAVE
-
-EXTRA_DIST = \
+BUILT_DISTFILES = \
   AUTHORS \
   BUGS \
+  ChangeLog \
+  INSTALL.OCTAVE
+
+EXTRA_DIST = \
   COPYING \
   ChangeLog \
   INSTALL \
-  INSTALL.OCTAVE \
   NEWS \
   README \
   CITATION \
@@ -48,31 +45,43 @@ EXTRA_DIST = \
   build-aux/stl_algo.h-fixed \
   run-octave.in
 
+DIRSTAMP_FILES =
+
+octave_dirstamp = $(am__leading_dot)octave-dirstamp
+
+$(DIRSTAMP_FILES):
+	$(AM_V_GEN)$(MKDIR_P) $(@D) && \
+	: > $@
+
 CLEANFILES =
 DISTCLEANFILES =
 MAINTAINERCLEANFILES =
+info_TEXINFOS =
+BUILT_SOURCES =
 
+IMAGES_SRC =
+IMAGES_EPS =
+IMAGES_PDF =
+IMAGES_PNG =
+IMAGES_TXT =
+
+include doc/module.mk
+include doc/interpreter/images.mk
 include etc/module.mk
 include examples/module.mk
 include m4/module.mk
 
-# Subdirectories in which to run `make all'.  Including "." before
-# @DOCDIR@ is an attempt to force all preceding directories in the list
-# to be processed before the current directory so that the
-# scripts/DOCSTRINGS libinterp/DOCSTRINGS files are built before
-# attempting to build AUTHORS and BUGS.  Including "." again at the end
-# of the list ensures that we display the "Octave sucessfully built..."
-# message at the very end of the output from Make.  Another fix for
-# these problems would be to continue eliminating the recursive make
-# invocations so that we have better control over the dependencies and
-# the order that things are built.
+# Subdirectories in which to run make recursively.  Other
+# directories are handled directly from this Makefile (see also the
+# included makefile fragments).
+
 SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts . @DOCDIR@ test .
+SUBDIRS += src scripts test
 
-dist-hook: docs-dist-hook icons-dist-hook
+dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook
 
 if AMCOND_BUILD_DOCS
 docs-dist-hook:
@@ -88,7 +97,9 @@ icons-dist-hook:
 	@echo "Packaging distribution requires icotool and rsvg-convert." ; exit 1;
 endif
 
-BUILT_SOURCES = run-octave
+BUILT_SOURCES += \
+  run-octave \
+  $(DIRSTAMP_FILES)
 
 if AMCOND_HAVE_BROKEN_STL_ALGO_H
   BUILT_SOURCES += bits/stl_algo.h
@@ -98,17 +109,13 @@ endif
 
 noinst_SCRIPTS = run-octave
 
-INFO_FILES = \
-  AUTHORS \
-  BUGS \
-  INSTALL.OCTAVE
-
 CLEANFILES += \
   $(BUILT_SOURCES)
 
 DISTCLEANFILES += \
   .gdbinit \
-  ChangeLog
+  ChangeLog \
+  $(DIRSTAMP_FILES)
 
 MAINTAINERCLEANFILES += \
   $(BUILT_DISTFILES)
@@ -118,7 +125,7 @@ CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 nodist_octinclude_HEADERS = config.h
 octinclude_HEADERS = oct-conf-post.h
 
-all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
+all-local: $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(DOC_TARGETS)
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
@@ -153,12 +160,6 @@ nonexistent-file:
 .gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)
 
-if AMCOND_BUILD_DOCS
-AUTHORS BUGS INSTALL.OCTAVE:
-	$(AM_V_GEN)$(MAKE) -C doc/interpreter ../../$@
-endif
-.PHONY: AUTHORS BUGS INSTALL.OCTAVE
-
 define changelog-from-hg-log
   rm -f $@-t $@ && \
   ( cd $(srcdir); \
@@ -180,10 +181,6 @@ octetc_DATA += \
 if AMCOND_INSTALL_BUILD_LOGS
 octetc_DATA += config.log
 endif
-
-doxyhtml:
-	$(MAKE) -C doc/doxyhtml doxyhtml
-.PHONY: doxyhtml
 
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \

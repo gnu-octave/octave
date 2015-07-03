@@ -4,8 +4,7 @@ examples_data_SRC = \
 octdata_DATA += \
   $(examples_data_SRC)
 
-EXTRA_DIST += \
-  $(examples_data_SRC) \
+examples_code_SRC = \
   examples/code/@FIRfilter/FIRfilter.m \
   examples/code/@FIRfilter/FIRfilter_aggregation.m \
   examples/code/@FIRfilter/display.m \
@@ -54,5 +53,9 @@ EXTRA_DIST += \
   examples/code/standalonebuiltin.cc \
   examples/code/stringdemo.cc \
   examples/code/structdemo.cc \
-  examples/code/unwinddemo.cc \
+  examples/code/unwinddemo.cc
+
+EXTRA_DIST += \
+  $(examples_data_SRC) \
+  $(examples_code_SRC) \
   examples/module.mk

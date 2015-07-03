@@ -256,16 +256,15 @@ fi
 ### Disable running Make in the doc directory.
 ### This is useful, for example, when building Octave on systems without TeX.
 
-DOCDIR=doc
+ENABLE_DOCS=yes
 AC_ARG_ENABLE([docs],
   [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
   [if test "$enableval" = no; then
-     DOCDIR=
+     ENABLE_DOCS=no
      warn_docs="building documentation disabled; make dist will fail"
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi],
   [])
-AC_SUBST(DOCDIR)
 
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
@@ -2447,19 +2446,19 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 ### makeinfo are missing.  Skip this warning if building docs was
 ### disabled with a configure option.
 
-if test -n "$DOCDIR"; then
+if test $ENABLE_DOCS = yes; then
   if test -n "$warn_gnuplot"; then
-    DOCDIR=
+    ENABLE_DOCS = no
     warn_docs_gnuplot="building documentation disabled because gnuplot was not found; make dist will fail"
     OCTAVE_CONFIGURE_WARNING([warn_docs_gnuplot])
   fi
   if test -n "$warn_makeinfo"; then
-    DOCDIR=
+    ENABLE_DOCS = no
     warn_docs_makeinfo="building documentation disabled because makeinfo was not found; make dist will fail"
     OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
   fi
 fi
-AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
+AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
 ### done feature testing.
@@ -2997,12 +2996,7 @@ AC_SUBST(ac_config_headers)
 AC_CONFIG_FILES([
   oct-conf-post.h:oct-conf-post.in.h
   Makefile
-  doc/Makefile
-  doc/doxyhtml/Makefile
   doc/doxyhtml/Doxyfile
-  doc/interpreter/Makefile
-  doc/liboctave/Makefile
-  doc/refcard/Makefile
   libgnu/Makefile
   libgui/Makefile
   libinterp/Makefile
@@ -3134,6 +3128,7 @@ Octave is now configured for $canonical_host_type
   64-bit array dims and indexing:     $USE_64_BIT_IDX_T
   OpenMP SMP multithreading:          $USE_OPENMP
   Build cross tools:                  $cross_tools
+  Build docs:                         $ENABLE_DOCS
 ])
 
 warn_msg_printed=false

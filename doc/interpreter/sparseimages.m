@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function sparseimages (nm, typ)
+function sparseimages (d, nm, typ)
   graphics_toolkit ("gnuplot");
   set_print_size ();
   if (strcmp (typ, "png"))
@@ -27,19 +27,19 @@ function sparseimages (nm, typ)
       && __have_feature__ ("CHOLMOD")
       && __have_feature__ ("UMFPACK"))
     if (strcmp (typ,"txt"))
-      txtimages (nm, 15, typ);
+      txtimages (d, nm, 15, typ);
     else
       if (strcmp (nm, "gplot"))
-        gplotimages ("gplot", typ);
+        gplotimages (d, "gplot", typ);
       elseif (strcmp (nm, "grid"))
-        femimages ("grid", typ);
+        femimages (d, "grid", typ);
       else
-        otherimages (nm, 200, typ);
+        otherimages (d, nm, 200, typ);
       endif
     endif
   else ## There is no sparse matrix implementation available because
        ## of missing libraries, plot sombreros instead
-    sombreroimage (nm, typ);
+    sombreroimage (d, nm, typ);
   endif
 endfunction
 
@@ -57,8 +57,9 @@ function hide_output ()
   set (f, "visible", "off");
 endfunction
 
-function gplotimages (nm, typ)
+function gplotimages (d, nm, typ)
   hide_output ();
+  outfile = fullfile (d, strcat (nm, ".", typ));
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
@@ -69,38 +70,40 @@ function gplotimages (nm, typ)
               [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
   gplot (A, xy);
-  print ([nm "." typ], d_typ);
+  print (outfile, d_typ);
   hide_output ();
 endfunction
 
-function txtimages (nm, n, typ)
+function txtimages (d, nm, n, typ)
+  outfile = fullfile (d, strcat (nm, ".", typ));
   a = 10*speye (n) + sparse (1:n,ceil([1:n]/2),1,n,n) + ...
       sparse (ceil ([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "gplot") || strcmp (nm, "grid"))
-    fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
     fputs (fid, "\n");
     fputs (fid, "+---------------------------------+\n");
     fputs (fid, "| Image unavailable in text mode. |\n");
     fputs (fid, "+---------------------------------+\n");
     fclose (fid);
   elseif (strcmp (nm, "spmatrix"))
-    printsparse (a, ["spmatrix." typ]);
+    printsparse (a, outfile);
   else
     if (__have_feature__ ("COLAMD") && __have_feature__ ("CHOLMOD"))
       if (strcmp (nm, "spchol"))
         r1 = chol (a);
-        printsparse (r1, ["spchol." typ]);
+        printsparse (r1, outfile);
       elseif (strcmp (nm, "spcholperm"))
         [r2,p2,q2] = chol (a);
-        printsparse(r2, ["spcholperm." typ]);
+        printsparse(r2, outfile);
       endif
       ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
   endif
 endfunction
 
-function otherimages (nm, n, typ)
+function otherimages (d, nm, n, typ)
   hide_output ();
+  outfile = fullfile (d, strcat (nm, ".", typ));
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
@@ -112,7 +115,7 @@ function otherimages (nm, n, typ)
   if (strcmp (nm, "spmatrix"))
     spy (a);
     axis ("ij");
-    print (["spmatrix." typ], d_typ);
+    print (outfile, d_typ);
     hide_output ();
   else
     if (__have_feature__ ("COLAMD") && __have_feature__ ("CHOLMOD"))
@@ -120,13 +123,13 @@ function otherimages (nm, n, typ)
         r1 = chol (a);
         spy (r1);
         axis ("ij");
-        print (["spchol." typ], d_typ);
+        print (outfile, d_typ);
         hide_output ();
       elseif (strcmp (nm, "spcholperm"))
         [r2,p2,q2] = chol (a);
         spy (r2);
         axis ("ij");
-        print (["spcholperm." typ], d_typ);
+        print (outfile, d_typ);
         hide_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
@@ -172,8 +175,9 @@ function printsparse (a, nm)
   fclose (fid);
 endfunction
 
-function femimages (nm, typ)
+function femimages (d, nm, typ)
   hide_output ();
+  outfile = fullfile (d, strcat (nm, ".", typ));
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
@@ -253,7 +257,7 @@ function femimages (nm, typ)
 
     plot3 (xelems, yelems, velems);
     view (80, 10);
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
     hide_output ();
   endif
 endfunction
@@ -261,9 +265,9 @@ endfunction
 ## There is no sparse matrix implementation available because of missing
 ## libraries, plot sombreros instead. Also plot a nice title that we are
 ## sorry about that.
-function sombreroimage (nm, typ)
+function sombreroimage (d, nm, typ)
   if (strcmp (typ, "txt"))
-    fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
     fputs (fid, "\n");
     fputs (fid, "+---------------------------------------+\n");
     fputs (fid, "| Image unavailable because of a        |\n");
@@ -285,19 +289,9 @@ function sombreroimage (nm, typ)
       mesh (x, y, z);
       title ("Sorry, graphics are unavailable because Octave was\ncompiled without a sparse matrix implementation.");
     unwind_protect_cleanup
-      print ([nm "." typ], d_typ);
+      print (outfile, d_typ);
       hide_output ();
     end_unwind_protect
   endif
-endfunction
-
-## generate something for the texinfo @image command to process
-function image_as_txt (nm)
-  fid = fopen (sprintf ("%s.txt", nm), "wt");
-  fputs (fid, "\n");
-  fputs (fid, "+---------------------------------+\n");
-  fputs (fid, "| Image unavailable in text mode. |\n");
-  fputs (fid, "+---------------------------------+\n");
-  fclose (fid);
 endfunction
 

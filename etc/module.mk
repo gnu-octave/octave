@@ -53,33 +53,36 @@ EXTRA_DIST += \
 
 image_DATA = \
   $(icon_IMAGE_FILES) \
-  octave-logo.ico
+  etc/icons/octave-logo.ico
 
 VENDOR = www.octave.org
 
+DIRSTAMP_FILES += \
+  etc/icons/$(octave_dirstamp)
+
 all-icons: etc/icons/octave.appdata.xml etc/icons/octave.desktop $(BUILT_ICONS)
 
-etc/icons/octave.appdata.xml: etc/iconst/octave.appdata.xml.in Makefile
+etc/icons/octave.appdata.xml: etc/iconst/octave.appdata.xml.in Makefile etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_DESKTOP_FILE%|${VENDOR}-octave.desktop|" && \
 	mv $@-t $@
 
-etc/icons/octave.desktop: etc/icons/octave.desktop.in Makefile
+etc/icons/octave.desktop: etc/icons/octave.desktop.in Makefile etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|" && \
 	mv $@-t $@
 
-$(BUILT_PNG_ICONS): etc/icons/octave-logo.svg
+$(BUILT_PNG_ICONS): etc/icons/octave-logo.svg etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(RSVG_CONVERT) -w $(lastword $(subst -, ,$(patsubst %.png,%,$@))) $< > $@-t && \
 	mv $@-t $@
 
-etc/icons/octave-logo.ico: $(WINDOWS_PNG_ICONS)
+etc/icons/octave-logo.ico: $(WINDOWS_PNG_ICONS) etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(ICOTOOL) --create --raw $^ > $@-t && \
+	$(ICOTOOL) --create --raw  $(WINDOWS_PNG_ICONS) > $@-t && \
 	mv $@-t $@
 
 install-icons:

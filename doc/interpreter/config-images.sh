@@ -14,6 +14,6 @@ move_if_change="$top_srcdir/build-aux/move-if-change"
 
 interp_dir=$top_srcdir/doc/interpreter
 
-$AWK -f $interp_dir/images.awk < $interp_dir/images > $interp_dir/images.mk-t
+$AWK -v dir=doc/interpreter -f $interp_dir/images.awk < $interp_dir/images > $interp_dir/images.mk-t
 
 $move_if_change $interp_dir/images.mk-t $interp_dir/images.mk

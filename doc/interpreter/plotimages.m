@@ -16,10 +16,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function plotimages (nm, typ)
+function plotimages (d, nm, typ)
   graphics_toolkit ("gnuplot");
   set_print_size ();
   hide_output ();
+  outfile = fullfile (d, strcat (nm, ".", typ));
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -30,21 +31,21 @@ function plotimages (nm, typ)
   endif
 
   if (strcmp(typ , "txt"))
-    image_as_txt(nm);
+    image_as_txt(d, nm);
   elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
     xlabel ("x");
     ylabel ("sin (x)");
     title ("Simple 2-D Plot");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "hist"))
     randn ("state", 1);
     hist (randn (10000, 1), 30);
     xlabel ("Value");
     ylabel ("Count");
     title ("Histogram of 10,000 normally distributed random numbers");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "errorbar"))
     rand ("state", 2);
     x = 0:0.1:10;
@@ -56,11 +57,11 @@ function plotimages (nm, typ)
     xlabel ("x");
     ylabel ("sin (x)");
     title ("Errorbar plot of sin (x)");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);
     title ("Example polar plot from 0 to 10*pi");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "mesh"))
     tx = ty = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (tx, ty);
@@ -71,7 +72,7 @@ function plotimages (nm, typ)
     ylabel ("ty");
     zlabel ("tz");
     title ("3-D Sombrero plot");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "plot3"))
     t = 0:0.1:10*pi;
     r = linspace (0, 1, numel (t));
@@ -81,7 +82,7 @@ function plotimages (nm, typ)
     ylabel ("r.*cos (t)");
     zlabel ("z");
     title ("plot3 display of 3-D helix");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "extended"))
     x = 0:0.01:3;
     plot (x,erf(x));
@@ -93,7 +94,7 @@ function plotimages (nm, typ)
     xlabel ("x");
     ylabel ("erf (x)");
     title ("erf (x) with text annotation");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   else
     error ("unrecognized plot requested");
   endif
@@ -118,8 +119,8 @@ function hide_output ()
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(nm)
-  fid = fopen (sprintf ("%s.txt", nm), "wt");
+function image_as_txt(d, nm)
+  fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");

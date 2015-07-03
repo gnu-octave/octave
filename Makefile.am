@@ -46,28 +46,13 @@ EXTRA_DIST = \
   build-aux/move-if-change \
   build-aux/OctJavaQry.class \
   build-aux/stl_algo.h-fixed \
-  etc/NEWS.1 \
-  etc/NEWS.2 \
-  etc/NEWS.3 \
-  etc/OLD-ChangeLogs/ChangeLog \
-  etc/OLD-ChangeLogs/ChangeLog.1 \
-  etc/OLD-ChangeLogs/doc-ChangeLog \
-  etc/OLD-ChangeLogs/libcruft-ChangeLog \
-  etc/OLD-ChangeLogs/liboctave-ChangeLog \
-  etc/OLD-ChangeLogs/scripts-ChangeLog \
-  etc/OLD-ChangeLogs/src-ChangeLog \
-  etc/OLD-ChangeLogs/test-ChangeLog \
-  etc/PROJECTS \
-  etc/README.Cygwin \
-  etc/README.Linux \
-  etc/README.MacOS \
-  etc/README.MinGW \
-  etc/README.Windows \
-  etc/README.gnuplot \
-  etc/README.kpathsea \
-  etc/gdbinit \
   run-octave.in
 
+CLEANFILES =
+DISTCLEANFILES =
+MAINTAINERCLEANFILES =
+
+include etc/module.mk
 include examples/module.mk
 include m4/module.mk
 
@@ -85,11 +70,22 @@ SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts . @DOCDIR@ etc/icons test .
+SUBDIRS += src scripts . @DOCDIR@ test .
 
-if ! AMCOND_BUILD_DOCS
-dist-hook:
-	echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
+dist-hook: docs-dist-hook icons-dist-hook
+
+if AMCOND_BUILD_DOCS
+docs-dist-hook:
+else
+docs-dist-hook:
+	@echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
+endif
+
+if AMCOND_HAVE_ICON_TOOLS
+icons-dist-hook:
+else
+icons-dist-hook:
+	@echo "Packaging distribution requires icotool and rsvg-convert." ; exit 1;
 endif
 
 BUILT_SOURCES = run-octave
@@ -107,13 +103,15 @@ INFO_FILES = \
   BUGS \
   INSTALL.OCTAVE
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES += \
+  $(BUILT_SOURCES)
 
-DISTCLEANFILES = \
+DISTCLEANFILES += \
   .gdbinit \
   ChangeLog
 
-MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
+MAINTAINERCLEANFILES += \
+  $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 

@@ -2150,7 +2150,8 @@ function A = rando (n, k = 1)
 
 endfunction
 
-function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
+function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = max (n) -1,
+                      ku = kl)
   ## RANDSVD  Random matrix with pre-assigned singular values.
   ##   RANDSVD(N, KAPPA, MODE, KL, KU) is a (banded) random matrix of order N
   ##   with COND(A) = KAPPA and singular values from the distribution MODE.
@@ -2851,6 +2852,53 @@ function A = bandred (A, kl, ku)
   endif
 endfunction
 
+## NOTE: qmult is part of the Test Matrix Toolbox and is used by randsvd()
+function B = qmult (A)
+  ## QMULT  Pre-multiply by random orthogonal matrix.
+  ##   QMULT(A) is Q*A where Q is a random real orthogonal matrix from
+  ##   the Haar distribution, of dimension the number of rows in A.
+  ##   Special case: if A is a scalar then QMULT(A) is the same as
+  ##   QMULT(EYE(A)).
+  ##
+  ##   Called by RANDSVD.
+  ##
+  ## Reference:
+  ##   G.W. Stewart, The efficient generation of random
+  ##   orthogonal matrices with an application to condition estimators,
+  ##   SIAM J. Numer. Anal., 17 (1980), 403-409.
+
+  [n, m] = size (A);
+
+  ##  Handle scalar A
+  if (isscalar (A))
+    n = A;
+    A = eye (n);
+  endif
+
+  d = zeros (n);
+
+  for k = n-1:-1:1
+    ## Generate random Householder transformation.
+    x = randn (n-k+1, 1);
+    s = norm (x);
+    sgn = sign (x(1)) + (x(1) == 0); # Modification for sign(1)=1.
+    s = sgn*s;
+    d(k) = -sgn;
+    x(1) = x(1) + s;
+    beta = s*x(1);
+
+    ## Apply the transformation to A.
+    y = x'*A(k:n,:);
+    A(k:n,:) = A(k:n,:) - x*(y/beta);
+  endfor
+
+  ## Tidy up signs
+  for i = 1:n-1
+    A(i,:) = d(i)*A(i,:);
+  endfor
+  A(n,:) = A(n,:) * sign (randn);
+  B = A;
+endfunction
 
 ## BIST testing for just a few functions to verify that the main gallery
 ## dispatch function works.

@@ -77,6 +77,7 @@ function h = imshow (im, varargin)
   truecolor = false;
   indexed = false;
   xdata = ydata = [];
+  prop_val_args = {};
 
   ## Get the image.
   if (ischar (im))
@@ -123,6 +124,9 @@ function h = imshow (im, varargin)
       endif
     elseif (ischar (arg))
       switch (tolower (arg))
+        case "border"
+          warning ("imshow: border argument is not implemented");
+          narg++;
         case "colormap"
           map = varargin{narg++};
           if (iscolormap (map))
@@ -132,10 +136,14 @@ function h = imshow (im, varargin)
           endif
         case "displayrange"
           display_range = varargin{narg++};
-        case "parent"
-          warning ("imshow: parent argument is not implemented");
-        case {"truesize", "initialmagnification"}
+        case {"initialmagnification"}
           warning ("image: zoom argument ignored -- use GUI features");
+          narg++;
+        case "parent"
+          prop_val_args(end+(1:2)) = {"parent", varargin{narg++}}; 
+        case "reduce"
+          warning ("imshow: reduce argument is not implemented");
+          narg++;
         case "xdata"
           xdata = varargin{narg++};
           if (! isvector (xdata))
@@ -187,21 +195,10 @@ function h = imshow (im, varargin)
     endif
   endif
 
-  ## FIXME: Commented out 2014/05/01.  imagesc and 'clim' will automatically
-  ## take care of displaying out-of-range data clamped to the limits.
-  ## Eventually, this can be deleted if no problems arise.
-  ## Clamp the image to the range boundaries
-  ##if (! (truecolor || indexed || islogical (im)))
-  ##  low = display_range(1);
-  ##  high = display_range(2);
-  ##  im(im < low) = low;
-  ##  im(im > high) = high;
-  ##endif
-
   if (truecolor || indexed)
-    htmp = image (xdata, ydata, im);
+    htmp = image (xdata, ydata, im, prop_val_args{:});
   else
-    htmp = imagesc (xdata, ydata, im, display_range);
+    htmp = imagesc (xdata, ydata, im, display_range, prop_val_args{:});
     set (gca (), "clim", display_range);
   endif
   set (gca (), "visible", "off", "view", [0, 90],

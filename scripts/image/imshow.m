@@ -137,10 +137,13 @@ function h = imshow (im, varargin)
         case "displayrange"
           display_range = varargin{narg++};
         case {"initialmagnification"}
-          warning ("image: zoom argument ignored -- use GUI features");
+          warning ("imshow: zoom argument ignored -- use GUI features");
           narg++;
         case "parent"
           prop_val_args(end+(1:2)) = {"parent", varargin{narg++}}; 
+          if (! isaxes (prop_val_args{end}))
+            error ("imshow: parent must be an axes handle");
+          endif
         case "reduce"
           warning ("imshow: reduce argument is not implemented");
           narg++;
@@ -199,10 +202,10 @@ function h = imshow (im, varargin)
     htmp = image (xdata, ydata, im, prop_val_args{:});
   else
     htmp = imagesc (xdata, ydata, im, display_range, prop_val_args{:});
-    set (gca (), "clim", display_range);
+    set (get (htmp, "parent"), "clim", display_range);
   endif
-  set (gca (), "visible", "off", "view", [0, 90],
-               "ydir", "reverse", "layer", "top");
+  set (get (htmp, "parent"), "visible", "off", "view", [0, 90],
+                             "ydir", "reverse", "layer", "top");
   axis ("image");
 
   if (nargout > 0)
@@ -262,6 +265,7 @@ endfunction
 %!   fail ("imshow ([1,1], [2 0 0])", "invalid colormap MAP");
 %!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid");
 %!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap");
+%!   fail ('imshow ([1,1], "parent", -1)', "must be an axes handle");
 %!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector");
 %!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector");
 %!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar")

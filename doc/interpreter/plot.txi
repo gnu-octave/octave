@@ -205,6 +205,7 @@ and linear.  For example,
 
 @example
 polar (0:0.1:10*pi, 0:0.1:10*pi);
+set (gca, "rtick", [0:10:40]);
 @end example
 
 @noindent
@@ -914,31 +915,6 @@ width 0.6pt \tabskip=0pt\cr
 @end tex
 @end float
 
-A complete example showing the capabilities of the extended text is
-
-@example
-@group
-x = 0:0.01:3;
-plot (x, erf (x));
-hold on;
-plot (x,x,"r");
-axis ([0, 3, 0, 1]);
-text (0.65, 0.6175, strcat ('\leftarrow x = @{2/\surd\pi',
-' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
-' e^@{-t^2@} dt@} = 0.6175'))
-@end group
-@end example
-
-@ifnotinfo
-@noindent
-The result of which can be seen in @ref{fig:extendedtext}
-
-@float Figure,fig:extendedtext
-@center @image{extended,4in}
-@caption{Example of inclusion of text with the @TeX{} interpreter}
-@end float
-@end ifnotinfo
-
 @node Printing and Saving Plots
 @subsection Printing and Saving Plots
 @cindex plotting, saving and printing plots
@@ -963,12 +939,48 @@ print -deps foo.eps
 saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
 
-The different graphic toolkits have different print capabilities.  In
-particular, the OpenGL based toolkits such as @code{fltk} do not support
-the @qcode{"interpreter"} property of text objects.  This means special
-symbols drawn with the @qcode{"tex"} interpreter will appear correctly
-on-screen but will be rendered with interpreter @qcode{"none"} when printing.
-Switch graphics toolkits for printing if this is a concern.
+The current graphic toolkits have differing print capabilities.  In particular,
+the OpenGL based toolkits such as @code{fltk} and @code{qt} do not support the
+@qcode{"interpreter"} property of text objects.  This means that when using
+OpenGL toolkits special symbols drawn with the @qcode{"tex"} interpreter will
+appear correctly on-screen but will be rendered with interpreter @qcode{"none"}
+when printing unless one of the @qcode{standalone} (see below) modes is used.
+These modes provide access to the pdflatex processor and therefore allow full
+use of LaTeX commands.
+
+A complete example showing the capabilities of text printing using the
+@code{-dpdflatexstandalone} option is
+
+@example
+@group
+x = 0:0.01:3;
+hf = figure ();
+plot (x, erf (x));
+hold on;
+plot (x, x, "r");
+axis ([0, 3, 0, 1]);
+text (0.65, 0.6175, ['$\leftarrow x = @{2/\sqrt@{\pi@}' ...
+        '@{\int_@{0@}^@{x@}@}e^@{-t^2@} dt@} = 0.6175$']);
+xlabel ("x");
+ylabel ("erf (x)");
+title ("erf (x) with text annotation");
+set (hf, "visible", "off")
+print (hf, "plot15_7.pdf", "-dpdflatexstandalone")
+set (hf, "visible", "on")
+system ("pdflatex plot15_7");
+system ("acroread plot15_7.pdf &");
+@end group
+@end example
+
+@ifnotinfo
+@noindent
+The result of which can be seen in @ref{fig:extendedtext}
+
+@float Figure,fig:extendedtext
+@center @image{extended,4in}
+@caption{Example of inclusion of text with use of @code{-dpdflatexstandalone}}
+@end float
+@end ifnotinfo
 
 @DOCSTRING(print)
 

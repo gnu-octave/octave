@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function plotimages (d, nm, typ)
-  graphics_toolkit ("gnuplot");
+  graphics_toolkit ("qt");
   set_print_size ();
   hide_output ();
   outfile = fullfile (d, strcat (nm, ".", typ));
@@ -31,7 +31,7 @@ function plotimages (d, nm, typ)
   endif
 
   if (strcmp(typ , "txt"))
-    image_as_txt(d, nm);
+    image_as_txt (d, nm);
   elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
@@ -60,6 +60,7 @@ function plotimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);
+    set (gca, "rtick", [0:10:40]);
     title ("Example polar plot from 0 to 10*pi");
     print (outfile, d_typ);
   elseif (strcmp (nm, "mesh"))
@@ -85,16 +86,27 @@ function plotimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "extended"))
     x = 0:0.01:3;
-    plot (x,erf(x));
+    plot (x, erf (x));
     hold on;
-    plot (x,x,"r");
+    plot (x, x, "r");
     axis ([0, 3, 0, 1]);
-    text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
-          '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
+    if (strcmp (typ, "pdf"))
+      text (0.65, 0.6175, ['$\leftarrow x = {2/\sqrt{\pi}' ...
+            '{\int_{0}^{x}}e^{-t^2} dt} = 0.6175$']);
+    else
+      text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
+            '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
+    endif
     xlabel ("x");
     ylabel ("erf (x)");
     title ("erf (x) with text annotation");
-    print (outfile, d_typ);
+    if (strcmp (typ, "pdf"))
+      print ([nm ".pdf"], "-dpdflatexstandalone");
+      system (["pdflatex " nm]);
+      delete ([nm ".aux"], [nm "-inc.pdf"], [nm ".log"], [nm ".tex"]);
+    else
+      print ([nm "." typ], d_typ);
+    endif
   else
     error ("unrecognized plot requested");
   endif
@@ -111,7 +123,7 @@ function set_print_size ()
 endfunction
 
 ## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnpulot
+## print since print() resets output to stdout (unfortunately, gnuplot
 ## can't pop output as it can the terminal type).
 function hide_output ()
   f = figure (1);
@@ -119,7 +131,7 @@ function hide_output ()
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(d, nm)
+function image_as_txt (d, nm)
   fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");

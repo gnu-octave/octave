@@ -36,19 +36,21 @@ CLASSES="
   function_handle
 "
 
-if [ $# -eq 1 ]; then
+if [ $# -eq 2 ]; then
+  output_dir="$1"
+  shift
   case "$1" in
     --list-files)
-      echo tbcover.m
-      echo bc-overloads.tst
+      echo $output_dir/tbcover.m
+      echo $output_dir/bc-overloads.tst
       for class in $CLASSES; do
-        echo @$class/tbcover.m
+        echo $output_dir/@$class/tbcover.m
       done
       exit
     ;;
     --list-dirs)
       for class in $CLASSES; do
-        echo @$class
+        echo $output_dir/@$class
       done
       exit
     ;;
@@ -57,15 +59,11 @@ if [ $# -eq 1 ]; then
       exit
     ;;
     *)
-      echo "usage: build-bc-overload-tests.sh option" 1>&2
-      exit 1
+      expected_results_file="$1"
     ;;
   esac
-elif [ $# -eq 2 ]; then
-    output_dir="$1"
-    expected_results_file="$2"
 else
-  echo "usage: build-bc-overload-tests.sh expected-results-file" 1>&2
+  echo "usage: build-bc-overload-tests.sh output_dir option" 1>&2
   exit 1
 fi
 

@@ -58,6 +58,7 @@ DISTCLEANFILES =
 MAINTAINERCLEANFILES =
 info_TEXINFOS =
 BUILT_SOURCES =
+TEST_FILES =
 
 IMAGES_SRC =
 IMAGES_EPS =
@@ -70,6 +71,7 @@ include doc/interpreter/images.mk
 include etc/module.mk
 include examples/module.mk
 include m4/module.mk
+include test/module.mk
 
 # Subdirectories in which to run make recursively.  Other
 # directories are handled directly from this Makefile (see also the
@@ -79,7 +81,7 @@ SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts test
+SUBDIRS += src scripts
 
 dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook
 
@@ -133,14 +135,6 @@ all-local: $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(DOC_TARGETS)
 	@echo "   make check      - to run the tests"
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
-
-check: all
-	$(MAKE) -C test check
-
-if AMCOND_HAVE_LLVM
-check-jit: all
-	$(MAKE) -C test check-jit
-endif
 
 run-octave: run-octave.in Makefile
 	$(AM_V_GEN)$(do_subst_script_vals) && \

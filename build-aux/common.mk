@@ -929,10 +929,10 @@ define subst-bison-api-decls
 endef
 
 define gdbinit_install_rule
-  if [ -f .gdbinit ]; then \
-    echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
+  if [ -f $@ ]; then \
+    echo "refusing to overwrite $@ with newer version from $<" 1>&2; \
   else \
-    echo "Installing .gdbinit from version at $<" ; \
+    echo "Installing $@ from version at $<" ; \
     cp $< $@; \
   fi
 endef

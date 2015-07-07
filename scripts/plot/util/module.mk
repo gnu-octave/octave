@@ -1,4 +1,4 @@
-FCN_FILE_DIRS += plot
+FCN_FILE_DIRS += plot/util
 
 plot_util_GEN_FCN_FILES = \
   plot/util/gnuplot_binary.m

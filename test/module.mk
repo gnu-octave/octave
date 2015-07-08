@@ -52,11 +52,11 @@ test/.gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)
 
 check-local: 
-	cd test && ../run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(srcdir)/test/fntests.m $(srcdir)/test
+	cd test && ../run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
 
 if AMCOND_HAVE_LLVM
 check-jit: test/sparse.tst test/bc-overload-tests.stamp test/$(octave_dirstamp)
-	cd test && ../run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(srcdir)/test/fntests.m $(srcdir)/test
+	cd test && ../run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
 endif
 
 test/sparse.tst: test/build-sparse-tests.sh test/$(octave_dirstamp)

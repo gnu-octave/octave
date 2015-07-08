@@ -466,12 +466,12 @@ $(srcdir)/doc/interpreter/images.mk: $(srcdir)/doc/interpreter/config-images.sh 
 $(refcard_DVI) : %.dvi : %.tex doc/refcard/$(octave_dirstamp)
 	-$(AM_V_TEX)cd $(@D) && \
 	TEXINPUTS="$(srcdir)/doc/refcard:$(TEXINPUTS):" \
-	$(TEX) $< $(AM_V_texidevnull)
+	$(TEX) $(<F) $(AM_V_texidevnull)
 
 $(refcard_PDF) : %.pdf : %.tex doc/refcard/$(octave_dirstamp)
 	-$(AM_V_PDFTEX)cd $(@D) && \
 	TEXINPUTS="$(srcdir)/doc/refcard:$(TEXINPUTS):" \
-	$(PDFTEX) $< $(AM_V_texidevnull)
+	$(PDFTEX) $(<F) $(AM_V_texidevnull)
 
 endif
 

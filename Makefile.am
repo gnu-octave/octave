@@ -22,6 +22,7 @@ include build-aux/common.mk
 
 octdata_DATA =
 octetc_DATA =
+octlocale_DATA =
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -73,8 +74,13 @@ OCTAVE_VERSION_LINKS =
 OCTAVE_CROSS_TOOLS =
 OCTAVE_INTERPRETER_TARGETS =
 
+octlib_LTLIBRARIES =
+noinst_LTLIBRARIES =
+
 ALL_LOCAL_TARGETS =
 
+include libgui/module.mk
+include libgui/link-deps.mk
 include src/module.mk
 include doc/module.mk
 include doc/interpreter/images.mk
@@ -87,11 +93,7 @@ include test/module.mk
 # directories are handled directly from this Makefile (see also the
 # included makefile fragments).
 
-SUBDIRS = libgnu liboctave libinterp
-if AMCOND_BUILD_GUI
-SUBDIRS += libgui
-endif
-SUBDIRS += scripts
+SUBDIRS = libgnu liboctave libinterp scripts
 
 dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook
 

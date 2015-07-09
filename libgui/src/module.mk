@@ -1,186 +1,207 @@
 EXTRA_DIST += \
-  src/module.mk \
-  src/resource.qrc \
+  libgui/src/module.mk \
+  libgui/src/resource.qrc \
   $(octave_gui_UI) \
   $(octave_gui_ICONS)
 
 octave_gui_ICONS = \
-  src/icons/applications-system.png \
-  src/icons/bp-next.png \
-  src/icons/bp-prev.png \
-  src/icons/bp-rm-all.png \
-  src/icons/bp-toggle.png \
-  src/icons/db-cont.png \
-  src/icons/db-step-in.png \
-  src/icons/db-step-out.png \
-  src/icons/db-step.png \
-  src/icons/db-stop.png \
-  src/icons/document-new.png \
-  src/icons/document-open.png \
-  src/icons/document-print.png \
-  src/icons/document-save.png \
-  src/icons/document-save-as.png \
-  src/icons/edit-copy.png \
-  src/icons/edit-cut.png \
-  src/icons/edit-delete.png \
-  src/icons/edit-find.png \
-  src/icons/edit-find-replace.png \
-  src/icons/edit-paste.png \
-  src/icons/edit-redo.png \
-  src/icons/edit-undo.png \
-  src/icons/folder.png \
-  src/icons/folder-new.png \
-  src/icons/go-first.png \
-  src/icons/go-last.png \
-  src/icons/go-up.png \
-  src/icons/graphic_logo_DocumentationDockWidget.png \
-  src/icons/graphic_logo_FileEditor.png \
-  src/icons/graphic_logo_FilesDockWidget.png \
-  src/icons/graphic_logo_HistoryDockWidget.png \
-  src/icons/graphic_logo_NewsDockWidget.png \
-  src/icons/graphic_logo_TerminalDockWidget.png \
-  src/icons/graphic_logo_WorkspaceView.png \
-  src/icons/graphic_logo_ReleaseWidget.png \
-  src/icons/icons_license \
-  src/icons/letter_logo_DocumentationDockWidget.png \
-  src/icons/letter_logo_FileEditor.png \
-  src/icons/letter_logo_FilesDockWidget.png \
-  src/icons/letter_logo_HistoryDockWidget.png \
-  src/icons/letter_logo_NewsDockWidget.png \
-  src/icons/letter_logo_TerminalDockWidget.png \
-  src/icons/letter_logo_WorkspaceView.png \
-  src/icons/letter_logo_ReleaseWidget.png \
-  src/icons/logo.png \
-  src/icons/preferences-system.png \
-  src/icons/system-run.png \
-  src/icons/user-home.png \
-  src/icons/view-refresh.png \
-  src/icons/widget-close.png \
-  src/icons/widget-dock.png \
-  src/icons/widget-undock.png \
-  src/icons/widget-close-light.png \
-  src/icons/widget-dock-light.png \
-  src/icons/widget-undock-light.png \
-  src/icons/zoom-in.png \
-  src/icons/zoom-out.png
+  libgui/src/icons/applications-system.png \
+  libgui/src/icons/bp-next.png \
+  libgui/src/icons/bp-prev.png \
+  libgui/src/icons/bp-rm-all.png \
+  libgui/src/icons/bp-toggle.png \
+  libgui/src/icons/db-cont.png \
+  libgui/src/icons/db-step-in.png \
+  libgui/src/icons/db-step-out.png \
+  libgui/src/icons/db-step.png \
+  libgui/src/icons/db-stop.png \
+  libgui/src/icons/document-new.png \
+  libgui/src/icons/document-open.png \
+  libgui/src/icons/document-print.png \
+  libgui/src/icons/document-save.png \
+  libgui/src/icons/document-save-as.png \
+  libgui/src/icons/edit-copy.png \
+  libgui/src/icons/edit-cut.png \
+  libgui/src/icons/edit-delete.png \
+  libgui/src/icons/edit-find.png \
+  libgui/src/icons/edit-find-replace.png \
+  libgui/src/icons/edit-paste.png \
+  libgui/src/icons/edit-redo.png \
+  libgui/src/icons/edit-undo.png \
+  libgui/src/icons/folder.png \
+  libgui/src/icons/folder-new.png \
+  libgui/src/icons/go-first.png \
+  libgui/src/icons/go-last.png \
+  libgui/src/icons/go-up.png \
+  libgui/src/icons/graphic_logo_DocumentationDockWidget.png \
+  libgui/src/icons/graphic_logo_FileEditor.png \
+  libgui/src/icons/graphic_logo_FilesDockWidget.png \
+  libgui/src/icons/graphic_logo_HistoryDockWidget.png \
+  libgui/src/icons/graphic_logo_NewsDockWidget.png \
+  libgui/src/icons/graphic_logo_TerminalDockWidget.png \
+  libgui/src/icons/graphic_logo_WorkspaceView.png \
+  libgui/src/icons/graphic_logo_ReleaseWidget.png \
+  libgui/src/icons/icons_license \
+  libgui/src/icons/letter_logo_DocumentationDockWidget.png \
+  libgui/src/icons/letter_logo_FileEditor.png \
+  libgui/src/icons/letter_logo_FilesDockWidget.png \
+  libgui/src/icons/letter_logo_HistoryDockWidget.png \
+  libgui/src/icons/letter_logo_NewsDockWidget.png \
+  libgui/src/icons/letter_logo_TerminalDockWidget.png \
+  libgui/src/icons/letter_logo_WorkspaceView.png \
+  libgui/src/icons/letter_logo_ReleaseWidget.png \
+  libgui/src/icons/logo.png \
+  libgui/src/icons/preferences-system.png \
+  libgui/src/icons/system-run.png \
+  libgui/src/icons/user-home.png \
+  libgui/src/icons/view-refresh.png \
+  libgui/src/icons/widget-close.png \
+  libgui/src/icons/widget-dock.png \
+  libgui/src/icons/widget-undock.png \
+  libgui/src/icons/widget-close-light.png \
+  libgui/src/icons/widget-dock-light.png \
+  libgui/src/icons/widget-undock-light.png \
+  libgui/src/icons/zoom-in.png \
+  libgui/src/icons/zoom-out.png
 
 octave_gui_MOC =
 
 if AMCOND_HAVE_QSCINTILLA
+
+OCTAVE_GUI_SRC_M_EDITOR_MOC = \
+  libgui/src/m-editor/moc-file-editor-interface.cc \
+  libgui/src/m-editor/moc-file-editor-tab.cc \
+  libgui/src/m-editor/moc-file-editor.cc \
+  libgui/src/m-editor/moc-find-dialog.cc \
+  libgui/src/m-editor/moc-octave-qscintilla.cc \
+  libgui/src/m-editor/moc-octave-txt-lexer.cc
+
+$(OCTAVE_GUI_SRC_M_EDITOR_MOC): libgui/src/m-editor/$(octave_dirstamp)
+
 octave_gui_MOC += \
-  src/m-editor/moc-file-editor-interface.cc \
-  src/m-editor/moc-file-editor-tab.cc \
-  src/m-editor/moc-file-editor.cc \
-  src/m-editor/moc-find-dialog.cc \
-  src/m-editor/moc-octave-qscintilla.cc \
-  src/m-editor/moc-octave-txt-lexer.cc
+  $(OCTAVE_GUI_SRC_M_EDITOR_MOC)
+
+DIRSTAMP_FILES += \
+  libgui/src/m-editor/$(octave_dirstamp)
+
 endif
 
-octave_gui_MOC += \
-  src/moc-dialog.cc \
-  src/moc-documentation-dock-widget.cc \
-  src/moc-files-dock-widget.cc \
-  src/moc-history-dock-widget.cc \
-  src/moc-main-window.cc \
-  src/moc-octave-interpreter.cc \
-  src/moc-octave-qt-link.cc \
-  src/moc-settings-dialog.cc \
-  src/moc-terminal-dock-widget.cc \
-  src/moc-color-picker.cc \
-  src/moc-resource-manager.cc \
-  src/moc-shortcut-manager.cc \
-  src/moc-welcome-wizard.cc \
-  src/moc-workspace-model.cc \
-  src/moc-workspace-view.cc \
-  src/moc-find-files-dialog.cc \
-  src/moc-find-files-model.cc \
-  src/qtinfo/moc-parser.cc \
-  src/qtinfo/moc-webinfo.cc \
-  src/moc-octave-dock-widget.cc
+OCTAVE_GUI_SRC_MOC = \
+  libgui/src/moc-dialog.cc \
+  libgui/src/moc-documentation-dock-widget.cc \
+  libgui/src/moc-files-dock-widget.cc \
+  libgui/src/moc-history-dock-widget.cc \
+  libgui/src/moc-main-window.cc \
+  libgui/src/moc-octave-interpreter.cc \
+  libgui/src/moc-octave-qt-link.cc \
+  libgui/src/moc-settings-dialog.cc \
+  libgui/src/moc-terminal-dock-widget.cc \
+  libgui/src/moc-color-picker.cc \
+  libgui/src/moc-resource-manager.cc \
+  libgui/src/moc-shortcut-manager.cc \
+  libgui/src/moc-welcome-wizard.cc \
+  libgui/src/moc-workspace-model.cc \
+  libgui/src/moc-workspace-view.cc \
+  libgui/src/moc-find-files-dialog.cc \
+  libgui/src/moc-find-files-model.cc \
+  libgui/src/qtinfo/moc-parser.cc \
+  libgui/src/qtinfo/moc-webinfo.cc \
+  libgui/src/moc-octave-dock-widget.cc
 
-octave_gui_RC = src/qrc-resource.cc
+octave_gui_MOC += \
+  $(OCTAVE_GUI_SRC_MOC) \
+  $(OCTAVE_GUI_EDITOR_MOC)
+
+octave_gui_RC = libgui/src/qrc-resource.cc
+
+$(octave_gui_RC): libgui/src/$(octave_dirstamp)
+
+DIRSTAMP_FILES += \
+  libgui/src/$(octave_dirstamp)
 
 octave_gui_UI = \
-  src/settings-dialog.ui
+  libgui/src/settings-dialog.ui
 
-octave_gui_UI_H = $(patsubst src/%.ui, src/ui-%.h, $(octave_gui_UI))
+octave_gui_UI_H = $(patsubst libgui/src/%.ui, libgui/src/ui-%.h, $(octave_gui_UI))
+
+$(octave_gui_UI_H): libgui/src/$(octave_dirstamp)
 
 BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
-  src/dialog.h \
-  src/octave-dock-widget.h \
-  src/documentation-dock-widget.h \
-  src/files-dock-widget.h \
-  src/history-dock-widget.h \
-  src/m-editor/file-editor-interface.h \
-  src/m-editor/file-editor-tab.h \
-  src/m-editor/file-editor.h \
-  src/m-editor/find-dialog.h \
-  src/m-editor/octave-qscintilla.h \
-  src/m-editor/octave-txt-lexer.h \
-  src/main-window.h \
-  src/octave-gui.h \
-  src/octave-cmd.h \
-  src/octave-interpreter.h \
-  src/octave-qt-link.h \
-  src/qtinfo/parser.h \
-  src/qtinfo/webinfo.h \
-  src/resource-manager.h \
-  src/settings-dialog.h \
-  src/shortcut-manager.h \
-  src/thread-manager.h \
-  src/terminal-dock-widget.h \
-  src/color-picker.h \
-  src/welcome-wizard.h \
-  src/find-files-dialog.h \
-  src/find-files-model.h \
-  src/workspace-model.h \
-  src/workspace-view.h
+  libgui/src/dialog.h \
+  libgui/src/octave-dock-widget.h \
+  libgui/src/documentation-dock-widget.h \
+  libgui/src/files-dock-widget.h \
+  libgui/src/history-dock-widget.h \
+  libgui/src/m-editor/file-editor-interface.h \
+  libgui/src/m-editor/file-editor-tab.h \
+  libgui/src/m-editor/file-editor.h \
+  libgui/src/m-editor/find-dialog.h \
+  libgui/src/m-editor/octave-qscintilla.h \
+  libgui/src/m-editor/octave-txt-lexer.h \
+  libgui/src/main-window.h \
+  libgui/src/octave-gui.h \
+  libgui/src/octave-cmd.h \
+  libgui/src/octave-interpreter.h \
+  libgui/src/octave-qt-link.h \
+  libgui/src/qtinfo/parser.h \
+  libgui/src/qtinfo/webinfo.h \
+  libgui/src/resource-manager.h \
+  libgui/src/settings-dialog.h \
+  libgui/src/shortcut-manager.h \
+  libgui/src/thread-manager.h \
+  libgui/src/terminal-dock-widget.h \
+  libgui/src/color-picker.h \
+  libgui/src/welcome-wizard.h \
+  libgui/src/find-files-dialog.h \
+  libgui/src/find-files-model.h \
+  libgui/src/workspace-model.h \
+  libgui/src/workspace-view.h
 
-src_libgui_src_la_SOURCES = \
-  src/dialog.cc \
-  src/documentation-dock-widget.cc \
-  src/files-dock-widget.cc \
-  src/history-dock-widget.cc \
-  src/m-editor/file-editor-tab.cc \
-  src/m-editor/file-editor.cc \
-  src/m-editor/find-dialog.cc \
-  src/m-editor/octave-qscintilla.cc \
-  src/m-editor/octave-txt-lexer.cc \
-  src/main-window.cc \
-  src/octave-cmd.cc \
-  src/octave-dock-widget.cc \
-  src/octave-gui.cc \
-  src/octave-interpreter.cc \
-  src/octave-qt-link.cc \
-  src/qtinfo/parser.cc \
-  src/qtinfo/webinfo.cc \
-  src/resource-manager.cc \
-  src/settings-dialog.cc \
-  src/shortcut-manager.cc \
-  src/thread-manager.cc \
-  src/terminal-dock-widget.cc \
-  src/color-picker.cc \
-  src/welcome-wizard.cc \
-  src/find-files-dialog.cc \
-  src/find-files-model.cc \
-  src/workspace-model.cc \
-  src/workspace-view.cc
+libgui_src_libgui_src_la_SOURCES = \
+  libgui/src/dialog.cc \
+  libgui/src/documentation-dock-widget.cc \
+  libgui/src/files-dock-widget.cc \
+  libgui/src/history-dock-widget.cc \
+  libgui/src/m-editor/file-editor-tab.cc \
+  libgui/src/m-editor/file-editor.cc \
+  libgui/src/m-editor/find-dialog.cc \
+  libgui/src/m-editor/octave-qscintilla.cc \
+  libgui/src/m-editor/octave-txt-lexer.cc \
+  libgui/src/main-window.cc \
+  libgui/src/octave-cmd.cc \
+  libgui/src/octave-dock-widget.cc \
+  libgui/src/octave-gui.cc \
+  libgui/src/octave-interpreter.cc \
+  libgui/src/octave-qt-link.cc \
+  libgui/src/qtinfo/parser.cc \
+  libgui/src/qtinfo/webinfo.cc \
+  libgui/src/resource-manager.cc \
+  libgui/src/settings-dialog.cc \
+  libgui/src/shortcut-manager.cc \
+  libgui/src/thread-manager.cc \
+  libgui/src/terminal-dock-widget.cc \
+  libgui/src/color-picker.cc \
+  libgui/src/welcome-wizard.cc \
+  libgui/src/find-files-dialog.cc \
+  libgui/src/find-files-model.cc \
+  libgui/src/workspace-model.cc \
+  libgui/src/workspace-view.cc
 
-nodist_src_libgui_src_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
+nodist_libgui_src_libgui_src_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
-src_libgui_src_la_CPPFLAGS = \
+libgui_src_libgui_src_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \
-  -I$(srcdir)/qterminal/libqterminal \
-  -Isrc -I$(srcdir)/src \
-  -I$(srcdir)/src/m-editor \
-  -I$(srcdir)/src/qtinfo \
-  -I$(srcdir)/graphics \
+  -I$(srcdir)/libgui/qterminal/libqterminal \
+  -Ilibgui/src -I$(srcdir)/libgui/src \
+  -I$(srcdir)/libgui/src/m-editor \
+  -I$(srcdir)/libgui/src/qtinfo \
+  -I$(srcdir)/libgui/graphics \
   -I$(top_srcdir)/liboctave/cruft/misc \
   -I$(top_srcdir)/liboctave/array \
   -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
@@ -193,11 +214,11 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_srcdir)/libinterp/octave-value \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
-src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+libgui_src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-src_libgui_src_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+libgui_src_libgui_src_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
-noinst_LTLIBRARIES += src/libgui-src.la
+noinst_LTLIBRARIES += libgui/src/libgui-src.la
 
 CLEANFILES += \
   $(octave_gui_MOC) \

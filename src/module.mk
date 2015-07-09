@@ -46,8 +46,6 @@ OCTAVE_CORE_LIBS = \
   $(top_builddir)/libinterp/liboctinterp.la \
   $(top_builddir)/liboctave/liboctave.la
 
-include libgui/link-deps.mk
-
 nodist_src_octave_SOURCES = src/main.cc
 src_octave_SOURCES = src/display-available.c
 

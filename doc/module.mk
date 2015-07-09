@@ -56,6 +56,8 @@ GRAPH_PROP_TEXI_SRC = \
   doc/interpreter/plot-surfaceproperties.texi \
   doc/interpreter/plot-textproperties.texi
 
+$(GRAPH_PROP_TEXI_SRC): $(OCTAVE_INTERPRETER_TARGETS)
+
 define gen-propdoc-texi
   rm -f $@-t $@ && \
   $(top_builddir)/run-octave -f -q -H -p $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
@@ -112,6 +114,8 @@ BUILT_IMAGES = \
 IMAGES = \
   $(BUILT_IMAGES) \
   $(JAVA_IMAGES)
+
+$(BUILT_IMAGES): $(OCTAVE_INTERPRETER_TARGETS)
 
 ## FIXME: JAVA_IMAGES will eventually need to be added to the HTML build.
 ##        It will require a different Makefile rule later because
@@ -203,10 +207,14 @@ octave_TEXINFOS = \
 ## there are additional dependencies, so we include our own
 ## versions of the rules here.
 
+OCTAVE_HTML_DIR = doc/interpreter/octave.html
+OCTAVE_HTML_TMP_DIR = $(OCTAVE_HTML_DIR:.html=.htp)
+OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.html-stamp
+
 $(srcdir)/doc/interpreter/octave.info: $(IMAGES_TXT) $(octave_TEXINFOS)
 doc/interpreter/octave.dvi: $(IMAGES_EPS) $(octave_TEXINFOS)
 doc/interpreter/octave.pdf: $(IMAGES_PDF) $(octave_TEXINFOS)
-doc/interpreter/octave.html: $(IMAGES_PNG) $(octave_TEXINFOS)
+$(OCTAVE_HTML_STAMP): $(IMAGES_PNG) $(octave_TEXINFOS)
 
 $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
@@ -218,7 +226,7 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 	  done; \
 	else :; fi && \
 	cd "$$am__cwd"; \
-	if $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(srcdir)/doc/interpreter \
+	if $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
 	 -o $@ $(srcdir)/doc/interpreter/octave.texi; \
 	then \
 	  rc=0; \
@@ -232,24 +240,20 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 
 doc/interpreter/octave.dvi: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
-	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(srcdir)/doc/interpreter' \
+	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
 	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
-	`test -f 'doc/interpreter/octave.texi' || echo '$(srcdir)/'`doc/interpreter/octave.texi
+	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
 doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
-	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(srcdir)/doc/interpreter' \
+	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
 	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
-	`test -f 'doc/interpreter/octave.texi' || echo '$(srcdir)/'`doc/interpreter/octave.texi
-
-OCTAVE_HTML_DIR = doc/interpreter/octave.html
-OCTAVE_HTML_TMP_DIR = $(OCTAVE_HTML_DIR:.html=.htp)
-OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.html-stamp
+	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
 $(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi doc/interpreter/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(OCTAVE_HTML_DIR)
-	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(srcdir)/doc/interpreter \
-	 -o $(OCTAVE_HTML_TMP_DIR) `test -f 'doc/interpreter/octave.texi' || echo '$(srcdir)/'`doc/interpreter/octave.texi; \
+	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
+	 -o $(OCTAVE_HTML_TMP_DIR) `test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi; \
 	then \
 	  rm -rf $(OCTAVE_HTML_DIR)@ && \
 	  mv $(OCTAVE_HTML_TMP_DIR) $(OCTAVE_HTML_DIR) && \
@@ -287,7 +291,7 @@ octetc_DATA += \
 
 DOCSTRING_FILES = $(shell $(srcdir)/doc/interpreter/find-docstring-files.sh "$(top_srcdir)")
 
-doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk_doc_cache.m doc/interpreter/$(octave_dirstamp)
+doc/interpreter/doc-cache: $(DOCSTRING_FILES) $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/mk_doc_cache.m doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) >$@-t && \
 	mv $@-t $@

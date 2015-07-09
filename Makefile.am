@@ -66,6 +66,16 @@ IMAGES_PDF =
 IMAGES_PNG =
 IMAGES_TXT =
 
+bin_PROGRAMS =
+archlib_PROGRAMS =
+noinst_HEADERS =
+OCTAVE_VERSION_LINKS =
+OCTAVE_CROSS_TOOLS =
+OCTAVE_INTERPRETER_TARGETS =
+
+ALL_LOCAL_TARGETS =
+
+include src/module.mk
 include doc/module.mk
 include doc/interpreter/images.mk
 include etc/module.mk
@@ -81,7 +91,7 @@ SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts
+SUBDIRS += scripts
 
 dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook
 
@@ -111,6 +121,8 @@ endif
 
 noinst_SCRIPTS = run-octave
 
+OCTAVE_INTERPRETER_TARGETS += run-octave
+
 CLEANFILES += \
   $(BUILT_SOURCES)
 
@@ -127,7 +139,7 @@ CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 nodist_octinclude_HEADERS = config.h
 octinclude_HEADERS = oct-conf-post.h
 
-all-local: $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(DOC_TARGETS)
+all-local: $(ALL_LOCAL_TARGETS) $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(DOC_TARGETS)
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""

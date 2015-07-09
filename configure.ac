@@ -3002,8 +3002,7 @@ AC_CONFIG_FILES([
   libinterp/Makefile
   liboctave/Makefile
   liboctave/cruft/mkf77def
-  scripts/Makefile
-  src/Makefile])
+  scripts/Makefile])
 
 AC_OUTPUT
 

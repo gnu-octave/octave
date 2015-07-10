@@ -43,20 +43,6 @@ function sparseimages (d, nm, typ)
   endif
 endfunction
 
-function set_print_size ()
-  image_size = [5.0, 3.5]; # in inches, 16:9 format
-  border = 0;              # For postscript use 50/72
-  set (0, "defaultfigurepapertype", "<custom>");
-  set (0, "defaultfigurepaperorientation", "landscape");
-  set (0, "defaultfigurepapersize", image_size + 2*border);
-  set (0, "defaultfigurepaperposition", [border, border, image_size]);
-endfunction
-
-function hide_output ()
-  f = figure (1);
-  set (f, "visible", "off");
-endfunction
-
 function gplotimages (d, nm, typ)
   hide_output ();
   outfile = fullfile (d, strcat (nm, ".", typ));
@@ -94,7 +80,7 @@ function txtimages (d, nm, n, typ)
         printsparse (r1, outfile);
       elseif (strcmp (nm, "spcholperm"))
         [r2,p2,q2] = chol (a);
-        printsparse(r2, outfile);
+        printsparse (r2, outfile);
       endif
       ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
@@ -110,7 +96,7 @@ function otherimages (d, nm, n, typ)
     d_typ = ["-d" typ];
   endif
 
-  a = 10*speye (n) + sparse (1:n,ceil([1:n]/2),1,n,n) + ...
+  a = 10*speye (n) + sparse (1:n,ceil ([1:n]/2),1,n,n) + ...
       sparse (ceil ([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "spmatrix"))
     spy (a);
@@ -267,7 +253,7 @@ endfunction
 ## sorry about that.
 function sombreroimage (d, nm, typ)
   if (strcmp (typ, "txt"))
-    fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
+    fid = fopen (fullfile (d, [nm ".txt"]), "wt");
     fputs (fid, "\n");
     fputs (fid, "+---------------------------------------+\n");
     fputs (fid, "| Image unavailable because of a        |\n");
@@ -275,8 +261,7 @@ function sombreroimage (d, nm, typ)
     fputs (fid, "+---------------------------------------+\n");
     fclose (fid);
     return;
-  else ## if (!strcmp (typ, "txt"))
-
+  else
     hide_output ();
     if (strcmp (typ, "eps"))
       d_typ = "-depsc2";
@@ -293,5 +278,22 @@ function sombreroimage (d, nm, typ)
       hide_output ();
     end_unwind_protect
   endif
+endfunction
+
+function set_print_size ()
+  image_size = [5.0, 3.5]; # in inches, 16:9 format
+  border = 0;              # For postscript use 50/72
+  set (0, "defaultfigurepapertype", "<custom>");
+  set (0, "defaultfigurepaperorientation", "landscape");
+  set (0, "defaultfigurepapersize", image_size + 2*border);
+  set (0, "defaultfigurepaperposition", [border, border, image_size]);
+endfunction
+
+## Use this function before plotting commands and after every call to
+## print since print() resets output to stdout (unfortunately, gnpulot
+## can't pop output as it can the terminal type).
+function hide_output ()
+  hf = figure (1);
+  set (hf, "visible", "off");
 endfunction
 

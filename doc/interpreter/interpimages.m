@@ -20,7 +20,7 @@ function interpimages (d, nm, typ)
   graphics_toolkit ("gnuplot");
   set_print_size ();
   hide_output ();
-  outfile = fullfile (d, strcat (nm, ".", typ));
+  outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -91,13 +91,13 @@ endfunction
 ## print since print() resets output to stdout (unfortunately, gnpulot
 ## can't pop output as it can the terminal type).
 function hide_output ()
-  f = figure (1);
-  set (f, "visible", "off");
+  hf = figure (1);
+  set (hf, "visible", "off");
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(d, nm)
-  fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
+function image_as_txt (d, nm)
+  fid = fopen (fullfile (d, [nm ".txt"]), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");

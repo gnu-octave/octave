@@ -20,7 +20,7 @@ function plotimages (d, nm, typ)
   graphics_toolkit ("qt");
   set_print_size ();
   hide_output ();
-  outfile = fullfile (d, strcat (nm, ".", typ));
+  outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -30,7 +30,7 @@ function plotimages (d, nm, typ)
     d_typ = ["-d", typ];
   endif
 
-  if (strcmp(typ , "txt"))
+  if (strcmp (typ , "txt"))
     image_as_txt (d, nm);
   elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
@@ -78,7 +78,7 @@ function plotimages (d, nm, typ)
     t = 0:0.1:10*pi;
     r = linspace (0, 1, numel (t));
     z = linspace (0, 1, numel (t));
-    plot3 (r.*sin(t), r.*cos(t), z);
+    plot3 (r.*sin (t), r.*cos (t), z);
     xlabel ("r.*sin (t)");
     ylabel ("r.*cos (t)");
     zlabel ("z");
@@ -126,16 +126,17 @@ endfunction
 ## print since print() resets output to stdout (unfortunately, gnuplot
 ## can't pop output as it can the terminal type).
 function hide_output ()
-  f = figure (1);
-  set (f, "visible", "off");
+  hf = figure (1);
+  set (hf, "visible", "off");
 endfunction
 
 ## generate something for the texinfo @image command to process
 function image_as_txt (d, nm)
-  fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
+  fid = fopen (fullfile (d, [nm ".txt"]), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
+

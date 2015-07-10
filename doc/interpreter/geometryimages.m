@@ -20,7 +20,7 @@ function geometryimages (d, nm, typ)
   graphics_toolkit ("gnuplot");
   set_print_size ();
   hide_output ();
-  outfile = fullfile (d, strcat (nm, ".", typ));
+  outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -50,7 +50,7 @@ function geometryimages (d, nm, typ)
     xc = r * sin (pi*pc) + c(1);
     yc = r * cos (pi*pc) + c(2);
     plot (xc, yc, "g-", "LineWidth", 3);
-    axis([0, 1, 0, 1]);
+    axis ([0, 1, 0, 1]);
     legend ("Delaunay Triangulation", "Voronoi Diagram");
     print (outfile, d_typ);
   elseif (strcmp (nm, "triplot"))
@@ -113,6 +113,28 @@ function [r, c] = tri2circ (tri, xx, yy)
   r = sqrt ((xc - x(1)).^2 + (yc - y(1)).^2);
 endfunction
 
+function sombreroimage (nm, typ, d_typ)
+  if (strcmp (typ, "txt"))
+    fid = fopen ([nm ".txt"], "wt");
+    fputs (fid, "+-----------------------------+\n");
+    fputs (fid, "| Image unavailable because   |\n");
+    fputs (fid, "| of a missing QHULL library. |\n");
+    fputs (fid, "+-----------------------------+\n");
+    fclose (fid);
+    return;
+  else
+    hide_output ();
+    [x, y, z] = sombrero ();
+    unwind_protect
+      mesh (x, y, z);
+      title ("Sorry, graphics not available because Octave was\\ncompiled without the QHULL library.");
+    unwind_protect_cleanup
+      print (outfile, d_typ);
+      hide_output ();
+    end_unwind_protect
+  endif
+endfunction
+
 function set_print_size ()
   image_size = [5.0, 3.5]; # in inches, 16:9 format
   border = 0;              # For postscript use 50/72
@@ -126,37 +148,13 @@ endfunction
 ## print since print() resets output to stdout (unfortunately, gnpulot
 ## can't pop output as it can the terminal type).
 function hide_output ()
-  f = figure (1);
-  set (f, "visible", "off");
-endfunction
-
-function sombreroimage (nm, typ, d_typ)
-  if (strcmp (typ, "txt"))
-    fid = fopen (sprintf ("%s.txt", nm), "wt");
-    fputs (fid, "+-----------------------------+\n");
-    fputs (fid, "| Image unavailable because   |\n");
-    fputs (fid, "| of a missing QHULL library. |\n");
-    fputs (fid, "+-----------------------------+\n");
-    fclose (fid);
-    return;
-  else ## if (!strcmp (typ, "txt"))
-
-    hide_output ();
-
-    [x, y, z] = sombrero ();
-    unwind_protect
-      mesh (x, y, z);
-      title ("Sorry, graphics not available because octave was\\ncompiled without the QHULL library.");
-    unwind_protect_cleanup
-      print (outfile, d_typ);
-      hide_output ();
-    end_unwind_protect
-  endif
+  hf = figure (1);
+  set (hf, "visible", "off");
 endfunction
 
 ## generate something for the texinfo @image command to process
 function image_as_txt (d, nm)
-  fid = fopen (fullfile (d, strcat (nm, ".txt")), "wt");
+  fid = fopen (fullfile (d, [nm ".txt"]), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");

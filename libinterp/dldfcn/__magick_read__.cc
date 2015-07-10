@@ -115,15 +115,20 @@ is_indexed (const Magick::Image& img)
 //  all to 1. So we will guess that if all channels have depth of 1,
 //  then we must have a binary image.
 //  Note that we can't use AllChannels it doesn't work for this.
-//  Instead of checking all of the individual channels, we check one
-//  from RGB, CMYK, grayscale, and transparency.
+//  We also can't check only one from RGB, one from CMYK, and grayscale
+// and transparency, we really need to check all of the channels (bug #41584).
 static octave_idx_type
 get_depth (Magick::Image& img)
 {
   octave_idx_type depth = img.depth ();
   if (depth == 8
       && img.channelDepth (Magick::RedChannel)     == 1
+      && img.channelDepth (Magick::GreenChannel)   == 1
+      && img.channelDepth (Magick::BlueChannel)    == 1
       && img.channelDepth (Magick::CyanChannel)    == 1
+      && img.channelDepth (Magick::MagentaChannel) == 1
+      && img.channelDepth (Magick::YellowChannel)  == 1
+      && img.channelDepth (Magick::BlackChannel)   == 1
       && img.channelDepth (Magick::OpacityChannel) == 1
       && img.channelDepth (Magick::GrayChannel)    == 1)
     depth = 1;

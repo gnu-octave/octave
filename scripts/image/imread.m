@@ -108,7 +108,6 @@ function [img, varargout] = imread (filename, varargin)
 
 endfunction
 
-
 %!testif HAVE_MAGICK
 %! vpng = [ ...
 %!  137,  80,  78,  71,  13,  10,  26,  10,   0,   0, ...
@@ -140,8 +139,8 @@ endfunction
 %! assert (A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
 %! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
 
-%!function [r, cmap, a] = write_and_read (w, varargin)
-%!  filename = [tempname() ".tif"];
+%!function [r, cmap, a] = write_and_read (w, f_ext, varargin)
+%!  filename = [tempname() "." f_ext];
 %!  unwind_protect
 %!    imwrite (w, filename);
 %!    [r, cmap, a] = imread (filename, varargin{:});
@@ -153,9 +152,9 @@ endfunction
 ## test PixelRegion option
 %!testif HAVE_MAGICK
 %! w = randi (255, 100, 100, "uint8");
-%! [r, cmap, a] = write_and_read (w, "PixelRegion", {[50 70] [20 40]});
+%! [r, cmap, a] = write_and_read (w, "tif", "PixelRegion", {[50 70] [20 40]});
 %! assert (r, w(50:70, 20:40))
-%! [r, cmap, a] = write_and_read (w, "PixelRegion", {[50 2 70] [20 3 40]});
+%! [r, cmap, a] = write_and_read (w, "tif", "PixelRegion", {[50 2 70] [20 3 40]});
 %! assert (r, w(50:2:70, 20:3:40))
 
 ## If a file does not exist, it's the job of imread to check the file
@@ -203,3 +202,12 @@ endfunction
 %!   imformats (def_fmt);
 %! end_unwind_protect
 
+## Test for bug #41584 (some GM coders report saturated channels as binary)
+%!testif HAVE_MAGICK
+%! im = zeros ([16 16 3], "uint8");
+%! im(:,:,1) = 255;
+%! im(:,:,3) = repmat (0:16:255, [16 1]);
+%! [r, cmap, a] = write_and_read (im, "png");
+%! assert (class (r), "uint8");
+%! assert (isempty (cmap))
+%! assert (isempty (a))

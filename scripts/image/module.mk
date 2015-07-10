@@ -1,64 +1,64 @@
-FCN_FILE_DIRS += image
+FCN_FILE_DIRS += scripts/image
 
-image_PRIVATE_FCN_FILES = \
-  image/private/__imfinfo__.m \
-  image/private/__imread__.m \
-  image/private/__imwrite__.m \
-  image/private/imageIO.m \
-  image/private/imwrite_filename.m \
-  image/private/ind2x.m
+scripts_image_PRIVATE_FCN_FILES = \
+  scripts/image/private/__imfinfo__.m \
+  scripts/image/private/__imread__.m \
+  scripts/image/private/__imwrite__.m \
+  scripts/image/private/imageIO.m \
+  scripts/image/private/imwrite_filename.m \
+  scripts/image/private/ind2x.m
 
-image_FCN_FILES = \
-  image/autumn.m \
-  image/bone.m \
-  image/brighten.m \
-  image/cmpermute.m \
-  image/cmunique.m \
-  image/colorcube.m \
-  image/colormap.m \
-  image/contrast.m \
-  image/cool.m \
-  image/copper.m \
-  image/cubehelix.m \
-  image/flag.m \
-  image/gray.m \
-  image/gray2ind.m \
-  image/hot.m \
-  image/hsv.m \
-  image/hsv2rgb.m \
-  image/iscolormap.m \
-  image/image.m \
-  image/imagesc.m \
-  image/imfinfo.m \
-  image/imformats.m \
-  image/imread.m \
-  image/imshow.m \
-  image/imwrite.m \
-  image/ind2gray.m \
-  image/ind2rgb.m \
-  image/jet.m \
-  image/lines.m \
-  image/ntsc2rgb.m \
-  image/ocean.m \
-  image/pink.m \
-  image/prism.m \
-  image/rainbow.m \
-  image/rgb2hsv.m \
-  image/rgb2ind.m \
-  image/rgb2ntsc.m \
-  image/rgbplot.m \
-  image/spinmap.m \
-  image/spring.m \
-  image/summer.m \
-  image/white.m \
-  image/winter.m \
-  $(image_PRIVATE_FCN_FILES)
+scripts_image_FCN_FILES = \
+  scripts/image/autumn.m \
+  scripts/image/bone.m \
+  scripts/image/brighten.m \
+  scripts/image/cmpermute.m \
+  scripts/image/cmunique.m \
+  scripts/image/colorcube.m \
+  scripts/image/colormap.m \
+  scripts/image/contrast.m \
+  scripts/image/cool.m \
+  scripts/image/copper.m \
+  scripts/image/cubehelix.m \
+  scripts/image/flag.m \
+  scripts/image/gray.m \
+  scripts/image/gray2ind.m \
+  scripts/image/hot.m \
+  scripts/image/hsv.m \
+  scripts/image/hsv2rgb.m \
+  scripts/image/iscolormap.m \
+  scripts/image/image.m \
+  scripts/image/imagesc.m \
+  scripts/image/imfinfo.m \
+  scripts/image/imformats.m \
+  scripts/image/imread.m \
+  scripts/image/imshow.m \
+  scripts/image/imwrite.m \
+  scripts/image/ind2gray.m \
+  scripts/image/ind2rgb.m \
+  scripts/image/jet.m \
+  scripts/image/lines.m \
+  scripts/image/ntsc2rgb.m \
+  scripts/image/ocean.m \
+  scripts/image/pink.m \
+  scripts/image/prism.m \
+  scripts/image/rainbow.m \
+  scripts/image/rgb2hsv.m \
+  scripts/image/rgb2ind.m \
+  scripts/image/rgb2ntsc.m \
+  scripts/image/rgbplot.m \
+  scripts/image/spinmap.m \
+  scripts/image/spring.m \
+  scripts/image/summer.m \
+  scripts/image/white.m \
+  scripts/image/winter.m \
+  $(scripts_image_PRIVATE_FCN_FILES)
 
-IMAGES += \
-  image/default.img
+SCRIPTS_IMAGES += \
+  scripts/image/default.img
 
-FCN_FILES += $(image_FCN_FILES)
+FCN_FILES += $(scripts_image_FCN_FILES)
 
-PKG_ADD_FILES += image/PKG_ADD
+PKG_ADD_FILES += scripts/image/PKG_ADD
 
-DIRSTAMP_FILES += image/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/image/$(octave_dirstamp)

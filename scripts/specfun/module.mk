@@ -1,27 +1,27 @@
-FCN_FILE_DIRS += specfun
+FCN_FILE_DIRS += scripts/specfun
 
-specfun_FCN_FILES = \
-  specfun/bessel.m \
-  specfun/beta.m \
-  specfun/betaln.m \
-  specfun/ellipke.m \
-  specfun/expint.m \
-  specfun/factor.m \
-  specfun/factorial.m \
-  specfun/isprime.m \
-  specfun/lcm.m \
-  specfun/legendre.m \
-  specfun/nchoosek.m \
-  specfun/nthroot.m \
-  specfun/perms.m \
-  specfun/pow2.m \
-  specfun/primes.m \
-  specfun/reallog.m \
-  specfun/realpow.m \
-  specfun/realsqrt.m
+scripts_specfun_FCN_FILES = \
+  scripts/specfun/bessel.m \
+  scripts/specfun/beta.m \
+  scripts/specfun/betaln.m \
+  scripts/specfun/ellipke.m \
+  scripts/specfun/expint.m \
+  scripts/specfun/factor.m \
+  scripts/specfun/factorial.m \
+  scripts/specfun/isprime.m \
+  scripts/specfun/lcm.m \
+  scripts/specfun/legendre.m \
+  scripts/specfun/nchoosek.m \
+  scripts/specfun/nthroot.m \
+  scripts/specfun/perms.m \
+  scripts/specfun/pow2.m \
+  scripts/specfun/primes.m \
+  scripts/specfun/reallog.m \
+  scripts/specfun/realpow.m \
+  scripts/specfun/realsqrt.m
 
-FCN_FILES += $(specfun_FCN_FILES)
+FCN_FILES += $(scripts_specfun_FCN_FILES)
 
-PKG_ADD_FILES += specfun/PKG_ADD
+PKG_ADD_FILES += scripts/specfun/PKG_ADD
 
-DIRSTAMP_FILES += specfun/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/specfun/$(octave_dirstamp)

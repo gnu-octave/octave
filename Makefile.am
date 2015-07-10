@@ -20,6 +20,7 @@
 
 include build-aux/common.mk
 
+image_DATA =
 octdata_DATA =
 octetc_DATA =
 octlocale_DATA =
@@ -65,11 +66,19 @@ info_TEXINFOS =
 BUILT_SOURCES =
 TEST_FILES =
 
-IMAGES_SRC =
-IMAGES_EPS =
-IMAGES_PDF =
-IMAGES_PNG =
-IMAGES_TXT =
+DOC_IMAGES =
+DOC_IMAGES_SRC =
+DOC_IMAGES_EPS =
+DOC_IMAGES_PDF =
+DOC_IMAGES_PNG =
+DOC_IMAGES_TXT =
+
+FCN_FILE_DIRS =
+FCN_FILES =
+GEN_FCN_FILES =
+PKG_ADD_FILES =
+SCRIPTS_IMAGES =
+JAR_FILES =
 
 bin_PROGRAMS =
 archlib_PROGRAMS =
@@ -95,6 +104,7 @@ include libinterp/link-deps.mk
 include libgui/module.mk
 include libgui/link-deps.mk
 include src/module.mk
+include scripts/module.mk
 include doc/module.mk
 include doc/interpreter/images.mk
 include etc/module.mk
@@ -106,9 +116,9 @@ include test/module.mk
 # directories are handled directly from this Makefile (see also the
 # included makefile fragments).
 
-SUBDIRS = libgnu scripts
+SUBDIRS = libgnu
 
-dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook
+dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook scripts-dist-hook
 
 if AMCOND_BUILD_DOCS
 docs-dist-hook:
@@ -218,3 +228,5 @@ installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
 install-data-local: installdirs-local
+
+distclean-local: scripts-distclean

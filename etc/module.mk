@@ -51,7 +51,7 @@ EXTRA_DIST += \
   etc/icons/octave.appdata.xml.in \
   etc/icons/octave.desktop.in
 
-image_DATA = \
+image_DATA += \
   $(icon_IMAGE_FILES) \
   etc/icons/octave-logo.ico
 

@@ -1,16 +1,16 @@
-FCN_FILE_DIRS += path
+FCN_FILE_DIRS += scripts/path
 
-path_PRIVATE_FCN_FILES = \
-  path/private/getsavepath.m
+scripts_path_PRIVATE_FCN_FILES = \
+  scripts/path/private/getsavepath.m
 
-path_FCN_FILES = \
-  path/matlabroot.m \
-  path/pathdef.m \
-  path/savepath.m \
-  $(path_PRIVATE_FCN_FILES)
+scripts_path_FCN_FILES = \
+  scripts/path/matlabroot.m \
+  scripts/path/pathdef.m \
+  scripts/path/savepath.m \
+  $(scripts_path_PRIVATE_FCN_FILES)
 
-FCN_FILES += $(path_FCN_FILES)
+FCN_FILES += $(scripts_path_FCN_FILES)
 
-PKG_ADD_FILES += path/PKG_ADD
+PKG_ADD_FILES += scripts/path/PKG_ADD
 
-DIRSTAMP_FILES += path/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/path/$(octave_dirstamp)

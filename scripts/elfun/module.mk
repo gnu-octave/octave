@@ -1,34 +1,34 @@
-FCN_FILE_DIRS += elfun
+FCN_FILE_DIRS += scripts/elfun
 
-elfun_FCN_FILES = \
-  elfun/acosd.m \
-  elfun/acot.m \
-  elfun/acotd.m \
-  elfun/acoth.m \
-  elfun/acsc.m \
-  elfun/acscd.m \
-  elfun/acsch.m \
-  elfun/asec.m \
-  elfun/asecd.m \
-  elfun/asech.m \
-  elfun/asind.m \
-  elfun/atan2d.m \
-  elfun/atand.m \
-  elfun/cosd.m \
-  elfun/cot.m \
-  elfun/cotd.m \
-  elfun/coth.m \
-  elfun/csc.m \
-  elfun/cscd.m \
-  elfun/csch.m \
-  elfun/sec.m \
-  elfun/secd.m \
-  elfun/sech.m \
-  elfun/sind.m \
-  elfun/tand.m
+scripts_elfun_FCN_FILES = \
+  scripts/elfun/acosd.m \
+  scripts/elfun/acot.m \
+  scripts/elfun/acotd.m \
+  scripts/elfun/acoth.m \
+  scripts/elfun/acsc.m \
+  scripts/elfun/acscd.m \
+  scripts/elfun/acsch.m \
+  scripts/elfun/asec.m \
+  scripts/elfun/asecd.m \
+  scripts/elfun/asech.m \
+  scripts/elfun/asind.m \
+  scripts/elfun/atan2d.m \
+  scripts/elfun/atand.m \
+  scripts/elfun/cosd.m \
+  scripts/elfun/cot.m \
+  scripts/elfun/cotd.m \
+  scripts/elfun/coth.m \
+  scripts/elfun/csc.m \
+  scripts/elfun/cscd.m \
+  scripts/elfun/csch.m \
+  scripts/elfun/sec.m \
+  scripts/elfun/secd.m \
+  scripts/elfun/sech.m \
+  scripts/elfun/sind.m \
+  scripts/elfun/tand.m
 
-FCN_FILES += $(elfun_FCN_FILES)
+FCN_FILES += $(scripts_elfun_FCN_FILES)
 
-PKG_ADD_FILES += elfun/PKG_ADD
+PKG_ADD_FILES += scripts/elfun/PKG_ADD
 
-DIRSTAMP_FILES += elfun/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/elfun/$(octave_dirstamp)

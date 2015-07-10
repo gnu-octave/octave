@@ -1,28 +1,28 @@
-FCN_FILE_DIRS += deprecated
+FCN_FILE_DIRS += scripts/deprecated
 
-deprecated_FCN_FILES = \
-  deprecated/bicubic.m \
-  deprecated/delaunay3.m \
-  deprecated/dump_prefs.m \
-  deprecated/find_dir_in_path.m \
-  deprecated/finite.m \
-  deprecated/fmod.m \
-  deprecated/fnmatch.m \
-  deprecated/gmap40.m \
-  deprecated/isstr.m \
-  deprecated/loadaudio.m \
-  deprecated/luinc.m \
-  deprecated/mouse_wheel_zoom.m \
-  deprecated/nfields.m \
-  deprecated/octave_tmp_file_name.m \
-  deprecated/playaudio.m \
-  deprecated/saveaudio.m \
-  deprecated/setaudio.m \
-  deprecated/syl.m \
-  deprecated/usage.m
+scripts_deprecated_FCN_FILES = \
+  scripts/deprecated/bicubic.m \
+  scripts/deprecated/delaunay3.m \
+  scripts/deprecated/dump_prefs.m \
+  scripts/deprecated/find_dir_in_path.m \
+  scripts/deprecated/finite.m \
+  scripts/deprecated/fmod.m \
+  scripts/deprecated/fnmatch.m \
+  scripts/deprecated/gmap40.m \
+  scripts/deprecated/isstr.m \
+  scripts/deprecated/loadaudio.m \
+  scripts/deprecated/luinc.m \
+  scripts/deprecated/mouse_wheel_zoom.m \
+  scripts/deprecated/nfields.m \
+  scripts/deprecated/octave_tmp_file_name.m \
+  scripts/deprecated/playaudio.m \
+  scripts/deprecated/saveaudio.m \
+  scripts/deprecated/setaudio.m \
+  scripts/deprecated/syl.m \
+  scripts/deprecated/usage.m
 
-FCN_FILES += $(deprecated_FCN_FILES)
+FCN_FILES += $(scripts_deprecated_FCN_FILES)
 
-PKG_ADD_FILES += deprecated/PKG_ADD
+PKG_ADD_FILES += scripts/deprecated/PKG_ADD
 
-DIRSTAMP_FILES += deprecated/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/deprecated/$(octave_dirstamp)

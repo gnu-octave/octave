@@ -15,7 +15,7 @@ BEGIN {
   basename = script;
   sub (/\.m$/, "", basename);
   ubasename = toupper (basename);
-  printf ("IMAGES_SRC += %s%s\n", dir, script);
+  printf ("DOC_IMAGES_SRC += %s%s\n", dir, script);
   for (i = 1; i <= 4; i++) {
     ext = exts[i];
     uext = toupper (ext);
@@ -25,7 +25,7 @@ BEGIN {
       printf (" %s%s.%s", dir, $j, ext);
     printf ("\n");
 
-    printf ("IMAGES_%s += $(%s_%s)\n", uext, ubasename, uext);
+    printf ("DOC_IMAGES_%s += $(%s_%s)\n", uext, ubasename, uext);
 
     for (j = 2; j <= NF; j++) {
       printf ("%s%s.%s: %s%s\n", dir, $j, ext, dir, script);

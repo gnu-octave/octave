@@ -1,13 +1,13 @@
-FCN_FILE_DIRS += startup
+FCN_FILE_DIRS += scripts/startup
 
-startup_FCN_FILES = \
-  startup/__finish__.m
+scripts_startup_FCN_FILES = \
+  scripts/startup/__finish__.m
 
-LOCAL_STARTUP_FILE_SRC  = startup/local-rcfile
+LOCAL_STARTUP_FILE_SRC  = scripts/startup/local-rcfile
 
-SYSTEM_STARTUP_FILE_SRC = startup/main-rcfile
+SYSTEM_STARTUP_FILE_SRC = scripts/startup/main-rcfile
 
-SYSTEM_INPUTRC_FILE_SRC = startup/inputrc
+SYSTEM_INPUTRC_FILE_SRC = scripts/startup/inputrc
 
 STARTUP_FILE_SRC = \
   $(LOCAL_STARTUP_FILE_SRC) \
@@ -15,11 +15,11 @@ STARTUP_FILE_SRC = \
   $(SYSTEM_INPUTRC_FILE_SRC)
 
 FCN_FILES += \
-  $(startup_FCN_FILES)
+  $(scripts_startup_FCN_FILES)
 
 EXTRA_DIST += \
   $(STARTUP_FILE_SRC)
 
-PKG_ADD_FILES += startup/PKG_ADD
+PKG_ADD_FILES += scripts/startup/PKG_ADD
 
-DIRSTAMP_FILES += startup/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/startup/$(octave_dirstamp)

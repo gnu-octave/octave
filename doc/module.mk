@@ -1,9 +1,10 @@
 TEXINFO_TEX = doc/texinfo.tex
 
 TEXINPUTS := $(PATH_SEPARATOR)$(top_srcdir)/doc/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(top_builddir)/doc/interpreter$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
-export TEXINPUTS
 
 TEXMFCNF := $(PATH_SEPARATOR)$(top_srcdir)/doc$(PATH_SEPARATOR)$(top_builddir)/doc$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)
+
+export TEXINPUTS
 export TEXMFCNF
 
 DVIPS = dvips
@@ -94,7 +95,7 @@ dist_man_MANS = \
   doc/interpreter/octave-config.1 \
   doc/interpreter/octave.1
 
-JAVA_IMAGES = \
+DOC_JAVA_IMAGES = \
   doc/interpreter/java-images/image001.png \
   doc/interpreter/java-images/image002.png \
   doc/interpreter/java-images/image003.png \
@@ -105,30 +106,30 @@ JAVA_IMAGES = \
   doc/interpreter/java-images/image008.png \
   doc/interpreter/java-images/image009.png
 
-BUILT_IMAGES = \
-  $(IMAGES_EPS) \
-  $(IMAGES_PDF) \
-  $(IMAGES_PNG) \
-  $(IMAGES_TXT)
+BUILT_DOC_IMAGES = \
+  $(DOC_IMAGES_EPS) \
+  $(DOC_IMAGES_PDF) \
+  $(DOC_IMAGES_PNG) \
+  $(DOC_IMAGES_TXT)
 
-IMAGES = \
-  $(BUILT_IMAGES) \
-  $(JAVA_IMAGES)
+DOC_IMAGES += \
+  $(BUILT_DOC_IMAGES) \
+  $(DOC_JAVA_IMAGES)
 
-$(BUILT_IMAGES): $(OCTAVE_INTERPRETER_TARGETS)
+$(BUILT_DOC_IMAGES): $(OCTAVE_INTERPRETER_TARGETS)
 
-## FIXME: JAVA_IMAGES will eventually need to be added to the HTML build.
+## FIXME: DOC_JAVA_IMAGES will eventually need to be added to the HTML build.
 ##        It will require a different Makefile rule later because
-##        JAVA_IMAGES live in a subdir rather than in the current directory.
+##        DOC_JAVA_IMAGES live in a subdir rather than in the current directory.
 
-HTMLDIR_IMAGES = $(patsubst doc/interpreter/%.png, doc/interpreter/octave.html/%.png, $(IMAGES_PNG))
+HTMLDIR_IMAGES = $(patsubst doc/interpreter/%.png, doc/interpreter/octave.html/%.png, $(DOC_IMAGES_PNG))
 
 LOGOS = \
   doc/interpreter/octave_logo.eps \
   doc/interpreter/octave_logo.pdf
 
-IMAGES_EPS += doc/interpreter/octave_logo.eps
-IMAGES_PDF += doc/interpreter/octave_logo.pdf
+DOC_IMAGES_EPS += doc/interpreter/octave_logo.eps
+DOC_IMAGES_PDF += doc/interpreter/octave_logo.pdf
 
 MUNGED_TEXI_SRC = \
   doc/interpreter/arith.texi \
@@ -211,10 +212,10 @@ OCTAVE_HTML_DIR = doc/interpreter/octave.html
 OCTAVE_HTML_TMP_DIR = $(OCTAVE_HTML_DIR:.html=.htp)
 OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.html-stamp
 
-$(srcdir)/doc/interpreter/octave.info: $(IMAGES_TXT) $(octave_TEXINFOS)
-doc/interpreter/octave.dvi: $(IMAGES_EPS) $(octave_TEXINFOS)
-doc/interpreter/octave.pdf: $(IMAGES_PDF) $(octave_TEXINFOS)
-$(OCTAVE_HTML_STAMP): $(IMAGES_PNG) $(octave_TEXINFOS)
+$(srcdir)/doc/interpreter/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
+doc/interpreter/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
+doc/interpreter/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
+$(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
 
 $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
@@ -298,9 +299,6 @@ doc/interpreter/doc-cache: $(DOCSTRING_DEPS) $(OCTAVE_INTERPRETER_TARGETS) doc/i
 	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) >$@-t && \
 	mv $@-t $@
 
-scripts/.DOCSTRINGS:
-	$(MAKE) -C scripts .DOCSTRINGS
-
 $(MUNGED_TEXI_SRC): $(DOCSTRING_DEPS) $(munge_texi_SOURCES)
 
 %.texi : %.txi doc/interpreter/munge-texi.pl doc/interpreter/$(octave_dirstamp)
@@ -349,8 +347,8 @@ EXTRA_DIST += \
   doc/interpreter/mk_doc_cache.m \
   doc/interpreter/mkcontrib.awk \
   doc/interpreter/munge-texi.pl \
-  $(IMAGES) \
-  $(IMAGES_SRC) \
+  $(DOC_IMAGES) \
+  $(DOC_IMAGES_SRC) \
   $(LOGOS) \
   $(TXI_SRC)
 
@@ -362,7 +360,7 @@ DISTCLEANFILES += \
   $(OCTAVE_HTML_STAMP)
 
 MAINTAINERCLEANFILES += \
-  $(BUILT_IMAGES) \
+  $(BUILT_DOC_IMAGES) \
   doc/interpreter/doc-cache
 
 DIRSTAMP_FILES += doc/interpreter/$(octave_dirstamp)

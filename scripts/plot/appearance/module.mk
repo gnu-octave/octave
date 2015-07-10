@@ -1,43 +1,43 @@
-FCN_FILE_DIRS += plot/appearance
+FCN_FILE_DIRS += scripts/plot/appearance
 
-plot_appearance_PRIVATE_FCN_FILES = \
-  plot/appearance/private/__axis_limits__.m \
-  plot/appearance/private/__axis_label__.m
+scripts_plot_appearance_PRIVATE_FCN_FILES = \
+  scripts/plot/appearance/private/__axis_limits__.m \
+  scripts/plot/appearance/private/__axis_label__.m
 
-plot_appearance_FCN_FILES = \
-  plot/appearance/__clabel__.m \
-  plot/appearance/__getlegenddata__.m \
-  plot/appearance/annotation.m \
-  plot/appearance/axis.m \
-  plot/appearance/box.m \
-  plot/appearance/caxis.m \
-  plot/appearance/clabel.m \
-  plot/appearance/daspect.m \
-  plot/appearance/datetick.m \
-  plot/appearance/diffuse.m \
-  plot/appearance/grid.m \
-  plot/appearance/gtext.m \
-  plot/appearance/hidden.m \
-  plot/appearance/legend.m \
-  plot/appearance/orient.m \
-  plot/appearance/pbaspect.m \
-  plot/appearance/shading.m \
-  plot/appearance/specular.m \
-  plot/appearance/text.m \
-  plot/appearance/title.m \
-  plot/appearance/view.m \
-  plot/appearance/whitebg.m \
-  plot/appearance/xlabel.m \
-  plot/appearance/xlim.m \
-  plot/appearance/ylabel.m \
-  plot/appearance/ylim.m \
-  plot/appearance/zlabel.m \
-  plot/appearance/zlim.m \
-  $(plot_appearance_PRIVATE_FCN_FILES)
+scripts_plot_appearance_FCN_FILES = \
+  scripts/plot/appearance/__clabel__.m \
+  scripts/plot/appearance/__getlegenddata__.m \
+  scripts/plot/appearance/annotation.m \
+  scripts/plot/appearance/axis.m \
+  scripts/plot/appearance/box.m \
+  scripts/plot/appearance/caxis.m \
+  scripts/plot/appearance/clabel.m \
+  scripts/plot/appearance/daspect.m \
+  scripts/plot/appearance/datetick.m \
+  scripts/plot/appearance/diffuse.m \
+  scripts/plot/appearance/grid.m \
+  scripts/plot/appearance/gtext.m \
+  scripts/plot/appearance/hidden.m \
+  scripts/plot/appearance/legend.m \
+  scripts/plot/appearance/orient.m \
+  scripts/plot/appearance/pbaspect.m \
+  scripts/plot/appearance/shading.m \
+  scripts/plot/appearance/specular.m \
+  scripts/plot/appearance/text.m \
+  scripts/plot/appearance/title.m \
+  scripts/plot/appearance/view.m \
+  scripts/plot/appearance/whitebg.m \
+  scripts/plot/appearance/xlabel.m \
+  scripts/plot/appearance/xlim.m \
+  scripts/plot/appearance/ylabel.m \
+  scripts/plot/appearance/ylim.m \
+  scripts/plot/appearance/zlabel.m \
+  scripts/plot/appearance/zlim.m \
+  $(scripts_plot_appearance_PRIVATE_FCN_FILES)
 
-FCN_FILES += $(plot_appearance_FCN_FILES)
+FCN_FILES += $(scripts_plot_appearance_FCN_FILES)
 
-PKG_ADD_FILES += plot/appearance/PKG_ADD
+PKG_ADD_FILES += scripts/plot/appearance/PKG_ADD
 
-DIRSTAMP_FILES += plot/appearance/$(octave_dirstamp)
+DIRSTAMP_FILES += scripts/plot/appearance/$(octave_dirstamp)
 

@@ -40,7 +40,7 @@
 ##
 ## @tex
 ## $$
-## {\rm K} (m) = \int_0^1 {dt \over \sqrt{(1 - t^2) (1 - m^2 t^2)}}
+## {\rm K} (m) = \int_0^1 {dt \over \sqrt{(1 - t^2) (1 - m t^2)}}
 ## $$
 ## @end tex
 ## @ifnottex
@@ -50,7 +50,7 @@
 ##          1
 ##         /               dt
 ## K (m) = | ------------------------------
-##         / sqrt ((1 - t^2)*(1 - m^2*t^2))
+##         / sqrt ((1 - t^2)*(1 - m*t^2))
 ##        0
 ## @end group
 ## @end example
@@ -61,7 +61,7 @@
 ##
 ## @tex
 ## $$
-## {\rm E} (m) = \int_0^1 {\sqrt{1 - m^2 t^2} \over \sqrt{1 - t^2}} dt
+## {\rm E} (m) = \int_0^1 {\sqrt{1 - m t^2} \over \sqrt{1 - t^2}} dt
 ## $$
 ## @end tex
 ## @ifnottex
@@ -69,7 +69,7 @@
 ## @example
 ## @group
 ##          1
-##         /  sqrt (1 - m^2*t^2)
+##         /  sqrt (1 - m*t^2)
 ## E (m) = |  ------------------ dt
 ##         /  sqrt (1 - t^2)
 ##        0

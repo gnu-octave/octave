@@ -30,7 +30,7 @@ for f in "$@"; do
     base=`basename $f | $SED 's/\.df$//'`
     fcns=`$SED -n -e 's/^ *XDEFUN_DLD_INTERNAL *( *\([^, ]*\)[, ].*$/\1/p' \
                   -e 's/^ *XDEFUNX_DLD_INTERNAL *( *"\([^"]*\)".*$/\1/p' $f | \
-          sort -u`
+          LC_COLLATE=C sort -u`
     if [ -n "$fcns" ]; then
       for n in $fcns; do
         if [ "$n" = "$base" ]; then

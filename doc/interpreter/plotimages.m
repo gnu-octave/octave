@@ -101,11 +101,11 @@ function plotimages (d, nm, typ)
     ylabel ("erf (x)");
     title ("erf (x) with text annotation");
     if (strcmp (typ, "pdf"))
-      print ([nm ".pdf"], "-dpdflatexstandalone");
+      print (outfile, "-dpdflatexstandalone");
       system (["pdflatex " nm]);
       delete ([nm ".aux"], [nm "-inc.pdf"], [nm ".log"], [nm ".tex"]);
     else
-      print ([nm "." typ], d_typ);
+      print (outfile, d_typ);
     endif
   else
     error ("unrecognized plot requested");

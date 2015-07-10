@@ -1,19 +1,19 @@
 EXTRA_DIST += \
-  cruft/misc/module.mk \
-  cruft/misc/d1mach-tst.for
+  liboctave/cruft/misc/module.mk \
+  liboctave/cruft/misc/d1mach-tst.for
 
 CRUFT_SOURCES += \
-  cruft/misc/blaswrap.c \
-  cruft/misc/cquit.c \
-  cruft/misc/d1mach.f \
-  cruft/misc/f77-extern.cc \
-  cruft/misc/f77-fcn.c \
-  cruft/misc/i1mach.f \
-  cruft/misc/lo-error.c \
-  cruft/misc/quit.cc \
-  cruft/misc/r1mach.f
+  liboctave/cruft/misc/blaswrap.c \
+  liboctave/cruft/misc/cquit.c \
+  liboctave/cruft/misc/d1mach.f \
+  liboctave/cruft/misc/f77-extern.cc \
+  liboctave/cruft/misc/f77-fcn.c \
+  liboctave/cruft/misc/i1mach.f \
+  liboctave/cruft/misc/lo-error.c \
+  liboctave/cruft/misc/quit.cc \
+  liboctave/cruft/misc/r1mach.f
 
 CRUFT_INC += \
-  cruft/misc/f77-fcn.h \
-  cruft/misc/lo-error.h \
-  cruft/misc/quit.h
+  liboctave/cruft/misc/f77-fcn.h \
+  liboctave/cruft/misc/lo-error.h \
+  liboctave/cruft/misc/quit.h

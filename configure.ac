@@ -2998,8 +2998,6 @@ AC_CONFIG_FILES([
   Makefile
   doc/doxyhtml/Doxyfile
   libgnu/Makefile
-  libinterp/Makefile
-  liboctave/Makefile
   liboctave/cruft/mkf77def
   scripts/Makefile])
 

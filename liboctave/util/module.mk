@@ -1,93 +1,98 @@
 EXTRA_DIST += \
-  util/module.mk
+  liboctave/util/module.mk
 
 UTIL_INC = \
-  util/action-container.h \
-  util/base-list.h \
-  util/byte-swap.h \
-  util/caseless-str.h \
-  util/cmd-edit.h \
-  util/cmd-hist.h \
-  util/data-conv.h \
-  util/functor.h \
-  util/glob-match.h \
-  util/lo-array-gripes.h \
-  util/lo-cutils.h \
-  util/lo-ieee.h \
-  util/lo-macros.h \
-  util/lo-math.h \
-  util/lo-traits.h \
-  util/lo-utils.h \
-  util/oct-alloc.h \
-  util/oct-base64.h \
-  util/oct-binmap.h \
-  util/oct-cmplx.h \
-  util/oct-glob.h \
-  util/oct-inttypes.h \
-  util/oct-locbuf.h \
-  util/oct-md5.h \
-  util/oct-mutex.h \
-  util/oct-refcount.h \
-  util/oct-rl-edit.h \
-  util/oct-rl-hist.h \
-  util/oct-shlib.h \
-  util/oct-sort.h \
-  util/oct-sparse.h \
-  util/pathsearch.h \
-  util/lo-regexp.h \
-  util/singleton-cleanup.h \
-  util/sparse-sort.h \
-  util/sparse-util.h \
-  util/statdefs.h \
-  util/str-vec.h \
-  util/sun-utils.h \
-  util/unwind-prot.h \
-  util/url-transfer.h
+  liboctave/util/action-container.h \
+  liboctave/util/base-list.h \
+  liboctave/util/byte-swap.h \
+  liboctave/util/caseless-str.h \
+  liboctave/util/cmd-edit.h \
+  liboctave/util/cmd-hist.h \
+  liboctave/util/data-conv.h \
+  liboctave/util/functor.h \
+  liboctave/util/glob-match.h \
+  liboctave/util/lo-array-gripes.h \
+  liboctave/util/lo-cutils.h \
+  liboctave/util/lo-ieee.h \
+  liboctave/util/lo-macros.h \
+  liboctave/util/lo-math.h \
+  liboctave/util/lo-traits.h \
+  liboctave/util/lo-utils.h \
+  liboctave/util/oct-alloc.h \
+  liboctave/util/oct-base64.h \
+  liboctave/util/oct-binmap.h \
+  liboctave/util/oct-cmplx.h \
+  liboctave/util/oct-glob.h \
+  liboctave/util/oct-inttypes.h \
+  liboctave/util/oct-locbuf.h \
+  liboctave/util/oct-md5.h \
+  liboctave/util/oct-mutex.h \
+  liboctave/util/oct-refcount.h \
+  liboctave/util/oct-rl-edit.h \
+  liboctave/util/oct-rl-hist.h \
+  liboctave/util/oct-shlib.h \
+  liboctave/util/oct-sort.h \
+  liboctave/util/oct-sparse.h \
+  liboctave/util/pathsearch.h \
+  liboctave/util/lo-regexp.h \
+  liboctave/util/singleton-cleanup.h \
+  liboctave/util/sparse-sort.h \
+  liboctave/util/sparse-util.h \
+  liboctave/util/statdefs.h \
+  liboctave/util/str-vec.h \
+  liboctave/util/sun-utils.h \
+  liboctave/util/unwind-prot.h \
+  liboctave/util/url-transfer.h
 
 UTIL_C_SRC = \
-  util/f2c-main.c \
-  util/lo-cutils.c \
-  util/oct-rl-edit.c \
-  util/oct-rl-hist.c
+  liboctave/util/f2c-main.c \
+  liboctave/util/lo-cutils.c \
+  liboctave/util/oct-rl-edit.c \
+  liboctave/util/oct-rl-hist.c
 
 UTIL_SRC = \
-  util/cmd-edit.cc \
-  util/cmd-hist.cc \
-  util/data-conv.cc \
-  util/glob-match.cc \
-  util/lo-array-gripes.cc \
-  util/lo-ieee.cc \
-  util/lo-utils.cc \
-  util/oct-base64.cc \
-  util/oct-glob.cc \
-  util/oct-inttypes.cc \
-  util/oct-locbuf.cc \
-  util/oct-md5.cc \
-  util/oct-mutex.cc \
-  util/oct-shlib.cc \
-  util/pathsearch.cc \
-  util/lo-regexp.cc \
-  util/singleton-cleanup.cc \
-  util/sparse-sort.cc \
-  util/sparse-util.cc \
-  util/str-vec.cc \
-  util/unwind-prot.cc \
-  util/url-transfer.cc \
+  liboctave/util/cmd-edit.cc \
+  liboctave/util/cmd-hist.cc \
+  liboctave/util/data-conv.cc \
+  liboctave/util/glob-match.cc \
+  liboctave/util/lo-array-gripes.cc \
+  liboctave/util/lo-ieee.cc \
+  liboctave/util/lo-utils.cc \
+  liboctave/util/oct-base64.cc \
+  liboctave/util/oct-glob.cc \
+  liboctave/util/oct-inttypes.cc \
+  liboctave/util/oct-locbuf.cc \
+  liboctave/util/oct-md5.cc \
+  liboctave/util/oct-mutex.cc \
+  liboctave/util/oct-shlib.cc \
+  liboctave/util/pathsearch.cc \
+  liboctave/util/lo-regexp.cc \
+  liboctave/util/singleton-cleanup.cc \
+  liboctave/util/sparse-sort.cc \
+  liboctave/util/sparse-util.cc \
+  liboctave/util/str-vec.cc \
+  liboctave/util/unwind-prot.cc \
+  liboctave/util/url-transfer.cc \
   $(UTIL_C_SRC)
 
-TEMPLATE_SRC += \
-  util/oct-sort.cc
+LIBOCTAVE_TEMPLATE_SRC += \
+  liboctave/util/oct-sort.cc
 
 OTHER_INC += \
-  util/kpse.cc
+  liboctave/util/kpse.cc
 
-noinst_LTLIBRARIES += util/libutil.la
+noinst_LTLIBRARIES += liboctave/util/libutil.la
 
-util_libutil_la_SOURCES = $(UTIL_SRC)
-util_libutil_la_CPPFLAGS = \
-  $(liboctave_la_CPPFLAGS) \
+liboctave_util_libutil_la_SOURCES = $(UTIL_SRC)
+
+liboctave_util_libutil_la_CPPFLAGS = \
+  $(liboctave_liboctave_la_CPPFLAGS) \
   $(CURL_CPPFLAGS) \
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-liboctave_la_LIBADD += util/libutil.la
+liboctave_util_libutil_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
+
+liboctave_util_libutil_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
+
+liboctave_liboctave_la_LIBADD += liboctave/util/libutil.la

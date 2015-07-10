@@ -1,5 +1,3 @@
-include $(top_srcdir)/libinterp/link-deps.mk
-
 if AMCOND_ENABLE_DYNAMIC_LINKING
   LIBOCTGUI_LINK_DEPS =
 else

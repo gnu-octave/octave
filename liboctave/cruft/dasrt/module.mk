@@ -1,6 +1,6 @@
-EXTRA_DIST += cruft/dasrt/module.mk
+EXTRA_DIST += liboctave/cruft/dasrt/module.mk
 
 CRUFT_SOURCES += \
-  cruft/dasrt/ddasrt.f \
-  cruft/dasrt/drchek.f \
-  cruft/dasrt/droots.f
+  liboctave/cruft/dasrt/ddasrt.f \
+  liboctave/cruft/dasrt/drchek.f \
+  liboctave/cruft/dasrt/droots.f

@@ -291,12 +291,17 @@ octetc_DATA += \
 
 DOCSTRING_FILES = $(shell $(srcdir)/doc/interpreter/find-docstring-files.sh "$(top_srcdir)")
 
-doc/interpreter/doc-cache: $(DOCSTRING_FILES) $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/mk_doc_cache.m doc/interpreter/$(octave_dirstamp)
+DOCSTRING_DEPS = scripts/.DOCSTRINGS libinterp/.DOCSTRINGS
+
+doc/interpreter/doc-cache: $(DOCSTRING_DEPS) $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/mk_doc_cache.m doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) >$@-t && \
 	mv $@-t $@
 
-$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) $(munge_texi_SOURCES)
+scripts/.DOCSTRINGS:
+	$(MAKE) -C scripts .DOCSTRINGS
+
+$(MUNGED_TEXI_SRC): $(DOCSTRING_DEPS) $(munge_texi_SOURCES)
 
 %.texi : %.txi doc/interpreter/munge-texi.pl doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \

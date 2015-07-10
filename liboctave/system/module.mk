@@ -1,39 +1,44 @@
 EXTRA_DIST += \
-  system/module.mk
+  liboctave/system/module.mk
 
 SYSTEM_INC = \
-  system/dir-ops.h \
-  system/file-ops.h \
-  system/file-stat.h \
-  system/lo-sysdep.h \
-  system/mach-info.h \
-  system/oct-env.h \
-  system/oct-group.h \
-  system/oct-openmp.h \
-  system/oct-passwd.h \
-  system/oct-syscalls.h \
-  system/oct-time.h \
-  system/oct-uname.h \
-  system/pathlen.h \
-  system/sysdir.h \
-  system/syswait.h
+  liboctave/system/dir-ops.h \
+  liboctave/system/file-ops.h \
+  liboctave/system/file-stat.h \
+  liboctave/system/lo-sysdep.h \
+  liboctave/system/mach-info.h \
+  liboctave/system/oct-env.h \
+  liboctave/system/oct-group.h \
+  liboctave/system/oct-openmp.h \
+  liboctave/system/oct-passwd.h \
+  liboctave/system/oct-syscalls.h \
+  liboctave/system/oct-time.h \
+  liboctave/system/oct-uname.h \
+  liboctave/system/pathlen.h \
+  liboctave/system/sysdir.h \
+  liboctave/system/syswait.h
 
 SYSTEM_SRC = \
-  system/dir-ops.cc \
-  system/file-ops.cc \
-  system/file-stat.cc \
-  system/lo-sysdep.cc \
-  system/mach-info.cc \
-  system/oct-env.cc \
-  system/oct-group.cc \
-  system/oct-passwd.cc \
-  system/oct-syscalls.cc \
-  system/oct-time.cc \
-  system/oct-uname.cc
+  liboctave/system/dir-ops.cc \
+  liboctave/system/file-ops.cc \
+  liboctave/system/file-stat.cc \
+  liboctave/system/lo-sysdep.cc \
+  liboctave/system/mach-info.cc \
+  liboctave/system/oct-env.cc \
+  liboctave/system/oct-group.cc \
+  liboctave/system/oct-passwd.cc \
+  liboctave/system/oct-syscalls.cc \
+  liboctave/system/oct-time.cc \
+  liboctave/system/oct-uname.cc
 
-noinst_LTLIBRARIES += system/libsystem.la
+noinst_LTLIBRARIES += liboctave/system/libsystem.la
 
-system_libsystem_la_SOURCES = $(SYSTEM_SRC)
-system_libsystem_la_CPPFLAGS = $(liboctave_la_CPPFLAGS)
+liboctave_system_libsystem_la_SOURCES = $(SYSTEM_SRC)
 
-liboctave_la_LIBADD += system/libsystem.la
+liboctave_system_libsystem_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
+
+liboctave_system_libsystem_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
+
+liboctave_system_libsystem_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
+
+liboctave_liboctave_la_LIBADD += liboctave/system/libsystem.la

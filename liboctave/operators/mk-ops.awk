@@ -93,13 +93,13 @@ BEGIN {
 
           if (list_cc_files)
             {
-              printf (" operators/%s", cc_file);
+              printf (" liboctave/operators/%s", cc_file);
               next;
             }
 
           if (list_h_files)
             {
-              printf (" operators/%s", h_file);
+              printf (" liboctave/operators/%s", h_file);
               next;
             }
 

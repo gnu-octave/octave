@@ -1,5 +1,5 @@
-EXTRA_DIST += cruft/Faddeeva/module.mk
+EXTRA_DIST += liboctave/cruft/Faddeeva/module.mk
 
 CRUFT_SOURCES += \
-  cruft/Faddeeva/Faddeeva.cc \
-  cruft/Faddeeva/Faddeeva.hh
+  liboctave/cruft/Faddeeva/Faddeeva.cc \
+  liboctave/cruft/Faddeeva/Faddeeva.hh

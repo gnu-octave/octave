@@ -26,7 +26,6 @@ include $(top_srcdir)/build-aux/common.mk
 
 EXTRA_DIST = \
   Makefile.am \
-  texinfo.tex \
   texmf.cnf
 
 SUBDIRS = doxyhtml interpreter liboctave refcard

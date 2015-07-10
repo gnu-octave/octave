@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-TEXINFO_TEX = ../texinfo.tex
-
 info_TEXINFOS = liboctave.texi
 
 liboctave_TEXINFOS = \

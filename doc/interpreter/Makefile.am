@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-TEXINFO_TEX = ../texinfo.tex
-
 ## Leading PATH_SEPARATOR required due to weak parsing by dvips (12/04/09)
 TEXINPUTS := "$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)"
 export TEXINPUTS

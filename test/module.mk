@@ -72,7 +72,7 @@ GENERATED_BC_OVERLOADS_FILES := \
 
 $(GENERATED_BC_OVERLOADS_FILES): test/bc-overload-tests.stamp
 
-test/bc-overload-tests.stamp: test/build-bc-overload-tests.sh test/bc-overloads-expected
+test/bc-overload-tests.stamp: test/build-bc-overload-tests.sh test/bc-overloads-expected test/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
 	$(srcdir)/test/build-bc-overload-tests.sh test $(srcdir)/test/bc-overloads-expected && \
 	touch $@

@@ -27,7 +27,9 @@ bin_PROGRAMS += \
   src/octave-cli \
   src/octave-config
 
-OCTAVE_INTERPRETER_TARGETS += $(bin_programs)
+OCTAVE_INTERPRETER_TARGETS += \
+  $(bin_programs) \
+  $(OCTAVE_VERSION_LINKS)
 
 noinst_HEADERS += \
   src/display-available.h	\
@@ -210,11 +212,11 @@ remove-version-links:
 
 src/octave-cli-$(version)$(EXEEXT): src/octave-cli$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
-	$(LN_S) $< $@
+	$(LN_S) $(<F) $@
 
 src/octave-gui-$(version)$(EXEEXT): src/octave-gui$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
-	$(LN_S) $< $@
+	$(LN_S) $(<F) $@
 
 CLEANFILES += \
   $(OCTAVE_VERSION_LINKS)

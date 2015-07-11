@@ -939,17 +939,18 @@ print -deps foo.eps
 saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
 
-The current graphic toolkits have differing print capabilities.  In particular,
+The current graphic toolkits produce very similar graphic displays but differ
+in their capability to display text and in print capabilities.  In particular,
 the OpenGL based toolkits such as @code{fltk} and @code{qt} do not support the
 @qcode{"interpreter"} property of text objects.  This means that when using
 OpenGL toolkits special symbols drawn with the @qcode{"tex"} interpreter will
 appear correctly on-screen but will be rendered with interpreter @qcode{"none"}
 when printing unless one of the @qcode{standalone} (see below) modes is used.
 These modes provide access to the pdflatex processor and therefore allow full
-use of LaTeX commands.
+use of @LaTeX{} commands.
 
 A complete example showing the capabilities of text printing using the
-@code{-dpdflatexstandalone} option is
+@code{-dpdflatexstandalone} option is:
 
 @example
 @group
@@ -964,17 +965,17 @@ text (0.65, 0.6175, ['$\leftarrow x = @{2/\sqrt@{\pi@}' ...
 xlabel ("x");
 ylabel ("erf (x)");
 title ("erf (x) with text annotation");
-set (hf, "visible", "off")
-print (hf, "plot15_7.pdf", "-dpdflatexstandalone")
-set (hf, "visible", "on")
+set (hf, "visible", "off");
+print (hf, "plot15_7.pdf", "-dpdflatexstandalone");
+set (hf, "visible", "on");
 system ("pdflatex plot15_7");
-system ("acroread plot15_7.pdf &");
+open ("plot15_7.pdf");
 @end group
 @end example
 
 @ifnotinfo
 @noindent
-The result of which can be seen in @ref{fig:extendedtext}
+The result of this example can be seen in @ref{fig:extendedtext}
 
 @float Figure,fig:extendedtext
 @center @image{extended,4in}

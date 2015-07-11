@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function plotimages (d, nm, typ)
-  graphics_toolkit ("qt");
+  set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
   outfile = fullfile (d, [nm "." typ]);
@@ -113,6 +113,20 @@ function plotimages (d, nm, typ)
   hide_output ();
 endfunction
 
+## Choose a toolkit with a preference for OpenGL renderers
+function set_graphics_toolkit ()
+  avl_tk = available_graphics_toolkits ();
+  if (any (strcmp ("qt", avl_tk)))
+    graphics_toolkit ("qt");
+  elseif (any (strcmp ("fltk", avl_tk)))
+    graphics_toolkit ("fltk");
+  elseif (any (strcmp ("gnuplot", avl_tk)))
+    graphics_toolkit ("gnuplot");
+  else
+    error ("no valid graphics toolkit found");
+  endif
+endfunction
+
 function set_print_size ()
   image_size = [5.0, 3.5]; # in inches, 16:9 format
   border = 0;              # For postscript use 50/72
@@ -122,12 +136,11 @@ function set_print_size ()
   set (0, "defaultfigurepaperposition", [border, border, image_size]);
 endfunction
 
-## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnuplot
-## can't pop output as it can the terminal type).
+## Use this function before plotting commands and after every call to print
+## since print() resets output to stdout (unfortunately, gnuplot can't pop
+## output as it can the terminal type).
 function hide_output ()
-  hf = figure (1);
-  set (hf, "visible", "off");
+  hf = figure (1, "visible", "off");
 endfunction
 
 ## generate something for the texinfo @image command to process

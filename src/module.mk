@@ -212,11 +212,11 @@ remove-version-links:
 
 src/octave-cli-$(version)$(EXEEXT): src/octave-cli$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
-	$(LN_S) $(<F) $@
+	cd $(@D) && $(LN_S) $(<F) $(@F)
 
 src/octave-gui-$(version)$(EXEEXT): src/octave-gui$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
-	$(LN_S) $(<F) $@
+	cd $(@D) && $(LN_S) $(<F) $(@F)
 
 CLEANFILES += \
   $(OCTAVE_VERSION_LINKS)

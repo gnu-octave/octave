@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function sparseimages (d, nm, typ)
-  graphics_toolkit ("gnuplot");
+  set_graphics_toolkit ();
   set_print_size ();
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
@@ -280,6 +280,16 @@ function sombreroimage (d, nm, typ)
   endif
 endfunction
 
+## This function no longer sets the graphics toolkit; That is now done
+## automatically by C++ code which will ordinarily choose 'qt', but might
+## choose gnuplot on older systems.  Only a complete lack of plotting is a
+## problem.
+function set_graphics_toolkit ()
+  if (isempty (available_graphics_toolkits ()))
+    error ("no graphics toolkit available for plotting");
+  endif
+endfunction
+
 function set_print_size ()
   image_size = [5.0, 3.5]; # in inches, 16:9 format
   border = 0;              # For postscript use 50/72
@@ -289,11 +299,10 @@ function set_print_size ()
   set (0, "defaultfigurepaperposition", [border, border, image_size]);
 endfunction
 
-## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnpulot
-## can't pop output as it can the terminal type).
+## Use this function before plotting commands and after every call to print
+## since print() resets output to stdout (unfortunately, gnuplot can't pop
+## output as it can the terminal type).
 function hide_output ()
-  hf = figure (1);
-  set (hf, "visible", "off");
+  hf = figure (1, "visible", "off");
 endfunction
 

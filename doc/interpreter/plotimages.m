@@ -90,21 +90,24 @@ function plotimages (d, nm, typ)
     hold on;
     plot (x, x, "r");
     axis ([0, 3, 0, 1]);
-    if (strcmp (typ, "pdf"))
-      text (0.65, 0.6175, ['$\leftarrow x = {2/\sqrt{\pi}' ...
-            '{\int_{0}^{x}}e^{-t^2} dt} = 0.6175$']);
-    else
-      text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
-            '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
-    endif
     xlabel ("x");
     ylabel ("erf (x)");
     title ("erf (x) with text annotation");
     if (strcmp (typ, "pdf"))
-      print (outfile, "-dpdflatexstandalone");
-      system (["pdflatex " nm]);
+      text (0.65, 0.6175, ['$\displaystyle\leftarrow x = {2/\sqrt{\pi}' ...
+            '{\int_{0}^{x}}e^{-t^2} dt} = 0.6175$']);
+      ## Be very careful about modifying this.  pdflatex expects to be in
+      ## the same directory as the file it is operating on.
+      cd (make_absolute_filename (d)); 
+      print ([nm ".pdf"], "-dpdflatexstandalone");
+      [status, output] = system (["pdflatex " nm]);
+      if (status)
+        error ("plotimages: Failed to run pdflatex on <extended.pdf>");
+      endif
       delete ([nm ".aux"], [nm "-inc.pdf"], [nm ".log"], [nm ".tex"]);
     else
+      text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
+            '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
       print (outfile, d_typ);
     endif
   else
@@ -113,17 +116,13 @@ function plotimages (d, nm, typ)
   hide_output ();
 endfunction
 
-## Choose a toolkit with a preference for OpenGL renderers
+## This function no longer sets the graphics toolkit; That is now done
+## automatically by C++ code which will ordinarily choose 'qt', but might
+## choose gnuplot on older systems.  Only a complete lack of plotting is a
+## problem.
 function set_graphics_toolkit ()
-  avl_tk = available_graphics_toolkits ();
-  if (any (strcmp ("qt", avl_tk)))
-    graphics_toolkit ("qt");
-  elseif (any (strcmp ("fltk", avl_tk)))
-    graphics_toolkit ("fltk");
-  elseif (any (strcmp ("gnuplot", avl_tk)))
-    graphics_toolkit ("gnuplot");
-  else
-    error ("no valid graphics toolkit found");
+  if (isempty (available_graphics_toolkits ()))
+    error ("no graphics toolkit available for plotting");
   endif
 endfunction
 

@@ -960,7 +960,7 @@ plot (x, erf (x));
 hold on;
 plot (x, x, "r");
 axis ([0, 3, 0, 1]);
-text (0.65, 0.6175, ['$\leftarrow x = @{2/\sqrt@{\pi@}' ...
+text (0.65, 0.6175, ['$\displaystyle\leftarrow x = @{2/\sqrt@{\pi@}' ...
         '@{\int_@{0@}^@{x@}@}e^@{-t^2@} dt@} = 0.6175$']);
 xlabel ("x");
 ylabel ("erf (x)");

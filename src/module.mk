@@ -195,13 +195,13 @@ uninstall-local: remove-version-links
 
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \
-	for f in $(basename $(bin_PROGRAMS)); do \
+	for f in $(notdir $(basename $(bin_PROGRAMS))); do \
 	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
 	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
 	done
 
 remove-version-links:
-	for f in $(basename $(bin_PROGRAMS)); do \
+	for f in $(notdir $(basename $(bin_PROGRAMS))); do \
 	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
 	done
 

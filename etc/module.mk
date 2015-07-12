@@ -60,9 +60,11 @@ VENDOR = www.octave.org
 DIRSTAMP_FILES += \
   etc/icons/$(octave_dirstamp)
 
+all-local: all-icons
+
 all-icons: etc/icons/octave.appdata.xml etc/icons/octave.desktop $(BUILT_ICONS)
 
-etc/icons/octave.appdata.xml: etc/iconst/octave.appdata.xml.in Makefile etc/icons/$(octave_dirstamp)
+etc/icons/octave.appdata.xml: etc/icons/octave.appdata.xml.in Makefile etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_DESKTOP_FILE%|${VENDOR}-octave.desktop|" && \
@@ -85,10 +87,14 @@ etc/icons/octave-logo.ico: $(WINDOWS_PNG_ICONS) etc/icons/$(octave_dirstamp)
 	$(ICOTOOL) --create --raw  $(WINDOWS_PNG_ICONS) > $@-t && \
 	mv $@-t $@
 
+install-data-local: install-icons
+
+uninstall-local: uninstall-icons
+
 install-icons:
 	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor $(VENDOR) octave.desktop; \
+	    --vendor $(VENDOR) etc/icons/octave.desktop; \
 	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \

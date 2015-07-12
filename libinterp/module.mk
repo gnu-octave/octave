@@ -351,7 +351,7 @@ endif
 if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
-	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+	$(INSTALL_DATA) libinterp/DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
 
 uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings

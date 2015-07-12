@@ -152,19 +152,19 @@ install-startup-files:
 	$(MKDIR_P) $(DESTDIR)$(fcnfiledir)/startup
 	if test -f $(DESTDIR)$(fcnfiledir)/startup/octaverc; then true; \
 	else \
-	  $(INSTALL_DATA) $(srcdir)/scripts/$(SYSTEM_STARTUP_FILE_SRC) \
+	  $(INSTALL_DATA) $(srcdir)/$(SYSTEM_STARTUP_FILE_SRC) \
 	    $(DESTDIR)$(fcnfiledir)/startup/octaverc; \
 	fi
 	if test -f $(DESTDIR)$(fcnfiledir)/startup/inputrc; then true; \
 	else \
-	  $(INSTALL_DATA) $(srcdir)/scripts/$(SYSTEM_INPUTRC_FILE_SRC) \
+	  $(INSTALL_DATA) $(srcdir)/$(SYSTEM_INPUTRC_FILE_SRC) \
 	    $(DESTDIR)$(fcnfiledir)/startup/inputrc; \
 	fi
 	$(MKDIR_P) $(DESTDIR)$(localfcnfiledir)/startup
 	if test -f $(DESTDIR)$(localfcnfiledir)/startup/octaverc; \
 	then true; \
 	else \
-	  $(INSTALL_DATA) $(srcdir)/scripts/$(LOCAL_STARTUP_FILE_SRC) \
+	  $(INSTALL_DATA) $(srcdir)/$(LOCAL_STARTUP_FILE_SRC) \
 	    $(DESTDIR)$(localfcnfiledir)/startup/octaverc; \
 	fi
 .PHONY: install-startup-files

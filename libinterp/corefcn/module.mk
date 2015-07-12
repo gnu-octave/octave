@@ -283,7 +283,7 @@ $(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_
 	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \
 	  $(libinterp_corefcn_libcorefcn_la_CXXFLAGS) \
 	  -DMAKE_BUILTINS $< > $@-t && \
-	$(srcdir)/libinterp/mkdefs $(srcdir) $< < $@-t > $@ && \
+	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t > $@ && \
 	rm $@-t
 
 ## Special rules for sources which must be built before rest of compilation.

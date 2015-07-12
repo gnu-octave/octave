@@ -34,7 +34,7 @@ case "$file" in
     xsrcdir=`echo "$file" | sed "s,^$srcdir,libinterp,"`
   ;;
   *)
-    xsrcdir="libinterp/$file"
+    xsrcdir="$file"
   ;;
 esac
 echo " XDEFUN_FILE_NAME (\"$xsrcdir\")"

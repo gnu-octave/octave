@@ -55,7 +55,7 @@ liboctave_cruft_ranlib_libranlib_la_DEPENDENCIES = liboctave/cruft/ranlib/ranlib
 define gen-ranlib-def
   rm -f $@-t $@ && \
   $(MKDIR_P) liboctave/cruft/ranlib && \
-  $(SHELL) liboctave/cruft/mkf77def $(srcdir)/liboctave $(RANLIB_SRC) > $@-t && \
+  $(SHELL) liboctave/cruft/mkf77def $(top_srcdir) $(RANLIB_SRC) > $@-t && \
   mv $@-t $@
 endef
 

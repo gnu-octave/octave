@@ -36,13 +36,13 @@ EXTRA_DIST += \
   doc/doxyhtml/Doxyfile.in \
   doc/doxyhtml/README
 
-doxyhtml: doxyhtml/$(octave_dirstamp)
-	doxygen doxyhtml/Doxyfile
+doxyhtml: doc/doxyhtml/$(octave_dirstamp)
+	doxygen doc/doxyhtml/Doxyfile
 
 doxyhtml-maintainer-clean:
-	rm -rf doc/doxyhtml && rm -rf `ls | $(GREP) -v Doxyfile.in`
+	cd doc/doxyhtml && rm -rf `ls | $(GREP) -v Doxyfile.in`
 
-DIRSTAMP_FILES += doxyhtml/$(octave_dirstamp)
+DIRSTAMP_FILES += doc/doxyhtml/$(octave_dirstamp)
 
 GRAPH_PROP_TEXI_SRC = \
   doc/interpreter/plot-axesproperties.texi \

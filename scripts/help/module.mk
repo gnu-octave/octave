@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/help
+FCN_FILE_DIRS += \
+  scripts/help \
+  scripts/help/private
 
 scripts_help_PRIVATE_FCN_FILES = \
   scripts/help/private/__additional_help_message__.m \
@@ -15,10 +17,19 @@ scripts_help_FCN_FILES = \
   scripts/help/lookfor.m \
   scripts/help/print_usage.m \
   scripts/help/type.m \
-  scripts/help/which.m \
-  $(scripts_help_PRIVATE_FCN_FILES)
+  scripts/help/which.m
 
-FCN_FILES += $(scripts_help_FCN_FILES)
+scripts_helpdir = $(fcnfiledir)/help
+
+scripts_help_DATA = $(scripts_help_FCN_FILES)
+
+scripts_help_privatedir = $(fcnfiledir)/help/private
+
+scripts_help_private_DATA = $(scripts_help_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_help_FCN_FILES) \
+  $(scripts_help_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/help/PKG_ADD
 

@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/plot/draw
+FCN_FILE_DIRS += \
+  scripts/plot/draw \
+  scripts/plot/draw/private
 
 scripts_plot_draw_PRIVATE_FCN_FILES = \
   scripts/plot/draw/private/__add_datasource__.m \
@@ -93,10 +95,19 @@ scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/trimesh.m \
   scripts/plot/draw/triplot.m \
   scripts/plot/draw/trisurf.m \
-  scripts/plot/draw/waterfall.m \
-  $(scripts_plot_draw_PRIVATE_FCN_FILES)
+  scripts/plot/draw/waterfall.m
 
-FCN_FILES += $(scripts_plot_draw_FCN_FILES)
+scripts_plot_drawdir = $(fcnfiledir)/plot/draw
+
+scripts_plot_draw_DATA = $(scripts_plot_draw_FCN_FILES)
+
+scripts_plot_draw_privatedir = $(fcnfiledir)/plot/draw/private
+
+scripts_plot_draw_private_DATA = $(scripts_plot_draw_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_plot_draw_FCN_FILES) \
+  $(scripts_plot_draw_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/plot/draw/PKG_ADD
 

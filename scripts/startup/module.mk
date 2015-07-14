@@ -14,11 +14,15 @@ STARTUP_FILE_SRC = \
   $(SYSTEM_STARTUP_FILE_SRC) \
   $(SYSTEM_INPUTRC_FILE_SRC)
 
-FCN_FILES += \
-  $(scripts_startup_FCN_FILES)
+scripts_startupdir = $(fcnfiledir)/startup
 
-EXTRA_DIST += \
+scripts_startup_DATA = \
+  $(scripts_startup_FCN_FILES) \
   $(STARTUP_FILE_SRC)
+
+FCN_FILES += $(scripts_startup_FCN_FILES)
+
+EXTRA_DIST += $(STARTUP_FILE_SRC)
 
 PKG_ADD_FILES += scripts/startup/PKG_ADD
 

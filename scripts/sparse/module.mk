@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/sparse
+FCN_FILE_DIRS += \
+  scripts/sparse \
+  scripts/sparse/private
 
 scripts_sparse_PRIVATE_FCN_FILES = \
   scripts/sparse/private/__sprand_impl__.m
@@ -31,10 +33,19 @@ scripts_sparse_FCN_FILES = \
   scripts/sparse/spy.m \
   scripts/sparse/svds.m \
   scripts/sparse/treelayout.m \
-  scripts/sparse/treeplot.m \
-  $(scripts_sparse_PRIVATE_FCN_FILES)
+  scripts/sparse/treeplot.m
 
-FCN_FILES += $(scripts_sparse_FCN_FILES)
+scripts_sparsedir = $(fcnfiledir)/sparse
+
+scripts_sparse_DATA = $(scripts_sparse_FCN_FILES)
+
+scripts_sparse_privatedir = $(fcnfiledir)/sparse/private
+
+scripts_sparse_private_DATA = $(scripts_sparse_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_sparse_FCN_FILES) \
+  $(scripts_sparse_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/sparse/PKG_ADD
 

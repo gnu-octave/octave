@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/plot/appearance
+FCN_FILE_DIRS += \
+  scripts/plot/appearance \
+  scripts/plot/appearance/private
 
 scripts_plot_appearance_PRIVATE_FCN_FILES = \
   scripts/plot/appearance/private/__axis_limits__.m \
@@ -32,10 +34,19 @@ scripts_plot_appearance_FCN_FILES = \
   scripts/plot/appearance/ylabel.m \
   scripts/plot/appearance/ylim.m \
   scripts/plot/appearance/zlabel.m \
-  scripts/plot/appearance/zlim.m \
-  $(scripts_plot_appearance_PRIVATE_FCN_FILES)
+  scripts/plot/appearance/zlim.m
 
-FCN_FILES += $(scripts_plot_appearance_FCN_FILES)
+scripts_plot_appearancedir = $(fcnfiledir)/plot/appearance
+
+scripts_plot_appearance_DATA = $(scripts_plot_appearance_FCN_FILES)
+
+scripts_plot_appearance_privatedir = $(fcnfiledir)/plot/appearance/private
+
+scripts_plot_appearance_private_DATA = $(scripts_plot_appearance_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_plot_appearance_FCN_FILES) \
+  $(scripts_plot_appearance_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/plot/appearance/PKG_ADD
 

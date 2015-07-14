@@ -20,6 +20,10 @@ scripts_specfun_FCN_FILES = \
   scripts/specfun/realpow.m \
   scripts/specfun/realsqrt.m
 
+scripts_specfundir = $(fcnfiledir)/specfun
+
+scripts_specfun_DATA = $(scripts_specfun_FCN_FILES)
+
 FCN_FILES += $(scripts_specfun_FCN_FILES)
 
 PKG_ADD_FILES += scripts/specfun/PKG_ADD

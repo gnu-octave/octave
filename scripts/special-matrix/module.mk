@@ -13,6 +13,10 @@ scripts_special_matrix_FCN_FILES = \
   scripts/special-matrix/vander.m \
   scripts/special-matrix/wilkinson.m
 
+scripts_special_matrixdir = $(fcnfiledir)/special-matrix
+
+scripts_special_matrix_DATA = $(scripts_special_matrix_FCN_FILES)
+
 FCN_FILES += $(scripts_special_matrix_FCN_FILES)
 
 PKG_ADD_FILES += scripts/special-matrix/PKG_ADD

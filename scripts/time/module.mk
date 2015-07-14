@@ -16,6 +16,10 @@ scripts_time_FCN_FILES = \
   scripts/time/now.m \
   scripts/time/weekday.m
 
+scripts_timedir = $(fcnfiledir)/time
+
+scripts_time_DATA = $(scripts_time_FCN_FILES)
+
 FCN_FILES += $(scripts_time_FCN_FILES)
 
 PKG_ADD_FILES += scripts/time/PKG_ADD

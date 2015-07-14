@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/plot/util
+FCN_FILE_DIRS += \
+  scripts/plot/util \
+  scripts/plot/util/private
 
 scripts_plot_util_GEN_FCN_FILES = \
   scripts/plot/util/gnuplot_binary.m
@@ -77,10 +79,22 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/shg.m \
   scripts/plot/util/struct2hdl.m \
   scripts/plot/util/subplot.m \
-  scripts/plot/util/zoom.m \
-  $(scripts_plot_util_PRIVATE_FCN_FILES)
+  scripts/plot/util/zoom.m
 
-FCN_FILES += $(scripts_plot_util_FCN_FILES)
+scripts_plot_utildir = $(fcnfiledir)/plot/util
+
+scripts_plot_util_DATA = \
+  $(scripts_plot_util_FCN_FILES) \
+  $(scripts_plot_util_GEN_FCN_FILES)
+
+scripts_plot_util_privatedir = $(fcnfiledir)/plot/util/private
+
+scripts_plot_util_private_DATA = $(scripts_plot_util_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_plot_util_FCN_FILES) \
+  $(scripts_plot_util_GEN_FCN_FILES) \
+  $(scripts_plot_util_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/plot/util/PKG_ADD
 

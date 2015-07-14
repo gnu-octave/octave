@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/pkg
+FCN_FILE_DIRS += \
+  scripts/pkg \
+  scripts/pkg/private
 
 scripts_pkg_PRIVATE_FCN_FILES = \
   scripts/pkg/private/build.m \
@@ -40,12 +42,19 @@ scripts_pkg_PRIVATE_FCN_FILES = \
   scripts/pkg/private/verify_directory.m \
   scripts/pkg/private/write_index.m
 
+scripts_pkg_FCN_FILES = scripts/pkg/pkg.m
 
-scripts_pkg_FCN_FILES = \
-  scripts/pkg/pkg.m \
+scripts_pkgdir = $(fcnfiledir)/pkg
+
+scripts_pkg_DATA = $(scripts_pkg_FCN_FILES)
+
+scripts_pkg_privatedir = $(fcnfiledir)/pkg/private
+
+scripts_pkg_private_DATA = $(scripts_pkg_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_pkg_FCN_FILES) \
   $(scripts_pkg_PRIVATE_FCN_FILES)
-
-FCN_FILES += $(scripts_pkg_FCN_FILES)
 
 PKG_ADD_FILES += scripts/pkg/PKG_ADD
 

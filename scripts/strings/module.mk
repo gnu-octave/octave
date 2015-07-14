@@ -32,6 +32,10 @@ scripts_strings_FCN_FILES = \
   scripts/strings/untabify.m \
   scripts/strings/validatestring.m
 
+scripts_stringsdir = $(fcnfiledir)/strings
+
+scripts_strings_DATA = $(scripts_strings_FCN_FILES)
+
 FCN_FILES += $(scripts_strings_FCN_FILES)
 
 PKG_ADD_FILES += scripts/strings/PKG_ADD

@@ -15,6 +15,10 @@ scripts_geometry_FCN_FILES = \
   scripts/geometry/voronoi.m \
   scripts/geometry/voronoin.m
 
+scripts_geometrydir = $(fcnfiledir)/geometry
+
+scripts_geometry_DATA = $(scripts_geometry_FCN_FILES)
+
 FCN_FILES += $(scripts_geometry_FCN_FILES)
 
 PKG_ADD_FILES += scripts/geometry/PKG_ADD

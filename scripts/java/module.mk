@@ -11,14 +11,10 @@ scripts_java_FCN_FILES = \
   scripts/java/javarmpath.m \
   scripts/java/usejava.m
 
-FCN_FILES += $(scripts_java_FCN_FILES)
-
-PKG_ADD_FILES += scripts/java/PKG_ADD
-
-DIRSTAMP_FILES += scripts/java/$(octave_dirstamp)
-
 if AMCOND_HAVE_JAVA
-JAR_FILES += scripts/java/octave.jar
+scripts_java_JAR_FILES = scripts/java/octave.jar
+
+JAR_FILES += $(scripts_java_JAR_FILES)
 endif
 
 org_octave_dir = org/octave
@@ -53,7 +49,7 @@ scripts_java_JAVA_IMAGES = $(addprefix scripts/java/, $(JAVA_IMAGES))
 
 srcdir_scripts_java_JAVA_IMAGES = $(addprefix $(srcdir)/scripts/java/, $(JAVA_IMAGES))
 
-$(JAVA_CLASSES) : %.class : %.java
+$(scripts_java_JAVA_CLASSES) : %.class : %.java scripts/java/$(octave_dirstamp)
 	$(AM_V_GEN)$(MKDIR_P) scripts/java/$(org_octave_dir) && \
 	( cd $(srcdir)/scripts/java; "$(JAVAC)" -source 1.3 -target 1.3 -d $(abs_top_builddir)/scripts/java $(org_octave_dir)/$(<F) )
 
@@ -72,9 +68,25 @@ scripts/java/octave.jar: scripts/java/images.stamp $(scripts_java_JAVA_CLASSES)
 	mv $@-t $@
 endif
 
-EXTRA_DIST += $(JAR_FILES) $(scripts_java_JAVA_SRC) $(scripts_java_JAVA_IMAGES)
+EXTRA_DIST += \
+  $(scripts_java_JAR_FILES) \
+  $(scripts_java_JAVA_SRC) \
+  $(scripts_java_JAVA_IMAGES)
 
-CLEANFILES += $(JAR_FILES) $(scripts_java_JAVA_CLASSES)
+CLEANFILES += \
+  $(scripts_java_JAR_FILES) \
+  $(scripts_java_JAVA_CLASSES)
 
 DISTCLEANFILES += scripts/java/images.stamp
 
+scripts_javadir = $(fcnfiledir)/java
+
+scripts_java_DATA = \
+  $(scripts_java_FCN_FILES) \
+  $(scripts_java_JAR_FILES)
+
+FCN_FILES += $(scripts_java_FCN_FILES)
+
+PKG_ADD_FILES += scripts/java/PKG_ADD
+
+DIRSTAMP_FILES += scripts/java/$(octave_dirstamp)

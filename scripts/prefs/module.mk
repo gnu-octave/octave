@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/prefs
+FCN_FILE_DIRS += \
+  scripts/prefs \
+  scripts/prefs/private
 
 scripts_prefs_PRIVATE_FCN_FILES = \
   scripts/prefs/private/loadprefs.m \
@@ -12,10 +14,19 @@ scripts_prefs_FCN_FILES = \
   scripts/prefs/prefdir.m \
   scripts/prefs/preferences.m \
   scripts/prefs/rmpref.m \
-  scripts/prefs/setpref.m \
-  $(scripts_prefs_PRIVATE_FCN_FILES)
+  scripts/prefs/setpref.m
 
-FCN_FILES += $(scripts_prefs_FCN_FILES)
+scripts_prefsdir = $(fcnfiledir)/prefs
+
+scripts_prefs_DATA = $(scripts_prefs_FCN_FILES)
+
+scripts_prefs_privatedir = $(fcnfiledir)/prefs/private
+
+scripts_prefs_private_DATA = $(scripts_prefs_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_prefs_FCN_FILES) \
+  $(scripts_prefs_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/prefs/PKG_ADD
 

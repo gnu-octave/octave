@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/polynomial
+FCN_FILE_DIRS += \
+  scripts/polynomial \
+  scripts/polynomial/private
 
 scripts_polynomial_PRIVATE_FCN_FILES = \
   scripts/polynomial/private/__splinefit__.m
@@ -29,10 +31,19 @@ scripts_polynomial_FCN_FILES = \
   scripts/polynomial/roots.m \
   scripts/polynomial/spline.m \
   scripts/polynomial/splinefit.m \
-  scripts/polynomial/unmkpp.m \
-  $(scripts_polynomial_PRIVATE_FCN_FILES)
+  scripts/polynomial/unmkpp.m
 
-FCN_FILES += $(scripts_polynomial_FCN_FILES)
+scripts_polynomialdir = $(fcnfiledir)/polynomial
+
+scripts_polynomial_DATA = $(scripts_polynomial_FCN_FILES)
+
+scripts_polynomial_privatedir = $(fcnfiledir)/polynomial/private
+
+scripts_polynomial_private_DATA = $(scripts_polynomial_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_polynomial_FCN_FILES) \
+  $(scripts_polynomial_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/polynomial/PKG_ADD
 

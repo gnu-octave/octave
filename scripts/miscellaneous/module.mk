@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/miscellaneous
+FCN_FILE_DIRS += \
+  scripts/miscellaneous \
+  scripts/miscellaneous/private
 
 scripts_miscellaneous_PRIVATE_FCN_FILES = \
   scripts/miscellaneous/private/display_info_file.m \
@@ -78,10 +80,19 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/warning_ids.m \
   scripts/miscellaneous/what.m \
   scripts/miscellaneous/xor.m \
-  scripts/miscellaneous/zip.m \
-  $(scripts_miscellaneous_PRIVATE_FCN_FILES)
+  scripts/miscellaneous/zip.m
 
-FCN_FILES += $(scripts_miscellaneous_FCN_FILES)
+scripts_miscellaneousdir = $(fcnfiledir)/miscellaneous
+
+scripts_miscellaneous_DATA = $(scripts_miscellaneous_FCN_FILES)
+
+scripts_miscellaneous_privatedir = $(fcnfiledir)/miscellaneous/private
+
+scripts_miscellaneous_private_DATA = $(scripts_miscellaneous_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_miscellaneous_FCN_FILES) \
+  $(scripts_miscellaneous_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/miscellaneous/PKG_ADD
 

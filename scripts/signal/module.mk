@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/signal
+FCN_FILE_DIRS += \
+  scripts/signal \
+  scripts/signal/private
 
 scripts_signal_PRIVATE_FCN_FILES = \
   scripts/signal/private/rectangle_lw.m  \
@@ -38,10 +40,19 @@ scripts_signal_FCN_FILES = \
   scripts/signal/stft.m \
   scripts/signal/synthesis.m \
   scripts/signal/unwrap.m \
-  scripts/signal/yulewalker.m \
-  $(scripts_signal_PRIVATE_FCN_FILES)
+  scripts/signal/yulewalker.m
 
-FCN_FILES += $(scripts_signal_FCN_FILES)
+scripts_signaldir = $(fcnfiledir)/signal
+
+scripts_signal_DATA = $(scripts_signal_FCN_FILES)
+
+scripts_signal_privatedir = $(fcnfiledir)/signal/private
+
+scripts_signal_private_DATA = $(scripts_signal_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_signal_FCN_FILES) \
+  $(scripts_signal_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/signal/PKG_ADD
 

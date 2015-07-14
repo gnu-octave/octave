@@ -14,6 +14,10 @@ scripts_testfun_FCN_FILES = \
   scripts/testfun/speed.m \
   scripts/testfun/test.m
 
+scripts_testfundir = $(fcnfiledir)/testfun
+
+scripts_testfun_DATA = $(scripts_testfun_FCN_FILES)
+
 FCN_FILES += $(scripts_testfun_FCN_FILES)
 
 PKG_ADD_FILES += scripts/testfun/PKG_ADD

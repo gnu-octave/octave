@@ -21,6 +21,10 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/syl.m \
   scripts/deprecated/usage.m
 
+scripts_deprecateddir = $(fcnfiledir)/deprecated
+
+scripts_deprecated_DATA = $(scripts_deprecated_FCN_FILES)
+
 FCN_FILES += $(scripts_deprecated_FCN_FILES)
 
 PKG_ADD_FILES += scripts/deprecated/PKG_ADD

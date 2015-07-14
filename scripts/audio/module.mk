@@ -1,4 +1,7 @@
-FCN_FILE_DIRS += scripts/audio
+FCN_FILE_DIRS += \
+  scripts/audio \
+  scripts/audio/@audioplayer \
+  scripts/audio/@audiorecorder
 
 scripts_audio_FCN_FILES = \
   scripts/audio/lin2mu.m \
@@ -7,7 +10,9 @@ scripts_audio_FCN_FILES = \
   scripts/audio/sound.m \
   scripts/audio/soundsc.m \
   scripts/audio/wavread.m \
-  scripts/audio/wavwrite.m \
+  scripts/audio/wavwrite.m
+
+scripts_audio_@audioplayer_FCN_FILES = \
   scripts/audio/@audioplayer/__get_properties__.m \
   scripts/audio/@audioplayer/audioplayer.m \
   scripts/audio/@audioplayer/display.m \
@@ -20,7 +25,9 @@ scripts_audio_FCN_FILES = \
   scripts/audio/@audioplayer/set.m \
   scripts/audio/@audioplayer/stop.m \
   scripts/audio/@audioplayer/subsasgn.m \
-  scripts/audio/@audioplayer/subsref.m \
+  scripts/audio/@audioplayer/subsref.m
+
+scripts_audio_@audiorecorder_FCN_FILES = \
   scripts/audio/@audiorecorder/__get_properties__.m \
   scripts/audio/@audiorecorder/audiorecorder.m \
   scripts/audio/@audiorecorder/display.m \
@@ -38,7 +45,22 @@ scripts_audio_FCN_FILES = \
   scripts/audio/@audiorecorder/subsasgn.m \
   scripts/audio/@audiorecorder/subsref.m
 
-FCN_FILES += $(scripts_audio_FCN_FILES)
+scripts_audiodir = $(fcnfiledir)/audio
+
+scripts_audio_DATA = $(scripts_audio_FCN_FILES)
+
+scripts_audio_@audioplayerdir = $(fcnfiledir)/audio/@audioplayer
+
+scripts_audio_@audioplayer_DATA = $(scripts_audio_@audioplayer_FCN_FILES)
+
+scripts_audio_@audiorecorderdir = $(fcnfiledir)/audio/@audiorecorder
+
+scripts_audio_@audiorecorder_DATA = $(scripts_audio_@audiorecorder_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_audio_FCN_FILES) \
+  $(scripts_audio_@audioplayer_FCN_FILES) \
+  $(scripts_audio_@audiorecorder_FCN_FILES)
 
 PKG_ADD_FILES += scripts/audio/PKG_ADD
 

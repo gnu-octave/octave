@@ -27,6 +27,10 @@ scripts_statistics_tests_FCN_FILES = \
   scripts/statistics/tests/z_test.m \
   scripts/statistics/tests/z_test_2.m
 
+scripts_statistics_testsdir = $(fcnfiledir)/statistics/tests
+
+scripts_statistics_tests_DATA = $(scripts_statistics_tests_FCN_FILES)
+
 FCN_FILES += $(scripts_statistics_tests_FCN_FILES)
 
 PKG_ADD_FILES += scripts/statistics/tests/PKG_ADD

@@ -27,6 +27,10 @@ scripts_elfun_FCN_FILES = \
   scripts/elfun/sind.m \
   scripts/elfun/tand.m
 
+scripts_elfundir = $(fcnfiledir)/elfun
+
+scripts_elfun_DATA = $(scripts_elfun_FCN_FILES)
+
 FCN_FILES += $(scripts_elfun_FCN_FILES)
 
 PKG_ADD_FILES += scripts/elfun/PKG_ADD

@@ -31,6 +31,10 @@ scripts_linear_algebra_FCN_FILES = \
   scripts/linear-algebra/trace.m \
   scripts/linear-algebra/vech.m
 
+scripts_linear_algebradir = $(fcnfiledir)/linear-algebra
+
+scripts_linear_algebra_DATA = $(scripts_linear_algebra_FCN_FILES)
+
 FCN_FILES += $(scripts_linear_algebra_FCN_FILES)
 
 PKG_ADD_FILES += scripts/linear-algebra/PKG_ADD

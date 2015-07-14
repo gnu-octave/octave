@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/general
+FCN_FILE_DIRS += \
+  scripts/general \
+  scripts/general/private
 
 scripts_general_PRIVATE_FCN_FILES = \
   scripts/general/private/__isequal__.m \
@@ -77,10 +79,19 @@ scripts_general_FCN_FILES = \
   scripts/general/subsindex.m \
   scripts/general/trapz.m \
   scripts/general/triplequad.m \
-  scripts/general/validateattributes.m \
-  $(scripts_general_PRIVATE_FCN_FILES)
+  scripts/general/validateattributes.m
 
-FCN_FILES += $(scripts_general_FCN_FILES)
+scripts_generaldir = $(fcnfiledir)/general
+
+scripts_general_DATA = $(scripts_general_FCN_FILES)
+
+scripts_general_privatedir = $(fcnfiledir)/general/private
+
+scripts_general_private_DATA = $(scripts_general_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_general_FCN_FILES) \
+  $(scripts_general_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/general/PKG_ADD
 

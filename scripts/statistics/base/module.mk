@@ -36,6 +36,10 @@ scripts_statistics_base_FCN_FILES = \
   scripts/statistics/base/var.m \
   scripts/statistics/base/zscore.m
 
+scripts_statistics_basedir = $(fcnfiledir)/statistics/base
+
+scripts_statistics_base_DATA = $(scripts_statistics_base_FCN_FILES)
+
 FCN_FILES += $(scripts_statistics_base_FCN_FILES)
 
 PKG_ADD_FILES += scripts/statistics/base/PKG_ADD

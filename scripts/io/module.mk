@@ -12,6 +12,10 @@ scripts_io_FCN_FILES = \
   scripts/io/textscan.m \
   scripts/io/textread.m
 
+scripts_iodir = $(fcnfiledir)/io
+
+scripts_io_DATA = $(scripts_io_FCN_FILES)
+
 FCN_FILES += $(scripts_io_FCN_FILES)
 
 PKG_ADD_FILES += scripts/io/PKG_ADD

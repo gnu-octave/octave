@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/image
+FCN_FILE_DIRS += \
+  scripts/image \
+  scripts/image/private
 
 scripts_image_PRIVATE_FCN_FILES = \
   scripts/image/private/__imfinfo__.m \
@@ -51,13 +53,22 @@ scripts_image_FCN_FILES = \
   scripts/image/spring.m \
   scripts/image/summer.m \
   scripts/image/white.m \
-  scripts/image/winter.m \
-  $(scripts_image_PRIVATE_FCN_FILES)
+  scripts/image/winter.m
 
 SCRIPTS_IMAGES += \
   scripts/image/default.img
 
-FCN_FILES += $(scripts_image_FCN_FILES)
+scripts_imagedir = $(fcnfiledir)/image
+
+scripts_image_DATA = $(scripts_image_FCN_FILES)
+
+scripts_image_privatedir = $(fcnfiledir)/image/private
+
+scripts_image_private_DATA = $(scripts_image_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_image_FCN_FILES) \
+  $(scripts_image_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/image/PKG_ADD
 

@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/gui
+FCN_FILE_DIRS += \
+  scripts/gui \
+  scripts/gui/private
 
 scripts_gui_PRIVATE_FCN_FILES = \
   scripts/gui/private/__file_filter__.m \
@@ -34,10 +36,19 @@ scripts_gui_FCN_FILES = \
   scripts/gui/uiwait.m \
   scripts/gui/waitbar.m \
   scripts/gui/waitforbuttonpress.m \
-  scripts/gui/warndlg.m \
-  $(scripts_gui_PRIVATE_FCN_FILES)
+  scripts/gui/warndlg.m
 
-FCN_FILES += $(scripts_gui_FCN_FILES)
+scripts_guidir = $(fcnfiledir)/gui
+
+scripts_gui_DATA = $(scripts_gui_FCN_FILES)
+
+scripts_gui_privatedir = $(fcnfiledir)/gui/private
+
+scripts_gui_private_DATA = $(scripts_gui_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_gui_FCN_FILES) \
+  $(scripts_gui_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/gui/PKG_ADD
 

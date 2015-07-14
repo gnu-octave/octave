@@ -92,6 +92,10 @@ scripts_statistics_distributions_FCN_FILES = \
   scripts/statistics/distributions/wblrnd.m \
   scripts/statistics/distributions/wienrnd.m
 
+scripts_statistics_distributionsdir = $(fcnfiledir)/statistics/distributions
+
+scripts_statistics_distributions_DATA = $(scripts_statistics_distributions_FCN_FILES)
+
 FCN_FILES += $(scripts_statistics_distributions_FCN_FILES)
 
 PKG_ADD_FILES += scripts/statistics/distributions/PKG_ADD

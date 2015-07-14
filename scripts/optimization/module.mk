@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/optimization
+FCN_FILE_DIRS += \
+  scripts/optimization \
+  scripts/optimization/private
 
 scripts_optimization_PRIVATE_FCN_FILES = \
   scripts/optimization/private/__fdjac__.m
@@ -16,10 +18,19 @@ scripts_optimization_FCN_FILES = \
   scripts/optimization/optimset.m \
   scripts/optimization/pqpnonneg.m \
   scripts/optimization/qp.m \
-  scripts/optimization/sqp.m \
-  $(scripts_optimization_PRIVATE_FCN_FILES)
+  scripts/optimization/sqp.m
 
-FCN_FILES += $(scripts_optimization_FCN_FILES)
+scripts_optimizationdir = $(fcnfiledir)/optimization
+
+scripts_optimization_DATA = $(scripts_optimization_FCN_FILES)
+
+scripts_optimization_privatedir = $(fcnfiledir)/optimization/private
+
+scripts_optimization_private_DATA = $(scripts_optimization_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_optimization_FCN_FILES) \
+  $(scripts_optimization_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/optimization/PKG_ADD
 

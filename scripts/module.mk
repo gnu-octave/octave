@@ -19,6 +19,10 @@ scripts_@ftp_FCN_FILES = \
   scripts/@ftp/rmdir.m  \
   scripts/@ftp/saveobj.m
 
+scripts_@ftpdir = $(fcnfiledir)/@ftp/module.mk fails.  Is that an automake bug?
+
+scripts_@ftp_DATA = $(scripts_@ftp_FCN_FILES)
+
 FCN_FILES += $(scripts_@ftp_FCN_FILES)
 
 PKG_ADD_FILES += scripts/@ftp/PKG_ADD
@@ -58,8 +62,6 @@ include scripts/statistics/tests/module.mk
 include scripts/strings/module.mk
 include scripts/testfun/module.mk
 include scripts/time/module.mk
-
-nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES) $(JAR_FILES)
 
 image_DATA += $(SCRIPTS_IMAGES)
 

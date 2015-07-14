@@ -58,7 +58,7 @@ GENERATED_PARSER_FILES := \
   libinterp/corefcn/oct-tex-parser.yy \
   libinterp/parse-tree/oct-parse.yy
 
-BUILT_DISTFILES += \
+LIBINTERP_BUILT_DISTFILES = \
   $(GENERATED_PARSER_FILES) \
   libinterp/corefcn/oct-tex-parser.h \
   libinterp/corefcn/oct-tex-symbols.cc \
@@ -67,7 +67,7 @@ BUILT_DISTFILES += \
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
-BUILT_NODISTFILES += \
+LIBINTERP_BUILT_NODISTFILES = \
   libinterp/corefcn/mxarray.h \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/defaults.h \
@@ -95,7 +95,7 @@ EXTRA_DIST += \
   libinterp/mkops \
   libinterp/oct-conf.in.h \
   libinterp/version.in.h \
-  $(BUILT_DISTFILES)
+  $(LIBINTERP_BUILT_DISTFILES)
 
 octinclude_HEADERS += \
   libinterp/corefcn/graphics-props.cc \
@@ -367,10 +367,12 @@ CLEANFILES += \
 DISTCLEANFILES += \
   libinterp/.DOCSTRINGS \
   libinterp/DOCSTRINGS \
-  $(BUILT_NODISTFILES) \
+  $(LIBINTERP_BUILT_NODISTFILES) \
   $(OCT_FILES) \
   $(LIBINTERP_TST_FILES)
 
 MAINTAINERCLEANFILES += \
-  $(BUILT_DISTFILES)
+  $(LIBINTERP_BUILT_DISTFILES)
 
+BUILT_DISTFILES += $(LIBINTERP_BUILT_DISTFILES)
+BUILT_NODISTFILES += $(LIBINTERP_BUILT_NODISTFILES)

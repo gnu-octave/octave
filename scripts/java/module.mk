@@ -53,7 +53,7 @@ scripts_java_JAVA_IMAGES = $(addprefix scripts/java/, $(JAVA_IMAGES))
 
 srcdir_scripts_java_JAVA_IMAGES = $(addprefix $(srcdir)/scripts/java/, $(JAVA_IMAGES))
 
-%.class : %.java
+$(JAVA_CLASSES) : %.class : %.java
 	$(AM_V_GEN)$(MKDIR_P) scripts/java/$(org_octave_dir) && \
 	( cd $(srcdir)/scripts/java; "$(JAVAC)" -source 1.3 -target 1.3 -d $(abs_top_builddir)/scripts/java $(org_octave_dir)/$(<F) )
 

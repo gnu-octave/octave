@@ -25,7 +25,7 @@ BEGIN {
       printf (" %s%s.%s", dir, $j, ext);
     printf ("\n");
 
-    printf ("DOC_IMAGES_%s += $(%s_%s)\n", uext, ubasename, uext);
+    printf ("BUILT_DOC_IMAGES_%s += $(%s_%s)\n", uext, ubasename, uext);
 
     for (j = 2; j <= NF; j++) {
       printf ("%s%s.%s: %s%s\n", dir, $j, ext, dir, script);

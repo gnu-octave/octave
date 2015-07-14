@@ -28,9 +28,6 @@ if AMCOND_BUILD_DOCS
 ## also depends on the DVI file and somehow the rules are invoked
 ## twice.  Is that a bug in automake or make or what?
 
-DOC_TARGETS = \
-  doc/interpreter/doc-cache
-
 EXTRA_DIST += \
   doc/texinfo.tex \
   doc/texmf.cnf
@@ -268,9 +265,21 @@ $(HTMLDIR_IMAGES) : doc/interpreter/octave.html/%.png: doc/interpreter/%.png $(O
 
 DOC_TARGETS += \
   $(srcdir)/doc/interpreter/octave.info \
+  doc/interpreter/doc-cache \
   doc/interpreter/octave.ps \
   doc/interpreter/octave.pdf \
   $(OCTAVE_HTML_STAMP) \
+  $(HTMLDIR_IMAGES)
+
+EXTRA_DIST += \
+  $(BUILT_OCTAVE_TEXI_SRC) \
+  $(srcdir)/doc/interpreter/octave.info \
+  doc/interpreter/TODO \
+  doc/interpreter/doc-cache \
+  doc/interpreter/octave.dvi \
+  doc/interpreter/octave.ps \
+  doc/interpreter/octave.pdf \
+  doc/interpreter/octave.html \
   $(HTMLDIR_IMAGES)
 
 ## The texi2dvi script (used to create both PDF and DVI output formats)
@@ -395,6 +404,14 @@ DOC_TARGETS += \
   doc/liboctave/liboctave.pdf \
   doc/liboctave/liboctave.html
 
+EXTRA_DIST += \
+  $(liboctave_TEXINFOS) \
+  $(srcdir)/doc/liboctave/liboctave.info \
+  doc/liboctave/liboctave.dvi \
+  doc/liboctave/liboctave.ps \
+  doc/liboctave/liboctave.pdf \
+  doc/liboctave/liboctave.html
+
 ## The texi2dvi script (used to create both PDF and DVI output formats)
 ## uses some fixed temporary file names.  In order to avoid a race condition
 ## the DVI and PDF builds are forced to run serially through a Makefile rule.
@@ -450,8 +467,8 @@ doc/refcard/refcard-letter.ps: doc/refcard/refcard-letter.dvi
 	-$(AM_V_DVIPS)$(DVIPS) $(AM_V_texinfo) -T 11in,8.5in -o $@ $<
 
 EXTRA_DIST += \
-  $(refcard_TEX_SRC) \
-  $(refcard_FORMATTED)
+  $(refcard_FORMATTED) \
+  $(refcard_TEX_SRC)
 
 CLEANFILES += \
   doc/refcard/refcard-a4.log \

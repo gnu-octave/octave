@@ -58,4 +58,5 @@ examples_code_SRC = \
 EXTRA_DIST += \
   $(examples_data_SRC) \
   $(examples_code_SRC) \
+  examples/code/COPYING \
   examples/module.mk

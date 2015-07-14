@@ -191,6 +191,7 @@ uninstall-pkg-add:
 .PHONY: uninstall-pkg-add
 
 if AMCOND_HAVE_JAVA
+scripts-dist-hook:
 else
 scripts-dist-hook:
 	@echo "Packaging distribution requires Java." ; exit 1;

@@ -324,13 +324,13 @@ AUTHORS: doc/interpreter/preface.texi doc/interpreter/contributors.texi doc/inte
 BUGS: doc/interpreter/bugs.texi doc/interpreter/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D BUGSONLY -I $(srcdir)/doc/interpreter \
-	  --no-validate --no-headers --no-split --output doc/interpreter/BUGS $< && \
+	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
 INSTALL.OCTAVE: doc/interpreter/install.texi doc/interpreter/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D INSTALLONLY -I $(srcdir)/doc/interpreter \
-	  --no-validate --no-headers --no-split --output doc/interpreter/INSTALL $< && \
+	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
 EXTRA_DIST += \

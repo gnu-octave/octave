@@ -278,13 +278,14 @@ COREFCN_FT2_DF = \
 ## Special rules for FreeType .df files so that not all .df files are built
 ## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
 $(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS)
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \
 	  $(libinterp_corefcn_libcorefcn_la_CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t && \
-	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t > $@ && \
-	rm $@-t
+	  -DMAKE_BUILTINS $< > $@-t1 && \
+	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
+	rm -f $@-t1 && \
+	mv $@-t $@
 
 ## Special rules for sources which must be built before rest of compilation.
 
@@ -295,17 +296,17 @@ libinterp/corefcn/defaults.h: libinterp/corefcn/defaults.in.h Makefile
 	$(AM_V_GEN)$(do_subst_default_vals)
 
 libinterp/corefcn/graphics.h: libinterp/corefcn/graphics.in.h libinterp/genprops.awk Makefile
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 libinterp/corefcn/graphics-props.cc: libinterp/corefcn/graphics.in.h libinterp/genprops.awk Makefile
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc Makefile
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t && \
 	if test -n "$(PERL)"; then \
 	  $(srcdir)/libinterp/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
@@ -313,24 +314,24 @@ libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc Makefile
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 libinterp/corefcn/mxarray.h: libinterp/corefcn/mxarray.in.h Makefile
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) < $< \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
 	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 libinterp/corefcn/oct-tex-lexer.ll: libinterp/corefcn/oct-tex-lexer.in.ll libinterp/corefcn/oct-tex-symbols.in Makefile.am
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/libinterp/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 libinterp/corefcn/oct-tex-symbols.cc: libinterp/corefcn/oct-tex-symbols.in Makefile.am
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } !/^#/ && (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; }' $< > $@-t && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 libinterp/corefcn/txt-eng.cc: libinterp/corefcn/oct-tex-symbols.cc
 libinterp/corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_

@@ -5,7 +5,7 @@
 
 if test -r $2; then
   if cmp $1 $2 > /dev/null; then
-    echo $2 is unchanged
+    echo $2 is unchanged 1>&2
     rm -f $1
   else
     mv -f $1 $2

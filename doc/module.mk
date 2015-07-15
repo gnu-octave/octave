@@ -370,6 +370,9 @@ EXTRA_DIST += \
 interpreter-clean:
 	rm -rf t2d_cache
 
+interpreter-maintainer-clean:
+	rm -f $(BUILT_OCTAVE_TEXI_SRC)
+
 DISTCLEANFILES += \
   $(BUILT_TEXINFOS) \
   $(OCTAVE_HTML_STAMP)
@@ -486,9 +489,9 @@ MAINTAINERCLEANFILES += \
 
 DIRSTAMP_FILES += doc/refcard/$(octave_dirstamp)
 
-clean-local: interpreter-clean
+doc-clean: interpreter-clean
 
-maintainer-clean-local: doxyhtml-maintainer-clean
+doc-maintainer-clean: doxyhtml-maintainer-clean interpreter-maintainer-clean
 
 $(srcdir)/doc/interpreter/images.mk: $(srcdir)/doc/interpreter/config-images.sh $(srcdir)/doc/interpreter/images.awk $(srcdir)/doc/interpreter/images
 	$(srcdir)/doc/interpreter/config-images.sh $(top_srcdir)

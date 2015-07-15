@@ -40,8 +40,9 @@ doxyhtml: doc/doxyhtml/$(octave_dirstamp)
 	doxygen doc/doxyhtml/Doxyfile
 
 doxyhtml-maintainer-clean:
-	cd doc/doxyhtml && rm -rf `ls | $(GREP) -v Doxyfile.in`
 	rm -f doc/doxygen_sqlite3.db
+	cd doc/doxyhtml && \
+	rm -rf `ls | $(GREP) -v Doxyfile.in | $(GREP) -v README`
 
 DIRSTAMP_FILES += doc/doxyhtml/$(octave_dirstamp)
 

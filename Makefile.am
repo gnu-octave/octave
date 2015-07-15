@@ -233,4 +233,9 @@ installdirs-local:
 
 install-data-local: installdirs-local
 
+clean-local: doc-clean
+
 distclean-local: scripts-distclean
+
+maintainer-clean-local: doc-maintainer-clean
+

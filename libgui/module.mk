@@ -1,3 +1,5 @@
+if AMCOND_BUILD_GUI
+
 MOC_CPPFLAGS =
 
 ## Fix for bug #42839 where -mieee CFLAG option is added to CPPFLAGS by gnulib.
@@ -110,3 +112,4 @@ DISTCLEANFILES += \
   libgui/default-qt-settings \
   $(LOCALES)
 
+endif

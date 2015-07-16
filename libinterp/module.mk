@@ -82,7 +82,6 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/builtins.cc
 
 EXTRA_DIST += \
-  libinterp/Makefile.in \
   libinterp/DOCSTRINGS \
   libinterp/config-features.sh \
   libinterp/find-defun-files.sh \

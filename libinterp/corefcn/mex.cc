@@ -615,10 +615,15 @@ protected:
       ndims (ndims_arg < 2 ? 2 : ndims_arg),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
-    if (ndims_arg < 2)
+    if (ndims_arg == 0)
       {
         dims[0] = 0;
         dims[1] = 0;
+      }
+    else if (ndims_arg < 2)
+      {
+        dims[0] = 1;
+        dims[1] = 1;
       }
 
     for (mwIndex i = 0; i < ndims_arg; i++)

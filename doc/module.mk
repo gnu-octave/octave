@@ -312,7 +312,7 @@ DOCSTRING_DEPS = scripts/.DOCSTRINGS libinterp/.DOCSTRINGS
 
 doc/interpreter/doc-cache: $(DOCSTRING_DEPS) $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/mk_doc_cache.m doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) >$@-t && \
+	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_DEPS) $(munge_texi_SOURCES)
@@ -379,6 +379,7 @@ DISTCLEANFILES += \
   $(OCTAVE_HTML_STAMP)
 
 MAINTAINERCLEANFILES += \
+  AUTHORS \
   $(BUILT_DOC_IMAGES) \
   doc/interpreter/doc-cache
 

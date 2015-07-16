@@ -65,7 +65,7 @@ include scripts/time/module.mk
 
 image_DATA += $(SCRIPTS_IMAGES)
 
-FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
+GEN_FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
 
 ALL_LOCAL_TARGETS += \
   $(GEN_FCN_FILES) \
@@ -203,8 +203,7 @@ endif
 EXTRA_DIST += \
   $(SCRIPTS_IMAGES) \
   $(FCN_FILES) \
-  $(FCN_FILES_IN) \
-  $(GEN_FCN_FILES) \
+  $(GEN_FCN_FILES_IN) \
   scripts/DOCSTRINGS \
   scripts/mkdoc.pl \
   scripts/mk-pkg-add

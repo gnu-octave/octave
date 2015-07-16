@@ -93,7 +93,6 @@ scripts_plot_util_private_DATA = $(scripts_plot_util_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(scripts_plot_util_FCN_FILES) \
-  $(scripts_plot_util_GEN_FCN_FILES) \
   $(scripts_plot_util_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/plot/util/PKG_ADD

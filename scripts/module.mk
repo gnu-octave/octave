@@ -19,7 +19,7 @@ scripts_@ftp_FCN_FILES = \
   scripts/@ftp/rmdir.m  \
   scripts/@ftp/saveobj.m
 
-scripts_@ftpdir = $(fcnfiledir)/@ftp/module.mk fails.  Is that an automake bug?
+scripts_@ftpdir = $(fcnfiledir)/@ftp
 
 scripts_@ftp_DATA = $(scripts_@ftp_FCN_FILES)
 
@@ -180,8 +180,9 @@ uninstall-startup-files:
 install-pkg-add:
 	for f in $(PKG_ADD_FILES); do \
 	  if [ -n "`cat $$f`" ]; then \
-	    $(MKDIR_P) $(DESTDIR)$(fcnfiledir)/`echo $$f | $(SED) 's,/[^/]*$$,,'`; \
-	    $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$$f; \
+	    base=`echo $$f | $(SED) 's,^scripts/,,'`; \
+	    $(MKDIR_P) $(DESTDIR)$(fcnfiledir)/`echo $$base | $(SED) 's,/[^/]*$$,,'`; \
+	    $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$$base; \
 	  fi \
 	done
 .PHONY: install-pkg-add

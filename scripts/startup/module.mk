@@ -16,9 +16,7 @@ STARTUP_FILE_SRC = \
 
 scripts_startupdir = $(fcnfiledir)/startup
 
-scripts_startup_DATA = \
-  $(scripts_startup_FCN_FILES) \
-  $(STARTUP_FILE_SRC)
+scripts_startup_DATA = $(scripts_startup_FCN_FILES)
 
 FCN_FILES += $(scripts_startup_FCN_FILES)
 

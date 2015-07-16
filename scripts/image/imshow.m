@@ -114,7 +114,7 @@ function h = imshow (im, varargin)
         display_range = arg;
       elseif (columns (arg) == 3)
         indexed = true;
-        if (iscolormap (arg))
+        if (iscolormap (arg) && min (arg) >= 0 || max (arg) <= 1)
           colormap (arg);
         else
           error ("imshow: invalid colormap MAP");
@@ -129,7 +129,7 @@ function h = imshow (im, varargin)
           narg++;
         case "colormap"
           map = varargin{narg++};
-          if (iscolormap (map))
+          if (iscolormap (map) && min (map) >= 0 || max (map) <= 1)
             colormap (map);
           else
             error ("imshow: invalid colormap");
@@ -262,9 +262,9 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   fail ("imshow ([1,1], [2 0 0])", "invalid colormap MAP");
+%!   fail ("imshow ([1,1], [2 0 0])", "all MAP values must be in the range");
 %!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid");
-%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap");
+%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "all MAP values must be in the range");
 %!   fail ('imshow ([1,1], "parent", -1)', "must be an axes handle");
 %!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector");
 %!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector");

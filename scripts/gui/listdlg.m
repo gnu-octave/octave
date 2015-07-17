@@ -85,7 +85,7 @@ function [sel, ok] = listdlg (varargin)
   endif
 
   listcell = {""};
-  selmode = "Multiple";
+  selmode = "multiple";
   listsize = [160, 300];
   initialvalue = 1;
   name = "";
@@ -127,7 +127,7 @@ function [sel, ok] = listdlg (varargin)
   endif
 
   ## make sure valid selection mode
-  if (! strcmpi (selmode, "multiple") && ! strcmpi (selmode, "single"))
+  if (! strcmp (selmode, "multiple") && ! strcmp (selmode, "single"))
     error ("listdlg: invalid SelectionMode");
   endif
 

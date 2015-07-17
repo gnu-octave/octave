@@ -42,7 +42,7 @@ doc_EXTRA_DIST += \
   doc/doxyhtml/Doxyfile.in \
   doc/doxyhtml/README
 
-doxyhtml: doc/doxyhtml/$(octave_dirstamp)
+doxyhtml: | doc/doxyhtml/$(octave_dirstamp)
 	doxygen doc/doxyhtml/Doxyfile
 
 doxyhtml-maintainer-clean:
@@ -62,7 +62,7 @@ GRAPH_PROP_TEXI_SRC = \
   doc/interpreter/plot-surfaceproperties.texi \
   doc/interpreter/plot-textproperties.texi
 
-$(GRAPH_PROP_TEXI_SRC): $(OCTAVE_INTERPRETER_TARGETS)
+$(GRAPH_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS)
 
 define gen-propdoc-texi
   rm -f $@-t $@ && \
@@ -126,7 +126,7 @@ DOC_IMAGES += \
   $(BUILT_DOC_IMAGES) \
   $(DOC_JAVA_IMAGES)
 
-$(BUILT_DOC_IMAGES): $(OCTAVE_INTERPRETER_TARGETS)
+$(BUILT_DOC_IMAGES): | $(OCTAVE_INTERPRETER_TARGETS)
 
 ## FIXME: DOC_JAVA_IMAGES will eventually need to be added to the HTML build.
 ##        It will require a different Makefile rule later because
@@ -249,19 +249,19 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-doc/interpreter/octave.dvi: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi doc/interpreter/$(am__dirstamp)
+doc/interpreter/octave.dvi: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
 	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
-doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi doc/interpreter/$(am__dirstamp)
+doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
 	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
-$(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi doc/interpreter/$(am__dirstamp)
+$(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(OCTAVE_HTML_DIR)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
 	 -o $(OCTAVE_HTML_TMP_DIR) `test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi; \
@@ -316,24 +316,24 @@ DOCSTRING_FILES = $(shell $(srcdir)/doc/interpreter/find-docstring-files.sh "$(t
 
 DOCSTRING_DEPS = scripts/.DOCSTRINGS libinterp/.DOCSTRINGS
 
-doc/interpreter/doc-cache: $(DOCSTRING_DEPS) $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/mk_doc_cache.m doc/interpreter/$(octave_dirstamp)
+doc/interpreter/doc-cache: $(DOCSTRING_DEPS) doc/interpreter/mk_doc_cache.m | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_DEPS) $(munge_texi_SOURCES)
 
-%.texi : %.txi doc/interpreter/munge-texi.pl doc/interpreter/$(octave_dirstamp)
+%.texi : %.txi doc/interpreter/munge-texi.pl | doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(PERL) $(srcdir)/doc/interpreter/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t && \
 	mv $@-t $@
 
-doc/interpreter/contributors.texi: doc/interpreter/contributors.in doc/interpreter/$(octave_dirstamp)
+doc/interpreter/contributors.texi: doc/interpreter/contributors.in | doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(AWK) -f $(srcdir)/doc/interpreter/mkcontrib.awk $(srcdir)/doc/interpreter/contributors.in > $@-t && \
 	mv $@-t $@
 
-AUTHORS: doc/interpreter/preface.texi doc/interpreter/contributors.texi doc/interpreter/$(octave_dirstamp)
+AUTHORS: doc/interpreter/preface.texi doc/interpreter/contributors.texi | doc/interpreter/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/doc/interpreter/contributors.texi ] && [ ! -f doc/interpreter/contributors.texi ]; then \
 		cp $(srcdir)/doc/interpreter/contributors.texi doc/interpreter/contributors.texi; \
@@ -343,13 +343,13 @@ AUTHORS: doc/interpreter/preface.texi doc/interpreter/contributors.texi doc/inte
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
-BUGS: doc/interpreter/bugs.texi doc/interpreter/$(octave_dirstamp)
+BUGS: doc/interpreter/bugs.texi | doc/interpreter/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D BUGSONLY -I $(srcdir)/doc/interpreter \
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
-INSTALL.OCTAVE: doc/interpreter/install.texi doc/interpreter/$(octave_dirstamp)
+INSTALL.OCTAVE: doc/interpreter/install.texi | doc/interpreter/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D INSTALLONLY -I $(srcdir)/doc/interpreter \
 	  --no-validate --no-headers --no-split --output $@-t $< && \
@@ -485,12 +485,12 @@ DIRSTAMP_FILES += doc/refcard/$(octave_dirstamp)
 $(srcdir)/doc/interpreter/images.mk: $(srcdir)/doc/interpreter/config-images.sh $(srcdir)/doc/interpreter/images.awk $(srcdir)/doc/interpreter/images
 	$(srcdir)/doc/interpreter/config-images.sh $(top_srcdir)
 
-$(refcard_DVI) : %.dvi : %.tex doc/refcard/$(octave_dirstamp)
+$(refcard_DVI) : %.dvi : %.tex | doc/refcard/$(octave_dirstamp)
 	-$(AM_V_TEX)cd $(@D) && \
 	TEXINPUTS="$(abs_top_srcdir)/doc/refcard:$(TEXINPUTS):" \
 	$(TEX) $(<F) $(AM_V_texidevnull)
 
-$(refcard_PDF) : %.pdf : %.tex doc/refcard/$(octave_dirstamp)
+$(refcard_PDF) : %.pdf : %.tex | doc/refcard/$(octave_dirstamp)
 	-$(AM_V_PDFTEX)cd $(@D) && \
 	TEXINPUTS="$(abs_top_srcdir)/doc/refcard:$(TEXINPUTS):" \
 	$(PDFTEX) $(<F) $(AM_V_texidevnull)
@@ -517,7 +517,7 @@ doc/interpreter/undocumented_list:
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 
-%.scheck: %.texi doc/interpreter/$(octave_dirstamp)
+%.scheck: %.texi | doc/interpreter/$(octave_dirstamp)
 	$(srcdir)/doc/interpreter/doccheck/spellcheck $< > $@-t
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@

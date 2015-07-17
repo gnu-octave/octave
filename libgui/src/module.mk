@@ -70,7 +70,7 @@ OCTAVE_GUI_SRC_M_EDITOR_MOC = \
   libgui/src/m-editor/moc-octave-qscintilla.cc \
   libgui/src/m-editor/moc-octave-txt-lexer.cc
 
-$(OCTAVE_GUI_SRC_M_EDITOR_MOC): libgui/src/m-editor/$(octave_dirstamp)
+$(OCTAVE_GUI_SRC_M_EDITOR_MOC): | libgui/src/m-editor/$(octave_dirstamp)
 
 octave_gui_MOC += \
   $(OCTAVE_GUI_SRC_M_EDITOR_MOC)
@@ -108,7 +108,7 @@ octave_gui_MOC += \
 
 octave_gui_RC = libgui/src/qrc-resource.cc
 
-$(octave_gui_RC): libgui/src/$(octave_dirstamp)
+$(octave_gui_RC): | libgui/src/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
   libgui/src/$(octave_dirstamp)
@@ -118,7 +118,7 @@ octave_gui_UI = \
 
 octave_gui_UI_H = $(patsubst libgui/src/%.ui, libgui/src/ui-%.h, $(octave_gui_UI))
 
-$(octave_gui_UI_H): libgui/src/$(octave_dirstamp)
+$(octave_gui_UI_H): | libgui/src/$(octave_dirstamp)
 
 BUILT_SOURCES += $(octave_gui_UI_H)
 

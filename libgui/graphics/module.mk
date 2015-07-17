@@ -19,7 +19,7 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   libgui/graphics/moc-ToggleTool.cc \
   libgui/graphics/moc-ToolBar.cc
 
-$(OCTAVE_GUI_GRAPHICS_MOC): libgui/graphics/$(octave_dirstamp)
+$(OCTAVE_GUI_GRAPHICS_MOC): | libgui/graphics/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
   libgui/graphics/$(octave_dirstamp)
@@ -32,13 +32,13 @@ octave_gui_graphics_UI = \
 
 octave_gui_graphics_UI_H = $(patsubst libgui/graphics/%.ui, libgui/graphics/ui-%.h, $(octave_gui_graphics_UI))
 
-$(octave_gui_graphics_UI_H): libgui/graphics/$(octave_dirstamp)
+$(octave_gui_graphics_UI_H): | libgui/graphics/$(octave_dirstamp)
 
 BUILT_SOURCES += $(octave_gui_graphics_UI_H)
 
 octave_gui_graphics_RC = libgui/graphics/qrc-qthandles.cc
 
-$(octave_gui_graphics_RC): libgui/graphics/$(octave_dirstamp)
+$(octave_gui_graphics_RC): | libgui/graphics/$(octave_dirstamp)
 
 noinst_HEADERS += \
   libgui/graphics/__init_qt__.h \

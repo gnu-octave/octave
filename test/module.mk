@@ -57,15 +57,15 @@ ALL_LOCAL_TARGETS += test/.gdbinit
 test/.gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)
 
-check-local: $(GENERATED_TEST_FILES) $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
+check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
 	cd test && ../run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
 
 if AMCOND_HAVE_LLVM
-check-jit: $(GENERATED_TEST_FILES) $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
+check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
 	cd test && ../run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
 endif
 
-test/sparse.tst: test/build-sparse-tests.sh test/$(octave_dirstamp)
+test/sparse.tst: test/build-sparse-tests.sh | test/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(srcdir)/test/build-sparse-tests.sh > $@-t && \
 	mv $@-t $@
@@ -78,7 +78,7 @@ GENERATED_BC_OVERLOADS_FILES := \
 
 $(GENERATED_BC_OVERLOADS_FILES): test/bc-overload-tests.stamp
 
-test/bc-overload-tests.stamp: test/build-bc-overload-tests.sh test/bc-overloads-expected test/$(octave_dirstamp)
+test/bc-overload-tests.stamp: test/build-bc-overload-tests.sh test/bc-overloads-expected | test/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
 	$(srcdir)/test/build-bc-overload-tests.sh test $(srcdir)/test/bc-overloads-expected && \
 	touch $@

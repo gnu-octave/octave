@@ -29,7 +29,7 @@ libgui_qterminal_libqterminal_la_MOC =
 OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_MOC = \
   libgui/qterminal/libqterminal/moc-QTerminal.cc
 
-$(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_MOC): libgui/qterminal/libqterminal/$(octave_dirstamp)
+$(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_MOC): | libgui/qterminal/libqterminal/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
   libgui/qterminal/libqterminal/$(octave_dirstamp)
@@ -62,7 +62,7 @@ OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_WIN32_MOC = \
 libgui_qterminal_libqterminal_la_MOC += \
   $(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_WIN32_MOC)
 
-$(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_WIN32_MOC): libgui/qterminal/libqterminal/win32/$(octave_dirstamp)
+$(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_WIN32_MOC): | libgui/qterminal/libqterminal/win32/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
   libgui/qterminal/libqterminal/win32/$(octave_dirstamp)
@@ -105,7 +105,7 @@ OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC = \
 libgui_qterminal_libqterminal_la_MOC += \
   $(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC)
 
-$(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC): libgui/qterminal/libqterminal/unix/$(octave_dirstamp)
+$(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC): | libgui/qterminal/libqterminal/unix/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
   libgui/qterminal/libqterminal/unix/$(octave_dirstamp)

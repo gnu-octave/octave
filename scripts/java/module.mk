@@ -51,7 +51,7 @@ scripts_DISTCLEANFILES += $(addprefix $(abs_top_builddir), $(java_JAVA_IMAGES))
 
 srcdir_scripts_java_JAVA_IMAGES = $(addprefix $(srcdir)/scripts/java/, $(JAVA_IMAGES))
 
-$(scripts_java_JAVA_CLASSES) : %.class : %.java scripts/java/$(octave_dirstamp)
+$(scripts_java_JAVA_CLASSES) : %.class : %.java | scripts/java/$(octave_dirstamp)
 	$(AM_V_GEN)$(MKDIR_P) scripts/java/$(org_octave_dir) && \
 	( cd $(srcdir)/scripts/java; "$(JAVAC)" -source 1.3 -target 1.3 -d $(abs_top_builddir)/scripts/java $(org_octave_dir)/$(<F) )
 

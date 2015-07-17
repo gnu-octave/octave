@@ -162,7 +162,7 @@ OCTAVE_CROSS_TOOLS += src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT)
 src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): src/$(host_triplet)-mkoctfile.cc
 	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) src/$(host_triplet)-mkoctfile.cc
 
-src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc Makefile src/$(octave_dirstamp)
+src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_cross_config_vals)
 
 ## Building cross octave-config.
@@ -172,7 +172,7 @@ OCTAVE_CROSS_TOOLS += src/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 src/$(host_triplet)-octave-config$(BUILD_EXEEXT): src/$(host_triplet)-octave-config.cc
 	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) src/$(host_triplet)-octave-config.cc
 
-src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc Makefile src/$(octave_dirstamp)
+src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_default_vals)
 
 mostlyclean-local:
@@ -180,17 +180,17 @@ mostlyclean-local:
 
 endif
 
-src/octave-config.cc: src/octave-config.in.cc Makefile src/$(octave_dirstamp)
+src/octave-config.cc: src/octave-config.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_default_vals)
 
-src/mkoctfile.cc: src/mkoctfile.in.cc Makefile src/$(octave_dirstamp)
+src/mkoctfile.cc: src/mkoctfile.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_config_vals)
 
 ## main.cc must depend on Makefile.  Calling configure may change
 ## default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 
-src/main.cc: src/main.in.cc Makefile src/$(octave_dirstamp)
+src/main.cc: src/main.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_default_vals)
 
 ALL_LOCAL_TARGETS += $(OCTAVE_VERSION_LINKS) $(OCTAVE_CROSS_TOOLS)

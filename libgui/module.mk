@@ -68,7 +68,7 @@ octetc_DATA += libgui/default-qt-settings
 
 octlocale_DATA += $(LOCALES)
 
-libgui/default-qt-settings: libgui/default-qt-settings.in libgui/$(octave_dirstamp)
+libgui/default-qt-settings: libgui/default-qt-settings.in | libgui/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_qt_settings)
 
 DIRSTAMP_FILES += \
@@ -106,7 +106,7 @@ am__v_lrelease_ = $(am__v_lrelease_$(AM_DEFAULT_VERBOSITY))
 am__v_lrelease_0 = -silent
 am__v_lrelease_1 =
 
-%.qm: %.ts libgui/languages/$(octave_dirstamp)
+%.qm: %.ts | libgui/languages/$(octave_dirstamp)
 	$(AM_V_GEN)$(LRELEASE) $(AM_V_lrelease) -qm $@ $<
 
 DIRSTAMP_FILES += \

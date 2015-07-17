@@ -1,3 +1,9 @@
+libinterp_EXTRA_DIST =
+
+libinterp_CLEANFILES =
+libinterp_DISTCLEANFILES =
+libinterp_MAINTAINERCLEANFILES =
+
 ## Search local directories before those specified by the user.
 libinterp_liboctinterp_la_CPPFLAGS = \
   @OCTINTERP_DLL_DEFS@ \
@@ -81,7 +87,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   $(ALL_DEF_FILES) \
   libinterp/builtins.cc
 
-EXTRA_DIST += \
+libinterp_EXTRA_DIST += \
   libinterp/DOCSTRINGS \
   libinterp/config-features.sh \
   libinterp/find-defun-files.sh \
@@ -357,21 +363,36 @@ uninstall-built-in-docstrings:
 endif
 .PHONY: install-built-in-docstrings uninstall-built-in-docstrings
 
-CLEANFILES += \
+EXTRA_DIST += $(libinterp_EXTRA_DIST)
+
+libinterp_CLEANFILES += \
   $(DLDFCN_PKG_ADD_FILE) \
   libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/oct-tex-parser.output \
   libinterp/parse-tree/oct-parse.output
 
-DISTCLEANFILES += \
+libinterp_DISTCLEANFILES += \
   libinterp/.DOCSTRINGS \
   libinterp/DOCSTRINGS \
   $(LIBINTERP_BUILT_NODISTFILES) \
   $(OCT_FILES) \
   $(LIBINTERP_TST_FILES)
 
-MAINTAINERCLEANFILES += \
+libinterp_MAINTAINERCLEANFILES += \
   $(LIBINTERP_BUILT_DISTFILES)
 
 BUILT_DISTFILES += $(LIBINTERP_BUILT_DISTFILES)
 BUILT_NODISTFILES += $(LIBINTERP_BUILT_NODISTFILES)
+
+CLEANFILES += $(libinterp_CLEANFILES)
+DISTCLEANFILES += $(libinterp_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(libinterp_MAINTAINERCLEANFILES)
+
+libinterp-clean:
+	rm -f $(libinterp_CLEANFILES)
+
+libinterp-distclean: libinterp-clean
+	rm -f $(libinterp_DISTCLEANFILES)
+
+libinterp-maintainer-clean: libinterp-distclean
+	rm -f $(libinterp_MAINTAINERCLEANFILES)

@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/amos/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/amos/cacai.f \
   liboctave/cruft/amos/cacon.f \

@@ -1,5 +1,3 @@
-EXTRA_DIST += libinterp/operators/module.mk
-
 LIBINTERP_OPERATORS_SRC = \
   libinterp/operators/op-b-b.cc \
   libinterp/operators/op-b-bm.cc \

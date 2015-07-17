@@ -1,18 +1,3 @@
-EXTRA_DIST += \
-  liboctave/operators/module.mk \
-  liboctave/operators/config-ops.sh \
-  liboctave/operators/mk-ops.awk \
-  liboctave/operators/mx-op-inc.mk \
-  liboctave/operators/mx-op-src.mk \
-  liboctave/operators/mx-ops \
-  liboctave/operators/smx-op-inc.mk \
-  liboctave/operators/smx-op-src.mk \
-  liboctave/operators/sparse-mk-ops.awk \
-  liboctave/operators/smx-ops \
-  liboctave/operators/vx-op-inc.mk \
-  liboctave/operators/vx-op-src.mk \
-  liboctave/operators/vx-ops
-
 include liboctave/operators/vx-op-inc.mk
 include liboctave/operators/mx-op-inc.mk
 include liboctave/operators/smx-op-inc.mk
@@ -66,8 +51,6 @@ liboctave/operators/mx-ops.h : liboctave/operators/mk-ops.awk liboctave/operator
 	$(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(OP_SRCDIR)/mx-ops > $@-t && \
 	mv $@-t $@
 
-DISTCLEANFILES += $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
-
 noinst_LTLIBRARIES += liboctave/operators/liboperators.la
 
 liboctave_operators_liboperators_la_SOURCES = $(LIBOCTAVE_OPERATORS_SRC)
@@ -81,3 +64,13 @@ liboctave_operators_liboperators_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
 liboctave_operators_liboperators_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 liboctave_liboctave_la_LIBADD += liboctave/operators/liboperators.la
+
+liboctave_EXTRA_DIST += \
+  liboctave/operators/config-ops.sh \
+  liboctave/operators/mk-ops.awk \
+  liboctave/operators/mx-ops \
+  liboctave/operators/sparse-mk-ops.awk \
+  liboctave/operators/smx-ops \
+  liboctave/operators/vx-ops
+
+liboctave_DISTCLEANFILES += $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)

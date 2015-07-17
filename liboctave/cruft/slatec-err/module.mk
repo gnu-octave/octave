@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/slatec-err/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/slatec-err/fdump.f \
   liboctave/cruft/slatec-err/ixsav.f \

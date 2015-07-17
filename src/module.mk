@@ -1,3 +1,9 @@
+src_EXTRA_DIST =
+
+src_CLEANFILES =
+src_DISTCLEANFILES =
+src_MAINTAINERCLEANFILES =
+
 ## Search local directories before those specified by the user.
 
 SRC_DIR_CPPFLAGS = \
@@ -218,5 +224,17 @@ src/octave-gui-$(version)$(EXEEXT): src/octave-gui$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
 	cd $(@D) && $(LN_S) $(<F) $(@F)
 
-CLEANFILES += \
-  $(OCTAVE_VERSION_LINKS)
+src_CLEANFILES += $(OCTAVE_VERSION_LINKS)
+
+CLEANFILES += $(src_CLEANFILES)
+DISTCLEANFILES += $(src_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(src_MAINTAINERCLEANFILES)
+
+src-clean:
+	rm -f $(src_CLEANFILES)
+
+src-distclean: src-clean
+	rm -f $(src_DISTCLEANFILES)
+
+src-maintainer-clean: src-distclean
+	rm -f $(src_MAINTAINERCLEANFILES)

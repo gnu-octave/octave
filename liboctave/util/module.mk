@@ -1,6 +1,3 @@
-EXTRA_DIST += \
-  liboctave/util/module.mk
-
 UTIL_INC = \
   liboctave/util/action-container.h \
   liboctave/util/base-list.h \

@@ -1,6 +1,3 @@
-EXTRA_DIST += \
-  libgui/qterminal-module.mk
-
 noinst_HEADERS += \
   libgui/qterminal/libqterminal/QTerminal.h \
   libgui/qterminal/libqterminal/win32/QTerminalColors.h \
@@ -117,4 +114,4 @@ endif
 
 noinst_LTLIBRARIES += libgui/qterminal/libqterminal.la
 
-CLEANFILES += $(libgui_qterminal_libqterminal_la_MOC)
+libgui_CLEANFILES += $(libgui_qterminal_libqterminal_la_MOC)

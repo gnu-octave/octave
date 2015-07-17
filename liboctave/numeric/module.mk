@@ -1,7 +1,3 @@
-EXTRA_DIST += \
-  liboctave/numeric/module.mk \
-  $(LIBOCTAVE_OPT_IN)
-
 LIBOCTAVE_OPT_INC = \
   liboctave/numeric/DASPK-opts.h \
   liboctave/numeric/DASRT-opts.h \
@@ -190,3 +186,6 @@ liboctave_numeric_libnumeric_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
 liboctave_numeric_libnumeric_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 liboctave_liboctave_la_LIBADD += liboctave/numeric/libnumeric.la
+
+liboctave_EXTRA_DIST += $(LIBOCTAVE_OPT_IN)
+

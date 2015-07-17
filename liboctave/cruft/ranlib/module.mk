@@ -1,14 +1,3 @@
-EXTRA_DIST += \
-  liboctave/cruft/ranlib/module.mk \
-  liboctave/cruft/ranlib/Basegen.doc \
-  liboctave/cruft/ranlib/HOWTOGET \
-  liboctave/cruft/ranlib/README \
-  liboctave/cruft/ranlib/randlib.chs \
-  liboctave/cruft/ranlib/randlib.fdoc \
-  liboctave/cruft/ranlib/tstbot.for \
-  liboctave/cruft/ranlib/tstgmn.for \
-  liboctave/cruft/ranlib/tstmid.for
-
 RANLIB_SRC = \
   liboctave/cruft/ranlib/advnst.f \
   liboctave/cruft/ranlib/genbet.f \
@@ -65,3 +54,13 @@ liboctave/cruft/ranlib/ranlib.def: $(RANLIB_SRC) liboctave/cruft/mkf77def
 	$(AM_V_GEN)$(gen-ranlib-def)
 
 liboctave_liboctave_la_LIBADD += liboctave/cruft/ranlib/libranlib.la
+
+liboctave_EXTRA_DIST += \
+  liboctave/cruft/ranlib/Basegen.doc \
+  liboctave/cruft/ranlib/HOWTOGET \
+  liboctave/cruft/ranlib/README \
+  liboctave/cruft/ranlib/randlib.chs \
+  liboctave/cruft/ranlib/randlib.fdoc \
+  liboctave/cruft/ranlib/tstbot.for \
+  liboctave/cruft/ranlib/tstgmn.for \
+  liboctave/cruft/ranlib/tstmid.for

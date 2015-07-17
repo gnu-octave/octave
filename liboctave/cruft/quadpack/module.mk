@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/quadpack/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/quadpack/dqagi.f \
   liboctave/cruft/quadpack/dqagie.f \

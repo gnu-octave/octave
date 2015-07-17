@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/odepack/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/odepack/cfode.f \
   liboctave/cruft/odepack/dlsode.f \

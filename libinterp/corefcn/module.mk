@@ -1,13 +1,3 @@
-EXTRA_DIST += \
-  libinterp/corefcn/module.mk \
-  libinterp/corefcn/defaults.in.h \
-  libinterp/corefcn/graphics.in.h \
-  libinterp/corefcn/mxarray.in.h \
-  libinterp/corefcn/oct-errno.in.cc \
-  libinterp/corefcn/oct-tex-lexer.in.ll \
-  libinterp/corefcn/oct-tex-parser.in.yy \
-  libinterp/corefcn/oct-tex-symbols.in
-
 ## Options functions for Fortran packages like LSODE, DASPK.
 ## These are generated automagically by configure and Perl.
 OPT_HANDLERS = \
@@ -365,3 +355,13 @@ libinterp_corefcn_libtex_parser_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLA
 
 libinterp_corefcn_libtex_parser_la_CXXFLAGS = \
   $(filter-out -Wold-style-cast, $(libinterp_corefcn_libcorefcn_la_CXXFLAGS))
+
+libinterp_EXTRA_DIST += \
+  libinterp/corefcn/defaults.in.h \
+  libinterp/corefcn/graphics.in.h \
+  libinterp/corefcn/mxarray.in.h \
+  libinterp/corefcn/oct-errno.in.cc \
+  libinterp/corefcn/oct-tex-lexer.in.ll \
+  libinterp/corefcn/oct-tex-parser.in.yy \
+  libinterp/corefcn/oct-tex-symbols.in
+

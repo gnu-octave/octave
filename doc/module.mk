@@ -1,3 +1,9 @@
+doc_EXTRA_DIST =
+
+doc_CLEANFILES =
+doc_DISTCLEANFILES =
+doc_MAINTAINERCLEANFILES =
+
 TEXINFO_TEX = doc/texinfo.tex
 
 TEXINPUTS := $(PATH_SEPARATOR)$(top_srcdir)/doc/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(top_builddir)/doc/interpreter$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
@@ -28,11 +34,11 @@ if AMCOND_BUILD_DOCS
 ## also depends on the DVI file and somehow the rules are invoked
 ## twice.  Is that a bug in automake or make or what?
 
-EXTRA_DIST += \
+doc_EXTRA_DIST += \
   doc/texinfo.tex \
   doc/texmf.cnf
 
-EXTRA_DIST += \
+doc_EXTRA_DIST += \
   doc/doxyhtml/Doxyfile.in \
   doc/doxyhtml/README
 
@@ -278,7 +284,7 @@ DOC_TARGETS += \
   $(OCTAVE_HTML_STAMP) \
   $(HTMLDIR_IMAGES)
 
-EXTRA_DIST += \
+doc_EXTRA_DIST += \
   $(BUILT_OCTAVE_TEXI_SRC) \
   $(srcdir)/doc/interpreter/octave.info \
   doc/interpreter/TODO \
@@ -349,7 +355,7 @@ INSTALL.OCTAVE: doc/interpreter/install.texi doc/interpreter/$(octave_dirstamp)
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
-EXTRA_DIST += \
+doc_EXTRA_DIST += \
   doc/interpreter/config-images.sh \
   doc/interpreter/contributors.in \
   doc/interpreter/doc-cache \
@@ -368,17 +374,14 @@ EXTRA_DIST += \
   $(LOGOS) \
   $(TXI_SRC)
 
-interpreter-clean:
+doc-interpreter-clean:
 	rm -rf t2d_cache
 
-interpreter-maintainer-clean:
-	rm -f $(BUILT_OCTAVE_TEXI_SRC)
-
-DISTCLEANFILES += \
-  $(BUILT_TEXINFOS) \
+doc_DISTCLEANFILES += \
+  $(BUILT_OCTAVE_TEXI_SRC) \
   $(OCTAVE_HTML_STAMP)
 
-MAINTAINERCLEANFILES += \
+doc_MAINTAINERCLEANFILES += \
   AUTHORS \
   $(BUILT_DOC_IMAGES) \
   doc/interpreter/doc-cache
@@ -415,7 +418,7 @@ DOC_TARGETS += \
   doc/liboctave/liboctave.pdf \
   doc/liboctave/liboctave.html
 
-EXTRA_DIST += \
+doc_EXTRA_DIST += \
   $(liboctave_TEXINFOS) \
   $(srcdir)/doc/liboctave/liboctave.info \
   doc/liboctave/liboctave.dvi \
@@ -428,7 +431,7 @@ EXTRA_DIST += \
 ## the DVI and PDF builds are forced to run serially through a Makefile rule.
 #doc/liboctave/liboctave.pdf: doc/liboctave/liboctave.dvi
 
-liboctave-clean:
+doc-liboctave-clean:
 	rm -rf doc/liboctave/t2d_cache
 
 DIRSTAMP_FILES += doc/liboctave/$(octave_dirstamp)
@@ -477,23 +480,7 @@ doc/refcard/refcard-letter.dvi: doc/refcard/refcard.tex
 doc/refcard/refcard-letter.ps: doc/refcard/refcard-letter.dvi
 	-$(AM_V_DVIPS)$(DVIPS) $(AM_V_texinfo) -T 11in,8.5in -o $@ $<
 
-EXTRA_DIST += \
-  $(refcard_FORMATTED) \
-  $(refcard_TEX_SRC)
-
-CLEANFILES += \
-  doc/refcard/refcard-a4.log \
-  doc/refcard/refcard-legal.log \
-  doc/refcard/refcard-letter.log
-
-MAINTAINERCLEANFILES += \
-  $(refcard_FORMATTED)
-
 DIRSTAMP_FILES += doc/refcard/$(octave_dirstamp)
-
-doc-clean: interpreter-clean
-
-doc-maintainer-clean: doxyhtml-maintainer-clean interpreter-maintainer-clean
 
 $(srcdir)/doc/interpreter/images.mk: $(srcdir)/doc/interpreter/config-images.sh $(srcdir)/doc/interpreter/images.awk $(srcdir)/doc/interpreter/images
 	$(srcdir)/doc/interpreter/config-images.sh $(top_srcdir)
@@ -507,6 +494,18 @@ $(refcard_PDF) : %.pdf : %.tex doc/refcard/$(octave_dirstamp)
 	-$(AM_V_PDFTEX)cd $(@D) && \
 	TEXINPUTS="$(abs_top_srcdir)/doc/refcard:$(TEXINPUTS):" \
 	$(PDFTEX) $(<F) $(AM_V_texidevnull)
+
+doc_EXTRA_DIST += \
+  $(refcard_FORMATTED) \
+  $(refcard_TEX_SRC)
+
+doc_CLEANFILES += \
+  doc/refcard/refcard-a4.log \
+  doc/refcard/refcard-legal.log \
+  doc/refcard/refcard-letter.log
+
+doc_MAINTAINERCLEANFILES += \
+  $(refcard_FORMATTED)
 
 endif
 
@@ -533,3 +532,18 @@ spellcheck: $(SPELLCHECK_FILES)
 		echo "Spellcheck passed"; \
 	fi
 .PHONY: spellcheck
+
+EXTRA_DIST += $(doc_EXTRA_DIST)
+
+CLEANFILES += $(doc_CLEANFILES)
+DISTCLEANFILES += $(doc_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(doc_MAINTAINERCLEANFILES)
+
+doc-clean:
+	rm -f $(doc_CLEANFILES)
+
+doc-distclean: doc-clean
+	rm -f $(doc_DISTCLEANFILES)
+
+doc-maintainer-clean: doc-distclean
+	rm -f $(doc_MAINTAINERCLEANFILES)

@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/blas-xtra/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/blas-xtra/ddot3.f \
   liboctave/cruft/blas-xtra/zdotc3.f \

@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/daspk/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/daspk/datv.f \
   liboctave/cruft/daspk/dcnst0.f \

@@ -1,5 +1,11 @@
 if AMCOND_BUILD_GUI
 
+libgui_EXTRA_DIST =
+
+libgui_CLEANFILES =
+libgui_DISTCLEANFILES =
+libgui_MAINTAINERCLEANFILES =
+
 MOC_CPPFLAGS =
 
 ## Fix for bug #42839 where -mieee CFLAG option is added to CPPFLAGS by gnulib.
@@ -25,8 +31,6 @@ TRANSLATIONS = \
   libgui/languages/zh_CN.ts
 
 LOCALES = $(patsubst libgui/languages/%.ts, libgui/languages/%.qm, $(TRANSLATIONS))
-
-EXTRA_DIST += libgui/default-qt-settings.in $(TRANSLATIONS)
 
 include libgui/src/module.mk
 include libgui/graphics/module.mk
@@ -108,8 +112,24 @@ am__v_lrelease_1 =
 DIRSTAMP_FILES += \
   libgui/languages/$(octave_dirstamp)
 
-DISTCLEANFILES += \
+libgui_EXTRA_DIST += \
+  $(TRANSLATIONS) \
+  libgui/default-qt-settings.in
+
+libgui_DISTCLEANFILES += \
   libgui/default-qt-settings \
   $(LOCALES)
 
+CLEANFILES += $(libgui_CLEANFILES)
+DISTCLEANFILES += $(libgui_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(libgui_MAINTAINERCLEANFILES)
+
+libgui-clean:
+	rm -f $(libgui_CLEANFILES)
+
+libgui-distclean: libgui-clean
+	rm -f $(libgui_DISTCLEANFILES)
+
+libgui-maintainer-clean: libgui-distclean
+	rm -f $(libgui_MAINTAINERCLEANFILES)
 endif

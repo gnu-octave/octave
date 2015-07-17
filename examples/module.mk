@@ -1,3 +1,9 @@
+examples_EXTRA_DIST =
+
+examples_CLEANFILES =
+examples_DISTCLEANFILES =
+examples_MAINTAINERCLEANFILES =
+
 examples_data_SRC = \
    examples/data/penny.mat
 
@@ -55,8 +61,23 @@ examples_code_SRC = \
   examples/code/structdemo.cc \
   examples/code/unwinddemo.cc
 
-EXTRA_DIST += \
+examples_EXTRA_DIST += \
   $(examples_data_SRC) \
   $(examples_code_SRC) \
   examples/code/COPYING \
   examples/module.mk
+
+EXTRA_DIST += $(examples_EXTRA_DIST)
+
+CLEANFILES += $(examples_CLEANFILES)
+DISTCLEANFILES += $(examples_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(examples_MAINTAINERCLEANFILES)
+
+examples-clean:
+	rm -f $(examples_CLEANFILES)
+
+examples-distclean: examples-clean
+	rm -f $(examples_DISTCLEANFILES)
+
+examples-maintainer-clean: examples-distclean
+	rm -f $(examples_MAINTAINERCLEANFILES)

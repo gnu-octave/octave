@@ -1,7 +1,3 @@
-EXTRA_DIST += \
-  liboctave/cruft/misc/module.mk \
-  liboctave/cruft/misc/d1mach-tst.for
-
 CRUFT_SOURCES += \
   liboctave/cruft/misc/blaswrap.c \
   liboctave/cruft/misc/cquit.c \
@@ -17,3 +13,6 @@ CRUFT_INC += \
   liboctave/cruft/misc/f77-fcn.h \
   liboctave/cruft/misc/lo-error.h \
   liboctave/cruft/misc/quit.h
+
+liboctave_EXTRA_DIST += \
+  liboctave/cruft/misc/d1mach-tst.for

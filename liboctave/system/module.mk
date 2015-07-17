@@ -1,6 +1,3 @@
-EXTRA_DIST += \
-  liboctave/system/module.mk
-
 SYSTEM_INC = \
   liboctave/system/dir-ops.h \
   liboctave/system/file-ops.h \

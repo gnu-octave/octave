@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/dassl/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/dassl/ddaini.f \
   liboctave/cruft/dassl/ddajac.f \

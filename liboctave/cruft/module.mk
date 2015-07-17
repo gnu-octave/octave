@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/mkf77def.in
-
 nodist_liboctave_cruft_libcruft_la_SOURCES =
 
 liboctave_cruft_libcruft_la_FFLAGS = $(F77_INTEGER_8_FLAG)
@@ -36,7 +34,7 @@ endef
 liboctave/cruft/cruft.def: $(liboctave_cruft_libcruft_la_SOURCES) liboctave/cruft/mkf77def
 	$(AM_V_GEN)$(gen-cruft-def)
 
-DISTCLEANFILES += \
+liboctave_DISTCLEANFILES += \
   liboctave/cruft/cruft.def \
   liboctave/cruft/mkf77def \
   liboctave/cruft/ranlib/ranlib.def \
@@ -53,3 +51,5 @@ liboctave_cruft_libcruft_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
 liboctave_cruft_libcruft_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 liboctave_liboctave_la_LIBADD += liboctave/cruft/libcruft.la
+
+liboctave_EXTRA_DIST += liboctave/cruft/mkf77def.in

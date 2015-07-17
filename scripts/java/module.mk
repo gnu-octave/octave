@@ -47,6 +47,8 @@ scripts_java_JAVA_CLASSES = $(addprefix scripts/java/, $(JAVA_CLASSES))
 
 scripts_java_JAVA_IMAGES = $(addprefix scripts/java/, $(JAVA_IMAGES))
 
+scripts_DISTCLEANFILES += $(addprefix $(abs_top_builddir), $(java_JAVA_IMAGES))
+
 srcdir_scripts_java_JAVA_IMAGES = $(addprefix $(srcdir)/scripts/java/, $(JAVA_IMAGES))
 
 $(scripts_java_JAVA_CLASSES) : %.class : %.java scripts/java/$(octave_dirstamp)
@@ -68,17 +70,6 @@ scripts/java/octave.jar: scripts/java/images.stamp $(scripts_java_JAVA_CLASSES)
 	mv $@-t $@
 endif
 
-EXTRA_DIST += \
-  $(scripts_java_JAR_FILES) \
-  $(scripts_java_JAVA_SRC) \
-  $(scripts_java_JAVA_IMAGES)
-
-CLEANFILES += \
-  $(scripts_java_JAR_FILES) \
-  $(scripts_java_JAVA_CLASSES)
-
-DISTCLEANFILES += scripts/java/images.stamp
-
 scripts_javadir = $(fcnfiledir)/java
 
 scripts_java_DATA = \
@@ -90,3 +81,14 @@ FCN_FILES += $(scripts_java_FCN_FILES)
 PKG_ADD_FILES += scripts/java/PKG_ADD
 
 DIRSTAMP_FILES += scripts/java/$(octave_dirstamp)
+
+scripts_EXTRA_DIST += \
+  $(scripts_java_JAR_FILES) \
+  $(scripts_java_JAVA_SRC) \
+  $(scripts_java_JAVA_IMAGES)
+
+scripts_CLEANFILES += \
+  $(scripts_java_JAR_FILES) \
+  $(scripts_java_JAVA_CLASSES)
+
+scripts_DISTCLEANFILES += scripts/java/images.stamp

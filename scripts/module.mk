@@ -1,3 +1,9 @@
+scripts_EXTRA_DIST =
+
+scripts_CLEANFILES =
+scripts_DISTCLEANFILES =
+scripts_MAINTAINERCLEANFILES =
+
 ## FIXME -- including scripts/@ftp/module.mk fails.  Is that an automake bug?
 
 FCN_FILE_DIRS += scripts/@ftp
@@ -201,7 +207,7 @@ scripts-dist-hook:
 	@echo "Packaging distribution requires Java." ; exit 1;
 endif
 
-EXTRA_DIST += \
+scripts_EXTRA_DIST += \
   $(SCRIPTS_IMAGES) \
   $(FCN_FILES) \
   $(GEN_FCN_FILES_IN) \
@@ -209,14 +215,24 @@ EXTRA_DIST += \
   scripts/mkdoc.pl \
   scripts/mk-pkg-add
 
-DISTCLEANFILES += \
+EXTRA_DIST += $(scripts_EXTRA_DIST)
+
+scripts_DISTCLEANFILES += \
   scripts/.DOCSTRINGS \
   scripts/DOCSTRINGS \
   $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \
   $(GEN_FCN_FILES)
 
-scripts-distclean:
-	if [ "x$(srcdir)" != "x." ]; then \
-	  rm -f $(java_JAVA_IMAGES); \
-	fi
+CLEANFILES += $(scripts_CLEANFILES)
+DISTCLEANFILES += $(scripts_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(scripts_MAINTAINERCLEANFILES)
+
+scripts-clean:
+	rm -f $(scripts_CLEANFILES)
+
+scripts-distclean: scripts-clean
+	rm -f $(scripts_DISTCLEANFILES)
+
+scripts-maintainer-clean: scripts-distclean
+	rm -f $(scripts_MAINTAINERCLEANFILES)

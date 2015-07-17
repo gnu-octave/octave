@@ -1,9 +1,3 @@
-EXTRA_DIST += \
-  libgui/src/module.mk \
-  libgui/src/resource.qrc \
-  $(octave_gui_UI) \
-  $(octave_gui_ICONS)
-
 octave_gui_ICONS = \
   libgui/src/icons/applications-system.png \
   libgui/src/icons/bp-next.png \
@@ -220,7 +214,12 @@ libgui_src_libgui_src_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 noinst_LTLIBRARIES += libgui/src/libgui-src.la
 
-CLEANFILES += \
+libgui_EXTRA_DIST += \
+  libgui/src/resource.qrc \
+  $(octave_gui_UI) \
+  $(octave_gui_ICONS)
+
+libgui_CLEANFILES += \
   $(octave_gui_MOC) \
   $(octave_gui_UI_H) \
   $(octave_gui_RC)

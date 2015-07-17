@@ -1,5 +1,3 @@
-EXTRA_DIST += liboctave/cruft/lapack-xtra/module.mk
-
 CRUFT_SOURCES += \
   liboctave/cruft/lapack-xtra/xclange.f \
   liboctave/cruft/lapack-xtra/xdlamch.f \

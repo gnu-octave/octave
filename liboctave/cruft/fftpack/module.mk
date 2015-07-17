@@ -1,7 +1,3 @@
-EXTRA_DIST += \
-  liboctave/cruft/fftpack/module.mk \
-  liboctave/cruft/fftpack/fftpack.doc
-
 FFTPACK_SRC = \
   liboctave/cruft/fftpack/cfftb.f \
   liboctave/cruft/fftpack/cfftb1.f \
@@ -37,7 +33,10 @@ FFTPACK_SRC = \
   liboctave/cruft/fftpack/zpassf5.f
 
 if AMCOND_HAVE_FFTW
-  EXTRA_DIST += $(FFTPACK_SRC)
+  liboctave_EXTRA_DIST += $(FFTPACK_SRC)
 else
   CRUFT_SOURCES += $(FFTPACK_SRC)
 endif
+
+liboctave_EXTRA_DIST += \
+  liboctave/cruft/fftpack/fftpack.doc

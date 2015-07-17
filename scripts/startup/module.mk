@@ -20,8 +20,8 @@ scripts_startup_DATA = $(scripts_startup_FCN_FILES)
 
 FCN_FILES += $(scripts_startup_FCN_FILES)
 
-EXTRA_DIST += $(STARTUP_FILE_SRC)
-
 PKG_ADD_FILES += scripts/startup/PKG_ADD
 
 DIRSTAMP_FILES += scripts/startup/$(octave_dirstamp)
+
+scripts_EXTRA_DIST += $(STARTUP_FILE_SRC)

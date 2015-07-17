@@ -1,14 +1,3 @@
-EXTRA_DIST += \
-  libgui/graphics/module.mk \
-  libgui/graphics/qthandles.qrc \
-  libgui/graphics/images/README \
-  libgui/graphics/images/pan.png \
-  libgui/graphics/images/rotate.png \
-  libgui/graphics/images/select.png \
-  libgui/graphics/images/zoom-in.png \
-  libgui/graphics/images/zoom-out.png \
-  $(octave_gui_graphics_UI)
-
 OCTAVE_GUI_GRAPHICS_MOC = \
   libgui/graphics/moc-annotation-dialog.cc \
   libgui/graphics/moc-Backend.cc \
@@ -158,7 +147,17 @@ libgui_graphics_libgui_graphics_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 noinst_LTLIBRARIES += libgui/graphics/libgui-graphics.la
 
-CLEANFILES += \
+libgui_EXTRA_DIST += \
+  libgui/graphics/qthandles.qrc \
+  libgui/graphics/images/README \
+  libgui/graphics/images/pan.png \
+  libgui/graphics/images/rotate.png \
+  libgui/graphics/images/select.png \
+  libgui/graphics/images/zoom-in.png \
+  libgui/graphics/images/zoom-out.png \
+  $(octave_gui_graphics_UI)
+
+libgui_CLEANFILES += \
   $(octave_gui_graphics_MOC) \
   $(octave_gui_graphics_RC) \
   $(octave_gui_graphics_UI_H)

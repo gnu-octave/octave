@@ -1,8 +1,3 @@
-EXTRA_DIST += \
-  liboctave/cruft/slatec-fn/module.mk \
-  liboctave/cruft/slatec-fn/derfc.in.f \
-  liboctave/cruft/slatec-fn/erfc.in.f
-
 CRUFT_SOURCES += \
   liboctave/cruft/slatec-fn/albeta.f \
   liboctave/cruft/slatec-fn/alngam.f \
@@ -87,4 +82,8 @@ liboctave/cruft/slatec-fn/erfc.f: liboctave/cruft/slatec-fn/erfc.in.f Makefile
 
 liboctave/cruft/slatec-fn/derfc.f: liboctave/cruft/slatec-fn/derfc.in.f Makefile
 	$(AM_V_GEN)$(do-subst-isnan-macro)
+
+liboctave_EXTRA_DIST += \
+  liboctave/cruft/slatec-fn/derfc.in.f \
+  liboctave/cruft/slatec-fn/erfc.in.f
 

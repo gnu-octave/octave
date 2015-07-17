@@ -1,8 +1,3 @@
-EXTRA_DIST += \
-  libinterp/parse-tree/module.mk \
-  libinterp/parse-tree/oct-parse.in.yy \
-  libinterp/parse-tree/octave.gperf
-
 PARSER_INC = \
   libinterp/parse-tree/lex.h \
   libinterp/parse-tree/parse.h
@@ -114,3 +109,8 @@ libinterp_parse_tree_libparser_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAG
 
 libinterp_parse_tree_libparser_la_CXXFLAGS = \
   $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+
+libinterp_EXTRA_DIST += \
+  libinterp/parse-tree/oct-parse.in.yy \
+  libinterp/parse-tree/octave.gperf
+

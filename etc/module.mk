@@ -1,4 +1,10 @@
-EXTRA_DIST += \
+etc_EXTRA_DIST =
+
+etc_CLEANFILES =
+etc_DISTCLEANFILES =
+etc_MAINTAINERCLEANFILES =
+
+etc_EXTRA_DIST += \
   etc/NEWS.1 \
   etc/NEWS.2 \
   etc/NEWS.3 \
@@ -12,7 +18,7 @@ EXTRA_DIST += \
   etc/README.kpathsea \
   etc/gdbinit
 
-EXTRA_DIST += \
+etc_EXTRA_DIST += \
   etc/OLD-ChangeLogs/ChangeLog \
   etc/OLD-ChangeLogs/ChangeLog.1 \
   etc/OLD-ChangeLogs/doc-ChangeLog \
@@ -45,7 +51,7 @@ BUILT_ICONS = \
   $(BUILT_PNG_ICONS) \
   etc/icons/octave-logo.ico
 
-EXTRA_DIST += \
+etc_EXTRA_DIST += \
   $(BUILT_ICONS) \
   $(icon_IMAGE_FILES) \
   etc/icons/octave.appdata.xml.in \
@@ -118,10 +124,24 @@ uninstall-icons:
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
 	rm -f $(DESTDIR)$(datadir)/appdata/$(VENDOR)-octave.appdata.xml
 
-CLEANFILES += \
+EXTRA_DIST += $(etc_EXTRA_DIST)
+
+etc_CLEANFILES += \
   etc/icons/octave.appdata.xml \
   etc/icons/octave.desktop
 
-MAINTAINERCLEANFILES += \
+etc_MAINTAINERCLEANFILES += \
   $(BUILT_ICONS)
 
+CLEANFILES += $(etc_CLEANFILES)
+DISTCLEANFILES += $(etc_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(etc_MAINTAINERCLEANFILES)
+
+etc-clean:
+	rm -f $(etc_CLEANFILES)
+
+etc-distclean: etc-clean
+	rm -f $(etc_DISTCLEANFILES)
+
+etc-maintainer-clean: etc-distclean
+	rm -f $(etc_MAINTAINERCLEANFILES)

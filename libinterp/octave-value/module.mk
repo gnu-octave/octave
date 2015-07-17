@@ -1,6 +1,3 @@
-EXTRA_DIST += \
-  libinterp/octave-value/module.mk
-
 OV_INTTYPE_INC = \
   libinterp/octave-value/ov-base-int.h \
   libinterp/octave-value/ov-base-int.cc \

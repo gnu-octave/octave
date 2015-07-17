@@ -1,6 +1,3 @@
-EXTRA_DIST += \
-  liboctave/array/module.mk
-
 ARRAY_INC = \
   liboctave/array/Array.h \
   liboctave/array/Array-util.h \

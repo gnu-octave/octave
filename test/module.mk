@@ -1,3 +1,9 @@
+test_EXTRA_DIST =
+
+test_CLEANFILES =
+test_DISTCLEANFILES =
+test_MAINTAINERCLEANFILES =
+
 TEST_FILES += \
   test/fntests.m \
   test/args.tst \
@@ -46,7 +52,7 @@ include test/ctor-vs-method/module.mk
 include test/fcn-handle-derived-resolution/module.mk
 include test/nest/module.mk
 
-all-local: test/.gdbinit
+ALL_LOCAL_TARGETS += test/.gdbinit
 
 test/.gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)
@@ -77,27 +83,9 @@ test/bc-overload-tests.stamp: test/build-bc-overload-tests.sh test/bc-overloads-
 	$(srcdir)/test/build-bc-overload-tests.sh test $(srcdir)/test/bc-overloads-expected && \
 	touch $@
 
-GENERATED_TEST_FILES = test/sparse.tst test/bc-overload-tests.stamp
-
-BUILT_SOURCES += \
+GENERATED_TEST_FILES = \
   test/sparse.tst \
   test/bc-overload-tests.stamp
-
-EXTRA_DIST += \
-  test/build-sparse-tests.sh \
-  test/build-bc-overload-tests.sh \
-  test/bc-overloads-expected \
-  test/build_bc_overloads_expected.m \
-  $(TEST_FILES)
-
-CLEANFILES += \
-  $(GENERATED_BC_OVERLOADS_FILES) \
-  test/sparse.tst \
-  test/bc-overload-tests.stamp
-
-DISTCLEANFILES += \
-  test/.gdbinit \
-  test/fntests.log
 
 fixedtestsdir := $(octtestsdir)/fixed
 
@@ -105,3 +93,33 @@ nobase_fixedtests_DATA = \
   test/sparse.tst \
   $(GENERATED_BC_OVERLOADS_FILES) \
   $(filter-out test/fntests.m, $(TEST_FILES))
+
+BUILT_SOURCES += $(GENERATED_TEST_FILES)
+
+test_EXTRA_DIST += \
+  test/build-sparse-tests.sh \
+  test/build-bc-overload-tests.sh \
+  test/bc-overloads-expected \
+  test/build_bc_overloads_expected.m \
+  $(TEST_FILES)
+
+test_CLEANFILES += \
+  $(GENERATED_BC_OVERLOADS_FILES) \
+  $(GENERATED_TEST_FILES)
+
+test_DISTCLEANFILES += \
+  test/.gdbinit \
+  test/fntests.log
+
+CLEANFILES += $(test_CLEANFILES)
+DISTCLEANFILES += $(test_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(test_MAINTAINERCLEANFILES)
+
+test-clean:
+	rm -f $(test_CLEANFILES)
+
+test-distclean: test-clean
+	rm -f $(test_DISTCLEANFILES)
+
+test-maintainer-clean: test-distclean
+	rm -f $(test_MAINTAINERCLEANFILES)

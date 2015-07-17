@@ -189,7 +189,8 @@ install-pkg-add:
 
 uninstall-pkg-add:
 	for f in $(PKG_ADD_FILES); do \
-	  rm -f $(DESTDIR)$(fcnfiledir)/$$f; \
+	  base=`echo $$f | $(SED) 's,^scripts/,,'`; \
+	  rm -f $(DESTDIR)$(fcnfiledir)/$$base; \
 	done
 .PHONY: uninstall-pkg-add
 

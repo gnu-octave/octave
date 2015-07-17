@@ -28,7 +28,7 @@ bin_PROGRAMS += \
   src/octave-config
 
 OCTAVE_INTERPRETER_TARGETS += \
-  $(bin_programs) \
+  $(bin_PROGRAMS) \
   $(OCTAVE_VERSION_LINKS)
 
 noinst_HEADERS += \

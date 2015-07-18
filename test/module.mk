@@ -103,6 +103,8 @@ test_EXTRA_DIST += \
   test/build_bc_overloads_expected.m \
   $(TEST_FILES)
 
+EXTRA_DIST += $(test_EXTRA_DIST)
+
 test_CLEANFILES += \
   $(GENERATED_BC_OVERLOADS_FILES) \
   $(GENERATED_TEST_FILES)

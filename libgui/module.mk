@@ -116,6 +116,8 @@ libgui_EXTRA_DIST += \
   $(TRANSLATIONS) \
   libgui/default-qt-settings.in
 
+EXTRA_DIST += $(libgui_EXTRA_DIST)
+
 libgui_DISTCLEANFILES += \
   libgui/default-qt-settings \
   $(LOCALES)

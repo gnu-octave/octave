@@ -51,33 +51,8 @@ function yiq = rgb2ntsc (rgb)
     print_usage ();
   endif
 
-  cls = class (rgb);
-  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
-    error ("rgb2ntsc: invalid data type '%s'", cls);
-  elseif (isfloat (rgb) && (any (rgb(:) < 0) || any (rgb(:) > 1)))
-    error ("rgb2ntsc: floating point images may only contain values between 0 and 1");
-  endif
-
-  ## If we have an image convert it into a color map.
-  if (isreal (rgb) && ndims (rgb) == 3)
-    is_image = true;
-    sz = size (rgb);
-    rgb = [rgb(:,:,1)(:), rgb(:,:,2)(:), rgb(:,:,3)(:)];
-    ## Convert to a double image.
-    if (isinteger (rgb))
-      low = double (intmin (cls));
-      high = double (intmax (cls));
-      rgb = (double (rgb) - low) / (high - low);
-    elseif (isa (rgb, "single"))
-      rgb = double (rgb);
-    endif
-  else
-    is_image = false;
-  endif
-
-  if (! isreal (rgb) || columns (rgb) != 3 || issparse (rgb))
-    error ("rgb2ntsc: input must be a matrix of size Nx3 or NxMx3");
-  endif
+  [rgb, cls, sz, is_im, is_nd, is_int] ...
+    = colorspace_conversion_input_check ("rgb2ntsc", "RGB", rgb);
 
   ## Reference matrix for transformation from http://en.wikipedia.org/wiki/YIQ
   ## and truncated to 3 significant figures.  Matlab uses this matrix for their
@@ -85,17 +60,10 @@ function yiq = rgb2ntsc (rgb)
   trans = [ 0.299,  0.596,  0.211;
             0.587, -0.274, -0.523;
             0.114, -0.322,  0.312 ];
-
-  ## Convert data.
   yiq = rgb * trans;
 
-  ## If input was an image, convert it back into one.
-  if (is_image)
-    yiq = reshape (yiq, sz);
-  endif
-
+  yiq = colorspace_conversion_revert (yiq, cls, sz, is_im, is_nd, is_int);
 endfunction
-
 
 ## Test pure RED, GREEN, BLUE colors
 %!assert (rgb2ntsc ([1 0 0]), [.299  .596  .211])
@@ -114,5 +82,13 @@ endfunction
 %!error rgb2ntsc ()
 %!error rgb2ntsc (1,2)
 %!error <invalid data type 'cell'> rgb2ntsc ({1})
-%!error <must be a matrix of size Nx3 or NxMx3> rgb2ntsc (ones (2,2))
+%!error <RGB must be a colormap or RGB image> rgb2ntsc (ones (2,2))
 
+## Test ND input
+%!test
+%! rgb = rand (16, 16, 3, 5);
+%! yiq = zeros (size (rgb));
+%! for i = 1:5
+%!   yiq(:,:,:,i) = rgb2ntsc (rgb(:,:,:,i));
+%! endfor
+%! assert (rgb2ntsc (rgb), yiq)

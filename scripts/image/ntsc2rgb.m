@@ -45,22 +45,8 @@ function rgb = ntsc2rgb (yiq)
     print_usage ();
   endif
 
-  if (! isa (yiq, "double"))
-    error ("ntsc2rgb: YIQ must be of type double");
-  endif
-
-  ## If we have an image convert it into a color map.
-  if (isnumeric (yiq) && ndims (yiq) == 3)
-    is_image = true;
-    sz = size (yiq);
-    yiq = [yiq(:,:,1)(:), yiq(:,:,2)(:), yiq(:,:,3)(:)];
-  else
-    is_image = false;
-  endif
-
-  if (! isreal (yiq) || columns (yiq) != 3 || issparse (yiq))
-    error ("ntsc2rgb: input must be a matrix of size Nx3 or NxMx3");
-  endif
+  [yiq, cls, sz, is_im, is_nd, is_int] ...
+    = colorspace_conversion_input_check ("ntsc2rgb", "YIQ", yiq);
 
   ## Conversion matrix constructed from 'inv (rgb2ntsc matrix)'.
   ## See programming notes in rgb2ntsc.m.  Note: Matlab matrix for inverse
@@ -70,16 +56,10 @@ function rgb = ntsc2rgb (yiq)
   trans = [ 1.0,      1.0,      1.0;
             0.95617, -0.27269, -1.10374;
             0.62143, -0.64681,  1.70062 ];
-
   rgb = yiq * trans;
 
-  ## If input was an image, convert it back into one.
-  if (is_image)
-    rgb = reshape (rgb, sz);
-  endif
-
+  rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd, is_int);
 endfunction
-
 
 ## Test pure R, G, B colors
 %!assert (ntsc2rgb ([.299  .596  .211]), [1 0 0], 1e-5)
@@ -97,6 +77,14 @@ endfunction
 ## Test input validation
 %!error ntsc2rgb ()
 %!error ntsc2rgb (1,2)
-%!error <YIQ must be of type double> ntsc2rgb (uint8 (1))
-%!error <must be a matrix of size Nx3 or NxMx3> ntsc2rgb (ones (2,2))
+%!error <YIQ must be a colormap or YIQ image> ntsc2rgb (uint8 (1))
+%!error <YIQ must be a colormap or YIQ image> ntsc2rgb (ones (2,2))
 
+## Test ND input
+%!test
+%! yiq = rand (16, 16, 3, 5);
+%! rgb = zeros (size (yiq));
+%! for i = 1:5
+%!   rgb(:,:,:,i) = ntsc2rgb (yiq(:,:,:,i));
+%! endfor
+%! assert (ntsc2rgb (yiq), rgb)

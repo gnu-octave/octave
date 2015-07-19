@@ -63,42 +63,8 @@ function rgb = hsv2rgb (hsv)
     print_usage ();
   endif
 
-  cls = class (hsv);
-  ## If we have an image convert it into a color map.
-  if (! iscolormap (hsv))
-    if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
-      error ("hsv2rgb: HSV of invalid data type '%s'", cls);
-    elseif (size (hsv, 3) != 3)
-      error ("hsv2rgb: HSV must be a colormap or HSV image");
-    elseif (! isreal (hsv) || ! isnumeric (hsv))
-      error ("hsv2rgb: HSV must be numeric and real");
-    endif
-    is_image = true;
-
-    ## Allow for ND images, i.e., multiple images on the 4th dimension.
-    sz = size (hsv);
-    nd = ndims (hsv);
-    if (nd == 3)
-      is_ndimage = false;
-    elseif (nd == 4)
-      is_ndimage = true;
-      hsv = permute (hsv, [1 2 4 3]);
-    elseif (nd > 4)
-      error ("hsv2rgb: invalid HSV with more than 4 dimensions");
-    endif
-    hsv = reshape (hsv, [numel(hsv)/3 3]);
-  else
-    is_image = false;
-    is_ndimage = false;
-  endif
-
-  ## Convert to floating point (remember to leave class single alone)
-  if (isinteger (hsv))
-    hsv = double (hsv) / double (intmin (cls));
-    is_uint = true;
-  else
-    is_uint = false;
-  endif
+  [hsv, cls, sz, is_im, is_nd, is_int] ...
+    = colorspace_conversion_input_check ("hsv2rgb", "HSV", hsv);
 
   h = hsv(:,1);
   s = hsv(:,2);
@@ -126,18 +92,7 @@ function rgb = hsv2rgb (hsv)
                + (hue >= 1/6 & hue < 1/2)
                + (hue >= 1/2 & hue < 2/3) .* (4 - 6 * hue));
 
-  if (is_image)
-    if (is_ndimage)
-      rgb = reshape (rgb, [sz(1:2) sz(4) sz(3)]);
-      rgb = permute (rgb, [1 2 4 3]);
-    else
-      rgb = reshape (rgb, sz);
-    endif
-  endif
-
-  if (is_uint)
-    rgb *= intmax (cls);
-  endif
+  rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd, is_int);
 
 endfunction
 
@@ -179,3 +134,12 @@ endfunction
 %!error hsv2rgb (1,2)
 %!error <invalid data type> hsv2rgb ({1})
 %!error <HSV must be a colormap or HSV image> hsv2rgb (ones (2,2))
+
+## Test ND input
+%!test
+%! hsv = rand (16, 16, 3, 5);
+%! rgb = zeros (size (hsv));
+%! for i = 1:5
+%!   rgb(:,:,:,i) = hsv2rgb (hsv(:,:,:,i));
+%! endfor
+%! assert (hsv2rgb (hsv), rgb)

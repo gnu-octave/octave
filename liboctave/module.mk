@@ -93,7 +93,7 @@ LIBOCTAVE_TST_SRC = \
   $(liboctave_numeric_libnumeric_la_SOURCES) \
   $(liboctave_system_libsystem_la_SOURCES) \
   $(liboctave_util_libutil_la_SOURCES) \
-  $(TEMPLATE_SRC)
+  $(LIBOCTAVE_TEMPLATE_SRC)
 
 LIBOCTAVE_TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
 

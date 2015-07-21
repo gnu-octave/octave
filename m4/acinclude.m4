@@ -2274,7 +2274,11 @@ reconstruct the DVI version of the manual
 "
     OCTAVE_CONFIGURE_WARNING([warn_texi2dvi])
   fi
-  TEXI2DVI="$TEXI2DVI"' --build-dir=t2d_cache'
+dnl FIXME: texi2pdf and texi2dvi can not be run simultaneously as they both
+dnl        attempt to create a temporary build directory of the same name.
+dnl        A workaround is to define separate build directories for each
+dnl        command as is done here.
+  TEXI2DVI="$TEXI2DVI"' --build-dir=.t2d.cache'
   AC_SUBST(TEXI2DVI)
 ])
 dnl
@@ -2301,7 +2305,11 @@ reconstruct the PDF version of the manual
 "
     OCTAVE_CONFIGURE_WARNING([warn_texi2pdf])
   fi
-  TEXI2PDF="$TEXI2PDF"' --build-dir=t2d_cache'
+dnl FIXME: texi2pdf and texi2dvi can not be run simultaneously as they both
+dnl        attempt to create a temporary build directory of the same name.
+dnl        A workaround is to define separate build directories for each
+dnl        command as is done here.
+  TEXI2PDF="$TEXI2PDF"' --build-dir=.t2p.cache'
   AC_SUBST(TEXI2PDF)
 ])
 dnl

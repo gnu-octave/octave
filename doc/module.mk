@@ -252,13 +252,13 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 doc/interpreter/octave.dvi: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
-	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
+	$(TEXI2DVI) $(AM_V_texinfo) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
 doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
-	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
+	$(TEXI2PDF) $(AM_V_texinfo) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
 $(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
@@ -294,11 +294,6 @@ doc_EXTRA_DIST += \
   doc/interpreter/octave.pdf \
   doc/interpreter/octave.html \
   $(HTMLDIR_IMAGES)
-
-## The texi2dvi script (used to create both PDF and DVI output formats)
-## uses some fixed temporary file names.  In order to avoid a race condition
-## the DVI and PDF builds are forced to run serially through a Makefile rule.
-#doc/interpreter/octave.pdf: doc/interpreter/octave.dvi
 
 # Prevent packaging of distribution unless all libraries
 # necessary to create documentation are present
@@ -541,6 +536,8 @@ MAINTAINERCLEANFILES += $(doc_MAINTAINERCLEANFILES)
 
 doc-clean:
 	rm -f $(doc_CLEANFILES)
+	rm -rf $(top_builddir)/.t2d.cache
+	rm -rf $(top_builddir)/.t2p.cache
 
 doc-distclean: doc-clean
 	rm -f $(doc_DISTCLEANFILES)

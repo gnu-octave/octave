@@ -6,6 +6,8 @@ scripts_image_PRIVATE_FCN_FILES = \
   scripts/image/private/__imfinfo__.m \
   scripts/image/private/__imread__.m \
   scripts/image/private/__imwrite__.m \
+  scripts/image/private/colorspace_conversion_input_check.m \
+  scripts/image/private/colorspace_conversion_revert.m \
   scripts/image/private/imageIO.m \
   scripts/image/private/imwrite_filename.m \
   scripts/image/private/ind2x.m

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-cmplx.h"
 #include "lo-math.h"
+#include "lo-ieee.h"
 
 // Double Precision
 extern OCTAVE_API double xtrunc (double x);
@@ -334,7 +335,7 @@ xmod (T x, T y)
         }
     }
 
-  if (x != y && y != 0 && retval != 0)
+  if (x != y && y != 0)
     retval = xcopysign (retval, y);
 
   return retval;
@@ -347,7 +348,7 @@ xrem (T x, T y)
   T retval;
 
   if (y == 0)
-    retval = x;
+    retval = octave_NaN;
   else
     {
       T q = x / y;
@@ -367,7 +368,7 @@ xrem (T x, T y)
         }
     }
 
-  if (x != y && y != 0 && retval != 0)
+  if (x != y && y != 0)
     retval = xcopysign (retval, x);
 
   return retval;

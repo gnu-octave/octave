@@ -590,7 +590,26 @@ x - y .* fix (x ./ y)\n\
 @end example\n\
 \n\
 An error message is printed if the dimensions of the arguments do not agree,\n\
-or if either of the arguments is complex.\n\
+or if either argument is complex.\n\
+\n\
+Programming Notes: Floating point numbers within a few eps of an integer will\n\
+be rounded to an integer before computation for compatibility with\n\
+@sc{matlab}.\n\
+\n\
+By convention,\n\
+\n\
+@example\n\
+@group\n\
+rem (@var{x}, 0) = NaN  if @var{x} is a floating point variable\n\
+rem (@var{x}, 0) = 0    if @var{x} is an integer variable\n\
+rem (@var{x}, @var{y})        returns a value with the signbit from @var{x}\n\
+@end group\n\
+@end example\n\
+\n\
+For the opposite conventions see the @code{mod} function.  In general,\n\
+@code{rem} is best when computing the remainder after division of two\n\
+@emph{positive} numbers.  For negative numbers, or when the values are\n\
+periodic, @code{mod} is a better choice.\n\
 @seealso{mod}\n\
 @end deftypefn")
 {
@@ -689,20 +708,22 @@ or if either of the arguments is complex.\n\
 
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2), [1, 0, 1; -1, 0, -1])
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3)),[1, 0, 1; -1, 0, -1])
+%!assert (rem ([0, 1, 2], [0, 0, 1]), [NaN, NaN, 0]);
 %!assert (rem (uint8 ([1, 2, 3; -1, -2, -3]), uint8 (2)), uint8 ([1, 0, 1; -1, 0, -1]))
 %!assert (uint8 (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3))),uint8 ([1, 0, 1; -1, 0, -1]))
+%!assert (rem (uint8 ([0, 1, 2]), [0, 0, 1]), uint8 ([0, 0, 0]));
 
 ## Test sparse implementations
 %!shared xs
 %! xs = sparse (0:3);
 %!test
 %! y = rem (11, xs);
-%! assert (nnz (y), 3);
+%! assert (isnan (y(1)));
 %! assert (y, sparse (rem (11, 0:3)));
 %!test
 %! y = rem (0, xs);
-%! assert (nnz (y), 0);
-%! assert (y, sparse (zeros (1,4)));
+%! assert (nnz (y), 1);
+%! assert (y, sparse ([NaN 0 0 0]));
 %!test
 %! y = rem (xs, 2);
 %! assert (nnz (y), 2);
@@ -717,8 +738,15 @@ or if either of the arguments is complex.\n\
 %! assert (y, sparse (rem (11, 0:3)));
 %!test
 %! y = rem (sparse ([0 0 0 0]), xs);
-%! assert (nnz (y), 0);
-%! assert (y, sparse (zeros (1,4)));
+%! assert (nnz (y), 1);
+%! assert (y, sparse ([NaN 0 0 0]));
+
+## Bug #45587
+%!assert (signbit (rem (-0, 1)))
+%!assert (! signbit (rem (0, 1)))
+
+## bug #42627
+%!assert (rem (0.94, 0.01), 0.0)
 
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
@@ -726,9 +754,6 @@ or if either of the arguments is complex.\n\
 %!error rem (1, 2, 3)
 %!error rem ([1, 2], [3, 4, 5])
 %!error rem (i, 1)
-
-# bug 42627
-%!assert (rem (0.94, 0.01), 0.0);
 */
 
 DEFUN (mod, args, ,
@@ -745,11 +770,27 @@ x - y .* floor (x ./ y)\n\
 @noindent\n\
 and is written such that the correct modulus is returned for integer types.\n\
 This function handles negative values correctly.  That is,\n\
-@code{mod (-1, 3)} is 2, not -1, as @code{rem (-1, 3)} returns.\n\
-@code{mod (@var{x}, 0)} returns @var{x}.\n\
+@w{@code{mod (-1, 3)}} is 2, not -1, as @w{@code{rem (-1, 3)}} returns.\n\
 \n\
 An error results if the dimensions of the arguments do not agree, or if\n\
 either of the arguments is complex.\n\
+\n\
+Programming Notes: Floating point numbers within a few eps of an integer will\n\
+be rounded to an integer before computation for compatibility with\n\
+@sc{matlab}.\n\
+\n\
+By convention,\n\
+\n\
+@example\n\
+@group\n\
+mod (@var{x}, 0) = @var{x}\n\
+mod (@var{x}, @var{y})      returns a value with the signbit from @var{y}\n\
+@end group\n\
+@end example\n\
+\n\
+For the opposite conventions see the @code{rem} function.  In general,\n\
+@code{mod} is a better choice than @code{rem} when any of the inputs are\n\
+negative numbers or when the values are periodic.\n\
 @seealso{rem}\n\
 @end deftypefn")
 {
@@ -881,8 +922,12 @@ either of the arguments is complex.\n\
 %!assert (mod (2.1, 0.1), 0)
 %!assert (mod (2.1, 0.2), 0.1, eps)
 
-# bug 42627
-%!assert (mod (0.94, 0.01), 0.0);
+## Bug #45587
+%!assert (signbit (mod (-0, 0)))
+%!assert (! signbit (mod (0, -0)))
+
+## Bug #42627
+%!assert (mod (0.94, 0.01), 0.0)
 */
 
 // FIXME: Need to convert reduction functions of this file for single precision

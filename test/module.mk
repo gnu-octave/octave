@@ -89,10 +89,30 @@ GENERATED_TEST_FILES = \
 
 fixedtestsdir := $(octtestsdir)/fixed
 
-nobase_fixedtests_DATA = \
+TEST_INST_FILES = \
   test/sparse.tst \
   $(GENERATED_BC_OVERLOADS_FILES) \
   $(filter-out test/fntests.m, $(TEST_FILES))
+
+install-data-local: install-test-files
+
+uninstall-local: uninstall-test-files
+
+install-test-files:
+	for f in $(TEST_INST_FILES); do \
+	  if test -f "$$f"; then d=; else d="$(srcdir)/"; fi; \
+	  base=`echo $$f | $(SED) 's,^test/,,'`; \
+	  $(MKDIR_P) $(DESTDIR)$(fixedtestsdir)/`echo $$base | $(SED) 's,/*[^/]*$$,,'`; \
+	  $(INSTALL_DATA) $$d$$f $(DESTDIR)$(fixedtestsdir)/$$base; \
+	done
+.PHONY: install-test-files
+
+uninstall-test-files:
+	for f in $(TEST_INST_FILES); do \
+	  base=`echo $$f | $(SED) 's,^test/,,'`; \
+	  rm -f $(DESTDIR)$(fixedtestsdir)/$$base; \
+	done
+.PHONY: uninstall-test-files
 
 BUILT_SOURCES += $(GENERATED_TEST_FILES)
 

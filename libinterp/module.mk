@@ -236,7 +236,7 @@ LIBINTERP_TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests
 
 LIBINTERP_TST_FILES := $(addsuffix -tst,$(LIBINTERP_TST_FILES_SRC))
 
-libinterptestsdir := $(octtestsdir)/libinterp
+libinterptestsdir := $(octtestsdir)
 
 nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 

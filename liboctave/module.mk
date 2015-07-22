@@ -99,7 +99,7 @@ LIBOCTAVE_TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests
 
 LIBOCTAVE_TST_FILES := $(addsuffix -tst,$(LIBOCTAVE_TST_FILES_SRC))
 
-liboctavetestsdir := $(octtestsdir)/liboctave
+liboctavetestsdir := $(octtestsdir)
 
 nobase_liboctavetests_DATA = $(LIBOCTAVE_TST_FILES)
 

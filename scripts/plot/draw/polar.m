@@ -156,13 +156,20 @@ endfunction
 
 function rtick = __calc_rtick__ (hax, maxr)
   ## FIXME: workaround: calculate r(ho)tick from xtick
+  ##        It would be better to just calculate the values,
+  ##        but that code is deep in the C++ for the plot engines.
   savexlim = get (hax, "xlim");
   saveylim = get (hax, "ylim");
   set (hax, "xlim", [-maxr maxr], "ylim", [-maxr maxr]);
   xtick = get (hax, "xtick");
-  rtick = xtick(find (xtick > 0, 1):find (xtick >= maxr, 1));
-  if (isempty (rtick))
-    rtick = [0.5 1];
+  minidx = find (xtick > 0, 1);
+  maxidx = find (xtick >= maxr, 1);
+  if (! isempty (maxidx))
+    rtick = xtick(minidx:maxidx);
+  else
+    ## Add one more tick through linear interpolation
+    rtick = xtick(minidx:end);
+    rtick(end+1) = xtick(end) + diff (xtick(end-1:end));
   endif
   set (hax, "xlim", savexlim, "ylim", saveylim);
 endfunction

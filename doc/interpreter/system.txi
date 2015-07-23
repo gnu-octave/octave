@@ -80,6 +80,9 @@ Days since January 1 (0-365).
 @item isdst
 Daylight Savings Time flag.
 
+@item gmtoff
+Seconds offset from UTC.
+
 @item zone
 Time zone.
 @end table

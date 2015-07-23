@@ -55,7 +55,7 @@ octave_time::octave_time (const octave_base_tm& tm)
   t.tm_yday = tm.yday ();
   t.tm_isdst = tm.isdst ();
 
-#if defined (HAVE_STRUCT_TM_GMTOFF)
+#if defined (HAVE_TM_GMTOFF)
   t.tm_gmtoff = tm.gmtoff ();
 #endif
 
@@ -159,7 +159,7 @@ octave_base_tm::strftime (const std::string& fmt) const
       t.tm_yday = tm_yday;
       t.tm_isdst = tm_isdst;
 
-#if defined (HAVE_STRUCT_TM_GMTOFF)
+#if defined (HAVE_TM_GMTOFF)
       t.tm_gmtoff = tm_gmtoff;
 #endif
 
@@ -215,7 +215,7 @@ octave_base_tm::init (void *p)
   tm_yday = t->tm_yday;
   tm_isdst = t->tm_isdst;
 
-#if defined (HAVE_STRUCT_TM_GMTOFF)
+#if defined (HAVE_TM_GMTOFF)
   tm_gmtoff = t->tm_gmtoff;
 #endif
 
@@ -263,7 +263,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_yday = 0;
   t.tm_isdst = 0;
 
-#if defined (HAVE_STRUCT_TM_GMTOFF)
+#if defined (HAVE_TM_GMTOFF)
   t.tm_gmtoff = 0;
 #endif
 

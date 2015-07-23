@@ -50,6 +50,7 @@ mk_tm_map (const octave_base_tm& t)
   m.assign ("wday", static_cast<double> (t.wday ()));
   m.assign ("yday", static_cast<double> (t.yday ()));
   m.assign ("isdst", static_cast<double> (t.isdst ()));
+  m.assign ("gmtoff", static_cast<double> (t.gmtoff ()));
   m.assign ("zone", t.zone ());
 
   return m;
@@ -96,6 +97,7 @@ extract_tm (const octave_scalar_map& m)
   tm.wday (intfield (m, "wday"));
   tm.yday (intfield (m, "yday"));
   tm.isdst (intfield (m, "isdst"));
+  tm.gmtoff (intfield (m, "gmtoff"));
   tm.zone (stringfield (m, "zone"));
 
   return tm;
@@ -150,7 +152,8 @@ gmtime (time ())\n\
            wday = 1\n\
            yday = 47\n\
            isdst = 0\n\
-           zone = CST\n\
+           gmtoff = 0\n\
+           zone = GMT\n\
         @}\n\
 @end group\n\
 @end example\n\
@@ -211,6 +214,7 @@ localtime (time ())\n\
            wday = 1\n\
            yday = 47\n\
            isdst = 0\n\
+           gmtoff = -21600\n\
            zone = CST\n\
         @}\n\
 @end group\n\
@@ -398,6 +402,9 @@ Time, 24-hour (hh:mm:ss).\n\
 \n\
 @item %X\n\
 Locale's time representation (%H:%M:%S).\n\
+\n\
+@item %z\n\
+Offset from UTC (±hhmm), or nothing if no time zone is determinable.\n\
 \n\
 @item %Z\n\
 Time zone (EDT), or nothing if no time zone is determinable.\n\

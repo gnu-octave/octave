@@ -190,10 +190,11 @@ The following external packages are required:
 
 @table @asis
 @item BLAS
-Basic Linear Algebra Subroutine library
-(@url{http://www.netlib.org/blas}).  Accelerated @sc{blas} libraries such as
-ATLAS (@url{http://math-atlas.sourceforge.net}) are recommeded for
-better performance.
+Basic Linear Algebra Subroutine library.  Accelerated @sc{blas} libraries such
+as OpenBLAS (@url{http://www.openblas.net/}) or
+ATLAS (@url{http://math-atlas.sourceforge.net}) are recommended for best
+performance.  The reference implementation (@url{http://www.netlib.org/blas})
+is slow, unmaintained, and suffers from certain bugs in corner case inputs.
 
 @item LAPACK
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
@@ -971,6 +972,27 @@ work on SunOS systems.  This is apparently due to having
 @code{libg++}.
 
 @item
+On systems where the reference @sc{blas} library is used the following
+matrix-by-vector multiplication incorrectly handles NaN values of the
+form @code{NaN * 0}.
+
+@example
+@group
+[NaN, 1; 0, 0] * [0; 1]
+@result{}
+[ 1
+  0 ]
+
+correct result @result{}
+[ NaN
+  0   ]
+@end group
+@end example
+
+Install a different @sc{blas} library such as OpenBLAS or ATLAS to correct
+this issue.
+
+@item
 On NeXT systems, linking to @file{libsys_s.a} may fail to resolve the
 following functions
 
@@ -1032,7 +1054,7 @@ directory to the include search path by specifying (for example)
 @env{CFLAGS}, @env{CXXFLAGS}, @env{FFLAGS}, and @env{LDFLAGS}.  Passing
 them as options to the configure script also records them in the
 @file{config.status} file.  By default, @env{CPPFLAGS} and @env{LDFLAGS}
-are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O"} and
+are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O2"} and
 @env{FFLAGS} is set to @qcode{"-O"}.
 
 @end itemize

@@ -60,7 +60,6 @@ function plotimages (d, nm, typ)
     print (outfile, d_typ);
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);
-    set (gca, "rtick", [0:10:40]);
     title ("Example polar plot from 0 to 10*pi");
     print (outfile, d_typ);
   elseif (strcmp (nm, "mesh"))

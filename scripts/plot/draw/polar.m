@@ -266,7 +266,7 @@ function __update_text__ (hax, ~, hg, prop)
 
 endfunction
 
-function __update_lines__ (hax,  ~, hg, prop)
+function __update_lines__ (hax, ~, hg, prop)
 
   kids = get (hg, "children");
   idx = strcmp (get (kids, "type"), "line");
@@ -286,17 +286,22 @@ function __update_patch__ (hax, ~, hg)
 
 endfunction
 
-function __update_layer__ (hax,  ~, hg)
+function __update_layer__ (hax, ~, hg)
 
-  set (hg, "handlevisibility", "on");
-  kids = get (hax, "children");
-  if (strcmp (get (hax, "layer"), "bottom"))
-    set (hax, "children", [kids(kids != hg); hg]);
-  else
-    set (hax, "children", [hg; kids(kids != hg)]);
-  endif
-  set (hg, "handlevisibility", "off");
-
+  ## FIXME: This re-implements allchild() because setting the "children"
+  ##        property needs to preserve all children (titles, xlabels, etc.).
+  shh = get (0, "showhiddenhandles");
+  unwind_protect
+    set (0, "showhiddenhandles", "on");
+    kids = get (hax, "children");
+    if (strcmp (get (hax, "layer"), "bottom"))
+      set (hax, "children", [kids(kids != hg); hg]);
+    else
+      set (hax, "children", [hg; kids(kids != hg)]);
+    endif
+  unwind_protect_cleanup
+    set (0, "showhiddenhandles", shh);
+  end_unwind_protect
 endfunction
 
 function __update_polar_grid__ (hax, ~, hg)

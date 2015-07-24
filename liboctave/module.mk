@@ -66,7 +66,7 @@ include liboctave/util/module.mk
 liboctave_liboctave_la_SOURCES =
 
 # Dummy C++ source to force C++ linking.
-nodist_EXTRA_liboctave_liboctave_la_SOURCES = dummy.cc
+nodist_EXTRA_liboctave_liboctave_la_SOURCES = liboctave/dummy.cc
 
 liboctave_liboctave_la_LIBADD += \
   $(top_builddir)/libgnu/libgnu.la \

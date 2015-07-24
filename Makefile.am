@@ -197,12 +197,15 @@ nonexistent-file:
 
 define changelog-from-hg-log
   rm -f $@-t && \
-  cd $(srcdir) && \
-  if [ -d .hg ]; then \
-    ( hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; \
+  if [ -d $(srcdir)/.hg ]; then \
+    ( cd $(srcdir); \
+      hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; \
       echo ""; \
       echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19"; \
     ) > $@-t && \
+    mv $@-t $@; \
+  elif [ ! -f $@ ] && [ ! -f $(srcdir)/$@ ]; then \
+    echo "Empty ChangeLog generated because no hg log available" > $@-t && \
     mv $@-t $@; \
   fi
 endef

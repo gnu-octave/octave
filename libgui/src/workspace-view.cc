@@ -92,18 +92,20 @@ workspace_view::workspace_view (QWidget *p)
 
   QSettings *settings = resource_manager::get_settings ();
 
-  //enable sorting as previously configured
+  //enable sorting (setting column and order after model was set)
   view->setSortingEnabled (true);
-  view->sortByColumn (
+  // Initialize column order and width of the workspace
+  view->horizontalHeader ()->restoreState (
+    settings->value ("workspaceview/column_state").toByteArray ());
+  // Set header properties for sorting
+  view->horizontalHeader ()->setClickable (true);
+  view->horizontalHeader ()->setMovable (true);
+  view->horizontalHeader ()->setSortIndicator (
     settings->value ("workspaceview/sort_by_column",0).toInt (),
     static_cast<Qt::SortOrder>
     (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ())
   );
-  // Initialize column order and width of the workspace
-  view->horizontalHeader ()->restoreState (
-    settings->value ("workspaceview/column_state").toByteArray ());
-  // Make the header clickable to enable sorting
-  view->horizontalHeader ()->setClickable (true);
+  view->horizontalHeader ()->setSortIndicatorShown (true);
 
   // Init state of the filter
   _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
@@ -159,6 +161,14 @@ void workspace_view::setModel (workspace_model *model)
   _filter_model.setFilterKeyColumn(0);
 
   view->setModel (&_filter_model);
+
+  // set the sorting after a model was set, it would be ignored otherwise
+  QSettings *settings = resource_manager::get_settings ();
+  view->sortByColumn (
+    settings->value ("workspaceview/sort_by_column",0).toInt (),
+    static_cast<Qt::SortOrder>
+    (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ())
+  );
 
   _model = model;
 }

@@ -40,18 +40,18 @@ BUILT_DISTFILES += \
   INSTALL.OCTAVE
 
 EXTRA_DIST += \
+  CITATION \
   COPYING \
-  ChangeLog \
   INSTALL \
   NEWS \
   README \
-  CITATION \
+  build-aux/OctJavaQry.class \
   build-aux/find-files-with-tests.sh \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \
-  build-aux/OctJavaQry.class \
   build-aux/stl_algo.h-fixed \
-  run-octave.in
+  run-octave.in \
+  $(BUILT_DISTFILES)
 
 DIRSTAMP_FILES =
 

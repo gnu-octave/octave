@@ -4,8 +4,6 @@ doc_CLEANFILES =
 doc_DISTCLEANFILES =
 doc_MAINTAINERCLEANFILES =
 
-TEXINFO_TEX = doc/texinfo.tex
-
 TEXINPUTS := $(PATH_SEPARATOR)$(top_srcdir)/doc/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(top_builddir)/doc/interpreter$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
 
 TEXMFCNF := $(PATH_SEPARATOR)$(top_srcdir)/doc$(PATH_SEPARATOR)$(top_builddir)/doc$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)
@@ -34,9 +32,7 @@ if AMCOND_BUILD_DOCS
 ## also depends on the DVI file and somehow the rules are invoked
 ## twice.  Is that a bug in automake or make or what?
 
-doc_EXTRA_DIST += \
-  doc/texinfo.tex \
-  doc/texmf.cnf
+doc_EXTRA_DIST += doc/texmf.cnf
 
 doc_EXTRA_DIST += \
   doc/doxyhtml/Doxyfile.in \

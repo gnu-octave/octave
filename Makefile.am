@@ -163,6 +163,9 @@ DISTCLEANFILES += \
   ChangeLog \
   $(DIRSTAMP_FILES)
 
+MAINTAINERCLEANFILES += \
+  $(BUILT_DISTFILES)
+
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 octinclude_HEADERS += oct-conf-post.h

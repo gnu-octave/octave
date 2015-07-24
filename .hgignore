@@ -32,8 +32,8 @@ syntax: regexp
 #      doc/interpreter/octave.info-4
 ^doc/.*\.info(-\d)?$
 
-^doc/\w*/stamp-vti$
-^doc/\w*/version\.texi$
+^doc/\w*/stamp-(vti|\d+)$
+^doc/\w*/version-\w+\.texi$
 ^doc/interpreter/images\.mk$
 
 # e.g. liboctave/operators/smx-op-inc.mk

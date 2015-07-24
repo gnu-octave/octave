@@ -1204,16 +1204,17 @@ write_header (std::ostream& os, load_save_format format)
       {
         char const * versionmagic;
         int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
-        struct tm bdt;
-        time_t now;
         char headertext[128];
+        octave_gmtime now;
 
-        time (&now);
-        bdt = *gnulib::gmtime (&now);
-        memset (headertext, ' ', 124);
         // ISO 8601 format date
-        nstrftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
-                   OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt, 1, 0);
+        const char *matlab_format = "MATLAB 5.0 MAT-file, written by Octave "
+            OCTAVE_VERSION ", %Y-%m-%d %T UTC";
+        std::string comment_string = now.strftime (matlab_format);
+
+        size_t len = std::min (comment_string.length (), static_cast<size_t> (124));
+        memset (headertext, ' ', 124);
+        memcpy (headertext, comment_string.data (), len);
 
         // The first pair of bytes give the version of the MAT file
         // format.  The second pair of bytes form a magic number which

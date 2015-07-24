@@ -205,7 +205,6 @@ and linear.  For example,
 
 @example
 polar (0:0.1:10*pi, 0:0.1:10*pi);
-set (gca, "rtick", [0:10:40]);
 @end example
 
 @noindent

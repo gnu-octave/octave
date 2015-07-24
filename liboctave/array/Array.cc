@@ -1183,6 +1183,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
     gripe_invalid_assignment_size ();
 }
 
+// Assignment to a 2-dimensional array
 template <class T>
 void
 Array<T>::assign (const idx_vector& i, const idx_vector& j,
@@ -1281,10 +1282,12 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
             }
         }
     }
-  else
+  // any empty RHS can be assigned to an empty LHS
+  else if ((il != 0 && jl != 0) || (rhdv(0) != 0 && rhdv(1) != 0))
     gripe_assignment_dimension_mismatch ();
 }
 
+// Assignment to a multi-dimensional array
 template <class T>
 void
 Array<T>::assign (const Array<idx_vector>& ia,
@@ -1384,7 +1387,19 @@ Array<T>::assign (const Array<idx_vector>& ia,
             }
         }
       else
-        gripe_assignment_dimension_mismatch ();
+        {
+          // dimension mismatch, unless LHS and RHS both empty
+          bool lhsempty, rhsempty;
+          lhsempty = rhsempty = false;
+          for (int i = 0; i < ial; i++)
+            {
+              octave_idx_type l = ia(i).length (rdv(i));
+              lhsempty = lhsempty || (l == 0);
+              rhsempty = rhsempty || (rhdv(j++) == 0);
+            }
+          if (! lhsempty || ! rhsempty)
+            gripe_assignment_dimension_mismatch ();
+        }
     }
 }
 

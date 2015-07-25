@@ -257,6 +257,8 @@ doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interprete
 	$(TEXI2PDF) $(AM_V_texinfo) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
+doc/interpreter/octave.html: $(OCTAVE_HTML_STAMP)
+
 $(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(OCTAVE_HTML_DIR)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
@@ -398,6 +400,28 @@ liboctave_TEXINFOS = \
 
 info_TEXINFOS += \
   doc/liboctave/liboctave.texi
+
+doc/liboctave/liboctave.dvi: doc/liboctave/liboctave.texi $(srcdir)/doc/liboctave/version-liboctave.texi | doc/liboctave/$(am__dirstamp)
+	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
+	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/liboctave -I $(srcdir)/doc/liboctave' \
+	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
+	`test -f 'doc/liboctave/liboctave.texi' || echo '$(srcdir)/'`doc/liboctave/liboctave.texi
+
+doc/liboctave/liboctave.pdf: doc/liboctave/liboctave.texi $(srcdir)/doc/liboctave/version-liboctave.texi | doc/liboctave/$(am__dirstamp)
+	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
+	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/liboctave -I $(srcdir)/doc/liboctave' \
+	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
+	`test -f 'doc/liboctave/liboctave.texi' || echo '$(srcdir)/'`doc/liboctave/liboctave.texi
+
+doc/liboctave/liboctave.html: doc/liboctave/liboctave.texi $(srcdir)/doc/liboctave/version-liboctave.texi | doc/liboctave/$(am__dirstamp)
+	$(AM_V_MAKEINFO)rm -rf $(@:.html=.htp)
+	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc/liboctave -I $(srcdir)/doc/liboctave \
+	 -o $(@:.html=.htp) `test -f 'doc/liboctave/liboctave.texi' || echo '$(srcdir)/'`doc/liboctave/liboctave.texi; \
+	then \
+	  rm -rf $@ && mv $(@:.html=.htp) $@; \
+	else \
+	  rm -rf $(@:.html=.htp); exit 1; \
+	fi
 
 DOC_TARGETS += \
   $(srcdir)/doc/liboctave/liboctave.info \

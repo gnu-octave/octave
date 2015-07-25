@@ -373,7 +373,8 @@ zoom_mode (const graphics_object figObj)
 
 void 
 Canvas::select_object (graphics_object obj, QMouseEvent* event, 
-                       graphics_object &currentObj, graphics_object &axesObj)
+                       graphics_object &currentObj, graphics_object &axesObj,
+                       bool axes_only)
 {
   QList<graphics_object> axesList;
   Matrix children = obj.get_properties ().get_all_children ();
@@ -399,7 +400,30 @@ Canvas::select_object (graphics_object obj, QMouseEvent* event,
         }
     }
 
-  if (! currentObj)
+  if (axes_only)
+    {
+      QPoint pt = event->pos ();
+
+      for (QList<graphics_object>::ConstIterator it = axesList.begin ();
+           it != axesList.end (); ++it)
+        {
+          const axes::properties& ap = 
+            dynamic_cast<const axes::properties&> ((*it).get_properties ());
+
+          ColumnVector p0 = ap.pixel2coord (pt.x (), pt.y ());
+          Matrix xlim = ap.get_xlim ().matrix_value ();
+          Matrix ylim = ap.get_ylim ().matrix_value ();
+
+          if (xlim(0) < p0(0) && xlim(1) > p0(0) 
+              && ylim(0) < p0(1) && ylim(1) > p0(1))
+            {
+              axesObj = *it;
+              return;
+            }
+        }
+      
+    }
+  else if (! currentObj)
     {
       for (QList<graphics_object>::ConstIterator it = axesList.begin ();
            it != axesList.end (); ++it)
@@ -505,7 +529,7 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
   if (obj.valid_object ())
     {
       graphics_object currentObj, axesObj;
-      select_object (obj, event, currentObj, axesObj);
+      select_object (obj, event, currentObj, axesObj, true);
 
       if (axesObj.valid_object ())
         {

@@ -104,7 +104,7 @@ install-icons:
 	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
-	  if test -f $$f; then d=; else d="$(srcdir)/etc/icons/"; fi; \
+	  if test -f $$f; then d=; else d="$(srcdir)/"; fi; \
 	  $(MKDIR_P) $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps; \
 	  $(INSTALL_DATA) "$$d$$f" $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps/octave.png; \
 	done

@@ -348,7 +348,6 @@ doc_EXTRA_DIST += \
   doc/interpreter/config-images.sh \
   doc/interpreter/contributors.in \
   doc/interpreter/doc-cache \
-  doc/interpreter/find-docstring-files.sh \
   doc/interpreter/genpropdoc.m \
   doc/interpreter/graphics_properties.mk \
   doc/interpreter/images \

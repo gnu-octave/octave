@@ -100,6 +100,10 @@ $(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
 
 if AMCOND_BUILD_DOCS
 
+DOCSTRING_FILES += scripts/DOCSTRINGS
+
+scripts/DOCSTRINGS: | scripts/.DOCSTRINGS
+
 scripts/.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) scripts/mkdoc.pl Makefile
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/scripts/DOCSTRINGS ] && [ ! -f scripts/DOCSTRINGS ]; then \

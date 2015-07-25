@@ -295,6 +295,10 @@ endif
 
 if AMCOND_BUILD_DOCS
 
+DOCSTRING_FILES += libinterp/DOCSTRINGS
+
+libinterp/DOCSTRINGS: | libinterp/.DOCSTRINGS
+
 libinterp/.DOCSTRINGS: $(ALL_DEF_FILES) libinterp/gendoc.pl
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/libinterp/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \

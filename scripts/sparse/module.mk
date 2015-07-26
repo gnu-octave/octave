@@ -3,7 +3,7 @@ FCN_FILE_DIRS += \
   scripts/sparse/private
 
 scripts_sparse_PRIVATE_FCN_FILES = \
-  scripts/sparse/private/__sprand_impl__.m
+  scripts/sparse/private/__sprand__.m
 
 scripts_sparse_FCN_FILES = \
   scripts/sparse/bicg.m \

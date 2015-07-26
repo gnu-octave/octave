@@ -53,11 +53,11 @@
 function s = sprand (m, n, d, rc)
 
   if (nargin == 1 )
-    s = __sprand_impl__ (m, @rand);
+    s = __sprand__ (m, @rand);
   elseif ( nargin == 3)
-    s = __sprand_impl__ (m, n, d, "sprand", @rand);
+    s = __sprand__ (m, n, d, "sprand", @rand);
   elseif (nargin == 4)
-    s = __sprand_impl__ (m, n, d, rc, "sprand", @rand);
+    s = __sprand__ (m, n, d, rc, "sprand", @rand);
   else
     print_usage ();
   endif

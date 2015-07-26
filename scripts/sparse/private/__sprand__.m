@@ -21,15 +21,15 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} __sprand_impl__ (@var{s}, @var{randfun})
-## @deftypefnx {Function File} {} __sprand_impl__ (@var{m}, @var{n}, @var{d}, @var{fcnname}, @var{randfun})
-## @deftypefnx {Function File} {} __sprand_impl__ (@var{m}, @var{n}, @var{d}, @var{rc}, @var{fcnname}, @var{randfun})
+## @deftypefn  {Function File} {} __sprand__ (@var{s}, @var{randfun})
+## @deftypefnx {Function File} {} __sprand__ (@var{m}, @var{n}, @var{d}, @var{fcnname}, @var{randfun})
+## @deftypefnx {Function File} {} __sprand__ (@var{m}, @var{n}, @var{d}, @var{rc}, @var{fcnname}, @var{randfun})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Actual implementation of sprand and sprandn happens here.
 
-function S = __sprand_impl__ (varargin)
+function S = __sprand__ (varargin)
 
   if (nargin == 2)
     [m, randfun] = deal (varargin{1:2});

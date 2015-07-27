@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __go_draw_figure__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
+## @deftypefn {Function File} {} __gnuplot_draw_figure__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __go_draw_figure__ (h, plot_stream, enhanced, mono)
+function __gnuplot_draw_figure__ (h, plot_stream, enhanced, mono)
 
   htype = get (h, "type");
   if (strcmp (htype, "figure"))
@@ -116,7 +116,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   if (bg_is_set)
                     fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", round (255 * (1 - bg)));
                   endif
-                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono,
+                  __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced, mono,
                                     bg_is_set, false, hlgnd);
                 unwind_protect_cleanup
                   ## Return axes "units" and "position" back to
@@ -154,7 +154,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", round (255 * (1 - bg)));
                 endif
                 ## Find if this axes has an associated legend axes and pass it
-                ## to __go_draw_axes__
+                ## to __gnuplot_draw_axes__
                 hlegend = [];
                 fkids = get (h, "children");
                 for j = 1 : numel (fkids)
@@ -169,7 +169,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                     endif
                   endif
                 endfor
-                __go_draw_axes__ (kids(i), plot_stream, enhanced, mono,
+                __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced, mono,
                                   bg_is_set, fg_is_set, hlegend);
               unwind_protect_cleanup
                 ## Return axes "units" and "position" back to
@@ -184,7 +184,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
             ## ignore uimenu objects
             kids(i) = [];
           otherwise
-            error ("__go_draw_figure__: unknown object class, %s", type);
+            error ("__gnuplot_draw_figure__: unknown object class, %s", type);
         endswitch
       endfor
       if (isempty (kids))
@@ -198,7 +198,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
       fflush (plot_stream);
     endif
   else
-    error ("__go_draw_figure__: expecting figure object, found '%s'",
+    error ("__gnuplot_draw_figure__: expecting figure object, found '%s'",
            htype);
   endif
 

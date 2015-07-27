@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __go_draw_axes__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
+## @deftypefn {Function File} {} __gnuplot_draw_axes__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono,
+function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                            bg_is_set, fg_is_set, hlgnd)
 
   showhiddenhandles = get (0, "showhiddenhandles");
@@ -668,7 +668,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              endif
              if (nd == 3)
                if (numel (xcol) > 3)
-                 error ("__go_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
+                 error ("__gnuplot_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
                else
                  if (isnan (data_3d_idx))
                    data_idx++;
@@ -1169,7 +1169,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             err = true;
           endif
           if (err)
-            error ("__go_draw_axes__: invalid grid data");
+            error ("__gnuplot_draw_axes__: invalid grid data");
           endif
           xlen = columns (zdat);
           ylen = rows (zdat);
@@ -1397,7 +1397,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         endif
 
       otherwise
-        error ("__go_draw_axes__: unknown object class, %s",
+        error ("__gnuplot_draw_axes__: unknown object class, %s",
                obj.type);
     endswitch
 
@@ -2225,7 +2225,7 @@ function ticklabel = ticklabel_to_cell (ticklabel)
   elseif (iscellstr (ticklabel))
     ticklabel = ticklabel;
   else
-    error ("__go_draw_axes__: unsupported type of ticklabel");
+    error ("__gnuplot_draw_axes__: unsupported type of ticklabel");
   endif
 endfunction
 

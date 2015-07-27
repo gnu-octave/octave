@@ -17,8 +17,8 @@ scripts_plot_util_PRIVATE_FCN_FILES = \
   scripts/plot/util/private/__gnuplot_open_stream__.m \
   scripts/plot/util/private/__gnuplot_print__.m \
   scripts/plot/util/private/__gnuplot_version__.m \
-  scripts/plot/util/private/__go_draw_axes__.m \
-  scripts/plot/util/private/__go_draw_figure__.m \
+  scripts/plot/util/private/__gnuplot_draw_axes__.m \
+  scripts/plot/util/private/__gnuplot_draw_figure__.m \
   scripts/plot/util/private/__opengl_print__.m \
   scripts/plot/util/private/__print_parse_opts__.m \
   scripts/plot/util/private/__tight_eps_bbox__.m

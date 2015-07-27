@@ -40,11 +40,11 @@ function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
       gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream);
       if (gnuplot_supports_term)
         enhanced = gnuplot_set_term (plot_stream(1), true, h, term, file);
-        __go_draw_figure__ (h, plot_stream(1), enhanced, mono);
+        __gnuplot_draw_figure__ (h, plot_stream(1), enhanced, mono);
         if (nargin == 5)
           fid = fopen (debug_file, "wb");
           enhanced = gnuplot_set_term (fid, true, h, term, file);
-          __go_draw_figure__ (h, fid, enhanced, mono);
+          __gnuplot_draw_figure__ (h, fid, enhanced, mono);
         endif
       else
         error ('__gnuplot_drawnow__: the gnuplot terminal, "%s", is not available',
@@ -83,7 +83,7 @@ function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
     else
       enhanced = gnuplot_set_term (plot_stream(1), new_stream, h, term);
     endif
-    __go_draw_figure__ (h, plot_stream(1), enhanced, mono);
+    __gnuplot_draw_figure__ (h, plot_stream(1), enhanced, mono);
     fflush (plot_stream(1));
     if (strcmp (term, "dumb"))
       fid = -1;

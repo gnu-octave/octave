@@ -69,7 +69,7 @@ function h = semilogxerr (varargin)
       set (hax, "xminortick", "on");
     endif
 
-    htmp = __errcomm__ ("semilogxerr", hax, varargin{:});
+    htmp = __errplot__ ("semilogxerr", hax, varargin{:});
 
   unwind_protect_cleanup
     if (! isempty (oldfig))

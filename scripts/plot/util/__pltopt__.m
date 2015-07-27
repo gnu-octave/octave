@@ -126,7 +126,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   have_marker = false;
 
   ## If called by __errplot__, extract the linestyle before proceeding.
-  if (strcmp (caller, "__errplot__"))
+  if (strcmp (caller, "__do_errplot__"))
     if (strncmp (opt, "#~>", 3))
       n = 3;
     elseif (strncmp (opt, "#~", 2) || strncmp (opt, "~>", 2))
@@ -258,7 +258,7 @@ endfunction
 %! assert (opts.linestyle, []);
 %! assert (opts.marker, []);
 %!test
-%! opts = __pltopt__ ("__errplot__", "~>r");
+%! opts = __pltopt__ ("__do_errplot__", "~>r");
 %! assert (opts.errorstyle, "~>");
 %! assert (opts.color, [1 0 0 ]);
 %! assert (opts.linestyle, []);

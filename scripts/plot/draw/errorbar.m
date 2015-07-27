@@ -178,7 +178,7 @@ function h = errorbar (varargin)
   unwind_protect
     hax = newplot (hax);
 
-    htmp = __errcomm__ ("errorbar", hax, varargin{:});
+    htmp = __errplot__ ("errorbar", hax, varargin{:});
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

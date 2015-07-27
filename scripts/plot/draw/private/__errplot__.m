@@ -24,10 +24,62 @@
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
+function retval = __errplot__ (caller, hax, varargin)
 
-function h = __errplot__ (fstr, hax, varargin)
+  if (nargin < 4)
+    print_usage (caller);
+  endif
 
-  fmt = __pltopt__ ("__errplot__", fstr);
+  retval = [];
+  data = cell (6,1);
+  nargs = numel (varargin);
+  k = 1;
+  while (k <= nargs)
+    arg = varargin{k++};
+    if (! isnumeric (arg))
+      error ("%s: data argument %d must be numeric", caller, k-1);
+    endif
+    if (isvector (arg))
+      arg = arg(:);
+    endif
+    sz = size (arg);
+    ndata = 1;
+    data{ndata} = arg;
+    while (k <= nargs)
+      arg = varargin{k++};
+      if (ischar (arg) || iscellstr (arg))
+        retval(end+1,1) = __do_errplot__(arg, hax, data{1:ndata});
+        break;
+      endif
+      if (! isnumeric (arg))
+        error ("%s: data argument %d must be numeric", caller, k-1);
+      endif
+      if (isvector (arg))
+        arg = arg(:);
+      endif
+      if (! isscalar (arg) && ((isvector (arg) && numel (arg) != prod (sz))
+          || any (size (arg) != sz)))
+        error ("%s: size of argument %d does not match others", caller, k-1);
+      endif
+      data{++ndata} = arg;
+      if (ndata > 6)
+        error ("%s: too many arguments to plot", caller);
+      endif
+    endwhile
+  endwhile
+
+  ## No format code found, use yerrorbar
+  if (! (ischar (arg) || iscellstr (arg)))
+    retval = [retval; __do_errplot__("~", hax, data{1:ndata})];
+  endif
+
+  drawnow ();
+
+endfunction
+
+function h = __do_errplot__ (fstr, hax, varargin)
+
+  fmt = __pltopt__ ("__do_errplot__", fstr);
 
   ## Set the plot type based on linestyle.
   switch (fmt.errorstyle)
@@ -66,7 +118,7 @@ function h = __errplot__ (fstr, hax, varargin)
     ## Must occur after __next_line_color__ in order to work correctly.
     hg = hggroup ("parent", hax);
     h = [h; hg];
-    args = __add_datasource__ ("__errplot__", hg,
+    args = __add_datasource__ ("__do_errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});
 
     hl = [(__line__ (hg, "color", lc, "linestyle", "-", "marker", "none")),

@@ -6,7 +6,6 @@ scripts_plot_draw_PRIVATE_FCN_FILES = \
   scripts/plot/draw/private/__add_datasource__.m \
   scripts/plot/draw/private/__bar__.m \
   scripts/plot/draw/private/__contour__.m \
-  scripts/plot/draw/private/__errcomm__.m \
   scripts/plot/draw/private/__errplot__.m \
   scripts/plot/draw/private/__ezplot__.m \
   scripts/plot/draw/private/__interp_cube__.m \

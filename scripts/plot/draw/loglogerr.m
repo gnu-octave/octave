@@ -66,7 +66,7 @@ function h = loglogerr (varargin)
     if (! ishold (hax))
       set (hax, "xminortick", "on", "yminortick", "on");
     endif
-    htmp = __errcomm__ ("loglogerr", hax, varargin{:});
+    htmp = __errplot__ ("loglogerr", hax, varargin{:});
 
   unwind_protect_cleanup
     if (! isempty (oldfig))

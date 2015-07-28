@@ -75,7 +75,7 @@ UTIL_SRC = \
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/util/oct-sort.cc
 
-OTHER_INC += \
+EXTRA_DIST += \
   liboctave/util/kpse.cc
 
 noinst_LTLIBRARIES += liboctave/util/libutil.la

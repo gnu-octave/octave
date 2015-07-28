@@ -1551,6 +1551,23 @@ Use @code{imwrite} instead.\n\
   // Note that this only needs to be set on the first frame
   imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());
 
+  const std::string compression = options.getfield ("compression").string_value ();
+#define COMPRESS_MAGICK_IMAGE_VECTOR(COMPRESSION_STRING, GM_TYPE) \
+  if (compression == COMPRESSION_STRING) \
+    for (std::vector<Magick::Image>::size_type i = 0; i < imvec.size (); i++) \
+      imvec[i].compressType (GM_TYPE);
+
+  COMPRESS_MAGICK_IMAGE_VECTOR("none", Magick::NoCompression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("bzip", Magick::BZipCompression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("fax3", Magick::FaxCompression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("fax4", Magick::Group4Compression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("jpeg", Magick::JPEGCompression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("lzw", Magick::LZWCompression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("rle", Magick::RLECompression)
+  else COMPRESS_MAGICK_IMAGE_VECTOR("deflate", Magick::ZipCompression)
+
+#undef COMPRESS_MAGICK_IMAGE_VECTOR
+
   write_file (filename, ext, imvec);
   if (error_state)
     return retval;

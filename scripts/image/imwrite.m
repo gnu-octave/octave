@@ -46,6 +46,12 @@
 ## multipage image, the size of the 4th dimension must also match and the third
 ## dimension must be a singleton.  By default, image will be completely opaque.
 ##
+## @item Compression
+## Compression to use one the image.  Can be one of the following: "none"
+## (default), "bzip", "fax3", "fax4", "jpeg", "lzw", "rle", or "deflate".
+## Note that not all compression types are available for all image formats
+## in which it defaults to your Magick library.
+##
 ## @item DelayTime
 ## For formats that accept animations (such as GIF), controls for how long a
 ## frame is displayed until it moves to the next one.  The value must be scalar
@@ -200,3 +206,32 @@ endfunction
 %! [g] = write_and_read (".jpeg", gray, "quality", 100);
 %! assert (g, gray)
 
+%!function [compression] = get_bmp_compression (ext, cmap = [], varargin)
+%!  gray = repmat (uint8 (0:255), 100, 1);
+%!  filename = [tempname() ext];
+%!  unwind_protect
+%!    if (isempty (cmap))
+%!      imwrite (gray, filename, varargin{1:end});
+%!    else
+%!      imwrite (gray, cmap, filename, varargin{1:end});
+%!    endif
+%!    fid = fopen (filename);
+%!    unwind_protect
+%!      compression = fread (fid, 31)(end);
+%!    unwind_protect_cleanup
+%!      fclose (fid);
+%!    end_unwind_protect
+%!  unwind_protect_cleanup
+%!    unlink (filename);
+%!  end_unwind_protect
+%!endfunction
+
+## BMP images must be saved uncompressed by default (bug #45565)
+%!testif HAVE_MAGICK
+%! assert (get_bmp_compression ("", [], "BMP"), 0)
+%! assert (get_bmp_compression ("", [], "bmp"), 0)
+%! assert (get_bmp_compression (".BMP"), 0)
+%! assert (get_bmp_compression (".bmp"), 0)
+%! assert (get_bmp_compression (".bmp", [], "bmp"), 0)
+%! assert (get_bmp_compression ("", gray (256), "bmp"), 0)
+%! assert (get_bmp_compression (".bmp", gray (256), "Compression", "rle"), 1)

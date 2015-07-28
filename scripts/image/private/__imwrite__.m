@@ -46,7 +46,8 @@ function __imwrite__ (img, varargin)
                     "quality",   75,
                     "delaytime", ones (1, size (img, 4)) *500, # 0.5 seconds
                     "loopcount", 0, ## this is actually Inf
-                    "alpha",     cast ([], class (img)));
+                    "alpha",     cast ([], class (img)),
+                    "compression", "none");
 
   for idx = 1:2:numel (param_list)
 
@@ -65,6 +66,19 @@ function __imwrite__ (img, varargin)
                 || size (options.alpha, 4) != size (img, 4))
           error ("imwrite: matrix for %s must have same dimension as image",
                  param_list{idx});
+        endif
+
+      case "compression"
+        options.compression = param_list{idx+1};
+        if (! ischar (options.compression))
+          error ("imwrite: value for %s option must be a string",
+                 param_list{idx});
+        endif
+        options.compression = tolower (options.compression);
+        if (! any (strcmp (options.compression, {"none", "bzip", "fax3", ...
+                                                 "fax4", "jpeg", "lzw", ...
+                                                 "rle", "deflate"})))
+          error ("imwrite: invalid compression `%s'", options.compression);
         endif
 
       case "delaytime"

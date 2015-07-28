@@ -48,7 +48,7 @@ function retval = __errplot__ (caller, hax, varargin)
     while (k <= nargs)
       arg = varargin{k++};
       if (ischar (arg) || iscellstr (arg))
-        retval(end+1,1) = __do_errplot__(arg, hax, data{1:ndata});
+        retval = [retval; __do_errplot__(arg, hax, data{1:ndata})];
         break;
       endif
       if (! isnumeric (arg))
@@ -100,7 +100,7 @@ function h = __do_errplot__ (fstr, hax, varargin)
   endswitch
 
   h = [];
-  nplots = columns (varargin{1});
+  nplots = ifelse (isempty (varargin{1}), 0, columns (varargin{1}));
   for i = 1:nplots
 
     if (isempty (fmt.color))
@@ -251,7 +251,7 @@ function h = __do_errplot__ (fstr, hax, varargin)
   endfor
 
   ## Process legend key
-  if (! isempty (fmt.key))
+  if (! isempty (fmt.key) && nplots > 0)
     hlegend = [];
     fkids = get (gcf (), "children");
     for i = 1 : numel (fkids)

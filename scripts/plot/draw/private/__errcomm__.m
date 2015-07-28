@@ -49,7 +49,7 @@ function retval = __errcomm__ (caller, hax, varargin)
     while (k <= nargs)
       arg = varargin{k++};
       if (ischar (arg) || iscellstr (arg))
-        retval(end+1,1) = __errplot__(arg, hax, data{1:ndata});
+        retval = [retval; __errplot__(arg, hax, data{1:ndata})];
         break;
       endif
       if (! isnumeric (arg))

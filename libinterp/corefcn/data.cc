@@ -2703,9 +2703,9 @@ DEFUN (length, args, ,
 Return the length of the object @var{a}.\n\
 \n\
 The length is 0 for empty objects, 1 for scalars, and the number of elements\n\
-for vectors.  For matrix objects, the length is the number of rows or\n\
-columns, whichever is greater (this odd definition is used for compatibility\n\
-with @sc{matlab}).\n\
+for vectors.  For matrix or N-dimensional objects, the length is the number\n\
+of elements along the largest dimension\n\
+(equivalent to @w{@code{max (size (@var{a}))}}).\n\
 @seealso{numel, size}\n\
 @end deftypefn")
 {

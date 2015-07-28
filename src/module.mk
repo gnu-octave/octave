@@ -47,7 +47,7 @@ if AMCOND_BUILD_GUI
   archlib_PROGRAMS += src/octave-gui
   OCTAVE_VERSION_LINKS += src/octave-gui-$(version)$(EXEEXT)
 
-  OCTAVE_INTERPRETER_TARGETS += src/octave-gui
+  OCTAVE_INTERPRETER_TARGETS += src/octave-gui$(EXEEXT)
 endif
 
 OCTAVE_CORE_LIBS = \
@@ -160,7 +160,7 @@ if AMCOND_CROSS_TOOLS
 OCTAVE_CROSS_TOOLS += src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT)
 
 src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): src/$(host_triplet)-mkoctfile.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) src/$(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(top_srcdir)/src src/$(host_triplet)-mkoctfile.cc
 
 src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_cross_config_vals)
@@ -170,7 +170,7 @@ src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc Makefile | src/$(octave_di
 OCTAVE_CROSS_TOOLS += src/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 
 src/$(host_triplet)-octave-config$(BUILD_EXEEXT): src/$(host_triplet)-octave-config.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) src/$(host_triplet)-octave-config.cc
+	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(top_srcdir)/src src/$(host_triplet)-octave-config.cc
 
 src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_default_vals)

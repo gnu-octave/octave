@@ -594,10 +594,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                       "fontweight"};
           ca_props = get (ca(1), proplist);
           set (hlegend, proplist, ca_props);
+          old_hplots = [];
         else
           addprops = false;
           axes (hlegend);
           delete (get (hlegend, "children"));
+          ## Hack, to get list of hplots for which addlistener has already been called.
+          old_hplots = [ get(hlegend, "deletefcn"){6:end} ];
         endif
         if (addprops)
           addproperty ("edgecolor", hlegend, "color", [0, 0, 0]);
@@ -859,7 +862,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                 hobjects(end+1) = l1;
               endif
 
-              if (addprops)
+              if (! any (hplots(k) == old_hplots))
                 addlistener (hplots(k), "color",
                              {@updateline, hlegend, linelength, false});
                 addlistener (hplots(k), "linestyle",
@@ -1254,7 +1257,7 @@ endfunction
 %!demo
 %! clf;
 %! plot (rand (3));
-%! title ('legend("show") without inputs creates default labels');
+%! title ('legend ("show") without inputs creates default labels');
 %! h = legend ('show');
 
 %!demo
@@ -1343,12 +1346,6 @@ endfunction
 
 %!demo
 %! clf;
-%! plot (1:10, 1:10);
-%! title ('a very long label can sometimes cause problems');
-%! legend ('hello very big world', 'location', 'northeastoutside');
-
-%!demo
-%! clf;
 %! labels = {};
 %! colororder = get (gca, 'colororder');
 %! for i = 1:5
@@ -1396,6 +1393,13 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap (cool (64));
+%! surf (peaks ());
+%! legend ('peaks()')
+%! title ('legend() works for surface objects too');
+
+%!demo
+%! clf reset;  % needed to undo colormap assignment in previous demo
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
@@ -1455,6 +1459,7 @@ endfunction
 %! subplot (2,2,4);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'southeastoutside');
+%! %% Legend works on a per axes basis for each subplot
 
 %!demo
 %! clf;
@@ -1489,6 +1494,12 @@ endfunction
 %! title ('plotyy legend test #3: Blue and Green labels');
 %! legend ('Blue', 'Green', 'location', 'south');
 
+%!demo
+%! clf;
+%! plot (1:10, 1:10);
+%! title ('a very long label can sometimes cause problems');
+%! legend ('hello very big world', 'location', 'northeastoutside');
+
 %!demo % bug 36408
 %! clf;
 %! option = 'right';
@@ -1496,7 +1507,7 @@ endfunction
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
-%!  title ('Subplots should adjust to the legend placed outside');
+%!  title ('Subplots adjust to the legend placed outside');
 %!  legend ({'1'}, 'location', 'northeastoutside');
 %!  legend (option);
 %! subplot (3,1,2);
@@ -1517,7 +1528,7 @@ endfunction
 %! option = 'right';
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
-%!  title ('Subplots should adjust to the legend placed outside');
+%!  title ('Subplots adjust to the legend placed outside');
 %!  legend ({'1'}, 'location', 'northwestoutside');
 %!  legend (option);
 %! subplot (3,1,2);
@@ -1537,7 +1548,7 @@ endfunction
 %!  set (gca (), 'yaxislocation', 'right');
 %!  xlabel ('xlabel');
 %!  ylabel ('ylabel');
-%!  title ('Subplots should adjust to the legend placed outside');
+%!  title ('Subplots adjust to the legend placed outside');
 %!  legend ({'1'}, 'location', 'northeastoutside');
 %!  legend (option);
 %! subplot (3,1,2);
@@ -1563,7 +1574,7 @@ endfunction
 %!  set (gca (), 'yaxislocation', 'right');
 %!  xlabel ('xlabel');
 %!  ylabel ('ylabel');
-%!  title ('Subplots should adjust to the legend placed outside');
+%!  title ('Subplots adjust to the legend placed outside');
 %!  legend ({'1'}, 'location', 'northwestoutside');
 %!  legend (option);
 %! subplot (3,1,2);
@@ -1589,7 +1600,7 @@ endfunction
 %!  set (gca (), 'xaxislocation', 'top');
 %!  xlabel ('xlabel');
 %!  ylabel ('ylabel');
-%!  title ('Subplots should adjust to the legend placed outside');
+%!  title ('Subplots adjust to the legend placed outside');
 %!  legend ({'1'}, 'location', 'northwestoutside');
 %!  legend (option);
 %! subplot (3,1,2);
@@ -1611,14 +1622,7 @@ endfunction
 %! clf;
 %! plot (1:10);
 %! legend ('Legend Text');
-%! title ({'Multi-line', 'titles', 'are a', 'problem'});
-
-%!demo
-%! clf;
-%! colormap (cool (64));
-%! surf (peaks ());
-%! legend ('peaks()')
-%! title ('legend() works for surface objects too');
+%! title ({'Multi-line', 'titles', 'are a', 'problem', 'See bug #39697'});
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");

@@ -376,13 +376,13 @@ libinterp_CLEANFILES += \
   libinterp/parse-tree/oct-parse.output
 
 libinterp_DISTCLEANFILES += \
-  libinterp/.DOCSTRINGS \
-  libinterp/DOCSTRINGS \
   $(LIBINTERP_BUILT_NODISTFILES) \
   $(OCT_FILES) \
   $(LIBINTERP_TST_FILES)
 
 libinterp_MAINTAINERCLEANFILES += \
+  libinterp/.DOCSTRINGS \
+  libinterp/DOCSTRINGS \
   $(LIBINTERP_BUILT_DISTFILES)
 
 BUILT_DISTFILES += $(LIBINTERP_BUILT_DISTFILES)

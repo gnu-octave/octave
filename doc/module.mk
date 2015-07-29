@@ -366,12 +366,12 @@ doc-interpreter-clean:
 	rm -rf t2d_cache
 
 doc_DISTCLEANFILES += \
-  $(BUILT_OCTAVE_TEXI_SRC) \
   $(OCTAVE_HTML_STAMP)
 
 doc_MAINTAINERCLEANFILES += \
   AUTHORS \
   $(BUILT_DOC_IMAGES) \
+  $(BUILT_OCTAVE_TEXI_SRC) \
   doc/interpreter/doc-cache
 
 DIRSTAMP_FILES += doc/interpreter/$(octave_dirstamp)

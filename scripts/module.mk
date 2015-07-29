@@ -222,11 +222,13 @@ scripts_EXTRA_DIST += \
 EXTRA_DIST += $(scripts_EXTRA_DIST)
 
 scripts_DISTCLEANFILES += \
-  scripts/.DOCSTRINGS \
-  scripts/DOCSTRINGS \
   $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \
   $(GEN_FCN_FILES)
+
+scripts_MAINTAINERCLEANFILES += \
+  scripts/.DOCSTRINGS \
+  scripts/DOCSTRINGS
 
 CLEANFILES += $(scripts_CLEANFILES)
 DISTCLEANFILES += $(scripts_DISTCLEANFILES)

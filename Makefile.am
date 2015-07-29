@@ -161,10 +161,10 @@ CLEANFILES += \
 
 DISTCLEANFILES += \
   .gdbinit \
-  ChangeLog \
   $(DIRSTAMP_FILES)
 
 MAINTAINERCLEANFILES += \
+  ChangeLog \
   $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@

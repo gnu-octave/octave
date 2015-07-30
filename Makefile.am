@@ -193,7 +193,7 @@ bits/stl_algo.h: build-aux/stl_algo.h-fixed
 ## there isn't a stray copy sitting in the build tree.
 
 nonexistent-file:
-	@rm -f bits/stl_algo.h
+	$(AM_V_at)rm -f bits/stl_algo.h
 .PHONY: nonexistent-file
 
 .gdbinit: etc/gdbinit

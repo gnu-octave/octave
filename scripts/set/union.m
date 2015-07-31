@@ -51,7 +51,7 @@ function [y, ia, ib] = union (a, b, varargin)
   [a, b] = validsetargs ("union", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+  isrowvec = (isrow (a) || isempty (a)) && (isrow (b) || isempty (b));
 
   if (by_rows)
     y = [a; b];
@@ -94,6 +94,12 @@ endfunction
 %! assert (y, [1; 2; 3; 4; 5]);
 %! assert (y, sort ([a(ia)'; b(ib)']));
 
+## Test format when input is empty
+%!assert (union ([],[1,2]), [1,2])
+%!assert (union ([1,2],[]), [1,2])
+%!assert (union ([],[1;2]), [1;2])
+%!assert (union ([1;2],[]), [1;2])
+
 ## Test common input validation for set routines contained in validsetargs
 %!error <cell array of strings cannot be combined> union ({"a"}, 1)
 %!error <A and B must be arrays or cell arrays> union (@sin, 1)
@@ -102,4 +108,3 @@ endfunction
 %!error <A and B must be arrays or cell arrays> union (@sin, 1, "rows")
 %!error <A and B must be 2-dimensional matrices> union (rand(2,2,2), 1, "rows")
 %!error <number of columns in A and B must match> union ([1 2], 1, "rows")
-

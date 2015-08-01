@@ -71,6 +71,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   _lexer_apis = 0;
   _is_octave_file = true;
+  _lines_changed = false;
 
   _ced = directory_arg;
 
@@ -78,9 +79,14 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
   _edit_area = new octave_qscintilla (this);
+  _line = 0;
+  _col  = 0;
 
   connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
            this, SLOT (handle_cursor_moved (int,int)));
+
+  connect (_edit_area, SIGNAL (linesChanged ()),
+           this, SLOT (handle_lines_changed ()));
 
   connect (_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
            this, SLOT (handle_context_menu_edit (const QString&)));
@@ -1878,6 +1884,7 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
 
   _edit_area->setAutoIndent
         (settings->value ("editor/auto_indent",true).toBool ());
+  _smart_indent = settings->value ("editor/auto_indent",true).toBool ();
   _edit_area->setTabIndents
         (settings->value ("editor/tab_indents_line",false).toBool ());
   _edit_area->setBackspaceUnindents
@@ -2063,14 +2070,81 @@ file_editor_tab::center_current_line ()
 }
 
 void
+file_editor_tab::handle_lines_changed ()
+{
+  // the related signal is emitted before cursor-move-signal!
+  _lines_changed = true;
+}
+
+void
 file_editor_tab::handle_cursor_moved (int line, int col)
 {
   if (_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))
     show_auto_completion (this);
 
+  if (_lines_changed)  // check for smart indentation
+    {
+      _lines_changed = false;
+      if (_is_octave_file && _smart_indent && line == _line+1 && col < _col)
+        do_smart_indent ();
+    }
+
+  _line = line;
+  _col  = col;
+
   _row_indicator->setNum (line+1);
   _col_indicator->setNum (col+1);
 }
+
+void
+file_editor_tab::do_smart_indent ()
+{
+  QString prev_line = _edit_area->text (_line);
+
+  QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|do|function"
+                          "|unwind_protect|unwind_protect_cleanup|try)"
+                          "[\n\t #%]");
+  if (prev_line.contains (bkey))
+    {
+      _edit_area->indent (_line+1);
+      _edit_area->setCursorPosition (_line+1,
+                                     _edit_area->indentation (_line) +
+                                     _edit_area->indentationWidth ());
+      return;
+    }
+
+  QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\t #%\n]");
+  if (prev_line.contains (mkey))
+    {
+      int prev_ind = _edit_area->indentation (_line-1);
+      int act_ind = _edit_area->indentation (_line);
+
+      if (prev_ind == act_ind)
+        _edit_area->unindent (_line);
+      else if (prev_ind > act_ind)
+        {
+          _edit_area->setIndentation (_line+1, prev_ind);
+          _edit_area->setCursorPosition (_line+1, prev_ind);
+        }
+      return;
+    }
+
+  QRegExp ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
+                          "|end_try_catch|end_unwind_protext)[\t #%\n(;]");
+  if (prev_line.contains (ekey))
+    {
+      if (_edit_area->indentation (_line-1) <= _edit_area->indentation (_line))
+        {
+          _edit_area->unindent (_line+1);
+          _edit_area->unindent (_line);
+          _edit_area->setCursorPosition (_line+1,
+                                         _edit_area->indentation (_line));
+        }
+      return;
+    }
+
+}
+
 
 QString
 file_editor_tab::get_function_name ()

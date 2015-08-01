@@ -173,6 +173,7 @@ private slots:
   void auto_margin_width ();
 
   void handle_cursor_moved (int line, int col);
+  void handle_lines_changed (void);
 
 private:
 
@@ -216,6 +217,8 @@ private:
   void add_octave_apis (octave_value_list key_ovl);
   QString get_function_name ();
 
+  void do_smart_indent (void);
+
   QsciScintilla::EolMode detect_eol_mode ();
   void update_eol_indicator ();
 
@@ -236,6 +239,7 @@ private:
   bool _copy_available;
   bool _is_octave_file;
   bool _always_reload_changed_files;
+  bool _smart_indent;
 
   QFileSystemWatcher _file_system_watcher;
 
@@ -247,6 +251,10 @@ private:
   QString _prep_apis_file;
 
   static bool _cancelled;
+
+  int _line;
+  int _col;
+  bool _lines_changed;
 };
 
 #endif

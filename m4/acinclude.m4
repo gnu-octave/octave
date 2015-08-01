@@ -1158,6 +1158,52 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
   fi
 ])
 dnl
+dnl Check whether Qt works with full OpenGL support
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
+  AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
+    [octave_cv_qt_opengl_ok],
+    [AC_LANG_PUSH(C++)
+     ac_octave_save_CPPFLAGS="$CPPFLAGS"
+     CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if HAVE_WINDOWS_H
+         # include <windows.h>
+         #endif
+         #if defined (HAVE_GL_GL_H)
+         # include <GL/gl.h>
+         #elif defined (HAVE_OPENGL_GL_H)
+         # include <OpenGL/gl.h>
+         #endif
+         #ifdef HAVE_GL_GLU_H
+         # include <GL/glu.h>
+         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
+         # include <OpenGL/glu.h>
+         #endif
+         #include <QGLWidget>
+         class gl_widget : public QGLWidget
+         {
+         public:
+           gl_widget (QWidget *parent = 0) : QGLWidget (parent) {}
+           ~gl_widget () {}
+         };
+         ]], [[
+         gl_widget widget;
+       ]])],
+       octave_cv_qt_opengl_ok=yes,
+       octave_cv_qt_opengl_ok=no)
+     CPPFLAGS="$ac_octave_save_CPPFLAGS"
+     AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_qt_opengl_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
 dnl Check if the default Fortran INTEGER is 64 bits wide.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [

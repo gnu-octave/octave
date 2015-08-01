@@ -2859,6 +2859,12 @@ if test $build_gui = yes; then
   fi
 
   if test $build_gui = yes; then
+    OCTAVE_CHECK_QT_OPENGL_OK([],
+      [warn_gui="Qt does not work with the OpenGL libs (GL and GLU) -- disabling GUI"
+       build_gui=no])
+  fi
+
+  if test $build_gui = yes; then
     OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
     if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
       warn_gui="QAbstractItemModel::beginResetModel() not found -- disabling GUI"

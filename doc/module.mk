@@ -371,6 +371,11 @@ doc_MAINTAINERCLEANFILES += \
   $(BUILT_OCTAVE_TEXI_SRC) \
   doc/interpreter/doc-cache
 
+## The TeX software suite is used to create both PDF and PS output formats.
+## In order to avoid race conditions between simultaneous TeX commands, the
+## PDF and PS builds are forced to run serially through the following rule.
+doc/interpreter/octave.pdf: doc/interpreter/octave.ps
+
 DIRSTAMP_FILES += doc/interpreter/$(octave_dirstamp)
 
 liboctave_TEXINFOS = \
@@ -433,10 +438,10 @@ doc_EXTRA_DIST += \
   doc/liboctave/liboctave.pdf \
   doc/liboctave/liboctave.html
 
-## The texi2dvi script (used to create both PDF and DVI output formats)
-## uses some fixed temporary file names.  In order to avoid a race condition
-## the DVI and PDF builds are forced to run serially through a Makefile rule.
-#doc/liboctave/liboctave.pdf: doc/liboctave/liboctave.dvi
+## The TeX software suite is used to create both PDF and PS output formats.
+## In order to avoid race conditions between simultaneous TeX commands, the
+## PDF and PS builds are forced to run serially through the following rule.
+doc/liboctave/liboctave.pdf: doc/liboctave/liboctave.ps
 
 DIRSTAMP_FILES += doc/liboctave/$(octave_dirstamp)
 

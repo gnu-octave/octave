@@ -4,12 +4,15 @@ doc_CLEANFILES =
 doc_DISTCLEANFILES =
 doc_MAINTAINERCLEANFILES =
 
-TEXINPUTS := $(PATH_SEPARATOR)$(top_srcdir)/doc/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(top_builddir)/doc/interpreter$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
+TEXINPUTS := $(PATH_SEPARATOR)$(top_srcdir)/doc/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(top_builddir)/doc/interpreter$(PATH_SEPARATOR)$(abs_top_builddir)/doc/.texmf-var//$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
 
 TEXMFCNF := $(PATH_SEPARATOR)$(top_srcdir)/doc$(PATH_SEPARATOR)$(top_builddir)/doc$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)
 
+TEXMFVAR := $(abs_top_builddir)/doc/.texmf-var
+
 export TEXINPUTS
 export TEXMFCNF
+export TEXMFVAR
 
 DVIPS = dvips
 TEX = tex
@@ -554,6 +557,7 @@ doc-clean:
 	rm -rf doc/interpreter/octave.t2p
 	rm -rf doc/liboctave/liboctave.t2d
 	rm -rf doc/liboctave/liboctave.t2p
+	rm -rf doc/.texmf-var
 
 
 doc-distclean: doc-clean

@@ -248,13 +248,13 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 doc/interpreter/octave.dvi: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
-	$(TEXI2DVI) $(AM_V_texinfo) -o $@ $(AM_V_texidevnull) \
+	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
 doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
-	$(TEXI2PDF) $(AM_V_texinfo) -o $@ $(AM_V_texidevnull) \
+	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
 	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
 
 doc/interpreter/octave.html: $(OCTAVE_HTML_STAMP)
@@ -362,9 +362,6 @@ doc_EXTRA_DIST += \
   $(LOGOS) \
   $(TXI_SRC)
 
-doc-interpreter-clean:
-	rm -rf t2d_cache
-
 doc_DISTCLEANFILES += \
   $(OCTAVE_HTML_STAMP)
 
@@ -440,9 +437,6 @@ doc_EXTRA_DIST += \
 ## uses some fixed temporary file names.  In order to avoid a race condition
 ## the DVI and PDF builds are forced to run serially through a Makefile rule.
 #doc/liboctave/liboctave.pdf: doc/liboctave/liboctave.dvi
-
-doc-liboctave-clean:
-	rm -rf doc/liboctave/t2d_cache
 
 DIRSTAMP_FILES += doc/liboctave/$(octave_dirstamp)
 
@@ -551,8 +545,11 @@ MAINTAINERCLEANFILES += $(doc_MAINTAINERCLEANFILES)
 
 doc-clean:
 	rm -f $(doc_CLEANFILES)
-	rm -rf $(top_builddir)/.t2d.cache
-	rm -rf $(top_builddir)/.t2p.cache
+	rm -rf doc/interpreter/octave.t2d
+	rm -rf doc/interpreter/octave.t2p
+	rm -rf doc/liboctave/liboctave.t2d
+	rm -rf doc/liboctave/liboctave.t2p
+
 
 doc-distclean: doc-clean
 	rm -f $(doc_DISTCLEANFILES)

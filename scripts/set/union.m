@@ -94,6 +94,14 @@ endfunction
 %! assert (y, [1; 2; 3; 4; 5]);
 %! assert (y, sort ([a(ia)'; b(ib)']));
 
+## Test empty cell string array unions
+%!assert (union ({}, []), cell (0,1))
+%!assert (union ([], {}), cell (0,1))
+%!assert (union ([], {'a', 'b'}), {'a';'b'})
+%!assert (union ({'a', 'b'}, []), {'a';'b'})
+%!assert (union (['a', 'b'], {}), {'ab'})
+%!assert (union ({}, ['a', 'b']), {'ab'})
+
 ## Test common input validation for set routines contained in validsetargs
 %!error <cell array of strings cannot be combined> union ({"a"}, 1)
 %!error <A and B must be arrays or cell arrays> union (@sin, 1)

@@ -31,6 +31,10 @@ function [x, y] = validsetargs (caller, x, y, byrows_arg)
         y = cellstr (y);
       elseif (icy && ischar (x))
         x = cellstr (x);
+      elseif (icy && isempty (x))
+        x = {};
+      elseif (icx && isempty (y))
+        y = {};
       elseif (! (icx && icy))
         error ("%s: cell array of strings cannot be combined with a nonstring value", caller);
       endif

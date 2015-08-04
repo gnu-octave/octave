@@ -200,7 +200,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
             {
               if (! elt->eval ())
                 {
-                  ::error ("no default value for argument %d\n", i+1);
+                  error ("no default value for argument %d", i+1);
                   return;
                 }
             }

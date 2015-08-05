@@ -172,7 +172,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
 
 ## Abramowitz and Stegun, page 258, eq 6.3.5
 %!test
-%! z = [-10:.1:-.1 .1:.1:20]; # drop the 0
+%! z = [-100:-1 1:200] ./ 10; # drop the 0
 %! assert (psi (z + 1), psi (z) + 1 ./ z, eps*1000)
 
 ## Abramowitz and Stegun, page 258, eq 6.3.2
@@ -186,7 +186,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
 
 ## Interesting identities of the digamma function, in section of 5.1.3
 %!assert (psi (1/3), - em - (3/2) * log(3) - ((sqrt (3) / 6) * pi), eps*10)
-%!assert (psi (1/4), - em -3 * log (2) - pi /2)
+%!assert (psi (1/4), - em -3 * log (2) - pi/2, eps*10)
 %!assert (psi (1/6), - em -2 * log (2) - (3/2) * log (3) - ((sqrt (3) / 2) * pi), eps*10)
 
 ## First 6 zeros of the digamma function, in section of 5.1.5 (and also on
@@ -200,7 +200,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
 
 ## Tests for complex values
 %!shared z
-%! z = [-10:.1:-.1 .1:.1:20]; # drop the 0
+%! z = [-100:-1 1:200] ./ 10; # drop the 0
 
 ## Abramowitz and Stegun, page 259 eq 6.3.10
 %!assert (real (psi (i*z)), real (psi (1 - i*z)))
@@ -209,7 +209,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
 %!assert (imag (psi (i*z)), 1/2 .* 1./z + 1/2 * pi * coth (pi * z), eps *10)
 
 ## Abramowitz and Stegun, page 259 eq 6.3.12
-%!assert (imag (psi (1/2 + i*z)), 1/2 * pi * tanh (pi * z), eps)
+%!assert (imag (psi (1/2 + i*z)), 1/2 * pi * tanh (pi * z), eps*10)
 
 ## Abramowitz and Stegun, page 259 eq 6.3.13
 %!assert (imag (psi (1 + i*z)), - 1./(2*z) + 1/2 * pi * coth (pi * z), eps*10)

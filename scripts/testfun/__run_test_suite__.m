@@ -21,7 +21,8 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function __run_test_suite__ (fcndirs, fixedtestdirs)
+function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
+
   testsdir = octave_config_info ("octtestsdir");
   libinterptestdir = fullfile (testsdir, "libinterp");
   liboctavetestdir = fullfile (testsdir, "liboctave");
@@ -117,6 +118,14 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
     warning (orig_wstate);
     page_screen_output (pso);
   end_unwind_protect
+
+  if (nargout > 0)
+    pass = np;
+    fail = nfail;
+    xfail = dxf;
+    skip = xsk;
+  endif
+
 endfunction
 
 function print_test_file_name (nm)

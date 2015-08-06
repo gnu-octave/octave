@@ -1777,7 +1777,7 @@ public:
 
     if (! instance)
       {
-        ::error ("unable to create figure_manager object!");
+        error ("unable to create figure_manager object!");
 
         retval = false;
       }

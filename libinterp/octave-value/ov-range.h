@@ -59,14 +59,14 @@ public:
     : octave_base_value (), range (base, limit, inc), idx_cache ()
   {
     if (range.numel () < 0)
-      ::error ("invalid range");
+      error ("invalid range");
   }
 
   octave_range (const Range& r)
     : octave_base_value (), range (r), idx_cache ()
   {
     if (range.numel () < 0 && range.numel () != -2)
-      ::error ("invalid range");
+      error ("invalid range");
   }
 
   octave_range (const octave_range& r)

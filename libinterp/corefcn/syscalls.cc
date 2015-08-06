@@ -829,7 +829,7 @@ convert (int x, int ibase, int obase)
   int tmp = x % obase;
 
   if (tmp > ibase - 1)
-    ::error ("mkfifo: invalid digit");
+    error ("mkfifo: invalid digit");
   else
     {
       retval = tmp;
@@ -839,7 +839,7 @@ convert (int x, int ibase, int obase)
           tmp = x % obase;
           if (tmp > ibase - 1)
             {
-              ::error ("mkfifo: invalid digit");
+              error ("mkfifo: invalid digit");
               break;
             }
           retval += mult * tmp;

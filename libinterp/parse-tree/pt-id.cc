@@ -50,12 +50,12 @@ tree_identifier::eval_undefined_error (void)
     return;
 
   if (l == -1 && c == -1)
-    ::error_with_id ("Octave:undefined-function",
-                     "'%s' undefined", name ().c_str ());
+    error_with_id ("Octave:undefined-function",
+                   "'%s' undefined", name ().c_str ());
   else
-    ::error_with_id ("Octave:undefined-function",
-                     "'%s' undefined near line %d column %d",
-                     name ().c_str (), l, c);
+    error_with_id ("Octave:undefined-function",
+                   "'%s' undefined near line %d column %d",
+                   name ().c_str (), l, c);
 }
 
 octave_value_list

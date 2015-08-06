@@ -276,7 +276,7 @@ get_concat_class (const std::string& c1, const std::string& c2)
 static void
 eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 {
-  ::error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
+  error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
 }
 
 void

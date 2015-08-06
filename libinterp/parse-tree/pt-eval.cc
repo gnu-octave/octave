@@ -412,8 +412,8 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       }
     else
       {
-        ::error ("invalid type in for loop expression near line %d, column %d",
-                 cmd.line (), cmd.column ());
+        error ("invalid type in for loop expression near line %d, column %d",
+               cmd.line (), cmd.column ());
       }
   }
 }
@@ -878,8 +878,8 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
         }
     }
   else
-    ::error ("missing value in switch command near line %d, column %d",
-             cmd.line (), cmd.column ());
+    error ("missing value in switch command near line %d, column %d",
+           cmd.line (), cmd.column ());
 }
 
 void

@@ -157,7 +157,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 #define DASPK_ABORT1(msg) \
   do \
     { \
-      ::error ("daspk: " msg); \
+      error ("daspk: " msg); \
       DASPK_ABORT (); \
     } \
   while (0)
@@ -165,7 +165,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 #define DASPK_ABORT2(fmt, arg) \
   do \
     { \
-      ::error ("daspk: " fmt, arg); \
+      error ("daspk: " fmt, arg); \
       DASPK_ABORT (); \
     } \
   while (0)

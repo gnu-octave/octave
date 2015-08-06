@@ -193,7 +193,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 #define DASRT_ABORT1(msg) \
   do \
     { \
-      ::error ("dasrt: " msg); \
+      error ("dasrt: " msg); \
       DASRT_ABORT; \
     } \
   while (0)
@@ -201,7 +201,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 #define DASRT_ABORT2(fmt, arg) \
   do \
     { \
-      ::error ("dasrt: " fmt, arg); \
+      error ("dasrt: " fmt, arg); \
       DASRT_ABORT; \
     } \
   while (0)

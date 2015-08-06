@@ -75,7 +75,7 @@ shortcut_manager::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create shortcut_manager object!");
+      error ("unable to create shortcut_manager object!");
 
       retval = false;
     }

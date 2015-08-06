@@ -134,7 +134,7 @@ public:
 
     if (! instance)
       {
-        ::error ("unable to create call stack object!");
+        error ("unable to create call stack object!");
 
         retval = false;
       }

@@ -2365,7 +2365,7 @@ private:
 
     if (! instance)
       {
-        ::error ("unable to create gh_manager!");
+        error ("unable to create gh_manager!");
 
         retval = false;
       }
@@ -5960,7 +5960,7 @@ public:
 
     if (! instance)
       {
-        ::error ("unable to create gh_manager!");
+        error ("unable to create gh_manager!");
 
         retval = false;
       }

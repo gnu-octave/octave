@@ -195,7 +195,7 @@ Example:\n\
         retval = 1;
     }
   else
-    ::error ("invalid use of end");
+    error ("invalid use of end");
 
   return retval;
 }
@@ -244,7 +244,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
           if (error_state)
             {
-              ::error ("evaluating argument list element number %d", k+1);
+              error ("evaluating argument list element number %d", k+1);
               args.clear ();
               break;
             }

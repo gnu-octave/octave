@@ -52,7 +52,7 @@ octave_value_typeinfo::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create value type info object!");
+      error ("unable to create value type info object!");
 
       retval = false;
     }

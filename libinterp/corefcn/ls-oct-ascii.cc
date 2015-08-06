@@ -408,7 +408,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
     }
   else
     {
-      ::error ("for now, I can only save real matrices in 3-D format");
+      error ("for now, I can only save real matrices in 3-D format");
       fail = true;
     }
 

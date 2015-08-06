@@ -143,7 +143,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 #define LSODE_ABORT1(msg) \
   do \
     { \
-      ::error ("lsode: " msg); \
+      error ("lsode: " msg); \
       LSODE_ABORT (); \
     } \
   while (0)
@@ -151,7 +151,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 #define LSODE_ABORT2(fmt, arg) \
   do \
     { \
-      ::error ("lsode: " fmt, arg); \
+      error ("lsode: " fmt, arg); \
       LSODE_ABORT (); \
     } \
   while (0)

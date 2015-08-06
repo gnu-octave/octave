@@ -47,8 +47,8 @@ tree_expression::is_logically_true (const char *warn_for)
       if (t1.is_defined ())
         return t1.is_true ();
       else
-        ::error ("%s: undefined value used in conditional expression",
-                 warn_for);
+        error ("%s: undefined value used in conditional expression",
+               warn_for);
     }
 
   return expr_value;
@@ -57,14 +57,14 @@ tree_expression::is_logically_true (const char *warn_for)
 octave_value
 tree_expression::rvalue1 (int)
 {
-  ::error ("invalid rvalue function called in expression");
+  error ("invalid rvalue function called in expression");
   return octave_value ();
 }
 
 octave_value_list
 tree_expression::rvalue (int)
 {
-  ::error ("invalid rvalue function called in expression");
+  error ("invalid rvalue function called in expression");
   return octave_value_list ();
 }
 
@@ -77,7 +77,7 @@ tree_expression::rvalue (int nargout, const std::list<octave_lvalue> *)
 octave_lvalue
 tree_expression::lvalue (void)
 {
-  ::error ("invalid lvalue function called in expression");
+  error ("invalid lvalue function called in expression");
   return octave_lvalue ();
 }
 

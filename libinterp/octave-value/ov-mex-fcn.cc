@@ -136,7 +136,7 @@ octave_mex_function::do_multi_index_op (int nargout,
     return retval;
 
   if (args.has_magic_colon ())
-    ::error ("invalid use of colon in function argument list");
+    error ("invalid use of colon in function argument list");
   else
     {
       unwind_protect frame;

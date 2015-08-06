@@ -81,7 +81,7 @@ public:
 
     if (! instance)
       {
-        ::error ("unable to create ch_manager!");
+        error ("unable to create ch_manager!");
 
         retval = false;
       }

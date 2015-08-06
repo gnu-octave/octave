@@ -303,7 +303,7 @@ octave_errno::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create errno object!");
+      error ("unable to create errno object!");
 
       retval = false;
     }

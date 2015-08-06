@@ -117,7 +117,7 @@ octave_user_script::subsref (const std::string&,
 {
   octave_value_list retval;
 
-  ::error ("invalid use of script %s in index expression", file_name.c_str ());
+  error ("invalid use of script %s in index expression", file_name.c_str ());
 
   return retval;
 }
@@ -161,7 +161,7 @@ octave_user_script::do_multi_index_op (int nargout,
                     tree_break_command::breaking--;
                 }
               else
-                ::error ("max_recursion_depth exceeded");
+                error ("max_recursion_depth exceeded");
             }
         }
       else
@@ -514,7 +514,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (call_depth >= Vmax_recursion_depth)
     {
-      ::error ("max_recursion_depth exceeded");
+      error ("max_recursion_depth exceeded");
       return retval;
     }
 
@@ -555,8 +555,8 @@ octave_user_function::do_multi_index_op (int nargout,
         }
       else
         {
-          ::error ("%s: invalid classdef constructor, no output argument defined",
-                   dispatch_class ().c_str ());
+          error ("%s: invalid classdef constructor, no output argument defined",
+                 dispatch_class ().c_str ());
           return retval;
         }
     }

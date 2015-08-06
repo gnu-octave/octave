@@ -230,7 +230,7 @@ fopen_mode_to_ios_mode (const std::string& mode)
         retval = (std::ios::in | std::ios::out | std::ios::app
                   | std::ios::binary);
       else
-        ::error ("invalid mode specified");
+        error ("invalid mode specified");
     }
 
   return retval;
@@ -576,13 +576,13 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
               retval = do_stream_open (name, mode, arch, fid);
             }
           else
-            ::error ("%s: architecture type must be a string", fcn);
+            error ("%s: architecture type must be a string", fcn);
         }
       else
-        ::error ("%s: file mode must be a string", fcn);
+        error ("%s: file mode must be a string", fcn);
     }
   else
-    ::error ("%s: file name must be a string", fcn);
+    error ("%s: file name must be a string", fcn);
 
   return retval;
 }
@@ -946,7 +946,7 @@ expanded even when the template string is defined with single quotes.\n\
               result = os.printf (args(fmt_n), tmp_args, who);
             }
           else
-            ::error ("%s: format TEMPLATE must be a string", who.c_str ());
+            error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
     }
   else
@@ -1001,7 +1001,7 @@ expanded even when the template string is defined with single quotes.\n\
           result = stdout_stream.printf (args(0), tmp_args, who);
         }
       else
-        ::error ("%s: format TEMPLATE must be a string", who.c_str ());
+        error ("%s: format TEMPLATE must be a string", who.c_str ());
     }
   else
     print_usage ();
@@ -1129,10 +1129,10 @@ expanded even when the template string is defined with single quotes.\n\
                            : octave_value (result, type));
             }
           else
-            ::error ("%s: format TEMPLATE must be a string", who.c_str ());
+            error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
       else
-        ::error ("%s: unable to create output buffer", who.c_str ());
+        error ("%s: unable to create output buffer", who.c_str ());
     }
   else
     print_usage ();
@@ -1205,7 +1205,7 @@ complete description of the syntax of the template string.\n\
           if (args(1).is_string ())
             retval = os.oscanf (args(1), who);
           else
-            ::error ("%s: format TEMPLATE must be a string", who.c_str ());
+            error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
     }
   else
@@ -1242,7 +1242,7 @@ complete description of the syntax of the template string.\n\
                     }
                 }
               else
-                ::error ("%s: format must be a string", who.c_str ());
+                error ("%s: format must be a string", who.c_str ());
             }
         }
       else
@@ -1264,7 +1264,7 @@ get_sscanf_data (const octave_value& val)
       retval = tmp.string_value ();
     }
   else
-    ::error ("sscanf: argument STRING must be a string");
+    error ("sscanf: argument STRING must be a string");
 
   return retval;
 }
@@ -1301,14 +1301,13 @@ character to be read is returned in @var{pos}.\n\
               if (args(1).is_string ())
                 retval = os.oscanf (args(1), who);
               else
-                ::error ("%s: format TEMPLATE must be a string", who.c_str ());
+                error ("%s: format TEMPLATE must be a string", who.c_str ());
             }
           else
-            ::error ("%s: unable to create temporary input buffer",
-                     who.c_str ());
+            error ("%s: unable to create temporary input buffer", who.c_str ());
         }
       else
-        ::error ("%s: argument STRING must be a string", who.c_str ());
+        error ("%s: argument STRING must be a string", who.c_str ());
     }
   else
     {
@@ -1353,12 +1352,12 @@ character to be read is returned in @var{pos}.\n\
                         }
                     }
                   else
-                    ::error ("%s: format TEMPLATE must be a string",
-                             who.c_str ());
+                    error ("%s: format TEMPLATE must be a string",
+                           who.c_str ());
                 }
               else
-                ::error ("%s: unable to create temporary input buffer",
-                         who.c_str  ());
+                error ("%s: unable to create temporary input buffer",
+                       who.c_str  ());
             }
         }
       else
@@ -1431,19 +1430,19 @@ do_fread (octave_stream& os, const octave_value& size_arg,
                                           output_type, skip, flt_fmt, count);
                     }
                   else
-                    ::error ("fread: ARCH architecture type must be a string");
+                    error ("fread: ARCH architecture type must be a string");
                 }
               else
-                ::error ("fread: SKIP must be an integer");
+                error ("fread: SKIP must be an integer");
             }
           else
-            ::error ("fread: invalid PRECISION specified");
+            error ("fread: invalid PRECISION specified");
         }
       else
-        ::error ("fread: PRECISION must be a string");
+        error ("fread: PRECISION must be a string");
     }
   else
-    ::error ("fread: invalid SIZE specified");
+    error ("fread: invalid SIZE specified");
 
   return retval;
 }
@@ -1699,16 +1698,16 @@ do_fwrite (octave_stream& os, const octave_value& data,
                                        skip, flt_fmt);
                 }
               else
-                ::error ("fwrite: ARCH architecture type must be a string");
+                error ("fwrite: ARCH architecture type must be a string");
             }
           else
-            ::error ("fwrite: SKIP must be an integer");
+            error ("fwrite: SKIP must be an integer");
         }
       else
-        ::error ("fwrite: invalid PRECISION specified");
+        error ("fwrite: invalid PRECISION specified");
     }
   else
-    ::error ("fwrite: PRECISION must be a string");
+    error ("fwrite: PRECISION must be a string");
 
   return retval;
 }
@@ -1929,13 +1928,13 @@ endwhile\n\
                   retval = octave_stream_list::insert (ops);
                 }
               else
-                ::error ("popen: invalid MODE specified");
+                error ("popen: invalid MODE specified");
             }
           else
-            ::error ("popen: MODE must be a string");
+            error ("popen: MODE must be a string");
         }
       else
-        ::error ("popen: COMMAND must be a string");
+        error ("popen: COMMAND must be a string");
     }
   else
     print_usage ();
@@ -1996,7 +1995,7 @@ see @code{tmpfile}.\n\
           if (args(0).is_string ())
             dir = args(0).string_value ();
           else
-            ::error ("DIR must be a string");
+            error ("DIR must be a string");
         }
 
       std::string pfx ("oct-");
@@ -2005,7 +2004,7 @@ see @code{tmpfile}.\n\
           if (args(1).is_string ())
             pfx = args(1).string_value ();
           else
-            ::error ("PREFIX must be a string");
+            error ("PREFIX must be a string");
         }
 
       retval = octave_tempnam (dir, pfx);
@@ -2214,7 +2213,7 @@ convert (int x, int ibase, int obase)
   int tmp = x % obase;
 
   if (tmp > ibase - 1)
-    ::error ("umask: invalid digit");
+    error ("umask: invalid digit");
   else
     {
       retval = tmp;
@@ -2224,7 +2223,7 @@ convert (int x, int ibase, int obase)
           tmp = x % obase;
           if (tmp > ibase - 1)
             {
-              ::error ("umask: invalid digit");
+              error ("umask: invalid digit");
               break;
             }
           retval += mult * tmp;
@@ -2266,7 +2265,7 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
           if (mask < 0)
             {
               status = -1;
-              ::error ("umask: MASK must be a positive integer value");
+              error ("umask: MASK must be a positive integer value");
             }
           else
             {
@@ -2279,7 +2278,7 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
       else
         {
           status = -1;
-          ::error ("umask: MASK must be an integer");
+          error ("umask: MASK must be an integer");
         }
     }
   else

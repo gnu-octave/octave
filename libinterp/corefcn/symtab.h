@@ -94,7 +94,7 @@ public:
 
       if (! instance)
         {
-          ::error ("unable to create scope_id_cache object!");
+          error ("unable to create scope_id_cache object!");
 
           retval = false;
         }

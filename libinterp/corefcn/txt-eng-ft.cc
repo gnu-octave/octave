@@ -90,7 +90,7 @@ public:
 
     if (! instance)
       {
-        ::error ("unable to create ft_manager!");
+        error ("unable to create ft_manager!");
 
         retval = false;
       }
@@ -138,13 +138,13 @@ private:
     : library (), freetype_initialized (false), fontconfig_initialized (false)
   {
     if (FT_Init_FreeType (&library))
-      ::error ("unable to initialize FreeType library");
+      error ("unable to initialize FreeType library");
     else
       freetype_initialized = true;
 
 #if defined (HAVE_FONTCONFIG)
     if (! FcInit ())
-      ::error ("unable to initialize fontconfig library");
+      error ("unable to initialize fontconfig library");
     else
       fontconfig_initialized = true;
 #endif
@@ -492,7 +492,7 @@ ft_render::set_mode (int m)
         }
       break;
     default:
-      ::error ("ft_render: invalid mode '%d'", mode);
+      error ("ft_render: invalid mode '%d'", mode);
       break;
     }
 }

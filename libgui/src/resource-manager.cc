@@ -144,7 +144,7 @@ resource_manager::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create resource_manager object!");
+      error ("unable to create resource_manager object!");
 
       retval = false;
     }

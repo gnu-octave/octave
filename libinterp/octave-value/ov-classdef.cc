@@ -578,8 +578,7 @@ class_fevalStatic (const octave_value_list& args, int nargout)
                            meth_name.c_str ());
                 }
               else
-                error ("fevalStatic: method not found: %s",
-                       meth_name.c_str ());
+                error ("fevalStatic: method not found: %s", meth_name.c_str ());
             }
           else
             error ("fevalStatic: invalid method name, expected a string value");
@@ -740,8 +739,8 @@ make_class (const std::string& name,
         }
 
       if (has_handle_class && ! all_handle_compatible)
-        ::error ("%s: cannot mix handle and non-HandleCompatible classes",
-                 name.c_str ());
+        error ("%s: cannot mix handle and non-HandleCompatible classes",
+               name.c_str ());
       else
         {
           cls.put ("HandleCompatible", all_handle_compatible);
@@ -993,7 +992,7 @@ octave_classdef::subsasgn (const std::string& type,
                   if (retlist.length () > 0)
                     retval = retlist(0);
                   else
-                    ::error ("overloaded method `subsasgn' did not return any value");
+                    error ("overloaded method `subsasgn' did not return any value");
                 }
             }
         }
@@ -1256,12 +1255,12 @@ public:
                         retval(0) = sym;
                       }
                     else
-                      ::error ("cannot call superclass constructor with "
-                               "variable `%s'", mname.c_str ());
+                      error ("cannot call superclass constructor with "
+                             "variable `%s'", mname.c_str ());
                   }
                 else
-                  ::error ("`%s' is not a direct superclass of `%s'",
-                           cname.c_str (), ctx.get_name ().c_str ());
+                  error ("`%s' is not a direct superclass of `%s'",
+                         cname.c_str (), ctx.get_name ().c_str ());
               }
             else
               {
@@ -1286,21 +1285,21 @@ public:
                           retval = meth.execute (idx, nargout, true,
                                                  meth_name);
                         else
-                          ::error ("no method `%s' found in superclass `%s'",
-                                   meth_name.c_str (), cname.c_str ());
+                          error ("no method `%s' found in superclass `%s'",
+                                 meth_name.c_str (), cname.c_str ());
                       }
                     else
-                      ::error ("`%s' is not a superclass of `%s'",
-                               cname.c_str (), ctx.get_name ().c_str ());
+                      error ("`%s' is not a superclass of `%s'",
+                             cname.c_str (), ctx.get_name ().c_str ());
                   }
                 else
-                  ::error ("method name mismatch (`%s' != `%s')",
-                           mname.c_str (), meth_name.c_str ());
+                  error ("method name mismatch (`%s' != `%s')",
+                         mname.c_str (), meth_name.c_str ());
               }
           }
       }
     else if (! error_state)
-      ::error ("superclass calls can only occur in methods or constructors");
+      error ("superclass calls can only occur in methods or constructors");
 
     return retval;
   }
@@ -1714,8 +1713,8 @@ cdef_object_array::subsref (const std::string& type,
       // fall through "default"
 
     default:
-      ::error ("can't perform indexing operation on array of %s objects",
-               class_name ().c_str ());
+      error ("can't perform indexing operation on array of %s objects",
+             class_name ().c_str ());
       break;
     }
 
@@ -1784,9 +1783,9 @@ cdef_object_array::subsasgn (const std::string& type,
                     }
                 }
               else
-                ::error ("can't assign %s object into array of %s objects.",
-                         rhs_obj.class_name ().c_str (),
-                         class_name ().c_str ());
+                error ("can't assign %s object into array of %s objects.",
+                       rhs_obj.class_name ().c_str (),
+                       class_name ().c_str ());
             }
         }
       else
@@ -1884,8 +1883,8 @@ cdef_object_array::subsasgn (const std::string& type,
       break;
 
     default:
-      ::error ("can't perform indexing operation on array of %s objects",
-               class_name ().c_str ());
+      error ("can't perform indexing operation on array of %s objects",
+             class_name ().c_str ());
       break;
     }
 
@@ -2177,8 +2176,8 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
                     }
                 }
               else
-                ::error ("%s: invalid constructor output arguments",
-                         meth.get_name ().c_str ());
+                error ("%s: invalid constructor output arguments",
+                       meth.get_name ().c_str ());
             }
         }
     }
@@ -2543,7 +2542,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
                                              "meta.class");
                     }
                   else
-                    ::error ("method `%s' is not static", nm.c_str ());
+                    error ("method `%s' is not static", nm.c_str ());
                 }
               else
                 {
@@ -2554,22 +2553,21 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
                       if (prop.is_constant ())
                         retval(0) = prop.get_value (true, "meta.class");
                       else
-                        ::error ("property `%s' is not constant",
-                                 nm.c_str ());
+                        error ("property `%s' is not constant", nm.c_str ());
                     }
                   else
-                    ::error ("no such method or property `%s'", nm.c_str ());
+                    error ("no such method or property `%s'", nm.c_str ());
                 }
             }
           else
-            ::error ("invalid meta.class indexing, expected a method or property name");
+            error ("invalid meta.class indexing, expected a method or property name");
         }
       else
-        ::error ("invalid meta.class indexing");
+        error ("invalid meta.class indexing");
       break;
 
     default:
-      ::error ("invalid meta.class indexing");
+      error ("invalid meta.class indexing");
       break;
     }
 
@@ -2664,8 +2662,8 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
             obj = to_cdef (ctor_retval(0));
           else
             {
-              ::error ("%s: invalid number of output arguments for classdef constructor",
-                       ctor_name.c_str ());
+              error ("%s: invalid number of output arguments for classdef constructor",
+                     ctor_name.c_str ());
               return;
             }
         }
@@ -2839,8 +2837,8 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                 slist.push_back (sclass);
               else
                 {
-                  ::error ("`%s' cannot inherit from `%s', because it is sealed",
-                           full_class_name.c_str (), sclass_name.c_str ());
+                  error ("`%s' cannot inherit from `%s', because it is sealed",
+                         full_class_name.c_str (), sclass_name.c_str ());
                   return retval;
                 }
             }
@@ -3152,8 +3150,8 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       if (! obj.is_partially_constructed_for (cls))
         {
-          ::error ("cannot reference properties of class `%s' for non-constructed object",
-                   cls.get_name ().c_str ());
+          error ("cannot reference properties of class `%s' for non-constructed object",
+                 cls.get_name ().c_str ());
           return retval;
         }
     }
@@ -3219,8 +3217,8 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
       if (! obj.is_partially_constructed_for (cls))
         {
-          ::error ("cannot reference properties of class `%s' for non-constructed object",
-                   cls.get_name ().c_str ());
+          error ("cannot reference properties of class `%s' for non-constructed object",
+                 cls.get_name ().c_str ());
           return;
         }
     }
@@ -3324,8 +3322,8 @@ cdef_method::cdef_method_rep::check_method (void)
         }
 
       if (is_dummy_method (function))
-        ::error ("no definition found for method `%s' of class `%s'",
-                 get_name ().c_str (), dispatch_type.c_str ());
+        error ("no definition found for method `%s' of class `%s'",
+               get_name ().c_str (), dispatch_type.c_str ());
     }
 }
 

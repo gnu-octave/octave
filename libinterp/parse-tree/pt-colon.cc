@@ -44,7 +44,7 @@ tree_colon_expression::append (tree_expression *t)
       if (op_limit)
         {
           if (op_increment)
-            ::error ("invalid colon expression");
+            error ("invalid colon expression");
           else
             {
               // Stupid syntax:
@@ -62,7 +62,7 @@ tree_colon_expression::append (tree_expression *t)
       retval = this;
     }
   else
-    ::error ("invalid colon expression");
+    error ("invalid colon expression");
 
   return retval;
 }
@@ -133,7 +133,7 @@ tree_colon_expression::rvalue1 (int)
                     retval = tmp2 (0);
                 }
               else
-                ::error ("can not find overloaded colon function");
+                error ("can not find overloaded colon function");
             }
         }
       else
@@ -160,7 +160,7 @@ tree_colon_expression::rvalue1 (int)
 void
 tree_colon_expression::eval_error (const std::string& s) const
 {
-  ::error ("%s", s.c_str ());
+  error ("%s", s.c_str ());
 }
 
 int

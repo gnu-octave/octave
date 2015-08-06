@@ -82,7 +82,7 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
     symbol_table::cache_name (uf->scope (), nm);
 
   if (uf && uf->is_nested_function ())
-    ::error ("handles to nested functions are not yet supported");
+    error ("handles to nested functions are not yet supported");
 }
 
 octave_value_list

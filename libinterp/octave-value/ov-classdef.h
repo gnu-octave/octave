@@ -546,7 +546,7 @@ public:
                 const std::list<octave_value_list>& /* idx */,
                 int /* nargout */)
   {
-    ::error ("subsref: invalid meta object");
+    error ("subsref: invalid meta object");
     return octave_value_list ();
   }
 
@@ -1628,7 +1628,7 @@ private:
 
     if (! instance)
       {
-        ::error ("unable to create cdef_manager!");
+        error ("unable to create cdef_manager!");
 
         retval = false;
       }

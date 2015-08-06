@@ -1621,7 +1621,7 @@ symbol_table::do_update_nest (void)
               && nest_parent->look_nonlocal (ti->first, parents))
             {
               if (ours.is_global () || ours.is_persistent ())
-                ::error ("global and persistent may only be used in the topmost level in which a nested variable is used");
+                error ("global and persistent may only be used in the topmost level in which a nested variable is used");
 
               if (! ours.is_formal ())
                 {

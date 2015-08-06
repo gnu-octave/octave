@@ -199,7 +199,7 @@ private:
 
     if (! instance)
       {
-        ::error ("unable to create w32_interrupt_manager");
+        error ("unable to create w32_interrupt_manager");
 
         retval = false;
       }
@@ -929,7 +929,7 @@ octave_child_list::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create child list object!");
+      error ("unable to create child list object!");
 
       retval = false;
     }

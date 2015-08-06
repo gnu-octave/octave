@@ -71,7 +71,7 @@ tree_cell::rvalue1 (int)
                 continue;  // blank line
               else
                 {
-                  ::error ("number of columns must match");
+                  error ("number of columns must match");
                   return retval;
                 }
             }

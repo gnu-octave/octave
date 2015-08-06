@@ -292,7 +292,7 @@ bp_table::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create breakpoint table!");
+      error ("unable to create breakpoint table!");
       retval = false;
     }
 

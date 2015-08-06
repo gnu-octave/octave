@@ -333,7 +333,7 @@ load_path::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create load path object!");
+      error ("unable to create load path object!");
 
       retval = false;
     }

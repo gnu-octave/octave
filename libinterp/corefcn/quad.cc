@@ -159,7 +159,7 @@ quad_float_user_function (float x)
 #define QUAD_ABORT1(msg) \
   do \
     { \
-      ::error ("quad: " msg); \
+      error ("quad: " msg); \
       QUAD_ABORT (); \
     } \
   while (0)
@@ -167,7 +167,7 @@ quad_float_user_function (float x)
 #define QUAD_ABORT2(fmt, arg) \
   do \
     { \
-      ::error ("quad: " fmt, arg); \
+      error ("quad: " fmt, arg); \
       QUAD_ABORT (); \
     } \
   while (0)

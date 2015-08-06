@@ -160,7 +160,7 @@ octave_shlib_list::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create shared library list object!");
+      error ("unable to create shared library list object!");
 
       retval = false;
     }
@@ -216,7 +216,7 @@ octave_dynamic_loader::instance_ok (void)
 
   if (! instance)
     {
-      ::error ("unable to create dynamic loader object!");
+      error ("unable to create dynamic loader object!");
 
       retval = false;
     }
@@ -295,13 +295,12 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
               retval = f (oct_file, relative);
 
               if (! retval)
-                ::error ("failed to install .oct file function '%s'",
-                         fcn_name.c_str ());
+                error ("failed to install .oct file function '%s'",
+                       fcn_name.c_str ());
             }
         }
       else
-        ::error ("%s is not a valid shared library",
-                 file_name.c_str ());
+        error ("%s is not a valid shared library", file_name.c_str ());
     }
 
   return retval;
@@ -363,12 +362,11 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
             retval = new octave_mex_function (function, have_fmex,
                                               mex_file, fcn_name);
           else
-            ::error ("failed to install .mex file function '%s'",
-                     fcn_name.c_str ());
+            error ("failed to install .mex file function '%s'",
+                   fcn_name.c_str ());
         }
       else
-        ::error ("%s is not a valid shared library",
-                 file_name.c_str ());
+        error ("%s is not a valid shared library", file_name.c_str ());
     }
 
   return retval;

@@ -61,11 +61,11 @@ endfunction
 %!assert (inputname (1), "hello")
 %!assert (inputname (2), "worldly")
 
-%!function r = foo (x, y)
+%!function r = __foo__ (x, y)
 %!  r = inputname (2);
 %!endfunction
-%!assert (foo (pi, e), "e");
-%!assert (feval (@foo, pi, e), "e");
+%!assert (__foo__ (pi, e), "e");
+%!assert (feval (@__foo__, pi, e), "e");
 
 %!error inputname ()
 %!error inputname (1,2)

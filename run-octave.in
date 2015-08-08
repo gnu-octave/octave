@@ -20,9 +20,9 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-AWK=%AWK%
-FIND=%FIND%
-SED=%SED%
+: ${AWK=%AWK%}
+: ${FIND=%FIND%}
+: ${SED=%SED%}
 
 # FIXME -- is there a better way to handle the possibility of spaces
 # in these names?
@@ -89,14 +89,15 @@ fi
 ## need Octave to find other things in ARCHLIBDIR that are not built
 ## in the $builddir/src directory.
 
-OCTAVE_BINDIR="$builddir/src" \
-OCTAVE_ARCHLIBDIR="$builddir/src" \
-OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings" \
-OCTAVE_LOCALE_DIR="$builddir/libgui/languages" \
-OCTAVE_JAVA_DIR="$builddir/scripts/java" \
-  exec $builddir/libtool --mode=execute $driver \
-    "$octave_executable" --no-init-path --path="$LOADPATH" \
-    --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
-    --built-in-docstrings-file="$BUILT_IN_DOCSTRINGS_FILE" \
-    --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"
+OCTAVE_ARCHLIBDIR="$builddir/src"; export OCTAVE_ARCHLIBDIR
+OCTAVE_BINDIR="$builddir/src"; export OCTAVE_BINDIR
+OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings"; export OCTAVE_DEFAULT_QT_SETTINGS
+OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
+OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR
+OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile"; export OCTAVE_SITE_INITFILE
+
+exec $builddir/libtool --mode=execute $driver \
+  "$octave_executable" --no-init-path --path="$LOADPATH" \
+  --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
+  --built-in-docstrings-file="$BUILT_IN_DOCSTRINGS_FILE" \
+  --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"

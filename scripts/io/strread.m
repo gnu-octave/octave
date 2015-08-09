@@ -388,7 +388,7 @@ function varargout = strread (str, format = "%f", varargin)
   if (! isempty (white_spaces))
     ## For numeric fields, whitespace is always a delimiter, but not for text
     ## fields
-    if (isempty (strfind (format, "%s")))
+    if (isempty (regexp (format, '%\*?\d*s')))
       ## Add whitespace to delimiter set
       delimiter_str = unique ([white_spaces delimiter_str]);
     else
@@ -1086,3 +1086,9 @@ endfunction
 ## Test for false positives in check for non-supported format specifiers
 %!test
 %! assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5);
+
+## Test various forms of string format specifiers (bug #45712)
+%!test
+%! str = "14 :1 z:2 z:3 z:5 z:11";
+%! [a, b, c, d] = strread (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
+%! assert ({a, b, c, d}, {14, {"1 z"}, {"3 z"}, 11});

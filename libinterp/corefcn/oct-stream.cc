@@ -3189,7 +3189,7 @@ convert_and_copy (std::list<void *>& input_buf_list,
               else if (do_float_fmt_conv)
                 do_float_format_conversion (&data[i], sizeof (SRC_T),
                                             1, from_flt_fmt,
-                                            oct_mach_info::float_format ());
+                                            oct_mach_info::native_float_format ());
 
               dst_elt_type tmp (data[i]);
 

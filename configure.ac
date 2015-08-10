@@ -3000,6 +3000,7 @@ AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
 AC_CONFIG_FILES([
+  oct-conf-post.h:oct-conf-post.in.h
   Makefile
   doc/doxyhtml/Doxyfile
   libgnu/Makefile

@@ -687,7 +687,7 @@ Return the largest integer that can be represented within a floating point\n\
 value.\n\
 \n\
 The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
-valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
+valid option.  On IEEE 754 compatible systems, @code{bitmax} is\n\
 @w{@math{2^{53} - 1}} for @qcode{\"double\"} and @w{@math{2^{24} -1}} for\n\
 @qcode{\"single\"}.\n\
 @seealso{flintmax, intmax, realmax, realmin}\n\
@@ -724,8 +724,8 @@ Return the largest integer that can be represented consecutively in a\n\
 floating point value.\n\
 \n\
 The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a valid\n\
-option.  On IEEE-754 compatible systems, @code{flintmax} is @w{@math{2^53}}\n\
-for @qcode{\"double\"} and @w{@math{2^24}} for @qcode{\"single\"}.\n\
+option.  On IEEE 754 compatible systems, @code{flintmax} is @w{@math{2^{53}}}\n\
+for @qcode{\"double\"} and @w{@math{2^{24}}} for @qcode{\"single\"}.\n\
 @seealso{bitmax, intmax, realmax, realmin}\n\
 @end deftypefn")
 {

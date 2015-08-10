@@ -48,7 +48,7 @@ function [c, ia] = setdiff (a, b, varargin)
   [a, b] = validsetargs ("setdiff", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isrow (a);
+  isrowvec = isrow (a);
 
   if (by_rows)
     if (nargout > 1)

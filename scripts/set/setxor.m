@@ -50,7 +50,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
   [a, b] = validsetargs ("setxor", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+  isrowvec = isrow (a) && isrow (b);
 
   ## Form A and B into sets.
   if (nargout > 1)

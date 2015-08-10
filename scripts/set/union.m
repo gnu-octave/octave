@@ -51,7 +51,7 @@ function [y, ia, ib] = union (a, b, varargin)
   [a, b] = validsetargs ("union", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+  isrowvec = isrow (a) && isrow (b);
 
   if (by_rows)
     y = [a; b];

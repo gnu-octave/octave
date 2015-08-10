@@ -50,7 +50,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
     c = ia = ib = [];
   else
     by_rows = nargin == 3;
-    isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+    isrowvec = isrow (a) && isrow (b);
 
     ## Form A and B into sets
     if (nargout > 1)

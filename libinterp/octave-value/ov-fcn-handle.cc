@@ -1869,6 +1869,11 @@ Use @code{eval (@var{str})} as a replacement.\n\
       if (args(0).is_string ())
         {
           std::string nm = args(0).string_value ();
+          if (nm[0] == '@')
+            {
+              error ("str2func: Can't process anonymous functions.");
+              return retval;
+            }
           retval = make_fcn_handle (nm, nargin != 2);
         }
       else

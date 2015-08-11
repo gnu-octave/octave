@@ -47,7 +47,16 @@ function [c, ia, ib] = intersect (a, b, varargin)
   [a, b] = validsetargs ("intersect", a, b, varargin{:});
 
   if (isempty (a) || isempty (b))
-    c = ia = ib = [];
+    ## Special case shortcuts algorithm.
+    ## Lots of type checking required for Matlab compatibility.
+    if (isnumeric (a) && isnumeric (b))
+      c = [];
+    elseif (iscell (b))
+      c = {};
+    else
+      c = "";
+    endif
+    ia = ib = [];
   else
     by_rows = nargin == 3;
     isrowvec = isrow (a) && isrow (b);
@@ -141,3 +150,11 @@ endfunction
 %! assert (ia, [1:3]');
 %! assert (ib, [1:3]');
 
+## Test return type of empty intersections
+%!assert (intersect (['a', 'b'], {}), {})
+%!assert (intersect ([], {'a', 'b'}), {})
+%!assert (intersect ([], {}), {})
+%!assert (intersect ({'a', 'b'}, []), {})
+%!assert (intersect ([], ['a', 'b']), "")
+%!assert (intersect ({}, []), {})
+%!assert (intersect (['a', 'b'], []), "")

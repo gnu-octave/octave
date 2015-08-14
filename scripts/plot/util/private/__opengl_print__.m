@@ -48,20 +48,21 @@ function opts = __opengl_print__ (opts)
       ## format GL2PS_TEX
       n = find (opts.devopt == "l", 1);
       suffix = opts.devopt(1:n-1);
-      dot = find (opts.name == ".", 1, "last");
-      if ((! isempty (dot))
-          && any (strcmpi (opts.name(dot:end), ...
-                  {strcat(".", suffix), ".tex", "."})))
-        name = opts.name(1:dot-1);
-        if (dot < numel (opts.name)
-            && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
-          ## If user provides eps/ps/pdf suffix, use it.
-          suffix = opts.name(dot+1:end);
+      [ndir, name, ext] = fileparts (opts.name);
+      if (isempty (ext))
+        ext = "tex";
+      else
+        ext = ext(2:end);  # remove leading '.'
+      endif
+      if (any (strcmpi (ext, {suffix, "tex"})))
+        name = fullfile (ndir, name);
+        if (any (strcmpi (ext, {"eps", "ps", "pdf"})))
+          suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
         endif
       else
         error ("print:invalid-suffix",
                "invalid suffix '%s' for device '%s'.",
-               opts.name(dot:end), lower (opts.devopt));
+               ext, lower (opts.devopt));
       endif
       gl2ps_device = {sprintf("%snotxt", lower (suffix))};
       gl2ps_device{2} = "tex";

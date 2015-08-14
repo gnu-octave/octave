@@ -71,15 +71,23 @@ function opts = __gnuplot_print__ (opts)
       dot = find (opts.name == ".", 1, "last");
       n = find (opts.devopt == "l", 1);
       suffix = opts.devopt(1:n-1);
-      if (! isempty (dot))
-        if (any (strcmpi (opts.name(dot:end), {["." suffix], ".tex", "."})))
-          name = opts.name(1:dot-1);
-        else
-          error ("print:invalid-suffix",
-                 "invalid suffix '%s' for device '%s'.",
-                 opts.name(dot:end), lower (opts.devopt));
-        endif
+      [ndir, name, ext] = fileparts (opts.name);
+      if (isempty (ext))
+        ext = "tex";
+      else
+        ext = ext(2:end);  # remove leading '.'
       endif
+      if (any (strcmpi (ext, {suffix, "tex"})))
+        name = fullfile (ndir, name);
+        if (any (strcmpi (ext, {"eps", "ps", "pdf"})))
+          suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
+        endif
+      else
+        error ("print:invalid-suffix",
+               "invalid suffix '%s' for device '%s'.",
+               ext, lower (opts.devopt));
+      endif
+
       if (strfind (opts.devopt, "standalone"))
         term = sprintf ("%s ",
                         strrep (opts.devopt, "standalone", " standalone"));

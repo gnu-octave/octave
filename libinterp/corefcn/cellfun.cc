@@ -1959,8 +1959,6 @@ num2cell ([1,2;3,4],1)\n\
         retval = do_num2cell (array.map_value (), dimv);
       else if (array.is_cell ())
         retval = do_num2cell (array.cell_value (), dimv);
-      else if (array.is_object ())
-        retval = do_num2cell (array.cell_value (), dimv);
       else
         gripe_wrong_type_arg ("num2cell", array);
     }

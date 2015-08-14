@@ -50,15 +50,12 @@ DEFUN (__dispatch__, args, nargout,
 
   if (nargin > 0 && nargin < 4)
     {
-      if (nargin > 0)
-        {
-          f = args(0).string_value ();
+      f = args(0).string_value ();
 
-          if (error_state)
-            {
-              error ("__dispatch__: first argument must be a function name");
-              return retval;
-            }
+      if (error_state)
+        {
+          error ("__dispatch__: first argument must be a function name");
+          return retval;
         }
 
       if (nargin > 1)

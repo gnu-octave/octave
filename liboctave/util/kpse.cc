@@ -485,9 +485,7 @@ private:
       {
         /* Find the next colon not enclosed by braces (or the end of
            the path).  */
-
-        int brace_level = 0;
-        while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
+        while (e < len && ! kpse_is_env_sep (path[e]))
           e++;
       }
   }

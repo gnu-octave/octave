@@ -400,7 +400,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 
       if (error_state || stream.eof () || name.empty ())
         break;
-      else if (! error_state && ! name.empty ())
+      else
         {
           if (tc.is_defined ())
             {
@@ -454,14 +454,6 @@ do_load (std::istream& stream, const std::string& orig_fname,
             }
           else
             error ("load: unable to load variable '%s'", name.c_str ());
-        }
-      else
-        {
-          if (count == 0)
-            error ("load: are you sure '%s' is an Octave data file?",
-                   orig_fname.c_str ());
-
-          break;
         }
     }
 

@@ -306,10 +306,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                            (perm (i))
                                            - 1;
 
-                                  if (str_typ == "upper")
-                                    mattyp.mark_as_permuted (len, p);
-                                  else
-                                    mattyp.mark_as_permuted (len, p);
+                                  mattyp.mark_as_permuted (len, p);
                                 }
                             }
                         }
@@ -479,10 +476,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                            (perm (i))
                                            - 1;
 
-                                  if (str_typ == "upper")
-                                    mattyp.mark_as_permuted (len, p);
-                                  else
-                                    mattyp.mark_as_permuted (len, p);
+                                  mattyp.mark_as_permuted (len, p);
                                 }
                             }
                         }

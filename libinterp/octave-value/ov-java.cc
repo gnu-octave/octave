@@ -1846,6 +1846,40 @@ octave_java::print_raw (std::ostream& os, bool) const
   os << "<Java object: " << java_classname << ">";
 }
 
+// FIXME: Need routines to actually save/load java objects through Serialize.
+//        See bug #42112. 
+
+bool
+octave_java::save_ascii (std::ostream& /* os */)
+{
+  warning ("save: unable to save java objects, skipping"); 
+
+  return true;
+}
+
+bool
+octave_java::load_ascii (std::istream& /* is */)
+{
+  // Silently skip over java object that was not saved
+  return true;
+}
+
+bool
+octave_java::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
+{
+  warning ("save: unable to save java objects, skipping"); 
+
+  return true;
+}
+
+bool
+octave_java::load_binary (std::istream& /* is */, bool /* swap*/,
+                          oct_mach_info::float_format /* fmt */)
+{
+  // Silently skip over java object that was not saved
+  return true;
+}
+
 octave_value
 octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
                             const octave_value_list& args)

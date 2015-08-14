@@ -157,6 +157,15 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  bool save_ascii (std::ostream& os);
+
+  bool load_ascii (std::istream& is);
+
+  bool save_binary (std::ostream& os, bool& save_as_floats);
+
+  bool load_binary (std::istream& is, bool swap,
+                    oct_mach_info::float_format fmt);
+
   octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx, int nargout);

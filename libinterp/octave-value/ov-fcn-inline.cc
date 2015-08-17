@@ -50,7 +50,7 @@ Open Source Initiative (www.opensource.org)
 
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 

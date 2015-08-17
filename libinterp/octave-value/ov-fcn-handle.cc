@@ -61,7 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
 #include "ls-hdf5.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
 
@@ -379,7 +379,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
           for (std::list<symbol_table::symbol_record>::const_iterator
                p = vars.begin (); p != vars.end (); p++)
             {
-              if (! save_ascii_data (os, p->varval (0), p->name (), false, 0))
+              if (! save_text_data (os, p->varval (0), p->name (), false, 0))
                 return ! os.fail ();
             }
         }
@@ -462,7 +462,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   bool dummy;
 
                   std::string name
-                    = read_ascii_data (is, std::string (), dummy, t2, i);
+                    = read_text_data (is, std::string (), dummy, t2, i);
 
                   if (!is)
                     {

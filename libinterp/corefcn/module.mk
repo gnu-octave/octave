@@ -53,7 +53,7 @@ COREFCN_INC = \
   libinterp/corefcn/ls-mat-ascii.h \
   libinterp/corefcn/ls-mat4.h \
   libinterp/corefcn/ls-mat5.h \
-  libinterp/corefcn/ls-oct-ascii.h \
+  libinterp/corefcn/ls-oct-text.h \
   libinterp/corefcn/ls-oct-binary.h \
   libinterp/corefcn/ls-utils.h \
   libinterp/corefcn/mex.h \
@@ -182,7 +182,7 @@ COREFCN_SRC = \
   libinterp/corefcn/ls-mat-ascii.cc \
   libinterp/corefcn/ls-mat4.cc \
   libinterp/corefcn/ls-mat5.cc \
-  libinterp/corefcn/ls-oct-ascii.cc \
+  libinterp/corefcn/ls-oct-text.cc \
   libinterp/corefcn/ls-oct-binary.cc \
   libinterp/corefcn/ls-utils.cc \
   libinterp/corefcn/lsode.cc \

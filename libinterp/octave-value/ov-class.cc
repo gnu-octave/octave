@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "load-path.h"
 #include "ls-hdf5.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
 #include "mxarray.h"
@@ -1277,7 +1277,7 @@ octave_class::save_ascii (std::ostream& os)
     {
       octave_value val = map.contents (i);
 
-      bool b = save_ascii_data (os, val, m.key (i), false, 0);
+      bool b = save_text_data (os, val, m.key (i), false, 0);
 
       if (! b)
         return ! os.fail ();
@@ -1310,7 +1310,7 @@ octave_class::load_ascii (std::istream& is)
 
                   // recurse to read cell elements
                   std::string nm
-                    = read_ascii_data (is, std::string (), dummy, t2, j);
+                    = read_text_data (is, std::string (), dummy, t2, j);
 
                   if (! is)
                     break;

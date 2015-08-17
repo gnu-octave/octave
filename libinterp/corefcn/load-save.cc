@@ -77,7 +77,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-mat-ascii.h"
 #include "ls-mat4.h"
 #include "ls-mat5.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 
 // Remove gnulib definitions, if any.
@@ -270,7 +270,7 @@ get_file_format (std::istream& file, const std::string& filename)
               std::string type_val = extract_keyword (file, "type");
 
               if (name_val.empty () != true && type_val.empty () != true)
-                retval = LS_ASCII;
+                retval = LS_TEXT;
               else
                 {
                   file.clear ();
@@ -363,8 +363,8 @@ do_load (std::istream& stream, const std::string& orig_fname,
 
       switch (format.type)
         {
-        case LS_ASCII:
-          name = read_ascii_data (stream, orig_fname, global, tc, count);
+        case LS_TEXT:
+          name = read_text_data (stream, orig_fname, global, tc, count);
           break;
 
         case LS_BINARY:
@@ -709,7 +709,7 @@ Force Octave to assume the file is in Octave's text format.\n\
         }
       else if (argv[i] == "-text" || argv[i] == "-t")
         {
-          format = LS_ASCII;
+          format = LS_TEXT;
         }
       else
         break;
@@ -928,8 +928,8 @@ do_save (std::ostream& os, const octave_value& tc,
 {
   switch (fmt.type)
     {
-    case LS_ASCII:
-      save_ascii_data (os, tc, name, global, 0);
+    case LS_TEXT:
+      save_text_data (os, tc, name, global, 0);
       break;
 
     case LS_BINARY:
@@ -1070,7 +1070,7 @@ parse_save_options (const string_vector &argv,
         }
       else if (argv[i] == "-text" || argv[i] == "-t")
         {
-          format = LS_ASCII;
+          format = LS_TEXT;
         }
       else if (argv[i] == "-binary" || argv[i] == "-b")
         {
@@ -1229,7 +1229,7 @@ write_header (std::ostream& os, load_save_format format)
 #ifdef HAVE_HDF5
     case LS_HDF5:
 #endif /* HAVE_HDF5 */
-    case LS_ASCII:
+    case LS_TEXT:
       {
         octave_localtime now;
 
@@ -1615,7 +1615,7 @@ the file @file{data} in Octave's binary format.\n\
 
   bool save_as_floats = false;
 
-  load_save_format format = LS_ASCII;
+  load_save_format format = LS_TEXT;
 
   bool append = false;
 
@@ -1640,7 +1640,7 @@ the file @file{data} in Octave's binary format.\n\
       return retval;
     }
 
-  if (save_as_floats && format == LS_ASCII)
+  if (save_as_floats && format == LS_TEXT)
     {
       error ("save: cannot specify both -ascii and -float-binary");
       return retval;

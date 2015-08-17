@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "gripes.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
@@ -777,7 +777,7 @@ octave_cell::save_ascii (std::ostream& os)
           octave_value o_val = tmp.elem (i);
 
           // Recurse to print sub-value.
-          bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
+          bool b = save_text_data (os, o_val, CELL_ELT_TAG, false, 0);
 
           if (! b)
             return ! os.fail ();
@@ -799,7 +799,7 @@ octave_cell::save_ascii (std::ostream& os)
               octave_value o_val = tmp.elem (i, j);
 
               // Recurse to print sub-value.
-              bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
+              bool b = save_text_data (os, o_val, CELL_ELT_TAG, false, 0);
 
               if (! b)
                 return ! os.fail ();
@@ -849,7 +849,7 @@ octave_cell::load_ascii (std::istream& is)
                   bool dummy;
 
                   // recurse to read cell elements
-                  std::string nm = read_ascii_data (is, std::string (),
+                  std::string nm = read_text_data (is, std::string (),
                                                     dummy, t2, i);
 
                   if (nm == CELL_ELT_TAG)
@@ -898,7 +898,7 @@ octave_cell::load_ascii (std::istream& is)
                           bool dummy;
 
                           // recurse to read cell elements
-                          std::string nm = read_ascii_data (is, std::string (),
+                          std::string nm = read_text_data (is, std::string (),
                                                             dummy, t2, i);
 
                           if (nm == CELL_ELT_TAG)

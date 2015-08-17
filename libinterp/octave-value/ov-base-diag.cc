@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ops.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 
 template <class DMT, class MT>
 octave_value

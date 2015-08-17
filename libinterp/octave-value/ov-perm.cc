@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 #include "pr-output.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 
 octave_value
 octave_perm_matrix::subsref (const std::string& type,

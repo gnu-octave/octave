@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "ls-ascii-helper.h"
 #include "ls-hdf5.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-utils.h"
 #include "oct-obj.h"
 #include "oct-hdf5.h"

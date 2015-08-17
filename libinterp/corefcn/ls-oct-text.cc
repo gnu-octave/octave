@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
@@ -67,7 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 // The number of decimal digits to use when writing ascii data.
 static int Vsave_precision = 16;
 
-// Functions for reading ascii data.
+// Functions for reading octave format text data.
 
 // Extract a KEYWORD and its value from stream IS, returning the
 // associated value in a new string.
@@ -224,9 +224,8 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 //  # length: 5
 //  array
 //
-// FIXME: this format is fairly rigid, and doesn't allow for
-// arbitrary comments.  Someone should fix that. It does allow arbitrary
-// types however.
+// FIXME: This format is fairly rigid, and doesn't allow for arbitrary comments.
+// Someone should fix that.  It does allow arbitrary types however.
 
 // Ugh.  The signature of the compare method is not standard in older
 // versions of the GNU libstdc++.  Do this instead:
@@ -234,7 +233,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 #define SUBSTRING_COMPARE_EQ(s, pos, n, t) (s.substr (pos, n) == t)
 
 std::string
-read_ascii_data (std::istream& is, const std::string& filename, bool& global,
+read_text_data (std::istream& is, const std::string& filename, bool& global,
                  octave_value& tc, octave_idx_type count)
 {
   // Read name for this entry or break on EOF.
@@ -299,7 +298,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 
 // Save the data from TC along with the corresponding NAME, and global
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
-// above for load_ascii_data.  If NAME is empty, the name: line is not
+// above for load_text_data.  If NAME is empty, the name: line is not
 // generated.  PRECISION specifies the number of decimal digits to print.
 //
 // Assumes ranges and strings cannot contain Inf or NaN values.
@@ -309,9 +308,9 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 // FIXME: should probably write the help string here too.
 
 bool
-save_ascii_data (std::ostream& os, const octave_value& val_arg,
-                 const std::string& name, bool mark_as_global,
-                 int precision)
+save_text_data (std::ostream& os, const octave_value& val_arg,
+                const std::string& name, bool mark_as_global,
+                int precision)
 {
   bool success = true;
 
@@ -345,10 +344,10 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
 }
 
 bool
-save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
-                              const std::string& name)
+save_text_data_for_plotting (std::ostream& os, const octave_value& t,
+                             const std::string& name)
 {
-  return save_ascii_data (os, t, name, false, 6);
+  return save_text_data (os, t, name, false, 6);
 }
 
 // Maybe this should be a static function in tree-plot.cc?

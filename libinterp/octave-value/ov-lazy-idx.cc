@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-lazy-idx.h"
 #include "ops.h"
 #include "ov-scalar.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_lazy_index, "lazy_index", "double");
@@ -161,14 +161,14 @@ static const std::string value_save_tag ("index_value");
 
 bool octave_lazy_index::save_ascii (std::ostream& os)
 {
-  return save_ascii_data (os, make_value (), value_save_tag, false, 0);
+  return save_text_data (os, make_value (), value_save_tag, false, 0);
 }
 
 bool octave_lazy_index::load_ascii (std::istream& is)
 {
   bool dummy;
 
-  std::string nm = read_ascii_data (is, std::string (), dummy, value, 0);
+  std::string nm = read_text_data (is, std::string (), dummy, value, 0);
 
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");

@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "xpow.h"
 #include "ops.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 
 template class octave_base_scalar<double>;

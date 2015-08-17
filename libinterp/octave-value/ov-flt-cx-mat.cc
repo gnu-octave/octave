@@ -57,7 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 

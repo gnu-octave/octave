@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_oct_ascii_h)
-#define octave_ls_oct_ascii_h 1
+#if !defined (octave_ls_oct_text_h)
+#define octave_ls_oct_text_h 1
 
 #include <cfloat>
 
@@ -46,15 +46,15 @@ extract_keyword (std::istream& is, const char *keyword,
                  const bool next_only = false);
 
 extern OCTINTERP_API std::string
-read_ascii_data (std::istream& is, const std::string& filename, bool& global,
+read_text_data (std::istream& is, const std::string& filename, bool& global,
                  octave_value& tc, octave_idx_type count);
 
 extern OCTINTERP_API bool
-save_ascii_data (std::ostream& os, const octave_value& val_arg,
+save_text_data (std::ostream& os, const octave_value& val_arg,
                  const std::string& name, bool mark_as_global, int precision);
 
 extern OCTINTERP_API bool
-save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
+save_text_data_for_plotting (std::ostream& os, const octave_value& t,
                               const std::string& name);
 
 extern OCTINTERP_API bool

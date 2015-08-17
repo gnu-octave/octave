@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
@@ -766,7 +766,7 @@ octave_struct::save_ascii (std::ostream& os)
 
       octave_value val = map.contents (key);
 
-      bool b = save_ascii_data (os, val, key, false, 0);
+      bool b = save_text_data (os, val, key, false, 0);
 
       if (! b)
         return ! os.fail ();
@@ -820,7 +820,7 @@ octave_struct::load_ascii (std::istream& is)
 
               // recurse to read cell elements
               std::string nm
-                = read_ascii_data (is, std::string (), dummy, t2, j);
+                = read_text_data (is, std::string (), dummy, t2, j);
 
               if (!is)
                 break;
@@ -1476,7 +1476,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
 
       octave_value val = map.contents (key);
 
-      bool b = save_ascii_data (os, val, key, false, 0);
+      bool b = save_text_data (os, val, key, false, 0);
 
       if (! b)
         return ! os.fail ();
@@ -1504,7 +1504,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
 
               // recurse to read cell elements
               std::string nm
-                = read_ascii_data (is, std::string (), dummy, t2, j);
+                = read_text_data (is, std::string (), dummy, t2, j);
 
               if (!is)
                 break;

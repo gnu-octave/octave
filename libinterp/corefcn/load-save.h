@@ -35,7 +35,7 @@ class octave_value;
 // Similarly, save_as_floats may be an option for LS_BINARY, LS_HDF5 etc.
 enum load_save_format_type
 {
-  LS_ASCII,
+  LS_TEXT,
   LS_BINARY,
   LS_MAT_ASCII,
   LS_MAT_BINARY,

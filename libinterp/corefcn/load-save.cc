@@ -1642,7 +1642,7 @@ the file @file{data} in Octave's binary format.\n\
 
   if (save_as_floats && format == LS_TEXT)
     {
-      error ("save: cannot specify both -ascii and -float-binary");
+      error ("save: cannot specify both -text and -float-binary");
       return retval;
     }
 

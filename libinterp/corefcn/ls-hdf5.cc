@@ -415,7 +415,7 @@ hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
     }
   else if (info.type == H5G_DATASET && ident_valid)
     {
-      // For backwards compatiability.
+      // For backwards compatibility.
 #if HAVE_HDF5_18
       data_id = H5Dopen (group_id, name, H5P_DEFAULT);
 #else

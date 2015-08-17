@@ -300,7 +300,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
   else
     {
       // Keep this case, rather than use generic code above for
-      // backward compatiability. Makes load_ascii much more complex!!
+      // backward compatibility.  Makes load_ascii much more complex!!
       charMatrix chm = char_matrix_value ();
       octave_idx_type elements = chm.rows ();
       os << "# elements: " << elements << "\n";
@@ -442,7 +442,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
           if (len >= 0)
             {
-              // This is cruft for backward compatiability,
+              // This is cruft for backward compatibility,
               // but relatively harmless.
 
               // Use this instead of a C-style character buffer so
@@ -697,7 +697,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
   else
     {
-      // This is cruft for backward compatiability and easy data
+      // This is cruft for backward compatibility and easy data
       // importation
       if (rank == 0) //FIXME: Does rank==0 even exist for strings in HDF5?
         {

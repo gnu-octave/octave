@@ -447,7 +447,7 @@ octave_matrix::save_ascii (std::ostream& os)
   else
     {
       // Keep this case, rather than use generic code above for backward
-      // compatiability. Makes load_ascii much more complex!!
+      // compatibility.  Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
 

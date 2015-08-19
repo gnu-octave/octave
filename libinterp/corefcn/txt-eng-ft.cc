@@ -560,8 +560,8 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
                   if (x0 < 0)
                     x0 = 0;
 
-                  for (int r = 0; r < bitmap.rows; r++)
-                    for (int c = 0; c < bitmap.width; c++)
+                  for (unsigned int r = 0; r < bitmap.rows; r++)
+                    for (unsigned int c = 0; c < bitmap.width; c++)
                       {
                         unsigned char pix = bitmap.buffer[r*bitmap.width+c];
                         if (x0+c < 0 || x0+c >= pixels.dim2 ()

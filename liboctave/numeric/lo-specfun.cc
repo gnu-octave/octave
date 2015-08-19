@@ -3743,6 +3743,27 @@ ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
 
 static const double pi = 3.14159265358979323846;
 
+template <class T>
+static inline T
+xlog (const T& x)
+{
+  return log (x);
+}
+
+template <>
+inline double
+xlog (const double& x)
+{
+  return gnulib::log (x);
+}
+
+template <>
+inline float
+xlog (const float& x)
+{
+  return gnulib::logf (x);
+}
+
 template<class T>
 static T
 Lanczos_approximation_psi (const T zc)
@@ -3765,7 +3786,7 @@ Lanczos_approximation_psi (const T zc)
   T p = 0;
   for (octave_idx_type k = 0; k < 10; k++, overz2k *= overz2)
     p += dg_coeff[k] * overz2k;
-  p += gnulib::log (zc) - T (0.5) / zc;
+  p += xlog (zc) - T (0.5) / zc;
   return p;
 }
 

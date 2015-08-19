@@ -3761,7 +3761,7 @@ Lanczos_approximation_psi (const T zc)
   T p = 0;
   for (octave_idx_type k = 0; k < 10; k++, overz2k *= overz2)
     p += dg_coeff[k] * overz2k;
-  p += log (zc) - T (0.5) / zc;
+  p += gnulib::log (zc) - T (0.5) / zc;
   return p;
 }
 

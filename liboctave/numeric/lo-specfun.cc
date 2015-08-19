@@ -3004,11 +3004,13 @@ FloatComplex rc_log1p (float x)
 }
 
 // This algorithm is due to P. J. Acklam.
+//
 // See http://home.online.no/~pjacklam/notes/invnorm/
-// The rational approximation has relative accuracy 1.15e-9 in the whole region.
-// For doubles, it is refined by a single step of Halley's 3rd order method.
-// For single precision, the accuracy is already OK, so we skip it to get
-// faster evaluation.
+//
+// The rational approximation has relative accuracy 1.15e-9 in the whole
+// region.  For doubles, it is refined by a single step of Halley's 3rd
+// order method.  For single precision, the accuracy is already OK, so
+// we skip it to get faster evaluation.
 
 static double do_erfinv (double x, bool refine)
 {
@@ -3083,9 +3085,10 @@ float erfinv (float x)
   return do_erfinv (x, false);
 }
 
-// The algorthim for erfcinv is an adaptation of the erfinv algorithm above
-// from P. J. Acklam.  It has been modified to run over the different input
-// domain of erfcinv.  See the notes for erfinv for an explanation.
+// The algorthim for erfcinv is an adaptation of the erfinv algorithm
+// above from P. J. Acklam.  It has been modified to run over the
+// different input domain of erfcinv.  See the notes for erfinv for an
+// explanation.
 
 static double do_erfcinv (double x, bool refine)
 {
@@ -3744,9 +3747,10 @@ template<class T>
 static T
 Lanczos_approximation_psi (const T zc)
 {
-  // Coefficients for C.Lanczos expansion of psi function from XLiFE++ gammaFunctions
-  // psi_coef[k] = - (2k+1) * lg_coef[k] (see melina++ gamma functions)
-  // -1/12, 3/360,-5/1260, 7/1680,-9/1188, 11*691/360360,-13/156, 15*3617/122400, ? , ?
+  // Coefficients for C.Lanczos expansion of psi function from XLiFE++
+  // gammaFunctions psi_coef[k] = - (2k+1) * lg_coef[k] (see melina++
+  // gamma functions -1/12, 3/360,-5/1260, 7/1680,-9/1188,
+  // 11*691/360360,-13/156, 15*3617/122400, ? , ?
   static const T dg_coeff[10] = {
     -0.83333333333333333e-1, 0.83333333333333333e-2,
     -0.39682539682539683e-2, 0.41666666666666667e-2,
@@ -3846,15 +3850,20 @@ psi (const std::complex<T>& z)
           unsigned char n = 8 - z_ra;
           z_m = z + std::complex<T> (n, 0.0);
 
-          // Recurrence formula
-          // for | Re(z) | < 8 , use recursively DiGamma(z) = DiGamma(z+1) - 1/z
+          // Recurrence formula.  For | Re(z) | < 8, use recursively
+          //
+          //   DiGamma(z) = DiGamma(z+1) - 1/z
           std::complex<T> z_p = z + P (n - 1);
           for (unsigned char k = n; k > 0; k--, z_p -= 1.0)
             dgam -= P (1.0) / z_p;
         }
 
-      // for | Re(z) | > 8, use derivative of C.Lanczos expansion for LogGamma
-      // psi(z) = log(z) - 1/(2z) - 1/12z^2 + 3/360z^4 - 5/1260z^6 + 7/1680z^8 - 9/1188z^10 + ...
+      // for | Re(z) | > 8, use derivative of C.Lanczos expansion for
+      // LogGamma
+      //
+      //   psi(z) = log(z) - 1/(2z) - 1/12z^2 + 3/360z^4 - 5/1260z^6
+      //     + 7/1680z^8 - 9/1188z^10 + ...
+      //
       // (Abramowitz&Stegun, page 259, formula 6.3.18
       dgam += Lanczos_approximation_psi (z_m);
     }

@@ -244,7 +244,7 @@ Range::sort_internal (bool ascending)
     }
   else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
     {
-      double tmp = rng_limit;
+      double tmp = max ();
       rng_limit = min ();
       rng_base = tmp;
       rng_inc = -rng_inc;
@@ -274,7 +274,7 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
     }
   else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
     {
-      double tmp = rng_limit;
+      double tmp = max ();
       rng_limit = min ();
       rng_base = tmp;
       rng_inc = -rng_inc;

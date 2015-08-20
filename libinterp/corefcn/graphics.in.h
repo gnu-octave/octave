@@ -3223,11 +3223,9 @@ public:
     // Note that these properties are not yet used by Octave, so setting
     // them will have no effect.
 
-    // FIXME: Several properties have been deleted from Matlab.
-    //        We should either immediately remove them or figure out a way
-    //        to deprecate them for a release or two.
-    // Obsolete properties: commandwindowsize, diary, diaryfile, echo,
-    // errormessage, format, formatspacing, language, recursionlimit.
+    // FIXME: The commandwindowsize property has been deprecated in Matlab
+    //        and is now available through matlab.desktop.comandwindow.size.
+    //        Until Octave has something similar, keep this property in root.
 
     // Programming note: Keep property list sorted if new ones are added.
 
@@ -3235,18 +3233,10 @@ public:
       handle_property callbackobject Sr , graphics_handle ()
       array_property commandwindowsize r , Matrix (1, 2, 0)
       handle_property currentfigure S , graphics_handle ()
-      bool_property diary GS , "off"
-      string_property diaryfile GS , "diary"
-      bool_property echo GS , "off"
-      string_property errormessage Gr , ""
       string_property fixedwidthfontname , "Courier"
-      radio_property format GS , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rat|{short}|shorte|shorteng|shortg"
-      radio_property formatspacing GS , "compact|{loose}"
-      string_property language , "ascii"
       array_property monitorpositions r , Matrix (1, 4, 0)
       array_property pointerlocation , Matrix (1, 2, 0)
       double_property pointerwindow r , 0.0
-      double_property recursionlimit GS , 256.0
       double_property screendepth r , default_screendepth ()
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
       array_property screensize r , default_screensize ()

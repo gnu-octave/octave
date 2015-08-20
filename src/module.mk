@@ -153,6 +153,9 @@ src_octave_config_CXXFLAGS = \
 
 DIRSTAMP_FILES += src/$(octave_dirstamp)
 
+mostlyclean-local: src-mostlyclean-local
+.PHONY: src-mostlyclean-local
+
 if AMCOND_CROSS_TOOLS
 
 ## Building cross mkoctfile.
@@ -175,8 +178,12 @@ src/$(host_triplet)-octave-config$(BUILD_EXEEXT): src/$(host_triplet)-octave-con
 src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_default_vals)
 
-mostlyclean-local:
+src-mostlyclean-local:
 	-rm -f $(OCTAVE_CROSS_TOOLS)
+
+else
+
+src-mostlyclean-local:
 
 endif
 

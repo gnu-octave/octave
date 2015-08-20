@@ -1,5 +1,5 @@
 ## Copyright (C) 2009-2015 Eric Chassande-Mottin, CNRS (France)
-## Parts Copyright (C) 2012 Philip Nienhuis
+## Parts Copyright (C) 2012-2015 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -123,9 +123,13 @@
 ##
 ## @item @qcode{"delimiter"}
 ## Any character in @var{value} will be used to split @var{str} into words
-## (default value = any whitespace).
+## (default value = any whitespace).  Note that whitespace is implicitly added
+## to the set of delimiter characters unless a @qcode{"%s"} format conversion
+## specifier is supplied; see @qcode{"whitespace"} parameter below.  The set
+## of delimiter characters cannot be empty; if needed Octave substitutes a
+## space as delimiter.
 ##
-## @item @qcode{"emptyvalue"}:
+## @item @qcode{"emptyvalue"}
 ## Value to return for empty numeric values in non-whitespace delimited data.
 ## The default is NaN@.  When the data type does not support NaN (int32 for
 ## example), then default is zero.
@@ -146,15 +150,21 @@
 ## @item @qcode{"whitespace"}
 ## Any character in @var{value} will be interpreted as whitespace and trimmed;
 ## the string defining whitespace must be enclosed in double quotes for proper
-## processing of special characters like @qcode{"@xbackslashchar{}t"}.  The
-## default value for whitespace is
+## processing of special characters like @qcode{"@xbackslashchar{}t"}.  In
+## each data field, multiple consecutive whitespace characters are collapsed
+## into one space and leading and trailing whitespace is removed.  The default
+## value for whitespace is
 ## @c Note: the next line specifically has a newline which generates a space
 ## @c       in the output of qcode, but keeps the next line < 80 characters.
 ## @qcode{"
 ## @xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t"}
-## (note the space).  Unless whitespace is set to @qcode{""} (empty) AND at
-## least one @qcode{"%s"} format conversion specifier is supplied, a space is
-## always part of whitespace.
+## (note the space).  Whitespace is always added to the set of delimiter
+## characters unless at least one @qcode{"%s"} format conversion specifier is
+## supplied; in that case only whitespace explicitly specified in
+## @qcode{"delimiter"} is retained as delimiter and removed from the set of
+## whitespace characters.  If whitespace characters are to be kept as-is (in
+## e.g., strings), specify an empty value (i.e., @qcode{""}) for
+## @qcode{"whitespace"}; obviously, whitespace cannot be a delimiter then.
 ##
 ## @end table
 ##
@@ -388,7 +398,7 @@ function varargout = strread (str, format = "%f", varargin)
   if (! isempty (white_spaces))
     ## For numeric fields, whitespace is always a delimiter, but not for text
     ## fields
-    if (isempty (strfind (format, "%s")))
+    if (isempty (regexp (format, '%\*?\d*s')))
       ## Add whitespace to delimiter set
       delimiter_str = unique ([white_spaces delimiter_str]);
     else
@@ -1086,3 +1096,9 @@ endfunction
 ## Test for false positives in check for non-supported format specifiers
 %!test
 %! assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5);
+
+## Test various forms of string format specifiers (bug #45712)
+%!test
+%! str = "14 :1 z:2 z:3 z:5 z:11";
+%! [a, b, c, d] = strread (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
+%! assert ({a, b, c, d}, {14, {"1 z"}, {"3 z"}, 11});

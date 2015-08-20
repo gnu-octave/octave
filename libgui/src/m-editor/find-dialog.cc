@@ -237,6 +237,10 @@ find_dialog::init_search_text ()
       if (lbeg == lend)
         _search_line_edit->setText (_edit_area->selectedText ());
     }
+
+  // set focus to "Find what" and select all text
+  _search_line_edit->setFocus();
+  _search_line_edit->selectAll();
 }
 
 void

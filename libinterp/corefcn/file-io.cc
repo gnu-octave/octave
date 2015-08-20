@@ -1608,7 +1608,12 @@ IEEE big endian.\n\
 IEEE little endian.\n\
 @end table\n\
 \n\
+If no @var{arch} is given the value used in the call to @code{fopen} which\n\
+created the file descriptor is used.  Otherwise, the value specified with\n\
+@code{fread} overrides that of @code{fopen} and determines the data format.\n\
+\n\
 The output argument @var{val} contains the data read from the file.\n\
+\n\
 The optional return value @var{count} contains the number of elements read.\n\
 @seealso{fwrite, fgets, fgetl, fscanf, fopen}\n\
 @end deftypefn")

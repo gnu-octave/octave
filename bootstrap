@@ -1,10 +1,10 @@
 #! /bin/sh
 # Print a version string.
-scriptversion=2013-08-15.22; # UTC
+scriptversion=2014-12-08.12; # UTC
 
 # Bootstrap this package from checked-out sources.
 
-# Copyright (C) 2003-2013 Free Software Foundation, Inc.
+# Copyright (C) 2003-2015 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,6 +41,9 @@ export LC_ALL
 (unset CDPATH) >/dev/null 2>&1 && unset CDPATH
 
 local_gl_dir=gl
+
+# Honour $PERL, but work even if there is none
+PERL="${PERL-perl}"
 
 me=$0
 
@@ -209,12 +212,26 @@ bootstrap_sync=false
 # Use git to update gnulib sources
 use_git=true
 
+check_exists() {
+  if test "$1" = "--verbose"; then
+    ($2 --version </dev/null) >/dev/null 2>&1
+    if test $? -ge 126; then
+      # If not found, run with diagnostics as one may be
+      # presented with env variables to set to find the right version
+      ($2 --version </dev/null)
+    fi
+  else
+    ($1 --version </dev/null) >/dev/null 2>&1
+  fi
+
+  test $? -lt 126
+}
+
 # find_tool ENVVAR NAMES...
 # -------------------------
 # Search for a required program.  Use the value of ENVVAR, if set,
-# otherwise find the first of the NAMES that can be run (i.e.,
-# supports --version).  If found, set ENVVAR to the program name,
-# die otherwise.
+# otherwise find the first of the NAMES that can be run.
+# If found, set ENVVAR to the program name, die otherwise.
 #
 # FIXME: code duplication, see also gnu-web-doc-update.
 find_tool ()
@@ -225,7 +242,7 @@ find_tool ()
   eval "find_tool_res=\$$find_tool_envvar"
   if test x"$find_tool_res" = x; then
     for i; do
-      if ($i --version </dev/null) >/dev/null 2>&1; then
+      if check_exists $i; then
         find_tool_res=$i
         break
       fi
@@ -404,7 +421,7 @@ sort_ver() { # sort -V is not generally available
 get_version() {
   app=$1
 
-  $app --version >/dev/null 2>&1 || return 1
+  $app --version >/dev/null 2>&1 || { $app --version; return 1; }
 
   $app --version 2>&1 |
   sed -n '# Move version to start of line.
@@ -442,6 +459,7 @@ check_versions() {
     test "$appvar" = TAR && appvar=AMTAR
     case $appvar in
         GZIP) ;; # Do not use $GZIP:  it contains gzip options.
+        PERL::*) ;; # Keep perl modules as-is
         *) eval "app=\${$appvar-$app}" ;;
     esac
 
@@ -459,12 +477,22 @@ check_versions() {
           ret=1
           continue
         } ;;
+      # Another check is for perl modules.  These can be written as
+      # e.g. perl::XML::XPath in case of XML::XPath module, etc.
+      perl::*)
+        # Extract module name
+        app="${app#perl::}"
+        if ! $PERL -m"$app" -e 'exit 0' >/dev/null 2>&1; then
+          warn_ "Error: perl module '$app' not found"
+          ret=1
+        fi
+        continue
+        ;;
     esac
     if [ "$req_ver" = "-" ]; then
       # Merely require app to exist; not all prereq apps are well-behaved
       # so we have to rely on $? rather than get_version.
-      $app --version >/dev/null 2>&1 </dev/null
-      if [ 126 -le $? ]; then
+      if ! check_exists --verbose $app; then
         warn_ "Error: '$app' not found"
         ret=1
       fi
@@ -548,13 +576,21 @@ if ! printf "$buildreq" | check_versions; then
   fi
 fi
 
+# Warn the user if autom4te appears to be broken; this causes known
+# issues with at least gettext 0.18.3.
+probe=$(echo 'm4_quote([hi])' | autom4te -l M4sugar -t 'm4_quote:$%' -)
+if test "x$probe" != xhi; then
+  warn_ "WARNING: your autom4te wrapper eats stdin;"
+  warn_ "if bootstrap fails, consider upgrading your autotools"
+fi
+
 echo "$0: Bootstrapping from checked-out $package sources..."
 
 # See if we can use gnulib's git-merge-changelog merge driver.
-if $use_git && test -d .git && (git --version) >/dev/null 2>/dev/null ; then
+if $use_git && test -d .git && check_exists git; then
   if git config merge.merge-changelog.driver >/dev/null ; then
     :
-  elif (git-merge-changelog --version) >/dev/null 2>/dev/null ; then
+  elif check_exists git-merge-changelog; then
     echo "$0: initializing git-merge-changelog driver"
     git config merge.merge-changelog.name 'GNU-style ChangeLog merge driver'
     git config merge.merge-changelog.driver 'git-merge-changelog %O %A %B'
@@ -587,8 +623,8 @@ case ${GNULIB_SRCDIR--} in
   # Note that $use_git is necessarily true in this case.
   if git_modules_config submodule.gnulib.url >/dev/null; then
     echo "$0: getting gnulib files..."
-    git submodule init || exit $?
-    git submodule update || exit $?
+    git submodule init -- "$gnulib_path" || exit $?
+    git submodule update -- "$gnulib_path" || exit $?
 
   elif [ ! -d "$gnulib_path" ]; then
     echo "$0: getting gnulib files..."
@@ -617,13 +653,14 @@ case ${GNULIB_SRCDIR--} in
       # This fallback allows at least git 1.5.5.
       if test -f "$gnulib_path"/gnulib-tool; then
         # Since file already exists, assume submodule init already complete.
-        git submodule update || exit $?
+        git submodule update -- "$gnulib_path" || exit $?
       else
         # Older git can't clone into an empty directory.
         rmdir "$gnulib_path" 2>/dev/null
         git clone --reference "$GNULIB_SRCDIR" \
           "$(git_modules_config submodule.gnulib.url)" "$gnulib_path" \
-          && git submodule init && git submodule update \
+          && git submodule init -- "$gnulib_path" \
+          && git submodule update -- "$gnulib_path" \
           || exit $?
       fi
     fi
@@ -878,7 +915,8 @@ if test $use_libtool = 1; then
   esac
 fi
 echo "$0: $gnulib_tool $gnulib_tool_options --import ..."
-$gnulib_tool $gnulib_tool_options --import $gnulib_modules &&
+$gnulib_tool $gnulib_tool_options --import $gnulib_modules \
+  || die "gnulib-tool failed"
 
 for file in $gnulib_files; do
   symlink_to_dir "$GNULIB_SRCDIR" $file \

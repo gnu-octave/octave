@@ -107,3 +107,12 @@
 %!assert (signbit (sort (r, "descend")), logical ([0 0 0 1]))
 %!assert (signbit (sort (rrev, "ascend")), logical ([1 0 0 0]))
 
+## Test sorting of ranges (bug #45739)
+
+%!shared r, rrev
+%! r = 1:2:10;
+%! rrev = 10:-2:1;
+
+%!assert (sort (r, "descend"), [9 7 5 3 1])
+%!assert (sort (rrev, "ascend"), [2 4 6 8 10])
+

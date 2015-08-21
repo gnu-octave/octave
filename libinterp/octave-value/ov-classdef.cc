@@ -1946,6 +1946,12 @@ cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
   return true;
 }
 
+void
+cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
+{
+  ctor_list.erase (cls);
+}
+
 handle_cdef_object::~handle_cdef_object (void)
 {
 #if DEBUG_TRACE

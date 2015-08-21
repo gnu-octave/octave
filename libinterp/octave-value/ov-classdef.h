@@ -438,7 +438,7 @@ public:
 
   void mark_as_constructed (void) { ctor_list.clear (); }
 
-  void mark_as_constructed (const cdef_class& cls) { ctor_list.erase (cls); }
+  void mark_as_constructed (const cdef_class& cls);
 
   bool is_constructed (void) const { return ctor_list.empty (); }
 

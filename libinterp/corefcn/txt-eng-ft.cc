@@ -438,7 +438,7 @@ ft_render::update_line_bbox (void)
       int asc = font.get_face ()->size->metrics.ascender >> 6;
       int desc = font.get_face ()->size->metrics.descender >> 6;
 
-      Matrix& bb = line_bbox.front ();
+      Matrix& bb = line_bbox.back ();
 
       if ((yoffset + desc) < bb(1))
         {

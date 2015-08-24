@@ -635,6 +635,7 @@ for the x-axis.  __modemsg__.  @xref{XREFxlim, , @w{xlim function}}.";
       case "xtick"
         s.doc = "Position of x tick marks.  __modemsg__.";
         s.valid = "vector";
+        s.printdefault = false;
 
       case "xticklabel"
         s.doc = "Labels of x tick marks.  __modemsg__.";
@@ -669,6 +670,7 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
       case "ytick"
         s.doc = "Position of y tick marks.  __modemsg__.";
         s.valid = "vector";
+        s.printdefault = false;
 
       case "yticklabel"
         s.doc = "Labels of y tick marks.  __modemsg__.";
@@ -702,6 +704,7 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
       case "ztick"
         s.doc = "Position of z tick marks.  __modemsg__.";
         s.valid = "vector";
+        s.printdefault = false;
 
       case "zticklabel"
         s.doc = "Labels of z tick marks.  __modemsg__.";

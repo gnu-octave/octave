@@ -637,11 +637,7 @@ function varargout = strread (str, format = "%f", varargin)
               fwptr = [fwptr(1:ii) (++fwptr(ii+1:end))];
 
             else
-              if (! idg(ii) && ! isempty (strfind (fmt_words{ii-1}, "%s")))
-                ## Trailing literal.
-                ## If preceding format == '%s' this is an error.
-                warning ("strread: ambiguous '%s' specifier next to literal in column %d", icol);
-              elseif (idg(ii))
+              if (idg(ii))
                 ## Current field = fixed width. Strip into icol, rest in icol+1
                 sw = regexp (fmt_words{ii}, '\d', "once");
                 ew = regexp (fmt_words{ii}, '[nfuds]') - 1;
@@ -657,6 +653,10 @@ function varargout = strread (str, format = "%f", varargin)
                   fwptr = [fwptr(1:ii) (++fwptr(ii+1:end))];
                 endif
               else
+                if (! isempty (strfind (fmt_words{ii-1}, "%s")))
+                  ## Trailing literal. Could be ambiguous if preceding format == '%s'
+                  warning ("strread.m:\n  Ambiguous '%%s' specifier immediately before literal in column %d", icol);
+                endif
                 ## FIXME: this assumes char(254)/char(255) won't occur in input!
                 clear wrds;
                 wrds(1:2:2*numel (words(icol, jptr))) = ...
@@ -1102,3 +1102,11 @@ endfunction
 %! str = "14 :1 z:2 z:3 z:5 z:11";
 %! [a, b, c, d] = strread (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
 %! assert ({a, b, c, d}, {14, {"1 z"}, {"3 z"}, 11});
+
+## Allow cuddling %sliteral but warn it is ambiguous
+%!test
+%! [a, b] = strread ("abcxyz51\nxyz83\n##xyz101", "%s xyz %d");
+%! assert (a([1 3]), {"abc"; "##"});
+%! assert (isempty (a{2}), true);
+%! assert (b, int32([51; 83; 101]));
+

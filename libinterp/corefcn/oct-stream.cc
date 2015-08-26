@@ -1603,11 +1603,19 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
           if (elt)
             {
-              if (! (elt->type == scanf_format_elt::whitespace_conversion
-                     || elt->type == scanf_format_elt::literal_conversion
-                     || elt->type == '%')
-                  && max_conv > 0 && conversion_count == max_conv)
+              if (elt->type == scanf_format_elt::null
+                  || (! (elt->type == scanf_format_elt::whitespace_conversion
+                        || elt->type == scanf_format_elt::literal_conversion
+                        || elt->type == '%')
+                      && max_conv > 0 && conversion_count == max_conv))
                 {
+                  // We are done, either because we have reached the end
+                  // of the format string and are not cycling through
+                  // the format again or because we've converted all the
+                  // values that have been requested and the next format
+                  // element is a conversion.  Determine final array
+                  // size and exit.
+
                   if (all_char_conv && one_elt_size_spec)
                     {
                       final_nr = 1;
@@ -1859,7 +1867,16 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
               break;
             }
           else
-            elt = fmt_list.next (nconv > 0);
+            {
+              // Cycle through the format list more than once if we have
+              // some conversions to make and we haven't reached the
+              // limit on the number of values to convert (possibly
+              // because there is no specified limit).
+
+              elt = fmt_list.next (nconv > 0
+                                   && (max_conv == 0
+                                       || conversion_count < max_conv));
+            }
         }
     }
 

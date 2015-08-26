@@ -49,7 +49,8 @@ public:
   enum special_conversion
   {
     whitespace_conversion = 1,
-    literal_conversion = 2
+    literal_conversion = 2,
+    null = 3
   };
 
   scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
@@ -129,6 +130,9 @@ public:
 
   const scanf_format_elt *next (bool cycle = true)
   {
+    static scanf_format_elt dummy
+      (0, 0, false, scanf_format_elt::null, '\0', "");
+
     curr_idx++;
 
     if (curr_idx >= list.numel ())
@@ -136,8 +140,9 @@ public:
         if (cycle)
           curr_idx = 0;
         else
-          return 0;
+          return &dummy;
       }
+
     return current ();
   }
 

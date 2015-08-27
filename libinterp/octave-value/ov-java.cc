@@ -1880,6 +1880,22 @@ octave_java::load_binary (std::istream& /* is */, bool /* swap*/,
   return true;
 }
 
+bool
+octave_java::save_hdf5 (octave_hdf5_id /* loc_id */, const char * /* name */,
+                        bool /* save_as_floats */)
+{
+  warning ("save: unable to save java objects, skipping");
+
+  return true;
+}
+
+bool
+octave_java::load_hdf5 (octave_hdf5_id /* loc_id */, const char * /* name */)
+{
+  // Silently skip object that was not saved
+  return true;
+}
+
 octave_value
 octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
                             const octave_value_list& args)

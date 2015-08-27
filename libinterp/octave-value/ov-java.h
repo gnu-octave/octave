@@ -166,6 +166,11 @@ public:
   bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
+  bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                  bool save_as_floats);
+
+  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+
   octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx, int nargout);

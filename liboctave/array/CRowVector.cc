@@ -462,14 +462,19 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 ComplexRowVector
 linspace (const Complex& x1, const Complex& x2, octave_idx_type n)
 {
-  if (n < 1) n = 1;
+  NoAlias<ComplexRowVector> retval;
 
-  NoAlias<ComplexRowVector> retval (n);
+  if (n < 1)
+    return retval;
+  else
+    retval.clear (n);
+
+  retval(0) = x1;
 
   Complex delta = (x2 - x1) / (n - 1.0);
-  retval(0) = x1;
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + static_cast<double> (i)*delta;
+
   retval(n-1) = x2;
 
   return retval;

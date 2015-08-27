@@ -22,6 +22,11 @@ Summary of important user-visible changes for version 4.2:
  ** mkfifo now interprets the MODE argument as an octal, not decimal, integer.
     This is consistent with the equivalent shell command. 
 
+ ** linspace now returns an empty matrix if the number of requested points
+    is 0 or a negative number.  This change was made to be compatible with
+    Matlab releases newer than 2011.  In addition, Octave no longer supports
+    matrix inputs for A or B.
+
  ** The griddata function no longer plots the interpolated mesh if no output
     argument is requested, instead the vector or array of interpolated values
     is always returned for Matlab compatibility.

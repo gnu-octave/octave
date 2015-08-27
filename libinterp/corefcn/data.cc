@@ -5342,9 +5342,11 @@ and @var{limit} are always included in the range.  If @var{base} is greater\n\
 than @var{limit}, the elements are stored in decreasing order.  If the\n\
 number of points is not specified, a value of 100 is used.\n\
 \n\
-The @code{linspace} function always returns a row vector if both @var{base}\n\
-and @var{limit} are scalars.  If one, or both, of them are column vectors,\n\
-@code{linspace} returns a matrix.\n\
+The @code{linspace} function returns a row vector when both @var{base}\n\
+and @var{limit} are scalars.  If one, or both, inputs are vectors, then\n\
+@code{linspace} transforms them to column vectors and returns a matrix where\n\
+each row is an independent sequence between\n\
+@w{@code{@var{base}(@var{row_n}), @var{limit}(@var{row_n})}}.\n\
 \n\
 For compatibility with @sc{matlab}, return the second argument (@var{limit})\n\
 if fewer than two values are requested.\n\
@@ -5372,6 +5374,8 @@ if fewer than two values are requested.\n\
 
       if (arg_3.is_numeric_type () && arg_3.is_empty ())
         npoints = 1;
+      else if (! arg_3.is_scalar_type ())
+        error ("linspace: N must be a scalar");
       else
         npoints = arg_3.idx_type_value ();
     }
@@ -5381,7 +5385,14 @@ if fewer than two values are requested.\n\
       octave_value arg_1 = args(0);
       octave_value arg_2 = args(1);
 
-      if (arg_1.is_single_type () || arg_2.is_single_type ())
+      dim_vector sz1 = arg_1.dims ();
+      bool isvector1 = sz1.length () == 2 && (sz1(0) == 1 || sz1(1) == 1);
+      dim_vector sz2 = arg_2.dims ();
+      bool isvector2 = sz2.length () == 2 && (sz2(0) == 1 || sz2(1) == 1);
+
+      if (! isvector1 || ! isvector2)
+        error ("linspace: A, B must be scalars or vectors");
+      else if (arg_1.is_single_type () || arg_2.is_single_type ())
         {
           if (arg_1.is_complex_type () || arg_2.is_complex_type ())
             retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
@@ -5413,12 +5424,32 @@ if fewer than two values are requested.\n\
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
 
-%! ##assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
+## Test complex values
+%!test
+%! exp = [1+0i, 2-1.25i, 3-2.5i, 4-3.75i, 5-5i];
+%! obs = linspace (1, 5-5i, 5);
+%! assert (obs, exp);
 
+## Test class of output
+%!assert (class (linspace (1, 2)), "double")
+%!assert (class (linspace (single (1), 2)), "single")
+%!assert (class (linspace (1, single (2))), "single")
+
+## Test obscure Matlab compatibility options
 %!assert (linspace (0, 1, []), 1)
+%!assert (linspace (10, 20, 2), [10 20])
+%!assert (linspace (10, 20, 1), [20])
+%!assert (linspace (10, 20, 0), zeros (1, 0))
+%!assert (linspace (10, 20, -1), zeros (1, 0))
+%!assert (numel (linspace (0, 1, 2+eps)), 2)
+%!assert (numel (linspace (0, 1, 2-eps)), 1)
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)
+%!error <N must be a scalar> linspace (1, 2, [3, 4])
+%!error <must be scalars or vectors> linspace (ones (2,2), 2, 3)
+%!error <must be scalars or vectors> linspace (2, ones (2,2), 3)
+%!error <must be scalars or vectors> linspace (1, [], 3)
 */
 
 // FIXME: should accept dimensions as separate args for N-d

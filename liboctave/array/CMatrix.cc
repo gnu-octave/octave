@@ -3999,8 +3999,6 @@ ComplexMatrix linspace (const ComplexColumnVector& x1,
                         octave_idx_type n)
 
 {
-  if (n < 1) n = 1;
-
   octave_idx_type m = x1.numel ();
 
   if (x2.numel () != m)
@@ -4009,11 +4007,17 @@ ComplexMatrix linspace (const ComplexColumnVector& x1,
 
   NoAlias<ComplexMatrix> retval;
 
+  if (n < 1)
+    {
+      retval.clear (m, 0);
+      return retval;
+    }
+
   retval.clear (m, n);
   for (octave_idx_type i = 0; i < m; i++)
     retval(i, 0) = x1(i);
 
-  // The last column is not needed while using delta.
+  // The last column is unused so temporarily store delta there
   Complex *delta = &retval(0, n-1);
   for (octave_idx_type i = 0; i < m; i++)
     delta[i] = (x2(i) - x1(i)) / (n - 1.0);

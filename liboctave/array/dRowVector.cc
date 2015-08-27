@@ -293,14 +293,19 @@ operator >> (std::istream& is, RowVector& a)
 RowVector
 linspace (double x1, double x2, octave_idx_type n)
 {
-  if (n < 1) n = 1;
+  NoAlias<RowVector> retval;
 
-  NoAlias<RowVector> retval (n);
+  if (n < 1)
+    return retval;
+  else
+    retval.clear (n);
+
+  retval(0) = x1;
 
   double delta = (x2 - x1) / (n - 1);
-  retval(0) = x1;
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + i*delta;
+
   retval(n-1) = x2;
 
   return retval;

@@ -463,14 +463,19 @@ operator * (const FloatComplexRowVector& v, const FloatComplexColumnVector& a)
 FloatComplexRowVector
 linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
 {
-  if (n < 1) n = 1;
+  NoAlias<FloatComplexRowVector> retval;
 
-  NoAlias<FloatComplexRowVector> retval (n);
+  if (n < 1)
+    return retval;
+  else
+    retval.clear (n);
+
+  retval(0) = x1;
 
   FloatComplex delta = (x2 - x1) / (n - 1.0f);
-  retval(0) = x1;
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + static_cast<float> (i)*delta;
+
   retval(n-1) = x2;
 
   return retval;

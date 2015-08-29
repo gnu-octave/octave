@@ -1729,8 +1729,9 @@ determine whether functions defined in function files need to recompiled.\n\
 
 DEFUN (__current_scope__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{scope}, @var{context}]} __dump_symtab_info__ ()\n\
-Undocumented internal function.\n\
+@deftypefn {Built-in Function} {[@var{scope}, @var{context}]} __current_scope__ ()\n\
+Return the current scope and context as integers.\n\
+@seealso{__dump_symtab_info__}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1748,6 +1749,7 @@ DEFUN (__dump_symtab_info__, args, ,
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"scopes\")\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"functions\")\n\
 Undocumented internal function.\n\
+@seealso{__current_scope__}\n\
 @end deftypefn")
 {
   octave_value retval;

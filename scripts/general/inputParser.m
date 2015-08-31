@@ -261,7 +261,7 @@ classdef inputParser < handle
     ## structs with the fields "name", "def" (default), and "val" (validator).
     Required   = cell ();
     Optional   = cell ();
-    ## ParamValue and Swicth are unordered so we have a struct whose fieldnames
+    ## ParamValue and Switch are unordered so we have a struct whose fieldnames
     ## are the argname, and values are a struct with fields "def" and "val"
     ParamValue = struct ();
     Switch     = struct ();

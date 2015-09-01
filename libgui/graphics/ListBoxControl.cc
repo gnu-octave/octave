@@ -48,6 +48,7 @@ updateSelection (QListWidget* list, const Matrix& value)
       if (1 <= idx && idx <= lc)
         {
           list->item (idx-1)->setSelected (true);
+          list->scrollToItem (list->item (idx-1));
           if (i == 0
               && list->selectionMode () == QAbstractItemView::SingleSelection)
             break;
@@ -100,6 +101,7 @@ ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
           if (1 <= idx && idx <= lc)
             {
               list->item (idx-1)->setSelected (true);
+              list->scrollToItem (list->item (idx-1));
               if (i == 0 && (list->selectionMode ()
                              == QAbstractItemView::SingleSelection))
                 break;

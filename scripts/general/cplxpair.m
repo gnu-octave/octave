@@ -20,15 +20,17 @@
 ## @deftypefn  {Function File} {} cplxpair (@var{z})
 ## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol})
 ## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol}, @var{dim})
-## Sort the numbers @var{z} into complex conjugate pairs ordered by
-## increasing real part.
+## Sort the numbers @var{z} into complex conjugate pairs ordered by increasing
+## real part.
 ##
 ## The negative imaginary complex numbers are placed first within each pair.
 ## All real numbers (those with
 ## @code{abs (imag (@var{z}) / @var{z}) < @var{tol}}) are placed after the
 ## complex pairs.
 ##
-## If @var{tol} is unspecified the default value is 100*@code{eps}.
+## @var{tol} is a weighting factor which determines the tolerance of matching.
+## The default value is 100 and the resulting tolerance for a given complex
+## pair is @code{100 * eps (abs (@var{z}(i))}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
 ## dimension of @var{z}.  If @var{dim} is specified, then the complex pairs are
@@ -46,7 +48,7 @@
 ## @end deftypefn
 
 ## FIXME: subsort returned pairs by imaginary magnitude
-## FIXME: Why doesn't exp (2i*pi*[0:4]'/5) produce exact conjugates.  Does
+## FIXME: Why doesn't exp (2i*pi*[0:4]'/5) produce exact conjugates?  Does
 ## FIXME: it in Matlab?  The reason is that complex pairs are supposed
 ## FIXME: to be exact conjugates, and not rely on a tolerance test.
 
@@ -58,39 +60,30 @@ function y = cplxpair (z, tol, dim)
     print_usage ();
   endif
 
-  if (length (z) == 0)
+  if (isempty (z))
     y = zeros (size (z));
     return;
   endif
 
   if (nargin < 2 || isempty (tol))
-    if (isa (z, "single"))
-      tol = 100 * eps("single");
-    else
-      tol = 100*eps;
-    endif
+    tol = 100;
+  elseif (! isscalar (tol) || tol < 0)
+    error ("cplxpair: TOL must be a positive scalar number")
   endif
 
   nd = ndims (z);
-  orig_dims = size (z);
   if (nargin < 3)
     ## Find the first singleton dimension.
-    dim = 0;
-    while (dim < nd && orig_dims(dim+1) == 1)
-      dim++;
-    endwhile
-    dim++;
-    if (dim > nd)
-      dim = 1;
-    endif
+    sz = size (z);
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     dim = floor (dim);
     if (dim < 1 || dim > nd)
-      error ("cplxpair: invalid dimension along which to sort");
+      error ("cplxpair: invalid dimension DIM");
     endif
   endif
 
-  ## Move dimension to treat first, and convert to a 2-D matrix.
+  ## Move dimension to treat to first position, and convert to a 2-D matrix.
   perm = [dim:nd, 1:dim-1];
   z = permute (z, perm);
   sz = size (z);
@@ -103,20 +96,17 @@ function y = cplxpair (z, tol, dim)
   z = z(idx + n * ones (n, 1) * [0:m-1]);
 
   ## Put the purely real values at the end of the returned list.
-  cls = "double";
-  if (isa (z, "single"))
-    cls = "single";
-  endif
-  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin (cls)) < tol);
+  cls = ifelse (isa (z, "single"), "single", "double");
+  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin (cls)) ...
+                       < tol*eps (abs (z)));
   q = sparse (idxi, idxj, 1, n, m);
   nr = sum (q, 1);
   [q, idx] = sort (q, 1);
   z = z(idx);
   y = z;
 
-  ## For each remaining z, place the value and its conjugate at the
-  ## start of the returned list, and remove them from further
-  ## consideration.
+  ## For each remaining z, place the value and its conjugate at the start of
+  ## the returned list, and remove them from further consideration.
   for j = 1:m
     p = n - nr(j);
     for i = 1:2:p
@@ -124,7 +114,7 @@ function y = cplxpair (z, tol, dim)
         error ("cplxpair: could not pair all complex numbers");
       endif
       [v, idx] = min (abs (z(i+1:p) - conj (z(i))));
-      if (v > tol)
+      if (v > tol*eps (abs (z(i))))
         error ("cplxpair: could not pair all complex numbers");
       endif
       if (imag (z(i)) < 0)
@@ -159,10 +149,21 @@ endfunction
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
-%!assert (cplxpair ([z(randperm(7)),z(randperm(7))]), [z,z])
-%!assert (cplxpair ([z(randperm(7)),z(randperm(7))],[],1), [z,z])
-%!assert (cplxpair ([z(randperm(7)).';z(randperm(7)).'],[],2), [z.';z.'])
+%!assert (cplxpair ([z(randperm (7)), z(randperm (7))]), [z,z])
+%!assert (cplxpair ([z(randperm (7)), z(randperm (7))],[],1), [z,z])
+%!assert (cplxpair ([z(randperm (7)).'; z(randperm (7)).'],[],2), [z.';z.'])
 
-## tolerance test
-%!assert (cplxpair ([1i, -1i, 1+(1i*eps)],2*eps), [-1i, 1i, 1+(1i*eps)])
+## Test tolerance
+%!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]), ...
+%!        [(2000 - 4j); (2000 + 4j)], 100*eps(200))
+%!error <could not pair> cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0);
+
+%!error <could not pair> cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)]);
+
+## Test input validation
+%!error cplxpair ()
+%!error cplxpair (1,2,3,4)
+%!error <TOL must be .* positive> cplxpair (1, -1)
+%!error <TOL must be .* scalar number> cplxpair (1, ones (2,2))
+%!error <invalid dimension DIM> cplxpair (1, [], 3)
 

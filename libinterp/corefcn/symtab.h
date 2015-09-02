@@ -881,6 +881,8 @@ public:
       // "user defined"
       void clear_user_function (bool force = false)
       {
+        clear_autoload_function (force);
+
         if (force || ! function_on_path.islocked ())
           function_on_path = octave_value ();
 

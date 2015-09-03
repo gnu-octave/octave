@@ -17,27 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __finish__ ()
-## Undocumented internal function.
+## @deftypefn {Script File} {} __finish__
+## Check for the existence of the function/script, @file{finish}, in the
+## path or current working directory and execute it.
+##
+## This function is intended to be excecuted upon a clean exit from Octave.
+## This is accomplished in the system script @file{startup/octaverc} by use of
+## the built-in function @code{atexit}.
+## @seealso{atexit}
 ## @end deftypefn
 
-## Check for the existence of the function/script, @file{finish}, in the
-## path or current working directory and execute it.  This function is
-## intended to be excecuted upon a clean exit from Octave.  This is
-## accomplished in the system script @file{startup/octaverc} by use of
-## the built-in function @code{atexit}.
+## No function declaration, this is is an Octave script.  This means we are
+## still in the base workspace with access to all user variables.
 
-function __finish__ ()
-
-  if (exist ("finish", "file"))
-    ## No arg list here since finish might be a script.
-    finish;
-  endif
-
-endfunction
+if (exist ("finish", "file"))
+  ## No arg list here since finish might be a script.
+  finish;
+endif
 
 
-
-## No test needed for internal helper function.
+## No test needed for internal helper m-file.
 %!assert (1)
 

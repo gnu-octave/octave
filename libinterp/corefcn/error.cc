@@ -314,6 +314,10 @@ pr_where (const char *who)
   if (nframes > 0)
     pr_where_1 ("%s: called from\n", who);
 
+  // Print the error message only if it is different from the previous one;
+  // Makes the output more concise and readable.
+  frames.unique ();
+
   for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
        p != frames.end (); p++)
     {

@@ -130,6 +130,21 @@ octave_call_stack::stack_frame::fcn_name (bool print_subfn) const
   return retval;
 }
 
+bool
+octave_call_stack::stack_frame::operator== (const octave_call_stack::stack_frame &rhs) const
+{
+  if (this->line () != rhs.line ())
+    return false;
+  else if (this->column () != rhs.column ())
+    return false;
+  else if (this->fcn_file_name () != rhs.fcn_file_name ())
+    return false;
+  else if (this->fcn_name () != rhs.fcn_name ())
+    return false;
+  else
+    return true;
+}
+
 void
 octave_call_stack::create_instance (void)
 {

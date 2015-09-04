@@ -16,6 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
 ## @deftypefn  {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')
 ## @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})
 ## @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})

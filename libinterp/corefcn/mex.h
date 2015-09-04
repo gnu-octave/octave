@@ -52,7 +52,7 @@ SUCH DAMAGE.
 
 typedef void mxArray;
 
-#if ! defined (__cplusplus)
+#if ! defined (__cplusplus) && ! defined (bool)
 typedef int bool;
 #endif
 

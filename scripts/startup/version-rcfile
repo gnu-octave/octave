@@ -1,5 +1,8 @@
 ## System-wide startup file for Octave.
 ##
+## If the environment variable OCTAVE_VERSION_INITFILE is set when Octave
+## starts, then that file is executed instead of this file.
+##
 ## This file should contain any commands that should be executed each
 ## time Octave starts for every user at this site.
 

@@ -83,73 +83,69 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
   endfor
 
   ## Should we return something?
-  if (nargout == 2)
+  if (nargout == 1)
+    out1 = installed_pkgs_lst;
+  elseif (nargout > 1)
     out1 = local_packages;
     out2 = global_packages;
-    return;
-  elseif (nargout == 1)
-    out1 = installed_pkgs_lst;
-    return;
-  endif
-
-  ## Don't return anything, instead we'll print something.
-  num_packages = numel (installed_pkgs_lst);
-  if (num_packages == 0)
-    if (isempty (pkgname))
-      printf ("no packages installed.\n");
-    else
-      printf ("package %s is not installed.\n", pkgname{1});
-    endif
-    return;
-  endif
-
-  ## Compute the maximal lengths of name, version, and dir.
-  h1 = "Package Name";
-  h2 = "Version";
-  h3 = "Installation directory";
-  max_name_length = max ([length(h1), cellfun(@length, installed_names)]);
-  version_lengths = cellfun (@(x) length (x.version), installed_pkgs_lst);
-  max_version_length = max ([length(h2), version_lengths]);
-  ncols = terminal_size ()(2);
-  max_dir_length = ncols - max_name_length - max_version_length - 7;
-  if (max_dir_length < 20)
-    max_dir_length = Inf;
-  endif
-
-  h1 = postpad (h1, max_name_length + 1, " ");
-  h2 = postpad (h2, max_version_length, " ");;
-
-  ## Print a header.
-  header = sprintf ("%s | %s | %s\n", h1, h2, h3);
-  printf (header);
-  tmp = sprintf (repmat ("-", 1, length (header) - 1));
-  tmp(length(h1)+2) = "+";
-  tmp(length(h1)+length(h2)+5) = "+";
-  printf ("%s\n", tmp);
-
-  ## Print the packages.
-  format = sprintf ("%%%ds %%1s| %%%ds | %%s\n",
-                    max_name_length, max_version_length);
-  for i = 1:num_packages
-    cur_name = installed_pkgs_lst{i}.name;
-    cur_version = installed_pkgs_lst{i}.version;
-    cur_dir = installed_pkgs_lst{i}.dir;
-    if (length (cur_dir) > max_dir_length)
-      first_char = length (cur_dir) - max_dir_length + 4;
-      first_filesep = strfind (cur_dir(first_char:end), filesep ());
-      if (! isempty (first_filesep))
-        cur_dir = ["..." cur_dir((first_char + first_filesep(1) - 1):end)];
+  else
+    ## Don't return anything, instead we'll print something.
+    num_packages = numel (installed_pkgs_lst);
+    if (num_packages == 0)
+      if (isempty (pkgname))
+        printf ("no packages installed.\n");
       else
-        cur_dir = ["..." cur_dir(first_char:end)];
+        printf ("package %s is not installed.\n", pkgname{1});
       endif
+      return;
     endif
-    if (installed_pkgs_lst{i}.loaded)
-      cur_loaded = "*";
-    else
-      cur_loaded = " ";
-    endif
-    printf (format, cur_name, cur_loaded, cur_version, cur_dir);
-  endfor
 
+    ## Compute the maximal lengths of name, version, and dir.
+    h1 = "Package Name";
+    h2 = "Version";
+    h3 = "Installation directory";
+    max_name_length = max ([length(h1), cellfun(@length, installed_names)]);
+    version_lengths = cellfun (@(x) length (x.version), installed_pkgs_lst);
+    max_version_length = max ([length(h2), version_lengths]);
+    ncols = terminal_size ()(2);
+    max_dir_length = ncols - max_name_length - max_version_length - 7;
+    if (max_dir_length < 20)
+      max_dir_length = Inf;
+    endif
+
+    h1 = postpad (h1, max_name_length + 1, " ");
+    h2 = postpad (h2, max_version_length, " ");;
+
+    ## Print a header.
+    header = sprintf ("%s | %s | %s\n", h1, h2, h3);
+    printf (header);
+    tmp = sprintf (repmat ("-", 1, length (header) - 1));
+    tmp(length(h1)+2) = "+";
+    tmp(length(h1)+length(h2)+5) = "+";
+    printf ("%s\n", tmp);
+
+    ## Print the packages.
+    format = sprintf ("%%%ds %%1s| %%%ds | %%s\n",
+                      max_name_length, max_version_length);
+    for i = 1:num_packages
+      cur_name = installed_pkgs_lst{i}.name;
+      cur_version = installed_pkgs_lst{i}.version;
+      cur_dir = installed_pkgs_lst{i}.dir;
+      if (length (cur_dir) > max_dir_length)
+        first_char = length (cur_dir) - max_dir_length + 4;
+        first_filesep = strfind (cur_dir(first_char:end), filesep ());
+        if (! isempty (first_filesep))
+          cur_dir = ["..." cur_dir((first_char + first_filesep(1) - 1):end)];
+        else
+          cur_dir = ["..." cur_dir(first_char:end)];
+        endif
+      endif
+      if (installed_pkgs_lst{i}.loaded)
+        cur_loaded = "*";
+      else
+        cur_loaded = " ";
+      endif
+      printf (format, cur_name, cur_loaded, cur_version, cur_dir);
+    endfor
+  endif
 endfunction
-

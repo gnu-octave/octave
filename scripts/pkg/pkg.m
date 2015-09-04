@@ -368,7 +368,9 @@ function [local_packages, global_packages] = pkg (varargin)
           list_forge_packages ();
         endif
       else
-        if (nargout)
+        if (nargout == 1)
+          local_packages = installed_packages (local_list, global_list, files);
+        elseif (nargout > 1)
           [local_packages, global_packages] = installed_packages (local_list,
                                                                   global_list,
                                                                   files);

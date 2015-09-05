@@ -21,6 +21,10 @@
 ## @deftypefn  {Function File} {} wavwrite (@var{y}, @var{filename})
 ## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{filename})
 ## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{nbits}, @var{filename})
+##
+## @code{wavwrite} is deprecated and will be removed in Octave version 4.6.
+## Use @code{audiowrite} for the equivalent functionality.
+##
 ## Write the audio signal @var{y} to the RIFF/WAVE sound file @var{filename}.
 ##
 ## If @var{y} is a matrix, the columns represent multiple audio channels.
@@ -37,7 +41,16 @@
 ## @seealso{audiowrite, audioread, wavread}
 ## @end deftypefn
 
+## Deprecated in 4.2
+
 function wavwrite (y, varargin)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "wavwrite is obsolete and will be removed from a future version of Octave, please use audiowrite instead");
+  endif
 
   if (nargin < 2 || nargin > 4)
     print_usage ();

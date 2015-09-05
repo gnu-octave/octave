@@ -25,6 +25,10 @@
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@dots{}, @var{datatype})
 ## @deftypefnx {Function File} {@var{sz} =} wavread (@var{filename}, "size")
 ## @deftypefnx {Function File} {[@var{n_samp}, @var{n_chan}] =} wavread (@var{filename}, "size")
+##
+## @code{wavread} is deprecated and will be removed in Octave version 4.6.
+## Use @code{audioread} for the equivalent functionality.
+##
 ## Read the audio signal @var{y} from the RIFF/WAVE sound file @var{filename}.
 ##
 ## If the file contains multichannel data, then @var{y} is a matrix with the
@@ -48,7 +52,16 @@
 ## @seealso{audioread, audiowrite, wavwrite}
 ## @end deftypefn
 
+## Deprecated in 4.2
+
 function [y, fs, nbits] = wavread (filename, varargin)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "wavread is obsolete and will be removed from a future version of Octave, please use audioread instead");
+  endif
 
   if (nargin < 1 || nargin > 3)
     print_usage ();

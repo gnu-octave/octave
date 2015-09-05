@@ -8,9 +8,7 @@ scripts_audio_FCN_FILES = \
   scripts/audio/mu2lin.m \
   scripts/audio/record.m \
   scripts/audio/sound.m \
-  scripts/audio/soundsc.m \
-  scripts/audio/wavread.m \
-  scripts/audio/wavwrite.m
+  scripts/audio/soundsc.m
 
 scripts_audio_@audioplayer_FCN_FILES = \
   scripts/audio/@audioplayer/__get_properties__.m \

@@ -19,7 +19,9 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/saveaudio.m \
   scripts/deprecated/setaudio.m \
   scripts/deprecated/syl.m \
-  scripts/deprecated/usage.m
+  scripts/deprecated/usage.m \
+  scripts/deprecated/wavread.m \
+  scripts/deprecated/wavwrite.m
 
 scripts_deprecateddir = $(fcnfiledir)/deprecated
 

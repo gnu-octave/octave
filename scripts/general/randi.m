@@ -46,8 +46,7 @@
 ## Implementation Note: @code{randi} relies internally on @code{rand} which
 ## uses class @qcode{"double"} to represent numbers.  This limits the maximum
 ## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
-## returned by the @code{bitmax} function.  For IEEE floating point numbers
-## this value is @w{@math{2^{53} - 1}}.
+## returned by the @code{flintmax} function.
 ##
 ## @seealso{rand}
 ## @end deftypefn
@@ -59,20 +58,22 @@ function ri = randi (bounds, varargin)
   if (nargin < 1)
     print_usage ();
   endif
+  nargoutchk (0, 1);
 
-  if (! (isnumeric (bounds) && isreal (bounds)))
-    error ("randi: IMIN and IMAX must be real numeric bounds");
+  if (! (isnumeric (bounds) && all (bounds == fix (bounds))))
+    error ("randi: IMIN and IMAX must be integer bounds");
   endif
 
+  bounds = real (double (bounds));
   if (isscalar (bounds))
     imin = 1;
-    imax = fix (bounds);
+    imax = bounds;
     if (imax < 1)
       error ("randi: require IMAX >= 1");
     endif
   else
-    imin = fix (bounds(1));
-    imax = fix (bounds(2));
+    imin = bounds(1);
+    imax = bounds(2);
     if (imax < imin)
       error ("randi: require IMIN <= IMAX");
     endif
@@ -85,21 +86,12 @@ function ri = randi (bounds, varargin)
     rclass = "double";
   endif
 
-  if (strfind (rclass, "int"))
-    if (imax > intmax (rclass))
-      error ("randi: require IMAX < intmax (CLASS)");
-    endif
-  elseif (strcmp (rclass, "single"))
-    if (imax > bitmax (rclass))
-      error ("randi: require IMAX < bitmax (CLASS)");
-    endif
-  endif
   ## Limit set by use of class double in rand()
-  if (imax > bitmax)
-    error ("randi: maximum integer IMAX must be smaller than bitmax ()");
+  if (imax >= flintmax ())
+    error ("randi: maximum integer IMAX must be smaller than flintmax ()");
   endif
-  if ((imax - imin) > bitmax)
-    error ("randi: maximum integer range must be smaller than bitmax ()");
+  if ((imax - imin) >= flintmax ())
+    error ("randi: maximum integer range must be smaller than flintmax ()");
   endif
 
 
@@ -121,22 +113,44 @@ endfunction
 %! assert (columns (ri), 1);
 %! assert (class (ri), "double");
 %!test
+%! ri = randi (int64 (100), 1, 1000);
+%! assert (ri, fix (ri));
+%! assert (min (ri), 1);
+%! assert (max (ri), 100);
+%! assert (rows (ri), 1);
+%! assert (columns (ri), 1000);
+%! assert (class (ri), "double");
+%!test
 %! ri = randi ([-5, 10], 1000, 1, "int8");
 %! assert (ri, fix (ri));
 %! assert (min (ri), int8 (-5));
 %! assert (max (ri), int8 (10));
 %! assert (class (ri), "int8");
+%!test
+%! ri = randi ([-5, 10], 1000, 1, "uint8");
+%! assert (ri, fix (ri));
+%! assert (min (ri), uint8 (-5));
+%! assert (max (ri), uint8 (10));
+%! assert (class (ri), "uint8");
+%!test
+%! ri = randi ([-5; 10], 1000, 1, "single");
+%! assert (ri, fix (ri));
+%! assert (min (ri), single (-5));
+%! assert (max (ri), single (10));
+%! assert (class (ri), "single");
 %!
 %!assert (size (randi (10, 3,1,2)), [3, 1, 2])
 
 ## Test input validation
 %!error (randi ())
 %!error (randi ("test"))
-%!error (randi (10+2i))
+%!error (randi (struct ("a", 1)))
 %!error (randi (0))
+%!error (randi (1.5))
+%!error (randi ([1.5, 2.5]))
+%!error (randi ([1, 2.5]))
+%!error (randi ([1.5, 2]))
 %!error (randi ([10, 1]))
-%!error (randi (256, "uint8"))
-%!error (randi (2^25, "single"))
-%!error (randi (bitmax () + 1))
-%!error (randi ([-1, bitmax()]))
-
+%!error (randi (flintmax ()))
+%!error (randi ([-1, flintmax() - 1]))
+%!error ([r1, r2] = randi ())

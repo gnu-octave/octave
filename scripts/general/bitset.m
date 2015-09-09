@@ -32,7 +32,7 @@
 ##   @result{} 1011
 ## @end group
 ## @end example
-## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
+## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, intmax, flintmax}
 ## @end deftypefn
 
 function C = bitset (A, n, val)
@@ -54,7 +54,7 @@ function C = bitset (A, n, val)
   cl = class (A);
 
   if (isfloat (A) && isreal (A))
-    Bmax = bitmax (cl);
+    Bmax = flintmax (cl);
     Amax = ceil (log2 (Bmax));
   elseif (isinteger (A))
     Bmax = intmax (cl);

@@ -204,7 +204,7 @@ endfunction
 %!assert (num2str (complex (NA, 1)), "NA+1i")
 %!assert (num2str (complex (1, NA)), "1+NAi")
 
-## FIXME: Integers greater than bitmax() should be masked to show just
+## FIXME: Integers greater than flintmax() - 1 should be masked to show just
 ##        16 digits of precision.
 %!xtest
 %! assert (num2str (1e23), "100000000000000000000000");

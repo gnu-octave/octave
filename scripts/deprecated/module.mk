@@ -2,6 +2,7 @@ FCN_FILE_DIRS += scripts/deprecated
 
 scripts_deprecated_FCN_FILES = \
   scripts/deprecated/bicubic.m \
+  scripts/deprecated/bitmax.m \
   scripts/deprecated/delaunay3.m \
   scripts/deprecated/dump_prefs.m \
   scripts/deprecated/find_dir_in_path.m \

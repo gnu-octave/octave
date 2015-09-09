@@ -368,8 +368,8 @@ DEFUN (bitand, args, ,
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of non-negative integers.\n\
 \n\
-@var{x}, @var{y} must be in the range [0,bitmax]\n\
-@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
+@var{x}, @var{y} must be in the range [0,intmax]\n\
+@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
 @end deftypefn")
 {
   return bitop ("bitand", args);
@@ -378,10 +378,9 @@ Return the bitwise AND of non-negative integers.\n\
 DEFUN (bitor, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
-Return the bitwise OR of non-negative integers.\n\
+Return the bitwise OR of non-negative integers @var{x} and @var{y}.\n\
 \n\
-@var{x}, @var{y} must be in the range [0,bitmax]\n\
-@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
+@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
 @end deftypefn")
 {
   return bitop ("bitor", args);
@@ -390,10 +389,9 @@ Return the bitwise OR of non-negative integers.\n\
 DEFUN (bitxor, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
-Return the bitwise XOR of non-negative integers.\n\
+Return the bitwise XOR of non-negative integers @var{x} and @var{y}.\n\
 \n\
-@var{x}, @var{y} must be in the range [0,bitmax]\n\
-@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}\n\
+@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
 @end deftypefn")
 {
   return bitop ("bitxor", args);
@@ -546,8 +544,8 @@ Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{a}.\n\
 \n\
 A positive @var{k} leads to a left shift; A negative value to a right shift.\n\
 \n\
-If @var{n} is omitted it defaults to log2(bitmax)+1.\n\
-@var{n} must be in the range [1,log2(bitmax)+1] usually [1,33].\n\
+If @var{n} is omitted it defaults to 64.\n\
+@var{n} must be in the range [1,64].\n\
 \n\
 @example\n\
 @group\n\
@@ -568,7 +566,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 @c @result{} 4  8\n\
 @end group\n\
 @end example\n\
-@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitmax}\n\
+@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, intmax, flintmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -678,43 +676,6 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 %!error <N must be positive> bitshift (10, [-2 -1 0 1 2], -1)
 */
 
-DEFUN (bitmax, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} bitmax ()\n\
-@deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
-@deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
-Return the largest integer that can be represented within a floating point\n\
-value.\n\
-\n\
-The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
-valid option.  On IEEE 754 compatible systems, @code{bitmax} is\n\
-@w{@math{2^{53} - 1}} for @qcode{\"double\"} and @w{@math{2^{24} -1}} for\n\
-@qcode{\"single\"}.\n\
-@seealso{flintmax, intmax, realmax, realmin}\n\
-@end deftypefn")
-{
-  octave_value retval;
-  std::string cname = "double";
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_string ())
-    cname = args(0).string_value ();
-  else if (nargin != 0)
-    {
-      print_usage ();
-      return retval;
-    }
-
-  if (cname == "double")
-    retval = (static_cast<double> (max_mantissa_value<double> ()));
-  else if (cname == "single")
-    retval = (static_cast<float> (max_mantissa_value<float> ()));
-  else
-    error ("bitmax: not defined for class '%s'", cname.c_str ());
-
-  return retval;
-}
-
 DEFUN (flintmax, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} flintmax ()\n\
@@ -726,7 +687,7 @@ floating point value.\n\
 The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a valid\n\
 option.  On IEEE 754 compatible systems, @code{flintmax} is @w{@math{2^{53}}}\n\
 for @qcode{\"double\"} and @w{@math{2^{24}}} for @qcode{\"single\"}.\n\
-@seealso{bitmax, intmax, realmax, realmin}\n\
+@seealso{intmax, realmax, realmin}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -785,7 +746,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{int32}.\n\
-@seealso{intmin, flintmax, bitmax}\n\
+@seealso{intmin, flintmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -856,7 +817,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{int32}.\n\
-@seealso{intmax, flintmax, bitmax}\n\
+@seealso{intmax, flintmax}\n\
 @end deftypefn")
 {
   octave_value retval;

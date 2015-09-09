@@ -28,7 +28,7 @@
 ## @result{} 0  1  1  0  0  1  0  0
 ## @end group
 ## @end example
-## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, bitmax}
+## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, intmax, flintmax}
 ## @end deftypefn
 
 ## Liberally based of the version by Kai Habel from octave-forge
@@ -40,10 +40,10 @@ function C = bitget (A, n)
   endif
 
   if (isa (A, "double"))
-    Amax = ceil (log2 (bitmax));
+    Amax = ceil (log2 (flintmax));
     _conv = @double;
   elseif (isa (A, "single"))
-    Amax = ceil (log2 (bitmax ("single")));
+    Amax = ceil (log2 (flintmax ("single")));
     _conv = @single;
   else
     if (isa (A, "uint8"))

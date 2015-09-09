@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} bitcmp (@var{A}, @var{k})
 ## Return the @var{k}-bit complement of integers in @var{A}.
 ##
-## If @var{k} is omitted @code{k = log2 (bitmax) + 1} is assumed.
+## If @var{k} is omitted @code{k = log2 (flintmax) + 1} is assumed.
 ##
 ## @example
 ## @group
@@ -33,7 +33,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}
+## @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitshift, flintmax}
 ## @end deftypefn
 
 ## Liberally based on the version by Kai Habel from octave-forge
@@ -49,10 +49,10 @@ function C = bitcmp (A, k)
   endif
 
   if (isa (A, "double"))
-    bmax = bitmax;
+    bmax = flintmax - 1;
     amax = ceil (log2 (bmax));
   elseif (isa (A, "single"))
-    bmax = bitmax ("single");
+    bmax = flintmax ("single") - 1;
     amax = ceil (log2 (bmax));
   elseif (isinteger (A))
     amax = sizeof (ones (1, class (A))) * 8;
@@ -76,14 +76,14 @@ endfunction
 
 %!test
 %! Amax = 53;
-%! Bmax = bitmax;
+%! Bmax = flintmax - 1;
 %! A = bitshift (Bmax,-2);
 %! assert (bitcmp (A,Amax),bitor (bitshift (1,Amax-1), bitshift (1,Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (1,Amax-2));
 %! assert (bitcmp (A,Amax-2), 0);
 %!test
 %! Amax = 24;
-%! Bmax = bitmax ("single");
+%! Bmax = flintmax ("single") - 1;
 %! A = bitshift (Bmax,-2);
 %! assert (bitcmp (A,Amax),bitor (bitshift (single (1),Amax-1), bitshift (single (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (single (1),Amax-2));

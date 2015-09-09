@@ -4719,7 +4719,7 @@ When called with more than one argument the first two arguments are taken as\n\
 the number of rows and columns and any further arguments specify additional\n\
 matrix dimensions.  The optional argument @var{class} specifies the return\n\
 type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{realmax, realmin, intmax, bitmax}\n\
+@seealso{realmax, realmin, intmax, flintmax}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -4892,7 +4892,7 @@ additional matrix dimensions.\n\
 \n\
 The optional argument @var{class} specifies the return type and may be\n\
 either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{realmin, intmax, bitmax, eps}\n\
+@seealso{realmin, intmax, flintmax, eps}\n\
 @end deftypefn")
 {
   return fill_matrix (args, std::numeric_limits<double>::max (),

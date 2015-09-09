@@ -29,7 +29,7 @@
 ## their multiplicities.  That is, @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
 ##
 ## Implementation Note: The input @var{q} must be less than
-## @code{bitmax} (9.0072e+15) in order to factor correctly.
+## @code{flintmax} (9.0072e+15) in order to factor correctly.
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn
 
@@ -82,7 +82,7 @@ function [pf, n] = factor (q)
   q = prod (pf);
   if (q != qorig)
     error ("factor: Q too large to factor");
-  elseif (q > bitmax)
+  elseif (q >= flintmax ())
     warning ("factor: Q too large.  Answer is unreliable");
   endif
 

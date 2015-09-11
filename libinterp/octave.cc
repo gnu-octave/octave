@@ -714,7 +714,8 @@ octave_process_command_line (int argc, char **argv)
 
       octave_print_terse_usage_and_exit ();
     }
-  an_octave_program = (script_file || ! code_to_eval.empty ()) && ! persist;
+  an_octave_program = ((script_file || ! code_to_eval.empty ())
+                       && ! persist && ! traditional);
 
 }
 

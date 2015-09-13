@@ -341,7 +341,6 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! toolkit = graphics_toolkit ("gnuplot");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2,2,1);
@@ -352,11 +351,9 @@ endfunction
 %!   assert (h, h3);
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 %!test
-%! toolkit = graphics_toolkit ("gnuplot");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2,2,1, "tag", "1");
@@ -367,7 +364,6 @@ endfunction
 %!   assert (h, [h4; h3; h2])
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 %!test

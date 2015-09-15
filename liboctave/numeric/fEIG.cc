@@ -712,7 +712,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
                              F77_CHAR_ARG_LEN (1)));
 
   if (a.is_hermitian () && b.is_hermitian () && info == 0)
-    return hermitian_init (a, calc_ev);
+    return hermitian_init (a, b, calc_ev);
 
   FloatComplexMatrix atmp = a;
   FloatComplex *atmp_data = atmp.fortran_vec ();

@@ -715,7 +715,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
                              F77_CHAR_ARG_LEN (1)));
 
   if (a.is_hermitian () && b.is_hermitian () && info == 0)
-    return hermitian_init (a, calc_ev);
+    return hermitian_init (a, b, calc_ev);
 
   ComplexMatrix atmp = a;
   Complex *atmp_data = atmp.fortran_vec ();

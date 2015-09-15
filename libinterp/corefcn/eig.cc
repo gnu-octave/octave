@@ -324,6 +324,18 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 %! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
 %! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
+%!test
+%! A = [1, 1+i; 1-i, 1];  B = [2, 0; 0, 2];
+%! [v, d] = eig (A, B);
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+
+%!test
+%! A = single ([1, 1+i; 1-i, 1]);  B = single ([2, 0; 0, 2]);
+%! [v, d] = eig (A, B);
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps ("single")));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps ("single")));
+
 %!error eig ()
 %!error eig ([1, 2; 3, 4], [4, 3; 2, 1], 1)
 %!error <EIG requires same size matrices> eig ([1, 2; 3, 4], 2)

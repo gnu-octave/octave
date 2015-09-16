@@ -391,14 +391,6 @@ namespace octave
 
         param_list->accept (*this);
 
-        if (takes_varargs)
-          {
-            if (len > 0)
-              m_os << ", ";
-
-            m_os << "varargin";
-          }
-
         if (len > 0 || takes_varargs)
           {
             m_nesting.pop ();
@@ -764,10 +756,13 @@ namespace octave
           {
             elt->accept (*this);
 
-            if (p != lst.end ())
+            if (p != lst.end () || lst.takes_varargs ())
               m_os << ", ";
           }
       }
+ 
+    if (lst.takes_varargs ())
+      m_os << "varargin";
   }
 
   void

@@ -28,7 +28,7 @@
 ## @example
 ## @group
 ## ctime (time ())
-##    @result{} "Mon Feb 17 01:15:06 1997"
+##    @result{} "Mon Feb 17 01:15:06 1997@xbackslashchar{}n"
 ## @end group
 ## @end example
 ## @seealso{asctime, time, localtime}
@@ -50,6 +50,8 @@ endfunction
 %!test
 %! t = time ();
 %! assert (strcmp (asctime (localtime (t)), ctime (t)));
+
+%!assert (ctime (time ())(end), "\n")
 
 %!error ctime ()
 %!error ctime (1, 2)

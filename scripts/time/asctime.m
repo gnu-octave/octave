@@ -19,14 +19,14 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following
-## format: @qcode{"ddd mmm mm HH:MM:SS yyyy"}.
+## format: @qcode{"ddd mmm mm HH:MM:SS yyyy@xbackslashchar{}n"}.
 ##
 ## For example:
 ##
 ## @example
 ## @group
 ## asctime (localtime (time ()))
-##      @result{} "Mon Feb 17 01:15:06 1997"
+##      @result{} "Mon Feb 17 01:15:06 1997@xbackslashchar{}n"
 ## @end group
 ## @end example
 ##
@@ -50,6 +50,8 @@ endfunction
 %!test
 %! t = time ();
 %! assert (strcmp (asctime (localtime (t)), ctime (t)));
+
+%!assert (asctime (localtime (time ()))(end), "\n")
 
 %!error asctime ()
 %!error asctime (1, 2)

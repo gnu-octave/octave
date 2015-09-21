@@ -195,6 +195,12 @@ octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
   flags |= RTLD_NOW;
 #endif
 
+  // Use RTLD_GLOBAL to export symbols from loaded objects so they are
+  // available to other subsequently loaded libraries.
+#if defined (RTLD_GLOBAL)
+  flags |= RTLD_GLOBAL;
+#endif
+
   library = dlopen (file.c_str (), flags);
 
   if (! library)

@@ -42,7 +42,6 @@ ARRAY_INC = \
   liboctave/array/Matrix.h \
   liboctave/array/MatrixType.h \
   liboctave/array/MDiagArray2.h \
-  liboctave/array/MSparse-defs.h \
   liboctave/array/MSparse.h \
   liboctave/array/PermMatrix.h \
   liboctave/array/Range.h \

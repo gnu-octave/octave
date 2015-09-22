@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "MSparse.h"
-#include "MSparse.cc"
 
 template class OCTAVE_API MSparse<double>;
 

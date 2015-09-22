@@ -21,20 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <functional>
-
-#include "quit.h"
-#include "lo-error.h"
-#include "MArray.h"
-#include "Array-util.h"
-
-#include "MSparse.h"
-#include "MSparse-defs.h"
-
 // sparse array with math ops.
 
 // Element by element MSparse by MSparse ops.

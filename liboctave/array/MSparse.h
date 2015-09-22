@@ -24,18 +24,20 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_MSparse_h)
 #define octave_MSparse_h 1
 
-#include "MArray.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
+#include <functional>
+
+#include "quit.h"
+#include "lo-error.h"
 #include "Sparse.h"
+#include "MArray.h"
+#include "Array-util.h"
+
 
 // Two dimensional sparse array with math ops.
-
-// But first, some preprocessor abuse...
-
-#include "MSparse-defs.h"
-
-SPARSE_OPS_FORWARD_DECLS (MSparse, MArray, )
-
 template <class T>
 class
 MSparse : public Sparse<T>
@@ -119,11 +121,100 @@ public:
   MSparse<U>
   map (U (&fcn) (const T&)) const
   { return Sparse<T>::template map<U> (fcn); }
-
-  // Currently, the OPS functions don't need to be friends, but that
-  // may change.
-
-  // SPARSE_OPS_FRIEND_DECLS (MSparse, MArray)
 };
+
+// Include operator templates for MSparse
+#include "MSparse.cc"
+
+// A macro that can be used to declare and instantiate OP= operators.
+#define SPARSE_OP_ASSIGN_DECL(T, OP, API) \
+  template API MSparse<T>& \
+  operator OP (MSparse<T>&, const MSparse<T>&)
+
+// A macro that can be used to declare and instantiate unary operators.
+#define SPARSE_UNOP_DECL(T, OP, API) \
+  template API MSparse<T> \
+  operator OP (const MSparse<T>&)
+
+// A macro that can be used to declare and instantiate binary operators.
+#define SPARSE_BINOP_DECL(A_T, T, F, API, X_T, Y_T) \
+  template API A_T<T> \
+  F (const X_T&, const Y_T&)
+
+// A function that can be used to forward OP= operations from derived
+// classes back to us.
+#define SPARSE_OP_ASSIGN_FWD_FCN(R, F, T, C_X, X_T, C_Y, Y_T) \
+  inline R \
+  F (X_T& x, const Y_T& y) \
+  { \
+    return R (F (C_X (x), C_Y (y))); \
+  }
+
+// A function that can be used to forward unary operations from derived
+// classes back to us.
+#define SPARSE_UNOP_FWD_FCN(R, F, T, C_X, X_T) \
+  inline R \
+  F (const X_T& x) \
+  { \
+    return R (F (C_X (x))); \
+  }
+
+// A function that can be used to forward binary operations from derived
+// classes back to us.
+#define SPARSE_BINOP_FWD_FCN(R, F, T, C_X, X_T, C_Y, Y_T) \
+  inline R \
+  F (const X_T& x, const Y_T& y) \
+  { \
+    return R (F (C_X (x), C_Y (y))); \
+  }
+
+// Instantiate all the MSparse friends for MSparse element type T.
+#define INSTANTIATE_SPARSE_FRIENDS(T, API) \
+  SPARSE_OP_ASSIGN_DECL (T, +=, API); \
+  SPARSE_OP_ASSIGN_DECL (T, -=, API); \
+  SPARSE_UNOP_DECL (T, +, API); \
+  SPARSE_UNOP_DECL (T, -, API); \
+  SPARSE_BINOP_DECL (MArray,  T, operator +, API, MSparse<T>, T); \
+  SPARSE_BINOP_DECL (MArray,  T, operator -, API, MSparse<T>, T); \
+  SPARSE_BINOP_DECL (MSparse, T, operator *, API, MSparse<T>, T); \
+  SPARSE_BINOP_DECL (MSparse, T, operator /, API, MSparse<T>, T); \
+  SPARSE_BINOP_DECL (MArray,  T, operator +, API, T, MSparse<T>); \
+  SPARSE_BINOP_DECL (MArray,  T, operator -, API, T, MSparse<T>); \
+  SPARSE_BINOP_DECL (MSparse, T, operator *, API, T, MSparse<T>); \
+  SPARSE_BINOP_DECL (MSparse, T, operator /, API, T, MSparse<T>); \
+  SPARSE_BINOP_DECL (MSparse, T, operator +, API, MSparse<T>, MSparse<T>); \
+  SPARSE_BINOP_DECL (MSparse, T, operator -, API, MSparse<T>, MSparse<T>); \
+  SPARSE_BINOP_DECL (MSparse, T, quotient,   API, MSparse<T>, MSparse<T>); \
+  SPARSE_BINOP_DECL (MSparse, T, product,    API, MSparse<T>, MSparse<T>);
+
+// Define all the MSparse forwarding functions for return type R and
+// MSparse element type T
+#define SPARSE_FORWARD_DEFS(B, R, F, T) \
+  SPARSE_OP_ASSIGN_FWD_FCN \
+    (R, operator +=, T, dynamic_cast<B<T>&>, R, dynamic_cast<const B<T>&>, R) \
+  SPARSE_OP_ASSIGN_FWD_FCN \
+    (R, operator -=, T, dynamic_cast<B<T>&>, R, dynamic_cast<const B<T>&>, R) \
+  SPARSE_UNOP_FWD_FCN (R, operator +, T, dynamic_cast<const B<T>&>, R) \
+  SPARSE_UNOP_FWD_FCN (R, operator -, T, dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN (F, operator +, T, dynamic_cast<const B<T>&>, R, , T) \
+  SPARSE_BINOP_FWD_FCN (F, operator -, T, dynamic_cast<const B<T>&>, R, , T) \
+  SPARSE_BINOP_FWD_FCN (R, operator *, T, dynamic_cast<const B<T>&>, R, , T) \
+  SPARSE_BINOP_FWD_FCN (R, operator /, T, dynamic_cast<const B<T>&>, R, , T) \
+  SPARSE_BINOP_FWD_FCN (F, operator +, T, , T, dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN (F, operator -, T, , T, dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN (R, operator *, T, , T, dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN (R, operator /, T, , T, dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN \
+    (R, operator +, T, dynamic_cast<const B<T>&>, R, \
+      dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN \
+    (R, operator -, T, dynamic_cast<const B<T>&>, R, \
+      dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN \
+    (R, product,    T, dynamic_cast<const B<T>&>, R, \
+      dynamic_cast<const B<T>&>, R) \
+  SPARSE_BINOP_FWD_FCN \
+    (R, quotient,   T, dynamic_cast<const B<T>&>, R, \
+      dynamic_cast<const B<T>&>, R)
 
 #endif

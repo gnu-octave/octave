@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_boolSparse_h 1
 
 #include "Sparse.h"
-#include "MSparse-defs.h"
+#include "MSparse.h"
 
 #include "boolMatrix.h"
 #include "boolNDArray.h"

@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "DET.h"
 #include "MSparse.h"
-#include "MSparse-defs.h"
 
 #include "Sparse-op-decls.h"
 

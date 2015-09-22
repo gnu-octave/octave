@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 
 #include "MSparse.h"
-#include "MSparse.cc"
 
 template class OCTAVE_API MSparse<Complex>;
 

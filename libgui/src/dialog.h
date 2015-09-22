@@ -210,6 +210,8 @@ public slots:
   void buttonCancel_clicked (void);
 
   void reject (void);
+
+  void item_double_clicked (const QModelIndex&);
 };
 
 

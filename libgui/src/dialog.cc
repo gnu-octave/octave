@@ -265,7 +265,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
     }
   listLayout->addWidget (view);
   QPushButton *select_all = new QPushButton (tr ("Select All"));
-  select_all->setEnabled (mode == "multiple");
+  select_all->setVisible (mode == "multiple");
   listLayout->addWidget (select_all);
 
   QPushButton *buttonOk = new QPushButton (ok_string);
@@ -274,6 +274,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   buttonsLayout->addStretch (1);
   buttonsLayout->addWidget (buttonOk);
   buttonsLayout->addWidget (buttonCancel);
+  buttonOk->setDefault (true);
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addLayout (listLayout);
@@ -298,6 +299,9 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   connect (this, SIGNAL (finish_selection (const QIntList&, int)),
            &uiwidget_creator,
            SLOT (list_select_finished (const QIntList&, int)));
+
+  connect (view, SIGNAL (doubleClicked (const QModelIndex&)),
+           this, SLOT (item_double_clicked (const QModelIndex&)));
 }
 
 
@@ -335,6 +339,13 @@ void
 ListDialog::reject (void)
 {
   buttonCancel_clicked ();
+}
+
+
+void
+ListDialog::item_double_clicked (const QModelIndex&)
+{
+  buttonOk_clicked ();
 }
 
 

@@ -139,9 +139,7 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   
   // Status bar
   m_statusBar = win->statusBar ();
-  m_statusBar->setVisible (true);
-  int boffset = m_statusBar->sizeHint ().height ();
-  
+  int boffset = 0;
 
   // Toolbar and menubar
   createFigureToolBarAndMenuBar ();
@@ -150,9 +148,16 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   if (fp.toolbar_is ("figure") ||
       (fp.toolbar_is ("auto") && fp.menubar_is ("figure") &&
        ! hasUiControlChildren (fp)))
-    toffset += m_figureToolBar->sizeHint ().height ();
+    {
+      toffset += m_figureToolBar->sizeHint ().height ();
+      boffset += m_statusBar->sizeHint ().height ();
+    } 
   else
-    m_figureToolBar->hide ();
+    {
+      m_figureToolBar->hide ();
+      m_statusBar->hide ();
+    }
+
   if (fp.menubar_is ("figure") || hasUiMenuChildren (fp))
     toffset += m_menuBar->sizeHint ().height () + 1;
   else
@@ -502,17 +507,19 @@ Figure::showFigureToolBar (bool visible)
 {
   if ((! m_figureToolBar->isHidden ()) != visible)
     {
-      int dy = m_figureToolBar->sizeHint ().height ();
+      int dy1 = m_figureToolBar->sizeHint ().height ();
+      int dy2 = m_statusBar->sizeHint ().height ();
       QRect r = qWidget<QWidget> ()->geometry ();
 
       if (! visible)
-        r.adjust (0, dy, 0, 0);
+        r.adjust (0, dy1, 0, -dy2);
       else
-        r.adjust (0, -dy, 0, 0);
+        r.adjust (0, -dy1, 0, dy2);
 
       m_blockUpdates = true;
       qWidget<QWidget> ()->setGeometry (r);
       m_figureToolBar->setVisible (visible);
+      m_statusBar->setVisible (visible);
       m_blockUpdates = false;
 
       updateBoundingBox (false);

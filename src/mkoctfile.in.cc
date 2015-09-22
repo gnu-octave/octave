@@ -785,6 +785,7 @@ main (int argc, char **argv)
       else
         {
           std::string cmd = vars["DL_LD"] + " "
+                            + vars["ALL_CXXFLAGS"] + " "
                             + vars["DL_LDFLAGS"] + " "
                             + pass_on_options
                             + " -o " + octfile + " "

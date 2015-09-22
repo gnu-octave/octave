@@ -30,7 +30,8 @@
 ## or as a cell array of strings.
 ##
 ## The return value @var{choice} is the number of the option selected by the
-## user counting from 1.
+## user counting from 1 or 0 if the user aborts the dialog or makes an invalid
+## selection.
 ##
 ## This function is useful for interactive programs.  There is no limit to the
 ## number of options that may be passed in, but it may be confusing to present
@@ -58,7 +59,7 @@ function choice = menu (title, varargin)
     [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
                             "ListString", varargin, "SelectionMode", "Single");
     if (! ok)
-      choice = 1;
+      choice = 0;
     endif
   else  # console menu
     ## Force pending output to appear before the menu.
@@ -82,6 +83,7 @@ function choice = menu (title, varargin)
       choice = sscanf (s, "%d");
       if (! isscalar (choice) || choice < 1 || choice > nopt)
         printf ("\nerror: input invalid or out of range\n\n");
+        choice = 0;
       else
         break;
       endif

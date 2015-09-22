@@ -137,8 +137,6 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(cloglog)
 
-@DOCSTRING(mahalanobis)
-
 @DOCSTRING(table)
 
 @node Statistical Plots

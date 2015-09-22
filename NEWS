@@ -47,6 +47,7 @@ Summary of important user-visible changes for version 4.2:
       Function             | Replacement
       ---------------------|------------------
       bitmax               | flintmax
+      mahalanobis          | mahal in Octave-Forge statistics pkg
       wavread              | audioread
       wavwrite             | audiowrite
 

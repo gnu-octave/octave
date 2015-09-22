@@ -12,7 +12,6 @@ scripts_statistics_base_FCN_FILES = \
   scripts/statistics/base/kurtosis.m \
   scripts/statistics/base/logit.m \
   scripts/statistics/base/lscov.m \
-  scripts/statistics/base/mahalanobis.m \
   scripts/statistics/base/mean.m \
   scripts/statistics/base/meansq.m \
   scripts/statistics/base/median.m \

@@ -13,6 +13,7 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/isstr.m \
   scripts/deprecated/loadaudio.m \
   scripts/deprecated/luinc.m \
+  scripts/deprecated/mahalanobis.m \
   scripts/deprecated/mouse_wheel_zoom.m \
   scripts/deprecated/nfields.m \
   scripts/deprecated/octave_tmp_file_name.m \

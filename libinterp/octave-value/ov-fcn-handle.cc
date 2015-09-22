@@ -1856,8 +1856,8 @@ If the optional @qcode{\"global\"} argument is passed, locally visible\n\
 functions are ignored in the lookup.\n\
 \n\
 Note: @code{str2func} does not currently accept strings which define\n\
-anonymous functions (those which begin with @samp{a}).\n\
-Use @code{eval (@var{str})} as a replacement.\n\
+anonymous functions (those which begin with @samp{@@}).\n\
+Use @w{@code{eval (@var{str})}} as a replacement.\n\
 @seealso{func2str, inline}\n\
 @end deftypefn")
 {

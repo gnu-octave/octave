@@ -1985,23 +1985,24 @@ belongs to.\n\
       return retval;
     }
 
-  octave_value obj = args(0); // not const because of find_parent_class ()
-  const Array<std::string> cls = args(1).cellstr_value ();
+  octave_value obj = args(0);  // not const because of find_parent_class ()
+  std::string obj_cls = obj.class_name ();
+  Array<std::string> clsnames = args(1).cellstr_value ();
   if (error_state)
     {
       error ("isa: CLASSNAME must be a string or cell array of strings");
       return retval;
     }
 
-  boolNDArray matches (cls.dims (), false);
-  const octave_idx_type n = cls.numel ();
-  for (octave_idx_type idx = 0; idx < n; idx++)
+  boolNDArray matches (clsnames.dims (), false);
+  for (octave_idx_type idx = 0; idx < clsnames.numel (); idx++)
     {
-      const std::string cl = cls(idx);
-      if ((cl == "float"   && obj.is_float_type   ())
-          || (cl == "integer" && obj.is_integer_type ())
-          || (cl == "numeric" && obj.is_numeric_type ())
-          || obj.class_name () == cl || obj.is_instance_of (cl))
+      std::string cls = clsnames(idx);
+      if (obj_cls == cls
+          || (cls == "float"   && obj.is_float_type   ())
+          || (cls == "integer" && obj.is_integer_type ())
+          || (cls == "numeric" && obj.is_numeric_type ())
+          || obj.is_instance_of (cls))
         matches(idx) = true;
     }
   return octave_value (matches);

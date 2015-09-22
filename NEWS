@@ -322,6 +322,7 @@ Summary of important user-visible changes for version 4.0:
       finite               | isfinite
       fmod                 | rem
       fnmatch              | glob or regexp
+      gmap40               | ----
       loadaudio            | audioread
       luinc                | ilu or ichol
       mouse_wheel_zoom     | mousewheelzoom axes property

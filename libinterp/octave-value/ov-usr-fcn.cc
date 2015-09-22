@@ -866,7 +866,10 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
           std::string name = func.string_value ();
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
-            error ("nargout: invalid function name: %s", name.c_str ());
+            {
+              error ("nargin: invalid function name: %s", name.c_str ());
+              return retval;
+            }
         }
 
       octave_function *fcn_val = func.function_value ();
@@ -973,7 +976,10 @@ returns -1 for all anonymous functions.\n\
           std::string name = func.string_value ();
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
-            error ("nargout: invalid function name: %s", name.c_str ());
+            {
+              error ("nargout: invalid function name: %s", name.c_str ());
+              return retval;
+            }
         }
 
       if (func.is_inline_function ())

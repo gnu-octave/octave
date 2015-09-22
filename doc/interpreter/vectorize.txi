@@ -455,25 +455,19 @@ end_try_catch
 
 @noindent
 that may have relied on matrices of different size producing an error.
-Due to how broadcasting changes semantics with older versions of Octave,
-by default Octave warns if a broadcasting operation is performed.  To
-disable this warning, refer to its ID (@pxref{XREFwarning_ids,,warning_ids}):
+Because such operation is now valid Octave syntax, this will no longer
+produce an error.  Instead, the following code should be used:
 
 @example
-warning ("off", "Octave:broadcast");
+@group
+if (isequal (size (a), size (b)))
+  c = a .* b;
+else
+  c = a .* a;
+endif
+@end group
 @end example
 
-@noindent
-If you want to recover the old behavior and produce an error, turn this
-warning into an error:
-
-@example
-warning ("error", "Octave:broadcast");
-@end example
-
-@noindent
-For broadcasting on scalars that worked in previous versions of Octave,
-this warning will not be emitted.
 
 @node Function Application
 @section Function Application

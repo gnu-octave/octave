@@ -78,5 +78,5 @@ octave_cmd_eval::execute ()
   command_editor::set_initial_input (pending_input);
   command_editor::redisplay ();
 
-  command_editor::interrupt ();
+  command_editor::accept_line ();
 }

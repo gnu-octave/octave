@@ -71,35 +71,13 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
   fun = varargin{1};
   if (ischar (fun))
     if (exist (fun, "file") || exist (fun, "builtin"))
-      fun = inline ([fun "(t)"]);
+      fun = str2func (fun);            # convert to function handle
     else
-      fun = vectorize (inline (fun));
+      fun = vectorize (inline (fun));  # convert to inline function
     endif
-    argids = argnames (fun);
-    if (isplot && length (argids) == 2)
-      nargs = 2;
-    elseif (numel (argids) != nargs)
-      error ("%s: expecting a function of %d arguments", ezfunc, nargs);
-    endif
-    fstr = formula (fun);
-    if (isplot)
-      xarg = argids{1};
-      if (nargs == 2)
-        yarg = argids{2};
-      else
-        yarg = "";
-      endif
-    elseif (isplot3)
-      xarg = "x";
-      yarg = "y";
-    elseif (ispolar)
-      xarg = "";
-      yarg = "";
-    else
-      xarg = argids{1};
-      yarg = argids{2};
-    endif
-  elseif (strcmp (typeinfo (fun), "inline function"))
+  endif
+
+  if (strcmp (typeinfo (fun), "inline function"))
     argids = argnames (fun);
     if (isplot && length (argids) == 2)
       nargs = 2;
@@ -133,6 +111,11 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       fstr = fstr(idx+2:end);  # remove '@(x) ' from string name
     else
       args = {"x"};
+      try
+        if (builtin ("nargin", fun) == 2)
+          args{2} = "y";
+        endif
+      end_try_catch
     endif
     if (isplot && length (args) == 2)
       nargs = 2;

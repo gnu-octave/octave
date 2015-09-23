@@ -54,6 +54,7 @@ scripts_image_FCN_FILES = \
   scripts/image/spinmap.m \
   scripts/image/spring.m \
   scripts/image/summer.m \
+  scripts/image/viridis.m \
   scripts/image/white.m \
   scripts/image/winter.m
 

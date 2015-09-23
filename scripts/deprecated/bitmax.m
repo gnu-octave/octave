@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{r} =} bitmax (@var{precision})
 ##
-## @code{bitmax} is deprecated and will be removed in Octave version 4.4.
+## @code{bitmax} is deprecated and will be removed in Octave version 4.6.
 ## Use @code{flintmax (precision) - 1} for the equivalent functionality.
 ##
 ## Return the largest integer @var{r} that can be represented within a

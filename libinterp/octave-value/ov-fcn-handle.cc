@@ -1854,10 +1854,6 @@ Return a function handle constructed from the string @var{fcn_name}.\n\
 \n\
 If the optional @qcode{\"global\"} argument is passed, locally visible\n\
 functions are ignored in the lookup.\n\
-\n\
-Note: @code{str2func} does not currently accept strings which define\n\
-anonymous functions (those which begin with @samp{@@}).\n\
-Use @w{@code{eval (@var{str})}} as a replacement.\n\
 @seealso{func2str, inline}\n\
 @end deftypefn")
 {
@@ -1871,10 +1867,15 @@ Use @w{@code{eval (@var{str})}} as a replacement.\n\
           std::string nm = args(0).string_value ();
           if (nm[0] == '@')
             {
-              error ("str2func: Can't process anonymous functions.");
-              return retval;
+              int parse_status;
+              octave_value anon_fcn_handle =
+                eval_string (nm, true, parse_status);
+
+              if (parse_status == 0)
+                retval = anon_fcn_handle; 
             }
-          retval = make_fcn_handle (nm, nargin != 2);
+          else
+            retval = make_fcn_handle (nm, nargin != 2);
         }
       else
         error ("str2func: FCN_NAME must be a string");
@@ -1884,6 +1885,22 @@ Use @w{@code{eval (@var{str})}} as a replacement.\n\
 
   return retval;
 }
+
+/*
+%!test
+%! f = str2func ("<");
+%! assert (class (f), "function_handle");
+%! assert (func2str (f), "lt");
+%! assert (f (1, 2), true);
+%! assert (f (2, 1), false);
+
+%!test
+%! f = str2func ("@(x) sin (x)");
+%! assert (func2str (f), "@(x) sin (x)");
+%! assert (f (0:3), sin (0:3));
+
+%!error <FCN_NAME must be a string> str2func ({"sin"})
+*/
 
 /*
 %!function y = __testrecursionfunc (f, x, n)

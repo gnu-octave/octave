@@ -115,6 +115,41 @@ An m-file for the differential equation used above is included with the
 Octave distribution in the examples directory under the name
 @file{oregonator.m}.
 
+@menu
+* Matlab-compatible solvers::
+@end menu
+
+@node Matlab-compatible solvers
+@subsection Matlab-compatible solvers
+
+Octave also provides a set of solvers for initial value problems for Ordinary
+Differential Equations that have a Matlab-compatible interface.
+The options for this class of methods are set using the functions.
+@itemize
+  @item @code{odeset}
+  @item @code{odeget}
+@end itemize
+
+Currently implemented solvers are:
+@itemize
+  @item Runge-Kutta methods
+  @itemize
+    @item @code{ode45} Integrates a system of non--stiff ordinary differential equations
+    (non--stiff ODEs and DAEs) using second order Dormand-Prince method.
+    This is a fourth--order accurate integrator therefore the local error
+    normally expected is @math{O(h^5)}. This solver requires six function
+    evaluations per integration step.
+  @end itemize
+@end itemize
+
+
+@DOCSTRING(ode45)
+
+@DOCSTRING(odeset)
+
+@DOCSTRING(odeget)
+
+
 @node Differential-Algebraic Equations
 @section Differential-Algebraic Equations
 

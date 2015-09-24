@@ -47,6 +47,7 @@ include scripts/io/module.mk
 include scripts/java/module.mk
 include scripts/linear-algebra/module.mk
 include scripts/miscellaneous/module.mk
+include scripts/ode/module.mk
 include scripts/optimization/module.mk
 include scripts/path/module.mk
 include scripts/pkg/module.mk

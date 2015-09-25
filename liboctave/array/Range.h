@@ -43,11 +43,33 @@ public:
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),
-      rng_numel (numel_internal ()), cache () { }
+      rng_numel (numel_internal ()), cache ()
+  {
+    double tmplimit = rng_limit;
+
+    if (rng_inc > 0)
+      tmplimit = max ();
+    else
+      tmplimit = min ();
+
+    if (tmplimit != rng_limit)
+      rng_limit = tmplimit;
+  }
 
   Range (double b, double l, double i)
     : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_numel (numel_internal ()), cache () { }
+      rng_numel (numel_internal ()), cache ()
+  {
+    double tmplimit = rng_limit;
+
+    if (rng_inc > 0)
+      tmplimit = max ();
+    else
+      tmplimit = min ();
+
+    if (tmplimit != rng_limit)
+      rng_limit = tmplimit;
+  }
 
   // For operators' usage (to preserve element count).
   Range (double b, double i, octave_idx_type n)
@@ -56,6 +78,21 @@ public:
   {
     if (! xfinite (b) || ! xfinite (i) || ! xfinite (rng_limit))
       rng_numel = -2;
+    else
+      {
+        // Code below is only needed if the resulting range must be 100%
+        // correctly constructed.  If the Range object created is only
+        // a temporary one used by operators this may be unnecessary.
+        double tmplimit = rng_limit;
+
+        if (rng_inc > 0)
+          tmplimit = max ();
+        else
+          tmplimit = min ();
+
+        if (tmplimit != rng_limit)
+          rng_limit = tmplimit;
+      }
   }
 
   double base (void) const { return rng_base; }
@@ -91,32 +128,11 @@ public:
 
   Array<double> index (const idx_vector& i) const;
 
-  void set_base (double b)
-  {
-    if (rng_base != b)
-      {
-        rng_base = b;
-        clear_cache ();
-      }
-  }
+  void set_base (double b);
 
-  void set_limit (double l)
-  {
-    if (rng_limit != l)
-      {
-        rng_limit = l;
-        clear_cache ();
-      }
-  }
+  void set_limit (double l);
 
-  void set_inc (double i)
-  {
-    if (rng_inc != i)
-      {
-        rng_inc = i;
-        clear_cache ();
-      }
-  }
+  void set_inc (double i);
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os,
                                                const Range& r);

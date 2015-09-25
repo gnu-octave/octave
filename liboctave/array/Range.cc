@@ -54,27 +54,17 @@ Range::matrix_value (void) const
   if (rng_numel > 0 && cache.numel () == 0)
     {
       cache.resize (1, rng_numel);
+      
+      // The first element must always be *exactly* the base.
+      // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
+      cache(0) = rng_base;
+
       double b = rng_base;
       double increment = rng_inc;
-      if (rng_numel > 0)
-        {
-          // The first element must always be *exactly* the base.
-          // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
-          cache(0) = b;
-          for (octave_idx_type i = 1; i < rng_numel; i++)
-            cache(i) = b + i * increment;
-        }
+      for (octave_idx_type i = 1; i < rng_numel - 1; i++)
+        cache(i) = b + i * increment;
 
-      // On some machines (x86 with extended precision floating point
-      // arithmetic, for example) it is possible that we can overshoot
-      // the limit by approximately the machine precision even though
-      // we were very careful in our calculation of the number of
-      // elements.  The tests need equality (>= rng_limit or <= rng_limit)
-      // to have expressions like -5:1:-0 result in a -0 endpoint.
-
-      if ((rng_inc > 0 && cache(rng_numel-1) >= rng_limit)
-          || (rng_inc < 0 && cache(rng_numel-1) <= rng_limit))
-        cache(rng_numel-1) = rng_limit;
+      cache(rng_numel - 1) = rng_limit;
     }
 
   return cache;
@@ -91,14 +81,7 @@ Range::checkelem (octave_idx_type i) const
   else if (i < rng_numel - 1)
     return rng_base + i * rng_inc;
   else
-    {
-      double end = rng_base + i * rng_inc;
-      if ((rng_inc > 0 && end >= rng_limit)
-          || (rng_inc < 0 && end <= rng_limit))
-        return rng_limit;
-      else
-        return end;
-    }
+    return rng_limit;
 }
 
 double
@@ -112,14 +95,7 @@ Range::elem (octave_idx_type i) const
   else if (i < rng_numel - 1)
     return rng_base + i * rng_inc;
   else
-    {
-      double end = rng_base + i * rng_inc;
-      if ((rng_inc > 0 && end >= rng_limit)
-          || (rng_inc < 0 && end <= rng_limit))
-        return rng_limit;
-      else
-        return end;
-    }
+    return rng_limit;
 #endif
 }
 
@@ -137,13 +113,7 @@ public:
     else if (i < nmax)
       *array++ = base + i * inc;
     else
-      {
-        double end = base + i * inc;
-        if ((inc > 0 && end >= limit) || (inc < 0 && end <= limit))
-          *array++ = limit;
-        else
-          *array++ = end;
-      }
+      *array++ = limit;
   }
 
 private:
@@ -202,7 +172,7 @@ Range::min (void) const
         {
           retval = rng_base + (rng_numel - 1) * rng_inc;
 
-          // See the note in the matrix_value method above.
+          // Require '<=' test.  See note in max ().
           if (retval <= rng_limit)
             retval = rng_limit;
         }
@@ -221,7 +191,13 @@ Range::max (void) const
         {
           retval = rng_base + (rng_numel - 1) * rng_inc;
 
-          // See the note in the matrix_value method above.
+          // On some machines (x86 with extended precision floating point
+          // arithmetic, for example) it is possible that we can overshoot the
+          // limit by approximately the machine precision even though we were
+          // very careful in our calculation of the number of elements.
+          // Therefore, we clip the result to the limit if it overshoots.
+          // The test also includes equality (>= rng_limit) to have expressions
+          // such as -5:1:-0 result in a -0 endpoint.
           if (retval >= rng_limit)
             retval = rng_limit;
         }
@@ -234,19 +210,10 @@ Range::max (void) const
 void
 Range::sort_internal (bool ascending)
 {
-  if (ascending && rng_base > rng_limit && rng_inc < 0.0)
+  if ((ascending && rng_base > rng_limit && rng_inc < 0.0)
+      || (! ascending && rng_base < rng_limit && rng_inc > 0.0))
     {
-      double tmp = rng_base;
-      rng_base = min ();
-      rng_limit = tmp;
-      rng_inc = -rng_inc;
-      clear_cache ();
-    }
-  else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
-    {
-      double tmp = max ();
-      rng_limit = min ();
-      rng_base = tmp;
+      std::swap (rng_base, rng_limit);
       rng_inc = -rng_inc;
       clear_cache ();
     }
@@ -263,20 +230,10 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 
   bool reverse = false;
 
-  if (ascending && rng_base > rng_limit && rng_inc < 0.0)
+  if ((ascending && rng_base > rng_limit && rng_inc < 0.0)
+      || (! ascending && rng_base < rng_limit && rng_inc > 0.0))
     {
-      double tmp = rng_base;
-      rng_base = min ();
-      rng_limit = tmp;
-      rng_inc = -rng_inc;
-      clear_cache ();
-      reverse = true;
-    }
-  else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
-    {
-      double tmp = max ();
-      rng_limit = min ();
-      rng_base = tmp;
+      std::swap (rng_base, rng_limit);
       rng_inc = -rng_inc;
       clear_cache ();
       reverse = true;
@@ -346,6 +303,72 @@ Range::is_sorted (sortmode mode) const
   return mode;
 }
 
+void
+Range::set_base (double b)
+{
+  if (rng_base != b)
+    {
+      rng_base = b;
+      rng_numel = numel_internal ();
+
+      double tmplimit = rng_limit;
+
+      if (rng_inc > 0)
+        tmplimit = max ();
+      else
+        tmplimit = min ();
+
+      if (tmplimit != rng_limit)
+        rng_limit = tmplimit;
+
+      clear_cache ();
+    }
+}
+
+void
+Range::set_limit (double l)
+{
+  if (rng_limit != l)
+    {
+      rng_limit = l;
+      rng_numel = numel_internal ();
+
+      double tmplimit = rng_limit;
+
+      if (rng_inc > 0)
+        tmplimit = max ();
+      else
+        tmplimit = min ();
+
+      if (tmplimit != rng_limit)
+        rng_limit = tmplimit;
+
+      clear_cache ();
+    }
+}
+
+void
+Range::set_inc (double i)
+{
+  if (rng_inc != i)
+    {
+      rng_inc = i;
+      rng_numel = numel_internal ();
+
+      double tmplimit = rng_limit;
+
+      if (rng_inc > 0)
+        tmplimit = max ();
+      else
+        tmplimit = min ();
+
+      if (tmplimit != rng_limit)
+        rng_limit = tmplimit;
+
+      clear_cache ();
+    }
+}
+
 std::ostream&
 operator << (std::ostream& os, const Range& a)
 {
@@ -361,8 +384,8 @@ operator << (std::ostream& os, const Range& a)
         os << b + i * increment << " ";
     }
 
-  // Prevent overshoot.  See comment in the matrix_value method above.
-  os << (increment > 0 ? a.max () : a.min ()) << "\n";
+  // Print out exactly the last element, rather than a calculated last element.
+  os << a.rng_limit << "\n";
 
   return os;
 }
@@ -373,12 +396,14 @@ operator >> (std::istream& is, Range& a)
   is >> a.rng_base;
   if (is)
     {
-      is >> a.rng_limit;
+      double tmp_rng_limit;
+      is >> tmp_rng_limit;
+
       if (is)
-        {
-          is >> a.rng_inc;
-          a.rng_numel = a.numel_internal ();
-        }
+        is >> a.rng_inc;
+
+      // Clip the rng_limit to the true limit and rebuild numel, clear cache
+      a.set_limit (tmp_rng_limit);
     }
 
   return is;

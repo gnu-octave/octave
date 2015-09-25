@@ -130,7 +130,8 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
   have_line_spec = false;
   have_hist = false;
   parent = get (bigax, "parent");
-  for i = 1 : nargin - 1
+  narg = nargin ();
+  for i = 1 : narg - 1
     arg = varargin{i};
     if (ischar (arg) || iscellstr (arg))
       [linespec, valid] = __pltopt__ ("plotmatrix", varargin{i}, false);
@@ -138,7 +139,7 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
         have_line_spec = true;
         linespec = varargin(i);
         varargin(i) = [];
-        nargin -= 1;
+        narg -= 1;
         break;
       else
         print_usage ("plotmatrix");
@@ -146,11 +147,11 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
     endif
   endfor
 
-  if (nargin == 2)
+  if (narg == 2)
     X = varargin{1};
     Y = X;
     have_hist = true;
-  elseif (nargin == 3)
+  elseif (narg == 3)
     X = varargin{1};
     Y = varargin{2};
   else

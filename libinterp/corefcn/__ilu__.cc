@@ -529,10 +529,10 @@ Undocumented internal function.\n\
       Array<Complex> cols_norm, rows_norm;
       param_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_u =
-        feval("triu", param_list)(0).sparse_complex_matrix_value ();
+        feval ("triu", param_list)(0).sparse_complex_matrix_value ();
       param_list.append (-1);
       SparseComplexMatrix sm_l =
-        feval("tril", param_list)(0).sparse_complex_matrix_value ();
+        feval ("tril", param_list)(0).sparse_complex_matrix_value ();
       param_list(1) = "rows";
       rows_norm = feval ("norm", param_list)(0).complex_vector_value ();
       param_list(1) = "cols";
@@ -584,7 +584,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
   // That is necessary for the JKI (milu = "row") variant.
   if (opt == ROW)
-    sm = sm.transpose();
+    sm = sm.transpose ();
 
   // Extract pointers to the arrays for faster access inside loops
   octave_idx_type* cidx_in = sm.cidx ();
@@ -613,7 +613,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
   octave_idx_type* ridx_u = ridx_out_u.fortran_vec ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T* data_u = data_out_u.fortran_vec();
+  T* data_u = data_out_u.fortran_vec ();
 
   // Working arrays and permutation arrays
   octave_idx_type w_len_u, w_len_l;

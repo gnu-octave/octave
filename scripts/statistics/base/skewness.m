@@ -152,15 +152,10 @@ endfunction
 
 ## Verify no "divide-by-zero" warnings
 %!test
-%! wstate = warning ("query", "Octave:divide-by-zero");
-%! warning ("on", "Octave:divide-by-zero");
-%! unwind_protect
-%!   lastwarn ("");  # clear last warning
-%!   skewness (1);
-%!   assert (lastwarn (), "");
-%! unwind_protect_cleanup
-%!   warning (wstate, "Octave:divide-by-zero");
-%! end_unwind_protect
+%! warning ("on", "Octave:divide-by-zero", "local");
+%! lastwarn ("");  # clear last warning
+%! skewness (1);
+%! assert (lastwarn (), "");
 
 ## Test input validation
 %!error skewness ()
@@ -172,3 +167,4 @@ endfunction
 %!error <DIM must be an integer> skewness (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 0)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 3)
+

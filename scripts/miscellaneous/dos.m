@@ -51,13 +51,8 @@ endfunction
 
 %!test
 %! cmd = ls_command ();
-%! old_wstate = warning ("query");
-%! warning ("off", "Octave:undefined-return-values");
-%! unwind_protect
-%!   [status, output] = dos (cmd);
-%! unwind_protect_cleanup
-%!   warning (old_wstate);
-%! end_unwind_protect
+%! warning ("off", "Octave:undefined-return-values", "local");
+%! [status, output] = dos (cmd);
 %!
 %! if (ispc () && ! isunix ())
 %!   [status, output] = dos (cmd);

@@ -202,7 +202,7 @@ endfunction
 %!   assert (fid >= 0);
 %!   fclose (fid);
 %!   ## Save path into local .octaverc file
-%!   warning ("off", "Octave:savepath-local");
+%!   warning ("off", "Octave:savepath-local", "local");
 %!   status = savepath ();
 %!   assert (status == 0);
 %!   ## Compare old and new versions

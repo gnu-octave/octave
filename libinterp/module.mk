@@ -224,7 +224,7 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_liboctinterp_la_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
-	  $(libinterp_liboctinterp_la_CXXFLAGS) \
+	  $(libinterp_liboctinterp_la_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< > $@-t1 && \
 	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
 	rm -f $@-t1 && \

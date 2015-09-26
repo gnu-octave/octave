@@ -138,7 +138,7 @@ $(OV_JAVA_DF) : libinterp/octave-value/%.df : libinterp/octave-value/%.cc $(GENE
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_octave_value_liboctave_value_la_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
-	  $(libinterp_octave_value_liboctave_value_la_CXXFLAGS) \
+	  $(libinterp_octave_value_liboctave_value_la_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< > $@-t1 && \
 	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
 	mv $@-t $@ && \

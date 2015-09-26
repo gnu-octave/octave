@@ -271,7 +271,7 @@ $(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \
-	  $(libinterp_corefcn_libcorefcn_la_CXXFLAGS) \
+	  $(libinterp_corefcn_libcorefcn_la_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< > $@-t1 && \
 	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
 	rm -f $@-t1 && \

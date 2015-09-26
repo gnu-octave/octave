@@ -20,6 +20,7 @@ TRANSLATIONS = \
   libgui/languages/de_DE.ts \
   libgui/languages/en_US.ts \
   libgui/languages/es_ES.ts \
+  libgui/languages/eu_ES.ts \
   libgui/languages/fr_FR.ts \
   libgui/languages/it_IT.ts \
   libgui/languages/ja_JP.ts \

@@ -734,9 +734,7 @@ Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
                   ()->isWidgetType())
                 {
                   gh_manager::auto_lock lock;
-                  const figure::properties& fp = properties<figure> ();
-
-                  showFigureToolBar (! hasUiControlChildren (fp));
+                  update (figure::properties::ID_TOOLBAR);
                 }
 
             default:

@@ -100,6 +100,7 @@
 ## @item @qcode{"textarrow"}
 ## Construct an arrow with a text label at the opposite end from the arrowhead.
 ##
+## Use the "string" property to change the text string.
 ## The line and the arrowhead can be customized as for arrow annotations, and
 ## the text can be customized using the same properties as @code{text} graphics
 ## objects.  Note, however, that some text property names are prefixed with
@@ -112,6 +113,7 @@
 ## Construct a box with text inside.  @var{pos} specifies the
 ## @qcode{"position"} property of the annotation.
 ##
+## Use the "string" property to change the text string.
 ## You may use @qcode{"backgroundcolor"}, @qcode{"edgecolor"},
 ## @qcode{"linestyle"}, and @qcode{"linewidth"} properties to customize
 ## the box background color and edge appearance.  A limited set of @code{text}

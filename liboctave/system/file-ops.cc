@@ -54,6 +54,10 @@ extern "C" {
 #include "singleton-cleanup.h"
 #include "str-vec.h"
 
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+#include <algorithm>
+#endif
+
 file_ops *file_ops::instance = 0;
 
 bool
@@ -737,6 +741,11 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
       retval = tmp;
       free (tmp);
     }
+
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+  // Canonical Windows file separator is backslash.
+  std::replace (retval.begin (), retval.end (), '/', '\\');
+#endif
 
   if (retval.empty ())
     msg = gnulib::strerror (errno);

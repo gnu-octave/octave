@@ -631,9 +631,20 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
                                      "windowbuttondownfcn",
                                      button_number (event));
 
-          gh_manager::post_callback (currentObj.get_handle (),
-                                     "buttondownfcn",
-                                     button_number (event));
+          if (currentObj.get ("buttondownfcn").is_empty ())
+            {
+              graphics_object parentObj = 
+                gh_manager::get_object (currentObj.get_parent ());
+
+              if (parentObj.valid_object () && parentObj.isa ("hggroup"))
+                gh_manager::post_callback (parentObj.get_handle (),
+                                           "buttondownfcn",
+                                           button_number (event));
+            }
+          else
+            gh_manager::post_callback (currentObj.get_handle (),
+                                       "buttondownfcn",
+                                       button_number (event));
 
           if (event->button () == Qt::RightButton)
             ContextMenu::executeAt (currentObj.get_properties (),

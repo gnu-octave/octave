@@ -207,11 +207,11 @@ opengl_selector::draw_image (const image::properties& props)
 {
   Matrix xd = props.get_xdata ().matrix_value ();
   octave_idx_type nc = props.get_cdata ().columns ();
-  double x_pix_size = (xd(1) - xd(0)) / (nc - 1);
+  double x_pix_size = (nc == 1 ? 1 : (xd(1) - xd(0)) / (nc - 1));
 
   Matrix yd = props.get_ydata ().matrix_value ();
   octave_idx_type nr = props.get_cdata ().rows ();
-  double y_pix_size = (yd(1) - yd(0)) / (nr - 1);
+  double y_pix_size = (nr == 1 ? 1 : (yd(1) - yd(0)) / (nr - 1));
 
   ColumnVector p1(3, 0.0), p2(3, 0.0), p3(3, 0.0), p4(3, 0.0);
   p1(0) = xd(0) - x_pix_size/2;

@@ -97,13 +97,13 @@ function h = text (varargin)
       nt = numel (string);
       if (nx == 1)
         ## Single text object with one or more lines
-        string = {string};
+        string = {cellstr(string)};
         nt = 1;
       elseif (nx > 1 && nt == nx)
         ## Mutiple text objects with different strings
       else
         ## Mutiple text objects with same string
-        string = repmat ({string}, [nx, 1]);
+        string = repmat ({cellstr(string)}, [nx, 1]);
         nt = nx;
       endif
 
@@ -271,13 +271,13 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ## Single object with one line
-%!   h = text (0.5, 0.3, "single object with one line");
+%!   h = text (0.5, 0.5, "single object with one line");
 %!   obs = get (h, "string");
 %!   assert (class (obs), "char");
 %!   assert (obs, "single object with one line");
 %!
 %!   ## Single object with multiple lines
-%!   h = text (0.5, 0.4, ["char row 1"; "char row 2"]);
+%!   h = text (0.5, 0.3, ["char row 1"; "char row 2"]);
 %!   obs = get (h, "string");
 %!   assert (class (obs), "char");
 %!   assert (obs, ["char row 1"; "char row 2"]);
@@ -290,27 +290,34 @@ endfunction
 %!   assert (get (h(2), "string"), "two objects with same string");
 %!
 %!   ## Multiple objects with multiple lines
-%!   h = text ([0.1, 0.1], [0.3, 0.4], ["string1"; "string2"]);
+%!   h = text ([0.7, 0.7], [0.3, 0.4], ["string1"; "string2"]);
 %!   assert (class (get (h(1), "string")), "char");
 %!   assert (class (get (h(2), "string")), "char");
 %!   assert (get (h(1), "string"), "string1");
 %!   assert (get (h(2), "string"), "string2");
 %!
 %!   ### Tests repeated with cell input ###
+%!   clf;
 %!
 %!   ## Single object with one line
-%!   h = text (0.5, 0.3, {"single object with one line"});
+%!   h = text (0.5, 0.5, {"single object with one line"});
 %!   obs = get (h, "string");
 %!   assert (class (obs), "cell");
 %!   assert (obs, {"single object with one line"});
 %!
 %!   ## Single object with multiple lines
-%!   h = text (0.5, 0.6, {"cell2str (1,1)", "cell2str (1,2)";
+%!   h = text (0.5, 0.3, {"cell2str (1,1)", "cell2str (1,2)";
 %!                        "cell2str (2,1)", "cell2str (2,2)"});
 %!   obs = get (h, "string");
 %!   assert (class (obs), "cell");
 %!   assert (obs, {"cell2str (1,1)"; "cell2str (2,1)";
 %!                 "cell2str (1,2)"; "cell2str (2,2)"});
+%!
+%!   ## Single object with multiple lines including empty cell
+%!   h = text (0.5, 0.9, {"Line1"; []; "Line3"});
+%!   obs = get (h, "string");
+%!   assert (class (obs), "cell");
+%!   assert (obs, {"Line1"; ""; "Line3"});
 %!
 %!   ## Multiple objects with single line
 %!   h = text ([0.1, 0.1], [0.5, 0.6], {"two objects with same cellstr"});
@@ -319,6 +326,14 @@ endfunction
 %!   ## FIXME: is return value of cellstr, rather than string, Matlab-verified?
 %!   assert (get (h(1), "string"), {"two objects with same cellstr"});
 %!   assert (get (h(2), "string"), {"two objects with same cellstr"});
+%!
+%!   ## Multiple objects with same multi-line string which has empty cell
+%!   h = text ([0.7, 0.7], [0.3 0.5], {"Line1"; []; "Line3"});
+%!   assert (class (get (h(1), "string")), "cell");
+%!   assert (class (get (h(2), "string")), "cell");
+%!   ## FIXME: is return value of cellstr, rather than string, Matlab-verified?
+%!   assert (get (h(1), "string"), {"Line1"; ""; "Line3"});
+%!   assert (get (h(2), "string"), {"Line1"; ""; "Line3"});
 %!
 %!   ## Multiple objects with multiple lines
 %!   h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr1", "cellstr2"});

@@ -323,21 +323,19 @@ endfunction
 %!   h = text ([0.1, 0.1], [0.5, 0.6], {"two objects with same cellstr"});
 %!   assert (class (get (h(1), "string")), "cell");
 %!   assert (class (get (h(2), "string")), "cell");
-%!   ## FIXME: is return value of cellstr, rather than string, Matlab-verified?
 %!   assert (get (h(1), "string"), {"two objects with same cellstr"});
 %!   assert (get (h(2), "string"), {"two objects with same cellstr"});
 %!
 %!   ## Multiple objects with same multi-line string which has empty cell
+%!   ## NOTE: Matlab does not support this syntax
 %!   h = text ([0.7, 0.7], [0.3 0.5], {"Line1"; []; "Line3"});
 %!   assert (class (get (h(1), "string")), "cell");
 %!   assert (class (get (h(2), "string")), "cell");
-%!   ## FIXME: is return value of cellstr, rather than string, Matlab-verified?
 %!   assert (get (h(1), "string"), {"Line1"; ""; "Line3"});
 %!   assert (get (h(2), "string"), {"Line1"; ""; "Line3"});
 %!
 %!   ## Multiple objects with multiple lines
 %!   h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr1", "cellstr2"});
-%!   ## FIXME: is return value really char in Matlab?
 %!   assert (class (get (h(1), "string")), "char");
 %!   assert (class (get (h(2), "string")), "char");
 %!   assert (get (h(1), "string"), "cellstr1");

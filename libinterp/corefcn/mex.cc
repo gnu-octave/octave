@@ -2718,12 +2718,13 @@ mxIsEmpty (const mxArray *ptr)
   return ptr->is_empty ();
 }
 
-// Just plain odd thing to ask of a value.
+// FIXME: Just plain odd thing to ask of a value.
+// Still, Octave is incompatible because it does not implement this.
 int
-mxIsFromGlobalWS (const mxArray */*ptr*/)
+mxIsFromGlobalWS (const mxArray * /*ptr*/)
 {
-  // FIXME
-  abort ();
+  mexErrMsgTxt ("mxIsFromGlobalWS() is unimplemented");
+
   return 0;
 }
 

@@ -37,7 +37,7 @@
 ## must be between 0 and 1 inclusive.  The new colormap is returned.
 ##
 ## @code{colormap ("default")} restores the default colormap (the
-## @code{virdis} map with 64 entries).  The default colormap is returned.
+## @code{viridis} map with 64 entries).  The default colormap is returned.
 ##
 ## The map may also be specified by a string, @qcode{"@var{map_name}"}, where
 ## @var{map_name} is the name of a function that returns a colormap.
@@ -52,7 +52,7 @@
 ## colormaps.  The options @qcode{"register"} and @qcode{"unregister"}
 ## add or remove the colormap @var{name} from this list.
 ##
-## @seealso{virdis}
+## @seealso{viridis}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -79,7 +79,7 @@ function cmap = colormap (varargin)
     map = varargin{1};
     if (ischar (map))
       if (strcmp (map, "default"))
-        map = virdis (64);
+        map = viridis (64);
       elseif (strcmp (map, "list"))
         cmap = map_list;
         return;
@@ -132,9 +132,9 @@ endfunction
 %! ## Create an image for displaying a colormap
 %! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
 %! axis ([1, 64, 0, 1], "ticy", "xy");
-%! ## Show 'virdis' colormap
-%! colormap (virdis (64));
-%! title "colormap (virdis (64))"
+%! ## Show 'viridis' colormap
+%! colormap (viridis (64));
+%! title "colormap (viridis (64))"
 %! disp ("Press a key to continue");
 %! pause ();
 %! ## Show 'colorcube' colormap
@@ -152,7 +152,7 @@ endfunction
 %!   cmap = (get (gcf, "colormap"));
 %!   assert (cmap, cmaptst);
 %!   colormap ("default");
-%!   assert (colormap (), virdis (64));
+%!   assert (colormap (), viridis (64));
 %!   colormap ("ocean");
 %!   assert (colormap, ocean (64));
 %! unwind_protect_cleanup

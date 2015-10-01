@@ -190,6 +190,8 @@ between 0 and 1.
 
 @DOCSTRING(summer)
 
+@DOCSTRING(viridis)
+
 @DOCSTRING(white)
 
 @DOCSTRING(winter)

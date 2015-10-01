@@ -1668,7 +1668,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
                   {
                     temp = octave_env::get_current_directory ();
                   }
-                catch (octave_execution_exception)
+                catch (const octave_execution_exception&)
                   {
                     temp = "";
                   }

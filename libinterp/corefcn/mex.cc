@@ -3105,9 +3105,20 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   for (int i = 0; i < nargin; i++)
     args(i) = mxArray::as_octave_value (argin[i]);
 
-  octave_value_list retval = feval (fname, args, nargout);
+  bool execution_error = false;
 
-  if (error_state && mex_context->trap_feval_error == 0)
+  octave_value_list retval;
+
+  try
+    {
+      retval = feval (fname, args, nargout);
+    }
+  catch (const octave_execution_exception&)
+    {
+      execution_error = true;
+    }
+
+  if (execution_error && mex_context->trap_feval_error == 0)
     {
       // FIXME: is this the correct way to clean up?  abort() is
       // going to trigger a long jump, so the normal class destructors
@@ -3138,13 +3149,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   while (num_to_copy < nargout)
     argout[num_to_copy++] = 0;
 
-  if (error_state)
-    {
-      error_state = 0;
-      return 1;
-    }
-  else
-    return 0;
+  return execution_error ? 1 : 0;
 }
 
 void
@@ -3163,14 +3168,19 @@ mexEvalString (const char *s)
 
   octave_value_list ret;
 
-  ret = eval_string (s, false, parse_status, 0);
+  bool execution_error = false;
 
-  if (parse_status || error_state)
+  try
     {
-      error_state = 0;
-
-      retval = 1;
+      ret = eval_string (s, false, parse_status, 0);
     }
+  catch (const octave_execution_exception&)
+    {
+      execution_error = true;
+    }
+
+  if (parse_status || execution_error)
+    retval = 1;
 
   return retval;
 }

@@ -369,15 +369,18 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
   if (val.is_complex_type ())
     warning ("save: omitting imaginary part for ASCII file");
 
-  Matrix m = val.matrix_value (true);
+  Matrix m;
 
-  if (error_state)
+  try
+    {
+      m = val.matrix_value (true);
+    }
+  catch (const octave_execution_exception&)
     {
       success = false;
-
-      error_state = 0;
     }
-  else
+
+  if (success)
     {
       long old_precision = os.precision ();
 

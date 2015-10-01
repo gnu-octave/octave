@@ -78,29 +78,26 @@ octave_oncleanup::~octave_oncleanup (void)
   frame.protect_var (quit_allowed);
   quit_allowed = false;
 
-  // Clear errors.
-  frame.protect_var (error_state);
-  error_state = 0;
-
   try
     {
       // Run the actual code.
       fcn.do_multi_index_op (0, octave_value_list ());
     }
-  catch (octave_interrupt_exception)
+  catch (const octave_interrupt_exception&)
     {
       // Swallow the interrupt.
       warning ("onCleanup: interrupt occured in cleanup action");
+    }
+  catch (const octave_execution_exception&)
+    {
+      // Propagate the error.
+      throw;
     }
   catch (...) // Yes, the black hole. We're in a d-tor.
     {
       // This shouldn't happen, in theory.
       error ("onCleanup: internal error: unhandled exception in cleanup action");
     }
-
-  // FIXME: can this happen now?
-  if (error_state)
-    frame.discard_first ();
 }
 
 octave_scalar_map

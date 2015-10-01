@@ -1181,7 +1181,7 @@ using std::unordered_map;
             {
               idx = Array<octave_idx_type> (dim_vector (1, idx_len));
             }
-          catch (std::bad_alloc)
+          catch (const std::bad_alloc&)
             {
               // Looks like n is too big and short_shuffle is false.
               // Let's try again, but this time with the alternative.

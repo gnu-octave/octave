@@ -651,20 +651,18 @@ main_loop (void)
                 break;
             }
         }
-      catch (octave_interrupt_exception)
+      catch (const octave_interrupt_exception&)
         {
           recover_from_exception ();
           octave_stdout << "\n";
           if (quitting_gracefully)
             return exit_status;
         }
-      catch (octave_execution_exception)
+      catch (const octave_execution_exception&)
         {
           recover_from_exception ();
-          std::cerr << "error: unhandled execution exception -- trying to return to prompt"
-                    << std::endl;
         }
-      catch (std::bad_alloc)
+      catch (const std::bad_alloc&)
         {
           recover_from_exception ();
           std::cerr << "error: out of memory -- trying to return to prompt"

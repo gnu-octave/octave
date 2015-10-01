@@ -195,18 +195,18 @@ inline void octave_quit (void)
 
 #define END_INTERRUPT_WITH_EXCEPTIONS \
     } \
-  catch (octave_interrupt_exception) \
+  catch (const octave_interrupt_exception&) \
     { \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_jump_to_enclosing_context (); \
     } \
-  catch (octave_execution_exception) \
+  catch (const octave_execution_exception&) \
     { \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_exception_state = octave_exec_exception; \
       octave_jump_to_enclosing_context (); \
     } \
-  catch (std::bad_alloc) \
+  catch (const std::bad_alloc&) \
     { \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_exception_state = octave_alloc_exception; \

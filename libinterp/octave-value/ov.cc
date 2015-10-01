@@ -1490,16 +1490,9 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 
       if (f)
         {
-          try
-            {
-              f (*rep, octave_value_list (), *rhs.rep);
-              // Usually unnecessary, but may be needed (complex arrays).
-              maybe_mutate ();
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
+          f (*rep, octave_value_list (), *rhs.rep);
+          // Usually unnecessary, but may be needed (complex arrays).
+          maybe_mutate ();
         }
       else
         {
@@ -1993,14 +1986,7 @@ do_binary_op (octave_value::binary_op op,
 
       if (f)
         {
-          try
-            {
-              retval = f (v1, v2);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
+          retval = f (v1, v2);
         }
       else
         gripe_binary_op (octave_value::binary_op_as_string (op),
@@ -2015,16 +2001,7 @@ do_binary_op (octave_value::binary_op op,
         = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
       if (f)
-        {
-          try
-            {
-              retval = f (*v1.rep, *v2.rep);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
-        }
+        retval = f (*v1.rep, *v2.rep);
       else
         {
           octave_value tv1;
@@ -2143,16 +2120,7 @@ do_binary_op (octave_value::binary_op op,
                   f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
                   if (f)
-                    {
-                      try
-                        {
-                          retval = f (*tv1.rep, *tv2.rep);
-                        }
-                      catch (octave_execution_exception)
-                        {
-                          gripe_library_execution_error ();
-                        }
-                    }
+                    retval = f (*tv1.rep, *tv2.rep);
                   else
                     gripe_binary_op (octave_value::binary_op_as_string (op),
                                      v1.type_name (), v2.type_name ());
@@ -2251,16 +2219,7 @@ do_binary_op (octave_value::compound_binary_op op,
         = octave_value_typeinfo::lookup_binary_class_op (op);
 
       if (f)
-        {
-          try
-            {
-              retval = f (v1, v2);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
-        }
+        retval = f (v1, v2);
       else
         retval = decompose_binary_op (op, v1, v2);
     }
@@ -2270,16 +2229,7 @@ do_binary_op (octave_value::compound_binary_op op,
         = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
       if (f)
-        {
-          try
-            {
-              retval = f (*v1.rep, *v2.rep);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
-        }
+        retval = f (*v1.rep, *v2.rep);
       else
         retval = decompose_binary_op (op, v1, v2);
     }
@@ -2316,16 +2266,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
     = octave_value_typeinfo::lookup_cat_op (t1, t2);
 
   if (f)
-    {
-      try
-        {
-          retval = f (*v1.rep, *v2.rep, ra_idx);
-        }
-      catch (octave_execution_exception)
-        {
-          gripe_library_execution_error ();
-        }
-    }
+    retval = f (*v1.rep, *v2.rep, ra_idx);
   else
     {
       octave_value tv1;
@@ -2521,16 +2462,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
         = octave_value_typeinfo::lookup_unary_class_op (op);
 
       if (f)
-        {
-          try
-            {
-              retval = f (v);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
-        }
+        retval = f (v);
       else
         gripe_unary_op (octave_value::unary_op_as_string (op),
                         v.class_name ());
@@ -2544,16 +2476,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
         = octave_value_typeinfo::lookup_unary_op (op, t);
 
       if (f)
-        {
-          try
-            {
-              retval = f (*v.rep);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
-        }
+        retval = f (*v.rep);
       else
         {
           octave_value tv;
@@ -2615,14 +2538,7 @@ octave_value::do_non_const_unary_op (unary_op op)
         {
           make_unique ();
 
-          try
-            {
-              f (*rep);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
+          f (*rep);
         }
       else
         {
@@ -2643,14 +2559,7 @@ octave_value::do_non_const_unary_op (unary_op op)
 
                   if (f)
                     {
-                      try
-                        {
-                          f (*rep);
-                        }
-                      catch (octave_execution_exception)
-                        {
-                          gripe_library_execution_error ();
-                        }
+                      f (*rep);
 
                       if (old_rep && --old_rep->count == 0)
                         delete old_rep;
@@ -2690,16 +2599,7 @@ octave_value::do_non_const_unary_op (unary_op op)
         f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
 
       if (f)
-        {
-          try
-            {
-              f (*rep);
-            }
-          catch (octave_execution_exception)
-            {
-              gripe_library_execution_error ();
-            }
-        }
+        f (*rep);
       else
         *this = do_unary_op (op, *this);
     }

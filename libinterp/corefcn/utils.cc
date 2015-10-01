@@ -1473,7 +1473,7 @@ character @nospell{\"@xbackslashchar{}0\"}, it will always be a valid index.\n\
           else
             retval = false;
         }
-      catch (octave_execution_exception)
+      catch (const octave_execution_exception&)
         {
           retval = false;
         }

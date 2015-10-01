@@ -153,6 +153,8 @@ public:
 
   static bool quiet_breakpoint_flag;
 
+  static bool unwind_protect_exception;
+
   // Possible types of evaluation contexts.
   enum stmt_list_type
   {

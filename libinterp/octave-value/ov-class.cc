@@ -1172,13 +1172,21 @@ octave_class::reconstruct_exemplar (void)
 
           interpreter_try (frame);
 
-          octave_value_list result
-            = ctor.do_multi_index_op (1, octave_value_list ());
+          bool execution_error = false;
 
-          if (! error_state && result.length () == 1)
+          octave_value_list result;
+
+          try
+            {
+              result = ctor.do_multi_index_op (1, octave_value_list ());
+            }
+          catch (const octave_execution_exception&)
+            {
+              execution_error = true;
+            }
+
+          if (! execution_error && result.length () == 1)
             retval = true;
-
-          error_state = false;
         }
       else
         warning ("no constructor for class %s", c_name.c_str ());

@@ -363,12 +363,15 @@ To avoid segmentation faults causing Octave to abort this function
 explicitly checks that there are sufficient arguments available before
 accessing these arguments.  It then obtains two multi-dimensional arrays
 of type @code{NDArray} and adds these together.  Note that the array_value
-method is called without using the @code{is_matrix_type} type, and instead the
-error_state is checked before returning @code{A + B}.  The reason to
+method is called without using the @code{is_matrix_type} type.  If an
+error occurs when attempting to extract the value, Octave will print a
+message and throw an exception.  The reason to
 prefer this is that the arguments might be a type that is not an
 @code{NDArray}, but it would make sense to convert it to one.  The
 @code{array_value} method allows this conversion to be performed
-transparently if possible, and sets @code{error_state} if it is not.
+transparently if possible.  If you need to catch errors like this and
+perform some kind of cleanup or other operation, you can catch the
+@code{octave_execution_error} exception.
 
 @code{A + B}, operating on two @code{NDArray}'s returns an
 @code{NDArray}, which is cast to an @code{octave_value} on the return

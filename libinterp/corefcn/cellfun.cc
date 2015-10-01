@@ -70,17 +70,22 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
                  octave_value& error_handler)
 {
   octave_value_list tmp;
+
+  bool execution_error = false;
+
   try
     {
       tmp = func.do_multi_index_op (nargout, inputlist);
     }
-  catch (octave_execution_exception)
+  catch (const octave_execution_exception&)
     {
       if (error_handler.is_defined ())
-        error_state = 1;
+        execution_error = true;
+      else
+        octave_throw_execution_exception ();
     }
 
-  if (error_state)
+  if (execution_error)
     {
       if (error_handler.is_defined ())
         {
@@ -96,14 +101,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
           buffer_error_messages--;
 
-          error_state = 0;
-
           tmp = error_handler.do_multi_index_op (nargout, errlist);
-
-          buffer_error_messages++;
-
-          if (error_state)
-            tmp.clear ();
         }
       else
         tmp.clear ();

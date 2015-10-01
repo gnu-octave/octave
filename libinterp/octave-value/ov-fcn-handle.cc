@@ -2083,8 +2083,18 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                           unwind_protect frame;
                           interpreter_try (frame);
 
-                          root_val = make_fcn_handle (head_name);
-                          if (error_state)
+                          bool execution_error = false;
+
+                          try
+                            {
+                              root_val = make_fcn_handle (head_name);
+                            }
+                          catch (const octave_execution_exception&)
+                            {
+                              execution_error = true;
+                            }
+
+                          if (execution_error)
                             bad = true;
                         }
                     }

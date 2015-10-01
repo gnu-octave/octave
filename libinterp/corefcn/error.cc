@@ -93,21 +93,10 @@ static octave_map Vlast_error_stack;
 //
 // Valid values:
 //
-//   -2: an error has occurred, but don't print any messages.
-//   -1: an error has occurred, we are printing a traceback
 //    0: no error
 //    1: an error has occurred
 //
 int error_state = 0;
-
-// Current warning state.
-//
-//  Valid values:
-//
-//    0: no warning
-//    1: a warning has occurred
-//
-int warning_state = 0;
 
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
@@ -123,8 +112,6 @@ bool discard_warning_messages = false;
 void
 reset_error_handler (void)
 {
-  error_state = 0;
-  warning_state = 0;
   buffer_error_messages = 0;
   discard_error_messages = false;
 }
@@ -144,6 +131,26 @@ static octave_map
 initialize_last_error_stack (void)
 {
   return octave_call_stack::empty_backtrace ();
+}
+
+static void
+debug_or_throw_exception (void)
+{
+  if ((interactive || forced_interactive)
+      && Vdebug_on_error && octave_call_stack::caller_user_code ())
+    {
+      unwind_protect frame;
+      frame.protect_var (Vdebug_on_error);
+      Vdebug_on_error = false;
+
+      tree_evaluator::debug_mode = true;
+
+      tree_evaluator::current_frame = octave_call_stack::current_frame ();
+
+      do_keyboard (octave_value_list ());
+    }
+  else
+    octave_throw_execution_exception ();
 }
 
 // Warning messages are never buffered.
@@ -204,7 +211,7 @@ verror (bool save_last_error, std::ostream& os,
 
   std::string base_msg = output_buf.str ();
 
-  bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
+  bool to_beep_or_not_to_beep_p = Vbeep_on_error;
 
   std::string msg_string;
 
@@ -238,7 +245,7 @@ verror (bool save_last_error, std::ostream& os,
 
   msg_string += base_msg + "\n";
 
-  if (! error_state && save_last_error)
+  if (save_last_error)
     {
       // This is the first error in a possible series.
 
@@ -332,48 +339,6 @@ pr_where (const char *who)
     }
 }
 
-// Note that we don't actually print any message if the error string
-// is just "" or "\n".  This allows error ("") and error ("\n") to
-// just set the error state.
-
-static void
-error_1 (std::ostream& os, const char *name, const char *id,
-         const char *fmt, va_list args, bool with_cfn = false)
-{
-  if (error_state != -2)
-    {
-      if (fmt && *fmt)
-        {
-          size_t len = strlen (fmt);
-
-          if (len > 0)
-            {
-              if (fmt[len - 1] == '\n')
-                {
-                  if (len > 1)
-                    {
-                      // Strip newline before issuing error
-                      std::string tmp_fmt (fmt, len - 1);
-                      verror (true, os, name, id, tmp_fmt.c_str (),
-                              args, with_cfn);
-                    }
-
-                  error_state = -2;
-                }
-              else
-                {
-                  verror (true, os, name, id, fmt, args, with_cfn);
-
-                  if (! error_state)
-                    error_state = 1;
-                }
-            }
-        }
-      else
-        panic ("error_1: invalid format");
-    }
-}
-
 void
 vmessage (const char *name, const char *fmt, va_list args)
 {
@@ -409,7 +374,8 @@ void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
   verror (true, std::cerr, "usage", id, fmt, args);
-  error_state = -1;
+
+  debug_or_throw_exception ();
 }
 
 void
@@ -443,37 +409,49 @@ usage_with_id (const char *id, const char *fmt, ...)
 }
 
 static void
-error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
+error_1 (std::ostream& os, const char *name, const char *id,
+         const char *fmt, va_list args, bool with_cfn = false)
 {
-  int init_state = error_state;
-
-  error_1 (std::cerr, "error", id, fmt, args, with_cfn);
-
-  bool in_user_code = octave_call_stack::caller_user_code () != 0;
-
-  if (error_state != -2 && in_user_code && ! discard_error_messages)
-    pr_where ("error");
-
-  if (interactive && Vdebug_on_error && init_state == 0 && in_user_code)
+  if (fmt)
     {
-      unwind_protect frame;
-      frame.protect_var (Vdebug_on_error);
-      Vdebug_on_error = false;
+      if (*fmt)
+        {
+          size_t len = strlen (fmt);
 
-      error_state = 0;
+          if (len > 0)
+            {
+              if (fmt[len - 1] == '\n')
+                {
+                  if (len > 1)
+                    {
+                      char *tmp_fmt = strsave (fmt);
+                      tmp_fmt[len - 1] = '\0';
+                      verror (true, os, name, id, tmp_fmt, args, with_cfn);
+                      delete [] tmp_fmt;
+                    }
+                }
+              else
+                {
+                  verror (true, os, name, id, fmt, args, with_cfn);
 
-      tree_evaluator::debug_mode = true;
+                  bool in_user_code = octave_call_stack::caller_user_code () != 0;
 
-      tree_evaluator::current_frame = octave_call_stack::current_frame ();
-
-      do_keyboard (octave_value_list ());
+                  if (in_user_code && ! discard_error_messages)
+                    pr_where ("error");
+                }
+            }
+        }
     }
+  else
+    panic ("error_1: invalid format");
+
+  debug_or_throw_exception ();
 }
 
 void
 verror (const char *fmt, va_list args)
 {
-  error_2 ("", fmt, args);
+  error_1 (std::cerr, "error", "", fmt, args);
 }
 
 void
@@ -488,7 +466,7 @@ error (const char *fmt, ...)
 void
 verror_with_cfn (const char *fmt, va_list args)
 {
-  error_2 ("", fmt, args, true);
+  error_1 (std::cerr, "error", "", fmt, args, true);
 }
 
 void
@@ -503,7 +481,7 @@ error_with_cfn (const char *fmt, ...)
 void
 verror_with_id (const char *id, const char *fmt, va_list args)
 {
-  error_2 (id, fmt, args);
+  error_1 (std::cerr, "error", id, fmt, args);
 }
 
 void
@@ -518,7 +496,7 @@ error_with_id (const char *id, const char *fmt, ...)
 void
 verror_with_id_cfn (const char *id, const char *fmt, va_list args)
 {
-  error_2 (id, fmt, args, true);
+  error_1 (std::cerr, "error", id, fmt, args, true);
 }
 
 void
@@ -632,7 +610,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
     {
       // Handle this warning as an error.
 
-      error_2 (id, fmt, args);
+      error_1 (std::cerr, "error", id, fmt, args);
     }
   else if (warn_opt == 1)
     {
@@ -651,13 +629,10 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
       bool in_user_code = octave_call_stack::caller_user_code () != 0;
 
-
       if (! fmt_suppresses_backtrace && in_user_code
-          && Vbacktrace_on_warning && ! warning_state
+          && Vbacktrace_on_warning
           && ! discard_warning_messages)
         pr_where ("warning");
-
-      warning_state = 1;
 
       if ((interactive || forced_interactive)
           && Vdebug_on_warning && in_user_code)
@@ -860,120 +835,117 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
     {
       const octave_scalar_map err = args(0).scalar_map_value ();
 
-      if (! error_state)
+      if (err.contains ("message") && err.contains ("identifier"))
         {
-          if (err.contains ("message") && err.contains ("identifier"))
+          std::string msg = err.contents ("message").string_value ();
+          std::string id = err.contents ("identifier").string_value ();
+          int len = msg.length ();
+
+          std::string file;
+          std::string nm;
+          int l = -1;
+          int c = -1;
+
+          octave_map err_stack = initialize_last_error_stack ();
+
+          if (err.contains ("stack"))
             {
-              std::string msg = err.contents ("message").string_value ();
-              std::string id = err.contents ("identifier").string_value ();
-              int len = msg.length ();
+              err_stack = err.contents ("stack").map_value ();
 
-              std::string file;
-              std::string nm;
-              int l = -1;
-              int c = -1;
-
-              octave_map err_stack = initialize_last_error_stack ();
-
-              if (err.contains ("stack"))
+              if (err_stack.numel () > 0)
                 {
-                  err_stack = err.contents ("stack").map_value ();
+                  if (err_stack.contains ("file"))
+                    file = err_stack.contents ("file")(0).string_value ();
 
-                  if (err_stack.numel () > 0)
-                    {
-                      if (err_stack.contains ("file"))
-                        file = err_stack.contents ("file")(0).string_value ();
+                  if (err_stack.contains ("name"))
+                    nm = err_stack.contents ("name")(0).string_value ();
 
-                      if (err_stack.contains ("name"))
-                        nm = err_stack.contents ("name")(0).string_value ();
+                  if (err_stack.contains ("line"))
+                    l = err_stack.contents ("line")(0).nint_value ();
 
-                      if (err_stack.contains ("line"))
-                        l = err_stack.contents ("line")(0).nint_value ();
-
-                      if (err_stack.contains ("column"))
-                        c = err_stack.contents ("column")(0).nint_value ();
-                    }
+                  if (err_stack.contains ("column"))
+                    c = err_stack.contents ("column")(0).nint_value ();
                 }
+            }
 
-              // Ugh.
-              char *tmp_msg = strsave (msg.c_str ());
-              if (tmp_msg[len-1] == '\n')
+          // Ugh.
+          char *tmp_msg = strsave (msg.c_str ());
+          if (tmp_msg[len-1] == '\n')
+            {
+              if (len > 1)
                 {
-                  if (len > 1)
-                    {
-                      tmp_msg[len - 1] = '\0';
-                      rethrow_error (id.c_str (), "%s\n", tmp_msg);
-                    }
+                  tmp_msg[len - 1] = '\0';
+                  rethrow_error (id.c_str (), "%s\n", tmp_msg);
                 }
-              else
-                rethrow_error (id.c_str (), "%s", tmp_msg);
-              delete [] tmp_msg;
+            }
+          else
+            rethrow_error (id.c_str (), "%s", tmp_msg);
+          delete [] tmp_msg;
 
-              // FIXME: is this the right thing to do for Vlast_error_stack?
-              //        Should it be saved and restored with unwind_protect?
+          // FIXME: is this the right thing to do for Vlast_error_stack?
+          //        Should it be saved and restored with unwind_protect?
 
-              Vlast_error_stack = err_stack;
+          Vlast_error_stack = err_stack;
 
-              if (err.contains ("stack"))
+          if (err.contains ("stack"))
+            {
+              if (file.empty ())
                 {
-                  if (file.empty ())
+                  if (nm.empty ())
                     {
-                      if (nm.empty ())
+                      if (l > 0)
                         {
-                          if (l > 0)
-                            {
-                              if (c > 0)
-                                pr_where_1 ("error: near line %d, column %d",
-                                            l, c);
-                              else
-                                pr_where_1 ("error: near line %d", l);
-                            }
-                        }
-                      else
-                        {
-                          if (l > 0)
-                            {
-                              if (c > 0)
-                                pr_where_1 ("error: called from '%s' near line %d, column %d",
-                                            nm.c_str (), l, c);
-                              else
-                                pr_where_1 ("error: called from '%d' near line %d",
-                                            nm.c_str (), l);
-                            }
+                          if (c > 0)
+                            pr_where_1 ("error: near line %d, column %d",
+                                        l, c);
+                          else
+                            pr_where_1 ("error: near line %d", l);
                         }
                     }
                   else
                     {
-                      if (nm.empty ())
+                      if (l > 0)
                         {
-                          if (l > 0)
-                            {
-                              if (c > 0)
-                                pr_where_1 ("error: in file %s near line %d, column %d",
-                                            file.c_str (), l, c);
-                              else
-                                pr_where_1 ("error: in file %s near line %d",
-                                            file.c_str (), l);
-                            }
+                          if (c > 0)
+                            pr_where_1 ("error: called from '%s' near line %d, column %d",
+                                        nm.c_str (), l, c);
+                          else
+                            pr_where_1 ("error: called from '%d' near line %d",
+                                        nm.c_str (), l);
                         }
-                      else
+                    }
+                }
+              else
+                {
+                  if (nm.empty ())
+                    {
+                      if (l > 0)
                         {
-                          if (l > 0)
-                            {
-                              if (c > 0)
-                                pr_where_1 ("error: called from '%s' in file %s near line %d, column %d",
-                                            nm.c_str (), file.c_str (), l, c);
-                              else
-                                pr_where_1 ("error: called from '%d' in file %s near line %d",
-                                            nm.c_str (), file.c_str (), l);
-                            }
+                          if (c > 0)
+                            pr_where_1 ("error: in file %s near line %d, column %d",
+                                        file.c_str (), l, c);
+                          else
+                            pr_where_1 ("error: in file %s near line %d",
+                                        file.c_str (), l);
+                        }
+                    }
+                  else
+                    {
+                      if (l > 0)
+                        {
+                          if (c > 0)
+                            pr_where_1 ("error: called from '%s' in file %s near line %d, column %d",
+                                        nm.c_str (), file.c_str (), l, c);
+                          else
+                            pr_where_1 ("error: called from '%d' in file %s near line %d",
+                                        nm.c_str (), file.c_str (), l);
                         }
                     }
                 }
             }
-          else
-            error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
         }
+      else
+        error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
     }
   return retval;
 }
@@ -998,31 +970,28 @@ maybe_extract_message_id (const std::string& caller,
     {
       std::string arg1 = args(0).string_value ();
 
-      if (! error_state)
+      // For compatibility with Matlab, an identifier must contain
+      // ':', but not at the beginning or the end, and it must not
+      // contain '%' (even if it is not a valid conversion
+      // operator) or whitespace.
+
+      if (arg1.find_first_of ("% \f\n\r\t\v") == std::string::npos
+          && arg1.find (':') != std::string::npos
+          && arg1[0] != ':'
+          && arg1[arg1.length ()-1] != ':')
         {
-          // For compatibility with Matlab, an identifier must contain
-          // ':', but not at the beginning or the end, and it must not
-          // contain '%' (even if it is not a valid conversion
-          // operator) or whitespace.
-
-          if (arg1.find_first_of ("% \f\n\r\t\v") == std::string::npos
-              && arg1.find (':') != std::string::npos
-              && arg1[0] != ':'
-              && arg1[arg1.length ()-1] != ':')
+          if (nargin > 1)
             {
-              if (nargin > 1)
-                {
-                  id = arg1;
+              id = arg1;
 
-                  nargs.resize (nargin-1);
+              nargs.resize (nargin-1);
 
-                  for (int i = 1; i < nargin; i++)
-                    nargs(i-1) = args(i);
-                }
-              else
-                nargs(0) = "call to " + caller
-                           + " with message identifier requires message";
+              for (int i = 1; i < nargin; i++)
+                nargs(i-1) = args(i);
             }
+          else
+            nargs(0) = "call to " + caller
+              + " with message identifier requires message";
         }
     }
 
@@ -1167,12 +1136,7 @@ disable escape sequence expansion use a second backslash before the sequence\n\
           //        handle_message, error_with_id, etc.
         }
       else
-        {
-          have_fmt = maybe_extract_message_id ("error", args, nargs, id);
-
-          if (error_state)
-            return retval;
-        }
+        have_fmt = maybe_extract_message_id ("error", args, nargs, id);
 
       handle_message (error_with_id, id.c_str (), "unspecified error",
                       nargs, have_fmt);
@@ -1195,6 +1159,8 @@ warning_query (const std::string& id_arg)
   Cell state = warning_options.contents ("state");
 
   octave_idx_type nel = ident.numel ();
+
+  assert (nel != 0);
 
   bool found = false;
 
@@ -1223,13 +1189,14 @@ warning_query (const std::string& id_arg)
         }
     }
 
-  if (found)
-    {
-      retval.assign ("identifier", id);
-      retval.assign ("state", val);
-    }
-  else
-    error ("warning: unable to find default warning state!");
+  // The warning state "all" is always supposed to remain in the list,
+  // so we should always find a state, either explicitly or by using the
+  // state for "all".
+
+  assert (found);
+
+  retval.assign ("identifier", id);
+  retval.assign ("state", val);
 
   return retval;
 }
@@ -1814,11 +1781,6 @@ fields are set to their default values.\n\
   octave_value retval;
   int nargin = args.length ();
 
-  unwind_protect frame;
-
-  frame.protect_var (error_state);
-  error_state = 0;
-
   if (nargin < 2)
     {
       octave_scalar_map err;
@@ -1853,47 +1815,47 @@ fields are set to their default values.\n\
               int new_error_line = -1;
               int new_error_column = -1;
 
-              if (! error_state && new_err.contains ("message"))
+              if (new_err.contains ("message"))
                 {
                   const std::string tmp =
                     new_err.getfield ("message").string_value ();
                   new_error_message = tmp;
                 }
 
-              if (! error_state && new_err.contains ("identifier"))
+              if (new_err.contains ("identifier"))
                 {
                   const std::string tmp =
                     new_err.getfield ("identifier").string_value ();
                   new_error_id = tmp;
                 }
 
-              if (! error_state && new_err.contains ("stack"))
+              if (new_err.contains ("stack"))
                 {
                   new_err_stack =
                     new_err.getfield ("stack").scalar_map_value ();
 
-                  if (! error_state && new_err_stack.contains ("file"))
+                  if (new_err_stack.contains ("file"))
                     {
                       const std::string tmp =
                         new_err_stack.getfield ("file").string_value ();
                       new_error_file = tmp;
                     }
 
-                  if (! error_state && new_err_stack.contains ("name"))
+                  if (new_err_stack.contains ("name"))
                     {
                       const std::string tmp =
                         new_err_stack.getfield ("name").string_value ();
                       new_error_name = tmp;
                     }
 
-                  if (! error_state && new_err_stack.contains ("line"))
+                  if (new_err_stack.contains ("line"))
                     {
                       const int tmp =
                         new_err_stack.getfield ("line").nint_value ();
                       new_error_line = tmp;
                     }
 
-                  if (! error_state && new_err_stack.contains ("column"))
+                  if (new_err_stack.contains ("column"))
                     {
                       const int tmp =
                         new_err_stack.getfield ("column").nint_value ();
@@ -1901,35 +1863,31 @@ fields are set to their default values.\n\
                     }
                 }
 
-              if (! error_state)
+              Vlast_error_message = new_error_message;
+              Vlast_error_id = new_error_id;
+
+              if (new_err.contains ("stack"))
                 {
-                  Vlast_error_message = new_error_message;
-                  Vlast_error_id = new_error_id;
+                  new_err_stack.setfield ("file", new_error_file);
+                  new_err_stack.setfield ("name", new_error_name);
+                  new_err_stack.setfield ("line", new_error_line);
+                  new_err_stack.setfield ("column", new_error_column);
+                  Vlast_error_stack = new_err_stack;
+                }
+              else
+                {
+                  // No stack field.  Fill it in with backtrace info.
+                  octave_idx_type curr_frame = -1;
 
-                  if (new_err.contains ("stack"))
-                    {
-                      new_err_stack.setfield ("file", new_error_file);
-                      new_err_stack.setfield ("name", new_error_name);
-                      new_err_stack.setfield ("line", new_error_line);
-                      new_err_stack.setfield ("column", new_error_column);
-                      Vlast_error_stack = new_err_stack;
-                    }
-                  else
-                    {
-                      // No stack field.  Fill it in with backtrace info.
-                      octave_idx_type curr_frame = -1;
-
-                      Vlast_error_stack
-                        = octave_call_stack::backtrace (0, curr_frame);
-                    }
+                  Vlast_error_stack
+                    = octave_call_stack::backtrace (0, curr_frame);
                 }
             }
           else
             error ("lasterror: argument must be a structure or a string");
         }
 
-      if (! error_state)
-        retval = err;
+      retval = err;
     }
   else
     print_usage ();
@@ -1955,36 +1913,26 @@ With two arguments, also set the last message identifier.\n\
 {
   octave_value_list retval;
 
-  unwind_protect frame;
-
-  frame.protect_var (error_state);
-  error_state = 0;
-
   int argc = args.length () + 1;
 
   if (argc < 4)
     {
       string_vector argv = args.make_argv ("lasterr");
 
-      if (! error_state)
+      std::string prev_error_id = Vlast_error_id;
+      std::string prev_error_message = Vlast_error_message;
+
+      if (argc > 2)
+        Vlast_error_id = argv(2);
+
+      if (argc > 1)
+        Vlast_error_message = argv(1);
+
+      if (argc == 1 || nargout > 0)
         {
-          std::string prev_error_id = Vlast_error_id;
-          std::string prev_error_message = Vlast_error_message;
-
-          if (argc > 2)
-            Vlast_error_id = argv(2);
-
-          if (argc > 1)
-            Vlast_error_message = argv(1);
-
-          if (argc == 1 || nargout > 0)
-            {
-              retval(1) = prev_error_id;
-              retval(0) = prev_error_message;
-            }
+          retval(1) = prev_error_id;
+          retval(0) = prev_error_message;
         }
-      else
-        error ("lasterr: all arguments must be strings");
     }
   else
     print_usage ();
@@ -2016,26 +1964,20 @@ With two arguments, also set the last message identifier.\n\
     {
       string_vector argv = args.make_argv ("lastwarn");
 
-      if (! error_state)
+      std::string prev_warning_id = Vlast_warning_id;
+      std::string prev_warning_message = Vlast_warning_message;
+
+      if (argc > 2)
+        Vlast_warning_id = argv(2);
+
+      if (argc > 1)
+        Vlast_warning_message = argv(1);
+
+      if (argc == 1 || nargout > 0)
         {
-          std::string prev_warning_id = Vlast_warning_id;
-          std::string prev_warning_message = Vlast_warning_message;
-
-          if (argc > 2)
-            Vlast_warning_id = argv(2);
-
-          if (argc > 1)
-            Vlast_warning_message = argv(1);
-
-          if (argc == 1 || nargout > 0)
-            {
-              warning_state = 0;
-              retval(1) = prev_warning_id;
-              retval(0) = prev_warning_message;
-            }
+          retval(1) = prev_warning_id;
+          retval(0) = prev_warning_message;
         }
-      else
-        error ("lastwarn: all arguments must be strings");
     }
   else
     print_usage ();
@@ -2164,7 +2106,6 @@ last_warning_id (void)
 void
 interpreter_try (unwind_protect& frame)
 {
-  frame.protect_var (error_state);
   frame.protect_var (buffer_error_messages);
   frame.protect_var (Vdebug_on_error);
   frame.protect_var (Vdebug_on_warning);

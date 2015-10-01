@@ -205,15 +205,6 @@ gripe_logical_conversion (void)
 }
 
 void
-gripe_library_execution_error (void)
-{
-  octave_exception_state = octave_no_exception;
-
-  if (! error_state)
-    error ("caught execution error in library function");
-}
-
-void
 gripe_invalid_inquiry_subscript (void)
 {
   error ("invalid dimension inquiry of a non-existent value");

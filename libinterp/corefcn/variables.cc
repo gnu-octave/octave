@@ -268,7 +268,6 @@ generate_struct_completions (const std::string& text,
           unwind_protect frame;
 
           frame.protect_var (error_state);
-          frame.protect_var (warning_state);
 
           frame.protect_var (discard_error_messages);
           frame.protect_var (discard_warning_messages);
@@ -377,9 +376,14 @@ safe_symbol_lookup (const std::string& symbol_name)
   unwind_protect frame;
   interpreter_try (frame);
 
-  retval = symbol_table::find (symbol_name);
-
-  error_state = 0;
+  try
+    {
+      retval = symbol_table::find (symbol_name);
+    }
+  catch (const octave_execution_exception&)
+    {
+      // Ignore errors.
+    }
 
   return retval;
 }

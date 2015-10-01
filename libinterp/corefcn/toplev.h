@@ -517,12 +517,9 @@ private:
  \
           F ARGS; \
         } \
-      OCTAVE_IGNORE_EXCEPTION (octave_interrupt_exception) \
-      OCTAVE_IGNORE_EXCEPTION (octave_execution_exception) \
-      OCTAVE_IGNORE_EXCEPTION (std::bad_alloc) \
- \
-      if (error_state) \
-        error_state = 0; \
+      OCTAVE_IGNORE_EXCEPTION (const octave_interrupt_exception&) \
+      OCTAVE_IGNORE_EXCEPTION (const octave_execution_exception&) \
+      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&) \
     } \
   while (0)
 

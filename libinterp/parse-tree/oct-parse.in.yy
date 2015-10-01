@@ -2247,7 +2247,6 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
   unwind_protect frame;
 
   frame.protect_var (error_state);
-  frame.protect_var (warning_state);
 
   frame.protect_var (discard_error_messages);
   frame.protect_var (discard_warning_messages);
@@ -2268,7 +2267,7 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
             {
               octave_value tmp = e->rvalue1 ();
 
-              if (! (error_state || warning_state))
+              if (! error_state)
                 {
                   tree_constant *tc_retval
                     = new tree_constant (tmp, base->line (), base->column ());
@@ -3800,7 +3799,6 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
   unwind_protect frame;
 
   frame.protect_var (error_state);
-  frame.protect_var (warning_state);
 
   frame.protect_var (discard_error_messages);
   frame.protect_var (discard_warning_messages);
@@ -3812,7 +3810,7 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
     {
       octave_value tmp = array_list->rvalue1 ();
 
-      if (! (error_state || warning_state))
+      if (! error_state)
         {
           tree_constant *tc_retval
             = new tree_constant (tmp, array_list->line (),
@@ -4999,13 +4997,21 @@ the security considerations that the evaluation of arbitrary code does.\n\
 
       int parse_status = 0;
 
-      octave_value_list tmp = eval_string (args(0), nargout > 0,
-                                           parse_status, nargout);
+      bool execution_error = false;
 
-      if (nargin > 1 && (parse_status != 0 || error_state))
+      octave_value_list tmp;
+
+      try
         {
-          error_state = 0;
+          tmp = eval_string (args(0), nargout > 0, parse_status, nargout);
+        }
+      catch (const octave_execution_exception&)
+        {
+          execution_error = true;
+        }
 
+      if (nargin > 1 && (parse_status != 0 || execution_error))
+        {
           // Set up for letting the user print any messages from
           // errors that occurred in the first part of this eval().
 
@@ -5016,8 +5022,16 @@ the security considerations that the evaluation of arbitrary code does.\n\
           if (nargout > 0)
             retval = tmp;
         }
-      else if (nargout > 0)
-        retval = tmp;
+      else
+        {
+          if (nargout > 0)
+            retval = tmp;
+
+          // FIXME: we should really be rethrowing whatever exception occurred,
+          // not just throwing an execution exception.
+          if (execution_error)
+            octave_throw_execution_exception ();
+        }
     }
   else
     print_usage ();
@@ -5156,16 +5170,22 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 
               int parse_status = 0;
 
-              octave_value_list tmp = eval_string (args(1), nargout > 0,
-                                                   parse_status, nargout);
+              bool execution_error = false;
 
-              if (nargout > 0)
-                retval = tmp;
+              octave_value_list tmp;
 
-              if (nargin > 2 && (parse_status != 0 || error_state))
+              try
                 {
-                  error_state = 0;
+                  tmp = eval_string (args(1), nargout > 0,
+                                     parse_status, nargout);
+                }
+              catch (const octave_execution_exception&)
+                {
+                  execution_error = true;
+                }
 
+              if (nargin > 2 && (parse_status != 0 || execution_error))
+                {
                   // Set up for letting the user print any messages from
                   // errors that occurred in the first part of this eval().
 
@@ -5175,6 +5195,17 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
                                      parse_status, nargout);
 
                   retval = (nargout > 0) ? tmp : octave_value_list ();
+                }
+              else
+                {
+                  if (nargout > 0)
+                    retval = tmp;
+
+                  // FIXME: we should really be rethrowing whatever
+                  // exception occurred, not just throwing an
+                  // execution exception.
+                  if (execution_error)
+                    octave_throw_execution_exception ();
                 }
             }
         }

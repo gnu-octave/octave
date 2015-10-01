@@ -215,41 +215,20 @@ octave_jit_cast_any_complex (Complex c)
 extern "C" void
 octave_jit_gripe_nan_to_logical_conversion (void)
 {
-  try
-    {
-      gripe_nan_to_logical_conversion ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  gripe_nan_to_logical_conversion ();
 }
 
 extern "C" void
 octave_jit_ginvalid_index (void)
 {
-  try
-    {
-      gripe_invalid_index ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  gripe_invalid_index ();
 }
 
 extern "C" void
 octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
                          octave_idx_type ext)
 {
-  try
-    {
-      gripe_index_out_of_range (nd, dim, iext, ext);
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  gripe_index_out_of_range (nd, dim, iext, ext);
 }
 
 extern "C" jit_matrix
@@ -281,19 +260,12 @@ octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
                          octave_idx_type idx_count)
 {
   // FIXME: Replace this with a more optimal version
-  try
-    {
-      Array<idx_vector> idx;
-      make_indices (indicies, idx_count, idx);
+  Array<idx_vector> idx;
+  make_indices (indicies, idx_count, idx);
 
-      Array<double> ret = mat->array->index (idx);
-      return ret.xelem (0);
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-      return 0;
-    }
+  Array<double> ret = mat->array->index (idx);
+
+  return ret.xelem (0);
 }
 
 extern "C" jit_matrix
@@ -302,20 +274,14 @@ octave_jit_paren_scalar_subsasgn (jit_matrix *mat, double *indices,
 {
   // FIXME: Replace this with a more optimal version
   jit_matrix ret;
-  try
-    {
-      Array<idx_vector> idx;
-      make_indices (indices, idx_count, idx);
 
-      Matrix temp (1, 1);
-      temp.xelem(0) = value;
-      mat->array->assign (idx, temp);
-      ret.update (mat->array);
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  Array<idx_vector> idx;
+  make_indices (indices, idx_count, idx);
+
+  Matrix temp (1, 1);
+  temp.xelem(0) = value;
+  mat->array->assign (idx, temp);
+  ret.update (mat->array);
 
   return ret;
 }

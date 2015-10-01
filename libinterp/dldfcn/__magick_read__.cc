@@ -691,7 +691,6 @@ read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
-      error_state = 1;
     }
 }
 
@@ -1382,7 +1381,6 @@ write_file (const std::string& filename,
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
-      error_state = 1;
     }
 }
 

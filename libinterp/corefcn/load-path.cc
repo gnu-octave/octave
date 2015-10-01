@@ -91,12 +91,10 @@ load_path::dir_info::update (void)
                   initialize ();
                 }
             }
-          catch (octave_execution_exception)
+          catch (const octave_execution_exception&)
             {
               // Skip updating if we don't know where we are, but
               // don't treat it as an error.
-
-              error_state = 0;
             }
         }
       else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
@@ -159,7 +157,7 @@ load_path::dir_info::initialize (void)
 
           abs_dir_cache[abs_name] = *this;
         }
-      catch (octave_execution_exception)
+      catch (const octave_execution_exception&)
         {
           // Skip updating if we don't know where we are.
         }

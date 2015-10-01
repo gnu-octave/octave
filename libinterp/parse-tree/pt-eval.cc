@@ -59,6 +59,8 @@ bool tree_evaluator::debug_mode = false;
 
 bool tree_evaluator::quiet_breakpoint_flag = false;
 
+bool tree_evaluator::unwind_protect_exception = false;
+
 tree_evaluator::stmt_list_type tree_evaluator::statement_context
   = tree_evaluator::other;
 
@@ -751,11 +753,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               //                result_values(0) = tmp_result;
             }
         }
-      catch (octave_execution_exception)
-        {
-          gripe_library_execution_error ();
-        }
-      catch (std::bad_alloc)
+      catch (const std::bad_alloc&)
         {
           // FIXME: We want to use error_with_id here so that we set
           // the error state, give users control over this error
@@ -902,15 +900,22 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
   tree_statement_list *try_code = cmd.body ();
 
+  bool execution_error = false;
+  
   if (try_code)
     {
-      try_code->accept (*this);
+      try
+        {
+          try_code->accept (*this);
+        }
+      catch (const octave_execution_exception&)
+        {
+          execution_error = true;
+        }
     }
 
-  if (error_state)
+  if (execution_error)
     {
-      error_state = 0;
-
       if (catch_code)
         {
           // Set up for letting the user print any messages from errors that
@@ -923,21 +928,15 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
           if (expr_id)
             {
-
-              octave_scalar_map err;
-
               ult = expr_id->lvalue ();
 
-              if (error_state)
-                return;
+              octave_scalar_map err;
 
               err.assign ("message", last_error_message ());
               err.assign ("identifier", last_error_id ());
               err.assign ("stack", last_error_stack ());
 
-              if (! error_state)
-                ult.assign (octave_value::op_asn_eq, err);
-
+              ult.assign (octave_value::op_asn_eq, err);
             }
 
           if (catch_code)
@@ -953,14 +952,6 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
 
   frame.protect_var (octave_interrupt_state);
   octave_interrupt_state = 0;
-
-  // We want to run the cleanup code without error_state being set,
-  // but we need to restore its value, so that any errors encountered
-  // in the first part of the unwind_protect are not completely
-  // ignored.
-
-  frame.protect_var (error_state);
-  error_state = 0;
 
   // We want to preserve the last location info for possible
   // backtracking.
@@ -980,8 +971,17 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   frame.protect_var (tree_break_command::breaking);
   tree_break_command::breaking = 0;
 
-  if (list)
-    list->accept (*this);
+  bool execution_error_in_cleanup = false;
+
+  try
+    {
+      if (list)
+        list->accept (*this);
+    }
+  catch (const octave_execution_exception&)
+    {
+      execution_error_in_cleanup = true;
+    }
 
   // The unwind_protects are popped off the stack in the reverse of
   // the order they are pushed on.
@@ -1011,24 +1011,30 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   // whatever they were when the cleanup block was entered.
 
   if (tree_break_command::breaking || tree_return_command::returning)
-    {
-      frame.discard (2);
-    }
+    frame.discard (2);
   else
-    {
-      frame.run (2);
-    }
+    frame.run (2);
 
-  // We don't want to ignore errors that occur in the cleanup code, so
-  // if an error is encountered there, leave error_state alone.
-  // Otherwise, set it back to what it was before.
+  // We don't want to ignore errors that occur in the cleanup code,
+  // so if an error is encountered there, rethrow the exception.
+  // Otherwise, rethrow any exception that might have occurred in the
+  // unwind_protect block.
 
-  if (error_state)
+  if (execution_error_in_cleanup)
     frame.discard (2);
   else
     frame.run (2);
 
   frame.run ();
+
+  // FIXME: we should really be rethrowing whatever exception occurred,
+  // not just throwing an execution exception.
+  if (unwind_protect_exception || execution_error_in_cleanup)
+    {
+      unwind_protect_exception = false;
+
+      octave_throw_execution_exception ();
+    }
 }
 
 void
@@ -1040,15 +1046,20 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 
   if (unwind_protect_code)
     {
+      unwind_protect_exception = false;
+
       try
         {
           unwind_protect_code->accept (*this);
         }
-      catch (...)
+      catch (const octave_execution_exception&)
         {
+          unwind_protect_exception = true;
+
           // Run the cleanup code on exceptions, so that it is run even in case
           // of interrupt or out-of-memory.
           do_unwind_protect_cleanup_code (cleanup_code);
+
           // FIXME: should error_state be checked here?
           // We want to rethrow the exception, even if error_state is set, so
           // that interrupts continue.

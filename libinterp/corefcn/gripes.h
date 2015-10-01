@@ -114,9 +114,6 @@ extern OCTINTERP_API void
 gripe_logical_conversion (void);
 
 extern OCTINTERP_API void
-gripe_library_execution_error (void);
-
-extern OCTINTERP_API void
 gripe_invalid_inquiry_subscript (void);
 
 extern OCTINTERP_API void

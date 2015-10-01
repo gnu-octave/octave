@@ -166,31 +166,29 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
   m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
 
-  //qDebug () << "Figure::Figure:" << m_innerRect;
   win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
-  //qDebug () << "Figure::Figure(adjusted)" << m_innerRect.adjusted (0, -offset, 0, 0);
-  win->setWindowTitle (Utils::fromStdString (fp.get_title ()));
 
-  int eventMask = 0;
-  if (! fp.get_keypressfcn ().is_empty ())
-    eventMask |= Canvas::KeyPress;
-  if (! fp.get_keyreleasefcn ().is_empty ())
-    eventMask |= Canvas::KeyRelease;
-  m_container->canvas (m_handle)->setEventMask (eventMask);
+  // When this constructor gets called all properties are already 
+  // set, even non default. We force "update" here to get things right.
 
-  if (! fp.get_windowbuttonmotionfcn ().is_empty ())
-    {
-      m_container->setMouseTracking (true);
-      m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
-    }
+  // Figure title
+  update (figure::properties::ID_NUMBERTITLE);
+
+  // Decide what keyboard events we listen to
+  m_container->canvas (m_handle)->setEventMask (0);
+  update (figure::properties::ID_KEYPRESSFCN);
+  update (figure::properties::ID_KEYRELEASEFCN);
+
+  // Decide if the "currentpoint" is updated on mouse movements and
+  // if the windowbuttonmotionfcn is executed  
+  update (figure::properties::ID_WINDOWBUTTONMOTIONFCN);
+
+  // Visibility
+  update (figure::properties::ID_VISIBLE);
+  
 
   connect (this, SIGNAL (asyncUpdate (void)),
            this, SLOT (updateContainer (void)));
-
-  if (fp.is_visible ())
-    QTimer::singleShot (0, win, SLOT (show ()));
-  else
-    win->hide ();
 
   win->addReceiver (this);
   m_container->addReceiver (this);

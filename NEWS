@@ -1,6 +1,12 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
+ ** The default colormap is now set to 'viridis' which is also
+    the default colormap in matplotlib. This new colormap fixes
+    some of the main issues with the old default colormap 'jet'
+    such as its bad 'luminance profile' and is also more similar
+    to Matlab's new default colormap 'parula'.
+
  ** Octal ('\NNN') and hex ('\xNN') escape sequences in single quoted
     strings are now interpreted by the function do_string_escapes().
     The *printf family of functions now supports octal and hex escape

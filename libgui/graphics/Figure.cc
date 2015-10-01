@@ -129,14 +129,14 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
 {
   m_container = new Container (win);
   win->setCentralWidget (m_container);
-  
+
   figure::properties& fp = properties<figure> ();
 
   // Enable mouse tracking
   m_container->setMouseTracking (true);
   foreach (QWidget* w, m_container->findChildren<QWidget*> ())
     { w->setMouseTracking (true); }
-  
+
   // Status bar
   m_statusBar = win->statusBar ();
   int boffset = 0;
@@ -151,7 +151,7 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
     {
       toffset += m_figureToolBar->sizeHint ().height ();
       boffset += m_statusBar->sizeHint ().height ();
-    } 
+    }
   else
     {
       m_figureToolBar->hide ();
@@ -437,7 +437,7 @@ Figure::update (int pId)
 
           if (! m_menuBar->isHidden ())
             toffset += m_menuBar->sizeHint ().height () + 1;
-          
+
           if (! m_statusBar->isHidden ())
             boffset += m_statusBar->sizeHint ().height () + 1;
 

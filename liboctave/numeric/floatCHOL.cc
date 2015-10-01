@@ -136,13 +136,13 @@ FloatCHOL::init (const FloatMatrix& a, bool upper, bool calc_cond)
     {
       F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),
                                  n, h, n, info
-                                 F77_CHAR_ARG_LEN (1)));   
+                                 F77_CHAR_ARG_LEN (1)));
     }
   else
     {
       F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
                                  n, h, n, info
-                                 F77_CHAR_ARG_LEN (1)));   
+                                 F77_CHAR_ARG_LEN (1)));
     }
 
   xrcond = 0.0;
@@ -161,13 +161,13 @@ FloatCHOL::init (const FloatMatrix& a, bool upper, bool calc_cond)
         {
           F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
                                      n, anorm, xrcond, pz, piz, spocon_info
-                                     F77_CHAR_ARG_LEN (1)));       
+                                     F77_CHAR_ARG_LEN (1)));
         }
       else
         {
           F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("L", 1), n, h,
                                      n, anorm, xrcond, pz, piz, spocon_info
-                                     F77_CHAR_ARG_LEN (1)));       
+                                     F77_CHAR_ARG_LEN (1)));
         }
 
 
@@ -218,7 +218,7 @@ chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
                 {
                   for (octave_idx_type j = 0; j < r_nc; j++)
                     for (octave_idx_type i = j+1; i < r_nr; i++)
-                      tmp.xelem (i, j) = tmp.xelem (j, i); 
+                      tmp.xelem (i, j) = tmp.xelem (j, i);
                 }
               else
                 {

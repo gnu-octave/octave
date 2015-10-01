@@ -1872,7 +1872,7 @@ functions are ignored in the lookup.\n\
                 eval_string (nm, true, parse_status);
 
               if (parse_status == 0)
-                retval = anon_fcn_handle; 
+                retval = anon_fcn_handle;
             }
           else
             retval = make_fcn_handle (nm, nargin != 2);

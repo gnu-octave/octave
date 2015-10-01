@@ -54,7 +54,7 @@ Range::matrix_value (void) const
   if (rng_numel > 0 && cache.numel () == 0)
     {
       cache.resize (1, rng_numel);
-      
+
       // The first element must always be *exactly* the base.
       // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
       cache(0) = rng_base;

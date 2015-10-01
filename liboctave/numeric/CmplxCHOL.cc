@@ -120,7 +120,7 @@ ComplexCHOL::init (const ComplexMatrix& a, bool upper, bool calc_cond)
         {
           for (octave_idx_type i = 0; i < j; i++)
             chol_mat.xelem (i, j) = 0.0;
-       	  for (octave_idx_type i = j; i < n; i++)
+          for (octave_idx_type i = j; i < n; i++)
             chol_mat.xelem (i, j) = a (i, j);
         }
     }

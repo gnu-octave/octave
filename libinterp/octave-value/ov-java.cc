@@ -1847,12 +1847,12 @@ octave_java::print_raw (std::ostream& os, bool) const
 }
 
 // FIXME: Need routines to actually save/load java objects through Serialize.
-//        See bug #42112. 
+//        See bug #42112.
 
 bool
 octave_java::save_ascii (std::ostream& /* os */)
 {
-  warning ("save: unable to save java objects, skipping"); 
+  warning ("save: unable to save java objects, skipping");
 
   return true;
 }
@@ -1867,7 +1867,7 @@ octave_java::load_ascii (std::istream& /* is */)
 bool
 octave_java::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
 {
-  warning ("save: unable to save java objects, skipping"); 
+  warning ("save: unable to save java objects, skipping");
 
   return true;
 }

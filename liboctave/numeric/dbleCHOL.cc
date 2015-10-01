@@ -120,7 +120,7 @@ CHOL::init (const Matrix& a, bool upper, bool calc_cond)
         {
           for (octave_idx_type i = 0; i < j; i++)
             chol_mat.xelem (i, j) = 0.0;
-       	  for (octave_idx_type i = j; i < n; i++)
+          for (octave_idx_type i = j; i < n; i++)
             chol_mat.xelem (i, j) = a (i, j);
         }
     }
@@ -161,14 +161,13 @@ CHOL::init (const Matrix& a, bool upper, bool calc_cond)
           F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
                                      n, anorm, xrcond, pz, piz, dpocon_info
                                      F77_CHAR_ARG_LEN (1)));
-	}
+        }
       else
         {
           F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("L", 1), n, h,
                                      n, anorm, xrcond, pz, piz, dpocon_info
                                      F77_CHAR_ARG_LEN (1)));
-	}
-      
+        }
 
       if (dpocon_info != 0)
         info = -1;

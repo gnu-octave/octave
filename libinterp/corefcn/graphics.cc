@@ -2289,7 +2289,7 @@ graphics_object::set (const octave_map& m)
   for (octave_idx_type p = 0; p < m.nfields (); p++)
     {
       // FIXME: Would it be better to extract all the keys at once rather than
-      //        repeatedly call keys() inside a for loop? 
+      //        repeatedly call keys() inside a for loop?
       caseless_str pname = m.keys ()[p];
 
       octave_value val = octave_value (m.contents (pname).elem (m.numel () - 1));
@@ -3091,7 +3091,7 @@ void
 base_properties::mark_modified (void)
 {
   // Mark existing object as modified
-  __modified__ = "on";  
+  __modified__ = "on";
   // Attempt to mark parent object as modified if it exists
   graphics_object parent_go = gh_manager::get_object (get_parent ());
   if (parent_go)

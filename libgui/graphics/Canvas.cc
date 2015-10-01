@@ -268,7 +268,6 @@ Canvas::canvasToggleGrid (const graphics_handle& handle)
           ap.set_zgrid (state);
 
           redraw (true);
-            
         }
     }
 }
@@ -371,8 +370,8 @@ zoom_mode (const graphics_object figObj)
   return zm.contents ("Motion").string_value ();
 }
 
-void 
-Canvas::select_object (graphics_object obj, QMouseEvent* event, 
+void
+Canvas::select_object (graphics_object obj, QMouseEvent* event,
                        graphics_object &currentObj, graphics_object &axesObj,
                        bool axes_only)
 {
@@ -407,21 +406,20 @@ Canvas::select_object (graphics_object obj, QMouseEvent* event,
       for (QList<graphics_object>::ConstIterator it = axesList.begin ();
            it != axesList.end (); ++it)
         {
-          const axes::properties& ap = 
+          const axes::properties& ap =
             dynamic_cast<const axes::properties&> ((*it).get_properties ());
 
           ColumnVector p0 = ap.pixel2coord (pt.x (), pt.y ());
           Matrix xlim = ap.get_xlim ().matrix_value ();
           Matrix ylim = ap.get_ylim ().matrix_value ();
 
-          if (xlim(0) < p0(0) && xlim(1) > p0(0) 
+          if (xlim(0) < p0(0) && xlim(1) > p0(0)
               && ylim(0) < p0(1) && ylim(1) > p0(1))
             {
               axesObj = *it;
               return;
             }
         }
-      
     }
   else if (! currentObj)
     {
@@ -523,8 +521,8 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
         }
     }
 
-  // Update mouse coordinates in the figure window status bar 
-  graphics_object figObj = 
+  // Update mouse coordinates in the figure window status bar
+  graphics_object figObj =
     gh_manager::get_object (m_handle).get_ancestor ("figure");
 
   if (figObj.valid_object ())
@@ -534,16 +532,16 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 
       if (axesObj.valid_object ())
         {
-          // FIXME: should we use signal/slot mechanism instead of 
+          // FIXME: should we use signal/slot mechanism instead of
           //        directly calling parent fig methods
-          Figure* fig = 
+          Figure* fig =
             dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
           axes::properties& ap = Utils::properties<axes> (axesObj);
 
           if (fig)
             fig->updateStatusBar (ap.pixel2coord (event->x (), event->y ()));
         }
-    }    
+    }
 }
 
 void
@@ -591,7 +589,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
     {
       graphics_object figObj (obj.get_ancestor ("figure"));
       graphics_object currentObj, axesObj;
-      
+
       select_object (obj, event, currentObj, axesObj);
 
       if (axesObj)
@@ -633,7 +631,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
 
           if (currentObj.get ("buttondownfcn").is_empty ())
             {
-              graphics_object parentObj = 
+              graphics_object parentObj =
                 gh_manager::get_object (currentObj.get_parent ());
 
               if (parentObj.valid_object () && parentObj.isa ("hggroup"))

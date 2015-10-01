@@ -202,11 +202,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       if (args{headerlines + 1} > 0)
         ## Beware of zero valued headerline, fskipl would skip to EOF
         fskipl (fid, args{headerlines + 1});
-        args(headerlines:headerlines+1) = [];
         st_pos = ftell (fid);
       elseif (args{headerlines + 1} < 0)
         warning ("textscan.m: negative headerline value ignored");
       endif
+      args(headerlines:headerlines+1) = [];
     endif
     ## Read a first file chunk. Rest follows after endofline processing
     [str, count] = fscanf (fid, "%c", BUFLENGTH);

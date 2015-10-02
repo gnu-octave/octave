@@ -1298,10 +1298,18 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
             retval *= idxi.numel ();
           else
             {
-              idx_vector jdx = idxi.index_vector ();
-              if (error_state)
-                break;
-              retval *= jdx.length (dv(i));
+              try
+                {
+                  idx_vector jdx = idxi.index_vector ();
+                  if (error_state)
+                    break;
+                  retval *= jdx.length (dv(i));
+                }
+              catch (index_exception& e)
+                {
+                  error ("dims_to_numel: Invalid IDX %s. %s",
+                                                        e.idx (), e.explain ());
+                }
             }
         }
     }

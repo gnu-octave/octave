@@ -7244,44 +7244,51 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
       if (dim < 0)
         dim = argx.dims ().first_non_singleton ();
 
-      idx_vector n = args(1).index_vector ();
-
-      if (error_state)
-        return retval;
-
-      switch (argx.builtin_type ())
+      try
         {
-        case btyp_double:
-          retval = argx.array_value ().nth_element (n, dim);
-          break;
-        case btyp_float:
-          retval = argx.float_array_value ().nth_element (n, dim);
-          break;
-        case btyp_complex:
-          retval = argx.complex_array_value ().nth_element (n, dim);
-          break;
-        case btyp_float_complex:
-          retval = argx.float_complex_array_value ().nth_element (n, dim);
-          break;
-#define MAKE_INT_BRANCH(X) \
-        case btyp_ ## X: \
-          retval = argx.X ## _array_value ().nth_element (n, dim); \
-          break;
+          idx_vector n = args(1).index_vector ();
 
-        MAKE_INT_BRANCH (int8);
-        MAKE_INT_BRANCH (int16);
-        MAKE_INT_BRANCH (int32);
-        MAKE_INT_BRANCH (int64);
-        MAKE_INT_BRANCH (uint8);
-        MAKE_INT_BRANCH (uint16);
-        MAKE_INT_BRANCH (uint32);
-        MAKE_INT_BRANCH (uint64);
+          if (error_state)
+            return retval;
+
+          switch (argx.builtin_type ())
+            {
+            case btyp_double:
+              retval = argx.array_value ().nth_element (n, dim);
+              break;
+            case btyp_float:
+              retval = argx.float_array_value ().nth_element (n, dim);
+              break;
+            case btyp_complex:
+              retval = argx.complex_array_value ().nth_element (n, dim);
+              break;
+            case btyp_float_complex:
+              retval = argx.float_complex_array_value ().nth_element (n, dim);
+              break;
+#define MAKE_INT_BRANCH(X) \
+            case btyp_ ## X: \
+              retval = argx.X ## _array_value ().nth_element (n, dim); \
+              break;
+
+            MAKE_INT_BRANCH (int8);
+            MAKE_INT_BRANCH (int16);
+            MAKE_INT_BRANCH (int32);
+            MAKE_INT_BRANCH (int64);
+            MAKE_INT_BRANCH (uint8);
+            MAKE_INT_BRANCH (uint16);
+            MAKE_INT_BRANCH (uint32);
+            MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-        default:
-          if (argx.is_cellstr ())
-            retval = argx.cellstr_value ().nth_element (n, dim);
-          else
-            gripe_wrong_type_arg ("nth_element", argx);
+            default:
+              if (argx.is_cellstr ())
+                retval = argx.cellstr_value ().nth_element (n, dim);
+              else
+                gripe_wrong_type_arg ("nth_element", argx);
+            }
+        }
+      catch (index_exception& e)
+        {
+          error ("nth_element: invalid N value %s. %s", e.idx (), e.explain ());
         }
     }
   else
@@ -7323,42 +7330,50 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin >= 2 && nargin <= 3 && args(0).is_numeric_type ())
     {
-      idx_vector idx = args(0).index_vector ();
-      octave_idx_type n = -1;
-      if (nargin == 3)
-        n = args(2).idx_type_value (true);
-
-      if (! error_state)
+      try
         {
-          octave_value vals = args(1);
-          if (vals.is_range ())
-            {
-              Range r = vals.range_value ();
-              if (r.inc () == 0)
-                vals = r.base ();
-            }
+          idx_vector idx = args(0).index_vector ();
+          octave_idx_type n = -1;
+          if (nargin == 3)
+            n = args(2).idx_type_value (true);
 
-          if (vals.is_single_type ())
+          if (! error_state)
             {
-              if (vals.is_complex_type ())
-                retval = do_accumarray_sum (idx,
-                                            vals.float_complex_array_value (),
-                                            n);
+              octave_value vals = args(1);
+              if (vals.is_range ())
+                {
+                  Range r = vals.range_value ();
+                  if (r.inc () == 0)
+                    vals = r.base ();
+                }
+
+              if (vals.is_single_type ())
+                {
+                  if (vals.is_complex_type ())
+                    retval = do_accumarray_sum (idx,
+                                                vals.float_complex_array_value (),
+                                                n);
+                  else
+                    retval = do_accumarray_sum (idx, vals.float_array_value (), n);
+                }
+              else if (vals.is_numeric_type () || vals.is_bool_type ())
+                {
+                  if (vals.is_complex_type ())
+                    retval = do_accumarray_sum (idx,
+                                                vals.complex_array_value (),
+                                                n);
+                  else
+                    retval = do_accumarray_sum (idx, vals.array_value (), n);
+                }
               else
-                retval = do_accumarray_sum (idx, vals.float_array_value (), n);
+                gripe_wrong_type_arg ("accumarray", vals);
             }
-          else if (vals.is_numeric_type () || vals.is_bool_type ())
-            {
-              if (vals.is_complex_type ())
-                retval = do_accumarray_sum (idx,
-                                            vals.complex_array_value (),
-                                            n);
-              else
-                retval = do_accumarray_sum (idx, vals.array_value (), n);
-            }
-          else
-            gripe_wrong_type_arg ("accumarray", vals);
-        }
+          }
+        catch (index_exception& e)
+          {
+            error ("__accumarray_sum__: invalid IDX %s. %s",
+                                        e.idx(), e.explain ());
+          }
     }
   else
     print_usage ();
@@ -7403,60 +7418,69 @@ do_accumarray_minmax_fun (const octave_value_list& args,
   int nargin = args.length ();
   if (nargin >= 3 && nargin <= 4 && args(0).is_numeric_type ())
     {
-      idx_vector idx = args(0).index_vector ();
-      octave_idx_type n = -1;
-      if (nargin == 4)
-        n = args(3).idx_type_value (true);
-
-      if (! error_state)
+      try
         {
-          octave_value vals = args(1);
-          octave_value zero = args(2);
+          idx_vector idx = args(0).index_vector ();
+          octave_idx_type n = -1;
+          if (nargin == 4)
+            n = args(3).idx_type_value (true);
 
-          switch (vals.builtin_type ())
+          if (! error_state)
             {
-            case btyp_double:
-              retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
-                                             zero.double_value ());
-              break;
-            case btyp_float:
-              retval = do_accumarray_minmax (idx, vals.float_array_value (), n,
-                                             ismin, zero.float_value ());
-              break;
-            case btyp_complex:
-              retval = do_accumarray_minmax (idx, vals.complex_array_value (),
-                                             n, ismin, zero.complex_value ());
-              break;
-            case btyp_float_complex:
-              retval = do_accumarray_minmax (idx,
-                                             vals.float_complex_array_value (),
-                                             n, ismin,
-                                             zero.float_complex_value ());
-              break;
-#define MAKE_INT_BRANCH(X) \
-            case btyp_ ## X: \
-              retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
-                                             n, ismin, \
-                                             zero.X ## _scalar_value ()); \
-              break;
+              octave_value vals = args(1);
+              octave_value zero = args(2);
 
-            MAKE_INT_BRANCH (int8);
-            MAKE_INT_BRANCH (int16);
-            MAKE_INT_BRANCH (int32);
-            MAKE_INT_BRANCH (int64);
-            MAKE_INT_BRANCH (uint8);
-            MAKE_INT_BRANCH (uint16);
-            MAKE_INT_BRANCH (uint32);
-            MAKE_INT_BRANCH (uint64);
+              switch (vals.builtin_type ())
+                {
+                case btyp_double:
+                  retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
+                                                 zero.double_value ());
+                  break;
+                case btyp_float:
+                  retval = do_accumarray_minmax (idx, vals.float_array_value (), n,
+                                                 ismin, zero.float_value ());
+                  break;
+                case btyp_complex:
+                  retval = do_accumarray_minmax (idx, vals.complex_array_value (),
+                                                 n, ismin, zero.complex_value ());
+                  break;
+                case btyp_float_complex:
+                  retval = do_accumarray_minmax (idx,
+                                                 vals.float_complex_array_value (),
+                                                 n, ismin,
+                                                 zero.float_complex_value ());
+                  break;
+#define MAKE_INT_BRANCH(X) \
+                case btyp_ ## X: \
+                  retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
+                                                 n, ismin, \
+                                                 zero.X ## _scalar_value ()); \
+                  break;
+
+                MAKE_INT_BRANCH (int8);
+                MAKE_INT_BRANCH (int16);
+                MAKE_INT_BRANCH (int32);
+                MAKE_INT_BRANCH (int64);
+                MAKE_INT_BRANCH (uint8);
+                MAKE_INT_BRANCH (uint16);
+                MAKE_INT_BRANCH (uint32);
+                MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-            case btyp_bool:
-              retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
-                                             zero.bool_value ());
-              break;
-            default:
-              gripe_wrong_type_arg ("accumarray", vals);
+                case btyp_bool:
+                  retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
+                                                 zero.bool_value ());
+                  break;
+                default:
+                  gripe_wrong_type_arg ("accumarray", vals);
+                }
             }
         }
+      catch (index_exception& e)
+        {
+          error ("do_accumarray_minmax_fun: invalid index %s. %s",
+                                        e.idx (), e.explain ());
+        }
+
     }
   else
     print_usage ();
@@ -7523,39 +7547,46 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin >= 2 && nargin <= 4 && args(0).is_numeric_type ())
     {
-      idx_vector idx = args(0).index_vector ();
-      int dim = -1;
-      if (nargin >= 3)
-        dim = args(2).int_value () - 1;
-
-      octave_idx_type n = -1;
-      if (nargin == 4)
-        n = args(3).idx_type_value (true);
-
-      if (! error_state)
+      try
         {
-          octave_value vals = args(1);
+          idx_vector idx = args(0).index_vector ();
+          int dim = -1;
+          if (nargin >= 3)
+            dim = args(2).int_value () - 1;
 
-          if (vals.is_single_type ())
+          octave_idx_type n = -1;
+          if (nargin == 4)
+            n = args(3).idx_type_value (true);
+
+          if (! error_state)
             {
-              if (vals.is_complex_type ())
-                retval = do_accumdim_sum (idx,
-                                          vals.float_complex_array_value (),
-                                          dim, n);
+              octave_value vals = args(1);
+
+              if (vals.is_single_type ())
+                {
+                  if (vals.is_complex_type ())
+                    retval = do_accumdim_sum (idx,
+                                              vals.float_complex_array_value (),
+                                              dim, n);
+                  else
+                    retval = do_accumdim_sum (idx, vals.float_array_value (),
+                                              dim, n);
+                }
+              else if (vals.is_numeric_type () || vals.is_bool_type ())
+                {
+                  if (vals.is_complex_type ())
+                    retval = do_accumdim_sum (idx, vals.complex_array_value (),
+                                              dim, n);
+                  else
+                    retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
+                }
               else
-                retval = do_accumdim_sum (idx, vals.float_array_value (),
-                                          dim, n);
+                gripe_wrong_type_arg ("accumdim", vals);
             }
-          else if (vals.is_numeric_type () || vals.is_bool_type ())
-            {
-              if (vals.is_complex_type ())
-                retval = do_accumdim_sum (idx, vals.complex_array_value (),
-                                          dim, n);
-              else
-                retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
-            }
-          else
-            gripe_wrong_type_arg ("accumdim", vals);
+        }
+      catch (index_exception& e)
+        {
+          error ("__accumdim_sum__: invalid IDX %s. %s", e.idx(), e.explain ());
         }
     }
   else

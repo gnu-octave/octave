@@ -1647,7 +1647,16 @@ cdef_object_array::subsref (const std::string& type,
 
         for (int i = 0; ! error_state && i < ival.length (); i++)
           {
-            iv(i) = ival(i).index_vector ();
+            try
+              {
+                iv(i) = ival(i).index_vector ();
+              }
+            catch (index_exception& e)
+              {
+                // Rethrow to allow more info to be reported later.
+                e.set_pos_if_unset (ival.length (), i+1);
+                throw;
+              }
             if (! error_state)
               is_scalar = is_scalar && iv(i).is_scalar ();
           }
@@ -1745,7 +1754,15 @@ cdef_object_array::subsasgn (const std::string& type,
 
                   for (int i = 0; ! error_state && i < ival.length (); i++)
                     {
-                      iv(i) = ival(i).index_vector ();
+                      try
+                        {
+                          iv(i) = ival(i).index_vector ();
+                        }
+                      catch (index_exception& e)
+                        {
+                          e.set_pos_if_unset (ival.length (), i+1);
+                          throw;   // var name set in pt-idx.cc / pt-assign.cc
+                        }
                       if (! error_state)
                         is_scalar = is_scalar && iv(i).is_scalar ();
                     }
@@ -1798,7 +1815,16 @@ cdef_object_array::subsasgn (const std::string& type,
 
           for (int i = 0; ! error_state && i < ival.length (); i++)
             {
-              iv(i) = ival(i).index_vector ();
+              try
+                {
+                  iv(i) = ival(i).index_vector ();
+                }
+              catch (index_exception& e)
+                {
+                  // Rethrow to allow more info to be reported later.
+                  e.set_pos_if_unset (ival.length (), i+1);
+                  throw;
+                }
 
               if (! error_state)
                 {

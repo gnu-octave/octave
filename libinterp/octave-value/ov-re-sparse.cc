@@ -61,8 +61,8 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
     return idx_vector (array_value ());
   else
     {
-      std::string nm = type_name ();
-      error ("%s type invalid as index value", nm.c_str ());
+      std::string nm = "<" + type_name () + ">";
+      gripe_invalid_index (nm.c_str ());
       return idx_vector ();
     }
 }

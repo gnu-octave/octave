@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <string.h>
 #include "lo-array-gripes.h"
 #include "lo-error.h"
 
@@ -90,34 +91,6 @@ gripe_nonconformant (const char *op, const dim_vector& op1_dims,
 }
 
 void
-gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
-                          octave_idx_type ext)
-{
-  const char *err_id = error_id_index_out_of_bounds;
-
-  switch (nd)
-    {
-    case 1:
-      (*current_liboctave_error_with_id_handler)
-        (err_id, "A(I): index out of bounds; value %d out of bound %d",
-         idx, ext);
-      break;
-
-    case 2:
-      (*current_liboctave_error_with_id_handler)
-        (err_id, "A(I,J): %s index out of bounds; value %d out of bound %d",
-         (dim == 1) ? "row" : "column", idx, ext);
-      break;
-
-    default:
-      (*current_liboctave_error_with_id_handler)
-        (err_id, "A(I,J,...): index to dimension %d out of bounds; value %d out of bound %d",
-         dim, idx, ext);
-      break;
-    }
-}
-
-void
 gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
                               octave_idx_type ext)
 {
@@ -128,25 +101,234 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
      is1d ? "I" : "..,I,..", idx, ext);
 }
 
-void
-gripe_invalid_index (void)
-{
-  const char *err_id = error_id_invalid_index;
 
-  (*current_liboctave_error_with_id_handler)
-#ifdef USE_64_BIT_IDX_T
-    (err_id, "subscript indices must be either positive integers less than 2^63 or logicals");
-#else
-    (err_id, "subscript indices must be either positive integers less than 2^31 or logicals");
-#endif
+
+// Common procedures of base class index_exception, thrown whenever an
+// object is indexed incorrectly, such as by an index that is out of
+// range, negative, fractional, complex, or of a non-numeric type.
+
+const char *
+index_exception::err (void) throw ()
+{
+  msg = access () + "; " + explain ();
+  return msg.c_str ();
 }
 
-// FIXME: the following is a common error message to resize,
-// regardless of whether it's called from assign or elsewhere.  It
-// seems OK to me, but eventually the gripe can be specialized.
-// Anyway, propagating various error messages into procedure is, IMHO,
-// a nonsense.  If anything, we should change error handling here (and
-// throughout liboctave) to allow custom handling of errors
+// Show what was illegally accessed, e.g.,  "A(-1,_)", "A(0+1i)", "A(_,3)"
+// Show how many indices come before/after the offending one,
+// e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)
+
+std::string
+index_exception:: access (void) const
+{
+  // FIXME: don't use a fixed size buffer!
+
+  int buf_len = 300;
+
+  char output [buf_len];
+  char pre [buf_len];
+  char post [buf_len];
+
+  // dim == 0 if position not yet given, or
+  // <static_cast unsigned int>(-1) if explicitly shown to be unknown
+  // both are caught by this condition
+
+  if (static_cast <unsigned int> (dim-1) > 100000)
+    {
+      // No parentheses are given if the dimension is not known.
+      pre[0] = post[0] = '\0';
+    }
+  else
+    {
+      if (dim < 5)
+        {
+          pre[0] = '(';
+          octave_idx_type i;
+
+          for (i = 1; i < dim; i++)
+            {
+              pre[2*i-1] = '_';
+              pre[2*i]   = ',';
+            }
+
+          pre[2*i-1] = '\0';    // i == min (1, dim)
+        }
+      else
+        {
+          sprintf (pre, "(...[x%d]...", dim-1);
+        }
+
+      if (static_cast <unsigned int> (nd-dim) < 5)
+        {
+          for (octave_idx_type i = 0; i < nd-dim; i++)
+            {
+              post[2*i]   = ',';
+              post[2*i+1] = '_';
+            }
+
+          if (nd >= dim)
+            {
+              post[2*(nd-dim)] = ')';
+              post[2*(nd-dim)+1] = '\0';
+            }
+        }
+      else
+        sprintf (post, "...[x%d]...)", nd-dim);
+    }
+
+  const char *v;
+
+  if (var[0] == '\0' || var == "<unknown>")
+    v = "index ";
+  else
+    v = var.c_str ();
+
+  snprintf (output, buf_len, "%s%s%s%s", v, pre, idx(), post);
+
+  return output;
+}
+
+class invalid_index : public index_exception
+{
+public:
+
+  invalid_index (const char *value, octave_idx_type ndim,
+                 octave_idx_type dimen)
+    : index_exception (value, ndim, dimen)
+  { }
+
+  const char* explain (void) const
+  {
+#ifdef USE_64_BIT_IDX_T
+    return "subscripts must be either integers 1 to (2^63)-1 or logicals";
+#else
+    return "subscripts must be either integers 1 to (2^31)-1 or logicals";
+#endif
+  }
+
+  // ID of error to throw
+  const char* id (void) const
+  {
+    return error_id_invalid_index;
+  }
+};
+
+// Complain of an index that is: negative, fractional, or too big.
+
+void
+gripe_invalid_index (const char *idx, octave_idx_type nd,
+                     octave_idx_type dim, const char * /* var */)
+{
+    invalid_index e (idx, nd, dim);
+
+    throw e;
+}
+
+void
+gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
+                     octave_idx_type dim, const char *var)
+{
+  // FIXME: don't use a fixed size buffer!
+  char buf [100];
+
+  sprintf (buf, "%d", n+1);
+
+  gripe_invalid_index (buf, nd, dim, var);
+}
+
+void
+gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
+                     const char *var)
+{
+  // FIXME: don't use a fixed size buffer!
+  char buf [100];
+
+  sprintf (buf, "%g", n+1);
+
+  gripe_invalid_index (buf, nd, dim, var);
+}
+
+
+// Gripe and exception for read access beyond the bounds of an array.
+
+class out_of_range : public index_exception
+{
+public:
+
+  out_of_range (const char *value, octave_idx_type nd_in,octave_idx_type dim_in)
+        : index_exception (value, nd_in, dim_in), extent(0)
+    { }
+
+  const char* explain (void) const
+  {
+    static std::string expl;    // should probably be member variable, but
+                                // then explain() can't be const.
+
+    if (nd >= size.length ())   // if not an index slice
+      {
+        if (var != "")
+          expl = "but " + var + " has size ";
+        else
+          expl = "but object has size ";
+
+        expl = expl + size.str ('x');
+      }
+    else
+      {
+        // FIXME: don't use a fixed size buffer!
+        char buf [100];
+        sprintf (buf, "%d", extent);
+        expl = "out of bound " + std::string (buf);
+      }
+
+    return expl.c_str ();
+  }
+
+  // ID of error to throw.
+  const char* id (void) const
+  {
+    return (error_id_index_out_of_bounds);
+  }
+
+  void set_size (const dim_vector& size_in) { size = size_in; }
+
+  void set_extent (octave_idx_type ext) { extent = ext; }
+
+private:
+
+  dim_vector  size;         // dimension of object being accessed
+
+  octave_idx_type extent;   // length of dimension being accessed
+};
+
+// Complain of an index that is out of range, but we don't know matrix size
+void
+gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
+                          octave_idx_type ext)
+{
+    char buf [100];
+    sprintf (buf, "%d", idx);
+    out_of_range e (buf, nd, dim);
+
+    e.set_extent (ext);
+    dim_vector d (1,1,1,1,1,1,1);   // make  explain()  give extent not size
+    e.set_size (d);
+    throw e;
+}
+
+// Complain of an index that is out of range
+void
+gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
+                          octave_idx_type ext, const dim_vector& d)
+{
+    char buf [100];
+    sprintf (buf, "%d", idx);
+    out_of_range e (buf, nd, dim);
+
+    e.set_extent (ext);
+    e.set_size (d);
+    throw e;
+}
 
 void
 gripe_invalid_resize (void)
@@ -154,20 +336,6 @@ gripe_invalid_resize (void)
   (*current_liboctave_error_with_id_handler)
     ("Octave:invalid-resize",
      "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element");
-}
-
-void
-gripe_invalid_assignment_size (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I) = X: X must have the same size as I");
-}
-
-void
-gripe_assignment_dimension_mismatch (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I,J,...) = X: dimensions mismatch");
 }
 
 void
@@ -186,3 +354,5 @@ gripe_singular_matrix (double rcond)
          "matrix singular to machine precision, rcond = %g", rcond);
     }
 }
+
+/* Tests in test/index.tst */

@@ -99,11 +99,21 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
             {
               if (args(j+1).is_numeric_type ())
                 {
-                  idxa(j) = args(j+1).index_vector ();
-                  if (error_state)
-                    break;
-                  else if (j > 0 && args(j+1).dims () != args(1).dims ())
-                    error ("sub2ind: all subscripts must be of the same size");
+                  try
+                    {
+                      idxa(j) = args(j+1).index_vector ();
+                      if (error_state)
+                        break;
+                      else if (j > 0 && args(j+1).dims () != args(1).dims ())
+                        error ("sub2ind: all subscripts must be of the same size");
+                    }
+                  catch (index_exception& e)
+                    {
+                      e.set_pos_if_unset (nargin-1, j+1);
+                      e.set_var ("");     // no particular variable
+                      (*current_liboctave_error_with_id_handler)
+                                                        (e.id(), e.err());
+                    }
                 }
               else
                 error ("sub2ind: subscripts must be numeric");
@@ -134,23 +144,23 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 
 # Test low index
 %!assert (sub2ind ([10 10 10], 1, 1, 1), 1)
-%!error <subscript indices> sub2ind ([10 10 10], 0, 1, 1)
-%!error <subscript indices> sub2ind ([10 10 10], 1, 0, 1)
-%!error <subscript indices> sub2ind ([10 10 10], 1, 1, 0)
+%!error <index \(0,_,_\)> sub2ind ([10 10 10], 0, 1, 1)
+%!error <index \(_,0,_\)> sub2ind ([10 10 10], 1, 0, 1)
+%!error <index \(_,_,0\)> sub2ind ([10 10 10], 1, 1, 0)
 
 # Test high index
 %!assert (sub2ind ([10 10 10], 10, 10, 10), 1000)
-%!error <index out of range> sub2ind ([10 10 10], 11, 10, 10)
-%!error <index out of range> sub2ind ([10 10 10], 10, 11, 10)
-%!error <index out of range> sub2ind ([10 10 10], 10, 10, 11)
+%!error <index \(11,_,_\); out of bound 10> sub2ind ([10 10 10], 11, 10, 10)
+%!error <index \(_,11,_\); out of bound 10> sub2ind ([10 10 10], 10, 11, 10)
+%!error <index \(_,_,11\); out of bound 10> sub2ind ([10 10 10], 10, 10, 11)
 
 # Test high index in the trailing dimensions
 %!assert (sub2ind ([10, 1], 2, 1, 1), 2)
-%!error <index out of range> sub2ind ([10, 1], 1, 2, 1)
-%!error <index out of range> sub2ind ([10, 1], 1, 1, 2)
+%!error <index \(_,2,_\); out of bound 1> sub2ind ([10, 1], 1, 2, 1)
+%!error <index \(_,_,2\); out of bound 1> sub2ind ([10, 1], 1, 1, 2)
 %!assert (sub2ind ([10 10], 2, 2, 1), 12)
-%!error <index out of range> sub2ind ([10 10], 2, 1, 2)
-%!error <index out of range> sub2ind ([10 10], 1, 2, 2)
+%!error <index \(_,_,2\); out of bound 1> sub2ind ([10 10], 2, 1, 2)
+%!error <index \(_,_,2\); out of bound 1> sub2ind ([10 10], 1, 2, 2)
 
 # Test handling of empty arguments
 %!assert (sub2ind ([10 10], zeros (0,0), zeros (0,0)), zeros (0,0))
@@ -164,8 +174,8 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 
 ## Test input validation
 %!error <dimension vector> sub2ind ([10 10.5], 1, 1)
-%!error <subscript indices> sub2ind ([10 10], 1.5, 1)
-%!error <subscript indices> sub2ind ([10 10], 1, 1.5)
+%!error <index \(1.5,_\)> sub2ind ([10 10], 1.5, 1)
+%!error <index \(_,1.5\)> sub2ind ([10 10], 1, 1.5)
 */
 
 DEFUN (ind2sub, args, nargout,
@@ -195,14 +205,21 @@ moving from one column to next, filling up all rows in each column.\n\
   else
     {
       dim_vector dv = get_dim_vector (args(0), "ind2sub");
-      idx_vector idx = args(1).index_vector ();
-      if (! error_state)
+      try
         {
-          if (nargout > dv.length ())
-            dv = dv.redim (nargout);
+          idx_vector idx = args(1).index_vector ();
+          if (! error_state)
+            {
+              if (nargout > dv.length ())
+                dv = dv.redim (nargout);
 
-          Array<idx_vector> idxa = ind2sub (dv, idx);
-          retval = Array<octave_value> (idxa);
+              Array<idx_vector> idxa = ind2sub (dv, idx);
+              retval = Array<octave_value> (idxa);
+            }
+        }
+      catch (index_exception& e)
+        {
+          error ("ind2sub: Invalid index %s. %s", e.idx (), e.explain ());
         }
     }
 

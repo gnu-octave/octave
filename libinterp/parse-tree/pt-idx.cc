@@ -284,6 +284,20 @@ tree_index_expression::rvalue (int nargout)
   return tree_index_expression::rvalue (nargout, 0);
 }
 
+// Final step of processing an indexing error.  Add the name of the
+// variable being indexed, if any, then issue an error.  (Will this also
+// be needed by pt-lvalue, which calls subsref?)
+
+static void
+final_index_error (index_exception& e, const tree_expression *expr)
+{
+  if (expr->is_identifier ()
+      && dynamic_cast<const tree_identifier *> (expr)->is_variable ())
+    e.set_var (expr->name ());
+
+  (*current_liboctave_error_with_id_handler) (e.id (), e.err ());
+}
+
 octave_value_list
 tree_index_expression::rvalue (int nargout,
                                const std::list<octave_lvalue> *lvalue_list)
@@ -353,7 +367,7 @@ tree_index_expression::rvalue (int nargout,
 
               if (force_split || (al && al->has_magic_end ()))
                 {
-                  // We have an expression like
+                  // (we have force_split, or) we have an expression like
                   //
                   //   x{end}.a(end)
                   //
@@ -363,37 +377,44 @@ tree_index_expression::rvalue (int nargout,
                   // that argument list so we can pass the appropriate
                   // value to the built-in end function.
 
-                  octave_value_list tmp_list
-                    = tmp.subsref (type.substr (tmpi, i - tmpi), idx, nargout);
-
-                  tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
-                  tmpi = i;
-                  idx.clear ();
-
-                  if (tmp.is_cs_list ())
-                    gripe_indexed_cs_list ();
-
-                  if (error_state)
-                    break;
-
-                  if (tmp.is_function ())
+                  try
                     {
-                      octave_function *fcn = tmp.function_value (true);
+                      octave_value_list tmp_list
+                        =tmp.subsref (type.substr (tmpi, i-tmpi), idx, nargout);
 
-                      if (fcn && ! fcn->is_postfix_index_handled (type[i]))
+                      tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
+                      tmpi = i;
+                      idx.clear ();
+
+                      if (tmp.is_cs_list ())
+                        gripe_indexed_cs_list ();
+
+                      if (error_state)
+                        break;
+
+                      if (tmp.is_function ())
                         {
-                          octave_value_list empty_args;
+                          octave_function *fcn = tmp.function_value (true);
 
-                          tmp_list = tmp.do_multi_index_op (1, empty_args);
-                          tmp = (tmp_list.length ()
-                                 ? tmp_list(0) : octave_value ());
+                          if (fcn && ! fcn->is_postfix_index_handled (type[i]))
+                            {
+                              octave_value_list empty_args;
 
-                          if (tmp.is_cs_list ())
-                            gripe_indexed_cs_list ();
+                              tmp_list = tmp.do_multi_index_op (1, empty_args);
+                              tmp = (tmp_list.length ()
+                                     ? tmp_list(0) : octave_value ());
 
-                          if (error_state)
-                            break;
+                              if (tmp.is_cs_list ())
+                                gripe_indexed_cs_list ();
+
+                              if (error_state)
+                                break;
+                            }
                         }
+                    }
+                  catch (index_exception& e)  // problems with index range, type etc.
+                    {
+                      final_index_error (e, expr);
                     }
                 }
             }
@@ -433,8 +454,15 @@ tree_index_expression::rvalue (int nargout,
 
       if (! error_state)
         {
-          retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
-                                lvalue_list);
+          try
+            {
+              retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
+                                    lvalue_list);
+            }
+          catch (index_exception& e)    // problems with range, invalid index type etc.
+            {
+              final_index_error (e, expr);
+            }
 
           octave_value val = retval.length () ? retval(0) : octave_value ();
 
@@ -500,7 +528,14 @@ tree_index_expression::lvalue (void)
             gripe_indexed_cs_list ();
           else if (tmpi < i)
             {
-              tmp = tmp.subsref (type.substr (tmpi, i - tmpi), tmpidx, true);
+              try
+                {
+                  tmp = tmp.subsref (type.substr (tmpi, i-tmpi), tmpidx, true);
+                }
+              catch (index_exception& e)  // problems with range, invalid type etc.
+                {
+                  final_index_error (e, expr);
+                }
               tmpidx.clear ();
             }
 

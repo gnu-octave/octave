@@ -106,40 +106,48 @@ tree_simple_assignment::rvalue1 (int)
                     }
                 }
 
-              octave_lvalue ult = lhs->lvalue ();
-
-              if (ult.numel () != 1)
-                gripe_nonbraced_cs_list_assignment ();
-
-              if (! error_state)
+              try
                 {
-                  ult.assign (etype, rhs_val);
+                  octave_lvalue ult = lhs->lvalue ();
+
+                  if (ult.numel () != 1)
+                    gripe_nonbraced_cs_list_assignment ();
 
                   if (! error_state)
                     {
-                      if (etype == octave_value::op_asn_eq)
-                        retval = rhs_val;
-                      else
-                        retval = ult.value ();
+                      ult.assign (etype, rhs_val);
 
-                      if (print_result ()
-                          && tree_evaluator::statement_printing_enabled ())
+                      if (! error_state)
                         {
-                          // We clear any index here so that we can
-                          // get the new value of the referenced
-                          // object below, instead of the indexed
-                          // value (which should be the same as the
-                          // right hand side value).
+                          if (etype == octave_value::op_asn_eq)
+                            retval = rhs_val;
+                          else
+                            retval = ult.value ();
 
-                          ult.clear_index ();
+                          if (print_result ()
+                              && tree_evaluator::statement_printing_enabled ())
+                            {
+                              // We clear any index here so that we can
+                              // get the new value of the referenced
+                              // object below, instead of the indexed
+                              // value (which should be the same as the
+                              // right hand side value).
 
-                          octave_value lhs_val = ult.value ();
+                              ult.clear_index ();
 
-                          if (! error_state)
-                            lhs_val.print_with_name (octave_stdout,
-                                                     lhs->name ());
+                              octave_value lhs_val = ult.value ();
+
+                              if (! error_state)
+                                lhs_val.print_with_name (octave_stdout,
+                                                         lhs->name ());
+                            }
                         }
                     }
+                }
+              catch (index_exception& e)
+                {       // problems with range, invalid index type etc.
+                  e.set_var (lhs->name ());
+                  (*current_liboctave_error_with_id_handler) (e.id(), e.err());
                 }
             }
         }

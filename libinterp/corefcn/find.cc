@@ -455,6 +455,11 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           // This case is equivalent to extracting indices from a logical
           // matrix. Try to reuse the possibly cached index vector.
+
+          // No need to catch index_exception, since arg is bool.
+          // Out-of-range errors have already set pos, and will be
+          // caught later.
+
           retval(0) = arg.index_vector ().unmask ();
         }
       else

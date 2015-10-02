@@ -198,20 +198,31 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 
           if (! error_state)
             {
-              idx_vector i = args(0).index_vector ();
-              idx_vector j = args(1).index_vector ();
+              int k = 0;    // index we're checking when index_vector throws
+              try
+                {
+                  idx_vector i = args(0).index_vector ();
+                  k = 1;
+                  idx_vector j = args(1).index_vector ();
 
-              if (args(2).is_bool_type ())
-                retval = SparseBoolMatrix (args(2).bool_array_value (), i, j,
+                  if (args(2).is_bool_type ())
+                    retval = SparseBoolMatrix (args(2).bool_array_value (), i,j,
+                                               m, n, summation, nzmax);
+                  else if (args(2).is_complex_type ())
+                    retval = SparseComplexMatrix (args(2).complex_array_value(),
+                                                  i, j, m, n, summation, nzmax);
+                  else if (args(2).is_numeric_type ())
+                    retval = SparseMatrix (args(2).array_value (), i, j,
                                            m, n, summation, nzmax);
-              else if (args(2).is_complex_type ())
-                retval = SparseComplexMatrix (args(2).complex_array_value (),
-                                              i, j, m, n, summation, nzmax);
-              else if (args(2).is_numeric_type ())
-                retval = SparseMatrix (args(2).array_value (), i, j,
-                                       m, n, summation, nzmax);
-              else
-                gripe_wrong_type_arg ("sparse", args(2));
+                  else
+                    gripe_wrong_type_arg ("sparse", args(2));
+                }
+              catch (index_exception& e)
+                {
+                  // Rethrow to allow more info to be reported later.
+                  e.set_pos_if_unset (2, k+1);
+                  throw;
+                }
             }
 
         }

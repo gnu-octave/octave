@@ -66,7 +66,7 @@ public:
 
   bool is_defined (void) { return sym->is_defined (); }
 
-  virtual bool is_variable (void) { return sym->is_variable (); }
+  virtual bool is_variable (void) const { return sym->is_variable (); }
 
   virtual bool is_black_hole (void) { return false; }
 
@@ -152,7 +152,7 @@ public:
 
   std::string name (void) const { return "~"; }
 
-  bool is_variable (void) { return false; }
+  bool is_variable (void) const { return false; }
 
   bool is_black_hole (void) { return true; }
 

@@ -827,28 +827,35 @@ make_java_index (JNIEnv* jni_env, const octave_value_list& idx)
   jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, 0);
 
   for (int i = 0; i < idx.length (); i++)
-    {
-      idx_vector v = idx(i).index_vector ();
+    try
+      {
+        idx_vector v = idx(i).index_vector ();
 
-      if (! error_state)
-        {
-          jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
-          jint *buf = jni_env->GetIntArrayElements (i_array, 0);
+        if (! error_state)
+          {
+            jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
+            jint *buf = jni_env->GetIntArrayElements (i_array, 0);
 
-          for (int k = 0; k < v.length (); k++)
-            buf[k] = v(k);
+            for (int k = 0; k < v.length (); k++)
+              buf[k] = v(k);
 
-          jni_env->ReleaseIntArrayElements (i_array, buf, 0);
-          jni_env->SetObjectArrayElement (retval, i, i_array);
+            jni_env->ReleaseIntArrayElements (i_array, buf, 0);
+            jni_env->SetObjectArrayElement (retval, i, i_array);
 
-          check_exception (jni_env);
+            check_exception (jni_env);
 
-          if (error_state)
-            break;
-        }
-      else
-        break;
-    }
+            if (error_state)
+              break;
+          }
+        else
+          break;
+      }
+    catch (index_exception& e)
+      {
+        // Rethrow to allow more info to be reported later.
+        e.set_pos_if_unset (idx.length (), i+1);
+        throw;
+      }
 
   return retval;
 }

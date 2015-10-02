@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "lo-ieee.h"
 
+#include "ov-base-diag.h"
 #include "mxarray.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -103,26 +104,37 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 
   if (idx.length () == 2 && ! resize_ok)
     {
-      idx_vector idx0 = idx(0).index_vector ();
-      idx_vector idx1 = idx(1).index_vector ();
+      int k = 0;        // index we're accesing when index_vector throws
+      try
+        {
+          idx_vector idx0 = idx(0).index_vector ();
+          k = 1;
+          idx_vector idx1 = idx(1).index_vector ();
 
-      if (idx0.is_scalar () && idx1.is_scalar ())
-        {
-          retval = matrix.checkelem (idx0(0), idx1(0));
-        }
-      else
-        {
-          octave_idx_type m = idx0.length (matrix.rows ());
-          octave_idx_type n = idx1.length (matrix.columns ());
-          if (idx0.is_colon_equiv (m) && idx1.is_colon_equiv (n)
-              && m <= matrix.rows () && n <= matrix.rows ())
+          if (idx0.is_scalar () && idx1.is_scalar ())
             {
-              DMT rm (matrix);
-              rm.resize (m, n);
-              retval = rm;
+              retval = matrix.checkelem (idx0(0), idx1(0));
             }
           else
-            retval = to_dense ().do_index_op (idx, resize_ok);
+            {
+              octave_idx_type m = idx0.length (matrix.rows ());
+              octave_idx_type n = idx1.length (matrix.columns ());
+              if (idx0.is_colon_equiv (m) && idx1.is_colon_equiv (n)
+                  && m <= matrix.rows () && n <= matrix.rows ())
+                {
+                  DMT rm (matrix);
+                  rm.resize (m, n);
+                  retval = rm;
+                }
+              else
+                retval = to_dense ().do_index_op (idx, resize_ok);
+            }
+        }
+      catch (index_exception& e)
+        {
+          // Rethrow to allow more info to be reported later.
+          e.set_pos_if_unset (2, k+1);
+          throw;
         }
     }
   else
@@ -153,17 +165,28 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                 && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
               {
                 typename DMT::element_type val;
-                idx_vector i0 = jdx(0).index_vector ();
-                idx_vector i1 = jdx(1).index_vector ();
-                if (! error_state  && i0(0) == i1(0)
-                    && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
-                    && chk_valid_scalar (rhs, val))
+                int k = 0;
+                try
                   {
-                    matrix.dgelem (i0(0)) = val;
-                    retval = this;
-                    this->count++;
-                    // invalidate cache
-                    dense_cache = octave_value ();
+                    idx_vector i0 = jdx(0).index_vector ();
+                    k = 1;
+                    idx_vector i1 = jdx(1).index_vector ();
+                    if (! error_state  && i0(0) == i1(0)
+                        && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
+                        && chk_valid_scalar (rhs, val))
+                      {
+                        matrix.dgelem (i0(0)) = val;
+                        retval = this;
+                        this->count++;
+                        // invalidate cache
+                        dense_cache = octave_value ();
+                      }
+                  }
+                catch (index_exception& e)
+                  {
+                    // Rethrow to allow more info to be reported later.
+                    e.set_pos_if_unset (2, k+1);
+                    throw;
                   }
               }
 

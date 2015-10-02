@@ -74,8 +74,19 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   idx_vector idx0, idx1;
   if (nidx == 2)
     {
-      idx0 = idx(0).index_vector ();
-      idx1 = idx(1).index_vector ();
+      int k = 0;    // index we're processing when index_vector throws
+      try
+        {
+          idx0 = idx(0).index_vector ();
+          k = 1;
+          idx1 = idx(1).index_vector ();
+        }
+      catch (index_exception& e)
+        {
+          // Rethrow to allow more info to be reported later.
+          e.set_pos_if_unset (2, k+1);
+          throw;
+        }
     }
 
   // This hack is to allow constructing permutation matrices using

@@ -113,9 +113,14 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
       gripe_invalid_range ();
       err = true;
     }
-  else if (start < 0 || (step < 0 && start + (len-1)*step < 0))
+  else if (start < 0)
     {
-      gripe_invalid_index ();
+      gripe_invalid_index (start);
+      err = true;
+    }
+  else if (step < 0 && start + (len-1)*step < 0)
+    {
+      gripe_invalid_index (start + (len-1)*step);
       err = true;
     }
 }
@@ -134,15 +139,23 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
         {
           start = static_cast<octave_idx_type> (r.base ()) - 1;
           step = static_cast<octave_idx_type> (r.inc ());
-          if (start < 0 || (step < 0 && start + (len-1)*step < 0))
+          if (start < 0)
             {
-              gripe_invalid_index ();
+              gripe_invalid_index (start);
+              err = true;
+            }
+          else if (step < 0 && start + (len-1)*step < 0)
+            {
+              gripe_invalid_index (start + (len-1)*step);
               err = true;
             }
         }
       else
         {
-          gripe_invalid_index ();
+          // find first non-integer, then gripe about it
+          double b = r.base();
+          double inc = r.inc();
+          gripe_invalid_index (b != floor(b) ? b : b+inc);
           err = true;
         }
     }
@@ -221,7 +234,11 @@ convert_index (octave_idx_type i, bool& conv_error,
                octave_idx_type& ext)
 {
   if (i <= 0)
-    conv_error = true;
+    {
+      if (!conv_error)          // only gripe once, for things like A(-10000:0)
+        gripe_invalid_index (i-1);
+      conv_error = true;
+    }
 
   if (ext < i)
     ext = i;
@@ -235,7 +252,10 @@ convert_index (double x, bool& conv_error, octave_idx_type& ext)
   octave_idx_type i = static_cast<octave_idx_type> (x);
 
   if (static_cast<double> (i) != x)
-    conv_error = true;
+    {
+      gripe_invalid_index (x-1);
+      conv_error = true;
+    }
 
   return convert_index (i, conv_error, ext);
 }
@@ -264,9 +284,6 @@ idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
   octave_idx_type dummy = 0;
 
   data = convert_index (x, err, dummy);
-
-  if (err)
-    gripe_invalid_index ();
 }
 
 idx_vector::idx_scalar_rep::idx_scalar_rep (octave_idx_type i)
@@ -274,7 +291,7 @@ idx_vector::idx_scalar_rep::idx_scalar_rep (octave_idx_type i)
 {
   if (data < 0)
     {
-      gripe_invalid_index ();
+      gripe_invalid_index (data);
       err = true;
     }
 }
@@ -327,10 +344,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
       data = d;
 
       if (err)
-        {
-          delete [] data;
-          gripe_invalid_index ();
-        }
+        delete [] data;
     }
 }
 
@@ -347,15 +361,16 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
         {
           octave_idx_type k = inda.xelem (i);
           if (k < 0)
-            err = true;
+            {
+              if (!err)         // only report first error, in case 1000s.
+                gripe_invalid_index (k);
+              err = true;
+            }
           else if (k > max)
             max = k;
         }
 
       ext = max + 1;
-
-      if (err)
-        gripe_invalid_index ();
     }
 }
 
@@ -459,7 +474,7 @@ idx_vector::idx_vector_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
     {
-      gripe_invalid_index ();
+      gripe_invalid_index (n);
       return 0;
     }
 
@@ -709,7 +724,7 @@ idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
     {
-      gripe_invalid_index ();
+      gripe_invalid_index (n);
       return 0;
     }
 

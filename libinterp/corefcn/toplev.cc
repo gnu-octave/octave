@@ -658,6 +658,13 @@ main_loop (void)
           if (quitting_gracefully)
             return exit_status;
         }
+      catch (index_exception& e)
+        {
+          recover_from_exception ();
+          std::cerr << "error: unhandled index exception: "
+                    << e.err () << " -- trying to return to prompt"
+                    << std::endl;
+        }
       catch (const octave_execution_exception&)
         {
           recover_from_exception ();

@@ -218,8 +218,8 @@ octave_base_value::do_multi_index_op (int nargout, const octave_value_list& idx,
 idx_vector
 octave_base_value::index_vector (bool /* require_integers */) const
 {
-  std::string nm = type_name ();
-  error ("%s type invalid as index value", nm.c_str ());
+  std::string nm = "<" + type_name () + ">";
+  gripe_invalid_index (nm.c_str ());
   return idx_vector ();
 }
 

@@ -1431,7 +1431,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           retval = tmp.index (idx);
         }
       else
-        gripe_index_out_of_range (1, 1, idx.extent (nel), nel);
+        gripe_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1614,9 +1614,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
           retval = tmp.index (idx_i, idx_j);
         }
       else if (idx_i.extent (nr) > nr)
-        gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr);
+        gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr, dims ());
       else
-        gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc);
+        gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc, dims ());
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1978,7 +1978,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
         assign (idx, Sparse<T> (rhl, 1));
     }
   else
-    gripe_invalid_assignment_size ();
+    gripe_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
 }
 
 template <class T>
@@ -2214,7 +2214,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
         assign (idx_i, idx_j, Sparse<T> (n, m));
     }
   else
-    gripe_assignment_dimension_mismatch ();
+    gripe_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
 }
 
 // Can't use versions of these in Array.cc due to duplication of the

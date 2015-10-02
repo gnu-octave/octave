@@ -900,46 +900,62 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
   octave_idx_type n_idx = idx.length ();
   octave_map retval;
 
-  switch (n_idx)
+  // If we catch an indexing error in index_vector, we flag an error in
+  // index k.  Ensure it is the right value befor each idx_vector call.
+  // Same variable as used in the for loop in the default case.
+
+  octave_idx_type k = 0;
+
+  try
     {
-    case 1:
-      {
-        idx_vector i = idx(0).index_vector ();
-
-        if (! error_state)
-          retval = index (i, resize_ok);
-      }
-      break;
-
-    case 2:
-      {
-        idx_vector i = idx(0).index_vector ();
-
-        if (! error_state)
+      switch (n_idx)
+        {
+        case 1:
           {
-            idx_vector j = idx(1).index_vector ();
+            idx_vector i = idx(0).index_vector ();
 
-            retval = index (i, j, resize_ok);
+            if (! error_state)
+              retval = index (i, resize_ok);
           }
-      }
-      break;
+          break;
 
-    default:
-      {
-        Array<idx_vector> ia (dim_vector (n_idx, 1));
-
-        for (octave_idx_type i = 0; i < n_idx; i++)
+        case 2:
           {
-            ia(i) = idx(i).index_vector ();
+            idx_vector i = idx(0).index_vector ();
 
-            if (error_state)
-              break;
+            if (! error_state)
+              {
+                k = 1;
+                idx_vector j = idx(1).index_vector ();
+
+                retval = index (i, j, resize_ok);
+              }
           }
+          break;
 
-        if (! error_state)
-          retval = index (ia, resize_ok);
-      }
-      break;
+        default:
+          {
+            Array<idx_vector> ia (dim_vector (n_idx, 1));
+
+            for (k = 0; k < n_idx; k++)
+              {
+                ia(k) = idx(k).index_vector ();
+
+                if (error_state)
+                  break;
+              }
+
+            if (! error_state)
+              retval = index (ia, resize_ok);
+          }
+          break;
+        }
+    }
+  catch (index_exception& e)
+    {
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 
   return retval;
@@ -1094,46 +1110,62 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
 {
   octave_idx_type n_idx = idx.length ();
 
-  switch (n_idx)
+  // If we catch an indexing error in index_vector, we flag an error in
+  // index k.  Ensure it is the right value befor each idx_vector call.
+  // Same variable as used in the for loop in the default case.
+
+  octave_idx_type k = 0;
+
+  try
     {
-    case 1:
-      {
-        idx_vector i = idx(0).index_vector ();
-
-        if (! error_state)
-          assign (i, rhs);
-      }
-      break;
-
-    case 2:
-      {
-        idx_vector i = idx(0).index_vector ();
-
-        if (! error_state)
+      switch (n_idx)
+        {
+        case 1:
           {
-            idx_vector j = idx(1).index_vector ();
+            idx_vector i = idx(0).index_vector ();
 
-            assign (i, j, rhs);
+            if (! error_state)
+              assign (i, rhs);
           }
-      }
-      break;
+          break;
 
-    default:
-      {
-        Array<idx_vector> ia (dim_vector (n_idx, 1));
-
-        for (octave_idx_type i = 0; i < n_idx; i++)
+        case 2:
           {
-            ia(i) = idx(i).index_vector ();
+            idx_vector i = idx(0).index_vector ();
 
-            if (error_state)
-              break;
+            if (! error_state)
+              {
+                k = 1;
+                idx_vector j = idx(1).index_vector ();
+
+                assign (i, j, rhs);
+              }
           }
+          break;
 
-        if (! error_state)
-          assign (ia, rhs);
-      }
-      break;
+        default:
+          {
+            Array<idx_vector> ia (dim_vector (n_idx, 1));
+
+            for (k = 0; k < n_idx; k++)
+              {
+                ia(k) = idx(k).index_vector ();
+
+                if (error_state)
+                  break;
+              }
+
+            if (! error_state)
+              assign (ia, rhs);
+          }
+          break;
+        }
+    }
+  catch (index_exception& e)
+    {
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 }
 
@@ -1244,7 +1276,16 @@ octave_map::delete_elements (const octave_value_list& idx)
 
   for (octave_idx_type i = 0; i < n_idx; i++)
     {
-      ia(i) = idx(i).index_vector ();
+      try
+        {
+          ia(i) = idx(i).index_vector ();
+        }
+      catch (index_exception& e)
+        {
+          // Rethrow to allow more info to be reported later.
+          e.set_pos_if_unset (n_idx, i+1);
+          throw;
+        }
 
       if (error_state)
         break;

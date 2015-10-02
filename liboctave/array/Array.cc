@@ -190,9 +190,9 @@ Array<T>::checkelem (octave_idx_type n)
 {
   // Do checks directly to avoid recomputing slice_len.
   if (n < 0)
-    gripe_invalid_index ();
+    gripe_invalid_index (n);
   if (n >= slice_len)
-    gripe_index_out_of_range (1, 1, n+1, slice_len);
+    gripe_index_out_of_range (1, 1, n+1, slice_len, dimensions);
 
   return elem (n);
 }
@@ -224,9 +224,9 @@ Array<T>::checkelem (octave_idx_type n) const
 {
   // Do checks directly to avoid recomputing slice_len.
   if (n < 0)
-    gripe_invalid_index ();
+    gripe_invalid_index (n);
   if (n >= slice_len)
-    gripe_index_out_of_range (1, 1, n+1, slice_len);
+    gripe_index_out_of_range (1, 1, n+1, slice_len, dimensions);
 
   return elem (n);
 }
@@ -260,7 +260,7 @@ Array<T>::column (octave_idx_type k) const
   octave_idx_type r = dimensions(0);
 #ifdef BOUNDS_CHECKING
   if (k < 0 || k > dimensions.numel (1))
-    gripe_index_out_of_range (2, 2, k+1, dimensions.numel (1));
+    gripe_index_out_of_range (2, 2, k+1, dimensions.numel (1), dimensions);
 #endif
 
   return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
@@ -275,7 +275,7 @@ Array<T>::page (octave_idx_type k) const
   octave_idx_type p = r*c;
 #ifdef BOUNDS_CHECKING
   if (k < 0 || k > dimensions.numel (2))
-    gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2));
+    gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2), dimensions);
 #endif
 
   return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
@@ -287,9 +287,9 @@ Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
 #ifdef BOUNDS_CHECKING
   if (lo < 0)
-    gripe_index_out_of_range (1, 1, lo+1, numel ());
+    gripe_index_out_of_range (1, 1, lo+1, numel (), dimensions);
   if (up > numel ())
-    gripe_index_out_of_range (1, 1, up, numel ());
+    gripe_index_out_of_range (1, 1, up, numel (), dimensions);
 #endif
   if (up < lo) up = lo;
   return Array<T> (*this, dim_vector (up - lo, 1), lo, up);
@@ -726,7 +726,7 @@ Array<T>::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        gripe_index_out_of_range (1, 1, i.extent (n), n); // throws
+        gripe_index_out_of_range (1, 1, i.extent (n), n, dimensions); // throws
 
       // FIXME: this is the only place where orig_dimensions are used.
       dim_vector rd = i.orig_dimensions ();
@@ -793,9 +793,9 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
   else
     {
       if (i.extent (r) != r)
-        gripe_index_out_of_range (2, 1, i.extent (r), r); // throws
+        gripe_index_out_of_range (2, 1, i.extent (r), r, dimensions); // throws
       if (j.extent (c) != c)
-        gripe_index_out_of_range (2, 2, j.extent (c), c); // throws
+        gripe_index_out_of_range (2, 2, j.extent (c), c, dimensions); // throws
 
       octave_idx_type n = numel ();
       octave_idx_type il = i.length (r);
@@ -855,7 +855,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
       for (int i = 0; i < ial; i++)
         {
           if (ia(i).extent (dv(i)) != dv(i))
-            gripe_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i)); // throws
+            gripe_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i), dimensions); // throws
 
           all_colons = all_colons && ia(i).is_colon ();
         }
@@ -1180,7 +1180,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
         }
     }
   else
-    gripe_invalid_assignment_size ();
+    gripe_nonconformant ("=", dim_vector(i.length(n),1), rhs.dims());
 }
 
 // Assignment to a 2-dimensional array
@@ -1284,7 +1284,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
     }
   // any empty RHS can be assigned to an empty LHS
   else if ((il != 0 && jl != 0) || (rhdv(0) != 0 && rhdv(1) != 0))
-    gripe_assignment_dimension_mismatch ();
+    gripe_nonconformant ("=", il, jl, rhs.dim1 (), rhs.dim2 ());
 }
 
 // Assignment to a multi-dimensional array
@@ -1398,10 +1398,18 @@ Array<T>::assign (const Array<idx_vector>& ia,
               rhsempty = rhsempty || (rhdv(j++) == 0);
             }
           if (! lhsempty || ! rhsempty)
-            gripe_assignment_dimension_mismatch ();
+            gripe_nonconformant ("=", dv, rhdv);
         }
     }
 }
+
+/*
+%!shared a
+%! a = [1 2; 3 4];
+%!error <op1 is 1x2, op2 is 1x3> a(1,:) = [1 2 3]
+%!error <op1 is 2x1, op2 is 1x3> a(:,1) = [1 2 3]
+%!error <op1 is 2x2, op2 is 2x1> a(1:2,2:3) = [1;2]
+*/
 
 template <class T>
 void

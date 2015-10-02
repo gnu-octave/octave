@@ -128,13 +128,25 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
       octave_value retval;
 
       // The range can handle a single subscript.
-      idx_vector i = idx(0).index_vector ();
-      if (! error_state)
+
+      try
         {
-          if (i.is_scalar () && i(0) < range.numel ())
-            retval = range.elem (i(0));
-          else
-            retval = range.index (i);
+          idx_vector i = idx(0).index_vector ();
+
+          if (! error_state)
+            {
+              if (i.is_scalar () && i(0) < range.numel ())
+                retval = range.elem (i(0));
+              else
+                retval = range.index (i);
+            }
+        }
+      catch (index_exception& e)
+        {
+          // More info may be added later before displaying error.
+
+          e.set_pos_if_unset (1, 1);
+          throw;
         }
 
       return retval;

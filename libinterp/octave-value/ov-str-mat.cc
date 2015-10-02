@@ -94,46 +94,62 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
   octave_idx_type len = idx.length ();
 
-  switch (len)
+  // If we catch an indexing error in index_vector, we flag an error in
+  // index k.  Ensure it is the right value befor each idx_vector call.
+  // Same variable as used in the for loop in the default case.
+
+  octave_idx_type k = 0;
+
+  try
     {
-    case 0:
-      retval = octave_value (matrix, type);
-      break;
+      switch (len)
+        {
+        case 0:
+          retval = octave_value (matrix, type);
+          break;
 
-    case 1:
-      {
-        idx_vector i = idx (0).index_vector ();
+        case 1:
+          {
+            idx_vector i = idx (0).index_vector ();
 
-        if (! error_state)
-          retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
-                                 type);
-      }
-      break;
+            if (! error_state)
+              retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
+                                     type);
+          }
+          break;
 
-    case 2:
-      {
-        idx_vector i = idx (0).index_vector ();
-        idx_vector j = idx (1).index_vector ();
+        case 2:
+          {
+            idx_vector i = idx (0).index_vector ();
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
 
-        if (! error_state)
-          retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-                                 type);
-      }
-      break;
+            if (! error_state)
+              retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
+                                     type);
+          }
+          break;
 
-    default:
-      {
-        Array<idx_vector> idx_vec (dim_vector (len, 1));
+        default:
+          {
+            Array<idx_vector> idx_vec (dim_vector (len, 1));
 
-        for (octave_idx_type i = 0; i < len; i++)
-          idx_vec(i) = idx(i).index_vector ();
+            for (k = 0; k < len; k++)
+              idx_vec(k) = idx(k).index_vector ();
 
-        if (! error_state)
-          retval =
-            octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-                          type);
-      }
-      break;
+            if (! error_state)
+              retval =
+                octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+                              type);
+          }
+          break;
+        }
+    }
+  catch (index_exception& e)
+    {
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (len, k+1);
+      throw;
     }
 
   return retval;

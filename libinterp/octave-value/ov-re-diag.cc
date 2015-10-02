@@ -92,30 +92,41 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
   // vectors.
   if (! resize_ok && idx.length () == 2 && matrix.is_multiple_of_identity (1))
     {
-      idx_vector idx0 = idx(0).index_vector ();
-      idx_vector idx1 = idx(1).index_vector ();
-
-      if (! error_state)
+      int k = 0;        // index we're accesing when index_vector throws
+      try
         {
-          bool left = idx0.is_permutation (matrix.rows ());
-          bool right = idx1.is_permutation (matrix.cols ());
+          idx_vector idx0 = idx(0).index_vector ();
+          k = 1;
+          idx_vector idx1 = idx(1).index_vector ();
 
-          if (left && right)
+          if (! error_state)
             {
-              if (idx0.is_colon ()) left = false;
-              if (idx1.is_colon ()) right = false;
+              bool left = idx0.is_permutation (matrix.rows ());
+              bool right = idx1.is_permutation (matrix.cols ());
+
               if (left && right)
-                retval = PermMatrix (idx0, false) * PermMatrix (idx1, true);
-              else if (left)
-                retval = PermMatrix (idx0, false);
-              else if (right)
-                retval = PermMatrix (idx1, true);
-              else
                 {
-                  retval = this;
-                  this->count++;
+                  if (idx0.is_colon ()) left = false;
+                  if (idx1.is_colon ()) right = false;
+                  if (left && right)
+                    retval = PermMatrix (idx0, false) * PermMatrix (idx1, true);
+                  else if (left)
+                    retval = PermMatrix (idx0, false);
+                  else if (right)
+                    retval = PermMatrix (idx1, true);
+                  else
+                    {
+                      retval = this;
+                      this->count++;
+                    }
                 }
             }
+        }
+      catch (index_exception& e)
+        {
+          // Rethrow to allow more info to be reported later.
+          e.set_pos_if_unset (2, k+1);
+          throw;
         }
     }
 

@@ -480,3 +480,39 @@ octave_complex::map (unary_mapper_t umap) const
       return octave_base_value::map (umap);
     }
 }
+
+class complex_index_exception : public index_exception
+{
+public:
+
+  complex_index_exception (const char *value) : index_exception (value) { }
+
+  ~complex_index_exception (void) { }
+
+  const char* explain (void) const
+  {
+    return "subscripts must be real (forgot to initialize i or j?)";
+  }
+
+  // ID of error to throw.
+  const char* id (void) const
+  {
+    return error_id_invalid_index;
+  }
+};
+
+// Complain if a complex value is used as a subscript
+
+void
+gripe_complex_index (Complex idx)
+{
+  // FIXME: don't use a fixed size buffer!
+
+  char buf [100];
+
+  sprintf (buf, "%g%+gi", std::real(idx), std::imag(idx));
+
+  complex_index_exception e (buf);
+
+  throw e;
+}

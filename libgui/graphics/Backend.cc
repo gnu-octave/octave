@@ -215,8 +215,7 @@ Backend::toolkitObjectProxy (const graphics_object& go)
         {
           OCTAVE_INTPTR_TYPE ptr = ov.OCTAVE_PTR_SCALAR ().value ();
 
-          if (! error_state)
-            return reinterpret_cast<ObjectProxy*> (ptr);
+          return reinterpret_cast<ObjectProxy*> (ptr);
         }
     }
 

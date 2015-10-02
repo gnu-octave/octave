@@ -1,18 +1,20 @@
 ## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
-## OdePkg - A package for solving ordinary differential equations and more
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This file is part of Octave.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {[@var{t_next}, @var{x_next}] =}
@@ -63,13 +65,14 @@
 function varargout = runge_kutta_45_dorpri (f, t, x, dt, varargin)
 
   options = varargin{1};
-  k = zeros (size (x, 1), 4);
+  k = zeros (rows (x), 6);
 
   if (nargin == 5) # only the options are passed
     k(:,1) = feval (f, t , x, options.vfunarguments{:});
   elseif (nargin == 6) # both the options and the k values are passed
     k(:,1) = varargin{2}(:,end); # FSAL property
   endif
+  
   k(:,1) = feval (f, t, x, options.vfunarguments{:});
   k(:,2) = feval (f, t + (1/5)*dt, ...
                   x + dt * (1/5)*k(:,1), ...
@@ -112,6 +115,3 @@ function varargout = runge_kutta_45_dorpri (f, t, x, dt, varargin)
 
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

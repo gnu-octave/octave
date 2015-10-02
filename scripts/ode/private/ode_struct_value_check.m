@@ -1,6 +1,5 @@
 ## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 ## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
-## OdePkg - A package for solving ordinary differential equations and more
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +16,6 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
-
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{}] =}

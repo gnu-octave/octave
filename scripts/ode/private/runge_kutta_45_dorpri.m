@@ -1,4 +1,5 @@
 ## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2015, Carlo de Falco
 ##
 ## This file is part of Octave.
 ##
@@ -64,54 +65,53 @@
 
 function varargout = runge_kutta_45_dorpri (f, t, x, dt, varargin)
 
-  options = varargin{1};
-  k = zeros (rows (x), 6);
+  persistent a = [0           0          0           0        0          0;
+                  1/5         0          0           0        0          0;
+                  3/40        9/40       0           0        0          0;
+                  44/45      -56/15      32/9        0        0          0;
+                  19372/6561 -25360/2187 64448/6561 -212/729  0          0;
+                  9017/3168  -355/33     46732/5247  49/176  -5103/18656 0;
+                  35/384      0          500/1113    125/192 -2187/6784  11/84];
+  persistent b = [0 1/5 3/10 4/5 8/9 1 1];
+  persistent c = [(35/384) 0 (500/1113) (125/192) (-2187/6784) (11/84)];
+  ## x_est according to Shampine 1986:
+  ## persistent c_prime = [(1951/21600) 0 (22642/50085) (451/720), ...
+  ##                       (-12231/42400) (649/6300) (1/60)];
+  persistent c_prime = [(5179/57600) 0 (7571/16695) (393/640), ...
+                        (-92097/339200) (187/2100)  (1/40)];
+
+  s = t + dt * b;
+  cc = dt * c;
+  aa = dt * a;
+  
+  args = varargin{1}.vfunarguments;
+  k = zeros (rows (x), 7);
 
   if (nargin == 5) # only the options are passed
-    k(:,1) = feval (f, t , x, options.vfunarguments{:});
+    k(:,1) = feval (f, t, x, args{:});
   elseif (nargin == 6) # both the options and the k values are passed
     k(:,1) = varargin{2}(:,end); # FSAL property
   endif
   
-  k(:,1) = feval (f, t, x, options.vfunarguments{:});
-  k(:,2) = feval (f, t + (1/5)*dt, ...
-                  x + dt * (1/5)*k(:,1), ...
-                  options.vfunarguments{:});
-  k(:,3) = feval (f, t + (3/10)*dt, ...
-                  x + dt * ((3/40)*k(:,1) + (9/40)*k(:,2)), ...
-                  options.vfunarguments{:});
-  k(:,4) = feval (f, t + (4/5)*dt, ...
-                  x + dt * ((44/45)*k(:,1) - (56/15)*k(:,2) + (32/9)*k(:,3)), ...
-                  options.vfunarguments{:});
-  k(:,5) = feval (f, t + (8/9)*dt, ...
-                  x + dt * ((19372/6561)*k(:,1) - (25360/2187)*k(:,2) ...
-                            + (64448/6561)*k(:,3) - (212/729)*k(:,4)), ...
-                  options.vfunarguments{:});
-  k(:,6) = feval (f, t + dt, ...
-                  x + dt * ((9017/3168)*k(:,1) - (355/33)*k(:,2) ...
-                            + (46732/5247)*k(:,3) + (49/176)*k(:,4) ...
-                            - (5103/18656)*k(:,5)), ...
-                  options.vfunarguments{:});
+  k(:,1) = feval (f, s(1), x, args{:});
+  k(:,2) = feval (f, s(2), x + k(:,1) * aa(2, 1).', args{:});
+  k(:,3) = feval (f, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
+  k(:,4) = feval (f, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
+  k(:,5) = feval (f, s(5), x + k(:,1:4) * aa(5, 1:4).', args{:});
+  k(:,6) = feval (f, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
 
   ## compute new time and new values for the unkwnowns
   varargout{1} = t + dt;
-  varargout{2} = x + dt * ((35/384)*k(:,1) + (500/1113)*k(:,3)
-                           + (125/192)*k(:,4) - (2187/6784)*k(:,5)
-                           + (11/84)*k(:,6)); # 5th order approximation
+  varargout{2} = x + k(:,1:6) * cc(:); # 5th order approximation
 
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
-    k(:,7) = feval (f, t + dt, varargout{2}, options.vfunarguments{:});
-    ## x_est according to Shampine 1986:
-    ## varargout{3} = x + dt * ((1951/21600)*k(:,1) + (22642/50085)*k(:,3)
-    ##                          + (451/720)*k(:,4) - (12231/42400)*k(:,5)
-    ##                          + (649/6300)*k(:,6) + (1/60)*k(:,7));
-    varargout{3} = x + dt * ((5179/57600)*k(:,1) + (7571/16695)*k(:,3)
-                             + (393/640)*k(:,4) - (92097/339200)*k(:,5)
-                             + (187/2100)*k(:,6) + (1/40)*k(:,7)); # x_est
+    k(:,7) = feval (f, t + dt, varargout{2}, args{:});
+    cc_prime = dt * c_prime;
+    varargout{3} = x + k * cc_prime(:); # x_est
     varargout{4} = k;
   endif
-
+  
 endfunction
 

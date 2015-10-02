@@ -21,6 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 %{
+
 #define YYDEBUG 1
 
 #ifdef HAVE_CONFIG_H
@@ -34,15 +35,16 @@ extern int octave_tex_lex (YYSTYPE *, void *);
 static void yyerror (text_parser_tex& parser, const char *s);
 
 #if defined (GNULIB_NAMESPACE)
-// Calls to the following functions appear in the generated output from
-// Bison without the namespace tag.  Redefine them so we will use them
-// via the gnulib namespace.
+// Calls to the following functions appear in the generated output
+// from Bison without the namespace tag.  Redefine them so we will use
+// them via the gnulib namespace.
 #define fclose GNULIB_NAMESPACE::fclose
 #define fprintf GNULIB_NAMESPACE::fprintf
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
 #define scanner parser.get_scanner ()
+
 %}
 
 %API_PREFIX_DECL%
@@ -53,16 +55,17 @@ static void yyerror (text_parser_tex& parser, const char *s);
 
 %code requires {#include <string>}
 
-%union {
-  /* Leaf symbols produced by the scanner */
+%union
+{
+  // Leaf symbols produced by the scanner.
   char                       ch;
   double                     num;
   int                        sym;
 
-  /* Used for string buffering */
+  // Used for string buffering.
   std::string*               str;
 
-  /* Objects produced by the parser */
+  // Objects produced by the parser.
   text_element*              e_base;
   text_element_list*         e_list;
 }
@@ -78,10 +81,11 @@ static void yyerror (text_parser_tex& parser, const char *s);
 %type<str> simple_string
 %type<e_base> string_element symbol_element
 %type<e_base> superscript_element subscript_element combined_script_element
-%type<e_base> font_modifier_element fontname_element fontsize_element color_element
+%type<e_base> font_modifier_element fontname_element fontsize_element
+%type<e_base> color_element
 %type<e_list> string_element_list scoped_string_element_list
 
-/* Make sure there's no memory leak on parse error. */
+// Make sure there's no memory leak on parse error.
 %destructor { } <ch> <num> <sym>
 %destructor { delete $$; } <*>
 
@@ -95,105 +99,104 @@ static void yyerror (text_parser_tex& parser, const char *s);
 
 %%
 
-simple_string			: CH
-				  { $$ = new std::string (1, $1); }
-				| simple_string CH
-				  { $1->append (1, $2); $$ = $1; }
-				;
+simple_string                   : CH
+                                  { $$ = new std::string (1, $1); }
+                                | simple_string CH
+                                  { $1->append (1, $2); $$ = $1; }
+                                ;
 
-symbol_element			: SYM
-				  { $$ = new text_element_symbol ($1); }
-				;
+symbol_element                  : SYM
+                                  { $$ = new text_element_symbol ($1); }
+                                ;
 
-font_modifier_element		: BF
-				  { $$ = new text_element_fontstyle (text_element_fontstyle::bold); }
-				| IT
-				  { $$ = new text_element_fontstyle (text_element_fontstyle::italic); }
-				| SL
-				  { $$ = new text_element_fontstyle (text_element_fontstyle::oblique); }
-				| RM
-				  { $$ = new text_element_fontstyle (text_element_fontstyle::normal); }
-				;
+font_modifier_element           : BF
+                                  { $$ = new text_element_fontstyle (text_element_fontstyle::bold); }
+                                | IT
+                                  { $$ = new text_element_fontstyle (text_element_fontstyle::italic); }
+                                | SL
+                                  { $$ = new text_element_fontstyle (text_element_fontstyle::oblique); }
+                                | RM
+                                  { $$ = new text_element_fontstyle (text_element_fontstyle::normal); }
+                                ;
 
-fontsize_element		: FONTSIZE START NUM END
-				  { $$ = new text_element_fontsize ($3); }
-				;
+fontsize_element                : FONTSIZE START NUM END
+                                  { $$ = new text_element_fontsize ($3); }
+                                ;
 
-fontname_element		: FONTNAME START simple_string END
-				  {
-				    $$ = new text_element_fontname (*$3);
-				    delete $3;
-				  }
-				;
+fontname_element                : FONTNAME START simple_string END
+                                  {
+                                    $$ = new text_element_fontname (*$3);
+                                    delete $3;
+                                  }
+                                ;
 
-color_element			: COLOR START simple_string END
-				  {
-				    $$ = new text_element_color (*$3);
-				    delete $3;
-				  }
-				| COLOR_RGB START NUM NUM NUM END
-				  {
-				    $$ = new text_element_color ($3, $4, $5);
-				  }
-				;
+color_element                   : COLOR START simple_string END
+                                  {
+                                    $$ = new text_element_color (*$3);
+                                    delete $3;
+                                  }
+                                | COLOR_RGB START NUM NUM NUM END
+                                  {
+                                    $$ = new text_element_color ($3, $4, $5);
+                                  }
+                                ;
 
-string_element			: simple_string %prec STR
-				  {
-				    $$ = new text_element_string (*$1);
-				    delete $1;
-				  }
-				| scoped_string_element_list
-				  /* This is just to avoid a warning in bison. */
-				  { $$ = $1; }
-				| symbol_element
-				| font_modifier_element
-				| fontsize_element
-				| fontname_element
-				| color_element
-				| superscript_element %prec SCRIPT
-				| subscript_element %prec SCRIPT
-				| combined_script_element
-				;
+string_element                  : simple_string %prec STR
+                                  {
+                                    $$ = new text_element_string (*$1);
+                                    delete $1;
+                                  }
+                                | scoped_string_element_list
+                                  { $$ = $1; }
+                                | symbol_element
+                                | font_modifier_element
+                                | fontsize_element
+                                | fontname_element
+                                | color_element
+                                | superscript_element %prec SCRIPT
+                                | subscript_element %prec SCRIPT
+                                | combined_script_element
+                                ;
 
-superscript_element		: SUPER CH
-				  { $$ = new text_element_superscript ($2); }
-				| SUPER scoped_string_element_list
-				  { $$ = new text_element_superscript ($2); }
-				| SUPER symbol_element
-				  { $$ = new text_element_superscript ($2); }
-				;
+superscript_element             : SUPER CH
+                                  { $$ = new text_element_superscript ($2); }
+                                | SUPER scoped_string_element_list
+                                  { $$ = new text_element_superscript ($2); }
+                                | SUPER symbol_element
+                                  { $$ = new text_element_superscript ($2); }
+                                ;
 
-subscript_element		: SUB CH
-				  { $$ = new text_element_subscript ($2); }
-				| SUB scoped_string_element_list
-				  { $$ = new text_element_subscript ($2); }
-				| SUB symbol_element
-				  { $$ = new text_element_subscript ($2); }
-				;
+subscript_element               : SUB CH
+                                  { $$ = new text_element_subscript ($2); }
+                                | SUB scoped_string_element_list
+                                  { $$ = new text_element_subscript ($2); }
+                                | SUB symbol_element
+                                  { $$ = new text_element_subscript ($2); }
+                                ;
 
-combined_script_element		: subscript_element superscript_element
-				  { $$ = new text_element_combined ($1, $2); }
-				| superscript_element subscript_element
-				  { $$ = new text_element_combined ($1, $2); }
-				;
+combined_script_element         : subscript_element superscript_element
+                                  { $$ = new text_element_combined ($1, $2); }
+                                | superscript_element subscript_element
+                                  { $$ = new text_element_combined ($1, $2); }
+                                ;
 
-string_element_list		: string_element
-				  { $$ = new text_element_list ($1); }
-				| string_element_list string_element
-				  { $1->push_back ($2); $$ = $1; }
-				;
+string_element_list             : string_element
+                                  { $$ = new text_element_list ($1); }
+                                | string_element_list string_element
+                                  { $1->push_back ($2); $$ = $1; }
+                                ;
 
-scoped_string_element_list	: START string_element_list END
-				  { $$ = $2; }
-				| START END
-				  { $$ = new text_element_list (); }
-				;
+scoped_string_element_list      : START string_element_list END
+                                  { $$ = $2; }
+                                | START END
+                                  { $$ = new text_element_list (); }
+                                ;
 
-string				: /* empty */
-				  { parser.set_parse_result (new text_element_string ("")); }
-				| string_element_list
-				  { parser.set_parse_result ($1); }
-				;
+string                          : // empty
+                                  { parser.set_parse_result (new text_element_string ("")); }
+                                | string_element_list
+                                  { parser.set_parse_result ($1); }
+                                ;
 
 %%
 

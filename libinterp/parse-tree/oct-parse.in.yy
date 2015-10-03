@@ -2246,8 +2246,6 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
 
   unwind_protect frame;
 
-  frame.protect_var (error_state);
-
   frame.protect_var (discard_error_messages);
   frame.protect_var (discard_warning_messages);
 
@@ -2267,23 +2265,20 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
             {
               octave_value tmp = e->rvalue1 ();
 
-              if (! error_state)
-                {
-                  tree_constant *tc_retval
-                    = new tree_constant (tmp, base->line (), base->column ());
+              tree_constant *tc_retval
+                = new tree_constant (tmp, base->line (), base->column ());
 
-                  std::ostringstream buf;
+              std::ostringstream buf;
 
-                  tree_print_code tpc (buf);
+              tree_print_code tpc (buf);
 
-                  e->accept (tpc);
+              e->accept (tpc);
 
-                  tc_retval->stash_original_text (buf.str ());
+              tc_retval->stash_original_text (buf.str ());
 
-                  delete e;
+              delete e;
 
-                  retval = tc_retval;
-                }
+              retval = tc_retval;
             }
         }
       else
@@ -3798,8 +3793,6 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
 
   unwind_protect frame;
 
-  frame.protect_var (error_state);
-
   frame.protect_var (discard_error_messages);
   frame.protect_var (discard_warning_messages);
 
@@ -3810,24 +3803,21 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
     {
       octave_value tmp = array_list->rvalue1 ();
 
-      if (! error_state)
-        {
-          tree_constant *tc_retval
-            = new tree_constant (tmp, array_list->line (),
-                                 array_list->column ());
+      tree_constant *tc_retval
+        = new tree_constant (tmp, array_list->line (),
+                             array_list->column ());
 
-          std::ostringstream buf;
+      std::ostringstream buf;
 
-          tree_print_code tpc (buf);
+      tree_print_code tpc (buf);
 
-          array_list->accept (tpc);
+      array_list->accept (tpc);
 
-          tc_retval->stash_original_text (buf.str ());
+      tc_retval->stash_original_text (buf.str ());
 
-          delete array_list;
+      delete array_list;
 
-          retval = tc_retval;
-        }
+      retval = tc_retval;
     }
 
   return retval;
@@ -4377,51 +4367,48 @@ not loaded anymore during the current Octave session.\n\
     {
       string_vector argv = args.make_argv ("autoload");
 
-      if (! error_state)
+      std::string nm = argv[2];
+
+      if (! octave_env::absolute_pathname (nm))
         {
-          std::string nm = argv[2];
+          octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
-          if (! octave_env::absolute_pathname (nm))
+          bool found = false;
+
+          if (fcn)
             {
-              octave_user_code *fcn = octave_call_stack::caller_user_code ();
+              std::string fname = fcn->fcn_file_name ();
 
-              bool found = false;
-
-              if (fcn)
+              if (! fname.empty ())
                 {
-                  std::string fname = fcn->fcn_file_name ();
+                  fname = octave_env::make_absolute (fname);
+                  fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
 
-                  if (! fname.empty ())
+                  file_stat fs (fname + nm);
+
+                  if (fs.exists ())
                     {
-                      fname = octave_env::make_absolute (fname);
-                      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
-
-                      file_stat fs (fname + nm);
-
-                      if (fs.exists ())
-                        {
-                          nm = fname + nm;
-                          found = true;
-                        }
+                      nm = fname + nm;
+                      found = true;
                     }
                 }
-              if (! found)
-                warning_with_id ("Octave:autoload-relative-file-name",
-                                 "autoload: '%s' is not an absolute file name",
-                                 nm.c_str ());
             }
-          if (nargin == 2)
-            autoload_map[argv[1]] = nm;
-          else if (nargin == 3)
-            {
-              if (argv[3].compare ("remove") != 0)
-                error_with_id ("Octave:invalid-input-arg",
-                               "autoload: third argument can only be 'remove'");
+          if (! found)
+            warning_with_id ("Octave:autoload-relative-file-name",
+                             "autoload: '%s' is not an absolute file name",
+                             nm.c_str ());
+        }
+      if (nargin == 2)
+        autoload_map[argv[1]] = nm;
+      else if (nargin == 3)
+        {
+          if (argv[3].compare ("remove") != 0)
+            error_with_id ("Octave:invalid-input-arg",
+                           "autoload: third argument can only be 'remove'");
 
-              // Remove function from symbol table and autoload map.
-              symbol_table::clear_dld_function (argv[1]);
-              autoload_map.erase (argv[1]);
-            }
+          // Remove function from symbol table and autoload map.
+          symbol_table::clear_dld_function (argv[1]);
+          autoload_map.erase (argv[1]);
         }
     }
   else
@@ -4497,40 +4484,38 @@ source_file (const std::string& file_name, const std::string& context,
       else
         error ("source: context must be \"caller\" or \"base\"");
 
-      if (! error_state)
-        frame.add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave_call_stack::pop);
     }
 
-  if (! error_state)
+  try
     {
       octave_function *fcn = parse_fcn_file (file_full_name, file_name,
                                              "", "", require_file, true,
                                              false, false, warn_for);
+    }
+  catch (const octave_execution_error)
+    {
+      error ("source: error sourcing file '%s'",
+             file_full_name.c_str ());
+    }
 
-      if (! error_state)
+  if (fcn && fcn->is_user_script ())
+    {
+      octave_value_list args;
+
+      if (verbose)
         {
-          if (fcn && fcn->is_user_script ())
-            {
-              octave_value_list args;
-
-              if (verbose)
-                {
-                  std::cout << "executing commands from " << file_full_name << " ... ";
-                  reading_startup_message_printed = true;
-                  std::cout.flush ();
-                }
-
-              fcn->do_multi_index_op (0, args);
-
-              if (verbose)
-                std::cout << "done." << std::endl;
-
-              delete fcn;
-            }
+          std::cout << "executing commands from " << file_full_name << " ... ";
+          reading_startup_message_printed = true;
+          std::cout.flush ();
         }
-      else
-        error ("source: error sourcing file '%s'",
-               file_full_name.c_str ());
+
+      fcn->do_multi_index_op (0, args);
+
+      if (verbose)
+        std::cout << "done." << std::endl;
+
+      delete fcn;
     }
 }
 
@@ -4661,9 +4646,14 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
     retval = fcn.do_multi_index_op (nargout, args);
   else
     {
-      maybe_missing_function_hook (name);
-      if (! error_state)
-        error ("feval: function '%s' not found", name.c_str ());
+      try
+        {
+          maybe_missing_function_hook (name);
+        }
+      catch (const octave_execution_exception&)
+        {
+          error ("feval: function '%s' not found", name.c_str ());
+        }
     }
 
   return retval;
@@ -4708,12 +4698,9 @@ feval (const octave_value_list& args, int nargout)
         {
           std::string name = f_arg.string_value ();
 
-          if (! error_state)
-            {
-              octave_value_list tmp_args = get_feval_args (args);
+          octave_value_list tmp_args = get_feval_args (args);
 
-              retval = feval (name, tmp_args, nargout);
-            }
+          retval = feval (name, tmp_args, nargout);
         }
       else if (f_arg.is_function_handle ()
                || f_arg.is_anonymous_function ()
@@ -4878,7 +4865,7 @@ eval_string (const std::string& eval_str, bool silent,
 
                   retval = expr->rvalue (nargout);
 
-                  if (do_bind_ans && ! (error_state || retval.empty ()))
+                  if (do_bind_ans && ! retval.empty ())
                     bind_ans (retval(0), expr->print_result ());
 
                   if (nargout == 0)
@@ -4889,8 +4876,7 @@ eval_string (const std::string& eval_str, bool silent,
               else
                 error ("eval: invalid use of statement list");
 
-              if (error_state
-                  || tree_return_command::returning
+              if (tree_return_command::returning
                   || tree_break_command::breaking
                   || tree_continue_command::continuing)
                 break;
@@ -5158,55 +5144,52 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
           else
             error ("evalin: CONTEXT must be \"caller\" or \"base\"");
 
-          if (! error_state)
+          frame.add_fcn (octave_call_stack::pop);
+
+          if (nargin > 2)
             {
-              frame.add_fcn (octave_call_stack::pop);
+              frame.protect_var (buffer_error_messages);
+              buffer_error_messages++;
+            }
 
-              if (nargin > 2)
-                {
-                  frame.protect_var (buffer_error_messages);
-                  buffer_error_messages++;
-                }
+          int parse_status = 0;
 
-              int parse_status = 0;
+          bool execution_error = false;
 
-              bool execution_error = false;
+          octave_value_list tmp;
 
-              octave_value_list tmp;
+          try
+            {
+              tmp = eval_string (args(1), nargout > 0,
+                                 parse_status, nargout);
+            }
+          catch (const octave_execution_exception&)
+            {
+              execution_error = true;
+            }
 
-              try
-                {
-                  tmp = eval_string (args(1), nargout > 0,
-                                     parse_status, nargout);
-                }
-              catch (const octave_execution_exception&)
-                {
-                  execution_error = true;
-                }
+          if (nargin > 2 && (parse_status != 0 || execution_error))
+            {
+              // Set up for letting the user print any messages from
+              // errors that occurred in the first part of this eval().
 
-              if (nargin > 2 && (parse_status != 0 || execution_error))
-                {
-                  // Set up for letting the user print any messages from
-                  // errors that occurred in the first part of this eval().
+              buffer_error_messages--;
 
-                  buffer_error_messages--;
+              tmp = eval_string (args(2), nargout > 0,
+                                 parse_status, nargout);
 
-                  tmp = eval_string (args(2), nargout > 0,
-                                     parse_status, nargout);
+              retval = (nargout > 0) ? tmp : octave_value_list ();
+            }
+          else
+            {
+              if (nargout > 0)
+                retval = tmp;
 
-                  retval = (nargout > 0) ? tmp : octave_value_list ();
-                }
-              else
-                {
-                  if (nargout > 0)
-                    retval = tmp;
-
-                  // FIXME: we should really be rethrowing whatever
-                  // exception occurred, not just throwing an
-                  // execution exception.
-                  if (execution_error)
-                    octave_throw_execution_exception ();
-                }
+              // FIXME: we should really be rethrowing whatever
+              // exception occurred, not just throwing an
+              // execution exception.
+              if (execution_error)
+                octave_throw_execution_exception ();
             }
         }
       else

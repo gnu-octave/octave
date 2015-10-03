@@ -1911,9 +1911,6 @@ If @var{name} is omitted, return a list of keywords.\n\
 
   string_vector argv = args.make_argv ("iskeyword");
 
-  if (error_state)
-    return retval;
-
   if (argc == 1)
     {
       // Neither set and get are keywords.  See the note in the

@@ -278,8 +278,7 @@ Creates an integer variable from VAL.")
     {
       double d = args(0).double_value ();
 
-      if (! error_state)
-        retval = octave_value (new octave_integer (NINT (d)));
+      retval = octave_value (new octave_integer (NINT (d)));
     }
   else
     usage ("make_int");

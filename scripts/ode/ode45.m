@@ -106,8 +106,8 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
   endif
 
   if (length (vslot) < 2 && ...
-     (isempty (vodeoptions.TimeStepSize) ...
-      || isempty (vodeoptions.TimeStepNumber)))
+      (isempty (vodeoptions.TimeStepSize) ...
+       || isempty (vodeoptions.TimeStepNumber)))
     error ("OdePkg:InvalidArgument", ...
            "second input argument must be a valid vector");
   elseif (vslot(2) == vslot(1))
@@ -251,8 +251,8 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
   ## option can be set by the user to another value than default value.
   if (isempty (vodeoptions.InitialStep) && strcmp (integrate_func, "adaptive"))
     vodeoptions.InitialStep = vodeoptions.vdirection* ...
-      starting_stepsize (vorder, vfun, vslot(1), vinit, vodeoptions.AbsTol, ...
-                         vodeoptions.RelTol, vodeoptions.vnormcontrol);
+                              starting_stepsize (vorder, vfun, vslot(1), vinit, vodeoptions.AbsTol, ...
+                                                 vodeoptions.RelTol, vodeoptions.vnormcontrol);
     warning ("OdePkg:InvalidArgument", ...
              "option ''InitialStep'' not set, estimated value %f is used", ...
              vodeoptions.InitialStep);
@@ -359,11 +359,11 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
     if (vmassdependence) ## constant mass matrices have already
       vmass = @(t,x) vodeoptions.Mass (t, x, vodeoptions.vfunarguments{:});
       vfun = @(t,x) vmass (t, x, vodeoptions.vfunarguments{:}) ...
-        \ vfun (t, x, vodeoptions.vfunarguments{:});
+             \ vfun (t, x, vodeoptions.vfunarguments{:});
     else                 ## if (vmassdependence == false)
       vmass = @(t) vodeoptions.Mass (t, vodeoptions.vfunarguments{:});
       vfun = @(t,x) vmass (t, vodeoptions.vfunarguments{:}) ...
-        \ vfun (t, x, vodeoptions.vfunarguments{:});
+             \ vfun (t, x, vodeoptions.vfunarguments{:});
     endif
   endif
 
@@ -385,11 +385,11 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
   ## Postprocessing, do whatever when terminating integration algorithm
   if (vodeoptions.vhaveoutputfunction) ## Cleanup plotter
     feval (vodeoptions.OutputFcn, solution.t(end), ...
-      solution.x(end,:)', "done", vodeoptions.vfunarguments{:});
+           solution.x(end,:)', "done", vodeoptions.vfunarguments{:});
   endif
   if (vodeoptions.vhaveeventfunction)  ## Cleanup event function handling
     odepkg_event_handle (vodeoptions.Events, solution.t(end), ...
-      solution.x(end,:)', "done", vodeoptions.vfunarguments{:});
+                         solution.x(end,:)', "done", vodeoptions.vfunarguments{:});
   endif
 
   ## Print additional information if option Stats is set

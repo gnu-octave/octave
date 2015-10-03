@@ -69,7 +69,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   ## first values for time and solution
   t = tspan(1);
   x = x0(:);
-
+  
   ## get first initial timestep
   dt = odeget (options, "InitialStep",
                starting_stepsize (order, func, t, x, options.AbsTol,
@@ -120,15 +120,20 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   z = t;
   u = x;
 
-  k_vals = feval (func, t , x, options.vfunarguments{:});
-
+  k_vals = []; 
+  
   while (counter <= k)
     facmax = 1.5;
 
     ## compute integration step from t to t+dt
-    [s, y, y_est, k_vals] = stepper (func, z(end), u(:,end),
-                                     dt, options, k_vals);
-
+    if (isempty (k_vals))
+      [s, y, y_est, new_k_vals] = stepper (func, z(end), u(:,end),
+                                           dt, options);
+    else
+      [s, y, y_est, new_k_vals] = stepper (func, z(end), u(:,end),
+                                           dt, options, k_vals);
+    endif
+    
     if (options.vhavenonnegative)
       x(options.NonNegative,end) = abs (x(options.NonNegative,end));
       y(options.NonNegative,end) = abs (y(options.NonNegative,end));
@@ -141,27 +146,29 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
     err = AbsRel_Norm (y(:,end), u(:,end), options.AbsTol, options.RelTol,
                        options.vnormcontrol, y_est(:,end));
-
+    
     ## solution accepted only if the error is less or equal to 1.0
     if (err <= 1)
-
+      
       [tk, comp] = kahan (tk, comp, dt);
       options.comp = comp;
       s(end) = tk;
 
       ## values on this interval for time and solution
-      z = [z(end);s];
-      u = [u(:,end),y];
-
+      z = [z(end); s];
+      u = [u(:,end), y];
+      k_vals = new_k_vals;
+      
       ## if next tspan value is caught, update counter
       if ((z(end) == tspan(counter))
           || (abs (z(end) - tspan(counter)) /
               (max (abs (z(end)), abs (tspan(counter)))) < 8*eps) )
         counter++;
-  
-      ## if there is an element in time vector at which the solution is required
-      ## the program must compute this solution before going on with next steps
+        
+        ## if there is an element in time vector at which the solution is required
+        ## the program must compute this solution before going on with next steps
       elseif (vdirection * z(end) > vdirection * tspan(counter))
+
         ## initialize counter for the following cycle
         i = 2;
         while (i <= length (z))
@@ -179,9 +186,9 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
             ## choose interpolation scheme according to order of the solver
             switch order
               case 1
-               u_interp = linear_interpolation ([z(i-1) z(i)],
-                                                [u(:,i-1) u(:,i)],
-                                                tspan(counter));
+                u_interp = linear_interpolation ([z(i-1) z(i)],
+                                                 [u(:,i-1) u(:,i)],
+                                                 tspan(counter));
               case 2
                 if (! isempty (k_vals))
                   der = k_vals(:,1);
@@ -194,10 +201,10 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
                                                     der, tspan(counter));
               case 3
                 u_interp = ...
-                  hermite_cubic_interpolation ([z(i-1) z(i)],
-                                               [u(:,i-1) u(:,i)],
-                                               [k_vals(:,1) k_vals(:,end)],
-                                               tspan(counter));
+                hermite_cubic_interpolation ([z(i-1) z(i)],
+                                             [u(:,i-1) u(:,i)],
+                                             [k_vals(:,1) k_vals(:,end)],
+                                             tspan(counter));
               case 4
                 ## if ode45 is used without local extrapolation this function
                 ## doesn't require a new function evaluation.
@@ -217,10 +224,10 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
                                    - (1776094331/19743644256) * k_vals(:,6)
                                    + (11237099/235043384) * k_vals(:,7));
                 u_interp = ...
-                  hermite_quartic_interpolation ([z(i-1) z(i)],
-                                                 [u(:,i-1) u_half u(:,i)],
-                                                 [k_vals(:,1) k_vals(:,end)],
-                                                 tspan(counter));
+                hermite_quartic_interpolation ([z(i-1) z(i)],
+                                               [u(:,i-1) u_half u(:,i)],
+                                               [k_vals(:,1) k_vals(:,end)],
+                                               tspan(counter));
 
                 ## it is also possible to do a new function evaluation and use
                 ## the quintic hermite interpolator
@@ -239,16 +246,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
                 der(:,2) = feval (func, z(i) , u(:,i),
                                   options.vfunarguments{:});
                 u_interp = ...
-                  hermite_cubic_interpolation ([z(i-1) z(i)],
-                                               [u(:,i-1) u(:,i)],
-                                               der, tspan(counter));
+                hermite_cubic_interpolation ([z(i-1) z(i)],
+                                             [u(:,i-1) u(:,i)],
+                                             der, tspan(counter));
             endswitch
 
             ## add the interpolated value of the solution
             u = [u(:,1:i-1), u_interp, u(:,i:end)];
             
             ## add the time requested
-            z = [z(1:i-1);tspan(counter);z(i:end)];
+            z = [z(1:i-1); tspan(counter); z(i:end)];
 
             ## update counters
             counter++;
@@ -310,7 +317,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
       ## true
       if (options.vhaveeventfunction)
         solution.vevent = odepkg_event_handle (options.Events, t(end),
-            x(:,end), [], options.vfunarguments{:});
+                                               x(:,end), [], options.vfunarguments{:});
         if (! isempty (solution.vevent{1})
             && solution.vevent{1} == 1)
           t(solution.vcntloop-1,:) = solution.vevent{3}(end,:);
@@ -321,13 +328,15 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
       endif
       
     else
+      
       facmax = 1.0;
+      
     endif
     
     ## Compute next timestep, formula taken from Hairer
     err += eps;    # adding an eps to avoid divisions by zero
-    dt = dt * min (facmax, max (facmin,
-                                fac * (1 / err)^(1 / (order + 1))));
+    dt = dt * min (facmax,
+                   max (facmin, fac * (1 / err)^(1 / (order + 1))));
     dt = vdirection * min (abs (dt), options.MaxStep);
     
     ## Update counters that count the number of iteration cycles
@@ -383,7 +392,3 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   solution.x = x(:,1:end-f)';
   
 endfunction
-
-## Local Variables: ***
-## mode: octave ***
-## End: ***

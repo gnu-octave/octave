@@ -63,7 +63,8 @@
 ##
 ## @seealso{odepkg}
 
-function varargout = runge_kutta_45_dorpri (f, t, x, dt, varargin)
+function [t_out, x_out, x_est, k] = ...
+         runge_kutta_45_dorpri (f, t, x, dt, varargin)
 
   persistent a = [0           0          0           0        0          0;
                   1/5         0          0           0        0          0;
@@ -83,17 +84,19 @@ function varargout = runge_kutta_45_dorpri (f, t, x, dt, varargin)
   s = t + dt * b;
   cc = dt * c;
   aa = dt * a;
-  
-  args = varargin{1}.vfunarguments;
   k = zeros (rows (x), 7);
 
-  if (nargin == 5) # only the options are passed
-    k(:,1) = feval (f, t, x, args{:});
-  elseif (nargin == 6) # both the options and the k values are passed
-    k(:,1) = varargin{2}(:,end); # FSAL property
+  if (nargin >= 5) # options are passed
+    args = varargin{1}.vfunarguments;
+    if (nargin >= 6) # both the options and the k values are passed
+      k(:,1) = varargin{2}(:,end); # FSAL property
+    else      
+      k(:,1) = feval (f, t, x, args{:});
+    endif
+  else
+    args = {};
   endif
-  
-  k(:,1) = feval (f, s(1), x, args{:});
+
   k(:,2) = feval (f, s(2), x + k(:,1) * aa(2, 1).', args{:});
   k(:,3) = feval (f, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
   k(:,4) = feval (f, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
@@ -101,16 +104,15 @@ function varargout = runge_kutta_45_dorpri (f, t, x, dt, varargin)
   k(:,6) = feval (f, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
 
   ## compute new time and new values for the unkwnowns
-  varargout{1} = t + dt;
-  varargout{2} = x + k(:,1:6) * cc(:); # 5th order approximation
+  t_out = t + dt;
+  x_out = x + k(:,1:6) * cc(:); # 5th order approximation
 
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
-    k(:,7) = feval (f, t + dt, varargout{2}, args{:});
+    k(:,7) = feval (f, t + dt, x_out, args{:});
     cc_prime = dt * c_prime;
-    varargout{3} = x + k * cc_prime(:); # x_est
-    varargout{4} = k;
+    x_est = x + k * cc_prime(:); # x_est
   endif
   
 endfunction

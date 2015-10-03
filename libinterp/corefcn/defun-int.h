@@ -103,21 +103,14 @@ typedef octave_function *
   octave_function * \
   gname (const octave_shlib& shl, bool relative) \
   { \
-    octave_function *retval = 0; \
- \
     check_version (OCTAVE_API_VERSION, name); \
  \
-    if (! error_state) \
-      { \
-        octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
+    octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
  \
-        if (relative) \
-          fcn->mark_relative (); \
+    if (relative) \
+      fcn->mark_relative (); \
  \
-        retval = fcn; \
-      } \
- \
-    return retval; \
+    return fcn; \
   }
 
 // MAKE_BUILTINS is defined to extract function names and related

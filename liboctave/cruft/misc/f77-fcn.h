@@ -45,8 +45,7 @@ extern "C" {
    here, we'll restore the previous context and return.  We may also
    end up here if an interrupt is processed when the Fortran
    subroutine is called.  In that case, we resotre the context and go
-   to the top level.  The error_state should be checked immediately
-   after this macro is used. */
+   to the top level. */
 
 #define F77_XFCN(f, F, args) \
   do \

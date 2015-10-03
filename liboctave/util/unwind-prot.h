@@ -40,8 +40,8 @@ public:
   unwind_protect (void) : lifo () { }
 
   // Destructor should not raise an exception, so all actions
-  // registered should be exception-safe (but setting error_state is
-  // allowed). If you're not sure, see unwind_protect_safe.
+  // registered should be exception-safe.  If you're not sure, see
+  // unwind_protect_safe.
 
   ~unwind_protect (void) { run (); }
 

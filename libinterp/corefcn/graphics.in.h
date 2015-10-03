@@ -718,14 +718,9 @@ public:
           {
             double d = c(i).double_value ();
 
-            if (! error_state)
-              {
-                std::ostringstream buf;
-                buf << d;
-                value[i] = buf.str ();
-              }
-            else
-              break;
+            std::ostringstream buf;
+            buf << d;
+            value[i] = buf.str ();
           }
       }
   }
@@ -795,14 +790,9 @@ protected:
               {
                 double d = c(i).double_value ();
 
-                if (! error_state)
-                  {
-                    std::ostringstream buf;
-                    buf << d;
-                    value[i] = buf.str ();
-                  }
-                else
-                  return false;
+                std::ostringstream buf;
+                buf << d;
+                value[i] = buf.str ();
               }
           }
 
@@ -810,30 +800,30 @@ protected:
       }
     else
       {
-        NDArray nda = val.array_value ();
+        NDArray nda;
 
-        if (! error_state)
+        try
           {
-            octave_idx_type nel = nda.numel ();
-
-            value.resize (nel);
-
-            for (octave_idx_type i = 0; i < nel; i++)
-              {
-                std::ostringstream buf;
-                buf << nda(i);
-                value[i] = buf.str ();
-              }
-
-            stored_type = char_t;
+            nda = val.array_value ();
           }
-        else
+        catch (const octave_execution_exception&)
           {
             error ("set: invalid string property value for \"%s\"",
                    get_name ().c_str ());
-
-            return false;
           }
+
+        octave_idx_type nel = nda.numel ();
+
+        value.resize (nel);
+
+        for (octave_idx_type i = 0; i < nel; i++)
+          {
+            std::ostringstream buf;
+            buf << nda(i);
+            value[i] = buf.str ();
+          }
+
+        stored_type = char_t;
       }
 
     return true;
@@ -1488,23 +1478,18 @@ protected:
   {
     bool retval = array_property::do_set (v);
 
-    if (! error_state)
+    dim_vector dv = data.dims ();
+
+    if (dv(0) > 1 && dv(1) == 1)
       {
-        dim_vector dv = data.dims ();
+        int tmp = dv(0);
+        dv(0) = dv(1);
+        dv(1) = tmp;
 
-        if (dv(0) > 1 && dv(1) == 1)
-          {
-            int tmp = dv(0);
-            dv(0) = dv(1);
-            dv(1) = tmp;
-
-            data = data.reshape (dv);
-          }
-
-        return retval;
+        data = data.reshape (dv);
       }
 
-    return false;
+    return retval;
   }
 
 private:
@@ -1712,7 +1697,16 @@ private:
 protected:
   bool do_set (const octave_value& val)
   {
-    const Matrix new_kids = val.matrix_value ();
+    Matrix new_kids;
+
+    try
+      {
+        new_kids = val.matrix_value ();
+      }
+    catch (const octave_execution_exception&)
+      {
+        error ("set: expecting children to be array of graphics handles");
+      }
 
     octave_idx_type nel = new_kids.numel ();
 
@@ -1721,33 +1715,25 @@ protected:
     bool is_ok = true;
     bool add_hidden = true;
 
-    if (! error_state)
+    const Matrix visible_kids = do_get_children (false);
+
+    if (visible_kids.numel () == new_kids.numel ())
       {
-        const Matrix visible_kids = do_get_children (false);
+        Matrix t1 = visible_kids.sort ();
+        Matrix t2 = new_kids_column.sort ();
+        Matrix t3 = get_hidden ().sort ();
 
-        if (visible_kids.numel () == new_kids.numel ())
-          {
-            Matrix t1 = visible_kids.sort ();
-            Matrix t2 = new_kids_column.sort ();
-            Matrix t3 = get_hidden ().sort ();
-
-            if (t1 != t2)
-              is_ok = false;
-
-            if (t1 == t3)
-              add_hidden = false;
-          }
-        else
+        if (t1 != t2)
           is_ok = false;
 
-        if (! is_ok)
-          error ("set: new children must be a permutation of existing children");
+        if (t1 == t3)
+          add_hidden = false;
       }
     else
-      {
-        is_ok = false;
-        error ("set: expecting children to be array of graphics handles");
-      }
+      is_ok = false;
+
+    if (! is_ok)
+      error ("set: new children must be a permutation of existing children");
 
     if (is_ok)
       {
@@ -3395,28 +3381,21 @@ public:
 
     void set___graphics_toolkit__ (const octave_value& val)
     {
-      if (! error_state)
+      if (val.is_string ())
         {
-          if (val.is_string ())
+          std::string nm = val.string_value ();
+          graphics_toolkit b = gtk_manager::find_toolkit (nm);
+
+          if (b.get_name () != nm)
+            error ("set___graphics_toolkit__: invalid graphics toolkit");
+          else if (nm != get___graphics_toolkit__ ())
             {
-              std::string nm = val.string_value ();
-              graphics_toolkit b = gtk_manager::find_toolkit (nm);
-              if (b.get_name () != nm)
-                {
-                  error ("set___graphics_toolkit__: invalid graphics toolkit");
-                }
-              else
-                {
-                  if (nm != get___graphics_toolkit__ ())
-                    {
-                      set_toolkit (b);
-                      mark_modified ();
-                    }
-                }
+              set_toolkit (b);
+              mark_modified ();
             }
-          else
-            error ("set___graphics_toolkit__ must be a string");
         }
+      else
+        error ("set___graphics_toolkit__ must be a string");
     }
 
     void adopt (const graphics_handle& h);
@@ -4515,27 +4494,24 @@ public:
 
     void set_position (const octave_value& val)
     {
-      if (! error_state)
+      octave_value new_val (val);
+
+      if (new_val.numel () == 2)
         {
-          octave_value new_val (val);
+          dim_vector dv (1, 3);
 
-          if (new_val.numel () == 2)
-            {
-              dim_vector dv (1, 3);
-
-              new_val = new_val.resize (dv, true);
-            }
-
-          if (position.set (new_val, false))
-            {
-              set_positionmode ("manual");
-              update_position ();
-              position.run_listeners (POSTSET);
-              mark_modified ();
-            }
-          else
-            set_positionmode ("manual");
+          new_val = new_val.resize (dv, true);
         }
+
+      if (position.set (new_val, false))
+        {
+          set_positionmode ("manual");
+          update_position ();
+          position.run_listeners (POSTSET);
+          mark_modified ();
+        }
+      else
+        set_positionmode ("manual");
     }
 
     // See the genprops.awk script for an explanation of the
@@ -6096,8 +6072,7 @@ public:
           cb = go.get (name);
       }
 
-    if (! error_state)
-      execute_callback (h, cb, data);
+    execute_callback (h, cb, data);
   }
 
   static void execute_callback (const graphics_handle& h,

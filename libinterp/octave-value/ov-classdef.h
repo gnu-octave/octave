@@ -1208,7 +1208,7 @@ cdef_object_base::register_object (void)
     {
       cdef_class cls (get_class ());
 
-      if (! error_state && cls.ok ())
+      if (cls.ok ())
         cls.register_object ();
     }
 }
@@ -1220,7 +1220,7 @@ cdef_object_base::unregister_object (void)
     {
       cdef_class cls (get_class ());
 
-      if (! error_state && cls.ok ())
+      if (cls.ok ())
         cls.unregister_object ();
     }
 }

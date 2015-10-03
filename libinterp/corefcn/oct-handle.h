@@ -42,12 +42,14 @@ public:
       /* do nothing */;
     else
       {
-        double tval = a.double_value ();
-
-        if (! error_state)
-          val = tval;
-        else
-          error ("invalid handle");
+        try
+          {
+            val = a.double_value ();
+          }
+        catch (const octave_execution_exception&)
+          {
+            error ("invalid handle");
+          }
       }
   }
 

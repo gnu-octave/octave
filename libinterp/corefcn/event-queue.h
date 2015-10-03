@@ -36,8 +36,8 @@ public:
   event_queue (void) : fifo () { }
 
   // Destructor should not raise an exception, so all actions
-  // registered should be exception-safe (but setting error_state is
-  // allowed). If you're not sure, see event_queue_safe.
+  // registered should be exception-safe.  If you're not sure, see
+  // event_queue_safe.
 
   ~event_queue (void) { run (); }
 

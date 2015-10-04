@@ -19,35 +19,36 @@
 
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{}] =} odeset ()
-## @deftypefnx {Function File}  {[@var{odestruct}] =} odeset (@var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
-## @deftypefnx {Function File}  {[@var{odestruct}] =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
-## @deftypefnx {Function File}  {[@var{odestruct}] =} odeset (@var{oldstruct},
-## @var{newstruct})
+## @deftypefn  {Function File} {} odeset ()
+## @deftypefnx {Function File} {@var{odestruct} =} odeset (@var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
+## @deftypefnx {Function File} {@var{odestruct} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
+## @deftypefnx {Function File} {@var{odestruct} =} odeset (@var{oldstruct}, @var{newstruct})
 ##
-## If this function is called without an input argument then return a new
-## ODE options structure array that contains all the necessary fields and
-## sets the values of all fields to default values.
+## Create or modify an ODE options structure.
+##
+## If this function is called without an input argument then return a new ODE
+## options structure array that contains all the necessary fields and sets
+## the values of all fields to default values.
 ##
 ## If this function is called with string input arguments @var{"field1"},
-## @var{"field2"}, @dots{} identifying valid ODE options then return a
-## new ODE options structure with all necessary fields and set the values
-## of the fields @var{"field1"}, @var{"field2"}, @dots{} to the values
-## @var{value1}, @var{value2}, @dots{}
+## @var{"field2"}, @dots{} identifying valid ODE options then return a new
+## ODE options structure with all necessary fields and set the values of the
+## fields @var{"field1"}, @var{"field2"}, @dots{} to the values @var{value1},
+## @var{value2}, @dots{}
 ##
-## If this function is called with a first input argument @var{oldstruct}
-## of type structure array then overwrite all values of the options
+## If this function is called with a first input argument @var{oldstruct} of
+## type structure array then overwrite all values of the options
 ## @var{"field1"}, @var{"field2"}, @dots{} of the structure @var{oldstruct}
 ## with new values @var{value1}, @var{value2}, @dots{} and return the
 ## modified structure array.
 ##
-## If this function is called with two input arguments @var{oldstruct}
-## and @var{newstruct} of type structure array then overwrite all values
-## in the fields from the structure @var{oldstruct} with new values of the
-## fields from the structure @var{newstruct}. Empty values of @var{newstruct}
-## will not overwrite values in @var{oldstruct}.
+## If this function is called with two input arguments @var{oldstruct} and
+## @var{newstruct} of type structure array then overwrite all values in the
+## fields from the structure @var{oldstruct} with new values of the fields
+## from the structure @var{newstruct}.  Empty values of @var{newstruct} will
+## not overwrite values in @var{oldstruct}.
+## @seealso{odeget}
 ## @end deftypefn
-##
 
 function opt = odeset (varargin)
 

@@ -18,14 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{}] =}
-## ode_struct_value_check (@var{arg}, [@var{"solver"}])
+## @deftypefn {Function File} {[@var{}] =} ode_struct_value_check (@var{arg}, [@var{"solver"}])
 ##
 ## If this function is called with one input argument of type structure array
 ## then check the field names and the field values of the OdePkg structure
-## @var{arg}. Optionally if this function is called with a second input
+## @var{arg}.  Optionally if this function is called with a second input
 ## argument @var{"solver"} of type string that specifies the name of a valid
-## OdePkg solver then a higher level error detection is performed. The function
+## OdePkg solver then a higher level error detection is performed.  The function
 ## does not modify any of the field names or field values but terminates with
 ## an error if an invalid option or value is found.
 ##

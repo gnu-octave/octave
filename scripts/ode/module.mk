@@ -16,7 +16,6 @@ scripts_ode_PRIVATE_FCN_FILES = \
   scripts/ode/private/runge_kutta_45_dorpri.m \
   scripts/ode/private/starting_stepsize.m
 
-
 scripts_ode_FCN_FILES = \
   scripts/ode/ode45.m \
   scripts/ode/odeset.m \

@@ -17,15 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{h}] =} starting_stepsize (@var{order},
-## @var{@@fun}, @var{t0}, @var{x0})
+## @deftypefn {Function File} {[@var{h}] =} starting_stepsize (@var{order}, @var{@@fun}, @var{t0}, @var{x0})
 ##
 ## This function file can be used to determine a good initial step for an ODE
-## solver of order @var{order}. The algorithm is that one described in [1].
+## solver of order @var{order}.  The algorithm is that one described in [1].
 ##
 ## Second input argument, which is @var{@@fun}, is the function describing
-## the differential equations, @var{t0} is the initial time and @var{x0}
-## is the initial condition.
+## the differential equations, @var{t0} is the initial time and @var{x0} is
+## the initial condition.
 ## 
 ## This function returns a good guess for the initial timestep @var{h}.
 ##

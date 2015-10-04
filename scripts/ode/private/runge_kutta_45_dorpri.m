@@ -18,15 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{t_next}, @var{x_next}] =}
-## runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt},
-## [@var{options}, @var{k_vals_in}])
-## @deftypefnx {Command} {[@var{t_next}, @var{x_next}, @var{x_est}] =}
-## runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt},
-## [@var{options}, @var{k_vals_in}])
-## @deftypefnx {Command} {[@var{t_next}, @var{x_next}, @var{x_est},
-## @var{k_vals_out}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x},
-## @var{dt}, [@var{options}, @var{k_vals_in}])
+## @deftypefn  {Function File} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
 ##
 ## This function can be used to integrate a system of ODEs with a given initial
 ## condition @var{x} from @var{t} to @var{t+dt}, with the Dormand-Prince method.
@@ -38,14 +32,14 @@
 ## Second output parameter is the higher order computed solution at time
 ## @var{t_next} (local extrapolation).
 ##
-## Third output parameter is a lower order solution for the estimation
-## of the error.
+## Third output parameter is a lower order solution for the estimation of the
+## error.
 ##
 ## Fourth output parameter is matrix containing the Runge-Kutta evaluations
 ## to use in a FSAL scheme or for dense output.
 ##
-## First input argument is the function describing the system of ODEs
-## to be integrated.
+## First input argument is the function describing the system of ODEs to be
+## integrated.
 ##
 ## Second input parameter is the first extreme of integration interval.
 ##
@@ -54,8 +48,8 @@
 ## Fourth input argument is the timestep, that is the length of the
 ## integration interval.
 ##
-## Fifth input parameter is optional and describes a set of options useful
-## to adapt the computation to what is needed.
+## Fifth input parameter is optional and describes a set of options useful to
+## adapt the computation to what is needed.
 ##
 ## Sixth input parameter is optional and describes the Runge-Kutta evaluations
 ## of the previous step to use in a FSAL scheme.

@@ -16,29 +16,26 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{res}] =} fuzzy_compare @
-## (@var{"string1"}, @var{string_set}, [@var{correctness}])
+## @deftypefn {Function File} {[@var{res}] =} fuzzy_compare (@var{"string1"}, @var{string_set}, [@var{correctness}])
 ##
-## Compare a string with a set of strings and returns the positions
-## in the set of strings at which there are the fields that best fit
-## the one we are comparing.
+## Compare a string with a set of strings and returns the positions in the
+## set of strings at which there are the fields that best fit the one we are
+## comparing.
 ##
 ## The distance used to compare the words is the Levenshtein distance
 ## and for more details see
 ## @url{http://en.wikipedia.org/wiki/Levenshtein_distance}.
 ##
-## This function must be called with one output argument @var{res}
-## which contains the positions of the elements in @var{string_set}
-## which best fit the given word. The tolerance that is used to
-## determine if a field of the list fits or not the given word is a
-## function of the length of the word and of the minimum distance of
-## the word from all the elements of the list. The more the length,
-## the more the tolerance. The less the minimum, the less the
-## tolerance but if the minimum is close to the length of the word,
-## the tolerance must be small because it means that no field in the
-## list is really fitting the given word. So that the function is:
+## This function must be called with one output argument @var{res} which
+## contains the positions of the elements in @var{string_set} which best fit
+## the given word.  The tolerance that is used to determine if a field of the
+## list fits or not the given word is a function of the length of the word
+## and of the minimum distance of the word from all the elements of the list.
+##  The more the length, the more the tolerance.  The less the minimum, the
+## less the tolerance but if the minimum is close to the length of the word,
+## the tolerance must be small because it means that no field in the list is
+## really fitting the given word.  So that the function is:
 ##
 ## @ifhtml
 ## @example
@@ -49,18 +46,16 @@
 ## @math{tolerance = 2 * (length-minimum) * minimum / length}.
 ## @end ifnothtml
 ##
-## The first input argument must be a string containing the word to
-## compare.
+## The first input argument must be a string containing the word to compare.
 ##
-## The second input argument must be a vector of strings or a
-## cell_array of strings and should contain the fields to use for the
-## comparison.
+## The second input argument must be a vector of strings or a cell_array of
+## strings and should contain the fields to use for the comparison.
 ##
-## The third input argument is optional and represents a fixed
-## tolerance that will replace the implemented one.
+## The third input argument is optional and represents a fixed tolerance that
+## will replace the implemented one.
 ## @end deftypefn
 ##
-## @seealso{odeset,odeget,levenshtein}
+## @seealso{odeset, odeget, levenshtein}
 
 function res = fuzzy_compare (string1, string_set, correctness)
 

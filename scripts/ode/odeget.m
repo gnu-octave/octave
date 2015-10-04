@@ -18,20 +18,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{}] =} odeget (@var{ode_opt}, @var{field}, [@var{default}], [@var{opt}])
-## @deftypefnx  {Function File} {[@var{res}] =} odeget (@var{ode_opt}, @var{field}, [@var{default}], [@var{opt}])
+## @deftypefn  {Function File} {@var{option} =} odeget (@var{ode_opt}, @var{field})
+## @deftypefnx {Function File} {@var{option} =} odeget (@var{ode_opt}, @var{field}, @var{default})
+##
+## Query the value of the property @var{field} in the ODE options structure
+## @var{ode_opt}.
 ##
 ## If this function is called with two input arguments and the first input
 ## argument @var{ode_opt} is of type structure array and the second input
-## argument @var{field} is of type string then return the option
-## value @var{res} that is specified by the option name @var{field} in
-## the ODE option structure @var{ode_opt}. Optionally if this function
-## is called with a third input argument then return the default value
-## @var{default} if @var{field} is not set in the structure @var{ode_opt}.
+## argument @var{field} is of type string then return the option value
+## @var{res} that is specified by the option name @var{field} in the ODE
+## option structure @var{ode_opt}.  Optionally if this function is called
+## with a third input argument then return the default value @var{default} if
+## @var{field} is not set in the structure @var{ode_opt}.
+## @seealso{odeset}
 ## @end deftypefn
-##
 
-## Note: 20061022, Thomas Treichl
+## Note: 2006-10-22, Thomas Treichl
 ##   We cannot create a function of the form odeget (@var{odestruct},
 ##   @var{name1}, @var{name2}) because we would get a mismatch with
 ##   the function form 1 like described above.

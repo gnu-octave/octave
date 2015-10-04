@@ -17,9 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{t}, @var{y}] =} integrate_n_steps
-## (@var{@@stepper}, @var{@@fun}, @var{t0}, @var{x0}, @var{dt}, @var{n},
-## @var{options})
+## @deftypefn {Function File} {[@var{t}, @var{y}] =} integrate_n_steps (@var{@@stepper}, @var{@@fun}, @var{t0}, @var{x0}, @var{dt}, @var{n}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
 ## integrate the set of ODEs on the interval @var{[t0,t0 + n*dt]} with a
@@ -34,13 +32,13 @@
 ##
 ## The first input argument must be a function_handle or an inline function
 ## representing the stepper, that is the function responsible for step-by-step
-## integration. This function discriminates one method from the others.
+## integration.  This function discriminates one method from the others.
 ##
-## The second input argument is the order of the stepper. It is needed
-## to compute the adaptive timesteps.
+## The second input argument is the order of the stepper.  It is needed to
+## compute the adaptive timesteps.
 ##
-## The third input argument is a function_handle or an inline function
-## that defines the set of ODE:
+## The third input argument is a function_handle or an inline function that
+## defines the set of ODE:
 ##
 ## @ifhtml
 ## @example

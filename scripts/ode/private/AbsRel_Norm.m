@@ -17,7 +17,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-
 function res = AbsRel_Norm (x, x_old, AbsTol, RelTol, normcontrol, y)
 
   n = length (x);

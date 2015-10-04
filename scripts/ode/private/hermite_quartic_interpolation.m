@@ -16,17 +16,15 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{x_out}] =}
-## hermite_quartic_interpolation (@var{t}, @var{x}, @var{der}, @var{t_out})
+## @deftypefn {Function File} {[@var{x_out}] =} hermite_quartic_interpolation (@var{t}, @var{x}, @var{der}, @var{t_out})
 ##
-## This function file can be called by a ODE solver function in order to
+## This function file can be called by an ODE solver function in order to
 ## interpolate the solution at the time @var{t_out} using 4th order
-## hermite interpolation.
+## Hermite interpolation.
 ##
 ## This function must be called with one output arguments: @var{x_out}
-## which contains the evaluation at @var{t_out} of the hermite interpolant.
+## which contains the evaluation at @var{t_out} of the Hermite interpolant.
 ##
 ## The first input argument is the vector with two given times.
 ##

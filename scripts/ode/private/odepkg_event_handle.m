@@ -17,20 +17,40 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{sol}] =} odepkg_event_handle (@var{@@fun}, @var{time}, @var{y}, @var{flag}, [@var{par1}, @var{par2}, @dots{}])
+## @deftypefn {Function File} {[@var{sol}] =} odepkg_event_handle (@var{@@fun}, @var{time}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
 ##
-## Return the solution of the event function that is specified as the first input argument @var{@@fun} in form of a function handle. The second input argument @var{time} is of type double scalar and specifies the time of the event evaluation, the third input argument @var{y} either is of type double column vector (for ODEs and DAEs) and specifies the solutions or is of type cell array (for IDEs and DDEs) and specifies the derivatives or the history values, the third input argument @var{flag} is of type string and can be of the form 
+## Return the solution of the event function that is specified as the first
+## input argument @var{@@fun} in form of a function handle.
+##
+## The second input argument @var{time} is of type double scalar and
+## specifies the time of the event evaluation, the third input argument
+## @var{y} either is of type double column vector (for ODEs and DAEs) and
+## specifies the solutions or is of type cell array (for IDEs and DDEs) and
+## specifies the derivatives or the history values, the third input argument
+## @var{flag} is of type string and can be of the form 
+##
 ## @table @option
-## @item  @code{"init"}
-## then initialize internal persistent variables of the function @command{odepkg_event_handle} and return an empty cell array of size 4,
-## @item  @code{"calc"}
-## then do the evaluation of the event function and return the solution @var{sol} as type cell array of size 4,
-## @item  @code{"done"}
-## then cleanup internal variables of the function @command{odepkg_event_handle} and return an empty cell array of size 4.
-## @end table
-## Optionally if further input arguments @var{par1}, @var{par2}, @dots{} of any type are given then pass these parameters through @command{odepkg_event_handle} to the event function.
+## @item  @qcode{"init"}
+## then initialize internal persistent variables of the function
+## @command{odepkg_event_handle} and return an empty cell array of size 4,
 ##
-## This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+## @item  @qcode{"calc"}
+## then do the evaluation of the event function and return the solution
+## @var{sol} as type cell array of size 4,
+##
+## @item  @qcode{"done"}
+## then cleanup internal variables of the function
+## @command{odepkg_event_handle} and return an empty cell array of size 4.
+## @end table
+##
+## Optionally if further input arguments @var{par1}, @var{par2}, @dots{} of
+## any type are given then pass these parameters through
+## @command{odepkg_event_handle} to the event function.
+##
+## This function is an OdePkg internal helper function therefore it should
+## never be necessary that this function is called directly by a user.  There
+## is only little error detection implemented in this function file to
+## achieve the highest performance.
 ## @end deftypefn
 ##
 ## @seealso{odepkg}

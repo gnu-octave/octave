@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{sum}] =} kahan (@var{sum},
-## @var{comp}, @var{temp})
-## @deftypefnx {Command} {[@var{sum}, @var{comp}] =} kahan (@var{sum},
-## @var{comp}, @var{temp})
+## @deftypefn  {Function File} {[@var{sum}] =} kahan (@var{sum}, @var{comp}, @var{temp})
+## @deftypefnx {Function File} {[@var{sum}, @var{comp}] =} kahan (@var{sum}, @var{comp}, @var{temp})
 ##
 ## This function is the implementation of the Kahan summation algorithm,
-## also known as compensated summation. It significantly reduces the numerical
-## error in the total obtained by adding a sequence of finite precision
-## floating point numbers, compared to the obvious approach. For more details
+## also known as compensated summation.
+##
+## It significantly reduces the numerical error in the total obtained by adding
+## a sequence of finite precision floating point numbers, compared to the
+## obvious approach.  For more details
 ## see @url{http://en.wikipedia.org/wiki/Kahan_summation_algorithm}.
 ## This function is called in @command{integrate_adaptive} and in
 ## @command{integrate_const} to better catch equality comparisons.
@@ -35,11 +35,11 @@
 ## next calls to kahan function.
 ##
 ## The second input argument contains the compensation term and it is returned
-## as second output argument so that it can be reused in the next calls
-## of the same computation.
+## as second output argument so that it can be reused in the next calls of the
+## same computation.
 ##
-## The third input argument is the variable that contains the term to
-## be added to @var{Sum}.
+## The third input argument is the variable that contains the term to be added
+## to @var{Sum}.
 ## @end deftypefn
 
 function [Sum, comp] = kahan (Sum, comp, term)

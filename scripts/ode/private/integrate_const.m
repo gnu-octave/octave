@@ -17,29 +17,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {[@var{t}, @var{y}] =} integrate_const (@var{@@stepper},
-## @var{@@fun}, @var{tspan}, @var{x0}, @var{dt}, @var{options})
+## @deftypefn {Function File} {[@var{t}, @var{y}] =} integrate_const (@var{@@stepper}, @var{@@fun}, @var{tspan}, @var{x0}, @var{dt}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
-## integrate the set of ODEs on the interval @var{[t0,t1]} with a
-## constant timestep @var{dt}.
+## integrate the set of ODEs on the interval @var{[t0,t1]} with a constant
+## timestep @var{dt}.
 ##
 ## This function must be called with two output arguments: @var{t} and @var{y}.
-## Variable @var{t} is a column vector and contains the time stamps,
-## instead @var{y} is a matrix in which each column refers to a different
-## unknown of the problem and the rows number is the same of @var{t} rows
-## number so that each row of @var{y} contains the values of all unknowns at
-## the time value contained in the corresponding row in @var{t}.
+## Variable @var{t} is a column vector and contains the time stamps, instead
+## @var{y} is a matrix in which each column refers to a different unknown of
+## the problem and the rows number is the same of @var{t} rows number so that
+## each row of @var{y} contains the values of all unknowns at the time value
+## contained in the corresponding row in @var{t}.
 ##
 ## The first input argument must be a function_handle or an inline function
 ## representing the stepper, that is the function responsible for step-by-step
-## integration. This function discriminates one method from the others.
+## integration.  This function discriminates one method from the others.
 ##
-## The second input argument is the order of the stepper. It is needed to
+## The second input argument is the order of the stepper.  It is needed to
 ## compute the adaptive timesteps.
 ##
-## The third input argument is a function_handle or an inline function
-## that defines the set of ODE:
+## The third input argument is a function_handle or an inline function that
+## defines the set of ODE:
 ##
 ## @ifhtml
 ## @example

@@ -4487,16 +4487,16 @@ source_file (const std::string& file_name, const std::string& context,
       frame.add_fcn (octave_call_stack::pop);
     }
 
+  octave_function *fcn;
   try
     {
-      octave_function *fcn = parse_fcn_file (file_full_name, file_name,
-                                             "", "", require_file, true,
-                                             false, false, warn_for);
+      fcn = parse_fcn_file (file_full_name, file_name,
+                            "", "", require_file, true,
+                            false, false, warn_for);
     }
-  catch (const octave_execution_error)
+  catch (const octave_execution_exception&)
     {
-      error ("source: error sourcing file '%s'",
-             file_full_name.c_str ());
+      error ("source: error sourcing file '%s'", file_full_name.c_str ());
     }
 
   if (fcn && fcn->is_user_script ())

@@ -28,9 +28,11 @@
 ## argument @var{ode_opt} is of type structure array and the second input
 ## argument @var{field} is of type string then return the option value
 ## @var{res} that is specified by the option name @var{field} in the ODE
-## option structure @var{ode_opt}.  Optionally if this function is called
-## with a third input argument then return the default value @var{default} if
-## @var{field} is not set in the structure @var{ode_opt}.
+## option structure @var{ode_opt}.
+##
+## Optionally if this function is called with a third input argument then
+## return the default value @var{default} if @var{field} is not set in the
+## structure @var{ode_opt}.
 ## @seealso{odeset}
 ## @end deftypefn
 
@@ -111,10 +113,10 @@ function res = odeget (ode_opt, field, default, opt)
     if (size (pos, 1) == 0) # no matching for the given option
       if (nargin == 2)
         error ("OdePkg:InvalidArgument",
-               "invalid property. No property found with name ''%s''.", field);
+               "invalid property. No property found with name '%s'.", field);
       endif
       warning ("odeget:NoExactMatching",
-               "no property found with name ''%s''. ",
+               "no property found with name '%s'. ",
                "Assuming default value.", field);
       res = default;
       return
@@ -124,8 +126,8 @@ function res = odeget (ode_opt, field, default, opt)
       if (! strcmp (lower (deblank (field)),
                     lower (deblank (options(pos,:)))) )
         warning ("OdePkg:InvalidArgument",
-                 "no exact matching for ''%s''. ",
-                 "Assuming you was intending ''%s''.",
+                 "no exact matching for '%s'. ",
+                 "Assuming you was intending '%s'.",
                  field, deblank (options(pos,:)));
       endif
       res = ode_opt.(deblank (options(pos,:)));
@@ -138,7 +140,7 @@ function res = odeget (ode_opt, field, default, opt)
 
     ## if there are more matching, ask the user to be more precise
     warning ("OdePkg:InvalidArgument", ...
-             "no exact matching for ''%s''. %d possible fields were found.",
+             "no exact matching for '%s'. %d possible fields were found.",
              field, size (pos, 1));
     for j = 1:(size (pos, 1))
       fprintf ("%s\n", deblank (options(pos(j),:)));
@@ -151,27 +153,25 @@ function res = odeget (ode_opt, field, default, opt)
 
 endfunction
 
-%! ## Turn off output of warning messages for all tests, turn them on
-%! ## again if the last test is called
-%!  warning ('off', 'OdePkg:InvalidArgument');
-%!test assert (odeget (odeset (), 'RelTol'), []);
-%!test assert (odeget (odeset (), 'RelTol', 10), 10);
-%!test assert (odeget (odeset (), 'Stats'), []);
-%!test assert (odeget (odeset (), 'Stats', 'on'), 'on');
-%!test assert (odeget (odeset (), 'AbsTol', 1.e-6, 'fast'), []);
-%!test assert (odeget (odeset (), 'AbsTol', 1.e-6, 'fast_not_empty'), 1.e-6);
-%!test assert (odeget (odeset (), 'AbsTol', 1e-9), 1e-9);
-%!
-%!  warning ('on', 'OdePkg:InvalidArgument');
 
 %!demo
 %! # Return the manually changed value RelTol of the OdePkg options
-%! # strutcure A. If RelTol wouldn't have been changed then an
+%! # strutcure A.  If RelTol wouldn't have been changed then an
 %! # empty matrix value would have been returned.
 %!
-%! A = odeset ('RelTol', 1e-1, 'AbsTol', 1e-2);
-%! odeget (A, 'RelTol', [])
+%! A = odeset ("RelTol", 1e-1, "AbsTol", 1e-2);
+%! odeget (A, "RelTol", [])
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***
+%! ## Turn off output of warning messages for all tests, turn them on
+%! ## again if the last test is called
+%!  warning ("off", "OdePkg:InvalidArgument");
+%!test assert (odeget (odeset (), "RelTol"), []);
+%!test assert (odeget (odeset (), "RelTol", 10), 10);
+%!test assert (odeget (odeset (), "Stats"), []);
+%!test assert (odeget (odeset (), "Stats", "on"), "on");
+%!test assert (odeget (odeset (), "AbsTol", 1.e-6, "fast"), []);
+%!test assert (odeget (odeset (), "AbsTol", 1.e-6, "fast_not_empty"), 1.e-6);
+%!test assert (odeget (odeset (), "AbsTol", 1e-9), 1e-9);
+%!
+%!  warning ("on", "OdePkg:InvalidArgument");
+

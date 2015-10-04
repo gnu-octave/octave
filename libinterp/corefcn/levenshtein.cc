@@ -67,8 +67,8 @@ The third argument @var{u_bound} is optional and fixes an upper bound for the di
   char *s2_p = s2.fortran_vec ();
 
   octave_idx_type
-    s1len = s1.length (),
-    s2len = s2.length (),
+    s1len = s1.numel (),
+    s2len = s2.numel (),
     ii, jj;
 
   if (! error_state)

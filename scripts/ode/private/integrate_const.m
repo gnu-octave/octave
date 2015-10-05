@@ -63,7 +63,7 @@
 
 function solution = integrate_const (stepper, func, tspan, x0, dt, options)
 
-  solution = struct;
+  solution = struct ();
 
   ## first values for time and solution
   t = tspan(1);
@@ -72,7 +72,7 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
   vdirection = odeget (options, "vdirection", [], "fast");
   if (sign (dt) != vdirection)
     error ("OdePkg:InvalidArgument",
-           "option ''InitialStep'' has a wrong sign");
+           "option 'InitialStep' has a wrong sign");
   endif
 
   ## setting parameters
@@ -189,11 +189,11 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
     vcntiter = 0;
       
     ## Call plot only if a valid result has been found, therefore this
-    ## code fragment has moved here. Stop integration if plot function
+    ## code fragment has moved here.  Stop integration if plot function
     ## returns false
     if (options.vhaveoutputfunction)
-      for vcnt = 0:options.Refine # Approximation between told and t
-        if (options.vhaverefine) # Do interpolation
+      for vcnt = 0:options.Refine  # Approximation between told and t
+        if (options.vhaverefine)  # Do interpolation
           vapproxtime = (vcnt + 1) / (options.Refine + 2);
           vapproxvals = (1 - vapproxtime) * vSaveVUForRefine ...
                         + (vapproxtime) * y(:,end);
@@ -207,18 +207,18 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
         endif
         vpltret = feval (options.OutputFcn, vapproxtime, vapproxvals, [],
                          options.vfunarguments{:});
-        if (vpltret) # Leave refinement loop
-          break
+        if (vpltret)  # Leave refinement loop
+          break;
         endif
       endfor
-      if (vpltret) # Leave main loop
+      if (vpltret)  # Leave main loop
         solution.vunhandledtermination = false;
-        break
+        break;
       endif
     endif
       
     ## Call event only if a valid result has been found, therefore this
-    ## code fragment has moved here. Stop integration if veventbreak is true
+    ## code fragment has moved here.  Stop integration if veventbreak is true
     if (options.vhaveeventfunction)
       solution.vevent = odepkg_event_handle (options.Events, t(end), x(:,end),
                                              [], options.vfunarguments{:});
@@ -227,7 +227,7 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
         t(solution.vcntloop-1,:) = solution.vevent{3}(end,:);
         x(:,solution.vcntloop-1) = solution.vevent{4}(end,:)';
         solution.vunhandledtermination = false; 
-        break
+        break;
       endif
     endif
     
@@ -238,12 +238,12 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
     ## Stop solving because the last 1000 steps no successful valid
     ## value has been found
     if (vcntiter >= 5000)
-      error (["Solving has not been successful. The iterative",
+      error (["Solving has not been successful.  The iterative",
               " integration loop exited at time t = %f before endpoint at",
-              " tend = %f was reached. This happened because the iterative",
+              " tend = %f was reached.  This happened because the iterative",
               " integration loop does not find a valid solution at this time",
-              " stamp. Try to reduce the value of ''InitialStep'' and/or",
-              " ''MaxStep'' with the command ''odeset''.\n"],
+              " stamp.  Try to reduce the value of 'InitialStep' and/or",
+              " 'MaxStep' with the command 'odeset'.\n"],
              s(end), tspan(end));
     endif
 
@@ -257,19 +257,18 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
   if (vdirection * z(end) < vdirection * tspan(end))
     if (solution.vunhandledtermination == true)
       error ("OdePkg:InvalidArgument",
-             ["Solving has not been successful. The iterative integration loop",
-              " exited at time t = %f before endpoint at tend = %f was",
-              " reached. This may happen if the stepsize grows smaller than",
-              " defined in vminstepsize. Try to reduce the value of",
-              " ''InitialStep'' and/or ''MaxStep'' with the command",
-              " ''odeset''.\n"], z(end), tspan(end));
+             ["Solving has not been successful.  The iterative integration"
+              " loop exited at time t = %f before endpoint at tend = %f was",
+              " reached.  This may happen if the stepsize grows smaller than",
+              " defined in vminstepsize.  Try to reduce the value of",
+              " 'InitialStep' and/or 'MaxStep' with the command 'odeset'.\n"],
+             z(end), tspan(end));
     else
       warning ("OdePkg:InvalidArgument",
-               ["Solver has been stopped by a call of ''break'' in the main",
+               ["Solver has been stopped by a call of 'break' in the main",
                 " iteration loop at time t = %f before endpoint at tend = %f",
-                " was reached. This may happen because the @odeplot function",
-                " returned ''true'' or the @event function returned",
-                " ''true''.\n"],
+                " was reached.  This may happen because the @odeplot function",
+                " returned 'true' or the @event function returned 'true'.\n"],
                z(end), tspan(end));
     endif
   endif
@@ -284,6 +283,3 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
   
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

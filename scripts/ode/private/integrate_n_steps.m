@@ -64,7 +64,7 @@
 
 function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
 
-  solution = struct;
+  solution = struct ();
 
   ## first values for time and solution
   x = x0(:); 
@@ -72,8 +72,7 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
 
   vdirection = odeget (options, "vdirection", [], "fast");
   if (sign (dt) != vdirection)
-    error("OdePkg:InvalidArgument",
-          "option ''InitialStep'' has a wrong sign");
+    error ("OdePkg:InvalidArgument", "option 'InitialStep' has a wrong sign");
   endif
 
   comp = 0.0;
@@ -139,7 +138,7 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
     vcntiter = 0;
       
     ## Call plot only if a valid result has been found, therefore this code
-    ## fragment has moved here. Stop integration if plot function returns false
+    ## fragment has moved here.  Stop integration if plot function returns false
     if (options.vhaveoutputfunction)
       for vcnt = 0:options.Refine # Approximation between told and t
         if (options.vhaverefine) # Do interpolation
@@ -157,17 +156,17 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
         vpltret = feval (options.OutputFcn, vapproxtime, vapproxvals, [],
                          options.vfunarguments{:});
         if (vpltret) # Leave refinement loop
-          break
+          break;
         endif
       endfor
       if (vpltret) # Leave main loop
         solution.vunhandledtermination = false;
-        break
+        break;
       endif
     endif
       
     ## Call event only if a valid result has been found, therefore this
-    ## code fragment has moved here. Stop integration if veventbreak is
+    ## code fragment has moved here.  Stop integration if veventbreak is
     ## true
     if (options.vhaveeventfunction)
       solution.vevent = odepkg_event_handle (options.Events, t(end), x(:,end),
@@ -177,7 +176,7 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
         t(solution.vcntloop-1,:) = solution.vevent{3}(end,:);
         x(:,solution.vcntloop-1) = solution.vevent{4}(end,:)';
         solution.vunhandledtermination = false; 
-        break
+        break;
       endif
     endif
     
@@ -188,12 +187,12 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
     ## Stop solving because the last 1000 steps no successful valid
     ## value has been found
     if (vcntiter >= 5000)
-      error (["Solving has not been successful. The iterative",
+      error (["Solving has not been successful.  The iterative",
               " integration loop exited at time t = %f before endpoint at",
-              " tend = %f was reached. This happened because the iterative",
+              " tend = %f was reached.  This happened because the iterative",
               " integration loop does not find a valid solution at this time",
-              " stamp. Try to reduce the value of ''InitialStep'' and/or",
-              " ''MaxStep'' with the command ''odeset''.\n"],
+              " stamp.  Try to reduce the value of 'InitialStep' and/or",
+              " 'MaxStep' with the command 'odeset'.\n"],
              s(end), tspan(end));
     endif
   endfor
@@ -202,20 +201,20 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
   #if (vdirection * z(end) < vdirection * tspan(end))
   #  if (solution.vunhandledtermination == true)
   #    error ("OdePkg:InvalidArgument",
-  #           ["Solving has not been successful. The iterative",
+  #           ["Solving has not been successful.  The iterative",
   #            " integration loop exited at time t = %f",
-  #            " before endpoint at tend = %f was reached. This may",
+  #            " before endpoint at tend = %f was reached.  This may",
   #            " happen if the stepsize grows smaller than defined in",
-  #            " vminstepsize. Try to reduce the value of ''InitialStep''",
-  #            " and/or ''MaxStep'' with the command ''odeset''.\n"],
+  #            " vminstepsize.  Try to reduce the value of 'InitialStep'",
+  #            " and/or 'MaxStep' with the command 'odeset'.\n"],
   #           z(end), tspan(end));
   #  else
   #    warning ("OdePkg:InvalidArgument",
-  #             ["Solver has been stopped by a call of ''break'' in the main",
+  #             ["Solver has been stopped by a call of 'break' in the main",
   #              " iteration loop at time t = %f before endpoint at tend = %f",
-  #              " was reached. This may happen because the @odeplot function",
-  #              " returned ''true'' or the @event function returned",
-  #              " ''true''.\n"],
+  #              " was reached.  This may happen because the @odeplot function",
+  #              " returned 'true' or the @event function returned",
+  #              " 'true'.\n"],
   #             z(end), tspan(end));
   #  endif
   #endif
@@ -225,6 +224,3 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
   
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

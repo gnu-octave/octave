@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{res}] =} fuzzy_compare (@var{"string1"}, @var{string_set}, [@var{correctness}])
+## @deftypefn  {Function File} {@var{res} =} fuzzy_compare (@var{"string1"}, @var{string_set})
+## @deftypefnx {Function File} {@var{res} =} fuzzy_compare (@var{"string1"}, @var{string_set}, @var{correctness})
 ##
 ## Compare a string with a set of strings and returns the positions in the
 ## set of strings at which there are the fields that best fit the one we are
 ## comparing.
 ##
-## The distance used to compare the words is the Levenshtein distance
-## and for more details see
+## The distance used to compare the words is the Levenshtein distance.
+## For more details see
 ## @url{http://en.wikipedia.org/wiki/Levenshtein_distance}.
 ##
 ## This function must be called with one output argument @var{res} which
@@ -95,9 +96,9 @@ function res = fuzzy_compare (string1, string_set, correctness)
   res = [];
 
   m = length (string1);
-  fields_nb = size (string_set, 1);
+  fields_nb = rows (string_set);
 
-  values = inf .* ones (fields_nb, 1);
+  values = Inf (fields_nb, 1);
 
   string1 = deblank (string1);
   string2 = [];
@@ -121,13 +122,13 @@ function res = fuzzy_compare (string1, string_set, correctness)
   positions = find (values == minimus);
 
   if (minimus == 0) # exact match
-    if (size (positions, 1) != 1)
+    if (rows (positions) != 1)
       error ("OdePkg:InvalidArgument",
-             "there are %d strings perfectly matching ''%s''",
-             size (positions, 1), string1);
+             "there are %d strings perfectly matching '%s'",
+             rows (positions), string1);
     endif
     res = positions;
-    return
+    return;
   endif
 
   ## determine the tolerance with the formula described in the
@@ -142,19 +143,18 @@ function res = fuzzy_compare (string1, string_set, correctness)
          && isscalar (correctness)
          && correctness == 0)
         || (ischar (correctness)
-            && strcmp (lower (deblank (correctness)), 'exact')))
+            && strcmp (lower (deblank (correctness)), "exact")))
       error ("OdePkg:InvalidArgument",
-             "no exact matching for string ''%s''", string1);
+             "no exact matching for string '%s'", string1);
     endif
-    if (isnumeric (correctness)
-        && isscalar (correctness))
+    if (isnumeric (correctness) && isscalar (correctness))
       tolerance = correctness;
     endif
   endif
 
   ## returning the positions of the fields whose distance is lower
   ## than the tolerance
-  for i = 1:1:fields_nb
+  for i = 1:fields_nb
     if (values(i) <= tolerance)
       res = [res; i];
     endif
@@ -162,6 +162,3 @@ function res = fuzzy_compare (string1, string_set, correctness)
 
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

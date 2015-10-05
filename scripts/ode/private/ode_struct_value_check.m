@@ -18,7 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{}] =} ode_struct_value_check (@var{arg}, [@var{"solver"}])
+## @deftypefn  {Function File} {} ode_struct_value_check (@var{arg})
+## @deftypefnx {Function File} {} ode_struct_value_check (@var{arg}, @var{"solver"})
 ##
 ## If this function is called with one input argument of type structure array
 ## then check the field names and the field values of the OdePkg structure
@@ -57,14 +58,14 @@ function ode_struct_value_check (arg, solver)
   fields = fieldnames (arg);
   fields_nb = length (fields);
 
-  for i = 1:1:fields_nb   # Run through the number of given structure field names
+  for i = 1:fields_nb  # Run through the number of given structure field names
     switch (fields{i})
 
       case "AbsTol"
         if (! isempty (arg.(fields{i})))
           if (! isnumeric (arg.(fields{i}))
               || any (arg.(fields{i}) <= 0)
-              || ~isreal (arg.(fields{i})))
+              || ! isreal (arg.(fields{i})))
             error ("OdePkg:InvalidArgument",
                    "value assigned to field %s is not a valid one", fields{i});
           elseif (! isvector (arg.(fields{i})))
@@ -105,13 +106,13 @@ function ode_struct_value_check (arg, solver)
         endif
 
       case "Eta"
-        if ( ~isempty (arg.(fields{i})) )
-          if ( ~isreal (arg.(fields{i})) )
-            error ("OdePkg:InvalidArgument", ...
-              "value assigned to field %s is not a valid one", fields{i});
+        if ( ! isempty (arg.(fields{i})) )
+          if ( ! isreal (arg.(fields{i})) )
+            error ("OdePkg:InvalidArgument",
+                   "value assigned to field %s is not a valid one", fields{i});
           elseif ( arg.(fields{i})<0 || arg.(fields{i})>=1 )
-            error ("OdePkg:InvalidArgument", ...
-              "value assigned to field %s is not a valid one", fields{i});
+            error ("OdePkg:InvalidArgument",
+                   "value assigned to field %s is not a valid one", fields{i});
           endif
         endif
 
@@ -197,7 +198,7 @@ function ode_struct_value_check (arg, solver)
       case "Mass"
         if (! isempty (arg.(fields{i})))
           if ((! isnumeric (arg.(fields{i}))
-               || ~ismatrix (arg.(fields{i})))
+               || ! ismatrix (arg.(fields{i})))
               && ! isa (arg.(fields{i}), "function_handle"))
             error ("OdePkg:InvalidArgument",
                    "value assigned to field %s is not a valid one", fields{i});
@@ -395,18 +396,14 @@ function ode_struct_value_check (arg, solver)
                    "value assigned to field %s is not a valid one", fields{i});
           endif
         endif
-        switch (solver)
-          case {"ode23", "ode23d", "ode45", "ode45d",
-                "ode54", "ode54d", "ode78", "ode78d"}
-            if (! isempty (arg.(fields{i})))
-              if (! isscalar (arg.(fields{i})))
-                error ("OdePkg:InvalidArgument",
-                       "for this type of solver, value assigned to field %s ",
-                       "is not a valid one", fields{i});
-              endif
-            endif
-          otherwise
-        endswitch
+        if (any (strcmp (solver, {"ode23", "ode23d", "ode45", "ode45d",
+                                  "ode54", "ode54d", "ode78", "ode78d"})))
+          if (! isempty (arg.(fields{i})) && ! isscalar (arg.(fields{i})))
+            error ("OdePkg:InvalidArgument",
+                   "for this type of solver, value assigned to field %s ",
+                   "is not a valid one", fields{i});
+          endif
+        endif
 
       case "Restart"
         if (! isempty (arg.(fields{i})))
@@ -473,6 +470,7 @@ function ode_struct_value_check (arg, solver)
 
 endfunction
 
+
 %!demo
 %! # Return the checked OdePkg options structure that is created by
 %! # the command odeset.
@@ -481,12 +479,9 @@ endfunction
 %!
 %!demo
 %! # Create the OdePkg options structure A with odeset and check it 
-%! # with odepkg_structure_check. This actually is unnecessary
+%! # with odepkg_structure_check.  This actually is unnecessary
 %! # because odeset automtically calls odepkg_structure_check before
 %! # returning.
 %!
 %! A = odeset (); ode_struct_value_check (A);
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}] =} starting_stepsize (@var{order}, @var{@@fun}, @var{t0}, @var{x0})
+## @deftypefn {Function File} {@var{h} =} starting_stepsize (@var{order}, @var{@@fun}, @var{t0}, @var{x0})
 ##
 ## This function file can be used to determine a good initial step for an ODE
 ## solver of order @var{order}.  The algorithm is that one described in [1].
@@ -45,8 +45,8 @@ function h = starting_stepsize (order, func, t0, x0,
   y = func (t0, x0);
   d1 = AbsRel_Norm (y, y, AbsTol, RelTol, normcontrol);
 
-  if (d0 < 1.e-5 || d1 < 1.e-5)
-    h0 = 1.e-6;
+  if (d0 < 1e-5 || d1 < 1e-5)
+    h0 = 1e-6;
   else
     h0 = .01 * (d0 / d1);
   endif
@@ -59,16 +59,13 @@ function h = starting_stepsize (order, func, t0, x0,
        AbsRel_Norm (func (t0+h0, x1) - y,
                     func (t0+h0, x1) - y, AbsTol, RelTol, normcontrol);
 
-  if (max(d1, d2) <= 1.e-15)
-    h1 = max (1.e-6, h0*1.e-3);
+  if (max(d1, d2) <= 1e-15)
+    h1 = max (1e-6, h0*1e-3);
   else
-    h1 = (1.e-2 / max (d1, d2)) ^(1 / (order+1));
+    h1 = (1e-2 / max (d1, d2)) ^(1 / (order+1));
   endif
 
   h = min (100*h0, h1);
 
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{sum}] =} kahan (@var{sum}, @var{comp}, @var{temp})
+## @deftypefn  {Function File} {@var{sum} =} kahan (@var{sum}, @var{comp}, @var{temp})
 ## @deftypefnx {Function File} {[@var{sum}, @var{comp}] =} kahan (@var{sum}, @var{comp}, @var{temp})
 ##
 ## This function is the implementation of the Kahan summation algorithm,
@@ -51,6 +51,3 @@ function [Sum, comp] = kahan (Sum, comp, term)
 
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

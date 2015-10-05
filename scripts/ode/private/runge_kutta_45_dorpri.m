@@ -97,16 +97,16 @@ function [t_out, x_out, x_est, k] = ...
   k(:,5) = feval (f, s(5), x + k(:,1:4) * aa(5, 1:4).', args{:});
   k(:,6) = feval (f, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
 
-  ## compute new time and new values for the unkwnowns
+  ## compute new time and new values for the unknowns
   t_out = t + dt;
-  x_out = x + k(:,1:6) * cc(:); # 5th order approximation
+  x_out = x + k(:,1:6) * cc(:);  # 5th order approximation
 
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
     k(:,7) = feval (f, t + dt, x_out, args{:});
     cc_prime = dt * c_prime;
-    x_est = x + k * cc_prime(:); # x_est
+    x_est = x + k * cc_prime(:);
   endif
   
 endfunction

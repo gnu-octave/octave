@@ -61,7 +61,7 @@
 
 function solution = integrate_adaptive (stepper, order, func, tspan, x0, options)
 
-  solution = struct;
+  solution = struct ();
 
   ## first values for time and solution
   t = tspan(1);
@@ -78,16 +78,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   endif
   dt = vdirection * min (abs (dt), options.MaxStep);
 
-  ## set parameters
+  ## Set parameters
   k = length (tspan);
   counter = 2;
   comp = 0.0;
   tk = tspan(1);
   options.comp = comp;
   
-  ## factor multiplying the stepsize guess
+  ## Factor multiplying the stepsize guess
   facmin = 0.8;
-  fac = 0.38^(1/(order+1)); ## formula taken from Hairer
+  fac = 0.38^(1/(order+1));  # formula taken from Hairer
   t_caught = false;
 
 
@@ -122,7 +122,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   while (counter <= k)
     facmax = 1.5;
 
-    ## compute integration step from t to t+dt
+    ## Compute integration step from t to t+dt
     if (isempty (k_vals))
       [s, y, y_est, new_k_vals] = stepper (func, z(end), u(:,end),
                                            dt, options);
@@ -144,7 +144,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     err = AbsRel_Norm (y(:,end), u(:,end), options.AbsTol, options.RelTol,
                        options.vnormcontrol, y_est(:,end));
     
-    ## solution accepted only if the error is less or equal to 1.0
+    ## Solution accepted only if the error is less or equal to 1.0
     if (err <= 1)
       
       [tk, comp] = kahan (tk, comp, dt);
@@ -162,8 +162,9 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
               (max (abs (z(end)), abs (tspan(counter)))) < 8*eps) )
         counter++;
         
-        ## if there is an element in time vector at which the solution is required
-        ## the program must compute this solution before going on with next steps
+        ## if there is an element in time vector at which the solution is
+        ## required the program must compute this solution before going on with
+        ## next steps
       elseif (vdirection * z(end) > vdirection * tspan(counter))
 
         ## initialize counter for the following cycle
@@ -233,11 +234,12 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
                 ## u_interp =
                 ##   hermite_quintic_interpolation ([z(i-1) z(i)],
                 ##                                  [u(:,i-1) u_half u(:,i)],
-                ##                                  [k_vals(:,1) f_half k_vals(:,end)],
+                ##                                  [k_vals(:,1) f_half ...
+                ##                                   k_vals(:,end)],
                 ##                                  tspan(counter));
               otherwise
                 warning ("High order interpolation not yet implemented: ",
-                         "using cubic iterpolation instead");
+                         "using cubic interpolation instead");
                 der(:,1) = feval (func, z(i-1) , u(:,i-1),
                                   options.vfunarguments{:});
                 der(:,2) = feval (func, z(i) , u(:,i),
@@ -281,7 +283,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
       vcntiter = 0;
       
       ## Call plot only if a valid result has been found, therefore this
-      ## code fragment has moved here. Stop integration if plot function
+      ## code fragment has moved here.  Stop integration if plot function
       ## returns false
       if (options.vhaveoutputfunction)
         for vcnt = 0:options.Refine # Approximation between told and t
@@ -300,27 +302,28 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
           vpltret = feval (options.OutputFcn, vapproxtime,
                            vapproxvals, [], options.vfunarguments{:});
           if (vpltret) # Leave refinement loop
-            break
+            break;
           endif
         endfor
         if (vpltret) # Leave main loop
           solution.vunhandledtermination = false;
-          break
+          break;
         endif
       endif
       
       ## Call event only if a valid result has been found, therefore this
-      ## code fragment has moved here. Stop integration if veventbreak is
+      ## code fragment has moved here.  Stop integration if veventbreak is
       ## true
       if (options.vhaveeventfunction)
         solution.vevent = odepkg_event_handle (options.Events, t(end),
-                                               x(:,end), [], options.vfunarguments{:});
+                                               x(:,end), [],
+                                               options.vfunarguments{:});
         if (! isempty (solution.vevent{1})
             && solution.vevent{1} == 1)
           t(solution.vcntloop-1,:) = solution.vevent{3}(end,:);
           x(:,solution.vcntloop-1) = solution.vevent{4}(end,:)';
           solution.vunhandledtermination = false; 
-          break
+          break;
         endif
       endif
       
@@ -337,18 +340,18 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     dt = vdirection * min (abs (dt), options.MaxStep);
     
     ## Update counters that count the number of iteration cycles
-    solution.vcntcycles = solution.vcntcycles + 1; # Needed for cost statistics
-    vcntiter = vcntiter + 1; # Needed to find iteration problems
+    solution.vcntcycles += 1; # Needed for cost statistics
+    vcntiter += 1; # Needed to find iteration problems
 
     ## Stop solving because in the last 1000 steps no successful valid
     ## value has been found
     if (vcntiter >= 5000)
-      error (["Solving has not been successful. The iterative",
+      error (["Solving has not been successful.  The iterative",
               " integration loop exited at time t = %f before endpoint at",
-              " tend = %f was reached. This happened because the iterative",
+              " tend = %f was reached.  This happened because the iterative",
               " integration loop does not find a valid solution at this time",
-              " stamp. Try to reduce the value of ''InitialStep'' and/or",
-              " ''MaxStep'' with the command ''odeset''.\n"],
+              " stamp.  Try to reduce the value of 'InitialStep' and/or",
+              " 'MaxStep' with the command 'odeset'.\n"],
              s(end), tspan(end));
     endif
 
@@ -362,20 +365,20 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   if (vdirection * z(end) < vdirection * tspan(end))
     if (solution.vunhandledtermination == true)
       error ("OdePkg:InvalidArgument",
-             ["Solving has not been successful. The iterative",
+             ["Solving has not been successful.  The iterative",
               " integration loop exited at time t = %f",
-              " before endpoint at tend = %f was reached. This may",
+              " before endpoint at tend = %f was reached.  This may",
               " happen if the stepsize grows smaller than defined in",
-              " vminstepsize. Try to reduce the value of ''InitialStep''",
-              " and/or ''MaxStep'' with the command ''odeset''.\n"],
+              " vminstepsize.  Try to reduce the value of 'InitialStep'",
+              " and/or 'MaxStep' with the command 'odeset'.\n"],
              z(end), tspan(end));
     else
       warning ("OdePkg:InvalidArgument",
-               ["Solver has been stopped by a call of ''break'' in the main",
+               ["Solver has been stopped by a call of 'break' in the main",
                 " iteration loop at time t = %f before endpoint at tend = %f ",
-                " was reached. This may happen because the @odeplot function",
-                " returned ''true'' or the @event function returned",
-                " ''true''.\n"],
+                " was reached.  This may happen because the @odeplot function",
+                " returned 'true' or the @event function returned",
+                " 'true'.\n"],
                z(end), tspan(end));
     endif
   endif
@@ -389,3 +392,4 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   solution.x = x(:,1:end-f)';
   
 endfunction
+

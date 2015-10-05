@@ -17,22 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x_out}] =} hermite_quartic_interpolation (@var{t}, @var{x}, @var{der}, @var{t_out})
+## @deftypefn {Function File} {@var{x_out} =} hermite_quartic_interpolation (@var{t}, @var{x}, @var{der}, @var{t_out})
 ##
 ## This function file can be called by an ODE solver function in order to
-## interpolate the solution at the time @var{t_out} using 4th order
+## interpolate the solution at the time @var{t_out} using a 4th order
 ## Hermite interpolation.
 ##
-## This function must be called with one output arguments: @var{x_out}
-## which contains the evaluation at @var{t_out} of the Hermite interpolant.
-##
-## The first input argument is the vector with two given times.
+## The first input @var{t} is a vector with two given times.
 ##
 ## The second input argument is the vector with the values of the function
 ## to interpolate at the times specified in @var{t} and at the middle point.
 ##
 ## The third input argument is the value of the derivatives of the function
 ## evaluated at the two extreme points.
+##
+## The output @var{x_out} is the evaluation of the Hermite interpolant at
+## @var{t_out}.
 ##
 ## @end deftypefn
 ##
@@ -42,18 +42,18 @@
 
 function x_out = hermite_quartic_interpolation (t, x, der, t_out)
 
-  # Rescale time on [0,1]
+  ## Rescale time on [0,1]
   s = (t_out - t(1)) / (t(2) - t(1));
 
-  # Hermite basis functions
-  # H0 = 1   - 11*s.^2 + 18*s.^3 -  8*s.^4;
-  # H1 =   s -  4*s.^2 +  5*s.^3 -  2*s.^4;
-  # H2 =       16*s.^2 - 32*s.^3 + 16*s.^4;
-  # H3 =     -  5*s.^2 + 14*s.^3 -  8*s.^4;
-  # H4 =          s.^2 -  3*s.^3 +  2*s.^4;
+  ## Hermite basis functions
+  ## H0 = 1   - 11*s.^2 + 18*s.^3 -  8*s.^4;
+  ## H1 =   s -  4*s.^2 +  5*s.^3 -  2*s.^4;
+  ## H2 =       16*s.^2 - 32*s.^3 + 16*s.^4;
+  ## H3 =     -  5*s.^2 + 14*s.^3 -  8*s.^4;
+  ## H4 =          s.^2 -  3*s.^3 +  2*s.^4;
 
-  x_out = zeros (size (x, 1), length (t_out));
-  for ii = 1:size (x, 1)
+  x_out = zeros (rows (x), length (t_out));
+  for ii = 1:rows (x)
     x_out(ii,:) = (1   - 11*s.^2 + 18*s.^3 -  8*s.^4)*x(ii,1) ...
                 + (  s -  4*s.^2 +  5*s.^3 -  2*s.^4)*(t(2)-t(1))*der(ii,1) ...
                 + (      16*s.^2 - 32*s.^3 + 16*s.^4)*x(ii,2) ...
@@ -63,6 +63,3 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
 
 endfunction
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***

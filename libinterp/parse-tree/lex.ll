@@ -320,14 +320,17 @@ static bool lexer_debug_flag = false;
 %}
 
 D       [0-9]
+D_      [0-9_]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
 Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 FQIDENT ({IDENT}(\.{IDENT})*)
-EXPON   ([DdEe][+-]?{D}+)
-NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
+EXPON   ([DdEe][+-]?{D}{D_}*)
+NUMREAL (({D}{D_}*\.?{D_}*{EXPON}?)|(\.{D}{D_}*{EXPON}?))
+NUMHEX  (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
+NUMBER  ({NUMREAL}|{NUMHEX})
 
 ANY_EXCEPT_NL [^\r\n]
 ANY_INCLUDING_NL (.|{NL})
@@ -1124,9 +1127,9 @@ ANY_INCLUDING_NL (.|{NL})
 // the constant.
 %}
 
-{D}+/\.[\*/\\^\'] |
+{D}{D_}*/\.[\*/\\^\'] |
 {NUMBER} {
-    curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\\\^\\']|{NUMBER}");
+    curr_lexer->lexer_debug ("{D}{D_}*/\\.[\\*/\\\\^\\']|{NUMBER}");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -2668,27 +2671,36 @@ octave_base_lexer::handle_number (void)
 
   char *yytxt = flex_yytext ();
 
-  if (looks_like_hex (yytxt, strlen (yytxt)))
+  // Strip any underscores
+  char *tmptxt = strsave (yytxt);
+  char *rptr = tmptxt;
+  char *wptr = tmptxt;
+  while (*rptr)
+  {
+    *wptr = *rptr++;
+     wptr += (*wptr != '_');
+  }
+  *wptr = '\0';
+
+  if (looks_like_hex (tmptxt, strlen (tmptxt)))
     {
       unsigned long ival;
 
-      nread = sscanf (yytxt, "%lx", &ival);
+      nread = sscanf (tmptxt, "%lx", &ival);
 
       value = static_cast<double> (ival);
     }
   else
     {
-      char *tmp = strsave (yytxt);
-
-      char *idx = strpbrk (tmp, "Dd");
+      char *idx = strpbrk (tmptxt, "Dd");
 
       if (idx)
         *idx = 'e';
 
-      nread = sscanf (tmp, "%lf", &value);
-
-      delete [] tmp;
+      nread = sscanf (tmptxt, "%lf", &value);
     }
+
+  delete [] tmptxt;
 
   // If yytext doesn't contain a valid number, we are in deep doo doo.
 

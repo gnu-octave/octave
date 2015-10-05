@@ -275,6 +275,13 @@
 %! assert (a += b *= c += 1, 42);
 %! assert (b == 40 && c == 8);
 
+## Test extended number format which allows '_' as NOP character
+%!assert (123_456, 123456)
+%!assert (.123_456, .123456)
+%!assert (123_456.123_456, 123456.123456)
+%!assert (0xAB_CD, 43981)
+%!assert (2e0_1, 20);
+
 ## Test creation of anonymous functions
 
 %!test

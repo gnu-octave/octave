@@ -1,6 +1,12 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
+ ** The parser has been extended to accept, but ignore, underscore characters
+    in numbers.  This facilitates writing more legible code by using '_' as
+    a thousands separator or to group nibbles into bytes in hex constants.
+
+    Examples: 1_000_000 == 1e6 or 0xDE_AD_BE_EF
+
  ** The default colormap is now set to 'viridis' which is also
     the default colormap in matplotlib. This new colormap fixes
     some of the main issues with the old default colormap 'jet'

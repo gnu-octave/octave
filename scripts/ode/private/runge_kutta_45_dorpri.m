@@ -1,5 +1,5 @@
-## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2015, Carlo de Falco
+## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -80,10 +80,10 @@ function [t_out, x_out, x_est, k] = ...
   aa = dt * a;
   k = zeros (rows (x), 7);
 
-  if (nargin >= 5) # options are passed
+  if (nargin >= 5)  # options are passed
     args = varargin{1}.vfunarguments;
-    if (nargin >= 6) # both the options and the k values are passed
-      k(:,1) = varargin{2}(:,end); # FSAL property
+    if (nargin >= 6)  # both the options and the k values are passed
+      k(:,1) = varargin{2}(:,end);  # FSAL property
     else      
       k(:,1) = feval (f, t, x, args{:});
     endif

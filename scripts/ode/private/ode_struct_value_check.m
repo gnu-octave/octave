@@ -1,5 +1,5 @@
-## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 ## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -177,7 +177,7 @@ function ode_struct_value_check (arg, solver)
         endif
 
       case "JConstant"
-        if (! isempty(arg.(fields{i})))
+        if (! isempty (arg.(fields{i})))
           if (! strcmp (arg.(fields{i}), "on")
               && ! strcmp (arg.(fields{i}), "off"))
             error ("OdePkg:InvalidArgument",

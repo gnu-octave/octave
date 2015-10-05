@@ -140,8 +140,8 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
     ## Call plot only if a valid result has been found, therefore this code
     ## fragment has moved here.  Stop integration if plot function returns false
     if (options.vhaveoutputfunction)
-      for vcnt = 0:options.Refine # Approximation between told and t
-        if (options.vhaverefine) # Do interpolation
+      for vcnt = 0:options.Refine  # Approximation between told and t
+        if (options.vhaverefine)  # Do interpolation
           vapproxtime = (vcnt + 1) / (options.Refine + 2);
           vapproxvals = (1 - vapproxtime) * vSaveVUForRefine ...
                         + (vapproxtime) * y(:,end);
@@ -155,11 +155,11 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
         endif
         vpltret = feval (options.OutputFcn, vapproxtime, vapproxvals, [],
                          options.vfunarguments{:});
-        if (vpltret) # Leave refinement loop
+        if (vpltret)  # Leave refinement loop
           break;
         endif
       endfor
-      if (vpltret) # Leave main loop
+      if (vpltret)  # Leave main loop
         solution.vunhandledtermination = false;
         break;
       endif
@@ -181,8 +181,8 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
     endif
     
     ## Update counters that count the number of iteration cycles
-    solution.vcntcycles = solution.vcntcycles + 1; # Needed for cost statistics
-    vcntiter = vcntiter + 1; # Needed to find iteration problems
+    solution.vcntcycles = solution.vcntcycles + 1;  # Needed for cost statistics
+    vcntiter = vcntiter + 1;  # Needed to find iteration problems
 
     ## Stop solving because the last 1000 steps no successful valid
     ## value has been found

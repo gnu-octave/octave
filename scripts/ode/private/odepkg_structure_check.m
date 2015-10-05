@@ -1,19 +1,21 @@
-## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 ## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
-## OdePkg - A package for solving ordinary differential equations and more
+## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This file is part of Octave.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{newstruct} =} odepkg_structure_check (@var{oldstruct})
@@ -52,7 +54,7 @@ function vret = odepkg_structure_check (varargin)
     error ("OdePkg:InvalidArgument",
            "Number of input arguments must be greater than zero");
   elseif (nargin > 2)
-    print_usage;
+    print_usage ();
   elseif (nargin == 1 && isstruct (varargin{1}))
     vret = varargin{1};
     vsol = "";
@@ -329,7 +331,7 @@ function vret = odepkg_structure_check (varargin)
 
       ## new fields added
       case "Algorithm"
-        if ( isempty(vret.(vfld{vcntarg})) || ischar(vret.(vfld{vcntarg})) )
+        if ( isempty (vret.(vfld{vcntarg})) || ischar (vret.(vfld{vcntarg})) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -337,8 +339,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "Choice"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (isnumeric(vret.(vfld{vcntarg})) && (vret.(vfld{vcntarg})==1)
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (isnumeric (vret.(vfld{vcntarg})) && (vret.(vfld{vcntarg})==1)
                 || vret.(vfld{vcntarg})==2 ) )
         else
           error ("OdePkg:InvalidParameter",
@@ -347,8 +349,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "Eta"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || ( isreal(vret.(vfld{vcntarg}))
+        if ( isempty (vret.(vfld{vcntarg}))
+            || ( isreal (vret.(vfld{vcntarg}))
                 && vret.(vfld{vcntarg})>=0 && vret.(vfld{vcntarg})<1) )
         else
           error ("OdePkg:InvalidParameter",
@@ -357,10 +359,10 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "Explicit"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (ischar(vret.(vfld{vcntarg}))
-                && (strcmp(vret.(vfld{vcntarg}),"yes")
-                || strcmp(vret.(vfld{vcntarg}),"no"))) )
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (ischar (vret.(vfld{vcntarg}))
+                && (strcmp (vret.(vfld{vcntarg}),"yes")
+                || strcmp (vret.(vfld{vcntarg}),"no"))) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -368,7 +370,7 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "InexactSolver"
-        if ( isempty(vret.(vfld{vcntarg})) || ischar(vret.(vfld{vcntarg})) )
+        if ( isempty (vret.(vfld{vcntarg})) || ischar (vret.(vfld{vcntarg})) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -376,11 +378,11 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "InitialSlope"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || ( ischar(vret.(vfld{vcntarg}))
-                || (isnumeric(vret.(vfld{vcntarg}))
-                    && (isvector(vret.(vfld{vcntarg}))
-                        || isreal(vret.(vfld{vcntarg}))))) )
+        if ( isempty (vret.(vfld{vcntarg}))
+            || ( ischar (vret.(vfld{vcntarg}))
+                || (isnumeric (vret.(vfld{vcntarg}))
+                    && (isvector (vret.(vfld{vcntarg}))
+                        || isreal (vret.(vfld{vcntarg}))))) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -388,10 +390,10 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "JConstant"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (ischar(vret.(vfld{vcntarg}))
-                && (strcmp(vret.(vfld{vcntarg}),"yes")
-                    || strcmp(vret.(vfld{vcntarg}),"no"))) )
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (ischar (vret.(vfld{vcntarg}))
+                && (strcmp (vret.(vfld{vcntarg}),"yes")
+                    || strcmp (vret.(vfld{vcntarg}),"no"))) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -399,9 +401,9 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "MassConstant"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (strcmp(vret.(vfld{vcntarg}),"on")
-                || strcmp(vret.(vfld{vcntarg}),"off")) )
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (strcmp (vret.(vfld{vcntarg}),"on")
+                || strcmp (vret.(vfld{vcntarg}),"off")) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -409,8 +411,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "PolynomialDegree"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (isnumeric(vret.(vfld{vcntarg}))
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (isnumeric (vret.(vfld{vcntarg}))
                 && mod(vret.(vfld{vcntarg}),1)==0 && vret.(vfld{vcntarg})>0) )
         else
           error ("OdePkg:InvalidParameter",
@@ -419,8 +421,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "QuadratureOrder"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (isnumeric(vret.(vfld{vcntarg}))
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (isnumeric (vret.(vfld{vcntarg}))
                 && mod(vret.(vfld{vcntarg}),1)==0 && vret.(vfld{vcntarg})>0) )
         else
           error ("OdePkg:InvalidParameter",
@@ -429,8 +431,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "Restart"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (isnumeric(vret.(vfld{vcntarg}))
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (isnumeric (vret.(vfld{vcntarg}))
                 && mod(vret.(vfld{vcntarg}),1)==0 && vret.(vfld{vcntarg})>0) )
         else
           error ("OdePkg:InvalidParameter",
@@ -439,8 +441,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "TimeStepNumber"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (isnumeric(vret.(vfld{vcntarg}))
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (isnumeric (vret.(vfld{vcntarg}))
                 && mod(vret.(vfld{vcntarg}),1)==0 && vret.(vfld{vcntarg})>0) )
         else
           error ("OdePkg:InvalidParameter",
@@ -449,8 +451,8 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "TimeStepSize"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || ( isreal(vret.(vfld{vcntarg})) && vret.(vfld{vcntarg})!=0) )
+        if ( isempty (vret.(vfld{vcntarg}))
+            || ( isreal (vret.(vfld{vcntarg})) && vret.(vfld{vcntarg})!=0) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',
@@ -458,10 +460,10 @@ function vret = odepkg_structure_check (varargin)
         endif
 
       case "UseJacobian"
-        if ( isempty(vret.(vfld{vcntarg}))
-            || (ischar(vret.(vfld{vcntarg}))
-                && (strcmp(vret.(vfld{vcntarg}),"yes")
-                    || strcmp(vret.(vfld{vcntarg}),"no"))) )
+        if ( isempty (vret.(vfld{vcntarg}))
+            || (ischar (vret.(vfld{vcntarg}))
+                && (strcmp (vret.(vfld{vcntarg}),"yes")
+                    || strcmp (vret.(vfld{vcntarg}),"no"))) )
         else
           error ("OdePkg:InvalidParameter",
                  'Unknown parameter name "%s" or no valid parameter value',

@@ -121,7 +121,7 @@ function res = fuzzy_compare (string1, string_set, correctness)
 
   positions = find (values == minimus);
 
-  if (minimus == 0) # exact match
+  if (minimus == 0)  # exact match
     if (rows (positions) != 1)
       error ("OdePkg:InvalidArgument",
              "there are %d strings perfectly matching '%s'",

@@ -136,7 +136,7 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
     ## if next tspan value is caught, update counter
     if ((z(end) == tspan(counter))
         || (abs (z(end) - tspan(counter)) /
-            (max(abs (z(end)), abs(tspan(counter)))) < 8*eps) )
+            (max (abs (z(end)), abs (tspan(counter)))) < 8*eps) )
       counter++;
 
     ## if there is an element in time vector at which the solution is required
@@ -150,7 +150,7 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
         if ((counter <= k)
             && (((z(i) == tspan(counter))
                  || (abs (z(i) - tspan(counter)) /
-                     (max(abs (z(i)), abs (tspan(counter)))) < 8*eps))) )
+                     (max (abs (z(i)), abs (tspan(counter)))) < 8*eps))) )
           counter++;
         endif
         ## else, loop until there are requested values inside this subinterval
@@ -232,8 +232,8 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
     endif
     
     ## Update counters that count the number of iteration cycles
-    solution.vcntcycles = solution.vcntcycles + 1; # Needed for cost statistics
-    vcntiter = vcntiter + 1;     # Needed to find iteration problems
+    solution.vcntcycles = solution.vcntcycles + 1;  # Needed for cost statistics
+    vcntiter = vcntiter + 1;  # Needed to find iteration problems
 
     ## Stop solving because the last 1000 steps no successful valid
     ## value has been found

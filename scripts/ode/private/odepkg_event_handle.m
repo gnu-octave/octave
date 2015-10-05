@@ -84,7 +84,7 @@ function vretval = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
       vinpargs = {vevefun, vt, vy};
     else
       vinpargs = {vevefun, vt, vy{1}, vy{2}};
-      vy = vy{1}; # Delete cell element 2
+      vy = vy{1};  # Delete cell element 2
     endif
     if (nargin > 4)
       vinpargs = {vinpargs{:}, varargin{:}};
@@ -103,7 +103,7 @@ function vretval = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
       vinpargs = {vevefun, vt, vy};
     else
       vinpargs = {vevefun, vt, vy{1}, vy{2}};
-      vy = vy{1}; # Delete cell element 2
+      vy = vy{1};  # Delete cell element 2
     endif
     if (nargin > 4)
       vinpargs = {vinpargs{:}, varargin{:}};
@@ -115,8 +115,8 @@ function vretval = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
 
     ## Check if one or more signs of the event has changed
     vsignum = (sign (veveold) != sign (veve));
-    if (any (vsignum))         # One or more values have changed
-      vindex = find (vsignum); # Get the index of the changed values
+    if (any (vsignum))          # One or more values have changed
+      vindex = find (vsignum);  # Get the index of the changed values
 
       if (any (vdir(vindex) == 0))
         ## Rising or falling (both are possible)
@@ -132,8 +132,8 @@ function vretval = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
       ## Create new output values if a valid index has been found
       if (! isempty (vindex))
         ## Change the persistent result cell array
-        vretcell{1} = any (vterm(vindex));    # Stop integration or not
-        vretcell{2}(vevecnt,1) = vindex(1,1); # Take first event found
+        vretcell{1} = any (vterm(vindex));     # Stop integration or not
+        vretcell{2}(vevecnt,1) = vindex(1,1);  # Take first event found
         ## Calculate the time stamp when the event function returned 0 and
         ## calculate new values for the integration results, we do both by
         ## a linear interpolation

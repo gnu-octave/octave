@@ -49,15 +49,15 @@
 ## @seealso{odeget}
 ## @end deftypefn
 
-function opt = odeset (varargin)
+function odestruct = odeset (varargin)
 
-  ## Check number and types of all input arguments
+  ## Special calling syntax to display defaults
   if (nargin == 0 && nargout == 0)
-    print_options;
+    print_options ();
     return;
   endif
 
-  ## Creating a vector of OdePkg possible fields
+  ## Column vector of all possible OdePkg fields
   fields = ["AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
             "Explicit"; "InexactSolver"; "InitialSlope"; "InitialStep";
             "Jacobian";"JConstant";"JPattern";"Mass"; "MassConstant";
@@ -68,27 +68,25 @@ function opt = odeset (varargin)
             "Restart"; "Stats"; "TimeStepNumber"; "TimeStepSize";
             "UseJacobian"; "Vectorized"];
 
-  fields_nb = size (fields, 1);
+  fields_nb = rows (fields);
 
   ## initialize output
-  opt = [];
-  for i = 1:1:fields_nb
-    opt.(deblank (fields(i,:))) = [];
-  endfor
+  odestruct = cell2struct (cell (rows (fields), 1), cellstr (fields));
 
-  opt.Refine = 0;
-  opt.OutputSave = 1;
+  odestruct.Refine = 0;
+  odestruct.OutputSave = 1;
 
   if (nargin == 0 && nargout == 1)
     return;
   endif
 
-  ode_fields = fieldnames (opt);
+  ode_fields = fieldnames (odestruct);
   
   if (isstruct (varargin{1}))
-    ode_struct_value_check (varargin{1});
+    oldstruct = varargin{1};
+    ode_struct_value_check (oldstruct);
 
-    optA_fields = fieldnames (varargin{1});
+    optA_fields = fieldnames (oldstruct);
     optA_f_nb = length (optA_fields);
 
     ## loop on first struct options for updating
@@ -97,12 +95,12 @@ function opt = odeset (varargin)
 
       while (1)
         pos = fuzzy_compare (name, fields);
-        if (size (pos, 1) == 0)
+        if (isempty (pos))
           warning ("OdePkg:InvalidArgument",
                    "no property found with name '%s'", name);
         endif
 
-        if (size (pos, 1) == 1)
+        if (rows (pos) == 1)
           if (! strcmp (lower (deblank (name)),
                         lower (deblank (fields(pos,:)))))
             warning ("OdePkg:InvalidArgument", "no exact matching for ",
@@ -110,28 +108,30 @@ function opt = odeset (varargin)
                      name, deblank (fields(pos,:)));
           endif
 
-          opt.(deblank (fields(pos,:))) = varargin{1}.(optA_fields{i});
-          break
+          odestruct.(deblank (fields(pos,:))) = oldstruct.(optA_fields{i});
+          break;
         endif
 
+        ## FIXME: Do we really need interactive selection?
         ## if there are more matching, ask the user to be more precise
         warning ("OdePkg:InvalidArgument",
                  "no exact matching for '%s'. %d possible fields were found",
                  name, size(pos, 1));
-        for j = 1:(size (pos, 1))
-          fprintf ("%s\n", deblank (fields(pos(j),:)));
+        for j = 1:(rows (pos))
+          printf ("%s\n", deblank (fields(pos(j),:)));
         endfor
         do
-          fprintf ("Please insert field name again\n");
+          disp ("Please insert field name again");
           name = input ("New field name: ");
         until (ischar (name))
       endwhile
     endfor
 
     if (nargin == 2 && isstruct (varargin{2}))
-      ode_struct_value_check (varargin{2});
+      newstruct = varargin{2};
+      ode_struct_value_check (newstruct);
 
-      optB_fields = fieldnames (varargin{2});
+      optB_fields = fieldnames (newstruct);
       optB_f_nb = length (optB_fields);
 
       ## update the first struct with the values in the second one
@@ -140,31 +140,32 @@ function opt = odeset (varargin)
         while (1)
           pos = fuzzy_compare (name, fields);
 
-          if (size (pos, 1) == 0)
-            warning ("OdePkg:InvalidArgument", ...
+          if (isempty (pos))
+            warning ("OdePkg:InvalidArgument",
                      "no property found with name '%s'", name);
           endif
 
-          if (size(pos, 1) == 1)
-            if (! strcmp (lower (deblank (name)), ...
+          if (rows (pos) == 1)
+            if (! strcmp (lower (deblank (name)),
                           lower (deblank (fields(pos,:)))))
               warning ("OdePkg:InvalidArgument", "no exact matching for ",
                        "'%s'. Assuming you were intending '%s'",
                         name, deblank (fields(pos,:)));
             endif
-            opt.(deblank (fields(pos,:))) = varargin{2}.(optB_fields{i});
-            break
+            odestruct.(deblank (fields(pos,:))) = newstruct.(optB_fields{i});
+            break;
           endif
 
+          ## FIXME: Do we really need interactive selection?
           ## if there are more matching, ask the user to be more precise
           warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
                    "%d possible fields were found",
-                   name, size (pos, 1));
-          for j = 1:(size (pos, 1))
-            fprintf ("%s\n", deblank (fields(pos(j),:)));
+                   name, rows (pos));
+          for j = 1:(rows (pos))
+            printf ("%s\n", deblank (fields(pos(j),:)));
           endfor
           do
-            fprintf ("Please insert field name again\n");
+            disp ("Please insert field name again");
             name = input ("New field name: ");
           until (ischar (name))
         endwhile
@@ -175,117 +176,114 @@ function opt = odeset (varargin)
     ## if the second argument is not a struct,
     ## pass new values of the OdePkg options to the first struct
     if (mod (nargin, 2) != 1)
-      error ("OdePkg:InvalidArgument",
-             "odeset expects an odd number of input arguments",
-             " when the first is a ODE_STRUCT");
+      error ("odeset: FIELD/VALUE arguments must occur in pairs");
+    endif
+
+    if (! all (cellfun ("isclass", varargin(2:2:end), "char")))
+      error ("odeset: All FIELD names must be strings");
     endif
 
     ## loop on the input arguments
     for i = 2:2:(nargin - 1)
-
-      if (! ischar(varargin{i}))
-        error ("OdePkg:InvalidArgument",
-               "not all odd input arguments are strings");
-      endif
-
       name = varargin{i};
 
       while (1)
         pos = fuzzy_compare (name, fields);
 
-        if (size (pos, 1) == 0)
+        if (isempty (pos))
           error ("OdePkg:InvalidArgument",
                  "no property found with name '%s'", name);
         endif
 
-        if (size (pos, 1) == 1)
-          if (! strcmp (lower (deblank (name)), lower (deblank (fields(pos,:)))))
+        if (rows (pos) == 1)
+          if (! strcmp (lower (deblank (name)),
+                        lower (deblank (fields(pos,:)))))
             warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
                      "%d possible fields were found",
-                     name, size (pos, 1));
+                     name, rows (pos));
           endif
-          opt.(deblank (fields(pos,:))) = varargin{i+1};
-          break
+          odestruct.(deblank (fields(pos,:))) = varargin{i+1};
+          break;
         endif
 
+        ## FIXME: Do we really need interactive selection?
         ## if there are more matching, ask the user to be more precise
         warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
                  "%d possible fields were found",
-                 name, size (pos, 1));
-        for j = 1:(size (pos, 1))
-          fprintf ("%s\n", deblank (fields(pos(j),:)));
+                 name, rows (pos));
+        for j = 1:(rows (pos))
+          printf ("%s\n", deblank (fields(pos(j),:)));
         endfor
         do
-          fprintf ("Please insert field name again\n");
+          disp ("Please insert field name again");
           name = input ("New field name: ");
         until (ischar (name))
       endwhile
     endfor
 
     ## check if all has been done gives a valid OdePkg struct
-    ode_struct_value_check (opt);
+    ode_struct_value_check (odestruct);
     return;
   endif
 
   ## first input argument was not a struct
   if (mod (nargin, 2) != 0)
-    error ("OdePkg:InvalidArgument", "odeset expects an even number ",
-           "of input arguments when the first is a string");
+    error ("odeset: FIELD/VALUE arguments must occur in pairs");
+  endif
+
+  if (! all (cellfun ("isclass", varargin(1:2:end), "char")))
+    error ("odeset: All FIELD names must be strings");
   endif
 
   for i = 1:2:(nargin-1)
-    if (! ischar (varargin{i}))
-      error ("OdePkg:InvalidArgument",
-             "not all even input arguments are strings");
-    endif
-
     name = varargin{i};
 
     while (1)
       pos = fuzzy_compare (name, fields);
 
-      if (size (pos, 1) == 0)
+      if (isempty (pos))
         error ("OdePkg:InvalidArgument",
                "invalid property. No property found with name '%s'", name);
       endif
 
-      if (size (pos, 1) == 1)
+      if (rows (pos) == 1)
         if (! strcmp (lower (deblank (name)),
                       lower (deblank (fields(pos,:)))))
           warning ("OdePkg:InvalidArgument", "no exact matching for ",
                    "'%s'. Assuming you were intending '%s'",
                    name, deblank (fields(pos,:)));
         endif
-        opt.(deblank (fields(pos,:))) = varargin{i+1};
-        break
+        odestruct.(deblank (fields(pos,:))) = varargin{i+1};
+        break;
       endif
 
+      ## FIXME: Do we really need interactive selection?
       ## if there are more matching, ask the user to be more precise
       warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
                "%d possible fields were found",
-               name, size (pos, 1));
-      for j = 1:(size (pos, 1))
-        fprintf ("%s\n", deblank (fields(pos(j),:)));
+               name, rows (pos));
+      for j = 1:rows (pos)
+        printf ("%s\n", deblank (fields(pos(j),:)));
       endfor
       do
-        fprintf ("Please insert field name again\n");
+        disp ("Please insert field name again");
         name = input ("New field name: ");
       until (ischar (name))
     endwhile
   endfor
 
   ## check if all has been done gives a valid OdePkg struct
-  ode_struct_value_check (opt);
+  ode_struct_value_check (odestruct);
 
 endfunction
 
 ## function useful to print all the possible options
 function print_options ()
   
-  printf ("These following are all possible options.\n",
-          "Default values are put in square brackets.\n\n");
-  
-  disp ("             AbsTol:  scalar or vector, >0, [1.e-6]");
+  disp ("These following are all possible options.");
+  disp ("Default values are put in square brackets.");
+  disp ("");
+  disp ("             AbsTol:  scalar or vector, >0, [1e-6]");
   disp ("          Algorithm:  string, {['gmres'], 'pcg', 'bicgstab'}");
   disp ("                BDF:  binary, {'on', ['off']}");
   disp ("             Choice:  switch, {[1], 2}");
@@ -301,7 +299,7 @@ function print_options ()
   disp ("               Mass:  matrix or function_handle, []");
   disp ("       MassConstant:  binary, {'on', ['off']}");
   disp ("       MassSingular:  switch, {'yes', ['maybe'], 'no'}");
-  disp ("MaxNewtonIterations:  scalar, integer, >0, [1.e3]");
+  disp ("MaxNewtonIterations:  scalar, integer, >0, [1e3]");
   disp ("           MaxOrder:  switch, {1, 2, 3, 4, [5]}");
   disp ("            MaxStep:  scalar, >0, []");
   disp ("   MStateDependence:  switch, {'none', ['weak'], 'strong'}");
@@ -315,7 +313,7 @@ function print_options ()
   disp ("   PolynomialDegree:  scalar, integer, >0, []");
   disp ("    QuadratureOrder:  scalar, integer, >0, []");
   disp ("             Refine:  scalar, integer, >0, []");
-  disp ("             RelTol:  scalar, >0, [1.e-3]");
+  disp ("             RelTol:  scalar, >0, [1e-3]");
   disp ("            Restart:  scalar, integer, >0, [20]");
   disp ("              Stats:  binary, {'on', ['off']}");
   disp ("     TimeStepNumber:  scalar, integer, >0, []");
@@ -330,34 +328,35 @@ endfunction
 %! # A new OdePkg options structure with default values is created.
 %!
 %! odeoptA = odeset ();
-%!
+
 %!demo
 %! # A new OdePkg options structure with manually set options 
-%! # "AbsTol" and "RelTol" is created.
+%! # for "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
-%!
+
 %!demo
-%! # A new OdePkg options structure from odeoptB is created with
+%! # A new OdePkg options structure is created from odeoptB with
 %! # a modified value for option "NormControl".
-%!
+
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 %! odeoptC = odeset (odeoptB, "NormControl", "on");
 
 ## All tests that are needed to check if a correct resp. valid option
 ## has been set are implemented in ode_struct_value_check.m.
-%! ## Turn off output of warning messages for all tests, turn them on
-%! ## again if the last test is called
-%!  warning ("off", "OdePkg:InvalidArgument");
-%!test odeoptA = odeset ();
-%!test odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
-%!     if (odeoptB.AbsTol != 1e-2), error; endif
-%!     if (odeoptB.RelTol != 1e-1), error; endif
-%!test odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
-%!     odeoptC = odeset (odeoptB, "NormControl", "on");
-%!test odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
-%!     odeoptC = odeset (odeoptB, "NormControl", "on");
-%!     odeoptD = odeset (odeoptC, odeoptB);
-%!
-%!  warning ("on", "OdePkg:InvalidArgument");
+%!test
+%! wstate = warning ("off", "OdePkg:InvalidArgument");
+%! unwind_protect
+%!   odeoptA = odeset ();
+%!   ## FIXME: no assert check on odeoptA
+%!   odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
+%!   assert (odeoptB.AbsTol, 1e-2);
+%!   assert (odeoptB.RelTol, 1e-1);
+%!   odeoptC = odeset (odeoptB, "NormControl", "on");
+%!   ## FIXME: no assert check on odeoptC
+%!   odeoptD = odeset (odeoptC, odeoptB);
+%!   ## FIXME: no assert check on odeoptD
+%! unwind_protect_cleanup
+%!   warning (wstate);
+%! end_unwind_protect
 

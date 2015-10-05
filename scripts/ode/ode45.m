@@ -1,6 +1,6 @@
-## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
-## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2014, Jacopo Corno <jacopo.corno@gmail.com>
+## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -72,19 +72,21 @@
 ## @seealso{odeset, odeget}
 ## @end deftypefn
 
-function varargout = ode45 (vfun, vslot, vinit, varargin)
+function varargout = ode45 (vfun, vtrange, vinit, varargin)
 
-  vorder = 5; # runge_kutta_45_dorpri uses local extrapolation
+  vorder = 5;  # runge_kutta_45_dorpri uses local extrapolation
   vsolver = "ode45";
 
-  if (nargin == 0) # Check number and types of all input arguments
+  ## FIXME: Octave core function's usually do print_usage ()
+  ##        rather than displaying full help string when improperly called.
+  if (nargin == 0)  # Check number and types of all input arguments
     help (vsolver);
-    error ("OdePkg:InvalidArgument", ...
+    error ("OdePkg:InvalidArgument",
            "number of input arguments must be greater than zero");
   endif
 
   if (nargin < 3)
-    print_usage;
+    print_usage ();
   endif
   
   if (nargin >= 4)
@@ -105,63 +107,63 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
     vodeoptions.vfunarguments = {};
   endif
 
-  if (! isvector (vslot) || ! isnumeric (vslot))
-    error ("OdePkg:InvalidArgument", ...
+  if (! isvector (vtrange) || ! isnumeric (vtrange))
+    error ("OdePkg:InvalidArgument",
            "second input argument must be a valid vector");
   endif
 
-  if (length (vslot) < 2 && ...
-      (isempty (vodeoptions.TimeStepSize) ...
-       || isempty (vodeoptions.TimeStepNumber)))
-    error ("OdePkg:InvalidArgument", ...
+  if (length (vtrange) < 2
+      && (isempty (vodeoptions.TimeStepSize)
+          || isempty (vodeoptions.TimeStepNumber)))
+    error ("OdePkg:InvalidArgument",
            "second input argument must be a valid vector");
-  elseif (vslot(2) == vslot(1))
-    error ("OdePkg:InvalidArgument", ...
+  elseif (vtrange(2) == vtrange(1))
+    error ("OdePkg:InvalidArgument",
            "second input argument must be a valid vector");
   else
-    vodeoptions.vdirection = sign (vslot(2) - vslot(1));
+    vodeoptions.vdirection = sign (vtrange(2) - vtrange(1));
   endif
-  vslot = vslot(:);
+  vtrange = vtrange(:);
 
   if (! isvector (vinit) || ! isnumeric (vinit))
-    error ("OdePkg:InvalidArgument", ...
+    error ("OdePkg:InvalidArgument",
            "third input argument must be a valid numerical value");
   endif
   vinit = vinit(:);
 
-  if (! (isa (vfun, "function_handle") || isa (vfun, "inline")))
-    error ("OdePkg:InvalidArgument", ...
+  if (! (isa (vfun, "function_handle")))
+    error ("OdePkg:InvalidArgument",
            "first input argument must be a valid function handle");
   endif
 
   ## Start preprocessing, have a look which options are set in vodeoptions,
   ## check if an invalid or unused option is set
-  if (isempty (vodeoptions.TimeStepNumber) ...
+  if (isempty (vodeoptions.TimeStepNumber)
       && isempty (vodeoptions.TimeStepSize))
     integrate_func = "adaptive";
     vodeoptions.vstepsizefixed = false;
-  elseif (! isempty (vodeoptions.TimeStepNumber) ...
+  elseif (! isempty (vodeoptions.TimeStepNumber)
           && ! isempty (vodeoptions.TimeStepSize))
     integrate_func = "n_steps";
     vodeoptions.vstepsizefixed = true;
     if (sign (vodeoptions.TimeStepSize) != vodeoptions.vdirection)
-      warning ("OdePkg:InvalidArgument", ...
-               "option 'TimeStepSize' has a wrong sign", ...
+      warning ("OdePkg:InvalidArgument",
+               "option 'TimeStepSize' has a wrong sign",
                "it will be corrected automatically");
       vodeoptions.TimeStepSize = (-1)*vodeoptions.TimeStepSize;
     endif
-  elseif (isempty (vodeoptions.TimeStepNumber) ...
+  elseif (isempty (vodeoptions.TimeStepNumber)
           && ! isempty (vodeoptions.TimeStepSize))
     integrate_func = "const";
     vodeoptions.vstepsizefixed = true;
     if (sign (vodeoptions.TimeStepSize) != vodeoptions.vdirection)
-      warning ("OdePkg:InvalidArgument", ...
-               "option 'TimeStepSize' has a wrong sign", ...
+      warning ("OdePkg:InvalidArgument",
+               "option 'TimeStepSize' has a wrong sign",
                "it will be corrected automatically");
       vodeoptions.TimeStepSize = (-1)*vodeoptions.TimeStepSize;
     endif
   else
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "assuming an adaptive integrate function");
     integrate_func = "adaptive";
   endif
@@ -173,11 +175,11 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   ## This option can be set by the user to another value than default value.
   if (isempty (vodeoptions.RelTol) && ! vodeoptions.vstepsizefixed)
     vodeoptions.RelTol = 1e-3;
-    warning ("OdePkg:InvalidArgument", ...
-             "Option 'RelTol' not set, new value %f is used", ...
+    warning ("OdePkg:InvalidArgument",
+             "Option 'RelTol' not set, new value %f is used",
              vodeoptions.RelTol);
   elseif (! isempty (vodeoptions.RelTol) && vodeoptions.vstepsizefixed)
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "Option 'RelTol' will be ignored if fixed time stamps are given");
   endif
 
@@ -185,11 +187,11 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   ## This option can be set by the user to another value than default value.
   if (isempty (vodeoptions.AbsTol) && ! vodeoptions.vstepsizefixed)
     vodeoptions.AbsTol = 1e-6;
-    warning ("OdePkg:InvalidArgument", ...
-             "Option 'AbsTol' not set, new value %f is used", ...
+    warning ("OdePkg:InvalidArgument",
+             "Option 'AbsTol' not set, new value %f is used",
              vodeoptions.AbsTol);
   elseif (! isempty (vodeoptions.AbsTol) && vodeoptions.vstepsizefixed)
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "Option 'AbsTol' will be ignored if fixed time stamps are given");
   else
     vodeoptions.AbsTol = vodeoptions.AbsTol(:); # Create column vector
@@ -210,7 +212,7 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
       vodeoptions.vhavenonnegative = true;
     else
       vodeoptions.vhavenonnegative = false;
-      warning ("OdePkg:InvalidArgument", ...
+      warning ("OdePkg:InvalidArgument",
                "Option 'NonNegative' will be ignored if mass matrix is set");
     endif
   else 
@@ -257,12 +259,13 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   ## This option can be set by the user to another value than default value.
   if (isempty (vodeoptions.InitialStep) && strcmp (integrate_func, "adaptive"))
     vodeoptions.InitialStep = ...
-      vodeoptions.vdirection * starting_stepsize (vorder, vfun, vslot(1), vinit,
+      vodeoptions.vdirection * starting_stepsize (vorder, vfun, vtrange(1),
+                                                  vinit,
                                                   vodeoptions.AbsTol,
                                                   vodeoptions.RelTol,
                                                   vodeoptions.vnormcontrol);
-    warning ("OdePkg:InvalidArgument", ...
-             "option 'InitialStep' not set, estimated value %f is used", ...
+    warning ("OdePkg:InvalidArgument",
+             "option 'InitialStep' not set, estimated value %f is used",
              vodeoptions.InitialStep);
   elseif(isempty (vodeoptions.InitialStep))
     vodeoptions.InitialStep = odeget (vodeoptions, "TimeStepSize");
@@ -271,9 +274,9 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   ## Implementation of the option MaxStep has been finished. This option
   ## can be set by the user to another value than default value.
   if (isempty (vodeoptions.MaxStep) && ! vodeoptions.vstepsizefixed)
-    vodeoptions.MaxStep = abs (vslot(end) - vslot(1)) / 10;
-    warning ("OdePkg:InvalidArgument", ...
-             "Option 'MaxStep' not set, new value %f is used", ...
+    vodeoptions.MaxStep = abs (vtrange(end) - vtrange(1)) / 10;
+    warning ("OdePkg:InvalidArgument",
+             "Option 'MaxStep' not set, new value %f is used",
              vodeoptions.MaxStep);
   endif
 
@@ -289,27 +292,27 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   ## by this solver because this solver uses an explicit Runge-Kutta method
   ## and therefore no Jacobian calculation is necessary.
   if (! isequal (vodeoptions.Jacobian, vodetemp.Jacobian))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'Jacobian' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.JPattern, vodetemp.JPattern))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'JPattern' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.Vectorized, vodetemp.Vectorized))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'Vectorized' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.NewtonTol, vodetemp.NewtonTol))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'NewtonTol' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.MaxNewtonIterations,vodetemp.MaxNewtonIterations))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'MaxNewtonIterations' will be ignored by this solver");
   endif
 
@@ -335,27 +338,27 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   ## Other options that are not used by this solver.
   ## Print a warning message to tell the user that the option is ignored.
   if (! isequal (vodeoptions.MvPattern, vodetemp.MvPattern))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'MvPattern' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.MassSingular, vodetemp.MassSingular))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'MassSingular' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.InitialSlope, vodetemp.InitialSlope))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'InitialSlope' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.MaxOrder, vodetemp.MaxOrder))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'MaxOrder' will be ignored by this solver");
   endif
 
   if (! isequal (vodeoptions.BDF, vodetemp.BDF))
-    warning ("OdePkg:InvalidArgument", ...
+    warning ("OdePkg:InvalidArgument",
              "option 'BDF' will be ignored by this solver");
   endif
 
@@ -374,28 +377,28 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
     endif
   endif
 
-  switch integrate_func
+  switch (integrate_func)
     case "adaptive"
-      solution = integrate_adaptive (@runge_kutta_45_dorpri, ...
-                                     vorder, vfun, vslot, vinit, SubOpts);
+      solution = integrate_adaptive (@runge_kutta_45_dorpri,
+                                     vorder, vfun, vtrange, vinit, SubOpts);
     case "n_steps"
-      solution = integrate_n_steps (@runge_kutta_45_dorpri, ...
-                                    vfun, vslot(1), vinit, ...
-                                    vodeoptions.TimeStepSize, ...
+      solution = integrate_n_steps (@runge_kutta_45_dorpri,
+                                    vfun, vtrange(1), vinit,
+                                    vodeoptions.TimeStepSize,
                                     vodeoptions.TimeStepNumber, SubOpts);
     case "const"
-      solution = integrate_const (@runge_kutta_45_dorpri, ...
-                                  vfun, vslot, vinit, ...
+      solution = integrate_const (@runge_kutta_45_dorpri,
+                                  vfun, vtrange, vinit,
                                   vodeoptions.TimeStepSize, SubOpts);
   endswitch
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (vodeoptions.vhaveoutputfunction)  # Cleanup plotter
-    feval (vodeoptions.OutputFcn, solution.t(end), ...
+    feval (vodeoptions.OutputFcn, solution.t(end),
            solution.x(end,:)', "done", vodeoptions.vfunarguments{:});
   endif
   if (vodeoptions.vhaveeventfunction)   # Cleanup event function handling
-    odepkg_event_handle (vodeoptions.Events, solution.t(end), ...
+    odepkg_event_handle (vodeoptions.Events, solution.t(end),
                          solution.x(end,:)', "done",
                          vodeoptions.vfunarguments{:});
   endif
@@ -404,22 +407,25 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
   if (strcmp (vodeoptions.Stats, "on"))
     vhavestats = true;
     vnsteps    = solution.vcntloop-2;        # vcntloop from 2..end
-    vnfailed   = (solution.vcntcycles-1)-(solution.vcntloop-2)+1; # vcntcycl from 1..end
+    vnfailed   = (solution.vcntcycles-1)-(vnsteps)+1; # vcntcycl from 1..end
     vnfevals   = 7*(solution.vcntcycles-1);  # number of ode evaluations
     vndecomps  = 0;                          # number of LU decompositions
     vnpds      = 0;                          # number of partial derivatives
     vnlinsols  = 0;                          # no. of linear systems solutions
     ## Print cost statistics if no output argument is given
     if (nargout == 0)
-      vmsg = fprintf (1, "Number of successful steps: %d\n", vnsteps);
-      vmsg = fprintf (1, "Number of failed attempts:  %d\n", vnfailed);
-      vmsg = fprintf (1, "Number of function calls:   %d\n", vnfevals);
+      printf ("Number of successful steps: %d\n", vnsteps);
+      printf ("Number of failed attempts:  %d\n", vnfailed);
+      printf ("Number of function calls:   %d\n", vnfevals);
     endif
   else
     vhavestats = false;
   endif
 
-  if (nargout == 1)                 # Sort output variables, depends on nargout
+  if (nargout == 2)
+    varargout{1} = solution.t;      # Time stamps are first output argument
+    varargout{2} = solution.x;      # Results are second output argument
+  elseif (nargout == 1)
     varargout{1}.x = solution.t;    # Time stamps are saved in field x
     varargout{1}.y = solution.x;    # Results are saved in field y
     varargout{1}.solver = vsolver;  # Solver name is saved in field solver
@@ -429,7 +435,7 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
       varargout{1}.ye = solution.vevent{4};  # Results when an event occurred
     endif
     if (vhavestats)
-      varargout{1}.stats = struct;
+      varargout{1}.stats = struct ();
       varargout{1}.stats.nsteps   = vnsteps;
       varargout{1}.stats.nfailed  = vnfailed;
       varargout{1}.stats.nfevals  = vnfevals;
@@ -437,15 +443,10 @@ function varargout = ode45 (vfun, vslot, vinit, varargin)
       varargout{1}.stats.ndecomps = vndecomps;
       varargout{1}.stats.nlinsols = vnlinsols;
     endif
-  elseif (nargout == 2)
-    varargout{1} = solution.t;   # Time stamps are first output argument
-    varargout{2} = solution.x;   # Results are second output argument
   elseif (nargout == 5)
-    varargout{1} = solution.t;   # Same as (nargout == 2)
-    varargout{2} = solution.x;   # Same as (nargout == 2)
-    varargout{3} = [];           # LabMat doesn't accept lines like
-    varargout{4} = [];           # varargout{3} = varargout{4} = [];
-    varargout{5} = [];
+    varargout = cell (1,5);
+    varargout{1} = solution.t;
+    varargout{2} = solution.x;
     if (vodeoptions.vhaveeventfunction) 
       varargout{3} = solution.vevent{3};     # Time info when an event occurred
       varargout{4} = solution.vevent{4};     # Results when an event occurred
@@ -618,13 +619,13 @@ endfunction
 %!test  # Events option, now stop integration
 %! vopt = odeset ("Events", @fevn, "NormControl", "on");
 %! vsol = ode45 (@fpol, [0 10], [2 0], vopt);
-%! assert ([vsol.ie, vsol.xe, vsol.ye], ...
-%!   [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
+%! assert ([vsol.ie, vsol.xe, vsol.ye], 
+%!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
 %!test  # Events option, five output arguments
 %! vopt = odeset ("Events", @fevn, "NormControl", "on");
 %! [vt, vy, vxe, vye, vie] = ode45 (@fpol, [0 10], [2 0], vopt);
-%! assert ([vie, vxe, vye], ...
-%!   [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
+%! assert ([vie, vxe, vye],
+%!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
 %!test  # Jacobian option
 %! vopt = odeset ("Jacobian", @fjac);
 %! vsol = ode45 (@fpol, [0 2], [2 0], vopt);

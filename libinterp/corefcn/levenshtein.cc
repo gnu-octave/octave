@@ -71,39 +71,39 @@ The third argument @var{u_bound} is optional and fixes an upper bound for the di
     s2len = s2.numel (),
     ii, jj;
 
-  if (! error_state)
+  Array<octave_idx_type>
+    dist (dim_vector (s1len + 1, s2len + 1), 0);
+
+  for (ii = 1; ii <= s1len; ii++)
+    dist.xelem (ii, 0) = ii;
+
+  for (jj = 1; jj <= s2len; jj++)
+    dist.xelem (0, jj) = jj;
+
+  for (jj = 1; jj <= s2len; jj++)
     {
-      Array<octave_idx_type>
-        dist (dim_vector (s1len + 1, s2len + 1), 0);
-
       for (ii = 1; ii <= s1len; ii++)
-        dist.xelem (ii, 0) = ii;
+        if (s1_p[ii-1] == s2_p[jj-1])
+          dist.xelem (ii, jj) = dist.xelem (ii-1, jj-1);
+        else
+          dist.xelem (ii, jj) =
+            MIN3(dist.xelem (ii-1, jj) + 1,
+                 dist.xelem (ii, jj-1) + 1,
+                 dist.xelem (ii-1, jj-1) + 1);
 
-      for (jj = 1; jj <= s2len; jj++)
-        dist.xelem (0, jj) = jj;
-
-      for (jj = 1; jj <= s2len; jj++)
+      if (dist(MIN2(jj, s1len), jj) > ub)
         {
-          for (ii = 1; ii <= s1len; ii++)
-            if (s1_p[ii-1] == s2_p[jj-1])
-              dist.xelem (ii, jj) = dist.xelem (ii-1, jj-1);
-            else
-              dist.xelem (ii, jj) =
-                MIN3(dist.xelem (ii-1, jj) + 1,
-                     dist.xelem (ii, jj-1) + 1,
-                     dist.xelem (ii-1, jj-1) + 1);
-
-          if (dist(MIN2(jj, s1len), jj) > ub)
-            {
-              retval(0) = std::numeric_limits<int32_t>::max ();
-              if (nargout == 2)
-                retval(1) = Matrix ();
-              return retval;
-            }
+          retval(0) = std::numeric_limits<int32_t>::max ();
+          if (nargout == 2)
+            retval(1) = Matrix ();
+          return retval;
         }
-      retval(0) = dist.xelem (s1len, s2len);
-      if (nargout == 2)
-        retval(1) = dist;
     }
+
+  retval(0) = dist.xelem (s1len, s2len);
+
+  if (nargout == 2)
+    retval(1) = dist;
+
   return retval;
 }

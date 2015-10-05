@@ -62,34 +62,27 @@ tree_prefix_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (op)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
         {
           octave_lvalue ref = op->lvalue ();
 
-          if (! error_state)
-            {
-              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+          BEGIN_PROFILER_BLOCK (tree_prefix_expression)
 
-              ref.do_unary_op (etype);
+          ref.do_unary_op (etype);
 
-              if (! error_state)
-                retval = ref.value ();
+          retval = ref.value ();
 
-              END_PROFILER_BLOCK
-            }
+          END_PROFILER_BLOCK
         }
       else
         {
           octave_value val = op->rvalue1 ();
 
-          if (! error_state && val.is_defined ())
+          if (val.is_defined ())
             {
-              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+               BEGIN_PROFILER_BLOCK (tree_prefix_expression)
 
               // Attempt to do the operation in-place if it is unshared
               // (a temporary expression).
@@ -97,9 +90,6 @@ tree_prefix_expression::rvalue1 (int)
                 retval = val.do_non_const_unary_op (etype);
               else
                 retval = ::do_unary_op (etype, val);
-
-              if (error_state)
-                retval = octave_value ();
 
               END_PROFILER_BLOCK
             }
@@ -149,38 +139,29 @@ tree_postfix_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (op)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
         {
           octave_lvalue ref = op->lvalue ();
 
-          if (! error_state)
-            {
-              retval = ref.value ();
+          retval = ref.value ();
 
-              BEGIN_PROFILER_BLOCK (tree_postfix_expression)
+          BEGIN_PROFILER_BLOCK (tree_postfix_expression)
 
-              ref.do_unary_op (etype);
+          ref.do_unary_op (etype);
 
-              END_PROFILER_BLOCK
-            }
+          END_PROFILER_BLOCK
         }
       else
         {
           octave_value val = op->rvalue1 ();
 
-          if (! error_state && val.is_defined ())
+          if (val.is_defined ())
             {
               BEGIN_PROFILER_BLOCK (tree_postfix_expression)
 
               retval = ::do_unary_op (etype, val);
-
-              if (error_state)
-                retval = octave_value ();
 
               END_PROFILER_BLOCK
             }

@@ -420,7 +420,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     }
 
   // For consistency.
-  if (! error_state && a.is_sparse_type () && b.is_sparse_type ())
+  if (a.is_sparse_type () && b.is_sparse_type ())
     {
       retval = retval.sparse_matrix_value ();
       x = x.sparse_matrix_value ();
@@ -495,9 +495,6 @@ gcd ([15, 9], [20, 18])\n\
                                            x, retval(j+1));
               for (int i = 0; i < j; i++)
                 retval(i+1).assign (octave_value::op_el_mul_eq, x);
-
-              if (error_state)
-                break;
             }
         }
       else
@@ -505,12 +502,7 @@ gcd ([15, 9], [20, 18])\n\
           retval(0) = do_simple_gcd (args(0), args(1));
 
           for (int j = 2; j < nargin; j++)
-            {
-              retval(0) = do_simple_gcd (retval(0), args(j));
-
-              if (error_state)
-                break;
-            }
+            retval(0) = do_simple_gcd (retval(0), args(j));
         }
     }
   else

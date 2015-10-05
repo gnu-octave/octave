@@ -94,7 +94,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   // vectors.
   // Note that, for better consistency, eye(n)(:,:) still converts to a full
   // matrix.
-  if (! error_state && nidx == 2)
+  if (nidx == 2)
     {
       bool left = idx0.is_permutation (matrix.rows ());
       bool right = idx1.is_permutation (matrix.cols ());
@@ -120,8 +120,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
         }
     }
 
-  // if error_state is set, we've already griped.
-  if (! error_state && ! retval.is_defined ())
+  if (! retval.is_defined ())
     {
       if (nidx == 2 && ! resize_ok && idx0.is_scalar () && idx1.is_scalar ())
         retval = matrix.checkelem (idx0(0), idx1(0));

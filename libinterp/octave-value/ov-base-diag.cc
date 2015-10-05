@@ -171,7 +171,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                     idx_vector i0 = jdx(0).index_vector ();
                     k = 1;
                     idx_vector i1 = jdx(1).index_vector ();
-                    if (! error_state  && i0(0) == i1(0)
+                    if (i0(0) == i1(0)
                         && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
                         && chk_valid_scalar (rhs, val))
                       {
@@ -190,7 +190,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                   }
               }
 
-            if (! error_state && ! retval.is_defined ())
+            if (! retval.is_defined ())
               retval = numeric_assign (type, idx, rhs);
           }
         else

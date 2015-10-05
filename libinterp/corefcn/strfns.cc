@@ -695,16 +695,13 @@ This is just the opposite of the corresponding C library function.\n\
     {
       octave_idx_type n = args(2).idx_type_value ();
 
-      if (! error_state)
+      if (n > 0)
         {
-          if (n > 0)
-            {
-              retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
-                                      strncmp_array_op, strncmp_str_op);
-            }
-          else
-            error ("strncmp: N must be greater than 0");
+          retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
+                                  strncmp_array_op, strncmp_str_op);
         }
+      else
+        error ("strncmp: N must be greater than 0");
     }
   else
     print_usage ();
@@ -838,16 +835,13 @@ This is just the opposite of the corresponding C library function.\n\
     {
       octave_idx_type n = args(2).idx_type_value ();
 
-      if (! error_state)
+      if (n > 0)
         {
-          if (n > 0)
-            {
-              retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                                      strncmpi_array_op, strncmpi_str_op);
-            }
-          else
-            error ("strncmpi: N must be greater than 0");
+          retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
+                                  strncmpi_array_op, strncmpi_str_op);
         }
+      else
+        error ("strncmpi: N must be greater than 0");
     }
   else
     print_usage ();

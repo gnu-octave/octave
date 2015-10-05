@@ -221,8 +221,8 @@ Undocumented internal function.\n\
       sm = feval ("tril", param_list)(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
-      if (! error_state)
-        retval(0) = sm;
+
+      retval(0) = sm;
     }
   else
     {
@@ -231,8 +231,8 @@ Undocumented internal function.\n\
       sm = feval ("tril", param_list)(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
-      if (! error_state)
-        retval(0) = sm;
+
+      retval(0) = sm;
     }
 
   return retval;
@@ -428,17 +428,16 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
         }
     }
 
-  if (! error_state)
+  // Build the output matrices
+  L = octave_matrix_t (n, n, total_len);
+
+  for (i = 0; i <= n; i++)
+    L.cidx (i) = cidx_l[i];
+
+  for (i = 0; i < total_len; i++)
     {
-      // Build the output matrices
-      L = octave_matrix_t (n, n, total_len);
-      for (i = 0; i <= n; i++)
-        L.cidx (i) = cidx_l[i];
-      for (i = 0; i < total_len; i++)
-        {
-          L.ridx (i) = ridx_l[i];
-          L.data (i) = data_l[i];
-        }
+      L.ridx (i) = ridx_l[i];
+      L.data (i) = data_l[i];
     }
 }
 
@@ -486,8 +485,8 @@ Undocumented internal function.\n\
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
                (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
-      if (! error_state)
-        retval(0) = L;
+
+      retval(0) = L;
     }
   else
     {
@@ -505,8 +504,8 @@ Undocumented internal function.\n\
                Complex, ichol_mult_complex, ichol_checkpivot_complex>
                (sm_l, L, cols_norm.fortran_vec (),
                 Complex (droptol), michol);
-      if (! error_state)
-        retval(0) = L;
+
+      retval(0) = L;
     }
 
   return retval;

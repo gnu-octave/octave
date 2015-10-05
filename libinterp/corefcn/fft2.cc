@@ -71,9 +71,6 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
         }
     }
 
-  if (error_state)
-    return retval;
-
   octave_idx_type n_cols = -1;
   if (nargin > 2)
     {
@@ -87,9 +84,6 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
             error ("%s: number of columns (M) must be greater than zero", fcn);
         }
     }
-
-  if (error_state)
-    return retval;
 
   for (int i = 0; i < dims.length (); i++)
     if (dims(i) < 0)
@@ -119,21 +113,15 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
         {
           FloatNDArray nda = arg.float_array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
         }
       else
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
         }
     }
   else
@@ -142,26 +130,18 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
         {
           NDArray nda = arg.array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourier2d () : nda.fourier2d ());
         }
       else if (arg.is_complex_type ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourier2d () : cnda.fourier2d ());
         }
       else
-        {
-          gripe_wrong_type_arg (fcn, arg);
-        }
+        gripe_wrong_type_arg (fcn, arg);
     }
 
   return retval;

@@ -194,39 +194,32 @@ in control (see @code{are} and @code{dare}).\n\
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
-          if (! error_state)
+          if (nargout == 0 || nargout == 1)
             {
-              if (nargout == 0 || nargout == 1)
-                {
-                  FloatSCHUR result (tmp, ord, false);
-                  retval(0) = result.schur_matrix ();
-                }
-              else
-                {
-                  FloatSCHUR result (tmp, ord, true);
-                  retval(1) = result.schur_matrix ();
-                  retval(0) = result.unitary_matrix ();
-                }
+              FloatSCHUR result (tmp, ord, false);
+              retval(0) = result.schur_matrix ();
+            }
+          else
+            {
+              FloatSCHUR result (tmp, ord, true);
+              retval(1) = result.schur_matrix ();
+              retval(0) = result.unitary_matrix ();
             }
         }
       else
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-          if (! error_state)
+          if (nargout == 0 || nargout == 1)
             {
-
-              if (nargout == 0 || nargout == 1)
-                {
-                  FloatComplexSCHUR result (ctmp, ord, false);
-                  retval(0) = mark_upper_triangular (result.schur_matrix ());
-                }
-              else
-                {
-                  FloatComplexSCHUR result (ctmp, ord, true);
-                  retval(1) = mark_upper_triangular (result.schur_matrix ());
-                  retval(0) = result.unitary_matrix ();
-                }
+              FloatComplexSCHUR result (ctmp, ord, false);
+              retval(0) = mark_upper_triangular (result.schur_matrix ());
+            }
+          else
+            {
+              FloatComplexSCHUR result (ctmp, ord, true);
+              retval(1) = mark_upper_triangular (result.schur_matrix ());
+              retval(0) = result.unitary_matrix ();
             }
         }
     }
@@ -236,39 +229,32 @@ in control (see @code{are} and @code{dare}).\n\
         {
           Matrix tmp = arg.matrix_value ();
 
-          if (! error_state)
+          if (nargout == 0 || nargout == 1)
             {
-              if (nargout == 0 || nargout == 1)
-                {
-                  SCHUR result (tmp, ord, false);
-                  retval(0) = result.schur_matrix ();
-                }
-              else
-                {
-                  SCHUR result (tmp, ord, true);
-                  retval(1) = result.schur_matrix ();
-                  retval(0) = result.unitary_matrix ();
-                }
+              SCHUR result (tmp, ord, false);
+              retval(0) = result.schur_matrix ();
+            }
+          else
+            {
+              SCHUR result (tmp, ord, true);
+              retval(1) = result.schur_matrix ();
+              retval(0) = result.unitary_matrix ();
             }
         }
       else
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-          if (! error_state)
+          if (nargout == 0 || nargout == 1)
             {
-
-              if (nargout == 0 || nargout == 1)
-                {
-                  ComplexSCHUR result (ctmp, ord, false);
-                  retval(0) = mark_upper_triangular (result.schur_matrix ());
-                }
-              else
-                {
-                  ComplexSCHUR result (ctmp, ord, true);
-                  retval(1) = mark_upper_triangular (result.schur_matrix ());
-                  retval(0) = result.unitary_matrix ();
-                }
+              ComplexSCHUR result (ctmp, ord, false);
+              retval(0) = mark_upper_triangular (result.schur_matrix ());
+            }
+          else
+            {
+              ComplexSCHUR result (ctmp, ord, true);
+              retval(1) = mark_upper_triangular (result.schur_matrix ());
+              retval(0) = result.unitary_matrix ();
             }
         }
     }
@@ -334,25 +320,21 @@ Note also that @var{U} and @var{T} are not unique.\n\
             {
               FloatMatrix u = args(0).float_matrix_value ();
               FloatMatrix t = args(1).float_matrix_value ();
-              if (! error_state)
-                {
-                  FloatComplexSCHUR cs (FloatSCHUR (t, u));
 
-                  retval(1) = cs.schur_matrix ();
-                  retval(0) = cs.unitary_matrix ();
-                }
+              FloatComplexSCHUR cs (FloatSCHUR (t, u));
+
+              retval(1) = cs.schur_matrix ();
+              retval(0) = cs.unitary_matrix ();
             }
           else
             {
               Matrix u = args(0).matrix_value ();
               Matrix t = args(1).matrix_value ();
-              if (! error_state)
-                {
-                  ComplexSCHUR cs (SCHUR (t, u));
 
-                  retval(1) = cs.schur_matrix ();
-                  retval(0) = cs.unitary_matrix ();
-                }
+              ComplexSCHUR cs (SCHUR (t, u));
+
+              retval(1) = cs.schur_matrix ();
+              retval(0) = cs.unitary_matrix ();
             }
         }
     }

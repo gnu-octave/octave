@@ -56,12 +56,9 @@ tree_decl_elt::eval (void)
 
       octave_value init_val = expr->rvalue1 ();
 
-      if (! error_state)
-        {
-          ult.assign (octave_value::op_asn_eq, init_val);
+      ult.assign (octave_value::op_asn_eq, init_val);
 
-          retval = true;
-        }
+      retval = true;
     }
 
   return retval;

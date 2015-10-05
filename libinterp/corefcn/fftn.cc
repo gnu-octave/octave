@@ -85,9 +85,6 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
         }
     }
 
-  if (error_state)
-    return retval;
-
   if (dims.all_zero ())
     {
       if (arg.is_single_type ())
@@ -102,21 +99,15 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
         {
           FloatNDArray nda = arg.float_array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
         }
       else
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
         }
     }
   else
@@ -125,26 +116,18 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
         {
           NDArray nda = arg.array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
         }
       else if (arg.is_complex_type ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
         }
       else
-        {
-          gripe_wrong_type_arg (fcn, arg);
-        }
+        gripe_wrong_type_arg (fcn, arg);
     }
 
   return retval;

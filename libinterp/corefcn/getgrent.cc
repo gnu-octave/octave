@@ -112,20 +112,17 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
     {
       double dval = args(0).double_value ();
 
-      if (! error_state)
+      if (D_NINT (dval) == dval)
         {
-          if (D_NINT (dval) == dval)
-            {
-              gid_t gid = static_cast<gid_t> (dval);
+          gid_t gid = static_cast<gid_t> (dval);
 
-              std::string msg;
+          std::string msg;
 
-              retval(1) = msg;
-              retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
-            }
-          else
-            error ("getgrgid: GID must be an integer");
+          retval(1) = msg;
+          retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
         }
+      else
+        error ("getgrgid: GID must be an integer");
     }
   else
     print_usage ();
@@ -154,13 +151,10 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
     {
       std::string s = args(0).string_value ();
 
-      if (! error_state)
-        {
-          std::string msg;
+      std::string msg;
 
-          retval(1) = msg;
-          retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
-        }
+      retval(1) = msg;
+      retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
     }
   else
     print_usage ();

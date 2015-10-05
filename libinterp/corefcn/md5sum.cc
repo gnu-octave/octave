@@ -59,18 +59,15 @@ sum of the string @var{str}.\n\
       if (nargin == 2)
         have_str = args(1).bool_value ();
 
-      if (!error_state)
+      if (have_str)
+        retval = oct_md5 (str);
+      else
         {
-          if (have_str)
-            retval = oct_md5 (str);
-          else
-            {
-              std::string fname = file_ops::tilde_expand (str);
+          std::string fname = file_ops::tilde_expand (str);
 
-              fname = find_data_file_in_load_path ("md5sum", fname);
+          fname = find_data_file_in_load_path ("md5sum", fname);
 
-              retval = oct_md5_file (fname);
-            }
+          retval = oct_md5_file (fname);
         }
     }
 

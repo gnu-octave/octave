@@ -140,9 +140,6 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         aa = args(0).matrix_value ();
     }
 
-  if (error_state)
-    return retval;
-
   // Treat AEP/GEP cases.
   if (AEPcase)
     {

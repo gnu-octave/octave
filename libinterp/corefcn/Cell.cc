@@ -180,8 +180,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
           {
             idx_vector i = idx_arg(0).index_vector ();
 
-            if (! error_state)
-              retval = Array<octave_value>::index (i, resize_ok, Matrix ());
+            retval = Array<octave_value>::index (i, resize_ok, Matrix ());
           }
           break;
 
@@ -189,14 +188,11 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
           {
             idx_vector i = idx_arg(0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx_arg(1).index_vector ();
+            k = 1;
+            idx_vector j = idx_arg(1).index_vector ();
 
-                if (! error_state)
-                  retval = Array<octave_value>::index (i, j, resize_ok, Matrix ());
-              }
+            if (! error_state)
+              retval = Array<octave_value>::index (i, j, resize_ok, Matrix ());
           }
           break;
 
@@ -205,14 +201,9 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
             Array<idx_vector> iv (dim_vector (n, 1));
 
             for (k = 0; k < n; k++)
-              {
-                iv(k) = idx_arg(k).index_vector ();
+              iv(k) = idx_arg(k).index_vector ();
 
-                if (error_state)
-                  break;
-              }
-            if (!error_state)
-              retval = Array<octave_value>::index (iv, resize_ok, Matrix ());
+            retval = Array<octave_value>::index (iv, resize_ok, Matrix ());
           }
           break;
         }

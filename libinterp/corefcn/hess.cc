@@ -98,34 +98,28 @@ IEEE Transactions on Automatic Control, 1979).\n\
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
-          if (! error_state)
-            {
-              FloatHESS result (tmp);
+          FloatHESS result (tmp);
 
-              if (nargout <= 1)
-                retval(0) = result.hess_matrix ();
-              else
-                {
-                  retval(1) = result.hess_matrix ();
-                  retval(0) = result.unitary_hess_matrix ();
-                }
+          if (nargout <= 1)
+            retval(0) = result.hess_matrix ();
+          else
+            {
+              retval(1) = result.hess_matrix ();
+              retval(0) = result.unitary_hess_matrix ();
             }
         }
       else if (arg.is_complex_type ())
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-          if (! error_state)
-            {
-              FloatComplexHESS result (ctmp);
+          FloatComplexHESS result (ctmp);
 
-              if (nargout <= 1)
-                retval(0) = result.hess_matrix ();
-              else
-                {
-                  retval(1) = result.hess_matrix ();
-                  retval(0) = result.unitary_hess_matrix ();
-                }
+          if (nargout <= 1)
+            retval(0) = result.hess_matrix ();
+          else
+            {
+              retval(1) = result.hess_matrix ();
+              retval(0) = result.unitary_hess_matrix ();
             }
         }
     }
@@ -135,34 +129,28 @@ IEEE Transactions on Automatic Control, 1979).\n\
         {
           Matrix tmp = arg.matrix_value ();
 
-          if (! error_state)
-            {
-              HESS result (tmp);
+          HESS result (tmp);
 
-              if (nargout <= 1)
-                retval(0) = result.hess_matrix ();
-              else
-                {
-                  retval(1) = result.hess_matrix ();
-                  retval(0) = result.unitary_hess_matrix ();
-                }
+          if (nargout <= 1)
+            retval(0) = result.hess_matrix ();
+          else
+            {
+              retval(1) = result.hess_matrix ();
+              retval(0) = result.unitary_hess_matrix ();
             }
         }
       else if (arg.is_complex_type ())
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-          if (! error_state)
-            {
-              ComplexHESS result (ctmp);
+          ComplexHESS result (ctmp);
 
-              if (nargout <= 1)
-                retval(0) = result.hess_matrix ();
-              else
-                {
-                  retval(1) = result.hess_matrix ();
-                  retval(0) = result.unitary_hess_matrix ();
-                }
+          if (nargout <= 1)
+            retval(0) = result.hess_matrix ();
+          else
+            {
+              retval(1) = result.hess_matrix ();
+              retval(0) = result.unitary_hess_matrix ();
             }
         }
       else

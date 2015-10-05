@@ -1249,17 +1249,14 @@ from the list, so if a function was placed in the list multiple times with\n\
                 error ("atexit: FLAG argument must be a logical value");
             }
 
-          if (! error_state)
+          if (add_mode)
+            octave_add_atexit_function (arg);
+          else
             {
-              if (add_mode)
-                octave_add_atexit_function (arg);
-              else
-                {
-                  bool found = octave_remove_atexit_function (arg);
+              bool found = octave_remove_atexit_function (arg);
 
-                  if (nargout > 0)
-                    retval(0) = found;
-                }
+              if (nargout > 0)
+                retval(0) = found;
             }
         }
       else
@@ -1550,20 +1547,17 @@ specified option.\n\
     {
       std::string arg = args(0).string_value ();
 
-      if (! error_state)
+      if (m.isfield (arg))
         {
-          if (m.isfield (arg))
-            {
-              Cell c = m.contents (arg);
+          Cell c = m.contents (arg);
 
-              if (c.is_empty ())
-                error ("octave_config_info: no info for '%s'", arg.c_str ());
-              else
-                retval = c(0);
-            }
+          if (c.is_empty ())
+            error ("octave_config_info: no info for '%s'", arg.c_str ());
           else
-            error ("octave_config_info: invalid parameter '%s'", arg.c_str ());
+            retval = c(0);
         }
+      else
+        error ("octave_config_info: invalid parameter '%s'", arg.c_str ());
     }
   else if (nargin == 0)
     retval = m;

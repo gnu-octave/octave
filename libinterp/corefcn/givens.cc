@@ -92,25 +92,19 @@ givens (1, 1)\n\
               FloatComplex cx = args(0).float_complex_value ();
               FloatComplex cy = args(1).float_complex_value ();
 
-              if (! error_state)
+              FloatComplexMatrix result = Givens (cx, cy);
+
+              switch (nargout)
                 {
-                  FloatComplexMatrix result = Givens (cx, cy);
+                case 0:
+                case 1:
+                  retval(0) = result;
+                  break;
 
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
+                case 2:
+                  retval(1) = result (0, 1);
+                  retval(0) = result (0, 0);
+                  break;
                 }
             }
           else
@@ -118,25 +112,19 @@ givens (1, 1)\n\
               float x = args(0).float_value ();
               float y = args(1).float_value ();
 
-              if (! error_state)
+              FloatMatrix result = Givens (x, y);
+
+              switch (nargout)
                 {
-                  FloatMatrix result = Givens (x, y);
+                case 0:
+                case 1:
+                  retval(0) = result;
+                  break;
 
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
+                case 2:
+                  retval(1) = result (0, 1);
+                  retval(0) = result (0, 0);
+                  break;
                 }
             }
         }
@@ -147,25 +135,19 @@ givens (1, 1)\n\
               Complex cx = args(0).complex_value ();
               Complex cy = args(1).complex_value ();
 
-              if (! error_state)
+              ComplexMatrix result = Givens (cx, cy);
+
+              switch (nargout)
                 {
-                  ComplexMatrix result = Givens (cx, cy);
+                case 0:
+                case 1:
+                  retval(0) = result;
+                  break;
 
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
+                case 2:
+                  retval(1) = result (0, 1);
+                  retval(0) = result (0, 0);
+                  break;
                 }
             }
           else
@@ -173,25 +155,19 @@ givens (1, 1)\n\
               double x = args(0).double_value ();
               double y = args(1).double_value ();
 
-              if (! error_state)
+              Matrix result = Givens (x, y);
+
+              switch (nargout)
                 {
-                  Matrix result = Givens (x, y);
+                case 0:
+                case 1:
+                  retval(0) = result;
+                  break;
 
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
+                case 2:
+                  retval(1) = result (0, 1);
+                  retval(0) = result (0, 0);
+                  break;
                 }
             }
         }

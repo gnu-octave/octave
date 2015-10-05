@@ -757,8 +757,6 @@ Use @code{imread} instead.\n\
 
   std::vector<Magick::Image> imvec;
   read_file (args(0).string_value (), imvec);
-  if (error_state)
-    return output;
 
   // Prepare an Array with the indexes for the requested frames.
   const octave_idx_type nFrames = imvec.size ();
@@ -1514,8 +1512,7 @@ Use @code{imwrite} instead.\n\
     {
       std::vector<Magick::Image> ini_imvec;
       read_file (filename, ini_imvec);
-      if (error_state)
-        return retval;
+
       if (ini_imvec.size () > 0)
         {
           ini_imvec.insert (ini_imvec.end (), imvec.begin (), imvec.end ());
@@ -1567,8 +1564,6 @@ Use @code{imwrite} instead.\n\
 #undef COMPRESS_MAGICK_IMAGE_VECTOR
 
   write_file (filename, ext, imvec);
-  if (error_state)
-    return retval;
 
 #endif
   return retval;
@@ -1831,8 +1826,7 @@ Use @code{imfinfo} instead.\n\
 
   std::vector<Magick::Image> imvec;
   read_file (filename, imvec);
-  if (error_state)
-    return retval;
+
   const octave_idx_type nFrames = imvec.size ();
   const std::string format = imvec[0].magick ();
 

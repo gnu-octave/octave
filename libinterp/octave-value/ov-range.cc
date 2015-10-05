@@ -133,13 +133,10 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
         {
           idx_vector i = idx(0).index_vector ();
 
-          if (! error_state)
-            {
-              if (i.is_scalar () && i(0) < range.numel ())
-                retval = range.elem (i(0));
-              else
-                retval = range.index (i);
-            }
+          if (i.is_scalar () && i(0) < range.numel ())
+            retval = range.elem (i(0));
+          else
+            retval = range.index (i);
         }
       catch (index_exception& e)
         {

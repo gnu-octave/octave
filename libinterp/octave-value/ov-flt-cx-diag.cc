@@ -190,8 +190,10 @@ octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   octave_idx_type len = m.length ();
   read_floats (is, reinterpret_cast<float *> (re),
                static_cast<save_type> (tmp), 2 * len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;

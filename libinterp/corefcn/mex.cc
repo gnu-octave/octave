@@ -3060,19 +3060,16 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
 
   octave_value_list retval;
 
-  if (! error_state)
+  if (nargout == 0 && argout[0])
     {
-      if (nargout == 0 && argout[0])
-        {
-          // We have something for ans.
-          nargout = 1;
-        }
-
-      retval.resize (nargout);
-
-      for (int i = 0; i < nargout; i++)
-        retval(i) = mxArray::as_octave_value (argout[i]);
+      // We have something for ans.
+      nargout = 1;
     }
+
+  retval.resize (nargout);
+
+  for (int i = 0; i < nargout; i++)
+    retval(i) = mxArray::as_octave_value (argout[i]);
 
   // Clean up mex resources.
   frame.run ();
@@ -3287,9 +3284,6 @@ mexGetVariable (const char *space, const char *name)
             {
               octave_call_stack::goto_base_frame ();
 
-              if (error_state)
-                return retval;
-
               frame.add_fcn (octave_call_stack::pop);
             }
 
@@ -3350,9 +3344,6 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
             {
               octave_call_stack::goto_base_frame ();
 
-              if (error_state)
-                return 1;
-
               frame.add_fcn (octave_call_stack::pop);
             }
 
@@ -3396,10 +3387,12 @@ const mxArray *
 mexGet (double handle, const char *property)
 {
   mxArray *m = 0;
+
   octave_value ret = get_property_from_handle (handle, property, "mexGet");
 
-  if (!error_state && ret.is_defined ())
+  if (ret.is_defined ())
     m = ret.as_mxArray ();
+
   return m;
 }
 

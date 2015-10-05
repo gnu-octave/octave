@@ -49,9 +49,6 @@ do_minmax_red_op (const octave_value& arg,
   octave_value_list retval;
   ArrayType array = octave_value_extract<ArrayType> (arg);
 
-  if (error_state)
-    return retval;
-
   if (nargout == 2)
     {
       retval.resize (2);
@@ -89,9 +86,6 @@ do_minmax_red_op<charNDArray> (const octave_value& arg,
 {
   octave_value_list retval;
   charNDArray array = octave_value_extract<charNDArray> (arg);
-
-  if (error_state)
-    return retval;
 
   if (nargout == 2)
     {
@@ -139,8 +133,8 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
     {
       // any/all don't have indexed versions, so do it via a conversion.
       retval = do_minmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
-      if (! error_state)
-        retval(0) = retval(0).bool_array_value ();
+
+      retval(0) = retval(0).bool_array_value ();
     }
 
   return retval;
@@ -160,9 +154,7 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
       ScalarType x = octave_value_extract<ScalarType> (argx);
       ArrayType y = octave_value_extract<ArrayType> (argy);
 
-      if (error_state)
-        ;
-      else if (ismin)
+      if (ismin)
         retval = min (x, y);
       else
         retval = max (x, y);
@@ -172,9 +164,7 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
       ArrayType x = octave_value_extract<ArrayType> (argx);
       ScalarType y = octave_value_extract<ScalarType> (argy);
 
-      if (error_state)
-        ;
-      else if (ismin)
+      if (ismin)
         retval = min (x, y);
       else
         retval = max (x, y);
@@ -184,9 +174,7 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
       ArrayType x = octave_value_extract<ArrayType> (argx);
       ArrayType y = octave_value_extract<ArrayType> (argy);
 
-      if (error_state)
-        ;
-      else if (ismin)
+      if (ismin)
         retval = min (x, y);
       else
         retval = max (x, y);
@@ -213,9 +201,7 @@ do_minmax_bin_op<charNDArray> (const octave_value& argx,
   charNDArray x = octave_value_extract<charNDArray> (argx);
   charNDArray y = octave_value_extract<charNDArray> (argy);
 
-  if (error_state)
-    ;
-  else if (ismin)
+  if (ismin)
     {
       if (x.numel () == 1)
         retval = NDArray (min (x(0), y));
@@ -875,9 +861,6 @@ do_cumminmax_red_op (const octave_value& arg,
 {
   octave_value_list retval;
   ArrayType array = octave_value_extract<ArrayType> (arg);
-
-  if (error_state)
-    return retval;
 
   if (nargout == 2)
     {

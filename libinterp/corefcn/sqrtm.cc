@@ -248,7 +248,7 @@ Mathematics, Manchester, England, January 1999.\n\
   else if (arg.is_numeric_type ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
 
-  if (nargout > 1 && ! error_state)
+  if (nargout > 1)
     {
       // This corresponds to generic code
       //

@@ -374,7 +374,7 @@ dimensionality as the other array.\n\
             }
         }
 
-      if (! error_state && retval.empty ())
+      if (retval.empty ())
         {
           dim_vector dva = A.dims ();
           octave_idx_type nda = dva.length ();
@@ -397,271 +397,262 @@ dimensionality as the other array.\n\
                 break;
               }
 
-          if (!error_state)
+          // Find the size of the output
+          dim_vector dvc;
+          dvc.resize (nd);
+
+          for (octave_idx_type i = 0; i < nd; i++)
+            dvc(i) = (dva(i) < 1 ? dva(i)
+                                 : (dvb(i) < 1 ? dvb(i)
+                                               : (dva(i) > dvb(i)
+                                                   ? dva(i) : dvb(i))));
+
+          if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
             {
-              // Find the size of the output
-              dim_vector dvc;
-              dvc.resize (nd);
-
-              for (octave_idx_type i = 0; i < nd; i++)
-                dvc(i) = (dva(i) < 1 ? dva(i)
-                                     : (dvb(i) < 1 ? dvb(i)
-                                                   : (dva(i) > dvb(i)
-                                                       ? dva(i) : dvb(i))));
-
-              if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
-                {
-                  octave_value_list inputs;
-                  inputs (0) = A;
-                  inputs (1) = B;
-                  retval = func.do_multi_index_op (1, inputs);
-                }
-              else if (dvc.numel () < 1)
-                {
-                  octave_value_list inputs;
-                  inputs (0) = A.resize (dvc);
-                  inputs (1) = B.resize (dvc);
-                  retval = func.do_multi_index_op (1, inputs);
-                }
-              else
-                {
-                  octave_idx_type ncount = 1;
-                  for (octave_idx_type i = 1; i < nd; i++)
-                    ncount *= dvc(i);
+              octave_value_list inputs;
+              inputs (0) = A;
+              inputs (1) = B;
+              retval = func.do_multi_index_op (1, inputs);
+            }
+          else if (dvc.numel () < 1)
+            {
+              octave_value_list inputs;
+              inputs (0) = A.resize (dvc);
+              inputs (1) = B.resize (dvc);
+              retval = func.do_multi_index_op (1, inputs);
+            }
+          else
+            {
+              octave_idx_type ncount = 1;
+              for (octave_idx_type i = 1; i < nd; i++)
+                ncount *= dvc(i);
 
 #define BSXDEF(T) \
-                  T result_ ## T; \
-                  bool have_ ## T = false;
+              T result_ ## T; \
+              bool have_ ## T = false;
 
-                  BSXDEF(NDArray);
-                  BSXDEF(ComplexNDArray);
-                  BSXDEF(FloatNDArray);
-                  BSXDEF(FloatComplexNDArray);
-                  BSXDEF(boolNDArray);
-                  BSXDEF(int8NDArray);
-                  BSXDEF(int16NDArray);
-                  BSXDEF(int32NDArray);
-                  BSXDEF(int64NDArray);
-                  BSXDEF(uint8NDArray);
-                  BSXDEF(uint16NDArray);
-                  BSXDEF(uint32NDArray);
-                  BSXDEF(uint64NDArray);
+              BSXDEF(NDArray);
+              BSXDEF(ComplexNDArray);
+              BSXDEF(FloatNDArray);
+              BSXDEF(FloatComplexNDArray);
+              BSXDEF(boolNDArray);
+              BSXDEF(int8NDArray);
+              BSXDEF(int16NDArray);
+              BSXDEF(int32NDArray);
+              BSXDEF(int64NDArray);
+              BSXDEF(uint8NDArray);
+              BSXDEF(uint16NDArray);
+              BSXDEF(uint32NDArray);
+              BSXDEF(uint64NDArray);
 
-                  octave_value Ac ;
-                  octave_value_list idxA;
-                  octave_value Bc;
-                  octave_value_list idxB;
-                  octave_value C;
-                  octave_value_list inputs;
-                  Array<int> ra_idx (dim_vector (dvc.length (), 1), 0);
+              octave_value Ac ;
+              octave_value_list idxA;
+              octave_value Bc;
+              octave_value_list idxB;
+              octave_value C;
+              octave_value_list inputs;
+              Array<int> ra_idx (dim_vector (dvc.length (), 1), 0);
 
 
-                  for (octave_idx_type i = 0; i < ncount; i++)
-                    {
-                      if (maybe_update_column (Ac, A, dva, dvc, i, idxA))
-                        inputs (0) = Ac;
+              for (octave_idx_type i = 0; i < ncount; i++)
+                {
+                  if (maybe_update_column (Ac, A, dva, dvc, i, idxA))
+                    inputs (0) = Ac;
 
-                      if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
-                        inputs (1) = Bc;
+                  if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
+                    inputs (1) = Bc;
 
-                      octave_value_list tmp = func.do_multi_index_op (1,
-                                                                      inputs);
-
-                      if (error_state)
-                        break;
+                  octave_value_list tmp = func.do_multi_index_op (1,
+                                                                  inputs);
 
 #define BSXINIT(T, CLS, EXTRACTOR) \
-                      (result_type == CLS) \
-                        { \
-                            have_ ## T = true; \
-                            result_ ## T = \
-                                tmp (0). EXTRACTOR ## _array_value (); \
-                            result_ ## T .resize (dvc); \
-                        }
+  (result_type == CLS) \
+    { \
+      have_ ## T = true; \
+      result_ ## T = tmp (0). EXTRACTOR ## _array_value (); \
+      result_ ## T .resize (dvc); \
+    }
 
-                      if (i == 0)
+                  if (i == 0)
+                    {
+                      if (! tmp(0).is_sparse_type ())
                         {
-                          if (! tmp(0).is_sparse_type ())
+                          std::string result_type = tmp(0).class_name ();
+                          if (result_type == "double")
                             {
-                              std::string result_type = tmp(0).class_name ();
-                              if (result_type == "double")
+                              if (tmp(0).is_real_type ())
                                 {
-                                  if (tmp(0).is_real_type ())
-                                    {
-                                      have_NDArray = true;
-                                      result_NDArray = tmp(0).array_value ();
-                                      result_NDArray.resize (dvc);
-                                    }
-                                  else
-                                    {
-                                      have_ComplexNDArray = true;
-                                      result_ComplexNDArray =
-                                        tmp(0).complex_array_value ();
-                                      result_ComplexNDArray.resize (dvc);
-                                    }
+                                  have_NDArray = true;
+                                  result_NDArray = tmp(0).array_value ();
+                                  result_NDArray.resize (dvc);
                                 }
-                              else if (result_type == "single")
-                                {
-                                  if (tmp(0).is_real_type ())
-                                    {
-                                      have_FloatNDArray = true;
-                                      result_FloatNDArray
-                                        = tmp(0).float_array_value ();
-                                      result_FloatNDArray.resize (dvc);
-                                    }
-                                  else
-                                    {
-                                      have_ComplexNDArray = true;
-                                      result_ComplexNDArray =
-                                        tmp(0).complex_array_value ();
-                                      result_ComplexNDArray.resize (dvc);
-                                    }
-                                }
-                              else if BSXINIT(boolNDArray, "logical", bool)
-                              else if BSXINIT(int8NDArray, "int8", int8)
-                              else if BSXINIT(int16NDArray, "int16", int16)
-                              else if BSXINIT(int32NDArray, "int32", int32)
-                              else if BSXINIT(int64NDArray, "int64", int64)
-                              else if BSXINIT(uint8NDArray, "uint8", uint8)
-                              else if BSXINIT(uint16NDArray, "uint16", uint16)
-                              else if BSXINIT(uint32NDArray, "uint32", uint32)
-                              else if BSXINIT(uint64NDArray, "uint64", uint64)
                               else
                                 {
-                                  C = tmp (0);
-                                  C = C.resize (dvc);
-                                }
-                            }
-                        }
-                      else
-                        {
-                          update_index (ra_idx, dvc, i);
-
-                          if (have_FloatNDArray
-                              || have_FloatComplexNDArray)
-                            {
-                              if (! tmp(0).is_float_type ())
-                                {
-                                  if (have_FloatNDArray)
-                                    {
-                                      have_FloatNDArray = false;
-                                      C = result_FloatNDArray;
-                                    }
-                                  else
-                                    {
-                                      have_FloatComplexNDArray = false;
-                                      C = result_FloatComplexNDArray;
-                                    }
-                                  C = do_cat_op (C, tmp(0), ra_idx);
-                                }
-                              else if (tmp(0).is_double_type ())
-                                {
-                                  if (tmp(0).is_complex_type ()
-                                      && have_FloatNDArray)
-                                    {
-                                      result_ComplexNDArray =
-                                        ComplexNDArray (result_FloatNDArray);
-                                      result_ComplexNDArray.insert
-                                        (tmp(0).complex_array_value (), ra_idx);
-                                      have_FloatComplexNDArray = false;
-                                      have_ComplexNDArray = true;
-                                    }
-                                  else
-                                    {
-                                      result_NDArray =
-                                        NDArray (result_FloatNDArray);
-                                      result_NDArray.insert
-                                        (tmp(0).array_value (), ra_idx);
-                                      have_FloatNDArray = false;
-                                      have_NDArray = true;
-                                    }
-                                }
-                              else if (tmp(0).is_real_type ())
-                                result_FloatNDArray.insert
-                                  (tmp(0).float_array_value (), ra_idx);
-                              else
-                                {
-                                  result_FloatComplexNDArray =
-                                    FloatComplexNDArray (result_FloatNDArray);
-                                  result_FloatComplexNDArray.insert
-                                    (tmp(0).float_complex_array_value (),
-                                     ra_idx);
-                                  have_FloatNDArray = false;
-                                  have_FloatComplexNDArray = true;
-                                }
-                            }
-                          else if (have_NDArray)
-                            {
-                              if (! tmp(0).is_float_type ())
-                                {
-                                  have_NDArray = false;
-                                  C = result_NDArray;
-                                  C = do_cat_op (C, tmp(0), ra_idx);
-                                }
-                              else if (tmp(0).is_real_type ())
-                                result_NDArray.insert (tmp(0).array_value (),
-                                                       ra_idx);
-                              else
-                                {
-                                  result_ComplexNDArray =
-                                    ComplexNDArray (result_NDArray);
-                                  result_ComplexNDArray.insert
-                                    (tmp(0).complex_array_value (), ra_idx);
-                                  have_NDArray = false;
                                   have_ComplexNDArray = true;
+                                  result_ComplexNDArray =
+                                    tmp(0).complex_array_value ();
+                                  result_ComplexNDArray.resize (dvc);
                                 }
                             }
-
-#define BSXLOOP(T, CLS, EXTRACTOR) \
-                        (have_ ## T) \
-                          { \
-                            if (tmp (0).class_name () != CLS) \
-                              { \
-                                have_ ## T = false; \
-                                C = result_ ## T; \
-                                C = do_cat_op (C, tmp (0), ra_idx); \
-                              } \
-                            else \
-                              result_ ## T .insert \
-                                (tmp(0). EXTRACTOR ## _array_value (), \
-                                ra_idx); \
-                          }
-
-                          else if BSXLOOP(ComplexNDArray, "double", complex)
-                          else if BSXLOOP(boolNDArray, "logical", bool)
-                          else if BSXLOOP(int8NDArray, "int8", int8)
-                          else if BSXLOOP(int16NDArray, "int16", int16)
-                          else if BSXLOOP(int32NDArray, "int32", int32)
-                          else if BSXLOOP(int64NDArray, "int64", int64)
-                          else if BSXLOOP(uint8NDArray, "uint8", uint8)
-                          else if BSXLOOP(uint16NDArray, "uint16", uint16)
-                          else if BSXLOOP(uint32NDArray, "uint32", uint32)
-                          else if BSXLOOP(uint64NDArray, "uint64", uint64)
+                          else if (result_type == "single")
+                            {
+                              if (tmp(0).is_real_type ())
+                                {
+                                  have_FloatNDArray = true;
+                                  result_FloatNDArray
+                                    = tmp(0).float_array_value ();
+                                  result_FloatNDArray.resize (dvc);
+                                }
+                              else
+                                {
+                                  have_ComplexNDArray = true;
+                                  result_ComplexNDArray =
+                                    tmp(0).complex_array_value ();
+                                  result_ComplexNDArray.resize (dvc);
+                                }
+                            }
+                          else if BSXINIT(boolNDArray, "logical", bool)
+                          else if BSXINIT(int8NDArray, "int8", int8)
+                          else if BSXINIT(int16NDArray, "int16", int16)
+                          else if BSXINIT(int32NDArray, "int32", int32)
+                          else if BSXINIT(int64NDArray, "int64", int64)
+                          else if BSXINIT(uint8NDArray, "uint8", uint8)
+                          else if BSXINIT(uint16NDArray, "uint16", uint16)
+                          else if BSXINIT(uint32NDArray, "uint32", uint32)
+                          else if BSXINIT(uint64NDArray, "uint64", uint64)
                           else
-                            C = do_cat_op (C, tmp(0), ra_idx);
+                            {
+                              C = tmp (0);
+                              C = C.resize (dvc);
+                            }
                         }
                     }
+                  else
+                    {
+                      update_index (ra_idx, dvc, i);
+
+                      if (have_FloatNDArray
+                          || have_FloatComplexNDArray)
+                        {
+                          if (! tmp(0).is_float_type ())
+                            {
+                              if (have_FloatNDArray)
+                                {
+                                  have_FloatNDArray = false;
+                                  C = result_FloatNDArray;
+                                }
+                              else
+                                {
+                                  have_FloatComplexNDArray = false;
+                                  C = result_FloatComplexNDArray;
+                                }
+                              C = do_cat_op (C, tmp(0), ra_idx);
+                            }
+                          else if (tmp(0).is_double_type ())
+                            {
+                              if (tmp(0).is_complex_type ()
+                                  && have_FloatNDArray)
+                                {
+                                  result_ComplexNDArray =
+                                    ComplexNDArray (result_FloatNDArray);
+                                  result_ComplexNDArray.insert
+                                    (tmp(0).complex_array_value (), ra_idx);
+                                  have_FloatComplexNDArray = false;
+                                  have_ComplexNDArray = true;
+                                }
+                              else
+                                {
+                                  result_NDArray =
+                                    NDArray (result_FloatNDArray);
+                                  result_NDArray.insert
+                                    (tmp(0).array_value (), ra_idx);
+                                  have_FloatNDArray = false;
+                                  have_NDArray = true;
+                                }
+                            }
+                          else if (tmp(0).is_real_type ())
+                            result_FloatNDArray.insert
+                              (tmp(0).float_array_value (), ra_idx);
+                          else
+                            {
+                              result_FloatComplexNDArray =
+                                FloatComplexNDArray (result_FloatNDArray);
+                              result_FloatComplexNDArray.insert
+                                (tmp(0).float_complex_array_value (),
+                                 ra_idx);
+                              have_FloatNDArray = false;
+                              have_FloatComplexNDArray = true;
+                            }
+                        }
+                      else if (have_NDArray)
+                        {
+                          if (! tmp(0).is_float_type ())
+                            {
+                              have_NDArray = false;
+                              C = result_NDArray;
+                              C = do_cat_op (C, tmp(0), ra_idx);
+                            }
+                          else if (tmp(0).is_real_type ())
+                            result_NDArray.insert (tmp(0).array_value (),
+                                                   ra_idx);
+                          else
+                            {
+                              result_ComplexNDArray =
+                                ComplexNDArray (result_NDArray);
+                              result_ComplexNDArray.insert
+                                (tmp(0).complex_array_value (), ra_idx);
+                              have_NDArray = false;
+                              have_ComplexNDArray = true;
+                            }
+                        }
+
+#define BSXLOOP(T, CLS, EXTRACTOR) \
+  (have_ ## T) \
+    { \
+      if (tmp (0).class_name () != CLS) \
+        { \
+          have_ ## T = false; \
+          C = result_ ## T; \
+          C = do_cat_op (C, tmp (0), ra_idx); \
+        } \
+      else \
+        result_ ## T .insert (tmp(0). EXTRACTOR ## _array_value (), ra_idx); \
+    }
+
+                      else if BSXLOOP(ComplexNDArray, "double", complex)
+                      else if BSXLOOP(boolNDArray, "logical", bool)
+                      else if BSXLOOP(int8NDArray, "int8", int8)
+                      else if BSXLOOP(int16NDArray, "int16", int16)
+                      else if BSXLOOP(int32NDArray, "int32", int32)
+                      else if BSXLOOP(int64NDArray, "int64", int64)
+                      else if BSXLOOP(uint8NDArray, "uint8", uint8)
+                      else if BSXLOOP(uint16NDArray, "uint16", uint16)
+                      else if BSXLOOP(uint32NDArray, "uint32", uint32)
+                      else if BSXLOOP(uint64NDArray, "uint64", uint64)
+                      else
+                        C = do_cat_op (C, tmp(0), ra_idx);
+                    }
+                }
 
 #define BSXEND(T) \
-                  (have_ ## T) \
-                    retval(0) = result_ ## T;
+  (have_ ## T) \
+    retval(0) = result_ ## T;
 
-                  if BSXEND(NDArray)
-                  else if BSXEND(ComplexNDArray)
-                  else if BSXEND(FloatNDArray)
-                  else if BSXEND(FloatComplexNDArray)
-                  else if BSXEND(boolNDArray)
-                  else if BSXEND(int8NDArray)
-                  else if BSXEND(int16NDArray)
-                  else if BSXEND(int32NDArray)
-                  else if BSXEND(int64NDArray)
-                  else if BSXEND(uint8NDArray)
-                  else if BSXEND(uint16NDArray)
-                  else if BSXEND(uint32NDArray)
-                  else if BSXEND(uint64NDArray)
-                  else
-                    retval(0) = C;
-                }
+              if BSXEND(NDArray)
+              else if BSXEND(ComplexNDArray)
+              else if BSXEND(FloatNDArray)
+              else if BSXEND(FloatComplexNDArray)
+              else if BSXEND(boolNDArray)
+              else if BSXEND(int8NDArray)
+              else if BSXEND(int16NDArray)
+              else if BSXEND(int32NDArray)
+              else if BSXEND(int64NDArray)
+              else if BSXEND(uint8NDArray)
+              else if BSXEND(uint16NDArray)
+              else if BSXEND(uint32NDArray)
+              else if BSXEND(uint64NDArray)
+              else
+                retval(0) = C;
             }
         }
     }

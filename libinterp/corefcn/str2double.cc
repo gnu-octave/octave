@@ -358,24 +358,21 @@ risk of using @code{eval} on unknown data.\n\
       else
         {
           const string_vector sv = args(0).all_strings ();
-          if (! error_state)
-            retval = sv.map<Complex> (str2double1);
+
+          retval = sv.map<Complex> (str2double1);
         }
     }
   else if (args(0).is_cell ())
     {
       const Cell cell = args(0).cell_value ();
 
-      if (! error_state)
+      ComplexNDArray output (cell.dims (), octave_NaN);
+      for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
-          ComplexNDArray output (cell.dims (), octave_NaN);
-          for (octave_idx_type i = 0; i < cell.numel (); i++)
-            {
-              if (cell(i).is_string ())
-                output(i) = str2double1 (cell(i).string_value ());
-            }
-          retval = output;
+          if (cell(i).is_string ())
+            output(i) = str2double1 (cell(i).string_value ());
         }
+      retval = output;
     }
   else
     retval = Matrix (1, 1, octave_NaN);

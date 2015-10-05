@@ -4487,12 +4487,12 @@ source_file (const std::string& file_name, const std::string& context,
       frame.add_fcn (octave_call_stack::pop);
     }
 
-  octave_function *fcn;
+  octave_function *fcn = 0;
+
   try
     {
-      fcn = parse_fcn_file (file_full_name, file_name,
-                            "", "", require_file, true,
-                            false, false, warn_for);
+      fcn = parse_fcn_file (file_full_name, file_name, "", "",
+                            require_file, true, false, false, warn_for);
     }
   catch (const octave_execution_exception&)
     {
@@ -5090,22 +5090,19 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
           else
             error ("assignin: CONTEXT must be \"caller\" or \"base\"");
 
+          frame.add_fcn (octave_call_stack::pop);
+
+          std::string nm = args(1).string_value ();
+
           if (! error_state)
             {
-              frame.add_fcn (octave_call_stack::pop);
-
-              std::string nm = args(1).string_value ();
-
-              if (! error_state)
-                {
-                  if (valid_identifier (nm))
-                    symbol_table::assign (nm, args(2));
-                  else
-                    error ("assignin: invalid variable name in argument VARNAME");
-                }
+              if (valid_identifier (nm))
+                symbol_table::assign (nm, args(2));
               else
-                error ("assignin: VARNAME must be a string");
+                error ("assignin: invalid variable name in argument VARNAME");
             }
+          else
+            error ("assignin: VARNAME must be a string");
         }
       else
         error ("assignin: CONTEXT must be a string");

@@ -158,7 +158,7 @@ information.\n\
   Matrix thres;
 
   int n = 1;
-  while (n < nargin && ! error_state)
+  while (n < nargin)
     {
       if (args(n).is_string ())
         {
@@ -173,21 +173,18 @@ information.\n\
         {
           Matrix tmp = args(n++).matrix_value ();
 
-          if (! error_state)
+          if (!issparse)
+            error ("lu: can not define pivoting threshold THRES for full matrices");
+          else if (tmp.numel () == 1)
             {
-              if (!issparse)
-                error ("lu: can not define pivoting threshold THRES for full matrices");
-              else if (tmp.numel () == 1)
-                {
-                  thres.resize (1,2);
-                  thres(0) = tmp(0);
-                  thres(1) = tmp(0);
-                }
-              else if (tmp.numel () == 2)
-                thres = tmp;
-              else
-                error ("lu: expecting 2-element vector for THRES");
+              thres.resize (1,2);
+              thres(0) = tmp(0);
+              thres(1) = tmp(0);
             }
+          else if (tmp.numel () == 2)
+            thres = tmp;
+          else
+            error ("lu: expecting 2-element vector for THRES");
         }
     }
 
@@ -360,76 +357,70 @@ information.\n\
             {
               FloatMatrix m = arg.float_matrix_value ();
 
-              if (! error_state)
+              FloatLU fact (m);
+
+              switch (nargout)
                 {
-                  FloatLU fact (m);
+                case 0:
+                case 1:
+                  retval(0) = fact.Y ();
+                  break;
 
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      retval(0) = fact.Y ();
-                      break;
+                case 2:
+                  {
+                    PermMatrix P = fact.P ();
+                    FloatMatrix L = P.transpose () * fact.L ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = L;
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        PermMatrix P = fact.P ();
-                        FloatMatrix L = P.transpose () * fact.L ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = L;
-                      }
-                      break;
-
-                    case 3:
-                    default:
-                      {
-                        if (vecout)
-                          retval(2) = fact.P_vec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = get_lu_l (fact);
-                      }
-                      break;
-                    }
+                case 3:
+                default:
+                  {
+                    if (vecout)
+                      retval(2) = fact.P_vec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = get_lu_l (fact);
+                  }
+                  break;
                 }
             }
           else
             {
               Matrix m = arg.matrix_value ();
 
-              if (! error_state)
+              LU fact (m);
+
+              switch (nargout)
                 {
-                  LU fact (m);
+                case 0:
+                case 1:
+                  retval(0) = fact.Y ();
+                  break;
 
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      retval(0) = fact.Y ();
-                      break;
+                case 2:
+                  {
+                    PermMatrix P = fact.P ();
+                    Matrix L = P.transpose () * fact.L ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = L;
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        PermMatrix P = fact.P ();
-                        Matrix L = P.transpose () * fact.L ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = L;
-                      }
-                      break;
-
-                    case 3:
-                    default:
-                      {
-                        if (vecout)
-                          retval(2) = fact.P_vec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = get_lu_l (fact);
-                      }
-                      break;
-                    }
+                case 3:
+                default:
+                  {
+                    if (vecout)
+                      retval(2) = fact.P_vec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = get_lu_l (fact);
+                  }
+                  break;
                 }
             }
         }
@@ -439,76 +430,70 @@ information.\n\
             {
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-              if (! error_state)
+              FloatComplexLU fact (m);
+
+              switch (nargout)
                 {
-                  FloatComplexLU fact (m);
+                case 0:
+                case 1:
+                  retval(0) = fact.Y ();
+                  break;
 
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      retval(0) = fact.Y ();
-                      break;
+                case 2:
+                  {
+                    PermMatrix P = fact.P ();
+                    FloatComplexMatrix L = P.transpose () * fact.L ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = L;
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        PermMatrix P = fact.P ();
-                        FloatComplexMatrix L = P.transpose () * fact.L ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = L;
-                      }
-                      break;
-
-                    case 3:
-                    default:
-                      {
-                        if (vecout)
-                          retval(2) = fact.P_vec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = get_lu_l (fact);
-                      }
-                      break;
-                    }
+                case 3:
+                default:
+                  {
+                    if (vecout)
+                      retval(2) = fact.P_vec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = get_lu_l (fact);
+                  }
+                  break;
                 }
             }
           else
             {
               ComplexMatrix m = arg.complex_matrix_value ();
 
-              if (! error_state)
+              ComplexLU fact (m);
+
+              switch (nargout)
                 {
-                  ComplexLU fact (m);
+                case 0:
+                case 1:
+                  retval(0) = fact.Y ();
+                  break;
 
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      retval(0) = fact.Y ();
-                      break;
+                case 2:
+                  {
+                    PermMatrix P = fact.P ();
+                    ComplexMatrix L = P.transpose () * fact.L ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = L;
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        PermMatrix P = fact.P ();
-                        ComplexMatrix L = P.transpose () * fact.L ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = L;
-                      }
-                      break;
-
-                    case 3:
-                    default:
-                      {
-                        if (vecout)
-                          retval(2) = fact.P_vec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_lu_u (fact);
-                        retval(0) = get_lu_l (fact);
-                      }
-                      break;
-                    }
+                case 3:
+                default:
+                  {
+                    if (vecout)
+                      retval(2) = fact.P_vec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_lu_u (fact);
+                    retval(0) = get_lu_l (fact);
+                  }
+                  break;
                 }
             }
         }

@@ -119,7 +119,7 @@ get_lines_and_columns (std::istream& is,
   nr = 0;
   nc = 0;
 
-  while (is && ! error_state)
+  while (is)
     {
       octave_quit ();
 
@@ -270,7 +270,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
       octave_quit ();
 
-      if (! error_state && nr > 0 && nc > 0)
+      if (nr > 0 && nc > 0)
         {
           Matrix tmp (nr, nc);
 

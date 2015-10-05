@@ -105,9 +105,6 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (args.has_magic_colon ())
     error ("invalid use of colon in function argument list");
   else

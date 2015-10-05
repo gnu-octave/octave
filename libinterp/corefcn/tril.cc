@@ -202,12 +202,7 @@ do_trilu (const std::string& name,
     }
 
   if (nargin == 2)
-    {
-      k = args(1).int_value (true);
-
-      if (error_state)
-        return retval;
-    }
+    k = args(1).int_value (true);
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -312,9 +307,6 @@ do_trilu (const std::string& name,
                         idx.push_back (ov_idx);
 
                         tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
-
-                        if (error_state)
-                          return retval;
                       }
                   }
                 else
@@ -330,9 +322,6 @@ do_trilu (const std::string& name,
                         idx.push_back (ov_idx);
 
                         tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
-
-                        if (error_state)
-                          return retval;
                       }
                   }
 

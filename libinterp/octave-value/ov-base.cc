@@ -658,8 +658,7 @@ octave_base_value::char_matrix_value (bool force) const
 
   octave_value tmp = convert_to_str (false, force);
 
-  if (! error_state)
-    retval = tmp.char_matrix_value ();
+  retval = tmp.char_matrix_value ();
 
   return retval;
 }
@@ -894,8 +893,7 @@ octave_base_value::all_strings (bool pad) const
 
   octave_value tmp = convert_to_str (pad, true);
 
-  if (! error_state)
-    retval = tmp.all_strings ();
+  retval = tmp.all_strings ();
 
   return retval;
 }
@@ -907,8 +905,7 @@ octave_base_value::string_value (bool force) const
 
   octave_value tmp = convert_to_str (force);
 
-  if (! error_state)
-    retval = tmp.string_value ();
+  retval = tmp.string_value ();
 
   return retval;
 }
@@ -1350,7 +1347,7 @@ octave_base_value::numeric_assign (const std::string& type,
     {
       f (*this, idx.front (), rhs.get_rep ());
 
-      done = (! error_state);
+      done = true;
     }
 
   if (done)
@@ -1378,7 +1375,7 @@ octave_base_value::numeric_assign (const std::string& type,
 
                   retval = val.subsasgn (type, idx, rhs);
 
-                  done = (! error_state);
+                  done = true;
                 }
               else
                 gripe_assign_conversion_failed (type_name (),
@@ -1388,7 +1385,7 @@ octave_base_value::numeric_assign (const std::string& type,
             gripe_indexed_assignment (type_name (), rhs.type_name ());
         }
 
-      if (! (done || error_state))
+      if (! done)
         {
           octave_value tmp_rhs;
 
@@ -1450,7 +1447,7 @@ octave_base_value::numeric_assign (const std::string& type,
             {
               retval = tmp_lhs.subsasgn (type, idx, tmp_rhs);
 
-              done = (! error_state);
+              done = true;
             }
           else
             gripe_no_conversion (octave_value::assign_op_as_string

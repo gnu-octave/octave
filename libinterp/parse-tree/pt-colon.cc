@@ -85,7 +85,7 @@ tree_colon_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state || ! op_base || ! op_limit)
+  if (! op_base || ! op_limit)
     return retval;
 
   octave_value ov_base = op_base->rvalue1 ();
@@ -121,20 +121,17 @@ tree_colon_expression::rvalue1 (int)
               tmp1(0) = ov_base;
             }
 
-          if (!error_state)
+          octave_value fcn = symbol_table::find_function ("colon", tmp1);
+
+          if (fcn.is_defined ())
             {
-              octave_value fcn = symbol_table::find_function ("colon", tmp1);
+              octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
 
-              if (fcn.is_defined ())
-                {
-                  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-
-                  if (! error_state)
-                    retval = tmp2 (0);
-                }
-              else
-                error ("can not find overloaded colon function");
+              if (! error_state)
+                retval = tmp2 (0);
             }
+          else
+            error ("can not find overloaded colon function");
         }
       else
         {
@@ -148,9 +145,8 @@ tree_colon_expression::rvalue1 (int)
                 eval_error ("invalid increment value in colon expression");
             }
 
-          if (! error_state)
-            retval = do_colon_op (ov_base, ov_increment, ov_limit,
-                                  is_for_cmd_expr ());
+          retval = do_colon_op (ov_base, ov_increment, ov_limit,
+                                is_for_cmd_expr ());
         }
     }
 

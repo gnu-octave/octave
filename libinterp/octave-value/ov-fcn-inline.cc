@@ -990,38 +990,35 @@ quadv (fcn, 0, 3)\n\
             error ("vectorize: FUN must be a string or inline function");
         }
 
-      if (! error_state)
+      std::string new_func;
+      size_t i = 0;
+
+      while (i < old_func.length ())
         {
-          std::string new_func;
-          size_t i = 0;
+          std::string t1 = old_func.substr (i, 1);
 
-          while (i < old_func.length ())
+          if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
             {
-              std::string t1 = old_func.substr (i, 1);
+              if (i && old_func.substr (i-1, 1) != ".")
+                new_func.append (".");
 
-              if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
+              // Special case for ** operator.
+              if (t1 == "*" && i < (old_func.length () - 1)
+                  && old_func.substr (i+1, 1) == "*")
                 {
-                  if (i && old_func.substr (i-1, 1) != ".")
-                    new_func.append (".");
-
-                  // Special case for ** operator.
-                  if (t1 == "*" && i < (old_func.length () - 1)
-                      && old_func.substr (i+1, 1) == "*")
-                    {
-                      new_func.append ("*");
-                      i++;
-                    }
+                  new_func.append ("*");
+                  i++;
                 }
-              new_func.append (t1);
-              i++;
             }
-
-          if (func_is_string)
-            retval = octave_value (new_func);
-          else
-            retval = octave_value (new octave_fcn_inline
-                                   (new_func, old->fcn_arg_names ()));
+          new_func.append (t1);
+          i++;
         }
+
+      if (func_is_string)
+        retval = octave_value (new_func);
+      else
+        retval = octave_value (new octave_fcn_inline
+                               (new_func, old->fcn_arg_names ()));
     }
   else
     print_usage ();

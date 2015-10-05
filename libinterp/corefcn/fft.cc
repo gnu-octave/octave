@@ -74,9 +74,6 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         }
     }
 
-  if (error_state)
-    return retval;
-
   if (nargin > 2)
     {
       double dval = args(2).double_value ();
@@ -89,9 +86,6 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         // to be safe, cast it back to int since dim is an int
         dim = NINT (dval) - 1;
     }
-
-  if (error_state)
-    return retval;
 
   for (octave_idx_type i = 0; i < dims.length (); i++)
     if (dims(i) < 0)
@@ -130,21 +124,15 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         {
           FloatNDArray nda = arg.float_array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
         }
       else
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
         }
     }
   else
@@ -153,26 +141,18 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         {
           NDArray nda = arg.array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
         }
       else if (arg.is_complex_type ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
         }
       else
-        {
-          gripe_wrong_type_arg (fcn, arg);
-        }
+        gripe_wrong_type_arg (fcn, arg);
     }
 
   return retval;

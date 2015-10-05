@@ -192,7 +192,8 @@ octave_scalar::load_binary (std::istream& is, bool swap,
 
   double dtmp;
   read_doubles (is, &dtmp, static_cast<save_type> (tmp), 1, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
 
   scalar = dtmp;
@@ -373,7 +374,7 @@ octave_scalar::map (unary_mapper_t umap) const
     case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
-        return error_state ? octave_value () : str_conv.map (umap);
+        return str_conv.map (umap);
       }
 
     default:

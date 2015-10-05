@@ -158,8 +158,10 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
   float *re = m.fortran_vec ();
   octave_idx_type len = m.length ();
   read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;

@@ -387,7 +387,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
 
   read_doubles (is, m.xdata (), static_cast<save_type> (ctmp), nz, swap, fmt);
 
-  if (error_state || ! is)
+  if (! is)
     return false;
 
   if (! m.indices_ok ())

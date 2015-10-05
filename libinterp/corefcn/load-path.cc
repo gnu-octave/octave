@@ -766,18 +766,15 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
             {
               dir_info di (dir);
 
-              if (! error_state)
-                {
-                  if (at_end)
-                    dir_info_list.push_back (di);
-                  else
-                    dir_info_list.push_front (di);
+              if (at_end)
+                dir_info_list.push_back (di);
+              else
+                dir_info_list.push_front (di);
 
-                  add (di, at_end);
+              add (di, at_end);
 
-                  if (add_hook)
-                    add_hook (dir);
-                }
+              if (add_hook)
+                add_hook (dir);
             }
           else if (warn)
             warning ("addpath: %s: not a directory", dir_arg.c_str ());
@@ -2256,12 +2253,7 @@ directories with those names.\n\
       string_vector skip (nargin - 1);
 
       for (octave_idx_type i = 1; i < nargin; i++)
-        {
-          skip[i-1] = args(i).string_value ();
-
-          if (error_state)
-            break;
-        }
+        skip[i-1] = args(i).string_value ();
 
       if (! error_state)
         retval = genpath (dirname, skip);
@@ -2362,33 +2354,30 @@ No checks are made for duplicate elements.\n\
 
   string_vector argv = args.make_argv ("path");
 
-  if (! error_state)
+  if (argc > 1)
     {
-      if (argc > 1)
-        {
-          std::string path = argv[1];
+      std::string path = argv[1];
 
-          for (int i = 2; i < argc; i++)
-            path += dir_path::path_sep_str () + argv[i];
+      for (int i = 2; i < argc; i++)
+        path += dir_path::path_sep_str () + argv[i];
 
-          load_path::set (path, true);
+      load_path::set (path, true);
 
-          rehash_internal ();
-        }
+      rehash_internal ();
+    }
 
-      if (nargout > 0)
-        retval = load_path::path ();
-      else if (argc == 1 && nargout == 0)
-        {
-          octave_stdout <<
-                        "\nOctave's search path contains the following directories:\n\n";
+  if (nargout > 0)
+    retval = load_path::path ();
+  else if (argc == 1 && nargout == 0)
+    {
+      octave_stdout <<
+        "\nOctave's search path contains the following directories:\n\n";
 
-          string_vector dirs = load_path::dirs ();
+      string_vector dirs = load_path::dirs ();
 
-          dirs.list_in_columns (octave_stdout);
+      dirs.list_in_columns (octave_stdout);
 
-          octave_stdout << "\n";
-        }
+      octave_stdout << "\n";
     }
 
   return retval;

@@ -61,9 +61,6 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
 
   double tmp = args(0).double_value ();
 
-  if (error_state)
-    return retval;
-
   if (xisnan (tmp))
     {
       error ("colloc: N cannot be NaN");

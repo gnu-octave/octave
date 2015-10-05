@@ -68,13 +68,10 @@ default_numeric_conversion_function (const octave_base_value& a)
 
   NDArray nda = v.array_value (true);
 
-  if (! error_state)
-    {
-      if (nda.numel () == 1)
-        retval = new octave_scalar (nda(0));
-      else
-        retval = new octave_matrix (nda);
-    }
+  if (nda.numel () == 1)
+    retval = new octave_scalar (nda(0));
+  else
+    retval = new octave_matrix (nda);
 
   return retval;
 }
@@ -112,9 +109,8 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
-                                     type);
+            retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
+                                   type);
           }
           break;
 
@@ -124,9 +120,8 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
             k = 1;
             idx_vector j = idx (1).index_vector ();
 
-            if (! error_state)
-              retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-                                     type);
+            retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
+                                   type);
           }
           break;
 
@@ -137,10 +132,9 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
             for (k = 0; k < len; k++)
               idx_vec(k) = idx(k).index_vector ();
 
-            if (! error_state)
-              retval =
-                octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-                              type);
+            retval =
+              octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+                            type);
           }
           break;
         }
@@ -443,8 +437,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
                     }
                 }
 
-              if (! error_state)
-                matrix = chm;
+              matrix = chm;
             }
           else
             {
@@ -555,8 +548,9 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       char *tmp = m.fortran_vec ();
       is.read (tmp, dv.numel ());
 
-      if (error_state || ! is)
+      if (! is)
         return false;
+
       matrix = m;
     }
   else

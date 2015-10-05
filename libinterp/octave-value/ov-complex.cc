@@ -301,7 +301,8 @@ octave_complex::load_binary (std::istream& is, bool swap,
   Complex ctmp;
   read_doubles (is, reinterpret_cast<double *> (&ctmp),
                 static_cast<save_type> (tmp), 2, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
 
   scalar = ctmp;

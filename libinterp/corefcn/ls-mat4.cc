@@ -373,7 +373,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
         read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
 
-        if (! is || error_state)
+        if (! is)
           {
             error ("load: reading matrix data for '%s'", name);
             goto data_read_error;
@@ -386,7 +386,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap,
                                   flt_fmt);
 
-            if (! is || error_state)
+            if (! is)
               {
                 error ("load: reading imaginary matrix data for '%s'", name);
                 goto data_read_error;

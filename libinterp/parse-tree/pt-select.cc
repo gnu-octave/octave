@@ -123,7 +123,7 @@ tree_switch_case::label_matches (const octave_value& val)
 {
   octave_value label_value = label->rvalue1 ();
 
-  if (! error_state && label_value.is_defined ())
+  if (label_value.is_defined ())
     {
       if (label_value.is_cell ())
         {
@@ -135,22 +135,13 @@ tree_switch_case::label_matches (const octave_value& val)
                 {
                   bool match = val.is_equal (cell(i,j));
 
-                  if (error_state)
-                    return false;
-                  else if (match)
+                  if (match)
                     return true;
                 }
             }
         }
       else
-        {
-          bool match = val.is_equal (label_value);
-
-          if (error_state)
-            return false;
-          else
-            return match;
-        }
+        return val.is_equal (label_value);
     }
 
   return false;

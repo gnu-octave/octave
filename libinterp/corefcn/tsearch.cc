@@ -86,9 +86,6 @@ convex hull, @var{idx} is NaN.\n\
   const ColumnVector xi (args(3).vector_value ());
   const ColumnVector yi (args(4).vector_value ());
 
-  if (error_state)
-    return retval;
-
   const octave_idx_type nelem = elem.rows ();
 
   ColumnVector minx (nelem);

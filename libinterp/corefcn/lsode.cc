@@ -367,31 +367,28 @@ parameters for @code{lsode}.\n\
                   {
                     string_vector tmp = f_arg.all_strings ();
 
-                    if (! error_state)
+                    fcn_name = unique_symbol_name ("__lsode_fcn__");
+                    fname = "function y = ";
+                    fname.append (fcn_name);
+                    fname.append (" (x, t) y = ");
+                    lsode_fcn = extract_function (tmp(0), "lsode", fcn_name,
+                                                  fname, "; endfunction");
+
+                    if (lsode_fcn)
                       {
-                        fcn_name = unique_symbol_name ("__lsode_fcn__");
-                        fname = "function y = ";
-                        fname.append (fcn_name);
-                        fname.append (" (x, t) y = ");
-                        lsode_fcn = extract_function (tmp(0), "lsode", fcn_name,
-                                                      fname, "; endfunction");
+                        jac_name = unique_symbol_name ("__lsode_jac__");
+                        jname = "function jac = ";
+                        jname.append (jac_name);
+                        jname.append (" (x, t) jac = ");
+                        lsode_jac = extract_function (tmp(1), "lsode",
+                                                      jac_name, jname,
+                                                      "; endfunction");
 
-                        if (lsode_fcn)
+                        if (!lsode_jac)
                           {
-                            jac_name = unique_symbol_name ("__lsode_jac__");
-                            jname = "function jac = ";
-                            jname.append (jac_name);
-                            jname.append (" (x, t) jac = ");
-                            lsode_jac = extract_function (tmp(1), "lsode",
-                                                          jac_name, jname,
-                                                          "; endfunction");
-
-                            if (!lsode_jac)
-                              {
-                                if (fcn_name.length ())
-                                  clear_function (fcn_name);
-                                lsode_fcn = 0;
-                              }
+                            if (fcn_name.length ())
+                              clear_function (fcn_name);
+                            lsode_fcn = 0;
                           }
                       }
                   }
@@ -451,22 +448,19 @@ parameters for @code{lsode}.\n\
       if (jac_name.length ())
         clear_function (jac_name);
 
-      if (! error_state)
+      std::string msg = ode.error_message ();
+
+      retval(2) = msg;
+      retval(1) = static_cast<double> (ode.integration_state ());
+
+      if (ode.integration_ok ())
+        retval(0) = output;
+      else
         {
-          std::string msg = ode.error_message ();
+          retval(0) = Matrix ();
 
-          retval(2) = msg;
-          retval(1) = static_cast<double> (ode.integration_state ());
-
-          if (ode.integration_ok ())
-            retval(0) = output;
-          else
-            {
-              retval(0) = Matrix ();
-
-              if (nargout < 2)
-                error ("lsode: %s", msg.c_str ());
-            }
+          if (nargout < 2)
+            error ("lsode: %s", msg.c_str ());
         }
     }
   else

@@ -283,9 +283,6 @@ at most n-1).\n\
   else if (str_case && (left_inf || right_inf))
     error ("lookup: l, r are not recognized for string lookups");
 
-  if (error_state)
-    return retval;
-
   if (num_case)
     {
 

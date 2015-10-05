@@ -182,41 +182,38 @@ instead.\n\
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();
 
-      if (! error_state)
-        {
-          size_t pos_p = file.find_first_of ("|");
-          size_t pos_c = file.find_first_not_of ("| ");
+      size_t pos_p = file.find_first_of ("|");
+      size_t pos_c = file.find_first_not_of ("| ");
 
-          if (pos_p == std::string::npos && pos_c == std::string::npos)
-            error ("__osmesa_print__: empty output ''");
-          else if (pos_c == std::string::npos)
-            error ("__osmesa_print__: empty pipe '|'");
-          else if (pos_p != std::string::npos && pos_p < pos_c)
+      if (pos_p == std::string::npos && pos_c == std::string::npos)
+        error ("__osmesa_print__: empty output ''");
+      else if (pos_c == std::string::npos)
+        error ("__osmesa_print__: empty pipe '|'");
+      else if (pos_p != std::string::npos && pos_p < pos_c)
+        {
+          // create process and pipe gl2ps output to it
+          std::string cmd = file.substr (pos_c);
+          gl2ps_print (fobj, cmd, term);
+        }
+      else
+        {
+          // write gl2ps output directly to file
+          FILE *filep = gnulib::fopen (file.substr (pos_c).c_str (), "w");
+
+          if (filep)
             {
-              // create process and pipe gl2ps output to it
-              std::string cmd = file.substr (pos_c);
-              gl2ps_print (fobj, cmd, term);
+              unwind_protect frame;
+
+              frame.add_fcn (close_fcn, filep);
+
+              glps_renderer rend (filep, term);
+              rend.draw (fobj, "");
+
+              // Make sure buffered commands are finished!!!
+              glFinish ();
             }
           else
-            {
-              // write gl2ps output directly to file
-              FILE *filep = gnulib::fopen (file.substr (pos_c).c_str (), "w");
-
-              if (filep)
-                {
-                  unwind_protect frame;
-
-                  frame.add_fcn (close_fcn, filep);
-
-                  glps_renderer rend (filep, term);
-                  rend.draw (fobj, "");
-
-                  // Make sure buffered commands are finished!!!
-                  glFinish ();
-                }
-              else
-                error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
-            }
+            error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
         }
 #endif
     }

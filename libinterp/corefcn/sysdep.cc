@@ -620,8 +620,7 @@ returns a string containing the value of your path.\n\
     {
       std::string name = args(0).string_value ();
 
-      if (! error_state)
-        retval = octave_env::getenv (name);
+      retval = octave_env::getenv (name);
     }
   else
     print_usage ();
@@ -700,11 +699,7 @@ occurred.\n\
     {
       std::string tmp = args(0).string_value ();
 
-      if (! error_state)
-        {
-          int status = gnulib::unsetenv (tmp.c_str ());
-          retval = status;
-        }
+      retval = gnulib::unsetenv (tmp.c_str ());
     }
   else
     print_usage ();
@@ -805,23 +800,20 @@ clc;\n\
     {
       double dval = args(0).double_value ();
 
-      if (! error_state)
+      if (! xisnan (dval))
         {
-          if (! xisnan (dval))
-            {
-              Fdrawnow ();
+          Fdrawnow ();
 
-              if (xisinf (dval))
-                {
-                  flush_octave_stdout ();
-                  octave_kbhit ();
-                }
-              else
-                octave_sleep (dval);
+          if (xisinf (dval))
+            {
+              flush_octave_stdout ();
+              octave_kbhit ();
             }
           else
-            warning ("pause: NaN is an invalid delay");
+            octave_sleep (dval);
         }
+      else
+        warning ("pause: NaN is an invalid delay");
     }
   else
     {
@@ -853,15 +845,12 @@ Suspend the execution of the program for the given number of seconds.\n\
     {
       double dval = args(0).double_value ();
 
-      if (! error_state)
+      if (xisnan (dval))
+        warning ("sleep: NaN is an invalid delay");
+      else
         {
-          if (xisnan (dval))
-            warning ("sleep: NaN is an invalid delay");
-          else
-            {
-              Fdrawnow ();
-              octave_sleep (dval);
-            }
+          Fdrawnow ();
+          octave_sleep (dval);
         }
     }
   else
@@ -896,19 +885,16 @@ one second, @code{usleep} will pause the execution for @code{round\n\
     {
       double dval = args(0).double_value ();
 
-      if (! error_state)
+      if (xisnan (dval))
+        warning ("usleep: NaN is an invalid delay");
+      else
         {
-          if (xisnan (dval))
-            warning ("usleep: NaN is an invalid delay");
-          else
-            {
-              Fdrawnow ();
+          Fdrawnow ();
 
-              int delay = NINT (dval);
+          int delay = NINT (dval);
 
-              if (delay > 0)
-                octave_usleep (delay);
-            }
+          if (delay > 0)
+            octave_usleep (delay);
         }
     }
   else

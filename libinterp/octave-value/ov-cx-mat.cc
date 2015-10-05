@@ -537,8 +537,10 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
       Complex *im = m.fortran_vec ();
       read_doubles (is, reinterpret_cast<double *> (im),
                     static_cast<save_type> (tmp), 2 * dv.numel (), swap, fmt);
-      if (error_state || ! is)
+
+      if (! is)
         return false;
+
       matrix = m;
     }
   else
@@ -556,8 +558,10 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
       octave_idx_type len = nr * nc;
       read_doubles (is, reinterpret_cast<double *> (im),
                     static_cast<save_type> (tmp), 2*len, swap, fmt);
-      if (error_state || ! is)
+
+      if (! is)
         return false;
+
       matrix = m;
     }
   return true;

@@ -495,9 +495,6 @@ compatibility with @sc{matlab}.\n\
   else
     aa = args(0).matrix_value ();
 
-  if (error_state)
-    return retval;
-
 #ifdef DEBUG
   std::cout << "qz: check argument 2" << std::endl;
 #endif
@@ -516,9 +513,6 @@ compatibility with @sc{matlab}.\n\
     cbb = args(1).complex_matrix_value ();
   else
     bb = args(1).matrix_value ();
-
-  if (error_state)
-    return retval;
 
   // Both matrices loaded, now let's check what kind of arithmetic:
   // declared volatile to avoid compiler warnings about long jumps,

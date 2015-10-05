@@ -97,8 +97,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 
   SparseBoolMatrix v2 (1, 1, a2.bool_value ());
 
-  if (! error_state)
-    v1.assign (idx, v2);
+  v1.assign (idx, v2);
 
   return octave_value ();
 }

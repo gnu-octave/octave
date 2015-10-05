@@ -319,7 +319,7 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
       m.ridx (i) = tmp;
     }
 
-  if (error_state || ! is)
+  if (! is)
     return false;
 
   OCTAVE_LOCAL_BUFFER (char, htmp, nz);

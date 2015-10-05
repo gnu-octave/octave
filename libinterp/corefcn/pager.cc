@@ -545,9 +545,6 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
   string_vector argv = args.make_argv ("diary");
 
-  if (error_state)
-    return retval;
-
   if (diary_file.empty ())
     diary_file = "diary";
 
@@ -625,9 +622,6 @@ The current state can be determined via @code{page_screen_output}.\n\
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("more");
-
-  if (error_state)
-    return retval;
 
   if (argc == 2)
     {

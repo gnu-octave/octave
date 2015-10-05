@@ -46,8 +46,6 @@ tree_identifier::eval_undefined_error (void)
   int c = column ();
 
   maybe_missing_function_hook (name ());
-  if (error_state)
-    return;
 
   if (l == -1 && c == -1)
     error_with_id ("Octave:undefined-function",
@@ -63,9 +61,6 @@ tree_identifier::rvalue (int nargout,
                          const std::list<octave_lvalue> *lvalue_list)
 {
   octave_value_list retval;
-
-  if (error_state)
-    return retval;
 
   octave_value val = sym->find ();
 

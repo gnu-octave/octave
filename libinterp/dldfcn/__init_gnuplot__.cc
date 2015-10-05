@@ -151,20 +151,17 @@ private:
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();
 
-        if (! error_state)
+        Ffputs (ovl (fids(0), "\nquit;\n"));
+
+        Ffflush (ovl (fids(0)));
+        Fpclose (ovl (fids(0)));
+
+        if (fids.numel () > 1)
           {
-            Ffputs (ovl (fids(0), "\nquit;\n"));
+            Fpclose (ovl (fids(1)));
 
-            Ffflush (ovl (fids(0)));
-            Fpclose (ovl (fids(0)));
-
-            if (fids.numel () > 1)
-              {
-                Fpclose (ovl (fids(1)));
-
-                if (fids.numel () > 2)
-                  Fwaitpid (ovl (fids(2)));
-              }
+            if (fids.numel () > 2)
+              Fwaitpid (ovl (fids(2)));
           }
       }
   }

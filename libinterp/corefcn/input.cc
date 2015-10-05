@@ -707,7 +707,7 @@ get_user_input (const octave_value_list& args, int nargout)
 
   std::string input_buf = interactive_input (prompt.c_str (), eof);
 
-  if (! (error_state || input_buf.empty ()))
+  if (! input_buf.empty ())
     {
       size_t len = input_buf.length ();
 
@@ -888,8 +888,7 @@ do_keyboard (const octave_value_list& args)
   if (nargin > 0)
     prompt = args(0).string_value ();
 
-  if (! error_state)
-    get_debug_input (prompt);
+  get_debug_input (prompt);
 
   return retval;
 }
@@ -975,9 +974,6 @@ With no arguments, @code{echo} toggles the current echo state.\n\
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("echo");
-
-  if (error_state)
-    return retval;
 
   switch (argc)
     {
@@ -1103,56 +1099,53 @@ a feature, not a bug.\n\
     {
       std::string hint = args(0).string_value ();
 
-      if (! error_state)
+      int n = 32;
+
+      string_vector list (n);
+
+      int k = 0;
+
+      for (;;)
         {
-          int n = 32;
+          std::string cmd = generate_completion (hint, k);
 
-          string_vector list (n);
-
-          int k = 0;
-
-          for (;;)
+          if (! cmd.empty ())
             {
-              std::string cmd = generate_completion (hint, k);
-
-              if (! cmd.empty ())
+              if (k == n)
                 {
-                  if (k == n)
-                    {
-                      n *= 2;
-                      list.resize (n);
-                    }
-
-                  list[k++] = cmd;
+                  n *= 2;
+                  list.resize (n);
                 }
-              else
-                {
-                  list.resize (k);
-                  break;
-                }
-            }
 
-          if (nargout > 0)
-            {
-              if (! list.empty ())
-                retval = list;
-              else
-                retval = "";
+              list[k++] = cmd;
             }
           else
             {
-              // We don't use string_vector::list_in_columns here
-              // because it will be easier for Emacs if the names
-              // appear in a single column.
-
-              int len = list.numel ();
-
-              for (int i = 0; i < len; i++)
-                octave_stdout << list[i] << "\n";
+              list.resize (k);
+              break;
             }
-
-          octave_completion_matches_called = true;
         }
+
+      if (nargout > 0)
+        {
+          if (! list.empty ())
+            retval = list;
+          else
+            retval = "";
+        }
+      else
+        {
+          // We don't use string_vector::list_in_columns here
+          // because it will be easier for Emacs if the names
+          // appear in a single column.
+
+          int len = list.numel ();
+
+          for (int i = 0; i < len; i++)
+            octave_stdout << list[i] << "\n";
+        }
+
+      octave_completion_matches_called = true;
     }
   else
     print_usage ();
@@ -1198,8 +1191,7 @@ for details.\n\
     {
       std::string file = args(0).string_value ();
 
-      if (! error_state)
-        command_editor::read_init_file (file);
+      command_editor::read_init_file (file);
     }
   else
     print_usage ();
@@ -1549,7 +1541,7 @@ The original variable value is restored when exiting the function.\n\
   octave_value retval = SET_INTERNAL_VARIABLE (filemarker);
 
   // The character passed must not be a legal character for a function name
-  if (! error_state && (::isalnum (Vfilemarker) || Vfilemarker == '_'))
+  if (::isalnum (Vfilemarker) || Vfilemarker == '_')
     {
       Vfilemarker = tmp;
       error ("filemarker: character can not be a valid character for a function name");

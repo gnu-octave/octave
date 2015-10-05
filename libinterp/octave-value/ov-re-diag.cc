@@ -99,26 +99,23 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
           k = 1;
           idx_vector idx1 = idx(1).index_vector ();
 
-          if (! error_state)
-            {
-              bool left = idx0.is_permutation (matrix.rows ());
-              bool right = idx1.is_permutation (matrix.cols ());
+          bool left = idx0.is_permutation (matrix.rows ());
+          bool right = idx1.is_permutation (matrix.cols ());
 
+          if (left && right)
+            {
+              if (idx0.is_colon ()) left = false;
+              if (idx1.is_colon ()) right = false;
               if (left && right)
+                retval = PermMatrix (idx0, false) * PermMatrix (idx1, true);
+              else if (left)
+                retval = PermMatrix (idx0, false);
+              else if (right)
+                retval = PermMatrix (idx1, true);
+              else
                 {
-                  if (idx0.is_colon ()) left = false;
-                  if (idx1.is_colon ()) right = false;
-                  if (left && right)
-                    retval = PermMatrix (idx0, false) * PermMatrix (idx1, true);
-                  else if (left)
-                    retval = PermMatrix (idx0, false);
-                  else if (right)
-                    retval = PermMatrix (idx1, true);
-                  else
-                    {
-                      retval = this;
-                      this->count++;
-                    }
+                  retval = this;
+                  this->count++;
                 }
             }
         }
@@ -130,8 +127,7 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
         }
     }
 
-  // if error_state is set, we've already griped.
-  if (! error_state && retval.is_undefined ())
+  if (retval.is_undefined ())
     retval = octave_base_diag<DiagMatrix, Matrix>::do_index_op (idx, resize_ok);
 
   return retval;
@@ -239,8 +235,10 @@ octave_diag_matrix::load_binary (std::istream& is, bool swap,
   double *re = m.fortran_vec ();
   octave_idx_type len = m.length ();
   read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;

@@ -166,8 +166,7 @@ gmtime (time ())\n\
     {
       double tmp = args(0).double_value ();
 
-      if (! error_state)
-        retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
+      retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
     }
   else
     print_usage ();
@@ -228,8 +227,7 @@ localtime (time ())\n\
     {
       double tmp = args(0).double_value ();
 
-      if (! error_state)
-        retval = octave_value (mk_tm_map (octave_localtime (tmp)));
+      retval = octave_value (mk_tm_map (octave_localtime (tmp)));
     }
   else
     print_usage ();

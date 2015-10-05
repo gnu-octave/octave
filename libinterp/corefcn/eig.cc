@@ -127,19 +127,13 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
             {
               ftmp_a = arg_a.float_matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = FloatEIG (ftmp_a, nargout > 1);
+              result = FloatEIG (ftmp_a, nargout > 1);
             }
           else
             {
               fctmp_a = arg_a.float_complex_matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = FloatEIG (fctmp_a, nargout > 1);
+              result = FloatEIG (fctmp_a, nargout > 1);
             }
         }
       else if (nargin == 2)
@@ -149,38 +143,29 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
               ftmp_a = arg_a.float_matrix_value ();
               ftmp_b = arg_b.float_matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = FloatEIG (ftmp_a, ftmp_b, nargout > 1);
+              result = FloatEIG (ftmp_a, ftmp_b, nargout > 1);
             }
           else
             {
               fctmp_a = arg_a.float_complex_matrix_value ();
               fctmp_b = arg_b.float_complex_matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = FloatEIG (fctmp_a, fctmp_b, nargout > 1);
+              result = FloatEIG (fctmp_a, fctmp_b, nargout > 1);
             }
         }
 
-      if (! error_state)
+      if (nargout == 0 || nargout == 1)
         {
-          if (nargout == 0 || nargout == 1)
-            {
-              retval(0) = result.eigenvalues ();
-            }
-          else
-            {
-              // Blame it on Matlab.
+          retval(0) = result.eigenvalues ();
+        }
+      else
+        {
+          // Blame it on Matlab.
 
-              FloatComplexDiagMatrix d (result.eigenvalues ());
+          FloatComplexDiagMatrix d (result.eigenvalues ());
 
-              retval(1) = d;
-              retval(0) = result.eigenvectors ();
-            }
+          retval(1) = d;
+          retval(0) = result.eigenvectors ();
         }
     }
   else
@@ -193,19 +178,13 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
             {
               tmp_a = arg_a.matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = EIG (tmp_a, nargout > 1);
+              result = EIG (tmp_a, nargout > 1);
             }
           else
             {
               ctmp_a = arg_a.complex_matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = EIG (ctmp_a, nargout > 1);
+              result = EIG (ctmp_a, nargout > 1);
             }
         }
       else if (nargin == 2)
@@ -215,38 +194,29 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
               tmp_a = arg_a.matrix_value ();
               tmp_b = arg_b.matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = EIG (tmp_a, tmp_b, nargout > 1);
+              result = EIG (tmp_a, tmp_b, nargout > 1);
             }
           else
             {
               ctmp_a = arg_a.complex_matrix_value ();
               ctmp_b = arg_b.complex_matrix_value ();
 
-              if (error_state)
-                return retval;
-              else
-                result = EIG (ctmp_a, ctmp_b, nargout > 1);
+              result = EIG (ctmp_a, ctmp_b, nargout > 1);
             }
         }
 
-      if (! error_state)
+      if (nargout == 0 || nargout == 1)
         {
-          if (nargout == 0 || nargout == 1)
-            {
-              retval(0) = result.eigenvalues ();
-            }
-          else
-            {
-              // Blame it on Matlab.
+          retval(0) = result.eigenvalues ();
+        }
+      else
+        {
+          // Blame it on Matlab.
 
-              ComplexDiagMatrix d (result.eigenvalues ());
+          ComplexDiagMatrix d (result.eigenvalues ());
 
-              retval(1) = d;
-              retval(0) = result.eigenvectors ();
-            }
+          retval(1) = d;
+          retval(0) = result.eigenvectors ();
         }
     }
 

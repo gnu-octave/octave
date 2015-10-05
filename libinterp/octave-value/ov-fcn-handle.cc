@@ -1159,22 +1159,19 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
               success = false;
             }
 
-          if (! error_state)
+          hdf5_callback_data dsub;
+          int current_item = 0;
+          for (octave_idx_type i = 0; i < len; i++)
             {
-              hdf5_callback_data dsub;
-              int current_item = 0;
-              for (octave_idx_type i = 0; i < len; i++)
+              if (H5Giterate (group_hid, "symbol table", &current_item,
+                              hdf5_read_next_data, &dsub) <= 0)
                 {
-                  if (H5Giterate (group_hid, "symbol table", &current_item,
-                                  hdf5_read_next_data, &dsub) <= 0)
-                    {
-                      error ("load: failed to load anonymous function handle");
-                      success = false;
-                      break;
-                    }
-
-                  symbol_table::assign (dsub.name, dsub.tc, local_scope);
+                  error ("load: failed to load anonymous function handle");
+                  success = false;
+                  break;
                 }
+
+              symbol_table::assign (dsub.name, dsub.tc, local_scope);
             }
         }
 

@@ -175,7 +175,7 @@ bool octave_lazy_index::load_ascii (std::istream& is)
   else
     index = value.index_vector ();
 
-  return ! error_state;
+  return true;
 }
 
 
@@ -199,5 +199,5 @@ bool octave_lazy_index::load_binary (std::istream& is, bool swap,
   else
     index = value.index_vector ();
 
-  return ! error_state;
+  return true;
 }

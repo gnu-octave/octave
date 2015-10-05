@@ -198,8 +198,7 @@ fill empty fields.  The default is zero.\n\
       && args(nargin-2).string_value () == "emptyvalue")
     {
       empty_value = args(nargin-1).double_value ();
-      if (error_state)
-        return retval;
+
       nargin -= 2;
     }
 
@@ -233,9 +232,6 @@ fill empty fields.  The default is zero.\n\
     {
       octave_stream is = octave_stream_list::lookup (args(0), "dlmread");
 
-      if (error_state)
-        return retval;
-
       input = is.input_stream ();
 
       if (! input)
@@ -258,9 +254,6 @@ fill empty fields.  The default is zero.\n\
         sep = do_string_escapes (args(1).string_value ());
       else
         sep = args(1).string_value ();
-
-      if (error_state)
-        return retval;
     }
 
   // Take a subset if a range was given.
@@ -279,181 +272,92 @@ fill empty fields.  The default is zero.\n\
         {
           r0 = args(2).idx_type_value ();
           c0 = args(3).idx_type_value ();
-
-          if (error_state)
-            return retval;
         }
 
       if (r0 < 0 || c0 < 0)
         error ("dlmread: left & top must be positive");
     }
 
-  if (!error_state)
+  octave_idx_type i = 0;
+  octave_idx_type j = 0;
+  octave_idx_type r = 1;
+  octave_idx_type c = 1;
+  octave_idx_type rmax = 0;
+  octave_idx_type cmax = 0;
+
+  Matrix rdata;
+  ComplexMatrix cdata;
+
+  bool iscmplx = false;
+  bool sepflag = false;
+
+  std::string line;
+
+  // Skip the r0 leading lines as these might be a header.
+  for (octave_idx_type m = 0; m < r0; m++)
+    getline (*input, line);
+  r1 -= r0;
+
+  std::istringstream tmp_stream;
+
+  // Read in the data one field at a time, growing the data matrix
+  // as needed.
+  while (getline (*input, line))
     {
-      octave_idx_type i = 0;
-      octave_idx_type j = 0;
-      octave_idx_type r = 1;
-      octave_idx_type c = 1;
-      octave_idx_type rmax = 0;
-      octave_idx_type cmax = 0;
+      // Skip blank lines for compatibility.
+      if (line.find_first_not_of (" \t") == std::string::npos)
+        continue;
 
-      Matrix rdata;
-      ComplexMatrix cdata;
-
-      bool iscmplx = false;
-      bool sepflag = false;
-
-      std::string line;
-
-      // Skip the r0 leading lines as these might be a header.
-      for (octave_idx_type m = 0; m < r0; m++)
-        getline (*input, line);
-      r1 -= r0;
-
-      std::istringstream tmp_stream;
-
-      // Read in the data one field at a time, growing the data matrix
-      // as needed.
-      while (getline (*input, line))
+      // To be compatible with matlab, blank separator should
+      // correspond to whitespace as delimter.
+      if (!sep.length ())
         {
-          // Skip blank lines for compatibility.
-          if (line.find_first_not_of (" \t") == std::string::npos)
-            continue;
-
-          // To be compatible with matlab, blank separator should
-          // correspond to whitespace as delimter.
-          if (!sep.length ())
+          size_t n = line.find_first_of (",:; \t",
+                                         line.find_first_of ("0123456789"));
+          if (n == std::string::npos)
             {
-              size_t n = line.find_first_of (",:; \t",
-                                             line.find_first_of ("0123456789"));
-              if (n == std::string::npos)
+              sep = " \t";
+              sepflag = true;
+            }
+          else
+            {
+              char ch = line.at (n);
+
+              switch (line.at (n))
                 {
-                  sep = " \t";
+                case ' ':
+                case '\t':
                   sepflag = true;
-                }
-              else
-                {
-                  char ch = line.at (n);
+                  sep = " \t";
+                  break;
 
-                  switch (line.at (n))
-                    {
-                    case ' ':
-                    case '\t':
-                      sepflag = true;
-                      sep = " \t";
-                      break;
-
-                    default:
-                      sep = ch;
-                      break;
-                    }
+                default:
+                  sep = ch;
+                  break;
                 }
             }
+        }
 
-          if (cmax == 0)
-            {
-              // Try to estimate the number of columns.  Skip leading
-              // whitespace.
-              size_t pos1 = line.find_first_not_of (" \t");
-              do
-                {
-                  size_t pos2 = line.find_first_of (sep, pos1);
-
-                  if (sepflag && pos2 != std::string::npos)
-                    // Treat consecutive separators as one.
-                    {
-                      pos2 = line.find_first_not_of (sep, pos2);
-                      if (pos2 != std::string::npos)
-                        pos2 -= 1;
-                      else
-                        pos2 = line.length () - 1;
-                    }
-
-                  cmax++;
-
-                  if (pos2 != std::string::npos)
-                    pos1 = pos2 + 1;
-                  else
-                    pos1 = std::string::npos;
-
-                }
-              while (pos1 != std::string::npos);
-
-              if (iscmplx)
-                cdata.resize (rmax, cmax);
-              else
-                rdata.resize (rmax, cmax);
-            }
-
-          r = (r > i + 1 ? r : i + 1);
-          j = 0;
-          // Skip leading whitespace.
+      if (cmax == 0)
+        {
+          // Try to estimate the number of columns.  Skip leading
+          // whitespace.
           size_t pos1 = line.find_first_not_of (" \t");
           do
             {
-              octave_quit ();
-
               size_t pos2 = line.find_first_of (sep, pos1);
-              std::string str = line.substr (pos1, pos2 - pos1);
 
               if (sepflag && pos2 != std::string::npos)
                 // Treat consecutive separators as one.
-                pos2 = line.find_first_not_of (sep, pos2) - 1;
-
-              c = (c > j + 1 ? c : j + 1);
-              if (r > rmax || c > cmax)
                 {
-                  // Use resize_and_fill for the case of not-equal
-                  // length rows.
-                  rmax = 2*r;
-                  cmax = c;
-                  if (iscmplx)
-                    cdata.resize (rmax, cmax);
+                  pos2 = line.find_first_not_of (sep, pos2);
+                  if (pos2 != std::string::npos)
+                    pos2 -= 1;
                   else
-                    rdata.resize (rmax, cmax);
+                    pos2 = line.length () - 1;
                 }
 
-              tmp_stream.str (str);
-              tmp_stream.clear ();
-
-              double x = octave_read_double (tmp_stream);
-              if (tmp_stream)
-                {
-                  if (tmp_stream.eof ())
-                    {
-                      if (iscmplx)
-                        cdata(i,j++) = x;
-                      else
-                        rdata(i,j++) = x;
-                    }
-                  else if (std::toupper (tmp_stream.peek ()) == 'I')
-                    {
-                      // This is to allow pure imaginary numbers.
-                      if (iscmplx)
-                        cdata(i,j++) = x;
-                      else
-                        rdata(i,j++) = x;
-                    }
-                  else
-                    {
-                      double y = octave_read_double (tmp_stream);
-
-                      if (!iscmplx && y != 0.)
-                        {
-                          iscmplx = true;
-                          cdata = ComplexMatrix (rdata);
-                        }
-
-                      if (iscmplx)
-                        cdata(i,j++) = Complex (x, y);
-                      else
-                        rdata(i,j++) = x;
-                    }
-                }
-              else if (iscmplx)
-                cdata(i,j++) = empty_value;
-              else
-                rdata(i,j++) = empty_value;
+              cmax++;
 
               if (pos2 != std::string::npos)
                 pos1 = pos2 + 1;
@@ -463,31 +367,114 @@ fill empty fields.  The default is zero.\n\
             }
           while (pos1 != std::string::npos);
 
-          if (i == r1)
-            break;
-
-          i++;
-        }
-
-      if (r1 >= r)
-        r1 = r - 1;
-      if (c1 >= c)
-        c1 = c - 1;
-
-      // Now take the subset of the matrix if there are any values.
-      if (i > 0 || j > 0)
-        {
           if (iscmplx)
-            cdata = cdata.extract (0, c0, r1, c1);
+            cdata.resize (rmax, cmax);
           else
-            rdata = rdata.extract (0, c0, r1, c1);
+            rdata.resize (rmax, cmax);
         }
 
-      if (iscmplx)
-        retval(0) = cdata;
-      else
-        retval(0) = rdata;
+      r = (r > i + 1 ? r : i + 1);
+      j = 0;
+      // Skip leading whitespace.
+      size_t pos1 = line.find_first_not_of (" \t");
+      do
+        {
+          octave_quit ();
+
+          size_t pos2 = line.find_first_of (sep, pos1);
+          std::string str = line.substr (pos1, pos2 - pos1);
+
+          if (sepflag && pos2 != std::string::npos)
+            // Treat consecutive separators as one.
+            pos2 = line.find_first_not_of (sep, pos2) - 1;
+
+          c = (c > j + 1 ? c : j + 1);
+          if (r > rmax || c > cmax)
+            {
+              // Use resize_and_fill for the case of not-equal
+              // length rows.
+              rmax = 2*r;
+              cmax = c;
+              if (iscmplx)
+                cdata.resize (rmax, cmax);
+              else
+                rdata.resize (rmax, cmax);
+            }
+
+          tmp_stream.str (str);
+          tmp_stream.clear ();
+
+          double x = octave_read_double (tmp_stream);
+          if (tmp_stream)
+            {
+              if (tmp_stream.eof ())
+                {
+                  if (iscmplx)
+                    cdata(i,j++) = x;
+                  else
+                    rdata(i,j++) = x;
+                }
+              else if (std::toupper (tmp_stream.peek ()) == 'I')
+                {
+                  // This is to allow pure imaginary numbers.
+                  if (iscmplx)
+                    cdata(i,j++) = x;
+                  else
+                    rdata(i,j++) = x;
+                }
+              else
+                {
+                  double y = octave_read_double (tmp_stream);
+
+                  if (!iscmplx && y != 0.)
+                    {
+                      iscmplx = true;
+                      cdata = ComplexMatrix (rdata);
+                    }
+
+                  if (iscmplx)
+                    cdata(i,j++) = Complex (x, y);
+                  else
+                    rdata(i,j++) = x;
+                }
+            }
+          else if (iscmplx)
+            cdata(i,j++) = empty_value;
+          else
+            rdata(i,j++) = empty_value;
+
+          if (pos2 != std::string::npos)
+            pos1 = pos2 + 1;
+          else
+            pos1 = std::string::npos;
+
+        }
+      while (pos1 != std::string::npos);
+
+      if (i == r1)
+        break;
+
+      i++;
     }
+
+  if (r1 >= r)
+    r1 = r - 1;
+  if (c1 >= c)
+    c1 = c - 1;
+
+  // Now take the subset of the matrix if there are any values.
+  if (i > 0 || j > 0)
+    {
+      if (iscmplx)
+        cdata = cdata.extract (0, c0, r1, c1);
+      else
+        rdata = rdata.extract (0, c0, r1, c1);
+    }
+
+  if (iscmplx)
+    retval(0) = cdata;
+  else
+    retval(0) = rdata;
 
   return retval;
 }

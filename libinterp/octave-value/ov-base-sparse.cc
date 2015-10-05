@@ -73,8 +73,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              retval = octave_value (matrix.index (i, resize_ok));
+            retval = octave_value (matrix.index (i, resize_ok));
           }
           break;
 
@@ -82,14 +81,10 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx (1).index_vector ();
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
 
-                if (! error_state)
-                  retval = octave_value (matrix.index (i, j, resize_ok));
-              }
+            retval = octave_value (matrix.index (i, j, resize_ok));
           }
           break;
         default:
@@ -202,8 +197,7 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              matrix.assign (i, rhs);
+            matrix.assign (i, rhs);
 
             break;
           }
@@ -212,14 +206,11 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx (1).index_vector ();
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
 
-                if (! error_state)
-                  matrix.assign (i, j, rhs);
-              }
+            matrix.assign (i, j, rhs);
+
             break;
           }
 
@@ -259,8 +250,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              matrix.delete_elements (i);
+            matrix.delete_elements (i);
 
             break;
           }
@@ -269,14 +259,10 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx (1).index_vector ();
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
 
-                if (! error_state)
-                  matrix.delete_elements (i, j);
-              }
+            matrix.delete_elements (i, j);
 
             break;
           }

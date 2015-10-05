@@ -153,34 +153,28 @@ Undocumented internal function.\n\
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       ilu_0 <SparseMatrix, double> (sm, milu);
-      if (!error_state)
-        {
-          param_list.append (sm);
-          retval(1) = feval ("triu", param_list)(0).sparse_matrix_value ();
-          SparseMatrix eye =
-            feval ("speye", octave_value_list (
-                     octave_value (sm.cols ())))(0).sparse_matrix_value ();
-          param_list.append (-1);
-          retval(0) = eye +
-                      feval ("tril", param_list)(0).sparse_matrix_value ();
-        }
+
+      param_list.append (sm);
+      retval(1) = feval ("triu", param_list)(0).sparse_matrix_value ();
+      SparseMatrix eye =
+        feval ("speye", octave_value_list (octave_value (sm.cols ())))(0).sparse_matrix_value ();
+      param_list.append (-1);
+      retval(0) = eye +
+        feval ("tril", param_list)(0).sparse_matrix_value ();
     }
   else
     {
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
       ilu_0 <SparseComplexMatrix, Complex> (sm, milu);
-      if (! error_state)
-        {
-          param_list.append (sm);
-          retval(1) =
-            feval ("triu", param_list)(0).sparse_complex_matrix_value ();
-          SparseComplexMatrix eye =
-            feval ("speye", octave_value_list (
-                     octave_value (sm.cols ())))(0).sparse_complex_matrix_value ();
-          param_list.append (-1);
-          retval(0) =
-            eye + feval ("tril", param_list)(0).sparse_complex_matrix_value ();
-        }
+
+      param_list.append (sm);
+      retval(1) =
+        feval ("triu", param_list)(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix eye =
+        feval ("speye", octave_value_list (octave_value (sm.cols ())))(0).sparse_complex_matrix_value ();
+      param_list.append (-1);
+      retval(0) =
+        eye + feval ("tril", param_list)(0).sparse_complex_matrix_value ();
     }
 
   return retval;
@@ -446,27 +440,29 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
         }
     }
 
-  if (! error_state)
+  // Build the output matrices
+  L = octave_matrix_t (n, n, total_len_l);
+  U = octave_matrix_t (n, n, total_len_u);
+
+  for (i = 0; i <= n; i++)
+    L.cidx (i) = cidx_l[i];
+
+  for (i = 0; i < total_len_l; i++)
     {
-      // Build the output matrices
-      L = octave_matrix_t (n, n, total_len_l);
-      U = octave_matrix_t (n, n, total_len_u);
-      for (i = 0; i <= n; i++)
-        L.cidx (i) = cidx_l[i];
-      for (i = 0; i < total_len_l; i++)
-        {
-          L.ridx (i) = ridx_l[i];
-          L.data (i) = data_l[i];
-        }
-      for (i = 0; i <= n; i++)
-        U.cidx (i) = cidx_u[i];
-      for (i = 0; i < total_len_u; i++)
-        {
-          U.ridx (i) = ridx_u[i];
-          U.data (i) = data_u[i];
-        }
-      U = U.transpose ();
+      L.ridx (i) = ridx_l[i];
+      L.data (i) = data_l[i];
     }
+
+  for (i = 0; i <= n; i++)
+    U.cidx (i) = cidx_u[i];
+
+  for (i = 0; i < total_len_u; i++)
+    {
+      U.ridx (i) = ridx_u[i];
+      U.data (i) = data_u[i];
+    }
+
+  U = U.transpose ();
 }
 
 DEFUN (__iluc__, args, nargout,
@@ -515,14 +511,11 @@ Undocumented internal function.\n\
                                         cols_norm.fortran_vec (),
                                         rows_norm.fortran_vec (),
                                         droptol, milu);
-      if (! error_state)
-        {
-          param_list.append (octave_value (L.cols ()));
-          SparseMatrix eye =
-            feval ("speye", param_list)(0).sparse_matrix_value ();
-          retval(1) = U;
-          retval(0) = L + eye;
-        }
+      param_list.append (octave_value (L.cols ()));
+      SparseMatrix eye =
+        feval ("speye", param_list)(0).sparse_matrix_value ();
+      retval(1) = U;
+      retval(0) = L + eye;
     }
   else
     {
@@ -543,14 +536,12 @@ Undocumented internal function.\n\
       ilu_crout < SparseComplexMatrix, Complex >
                 (sm_l, sm_u, L, U, cols_norm.fortran_vec () ,
                  rows_norm.fortran_vec (), Complex (droptol), milu);
-      if (! error_state)
-        {
-          param_list.append (octave_value (L.cols ()));
-          SparseComplexMatrix eye =
-            feval ("speye", param_list)(0).sparse_complex_matrix_value ();
-          retval(1) = U;
-          retval(0) = L + eye;
-        }
+
+      param_list.append (octave_value (L.cols ()));
+      SparseComplexMatrix eye =
+        feval ("speye", param_list)(0).sparse_complex_matrix_value ();
+      retval(1) = U;
+      retval(0) = L + eye;
     }
 
   return retval;
@@ -873,81 +864,78 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
       iw_u.clear ();
     }
 
-  if (! error_state)
+  octave_matrix_t *L_ptr;
+  octave_matrix_t *U_ptr;
+  octave_matrix_t diag (n, n, n);
+
+  // L and U are interchanged if milu = 'row'.  It is a matter
+  // of nomenclature to re-use code with both IKJ and JKI
+  // versions of the algorithm.
+  if (opt == ROW)
     {
-      octave_matrix_t *L_ptr;
-      octave_matrix_t *U_ptr;
-      octave_matrix_t diag (n, n, n);
+      L_ptr = &U;
+      U_ptr = &L;
+      L = octave_matrix_t (n, n, total_len_u - n);
+      U = octave_matrix_t (n, n, total_len_l);
+    }
+  else
+    {
+      L_ptr = &L;
+      U_ptr = &U;
+      L = octave_matrix_t (n, n, total_len_l);
+      U = octave_matrix_t (n, n, total_len_u);
+    }
 
-      // L and U are interchanged if milu = 'row'.  It is a matter
-      // of nomenclature to re-use code with both IKJ and JKI
-      // versions of the algorithm.
+  for (i = 0; i <= n; i++)
+    {
+      L_ptr->cidx (i) = cidx_l[i];
+      U_ptr->cidx (i) = cidx_u[i];
       if (opt == ROW)
-        {
-          L_ptr = &U;
-          U_ptr = &L;
-          L = octave_matrix_t (n, n, total_len_u - n);
-          U = octave_matrix_t (n, n, total_len_l);
-        }
-      else
-        {
-          L_ptr = &L;
-          U_ptr = &U;
-          L = octave_matrix_t (n, n, total_len_l);
-          U = octave_matrix_t (n, n, total_len_u);
-        }
+        U_ptr->cidx (i) -= i;
+    }
 
-      for (i = 0; i <= n; i++)
+  for (i = 0; i < n; i++)
+    {
+      if (opt == ROW)
+        diag.elem (i,i) = data_u[uptr[i]];
+      j = cidx_l[i];
+
+      while (j < cidx_l[i+1])
         {
-          L_ptr->cidx (i) = cidx_l[i];
-          U_ptr->cidx (i) = cidx_u[i];
+          L_ptr->ridx (j) = ridx_l[j];
+          L_ptr->data (j) = data_l[j];
+          j++;
+        }
+      j = cidx_u[i];
+
+      while (j < cidx_u[i+1])
+        {
+          c = j;
           if (opt == ROW)
-            U_ptr->cidx (i) -= i;
-        }
-
-      for (i = 0; i < n; i++)
-        {
-          if (opt == ROW)
-            diag.elem (i,i) = data_u[uptr[i]];
-          j = cidx_l[i];
-
-          while (j < cidx_l[i+1])
             {
-              L_ptr->ridx (j) = ridx_l[j];
-              L_ptr->data (j) = data_l[j];
-              j++;
-            }
-          j = cidx_u[i];
-
-          while (j < cidx_u[i+1])
-            {
-              c = j;
-              if (opt == ROW)
+              // The diagonal is removed from L if milu = 'row'.
+              // That is because is convenient to have it inside
+              // the L part to carry out the process.
+              if (ridx_u[j] == i)
                 {
-                  // The diagonal is removed from L if milu = 'row'.
-                  // That is because is convenient to have it inside
-                  // the L part to carry out the process.
-                  if (ridx_u[j] == i)
-                    {
-                      j++;
-                      continue;
-                    }
-                  else
-                    c -= i;
+                  j++;
+                  continue;
                 }
-              U_ptr->data (c) = data_u[j];
-              U_ptr->ridx (c) = ridx_u[j];
-              j++;
+              else
+                c -= i;
             }
+          U_ptr->data (c) = data_u[j];
+          U_ptr->ridx (c) = ridx_u[j];
+          j++;
         }
+    }
 
-      if (opt == ROW)
-        {
-          U = U.transpose ();
-          // The diagonal, conveniently permuted is added to U
-          U += diag.index (idx_vector::colon, perm_vec);
-          L = L.transpose ();
-        }
+  if (opt == ROW)
+    {
+      U = U.transpose ();
+      // The diagonal, conveniently permuted is added to U
+      U += diag.index (idx_vector::colon, perm_vec);
+      L = L.transpose ();
     }
 }
 
@@ -1010,35 +998,32 @@ Undocumented internal function.\n\
       ilu_tp <SparseMatrix, double> (sm, L, U, nnz_u, nnz_l,
                                      rc_norm.fortran_vec (),
                                      perm, droptol, thresh, milu, udiag);
-      if (! error_state)
+      param_list.append (octave_value (L.cols ()));
+      SparseMatrix eye =
+        feval ("speye", param_list)(0).sparse_matrix_value ();
+      if (milu == "row")
         {
-          param_list.append (octave_value (L.cols ()));
-          SparseMatrix eye =
-            feval ("speye", param_list)(0).sparse_matrix_value ();
-          if (milu == "row")
+          if (nargout == 3)
             {
-              if (nargout == 3)
-                {
-                  retval(2) = eye.index (idx_vector::colon, perm);
-                  retval(1) = U.index (idx_vector::colon, perm);
-                }
-              else if (nargout == 2)
-                retval(1) = U;
-              retval(0) = L + eye;
+              retval(2) = eye.index (idx_vector::colon, perm);
+              retval(1) = U.index (idx_vector::colon, perm);
+            }
+          else if (nargout == 2)
+            retval(1) = U;
+          retval(0) = L + eye;
+        }
+      else
+        {
+          if (nargout == 3)
+            {
+              retval(2) = eye.index (perm, idx_vector::colon);
+              retval(1) = U;
+              retval(0) = L.index (perm, idx_vector::colon) + eye;
             }
           else
             {
-              if (nargout == 3)
-                {
-                  retval(2) = eye.index (perm, idx_vector::colon);
-                  retval(1) = U;
-                  retval(0) = L.index (perm, idx_vector::colon) + eye;
-                }
-              else
-                {
-                  retval(1) = U;
-                  retval(0) = L + eye.index (perm, idx_vector::colon);
-                }
+              retval(1) = U;
+              retval(0) = L + eye.index (perm, idx_vector::colon);
             }
         }
     }
@@ -1065,35 +1050,32 @@ Undocumented internal function.\n\
               (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
                Complex (droptol), Complex (thresh), milu, udiag);
 
-      if (! error_state)
+      param_list.append (octave_value (L.cols ()));
+      SparseComplexMatrix eye =
+        feval ("speye", param_list)(0).sparse_complex_matrix_value ();
+      if (milu == "row")
         {
-          param_list.append (octave_value (L.cols ()));
-          SparseComplexMatrix eye =
-            feval ("speye", param_list)(0).sparse_complex_matrix_value ();
-          if (milu == "row")
+          if (nargout == 3)
             {
-              if (nargout == 3)
-                {
-                  retval(2) = eye.index (idx_vector::colon, perm);
-                  retval(1) = U.index (idx_vector::colon, perm);
-                }
-              else if (nargout == 2)
-                retval(1) = U;
-              retval(0) = L + eye;
+              retval(2) = eye.index (idx_vector::colon, perm);
+              retval(1) = U.index (idx_vector::colon, perm);
+            }
+          else if (nargout == 2)
+            retval(1) = U;
+          retval(0) = L + eye;
+        }
+      else
+        {
+          if (nargout == 3)
+            {
+              retval(2) = eye.index (perm, idx_vector::colon);
+              retval(1) = U;
+              retval(0) = L.index (perm, idx_vector::colon) + eye;
             }
           else
             {
-              if (nargout == 3)
-                {
-                  retval(2) = eye.index (perm, idx_vector::colon);
-                  retval(1) = U;
-                  retval(0) = L.index (perm, idx_vector::colon) + eye;
-                }
-              else
-                {
-                  retval(1) = U;
-                  retval(0) = L + eye.index (perm, idx_vector::colon);
-                }
+              retval(1) = U;
+              retval(0) = L + eye.index (perm, idx_vector::colon);
             }
         }
     }

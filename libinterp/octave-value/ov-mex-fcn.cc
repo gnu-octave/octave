@@ -132,9 +132,6 @@ octave_mex_function::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (args.has_magic_colon ())
     error ("invalid use of colon in function argument list");
   else

@@ -527,8 +527,10 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       float *re = m.fortran_vec ();
       read_floats (is, re, static_cast<save_type> (tmp), dv.numel (),
                    swap, fmt);
-      if (error_state || ! is)
+
+      if (! is)
         return false;
+
       matrix = m;
     }
   else
@@ -545,8 +547,10 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       float *re = m.fortran_vec ();
       octave_idx_type len = nr * nc;
       read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
-      if (error_state || ! is)
+
+      if (! is)
         return false;
+
       matrix = m;
     }
   return true;
@@ -841,7 +845,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
     case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
-        return error_state ? octave_value () : str_conv.map (umap);
+        return str_conv.map (umap);
       }
 
     default:

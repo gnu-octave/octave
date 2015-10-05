@@ -212,7 +212,7 @@ typecast (@var{x}, \"uint8\")\n\
 
       std::string numclass = args(1).string_value ();
 
-      if (error_state || numclass.size () == 0)
+      if (numclass.size () == 0)
         ;
       else if (numclass == "char")
         retval = octave_value (reinterpret_copy<charNDArray>
@@ -253,7 +253,7 @@ typecast (@var{x}, \"uint8\")\n\
       else if (numclass == "double complex")
         retval = reinterpret_copy<ComplexNDArray> (data, byte_size, old_dims);
 
-      if (! error_state && retval.is_undefined ())
+      if (retval.is_undefined ())
         error ("typecast: cannot convert to %s class", numclass.c_str ());
     }
   else
@@ -347,7 +347,7 @@ column vector.\n\
 
       std::string numclass = args(1).string_value ();
 
-      if (error_state || numclass.size () == 0)
+      if (numclass.size () == 0)
         ;
       else if (numclass == "char")
         retval = octave_value (do_bitpack<charNDArray> (bitp), '\'');
@@ -382,7 +382,7 @@ column vector.\n\
       else if (numclass == "double complex")
         retval = do_bitpack<ComplexNDArray> (bitp);
 
-      if (! error_state && retval.is_undefined ())
+      if (retval.is_undefined ())
         error ("bitpack: cannot pack to %s class", numclass.c_str ());
     }
 

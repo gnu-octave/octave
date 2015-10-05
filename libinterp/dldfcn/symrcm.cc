@@ -469,9 +469,6 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       ridx = Ac.xridx ();
     }
 
-  if (error_state)
-    return retval;
-
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
 

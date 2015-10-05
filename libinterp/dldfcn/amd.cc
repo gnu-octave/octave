@@ -133,67 +133,66 @@ The author of the code itself is Timothy A. Davis\n\
       if (!error_state && n_row != n_col)
         error ("amd: matrix S must be square");
 
-      if (!error_state)
+      OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
+      AMD_NAME (_defaults) (Control) ;
+      if (nargin > 1)
         {
-          OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
-          AMD_NAME (_defaults) (Control) ;
-          if (nargin > 1)
-            {
-              octave_scalar_map arg1 = args(1).scalar_map_value ();
-
-              if (!error_state)
-                {
-                  octave_value tmp;
-
-                  tmp = arg1.getfield ("dense");
-                  if (tmp.is_defined ())
-                    Control[AMD_DENSE] = tmp.double_value ();
-
-                  tmp = arg1.getfield ("aggressive");
-                  if (tmp.is_defined ())
-                    Control[AMD_AGGRESSIVE] = tmp.double_value ();
-                }
-              else
-                error ("amd: OPTS argument must be a scalar structure");
-            }
+          octave_scalar_map arg1 = args(1).scalar_map_value ();
 
           if (!error_state)
             {
-              OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
-              Matrix xinfo (AMD_INFO, 1);
-              double *Info = xinfo.fortran_vec ();
+              octave_value tmp;
 
-              // FIXME: how can we manage the memory allocation of amd
-              //        in a cleaner manner?
-              SUITESPARSE_ASSIGN_FPTR (malloc_func, amd_malloc, malloc);
-              SUITESPARSE_ASSIGN_FPTR (free_func, amd_free, free);
-              SUITESPARSE_ASSIGN_FPTR (calloc_func, amd_calloc, calloc);
-              SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
-              SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
+              tmp = arg1.getfield ("dense");
+              if (tmp.is_defined ())
+                Control[AMD_DENSE] = tmp.double_value ();
 
-              octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
-                                                          Control, Info);
+              tmp = arg1.getfield ("aggressive");
+              if (tmp.is_defined ())
+                Control[AMD_AGGRESSIVE] = tmp.double_value ();
+            }
+          else
+            error ("amd: OPTS argument must be a scalar structure");
+        }
 
-              switch (result)
-                {
-                case AMD_OUT_OF_MEMORY:
-                  error ("amd: out of memory");
-                  break;
-                case AMD_INVALID:
-                  error ("amd: matrix S is corrupted");
-                  break;
-                default:
-                  {
-                    if (nargout > 1)
-                      retval(1) = xinfo;
+      if (!error_state)
+        {
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
+          Matrix xinfo (AMD_INFO, 1);
+          double *Info = xinfo.fortran_vec ();
 
-                    Matrix Pout (1, n_col);
-                    for (octave_idx_type i = 0; i < n_col; i++)
-                      Pout.xelem (i) = P[i] + 1;
+          // FIXME: how can we manage the memory allocation of amd
+          //        in a cleaner manner?
+          SUITESPARSE_ASSIGN_FPTR (malloc_func, amd_malloc, malloc);
+          SUITESPARSE_ASSIGN_FPTR (free_func, amd_free, free);
+          SUITESPARSE_ASSIGN_FPTR (calloc_func, amd_calloc, calloc);
+          SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
+          SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
-                    retval(0) = Pout;
-                  }
-                }
+          octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
+                                                      Control, Info);
+
+          switch (result)
+            {
+            case AMD_OUT_OF_MEMORY:
+              error ("amd: out of memory");
+              break;
+
+            case AMD_INVALID:
+              error ("amd: matrix S is corrupted");
+              break;
+
+            default:
+              {
+                if (nargout > 1)
+                  retval(1) = xinfo;
+
+                Matrix Pout (1, n_col);
+                for (octave_idx_type i = 0; i < n_col; i++)
+                  Pout.xelem (i) = P[i] + 1;
+
+                retval(0) = Pout;
+              }
             }
         }
     }

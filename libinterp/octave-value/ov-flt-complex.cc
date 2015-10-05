@@ -287,7 +287,8 @@ octave_float_complex::load_binary (std::istream& is, bool swap,
   FloatComplex ctmp;
   read_floats (is, reinterpret_cast<float *> (&ctmp),
                static_cast<save_type> (tmp), 2, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
 
   scalar = ctmp;

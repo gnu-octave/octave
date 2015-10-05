@@ -218,8 +218,10 @@ octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   octave_idx_type len = m.length ();
   read_doubles (is, reinterpret_cast<double *> (im),
                 static_cast<save_type> (tmp), 2 * len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;

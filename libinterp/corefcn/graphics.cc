@@ -862,8 +862,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
     {
       Matrix _cmap = fig.get (caseless_str ("colormap")).matrix_value ();
 
-      if (! error_state)
-        cmap = _cmap;
+      cmap = _cmap;
     }
 
   if (is_scaled)
@@ -874,8 +873,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
         {
           Matrix _clim = ax.get (caseless_str ("clim")).matrix_value ();
 
-          if (! error_state)
-            clim = _clim;
+          clim = _clim;
         }
     }
 
@@ -1093,7 +1091,7 @@ base_property::set (const octave_value& v, bool do_run, bool do_notify_toolkit)
         }
 
       // run listeners
-      if (do_run && ! error_state)
+      if (do_run)
         run_listeners (POSTSET);
 
       return true;
@@ -1109,12 +1107,7 @@ base_property::run_listeners (listener_mode mode)
   const octave_value_list& l = listeners[mode];
 
   for (int i = 0; i < l.length (); i++)
-    {
-      gh_manager::execute_listener (parent, l(i));
-
-      if (error_state)
-        break;
-    }
+    gh_manager::execute_listener (parent, l(i));
 }
 
 radio_values::radio_values (const std::string& opt_string)
@@ -1261,6 +1254,7 @@ color_property::do_set (const octave_value& val)
           else
             {
               color_values col (s);
+
               if (! error_state)
                 {
                   if (current_type != color_t || col != color_val)
@@ -1286,14 +1280,12 @@ color_property::do_set (const octave_value& val)
       if (m.numel () == 3)
         {
           color_values col (m(0), m(1), m(2));
-          if (! error_state)
+
+          if (current_type != color_t || col != color_val)
             {
-              if (current_type != color_t || col != color_val)
-                {
-                  color_val = col;
-                  current_type = color_t;
-                  return true;
-                }
+              color_val = col;
+              current_type = color_t;
+              return true;
             }
         }
       else
@@ -1666,8 +1658,7 @@ property::create (const std::string& name, const graphics_handle& h,
     {
       std::string sv = (args.length () > 0 ? args(0).string_value () : "");
 
-      if (! error_state)
-        retval = property (new string_property (name, h, sv));
+      retval = property (new string_property (name, h, sv));
     }
   else if (type.compare ("any"))
     {
@@ -1699,19 +1690,15 @@ property::create (const std::string& name, const graphics_handle& h,
     {
       double dv = (args.length () > 0 ? args(0).double_value () : 0.0);
 
-      if (! error_state)
-        retval = property (new double_property (name, h, dv));
+      retval = property (new double_property (name, h, dv));
     }
   else if (type.compare ("handle"))
     {
       double hv = (args.length () > 0 ? args(0).double_value () : octave_NaN);
 
-      if (! error_state)
-        {
-          graphics_handle gh (hv);
+      graphics_handle gh (hv);
 
-          retval = property (new handle_property (name, h, gh));
-        }
+      retval = property (new handle_property (name, h, gh));
     }
   else if (type.compare ("boolean"))
     {
@@ -1739,18 +1726,12 @@ property::create (const std::string& name, const graphics_handle& h,
       if (args.length () > 1)
         rv = radio_values (args(1).string_value ());
 
-      if (! error_state)
-        {
-          retval = property (new color_property (name, h, cv, rv));
+      retval = property (new color_property (name, h, cv, rv));
 
-          if (! error_state)
-            {
-              if (args.length () > 0 && ! args(0).is_empty ())
-                retval.set (args(0));
-              else
-                retval.set (rv.default_value ());
-            }
-        }
+      if (args.length () > 0 && ! args(0).is_empty ())
+        retval.set (args(0));
+      else
+        retval.set (rv.default_value ());
     }
   else
     {
@@ -1782,16 +1763,13 @@ property::create (const std::string& name, const graphics_handle& h,
             {
               property prop = go.get_properties ().get_property (go_rest);
 
-              if (! error_state)
-                {
-                  retval = prop.clone ();
+              retval = prop.clone ();
 
-                  retval.set_parent (h);
-                  retval.set_name (name);
+              retval.set_parent (h);
+              retval.set_name (name);
 
-                  if (args.length () > 0)
-                    retval.set (args(0));
-                }
+              if (args.length () > 0)
+                retval.set (args(0));
             }
           else
             error ("addproperty: invalid object type (= %s)",
@@ -1856,59 +1834,56 @@ figure::properties::set_toolkit (const graphics_toolkit& b)
 void
 figure::properties::set___mouse_mode__ (const octave_value& val_arg)
 {
-  if (! error_state)
+  std::string direction = "in";
+
+  octave_value val = val_arg;
+
+  if (val.is_string ())
     {
-      std::string direction = "in";
+      std::string modestr = val.string_value ();
 
-      octave_value val = val_arg;
-
-      if (val.is_string ())
+      if (modestr == "zoom in")
         {
-          std::string modestr = val.string_value ();
+          val = modestr = "zoom";
+          direction = "in";
+        }
+      else if (modestr == "zoom out")
+        {
+          val = modestr = "zoom";
+          direction = "out";
+        }
 
-          if (modestr == "zoom in")
+      if (__mouse_mode__.set (val, true))
+        {
+          std::string mode = __mouse_mode__.current_value ();
+
+          octave_scalar_map pm = get___pan_mode__ ().scalar_map_value ();
+          pm.setfield ("Enable", mode == "pan" ? "on" : "off");
+          set___pan_mode__ (pm);
+
+          octave_scalar_map rm = get___rotate_mode__ ().scalar_map_value ();
+          rm.setfield ("Enable", mode == "rotate" ? "on" : "off");
+          set___rotate_mode__ (rm);
+
+          octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
+          zm.setfield ("Enable", mode == "zoom" ? "on" : "off");
+          zm.setfield ("Direction", direction);
+          set___zoom_mode__ (zm);
+
+          mark_modified ();
+        }
+      else if (modestr == "zoom")
+        {
+          octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
+          std::string curr_direction
+            = zm.getfield ("Direction").string_value ();
+
+          if (direction != curr_direction)
             {
-              val = modestr = "zoom";
-              direction = "in";
-            }
-          else if (modestr == "zoom out")
-            {
-              val = modestr = "zoom";
-              direction = "out";
-            }
-
-          if (__mouse_mode__.set (val, true))
-            {
-              std::string mode = __mouse_mode__.current_value ();
-
-              octave_scalar_map pm = get___pan_mode__ ().scalar_map_value ();
-              pm.setfield ("Enable", mode == "pan" ? "on" : "off");
-              set___pan_mode__ (pm);
-
-              octave_scalar_map rm = get___rotate_mode__ ().scalar_map_value ();
-              rm.setfield ("Enable", mode == "rotate" ? "on" : "off");
-              set___rotate_mode__ (rm);
-
-              octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
-              zm.setfield ("Enable", mode == "zoom" ? "on" : "off");
               zm.setfield ("Direction", direction);
               set___zoom_mode__ (zm);
 
               mark_modified ();
-            }
-          else if (modestr == "zoom")
-            {
-              octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
-              std::string curr_direction
-                = zm.getfield ("Direction").string_value ();
-
-              if (direction != curr_direction)
-                {
-                  zm.setfield ("Direction", direction);
-                  set___zoom_mode__ (zm);
-
-                  mark_modified ();
-                }
             }
         }
     }
@@ -2049,7 +2024,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
         }
     }
 
-  if (! error_state && offset == 0)
+  if (offset == 0)
     error ("invalid default property specification");
 }
 
@@ -2188,9 +2163,6 @@ graphics_object::set (const octave_value_list& args)
               octave_value val = args(i+1);
 
               set_value_or_default (pname, val);
-
-              if (error_state)
-                break;
             }
           else
             error ("set: expecting argument %d to be a property name", i);
@@ -2230,9 +2202,6 @@ graphics_object::set (const Array<std::string>& pnames,
       octave_value val  = values(row, column);
 
       set_value_or_default (pname, val);
-
-      if (error_state)
-        break;
     }
 }
 
@@ -2295,9 +2264,6 @@ graphics_object::set (const octave_map& m)
       octave_value val = octave_value (m.contents (pname).elem (m.numel () - 1));
 
       set_value_or_default (pname, val);
-
-      if (error_state)
-        break;
     }
 }
 
@@ -2398,17 +2364,11 @@ graphics_object::set_value_or_default (const caseless_str& pname,
         {
           default_val = get_default (pname);
 
-          if (error_state)
-            return;
-
           rep->set (pname, default_val);
         }
       else if (sval.compare ("factory") == 0)
         {
           default_val = get_factory_default (pname);
-
-          if (error_state)
-            return;
 
           rep->set (pname, default_val);
         }
@@ -2794,15 +2754,12 @@ is_handle (const octave_value& val)
     {
       const NDArray handles = val.array_value ();
 
-      if (! error_state)
-        {
-          boolNDArray result (handles.dims ());
+      boolNDArray result (handles.dims ());
 
-          for (octave_idx_type i = 0; i < handles.numel (); i++)
-            result.xelem (i) = is_handle (handles(i));
+      for (octave_idx_type i = 0; i < handles.numel (); i++)
+        result.xelem (i) = is_handle (handles(i));
 
-          retval = result;
-        }
+      retval = result;
     }
 
   return retval;
@@ -3005,12 +2962,9 @@ base_properties::set_dynamic (const caseless_str& pname,
   else
     error ("set: unknown property \"%s\"", pname.c_str ());
 
-  if (! error_state)
-    {
-      dynamic_properties.insert (pname);
+  dynamic_properties.insert (pname);
 
-      mark_modified ();
-    }
+  mark_modified ();
 }
 
 property
@@ -3189,7 +3143,7 @@ base_properties::add_listener (const caseless_str& pname,
 {
   property p = get_property (pname);
 
-  if (! error_state && p.ok ())
+  if (p.ok ())
     p.add_listener (val, mode);
 }
 
@@ -3200,7 +3154,7 @@ base_properties::delete_listener (const caseless_str& pname,
 {
   property p = get_property (pname);
 
-  if (! error_state && p.ok ())
+  if (p.ok ())
     p.delete_listener (val, mode);
 }
 
@@ -3248,7 +3202,6 @@ base_graphics_object::remove_all_listeners (void)
 
       unwind_protect frame;
 
-      frame.protect_var (error_state);
       frame.protect_var (discard_error_messages);
       frame.protect_var (Vdebug_on_error);
       frame.protect_var (Vdebug_on_warning);
@@ -3259,7 +3212,7 @@ base_graphics_object::remove_all_listeners (void)
 
       property p = get_properties ().get_property (pa->first);
 
-      if (! error_state && p.ok ())
+      if (p.ok ())
         p.delete_listener ();
     }
 }
@@ -3444,9 +3397,6 @@ root_figure::properties::set_callbackobject (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (error_state)
-    return;
-
   if (xisnan (val.value ()))
     {
       if (! cbo_stack.empty ())
@@ -3474,9 +3424,6 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (error_state)
-    return;
-
   if (xisnan (val.value ()) || is_handle (val))
     {
       currentfigure = val;
@@ -3491,44 +3438,41 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 void
 figure::properties::set_integerhandle (const octave_value& val)
 {
-  if (! error_state)
+  if (integerhandle.set (val, true))
     {
-      if (integerhandle.set (val, true))
+      bool int_fig_handle = integerhandle.is_on ();
+
+      graphics_object this_go = gh_manager::get_object (__myhandle__);
+
+      graphics_handle old_myhandle = __myhandle__;
+
+      __myhandle__ = gh_manager::get_handle (int_fig_handle);
+
+      gh_manager::renumber_figure (old_myhandle, __myhandle__);
+
+      graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+      base_properties& props = parent_go.get_properties ();
+
+      props.renumber_child (old_myhandle, __myhandle__);
+
+      Matrix kids = get_children ();
+
+      for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
-          bool int_fig_handle = integerhandle.is_on ();
+          graphics_object kid = gh_manager::get_object (kids(i));
 
-          graphics_object this_go = gh_manager::get_object (__myhandle__);
-
-          graphics_handle old_myhandle = __myhandle__;
-
-          __myhandle__ = gh_manager::get_handle (int_fig_handle);
-
-          gh_manager::renumber_figure (old_myhandle, __myhandle__);
-
-          graphics_object parent_go = gh_manager::get_object (get_parent ());
-
-          base_properties& props = parent_go.get_properties ();
-
-          props.renumber_child (old_myhandle, __myhandle__);
-
-          Matrix kids = get_children ();
-
-          for (octave_idx_type i = 0; i < kids.numel (); i++)
-            {
-              graphics_object kid = gh_manager::get_object (kids(i));
-
-              kid.get_properties ().renumber_parent (__myhandle__);
-            }
-
-          graphics_handle cf = gh_manager::current_figure ();
-
-          if (__myhandle__ == cf)
-            xset (0, "currentfigure", __myhandle__.value ());
-
-          this_go.update (integerhandle.get_id ());
-
-          mark_modified ();
+          kid.get_properties ().renumber_parent (__myhandle__);
         }
+
+      graphics_handle cf = gh_manager::current_figure ();
+
+      if (__myhandle__ == cf)
+        xset (0, "currentfigure", __myhandle__.value ());
+
+      this_go.update (integerhandle.get_id ());
+
+      mark_modified ();
     }
 }
 
@@ -3640,9 +3584,6 @@ figure::properties::set_currentaxes (const octave_value& val)
 {
   graphics_handle hax (val);
 
-  if (error_state)
-    return;
-
   if (xisnan (hax.value ()) || is_handle (hax))
     currentaxes = hax;
   else
@@ -3714,13 +3655,10 @@ figure::properties::set_visible (const octave_value& val)
 {
   std::string sval = val.string_value ();
 
-  if (! error_state)
-    {
-      if (sval == "on")
-        xset (0, "currentfigure", __myhandle__.value ());
+  if (sval == "on")
+    xset (0, "currentfigure", __myhandle__.value ());
 
-      visible = val;
-    }
+  visible = val;
 }
 
 Matrix
@@ -3796,68 +3734,55 @@ void
 figure::properties::set_position (const octave_value& v,
                                   bool do_notify_toolkit)
 {
-  if (! error_state)
+  Matrix old_bb, new_bb;
+  bool modified = false;
+
+  old_bb = get_boundingbox (true);
+  modified = position.set (v, false, do_notify_toolkit);
+  new_bb = get_boundingbox (true);
+
+  if (old_bb != new_bb)
     {
-      Matrix old_bb, new_bb;
-      bool modified = false;
-
-      old_bb = get_boundingbox (true);
-      modified = position.set (v, false, do_notify_toolkit);
-      new_bb = get_boundingbox (true);
-
-      if (old_bb != new_bb)
+      if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
-          if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
-            {
-              execute_resizefcn ();
-              update_boundingbox ();
-            }
+          execute_resizefcn ();
+          update_boundingbox ();
         }
-
-      if (modified)
-        {
-          position.run_listeners (POSTSET);
-          mark_modified ();
-        }
-
-      if (paperpositionmode.is ("auto"))
-        paperposition.set (get_auto_paperposition ());
     }
+
+  if (modified)
+    {
+      position.run_listeners (POSTSET);
+      mark_modified ();
+    }
+
+  if (paperpositionmode.is ("auto"))
+    paperposition.set (get_auto_paperposition ());
 }
 
 void
 figure::properties::set_outerposition (const octave_value& v,
                                        bool do_notify_toolkit)
 {
-  if (! error_state)
-    {
-      if (outerposition.set (v, true, do_notify_toolkit))
-        {
-          mark_modified ();
-        }
-    }
+  if (outerposition.set (v, true, do_notify_toolkit))
+    mark_modified ();
 }
 
 void
 figure::properties::set_paperunits (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str punits = val.string_value ();
+  caseless_str ptype = get_papertype ();
+
+  if (punits.compare ("normalized") && ptype.compare ("<custom>"))
+    error ("set: can't set paperunits to normalized when papertype is custom");
+  else
     {
-      caseless_str punits = val.string_value ();
-      caseless_str ptype = get_papertype ();
-      if (! error_state)
+      caseless_str old_paperunits = get_paperunits ();
+      if (paperunits.set (val, true))
         {
-          if (punits.compare ("normalized") && ptype.compare ("<custom>"))
-            error ("set: can't set paperunits to normalized when papertype is custom");
-          else
-            {
-              caseless_str old_paperunits = get_paperunits ();
-              if (paperunits.set (val, true))
-                {
-                  update_paperunits (old_paperunits);
-                  mark_modified ();
-                }
-            }
+          update_paperunits (old_paperunits);
+          mark_modified ();
         }
     }
 }
@@ -3865,22 +3790,17 @@ figure::properties::set_paperunits (const octave_value& val)
 void
 figure::properties::set_papertype (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str ptype = val.string_value ();
+  caseless_str punits = get_paperunits ();
+
+  if (punits.compare ("normalized") && ptype.compare ("<custom>"))
+    error ("set: can't set paperunits to normalized when papertype is custom");
+  else
     {
-      caseless_str ptype = val.string_value ();
-      caseless_str punits = get_paperunits ();
-      if (! error_state)
+      if (papertype.set (val, true))
         {
-          if (punits.compare ("normalized") && ptype.compare ("<custom>"))
-            error ("set: can't set paperunits to normalized when papertype is custom");
-          else
-            {
-              if (papertype.set (val, true))
-                {
-                  update_papertype ();
-                  mark_modified ();
-                }
-            }
+          update_papertype ();
+          mark_modified ();
         }
     }
 }
@@ -4450,14 +4370,12 @@ figure::properties::update_paperorientation (void)
 void
 figure::properties::set_units (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_units = get_units ();
+
+  if (units.set (val, true))
     {
-      caseless_str old_units = get_units ();
-      if (units.set (val, true))
-        {
-          update_units (old_units);
-          mark_modified ();
-        }
+      update_units (old_units);
+      mark_modified ();
     }
 }
 
@@ -4774,18 +4692,15 @@ axes::properties::set_text_child (handle_property& hp,
              who.c_str (), cname.c_str ());
     }
 
-  if (! error_state)
-    {
-      xset (val, "handlevisibility", "off");
+  xset (val, "handlevisibility", "off");
 
-      gh_manager::free (hp.handle_value ());
+  gh_manager::free (hp.handle_value ());
 
-      base_properties::remove_child (hp.handle_value ());
+  base_properties::remove_child (hp.handle_value ());
 
-      hp = val;
+  hp = val;
 
-      adopt (hp.handle_value ());
-    }
+  adopt (hp.handle_value ());
 }
 
 void
@@ -6459,55 +6374,46 @@ convert_ticklabel_string (const octave_value& val)
 void
 axes::properties::set_xticklabel (const octave_value& val)
 {
-  if (! error_state)
+  if (xticklabel.set (convert_ticklabel_string (val), false))
     {
-      if (xticklabel.set (convert_ticklabel_string (val), false))
-        {
-          set_xticklabelmode ("manual");
-          xticklabel.run_listeners (POSTSET);
-          mark_modified ();
-        }
-      else
-        set_xticklabelmode ("manual");
-
-      sync_positions ();
+      set_xticklabelmode ("manual");
+      xticklabel.run_listeners (POSTSET);
+      mark_modified ();
     }
+  else
+    set_xticklabelmode ("manual");
+
+  sync_positions ();
 }
 
 void
 axes::properties::set_yticklabel (const octave_value& val)
 {
-  if (! error_state)
+  if (yticklabel.set (convert_ticklabel_string (val), false))
     {
-      if (yticklabel.set (convert_ticklabel_string (val), false))
-        {
-          set_yticklabelmode ("manual");
-          yticklabel.run_listeners (POSTSET);
-          mark_modified ();
-        }
-      else
-        set_yticklabelmode ("manual");
-
-      sync_positions ();
+      set_yticklabelmode ("manual");
+      yticklabel.run_listeners (POSTSET);
+      mark_modified ();
     }
+  else
+    set_yticklabelmode ("manual");
+
+  sync_positions ();
 }
 
 void
 axes::properties::set_zticklabel (const octave_value& val)
 {
-  if (! error_state)
+  if (zticklabel.set (convert_ticklabel_string (val), false))
     {
-      if (zticklabel.set (convert_ticklabel_string (val), false))
-        {
-          set_zticklabelmode ("manual");
-          zticklabel.run_listeners (POSTSET);
-          mark_modified ();
-        }
-      else
-        set_zticklabelmode ("manual");
-
-      sync_positions ();
+      set_zticklabelmode ("manual");
+      zticklabel.run_listeners (POSTSET);
+      mark_modified ();
     }
+  else
+    set_zticklabelmode ("manual");
+
+  sync_positions ();
 }
 
 // Almost identical to convert_ticklabel_string but it only accepts
@@ -6554,23 +6460,18 @@ convert_linestyleorder_string (const octave_value& val)
 void
 axes::properties::set_linestyleorder (const octave_value& val)
 {
-  if (! error_state)
-    {
-      linestyleorder.set (convert_linestyleorder_string (val), false);
-    }
+  linestyleorder.set (convert_linestyleorder_string (val), false);
 }
 
 void
 axes::properties::set_units (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_units = get_units ();
+
+  if (units.set (val, true))
     {
-      caseless_str old_units = get_units ();
-      if (units.set (val, true))
-        {
-          update_units (old_units);
-          mark_modified ();
-        }
+      update_units (old_units);
+      mark_modified ();
     }
 }
 
@@ -6602,14 +6503,12 @@ axes::properties::update_units (const caseless_str& old_units)
 void
 axes::properties::set_fontunits (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
     {
-      caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (val, true))
-        {
-          update_fontunits (old_fontunits);
-          mark_modified ();
-        }
+      update_fontunits (old_fontunits);
+      mark_modified ();
     }
 }
 
@@ -6726,7 +6625,7 @@ check_limit_vals (double& min_val, double& max_val,
     {
       Matrix m = data.matrix_value ();
 
-      if (! error_state && m.numel () == 4)
+      if (m.numel () == 4)
         {
           double val;
 
@@ -8032,14 +7931,12 @@ text::properties::get_extent (void) const
 void
 text::properties::set_fontunits (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
     {
-      caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (val, true))
-        {
-          update_fontunits (old_fontunits);
-          mark_modified ();
-        }
+      update_fontunits (old_fontunits);
+      mark_modified ();
     }
 }
 
@@ -8885,14 +8782,12 @@ uicontrol::properties::get_boundingbox (bool,
 void
 uicontrol::properties::set_fontunits (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
     {
-      caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (val, true))
-        {
-          update_fontunits (old_fontunits);
-          mark_modified ();
-        }
+      update_fontunits (old_fontunits);
+      mark_modified ();
     }
 }
 
@@ -8994,14 +8889,12 @@ uipanel::properties::get_boundingbox (bool internal,
 void
 uipanel::properties::set_units (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_units = get_units ();
+
+  if (units.set (val, true))
     {
-      caseless_str old_units = get_units ();
-      if (units.set (val, true))
-        {
-          update_units (old_units);
-          mark_modified ();
-        }
+      update_units (old_units);
+      mark_modified ();
     }
 }
 
@@ -9021,14 +8914,12 @@ uipanel::properties::update_units (const caseless_str& old_units)
 void
 uipanel::properties::set_fontunits (const octave_value& val)
 {
-  if (! error_state)
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
     {
-      caseless_str old_fontunits = get_fontunits ();
-      if (fontunits.set (val, true))
-        {
-          update_fontunits (old_fontunits);
-          mark_modified ();
-        }
+      update_fontunits (old_fontunits);
+      mark_modified ();
     }
 }
 
@@ -9460,11 +9351,9 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           Cell c = cb.cell_value ();
 
           fcn = c(0).function_value ();
-          if (! error_state)
-            {
-              for (int i = 1; i < c.numel () ; i++)
-                args(1+i) = c(i);
-            }
+
+          for (int i = 1; i < c.numel () ; i++)
+            args(1+i) = c(i);
         }
       else
         {
@@ -9473,7 +9362,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
                  nm.c_str ());
         }
 
-      if (fcn && ! error_state)
+      if (fcn)
         feval (fcn, args);
 
       END_INTERRUPT_WITH_EXCEPTIONS;
@@ -9704,15 +9593,12 @@ is_handle_visible (const octave_value& val)
     {
       const NDArray handles = val.array_value ();
 
-      if (! error_state)
-        {
-          boolNDArray result (handles.dims ());
+      boolNDArray result (handles.dims ());
 
-          for (octave_idx_type i = 0; i < handles.numel (); i++)
-            result.xelem (i) = is_handle_visible (handles(i));
+      for (octave_idx_type i = 0; i < handles.numel (); i++)
+        result.xelem (i) = is_handle_visible (handles(i));
 
-          retval = result;
-        }
+      retval = result;
     }
 
   return retval;
@@ -9758,15 +9644,11 @@ each individual object will be reset.\n\
       // get vector of graphics handles
       ColumnVector hcv (args(0).vector_value ());
 
-      if (! error_state)
-        {
-          // loop over graphics objects
-          for (octave_idx_type n = 0; n < hcv.numel (); n++)
-            gh_manager::get_object (hcv(n)).reset_default_properties ();
+      // loop over graphics objects
+      for (octave_idx_type n = 0; n < hcv.numel (); n++)
+        gh_manager::get_object (hcv(n)).reset_default_properties ();
 
-          if (! error_state)
-            Fdrawnow ();
-        }
+      Fdrawnow ();
     }
 
   return octave_value ();
@@ -10026,8 +9908,8 @@ being @qcode{\"portrait\"}.\n\
                           else
                             {
                               std::string s = go.value_as_string (property);
-                              if (! error_state)
-                                octave_stdout << s;
+
+                              octave_stdout << s;
                             }
                         }
                       else
@@ -10043,8 +9925,8 @@ being @qcode{\"portrait\"}.\n\
                       else
                         {
                           std::string s = go.values_as_string ();
-                          if (! error_state)
-                            octave_stdout << s;
+
+                          octave_stdout << s;
                         }
                     }
                   else
@@ -10059,13 +9941,10 @@ being @qcode{\"portrait\"}.\n\
                   break;
                 }
 
-              if (error_state)
-                break;
-
               request_drawnow = true;
             }
 
-          if (! error_state && request_drawnow)
+          if (request_drawnow)
             Vdrawnow_requested = true;
         }
       else
@@ -10134,97 +10013,82 @@ lists respectively.\n\
             {
               std::string typ0 = get_graphics_object_type (hcv(0));
 
-              if (! error_state)
+              for (octave_idx_type n = 1; n < len; n++)
                 {
-                  for (octave_idx_type n = 1; n < len; n++)
+                  std::string typ = get_graphics_object_type (hcv(n));
+
+                  if (typ != typ0)
                     {
-                      std::string typ = get_graphics_object_type (hcv(n));
-
-                      if (error_state)
-                        break;
-
-                      if (typ != typ0)
-                        {
-                          error ("get: vector of handles must all have same type");
-                          break;
-                        }
+                      error ("get: vector of handles must all have same type");
+                      break;
                     }
-
                 }
             }
 
-          if (! error_state)
+          if (nargin > 1 && args(1).is_cellstr ())
             {
-              if (nargin > 1 && args(1).is_cellstr ())
+              Array<std::string> plist = args(1).cellstr_value ();
+
+              if (! error_state)
                 {
-                  Array<std::string> plist = args(1).cellstr_value ();
+                  octave_idx_type plen = plist.numel ();
 
-                  if (! error_state)
+                  use_cell_format = true;
+
+                  vals.resize (dim_vector (len, plen));
+
+                  for (octave_idx_type n = 0; n < len; n++)
                     {
-                      octave_idx_type plen = plist.numel ();
+                      graphics_object go = gh_manager::get_object (hcv(n));
 
-                      use_cell_format = true;
-
-                      vals.resize (dim_vector (len, plen));
-
-                      for (octave_idx_type n = 0; ! error_state && n < len; n++)
+                      if (go)
                         {
-                          graphics_object go = gh_manager::get_object (hcv(n));
-
-                          if (go)
+                          for (octave_idx_type m = 0; m < plen; m++)
                             {
-                              for (octave_idx_type m = 0;
-                                   ! error_state && m < plen;
-                                   m++)
-                                {
-                                  caseless_str property = plist(m);
+                              caseless_str property = plist(m);
 
-                                  vals(n, m) = go.get (property);
-                                }
-                            }
-                          else
-                            {
-                              error ("get: invalid handle (= %g)", hcv(n));
-                              break;
+                              vals(n, m) = go.get (property);
                             }
                         }
+                      else
+                        {
+                          error ("get: invalid handle (= %g)", hcv(n));
+                          break;
+                        }
                     }
-                  else
-                    error ("get: expecting property name or cell array of property names as second argument");
                 }
               else
+                error ("get: expecting property name or cell array of property names as second argument");
+            }
+          else
+            {
+              caseless_str property;
+
+              if (nargin > 1)
                 {
-                  caseless_str property;
+                  property = args(1).string_value ();
 
-                  if (nargin > 1)
+                  if (error_state)
+                    error ("get: expecting property name or cell array of property names as second argument");
+                }
+
+              vals.resize (dim_vector (len, 1));
+
+              for (octave_idx_type n = 0; n < len; n++)
+                {
+                  graphics_object go = gh_manager::get_object (hcv(n));
+
+                  if (go)
                     {
-                      property = args(1).string_value ();
-
-                      if (error_state)
-                        error ("get: expecting property name or cell array of property names as second argument");
+                      if (nargin == 1)
+                        vals(n) = go.get ();
+                      else
+                        vals(n) = go.get (property);
                     }
-
-                  vals.resize (dim_vector (len, 1));
-
-                  if (! error_state)
+                  else
                     {
-                      for (octave_idx_type n = 0; ! error_state && n < len; n++)
-                        {
-                          graphics_object go = gh_manager::get_object (hcv(n));
-
-                          if (go)
-                            {
-                              if (nargin == 1)
-                                vals(n) = go.get ();
-                              else
-                                vals(n) = go.get (property);
-                            }
-                          else
-                            {
-                              error ("get: invalid handle (= %g)", hcv(n));
-                              break;
-                            }
-                        }
+                      error ("get: invalid handle (= %g)", hcv(n));
+                      break;
                     }
                 }
             }
@@ -10235,30 +10099,27 @@ lists respectively.\n\
   else
     print_usage ();
 
-  if (! error_state)
+  if (use_cell_format)
+    retval = vals;
+  else
     {
-      if (use_cell_format)
-        retval = vals;
-      else
+      octave_idx_type len = vals.numel ();
+
+      if (len == 0)
+        retval = Matrix ();
+      else if (len == 1)
+        retval = vals(0);
+      else if (len > 1 && nargin == 1)
         {
-          octave_idx_type len = vals.numel ();
+          OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
 
-          if (len == 0)
-            retval = Matrix ();
-          else if (len == 1)
-            retval = vals(0);
-          else if (len > 1 && nargin == 1)
-            {
-              OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
+          for (octave_idx_type n = 0; n < len; n++)
+            tmp[n] = vals(n).scalar_map_value ();
 
-              for (octave_idx_type n = 0; n < len; n++)
-                tmp[n] = vals(n).scalar_map_value ();
-
-              retval = octave_map::cat (0, len, tmp);
-            }
-          else
-            retval = vals;
+          retval = octave_map::cat (0, len, tmp);
         }
+      else
+        retval = vals;
     }
 
   return retval;
@@ -10315,15 +10176,12 @@ Undocumented internal function.\n\
   else
     print_usage ();
 
-  if (! error_state)
-    {
-      octave_idx_type len = vals.numel ();
+  octave_idx_type len = vals.numel ();
 
-      if (len > 1)
-        retval = vals;
-      else if (len == 1)
-        retval = vals(0);
-    }
+  if (len > 1)
+    retval = vals;
+  else if (len == 1)
+    retval = vals(0);
 
   return retval;
 }
@@ -10348,18 +10206,15 @@ make_graphics_object (const std::string& go_name,
           {
             val = xargs(i+1).double_value ();
 
-            if (! error_state)
-              {
-                xargs = xargs.splice (i, 2);
-                break;
-              }
+            xargs = xargs.splice (i, 2);
+            break;
           }
         else
           error ("__go_%s__: missing value for parent property",
                  go_name.c_str ());
       }
 
-  if (! error_state && xisnan (val))
+  if (xisnan (val))
     val = args(0).double_value ();
 
   if (! error_state)
@@ -10383,8 +10238,7 @@ make_graphics_object (const std::string& go_name,
 
               retval = h.value ();
 
-              if (! error_state)
-                Vdrawnow_requested = true;
+              Vdrawnow_requested = true;
             }
           else
             error ("__go%s__: unable to create graphics handle",
@@ -10444,13 +10298,11 @@ Undocumented internal function.\n\
                             {
                               std::string pval = xargs(i+1).string_value ();
 
-                              if (! error_state)
-                                {
-                                  caseless_str on ("on");
-                                  int_fig_handle = on.compare (pval);
-                                  xargs = xargs.splice (i, 2);
-                                  break;
-                                }
+                              caseless_str on ("on");
+                              int_fig_handle = on.compare (pval);
+                              xargs = xargs.splice (i, 2);
+
+                              break;
                             }
                         }
                     }
@@ -10728,8 +10580,7 @@ Undocumented internal function.\n\
                 }
             }
 
-          if (! error_state)
-            delete_graphics_objects (vals);
+          delete_graphics_objects (vals);
         }
       else
         error ("delete: invalid graphics object");
@@ -10755,12 +10606,7 @@ Undocumented internal function.\n\
   std::string mode = "";
 
   if (nargin == 2)
-    {
-      mode = args(1).string_value ();
-
-      if (error_state)
-        return retval;
-    }
+    mode = args(1).string_value ();
 
   if (nargin == 1 || nargin == 2)
     {
@@ -10942,8 +10788,7 @@ gtk_manager::do_get_toolkit (void) const
               args(0) = dtk;
               feval ("graphics_toolkit", args);
 
-              if (! error_state)
-                pl = loaded_toolkits.find (dtk);
+              pl = loaded_toolkits.find (dtk);
 
               if (error_state || pl == loaded_toolkits.end ())
                 error ("failed to load %s graphics toolkit", dtk.c_str ());
@@ -11088,7 +10933,7 @@ undocumented.\n\
         {
           Matrix hlist = gh_manager::figure_handle_list (true);
 
-          for (int i = 0; ! error_state && i < hlist.numel (); i++)
+          for (int i = 0; i < hlist.numel (); i++)
             {
               graphics_handle h = gh_manager::lookup (hlist(i));
 
@@ -11509,8 +11354,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
                           property p = property::create (name, gh, type,
                                                          args.splice (0, 3));
 
-                          if (! error_state)
-                            go.get_properties ().insert_property (name, p);
+                          go.get_properties ().insert_property (name, p);
                         }
                       else
                         error ("addproperty: a '%s' property already exists in the graphics object",
@@ -11564,8 +11408,7 @@ set_property_in_handle (double handle, const std::string& property,
     {
       go.set (caseless_str (property), arg);
 
-      if (! error_state)
-        ret = true;
+      ret = true;
     }
   else
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
@@ -11583,7 +11426,7 @@ compare_property_values (const octave_value& ov1, const octave_value& ov2)
 
   octave_value_list result = feval ("isequal", args, 1);
 
-  if (! error_state && result.length () > 0)
+  if (result.length () > 0)
     return result(0).bool_value ();
 
   return false;
@@ -11607,29 +11450,23 @@ do_cleanup_waitfor_listener (const octave_value& listener,
     {
       double h = c(2).double_value ();
 
-      if (! error_state)
+      caseless_str pname = c(3).string_value ();
+
+      gh_manager::auto_lock guard;
+
+      graphics_handle gh = gh_manager::lookup (h);
+
+      if (gh.ok ())
         {
-          caseless_str pname = c(3).string_value ();
+          graphics_object go = gh_manager::get_object (gh);
 
-          if (! error_state)
+          if (go.get_properties ().has_property (pname))
             {
-              gh_manager::auto_lock guard;
+              go.get_properties ().delete_listener (pname, listener, mode);
 
-              graphics_handle gh = gh_manager::lookup (h);
-
-              if (gh.ok ())
-                {
-                  graphics_object go = gh_manager::get_object (gh);
-
-                  if (go.get_properties ().has_property (pname))
-                    {
-                      go.get_properties ().delete_listener (pname, listener,
-                                                            mode);
-                      if (mode == POSTSET)
-                        go.get_properties ().delete_listener (pname, listener,
-                                                              PERSISTENT);
-                    }
-                }
+              if (mode == POSTSET)
+                go.get_properties ().delete_listener (pname, listener,
+                                                      PERSISTENT);
             }
         }
     }
@@ -11650,36 +11487,27 @@ waitfor_listener (const octave_value_list& args, int)
     {
       uint32_t id = args(2).uint32_scalar_value ().value ();
 
-      if (! error_state)
+      if (args.length () > 5)
         {
-          if (args.length () > 5)
+          double h = args(0).double_value ();
+
+          caseless_str pname = args(4).string_value ();
+
+          gh_manager::auto_lock guard;
+
+          graphics_handle gh = gh_manager::lookup (h);
+
+          if (gh.ok ())
             {
-              double h = args(0).double_value ();
+              graphics_object go = gh_manager::get_object (gh);
+              octave_value pvalue = go.get (pname);
 
-              if (! error_state)
-                {
-                  caseless_str pname = args(4).string_value ();
-
-                  if (! error_state)
-                    {
-                      gh_manager::auto_lock guard;
-
-                      graphics_handle gh = gh_manager::lookup (h);
-
-                      if (gh.ok ())
-                        {
-                          graphics_object go = gh_manager::get_object (gh);
-                          octave_value pvalue = go.get (pname);
-
-                          if (compare_property_values (pvalue, args(5)))
-                            waitfor_results[id] = true;
-                        }
-                    }
-                }
+              if (compare_property_values (pvalue, args(5)))
+                waitfor_results[id] = true;
             }
-          else
-            waitfor_results[id] = true;
         }
+      else
+        waitfor_results[id] = true;
     }
 
   return octave_value_list ();
@@ -11692,8 +11520,7 @@ waitfor_del_listener (const octave_value_list& args, int)
     {
       uint32_t id = args(2).uint32_scalar_value ().value ();
 
-      if (! error_state)
-        waitfor_results[id] = true;
+      waitfor_results[id] = true;
     }
 
   return octave_value_list ();
@@ -11762,6 +11589,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
           if (args.length () > 1)
             {
               pname = args(1).string_value ();
+
               if (! error_state
                   && ! pname.empty () && ! pname.compare ("timeout"))
                 {
@@ -11861,8 +11689,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                 error ("waitfor: invalid property name, expected a non-empty string value");
             }
 
-          if (! error_state
-              && timeout_index < 0 && args.length () > (max_arg_index + 1))
+          if (timeout_index < 0 && args.length () > (max_arg_index + 1))
             {
               caseless_str s = args(max_arg_index + 1).string_value ();
 
@@ -11877,7 +11704,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                 error ("waitfor: invalid parameter, expected 'timeout'");
             }
 
-          if (! error_state && timeout_index >= 0)
+          if (timeout_index >= 0)
             {
               if (args.length () > (timeout_index + 1))
                 {
@@ -11978,9 +11805,6 @@ Undocumented internal function.\n\
 
   double h = args(0).double_value ();
 
-  if (error_state)
-    return retval;
-
   gh_manager::auto_lock guard;
 
   graphics_handle handle = gh_manager::lookup (h);
@@ -12000,9 +11824,6 @@ Undocumented internal function.\n\
     {
       std::string opt = args(1).string_value ();
 
-      if (error_state)
-        return retval;
-
       if (opt == "out" || opt == "reset")
         {
           if (opt == "out")
@@ -12018,9 +11839,6 @@ Undocumented internal function.\n\
     {
       std::string mode = args(1).string_value ();
       double factor = args(2).scalar_value ();
-
-      if (error_state)
-        return retval;
 
       ax_props.zoom (mode, factor);
       Vdrawnow_requested = true;

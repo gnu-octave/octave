@@ -182,22 +182,22 @@ bitop (const std::string& fname, const octave_value_list& args)
                 {
                   boolNDArray x (args(0).bool_array_value ());
                   boolNDArray y (args(1).bool_array_value ());
-                  if (! error_state)
-                    retval = bitopx (fname, x, y).bool_array_value ();
+
+                  retval = bitopx (fname, x, y).bool_array_value ();
                 }
               else if (arg0_is_float && arg1_is_float)
                 {
                   uint64NDArray x (args(0).float_array_value ());
                   uint64NDArray y (args(1).float_array_value ());
-                  if (! error_state)
-                    retval = bitopx (fname, x, y).float_array_value ();
+
+                  retval = bitopx (fname, x, y).float_array_value ();
                 }
               else if (! (arg0_is_float || arg1_is_float))
                 {
                   uint64NDArray x (args(0).array_value ());
                   uint64NDArray y (args(1).array_value ());
-                  if (! error_state)
-                    retval = bitopx (fname, x, y).array_value ();
+
+                  retval = bitopx (fname, x, y).array_value ();
                 }
               else
                 {
@@ -206,8 +206,8 @@ bitop (const std::string& fname, const octave_value_list& args)
 
                   uint64NDArray x (args(p).array_value ());
                   uint64NDArray y (args(q).float_array_value ());
-                  if (! error_state)
-                    retval = bitopx (fname, x, y).float_array_value ();
+
+                  retval = bitopx (fname, x, y).float_array_value ();
                 }
             }
           else
@@ -222,64 +222,64 @@ bitop (const std::string& fname, const octave_value_list& args)
                 {
                   uint64NDArray x (dx);
                   uint64NDArray y = args(q).uint64_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_uint32_matrix::static_type_id ()
                        || args(q).type_id () == octave_uint32_scalar::static_type_id ())
                 {
                   uint32NDArray x (dx);
                   uint32NDArray y = args(q).uint32_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_uint16_matrix::static_type_id ()
                        || args(q).type_id () == octave_uint16_scalar::static_type_id ())
                 {
                   uint16NDArray x (dx);
                   uint16NDArray y = args(q).uint16_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_uint8_matrix::static_type_id ()
                        || args(q).type_id () == octave_uint8_scalar::static_type_id ())
                 {
                   uint8NDArray x (dx);
                   uint8NDArray y = args(q).uint8_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_int64_matrix::static_type_id ()
                        || args(q).type_id () == octave_int64_scalar::static_type_id ())
                 {
                   int64NDArray x (dx);
                   int64NDArray y = args(q).int64_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_int32_matrix::static_type_id ()
                        || args(q).type_id () == octave_int32_scalar::static_type_id ())
                 {
                   int32NDArray x (dx);
                   int32NDArray y = args(q).int32_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_int16_matrix::static_type_id ()
                        || args(q).type_id () == octave_int16_scalar::static_type_id ())
                 {
                   int16NDArray x (dx);
                   int16NDArray y = args(q).int16_array_value ();
-                  if (! error_state)
-                    retval  = bitopx (fname, x, y);
+
+                  retval  = bitopx (fname, x, y);
                 }
               else if (args(q).type_id () == octave_int8_matrix::static_type_id ()
                        || args(q).type_id () == octave_int8_scalar::static_type_id ())
                 {
                   int8NDArray x (dx);
                   int8NDArray y = args(q).int8_array_value ();
-                  if (! error_state)
-                    retval = bitopx (fname, x, y);
+
+                  retval = bitopx (fname, x, y);
                 }
               else
                 error ("%s: invalid operand type", fname.c_str ());
@@ -292,64 +292,64 @@ bitop (const std::string& fname, const octave_value_list& args)
             {
               uint64NDArray x = args(0).uint64_array_value ();
               uint64NDArray y = args(1).uint64_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_uint32_matrix::static_type_id ()
                    || args(0).type_id () == octave_uint32_scalar::static_type_id ())
             {
               uint32NDArray x = args(0).uint32_array_value ();
               uint32NDArray y = args(1).uint32_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_uint16_matrix::static_type_id ()
                    || args(0).type_id () == octave_uint16_scalar::static_type_id ())
             {
               uint16NDArray x = args(0).uint16_array_value ();
               uint16NDArray y = args(1).uint16_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_uint8_matrix::static_type_id ()
                    || args(0).type_id () == octave_uint8_scalar::static_type_id ())
             {
               uint8NDArray x = args(0).uint8_array_value ();
               uint8NDArray y = args(1).uint8_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_int64_matrix::static_type_id ()
                    || args(0).type_id () == octave_int64_scalar::static_type_id ())
             {
               int64NDArray x = args(0).int64_array_value ();
               int64NDArray y = args(1).int64_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_int32_matrix::static_type_id ()
                    || args(0).type_id () == octave_int32_scalar::static_type_id ())
             {
               int32NDArray x = args(0).int32_array_value ();
               int32NDArray y = args(1).int32_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_int16_matrix::static_type_id ()
                    || args(0).type_id () == octave_int16_scalar::static_type_id ())
             {
               int16NDArray x = args(0).int16_array_value ();
               int16NDArray y = args(1).int16_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else if (args(0).type_id () == octave_int8_matrix::static_type_id ()
                    || args(0).type_id () == octave_int8_scalar::static_type_id ())
             {
               int8NDArray x = args(0).int8_array_value ();
               int8NDArray y = args(1).int8_array_value ();
-              if (! error_state)
-                retval = bitopx (fname, x, y);
+
+              retval = bitopx (fname, x, y);
             }
           else
             error ("%s: invalid operand type", fname.c_str ());
@@ -460,52 +460,49 @@ bitshift (float a, int n, int64_t mask)
 // shift.
 
 #define DO_BITSHIFT(T) \
-  if (! error_state) \
+  double d1, d2; \
+ \
+  if (n.all_integers (d1, d2)) \
     { \
-      double d1, d2; \
+      int m_nel = m.numel (); \
+      int n_nel = n.numel (); \
  \
-      if (n.all_integers (d1, d2)) \
+      bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
+ \
+      dim_vector m_dv = m.dims (); \
+      dim_vector n_dv = n.dims (); \
+ \
+      bool is_array_op = (m_dv == n_dv); \
+ \
+      if (is_array_op || is_scalar_op) \
         { \
-          int m_nel = m.numel (); \
-          int n_nel = n.numel (); \
+          T ## NDArray result; \
  \
-          bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
- \
-          dim_vector m_dv = m.dims (); \
-          dim_vector n_dv = n.dims (); \
- \
-          bool is_array_op = (m_dv == n_dv); \
- \
-          if (is_array_op || is_scalar_op) \
-            { \
-              T ## NDArray result; \
- \
-              if (m_nel != 1) \
-                result.resize (m_dv); \
-              else \
-                result.resize (n_dv); \
- \
-              for (int i = 0; i < m_nel; i++) \
-                if (is_scalar_op) \
-                  for (int k = 0; k < n_nel; k++) \
-                    if (static_cast<int> (n(k)) >= bits_in_type) \
-                      result(i+k) = 0; \
-                    else \
-                      result(i+k) = bitshift (m(i), static_cast<int> (n(k)), mask); \
-                else \
-                  if (static_cast<int> (n(i)) >= bits_in_type) \
-                    result(i) = 0;                                      \
-                  else                                          \
-                    result(i) = bitshift (m(i), static_cast<int> (n(i)), mask); \
- \
-              retval = result; \
-            } \
+          if (m_nel != 1) \
+            result.resize (m_dv); \
           else \
-            error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
+            result.resize (n_dv); \
+ \
+          for (int i = 0; i < m_nel; i++) \
+            if (is_scalar_op) \
+              for (int k = 0; k < n_nel; k++) \
+                if (static_cast<int> (n(k)) >= bits_in_type) \
+                  result(i+k) = 0; \
+                else \
+                  result(i+k) = bitshift (m(i), static_cast<int> (n(k)), mask); \
+            else \
+              if (static_cast<int> (n(i)) >= bits_in_type) \
+                result(i) = 0; \
+              else \
+                result(i) = bitshift (m(i), static_cast<int> (n(i)), mask); \
+ \
+          retval = result; \
         } \
       else \
-        error ("bitshift: expecting integer as second argument"); \
-    }
+        error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
+    } \
+  else \
+    error ("bitshift: expecting integer as second argument"); \
 
 #define DO_UBITSHIFT(T, N) \
   do \
@@ -600,9 +597,6 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
                 }
             }
         }
-
-      if (error_state)
-        return retval;
 
       octave_value m_arg = args(0);
       std::string cname = m_arg.class_name ();

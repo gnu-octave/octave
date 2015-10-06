@@ -831,24 +831,16 @@ make_java_index (JNIEnv* jni_env, const octave_value_list& idx)
       {
         idx_vector v = idx(i).index_vector ();
 
-        if (! error_state)
-          {
-            jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
-            jint *buf = jni_env->GetIntArrayElements (i_array, 0);
+        jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
+        jint *buf = jni_env->GetIntArrayElements (i_array, 0);
 
-            for (int k = 0; k < v.length (); k++)
-              buf[k] = v(k);
+        for (int k = 0; k < v.length (); k++)
+          buf[k] = v(k);
 
-            jni_env->ReleaseIntArrayElements (i_array, buf, 0);
-            jni_env->SetObjectArrayElement (retval, i, i_array);
+        jni_env->ReleaseIntArrayElements (i_array, buf, 0);
+        jni_env->SetObjectArrayElement (retval, i, i_array);
 
-            check_exception (jni_env);
-
-            if (error_state)
-              break;
-          }
-        else
-          break;
+        check_exception (jni_env);
       }
     catch (index_exception& e)
       {
@@ -868,12 +860,9 @@ get_array_elements (JNIEnv* jni_env, jobject jobj,
   jobject_ref resObj (jni_env);
   jobject_ref java_idx (jni_env, make_java_index (jni_env, idx));
 
-  if (! error_state)
-    {
-      jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-      jmethodID mID = jni_env->GetStaticMethodID (helperClass, "arraySubsref", "(Ljava/lang/Object;[[I)Ljava/lang/Object;");
-      resObj = jni_env->CallStaticObjectMethod (helperClass, mID, jobj, jobject (java_idx));
-    }
+  jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+  jmethodID mID = jni_env->GetStaticMethodID (helperClass, "arraySubsref", "(Ljava/lang/Object;[[I)Ljava/lang/Object;");
+  resObj = jni_env->CallStaticObjectMethod (helperClass, mID, jobj, jobject (java_idx));
 
   if (resObj)
     retval = box (jni_env, resObj);
@@ -896,7 +885,7 @@ set_array_elements (JNIEnv* jni_env, jobject jobj,
   jobject_ref rhsObj (jni_env);
   jobject_ref java_idx (jni_env, make_java_index (jni_env, idx));
 
-  if (! error_state && unbox (jni_env, rhs, rhsObj, rhsCls))
+  if (unbox (jni_env, rhs, rhsObj, rhsCls))
     {
       jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
       jmethodID mID = jni_env->GetStaticMethodID (helperClass, "arraySubsasgn",
@@ -985,12 +974,7 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
                   if (js)
                     c(i) = octave_value (jstring_to_string (jni_env, js), type);
                   else
-                    {
-                      c(i) = check_exception (jni_env);
-
-                      if (error_state)
-                        break;
-                    }
+                    c(i) = check_exception (jni_env);
                 }
 
               retval = octave_value (c);
@@ -1568,8 +1552,6 @@ Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
     varargin(i) = box (env, env->GetObjectArrayElement (argin, i), 0);
 
   varargout = feval (fname, varargin, nargout);
-  if (error_state)
-    return false;
 
   jobjectArray_ref out_objs (env, argout), out_clss (env);
   out_objs.detach ();
@@ -1598,38 +1580,31 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
         {
           jobject_ref jobj (env, env->GetObjectArrayElement (args, i));
           oct_args(i) = box (env, jobj, 0);
-
-          if (error_state)
-            break;
         }
 
-      if (! error_state)
+      BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
+      if (val.is_function_handle ())
         {
-          BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
-          if (val.is_function_handle ())
-            {
-              octave_function *fcn = val.function_value ();
-              feval (fcn, oct_args);
-            }
-          else if (val.is_cell () && val.length () > 0
-                   && (val.rows () == 1 || val.columns () == 1)
-                   && val.cell_value()(0).is_function_handle ())
-            {
-              Cell c = val.cell_value ();
-              octave_function *fcn = c(0).function_value ();
-
-              for (int i=1; i<c.numel (); i++)
-                oct_args(len+i-1) = c(i);
-
-              if (! error_state)
-                feval (fcn, oct_args);
-            }
-          else
-            error ("trying to invoke non-invocable object");
-
-          END_INTERRUPT_WITH_EXCEPTIONS;
+          octave_function *fcn = val.function_value ();
+          feval (fcn, oct_args);
         }
+      else if (val.is_cell () && val.length () > 0
+               && (val.rows () == 1 || val.columns () == 1)
+               && val.cell_value()(0).is_function_handle ())
+        {
+          Cell c = val.cell_value ();
+          octave_function *fcn = c(0).function_value ();
+
+          for (int i=1; i<c.numel (); i++)
+            oct_args(len+i-1) = c(i);
+
+          feval (fcn, oct_args);
+        }
+      else
+        error ("trying to invoke non-invocable object");
+
+      END_INTERRUPT_WITH_EXCEPTIONS;
     }
 }
 
@@ -1753,11 +1728,9 @@ octave_java::subsasgn (const std::string& type,
           ovl(1) = (idx.front ())(0);
           ovl(2) = rhs;
           feval ("__java_set__", ovl, 0);
-          if (! error_state)
-            {
-              count++;
-              retval = octave_value (this);
-            }
+
+          count++;
+          retval = octave_value (this);
         }
       else if (type.length () > 2 && type[1] == '(')
         {
@@ -1766,33 +1739,25 @@ octave_java::subsasgn (const std::string& type,
           new_idx.push_back (*it++);
           new_idx.push_back (*it++);
           octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);
-          if (! error_state)
-            {
-              std::list<octave_value_list> next_idx (idx);
-              next_idx.erase (next_idx.begin ());
-              next_idx.erase (next_idx.begin ());
-              u(0).subsasgn (type.substr (2), next_idx, rhs);
-              if (! error_state)
-                {
-                  count++;
-                  retval = octave_value (this);
-                }
-            }
+
+          std::list<octave_value_list> next_idx (idx);
+          next_idx.erase (next_idx.begin ());
+          next_idx.erase (next_idx.begin ());
+          u(0).subsasgn (type.substr (2), next_idx, rhs);
+
+          count++;
+          retval = octave_value (this);
         }
       else if (type[1] == '.')
         {
           octave_value_list u = subsref (type.substr (0, 1), idx, 1);
-          if (! error_state)
-            {
-              std::list<octave_value_list> next_idx (idx);
-              next_idx.erase (next_idx.begin ());
-              u(0).subsasgn (type.substr (1), next_idx, rhs);
-              if (! error_state)
-                {
-                  count++;
-                  retval = octave_value (this);
-                }
-            }
+
+          std::list<octave_value_list> next_idx (idx);
+          next_idx.erase (next_idx.begin ());
+          u(0).subsasgn (type.substr (1), next_idx, rhs);
+
+          count++;
+          retval = octave_value (this);
         }
       else
         error ("invalid indexing/assignment on Java object");
@@ -1802,11 +1767,9 @@ octave_java::subsasgn (const std::string& type,
       if (current_env)
         {
           set_array_elements (current_env, to_java (), idx.front (), rhs);
-          if (! error_state)
-            {
-              count++;
-              retval = octave_value (this);
-            }
+
+          count++;
+          retval = octave_value (this);
         }
       break;
 
@@ -2122,8 +2085,7 @@ Function will directly call initialize_java() to create an instance of a JVM.\n\
 
   initialize_java ();
 
-  if (! error_state)
-    retval = 1;
+  retval = 1;
 
   return retval;
 #else
@@ -2175,27 +2137,24 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 
   initialize_java ();
 
-  if (! error_state)
+  JNIEnv *current_env = octave_java::thread_jni_env ();
+
+  if (args.length () > 0)
     {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () > 0)
+      if (args(0).is_string ())
         {
-          if (args(0).is_string ())
-            {
-              std::string classname = args(0).string_value ();
+          std::string classname = args(0).string_value ();
 
-              octave_value_list tmp;
-              for (int i=1; i<args.length (); i++)
-                tmp(i-1) = args(i);
-              retval = octave_java::do_javaObject (current_env, classname, tmp);
-            }
-          else
-            error ("javaObject: CLASSNAME must be a string");
+          octave_value_list tmp;
+          for (int i=1; i<args.length (); i++)
+            tmp(i-1) = args(i);
+          retval = octave_java::do_javaObject (current_env, classname, tmp);
         }
       else
-        print_usage ();
+        error ("javaObject: CLASSNAME must be a string");
     }
+  else
+    print_usage ();
 
   return retval;
 #else
@@ -2243,39 +2202,36 @@ equivalent\n\
 
   initialize_java ();
 
-  if (! error_state)
+  JNIEnv *current_env = octave_java::thread_jni_env ();
+
+  if (args.length () > 1)
     {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () > 1)
+      if (args(0).is_string ())
         {
-          if (args(0).is_string ())
+          std::string methodname = args(0).string_value ();
+
+          octave_value_list tmp;
+          for (int i=2; i<args.length (); i++)
+            tmp(i-2) = args(i);
+
+          if (args(1).is_java ())
             {
-              std::string methodname = args(0).string_value ();
-
-              octave_value_list tmp;
-              for (int i=2; i<args.length (); i++)
-                tmp(i-2) = args(i);
-
-              if (args(1).is_java ())
-                {
-                  octave_java *jobj = TO_JAVA (args(1));
-                  retval = jobj->do_javaMethod (current_env, methodname, tmp);
-                }
-              else if (args(1).is_string ())
-                {
-                  std::string cls = args(1).string_value ();
-                  retval = octave_java::do_javaMethod (current_env, cls, methodname, tmp);
-                }
-              else
-                error ("javaMethod: OBJ must be a Java object or a string");
+              octave_java *jobj = TO_JAVA (args(1));
+              retval = jobj->do_javaMethod (current_env, methodname, tmp);
+            }
+          else if (args(1).is_string ())
+            {
+              std::string cls = args(1).string_value ();
+              retval = octave_java::do_javaMethod (current_env, cls, methodname, tmp);
             }
           else
-            error ("javaMethod: METHODNAME must be a string");
+            error ("javaMethod: OBJ must be a Java object or a string");
         }
       else
-        print_usage ();
+        error ("javaMethod: METHODNAME must be a string");
     }
+  else
+    print_usage ();
 
   return retval;
 #else
@@ -2318,35 +2274,32 @@ equivalent\n\
 
   initialize_java ();
 
-  if (! error_state)
+  JNIEnv *current_env = octave_java::thread_jni_env ();
+
+  if (args.length () == 2)
     {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () == 2)
+      if (args(1).is_string ())
         {
-          if (args(1).is_string ())
-            {
-              std::string name = args(1).string_value ();
+          std::string name = args(1).string_value ();
 
-              if (args(0).is_java ())
-                {
-                  octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_get (current_env, name);
-                }
-              else if (args(0).is_string ())
-                {
-                  std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_get (current_env, cls, name);
-                }
-              else
-                error ("__java_get__: OBJ must be a Java object or a string");
+          if (args(0).is_java ())
+            {
+              octave_java *jobj = TO_JAVA (args(0));
+              retval = jobj->do_java_get (current_env, name);
+            }
+          else if (args(0).is_string ())
+            {
+              std::string cls = args(0).string_value ();
+              retval = octave_java::do_java_get (current_env, cls, name);
             }
           else
-            error ("__java_get__: NAME must be a string");
+            error ("__java_get__: OBJ must be a Java object or a string");
         }
       else
-        print_usage ();
+        error ("__java_get__: NAME must be a string");
     }
+  else
+    print_usage ();
 
   return retval;
 #else
@@ -2383,35 +2336,32 @@ equivalent\n\
 
   initialize_java ();
 
-  if (! error_state)
+  JNIEnv *current_env = octave_java::thread_jni_env ();
+
+  if (args.length () == 3)
     {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () == 3)
+      if (args(1).is_string ())
         {
-          if (args(1).is_string ())
-            {
-              std::string name = args(1).string_value ();
+          std::string name = args(1).string_value ();
 
-              if (args(0).is_java ())
-                {
-                  octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_set (current_env, name, args(2));
-                }
-              else if (args(0).is_string ())
-                {
-                  std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_set (current_env, cls, name, args(2));
-                }
-              else
-                error ("__java_set__: OBJ must be a Java object or a string");
+          if (args(0).is_java ())
+            {
+              octave_java *jobj = TO_JAVA (args(0));
+              retval = jobj->do_java_set (current_env, name, args(2));
+            }
+          else if (args(0).is_string ())
+            {
+              std::string cls = args(0).string_value ();
+              retval = octave_java::do_java_set (current_env, cls, name, args(2));
             }
           else
-            error ("__java_set__: NAME must be a string");
+            error ("__java_set__: OBJ must be a Java object or a string");
         }
       else
-        print_usage ();
+        error ("__java_set__: NAME must be a string");
     }
+  else
+    print_usage ();
 
   return retval;
 #else
@@ -2431,23 +2381,20 @@ Undocumented internal function.\n\
 
   initialize_java ();
 
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = octave_java::thread_jni_env ();
 
-      if (args.length () == 1)
+  if (args.length () == 1)
+    {
+      if (args(0).is_java ())
         {
-          if (args(0).is_java ())
-            {
-              octave_java *jobj = TO_JAVA (args(0));
-              retval(0) = box_more (current_env, jobj->to_java (), 0);
-            }
-          else
-            retval(0) = args(0);
+          octave_java *jobj = TO_JAVA (args(0));
+          retval(0) = box_more (current_env, jobj->to_java (), 0);
         }
       else
-        print_usage ();
+        retval(0) = args(0);
     }
+  else
+    print_usage ();
 
   return retval;
 #else

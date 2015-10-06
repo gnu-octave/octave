@@ -1215,9 +1215,6 @@ get_dimensions (const octave_value& a, const char *warn_for,
         {
           Array<double> v = a.vector_value ();
 
-          if (error_state)
-            return;
-
           octave_idx_type n = v.numel ();
           dim.resize (n);
           for (octave_idx_type i = 0; i < n; i++)
@@ -1227,8 +1224,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
         error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
-  if (! error_state)
-    check_dimensions (dim, warn_for); // May set error_state.
+  check_dimensions (dim, warn_for);
 }
 
 
@@ -1249,8 +1245,6 @@ get_dimensions (const octave_value& a, const char *warn_for,
         {
           Array<double> v = a.vector_value ();
 
-          if (error_state)
-            return;
 
           nr = static_cast<octave_idx_type> (fix (v (0)));
           nc = static_cast<octave_idx_type> (fix (v (1)));
@@ -1259,8 +1253,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
         error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
-  if (! error_state)
-    check_dimensions (nr, nc, warn_for); // May set error_state.
+  check_dimensions (nr, nc, warn_for);
 }
 
 void
@@ -1273,7 +1266,7 @@ get_dimensions (const octave_value& a, const octave_value& b,
   if (error_state)
     error ("%s: expecting two scalar arguments", warn_for);
   else
-    check_dimensions (nr, nc, warn_for); // May set error_state.
+    check_dimensions (nr, nc, warn_for);
 }
 
 octave_idx_type
@@ -1301,8 +1294,7 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
               try
                 {
                   idx_vector jdx = idxi.index_vector ();
-                  if (error_state)
-                    break;
+
                   retval *= jdx.length (dv(i));
                 }
               catch (index_exception& e)
@@ -1458,33 +1450,23 @@ character @nospell{\"@xbackslashchar{}0\"}, it will always be a valid index.\n\
   else if (nargin != 1)
     print_usage ();
 
-  if (! error_state)
+  unwind_protect frame;
+
+  frame.protect_var (discard_error_messages);
+  discard_error_messages = true;
+
+  try
     {
-      unwind_protect frame;
+      idx_vector idx = args(0).index_vector (true);
 
-      frame.protect_var (error_state);
-
-      frame.protect_var (discard_error_messages);
-      discard_error_messages = true;
-
-      try
-        {
-          idx_vector idx = args(0).index_vector (true);
-
-          if (! error_state)
-            {
-              if (nargin == 2)
-                retval = idx.extent (n) <= n;
-              else
-                retval = true;
-            }
-          else
-            retval = false;
-        }
-      catch (const octave_execution_exception&)
-        {
-          retval = false;
-        }
+      if (nargin == 2)
+        retval = idx.extent (n) <= n;
+      else
+        retval = true;
+    }
+  catch (const octave_execution_exception&)
+    {
+      retval = false;
     }
 
   return retval;
@@ -1542,40 +1524,35 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
         }
     }
 
-  if (! error_state)
+  for (int i = 0; i < nargout; i++)
+    rcells[i].clear (dims);
+
+  for (octave_idx_type j = 0; j < numel; j++)
     {
-      for (int i = 0; i < nargout; i++)
-        rcells[i].clear (dims);
+      for (int i = 0; i < nargin; i++)
+        if (iscell[i])
+          new_args(i) = ccells[i](j);
 
-      for (octave_idx_type j = 0; j < numel; j++)
+      octave_quit ();
+
+      const octave_value_list tmp = fun (new_args, nargout);
+
+      if (tmp.length () < nargout)
         {
-          for (int i = 0; i < nargin; i++)
-            if (iscell[i])
-              new_args(i) = ccells[i](j);
-
-          octave_quit ();
-
-          const octave_value_list tmp = fun (new_args, nargout);
-
-          if (tmp.length () < nargout)
-            {
-              error ("%s: do_simple_cellfun: internal error", fun_name);
-              break;
-            }
-          else
-            {
-              for (int i = 0; i < nargout; i++)
-                rcells[i](j) = tmp(i);
-            }
+          error ("%s: do_simple_cellfun: internal error", fun_name);
+          break;
+        }
+      else
+        {
+          for (int i = 0; i < nargout; i++)
+            rcells[i](j) = tmp(i);
         }
     }
 
-  if (! error_state)
-    {
-      retval.resize (nargout);
-      for (int i = 0; i < nargout; i++)
-        retval(i) = rcells[i];
-    }
+  retval.resize (nargout);
+
+  for (int i = 0; i < nargout; i++)
+    retval(i) = rcells[i];
 
   return retval;
 }

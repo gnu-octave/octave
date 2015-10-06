@@ -616,54 +616,51 @@ return @code{NaN}.\n\
             error ("airy: K must be an integer value");
         }
 
-      if (! error_state)
+      int idx = nargin == 1 ? 0 : 1;
+
+      if (args(idx).is_single_type ())
         {
-          int idx = nargin == 1 ? 0 : 1;
+          FloatComplexNDArray z = args(idx).float_complex_array_value ();
 
-          if (args(idx).is_single_type ())
+          if (! error_state)
             {
-              FloatComplexNDArray z = args(idx).float_complex_array_value ();
+              Array<octave_idx_type> ierr;
+              octave_value result;
 
-              if (! error_state)
-                {
-                  Array<octave_idx_type> ierr;
-                  octave_value result;
-
-                  if (kind > 1)
-                    result = biry (z, kind == 3, scale, ierr);
-                  else
-                    result = airy (z, kind == 1, scale, ierr);
-
-                  if (nargout > 1)
-                    retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
-                }
+              if (kind > 1)
+                result = biry (z, kind == 3, scale, ierr);
               else
-                error ("airy: Z must be a complex matrix");
+                result = airy (z, kind == 1, scale, ierr);
+
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+
+              retval(0) = result;
             }
           else
+            error ("airy: Z must be a complex matrix");
+        }
+      else
+        {
+          ComplexNDArray z = args(idx).complex_array_value ();
+
+          if (! error_state)
             {
-              ComplexNDArray z = args(idx).complex_array_value ();
+              Array<octave_idx_type> ierr;
+              octave_value result;
 
-              if (! error_state)
-                {
-                  Array<octave_idx_type> ierr;
-                  octave_value result;
-
-                  if (kind > 1)
-                    result = biry (z, kind == 3, scale, ierr);
-                  else
-                    result = airy (z, kind == 1, scale, ierr);
-
-                  if (nargout > 1)
-                    retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
-                }
+              if (kind > 1)
+                result = biry (z, kind == 3, scale, ierr);
               else
-                error ("airy: Z must be a complex matrix");
+                result = airy (z, kind == 1, scale, ierr);
+
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+
+              retval(0) = result;
             }
+          else
+            error ("airy: Z must be a complex matrix");
         }
     }
   else

@@ -160,7 +160,7 @@ sparse matrices.\n\
     }
 
   int n = 1;
-  while (n < nargin && ! error_state)
+  while (n < nargin)
     {
       std::string tmp = args(n++).string_value ();
 
@@ -179,181 +179,160 @@ sparse matrices.\n\
         error ("chol: expecting trailing string arguments");
     }
 
-  if (! error_state)
+  octave_value arg = args(0);
+
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
+
+  int arg_is_empty = empty_arg ("chol", nr, nc);
+
+  if (arg_is_empty < 0)
+    return retval;
+  if (arg_is_empty > 0)
+    return octave_value (Matrix ());
+
+  if (arg.is_sparse_type ())
     {
-      octave_value arg = args(0);
+      octave_idx_type info;
+      bool natural = (nargout != 3);
+      bool force = nargout > 1;
 
-      octave_idx_type nr = arg.rows ();
-      octave_idx_type nc = arg.columns ();
-
-      int arg_is_empty = empty_arg ("chol", nr, nc);
-
-      if (arg_is_empty < 0)
-        return retval;
-      if (arg_is_empty > 0)
-        return octave_value (Matrix ());
-
-      if (arg.is_sparse_type ())
+      if (arg.is_real_type ())
         {
-          octave_idx_type info;
-          bool natural = (nargout != 3);
-          bool force = nargout > 1;
+          SparseMatrix m = arg.sparse_matrix_value ();
 
-          if (arg.is_real_type ())
+          SparseCHOL fact (m, info, natural, force);
+
+          if (nargout == 3)
             {
-              SparseMatrix m = arg.sparse_matrix_value ();
-
-              if (! error_state)
-                {
-                  SparseCHOL fact (m, info, natural, force);
-
-                  if (nargout == 3)
-                    {
-                      if (vecout)
-                        retval(2) = fact.perm ();
-                      else
-                        retval(2) = fact.Q ();
-                    }
-
-                  if (nargout > 1 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = fact.L ();
-                      else
-                        retval(0) = fact.R ();
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              if (vecout)
+                retval(2) = fact.perm ();
+              else
+                retval(2) = fact.Q ();
             }
-          else if (arg.is_complex_type ())
+
+          if (nargout > 1 || info == 0)
             {
-              SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-
-              if (! error_state)
-                {
-                  SparseComplexCHOL fact (m, info, natural, force);
-
-                  if (nargout == 3)
-                    {
-                      if (vecout)
-                        retval(2) = fact.perm ();
-                      else
-                        retval(2) = fact.Q ();
-                    }
-
-                  if (nargout > 1 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = fact.L ();
-                      else
-                        retval(0) = fact.R ();
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              retval(1) = info;
+              if (LLt)
+                retval(0) = fact.L ();
+              else
+                retval(0) = fact.R ();
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_single_type ())
+      else if (arg.is_complex_type ())
         {
-          if (arg.is_real_type ())
+          SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+
+          SparseComplexCHOL fact (m, info, natural, force);
+
+          if (nargout == 3)
             {
-              FloatMatrix m = arg.float_matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  FloatCHOL fact;
-                  fact = FloatCHOL (m, info, LLt != true);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      retval(0) = get_chol (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              if (vecout)
+                retval(2) = fact.perm ();
+              else
+                retval(2) = fact.Q ();
             }
-          else if (arg.is_complex_type ())
+
+          if (nargout > 1 || info == 0)
             {
-              FloatComplexMatrix m = arg.float_complex_matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  FloatComplexCHOL fact;
-                  if (LLt)
-                    fact = FloatComplexCHOL (m.transpose (), info);
-                  else
-                    fact = FloatComplexCHOL (m, info);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              retval(1) = info;
+              if (LLt)
+                retval(0) = fact.L ();
+              else
+                retval(0) = fact.R ();
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            error ("chol: input matrix must be positive definite");
         }
       else
+        gripe_wrong_type_arg ("chol", arg);
+    }
+  else if (arg.is_single_type ())
+    {
+      if (arg.is_real_type ())
         {
-          if (arg.is_real_type ())
+          FloatMatrix m = arg.float_matrix_value ();
+
+          octave_idx_type info;
+
+          FloatCHOL fact;
+          fact = FloatCHOL (m, info, LLt != true);
+
+          if (nargout == 2 || info == 0)
             {
-              Matrix m = arg.matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  CHOL fact;
-                  fact = CHOL (m, info, LLt != true);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      retval(0) = get_chol (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
-            }
-          else if (arg.is_complex_type ())
-            {
-              ComplexMatrix m = arg.complex_matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  ComplexCHOL fact;
-                  fact = ComplexCHOL (m, info, LLt != true);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      retval(0) = get_chol (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              retval(1) = info;
+              retval(0) = get_chol (fact);
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            error ("chol: input matrix must be positive definite");
         }
+      else if (arg.is_complex_type ())
+        {
+          FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+          octave_idx_type info;
+
+          FloatComplexCHOL fact;
+          if (LLt)
+            fact = FloatComplexCHOL (m.transpose (), info);
+          else
+            fact = FloatComplexCHOL (m, info);
+
+          if (nargout == 2 || info == 0)
+            {
+              retval(1) = info;
+              if (LLt)
+                retval(0) = get_chol_l (fact);
+              else
+                retval(0) = get_chol_r (fact);
+            }
+          else
+            error ("chol: input matrix must be positive definite");
+        }
+      else
+        gripe_wrong_type_arg ("chol", arg);
+    }
+  else
+    {
+      if (arg.is_real_type ())
+        {
+          Matrix m = arg.matrix_value ();
+
+          octave_idx_type info;
+
+          CHOL fact;
+          fact = CHOL (m, info, LLt != true);
+
+          if (nargout == 2 || info == 0)
+            {
+              retval(1) = info;
+              retval(0) = get_chol (fact);
+            }
+          else
+            error ("chol: input matrix must be positive definite");
+        }
+      else if (arg.is_complex_type ())
+        {
+          ComplexMatrix m = arg.complex_matrix_value ();
+
+          octave_idx_type info;
+
+          ComplexCHOL fact;
+          fact = ComplexCHOL (m, info, LLt != true);
+
+          if (nargout == 2 || info == 0)
+            {
+              retval(1) = info;
+              retval(0) = get_chol (fact);
+            }
+          else
+            error ("chol: input matrix must be positive definite");
+        }
+      else
+        gripe_wrong_type_arg ("chol", arg);
     }
 
   return retval;
@@ -405,29 +384,23 @@ the Cholesky@tie{}factorization.\n\
                 {
                   SparseMatrix m = arg.sparse_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      SparseCHOL chol (m, info);
+                  SparseCHOL chol (m, info);
 
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
+                  if (info == 0)
+                    retval = chol.inverse ();
+                  else
+                    error ("cholinv: A must be positive definite");
                 }
               else if (arg.is_complex_type ())
                 {
                   SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      SparseComplexCHOL chol (m, info);
+                  SparseComplexCHOL chol (m, info);
 
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
+                  if (info == 0)
+                    retval = chol.inverse ();
+                  else
+                    error ("cholinv: A must be positive definite");
                 }
               else
                 gripe_wrong_type_arg ("cholinv", arg);
@@ -438,29 +411,23 @@ the Cholesky@tie{}factorization.\n\
                 {
                   FloatMatrix m = arg.float_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      FloatCHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
+                  octave_idx_type info;
+                  FloatCHOL chol (m, info);
+                  if (info == 0)
+                    retval = chol.inverse ();
+                  else
+                    error ("cholinv: A must be positive definite");
                 }
               else if (arg.is_complex_type ())
                 {
                   FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      FloatComplexCHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
+                  octave_idx_type info;
+                  FloatComplexCHOL chol (m, info);
+                  if (info == 0)
+                    retval = chol.inverse ();
+                  else
+                    error ("cholinv: A must be positive definite");
                 }
               else
                 gripe_wrong_type_arg ("chol", arg);
@@ -471,29 +438,23 @@ the Cholesky@tie{}factorization.\n\
                 {
                   Matrix m = arg.matrix_value ();
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      CHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
+                  octave_idx_type info;
+                  CHOL chol (m, info);
+                  if (info == 0)
+                    retval = chol.inverse ();
+                  else
+                    error ("cholinv: A must be positive definite");
                 }
               else if (arg.is_complex_type ())
                 {
                   ComplexMatrix m = arg.complex_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      ComplexCHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
+                  octave_idx_type info;
+                  ComplexCHOL chol (m, info);
+                  if (info == 0)
+                    retval = chol.inverse ();
+                  else
+                    error ("cholinv: A must be positive definite");
                 }
               else
                 gripe_wrong_type_arg ("chol", arg);
@@ -554,15 +515,13 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
                 {
                   SparseMatrix r = arg.sparse_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
+                  retval = chol2inv (r);
                 }
               else if (arg.is_complex_type ())
                 {
                   SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
+                  retval = chol2inv (r);
                 }
               else
                 gripe_wrong_type_arg ("chol2inv", arg);
@@ -573,15 +532,13 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
                 {
                   FloatMatrix r = arg.float_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
+                  retval = chol2inv (r);
                 }
               else if (arg.is_complex_type ())
                 {
                   FloatComplexMatrix r = arg.float_complex_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
+                  retval = chol2inv (r);
                 }
               else
                 gripe_wrong_type_arg ("chol2inv", arg);
@@ -593,15 +550,13 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
                 {
                   Matrix r = arg.matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
+                  retval = chol2inv (r);
                 }
               else if (arg.is_complex_type ())
                 {
                   ComplexMatrix r = arg.complex_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
+                  retval = chol2inv (r);
                 }
               else
                 gripe_wrong_type_arg ("chol2inv", arg);

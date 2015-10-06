@@ -137,20 +137,17 @@ error message.\n\
           octave_stream new_stream
             = octave_stream_list::lookup (args(1), "dup2");
 
-          if (! error_state)
+          int i_old = old_stream.file_number ();
+          int i_new = new_stream.file_number ();
+
+          if (i_old >= 0 && i_new >= 0)
             {
-              int i_old = old_stream.file_number ();
-              int i_new = new_stream.file_number ();
+              std::string msg;
 
-              if (i_old >= 0 && i_new >= 0)
-                {
-                  std::string msg;
+              int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-                  int status = octave_syscalls::dup2 (i_old, i_new, msg);
-
-                  retval(1) = msg;
-                  retval(0) = status;
-                }
+              retval(1) = msg;
+              retval(0) = status;
             }
         }
       else
@@ -223,20 +220,17 @@ error message.\n\
               exec_args[0] = exec_file;
             }
 
-          if (! error_state)
-            {
-              octave_history_write_timestamp ();
+          octave_history_write_timestamp ();
 
-              if (! command_history::ignoring_entries ())
-                command_history::clean_up_and_save ();
+          if (! command_history::ignoring_entries ())
+            command_history::clean_up_and_save ();
 
-              std::string msg;
+          std::string msg;
 
-              int status = octave_syscalls::execvp (exec_file, exec_args, msg);
+          int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
-              retval(1) = msg;
-              retval(0) = status;
-            }
+          retval(1) = msg;
+          retval(0) = status;
         }
       else
         error ("exec: FILE must be a string");
@@ -339,36 +333,33 @@ exit status, it will linger until Octave exits.\n\
             {
               bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
 
-              if (! error_state)
+              int fildes[2];
+              std::string msg;
+              pid_t pid;
+
+              pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
+                                             fildes, msg, interactive);
+              if (pid >= 0)
                 {
-                  int fildes[2];
-                  std::string msg;
-                  pid_t pid;
+                  FILE *ifile = fdopen (fildes[1], "r");
+                  FILE *ofile = fdopen (fildes[0], "w");
 
-                  pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
-                                                 fildes, msg, interactive);
-                  if (pid >= 0)
-                    {
-                      FILE *ifile = fdopen (fildes[1], "r");
-                      FILE *ofile = fdopen (fildes[0], "w");
+                  std::string nm;
 
-                      std::string nm;
+                  octave_stream is = octave_stdiostream::create (nm, ifile,
+                                                                 std::ios::in);
 
-                      octave_stream is = octave_stdiostream::create (nm, ifile,
-                                                                  std::ios::in);
-
-                      octave_stream os = octave_stdiostream::create (nm, ofile,
+                  octave_stream os = octave_stdiostream::create (nm, ofile,
                                                                  std::ios::out);
 
-                      Cell file_ids (1, 2);
+                  Cell file_ids (1, 2);
 
-                      retval(2) = pid;
-                      retval(1) = octave_stream_list::insert (is);
-                      retval(0) = octave_stream_list::insert (os);
-                    }
-                  else
-                    error (msg.c_str ());
+                  retval(2) = pid;
+                  retval(1) = octave_stream_list::insert (is);
+                  retval(0) = octave_stream_list::insert (os);
                 }
+              else
+                error (msg.c_str ());
             }
           else
             error ("popen2: all arguments must be strings");
@@ -527,20 +518,17 @@ message.\n\
           int req = args(1).int_value (true);
           int arg = args(2).int_value (true);
 
-          if (! error_state)
+          // FIXME: Need better checking here?
+          if (fid < 0)
+            error ("fcntl: invalid file id");
+          else
             {
-              // FIXME: Need better checking here?
-              if (fid < 0)
-                error ("fcntl: invalid file id");
-              else
-                {
-                  std::string msg;
+              std::string msg;
 
-                  int status = octave_fcntl (fid, req, arg, msg);
+              int status = octave_fcntl (fid, req, arg, msg);
 
-                  retval(1) = msg;
-                  retval(0) = status;
-                }
+              retval(1) = msg;
+              retval(0) = status;
             }
         }
       else
@@ -768,20 +756,14 @@ Return 0 if successful, otherwise return -1.\n\
     {
       pid_t pid = args(0).int_value (true);
 
-      if (! error_state)
-        {
-          int sig = args(1).int_value (true);
+      int sig = args(1).int_value (true);
 
-          if (! error_state)
-            {
-              std::string msg;
+      std::string msg;
 
-              int status = octave_syscalls::kill (pid, sig, msg);
+      int status = octave_syscalls::kill (pid, sig, msg);
 
-              retval(1) = msg;
-              retval(0) = status;
-            }
-        }
+      retval(1) = msg;
+      retval(0) = status;
     }
   else
     print_usage ();
@@ -806,12 +788,9 @@ The function outputs are described in the documentation for @code{stat}.\n\
     {
       std::string fname = args(0).string_value ();
 
-      if (! error_state)
-        {
-          file_stat fs (fname, false);
+      file_stat fs (fname, false);
 
-          retval = mk_stat_result (fs);
-        }
+      retval = mk_stat_result (fs);
     }
   else
     print_usage ();
@@ -888,17 +867,14 @@ error message.\n\
                 {
                   int mode = convert (octal_mode, 8, 10);
 
-                  if (! error_state)
-                    {
-                      std::string msg;
+                  std::string msg;
 
-                      int status = octave_mkfifo (name, mode, msg);
+                  int status = octave_mkfifo (name, mode, msg);
 
-                      retval(0) = status;
+                  retval(0) = status;
 
-                      if (status < 0)
-                        retval(1) = msg;
-                    }
+                  if (status < 0)
+                    retval(1) = msg;
                 }
             }
           else
@@ -1085,23 +1061,17 @@ For example:\n\
         {
           int fid = octave_stream_list::get_file_number (args(0));
 
-          if (! error_state)
-            {
-              file_fstat fs (fid);
+          file_fstat fs (fid);
 
-              retval = mk_stat_result (fs);
-            }
+          retval = mk_stat_result (fs);
         }
       else
         {
           std::string fname = args(0).string_value ();
 
-          if (! error_state)
-            {
-              file_stat fs (fname);
+          file_stat fs (fname);
 
-              retval = mk_stat_result (fs);
-            }
+          retval = mk_stat_result (fs);
         }
     }
   else

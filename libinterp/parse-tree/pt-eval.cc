@@ -97,15 +97,12 @@ tree_evaluator::visit_binary_expression (tree_binary_expression&)
 void
 tree_evaluator::visit_break_command (tree_break_command& cmd)
 {
-  if (! error_state)
-    {
-      if (debug_mode)
-        do_breakpoint (cmd.is_breakpoint ());
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint ());
 
-      if (statement_context == function || statement_context == script
-          || in_loop_command)
-        tree_break_command::breaking = 1;
-    }
+  if (statement_context == function || statement_context == script
+      || in_loop_command)
+    tree_break_command::breaking = 1;
 }
 
 void
@@ -117,15 +114,12 @@ tree_evaluator::visit_colon_expression (tree_colon_expression&)
 void
 tree_evaluator::visit_continue_command (tree_continue_command& cmd)
 {
-  if (! error_state)
-    {
-      if (debug_mode)
-        do_breakpoint (cmd.is_breakpoint ());
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint ());
 
-      if (statement_context == function || statement_context == script
-          || in_loop_command)
-        tree_continue_command::continuing = 1;
-    }
+  if (statement_context == function || statement_context == script
+      || in_loop_command)
+    tree_continue_command::continuing = 1;
 }
 
 void
@@ -152,23 +146,20 @@ do_global_init (tree_decl_elt& elt)
     {
       id->mark_global ();
 
-      if (! error_state)
+      octave_lvalue ult = id->lvalue ();
+
+      if (ult.is_undefined ())
         {
-          octave_lvalue ult = id->lvalue ();
+          tree_expression *expr = elt.expression ();
 
-          if (ult.is_undefined ())
-            {
-              tree_expression *expr = elt.expression ();
+          octave_value init_val;
 
-              octave_value init_val;
+          if (expr)
+            init_val = expr->rvalue1 ();
+          else
+            init_val = Matrix ();
 
-              if (expr)
-                init_val = expr->rvalue1 ();
-              else
-                init_val = Matrix ();
-
-              ult.assign (octave_value::op_asn_eq, init_val);
-            }
+          ult.assign (octave_value::op_asn_eq, init_val);
         }
     }
 }
@@ -212,9 +203,6 @@ tree_evaluator::do_decl_init_list (decl_elt_init_fcn fcn,
           tree_decl_elt *elt = *p;
 
           fcn (*elt);
-
-          if (error_state)
-            break;
         }
     }
 }
@@ -255,12 +243,9 @@ tree_decl_elt::eval (void)
 
       octave_value init_val = expr->rvalue1 ();
 
-      if (! error_state)
-        {
-          ult.assign (octave_value::op_asn_eq, init_val);
+      ult.assign (octave_value::op_asn_eq, init_val);
 
-          retval = true;
-        }
+      retval = true;
     }
 
   return retval;
@@ -284,8 +269,7 @@ quit_loop_now (void)
   if (tree_continue_command::continuing)
     tree_continue_command::continuing--;
 
-  bool quit = (error_state
-               || tree_return_command::returning
+  bool quit = (tree_return_command::returning
                || tree_break_command::breaking
                || tree_continue_command::continuing);
 
@@ -298,9 +282,6 @@ quit_loop_now (void)
 void
 tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {
-  if (error_state)
-    return;
-
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
@@ -322,16 +303,13 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
     return;
 #endif
 
-  if (error_state || rhs.is_undefined ())
+  if (rhs.is_undefined ())
     return;
 
   {
     tree_expression *lhs = cmd.left_hand_side ();
 
     octave_lvalue ult = lhs->lvalue ();
-
-    if (error_state)
-      return;
 
     tree_statement_list *loop_body = cmd.body ();
 
@@ -347,7 +325,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
             ult.assign (octave_value::op_asn_eq, val);
 
-            if (! error_state && loop_body)
+            if (loop_body)
               loop_body->accept (*this);
 
             if (quit_loop_now ())
@@ -358,7 +336,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       {
         ult.assign (octave_value::op_asn_eq, rhs);
 
-        if (! error_state && loop_body)
+        if (loop_body)
           loop_body->accept (*this);
 
         // Maybe decrement break and continue states.
@@ -404,7 +382,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
                 ult.assign (octave_value::op_asn_eq, val);
 
-                if (! error_state && loop_body)
+                if (loop_body)
                   loop_body->accept (*this);
 
                 if (quit_loop_now ())
@@ -423,9 +401,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 void
 tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 {
-  if (error_state)
-    return;
-
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
@@ -439,7 +414,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 
   octave_value rhs = expr->rvalue1 ();
 
-  if (error_state || rhs.is_undefined ())
+  if (rhs.is_undefined ())
     return;
 
   if (rhs.is_map ())
@@ -481,7 +456,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
           val_ref.assign (octave_value::op_asn_eq, val);
           key_ref.assign (octave_value::op_asn_eq, key);
 
-          if (! error_state && loop_body)
+          if (loop_body)
             loop_body->accept (*this);
 
           if (quit_loop_now ())
@@ -574,13 +549,10 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
 
       if (tic->is_else_clause () || expr->is_logically_true ("if"))
         {
-          if (! error_state)
-            {
-              tree_statement_list *stmt_lst = tic->commands ();
+          tree_statement_list *stmt_lst = tic->commands ();
 
-              if (stmt_lst)
-                stmt_lst->accept (*this);
-            }
+          if (stmt_lst)
+            stmt_lst->accept (*this);
 
           break;
         }
@@ -657,24 +629,21 @@ tree_evaluator::visit_prefix_expression (tree_prefix_expression&)
 void
 tree_evaluator::visit_return_command (tree_return_command& cmd)
 {
-  if (! error_state)
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint ());
+
+  // Act like dbcont.
+
+  if (Vdebugging
+      && octave_call_stack::current_frame () == current_frame)
     {
-      if (debug_mode)
-        do_breakpoint (cmd.is_breakpoint ());
+      Vdebugging = false;
 
-      // Act like dbcont.
-
-      if (Vdebugging
-          && octave_call_stack::current_frame () == current_frame)
-        {
-          Vdebugging = false;
-
-          reset_debug_state ();
-        }
-      else if (statement_context == function || statement_context == script
-               || in_loop_command)
-        tree_return_command::returning = 1;
+      reset_debug_state ();
     }
+  else if (statement_context == function || statement_context == script
+           || in_loop_command)
+    tree_return_command::returning = 1;
 }
 
 void
@@ -745,7 +714,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 
               octave_value tmp_result = expr->rvalue1 (0);
 
-              if (do_bind_ans && ! (error_state || tmp_result.is_undefined ()))
+              if (do_bind_ans && tmp_result.is_defined ())
                 bind_ans (tmp_result, expr->print_result ()
                           && statement_printing_enabled ());
 
@@ -755,13 +724,10 @@ tree_evaluator::visit_statement (tree_statement& stmt)
         }
       catch (const std::bad_alloc&)
         {
-          // FIXME: We want to use error_with_id here so that we set
-          // the error state, give users control over this error
-          // message, and so that we set the error_state appropriately
-          // so we'll get stack trace info when appropriate.  But
-          // error_with_id will require some memory allocations.  Is
-          // there anything we can do to make those more likely to
-          // succeed?
+          // FIXME: We want to use error_with_id here so that give users
+          // control over this error message but error_with_id will
+          // require some memory allocations.  Is there anything we can
+          // do to make those more likely to succeed?
 
           error_with_id ("Octave:bad-alloc",
                          "out of memory or dimension too large for Octave's index type");
@@ -773,9 +739,6 @@ void
 tree_evaluator::visit_statement_list (tree_statement_list& lst)
 {
   static octave_value_list empty_list;
-
-  if (error_state)
-    return;
 
   tree_statement_list::iterator p = lst.begin ();
 
@@ -790,9 +753,6 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
               octave_quit ();
 
               elt->accept (*this);
-
-              if (error_state)
-                break;
 
               if (tree_break_command::breaking
                   || tree_continue_command::continuing)
@@ -853,7 +813,7 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 
       tree_switch_case_list *lst = cmd.case_list ();
 
-      if (! error_state && lst)
+      if (lst)
         {
           for (tree_switch_case_list::iterator p = lst->begin ();
                p != lst->end (); p++)
@@ -862,9 +822,6 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 
               if (t->is_default_case () || t->label_matches (val))
                 {
-                  if (error_state)
-                    break;
-
                   tree_statement_list *stmt_lst = t->commands ();
 
                   if (stmt_lst)
@@ -1060,9 +1017,7 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
           // of interrupt or out-of-memory.
           do_unwind_protect_cleanup_code (cleanup_code);
 
-          // FIXME: should error_state be checked here?
-          // We want to rethrow the exception, even if error_state is set, so
-          // that interrupts continue.
+          // We want to rethrow the exception so that interrupts continue.
           throw;
         }
 
@@ -1073,9 +1028,6 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 void
 tree_evaluator::visit_while_command (tree_while_command& cmd)
 {
-  if (error_state)
-    return;
-
 #if HAVE_LLVM
   if (tree_jit::execute (cmd))
     return;
@@ -1102,12 +1054,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
           tree_statement_list *loop_body = cmd.body ();
 
           if (loop_body)
-            {
-              loop_body->accept (*this);
-
-              if (error_state)
-                return;
-            }
+            loop_body->accept (*this);
 
           if (quit_loop_now ())
             break;
@@ -1120,9 +1067,6 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
 void
 tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 {
-  if (error_state)
-    return;
-
 #if HAVE_LLVM
   if (tree_jit::execute (cmd))
     return;
@@ -1144,12 +1088,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
       tree_statement_list *loop_body = cmd.body ();
 
       if (loop_body)
-        {
-          loop_body->accept (*this);
-
-          if (error_state)
-            return;
-        }
+        loop_body->accept (*this);
 
       if (quit_loop_now ())
         break;

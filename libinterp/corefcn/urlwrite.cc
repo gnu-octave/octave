@@ -607,14 +607,10 @@ Undocumented internal function\n\
       if (nargin > 2)
         passwd = args(2).string_value ();
 
-      if (! error_state)
-        {
-          curl_handle ch
-            = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
+      curl_handle ch
+        = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
 
-          if (! error_state)
-            retval = ch.value ();
-        }
+      retval = ch.value ();
     }
 
   return retval;
@@ -635,9 +631,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         retval = curl.pwd ();
@@ -663,9 +656,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         {
@@ -701,9 +691,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         {
@@ -783,9 +770,6 @@ Undocumented internal function\n\
     {
       url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
-
       if (curl.is_valid ())
         curl.ascii ();
       else
@@ -810,9 +794,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         curl.binary ();
@@ -839,9 +820,6 @@ Undocumented internal function\n\
     {
       curl_handle h = ch_manager::lookup (args(0));
 
-      if (error_state)
-        return retval;
-
       if (h.ok ())
         ch_manager::free (h);
       else
@@ -867,9 +845,6 @@ Undocumented internal function\n\
     {
       url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
-
       if (curl.is_valid ())
         retval = (curl.is_ascii () ? "ascii" : "binary");
       else
@@ -894,9 +869,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         {
@@ -930,9 +902,6 @@ Undocumented internal function\n\
     {
       url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
-
       if (curl.is_valid ())
         {
           std::string dir = args(1).string_value ();
@@ -964,9 +933,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         {
@@ -1000,9 +966,6 @@ Undocumented internal function\n\
     {
       url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
-
       if (curl.is_valid ())
         {
           std::string oldname = args(1).string_value ();
@@ -1035,9 +998,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         {
@@ -1126,9 +1086,6 @@ Undocumented internal function\n\
   else
     {
       url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
 
       if (curl.is_valid ())
         {

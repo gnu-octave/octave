@@ -1318,7 +1318,7 @@ octave_value::next_subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
                             size_t skip)
 {
-  if (! error_state && idx.size () > skip)
+  if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
       for (size_t i = 0; i < skip; i++)
@@ -1334,7 +1334,7 @@ octave_value::next_subsref (int nargout, const std::string& type,
                             const std::list<octave_value_list>& idx,
                             size_t skip)
 {
-  if (! error_state && idx.size () > skip)
+  if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
       for (size_t i = 0; i < skip; i++)
@@ -1351,7 +1351,7 @@ octave_value::next_subsref (int nargout, const std::string& type,
                             const std::list<octave_lvalue> *lvalue_list,
                             size_t skip)
 {
-  if (! error_state && idx.size () > skip)
+  if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
       for (size_t i = 0; i < skip; i++)
@@ -1367,7 +1367,7 @@ octave_value::next_subsref (bool auto_add, const std::string& type,
                             const std::list<octave_value_list>& idx,
                             size_t skip)
 {
-  if (! error_state && idx.size () > skip)
+  if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
       for (size_t i = 0; i < skip; i++)
@@ -1443,28 +1443,21 @@ octave_value::assign (assign_op op, const std::string& type,
         {
           octave_value t = subsref (type, idx);
 
-          if (! error_state)
-            {
-              binary_op binop = op_eq_to_binary_op (op);
+          binary_op binop = op_eq_to_binary_op (op);
 
-              if (! error_state)
-                t_rhs = do_binary_op (binop, t, rhs);
-            }
+          t_rhs = do_binary_op (binop, t, rhs);
         }
       else
         error ("in computed assignment A(index) OP= X, A must be defined first");
     }
 
-  if (! error_state)
-    {
-      octave_value tmp = subsasgn (type, idx, t_rhs);
+  octave_value tmp = subsasgn (type, idx, t_rhs);
 
-      if (error_state)
-        gripe_assign_failed_or_no_method (assign_op_as_string (op_asn_eq),
-                                          type_name (), rhs.type_name ());
-      else
-        *this = tmp;
-    }
+  if (error_state)
+    gripe_assign_failed_or_no_method (assign_op_as_string (op_asn_eq),
+                                      type_name (), rhs.type_name ());
+  else
+    *this = tmp;
 
   return *this;
 }
@@ -1499,13 +1492,9 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 
           binary_op binop = op_eq_to_binary_op (op);
 
-          if (! error_state)
-            {
-              octave_value t = do_binary_op (binop, *this, rhs);
+          octave_value t = do_binary_op (binop, *this, rhs);
 
-              if (! error_state)
-                operator = (t);
-            }
+          operator = (t);
         }
     }
   else
@@ -1548,7 +1537,7 @@ octave_value::is_equal (const octave_value& test) const
       octave_value tmp = do_binary_op (octave_value::op_eq, *this, test);
 
       // Empty array also means a match.
-      if (! error_state && tmp.is_defined ())
+      if (tmp.is_defined ())
         retval = tmp.is_true () || tmp.is_empty ();
     }
 
@@ -1685,12 +1674,9 @@ octave_value::vector_value (bool force_string_conv,
 {
   Array<double> retval = array_value (force_string_conv);
 
-  if (error_state)
-    return retval;
-  else
-    return retval.reshape (make_vector_dims (retval.dims (),
-                                             force_vector_conversion,
-                                             type_name (), "real vector"));
+  return retval.reshape (make_vector_dims (retval.dims (),
+                                           force_vector_conversion,
+                                           type_name (), "real vector"));
 }
 
 template <class T>
@@ -1736,36 +1722,30 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
   else
     {
       const NDArray a = array_value (force_string_conv);
-      if (! error_state)
+
+      if (require_int)
         {
-          if (require_int)
+          retval.resize (a.dims ());
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
-              retval.resize (a.dims ());
-              for (octave_idx_type i = 0; i < a.numel (); i++)
+              double ai = a.elem (i);
+              int v = static_cast<int> (ai);
+              if (ai == v)
+                retval.xelem (i) = v;
+              else
                 {
-                  double ai = a.elem (i);
-                  int v = static_cast<int> (ai);
-                  if (ai == v)
-                    retval.xelem (i) = v;
-                  else
-                    {
-                      error_with_cfn ("conversion to integer value failed");
-                      break;
-                    }
+                  error_with_cfn ("conversion to integer value failed");
+                  break;
                 }
             }
-          else
-            retval = Array<int> (a);
         }
+      else
+        retval = Array<int> (a);
     }
 
-
-  if (error_state)
-    return retval;
-  else
-    return retval.reshape (make_vector_dims (retval.dims (),
-                                             force_vector_conversion,
-                                             type_name (), "integer vector"));
+  return retval.reshape (make_vector_dims (retval.dims (),
+                                           force_vector_conversion,
+                                           type_name (), "integer vector"));
 }
 
 template <class T>
@@ -1812,36 +1792,30 @@ octave_value::octave_idx_type_vector_value (bool require_int,
   else
     {
       const NDArray a = array_value (force_string_conv);
-      if (! error_state)
+
+      if (require_int)
         {
-          if (require_int)
+          retval.resize (a.dims ());
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
-              retval.resize (a.dims ());
-              for (octave_idx_type i = 0; i < a.numel (); i++)
+              double ai = a.elem (i);
+              octave_idx_type v = static_cast<octave_idx_type> (ai);
+              if (ai == v)
+                retval.xelem (i) = v;
+              else
                 {
-                  double ai = a.elem (i);
-                  octave_idx_type v = static_cast<octave_idx_type> (ai);
-                  if (ai == v)
-                    retval.xelem (i) = v;
-                  else
-                    {
-                      error_with_cfn ("conversion to integer value failed");
-                      break;
-                    }
+                  error_with_cfn ("conversion to integer value failed");
+                  break;
                 }
             }
-          else
-            retval = Array<octave_idx_type> (a);
         }
+      else
+        retval = Array<octave_idx_type> (a);
     }
 
-
-  if (error_state)
-    return retval;
-  else
-    return retval.reshape (make_vector_dims (retval.dims (),
-                                             force_vector_conversion,
-                                             type_name (), "integer vector"));
+  return retval.reshape (make_vector_dims (retval.dims (),
+                                           force_vector_conversion,
+                                           type_name (), "integer vector"));
 }
 
 Array<Complex>
@@ -1850,12 +1824,9 @@ octave_value::complex_vector_value (bool force_string_conv,
 {
   Array<Complex> retval = complex_array_value (force_string_conv);
 
-  if (error_state)
-    return retval;
-  else
-    return retval.reshape (make_vector_dims (retval.dims (),
-                                             force_vector_conversion,
-                                             type_name (), "complex vector"));
+  return retval.reshape (make_vector_dims (retval.dims (),
+                                           force_vector_conversion,
+                                           type_name (), "complex vector"));
 }
 
 FloatColumnVector
@@ -1897,12 +1868,9 @@ octave_value::float_vector_value (bool force_string_conv,
 {
   Array<float> retval = float_array_value (force_string_conv);
 
-  if (error_state)
-    return retval;
-  else
-    return retval.reshape (make_vector_dims (retval.dims (),
-                                             force_vector_conversion,
-                                             type_name (), "real vector"));
+  return retval.reshape (make_vector_dims (retval.dims (),
+                                           force_vector_conversion,
+                                           type_name (), "real vector"));
 }
 
 Array<FloatComplex>
@@ -1911,12 +1879,9 @@ octave_value::float_complex_vector_value (bool force_string_conv,
 {
   Array<FloatComplex> retval = float_complex_array_value (force_string_conv);
 
-  if (error_state)
-    return retval;
-  else
-    return retval.reshape (make_vector_dims (retval.dims (),
-                                             force_vector_conversion,
-                                             type_name (), "complex vector"));
+  return retval.reshape (make_vector_dims (retval.dims (),
+                                           force_vector_conversion,
+                                           type_name (), "complex vector"));
 }
 
 octave_value
@@ -2966,15 +2931,12 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 
       decode_subscripts ("subsref", args(1), type, idx);
 
-      if (! error_state)
-        {
-          octave_value arg0 = args(0);
+      octave_value arg0 = args(0);
 
-          if (type.empty ())
-            retval = arg0;
-          else
-            retval = arg0.subsref (type, idx, nargout);
-        }
+      if (type.empty ())
+        retval = arg0;
+      else
+        retval = arg0.subsref (type, idx, nargout);
     }
   else
     print_usage ();
@@ -3024,23 +2986,19 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 
       decode_subscripts ("subsasgn", args(1), type, idx);
 
-      if (! error_state)
+      if (type.empty ())
         {
-          if (type.empty ())
-            {
-              // Regularize a null matrix if stored into a variable.
+          // Regularize a null matrix if stored into a variable.
 
-              retval = args(2).storable_value ();
-            }
-          else
-            {
-              octave_value arg0 = args(0);
+          retval = args(2).storable_value ();
+        }
+      else
+        {
+          octave_value arg0 = args(0);
 
-              arg0.make_unique ();
+          arg0.make_unique ();
 
-              if (! error_state)
-                retval= arg0.subsasgn (type, idx, args(2));
-            }
+          retval= arg0.subsasgn (type, idx, args(2));
         }
     }
   else

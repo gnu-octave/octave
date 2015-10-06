@@ -203,8 +203,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
         }
     }
 
-  if (! error_state)
-    symbol_table::add_to_parent_map (id, parent_list);
+  symbol_table::add_to_parent_map (id, parent_list);
 }
 
 octave_base_value *
@@ -402,18 +401,15 @@ octave_class::subsref (const std::string& type,
 
                 Cell tmp = dotref (key_idx);
 
-                if (! error_state)
-                  {
-                    Cell t = tmp.index (idx.front ());
+                Cell t = tmp.index (idx.front ());
 
-                    retval(0) = (t.numel () == 1) ? t(0)
-                                                   : octave_value (t, true);
+                retval(0) = (t.numel () == 1) ? t(0)
+                  : octave_value (t, true);
 
-                    // We handled two index elements, so tell
-                    // next_subsref to skip both of them.
+                // We handled two index elements, so tell
+                // next_subsref to skip both of them.
 
-                    skip++;
-                  }
+                skip++;
               }
             else
               retval(0) = octave_value (map.index (idx.front ()),
@@ -456,9 +452,6 @@ octave_class::subsref (const std::string& type,
           octave_value_list args;
 
           args(1) = make_idx_args (type, idx, "subsref");
-
-          if (error_state)
-            return octave_value_list ();
 
           count++;
           args(0) = octave_value (this);
@@ -569,10 +562,6 @@ octave_class::subsasgn_common (const octave_value& obj,
             args(2) = rhs;
 
           args(1) = make_idx_args (type, idx, "subsasgn");
-
-          if (error_state)
-            return octave_value_list ();
-
           args(0) = obj;
 
           // Now comes the magic. Count copies with me:
@@ -628,6 +617,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       if (obvp)
         {
           obvp->subsasgn (type, idx, rhs);
+
           if (! error_state)
             {
               count++;
@@ -682,20 +672,17 @@ octave_class::subsasgn_common (const octave_value& obj,
                         u = numeric_conv (map_elt, type.substr (2));
                       }
 
-                    if (! error_state)
-                      {
-                        std::list<octave_value_list> next_idx (idx);
+                    std::list<octave_value_list> next_idx (idx);
 
-                        // We handled two index elements, so subsasgn to
-                        // needs to skip both of them.
+                    // We handled two index elements, so subsasgn to
+                    // needs to skip both of them.
 
-                        next_idx.erase (next_idx.begin ());
-                        next_idx.erase (next_idx.begin ());
+                    next_idx.erase (next_idx.begin ());
+                    next_idx.erase (next_idx.begin ());
 
-                        u.make_unique ();
+                    u.make_unique ();
 
-                        t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
-                      }
+                    t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
                   }
                 else
                   gripe_invalid_index_for_assignment ();
@@ -728,27 +715,23 @@ octave_class::subsasgn_common (const octave_value& obj,
               }
 
             // FIXME: better code reuse?
-            if (! error_state)
+            if (tmpc.numel () == 1)
               {
-                if (tmpc.numel () == 1)
+                octave_value& tmp = tmpc(0);
+
+                if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                   {
-                    octave_value& tmp = tmpc(0);
-
-                    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                      {
-                        tmp = octave_value::empty_conv (next_type, rhs);
-                        tmp.make_unique (); // probably a no-op.
-                      }
-                    else
-                      // optimization: ignore copy still stored inside our map.
-                      tmp.make_unique (1);
-
-                    if (! error_state)
-                      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                    tmp = octave_value::empty_conv (next_type, rhs);
+                    tmp.make_unique (); // probably a no-op.
                   }
                 else
-                  gripe_indexed_cs_list ();
+                  // optimization: ignore copy still stored inside our map.
+                  tmp.make_unique (1);
+
+                t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
               }
+            else
+              gripe_indexed_cs_list ();
           }
           break;
 
@@ -899,18 +882,15 @@ octave_class::index_vector (bool require_integers) const
 
       octave_value_list tmp = feval (meth.function_value (), args, 1);
 
-      if (!error_state && tmp.length () >= 1)
-        {
-          if (tmp(0).is_object ())
-            error ("subsindex function must return a valid index vector");
-          else
-            // Index vector returned by subsindex is zero based
-            // (why this inconsistency Mathworks?), and so we must
-            // add one to the value returned as the index_vector method
-            // expects it to be one based.
-            retval = do_binary_op (octave_value::op_add, tmp (0),
-                                   octave_value (1.0)).index_vector (require_integers);
-        }
+      if (tmp(0).is_object ())
+        error ("subsindex function must return a valid index vector");
+      else
+        // Index vector returned by subsindex is zero based
+        // (why this inconsistency Mathworks?), and so we must
+        // add one to the value returned as the index_vector method
+        // expects it to be one based.
+        retval = do_binary_op (octave_value::op_add, tmp (0),
+                               octave_value (1.0)).index_vector (require_integers);
     }
   else
     error ("no subsindex method defined for class %s",
@@ -1058,7 +1038,7 @@ octave_class::all_strings (bool pad) const
 
       octave_value_list tmp = feval (meth.function_value (), args, 1);
 
-      if (!error_state && tmp.length () >= 1)
+      if (tmp.length () >= 1)
         {
           if (tmp(0).is_string ())
             retval = tmp(0).all_strings (pad);
@@ -1270,10 +1250,8 @@ octave_class::save_ascii (std::ostream& os)
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
-      if (! error_state)
-        m = tmp(0).map_value ();
-      else
-        return false;
+
+      m = tmp(0).map_value ();
     }
   else
     m = map_value ();
@@ -1350,10 +1328,7 @@ octave_class::load_ascii (std::istream& is)
                       octave_value in = new octave_class (*this);
                       octave_value_list tmp = feval ("loadobj", in, 1);
 
-                      if (! error_state)
-                        map = tmp(0).map_value ();
-                      else
-                        success = false;
+                      map = tmp(0).map_value ();
                     }
                 }
               else
@@ -1398,10 +1373,8 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
-      if (! error_state)
-        m = tmp(0).map_value ();
-      else
-        return false;
+
+      m = tmp(0).map_value ();
     }
   else
     m = map_value ();
@@ -1494,10 +1467,7 @@ octave_class::load_binary (std::istream& is, bool swap,
               octave_value in = new octave_class (*this);
               octave_value_list tmp = feval ("loadobj", in, 1);
 
-              if (! error_state)
-                map = tmp(0).map_value ();
-              else
-                success = false;
+              map = tmp(0).map_value ();
             }
         }
       else
@@ -1569,10 +1539,8 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_f
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
-      if (! error_state)
-        m = tmp(0).map_value ();
-      else
-        goto error_cleanup;
+
+      m = tmp(0).map_value ();
     }
   else
     m = map_value ();
@@ -1740,13 +1708,8 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
           octave_value in = new octave_class (*this);
           octave_value_list tmp = feval ("loadobj", in, 1);
 
-          if (! error_state)
-            {
-              map = tmp(0).map_value ();
-              retval = true;
-            }
-          else
-            retval = false;
+          map = tmp(0).map_value ();
+          retval = true;
         }
     }
 
@@ -1917,18 +1880,15 @@ is derived.\n\
                             = octave_value (new octave_class (m, id, parents));
                         }
 
-                      if (! error_state)
-                        {
-                          octave_class::exemplar_const_iterator it
-                            = octave_class::exemplar_map.find (id);
+                      octave_class::exemplar_const_iterator it
+                        = octave_class::exemplar_map.find (id);
 
-                          if (it == octave_class::exemplar_map.end ())
-                            octave_class::exemplar_map[id]
-                              = octave_class::exemplar_info (retval);
-                          else if (! it->second.compare (retval))
-                            error ("class: object of class '%s' does not match previously constructed objects",
-                                   id.c_str ());
-                        }
+                      if (it == octave_class::exemplar_map.end ())
+                        octave_class::exemplar_map[id]
+                          = octave_class::exemplar_info (retval);
+                      else if (! it->second.compare (retval))
+                        error ("class: object of class '%s' does not match previously constructed objects",
+                               id.c_str ());
                     }
                   else
                     error ("class: expecting structure S as first argument");
@@ -2137,18 +2097,12 @@ is a method of this class.\n\
       else
         error ("ismethod: expecting object or class name as first argument");
 
-      if (! error_state)
-        {
-          std::string method = args(1).string_value ();
+      std::string method = args(1).string_value ();
 
-          if (! error_state)
-            {
-              if (load_path::find_method (class_name, method) != std::string ())
-                retval = true;
-              else
-                retval = false;
-            }
-        }
+      if (load_path::find_method (class_name, method) != std::string ())
+        retval = true;
+      else
+        retval = false;
     }
   else
     print_usage ();
@@ -2178,11 +2132,8 @@ Implements @code{methods} for Octave class objects and classnames.\n\
   else if (arg.is_string ())
     class_name = arg.string_value ();
 
-  if (! error_state)
-    {
-      string_vector sv = load_path::methods (class_name);
-      retval = Cell (sv);
-    }
+  string_vector sv = load_path::methods (class_name);
+  retval = Cell (sv);
 
   return retval;
 }

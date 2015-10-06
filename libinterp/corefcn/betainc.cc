@@ -87,44 +87,34 @@ compatible dimensions.\n\
                 {
                   float a = a_arg.float_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          float b = b_arg.float_value ();
+                      float b = b_arg.float_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<float> b = b_arg.float_array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<float> b = b_arg.float_array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
               else
                 {
                   Array<float> a = a_arg.float_array_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          float b = b_arg.float_value ();
+                      float b = b_arg.float_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<float> b = b_arg.float_array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<float> b = b_arg.float_array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
             }
@@ -136,44 +126,34 @@ compatible dimensions.\n\
                 {
                   float a = a_arg.float_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          float b = b_arg.float_value ();
+                      float b = b_arg.float_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<float> b = b_arg.float_array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<float> b = b_arg.float_array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
               else
                 {
                   Array<float> a = a_arg.float_array_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          float b = b_arg.float_value ();
+                      float b = b_arg.float_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<float> b = b_arg.float_array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<float> b = b_arg.float_array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
             }
@@ -188,44 +168,34 @@ compatible dimensions.\n\
                 {
                   double a = a_arg.double_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          double b = b_arg.double_value ();
+                      double b = b_arg.double_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<double> b = b_arg.array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
               else
                 {
                   Array<double> a = a_arg.array_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          double b = b_arg.double_value ();
+                      double b = b_arg.double_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<double> b = b_arg.array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
             }
@@ -237,44 +207,34 @@ compatible dimensions.\n\
                 {
                   double a = a_arg.double_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          double b = b_arg.double_value ();
+                      double b = b_arg.double_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<double> b = b_arg.array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
               else
                 {
                   Array<double> a = a_arg.array_value ();
 
-                  if (! error_state)
+                  if (b_arg.is_scalar_type ())
                     {
-                      if (b_arg.is_scalar_type ())
-                        {
-                          double b = b_arg.double_value ();
+                      double b = b_arg.double_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
-                      else
-                        {
-                          Array<double> b = b_arg.array_value ();
+                      retval = betainc (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
 
-                          if (! error_state)
-                            retval = betainc (x, a, b);
-                        }
+                      retval = betainc (x, a, b);
                     }
                 }
             }
@@ -360,44 +320,34 @@ The inverse is the value @var{x} such that\n\
             {
               double a = a_arg.double_value ();
 
-              if (! error_state)
+              if (b_arg.is_scalar_type ())
                 {
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
+                  double b = b_arg.double_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
+                  retval = betaincinv (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
+                  retval = betaincinv (x, a, b);
                 }
             }
           else
             {
               Array<double> a = a_arg.array_value ();
 
-              if (! error_state)
+              if (b_arg.is_scalar_type ())
                 {
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
+                  double b = b_arg.double_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
+                  retval = betaincinv (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
+                  retval = betaincinv (x, a, b);
                 }
             }
         }
@@ -409,44 +359,34 @@ The inverse is the value @var{x} such that\n\
             {
               double a = a_arg.double_value ();
 
-              if (! error_state)
+              if (b_arg.is_scalar_type ())
                 {
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
+                  double b = b_arg.double_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
+                  retval = betaincinv (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
+                  retval = betaincinv (x, a, b);
                 }
             }
           else
             {
               Array<double> a = a_arg.array_value ();
 
-              if (! error_state)
+              if (b_arg.is_scalar_type ())
                 {
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
+                  double b = b_arg.double_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
+                  retval = betaincinv (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
 
-                      if (! error_state)
-                        retval = betaincinv (x, a, b);
-                    }
+                  retval = betaincinv (x, a, b);
                 }
             }
         }

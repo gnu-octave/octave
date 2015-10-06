@@ -153,17 +153,14 @@ octave_struct::subsref (const std::string& type,
 
             const Cell tmp = dotref (key_idx);
 
-            if (! error_state)
-              {
-                const Cell t = tmp.index (idx.front ());
+            const Cell t = tmp.index (idx.front ());
 
-                retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
+            retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
 
-                // We handled two index elements, so tell
-                // next_subsref to skip both of them.
+            // We handled two index elements, so tell
+            // next_subsref to skip both of them.
 
-                skip++;
-              }
+            skip++;
           }
         else
           retval(0) = do_index_op (idx.front ());
@@ -219,17 +216,14 @@ octave_struct::subsref (const std::string& type,
 
             const Cell tmp = dotref (key_idx, auto_add);
 
-            if (! error_state)
-              {
-                const Cell t = tmp.index (idx.front (), auto_add);
+            const Cell t = tmp.index (idx.front (), auto_add);
 
-                retval = (t.numel () == 1) ? t(0) : octave_value (t, true);
+            retval = (t.numel () == 1) ? t(0) : octave_value (t, true);
 
-                // We handled two index elements, so tell
-                // next_subsref to skip both of them.
+            // We handled two index elements, so tell
+            // next_subsref to skip both of them.
 
-                skip++;
-              }
+            skip++;
           }
         else
           retval = do_index_op (idx.front (), auto_add);
@@ -324,9 +318,6 @@ octave_struct::subsasgn (const std::string& type,
 
                 maybe_warn_invalid_field_name (key, "subsasgn");
 
-                if (error_state)
-                  return retval;
-
                 std::list<octave_value_list> next_idx (idx);
 
                 // We handled two index elements, so subsasgn to
@@ -347,69 +338,6 @@ octave_struct::subsasgn (const std::string& type,
 
                 // FIXME: better code reuse?
                 //        cf. octave_cell::subsasgn and the case below.
-                if (! error_state)
-                  {
-                    if (tmpc.numel () == 1)
-                      {
-                        octave_value& tmp = tmpc(0);
-
-                        bool orig_undefined = tmp.is_undefined ();
-
-                        if (orig_undefined || tmp.is_zero_by_zero ())
-                          {
-                            tmp = octave_value::empty_conv (next_type, rhs);
-                            tmp.make_unique (); // probably a no-op.
-                          }
-                        else
-                          // optimization: ignore the copy
-                          // still stored inside our map.
-                          tmp.make_unique (1);
-
-                        if (! error_state)
-                          t_rhs =
-                            (orig_undefined
-                               ? tmp.undef_subsasgn (next_type, next_idx, rhs)
-                               : tmp.subsasgn (next_type, next_idx, rhs));
-                      }
-                    else
-                      gripe_indexed_cs_list ();
-                  }
-              }
-            else
-              gripe_invalid_index_for_assignment ();
-          }
-          break;
-
-        case '.':
-          {
-            octave_value_list key_idx = idx.front ();
-
-            assert (key_idx.length () == 1);
-
-            std::string key = key_idx(0).string_value ();
-
-            maybe_warn_invalid_field_name (key, "subsasgn");
-
-            if (error_state)
-              return retval;
-
-            std::list<octave_value_list> next_idx (idx);
-
-            next_idx.erase (next_idx.begin ());
-
-            std::string next_type = type.substr (1);
-
-            Cell tmpc (1, 1);
-            octave_map::iterator pkey = map.seek (key);
-            if (pkey != map.end ())
-              {
-                map.contents (pkey).make_unique ();
-                tmpc = map.contents (pkey);
-              }
-
-            // FIXME: better code reuse?
-            if (! error_state)
-              {
                 if (tmpc.numel () == 1)
                   {
                     octave_value& tmp = tmpc(0);
@@ -426,14 +354,66 @@ octave_struct::subsasgn (const std::string& type,
                       // still stored inside our map.
                       tmp.make_unique (1);
 
-                    if (! error_state)
-                      t_rhs = (orig_undefined
-                               ? tmp.undef_subsasgn (next_type, next_idx, rhs)
-                               : tmp.subsasgn (next_type, next_idx, rhs));
+                      t_rhs =(orig_undefined
+                              ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                              : tmp.subsasgn (next_type, next_idx, rhs));
                   }
                 else
                   gripe_indexed_cs_list ();
               }
+            else
+              gripe_invalid_index_for_assignment ();
+          }
+          break;
+
+        case '.':
+          {
+            octave_value_list key_idx = idx.front ();
+
+            assert (key_idx.length () == 1);
+
+            std::string key = key_idx(0).string_value ();
+
+            maybe_warn_invalid_field_name (key, "subsasgn");
+
+            std::list<octave_value_list> next_idx (idx);
+
+            next_idx.erase (next_idx.begin ());
+
+            std::string next_type = type.substr (1);
+
+            Cell tmpc (1, 1);
+            octave_map::iterator pkey = map.seek (key);
+            if (pkey != map.end ())
+              {
+                map.contents (pkey).make_unique ();
+                tmpc = map.contents (pkey);
+              }
+
+            // FIXME: better code reuse?
+
+            if (tmpc.numel () == 1)
+              {
+                octave_value& tmp = tmpc(0);
+
+                bool orig_undefined = tmp.is_undefined ();
+
+                if (orig_undefined || tmp.is_zero_by_zero ())
+                  {
+                    tmp = octave_value::empty_conv (next_type, rhs);
+                    tmp.make_unique (); // probably a no-op.
+                  }
+                else
+                  // optimization: ignore the copy
+                  // still stored inside our map.
+                  tmp.make_unique (1);
+
+                t_rhs = (orig_undefined
+                         ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                         : tmp.subsasgn (next_type, next_idx, rhs));
+              }
+            else
+              gripe_indexed_cs_list ();
           }
           break;
 
@@ -463,9 +443,6 @@ octave_struct::subsasgn (const std::string& type,
                 std::string key = key_idx(0).string_value ();
 
                 maybe_warn_invalid_field_name (key, "subsasgn");
-
-                if (error_state)
-                  return retval;
 
                 if (! error_state)
                   {
@@ -571,9 +548,6 @@ octave_struct::subsasgn (const std::string& type,
             std::string key = key_idx(0).string_value ();
 
             maybe_warn_invalid_field_name (key, "subsasgn");
-
-            if (error_state)
-              return retval;
 
             if (t_rhs.is_cs_list ())
               {
@@ -1156,9 +1130,6 @@ octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
 
   maybe_warn_invalid_field_name (nm, "subsref");
 
-  if (error_state)
-    return retval;
-
   retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
@@ -1283,9 +1254,6 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       maybe_warn_invalid_field_name (key, "subsasgn");
 
-      if (error_state)
-        return retval;
-
       if (n > 1)
         {
           std::list<octave_value_list> next_idx (idx);
@@ -1302,24 +1270,20 @@ octave_scalar_struct::subsasgn (const std::string& type,
               tmp = map.contents (pkey);
             }
 
-          if (! error_state)
+          bool orig_undefined = tmp.is_undefined ();
+
+          if (orig_undefined || tmp.is_zero_by_zero ())
             {
-              bool orig_undefined = tmp.is_undefined ();
-
-              if (orig_undefined || tmp.is_zero_by_zero ())
-                {
-                  tmp = octave_value::empty_conv (next_type, rhs);
-                  tmp.make_unique (); // probably a no-op.
-                }
-              else
-                // optimization: ignore the copy still stored inside our map.
-                tmp.make_unique (1);
-
-              if (! error_state)
-                t_rhs = (orig_undefined
-                         ? tmp.undef_subsasgn (next_type, next_idx, rhs)
-                         : tmp.subsasgn (next_type, next_idx, rhs));
+              tmp = octave_value::empty_conv (next_type, rhs);
+              tmp.make_unique (); // probably a no-op.
             }
+          else
+            // optimization: ignore the copy still stored inside our map.
+            tmp.make_unique (1);
+
+          t_rhs = (orig_undefined
+                   ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                   : tmp.subsasgn (next_type, next_idx, rhs));
         }
 
       if (! error_state)
@@ -1925,13 +1889,7 @@ produces a struct @strong{array}.\n\
 
       std::string key (args(i).string_value ());
 
-      if (error_state)
-        return retval;
-
       maybe_warn_invalid_field_name (key, "struct");
-
-      if (error_state)
-        return retval;
 
       // Value may be v, { v }, or { v1, v2, ... }
       // In the first two cases, we need to create a cell array of
@@ -1943,9 +1901,6 @@ produces a struct @strong{array}.\n\
         {
           const Cell c (args(i+1).cell_value ());
 
-          if (error_state)
-            return retval;
-
           if (scalar (c.dims ()))
             map.setfield (key, Cell (dims, c(0)));
           else
@@ -1953,9 +1908,6 @@ produces a struct @strong{array}.\n\
         }
       else
         map.setfield (key, Cell (dims, args(i+1)));
-
-      if (error_state)
-        return retval;
     }
 
   return octave_value (map);
@@ -2175,12 +2127,7 @@ A(1)\n\
       if (nargin == 3)
         {
           if (args(2).is_real_scalar ())
-            {
-              dim = nargin == 2 ? 0 : args(2).int_value () - 1;
-
-              if (error_state)
-                return retval;
-            }
+            dim = nargin == 2 ? 0 : args(2).int_value () - 1;
           else
             {
               error ("cell2struct: DIM must be a real scalar");
@@ -2279,28 +2226,24 @@ the named fields.\n\
 
       octave_value_list fval = Fcellstr (args(1), 1);
 
-      if (! error_state)
+      Cell fcell = fval(0).cell_value ();
+
+      for (int i = 0; i < fcell.numel (); i++)
         {
-          Cell fcell = fval(0).cell_value ();
+          std::string key = fcell(i).string_value ();
 
-          for (int i = 0; i < fcell.numel (); i++)
+          if (m.isfield (key))
+            m.rmfield (key);
+          else
             {
-              std::string key = fcell(i).string_value ();
+              error ("rmfield: structure does not contain field %s",
+                     key.c_str ());
 
-              if (m.isfield (key))
-                m.rmfield (key);
-              else
-                {
-                  error ("rmfield: structure does not contain field %s",
-                         key.c_str ());
-
-                  break;
-                }
+              break;
             }
-
-          if (! error_state)
-            retval = m;
         }
+
+      retval = m;
     }
   else
     print_usage ();

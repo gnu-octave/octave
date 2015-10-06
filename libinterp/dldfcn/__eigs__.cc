@@ -270,7 +270,7 @@ Undocumented internal function.\n\
 
   // Note hold off reading B till later to avoid issues of double
   // copies of the matrix if B is full/real while A is complex.
-  if (! error_state && nargin > 1 + arg_offset
+  if (nargin > 1 + arg_offset
       && ! (args(1 + arg_offset).is_real_scalar ()))
     {
       if (args(1+arg_offset).is_complex_type ())
@@ -288,10 +288,10 @@ Undocumented internal function.\n\
         }
     }
 
-  if (!error_state && nargin > (1+arg_offset))
+  if (nargin > (1+arg_offset))
     k = args(1+arg_offset).nint_value ();
 
-  if (!error_state && nargin > (2+arg_offset))
+  if (nargin > (2+arg_offset))
     {
       if (args(2+arg_offset).is_string ())
         {
@@ -319,7 +319,7 @@ Undocumented internal function.\n\
   sigmar = std::real (sigma);
   sigmai = std::imag (sigma);
 
-  if (!error_state && nargin > (3+arg_offset))
+  if (nargin > (3+arg_offset))
     {
       if (args(3+arg_offset).is_map ())
         {
@@ -423,48 +423,128 @@ Undocumented internal function.\n\
 
   // Mode 1 for SM mode seems unstable for some reason.
   // Use Mode 3 instead, with sigma = 0.
-  if (!error_state && !have_sigma && typ == "SM")
+  if (! have_sigma && typ == "SM")
     have_sigma = true;
 
-  if (!error_state)
+  octave_idx_type nconv;
+  if (a_is_complex || b_is_complex)
     {
-      octave_idx_type nconv;
-      if (a_is_complex || b_is_complex)
-        {
-          ComplexMatrix eig_vec;
-          ComplexColumnVector eig_val;
+      ComplexMatrix eig_vec;
+      ComplexColumnVector eig_val;
 
+
+      if (have_a_fun)
+        nconv = EigsComplexNonSymmetricFunc
+          (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+           eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
+           disp, maxit);
+      else if (have_sigma)
+        {
+          if (a_is_sparse)
+            nconv = EigsComplexNonSymmetricMatrixShift
+              (ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
+               cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+               maxit);
+          else
+            nconv = EigsComplexNonSymmetricMatrixShift
+              (acm, sigma, k, p, info, eig_vec, eig_val, bcm, permB,
+               cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+               maxit);
+        }
+      else
+        {
+          if (a_is_sparse)
+            nconv = EigsComplexNonSymmetricMatrix
+              (ascm, typ, k, p, info, eig_vec, eig_val, bscm, permB,
+               cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+               maxit);
+          else
+            nconv = EigsComplexNonSymmetricMatrix
+              (acm, typ, k, p, info, eig_vec, eig_val, bcm, permB,
+               cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+               maxit);
+        }
+
+      if (nargout < 2)
+        retval(0) = eig_val;
+      else
+        {
+          retval(2) = double (info);
+          retval(1) = ComplexDiagMatrix (eig_val);
+          retval(0) = eig_vec;
+        }
+    }
+  else if (sigmai != 0.)
+    {
+      // Promote real problem to a complex one.
+      ComplexMatrix eig_vec;
+      ComplexColumnVector eig_val;
+
+      if (have_a_fun)
+        nconv = EigsComplexNonSymmetricFunc
+          (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec,
+           eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
+           disp, maxit);
+      else
+        {
+          if (a_is_sparse)
+            nconv = EigsComplexNonSymmetricMatrixShift
+              (SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
+               eig_val, SparseComplexMatrix (bsmm), permB, cresid,
+               octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+          else
+            nconv = EigsComplexNonSymmetricMatrixShift
+              (ComplexMatrix (amm), sigma, k, p, info, eig_vec,
+               eig_val, ComplexMatrix (bmm), permB, cresid,
+               octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+        }
+
+      if (nargout < 2)
+        retval(0) = eig_val;
+      else
+        {
+          retval(2) = double (info);
+          retval(1) = ComplexDiagMatrix (eig_val);
+          retval(0) = eig_vec;
+        }
+    }
+  else
+    {
+      if (symmetric)
+        {
+          Matrix eig_vec;
+          ColumnVector eig_val;
 
           if (have_a_fun)
-            nconv = EigsComplexNonSymmetricFunc
-                    (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
-                     eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
-                     disp, maxit);
+            nconv = EigsRealSymmetricFunc
+              (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+               eig_val, resid, octave_stdout, tol, (nargout > 1),
+               cholB, disp, maxit);
           else if (have_sigma)
             {
               if (a_is_sparse)
-                nconv = EigsComplexNonSymmetricMatrixShift
-                        (ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
-                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                         maxit);
+                nconv = EigsRealSymmetricMatrixShift
+                  (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
+                   permB, resid, octave_stdout, tol, (nargout > 1),
+                   cholB, disp, maxit);
               else
-                nconv = EigsComplexNonSymmetricMatrixShift
-                        (acm, sigma, k, p, info, eig_vec, eig_val, bcm, permB,
-                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                         maxit);
+                nconv = EigsRealSymmetricMatrixShift
+                  (amm, sigmar, k, p, info, eig_vec, eig_val, bmm,
+                   permB, resid, octave_stdout, tol, (nargout > 1),
+                   cholB, disp, maxit);
             }
           else
             {
               if (a_is_sparse)
-                nconv = EigsComplexNonSymmetricMatrix
-                        (ascm, typ, k, p, info, eig_vec, eig_val, bscm, permB,
-                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                         maxit);
+                nconv = EigsRealSymmetricMatrix
+                  (asmm, typ, k, p, info, eig_vec, eig_val, bsmm,
+                   permB, resid, octave_stdout, tol, (nargout > 1),
+                   cholB, disp, maxit);
               else
-                nconv = EigsComplexNonSymmetricMatrix
-                        (acm, typ, k, p, info, eig_vec, eig_val, bcm, permB,
-                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                         maxit);
+                nconv = EigsRealSymmetricMatrix
+                  (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
+                   resid, octave_stdout, tol, (nargout > 1), cholB,
+                   disp, maxit);
             }
 
           if (nargout < 2)
@@ -472,146 +552,63 @@ Undocumented internal function.\n\
           else
             {
               retval(2) = double (info);
-              retval(1) = ComplexDiagMatrix (eig_val);
-              retval(0) = eig_vec;
-            }
-        }
-      else if (sigmai != 0.)
-        {
-          // Promote real problem to a complex one.
-          ComplexMatrix eig_vec;
-          ComplexColumnVector eig_val;
-
-          if (have_a_fun)
-            nconv = EigsComplexNonSymmetricFunc
-                    (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec,
-                     eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
-                     disp, maxit);
-          else
-            {
-              if (a_is_sparse)
-                nconv = EigsComplexNonSymmetricMatrixShift
-                        (SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
-                         eig_val, SparseComplexMatrix (bsmm), permB, cresid,
-                         octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
-              else
-                nconv = EigsComplexNonSymmetricMatrixShift
-                        (ComplexMatrix (amm), sigma, k, p, info, eig_vec,
-                         eig_val, ComplexMatrix (bmm), permB, cresid,
-                         octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
-            }
-
-          if (nargout < 2)
-            retval(0) = eig_val;
-          else
-            {
-              retval(2) = double (info);
-              retval(1) = ComplexDiagMatrix (eig_val);
+              retval(1) = DiagMatrix (eig_val);
               retval(0) = eig_vec;
             }
         }
       else
         {
-          if (symmetric)
+          ComplexMatrix eig_vec;
+          ComplexColumnVector eig_val;
+
+          if (have_a_fun)
+            nconv = EigsRealNonSymmetricFunc
+              (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+               eig_val, resid, octave_stdout, tol, (nargout > 1),
+               cholB, disp, maxit);
+          else if (have_sigma)
             {
-              Matrix eig_vec;
-              ColumnVector eig_val;
-
-              if (have_a_fun)
-                nconv = EigsRealSymmetricFunc
-                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
-                         eig_val, resid, octave_stdout, tol, (nargout > 1),
-                         cholB, disp, maxit);
-              else if (have_sigma)
-                {
-                  if (a_is_sparse)
-                    nconv = EigsRealSymmetricMatrixShift
-                            (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1),
-                             cholB, disp, maxit);
-                  else
-                    nconv = EigsRealSymmetricMatrixShift
-                            (amm, sigmar, k, p, info, eig_vec, eig_val, bmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1),
-                             cholB, disp, maxit);
-                }
+              if (a_is_sparse)
+                nconv = EigsRealNonSymmetricMatrixShift
+                  (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
+                   permB, resid, octave_stdout, tol, (nargout > 1),
+                   cholB, disp, maxit);
               else
-                {
-                  if (a_is_sparse)
-                    nconv = EigsRealSymmetricMatrix
-                            (asmm, typ, k, p, info, eig_vec, eig_val, bsmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1),
-                             cholB, disp, maxit);
-                  else
-                    nconv = EigsRealSymmetricMatrix
-                            (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
-                             resid, octave_stdout, tol, (nargout > 1), cholB,
-                             disp, maxit);
-                }
-
-              if (nargout < 2)
-                retval(0) = eig_val;
-              else
-                {
-                  retval(2) = double (info);
-                  retval(1) = DiagMatrix (eig_val);
-                  retval(0) = eig_vec;
-                }
+                nconv = EigsRealNonSymmetricMatrixShift
+                  (amm, sigmar, k, p, info, eig_vec, eig_val, bmm,
+                   permB, resid, octave_stdout, tol, (nargout > 1),
+                   cholB, disp, maxit);
             }
           else
             {
-              ComplexMatrix eig_vec;
-              ComplexColumnVector eig_val;
-
-              if (have_a_fun)
-                nconv = EigsRealNonSymmetricFunc
-                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
-                         eig_val, resid, octave_stdout, tol, (nargout > 1),
-                         cholB, disp, maxit);
-              else if (have_sigma)
-                {
-                  if (a_is_sparse)
-                    nconv = EigsRealNonSymmetricMatrixShift
-                            (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1),
-                             cholB, disp, maxit);
-                  else
-                    nconv = EigsRealNonSymmetricMatrixShift
-                            (amm, sigmar, k, p, info, eig_vec, eig_val, bmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1),
-                             cholB, disp, maxit);
-                }
+              if (a_is_sparse)
+                nconv = EigsRealNonSymmetricMatrix
+                  (asmm, typ, k, p, info, eig_vec, eig_val, bsmm,
+                   permB, resid, octave_stdout, tol, (nargout > 1),
+                   cholB, disp, maxit);
               else
-                {
-                  if (a_is_sparse)
-                    nconv = EigsRealNonSymmetricMatrix
-                            (asmm, typ, k, p, info, eig_vec, eig_val, bsmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1),
-                             cholB, disp, maxit);
-                  else
-                    nconv = EigsRealNonSymmetricMatrix
-                            (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
-                             resid, octave_stdout, tol, (nargout > 1), cholB,
-                             disp, maxit);
-                }
+                nconv = EigsRealNonSymmetricMatrix
+                  (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
+                   resid, octave_stdout, tol, (nargout > 1), cholB,
+                   disp, maxit);
+            }
 
-              if (nargout < 2)
-                retval(0) = eig_val;
-              else
-                {
-                  retval(2) = double (info);
-                  retval(1) = ComplexDiagMatrix (eig_val);
-                  retval(0) = eig_vec;
-                }
+          if (nargout < 2)
+            retval(0) = eig_val;
+          else
+            {
+              retval(2) = double (info);
+              retval(1) = ComplexDiagMatrix (eig_val);
+              retval(0) = eig_vec;
             }
         }
-
-      if (nconv <= 0)
-        warning ("eigs: None of the %d requested eigenvalues converged", k);
-      else if (nconv < k)
-        warning ("eigs: Only %d of the %d requested eigenvalues converged",
-                 nconv, k);
     }
+
+  if (nconv <= 0)
+    warning ("eigs: None of the %d requested eigenvalues converged", k);
+  else if (nconv < k)
+    warning ("eigs: Only %d of the %d requested eigenvalues converged",
+             nconv, k);
 
   if (! fcn_name.empty ())
     clear_function (fcn_name);

@@ -126,19 +126,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in complex arithmetic;
 
           FloatComplexMatrix ca = arg_a.float_complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatComplexMatrix cb = arg_b.float_complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatComplexMatrix cc = arg_c.float_complex_matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -147,19 +136,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in real arithmetic.
 
           FloatMatrix ca = arg_a.float_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatMatrix cb = arg_b.float_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatMatrix cc = arg_c.float_matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -173,19 +151,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in complex arithmetic;
 
           ComplexMatrix ca = arg_a.complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           ComplexMatrix cb = arg_b.complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           ComplexMatrix cc = arg_c.complex_matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -194,19 +161,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in real arithmetic.
 
           Matrix ca = arg_a.matrix_value ();
-
-          if (error_state)
-            return retval;
-
           Matrix cb = arg_b.matrix_value ();
-
-          if (error_state)
-            return retval;
-
           Matrix cc = arg_c.matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }

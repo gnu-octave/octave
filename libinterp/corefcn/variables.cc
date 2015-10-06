@@ -267,8 +267,6 @@ generate_struct_completions (const std::string& text,
 
           unwind_protect frame;
 
-          frame.protect_var (error_state);
-
           frame.protect_var (discard_error_messages);
           frame.protect_var (discard_warning_messages);
 
@@ -309,7 +307,6 @@ looks_like_struct (const std::string& text)
       unwind_protect frame;
 
       frame.protect_var (discard_error_messages);
-      frame.protect_var (error_state);
 
       discard_error_messages = true;
 
@@ -1696,13 +1693,10 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
               feval ("load", octave_value (nm), 0);
 
-              if (! error_state)
-                {
-                  std::string newmsg = std::string ("Variables in the file ") +
-                                       nm + ":\n\n";
+              std::string newmsg = std::string ("Variables in the file ")
+                + nm + ":\n\n";
 
-                  retval =  do_who (i, argv, return_list, verbose, newmsg);
-                }
+              retval =  do_who (i, argv, return_list, verbose, newmsg);
             }
 
           return retval;
@@ -1786,10 +1780,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
                           octave_value expr_val
                             = eval_string (pat, true, parse_status);
 
-                          if (! error_state)
-                            symbol_stats.append (sr, pat, expr_val);
-                          else
-                            return retval;
+                          symbol_stats.append (sr, pat, expr_val);
                         }
                     }
                 }
@@ -1897,8 +1888,7 @@ matching the given patterns.\n\
 
       string_vector argv = args.make_argv ("who");
 
-      if (! error_state)
-        retval = do_who (argc, argv, nargout == 1);
+      retval = do_who (argc, argv, nargout == 1);
     }
   else
     print_usage ();
@@ -1978,8 +1968,7 @@ complex, nesting, persistent.\n\
 
       string_vector argv = args.make_argv ("whos");
 
-      if (! error_state)
-        retval = do_who (argc, argv, nargout == 1, true);
+      retval = do_who (argc, argv, nargout == 1, true);
     }
   else
     print_usage ();
@@ -2468,129 +2457,126 @@ without the dash as well.\n\
 
   string_vector argv = args.make_argv ("clear");
 
-  if (! error_state)
+  if (argc == 1)
     {
-      if (argc == 1)
-        {
-          do_clear_globals (argv, argc, true);
-          do_clear_variables (argv, argc, true);
+      do_clear_globals (argv, argc, true);
+      do_clear_variables (argv, argc, true);
 
-          octave_link::clear_workspace ();
+      octave_link::clear_workspace ();
+    }
+  else
+    {
+      int idx = 0;
+
+      bool clear_all = false;
+      bool clear_functions = false;
+      bool clear_globals = false;
+      bool clear_variables = false;
+      bool clear_objects = false;
+      bool exclusive = false;
+      bool have_regexp = false;
+      bool have_dash_option = false;
+
+      while (++idx < argc)
+        {
+          if (argv[idx] == "-all" || argv[idx] == "-a")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_all = true;
+            }
+          else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
+            {
+              have_dash_option = true;
+              exclusive = true;
+            }
+          else if (argv[idx] == "-functions" || argv[idx] == "-f")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_functions = true;
+            }
+          else if (argv[idx] == "-global" || argv[idx] == "-g")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_globals = true;
+            }
+          else if (argv[idx] == "-variables" || argv[idx] == "-v")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_variables = true;
+            }
+          else if (argv[idx] == "-classes" || argv[idx] == "-c")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_objects = true;
+            }
+          else if (argv[idx] == "-regexp" || argv[idx] == "-r")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              have_regexp = true;
+            }
+          else
+            break;
         }
-      else
+
+      if (idx <= argc)
         {
-          int idx = 0;
-
-          bool clear_all = false;
-          bool clear_functions = false;
-          bool clear_globals = false;
-          bool clear_variables = false;
-          bool clear_objects = false;
-          bool exclusive = false;
-          bool have_regexp = false;
-          bool have_dash_option = false;
-
-          while (++idx < argc)
+          if (! have_dash_option)
             {
-              if (argv[idx] == "-all" || argv[idx] == "-a")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_all = true;
-                }
-              else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
-                {
-                  have_dash_option = true;
-                  exclusive = true;
-                }
-              else if (argv[idx] == "-functions" || argv[idx] == "-f")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_functions = true;
-                }
-              else if (argv[idx] == "-global" || argv[idx] == "-g")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_globals = true;
-                }
-              else if (argv[idx] == "-variables" || argv[idx] == "-v")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_variables = true;
-                }
-              else if (argv[idx] == "-classes" || argv[idx] == "-c")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_objects = true;
-                }
-              else if (argv[idx] == "-regexp" || argv[idx] == "-r")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  have_regexp = true;
-                }
-              else
-                break;
+              do_matlab_compatible_clear (argv, argc, idx);
             }
-
-          if (idx <= argc)
+          else
             {
-              if (! have_dash_option)
+              if (clear_all)
                 {
-                  do_matlab_compatible_clear (argv, argc, idx);
+                  maybe_warn_exclusive (exclusive);
+
+                  if (++idx < argc)
+                    warning
+                      ("clear: ignoring extra arguments after -all");
+
+                  symbol_table::clear_all ();
+                }
+              else if (have_regexp)
+                {
+                  do_clear_variables (argv, argc, idx, exclusive, true);
+                }
+              else if (clear_functions)
+                {
+                  do_clear_functions (argv, argc, idx, exclusive);
+                }
+              else if (clear_globals)
+                {
+                  do_clear_globals (argv, argc, idx, exclusive);
+                }
+              else if (clear_variables)
+                {
+                  do_clear_variables (argv, argc, idx, exclusive);
+                }
+              else if (clear_objects)
+                {
+                  symbol_table::clear_objects ();
+                  octave_class::clear_exemplar_map ();
+                  symbol_table::clear_all ();
                 }
               else
                 {
-                  if (clear_all)
-                    {
-                      maybe_warn_exclusive (exclusive);
-
-                      if (++idx < argc)
-                        warning
-                          ("clear: ignoring extra arguments after -all");
-
-                      symbol_table::clear_all ();
-                    }
-                  else if (have_regexp)
-                    {
-                      do_clear_variables (argv, argc, idx, exclusive, true);
-                    }
-                  else if (clear_functions)
-                    {
-                      do_clear_functions (argv, argc, idx, exclusive);
-                    }
-                  else if (clear_globals)
-                    {
-                      do_clear_globals (argv, argc, idx, exclusive);
-                    }
-                  else if (clear_variables)
-                    {
-                      do_clear_variables (argv, argc, idx, exclusive);
-                    }
-                  else if (clear_objects)
-                    {
-                      symbol_table::clear_objects ();
-                      octave_class::clear_exemplar_map ();
-                      symbol_table::clear_all ();
-                    }
-                  else
-                    {
-                      do_clear_symbols (argv, argc, idx, exclusive);
-                    }
+                  do_clear_symbols (argv, argc, idx, exclusive);
                 }
-
-              octave_link::set_workspace ();
             }
+
+          octave_link::set_workspace ();
         }
     }
 

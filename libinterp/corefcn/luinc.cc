@@ -179,200 +179,170 @@ values of @var{p} @var{q} as vector values.\n\
         {
           std::string tmp = args(2).string_value ();
 
-          if (! error_state)
-            {
-              if (tmp.compare ("vector") == 0)
-                vecout = true;
-              else
-                error ("luinc: unrecognized string argument");
-            }
+          if (tmp.compare ("vector") == 0)
+            vecout = true;
+          else
+            error ("luinc: unrecognized string argument");
         }
 
       // FIXME: Add code for zero-level factorization
       if (zero_level)
         error ("luinc: zero-level factorization not implemented");
 
-      if (!error_state)
+      if (args(0).type_name () == "sparse matrix")
         {
-          if (args(0).type_name () == "sparse matrix")
+          SparseMatrix sm = args(0).sparse_matrix_value ();
+          octave_idx_type sm_nr = sm.rows ();
+          octave_idx_type sm_nc = sm.cols ();
+          ColumnVector Qinit (sm_nc);
+
+          for (octave_idx_type i = 0; i < sm_nc; i++)
+            Qinit (i) = i;
+
+          switch (nargout)
             {
-              SparseMatrix sm = args(0).sparse_matrix_value ();
-              octave_idx_type sm_nr = sm.rows ();
-              octave_idx_type sm_nc = sm.cols ();
-              ColumnVector Qinit (sm_nc);
+            case 0:
+            case 1:
+            case 2:
+              {
+                SparseLU fact (sm, Qinit, thresh, false, true, droptol,
+                               milu, udiag);
 
-              for (octave_idx_type i = 0; i < sm_nc; i++)
-                Qinit (i) = i;
+                SparseMatrix P = fact.Pr ();
+                SparseMatrix L = P.transpose () * fact.L ();
 
-              if (! error_state)
-                {
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                    case 2:
-                      {
-                        SparseLU fact (sm, Qinit, thresh, false, true, droptol,
-                                       milu, udiag);
+                retval(1)
+                  = octave_value (fact.U (), MatrixType (MatrixType::Upper));
 
-                        if (! error_state)
-                          {
-                            SparseMatrix P = fact.Pr ();
-                            SparseMatrix L = P.transpose () * fact.L ();
-                            retval(1)
-                              = octave_value (fact.U (),
-                                              MatrixType (MatrixType::Upper));
-                            retval(0)
-                              = octave_value (L, MatrixType
-                                                   (MatrixType::Permuted_Lower,
-                                                    sm_nr, fact.row_perm ()));
-                          }
-                      }
-                      break;
+                retval(0)
+                  = octave_value (L, MatrixType (MatrixType::Permuted_Lower,
+                                                 sm_nr, fact.row_perm ()));
+              }
+              break;
 
-                    case 3:
-                      {
-                        SparseLU fact (sm, Qinit, thresh, false, true, droptol,
-                                       milu, udiag);
+            case 3:
+              {
+                SparseLU fact (sm, Qinit, thresh, false, true, droptol,
+                               milu, udiag);
 
-                        if (! error_state)
-                          {
-                            if (vecout)
-                              retval(2) = fact.Pr_vec ();
-                            else
-                              retval(2) = fact.Pr_mat ();
-                            retval(1)
-                              = octave_value (fact.U (),
-                                              MatrixType (MatrixType::Upper));
-                            retval(0)
-                              = octave_value (fact.L (),
-                                              MatrixType (MatrixType::Lower));
-                          }
-                      }
-                      break;
+                if (vecout)
+                  retval(2) = fact.Pr_vec ();
+                else
+                  retval(2) = fact.Pr_mat ();
 
-                    case 4:
-                    default:
-                      {
-                        SparseLU fact (sm, Qinit, thresh, false, false, droptol,
-                                       milu, udiag);
+                retval(1)
+                  = octave_value (fact.U (), MatrixType (MatrixType::Upper));
 
-                        if (! error_state)
-                          {
-                            if (vecout)
-                              {
-                                retval(3) = fact.Pc_vec ();
-                                retval(2) = fact.Pr_vec ();
-                              }
-                            else
-                              {
-                                retval(3) = fact.Pc_mat ();
-                                retval(2) = fact.Pr_mat ();
-                              }
-                            retval(1)
-                              = octave_value (fact.U (),
-                                              MatrixType (MatrixType::Upper));
-                            retval(0)
-                              = octave_value (fact.L (),
-                                              MatrixType (MatrixType::Lower));
-                          }
-                      }
-                      break;
-                    }
-                }
+                retval(0)
+                  = octave_value (fact.L (), MatrixType (MatrixType::Lower));
+              }
+              break;
+
+            case 4:
+            default:
+              {
+                SparseLU fact (sm, Qinit, thresh, false, false, droptol,
+                               milu, udiag);
+
+                if (vecout)
+                  {
+                    retval(3) = fact.Pc_vec ();
+                    retval(2) = fact.Pr_vec ();
+                  }
+                else
+                  {
+                    retval(3) = fact.Pc_mat ();
+                    retval(2) = fact.Pr_mat ();
+                  }
+
+                retval(1)
+                  = octave_value (fact.U (), MatrixType (MatrixType::Upper));
+
+                retval(0)
+                  = octave_value (fact.L (), MatrixType (MatrixType::Lower));
+              }
+              break;
             }
-          else if (args(0).type_name () == "sparse complex matrix")
-            {
-              SparseComplexMatrix sm =
-                args(0).sparse_complex_matrix_value ();
-              octave_idx_type sm_nr = sm.rows ();
-              octave_idx_type sm_nc = sm.cols ();
-              ColumnVector Qinit (sm_nc);
-
-              for (octave_idx_type i = 0; i < sm_nc; i++)
-                Qinit (i) = i;
-
-              if (! error_state)
-                {
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                    case 2:
-                      {
-                        SparseComplexLU fact (sm, Qinit, thresh, false, true,
-                                              droptol, milu, udiag);
-
-
-                        if (! error_state)
-                          {
-                            SparseMatrix P = fact.Pr ();
-                            SparseComplexMatrix L = P.transpose () * fact.L ();
-                            retval(1)
-                              = octave_value (fact.U (),
-                                              MatrixType (MatrixType::Upper));
-                            retval(0)
-                              = octave_value (L, MatrixType
-                                                  (MatrixType::Permuted_Lower,
-                                                   sm_nr, fact.row_perm ()));
-                          }
-                      }
-                      break;
-
-                    case 3:
-                      {
-                        SparseComplexLU fact (sm, Qinit, thresh, false, true,
-                                              droptol, milu, udiag);
-
-                        if (! error_state)
-                          {
-                            if (vecout)
-                              retval(2) = fact.Pr_vec ();
-                            else
-                              retval(2) = fact.Pr_mat ();
-                            retval(1)
-                              = octave_value (fact.U (),
-                                              MatrixType (MatrixType::Upper));
-                            retval(0)
-                              = octave_value (fact.L (),
-                                              MatrixType (MatrixType::Lower));
-                          }
-                      }
-                      break;
-
-                    case 4:
-                    default:
-                      {
-                        SparseComplexLU fact (sm, Qinit, thresh, false, false,
-                                              droptol, milu, udiag);
-
-                        if (! error_state)
-                          {
-                            if (vecout)
-                              {
-                                retval(3) = fact.Pc_vec ();
-                                retval(2) = fact.Pr_vec ();
-                              }
-                            else
-                              {
-                                retval(3) = fact.Pc_mat ();
-                                retval(2) = fact.Pr_mat ();
-                              }
-                            retval(1)
-                              = octave_value (fact.U (),
-                                              MatrixType (MatrixType::Upper));
-                            retval(0)
-                              = octave_value (fact.L (),
-                                              MatrixType (MatrixType::Lower));
-                          }
-                      }
-                      break;
-                    }
-                }
-            }
-          else
-            error ("luinc: matrix A must be sparse");
         }
+      else if (args(0).type_name () == "sparse complex matrix")
+        {
+          SparseComplexMatrix sm =
+            args(0).sparse_complex_matrix_value ();
+          octave_idx_type sm_nr = sm.rows ();
+          octave_idx_type sm_nc = sm.cols ();
+          ColumnVector Qinit (sm_nc);
+
+          for (octave_idx_type i = 0; i < sm_nc; i++)
+            Qinit (i) = i;
+
+          switch (nargout)
+            {
+            case 0:
+            case 1:
+            case 2:
+              {
+                SparseComplexLU fact (sm, Qinit, thresh, false, true,
+                                      droptol, milu, udiag);
+
+
+                SparseMatrix P = fact.Pr ();
+                SparseComplexMatrix L = P.transpose () * fact.L ();
+
+                retval(1)
+                  = octave_value (fact.U (), MatrixType (MatrixType::Upper));
+
+                retval(0)
+                  = octave_value (L, MatrixType (MatrixType::Permuted_Lower,
+                                                 sm_nr, fact.row_perm ()));
+              }
+              break;
+
+            case 3:
+              {
+                SparseComplexLU fact (sm, Qinit, thresh, false, true,
+                                      droptol, milu, udiag);
+
+                if (vecout)
+                  retval(2) = fact.Pr_vec ();
+                else
+                  retval(2) = fact.Pr_mat ();
+
+                retval(1)
+                  = octave_value (fact.U (), MatrixType (MatrixType::Upper));
+
+                retval(0)
+                  = octave_value (fact.L (), MatrixType (MatrixType::Lower));
+              }
+              break;
+
+            case 4:
+            default:
+              {
+                SparseComplexLU fact (sm, Qinit, thresh, false, false,
+                                      droptol, milu, udiag);
+
+                if (vecout)
+                  {
+                    retval(3) = fact.Pc_vec ();
+                    retval(2) = fact.Pr_vec ();
+                  }
+                else
+                  {
+                    retval(3) = fact.Pc_mat ();
+                    retval(2) = fact.Pr_mat ();
+                  }
+
+                retval(1)
+                  = octave_value (fact.U (), MatrixType (MatrixType::Upper));
+
+                retval(0)
+                  = octave_value (fact.L (), MatrixType (MatrixType::Lower));
+              }
+              break;
+            }
+        }
+      else
+        error ("luinc: matrix A must be sparse");
     }
 
   return retval;

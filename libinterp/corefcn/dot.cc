@@ -147,7 +147,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
           argx = argx.reshape (dimx);
           dimy = dimy.redim (1);
           argy = argy.reshape (dimy);
-          match = ! error_state && (dimx == dimy);
+          match = dimx == dimy;
         }
 
       if (match)
@@ -158,9 +158,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
           else
             dim = args(2).int_value (true) - 1;
 
-          if (error_state)
-            ;
-          else if (dim < 0)
+          if (dim < 0)
             error ("dot: DIM must be a valid dimension");
           else
             {
@@ -174,10 +172,10 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       FloatComplexNDArray y = argy.float_complex_array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       FloatComplexNDArray z (dimz);
-                      if (! error_state)
-                        F77_XFCN (cdotc3, CDOTC3, (m, n, k,
-                                                   x.data (), y.data (),
-                                                   z.fortran_vec ()));
+
+                      F77_XFCN (cdotc3, CDOTC3, (m, n, k,
+                                                 x.data (), y.data (),
+                                                 z.fortran_vec ()));
                       retval = z;
                     }
                   else
@@ -186,10 +184,10 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       ComplexNDArray y = argy.complex_array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       ComplexNDArray z (dimz);
-                      if (! error_state)
-                        F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
-                                                   x.data (), y.data (),
-                                                   z.fortran_vec ()));
+
+                      F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
+                                                 x.data (), y.data (),
+                                                 z.fortran_vec ()));
                       retval = z;
                     }
                 }
@@ -201,9 +199,9 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       FloatNDArray y = argy.float_array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       FloatNDArray z (dimz);
-                      if (! error_state)
-                        F77_XFCN (sdot3, SDOT3, (m, n, k, x.data (), y.data (),
-                                                 z.fortran_vec ()));
+
+                      F77_XFCN (sdot3, SDOT3, (m, n, k, x.data (), y.data (),
+                                               z.fortran_vec ()));
                       retval = z;
                     }
                   else
@@ -212,9 +210,9 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       NDArray y = argy.array_value ();
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       NDArray z (dimz);
-                      if (! error_state)
-                        F77_XFCN (ddot3, DDOT3, (m, n, k, x.data (), y.data (),
-                                                 z.fortran_vec ()));
+
+                      F77_XFCN (ddot3, DDOT3, (m, n, k, x.data (), y.data (),
+                                               z.fortran_vec ()));
                       retval = z;
                     }
                 }
@@ -224,12 +222,10 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                   octave_value_list tmp;
                   tmp(1) = dim + 1;
                   tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
-                  if (! error_state)
-                    {
-                      tmp = feval ("sum", tmp, 1);
-                      if (! tmp.empty ())
-                        retval = tmp(0);
-                    }
+
+                  tmp = feval ("sum", tmp, 1);
+                  if (! tmp.empty ())
+                    retval = tmp(0);
                 }
             }
         }
@@ -341,10 +337,10 @@ endfor\n\
                   FloatComplexNDArray x = argx.float_complex_array_value ();
                   FloatComplexNDArray y = argy.float_complex_array_value ();
                   FloatComplexNDArray z (dimz);
-                  if (! error_state)
-                    F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
-                                               x.data (), y.data (),
-                                               z.fortran_vec ()));
+
+                  F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
+                                             x.data (), y.data (),
+                                             z.fortran_vec ()));
                   retval = z;
                 }
               else
@@ -352,10 +348,10 @@ endfor\n\
                   ComplexNDArray x = argx.complex_array_value ();
                   ComplexNDArray y = argy.complex_array_value ();
                   ComplexNDArray z (dimz);
-                  if (! error_state)
-                    F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
-                                               x.data (), y.data (),
-                                               z.fortran_vec ()));
+
+                  F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
+                                             x.data (), y.data (),
+                                             z.fortran_vec ()));
                   retval = z;
                 }
             }
@@ -366,10 +362,10 @@ endfor\n\
                   FloatNDArray x = argx.float_array_value ();
                   FloatNDArray y = argy.float_array_value ();
                   FloatNDArray z (dimz);
-                  if (! error_state)
-                    F77_XFCN (smatm3, SMATM3, (m, n, k, np,
-                                               x.data (), y.data (),
-                                               z.fortran_vec ()));
+
+                  F77_XFCN (smatm3, SMATM3, (m, n, k, np,
+                                             x.data (), y.data (),
+                                             z.fortran_vec ()));
                   retval = z;
                 }
               else
@@ -377,10 +373,10 @@ endfor\n\
                   NDArray x = argx.array_value ();
                   NDArray y = argy.array_value ();
                   NDArray z (dimz);
-                  if (! error_state)
-                    F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
-                                               x.data (), y.data (),
-                                               z.fortran_vec ()));
+
+                  F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
+                                             x.data (), y.data (),
+                                             z.fortran_vec ()));
                   retval = z;
                 }
             }

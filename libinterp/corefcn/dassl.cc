@@ -365,31 +365,28 @@ parameters for @code{dassl}.\n\
                   {
                     string_vector tmp = f_arg.all_strings ();
 
-                    if (! error_state)
+                    fcn_name = unique_symbol_name ("__dassl_fcn__");
+                    fname = "function y = ";
+                    fname.append (fcn_name);
+                    fname.append (" (x, xdot, t) y = ");
+                    dassl_fcn = extract_function (tmp(0), "dassl", fcn_name,
+                                                  fname, "; endfunction");
+
+                    if (dassl_fcn)
                       {
-                        fcn_name = unique_symbol_name ("__dassl_fcn__");
-                        fname = "function y = ";
-                        fname.append (fcn_name);
-                        fname.append (" (x, xdot, t) y = ");
-                        dassl_fcn = extract_function (tmp(0), "dassl", fcn_name,
-                                                      fname, "; endfunction");
+                        jac_name = unique_symbol_name ("__dassl_jac__");
+                        jname = "function jac = ";
+                        jname.append (jac_name);
+                        jname.append (" (x, xdot, t, cj) jac = ");
+                        dassl_jac = extract_function (tmp(1), "dassl",
+                                                      jac_name, jname,
+                                                      "; endfunction");
 
-                        if (dassl_fcn)
+                        if (!dassl_jac)
                           {
-                            jac_name = unique_symbol_name ("__dassl_jac__");
-                            jname = "function jac = ";
-                            jname.append (jac_name);
-                            jname.append (" (x, xdot, t, cj) jac = ");
-                            dassl_jac = extract_function (tmp(1), "dassl",
-                                                          jac_name, jname,
-                                                          "; endfunction");
-
-                            if (!dassl_jac)
-                              {
-                                if (fcn_name.length ())
-                                  clear_function (fcn_name);
-                                dassl_fcn = 0;
-                              }
+                            if (fcn_name.length ())
+                              clear_function (fcn_name);
+                            dassl_fcn = 0;
                           }
                       }
                   }
@@ -453,26 +450,23 @@ parameters for @code{dassl}.\n\
       if (jac_name.length ())
         clear_function (jac_name);
 
-      if (! error_state)
+      std::string msg = dae.error_message ();
+
+      retval(3) = msg;
+      retval(2) = static_cast<double> (dae.integration_state ());
+
+      if (dae.integration_ok ())
         {
-          std::string msg = dae.error_message ();
+          retval(1) = deriv_output;
+          retval(0) = output;
+        }
+      else
+        {
+          retval(1) = Matrix ();
+          retval(0) = Matrix ();
 
-          retval(3) = msg;
-          retval(2) = static_cast<double> (dae.integration_state ());
-
-          if (dae.integration_ok ())
-            {
-              retval(1) = deriv_output;
-              retval(0) = output;
-            }
-          else
-            {
-              retval(1) = Matrix ();
-              retval(0) = Matrix ();
-
-              if (nargout < 3)
-                error ("dassl: %s", msg.c_str ());
-            }
+          if (nargout < 3)
+            error ("dassl: %s", msg.c_str ());
         }
     }
   else

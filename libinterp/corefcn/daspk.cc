@@ -364,31 +364,28 @@ parameters for @code{daspk}.\n\
                   {
                     string_vector tmp = f_arg.all_strings ();
 
-                    if (! error_state)
+                    fcn_name = unique_symbol_name ("__daspk_fcn__");
+                    fname = "function y = ";
+                    fname.append (fcn_name);
+                    fname.append (" (x, xdot, t) y = ");
+                    daspk_fcn = extract_function (tmp(0), "daspk", fcn_name,
+                                                  fname, "; endfunction");
+
+                    if (daspk_fcn)
                       {
-                        fcn_name = unique_symbol_name ("__daspk_fcn__");
-                        fname = "function y = ";
-                        fname.append (fcn_name);
-                        fname.append (" (x, xdot, t) y = ");
-                        daspk_fcn = extract_function (tmp(0), "daspk", fcn_name,
-                                                      fname, "; endfunction");
+                        jac_name = unique_symbol_name ("__daspk_jac__");
+                        jname = "function jac = ";
+                        jname.append (jac_name);
+                        jname.append (" (x, xdot, t, cj) jac = ");
+                        daspk_jac = extract_function (tmp(1), "daspk",
+                                                      jac_name, jname,
+                                                      "; endfunction");
 
-                        if (daspk_fcn)
+                        if (!daspk_jac)
                           {
-                            jac_name = unique_symbol_name ("__daspk_jac__");
-                            jname = "function jac = ";
-                            jname.append (jac_name);
-                            jname.append (" (x, xdot, t, cj) jac = ");
-                            daspk_jac = extract_function (tmp(1), "daspk",
-                                                          jac_name, jname,
-                                                          "; endfunction");
-
-                            if (!daspk_jac)
-                              {
-                                if (fcn_name.length ())
-                                  clear_function (fcn_name);
-                                daspk_fcn = 0;
-                              }
+                            if (fcn_name.length ())
+                              clear_function (fcn_name);
+                            daspk_fcn = 0;
                           }
                       }
                   }
@@ -451,26 +448,23 @@ parameters for @code{daspk}.\n\
       if (jac_name.length ())
         clear_function (jac_name);
 
-      if (! error_state)
+      std::string msg = dae.error_message ();
+
+      retval(3) = msg;
+      retval(2) = static_cast<double> (dae.integration_state ());
+
+      if (dae.integration_ok ())
         {
-          std::string msg = dae.error_message ();
+          retval(1) = deriv_output;
+          retval(0) = output;
+        }
+      else
+        {
+          retval(1) = Matrix ();
+          retval(0) = Matrix ();
 
-          retval(3) = msg;
-          retval(2) = static_cast<double> (dae.integration_state ());
-
-          if (dae.integration_ok ())
-            {
-              retval(1) = deriv_output;
-              retval(0) = output;
-            }
-          else
-            {
-              retval(1) = Matrix ();
-              retval(0) = Matrix ();
-
-              if (nargout < 3)
-                error ("daspk: %s", msg.c_str ());
-            }
+          if (nargout < 3)
+            error ("daspk: %s", msg.c_str ());
         }
     }
   else

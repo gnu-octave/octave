@@ -87,7 +87,7 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
   u_half = x(:,1) + (1/2) * dt * (der(:,1:7) * coefs_u_half);
   
   ## Rescale time on [0,1]
-  s = (t_out - t) / dt;
+  s = (t_out - t(1)) / dt;
 
   ## Hermite basis functions
   ## H0 = 1   - 11*s.^2 + 18*s.^3 -  8*s.^4;

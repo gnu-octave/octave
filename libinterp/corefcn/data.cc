@@ -413,7 +413,7 @@ hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
   else if (nargin >= 3)
     {
       retval = args(0);
-      for (int i = 1; i < nargin && ! error_state; i++)
+      for (int i = 1; i < nargin; i++)
         retval = do_hypot (retval, args(i));
     }
   else
@@ -936,11 +936,8 @@ negative numbers or when the values are periodic.\n\
   (arg.is_ ## TYPE ## _type ()) \
     { \
       TYPE ## NDArray tmp = arg. TYPE ##_array_value (); \
-      \
-      if (! error_state) \
-        { \
-          retval = tmp.FCN (DIM); \
-        } \
+ \
+      retval = tmp.FCN (DIM); \
     }
 
 #define NATIVE_REDUCTION(FCN, BOOL_FCN) \
@@ -951,11 +948,11 @@ negative numbers or when the values are periodic.\n\
  \
   bool isnative = false; \
   bool isdouble = false; \
-  \
+ \
   if (nargin > 1 && args(nargin - 1).is_string ()) \
     { \
       std::string str = args(nargin - 1).string_value (); \
-      \
+ \
       if (str == "native") \
         isnative = true; \
       else if (str == "double") \
@@ -964,132 +961,80 @@ negative numbers or when the values are periodic.\n\
         error ("sum: unrecognized string argument"); \
       nargin --; \
     } \
-  \
+ \
   if (nargin == 1 || nargin == 2) \
     { \
       octave_value arg = args(0); \
  \
       int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
  \
-      if (! error_state) \
+      if (dim >= -1) \
         { \
-          if (dim >= -1) \
+          if (arg.is_sparse_type ()) \
             { \
-              if (arg.is_sparse_type ()) \
+              if (arg.is_real_type ()) \
                 { \
-                  if (arg.is_real_type ()) \
-                    { \
-                      SparseMatrix tmp = arg.sparse_matrix_value (); \
-                      \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
-                  else \
-                    { \
-                      SparseComplexMatrix tmp \
-                        = arg.sparse_complex_matrix_value (); \
-                      \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
+                  SparseMatrix tmp = arg.sparse_matrix_value (); \
+ \
+                  retval = tmp.FCN (dim); \
                 } \
               else \
                 { \
-                  if (isnative) \
-                    { \
-                      if NATIVE_REDUCTION_1 (FCN, uint8, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, uint16, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, uint32, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, uint64, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, int8, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, int16, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, int32, dim) \
-                      else if NATIVE_REDUCTION_1 (FCN, int64, dim) \
-                      else if (arg.is_bool_type ()) \
-                        { \
-                          boolNDArray tmp = arg.bool_array_value (); \
-                          if (! error_state) \
-                            retval = boolNDArray (tmp.BOOL_FCN (dim)); \
-                        } \
-                      else if (arg.is_char_matrix ()) \
-                        { \
-                          error (#FCN, ": invalid char type"); \
-                        } \
-                      else if (!isdouble && arg.is_single_type ()) \
-                        { \
-                          if (arg.is_complex_type ()) \
-                            { \
-                              FloatComplexNDArray tmp = \
-                                arg.float_complex_array_value (); \
-                              \
-                              if (! error_state) \
-                                retval = tmp.FCN (dim); \
-                            } \
-                          else if (arg.is_real_type ()) \
-                            { \
-                              FloatNDArray tmp = arg.float_array_value (); \
-                              \
-                              if (! error_state) \
-                                retval = tmp.FCN (dim); \
-                            } \
-                        } \
-                      else if (arg.is_complex_type ()) \
-                        { \
-                          ComplexNDArray tmp = arg.complex_array_value (); \
-                          \
-                          if (! error_state) \
-                            retval = tmp.FCN (dim); \
-                        } \
-                      else if (arg.is_real_type ()) \
-                        { \
-                          NDArray tmp = arg.array_value (); \
-                          \
-                          if (! error_state) \
-                            retval = tmp.FCN (dim); \
-                        } \
-                      else \
-                        { \
-                          gripe_wrong_type_arg (#FCN, arg); \
-                          return retval; \
-                        } \
-                    } \
+                  SparseComplexMatrix tmp \
+                    = arg.sparse_complex_matrix_value (); \
+ \
+                  retval = tmp.FCN (dim); \
+                } \
+            } \
+          else \
+            { \
+              if (isnative) \
+                { \
+                  if NATIVE_REDUCTION_1 (FCN, uint8, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, uint16, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, uint32, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, uint64, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int8, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int16, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int32, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int64, dim) \
                   else if (arg.is_bool_type ()) \
                     { \
                       boolNDArray tmp = arg.bool_array_value (); \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
+ \
+                      retval = boolNDArray (tmp.BOOL_FCN (dim)); \
+                    } \
+                  else if (arg.is_char_matrix ()) \
+                    { \
+                      error (#FCN, ": invalid char type"); \
                     } \
                   else if (!isdouble && arg.is_single_type ()) \
                     { \
-                      if (arg.is_real_type ()) \
-                        { \
-                          FloatNDArray tmp = arg.float_array_value (); \
-                          \
-                          if (! error_state) \
-                            retval = tmp.FCN (dim); \
-                        } \
-                      else if (arg.is_complex_type ()) \
+                      if (arg.is_complex_type ()) \
                         { \
                           FloatComplexNDArray tmp = \
                             arg.float_complex_array_value (); \
-                          \
-                          if (! error_state) \
-                            retval = tmp.FCN (dim); \
+ \
+                          retval = tmp.FCN (dim); \
                         } \
-                    } \
-                  else if (arg.is_real_type ()) \
-                    { \
-                      NDArray tmp = arg.array_value (); \
-                      \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
+                      else if (arg.is_real_type ()) \
+                        { \
+                          FloatNDArray tmp = arg.float_array_value (); \
+ \
+                          retval = tmp.FCN (dim); \
+                        } \
                     } \
                   else if (arg.is_complex_type ()) \
                     { \
                       ComplexNDArray tmp = arg.complex_array_value (); \
-                      \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
+ \
+                      retval = tmp.FCN (dim); \
+                    } \
+                  else if (arg.is_real_type ()) \
+                    { \
+                      NDArray tmp = arg.array_value (); \
+ \
+                      retval = tmp.FCN (dim); \
                     } \
                   else \
                     { \
@@ -1097,11 +1042,50 @@ negative numbers or when the values are periodic.\n\
                       return retval; \
                     } \
                 } \
+              else if (arg.is_bool_type ()) \
+                { \
+                  boolNDArray tmp = arg.bool_array_value (); \
+ \
+                  retval = tmp.FCN (dim); \
+                } \
+              else if (!isdouble && arg.is_single_type ()) \
+                { \
+                  if (arg.is_real_type ()) \
+                    { \
+                      FloatNDArray tmp = arg.float_array_value (); \
+ \
+                      retval = tmp.FCN (dim); \
+                    } \
+                  else if (arg.is_complex_type ()) \
+                    { \
+                      FloatComplexNDArray tmp = \
+                        arg.float_complex_array_value (); \
+ \
+                      retval = tmp.FCN (dim); \
+                    } \
+                } \
+              else if (arg.is_real_type ()) \
+                { \
+                  NDArray tmp = arg.array_value (); \
+ \
+                  retval = tmp.FCN (dim); \
+                } \
+              else if (arg.is_complex_type ()) \
+                { \
+                  ComplexNDArray tmp = arg.complex_array_value (); \
+ \
+                  retval = tmp.FCN (dim); \
+                } \
+              else \
+                { \
+                  gripe_wrong_type_arg (#FCN, arg); \
+                  return retval; \
+                } \
             } \
           else \
             error (#FCN ": invalid dimension argument = %d", dim + 1); \
         } \
-      \
+ \
     } \
   else \
     print_usage (); \
@@ -1120,68 +1104,59 @@ negative numbers or when the values are periodic.\n\
  \
       int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
  \
-      if (! error_state) \
+      if (dim >= -1) \
         { \
-          if (dim >= -1) \
+          if (arg.is_real_type ()) \
             { \
-              if (arg.is_real_type ()) \
+              if (arg.is_sparse_type ()) \
                 { \
-                  if (arg.is_sparse_type ()) \
-                    { \
-                      SparseMatrix tmp = arg.sparse_matrix_value (); \
- \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
-                  else if (arg.is_single_type ()) \
-                    { \
-                      FloatNDArray tmp = arg.float_array_value (); \
- \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
-                  else \
-                    { \
-                      NDArray tmp = arg.array_value (); \
- \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
+                  SparseMatrix tmp = arg.sparse_matrix_value (); \
+\
+                  retval = tmp.FCN (dim); \
                 } \
-              else if (arg.is_complex_type ()) \
+              else if (arg.is_single_type ()) \
                 { \
-                  if (arg.is_sparse_type ()) \
-                    { \
-                      SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
- \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
-                  else if (arg.is_single_type ()) \
-                    { \
-                      FloatComplexNDArray tmp \
-                        = arg.float_complex_array_value (); \
- \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
-                  else \
-                    { \
-                      ComplexNDArray tmp = arg.complex_array_value (); \
- \
-                      if (! error_state) \
-                        retval = tmp.FCN (dim); \
-                    } \
+                  FloatNDArray tmp = arg.float_array_value (); \
+\
+                  retval = tmp.FCN (dim); \
                 } \
               else \
                 { \
-                  gripe_wrong_type_arg (#FCN, arg); \
-                  return retval; \
+                  NDArray tmp = arg.array_value (); \
+\
+                  retval = tmp.FCN (dim); \
+                } \
+            } \
+          else if (arg.is_complex_type ()) \
+            { \
+              if (arg.is_sparse_type ()) \
+                { \
+                  SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
+\
+                  retval = tmp.FCN (dim); \
+                } \
+              else if (arg.is_single_type ()) \
+                { \
+                  FloatComplexNDArray tmp \
+                    = arg.float_complex_array_value (); \
+\
+                  retval = tmp.FCN (dim); \
+                } \
+              else \
+                { \
+                  ComplexNDArray tmp = arg.complex_array_value (); \
+\
+                  retval = tmp.FCN (dim); \
                 } \
             } \
           else \
-            error (#FCN ": invalid dimension argument = %d", dim + 1); \
+            { \
+              gripe_wrong_type_arg (#FCN, arg); \
+              return retval; \
+            } \
         } \
+      else \
+        error (#FCN ": invalid dimension argument = %d", dim + 1); \
     } \
   else \
     print_usage (); \
@@ -1257,9 +1232,6 @@ See @code{sum} for an explanation of the optional parameters\n\
       nargin --;
     }
 
-  if (error_state)
-    return retval;
-
   if (nargin == 1 || nargin == 2)
     {
       octave_value arg = args(0);
@@ -1272,74 +1244,71 @@ See @code{sum} for an explanation of the optional parameters\n\
             error ("cumsum: invalid dimension argument = %d", dim + 1);
         }
 
-      if (! error_state)
+      switch (arg.builtin_type ())
         {
-          switch (arg.builtin_type ())
-            {
-            case btyp_double:
-              if (arg.is_sparse_type ())
-                retval = arg.sparse_matrix_value ().cumsum (dim);
-              else
-                retval = arg.array_value ().cumsum (dim);
-              break;
-            case btyp_complex:
-              if (arg.is_sparse_type ())
-                retval = arg.sparse_complex_matrix_value ().cumsum (dim);
-              else
-                retval = arg.complex_array_value ().cumsum (dim);
-              break;
-            case btyp_float:
-              if (isdouble)
-                retval = arg.array_value ().cumsum (dim);
-              else
-                retval = arg.float_array_value ().cumsum (dim);
-              break;
-            case btyp_float_complex:
-              if (isdouble)
-                retval = arg.complex_array_value ().cumsum (dim);
-              else
-                retval = arg.float_complex_array_value ().cumsum (dim);
-              break;
+        case btyp_double:
+          if (arg.is_sparse_type ())
+            retval = arg.sparse_matrix_value ().cumsum (dim);
+          else
+            retval = arg.array_value ().cumsum (dim);
+          break;
+        case btyp_complex:
+          if (arg.is_sparse_type ())
+            retval = arg.sparse_complex_matrix_value ().cumsum (dim);
+          else
+            retval = arg.complex_array_value ().cumsum (dim);
+          break;
+        case btyp_float:
+          if (isdouble)
+            retval = arg.array_value ().cumsum (dim);
+          else
+            retval = arg.float_array_value ().cumsum (dim);
+          break;
+        case btyp_float_complex:
+          if (isdouble)
+            retval = arg.complex_array_value ().cumsum (dim);
+          else
+            retval = arg.float_complex_array_value ().cumsum (dim);
+          break;
 
 #define MAKE_INT_BRANCH(X) \
-            case btyp_ ## X: \
-              if (isnative) \
-                retval = arg.X ## _array_value ().cumsum (dim); \
-              else \
-                retval = arg.array_value ().cumsum (dim); \
-              break;
-            MAKE_INT_BRANCH (int8);
-            MAKE_INT_BRANCH (int16);
-            MAKE_INT_BRANCH (int32);
-            MAKE_INT_BRANCH (int64);
-            MAKE_INT_BRANCH (uint8);
-            MAKE_INT_BRANCH (uint16);
-            MAKE_INT_BRANCH (uint32);
-            MAKE_INT_BRANCH (uint64);
+          case btyp_ ## X: \
+            if (isnative) \
+              retval = arg.X ## _array_value ().cumsum (dim); \
+            else \
+              retval = arg.array_value ().cumsum (dim); \
+            break;
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
 
-            case btyp_bool:
-              if (arg.is_sparse_type ())
-                {
-                  SparseMatrix cs = arg.sparse_matrix_value ().cumsum (dim);
-                  if (isnative)
-                    retval = cs != 0.0;
-                  else
-                    retval = cs;
-                }
+        case btyp_bool:
+          if (arg.is_sparse_type ())
+            {
+              SparseMatrix cs = arg.sparse_matrix_value ().cumsum (dim);
+              if (isnative)
+                retval = cs != 0.0;
               else
-                {
-                  NDArray cs = arg.bool_array_value ().cumsum (dim);
-                  if (isnative)
-                    retval = cs != 0.0;
-                  else
-                    retval = cs;
-                }
-              break;
-
-            default:
-              gripe_wrong_type_arg ("cumsum", arg);
+                retval = cs;
             }
+          else
+            {
+              NDArray cs = arg.bool_array_value ().cumsum (dim);
+              if (isnative)
+                retval = cs != 0.0;
+              else
+                retval = cs;
+            }
+          break;
+
+        default:
+          gripe_wrong_type_arg ("cumsum", arg);
         }
     }
   else
@@ -1556,9 +1525,6 @@ in double precision even for single precision inputs.\n\
       nargin --;
     }
 
-  if (error_state)
-    return retval;
-
   if (nargin == 1 || nargin == 2)
     {
       octave_value arg = args(0);
@@ -1571,73 +1537,70 @@ in double precision even for single precision inputs.\n\
             error ("prod: invalid dimension DIM = %d", dim + 1);
         }
 
-      if (! error_state)
+      switch (arg.builtin_type ())
         {
-          switch (arg.builtin_type ())
-            {
-            case btyp_double:
-              if (arg.is_sparse_type ())
-                retval = arg.sparse_matrix_value ().prod (dim);
-              else
-                retval = arg.array_value ().prod (dim);
-              break;
-            case btyp_complex:
-              if (arg.is_sparse_type ())
-                retval = arg.sparse_complex_matrix_value ().prod (dim);
-              else
-                retval = arg.complex_array_value ().prod (dim);
-              break;
-            case btyp_float:
-              if (isdouble)
-                retval = arg.float_array_value ().dprod (dim);
-              else
-                retval = arg.float_array_value ().prod (dim);
-              break;
-            case btyp_float_complex:
-              if (isdouble)
-                retval = arg.float_complex_array_value ().dprod (dim);
-              else
-                retval = arg.float_complex_array_value ().prod (dim);
-              break;
+        case btyp_double:
+          if (arg.is_sparse_type ())
+            retval = arg.sparse_matrix_value ().prod (dim);
+          else
+            retval = arg.array_value ().prod (dim);
+          break;
+        case btyp_complex:
+          if (arg.is_sparse_type ())
+            retval = arg.sparse_complex_matrix_value ().prod (dim);
+          else
+            retval = arg.complex_array_value ().prod (dim);
+          break;
+        case btyp_float:
+          if (isdouble)
+            retval = arg.float_array_value ().dprod (dim);
+          else
+            retval = arg.float_array_value ().prod (dim);
+          break;
+        case btyp_float_complex:
+          if (isdouble)
+            retval = arg.float_complex_array_value ().dprod (dim);
+          else
+            retval = arg.float_complex_array_value ().prod (dim);
+          break;
 
 #define MAKE_INT_BRANCH(X) \
-            case btyp_ ## X: \
-              if (isnative) \
-                retval = arg.X ## _array_value ().prod (dim); \
-              else \
-                retval = arg.array_value ().prod (dim); \
-              break;
-            MAKE_INT_BRANCH (int8);
-            MAKE_INT_BRANCH (int16);
-            MAKE_INT_BRANCH (int32);
-            MAKE_INT_BRANCH (int64);
-            MAKE_INT_BRANCH (uint8);
-            MAKE_INT_BRANCH (uint16);
-            MAKE_INT_BRANCH (uint32);
-            MAKE_INT_BRANCH (uint64);
+          case btyp_ ## X: \
+            if (isnative) \
+              retval = arg.X ## _array_value ().prod (dim); \
+            else \
+              retval = arg.array_value ().prod (dim); \
+            break;
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
 
-            // GAGME: Accursed Matlab compatibility...
-            case btyp_char:
-              retval = arg.array_value (true).prod (dim);
-              break;
-            case btyp_bool:
-              if (arg.is_sparse_type ())
-                {
-                  if (isnative)
-                    retval = arg.sparse_bool_matrix_value ().all (dim);
-                  else
-                    retval = arg.sparse_matrix_value ().prod (dim);
-                }
-              else if (isnative)
-                retval = arg.bool_array_value ().all (dim);
+          // GAGME: Accursed Matlab compatibility...
+        case btyp_char:
+          retval = arg.array_value (true).prod (dim);
+          break;
+        case btyp_bool:
+          if (arg.is_sparse_type ())
+            {
+              if (isnative)
+                retval = arg.sparse_bool_matrix_value ().all (dim);
               else
-                retval = NDArray (arg.bool_array_value ().all (dim));
-              break;
-
-            default:
-              gripe_wrong_type_arg ("prod", arg);
+                retval = arg.sparse_matrix_value ().prod (dim);
             }
+          else if (isnative)
+            retval = arg.bool_array_value ().all (dim);
+          else
+            retval = NDArray (arg.bool_array_value ().all (dim));
+          break;
+
+        default:
+          gripe_wrong_type_arg ("prod", arg);
         }
     }
   else
@@ -1746,7 +1709,7 @@ single_type_concat (Array<T>& result,
 
       result.clear (dv);
 
-      for (int j = 0; j < n_args && ! error_state; j++)
+      for (int j = 0; j < n_args; j++)
         {
           octave_quit ();
 
@@ -1757,15 +1720,14 @@ single_type_concat (Array<T>& result,
     {
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, n_args);
 
-      for (int j = 0; j < n_args && ! error_state; j++)
+      for (int j = 0; j < n_args; j++)
         {
           octave_quit ();
 
           array_list[j] = octave_value_extract<TYPE> (args(j));
         }
 
-      if (! error_state)
-        result = Array<T>::cat (dim, n_args, array_list);
+      result = Array<T>::cat (dim, n_args, array_list);
     }
 }
 
@@ -1778,15 +1740,14 @@ single_type_concat (Sparse<T>& result,
   int n_args = args.length ();
   OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, n_args);
 
-  for (int j = 0; j < n_args && ! error_state; j++)
+  for (int j = 0; j < n_args; j++)
     {
       octave_quit ();
 
       sparse_list[j] = octave_value_extract<TYPE> (args(j));
     }
 
-  if (! error_state)
-    result = Sparse<T>::cat (dim, n_args, sparse_list);
+  result = Sparse<T>::cat (dim, n_args, sparse_list);
 }
 
 // Dispatcher.
@@ -1810,15 +1771,14 @@ single_type_concat_map (octave_map& result,
   int n_args = args.length ();
   OCTAVE_LOCAL_BUFFER (MAP, map_list, n_args);
 
-  for (int j = 0; j < n_args && ! error_state; j++)
+  for (int j = 0; j < n_args; j++)
     {
       octave_quit ();
 
       map_list[j] = octave_value_extract<MAP> (args(j));
     }
 
-  if (! error_state)
-    result = octave_map::cat (dim, n_args, map_list);
+  result = octave_map::cat (dim, n_args, map_list);
 }
 
 static octave_map
@@ -1901,19 +1861,14 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
       octave_value_list tmp2 = fcn.do_multi_index_op (1, ovl);
 
-      if (! error_state)
-        {
-          if (tmp2.length () > 0)
-            retval = tmp2(0);
-          else
-            {
-              error ("%s/%s method did not return a value",
-                     dtype.c_str (), cattype.c_str ());
-              goto done;
-            }
-        }
+      if (tmp2.length () > 0)
+        retval = tmp2(0);
       else
-        goto done;
+        {
+          error ("%s/%s method did not return a value",
+                 dtype.c_str (), cattype.c_str ());
+          goto done;
+        }
     }
   else
     {
@@ -1933,12 +1888,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
           if (t1_type == dtype)
             tmp(j++) = elt;
           else if (elt.is_object () || ! elt.is_empty ())
-            {
-              tmp(j++) = attempt_type_conversion (elt, dtype);
-
-              if (error_state)
-                goto done;
-            }
+            tmp(j++) = attempt_type_conversion (elt, dtype);
         }
 
       tmp.resize (j);
@@ -2135,9 +2085,6 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           octave_value tmp = args(0);
           tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
-          if (error_state)
-            return retval;
-
           int dv_len = dv.length ();
           Array<octave_idx_type> ra_idx (dim_vector (dv_len, 1), 0);
 
@@ -2147,9 +2094,6 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
               tmp = do_cat_op (tmp, args(j), ra_idx);
-
-              if (error_state)
-                return retval;
 
               dim_vector dv_tmp = args(j).dims ();
 
@@ -2635,8 +2579,7 @@ do_permute (const octave_value_list& args, bool inv)
 
       octave_value ret = args(0).permute (vec, inv);
 
-      if (! error_state)
-        retval = ret;
+      retval = ret;
     }
   else
     print_usage ();
@@ -3052,9 +2995,6 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
       nargin --;
     }
 
-  if (error_state)
-    return retval;
-
   if (nargin == 1 || nargin == 2)
     {
       octave_value arg = args(0);
@@ -3067,88 +3007,85 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
             error ("sum: invalid dimension DIM = %d", dim + 1);
         }
 
-      if (! error_state)
+      switch (arg.builtin_type ())
         {
-          switch (arg.builtin_type ())
+        case btyp_double:
+          if (arg.is_sparse_type ())
             {
-            case btyp_double:
-              if (arg.is_sparse_type ())
-                {
-                  if (isextra)
-                    warning ("sum: 'extra' not yet implemented for sparse matrices");
-                  retval = arg.sparse_matrix_value ().sum (dim);
-                }
-              else if (isextra)
-                retval = arg.array_value ().xsum (dim);
-              else
-                retval = arg.array_value ().sum (dim);
-              break;
-            case btyp_complex:
-              if (arg.is_sparse_type ())
-                {
-                  if (isextra)
-                    warning ("sum: 'extra' not yet implemented for sparse matrices");
-                  retval = arg.sparse_complex_matrix_value ().sum (dim);
-                }
-              else if (isextra)
-                retval = arg.complex_array_value ().xsum (dim);
-              else
-                retval = arg.complex_array_value ().sum (dim);
-              break;
-            case btyp_float:
-              if (isdouble || isextra)
-                retval = arg.float_array_value ().dsum (dim);
-              else
-                retval = arg.float_array_value ().sum (dim);
-              break;
-            case btyp_float_complex:
-              if (isdouble || isextra)
-                retval = arg.float_complex_array_value ().dsum (dim);
-              else
-                retval = arg.float_complex_array_value ().sum (dim);
-              break;
+              if (isextra)
+                warning ("sum: 'extra' not yet implemented for sparse matrices");
+              retval = arg.sparse_matrix_value ().sum (dim);
+            }
+          else if (isextra)
+            retval = arg.array_value ().xsum (dim);
+          else
+            retval = arg.array_value ().sum (dim);
+          break;
+        case btyp_complex:
+          if (arg.is_sparse_type ())
+            {
+              if (isextra)
+                warning ("sum: 'extra' not yet implemented for sparse matrices");
+              retval = arg.sparse_complex_matrix_value ().sum (dim);
+            }
+          else if (isextra)
+            retval = arg.complex_array_value ().xsum (dim);
+          else
+            retval = arg.complex_array_value ().sum (dim);
+          break;
+        case btyp_float:
+          if (isdouble || isextra)
+            retval = arg.float_array_value ().dsum (dim);
+          else
+            retval = arg.float_array_value ().sum (dim);
+          break;
+        case btyp_float_complex:
+          if (isdouble || isextra)
+            retval = arg.float_complex_array_value ().dsum (dim);
+          else
+            retval = arg.float_complex_array_value ().sum (dim);
+          break;
 
 #define MAKE_INT_BRANCH(X) \
-            case btyp_ ## X: \
-              if (isnative) \
-                retval = arg.X ## _array_value ().sum (dim); \
-              else \
-                retval = arg.X ## _array_value ().dsum (dim); \
-              break;
-            MAKE_INT_BRANCH (int8);
-            MAKE_INT_BRANCH (int16);
-            MAKE_INT_BRANCH (int32);
-            MAKE_INT_BRANCH (int64);
-            MAKE_INT_BRANCH (uint8);
-            MAKE_INT_BRANCH (uint16);
-            MAKE_INT_BRANCH (uint32);
-            MAKE_INT_BRANCH (uint64);
+          case btyp_ ## X: \
+            if (isnative) \
+              retval = arg.X ## _array_value ().sum (dim); \
+            else \
+              retval = arg.X ## _array_value ().dsum (dim); \
+            break;
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
 
-            // GAGME: Accursed Matlab compatibility...
-            case btyp_char:
-              if (isextra)
-                retval = arg.array_value (true).xsum (dim);
+          // GAGME: Accursed Matlab compatibility...
+        case btyp_char:
+          if (isextra)
+            retval = arg.array_value (true).xsum (dim);
+          else
+            retval = arg.array_value (true).sum (dim);
+          break;
+        case btyp_bool:
+          if (arg.is_sparse_type ())
+            {
+              if (isnative)
+                retval = arg.sparse_bool_matrix_value ().any (dim);
               else
-                retval = arg.array_value (true).sum (dim);
-              break;
-            case btyp_bool:
-              if (arg.is_sparse_type ())
-                {
-                  if (isnative)
-                    retval = arg.sparse_bool_matrix_value ().any (dim);
-                  else
-                    retval = arg.sparse_bool_matrix_value ().sum (dim);
-                }
-              else if (isnative)
-                retval = arg.bool_array_value ().any (dim);
-              else
-                retval = arg.bool_array_value ().sum (dim);
-              break;
-
-            default:
-              gripe_wrong_type_arg ("sum", arg);
+                retval = arg.sparse_bool_matrix_value ().sum (dim);
             }
+          else if (isnative)
+            retval = arg.bool_array_value ().any (dim);
+          else
+            retval = arg.bool_array_value ().sum (dim);
+          break;
+
+        default:
+          gripe_wrong_type_arg ("sum", arg);
         }
     }
   else
@@ -3393,8 +3330,7 @@ complex ([1, 2], [3, 4])\n\
             {
               SparseComplexMatrix val = arg.sparse_complex_matrix_value ();
 
-              if (! error_state)
-                retval = octave_value (new octave_sparse_complex_matrix (val));
+              retval = octave_value (new octave_sparse_complex_matrix (val));
             }
           else if (arg.is_single_type ())
             {
@@ -3402,15 +3338,13 @@ complex ([1, 2], [3, 4])\n\
                 {
                   FloatComplex val = arg.float_complex_value ();
 
-                  if (! error_state)
-                    retval = octave_value (new octave_float_complex (val));
+                  retval = octave_value (new octave_float_complex (val));
                 }
               else
                 {
                   FloatComplexNDArray val = arg.float_complex_array_value ();
 
-                  if (! error_state)
-                    retval = octave_value (new octave_float_complex_matrix (val));
+                  retval = octave_value (new octave_float_complex_matrix (val));
                 }
             }
           else
@@ -3419,15 +3353,13 @@ complex ([1, 2], [3, 4])\n\
                 {
                   Complex val = arg.complex_value ();
 
-                  if (! error_state)
-                    retval = octave_value (new octave_complex (val));
+                  retval = octave_value (new octave_complex (val));
                 }
               else
                 {
                   ComplexNDArray val = arg.complex_array_value ();
 
-                  if (! error_state)
-                    retval = octave_value (new octave_complex_matrix (val));
+                  retval = octave_value (new octave_complex_matrix (val));
                 }
             }
 
@@ -3445,66 +3377,63 @@ complex ([1, 2], [3, 4])\n\
           const SparseMatrix re_val = re.sparse_matrix_value ();
           const SparseMatrix im_val = im.sparse_matrix_value ();
 
-          if (!error_state)
+          if (re.numel () == 1)
             {
-              if (re.numel () == 1)
-                {
-                  SparseComplexMatrix result;
-                  if (re_val.nnz () == 0)
-                    result = Complex (0, 1) * SparseComplexMatrix (im_val);
-                  else
-                    {
-                      octave_idx_type nr = im_val.rows ();
-                      octave_idx_type nc = im_val.cols ();
-                      result = SparseComplexMatrix (nr, nc, re_val(0));
-
-                      for (octave_idx_type j = 0; j < nc; j++)
-                        {
-                          octave_idx_type off = j * nr;
-                          for (octave_idx_type i = im_val.cidx (j);
-                               i < im_val.cidx (j + 1); i++)
-                            result.data (im_val.ridx (i) + off) +=
-                              Complex (0, im_val.data (i));
-                        }
-                    }
-                  retval = octave_value (new octave_sparse_complex_matrix (result));
-                }
-              else if (im.numel () == 1)
-                {
-                  SparseComplexMatrix result;
-                  if (im_val.nnz () == 0)
-                    result = SparseComplexMatrix (re_val);
-                  else
-                    {
-                      octave_idx_type nr = re_val.rows ();
-                      octave_idx_type nc = re_val.cols ();
-                      result = SparseComplexMatrix (nr, nc,
-                                                    Complex (0, im_val(0)));
-
-                      for (octave_idx_type j = 0; j < nc; j++)
-                        {
-                          octave_idx_type off = j * nr;
-                          for (octave_idx_type i = re_val.cidx (j);
-                               i < re_val.cidx (j + 1); i++)
-                            result.data (re_val.ridx (i) + off) +=
-                              re_val.data (i);
-                        }
-                    }
-                  retval = octave_value (new octave_sparse_complex_matrix (result));
-                }
+              SparseComplexMatrix result;
+              if (re_val.nnz () == 0)
+                result = Complex (0, 1) * SparseComplexMatrix (im_val);
               else
                 {
-                  if (re_val.dims () == im_val.dims ())
+                  octave_idx_type nr = im_val.rows ();
+                  octave_idx_type nc = im_val.cols ();
+                  result = SparseComplexMatrix (nr, nc, re_val(0));
+
+                  for (octave_idx_type j = 0; j < nc; j++)
                     {
-                      SparseComplexMatrix result;
-                      result = SparseComplexMatrix (re_val)
-                               + Complex (0, 1) * SparseComplexMatrix (im_val);
-                      retval = octave_value (
-                                 new octave_sparse_complex_matrix (result));
+                      octave_idx_type off = j * nr;
+                      for (octave_idx_type i = im_val.cidx (j);
+                           i < im_val.cidx (j + 1); i++)
+                        result.data (im_val.ridx (i) + off) +=
+                          Complex (0, im_val.data (i));
                     }
-                  else
-                    error ("complex: dimension mismatch");
                 }
+              retval = octave_value (new octave_sparse_complex_matrix (result));
+            }
+          else if (im.numel () == 1)
+            {
+              SparseComplexMatrix result;
+              if (im_val.nnz () == 0)
+                result = SparseComplexMatrix (re_val);
+              else
+                {
+                  octave_idx_type nr = re_val.rows ();
+                  octave_idx_type nc = re_val.cols ();
+                  result = SparseComplexMatrix (nr, nc,
+                                                Complex (0, im_val(0)));
+
+                  for (octave_idx_type j = 0; j < nc; j++)
+                    {
+                      octave_idx_type off = j * nr;
+                      for (octave_idx_type i = re_val.cidx (j);
+                           i < re_val.cidx (j + 1); i++)
+                        result.data (re_val.ridx (i) + off) +=
+                          re_val.data (i);
+                    }
+                }
+              retval = octave_value (new octave_sparse_complex_matrix (result));
+            }
+          else
+            {
+              if (re_val.dims () == im_val.dims ())
+                {
+                  SparseComplexMatrix result;
+                  result = SparseComplexMatrix (re_val)
+                    + Complex (0, 1) * SparseComplexMatrix (im_val);
+                  retval = octave_value (
+                                         new octave_sparse_complex_matrix (result));
+                }
+              else
+                error ("complex: dimension mismatch");
             }
         }
       else if (re.is_single_type () || im.is_single_type ())
@@ -3517,26 +3446,21 @@ complex ([1, 2], [3, 4])\n\
                 {
                   float im_val = im.double_value ();
 
-                  if (! error_state)
-                    retval = octave_value (
-                               new octave_float_complex (FloatComplex (re_val,
-                                                                       im_val)));
+                  retval = octave_value (new octave_float_complex
+                                         (FloatComplex (re_val, im_val)));
                 }
               else
                 {
                   const FloatNDArray im_val = im.float_array_value ();
 
-                  if (! error_state)
-                    {
-                      FloatComplexNDArray result (im_val.dims (),
-                                                  FloatComplex ());
+                  FloatComplexNDArray result (im_val.dims (),
+                                              FloatComplex ());
 
-                      for (octave_idx_type i = 0; i < im_val.numel (); i++)
-                        result.xelem (i) = FloatComplex (re_val, im_val(i));
+                  for (octave_idx_type i = 0; i < im_val.numel (); i++)
+                    result.xelem (i) = FloatComplex (re_val, im_val(i));
 
-                      retval = octave_value (
-                                 new octave_float_complex_matrix (result));
-                    }
+                  retval = octave_value (new octave_float_complex_matrix
+                                         (result));
                 }
             }
           else
@@ -3547,39 +3471,33 @@ complex ([1, 2], [3, 4])\n\
                 {
                   float im_val = im.float_value ();
 
-                  if (! error_state)
-                    {
-                      FloatComplexNDArray result (re_val.dims (),
-                                                  FloatComplex ());
+                  FloatComplexNDArray result (re_val.dims (),
+                                              FloatComplex ());
 
-                      for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                        result.xelem (i) = FloatComplex (re_val(i), im_val);
+                  for (octave_idx_type i = 0; i < re_val.numel (); i++)
+                    result.xelem (i) = FloatComplex (re_val(i), im_val);
 
-                      retval = octave_value (
-                                 new octave_float_complex_matrix (result));
-                    }
+                  retval = octave_value (new octave_float_complex_matrix
+                                         (result));
                 }
               else
                 {
                   const FloatNDArray im_val = im.float_array_value ();
 
-                  if (! error_state)
+                  if (re_val.dims () == im_val.dims ())
                     {
-                      if (re_val.dims () == im_val.dims ())
-                        {
-                          FloatComplexNDArray result (re_val.dims (),
-                                                      FloatComplex ());
+                      FloatComplexNDArray result (re_val.dims (),
+                                                  FloatComplex ());
 
-                          for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                            result.xelem (i) = FloatComplex (re_val(i),
-                                                             im_val(i));
+                      for (octave_idx_type i = 0; i < re_val.numel (); i++)
+                        result.xelem (i) = FloatComplex (re_val(i),
+                                                         im_val(i));
 
-                          retval = octave_value (
-                                     new octave_float_complex_matrix (result));
-                        }
-                      else
-                        error ("complex: dimension mismatch");
+                      retval = octave_value (new octave_float_complex_matrix
+                                             (result));
                     }
+                  else
+                    error ("complex: dimension mismatch");
                 }
             }
         }
@@ -3591,23 +3509,19 @@ complex ([1, 2], [3, 4])\n\
             {
               double im_val = im.double_value ();
 
-              if (! error_state)
-                retval = octave_value (new octave_complex (Complex (re_val,
-                                                                    im_val)));
+              retval = octave_value (new octave_complex
+                                     (Complex (re_val, im_val)));
             }
           else
             {
               const NDArray im_val = im.array_value ();
 
-              if (! error_state)
-                {
-                  ComplexNDArray result (im_val.dims (), Complex ());
+              ComplexNDArray result (im_val.dims (), Complex ());
 
-                  for (octave_idx_type i = 0; i < im_val.numel (); i++)
-                    result.xelem (i) = Complex (re_val, im_val(i));
+              for (octave_idx_type i = 0; i < im_val.numel (); i++)
+                result.xelem (i) = Complex (re_val, im_val(i));
 
-                  retval = octave_value (new octave_complex_matrix (result));
-                }
+              retval = octave_value (new octave_complex_matrix (result));
             }
         }
       else
@@ -3618,35 +3532,29 @@ complex ([1, 2], [3, 4])\n\
             {
               double im_val = im.double_value ();
 
-              if (! error_state)
-                {
-                  ComplexNDArray result (re_val.dims (), Complex ());
+              ComplexNDArray result (re_val.dims (), Complex ());
 
-                  for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                    result.xelem (i) = Complex (re_val(i), im_val);
+              for (octave_idx_type i = 0; i < re_val.numel (); i++)
+                result.xelem (i) = Complex (re_val(i), im_val);
 
-                  retval = octave_value (new octave_complex_matrix (result));
-                }
+              retval = octave_value (new octave_complex_matrix (result));
             }
           else
             {
               const NDArray im_val = im.array_value ();
 
-              if (! error_state)
+              if (re_val.dims () == im_val.dims ())
                 {
-                  if (re_val.dims () == im_val.dims ())
-                    {
-                      ComplexNDArray result (re_val.dims (), Complex ());
+                  ComplexNDArray result (re_val.dims (), Complex ());
 
-                      for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                        result.xelem (i) = Complex (re_val(i), im_val(i));
+                  for (octave_idx_type i = 0; i < re_val.numel (); i++)
+                    result.xelem (i) = Complex (re_val(i), im_val(i));
 
-                      retval = octave_value (
-                                 new octave_complex_matrix (result));
-                    }
-                  else
-                    error ("complex: dimension mismatch");
+                  retval = octave_value (
+                                         new octave_complex_matrix (result));
                 }
+              else
+                error ("complex: dimension mismatch");
             }
         }
 
@@ -4022,9 +3930,6 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
       nargin--;
 
       dt = oct_data_conv::string_to_data_type (nm);
-
-      if (error_state)
-        return retval;
     }
 
   switch (nargin)
@@ -4054,77 +3959,71 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
       break;
     }
 
-  if (! error_state)
+  dims.chop_trailing_singletons ();
+
+  check_dimensions (dims, fcn);
+
+  // FIXME: perhaps this should be made extensible by
+  // using the class name to lookup a function to call to create
+  // the new value.
+
+  // Note that automatic narrowing will handle conversion from
+  // NDArray to scalar.
+
+  switch (dt)
     {
-      dims.chop_trailing_singletons ();
+    case oct_data_conv::dt_int8:
+      retval = int8NDArray (dims, val);
+      break;
 
-      check_dimensions (dims, fcn);
+    case oct_data_conv::dt_uint8:
+      retval = uint8NDArray (dims, val);
+      break;
 
-      // FIXME: perhaps this should be made extensible by
-      // using the class name to lookup a function to call to create
-      // the new value.
+    case oct_data_conv::dt_int16:
+      retval = int16NDArray (dims, val);
+      break;
 
-      // Note that automatic narrowing will handle conversion from
-      // NDArray to scalar.
+    case oct_data_conv::dt_uint16:
+      retval = uint16NDArray (dims, val);
+      break;
 
-      if (! error_state)
-        {
-          switch (dt)
-            {
-            case oct_data_conv::dt_int8:
-              retval = int8NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_int32:
+      retval = int32NDArray (dims, val);
+      break;
 
-            case oct_data_conv::dt_uint8:
-              retval = uint8NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_uint32:
+      retval = uint32NDArray (dims, val);
+      break;
 
-            case oct_data_conv::dt_int16:
-              retval = int16NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_int64:
+      retval = int64NDArray (dims, val);
+      break;
 
-            case oct_data_conv::dt_uint16:
-              retval = uint16NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_uint64:
+      retval = uint64NDArray (dims, val);
+      break;
 
-            case oct_data_conv::dt_int32:
-              retval = int32NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_single:
+      retval = FloatNDArray (dims, val);
+      break;
 
-            case oct_data_conv::dt_uint32:
-              retval = uint32NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_double:
+      {
+        if (val == 1 && dims.length () == 2 && dims(0) == 1)
+          retval = Range (1.0, 0.0, dims(1));  // packed form
+        else
+          retval = NDArray (dims, val);
+      }
+      break;
 
-            case oct_data_conv::dt_int64:
-              retval = int64NDArray (dims, val);
-              break;
+    case oct_data_conv::dt_logical:
+      retval = boolNDArray (dims, val);
+      break;
 
-            case oct_data_conv::dt_uint64:
-              retval = uint64NDArray (dims, val);
-              break;
-
-            case oct_data_conv::dt_single:
-              retval = FloatNDArray (dims, val);
-              break;
-
-            case oct_data_conv::dt_double:
-              {
-                if (val == 1 && dims.length () == 2 && dims(0) == 1)
-                  retval = Range (1.0, 0.0, dims(1));  // packed form
-                else
-                  retval = NDArray (dims, val);
-              }
-              break;
-
-            case oct_data_conv::dt_logical:
-              retval = boolNDArray (dims, val);
-              break;
-
-            default:
-              error ("%s: invalid class name", fcn);
-              break;
-            }
-        }
+    default:
+      error ("%s: invalid class name", fcn);
+      break;
     }
 
   return retval;
@@ -4148,9 +4047,6 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       nargin--;
 
       dt = oct_data_conv::string_to_data_type (nm);
-
-      if (error_state)
-        return retval;
     }
 
   switch (nargin)
@@ -4180,32 +4076,26 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       break;
     }
 
-  if (! error_state)
+  dims.chop_trailing_singletons ();
+
+  check_dimensions (dims, fcn);
+
+  // Note that automatic narrowing will handle conversion from
+  // NDArray to scalar.
+
+  switch (dt)
     {
-      dims.chop_trailing_singletons ();
+    case oct_data_conv::dt_single:
+      retval = FloatNDArray (dims, fval);
+      break;
 
-      check_dimensions (dims, fcn);
+    case oct_data_conv::dt_double:
+      retval = NDArray (dims, val);
+      break;
 
-      // Note that automatic narrowing will handle conversion from
-      // NDArray to scalar.
-
-      if (! error_state)
-        {
-          switch (dt)
-            {
-            case oct_data_conv::dt_single:
-              retval = FloatNDArray (dims, fval);
-              break;
-
-            case oct_data_conv::dt_double:
-              retval = NDArray (dims, val);
-              break;
-
-            default:
-              error ("%s: invalid class name", fcn);
-              break;
-            }
-        }
+    default:
+      error ("%s: invalid class name", fcn);
+      break;
     }
 
   return retval;
@@ -4228,9 +4118,6 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       nargin--;
 
       dt = oct_data_conv::string_to_data_type (nm);
-
-      if (error_state)
-        return retval;
     }
 
   switch (nargin)
@@ -4260,32 +4147,26 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
     }
 
-  if (! error_state)
+  dims.chop_trailing_singletons ();
+
+  check_dimensions (dims, fcn);
+
+  // Note that automatic narrowing will handle conversion from
+  // NDArray to scalar.
+
+  switch (dt)
     {
-      dims.chop_trailing_singletons ();
+    case oct_data_conv::dt_single:
+      retval = FloatNDArray (dims, static_cast<float> (val));
+      break;
 
-      check_dimensions (dims, fcn);
+    case oct_data_conv::dt_double:
+      retval = NDArray (dims, val);
+      break;
 
-      // Note that automatic narrowing will handle conversion from
-      // NDArray to scalar.
-
-      if (! error_state)
-        {
-          switch (dt)
-            {
-            case oct_data_conv::dt_single:
-              retval = FloatNDArray (dims, static_cast<float> (val));
-              break;
-
-            case oct_data_conv::dt_double:
-              retval = NDArray (dims, val);
-              break;
-
-            default:
-              error ("%s: invalid class name", fcn);
-              break;
-            }
-        }
+    default:
+      error ("%s: invalid class name", fcn);
+      break;
     }
 
   return retval;
@@ -4309,9 +4190,6 @@ fill_matrix (const octave_value_list& args, const Complex& val,
       nargin--;
 
       dt = oct_data_conv::string_to_data_type (nm);
-
-      if (error_state)
-        return retval;
     }
 
   switch (nargin)
@@ -4341,33 +4219,27 @@ fill_matrix (const octave_value_list& args, const Complex& val,
       break;
     }
 
-  if (! error_state)
+  dims.chop_trailing_singletons ();
+
+  check_dimensions (dims, fcn);
+
+  // Note that automatic narrowing will handle conversion from
+  // NDArray to scalar.
+
+  switch (dt)
     {
-      dims.chop_trailing_singletons ();
+    case oct_data_conv::dt_single:
+      retval = FloatComplexNDArray (dims,
+                                    static_cast<FloatComplex> (val));
+      break;
 
-      check_dimensions (dims, fcn);
+    case oct_data_conv::dt_double:
+      retval = ComplexNDArray (dims, val);
+      break;
 
-      // Note that automatic narrowing will handle conversion from
-      // NDArray to scalar.
-
-      if (! error_state)
-        {
-          switch (dt)
-            {
-            case oct_data_conv::dt_single:
-              retval = FloatComplexNDArray (dims,
-                                            static_cast<FloatComplex> (val));
-              break;
-
-            case oct_data_conv::dt_double:
-              retval = ComplexNDArray (dims, val);
-              break;
-
-            default:
-              error ("%s: invalid class name", fcn);
-              break;
-            }
-        }
+    default:
+      error ("%s: invalid class name", fcn);
+      break;
     }
 
   return retval;
@@ -4409,18 +4281,14 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
       break;
     }
 
-  if (! error_state)
-    {
-      dims.chop_trailing_singletons ();
+  dims.chop_trailing_singletons ();
 
-      check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
-      // Note that automatic narrowing will handle conversion from
-      // NDArray to scalar.
+  // Note that automatic narrowing will handle conversion from
+  // NDArray to scalar.
 
-      if (! error_state)
-        retval = boolNDArray (dims, val);
-    }
+  retval = boolNDArray (dims, val);
 
   return retval;
 }
@@ -4731,52 +4599,48 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
         {
           Array<float> x = args(0).float_array_value ();
 
-          if (! error_state)
-            {
-              Array<float> epsval (x.dims ());
+          Array<float> epsval (x.dims ());
 
-              for (octave_idx_type i = 0; i < x.numel (); i++)
+          for (octave_idx_type i = 0; i < x.numel (); i++)
+            {
+              float val = ::fabsf (x(i));
+              if (xisnan (val) || xisinf (val))
+                epsval(i) = lo_ieee_nan_value ();
+              else if (val < std::numeric_limits<float>::min ())
+                epsval(i) = powf (2.0, -149e0);
+              else
                 {
-                  float val = ::fabsf (x(i));
-                  if (xisnan (val) || xisinf (val))
-                    epsval(i) = lo_ieee_nan_value ();
-                  else if (val < std::numeric_limits<float>::min ())
-                    epsval(i) = powf (2.0, -149e0);
-                  else
-                    {
-                      int expon;
-                      gnulib::frexpf (val, &expon);
-                      epsval(i) = std::pow (2.0f,
-                                            static_cast<float> (expon - 24));
-                    }
+                  int expon;
+                  gnulib::frexpf (val, &expon);
+                  epsval(i) = std::pow (2.0f,
+                                        static_cast<float> (expon - 24));
                 }
-              retval = epsval;
             }
+
+          retval = epsval;
         }
       else
         {
           Array<double> x = args(0).array_value ();
 
-          if (! error_state)
-            {
-              Array<double> epsval (x.dims ());
+          Array<double> epsval (x.dims ());
 
-              for (octave_idx_type i = 0; i < x.numel (); i++)
+          for (octave_idx_type i = 0; i < x.numel (); i++)
+            {
+              double val = ::fabs (x(i));
+              if (xisnan (val) || xisinf (val))
+                epsval(i) = lo_ieee_nan_value ();
+              else if (val < std::numeric_limits<double>::min ())
+                epsval(i) = pow (2.0, -1074e0);
+              else
                 {
-                  double val = ::fabs (x(i));
-                  if (xisnan (val) || xisinf (val))
-                    epsval(i) = lo_ieee_nan_value ();
-                  else if (val < std::numeric_limits<double>::min ())
-                    epsval(i) = pow (2.0, -1074e0);
-                  else
-                    {
-                      int expon;
-                      gnulib::frexp (val, &expon);
-                      epsval(i) = std::pow (2.0,
-                                            static_cast<double> (expon - 53));
-                    }
-                  retval = epsval;
+                  int expon;
+                  gnulib::frexp (val, &expon);
+                  epsval(i) = std::pow (2.0,
+                                        static_cast<double> (expon - 53));
                 }
+
+              retval = epsval;
             }
         }
     }
@@ -5111,58 +4975,55 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
   // the class name to lookup a function to call to create the new
   // value.
 
-  if (! error_state)
+  switch (dt)
     {
-      switch (dt)
-        {
-        case oct_data_conv::dt_int8:
-          retval = identity_matrix<int8NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_int8:
+      retval = identity_matrix<int8NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_uint8:
-          retval = identity_matrix<uint8NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_uint8:
+      retval = identity_matrix<uint8NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_int16:
-          retval = identity_matrix<int16NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_int16:
+      retval = identity_matrix<int16NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_uint16:
-          retval = identity_matrix<uint16NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_uint16:
+      retval = identity_matrix<uint16NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_int32:
-          retval = identity_matrix<int32NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_int32:
+      retval = identity_matrix<int32NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_uint32:
-          retval = identity_matrix<uint32NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_uint32:
+      retval = identity_matrix<uint32NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_int64:
-          retval = identity_matrix<int64NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_int64:
+      retval = identity_matrix<int64NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_uint64:
-          retval = identity_matrix<uint64NDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_uint64:
+      retval = identity_matrix<uint64NDArray> (nr, nc);
+      break;
 
-        case oct_data_conv::dt_single:
-          retval = FloatDiagMatrix (nr, nc, 1.0f);
-          break;
+    case oct_data_conv::dt_single:
+      retval = FloatDiagMatrix (nr, nc, 1.0f);
+      break;
 
-        case oct_data_conv::dt_double:
-          retval = DiagMatrix (nr, nc, 1.0);
-          break;
+    case oct_data_conv::dt_double:
+      retval = DiagMatrix (nr, nc, 1.0);
+      break;
 
-        case oct_data_conv::dt_logical:
-          retval = identity_matrix<boolNDArray> (nr, nc);
-          break;
+    case oct_data_conv::dt_logical:
+      retval = identity_matrix<boolNDArray> (nr, nc);
+      break;
 
-        default:
-          error ("eye: invalid class name");
-          break;
-        }
+    default:
+      error ("eye: invalid class name");
+      break;
     }
 
   return retval;
@@ -5234,9 +5095,6 @@ definitions are for compatibility with @sc{matlab}.\n\
       nargin--;
 
       dt = oct_data_conv::string_to_data_type (nm);
-
-      if (error_state)
-        return retval;
     }
 
   switch (nargin)
@@ -5250,8 +5108,7 @@ definitions are for compatibility with @sc{matlab}.\n\
         octave_idx_type nr, nc;
         get_dimensions (args(0), "eye", nr, nc);
 
-        if (! error_state)
-          retval = identity_matrix (nr, nc, dt);
+        retval = identity_matrix (nr, nc, dt);
       }
       break;
 
@@ -5260,8 +5117,7 @@ definitions are for compatibility with @sc{matlab}.\n\
         octave_idx_type nr, nc;
         get_dimensions (args(0), args(1), "eye", nr, nc);
 
-        if (! error_state)
-          retval = identity_matrix (nr, nc, dt);
+        retval = identity_matrix (nr, nc, dt);
       }
       break;
 
@@ -5531,15 +5387,13 @@ Resizing an object to fewer dimensions is not possible.\n\
       dv.resize (nargin - 1);
       for (octave_idx_type i = 1; i < nargin; i++)
         dv(i-1) = static_cast<octave_idx_type> (args(i).scalar_value ());
-      if (!error_state)
-        {
-          retval = args(0);
-          retval = retval.resize (dv, true);
-        }
 
+      retval = args(0);
+      retval = retval.resize (dv, true);
     }
   else
     print_usage ();
+
   return retval;
 }
 
@@ -5632,9 +5486,7 @@ the unspecified dimension.\n\
             {
               new_dims(i-1) = args(i).idx_type_value ();
 
-              if (error_state)
-                break;
-              else if (new_dims(i-1) < 0)
+              if (new_dims(i-1) < 0)
                 {
                   error ("reshape: SIZE must be non-negative");
                   break;
@@ -5642,7 +5494,7 @@ the unspecified dimension.\n\
             }
         }
 
-      if (! error_state && (empty_dim > 0))
+      if (empty_dim > 0)
         {
           octave_idx_type nel = new_dims.numel ();
 
@@ -5667,8 +5519,7 @@ the unspecified dimension.\n\
       return retval;
     }
 
-  if (! error_state)
-    retval = args(0).reshape (new_dims);
+  retval = args(0).reshape (new_dims);
 
   return retval;
 }
@@ -5720,7 +5571,7 @@ with all elements along the last dimension.  This is equivalent to\n\
   if (nargin < 1 || nargin > 2)
     print_usage () ;
 
-  if (! error_state && nargin == 2)
+  if (nargin == 2)
     {
       dim = args(1).idx_type_value ();
 
@@ -5728,24 +5579,21 @@ with all elements along the last dimension.  This is equivalent to\n\
         error ("vec: DIM must be greater than zero");
     }
 
-  if (! error_state)
+  octave_value colon (octave_value::magic_colon_t);
+  octave_value arg = args(0);
+  retval = arg.single_subsref ("(", colon);
+
+
+  if (dim > 1)
     {
-      octave_value colon (octave_value::magic_colon_t);
-      octave_value arg = args(0);
-      retval = arg.single_subsref ("(", colon);
+      dim_vector new_dims = dim_vector::alloc (dim);
 
+      for (int i = 0; i < dim-1; i++)
+        new_dims(i) = 1;
 
-      if (! error_state && dim > 1)
-        {
-          dim_vector new_dims = dim_vector::alloc (dim);
+      new_dims(dim-1) = retval.numel ();
 
-          for (int i = 0; i < dim-1; i++)
-            new_dims(i) = 1;
-
-          new_dims(dim-1) = retval.numel ();
-
-          retval = retval.reshape (new_dims);
-        }
+      retval = retval.reshape (new_dims);
     }
 
   return retval;
@@ -5894,53 +5742,47 @@ compute the norms of each column and return a row vector.\n\
               nargin --;
             }
 
-          if (! error_state)
+          octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
+
+          if (p_arg.is_empty ())
+            p_arg = octave_value (2);
+          else if (p_arg.is_string ())
             {
-              octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
-
-              if (p_arg.is_empty ())
-                p_arg = octave_value (2);
-              else if (p_arg.is_string ())
+              std::string str = p_arg.string_value ();
+              if ((strflag == sfcols || strflag == sfrows))
                 {
-                  std::string str = p_arg.string_value ();
-                  if ((strflag == sfcols || strflag == sfrows))
-                    {
-                      if (str == "cols" || str == "columns" || str == "rows")
-                        error ("norm: invalid combination of options");
-                      else if (str == "fro")
-                        p_arg = octave_value (2);
-                      else if (str == "inf")
-                        p_arg = octave_Inf;
-                      else
-                        error ("norm: unrecognized option: %s", str.c_str ());
-                    }
-                  else
+                  if (str == "cols" || str == "columns" || str == "rows")
                     error ("norm: invalid combination of options");
+                  else if (str == "fro")
+                    p_arg = octave_value (2);
+                  else if (str == "inf")
+                    p_arg = octave_Inf;
+                  else
+                    error ("norm: unrecognized option: %s", str.c_str ());
                 }
-              else if (! p_arg.is_scalar_type ())
-                gripe_wrong_type_arg ("norm", p_arg, true);
+              else
+                error ("norm: invalid combination of options");
+            }
+          else if (! p_arg.is_scalar_type ())
+            gripe_wrong_type_arg ("norm", p_arg, true);
 
-              if (! error_state)
-                {
-                  switch (strflag)
-                    {
-                    case sfmatrix:
-                      retval(0) = xnorm (x_arg, p_arg);
-                      break;
-                    case sfcols:
-                      retval(0) = xcolnorms (x_arg, p_arg);
-                      break;
-                    case sfrows:
-                      retval(0) = xrownorms (x_arg, p_arg);
-                      break;
-                    case sffrob:
-                      retval(0) = xfrobnorm (x_arg);
-                      break;
-                    case sfinf:
-                      retval(0) = xnorm (x_arg, octave_Inf);
-                      break;
-                    }
-                }
+          switch (strflag)
+            {
+            case sfmatrix:
+              retval(0) = xnorm (x_arg, p_arg);
+              break;
+            case sfcols:
+              retval(0) = xcolnorms (x_arg, p_arg);
+              break;
+            case sfrows:
+              retval(0) = xrownorms (x_arg, p_arg);
+              break;
+            case sffrob:
+              retval(0) = xfrobnorm (x_arg);
+              break;
+            case sfinf:
+              retval(0) = xnorm (x_arg, octave_Inf);
+              break;
             }
         }
       else
@@ -6578,21 +6420,18 @@ DEFUN (toc, args, nargout,
             error ("toc: invalid ID");
         }
 
-      if (! error_state)
+      if (start_time < 0)
+        error ("toc called before timer set");
+      else
         {
-          if (start_time < 0)
-            error ("toc called before timer set");
+          octave_time now;
+
+          double tmp = now.double_value () - start_time;
+
+          if (nargout > 0)
+            retval = tmp;
           else
-            {
-              octave_time now;
-
-              double tmp = now.double_value () - start_time;
-
-              if (nargout > 0)
-                retval = tmp;
-              else
-                octave_stdout << "Elapsed time is " << tmp << " seconds.\n";
-            }
+            octave_stdout << "Elapsed time is " << tmp << " seconds.\n";
         }
     }
 
@@ -7142,9 +6981,6 @@ This function does not support sparse matrices.\n\
         }
       else
         error ("issorted: second argument must be a string");
-
-      if (error_state)
-        return retval;
     }
 
   octave_value arg = args(0);
@@ -7248,9 +7084,6 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
         {
           idx_vector n = args(1).index_vector ();
 
-          if (error_state)
-            return retval;
-
           switch (argx.builtin_type ())
             {
             case btyp_double:
@@ -7337,43 +7170,41 @@ Undocumented internal function.\n\
           if (nargin == 3)
             n = args(2).idx_type_value (true);
 
-          if (! error_state)
-            {
-              octave_value vals = args(1);
-              if (vals.is_range ())
-                {
-                  Range r = vals.range_value ();
-                  if (r.inc () == 0)
-                    vals = r.base ();
-                }
+          octave_value vals = args(1);
 
-              if (vals.is_single_type ())
-                {
-                  if (vals.is_complex_type ())
-                    retval = do_accumarray_sum (idx,
-                                                vals.float_complex_array_value (),
-                                                n);
-                  else
-                    retval = do_accumarray_sum (idx, vals.float_array_value (), n);
-                }
-              else if (vals.is_numeric_type () || vals.is_bool_type ())
-                {
-                  if (vals.is_complex_type ())
-                    retval = do_accumarray_sum (idx,
-                                                vals.complex_array_value (),
-                                                n);
-                  else
-                    retval = do_accumarray_sum (idx, vals.array_value (), n);
-                }
-              else
-                gripe_wrong_type_arg ("accumarray", vals);
+          if (vals.is_range ())
+            {
+              Range r = vals.range_value ();
+              if (r.inc () == 0)
+                vals = r.base ();
             }
-          }
-        catch (index_exception& e)
-          {
-            error ("__accumarray_sum__: invalid IDX %s. %s",
-                                        e.idx(), e.explain ());
-          }
+
+          if (vals.is_single_type ())
+            {
+              if (vals.is_complex_type ())
+                retval = do_accumarray_sum (idx,
+                                            vals.float_complex_array_value (),
+                                            n);
+              else
+                retval = do_accumarray_sum (idx, vals.float_array_value (), n);
+            }
+          else if (vals.is_numeric_type () || vals.is_bool_type ())
+            {
+              if (vals.is_complex_type ())
+                retval = do_accumarray_sum (idx,
+                                            vals.complex_array_value (),
+                                            n);
+              else
+                retval = do_accumarray_sum (idx, vals.array_value (), n);
+            }
+          else
+            gripe_wrong_type_arg ("accumarray", vals);
+        }
+      catch (index_exception& e)
+        {
+          error ("__accumarray_sum__: invalid IDX %s. %s",
+                 e.idx(), e.explain ());
+        }
     }
   else
     print_usage ();
@@ -7425,54 +7256,51 @@ do_accumarray_minmax_fun (const octave_value_list& args,
           if (nargin == 4)
             n = args(3).idx_type_value (true);
 
-          if (! error_state)
+          octave_value vals = args(1);
+          octave_value zero = args(2);
+
+          switch (vals.builtin_type ())
             {
-              octave_value vals = args(1);
-              octave_value zero = args(2);
-
-              switch (vals.builtin_type ())
-                {
-                case btyp_double:
-                  retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
-                                                 zero.double_value ());
-                  break;
-                case btyp_float:
-                  retval = do_accumarray_minmax (idx, vals.float_array_value (), n,
-                                                 ismin, zero.float_value ());
-                  break;
-                case btyp_complex:
-                  retval = do_accumarray_minmax (idx, vals.complex_array_value (),
-                                                 n, ismin, zero.complex_value ());
-                  break;
-                case btyp_float_complex:
-                  retval = do_accumarray_minmax (idx,
-                                                 vals.float_complex_array_value (),
-                                                 n, ismin,
-                                                 zero.float_complex_value ());
-                  break;
+            case btyp_double:
+              retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
+                                             zero.double_value ());
+              break;
+            case btyp_float:
+              retval = do_accumarray_minmax (idx, vals.float_array_value (), n,
+                                             ismin, zero.float_value ());
+              break;
+            case btyp_complex:
+              retval = do_accumarray_minmax (idx, vals.complex_array_value (),
+                                             n, ismin, zero.complex_value ());
+              break;
+            case btyp_float_complex:
+              retval = do_accumarray_minmax (idx,
+                                             vals.float_complex_array_value (),
+                                             n, ismin,
+                                             zero.float_complex_value ());
+              break;
 #define MAKE_INT_BRANCH(X) \
-                case btyp_ ## X: \
-                  retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
-                                                 n, ismin, \
-                                                 zero.X ## _scalar_value ()); \
-                  break;
+              case btyp_ ## X: \
+                retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
+                                               n, ismin, \
+                                               zero.X ## _scalar_value ()); \
+                break;
 
-                MAKE_INT_BRANCH (int8);
-                MAKE_INT_BRANCH (int16);
-                MAKE_INT_BRANCH (int32);
-                MAKE_INT_BRANCH (int64);
-                MAKE_INT_BRANCH (uint8);
-                MAKE_INT_BRANCH (uint16);
-                MAKE_INT_BRANCH (uint32);
-                MAKE_INT_BRANCH (uint64);
+              MAKE_INT_BRANCH (int8);
+              MAKE_INT_BRANCH (int16);
+              MAKE_INT_BRANCH (int32);
+              MAKE_INT_BRANCH (int64);
+              MAKE_INT_BRANCH (uint8);
+              MAKE_INT_BRANCH (uint16);
+              MAKE_INT_BRANCH (uint32);
+              MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-                case btyp_bool:
-                  retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
-                                                 zero.bool_value ());
-                  break;
-                default:
-                  gripe_wrong_type_arg ("accumarray", vals);
-                }
+            case btyp_bool:
+              retval = do_accumarray_minmax (idx, vals.array_value (), n, ismin,
+                                             zero.bool_value ());
+              break;
+            default:
+              gripe_wrong_type_arg ("accumarray", vals);
             }
         }
       catch (index_exception& e)
@@ -7558,31 +7386,28 @@ Undocumented internal function.\n\
           if (nargin == 4)
             n = args(3).idx_type_value (true);
 
-          if (! error_state)
-            {
-              octave_value vals = args(1);
+          octave_value vals = args(1);
 
-              if (vals.is_single_type ())
-                {
-                  if (vals.is_complex_type ())
-                    retval = do_accumdim_sum (idx,
-                                              vals.float_complex_array_value (),
-                                              dim, n);
-                  else
-                    retval = do_accumdim_sum (idx, vals.float_array_value (),
-                                              dim, n);
-                }
-              else if (vals.is_numeric_type () || vals.is_bool_type ())
-                {
-                  if (vals.is_complex_type ())
-                    retval = do_accumdim_sum (idx, vals.complex_array_value (),
-                                              dim, n);
-                  else
-                    retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
-                }
+          if (vals.is_single_type ())
+            {
+              if (vals.is_complex_type ())
+                retval = do_accumdim_sum (idx,
+                                          vals.float_complex_array_value (),
+                                          dim, n);
               else
-                gripe_wrong_type_arg ("accumdim", vals);
+                retval = do_accumdim_sum (idx, vals.float_array_value (),
+                                          dim, n);
             }
+          else if (vals.is_numeric_type () || vals.is_bool_type ())
+            {
+              if (vals.is_complex_type ())
+                retval = do_accumdim_sum (idx, vals.complex_array_value (),
+                                          dim, n);
+              else
+                retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
+            }
+          else
+            gripe_wrong_type_arg ("accumdim", vals);
         }
       catch (index_exception& e)
         {
@@ -7931,32 +7756,28 @@ an empty matrix is returned.\n\
   else if (! (args(0).is_numeric_type () || args(0).is_bool_type ()))
     error ("diff: X must be numeric or logical");
 
-  if (! error_state)
+  int dim = -1;
+  octave_idx_type order = 1;
+  if (nargin > 1)
     {
-      int dim = -1;
-      octave_idx_type order = 1;
-      if (nargin > 1)
-        {
-          if (args(1).is_scalar_type ())
-            order = args(1).idx_type_value (true, false);
-          else if (! args(1).is_zero_by_zero ())
-            error ("order K must be a scalar or []");
-          if (! error_state && order < 0)
-            error ("order K must be non-negative");
-        }
-
-      if (nargin > 2)
-        {
-          dim = args(2).int_value (true, false);
-          if (! error_state && (dim < 1 || dim > args(0).ndims ()))
-            error ("DIM must be a valid dimension");
-          else
-            dim -= 1;
-        }
-
-      if (! error_state)
-        retval = do_diff (args(0), order, dim);
+      if (args(1).is_scalar_type ())
+        order = args(1).idx_type_value (true, false);
+      else if (! args(1).is_zero_by_zero ())
+        error ("order K must be a scalar or []");
+      if (order < 0)
+        error ("order K must be non-negative");
     }
+
+  if (nargin > 2)
+    {
+      dim = args(2).int_value (true, false);
+      if (dim < 1 || dim > args(0).ndims ())
+        error ("DIM must be a valid dimension");
+      else
+        dim -= 1;
+    }
+
+  retval = do_diff (args(0), order, dim);
 
   return retval;
 }
@@ -8041,9 +7862,8 @@ endfor\n\
       octave_value x = args(0);
 
       const Matrix rm = args(1).matrix_value ();
-      if (error_state)
-        return retval;
-      else if (rm.rows () != 2 || rm.ndims () != 2)
+
+      if (rm.rows () != 2 || rm.ndims () != 2)
         {
           error ("repelems: R must be a matrix with two rows");
           return retval;
@@ -8125,21 +7945,20 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
         error ("base64_encode: encoding complex or sparse data is not supported");
       else if (args(0).is_integer_type ())
         {
-#define MAKE_INT_BRANCH(X)                                              \
-          if (args(0).is_ ## X ## _type ())                             \
-            {                                                           \
-              const X##NDArray in = args(0).  X## _array_value ();      \
-              size_t inlen =                                            \
-                in.numel () * sizeof (X## _t) / sizeof (char);          \
-              const char* inc =                                         \
-                reinterpret_cast<const char*> (in.data ());             \
-              char* out;                                                \
-              if (! error_state                                         \
-                  && octave_base64_encode (inc, inlen, &out))           \
-                {                                                       \
-                  retval(0) = octave_value (out);                       \
-                  ::free (out);                                         \
-                }                                                       \
+#define MAKE_INT_BRANCH(X) \
+          if (args(0).is_ ## X ## _type ()) \
+            { \
+              const X##NDArray in = args(0).  X## _array_value (); \
+              size_t inlen = \
+                in.numel () * sizeof (X## _t) / sizeof (char); \
+              const char* inc = \
+                reinterpret_cast<const char*> (in.data ()); \
+              char* out; \
+              if (octave_base64_encode (inc, inlen, &out)) \
+                { \
+                  retval(0) = octave_value (out); \
+                  ::free (out); \
+                } \
             }
 
           MAKE_INT_BRANCH(int8)
@@ -8163,8 +7982,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           const char*  inc;
           inc = reinterpret_cast<const char*> (in.data ());
           char* out;
-          if (! error_state
-              && octave_base64_encode (inc, inlen, &out))
+          if (octave_base64_encode (inc, inlen, &out))
             {
               retval(0) = octave_value (out);
               ::free (out);
@@ -8178,8 +7996,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           const char*  inc;
           inc = reinterpret_cast<const char*> (in.data ());
           char* out;
-          if (! error_state
-              && octave_base64_encode (inc, inlen, &out))
+          if (octave_base64_encode (inc, inlen, &out))
             {
               retval(0) = octave_value (out);
               ::free (out);
@@ -8231,25 +8048,19 @@ dimensions of the decoded array.\n\
           const Array<octave_idx_type> size =
             args(1).octave_idx_type_vector_value ();
 
-          if (! error_state)
-            {
-              dims = dim_vector::alloc (size.numel ());
-              for (octave_idx_type i = 0; i < size.numel (); i++)
-                dims(i) = size(i);
-            }
+          dims = dim_vector::alloc (size.numel ());
+          for (octave_idx_type i = 0; i < size.numel (); i++)
+            dims(i) = size(i);
         }
 
       const std::string str = args(0).string_value ();
 
-      if (! error_state)
-        {
-          Array<double> res = octave_base64_decode (str);
+      Array<double> res = octave_base64_decode (str);
 
-          if (nargin > 1)
-            res = res.reshape (dims);
+      if (nargin > 1)
+        res = res.reshape (dims);
 
-          retval = res;
-        }
+      retval = res;
     }
 
   return retval;

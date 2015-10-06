@@ -100,22 +100,19 @@ make_function_of_class (const std::string& class_name,
 {
   octave_function *of = fcn.function_value ();
 
-  if (! error_state)
+  of->stash_dispatch_class (class_name);
+
+  octave_user_function *uf = of->user_function_value (true);
+
+  if (uf)
     {
-      of->stash_dispatch_class (class_name);
-
-      octave_user_function *uf = of->user_function_value (true);
-
-      if (! error_state && uf)
+      if (get_base_name (class_name) == uf->name ())
         {
-          if (get_base_name (class_name) == uf->name ())
-            {
-              uf->mark_as_class_constructor ();
-              uf->mark_as_classdef_constructor ();
-            }
-          else
-            uf->mark_as_class_method ();
+          uf->mark_as_class_constructor ();
+          uf->mark_as_classdef_constructor ();
         }
+      else
+        uf->mark_as_class_method ();
     }
 }
 
@@ -182,8 +179,7 @@ lookup_class (const octave_value& ov)
     {
       cdef_class cls (to_cdef (ov));
 
-      if (! error_state)
-        return lookup_class (cls);
+      return lookup_class (cls);
     }
 
   return cdef_class ();
@@ -235,13 +231,12 @@ is_superclass (const cdef_class& clsa, const cdef_class& clsb,
     {
       Cell c = clsb.get ("SuperClasses").cell_value ();
 
-      for (int i = 0; ! error_state && ! retval && i < c.numel (); i++)
+      for (int i = 0; ! retval && i < c.numel (); i++)
         {
           cdef_class cls = lookup_class (c(i));
 
-          if (! error_state)
-            retval = is_superclass (clsa, cls, true,
-                                    max_depth < 0 ? max_depth : max_depth-1);
+          retval = is_superclass (clsa, cls, true,
+                                  max_depth < 0 ? max_depth : max_depth-1);
         }
     }
 
@@ -287,11 +282,9 @@ get_class_context (std::string& name, bool& in_constructor)
                   && ! fcn->dispatch_class ().empty ())))
     {
       cls = lookup_class (fcn->dispatch_class ());
-      if (! error_state)
-        {
-          name = fcn->name ();
-          in_constructor = fcn->is_classdef_constructor ();
-        }
+
+      name = fcn->name ();
+      in_constructor = fcn->is_classdef_constructor ();
     }
 
   return cls;
@@ -332,7 +325,7 @@ check_access (const cdef_class& cls, const octave_value& acc,
       // The access is private or protected, this requires a
       // valid class context.
 
-      if (! error_state && ctx.ok ())
+      if (ctx.ok ())
         {
           if (acc_s == "private")
             return (ctx == cls);
@@ -390,20 +383,17 @@ check_access (const cdef_class& cls, const octave_value& acc,
 
       // At this point, a class context is always required.
 
-      if (! error_state && ctx.ok ())
+      if (ctx.ok ())
         {
           if (ctx == cls)
             return true;
 
-          for (int i = 0; ! error_state && i < acc.numel (); i++)
+          for (int i = 0; i < acc.numel (); i++)
             {
               cdef_class acc_cls (to_cdef (acc_c(i)));
 
-              if (! error_state)
-                {
-                  if (is_superclass (acc_cls, ctx))
-                    return true;
-                }
+              if (is_superclass (acc_cls, ctx))
+                return true;
             }
         }
     }
@@ -583,7 +573,8 @@ class_fevalStatic (const octave_value_list& args, int nargout)
           else
             error ("fevalStatic: invalid method name, expected a string value");
         }
-      error ("fevalStatic: invalid object, expected a meta.class object");
+      else
+        error ("fevalStatic: invalid object, expected a meta.class object");
     }
   else
     error ("fevalStatic: invalid arguments");
@@ -749,9 +740,6 @@ make_class (const std::string& name,
         }
     }
 
-  if (error_state)
-    return cdef_class ();
-
   if (! name.empty ())
     cdef_manager::register_class (cls);
 
@@ -909,13 +897,10 @@ octave_classdef::subsref (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsref");
 
-          if (! error_state)
-            {
-              count++;
-              args(0) = octave_value (this);
+          count++;
+          args(0) = octave_value (this);
 
-              retval = meth.execute (args, nargout, true, "subsref");
-            }
+          retval = meth.execute (args, nargout, true, "subsref");
 
           return retval;
         }
@@ -925,11 +910,8 @@ octave_classdef::subsref (const std::string& type,
 
   retval = object.subsref (type, idx, nargout, skip, cdef_class ());
 
-  if (! error_state)
-    {
-      if (type.length () > skip && idx.size () > skip)
-        retval = retval(0).next_subsref (nargout, type, idx, skip);
-    }
+  if (type.length () > skip && idx.size () > skip)
+    retval = retval(0).next_subsref (nargout, type, idx, skip);
 
   return retval;
 }
@@ -949,11 +931,8 @@ octave_classdef::subsref (const std::string& type,
 
   retval = object.subsref (type, idx, 1, skip, cdef_class (), auto_add);
 
-  if (! error_state)
-    {
-      if (type.length () > skip && idx.size () > skip)
-        retval = retval(0).next_subsref (1, type, idx, skip);
-    }
+  if (type.length () > skip && idx.size () > skip)
+    retval = retval(0).next_subsref (1, type, idx, skip);
 
   return retval.length () > 0 ? retval(0) : octave_value ();
 }
@@ -977,28 +956,22 @@ octave_classdef::subsasgn (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsasgn");
 
-          if (! error_state)
-            {
-              count++;
-              args(0) = octave_value (this);
-              args(2) = rhs;
+          count++;
+          args(0) = octave_value (this);
+          args(2) = rhs;
 
-              octave_value_list retlist;
+          octave_value_list retlist;
 
-              retlist = meth.execute (args, 1, true, "subsasgn");
+          retlist = meth.execute (args, 1, true, "subsasgn");
 
-              if (! error_state)
-                {
-                  if (retlist.length () > 0)
-                    retval = retlist(0);
-                  else
-                    error ("overloaded method `subsasgn' did not return any value");
-                }
-            }
+          if (retlist.length () > 0)
+            retval = retlist(0);
+          else
+            error ("overloaded method `subsasgn' did not return any value");
         }
     }
 
-  if (! error_state && ! retval.is_defined ())
+  if (! retval.is_defined ())
     retval = object.subsasgn (type, idx, rhs);
 
   return retval;
@@ -1013,8 +986,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
     {
       object = object.make_array ();
 
-      if (! error_state)
-        return subsasgn (type, idx, rhs);
+      return subsasgn (type, idx, rhs);
     }
   else
     return octave_base_value::undef_subsasgn (type, idx, rhs);
@@ -1201,12 +1173,9 @@ public:
         break;
       }
 
-    if (! error_state)
-      {
-        if (type.length () > skip && idx.size () > skip
-            && retval.length () > 0)
-          retval = retval(0).next_subsref (nargout, type, idx, skip);
-      }
+    if (type.length () > skip && idx.size () > skip
+        && retval.length () > 0)
+      retval = retval(0).next_subsref (nargout, type, idx, skip);
 
     return retval;
   }
@@ -1240,62 +1209,59 @@ public:
 
         cdef_class cls = lookup_class (cname);
 
-        if (! error_state)
+        if (in_constructor)
           {
-            if (in_constructor)
+            if (is_direct_superclass (cls, ctx))
               {
-                if (is_direct_superclass (cls, ctx))
+                if (is_constructed_object (mname))
                   {
-                    if (is_constructed_object (mname))
-                      {
-                        octave_value sym = symbol_table::varval (mname);
+                    octave_value sym = symbol_table::varval (mname);
 
-                        cls.run_constructor (to_cdef_ref (sym), idx);
+                    cls.run_constructor (to_cdef_ref (sym), idx);
 
-                        retval(0) = sym;
-                      }
-                    else
-                      error ("cannot call superclass constructor with "
-                             "variable `%s'", mname.c_str ());
+                    retval(0) = sym;
                   }
                 else
-                  error ("`%s' is not a direct superclass of `%s'",
+                  error ("cannot call superclass constructor with "
+                         "variable `%s'", mname.c_str ());
+              }
+            else
+              error ("`%s' is not a direct superclass of `%s'",
+                     cname.c_str (), ctx.get_name ().c_str ());
+          }
+        else
+          {
+            if (mname == meth_name)
+              {
+                if (is_strict_superclass (cls, ctx))
+                  {
+                    // I see 2 possible implementations here:
+                    // 1) use cdef_object::subsref with a different class
+                    //    context; this avoids duplicating code, but
+                    //    assumes the object is always the first argument
+                    // 2) lookup the method manually and call
+                    //    cdef_method::execute; this duplicates part of
+                    //    logic in cdef_object::subsref, but avoid the
+                    //    assumption of 1)
+                    // Not being sure about the assumption of 1), I
+                    // go with option 2) for the time being.
+
+                    cdef_method meth = cls.find_method (meth_name, false);
+
+                    if (meth.ok ())
+                      retval = meth.execute (idx, nargout, true,
+                                             meth_name);
+                    else
+                      error ("no method `%s' found in superclass `%s'",
+                             meth_name.c_str (), cname.c_str ());
+                  }
+                else
+                  error ("`%s' is not a superclass of `%s'",
                          cname.c_str (), ctx.get_name ().c_str ());
               }
             else
-              {
-                if (mname == meth_name)
-                  {
-                    if (is_strict_superclass (cls, ctx))
-                      {
-                        // I see 2 possible implementations here:
-                        // 1) use cdef_object::subsref with a different class
-                        //    context; this avoids duplicating code, but
-                        //    assumes the object is always the first argument
-                        // 2) lookup the method manually and call
-                        //    cdef_method::execute; this duplicates part of
-                        //    logic in cdef_object::subsref, but avoid the
-                        //    assumption of 1)
-                        // Not being sure about the assumption of 1), I
-                        // go with option 2) for the time being.
-
-                        cdef_method meth = cls.find_method (meth_name, false);
-
-                        if (meth.ok ())
-                          retval = meth.execute (idx, nargout, true,
-                                                 meth_name);
-                        else
-                          error ("no method `%s' found in superclass `%s'",
-                                 meth_name.c_str (), cname.c_str ());
-                      }
-                    else
-                      error ("`%s' is not a superclass of `%s'",
-                             cname.c_str (), ctx.get_name ().c_str ());
-                  }
-                else
-                  error ("method name mismatch (`%s' != `%s')",
-                         mname.c_str (), meth_name.c_str ());
-              }
+              error ("method name mismatch (`%s' != `%s')",
+                     mname.c_str (), meth_name.c_str ());
           }
       }
     else if (! error_state)
@@ -1362,27 +1328,17 @@ cdef_object::map_value (void) const
               Cell cvalue (a_obj.dims ());
 
               for (octave_idx_type i = 0; i < a_obj.numel (); i++)
-                {
-                  cvalue (i) = it->second.get_value (a_obj(i), false);
+                cvalue (i) = it->second.get_value (a_obj(i), false);
 
-                  if (error_state)
-                    break;
-                }
-
-              if (! error_state)
-                retval.setfield (it->first, cvalue);
+              retval.setfield (it->first, cvalue);
             }
           else
             {
               Cell cvalue (dim_vector (1, 1),
                            it->second.get_value (*this, false));
 
-              if (! error_state)
-                retval.setfield (it->first, cvalue);
+              retval.setfield (it->first, cvalue);
             }
-
-          if (error_state)
-            break;
         }
     }
 
@@ -1450,7 +1406,7 @@ cdef_object_scalar::subsref (const std::string& type,
               }
           }
 
-        if (skip == 0 && ! error_state)
+        if (skip == 0)
           {
             cdef_property prop = cls.find_property (name);
 
@@ -1521,58 +1477,47 @@ cdef_object_scalar::subsasgn (const std::string& type,
       {
         std::string name = (idx.front ())(0).string_value ();
 
-        if (! error_state)
-          {
-            cdef_property prop = cls.find_property (name);
+        cdef_property prop = cls.find_property (name);
 
-            if (prop.ok ())
+        if (prop.ok ())
+          {
+            if (prop.is_constant ())
+              error ("subsasgn: cannot assign constant property: %s",
+                     name.c_str ());
+            else
               {
-                if (prop.is_constant ())
-                  error ("subsasgn: cannot assign constant property: %s",
-                         name.c_str ());
+                refcount++;
+
+                cdef_object obj (this);
+
+                if (type.length () == 1)
+                  {
+                    prop.set_value (obj, rhs, true, "subsasgn");
+
+                    retval = to_ov (obj);
+                  }
                 else
                   {
-                    refcount++;
+                    octave_value val =
+                      prop.get_value (obj, true, "subsasgn");
 
-                    cdef_object obj (this);
+                    std::list<octave_value_list> args (idx);
 
-                    if (type.length () == 1)
-                      {
-                        prop.set_value (obj, rhs, true, "subsasgn");
+                    args.erase (args.begin ());
 
-                        if (! error_state)
-                          retval = to_ov (obj);
-                      }
-                    else
-                      {
-                        octave_value val =
-                          prop.get_value (obj, true, "subsasgn");
+                    val = val.assign (octave_value::op_asn_eq,
+                                      type.substr (1), args, rhs);
 
-                        if (! error_state)
-                          {
-                            std::list<octave_value_list> args (idx);
+                    if (val.class_name () != "object"
+                        || ! to_cdef (val).is_handle_object ())
+                      prop.set_value (obj, val, true, "subsasgn");
 
-                            args.erase (args.begin ());
-
-                            val = val.assign (octave_value::op_asn_eq,
-                                              type.substr (1), args, rhs);
-
-                            if (! error_state)
-                              {
-                                if (val.class_name () != "object"
-                                    || ! to_cdef (val).is_handle_object ())
-                                  prop.set_value (obj, val, true, "subsasgn");
-
-                                if (! error_state)
-                                  retval = to_ov (obj);
-                              }
-                          }
-                      }
+                    retval = to_ov (obj);
                   }
               }
-            else
-              error ("subsasgn: unknown property: %s", name.c_str ());
           }
+        else
+          error ("subsasgn: unknown property: %s", name.c_str ());
       }
       break;
 
@@ -1590,8 +1535,7 @@ cdef_object_scalar::subsasgn (const std::string& type,
 
         octave_value tmp = new_obj.subsasgn (type, idx, rhs);
 
-        if (! error_state)
-          retval = tmp;
+        retval = tmp;
       }
       break;
 
@@ -1610,13 +1554,9 @@ cdef_object_scalar::mark_for_construction (const cdef_class& cls)
 
   Cell supcls = cls.get ("SuperClasses").cell_value ();
 
-  if (! error_state)
-    {
-      std::list<cdef_class> supcls_list = lookup_classes (supcls);
+  std::list<cdef_class> supcls_list = lookup_classes (supcls);
 
-      if (! error_state)
-        ctor_list[cls] = supcls_list;
-    }
+  ctor_list[cls] = supcls_list;
 }
 
 octave_value_list
@@ -1645,7 +1585,7 @@ cdef_object_array::subsref (const std::string& type,
         bool is_scalar = true;
         Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
-        for (int i = 0; ! error_state && i < ival.length (); i++)
+        for (int i = 0; i < ival.length (); i++)
           {
             try
               {
@@ -1657,34 +1597,28 @@ cdef_object_array::subsref (const std::string& type,
                 e.set_pos_if_unset (ival.length (), i+1);
                 throw;
               }
-            if (! error_state)
-              is_scalar = is_scalar && iv(i).is_scalar ();
+
+            is_scalar = is_scalar && iv(i).is_scalar ();
           }
 
-        if (! error_state)
+        Array<cdef_object> ires = array.index (iv, auto_add);
+
+        // If resizing is enabled (auto_add = true), it's possible
+        // indexing was out-of-bound and the result array contains
+        // invalid cdef_objects.
+
+        if (auto_add)
+          fill_empty_values (ires);
+
+        if (is_scalar)
+          retval(0) = to_ov (ires(0));
+        else
           {
-            Array<cdef_object> ires = array.index (iv, auto_add);
+            cdef_object array_obj (new cdef_object_array (ires));
 
-            if (! error_state)
-              {
-                // If resizing is enabled (auto_add = true), it's possible
-                // indexing was out-of-bound and the result array contains
-                // invalid cdef_objects.
+            array_obj.set_class (get_class ());
 
-                if (auto_add)
-                  fill_empty_values (ires);
-
-                if (is_scalar)
-                  retval(0) = to_ov (ires(0));
-                else
-                  {
-                    cdef_object array_obj (new cdef_object_array (ires));
-
-                    array_obj.set_class (get_class ());
-
-                    retval(0) = to_ov (array_obj);
-                  }
-              }
+            retval(0) = to_ov (array_obj);
           }
       }
       break;
@@ -1705,17 +1639,11 @@ cdef_object_array::subsref (const std::string& type,
               octave_value_list r = array(i).subsref (type, idx, 1, dummy_skip,
                                                       dummy_cls);
 
-              if (! error_state)
-                {
-                  if (r.length () > 0)
-                    c(i) = r(0);
-                }
-              else
-                break;
+              if (r.length () > 0)
+                c(i) = r(0);
             }
 
-          if (! error_state)
-            retval(0) = octave_value (c, true);
+          retval(0) = octave_value (c, true);
 
           break;
         }
@@ -1744,66 +1672,51 @@ cdef_object_array::subsasgn (const std::string& type,
         {
           cdef_object rhs_obj = to_cdef (rhs);
 
-          if (! error_state)
+          if (rhs_obj.get_class () == get_class ())
             {
-              if (rhs_obj.get_class () == get_class ())
+              const octave_value_list& ival = idx.front ();
+              bool is_scalar = true;
+              Array<idx_vector> iv (dim_vector (1, ival.length ()));
+
+              for (int i = 0; i < ival.length (); i++)
                 {
-                  const octave_value_list& ival = idx.front ();
-                  bool is_scalar = true;
-                  Array<idx_vector> iv (dim_vector (1, ival.length ()));
-
-                  for (int i = 0; ! error_state && i < ival.length (); i++)
+                  try
                     {
-                      try
-                        {
-                          iv(i) = ival(i).index_vector ();
-                        }
-                      catch (index_exception& e)
-                        {
-                          e.set_pos_if_unset (ival.length (), i+1);
-                          throw;   // var name set in pt-idx.cc / pt-assign.cc
-                        }
-                      if (! error_state)
-                        is_scalar = is_scalar && iv(i).is_scalar ();
+                      iv(i) = ival(i).index_vector ();
+                    }
+                  catch (index_exception& e)
+                    {
+                      e.set_pos_if_unset (ival.length (), i+1);
+                      throw;   // var name set in pt-idx.cc / pt-assign.cc
                     }
 
-                  if (! error_state)
-                    {
-                      Array<cdef_object> rhs_mat;
+                  is_scalar = is_scalar && iv(i).is_scalar ();
+                }
 
-                      if (! rhs_obj.is_array ())
-                        {
-                          rhs_mat = Array<cdef_object> (dim_vector (1, 1));
-                          rhs_mat(0) = rhs_obj;
-                        }
-                      else
-                        rhs_mat = rhs_obj.array_value ();
+              Array<cdef_object> rhs_mat;
 
-                      if (! error_state)
-                        {
-                          octave_idx_type n = array.numel ();
-
-                          array.assign (iv, rhs_mat, cdef_object ());
-
-                          if (! error_state)
-                            {
-                              if (array.numel () > n)
-                                fill_empty_values ();
-
-                              if (! error_state)
-                                {
-                                  refcount++;
-                                  retval = to_ov (cdef_object (this));
-                                }
-                            }
-                        }
-                    }
+              if (! rhs_obj.is_array ())
+                {
+                  rhs_mat = Array<cdef_object> (dim_vector (1, 1));
+                  rhs_mat(0) = rhs_obj;
                 }
               else
-                error ("can't assign %s object into array of %s objects.",
-                       rhs_obj.class_name ().c_str (),
-                       class_name ().c_str ());
+                rhs_mat = rhs_obj.array_value ();
+
+              octave_idx_type n = array.numel ();
+
+              array.assign (iv, rhs_mat, cdef_object ());
+
+              if (array.numel () > n)
+                fill_empty_values ();
+
+              refcount++;
+              retval = to_ov (cdef_object (this));
             }
+          else
+            error ("can't assign %s object into array of %s objects.",
+                   rhs_obj.class_name ().c_str (),
+                   class_name ().c_str ());
         }
       else
         {
@@ -1813,7 +1726,7 @@ cdef_object_array::subsasgn (const std::string& type,
 
           Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
-          for (int i = 0; ! error_state && i < ival.length (); i++)
+          for (int i = 0; i < ival.length (); i++)
             {
               try
                 {
@@ -1826,85 +1739,73 @@ cdef_object_array::subsasgn (const std::string& type,
                   throw;
                 }
 
-              if (! error_state)
-                {
-                  is_scalar = is_scalar && iv(i).is_scalar ();
+              is_scalar = is_scalar && iv(i).is_scalar ();
 
-                  if (! is_scalar)
-                    error ("subsasgn: invalid indexing for object array "
-                           "assignment, the index must reference a single "
-                           "object in the array.");
-                }
-            }
-
-          if (! error_state)
-            {
-              Array<cdef_object> a = array.index (iv, true);
-
-              if (a.numel () != 1)
+              if (! is_scalar)
                 error ("subsasgn: invalid indexing for object array "
-                       "assignment");
-
-              if (! error_state)
-                {
-                  cdef_object obj = a(0);
-
-                  int ignore_copies = 0;
-
-                  // If the object in 'a' is not valid, this means the index
-                  // was out-of-bound and we need to create a new object.
-
-                  if (! obj.ok ())
-                    obj = get_class ().construct_object (octave_value_list ());
-                  else
-                    // Optimize the subsasgn call to come. There are 2 copies
-                    // that we can safely ignore:
-                    // - 1 in "array"
-                    // - 1 in "a"
-                    ignore_copies = 2;
-
-                  std::list<octave_value_list> next_idx (idx);
-
-                  next_idx.erase (next_idx.begin ());
-
-                  octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
-                                                   rhs, ignore_copies);
-
-                  if (! error_state)
-                    {
-                      cdef_object robj = to_cdef (tmp);
-
-                      if (robj.ok ()
-                          && ! robj.is_array ()
-                          && robj.get_class () == get_class ())
-                        {
-                          // Small optimization, when dealing with handle
-                          // objects, we don't need to re-assign the result
-                          // of subsasgn back into the array.
-
-                          if (! robj.is (a(0)))
-                            {
-                              Array<cdef_object> rhs_a (dim_vector (1, 1),
-                                                        robj);
-
-                              octave_idx_type n = array.numel ();
-
-                              array.assign (iv, rhs_a);
-
-                              if (array.numel () > n)
-                                fill_empty_values ();
-                            }
-
-                          refcount++;
-
-                          retval = to_ov (cdef_object (this));
-                        }
-                      else
-                        error ("subasgn: invalid assignment into array of %s "
-                               "objects", class_name ().c_str ());
-                    }
-                }
+                       "assignment, the index must reference a single "
+                       "object in the array.");
             }
+
+          Array<cdef_object> a = array.index (iv, true);
+
+          if (a.numel () != 1)
+            error ("subsasgn: invalid indexing for object array "
+                   "assignment");
+
+          cdef_object obj = a(0);
+
+          int ignore_copies = 0;
+
+          // If the object in 'a' is not valid, this means the index
+          // was out-of-bound and we need to create a new object.
+
+          if (! obj.ok ())
+            obj = get_class ().construct_object (octave_value_list ());
+          else
+            // Optimize the subsasgn call to come. There are 2 copies
+            // that we can safely ignore:
+            // - 1 in "array"
+            // - 1 in "a"
+            ignore_copies = 2;
+
+          std::list<octave_value_list> next_idx (idx);
+
+          next_idx.erase (next_idx.begin ());
+
+          octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
+                                           rhs, ignore_copies);
+
+          cdef_object robj = to_cdef (tmp);
+
+          if (robj.ok ()
+              && ! robj.is_array ()
+              && robj.get_class () == get_class ())
+            {
+              // Small optimization, when dealing with handle
+              // objects, we don't need to re-assign the result
+              // of subsasgn back into the array.
+
+              if (! robj.is (a(0)))
+                {
+                  Array<cdef_object> rhs_a (dim_vector (1, 1),
+                                            robj);
+
+                  octave_idx_type n = array.numel ();
+
+                  array.assign (iv, rhs_a);
+
+                  if (array.numel () > n)
+                    fill_empty_values ();
+                }
+
+              refcount++;
+
+              retval = to_ov (cdef_object (this));
+            }
+          else
+            error ("subasgn: invalid assignment into array of %s "
+                   "objects", class_name ().c_str ());
         }
       break;
 
@@ -1922,26 +1823,22 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
 {
   cdef_class cls = get_class ();
 
-  if (! error_state)
+  cdef_object obj;
+
+  int n = arr.numel ();
+
+  for (int i = 0; i < n; i++)
     {
-      cdef_object obj;
-
-      int n = arr.numel ();
-
-      for (int i = 0; ! error_state && i < n; i++)
+      if (! arr.xelem (i).ok ())
         {
-          if (! arr.xelem (i).ok ())
+          if (! obj.ok ())
             {
-              if (! obj.ok ())
-                {
-                  obj = cls.construct_object (octave_value_list ());
+              obj = cls.construct_object (octave_value_list ());
 
-                  if (! error_state)
-                    arr.xelem (i) = obj;
-                }
-              else
-                arr.xelem (i) = obj.copy ();
+              arr.xelem (i) = obj;
             }
+          else
+            arr.xelem (i) = obj.copy ();
         }
     }
 }
@@ -2032,13 +1929,10 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
         {
           cdef_class cls = lookup_class (super_classes(i));
 
-          if (! error_state)
-            {
-              cdef_method meth = cls.find_method (nm);
+          cdef_method meth = cls.find_method (nm);
 
-              if (meth.ok ())
-                return meth;
-            }
+          if (meth.ok ())
+            return meth;
         }
     }
 
@@ -2054,7 +1948,7 @@ public:
   void visit_statement_list (tree_statement_list& t)
   {
     for (tree_statement_list::const_iterator it = t.begin ();
-         ! error_state && it != t.end (); ++it)
+         it != t.end (); ++it)
       (*it)->accept (*this);
   }
 
@@ -2188,23 +2082,21 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
                   ctor_analyzer a (meth.get_name (), obj_name);
 
                   body->accept (a);
-                  if (! error_state)
-                    {
-                      std::list<cdef_class> explicit_ctor_list
-                        = a.get_constructor_list ();
 
-                      for (std::list<cdef_class>::const_iterator
-                           it = explicit_ctor_list.begin ();
-                           ! error_state && it != explicit_ctor_list.end ();
-                           ++it)
-                        {
+                  std::list<cdef_class> explicit_ctor_list
+                    = a.get_constructor_list ();
+
+                  for (std::list<cdef_class>::const_iterator
+                         it = explicit_ctor_list.begin ();
+                       it != explicit_ctor_list.end ();
+                       ++it)
+                    {
 #if DEBUG_TRACE
-                          std::cerr << "explicit superclass constructor: "
-                                    << it->get_name () << std::endl;
+                      std::cerr << "explicit superclass constructor: "
+                                << it->get_name () << std::endl;
 #endif
 
-                          implicit_ctor_list.remove (*it);
-                        }
+                      implicit_ctor_list.remove (*it);
                     }
                 }
               else
@@ -2228,20 +2120,15 @@ cdef_class::cdef_class_rep::get_methods (void)
 
   find_methods (meths, false);
 
-  if (! error_state)
-    {
-      Cell c (meths.size (), 1);
+  Cell c (meths.size (), 1);
 
-      int idx = 0;
+  int idx = 0;
 
-      for (std::map<std::string,cdef_method>::const_iterator
-            it = meths.begin (); it != meths.end (); ++it, ++idx)
-        c (idx, 0) = to_ov (it->second);
+  for (std::map<std::string,cdef_method>::const_iterator
+         it = meths.begin (); it != meths.end (); ++it, ++idx)
+    c (idx, 0) = to_ov (it->second);
 
-      return c;
-    }
-
-  return Cell ();
+  return c;
 }
 
 void
@@ -2283,10 +2170,7 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string,
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        cls.get_rep ()->find_methods (meths, true);
-      else
-        break;
+      cls.get_rep ()->find_methods (meths, true);
     }
 }
 
@@ -2311,13 +2195,10 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        {
-          cdef_property prop = cls.find_property (nm);
+      cdef_property prop = cls.find_property (nm);
 
-          if (prop.ok ())
-            return prop;
-        }
+      if (prop.ok ())
+        return prop;
     }
 
   return cdef_property ();
@@ -2338,20 +2219,15 @@ cdef_class::cdef_class_rep::get_properties (int mode)
 
   props = get_property_map (mode);
 
-  if (! error_state)
-    {
-      Cell c (props.size (), 1);
+  Cell c (props.size (), 1);
 
-      int idx = 0;
+  int idx = 0;
 
-      for (std::map<std::string,cdef_property>::const_iterator
-            it = props.begin (); it != props.end (); ++it, ++idx)
-        c (idx, 0) = to_ov (it->second);
+  for (std::map<std::string,cdef_property>::const_iterator
+         it = props.begin (); it != props.end (); ++it, ++idx)
+    c (idx, 0) = to_ov (it->second);
 
-      return c;
-    }
-
-  return Cell ();
+  return c;
 }
 
 std::map<std::string, cdef_property>
@@ -2371,8 +2247,7 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
 {
   property_const_iterator it;
 
-  for (it = property_map.begin (); ! error_state && it != property_map.end ();
-       ++it)
+  for (it = property_map.begin (); it != property_map.end (); ++it)
     {
       std::string nm = it->second.get_name ();
 
@@ -2395,17 +2270,14 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
 
   Cell super_classes = get ("SuperClasses").cell_value ();
 
-  for (int i = 0; ! error_state && i < super_classes.numel (); i++)
+  for (int i = 0; i < super_classes.numel (); i++)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        cls.get_rep ()->find_properties (props,
-                                         (mode == property_all ?
-                                          property_all :
-                                          property_inherited));
-      else
-        break;
+      cls.get_rep ()->find_properties (props,
+                                       (mode == property_all
+                                        ? property_all
+                                        : property_inherited));
     }
 }
 
@@ -2416,7 +2288,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
   load_all_methods ();
 
   for (method_const_iterator it = method_map.begin ();
-       ! error_state && it != method_map.end(); ++it)
+       it != method_map.end(); ++it)
     {
       if (! it->second.is_constructor ())
         {
@@ -2436,7 +2308,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
     }
 
   for (property_const_iterator it = property_map.begin ();
-       ! error_state && it != property_map.end (); ++it)
+       it != property_map.end (); ++it)
     {
       std::string nm = it->second.get_name ();
 
@@ -2456,14 +2328,11 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 
   Cell super_classes = get ("SuperClasses").cell_value ();
 
-  for (int i = 0; ! error_state && i < super_classes.numel (); i++)
+  for (int i = 0; i < super_classes.numel (); i++)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        cls.get_rep ()->find_names (names, all);
-      else
-        break;
+      cls.get_rep ()->find_names (names, all);
     }
 }
 
@@ -2474,19 +2343,14 @@ cdef_class::cdef_class_rep::get_names (void)
 
   find_names (names, false);
 
-  if (! error_state)
-    {
-      string_vector v (names.size ());
+  string_vector v (names.size ());
 
-      int idx = 0;
-      for (std::set<std::string>::const_iterator it = names.begin ();
-           it != names.end (); ++it, ++idx)
-        v[idx] = *it;
+  int idx = 0;
+  for (std::set<std::string>::const_iterator it = names.begin ();
+       it != names.end (); ++it, ++idx)
+    v[idx] = *it;
 
-      return v.sort (true);
-    }
-
-  return string_vector ();
+  return v.sort (true);
 }
 
 void
@@ -2515,8 +2379,7 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (!error_state)
-        cls.delete_object (obj);
+      cls.delete_object (obj);
     }
 }
 
@@ -2603,11 +2466,8 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
       break;
     }
 
-  if (! error_state)
-    {
-      if (type.length () > skip && idx.size () > skip && ! retval.empty ())
-        retval = retval(0).next_subsref (nargout, type, idx, skip);
-    }
+  if (type.length () > skip && idx.size () > skip && ! retval.empty ())
+    retval = retval(0).next_subsref (nargout, type, idx, skip);
 
   return retval;
 }
@@ -2626,35 +2486,26 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
   std::list<cdef_class> super_classes = lookup_classes (
                                           get ("SuperClasses").cell_value ());
 
-  if (! error_state)
+  for (std::list<cdef_class>::iterator it = super_classes.begin ();
+       it != super_classes.end (); ++it)
+    it->initialize_object (obj);
+
+  for (property_const_iterator it = property_map.begin ();
+       it != property_map.end (); ++it)
     {
-      for (std::list<cdef_class>::iterator it = super_classes.begin ();
-           ! error_state && it != super_classes.end (); ++it)
-        it->initialize_object (obj);
-
-      if (! error_state)
+      if (! it->second.get ("Dependent").bool_value ())
         {
-          for (property_const_iterator it = property_map.begin ();
-               ! error_state && it != property_map.end (); ++it)
-            {
-              if (! it->second.get ("Dependent").bool_value ())
-                {
-                  octave_value pvalue = it->second.get ("DefaultValue");
+          octave_value pvalue = it->second.get ("DefaultValue");
 
-                  if (pvalue.is_defined ())
-                    obj.put (it->first, pvalue);
-                  else
-                    obj.put (it->first, octave_value (Matrix ()));
-                }
-            }
-
-          if (! error_state)
-            {
-              refcount++;
-              obj.mark_for_construction (cdef_class (this));
-            }
+          if (pvalue.is_defined ())
+            obj.put (it->first, pvalue);
+          else
+            obj.put (it->first, octave_value (Matrix ()));
         }
     }
+
+  refcount++;
+  obj.mark_for_construction (cdef_class (this));
 }
 
 void
@@ -2664,16 +2515,12 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
   octave_value_list empty_args;
 
   for (std::list<cdef_class>::const_iterator it = implicit_ctor_list.begin ();
-       ! error_state && it != implicit_ctor_list.end (); ++it)
+       it != implicit_ctor_list.end (); ++it)
     {
       cdef_class supcls = lookup_class (*it);
 
-      if (! error_state)
-        supcls.run_constructor (obj, empty_args);
+      supcls.run_constructor (obj, empty_args);
     }
-
-  if (error_state)
-    return;
 
   std::string cls_name = get_name ();
   std::string ctor_name = get_base_name (cls_name);
@@ -2688,16 +2535,13 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
       ctor_args.prepend (to_ov (obj));
       ctor_retval = ctor.execute (ctor_args, 1, true, "constructor");
 
-      if (! error_state)
+      if (ctor_retval.length () == 1)
+        obj = to_cdef (ctor_retval(0));
+      else
         {
-          if (ctor_retval.length () == 1)
-            obj = to_cdef (ctor_retval(0));
-          else
-            {
-              error ("%s: invalid number of output arguments for classdef constructor",
-                     ctor_name.c_str ());
-              return;
-            }
+          error ("%s: invalid number of output arguments for classdef constructor",
+                 ctor_name.c_str ());
+          return;
         }
     }
 
@@ -2709,7 +2553,7 @@ cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 {
   cdef_object obj = construct_object (args);
 
-  if (! error_state && obj.ok ())
+  if (obj.ok ())
     return to_ov (obj);
 
   return octave_value ();
@@ -2780,13 +2624,9 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 
           initialize_object (obj);
 
-          if (! error_state)
-            {
-              run_constructor (obj, args);
+          run_constructor (obj, args);
 
-              if (! error_state)
-                return obj;
-            }
+          return obj;
         }
     }
   else
@@ -2853,7 +2693,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
     {
       for (tree_classdef_superclass_list::iterator it =
              t->superclass_list ()->begin ();
-           ! error_state && it != t->superclass_list ()->end (); ++it)
+           it != t->superclass_list ()->end (); ++it)
         {
           std::string sclass_name = (*it)->class_name ();
 
@@ -2863,27 +2703,19 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           cdef_class sclass = lookup_class (sclass_name);
 
-          if (! error_state)
-            {
-              if (! sclass.get ("Sealed").bool_value ())
-                slist.push_back (sclass);
-              else
-                {
-                  error ("`%s' cannot inherit from `%s', because it is sealed",
-                         full_class_name.c_str (), sclass_name.c_str ());
-                  return retval;
-                }
-            }
+          if (! sclass.get ("Sealed").bool_value ())
+            slist.push_back (sclass);
           else
-            return retval;
+            {
+              error ("`%s' cannot inherit from `%s', because it is sealed",
+                     full_class_name.c_str (), sclass_name.c_str ());
+              return retval;
+            }
 
         }
     }
 
   retval = ::make_class (full_class_name, slist);
-
-  if (error_state)
-    return cdef_class ();
 
   // Package owning this class
 
@@ -2891,7 +2723,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
     {
       cdef_package pack = cdef_manager::find_package (t->package_name ());
 
-      if (! error_state && pack.ok ())
+      if (pack.ok ())
         retval.put ("ContainingPackage", to_ov (pack));
     }
 
@@ -3202,8 +3034,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       args = execute_ov (get_fcn, args, 1);
 
-      if (! error_state)
-        retval = args(0);
+      retval = args(0);
     }
 
   return retval;
@@ -3268,21 +3099,17 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
       args = execute_ov (set_fcn, args, 1);
 
-      if (! error_state)
+      if (args.length () > 0 && args(0).is_defined ())
         {
-          if (args.length () > 0 && args(0).is_defined ())
+          if (args (0).is_classdef_object ())
             {
-              if (args (0).is_classdef_object ())
-                {
-                  cdef_object new_obj = to_cdef (args(0));
+              cdef_object new_obj = to_cdef (args(0));
 
-                  if (! error_state)
-                    obj = new_obj;
-                }
-              else
-                ::warning ("set-method of property `%s' returned a non-classdef object",
-                           get_name ().c_str ());
+              obj = new_obj;
             }
+          else
+            ::warning ("set-method of property `%s' returned a non-classdef object",
+                       get_name ().c_str ());
         }
     }
 }
@@ -3292,9 +3119,8 @@ cdef_property::cdef_property_rep::check_get_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  if (! error_state)
-    return ::check_access (cls, get ("GetAccess"), std::string (),
-                           get_name (), false);
+  return ::check_access (cls, get ("GetAccess"), std::string (),
+                         get_name (), false);
 
   return false;
 }
@@ -3304,9 +3130,8 @@ cdef_property::cdef_property_rep::check_set_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  if (! error_state)
-    return ::check_access (cls, get ("SetAccess"), std::string (),
-                           get_name (), true);
+  return ::check_access (cls, get ("SetAccess"), std::string (),
+                         get_name (), true);
 
   return false;
 }
@@ -3377,10 +3202,8 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
     {
       check_method ();
 
-      if (! error_state && function.is_defined ())
-        {
-          retval = execute_ov (function, args, nargout);
-        }
+      if (function.is_defined ())
+        retval = execute_ov (function, args, nargout);
     }
   else
     error ("%s: cannot execute abstract method",
@@ -3408,7 +3231,7 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
     {
       check_method ();
 
-      if (! error_state && function.is_defined ())
+      if (function.is_defined ())
         {
           octave_value_list new_args;
 
@@ -3442,10 +3265,7 @@ cdef_method::cdef_method_rep::check_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  if (! error_state)
-    return ::check_access (cls, get ("Access"), get_name ());
-
-  return false;
+  return ::check_access (cls, get ("Access"), get_name ());
 }
 
 octave_value_list
@@ -3466,11 +3286,8 @@ cdef_method::cdef_method_rep::meta_subsref
       break;
     }
 
-  if (! error_state)
-    {
-      if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
-        retval = retval(0).next_subsref (nargout, type, idx, 1);
-    }
+  if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
+    retval = retval(0).next_subsref (nargout, type, idx, 1);
 
   return retval;
 }
@@ -3664,29 +3481,26 @@ cdef_package::cdef_package_rep::meta_subsref
                     {
                       octave_function* fcn = o.function_value ();
 
-                      if (! error_state)
+                      // NOTE: the case where the package query is the last
+                      // part of this subsref index is handled in the parse
+                      // tree, because there is some logic to handle magic
+                      // "end" that makes it impossible to execute the
+                      // function call at this stage.
+
+                      if (type.size () > 1
+                          && ! fcn->is_postfix_index_handled (type[1]))
                         {
-                          // NOTE: the case where the package query is the last
-                          // part of this subsref index is handled in the parse
-                          // tree, because there is some logic to handle magic
-                          // "end" that makes it impossible to execute the
-                          // function call at this stage.
+                          octave_value_list tmp_args;
 
-                          if (type.size () > 1
-                              && ! fcn->is_postfix_index_handled (type[1]))
-                            {
-                              octave_value_list tmp_args;
-
-                              retval = o.do_multi_index_op (nargout,
-                                                            tmp_args);
-                            }
-                          else
-                            retval(0) = o;
-
-                          if (type.size () > 1 && idx.size () > 1)
-                            retval = retval(0).next_subsref (nargout, type,
-                                                             idx, 1);
+                          retval = o.do_multi_index_op (nargout,
+                                                        tmp_args);
                         }
+                      else
+                        retval(0) = o;
+
+                      if (type.size () > 1 && idx.size () > 1)
+                        retval = retval(0).next_subsref (nargout, type,
+                                                         idx, 1);
                     }
                   else if (type.size () > 1 && idx.size () > 1)
                     retval = o.next_subsref (nargout, type, idx, 1);

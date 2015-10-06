@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov.h"
 #include "ov-fcn.h"
+#include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 
 octave_call_stack *octave_call_stack::instance = 0;
@@ -52,7 +53,10 @@ octave_call_stack::stack_frame::fcn_name (bool print_subfn) const
       if (print_subfn && ! parent_fcn_name.empty ())
         retval = parent_fcn_name + Vfilemarker;
 
-      retval += m_fcn->name ();
+      if (m_fcn->is_anonymous_function ())
+        retval += octave_fcn_handle::anonymous;
+      else
+        retval += m_fcn->name ();
     }
   else
     retval = "<unknown>";

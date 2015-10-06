@@ -1,3 +1,4 @@
+## Copyright (C) 2015, Carlo de Falco
 ## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
@@ -147,8 +148,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     ## Solution accepted only if the error is less or equal to 1.0
     if (err <= 1)
       
-      [tk, comp] = kahan (tk, comp, dt);
-      options.comp = comp;
+      [tk, options.comp] = kahan (tk, options.comp, dt);
       s(end) = tk;
 
       ## values on this interval for time and solution
@@ -182,73 +182,12 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
           while ((counter <= k)
                  && (vdirection * z(i) > vdirection * tspan(counter)))
             ## choose interpolation scheme according to order of the solver
-            switch (order)
-              case 1
-                u_interp = linear_interpolation ([z(i-1) z(i)],
-                                                 [u(:,i-1) u(:,i)],
-                                                 tspan(counter));
-              case 2
-                if (! isempty (k_vals))
-                  der = k_vals(:,1);
-                else
-                  der = feval (func, z(i-1) , u(:,i-1),
-                               options.vfunarguments{:});
-                endif
-                u_interp = quadratic_interpolation ([z(i-1) z(i)],
-                                                    [u(:,i-1) u(:,i)],
-                                                    der, tspan(counter));
-              case 3
-                u_interp = ...
-                hermite_cubic_interpolation ([z(i-1) z(i)],
-                                             [u(:,i-1) u(:,i)],
-                                             [k_vals(:,1) k_vals(:,end)],
-                                             tspan(counter));
-              case 4
-                ## if ode45 is used without local extrapolation this function
-                ## doesn't require a new function evaluation.
-                u_interp = dorpri_interpolation ([z(i-1) z(i)],
-                                                 [u(:,i-1) u(:,i)],
-                                                 k_vals, tspan(counter));
-              case 5
-                ## ode45 with Dormand-Prince scheme:
-                ## 4th order approximation of y in t+dt/2 as proposed by
-                ## Shampine in Lawrence, Shampine, "Some Practical
-                ## Runge-Kutta Formulas", 1986.
-                u_half = u(:,i-1) ...
-                         + 1/2*dt*((6025192743/30085553152) * k_vals(:,1)
-                                   + (51252292925/65400821598) * k_vals(:,3)
-                                   - (2691868925/45128329728) * k_vals(:,4)
-                                   + (187940372067/1594534317056) * k_vals(:,5)
-                                   - (1776094331/19743644256) * k_vals(:,6)
-                                   + (11237099/235043384) * k_vals(:,7));
-                u_interp = ...
-                hermite_quartic_interpolation ([z(i-1) z(i)],
-                                               [u(:,i-1) u_half u(:,i)],
-                                               [k_vals(:,1) k_vals(:,end)],
-                                               tspan(counter));
 
-                ## it is also possible to do a new function evaluation and use
-                ## the quintic hermite interpolator
-                ## f_half = feval (func, t+1/2*dt, u_half,
-                ##                 options.vfunarguments{:});
-                ## u_interp =
-                ##   hermite_quintic_interpolation ([z(i-1) z(i)],
-                ##                                  [u(:,i-1) u_half u(:,i)],
-                ##                                  [k_vals(:,1) f_half ...
-                ##                                   k_vals(:,end)],
-                ##                                  tspan(counter));
-              otherwise
-                warning ("High order interpolation not yet implemented: ",
-                         "using cubic interpolation instead");
-                der(:,1) = feval (func, z(i-1) , u(:,i-1),
-                                  options.vfunarguments{:});
-                der(:,2) = feval (func, z(i) , u(:,i),
-                                  options.vfunarguments{:});
-                u_interp = ...
-                hermite_cubic_interpolation ([z(i-1) z(i)],
-                                             [u(:,i-1) u(:,i)],
-                                             der, tspan(counter));
-            endswitch
+            u_interp = ...
+            ode_rk_interpolate (order, [z(i-1) z(i)], [u(:,i-1) u(:,i)],
+                                tspan(counter), k_vals, dt,
+                                options.vfunarguments{:});
+            
 
             ## add the interpolated value of the solution
             u = [u(:,1:i-1), u_interp, u(:,i:end)];

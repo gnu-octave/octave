@@ -77,78 +77,65 @@ tree_simple_assignment::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (rhs)
     {
       octave_value rhs_val = rhs->rvalue1 ();
 
-      if (! error_state)
+      if (rhs_val.is_undefined ())
         {
-          if (rhs_val.is_undefined ())
+          error ("value on right hand side of assignment is undefined");
+          return retval;
+        }
+      else
+        {
+          if (rhs_val.is_cs_list ())
             {
-              error ("value on right hand side of assignment is undefined");
-              return retval;
+              const octave_value_list lst = rhs_val.list_value ();
+
+              if (! lst.empty ())
+                rhs_val = lst(0);
+              else
+                {
+                  error ("invalid number of elements on RHS of assignment");
+                  return retval;
+                }
             }
-          else
+
+          try
             {
-              if (rhs_val.is_cs_list ())
+              octave_lvalue ult = lhs->lvalue ();
+
+              if (ult.numel () != 1)
+                gripe_nonbraced_cs_list_assignment ();
+
+              ult.assign (etype, rhs_val);
+
+              if (etype == octave_value::op_asn_eq)
+                retval = rhs_val;
+              else
+                retval = ult.value ();
+
+              if (print_result ()
+                  && tree_evaluator::statement_printing_enabled ())
                 {
-                  const octave_value_list lst = rhs_val.list_value ();
+                  // We clear any index here so that we can
+                  // get the new value of the referenced
+                  // object below, instead of the indexed
+                  // value (which should be the same as the
+                  // right hand side value).
 
-                  if (! lst.empty ())
-                    rhs_val = lst(0);
-                  else
-                    {
-                      error ("invalid number of elements on RHS of assignment");
-                      return retval;
-                    }
+                  ult.clear_index ();
+
+                  octave_value lhs_val = ult.value ();
+
+                  lhs_val.print_with_name (octave_stdout,
+                                           lhs->name ());
                 }
-
-              try
-                {
-                  octave_lvalue ult = lhs->lvalue ();
-
-                  if (ult.numel () != 1)
-                    gripe_nonbraced_cs_list_assignment ();
-
-                  if (! error_state)
-                    {
-                      ult.assign (etype, rhs_val);
-
-                      if (! error_state)
-                        {
-                          if (etype == octave_value::op_asn_eq)
-                            retval = rhs_val;
-                          else
-                            retval = ult.value ();
-
-                          if (print_result ()
-                              && tree_evaluator::statement_printing_enabled ())
-                            {
-                              // We clear any index here so that we can
-                              // get the new value of the referenced
-                              // object below, instead of the indexed
-                              // value (which should be the same as the
-                              // right hand side value).
-
-                              ult.clear_index ();
-
-                              octave_value lhs_val = ult.value ();
-
-                              if (! error_state)
-                                lhs_val.print_with_name (octave_stdout,
-                                                         lhs->name ());
-                            }
-                        }
-                    }
-                }
-              catch (index_exception& e)
-                {       // problems with range, invalid index type etc.
-                  e.set_var (lhs->name ());
-                  (*current_liboctave_error_with_id_handler) (e.id(), e.err());
-                }
+            }
+          catch (index_exception& e)
+            {       // problems with range, invalid index type etc.
+              e.set_var (lhs->name ());
+              (*current_liboctave_error_with_id_handler) (e.id(), e.err());
             }
         }
     }
@@ -219,15 +206,9 @@ tree_multi_assignment::rvalue (int)
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (rhs)
     {
       std::list<octave_lvalue> lvalue_list = lhs->lvalue_list ();
-
-      if (error_state)
-        return retval;
 
       octave_idx_type n_out = 0;
 
@@ -242,9 +223,6 @@ tree_multi_assignment::rvalue (int)
                                          && rhs_val1(0).is_cs_list ()
                                          ? rhs_val1(0).list_value ()
                                          : rhs_val1);
-
-      if (error_state)
-        return retval;
 
       octave_idx_type k = 0;
 
@@ -303,12 +281,9 @@ tree_multi_assignment::rvalue (int)
                   ult.assign (octave_value::op_asn_eq,
                               octave_value (ovl, true));
 
-                  if (! error_state)
-                    {
-                      retval_list.push_back (ovl);
+                  retval_list.push_back (ovl);
 
-                      k += nel;
-                    }
+                  k += nel;
                 }
               else
                 error ("some elements undefined in return list");
@@ -324,7 +299,7 @@ tree_multi_assignment::rvalue (int)
                       k++;
                       continue;
                     }
-                  else if (! error_state)
+                  else
                     {
                       retval_list.push_back (rhs_val(k));
 
@@ -358,10 +333,8 @@ tree_multi_assignment::rvalue (int)
                 }
             }
 
-          if (error_state)
-            break;
-          else if (print_result ()
-                   && tree_evaluator::statement_printing_enabled ())
+          if (print_result ()
+              && tree_evaluator::statement_printing_enabled ())
             {
               // We clear any index here so that we can get
               // the new value of the referenced object below,
@@ -372,19 +345,12 @@ tree_multi_assignment::rvalue (int)
 
               octave_value lhs_val = ult.value ();
 
-              if (! error_state)
-                lhs_val.print_with_name (octave_stdout,
-                                         lhs_elt->name ());
+              lhs_val.print_with_name (octave_stdout, lhs_elt->name ());
             }
-
-          if (error_state)
-            break;
-
         }
 
       // Concatenate return values.
       retval = retval_list;
-
     }
 
   return retval;

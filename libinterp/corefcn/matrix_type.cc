@@ -157,11 +157,9 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                     {
                       SparseComplexMatrix m =
                         args(0).sparse_complex_matrix_value ();
-                      if (!error_state)
-                        {
-                          mattyp = MatrixType (m);
-                          args(0).matrix_type (mattyp);
-                        }
+
+                      mattyp = MatrixType (m);
+                      args(0).matrix_type (mattyp);
                     }
                 }
               else
@@ -171,11 +169,9 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                   if (mattyp.is_unknown () && autocomp)
                     {
                       SparseMatrix m = args(0).sparse_matrix_value ();
-                      if (!error_state)
-                        {
-                          mattyp = MatrixType (m);
-                          args(0).matrix_type (mattyp);
-                        }
+
+                      mattyp = MatrixType (m);
+                      args(0).matrix_type (mattyp);
                     }
                 }
 
@@ -280,54 +276,46 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                   else
                     error ("matrix_type: Unknown matrix type %s", str_typ.c_str ());
 
-                  if (! error_state)
+                  if (nargin == 3
+                      && (str_typ == "upper" || str_typ == "lower"))
                     {
-                      if (nargin == 3
-                          && (str_typ == "upper" || str_typ == "lower"))
-                        {
-                          const ColumnVector perm =
-                            ColumnVector (args(2).vector_value ());
+                      const ColumnVector perm =
+                        ColumnVector (args(2).vector_value ());
 
-                          if (error_state)
+                      if (error_state)
+                        error ("matrix_type: Invalid permutation vector PERM");
+                      else
+                        {
+                          octave_idx_type len = perm.numel ();
+                          dim_vector dv = args(0).dims ();
+
+                          if (len != dv(0))
                             error ("matrix_type: Invalid permutation vector PERM");
                           else
                             {
-                              octave_idx_type len = perm.numel ();
-                              dim_vector dv = args(0).dims ();
+                              OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                              if (len != dv(0))
-                                error ("matrix_type: Invalid permutation vector PERM");
-                              else
-                                {
-                                  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+                              for (octave_idx_type i = 0; i < len; i++)
+                                p[i] = static_cast<octave_idx_type>
+                                  (perm (i))
+                                  - 1;
 
-                                  for (octave_idx_type i = 0; i < len; i++)
-                                    p[i] = static_cast<octave_idx_type>
-                                           (perm (i))
-                                           - 1;
-
-                                  mattyp.mark_as_permuted (len, p);
-                                }
+                              mattyp.mark_as_permuted (len, p);
                             }
                         }
-                      else if (nargin != 2
-                               && str_typ != "banded positive definite"
-                               && str_typ != "banded")
-                        error ("matrix_type: Invalid number of arguments");
-
-                      if (! error_state)
-                        {
-                          // Set the matrix type
-                          if (args(0).is_complex_type ())
-                            retval =
-                              octave_value (args(0).sparse_complex_matrix_value (),
-                                            mattyp);
-                          else
-                            retval
-                              = octave_value (args(0).sparse_matrix_value (),
-                                              mattyp);
-                        }
                     }
+                  else if (nargin != 2
+                           && str_typ != "banded positive definite"
+                           && str_typ != "banded")
+                    error ("matrix_type: Invalid number of arguments");
+
+                  // Set the matrix type
+                  if (args(0).is_complex_type ())
+                    retval = octave_value (args(0).sparse_complex_matrix_value (),
+                                           mattyp);
+                  else
+                    retval = octave_value (args(0).sparse_matrix_value (),
+                                           mattyp);
                 }
             }
         }
@@ -347,20 +335,16 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                         {
                           FloatComplexMatrix m;
                           m = args(0).float_complex_matrix_value ();
-                          if (!error_state)
-                            {
-                              mattyp = MatrixType (m);
-                              args(0).matrix_type (mattyp);
-                            }
+
+                          mattyp = MatrixType (m);
+                          args(0).matrix_type (mattyp);
                         }
                       else
                         {
                           ComplexMatrix m = args(0).complex_matrix_value ();
-                          if (!error_state)
-                            {
-                              mattyp = MatrixType (m);
-                              args(0).matrix_type (mattyp);
-                            }
+
+                          mattyp = MatrixType (m);
+                          args(0).matrix_type (mattyp);
                         }
                     }
                 }
@@ -373,20 +357,16 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                       if (args(0).is_single_type ())
                         {
                           FloatMatrix m = args(0).float_matrix_value ();
-                          if (!error_state)
-                            {
-                              mattyp = MatrixType (m);
-                              args(0).matrix_type (mattyp);
-                            }
+
+                          mattyp = MatrixType (m);
+                          args(0).matrix_type (mattyp);
                         }
                       else
                         {
                           Matrix m = args(0).matrix_value ();
-                          if (!error_state)
-                            {
-                              mattyp = MatrixType (m);
-                              args(0).matrix_type (mattyp);
-                            }
+
+                          mattyp = MatrixType (m);
+                          args(0).matrix_type (mattyp);
                         }
                     }
                 }
@@ -450,65 +430,55 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                     error ("matrix_type: Unknown matrix type %s",
                            str_typ.c_str ());
 
-                  if (! error_state)
+                  if (nargin == 3 && (str_typ == "upper"
+                                      || str_typ == "lower"))
                     {
-                      if (nargin == 3 && (str_typ == "upper"
-                                          || str_typ == "lower"))
-                        {
-                          const ColumnVector perm =
-                            ColumnVector (args(2).vector_value ());
+                      const ColumnVector perm =
+                        ColumnVector (args(2).vector_value ());
 
-                          if (error_state)
+                      if (error_state)
+                        error ("matrix_type: Invalid permutation vector PERM");
+                      else
+                        {
+                          octave_idx_type len = perm.numel ();
+                          dim_vector dv = args(0).dims ();
+
+                          if (len != dv(0))
                             error ("matrix_type: Invalid permutation vector PERM");
                           else
                             {
-                              octave_idx_type len = perm.numel ();
-                              dim_vector dv = args(0).dims ();
+                              OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                              if (len != dv(0))
-                                error ("matrix_type: Invalid permutation vector PERM");
-                              else
-                                {
-                                  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+                              for (octave_idx_type i = 0; i < len; i++)
+                                p[i] = static_cast<octave_idx_type>
+                                  (perm (i))
+                                  - 1;
 
-                                  for (octave_idx_type i = 0; i < len; i++)
-                                    p[i] = static_cast<octave_idx_type>
-                                           (perm (i))
-                                           - 1;
-
-                                  mattyp.mark_as_permuted (len, p);
-                                }
+                              mattyp.mark_as_permuted (len, p);
                             }
                         }
-                      else if (nargin != 2)
-                        error ("matrix_type: Invalid number of arguments");
+                    }
+                  else if (nargin != 2)
+                    error ("matrix_type: Invalid number of arguments");
 
-                      if (! error_state)
-                        {
-                          // Set the matrix type
-                          if (args(0).is_single_type ())
-                            {
-                              if (args(0).is_complex_type ())
-                                retval = octave_value
-                                         (args(0).float_complex_matrix_value (),
-                                          mattyp);
-                              else
-                                retval = octave_value
-                                         (args(0).float_matrix_value (),
-                                          mattyp);
-                            }
-                          else
-                            {
-                              if (args(0).is_complex_type ())
-                                retval = octave_value
-                                         (args(0).complex_matrix_value (),
-                                          mattyp);
-                              else
-                                retval = octave_value
-                                         (args(0).matrix_value (),
-                                          mattyp);
-                            }
-                        }
+                  // Set the matrix type
+                  if (args(0).is_single_type ())
+                    {
+                      if (args(0).is_complex_type ())
+                        retval = octave_value (args(0).float_complex_matrix_value (),
+                                               mattyp);
+                      else
+                        retval = octave_value (args(0).float_matrix_value (),
+                                               mattyp);
+                    }
+                  else
+                    {
+                      if (args(0).is_complex_type ())
+                        retval = octave_value (args(0).complex_matrix_value (),
+                                               mattyp);
+                      else
+                        retval = octave_value (args(0).matrix_value (),
+                                               mattyp);
                     }
                 }
             }

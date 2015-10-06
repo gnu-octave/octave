@@ -99,113 +99,87 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
     }
 
-  if (!error_state && nargin >= 2  && nargin <= 3)
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  octave_value x_arg = args(0);
+  octave_value a_arg = args(1);
+
+  // FIXME: Can we make a template version of the duplicated code below
+  if (x_arg.is_single_type () || a_arg.is_single_type ())
     {
-      octave_value x_arg = args(0);
-      octave_value a_arg = args(1);
-
-      // FIXME: Can we make a template version of the duplicated code below
-      if (x_arg.is_single_type () || a_arg.is_single_type ())
+      if (x_arg.is_scalar_type ())
         {
-          if (x_arg.is_scalar_type ())
+          float x = x_arg.float_value ();
+
+          if (a_arg.is_scalar_type ())
             {
-              float x = x_arg.float_value ();
+              float a = a_arg.float_value ();
 
-              if (! error_state)
-                {
-                  if (a_arg.is_scalar_type ())
-                    {
-                      float a = a_arg.float_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a)
-                                       : 1.0f - gammainc (x, a);
-                    }
-                  else
-                    {
-                      FloatNDArray a = a_arg.float_array_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a)
-                                       : 1.0f - gammainc (x, a);
-                    }
-                }
+              retval = lower ? gammainc (x, a) : 1.0f - gammainc (x, a);
             }
           else
             {
-              FloatNDArray x = x_arg.float_array_value ();
+              FloatNDArray a = a_arg.float_array_value ();
 
-              if (! error_state)
-                {
-                  if (a_arg.is_scalar_type ())
-                    {
-                      float a = a_arg.float_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a)
-                                       : 1.0f - gammainc (x, a);
-                    }
-                  else
-                    {
-                      FloatNDArray a = a_arg.float_array_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a)
-                                       : 1.0f - gammainc (x, a);
-                    }
-                }
+              retval = lower ? gammainc (x, a) : 1.0f - gammainc (x, a);
             }
         }
       else
         {
-          if (x_arg.is_scalar_type ())
+          FloatNDArray x = x_arg.float_array_value ();
+
+          if (a_arg.is_scalar_type ())
             {
-              double x = x_arg.double_value ();
+              float a = a_arg.float_value ();
 
-              if (! error_state)
-                {
-                  if (a_arg.is_scalar_type ())
-                    {
-                      double a = a_arg.double_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
-                    }
-                  else
-                    {
-                      NDArray a = a_arg.array_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
-                    }
-                }
+              retval = lower ? gammainc (x, a) : 1.0f - gammainc (x, a);
             }
           else
             {
-              NDArray x = x_arg.array_value ();
+              FloatNDArray a = a_arg.float_array_value ();
 
-              if (! error_state)
-                {
-                  if (a_arg.is_scalar_type ())
-                    {
-                      double a = a_arg.double_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
-                    }
-                  else
-                    {
-                      NDArray a = a_arg.array_value ();
-
-                      if (! error_state)
-                        retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
-                    }
-                }
+              retval = lower ? gammainc (x, a) : 1.0f - gammainc (x, a);
             }
         }
     }
   else
-    print_usage ();
+    {
+      if (x_arg.is_scalar_type ())
+        {
+          double x = x_arg.double_value ();
+
+          if (a_arg.is_scalar_type ())
+            {
+              double a = a_arg.double_value ();
+
+              retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
+            }
+          else
+            {
+              NDArray a = a_arg.array_value ();
+
+              retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
+            }
+        }
+      else
+        {
+          NDArray x = x_arg.array_value ();
+
+          if (a_arg.is_scalar_type ())
+            {
+              double a = a_arg.double_value ();
+
+              retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
+            }
+          else
+            {
+              NDArray a = a_arg.array_value ();
+
+              retval = lower ? gammainc (x, a) : 1. - gammainc (x, a);
+            }
+        }
+    }
 
   return retval;
 }

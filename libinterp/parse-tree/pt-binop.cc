@@ -69,9 +69,6 @@ tree_binary_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (Vdo_braindead_shortcircuit_evaluation
       && eligible_for_braindead_shortcircuit)
     {
@@ -79,48 +76,40 @@ tree_binary_expression::rvalue1 (int)
         {
           octave_value a = op_lhs->rvalue1 ();
 
-          if (! error_state)
+          if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
             {
-              if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
+              bool result = false;
+
+              bool a_true = a.is_true ();
+
+              if (a_true)
                 {
-                  bool result = false;
-
-                  bool a_true = a.is_true ();
-
-                  if (! error_state)
+                  if (etype == octave_value::op_el_or)
                     {
-                      if (a_true)
-                        {
-                          if (etype == octave_value::op_el_or)
-                            {
-                              matlab_style_short_circuit_warning ("|");
-                              result = true;
-                              goto done;
-                            }
-                        }
-                      else
-                        {
-                          if (etype == octave_value::op_el_and)
-                            {
-                              matlab_style_short_circuit_warning ("&");
-                              goto done;
-                            }
-                        }
-
-                      if (op_rhs)
-                        {
-                          octave_value b = op_rhs->rvalue1 ();
-
-                          if (! error_state)
-                            result = b.is_true ();
-                        }
-
-                    done:
-
-                      if (! error_state)
-                        return octave_value (result);
+                      matlab_style_short_circuit_warning ("|");
+                      result = true;
+                      goto done;
                     }
                 }
+              else
+                {
+                  if (etype == octave_value::op_el_and)
+                    {
+                      matlab_style_short_circuit_warning ("&");
+                      goto done;
+                    }
+                }
+
+              if (op_rhs)
+                {
+                  octave_value b = op_rhs->rvalue1 ();
+
+                  result = b.is_true ();
+                }
+
+            done:
+
+              return octave_value (result);
             }
         }
     }
@@ -129,11 +118,11 @@ tree_binary_expression::rvalue1 (int)
     {
       octave_value a = op_lhs->rvalue1 ();
 
-      if (! error_state && a.is_defined () && op_rhs)
+      if (a.is_defined () && op_rhs)
         {
           octave_value b = op_rhs->rvalue1 ();
 
-          if (! error_state && b.is_defined ())
+          if (b.is_defined ())
             {
               BEGIN_PROFILER_BLOCK (tree_binary_expression)
 
@@ -144,9 +133,6 @@ tree_binary_expression::rvalue1 (int)
               // timing the operator to make it reasonable.
 
               retval = ::do_binary_op (etype, a, b);
-
-              if (error_state)
-                retval = octave_value ();
 
               END_PROFILER_BLOCK
             }
@@ -203,9 +189,6 @@ tree_boolean_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   bool result = false;
 
   // This evaluation is not caught by the profiler, since we can't find
@@ -217,40 +200,32 @@ tree_boolean_expression::rvalue1 (int)
     {
       octave_value a = op_lhs->rvalue1 ();
 
-      if (! error_state)
+      bool a_true = a.is_true ();
+
+      if (a_true)
         {
-          bool a_true = a.is_true ();
-
-          if (! error_state)
+          if (etype == bool_or)
             {
-              if (a_true)
-                {
-                  if (etype == bool_or)
-                    {
-                      result = true;
-                      goto done;
-                    }
-                }
-              else
-                {
-                  if (etype == bool_and)
-                    goto done;
-                }
-
-              if (op_rhs)
-                {
-                  octave_value b = op_rhs->rvalue1 ();
-
-                  if (! error_state)
-                    result = b.is_true ();
-                }
-
-            done:
-
-              if (! error_state)
-                retval = octave_value (result);
+              result = true;
+              goto done;
             }
         }
+      else
+        {
+          if (etype == bool_and)
+            goto done;
+        }
+
+      if (op_rhs)
+        {
+          octave_value b = op_rhs->rvalue1 ();
+
+          result = b.is_true ();
+        }
+
+    done:
+
+      retval = octave_value (result);
     }
 
   return retval;

@@ -130,43 +130,40 @@ octave_user_script::do_multi_index_op (int nargout,
 
   unwind_protect frame;
 
-  if (! error_state)
+  if (args.length () == 0 && nargout == 0)
     {
-      if (args.length () == 0 && nargout == 0)
+      if (cmd_list)
         {
-          if (cmd_list)
+          frame.protect_var (call_depth);
+          call_depth++;
+
+          if (call_depth < Vmax_recursion_depth)
             {
-              frame.protect_var (call_depth);
-              call_depth++;
+              octave_call_stack::push (this);
 
-              if (call_depth < Vmax_recursion_depth)
-                {
-                  octave_call_stack::push (this);
+              frame.add_fcn (octave_call_stack::pop);
 
-                  frame.add_fcn (octave_call_stack::pop);
+              frame.protect_var (tree_evaluator::statement_context);
+              tree_evaluator::statement_context = tree_evaluator::script;
 
-                  frame.protect_var (tree_evaluator::statement_context);
-                  tree_evaluator::statement_context = tree_evaluator::script;
+              BEGIN_PROFILER_BLOCK (octave_user_script)
 
-                  BEGIN_PROFILER_BLOCK (octave_user_script)
+                cmd_list->accept (*current_evaluator);
 
-                  cmd_list->accept (*current_evaluator);
+              END_PROFILER_BLOCK
 
-                  END_PROFILER_BLOCK
+                if (tree_return_command::returning)
+                  tree_return_command::returning = 0;
 
-                  if (tree_return_command::returning)
-                    tree_return_command::returning = 0;
-
-                  if (tree_break_command::breaking)
-                    tree_break_command::breaking--;
-                }
-              else
-                error ("max_recursion_depth exceeded");
+              if (tree_break_command::breaking)
+                tree_break_command::breaking--;
             }
+          else
+            error ("max_recursion_depth exceeded");
         }
-      else
-        error ("invalid call to script %s", file_name.c_str ());
     }
+  else
+    error ("invalid call to script %s", file_name.c_str ());
 
   return retval;
 }
@@ -476,9 +473,6 @@ octave_user_function::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (! cmd_list)
     return retval;
 
@@ -536,11 +530,7 @@ octave_user_function::do_multi_index_op (int nargout,
   string_vector arg_names = args.name_tags ();
 
   if (param_list && ! param_list->varargs_only ())
-    {
-      param_list->define_from_arg_vector (args);
-      if (error_state)
-        return retval;
-    }
+    param_list->define_from_arg_vector (args);
 
   // For classdef constructor, pre-populate the output arguments
   // with the pre-initialized object instance, extracted above.
@@ -548,11 +538,7 @@ octave_user_function::do_multi_index_op (int nargout,
   if (is_classdef_constructor ())
     {
       if (ret_list)
-        {
-          ret_list->define_from_arg_vector (ret_args);
-          if (error_state)
-            return retval;
-        }
+        ret_list->define_from_arg_vector (ret_args);
       else
         {
           error ("%s: invalid classdef constructor, no output argument defined",
@@ -636,9 +622,6 @@ octave_user_function::do_multi_index_op (int nargout,
   if (tree_break_command::breaking)
     tree_break_command::breaking--;
 
-  if (error_state)
-    return retval;
-
   // Copy return values out.
 
   if (ret_list && ! is_special_expr ())
@@ -660,8 +643,7 @@ octave_user_function::do_multi_index_op (int nargout,
             }
         }
 
-      if (! error_state)
-        retval = ret_list->convert_to_const_vector (nargout, varargout);
+      retval = ret_list->convert_to_const_vector (nargout, varargout);
     }
 
   return retval;
@@ -803,11 +785,8 @@ octave_user_function::restore_warning_states (void)
 
   if (val.is_defined ())
     {
-      // Don't use the usual approach of attempting to extract a value
-      // and then checking error_state since this code might be
-      // executing when error_state is already set.  But do fail
-      // spectacularly if .saved_warning_states. is not an octave_map
-      // (or octave_scalar_map) object.
+      // Fail spectacularly if .saved_warning_states. is not an
+      // octave_map (or octave_scalar_map) object.
 
       if (! val.is_map ())
         panic_impossible ();
@@ -1123,22 +1102,20 @@ element-by-element and a logical array is returned.  At the top level,\n\
           if (args(0).is_scalar_type ())
             {
               double k = args(0).double_value ();
-              if (! error_state)
-                retval = isargout1 (nargout1, ignored, k);
+
+              retval = isargout1 (nargout1, ignored, k);
             }
           else if (args(0).is_numeric_type ())
             {
               const NDArray ka = args(0).array_value ();
-              if (! error_state)
-                {
-                  boolNDArray r (ka.dims ());
-                  for (octave_idx_type i = 0;
-                       i < ka.numel () && ! error_state;
-                       i++)
-                    r(i) = isargout1 (nargout1, ignored, ka(i));
 
-                  retval = r;
-                }
+              boolNDArray r (ka.dims ());
+              for (octave_idx_type i = 0;
+                   i < ka.numel () && ! error_state;
+                   i++)
+                r(i) = isargout1 (nargout1, ignored, ka(i));
+
+              retval = r;
             }
           else
             gripe_wrong_type_arg ("isargout", args(0));

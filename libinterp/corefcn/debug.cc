@@ -210,15 +210,11 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
       // string could be function name or line number
       int isint = atoi (args(0).string_value ().c_str ());
 
-      if (error_state)
-        return;
-
       if (isint == 0)
         {
           // It was a function name
           symbol_name = args(0).string_value ();
-          if (error_state)
-            return;
+
           idx = 1;
         }
       else
@@ -250,8 +246,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
       if (args(i).is_string ())
         {
           int line = atoi (args(i).string_value ().c_str ());
-          if (error_state)
-            break;
+
           lines[list_idx++] = line;
         }
       else if (args(i).is_map ())
@@ -260,19 +255,12 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
         {
           const NDArray arg = args(i).array_value ();
 
-          if (error_state)
-            break;
-
           for (octave_idx_type j = 0; j < arg.numel (); j++)
             {
               int line = static_cast<int> (arg.elem (j));
-              if (error_state)
-                break;
+
               lines[list_idx++] = line;
             }
-
-          if (error_state)
-            break;
         }
     }
 }
@@ -677,8 +665,7 @@ Octave will set the real breakpoint at the next executable line.\n\
   if (lines.size () == 0)
     lines[0] = 1;
 
-  if (! error_state)
-    retval = bp_table::add_breakpoint (symbol_name, lines);
+  retval = bp_table::add_breakpoint (symbol_name, lines);
 
   return intmap_to_ov (retval);
 }
@@ -731,10 +718,7 @@ files.\n\
   if (nargin == 1 && symbol_name == "all")
     bp_table::remove_all_breakpoints ();
   else
-    {
-      if (! error_state)
-        bp_table::remove_breakpoint (symbol_name, lines);
-    }
+    bp_table::remove_breakpoint (symbol_name, lines);
 
   return retval;
 }
@@ -973,134 +957,131 @@ numbers.\n\
   int nargin = args.length ();
   string_vector argv = args.make_argv ("dbtype");
 
-  if (! error_state)
+  switch (nargin)
     {
-      switch (nargin)
-        {
-        case 0: // dbtype
-          dbg_fcn = get_user_code ();
+    case 0: // dbtype
+      dbg_fcn = get_user_code ();
 
-          if (dbg_fcn)
-            do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                       0, std::numeric_limits<int>::max ());
-          else
-            error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
+      if (dbg_fcn)
+        do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                   0, std::numeric_limits<int>::max ());
+      else
+        error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
 
-          break;
+      break;
 
-        case 1: // (dbtype start:end) || (dbtype func) || (dbtype lineno)
+    case 1: // (dbtype start:end) || (dbtype func) || (dbtype lineno)
+      {
+        std::string arg = argv[1];
+
+        size_t ind = arg.find (':');
+
+        if (ind != std::string::npos)  // (dbtype start:end)
           {
-            std::string arg = argv[1];
+            dbg_fcn = get_user_code ();
 
-            size_t ind = arg.find (':');
-
-            if (ind != std::string::npos)  // (dbtype start:end)
+            if (dbg_fcn)
               {
+                std::string start_str = arg.substr (0, ind);
+                std::string end_str = arg.substr (ind + 1);
+
+                int start, end;
+                start = atoi (start_str.c_str ());
+                if (end_str == "end")
+                  end = std::numeric_limits<int>::max ();
+                else
+                  end = atoi (end_str.c_str ());
+
+                if (std::min (start, end) <= 0)
+                  {
+                    error ("dbtype: start and end lines must be >= 1\n");
+                    break;
+                  }
+
+                if (start <= end)
+                  do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                             start, end);
+                else
+                  error ("dbtype: start line must be less than end line\n");
+              }
+          }
+        else  // (dbtype func) || (dbtype lineno)
+          {
+            int line = atoi (arg.c_str ());
+
+            if (line == 0)  // (dbtype func)
+              {
+                dbg_fcn = get_user_code (arg);
+
+                if (dbg_fcn)
+                  do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                             0, std::numeric_limits<int>::max ());
+                else
+                  error ("dbtype: function <%s> not found\n", arg.c_str ());
+              }
+            else  // (dbtype lineno)
+              {
+                if (line <= 0)
+                  {
+                    error ("dbtype: start and end lines must be >= 1\n");
+                    break;
+                  }
+
                 dbg_fcn = get_user_code ();
 
                 if (dbg_fcn)
-                  {
-                    std::string start_str = arg.substr (0, ind);
-                    std::string end_str = arg.substr (ind + 1);
-
-                    int start, end;
-                    start = atoi (start_str.c_str ());
-                    if (end_str == "end")
-                      end = std::numeric_limits<int>::max ();
-                    else
-                      end = atoi (end_str.c_str ());
-
-                    if (std::min (start, end) <= 0)
-                      {
-                        error ("dbtype: start and end lines must be >= 1\n");
-                        break;
-                      }
-
-                    if (start <= end)
-                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                                 start, end);
-                    else
-                      error ("dbtype: start line must be less than end line\n");
-                  }
-              }
-            else  // (dbtype func) || (dbtype lineno)
-              {
-                int line = atoi (arg.c_str ());
-
-                if (line == 0)  // (dbtype func)
-                  {
-                    dbg_fcn = get_user_code (arg);
-
-                    if (dbg_fcn)
-                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                                 0, std::numeric_limits<int>::max ());
-                    else
-                      error ("dbtype: function <%s> not found\n", arg.c_str ());
-                  }
-                else  // (dbtype lineno)
-                  {
-                    if (line <= 0)
-                      {
-                        error ("dbtype: start and end lines must be >= 1\n");
-                        break;
-                      }
-
-                    dbg_fcn = get_user_code ();
-
-                    if (dbg_fcn)
-                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                                 line, line);
-                  }
+                  do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                             line, line);
               }
           }
-          break;
+      }
+      break;
 
-        case 2: // (dbtype func start:end) || (dbtype func start)
-          dbg_fcn = get_user_code (argv[1]);
+    case 2: // (dbtype func start:end) || (dbtype func start)
+      dbg_fcn = get_user_code (argv[1]);
 
-          if (dbg_fcn)
+      if (dbg_fcn)
+        {
+          std::string arg = argv[2];
+          int start, end;
+          size_t ind = arg.find (':');
+
+          if (ind != std::string::npos)
             {
-              std::string arg = argv[2];
-              int start, end;
-              size_t ind = arg.find (':');
+              std::string start_str = arg.substr (0, ind);
+              std::string end_str = arg.substr (ind + 1);
 
-              if (ind != std::string::npos)
-                {
-                  std::string start_str = arg.substr (0, ind);
-                  std::string end_str = arg.substr (ind + 1);
-
-                  start = atoi (start_str.c_str ());
-                  if (end_str == "end")
-                    end = std::numeric_limits<int>::max ();
-                  else
-                    end = atoi (end_str.c_str ());
-                }
+              start = atoi (start_str.c_str ());
+              if (end_str == "end")
+                end = std::numeric_limits<int>::max ();
               else
-                {
-                  start = atoi (arg.c_str ());
-                  end = start;
-                }
-
-              if (std::min (start, end) <= 0)
-                {
-                  error ("dbtype: start and end lines must be >= 1\n");
-                  break;
-                }
-
-              if (start <= end)
-                do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                           start, end);
-              else
-                error ("dbtype: start line must be less than end line\n");
+                end = atoi (end_str.c_str ());
             }
           else
-            error ("dbtype: function <%s> not found\n", argv[1].c_str ());
+            {
+              start = atoi (arg.c_str ());
+              end = start;
+            }
 
-          break;
+          if (std::min (start, end) <= 0)
+            {
+              error ("dbtype: start and end lines must be >= 1\n");
+              break;
+            }
 
-        default:
-          error ("dbtype: expecting zero, one, or two arguments\n");
+          if (start <= end)
+            do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                       start, end);
+          else
+            error ("dbtype: start line must be less than end line\n");
         }
+      else
+        error ("dbtype: function <%s> not found\n", argv[1].c_str ());
+
+      break;
+
+    default:
+      error ("dbtype: expecting zero, one, or two arguments\n");
     }
 
   return retval;
@@ -1200,7 +1181,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
     {
       int n = 0;
 
-      for (octave_idx_type i = 0; i < len && ! error_state; i++)
+      for (octave_idx_type i = 0; i < len; i++)
         {
           octave_value arg = args(i);
 
@@ -1218,7 +1199,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
           else
             n = arg.int_value ();
 
-          if (! error_state && n <= 0)
+          if (n <= 0)
             error ("dbstack: N must be a non-negative integer");
         }
 
@@ -1228,63 +1209,60 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
   else if (len)
     print_usage ();
 
-  if (! error_state)
+  if (nargout == 0)
     {
-      if (nargout == 0)
-        {
-          octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
-          octave_idx_type nframes_to_display = stk.numel ();
+      octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
+      octave_idx_type nframes_to_display = stk.numel ();
 
-          if (nframes_to_display > 0)
+      if (nframes_to_display > 0)
+        {
+          octave_preserve_stream_state stream_state (os);
+
+          os << "stopped in:\n\n";
+
+          Cell names = stk.contents ("name");
+          Cell files = stk.contents ("file");
+          Cell lines = stk.contents ("line");
+
+          bool show_top_level = true;
+
+          size_t max_name_len = 0;
+
+          for (octave_idx_type i = 0; i < nframes_to_display; i++)
             {
-              octave_preserve_stream_state stream_state (os);
+              std::string name = names(i).string_value ();
 
-              os << "stopped in:\n\n";
-
-              Cell names = stk.contents ("name");
-              Cell files = stk.contents ("file");
-              Cell lines = stk.contents ("line");
-
-              bool show_top_level = true;
-
-              size_t max_name_len = 0;
-
-              for (octave_idx_type i = 0; i < nframes_to_display; i++)
-                {
-                  std::string name = names(i).string_value ();
-
-                  max_name_len = std::max (name.length (), max_name_len);
-                }
-
-              for (octave_idx_type i = 0; i < nframes_to_display; i++)
-                {
-                  std::string name = names(i).string_value ();
-                  std::string file = files(i).string_value ();
-                  int line = lines(i).int_value ();
-
-                  if (show_top_level && i == curr_frame)
-                    show_top_level = false;
-
-                  os << (i == curr_frame ? "  --> " : "      ")
-                     << std::setw (max_name_len) << name
-                     << " at line " << line
-                     << " [" << file << "]"
-                     << std::endl;
-                }
-
-              if (show_top_level)
-                os << "  --> top level" << std::endl;
+              max_name_len = std::max (name.length (), max_name_len);
             }
-        }
-      else
-        {
-          octave_map stk = octave_call_stack::backtrace (nskip,
-                                                         curr_frame,
-                                                         false);
 
-          retval(1) = curr_frame < 0 ? 1 : curr_frame + 1;
-          retval(0) = stk;
+          for (octave_idx_type i = 0; i < nframes_to_display; i++)
+            {
+              std::string name = names(i).string_value ();
+              std::string file = files(i).string_value ();
+              int line = lines(i).int_value ();
+
+              if (show_top_level && i == curr_frame)
+                show_top_level = false;
+
+              os << (i == curr_frame ? "  --> " : "      ")
+                 << std::setw (max_name_len) << name
+                 << " at line " << line
+                 << " [" << file << "]"
+                 << std::endl;
+            }
+
+          if (show_top_level)
+            os << "  --> top level" << std::endl;
         }
+    }
+  else
+    {
+      octave_map stk = octave_call_stack::backtrace (nskip,
+                                                     curr_frame,
+                                                     false);
+
+      retval(1) = curr_frame < 0 ? 1 : curr_frame + 1;
+      retval(0) = stk;
     }
 
   return retval;
@@ -1367,14 +1345,11 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
         n = args(0).int_value ();
     }
 
-  if (! error_state)
-    {
-      if (who == "dbup")
-        n = -n;
+  if (who == "dbup")
+    n = -n;
 
-      if (! octave_call_stack::goto_frame_relative (n, true))
-        error ("%s: invalid stack frame", who.c_str ());
-    }
+  if (! octave_call_stack::goto_frame_relative (n, true))
+    error ("%s: invalid stack frame", who.c_str ());
 }
 
 DEFUN (dbup, args, ,

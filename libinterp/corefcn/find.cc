@@ -424,13 +424,10 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 
       std::string s_arg = args(2).string_value ();
 
-      if (! error_state)
-        {
-          if (s_arg == "first")
-            direction = 1;
-          else if (s_arg == "last")
-            direction = -1;
-        }
+      if (s_arg == "first")
+        direction = 1;
+      else if (s_arg == "last")
+        direction = -1;
 
       if (direction == 0)
         {
@@ -447,9 +444,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           SparseBoolMatrix v = arg.sparse_bool_matrix_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else if (nargout <= 1 && n_to_find == -1 && direction == 1)
         {
@@ -466,9 +461,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           boolNDArray v = arg.bool_array_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
     }
   else if (arg.is_integer_type ())
@@ -477,10 +470,8 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
       else if (arg.is_ ## INTT ## _type ()) \
         { \
           INTT ## NDArray v = arg.INTT ## _array_value (); \
-          \
-          if (! error_state) \
-            retval = find_nonzero_elem_idx (v, nargout, \
-                                            n_to_find, direction);\
+ \
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction); \
         }
 
       if (false)
@@ -502,17 +493,13 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           SparseMatrix v = arg.sparse_matrix_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else if (arg.is_complex_type ())
         {
           SparseComplexMatrix v = arg.sparse_complex_matrix_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else
         gripe_wrong_type_arg ("find", arg);
@@ -521,15 +508,13 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
     {
       PermMatrix P = arg.perm_matrix_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
     }
   else if (arg.is_string ())
     {
       charNDArray chnda = arg.char_array_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (chnda, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (chnda, nargout, n_to_find, direction);
     }
   else if (arg.is_single_type ())
     {
@@ -537,32 +522,26 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           FloatNDArray nda = arg.float_array_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (nda, nargout, n_to_find,
-                                            direction);
+          retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
         }
       else if (arg.is_complex_type ())
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (cnda, nargout, n_to_find,
-                                            direction);
+          retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
         }
     }
   else if (arg.is_real_type ())
     {
       NDArray nda = arg.array_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
     }
   else if (arg.is_complex_type ())
     {
       ComplexNDArray cnda = arg.complex_array_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
     }
   else
     gripe_wrong_type_arg ("find", arg);

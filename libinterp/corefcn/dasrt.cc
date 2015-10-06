@@ -448,27 +448,24 @@ parameters for @code{dasrt}.\n\
               {
                 string_vector tmp = args(0).all_strings ();
 
-                if (! error_state)
+                fcn_name = unique_symbol_name ("__dasrt_fcn__");
+                fname = "function y = ";
+                fname.append (fcn_name);
+                fname.append (" (x, xdot, t) y = ");
+                dasrt_f = extract_function (tmp(0), "dasrt", fcn_name,
+                                            fname, "; endfunction");
+
+                if (dasrt_f)
                   {
-                    fcn_name = unique_symbol_name ("__dasrt_fcn__");
-                    fname = "function y = ";
-                    fname.append (fcn_name);
-                    fname.append (" (x, xdot, t) y = ");
-                    dasrt_f = extract_function (tmp(0), "dasrt", fcn_name,
-                                                fname, "; endfunction");
+                    jac_name = unique_symbol_name ("__dasrt_jac__");
+                    jname = "function jac = ";
+                    jname.append (jac_name);
+                    jname.append (" (x, xdot, t, cj) jac = ");
+                    dasrt_j = extract_function (tmp(1), "dasrt", jac_name,
+                                                jname, "; endfunction");
 
-                    if (dasrt_f)
-                      {
-                        jac_name = unique_symbol_name ("__dasrt_jac__");
-                        jname = "function jac = ";
-                        jname.append (jac_name);
-                        jname.append (" (x, xdot, t, cj) jac = ");
-                        dasrt_j = extract_function (tmp(1), "dasrt", jac_name,
-                                                    jname, "; endfunction");
-
-                        if (! dasrt_j)
-                          dasrt_f = 0;
-                      }
+                    if (! dasrt_j)
+                      dasrt_f = 0;
                   }
               }
               break;
@@ -560,28 +557,25 @@ parameters for @code{dasrt}.\n\
   if (jac_name.length ())
     clear_function (jac_name);
 
-  if (! error_state)
+  std::string msg = dae.error_message ();
+
+  retval(4) = msg;
+  retval(3) = static_cast<double> (dae.integration_state ());
+
+  if (dae.integration_ok ())
     {
-      std::string msg = dae.error_message ();
+      retval(2) = output.times ();
+      retval(1) = output.deriv ();
+      retval(0) = output.state ();
+    }
+  else
+    {
+      retval(2) = Matrix ();
+      retval(1) = Matrix ();
+      retval(0) = Matrix ();
 
-      retval(4) = msg;
-      retval(3) = static_cast<double> (dae.integration_state ());
-
-      if (dae.integration_ok ())
-        {
-          retval(2) = output.times ();
-          retval(1) = output.deriv ();
-          retval(0) = output.state ();
-        }
-      else
-        {
-          retval(2) = Matrix ();
-          retval(1) = Matrix ();
-          retval(0) = Matrix ();
-
-          if (nargout < 4)
-            error ("dasrt: %s", msg.c_str ());
-        }
+      if (nargout < 4)
+        error ("dasrt: %s", msg.c_str ());
     }
 
   return retval;

@@ -157,19 +157,16 @@ make_subs_cell (tree_argument_list *args, const string_vector& arg_nm)
   if (args)
     arg_values = args->convert_to_const_vector ();
 
-  if (! error_state)
+  int n = arg_values.length ();
+
+  if (n > 0)
     {
-      int n = arg_values.length ();
+      arg_values.stash_name_tags (arg_nm);
 
-      if (n > 0)
-        {
-          arg_values.stash_name_tags (arg_nm);
+      retval.resize (dim_vector (1, n));
 
-          retval.resize (dim_vector (1, n));
-
-          for (int i = 0; i < n; i++)
-            retval(0,i) = arg_values(i);
-        }
+      for (int i = 0; i < n; i++)
+        retval(0,i) = arg_values(i);
     }
 
   return retval;
@@ -189,13 +186,10 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm,
         retval = args->convert_to_const_vector (object);
     }
 
-  if (! error_state)
-    {
-      octave_idx_type n = retval.length ();
+  octave_idx_type n = retval.length ();
 
-      if (n > 0)
-        retval.stash_name_tags (arg_nm);
-    }
+  if (n > 0)
+    retval.stash_name_tags (arg_nm);
 
   return retval;
 }
@@ -215,13 +209,10 @@ tree_index_expression::get_struct_index
         {
           octave_value t = df->rvalue1 ();
 
-          if (! error_state)
-            {
-              if (t.is_string () && t.rows () == 1)
-                fn = t.string_value ();
-              else
-                error ("dynamic structure field names must be strings");
-            }
+          if (t.is_string () && t.rows () == 1)
+            fn = t.string_value ();
+          else
+            error ("dynamic structure field names must be strings");
         }
       else
         panic_impossible ();
@@ -264,9 +255,6 @@ tree_index_expression::make_arg_struct (void) const
           panic_impossible ();
         }
 
-      if (error_state)
-        return m;
-
       p_args++;
       p_arg_nm++;
       p_dyn_field++;
@@ -304,9 +292,6 @@ tree_index_expression::rvalue (int nargout,
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   octave_value first_expr_val;
 
   octave_value_list first_args;
@@ -330,156 +315,140 @@ tree_index_expression::rvalue (int nargout,
               first_args = al -> convert_to_const_vector ();
               first_args.stash_name_tags (anm);
 
-              if (! error_state)
-                first_expr_val = id->do_lookup  (first_args);
+              first_expr_val = id->do_lookup  (first_args);
             }
         }
     }
 
-  if (! error_state)
+  if (first_expr_val.is_undefined ())
+    first_expr_val = expr->rvalue1 ();
+
+  octave_value tmp = first_expr_val;
+  octave_idx_type tmpi = 0;
+
+  std::list<octave_value_list> idx;
+
+  int n = args.size ();
+
+  std::list<tree_argument_list *>::iterator p_args = args.begin ();
+  std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
+  std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
+
+  for (int i = 0; i < n; i++)
     {
-      if (first_expr_val.is_undefined ())
-        first_expr_val = expr->rvalue1 ();
-
-      octave_value tmp = first_expr_val;
-      octave_idx_type tmpi = 0;
-
-      std::list<octave_value_list> idx;
-
-      int n = args.size ();
-
-      std::list<tree_argument_list *>::iterator p_args = args.begin ();
-      std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
-      std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
-
-      for (int i = 0; i < n; i++)
+      if (i > 0)
         {
-          if (i > 0)
+          tree_argument_list *al = *p_args;
+
+          // In Matlab, () can only be followed by . In Octave, we do not
+          // enforce this for rvalue expressions, but we'll split the
+          // evaluation at this point. This will, hopefully, allow Octave's
+          // looser rules apply smoothly for Matlab overloaded subsref
+          // codes.
+          bool force_split = type[i-1] == '(' && type[i] != '.';
+
+          if (force_split || (al && al->has_magic_end ()))
             {
-              tree_argument_list *al = *p_args;
+              // (we have force_split, or) we have an expression like
+              //
+              //   x{end}.a(end)
+              //
+              // and we are looking at the argument list that
+              // contains the second (or third, etc.) "end" token,
+              // so we must evaluate everything up to the point of
+              // that argument list so we can pass the appropriate
+              // value to the built-in end function.
 
-              // In Matlab, () can only be followed by . In Octave, we do not
-              // enforce this for rvalue expressions, but we'll split the
-              // evaluation at this point. This will, hopefully, allow Octave's
-              // looser rules apply smoothly for Matlab overloaded subsref
-              // codes.
-              bool force_split = type[i-1] == '(' && type[i] != '.';
-
-              if (force_split || (al && al->has_magic_end ()))
+              try
                 {
-                  // (we have force_split, or) we have an expression like
-                  //
-                  //   x{end}.a(end)
-                  //
-                  // and we are looking at the argument list that
-                  // contains the second (or third, etc.) "end" token,
-                  // so we must evaluate everything up to the point of
-                  // that argument list so we can pass the appropriate
-                  // value to the built-in end function.
+                  octave_value_list tmp_list
+                    =tmp.subsref (type.substr (tmpi, i-tmpi), idx, nargout);
 
-                  try
+                  tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
+                  tmpi = i;
+                  idx.clear ();
+
+                  if (tmp.is_cs_list ())
+                    gripe_indexed_cs_list ();
+
+                  if (tmp.is_function ())
                     {
-                      octave_value_list tmp_list
-                        =tmp.subsref (type.substr (tmpi, i-tmpi), idx, nargout);
+                      octave_function *fcn = tmp.function_value (true);
 
-                      tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
-                      tmpi = i;
-                      idx.clear ();
-
-                      if (tmp.is_cs_list ())
-                        gripe_indexed_cs_list ();
-
-                      if (error_state)
-                        break;
-
-                      if (tmp.is_function ())
+                      if (fcn && ! fcn->is_postfix_index_handled (type[i]))
                         {
-                          octave_function *fcn = tmp.function_value (true);
+                          octave_value_list empty_args;
 
-                          if (fcn && ! fcn->is_postfix_index_handled (type[i]))
-                            {
-                              octave_value_list empty_args;
+                          tmp_list = tmp.do_multi_index_op (1, empty_args);
+                          tmp = (tmp_list.length ()
+                                 ? tmp_list(0) : octave_value ());
 
-                              tmp_list = tmp.do_multi_index_op (1, empty_args);
-                              tmp = (tmp_list.length ()
-                                     ? tmp_list(0) : octave_value ());
-
-                              if (tmp.is_cs_list ())
-                                gripe_indexed_cs_list ();
-
-                              if (error_state)
-                                break;
-                            }
+                          if (tmp.is_cs_list ())
+                            gripe_indexed_cs_list ();
                         }
                     }
-                  catch (index_exception& e)  // problems with index range, type etc.
-                    {
-                      final_index_error (e, expr);
-                    }
                 }
-            }
-
-          switch (type[i])
-            {
-            case '(':
-              if (have_args)
+              catch (index_exception& e)  // problems with index range, type etc.
                 {
-                  idx.push_back (first_args);
-                  have_args = false;
+                  final_index_error (e, expr);
                 }
-              else
-                idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
-              break;
-
-            case '{':
-              idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
-              break;
-
-            case '.':
-              idx.push_back (octave_value (get_struct_index (p_arg_nm,
-                                                             p_dyn_field)));
-              break;
-
-            default:
-              panic_impossible ();
             }
-
-          if (error_state)
-            break;
-
-          p_args++;
-          p_arg_nm++;
-          p_dyn_field++;
         }
 
-      if (! error_state)
+      switch (type[i])
         {
-          try
+        case '(':
+          if (have_args)
             {
-              retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
-                                    lvalue_list);
+              idx.push_back (first_args);
+              have_args = false;
             }
-          catch (index_exception& e)    // problems with range, invalid index type etc.
-            {
-              final_index_error (e, expr);
-            }
+          else
+            idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
+          break;
 
-          octave_value val = retval.length () ? retval(0) : octave_value ();
+        case '{':
+          idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
+          break;
 
-          if (! error_state && val.is_function ())
-            {
-              octave_function *fcn = val.function_value (true);
+        case '.':
+          idx.push_back (octave_value (get_struct_index (p_arg_nm,
+                                                         p_dyn_field)));
+          break;
 
-              if (fcn)
-                {
-                  octave_value_list empty_args;
+        default:
+          panic_impossible ();
+        }
 
-                  retval = (lvalue_list
-                            ? val.do_multi_index_op (nargout, empty_args,
-                                                     lvalue_list)
-                            : val.do_multi_index_op (nargout, empty_args));
-                }
-            }
+      p_args++;
+      p_arg_nm++;
+      p_dyn_field++;
+    }
+
+  try
+    {
+      retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
+                            lvalue_list);
+    }
+  catch (index_exception& e)    // problems with range, invalid index type etc.
+    {
+      final_index_error (e, expr);
+    }
+
+  octave_value val = retval.length () ? retval(0) : octave_value ();
+
+  if (val.is_function ())
+    {
+      octave_function *fcn = val.function_value (true);
+
+      if (fcn)
+        {
+          octave_value_list empty_args;
+
+          retval = (lvalue_list
+                    ? val.do_multi_index_op (nargout, empty_args,
+                                             lvalue_list)
+                    : val.do_multi_index_op (nargout, empty_args));
         }
     }
 
@@ -515,157 +484,138 @@ tree_index_expression::lvalue (void)
 
   retval = expr->lvalue ();
 
-  if (! error_state)
+  octave_value tmp = retval.value ();
+
+  octave_idx_type tmpi = 0;
+  std::list<octave_value_list> tmpidx;
+
+  for (int i = 0; i < n; i++)
     {
-      octave_value tmp = retval.value ();
-
-      octave_idx_type tmpi = 0;
-      std::list<octave_value_list> tmpidx;
-
-      for (int i = 0; i < n; i++)
+      if (retval.numel () != 1)
+        gripe_indexed_cs_list ();
+      else if (tmpi < i)
         {
-          if (retval.numel () != 1)
-            gripe_indexed_cs_list ();
-          else if (tmpi < i)
+          try
             {
-              try
-                {
-                  tmp = tmp.subsref (type.substr (tmpi, i-tmpi), tmpidx, true);
-                }
-              catch (index_exception& e)  // problems with range, invalid type etc.
-                {
-                  final_index_error (e, expr);
-                }
-              tmpidx.clear ();
+              tmp = tmp.subsref (type.substr (tmpi, i-tmpi), tmpidx, true);
             }
-
-          if (error_state)
-            break;
-
-          switch (type[i])
+          catch (index_exception& e)  // problems with range, invalid type etc.
             {
-            case '(':
+              final_index_error (e, expr);
+            }
+          tmpidx.clear ();
+        }
+
+      switch (type[i])
+        {
+        case '(':
+          {
+            octave_value_list tidx
+              = make_value_list (*p_args, *p_arg_nm, &tmp, false);
+
+            idx.push_back (tidx);
+
+            if (i < n - 1)
               {
-                octave_value_list tidx
-                  = make_value_list (*p_args, *p_arg_nm, &tmp, false);
-
-                idx.push_back (tidx);
-
-                if (i < n - 1)
+                if (type[i+1] == '.')
                   {
-                    if (type[i+1] == '.')
-                      {
-                        tmpidx.push_back (tidx);
-                        tmpi = i+1;
-                      }
-                    else
-                      error ("() must be followed by . or close the index chain");
+                    tmpidx.push_back (tidx);
+                    tmpi = i+1;
                   }
+                else
+                  error ("() must be followed by . or close the index chain");
               }
-              break;
+          }
+          break;
 
-            case '{':
+        case '{':
+          {
+            octave_value_list tidx
+              = make_value_list (*p_args, *p_arg_nm, &tmp, false);
+
+            if (tmp.is_undefined ())
               {
-                octave_value_list tidx
-                  = make_value_list (*p_args, *p_arg_nm, &tmp, false);
+                if (tidx.has_magic_colon ())
+                  gripe_invalid_inquiry_subscript ();
+                else
+                  tmp = Cell ();
+              }
+            else if (tmp.is_zero_by_zero ()
+                     && (tmp.is_matrix_type () || tmp.is_string ()))
+              {
+                tmp = Cell ();
+              }
 
+            retval.numel (tmp.numel (tidx));
+
+            idx.push_back (tidx);
+            tmpidx.push_back (tidx);
+            tmpi = i;
+          }
+          break;
+
+        case '.':
+          {
+            octave_value tidx = get_struct_index (p_arg_nm, p_dyn_field);
+
+            bool autoconv = (tmp.is_zero_by_zero ()
+                             && (tmp.is_matrix_type () || tmp.is_string ()
+                                 || tmp.is_cell ()));
+
+            if (i > 0 && type[i-1] == '(')
+              {
+                octave_value_list pidx = idx.back ();
+
+                // Use octave_map, not octave_scalar_map so that the
+                // dimensions are 0x0, not 1x1.
                 if (tmp.is_undefined ())
                   {
-                    if (tidx.has_magic_colon ())
+                    if (pidx.has_magic_colon ())
                       gripe_invalid_inquiry_subscript ();
                     else
-                      tmp = Cell ();
-                  }
-                else if (tmp.is_zero_by_zero ()
-                         && (tmp.is_matrix_type () || tmp.is_string ()))
-                  {
-                    tmp = Cell ();
-                  }
-
-                retval.numel (tmp.numel (tidx));
-
-                if (error_state)
-                  break;
-
-                idx.push_back (tidx);
-                tmpidx.push_back (tidx);
-                tmpi = i;
-              }
-              break;
-
-            case '.':
-              {
-                octave_value tidx = get_struct_index (p_arg_nm, p_dyn_field);
-                if (error_state)
-                  break;
-
-                bool autoconv = (tmp.is_zero_by_zero ()
-                                 && (tmp.is_matrix_type () || tmp.is_string ()
-                                     || tmp.is_cell ()));
-
-                if (i > 0 && type[i-1] == '(')
-                  {
-                    octave_value_list pidx = idx.back ();
-
-                    // Use octave_map, not octave_scalar_map so that the
-                    // dimensions are 0x0, not 1x1.
-                    if (tmp.is_undefined ())
-                      {
-                        if (pidx.has_magic_colon ())
-                          gripe_invalid_inquiry_subscript ();
-                        else
-                          tmp = octave_map ();
-                      }
-                    else if (autoconv)
                       tmp = octave_map ();
+                  }
+                else if (autoconv)
+                  tmp = octave_map ();
 
-                    retval.numel (tmp.numel (pidx));
+                retval.numel (tmp.numel (pidx));
 
-                    tmpi = i-1;
-                    tmpidx.push_back (tidx);
+                tmpi = i-1;
+                tmpidx.push_back (tidx);
+              }
+            else
+              {
+                if (tmp.is_undefined () || autoconv)
+                  {
+                    tmpi = i+1;
+                    tmp = octave_value ();
                   }
                 else
                   {
-                    if (tmp.is_undefined () || autoconv)
-                      {
-                        tmpi = i+1;
-                        tmp = octave_value ();
-                      }
-                    else
-                      {
-                        retval.numel (tmp.numel (octave_value_list ()));
+                    retval.numel (tmp.numel (octave_value_list ()));
 
-                        tmpi = i;
-                        tmpidx.push_back (tidx);
-                      }
+                    tmpi = i;
+                    tmpidx.push_back (tidx);
                   }
-
-                if (error_state)
-                  break;
-
-                idx.push_back (tidx);
               }
-              break;
 
-            default:
-              panic_impossible ();
-            }
+            idx.push_back (tidx);
+          }
+          break;
 
-          if (idx.back ().empty ())
-            error ("invalid empty index list");
-
-          if (error_state)
-            break;
-
-          p_args++;
-          p_arg_nm++;
-          p_dyn_field++;
+        default:
+          panic_impossible ();
         }
 
-      if (! error_state)
-        retval.set_index (type, idx);
+      if (idx.back ().empty ())
+        error ("invalid empty index list");
 
+      p_args++;
+      p_arg_nm++;
+      p_dyn_field++;
     }
+
+  retval.set_index (type, idx);
 
   return retval;
 }

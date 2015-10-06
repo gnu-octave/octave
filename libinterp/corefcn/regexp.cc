@@ -343,12 +343,9 @@ octregexp (const octave_value_list &args, int nargout,
 
   // Make sure we have string, pattern
   const std::string buffer = args(0).string_value ();
-  if (error_state)
-    return retval;
 
   std::string pattern = args(1).string_value ();
-  if (error_state)
-    return retval;
+
   // Matlab compatibility.
   if (args(1).is_sq_string ())
     pattern = do_regexp_ptn_string_escapes (pattern);
@@ -357,8 +354,6 @@ octregexp (const octave_value_list &args, int nargout,
   options.case_insensitive (case_insensitive);
   bool extra_options = false;
   parse_options (options, args, who, 2, extra_options);
-  if (error_state)
-    return retval;
 
   regexp::match_data rx_lst = regexp_match (pattern, buffer, options, who);
 
@@ -366,175 +361,172 @@ octregexp (const octave_value_list &args, int nargout,
 
   size_t sz = rx_lst.size ();
 
-  if (! error_state)
+  // Converted the linked list in the correct form for the return values
+
+  octave_idx_type i = 0;
+  octave_scalar_map nmap;
+
+  retval.resize (7);
+
+  if (sz == 1)
     {
-      // Converted the linked list in the correct form for the return values
+      string_vector named_tokens = rx_lst.begin ()->named_tokens ();
 
-      octave_idx_type i = 0;
-      octave_scalar_map nmap;
+      for (int j = 0; j < named_pats.numel (); j++)
+        nmap.assign (named_pats(j), named_tokens(j));
 
-      retval.resize (7);
-
-      if (sz == 1)
+      retval(5) = nmap;
+    }
+  else
+    {
+      for (int j = 0; j < named_pats.numel (); j++)
         {
-          string_vector named_tokens = rx_lst.begin ()->named_tokens ();
-
-          for (int j = 0; j < named_pats.numel (); j++)
-            nmap.assign (named_pats(j), named_tokens(j));
-
-          retval(5) = nmap;
-        }
-      else
-        {
-          for (int j = 0; j < named_pats.numel (); j++)
-            {
-              Cell tmp (dim_vector (1, sz));
-
-              i = 0;
-              for (regexp::match_data::const_iterator p = rx_lst.begin ();
-                   p != rx_lst.end (); p++)
-                {
-                  string_vector named_tokens = p->named_tokens ();
-
-                  tmp(i++) = named_tokens(j);
-                }
-
-              nmap.assign (named_pats(j), octave_value (tmp));
-            }
-
-          retval(5) = nmap;
-        }
-
-      if (options.once ())
-        {
-          regexp::match_data::const_iterator p = rx_lst.begin ();
-
-          retval(4) = sz ? p->tokens () : Cell ();
-          retval(3) = sz ? p->match_string () : std::string ();
-          retval(2) = sz ? p->token_extents () : Matrix ();
-
-          if (sz)
-            {
-              double start = p->start ();
-              double end = p->end ();
-
-              Cell split (dim_vector (1, 2));
-              split(0) = buffer.substr (0, start-1);
-              split(1) = buffer.substr (end);
-
-              retval(6) = split;
-              retval(1) = end;
-              retval(0) = start;
-            }
-          else
-            {
-              retval(6) = buffer;
-              retval(1) = Matrix ();
-              retval(0) = Matrix ();
-            }
-        }
-      else
-        {
-          Cell tokens (dim_vector (1, sz));
-          Cell match_string (dim_vector (1, sz));
-          Cell token_extents (dim_vector (1, sz));
-          NDArray end (dim_vector (1, sz));
-          NDArray start (dim_vector (1, sz));
-          Cell split (dim_vector (1, sz+1));
-          size_t sp_start = 0;
+          Cell tmp (dim_vector (1, sz));
 
           i = 0;
           for (regexp::match_data::const_iterator p = rx_lst.begin ();
                p != rx_lst.end (); p++)
             {
-              double s = p->start ();
-              double e = p->end ();
+              string_vector named_tokens = p->named_tokens ();
 
-              string_vector tmp = p->tokens ();
-              tokens(i) = Cell (dim_vector (1, tmp.numel ()), tmp);
-              match_string(i) = p->match_string ();
-              token_extents(i) = p->token_extents ();
-              end(i) = e;
-              start(i) = s;
-              split(i) = buffer.substr (sp_start, s-sp_start-1);
-              sp_start = e;
-              i++;
+              tmp(i++) = named_tokens(j);
             }
 
-          split(i) = buffer.substr (sp_start);
+          nmap.assign (named_pats(j), octave_value (tmp));
+        }
+
+      retval(5) = nmap;
+    }
+
+  if (options.once ())
+    {
+      regexp::match_data::const_iterator p = rx_lst.begin ();
+
+      retval(4) = sz ? p->tokens () : Cell ();
+      retval(3) = sz ? p->match_string () : std::string ();
+      retval(2) = sz ? p->token_extents () : Matrix ();
+
+      if (sz)
+        {
+          double start = p->start ();
+          double end = p->end ();
+
+          Cell split (dim_vector (1, 2));
+          split(0) = buffer.substr (0, start-1);
+          split(1) = buffer.substr (end);
 
           retval(6) = split;
-          retval(4) = tokens;
-          retval(3) = match_string;
-          retval(2) = token_extents;
           retval(1) = end;
           retval(0) = start;
         }
-
-      // Alter the order of the output arguments
-
-      if (extra_options)
+      else
         {
-          int n = 0;
-          octave_value_list new_retval;
-          new_retval.resize (nargout);
-
-          OCTAVE_LOCAL_BUFFER (int, arg_used, 6);
-          for (int j = 0; j < 6; j++)
-            arg_used[j] = false;
-
-          for (int j = 2; j < nargin; j++)
-            {
-              int k = 0;
-              std::string str = args(j).string_value ();
-              std::transform (str.begin (), str.end (), str.begin (), tolower);
-
-              if (str.find ("once", 0) == 0
-                  || str.find ("stringanchors", 0) == 0
-                  || str.find ("lineanchors", 0) == 0
-                  || str.find ("matchcase", 0) == 0
-                  || str.find ("ignorecase", 0) == 0
-                  || str.find ("dotall", 0) == 0
-                  || str.find ("dotexceptnewline", 0) == 0
-                  || str.find ("literalspacing", 0) == 0
-                  || str.find ("freespacing", 0) == 0
-                  || str.find ("noemptymatch", 0) == 0
-                  || str.find ("emptymatch", 0) == 0)
-                continue;
-              else if (str.find ("start", 0) == 0)
-                k = 0;
-              else if (str.find ("end", 0) == 0)
-                k = 1;
-              else if (str.find ("tokenextents", 0) == 0)
-                k = 2;
-              else if (str.find ("match", 0) == 0)
-                k = 3;
-              else if (str.find ("tokens", 0) == 0)
-                k = 4;
-              else if (str.find ("names", 0) == 0)
-                k = 5;
-              else if (str.find ("split", 0) == 0)
-                k = 6;
-
-              new_retval(n++) = retval(k);
-              arg_used[k] = true;
-
-              if (n == nargout)
-                break;
-            }
-
-          // Fill in the rest of the arguments
-          if (n < nargout)
-            {
-              for (int j = 0; j < 6; j++)
-                {
-                  if (! arg_used[j])
-                    new_retval(n++) = retval(j);
-                }
-            }
-
-          retval = new_retval;
+          retval(6) = buffer;
+          retval(1) = Matrix ();
+          retval(0) = Matrix ();
         }
+    }
+  else
+    {
+      Cell tokens (dim_vector (1, sz));
+      Cell match_string (dim_vector (1, sz));
+      Cell token_extents (dim_vector (1, sz));
+      NDArray end (dim_vector (1, sz));
+      NDArray start (dim_vector (1, sz));
+      Cell split (dim_vector (1, sz+1));
+      size_t sp_start = 0;
+
+      i = 0;
+      for (regexp::match_data::const_iterator p = rx_lst.begin ();
+           p != rx_lst.end (); p++)
+        {
+          double s = p->start ();
+          double e = p->end ();
+
+          string_vector tmp = p->tokens ();
+          tokens(i) = Cell (dim_vector (1, tmp.numel ()), tmp);
+          match_string(i) = p->match_string ();
+          token_extents(i) = p->token_extents ();
+          end(i) = e;
+          start(i) = s;
+          split(i) = buffer.substr (sp_start, s-sp_start-1);
+          sp_start = e;
+          i++;
+        }
+
+      split(i) = buffer.substr (sp_start);
+
+      retval(6) = split;
+      retval(4) = tokens;
+      retval(3) = match_string;
+      retval(2) = token_extents;
+      retval(1) = end;
+      retval(0) = start;
+    }
+
+  // Alter the order of the output arguments
+
+  if (extra_options)
+    {
+      int n = 0;
+      octave_value_list new_retval;
+      new_retval.resize (nargout);
+
+      OCTAVE_LOCAL_BUFFER (int, arg_used, 6);
+      for (int j = 0; j < 6; j++)
+        arg_used[j] = false;
+
+      for (int j = 2; j < nargin; j++)
+        {
+          int k = 0;
+          std::string str = args(j).string_value ();
+          std::transform (str.begin (), str.end (), str.begin (), tolower);
+
+          if (str.find ("once", 0) == 0
+              || str.find ("stringanchors", 0) == 0
+              || str.find ("lineanchors", 0) == 0
+              || str.find ("matchcase", 0) == 0
+              || str.find ("ignorecase", 0) == 0
+              || str.find ("dotall", 0) == 0
+              || str.find ("dotexceptnewline", 0) == 0
+              || str.find ("literalspacing", 0) == 0
+              || str.find ("freespacing", 0) == 0
+              || str.find ("noemptymatch", 0) == 0
+              || str.find ("emptymatch", 0) == 0)
+            continue;
+          else if (str.find ("start", 0) == 0)
+            k = 0;
+          else if (str.find ("end", 0) == 0)
+            k = 1;
+          else if (str.find ("tokenextents", 0) == 0)
+            k = 2;
+          else if (str.find ("match", 0) == 0)
+            k = 3;
+          else if (str.find ("tokens", 0) == 0)
+            k = 4;
+          else if (str.find ("names", 0) == 0)
+            k = 5;
+          else if (str.find ("split", 0) == 0)
+            k = 6;
+
+          new_retval(n++) = retval(k);
+          arg_used[k] = true;
+
+          if (n == nargout)
+            break;
+        }
+
+      // Fill in the rest of the arguments
+      if (n < nargout)
+        {
+          for (int j = 0; j < 6; j++)
+            {
+              if (! arg_used[j])
+                new_retval(n++) = retval(j);
+            }
+        }
+
+      retval = new_retval;
     }
 
   return retval;
@@ -568,9 +560,6 @@ octcellregexp (const octave_value_list &args, int nargout,
                   octave_value_list tmp = octregexp (new_args, nargout, who,
                                                      case_insensitive);
 
-                  if (error_state)
-                    break;
-
                   for (int j = 0; j < nargout; j++)
                     newretval[j](i) = tmp(j);
                 }
@@ -587,9 +576,6 @@ octcellregexp (const octave_value_list &args, int nargout,
                   new_args(1) = cellpat(i);
                   octave_value_list tmp = octregexp (new_args, nargout, who,
                                                      case_insensitive);
-
-                  if (error_state)
-                    break;
 
                   for (int j = 0; j < nargout; j++)
                     newretval[j](i) = tmp(j);
@@ -613,9 +599,6 @@ octcellregexp (const octave_value_list &args, int nargout,
                       octave_value_list tmp = octregexp (new_args, nargout, who,
                                                          case_insensitive);
 
-                      if (error_state)
-                        break;
-
                       for (int j = 0; j < nargout; j++)
                         newretval[j](i) = tmp(j);
                     }
@@ -635,17 +618,13 @@ octcellregexp (const octave_value_list &args, int nargout,
               octave_value_list tmp = octregexp (new_args, nargout, who,
                                                  case_insensitive);
 
-              if (error_state)
-                break;
-
               for (int j = 0; j < nargout; j++)
                 newretval[j](i) = tmp(j);
             }
         }
 
-      if (!error_state)
-        for (int j = 0; j < nargout; j++)
-          retval(j) = octave_value (newretval[j]);
+      for (int j = 0; j < nargout; j++)
+        retval(j) = octave_value (newretval[j]);
     }
   else if (args(1).is_cell ())
     {
@@ -662,18 +641,12 @@ octcellregexp (const octave_value_list &args, int nargout,
           octave_value_list tmp = octregexp (new_args, nargout, who,
                                              case_insensitive);
 
-          if (error_state)
-            break;
-
           for (int j = 0; j < nargout; j++)
             newretval[j](i) = tmp(j);
         }
 
-      if (!error_state)
-        {
-          for (int j = 0; j < nargout; j++)
-            retval(j) = octave_value (newretval[j]);
-        }
+      for (int j = 0; j < nargout; j++)
+        retval(j) = octave_value (newretval[j]);
     }
   else
     retval = octregexp (args, nargout, who, case_insensitive);
@@ -1340,19 +1313,15 @@ octregexprep (const octave_value_list &args, const std::string &who)
 
   // Make sure we have string, pattern, replacement
   const std::string buffer = args(0).string_value ();
-  if (error_state)
-    return retval;
 
   std::string pattern = args(1).string_value ();
-  if (error_state)
-    return retval;
+
   // Matlab compatibility.
   if (args(1).is_sq_string ())
     pattern = do_regexp_ptn_string_escapes (pattern);
 
   std::string replacement = args(2).string_value ();
-  if (error_state)
-    return retval;
+
   // Matlab compatibility.
   if (args(2).is_sq_string ())
     replacement = do_regexp_rep_string_escapes (replacement);
@@ -1377,8 +1346,6 @@ octregexprep (const octave_value_list &args, const std::string &who)
   regexp::opts options;
   bool extra_args = false;
   parse_options (options, regexpargs, who, 0, extra_args);
-  if (error_state)
-    return retval;
 
   return regexp_replace (pattern, buffer, replacement, options, who);
 }
@@ -1465,41 +1432,31 @@ function.\n\
       else if (rep.numel () != 1)
         dv1 = rep.dims ();
 
-      if (!error_state)
+      Cell ret (dv0);
+      octave_value_list new_args = args;
+
+      for (octave_idx_type i = 0; i < dv0.numel (); i++)
         {
-          Cell ret (dv0);
-          octave_value_list new_args = args;
+          new_args(0) = str(i);
+          if (pat.numel () == 1)
+            new_args(1) = pat(0);
+          if (rep.numel () == 1)
+            new_args(2) = rep(0);
 
-          for (octave_idx_type i = 0; i < dv0.numel (); i++)
+          for (octave_idx_type j = 0; j < dv1.numel (); j++)
             {
-              new_args(0) = str(i);
-              if (pat.numel () == 1)
-                new_args(1) = pat(0);
-              if (rep.numel () == 1)
-                new_args(2) = rep(0);
-
-              for (octave_idx_type j = 0; j < dv1.numel (); j++)
-                {
-                  if (pat.numel () != 1)
-                    new_args(1) = pat(j);
-                  if (rep.numel () != 1)
-                    new_args(2) = rep(j);
-                  new_args(0) = octregexprep (new_args, "regexprep");
-
-                  if (error_state)
-                    break;
-                }
-
-              if (error_state)
-                break;
-
-              ret(i) = new_args(0);
+              if (pat.numel () != 1)
+                new_args(1) = pat(j);
+              if (rep.numel () != 1)
+                new_args(2) = rep(j);
+              new_args(0) = octregexprep (new_args, "regexprep");
             }
 
-          if (!error_state)
-            retval = args(0).is_cell () ? octave_value (ret)
-                                        : octave_value (ret(0));
+          ret(i) = new_args(0);
         }
+
+      retval = args(0).is_cell () ? octave_value (ret)
+        : octave_value (ret(0));
     }
   else
     retval = octregexprep (args, "regexprep");

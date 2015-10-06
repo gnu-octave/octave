@@ -128,9 +128,6 @@ present working directory rather than changing to the user's home directory.\n\
 
   string_vector argv = args.make_argv ("cd");
 
-  if (error_state)
-    return retval;
-
   if (nargout > 0)
     retval = octave_value (octave_env::get_current_directory ());
 

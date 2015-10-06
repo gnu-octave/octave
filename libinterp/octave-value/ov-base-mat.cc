@@ -158,14 +158,11 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                // optimize single scalar index.
-                if (! resize_ok && i.is_scalar ())
-                  retval = cmatrix.checkelem (i(0));
-                else
-                  retval = MT (matrix.index (i, resize_ok));
-              }
+            // optimize single scalar index.
+            if (! resize_ok && i.is_scalar ())
+              retval = cmatrix.checkelem (i(0));
+            else
+              retval = MT (matrix.index (i, resize_ok));
           }
           break;
 
@@ -173,20 +170,14 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                k=1;
-                idx_vector j = idx (1).index_vector ();
+            k=1;
+            idx_vector j = idx (1).index_vector ();
 
-                if (! error_state)
-                  {
-                    // optimize two scalar indices.
-                    if (! resize_ok && i.is_scalar () && j.is_scalar ())
-                      retval = cmatrix.checkelem (i(0), j(0));
-                    else
-                      retval = MT (matrix.index (i, j, resize_ok));
-                  }
-              }
+            // optimize two scalar indices.
+            if (! resize_ok && i.is_scalar () && j.is_scalar ())
+              retval = cmatrix.checkelem (i(0), j(0));
+            else
+              retval = MT (matrix.index (i, j, resize_ok));
           }
           break;
 
@@ -200,19 +191,13 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
               {
                 idx_vec(k) = idx(k).index_vector ();
 
-                if (error_state)
-                  break;
-
                 scalar_opt = (scalar_opt && idx_vec(k).is_scalar ());
               }
 
-            if (! error_state)
-              {
-                if (scalar_opt)
-                  retval = cmatrix.checkelem (conv_to_int_array (idx_vec));
-                else
-                  retval = MT (matrix.index (idx_vec, resize_ok));
-              }
+            if (scalar_opt)
+              retval = cmatrix.checkelem (conv_to_int_array (idx_vec));
+            else
+              retval = MT (matrix.index (idx_vec, resize_ok));
           }
           break;
         }
@@ -249,10 +234,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
           case 1:
             {
-                  idx_vector i = idx (0).index_vector ();
+              idx_vector i = idx (0).index_vector ();
 
-                  if (! error_state)
-                    matrix.assign (i, rhs);
+              matrix.assign (i, rhs);
             }
             break;
 
@@ -260,14 +244,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
             {
               idx_vector i = idx (0).index_vector ();
 
-              if (! error_state)
-                {
-                  k = 1;
-                  idx_vector j = idx (1).index_vector ();
+              k = 1;
+              idx_vector j = idx (1).index_vector ();
 
-                  if (! error_state)
-                    matrix.assign (i, j, rhs);
-                }
+              matrix.assign (i, j, rhs);
             }
             break;
 
@@ -276,15 +256,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
               Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
 
               for (k = 0; k < n_idx; k++)
-                {
-                  idx_vec(k) = idx(k).index_vector ();
+                idx_vec(k) = idx(k).index_vector ();
 
-                  if (error_state)
-                    break;
-                }
-
-              if (! error_state)
-                matrix.assign (idx_vec, rhs);
+              matrix.assign (idx_vec, rhs);
             }
             break;
         }
@@ -336,14 +310,11 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                // optimize single scalar index.
-                if (i.is_scalar () && i(0) < matrix.numel ())
-                  matrix(i(0)) = rhs;
-                else
-                  matrix.assign (i, mrhs);
-              }
+            // optimize single scalar index.
+            if (i.is_scalar () && i(0) < matrix.numel ())
+              matrix(i(0)) = rhs;
+            else
+              matrix.assign (i, mrhs);
           }
           break;
 
@@ -351,21 +322,15 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           {
             idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx (1).index_vector ();
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
 
-                if (! error_state)
-                  {
-                    // optimize two scalar indices.
-                    if (i.is_scalar () && j.is_scalar () && nd == 2
-                        && i(0) < matrix.rows () && j(0) < matrix.columns ())
-                      matrix(i(0), j(0)) = rhs;
-                    else
-                      matrix.assign (i, j, mrhs);
-                  }
-              }
+            // optimize two scalar indices.
+            if (i.is_scalar () && j.is_scalar () && nd == 2
+                && i(0) < matrix.rows () && j(0) < matrix.columns ())
+              matrix(i(0), j(0)) = rhs;
+            else
+              matrix.assign (i, j, mrhs);
           }
           break;
 
@@ -379,31 +344,25 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
               {
                 idx_vec(k) = idx(k).index_vector ();
 
-                if (error_state)
-                  break;
-
                 scalar_opt = (scalar_opt && idx_vec(k).is_scalar ()
                               && idx_vec(k)(0) < dv(k));
               }
 
-            if (! error_state)
+            if (scalar_opt)
               {
-                if (scalar_opt)
+                // optimize all scalar indices. Don't construct
+                // an index array, but rather calc a scalar index directly.
+                octave_idx_type n = 1;
+                octave_idx_type j = 0;
+                for (octave_idx_type i = 0; i < n_idx; i++)
                   {
-                    // optimize all scalar indices. Don't construct
-                    // an index array, but rather calc a scalar index directly.
-                    octave_idx_type n = 1;
-                    octave_idx_type j = 0;
-                    for (octave_idx_type i = 0; i < n_idx; i++)
-                      {
-                        j += idx_vec(i)(0) * n;
-                        n *= dv (i);
-                      }
-                    matrix(j) = rhs;
+                    j += idx_vec(i)(0) * n;
+                    n *= dv (i);
                   }
-                else
-                  matrix.assign (idx_vec, mrhs);
+                matrix(j) = rhs;
               }
+            else
+              matrix.assign (idx_vec, mrhs);
           }
           break;
         }

@@ -152,15 +152,12 @@ octave_cell::subsref (const std::string& type,
       {
         octave_value tmp = do_index_op (idx.front ());
 
-        if (! error_state)
-          {
-            Cell tcell = tmp.cell_value ();
+        Cell tcell = tmp.cell_value ();
 
-            if (tcell.numel () == 1)
-              retval(0) = tcell(0,0);
-            else
-              retval = octave_value (octave_value_list (tcell), true);
-          }
+        if (tcell.numel () == 1)
+          retval(0) = tcell(0,0);
+        else
+          retval = octave_value (octave_value_list (tcell), true);
       }
       break;
 
@@ -204,15 +201,12 @@ octave_cell::subsref (const std::string& type,
       {
         octave_value tmp = do_index_op (idx.front (), auto_add);
 
-        if (! error_state)
-          {
-            const Cell tcell = tmp.cell_value ();
+        const Cell tcell = tmp.cell_value ();
 
-            if (tcell.numel () == 1)
-              retval = tcell(0,0);
-            else
-              retval = octave_value (octave_value_list (tcell), true);
-          }
+        if (tcell.numel () == 1)
+          retval = tcell(0,0);
+        else
+          retval = octave_value (octave_value_list (tcell), true);
       }
       break;
 
@@ -280,16 +274,13 @@ octave_cell::subsasgn (const std::string& type,
                 if (! tmp.is_defined ())
                   tmp = octave_value::empty_conv (type.substr (1), rhs);
 
-                if (! error_state)
-                  {
-                    std::list<octave_value_list> next_idx (idx);
+                std::list<octave_value_list> next_idx (idx);
 
-                    next_idx.erase (next_idx.begin ());
+                next_idx.erase (next_idx.begin ());
 
-                    tmp.make_unique ();
+                tmp.make_unique ();
 
-                    t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
-                  }
+                t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
               }
           }
           break;
@@ -299,34 +290,30 @@ octave_cell::subsasgn (const std::string& type,
             matrix.make_unique ();
             Cell tmpc = matrix.index (idx.front (), true);
 
-            if (! error_state)
+            std::list<octave_value_list> next_idx (idx);
+
+            next_idx.erase (next_idx.begin ());
+
+            std::string next_type = type.substr (1);
+
+            if (tmpc.numel () == 1)
               {
-                std::list<octave_value_list> next_idx (idx);
+                octave_value tmp = tmpc(0);
+                tmpc = Cell ();
 
-                next_idx.erase (next_idx.begin ());
-
-                std::string next_type = type.substr (1);
-
-                if (tmpc.numel () == 1)
+                if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                   {
-                    octave_value tmp = tmpc(0);
-                    tmpc = Cell ();
-
-                    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                      {
-                        tmp = octave_value::empty_conv (type.substr (1), rhs);
-                        tmp.make_unique (); // probably a no-op.
-                      }
-                    else
-                      // optimization: ignore copy still stored inside array.
-                      tmp.make_unique (1);
-
-                    if (! error_state)
-                      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                    tmp = octave_value::empty_conv (type.substr (1), rhs);
+                    tmp.make_unique (); // probably a no-op.
                   }
                 else
-                  gripe_indexed_cs_list ();
+                  // optimization: ignore copy still stored inside array.
+                  tmp.make_unique (1);
+
+                t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
               }
+            else
+              gripe_indexed_cs_list ();
           }
           break;
 
@@ -349,93 +336,90 @@ octave_cell::subsasgn (const std::string& type,
         }
     }
 
-  if (! error_state)
+  switch (type[0])
     {
-      switch (type[0])
-        {
-        case '(':
+    case '(':
+      {
+        octave_value_list i = idx.front ();
+
+        if (t_rhs.is_cell ())
+          octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
+        else if (t_rhs.is_null_value ())
+          octave_base_matrix<Cell>::delete_elements (i);
+        else
+          octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+
+        if (! error_state)
           {
-            octave_value_list i = idx.front ();
-
-            if (t_rhs.is_cell ())
-              octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
-            else if (t_rhs.is_null_value ())
-              octave_base_matrix<Cell>::delete_elements (i);
-            else
-              octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
-
-            if (! error_state)
-              {
-                count++;
-                retval = octave_value (this);
-              }
-            else
-              gripe_failed_assignment ();
+            count++;
+            retval = octave_value (this);
           }
-          break;
+        else
+          gripe_failed_assignment ();
+      }
+      break;
 
-        case '{':
+    case '{':
+      {
+        octave_value_list idxf = idx.front ();
+
+        if (t_rhs.is_cs_list ())
           {
-            octave_value_list idxf = idx.front ();
+            Cell tmp_cell = Cell (t_rhs.list_value ());
 
-            if (t_rhs.is_cs_list ())
-              {
-                Cell tmp_cell = Cell (t_rhs.list_value ());
+            // Inquire the proper shape of the RHS.
 
-                // Inquire the proper shape of the RHS.
+            dim_vector didx = dims ().redim (idxf.length ());
+            for (octave_idx_type k = 0; k < idxf.length (); k++)
+              if (! idxf(k).is_magic_colon ()) didx(k) = idxf(k).numel ();
 
-                dim_vector didx = dims ().redim (idxf.length ());
-                for (octave_idx_type k = 0; k < idxf.length (); k++)
-                  if (! idxf(k).is_magic_colon ()) didx(k) = idxf(k).numel ();
-
-                if (didx.numel () == tmp_cell.numel ())
-                  tmp_cell = tmp_cell.reshape (didx);
+            if (didx.numel () == tmp_cell.numel ())
+              tmp_cell = tmp_cell.reshape (didx);
 
 
-                octave_base_matrix<Cell>::assign (idxf, tmp_cell);
-              }
-            else if (idxf.all_scalars ()
-                     || do_index_op (idxf, true).numel () == 1)
-              // Regularize a null matrix if stored into a cell.
-              octave_base_matrix<Cell>::assign (idxf,
-                                                Cell (t_rhs.storable_value ()));
-            else if (! error_state)
-              gripe_nonbraced_cs_list_assignment ();
-
-            if (! error_state)
-              {
-                count++;
-                retval = octave_value (this);
-              }
-            else
-              gripe_failed_assignment ();
+            octave_base_matrix<Cell>::assign (idxf, tmp_cell);
           }
-          break;
+        else if (idxf.all_scalars ()
+                 || do_index_op (idxf, true).numel () == 1)
+          // Regularize a null matrix if stored into a cell.
+          octave_base_matrix<Cell>::assign (idxf,
+                                            Cell (t_rhs.storable_value ()));
+        else
+          gripe_nonbraced_cs_list_assignment ();
 
-        case '.':
+        if (! error_state)
           {
-            if (is_empty ())
-              {
-                // Allow conversion of empty cell array to some other
-                // type in cases like
-                //
-                //  x = {}; x.f = rhs
-
-                octave_value tmp = octave_value::empty_conv (type, rhs);
-
-                return tmp.subsasgn (type, idx, rhs);
-              }
-            else
-              {
-                std::string nm = type_name ();
-                error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-              }
+            count++;
+            retval = octave_value (this);
           }
-          break;
+        else
+          gripe_failed_assignment ();
+      }
+      break;
 
-        default:
-          panic_impossible ();
-        }
+    case '.':
+      {
+        if (is_empty ())
+          {
+            // Allow conversion of empty cell array to some other
+            // type in cases like
+            //
+            //  x = {}; x.f = rhs
+
+            octave_value tmp = octave_value::empty_conv (type, rhs);
+
+            return tmp.subsasgn (type, idx, rhs);
+          }
+        else
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
+      }
+      break;
+
+    default:
+      panic_impossible ();
     }
 
   return retval;
@@ -613,9 +597,6 @@ octave_cell::all_strings (bool pad) const
   for (octave_idx_type i = 0; i < nel; i++)
     {
       string_vector s = matrix(i).all_strings ();
-
-      if (error_state)
-        return retval;
 
       octave_idx_type s_len = s.numel ();
 
@@ -1341,15 +1322,11 @@ dimensions.\n\
       break;
     }
 
-  if (! error_state)
-    {
-      dims.chop_trailing_singletons ();
+  dims.chop_trailing_singletons ();
 
-      check_dimensions (dims, "cell");
+  check_dimensions (dims, "cell");
 
-      if (! error_state)
-        retval = Cell (dims, Matrix ());
-    }
+  retval = Cell (dims, Matrix ());
 
   return retval;
 }

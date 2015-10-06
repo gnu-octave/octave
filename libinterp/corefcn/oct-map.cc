@@ -914,8 +914,7 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
           {
             idx_vector i = idx(0).index_vector ();
 
-            if (! error_state)
-              retval = index (i, resize_ok);
+            retval = index (i, resize_ok);
           }
           break;
 
@@ -923,13 +922,10 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
           {
             idx_vector i = idx(0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx(1).index_vector ();
+            k = 1;
+            idx_vector j = idx(1).index_vector ();
 
-                retval = index (i, j, resize_ok);
-              }
+            retval = index (i, j, resize_ok);
           }
           break;
 
@@ -938,15 +934,9 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
             Array<idx_vector> ia (dim_vector (n_idx, 1));
 
             for (k = 0; k < n_idx; k++)
-              {
-                ia(k) = idx(k).index_vector ();
+              ia(k) = idx(k).index_vector ();
 
-                if (error_state)
-                  break;
-              }
-
-            if (! error_state)
-              retval = index (ia, resize_ok);
+            retval = index (ia, resize_ok);
           }
           break;
         }
@@ -1124,8 +1114,7 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
           {
             idx_vector i = idx(0).index_vector ();
 
-            if (! error_state)
-              assign (i, rhs);
+            assign (i, rhs);
           }
           break;
 
@@ -1133,13 +1122,10 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
           {
             idx_vector i = idx(0).index_vector ();
 
-            if (! error_state)
-              {
-                k = 1;
-                idx_vector j = idx(1).index_vector ();
+            k = 1;
+            idx_vector j = idx(1).index_vector ();
 
-                assign (i, j, rhs);
-              }
+            assign (i, j, rhs);
           }
           break;
 
@@ -1148,15 +1134,9 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
             Array<idx_vector> ia (dim_vector (n_idx, 1));
 
             for (k = 0; k < n_idx; k++)
-              {
-                ia(k) = idx(k).index_vector ();
+              ia(k) = idx(k).index_vector ();
 
-                if (error_state)
-                  break;
-              }
-
-            if (! error_state)
-              assign (ia, rhs);
+            assign (ia, rhs);
           }
           break;
         }
@@ -1182,7 +1162,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
 
   ref.assign (idx, rhs);
 
-  if (! error_state && ref.dims () != dimensions)
+  if (ref.dims () != dimensions)
     {
       dimensions = ref.dims ();
 
@@ -1196,7 +1176,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
       optimize_dimensions ();
     }
 
-  if (! error_state && &ref == &tmp)
+  if (&ref == &tmp)
     setfield (k, tmp);
 }
 
@@ -1286,13 +1266,9 @@ octave_map::delete_elements (const octave_value_list& idx)
           e.set_pos_if_unset (n_idx, i+1);
           throw;
         }
-
-      if (error_state)
-        break;
     }
 
-  if (! error_state)
-    delete_elements (ia);
+  delete_elements (ia);
 }
 
 /*

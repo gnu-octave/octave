@@ -145,13 +145,10 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
   else
     ::error ("%s: invalid size specification", who.c_str ());
 
-  if (! error_state)
-    {
-      nr = get_size (dnr, who);
+  nr = get_size (dnr, who);
 
-      if (! error_state && dnc >= 0.0)
-        nc = get_size (dnc, who);
-    }
+  if (dnc >= 0.0)
+    nc = get_size (dnc, who);
 }
 
 scanf_format_list::scanf_format_list (const std::string& s)
@@ -1919,9 +1916,8 @@ octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
 
           get_size (size, nr, nc, one_elt_size_spec, who);
 
-          if (! error_state)
-            retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec,
-                               conversion_count, who);
+          retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec,
+                             conversion_count, who);
         }
     }
   else
@@ -2361,17 +2357,14 @@ printf_value_cache::int_value (void)
 
   octave_value val = get_next_value ();
 
+  double dval = val.double_value (true);
+
   if (! error_state)
     {
-      double dval = val.double_value (true);
-
-      if (! error_state)
-        {
-          if (D_NINT (dval) == dval)
-            retval = NINT (dval);
-          else
-            curr_state = conversion_error;
-        }
+      if (D_NINT (dval) == dval)
+        retval = NINT (dval);
+      else
+        curr_state = conversion_error;
     }
 
   return retval;
@@ -2587,9 +2580,8 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
 
               double dval = val.double_value (true);
 
-              if (! error_state)
-                retval += do_printf_conv (os, tfmt.c_str (), nsa,
-                                          sa_1, sa_2, dval, who);
+              retval += do_printf_conv (os, tfmt.c_str (), nsa,
+                                        sa_1, sa_2, dval, who);
             }
           break;
 
@@ -2611,9 +2603,8 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
 
               double dval = val.double_value (true);
 
-              if (! error_state)
-                retval += do_printf_conv (os, tfmt.c_str (), nsa,
-                                          sa_1, sa_2, dval, who);
+              retval += do_printf_conv (os, tfmt.c_str (), nsa,
+                                        sa_1, sa_2, dval, who);
             }
           break;
 
@@ -2622,8 +2613,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
           {
             double dval = val.double_value (true);
 
-            if (! error_state)
-              retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, dval, who);
+            retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, dval, who);
           }
           break;
 
@@ -2656,9 +2646,6 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
       const printf_format_elt *elt = fmt_list.first ();
 
       printf_value_cache val_cache (args, who);
-
-      if (error_state)
-        return retval;
 
       for (;;)
         {
@@ -2917,8 +2904,7 @@ octave_stream::getl (const octave_value& tc_max_len, bool& err,
         }
     }
 
-  if (! error_state)
-    retval = getl (max_len, err, who);
+  retval = getl (max_len, err, who);
 
   return retval;
 }
@@ -2957,8 +2943,7 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err,
         }
     }
 
-  if (! error_state)
-    retval = gets (max_len, err, who);
+  retval = gets (max_len, err, who);
 
   return retval;
 }
@@ -3002,8 +2987,7 @@ octave_stream::skipl (const octave_value& tc_count, bool& err,
         }
     }
 
-  if (! error_state)
-    retval = skipl (count, err, who);
+  retval = skipl (count, err, who);
 
   return retval;
 }
@@ -3398,7 +3382,6 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
       if (! error_state)
         {
-
           octave_idx_type elts_to_read;
 
           if (one_elt_size_spec)
@@ -4313,8 +4296,7 @@ octave_stream_list::do_lookup (const octave_value& fid,
 
   int i = get_file_number (fid);
 
-  if (! error_state)
-    retval = do_lookup (i, who);
+  retval = do_lookup (i, who);
 
   return retval;
 }
@@ -4370,8 +4352,7 @@ octave_stream_list::do_remove (const octave_value& fid, const std::string& who)
     {
       int i = get_file_number (fid);
 
-      if (! error_state)
-        retval = do_remove (i, who);
+      retval = do_remove (i, who);
     }
 
   return retval;

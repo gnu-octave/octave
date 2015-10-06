@@ -360,9 +360,9 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
       octave_value tmp = elt->rvalue1 ();
 
-      if (error_state || tmp.is_undefined ())
+      if (tmp.is_undefined ())
         {
-          ok = ! error_state;
+          ok = true;
           return;
         }
       else
@@ -388,35 +388,32 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
   first_elem = true;
 
-  if (! error_state)
+  for (iterator p = begin (); p != end (); p++)
     {
-      for (iterator p = begin (); p != end (); p++)
+      octave_quit ();
+
+      octave_value val = *p;
+
+      dim_vector this_elt_dv = val.dims ();
+
+      if (! this_elt_dv.zero_by_zero ())
         {
-          octave_quit ();
+          all_mt = false;
 
-          octave_value val = *p;
-
-          dim_vector this_elt_dv = val.dims ();
-
-          if (! this_elt_dv.zero_by_zero ())
+          if (first_elem)
             {
-              all_mt = false;
-
-              if (first_elem)
-                {
-                  first_elem = false;
-                  dv = this_elt_dv;
-                }
-              else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
-                {
-                  eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
-                  break;
-                }
+              first_elem = false;
+              dv = this_elt_dv;
+            }
+          else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
+            {
+              eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+              break;
             }
         }
     }
 
-  ok = ! error_state;
+  ok = true;
 }
 
 void
@@ -606,60 +603,57 @@ tm_const::init (const tree_matrix& tm)
         break;
     }
 
-  if (! error_state)
+  if (any_cell && ! any_class && ! first_elem_is_struct)
     {
-      if (any_cell && ! any_class && ! first_elem_is_struct)
-        {
-          for (iterator q = begin (); q != end (); q++)
-            {
-              octave_quit ();
-
-              q->cellify ();
-            }
-        }
-
-      first_elem = true;
-
       for (iterator q = begin (); q != end (); q++)
         {
           octave_quit ();
 
-          tm_row_const elt = *q;
-
-          octave_idx_type this_elt_nr = elt.rows ();
-          octave_idx_type this_elt_nc = elt.cols ();
-
-          std::string this_elt_class_nm = elt.class_name ();
-          class_nm = get_concat_class (class_nm, this_elt_class_nm);
-
-          dim_vector this_elt_dv = elt.dims ();
-
-          all_mt = false;
-
-          if (first_elem)
-            {
-              first_elem = false;
-
-              dv = this_elt_dv;
-            }
-          else if (all_str && dv.length () == 2
-                   && this_elt_dv.length () == 2)
-            {
-              // FIXME: this is Octave's specialty. Character matrices allow
-              // rows of unequal length.
-              if (this_elt_nc > cols ())
-                dv(1) = this_elt_nc;
-              dv(0) += this_elt_nr;
-            }
-          else if ((!any_class) && (!dv.hvcat (this_elt_dv, 0)))
-            {
-              eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
-              return;
-            }
+          q->cellify ();
         }
     }
 
-  ok = ! error_state;
+  first_elem = true;
+
+  for (iterator q = begin (); q != end (); q++)
+    {
+      octave_quit ();
+
+      tm_row_const elt = *q;
+
+      octave_idx_type this_elt_nr = elt.rows ();
+      octave_idx_type this_elt_nc = elt.cols ();
+
+      std::string this_elt_class_nm = elt.class_name ();
+      class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
+      dim_vector this_elt_dv = elt.dims ();
+
+      all_mt = false;
+
+      if (first_elem)
+        {
+          first_elem = false;
+
+          dv = this_elt_dv;
+        }
+      else if (all_str && dv.length () == 2
+               && this_elt_dv.length () == 2)
+        {
+          // FIXME: this is Octave's specialty. Character matrices allow
+          // rows of unequal length.
+          if (this_elt_nc > cols ())
+            dv(1) = this_elt_nc;
+          dv(0) += this_elt_nr;
+        }
+      else if ((!any_class) && (!dv.hvcat (this_elt_dv, 0)))
+        {
+          eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
+          return;
+        }
+    }
+
+  ok = true;
 }
 
 octave_value_list
@@ -707,20 +701,13 @@ single_type_concat (Array<T>& result,
           TYPE ra = octave_value_extract<TYPE> (*q);
 
           // Skip empty arrays to allow looser rules.
-          if (! error_state)
-            {
-              if (! ra.is_empty ())
-                {
-                  result.insert (ra, r, c);
 
-                  if (! error_state)
-                    c += ra.columns ();
-                  else
-                    return;
-                }
+          if (! ra.is_empty ())
+            {
+              result.insert (ra, r, c);
+
+              c += ra.columns ();
             }
-          else
-            return;
         }
 
       r += row.rows ();
@@ -752,8 +739,7 @@ single_type_concat (Array<T>& result,
           result.clear (dv);
           assert (static_cast<size_t> (result.numel ()) == row.length ());
           octave_idx_type i = 0;
-          for (tm_row_const::iterator q = row.begin ();
-               q != row.end () && ! error_state; q++)
+          for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
             result(i++) = octave_value_extract<T> (*q);
 
           return;
@@ -763,9 +749,7 @@ single_type_concat (Array<T>& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end () && ! error_state;
-           q++)
+      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
         {
           octave_quit ();
 
@@ -773,8 +757,7 @@ single_type_concat (Array<T>& result,
           i++;
         }
 
-      if (! error_state)
-        result = Array<T>::cat (-2, ncols, array_list);
+      result = Array<T>::cat (-2, ncols, array_list);
     }
   else
     {
@@ -808,9 +791,7 @@ single_type_concat (Sparse<T>& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end () && ! error_state;
-           q++)
+      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
         {
           octave_quit ();
 
@@ -848,9 +829,7 @@ single_type_concat (octave_map& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (MAP, map_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end () && ! error_state;
-           q++)
+      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
         {
           octave_quit ();
 
@@ -921,13 +900,10 @@ do_class_concat (tm_const& tmc)
         }
     }
 
-  if (! error_state)
-    {
-      if (rows.length () == 1)
-        retval = rows(0);
-      else
-        retval = do_class_concat (rows, "vertcat", 0);
-    }
+  if (rows.length () == 1)
+    retval = rows(0);
+  else
+    retval = do_class_concat (rows, "vertcat", 0);
 
   return retval;
 }
@@ -1095,53 +1071,46 @@ tree_matrix::rvalue1 (int)
                 ctmp = ctmp.resize (dim_vector (0,0)).resize (dv);
             }
 
-          if (! error_state)
+          // Now, extract the values from the individual elements and
+          // insert them in the result matrix.
+
+          int dv_len = dv.length ();
+          octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
+          Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
+
+          for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
             {
-              // Now, extract the values from the individual elements and
-              // insert them in the result matrix.
+              octave_quit ();
 
-              int dv_len = dv.length ();
-              octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
-              Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
+              tm_row_const row = *p;
 
-              for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+              for (tm_row_const::iterator q = row.begin ();
+                   q != row.end ();
+                   q++)
                 {
                   octave_quit ();
 
-                  tm_row_const row = *p;
+                  octave_value elt = *q;
 
-                  for (tm_row_const::iterator q = row.begin ();
-                       q != row.end ();
-                       q++)
-                    {
-                      octave_quit ();
+                  if (elt.is_empty ())
+                    continue;
 
-                      octave_value elt = *q;
+                  ctmp = do_cat_op (ctmp, elt, ra_idx);
 
-                      if (elt.is_empty ())
-                        continue;
-
-                      ctmp = do_cat_op (ctmp, elt, ra_idx);
-
-                      if (error_state)
-                        goto done;
-
-                      ra_idx (1) += elt.columns ();
-                    }
-
-                  ra_idx (0) += row.rows ();
-                  ra_idx (1) = 0;
+                  ra_idx (1) += elt.columns ();
                 }
 
-              retval = ctmp;
-
-              if (frc_str_conv && ! retval.is_string ())
-                retval = retval.convert_to_str ();
+              ra_idx (0) += row.rows ();
+              ra_idx (1) = 0;
             }
+
+          retval = ctmp;
+
+          if (frc_str_conv && ! retval.is_string ())
+            retval = retval.convert_to_str ();
         }
     }
 
-done:
   return retval;
 }
 

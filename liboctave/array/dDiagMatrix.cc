@@ -280,10 +280,7 @@ DiagMatrix::inverse (octave_idx_type &info) const
   for (octave_idx_type i = 0; i < len; i++)
     {
       if (elem (i, i) == 0.0)
-        {
-          info = -1;
-          return *this;
-        }
+        retval.elem (i, i) = octave_Inf;
       else
         retval.elem (i, i) = 1.0 / elem (i, i);
     }

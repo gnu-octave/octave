@@ -2714,7 +2714,7 @@ return the number of elements that would result from the indexing\n\
 @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
 \n\
-Note that the indices do not have to be numerical.  For example,\n\
+Note that the indices do not have to be scalar numbers.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -2726,6 +2726,18 @@ numel (@var{a}, @var{b})\n\
 \n\
 @noindent\n\
 will return 6, as this is the number of ways to index with @var{b}.\n\
+Or the index could be the string @qcode{\":\"} which represents the colon\n\
+operator.  For example,\n\
+\n\
+@example\n\
+@group\n\
+@var{a} = ones (5, 3);\n\
+numel (@var{a}, 2, \":\")\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+will return 3 as the second row has three column entries.\n\
 \n\
 This method is also called when an object appears as lvalue with cs-list\n\
 indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\

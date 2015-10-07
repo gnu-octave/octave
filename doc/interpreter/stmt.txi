@@ -541,7 +541,7 @@ the first ten elements of the Fibonacci sequence, this time using the
 @group
 fib = ones (1, 10);
 for i = 3:10
-  fib (i) = fib (i-1) + fib (i-2);
+  fib(i) = fib(i-1) + fib(i-2);
 endfor
 @end group
 @end example

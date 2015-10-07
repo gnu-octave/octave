@@ -487,14 +487,14 @@ binary mantissa and exponent so that\n\
 ${1 \\over 2} \\le \\left| f \\right| < 1$\n\
 @end tex\n\
 @ifnottex\n\
-@code{1/2 <= abs(f) < 1}\n\
+@w{@code{1/2 <= abs(f) < 1}}\n\
 @end ifnottex\n\
 and @var{e} is an integer.  If\n\
 @tex\n\
 $x = 0$, $f = e = 0$.\n\
 @end tex\n\
 @ifnottex\n\
-@code{x = 0}, @code{f = e = 0}.\n\
+@w{@code{x = 0}}, @w{@code{f = e = 0}}.\n\
 @end ifnottex\n\
 @seealso{pow2, log, log10, exp}\n\
 @end deftypefn")
@@ -2606,9 +2606,8 @@ DEFUN (permute, args, ,
 Return the generalized transpose for an N-D array object @var{A}.\n\
 \n\
 The permutation vector @var{perm} must contain the elements\n\
-@code{1:ndims (A)} (in any order, but each element must appear only once).\n\
-\n\
-The @var{N}th dimension of @var{A} gets remapped to dimension\n\
+@w{@code{1:ndims (A)}} (in any order, but each element must appear only\n\
+once).  The @var{N}th dimension of @var{A} gets remapped to dimension\n\
 @code{@var{PERM}(@var{N})}.  For example:\n\
 \n\
 @example\n\
@@ -3317,11 +3316,13 @@ DEFUN (complex, args, ,
 @deftypefnx {Built-in Function} {} complex (@var{re}, @var{im})\n\
 Return a complex value from real arguments.\n\
 \n\
-With 1 real argument @var{x}, return the complex result @code{@var{x} + 0i}.\n\
+With 1 real argument @var{x}, return the complex result\n\
+@w{@code{@var{x} + 0i}}.\n\
 \n\
-With 2 real arguments, return the complex result @code{@var{re} + @var{im}}.\n\
+With 2 real arguments, return the complex result\n\
+@w{@code{@var{re} + @var{im}}}.\n\
 @code{complex} can often be more convenient than expressions such as\n\
-@code{a + i*b}.\n\
+@w{@code{a + i*b}}.\n\
 For example:\n\
 \n\
 @example\n\
@@ -4912,7 +4913,7 @@ to the pure imaginary unit, defined as\n\
 $\\sqrt{-1}$.\n\
 @end tex\n\
 @ifnottex\n\
-@code{sqrt (-1)}.\n\
+@w{@code{sqrt (-1)}}.\n\
 @end ifnottex\n\
 \n\
 I, and its equivalents i, j, and J, are functions so any of the names may\n\
@@ -5738,7 +5739,7 @@ DEFUN (norm, args, ,
 @deftypefnx {Built-in Function} {} norm (@var{A}, @var{p}, @var{opt})\n\
 Compute the p-norm of the matrix @var{A}.\n\
 \n\
-If the second argument is missing, @code{p = 2} is assumed.\n\
+If the second argument is missing, @w{@code{p = 2}} is assumed.\n\
 \n\
 If @var{A} is a matrix (or sparse matrix):\n\
 \n\
@@ -6648,8 +6649,9 @@ matrix.  For example:\n\
 For equal elements, the indices are such that equal elements are listed\n\
 in the order in which they appeared in the original list.\n\
 \n\
-Sorting of complex entries is done first by magnitude (@code{abs (@var{z})})\n\
-and for any ties by phase angle (@code{angle (z)}).  For example:\n\
+Sorting of complex entries is done first by magnitude\n\
+(@w{@code{abs (@var{z})}}) and for any ties by phase angle\n\
+(@w{@code{angle (z)}}).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -7790,7 +7792,7 @@ DEFUN (diff, args, ,
 @deftypefn  {Built-in Function} {} diff (@var{x})\n\
 @deftypefnx {Built-in Function} {} diff (@var{x}, @var{k})\n\
 @deftypefnx {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
-If @var{x} is a vector of length @math{n}, @code{diff (@var{x})} is the\n\
+If @var{x} is a vector of length @math{n}, @w{@code{diff (@var{x})}} is the\n\
 vector of first differences\n\
 @tex\n\
  $x_2 - x_1, \\ldots{}, x_n - x_{n-1}$.\n\
@@ -7799,20 +7801,20 @@ vector of first differences\n\
  @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).\n\
 @end ifnottex\n\
 \n\
-If @var{x} is a matrix, @code{diff (@var{x})} is the matrix of column\n\
+If @var{x} is a matrix, @w{@code{diff (@var{x})}} is the matrix of column\n\
 differences along the first non-singleton dimension.\n\
 \n\
-The second argument is optional.  If supplied, @code{diff (@var{x},\n\
-@var{k})}, where @var{k} is a non-negative integer, returns the\n\
-@var{k}-th differences.  It is possible that @var{k} is larger than\n\
-the first non-singleton dimension of the matrix.  In this case,\n\
+The second argument is optional.  If supplied,\n\
+@w{@code{diff (@var{x}, @var{k})}}, where @var{k} is a non-negative integer,\n\
+returns the @var{k}-th differences.  It is possible that @var{k} is larger\n\
+than the first non-singleton dimension of the matrix.  In this case,\n\
 @code{diff} continues to take the differences along the next\n\
 non-singleton dimension.\n\
 \n\
 The dimension along which to take the difference can be explicitly\n\
 stated with the optional variable @var{dim}.  In this case the\n\
 @var{k}-th order differences are calculated along this dimension.\n\
-In the case where @var{k} exceeds @code{size (@var{x}, @var{dim})}\n\
+In the case where @var{k} exceeds @w{@code{size (@var{x}, @var{dim})}}\n\
 an empty matrix is returned.\n\
 @seealso{sort, merge}\n\
 @end deftypefn")

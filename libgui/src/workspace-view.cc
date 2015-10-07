@@ -75,22 +75,31 @@ workspace_view::workspace_view (QWidget *p)
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
 
-  // Create a new layout and add widgets to it.
-  QVBoxLayout *vbox_layout = new QVBoxLayout ();
-  QHBoxLayout *hbox_layout = new QHBoxLayout ();
-  hbox_layout->addWidget (filter_label);
-  hbox_layout->addWidget (_filter_checkbox);
-  hbox_layout->addWidget (_filter);
-  vbox_layout->addLayout (hbox_layout);
-  vbox_layout->addWidget (view);
-  vbox_layout->setMargin (2);
+  // Create the layouts
+  _filter_widget = new QWidget (this);
+  QHBoxLayout *filter_layout = new QHBoxLayout ();
 
-  // Set the empty widget to have our layout.
-  widget ()->setLayout (vbox_layout);
+  filter_layout->addWidget (filter_label);
+  filter_layout->addWidget (_filter_checkbox);
+  filter_layout->addWidget (_filter);
+  filter_layout->setMargin(0);
+  _filter_widget->setLayout (filter_layout);
 
-  // Initialize collapse/expand state of the workspace subcategories.
+  QVBoxLayout *ws_layout = new QVBoxLayout ();
+  ws_layout->addWidget (_filter_widget);
+  ws_layout->addWidget (view);
 
   QSettings *settings = resource_manager::get_settings ();
+
+  _filter_shown = settings->value ("workspaceview/filter_shown",true).toBool();
+  _filter_widget->setVisible (_filter_shown);
+
+  ws_layout->setMargin (2);
+
+  // Set the empty widget to have our layout.
+  widget ()->setLayout (ws_layout);
+
+  // Initialize collapse/expand state of the workspace subcategories.
 
   //enable sorting (setting column and order after model was set)
   view->setSortingEnabled (true);
@@ -129,7 +138,6 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
-
 }
 
 workspace_view::~workspace_view (void)
@@ -146,6 +154,7 @@ workspace_view::~workspace_view (void)
 
   settings->setValue ("workspaceview/filter_active",
                       _filter_checkbox->isChecked ());
+  settings->setValue ("workspaceview/filter_shown", _filter_shown);
 
   QStringList mru;
   for (int i = 0; i < _filter->count (); i++)
@@ -263,8 +272,18 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
       menu.addAction ("stem (" + var_name + ")", this,
                       SLOT (handle_contextmenu_stem ()));
 
-      menu.exec (view->mapToGlobal (qpos));
+      menu.addSeparator ();
+
     }
+
+  if (_filter_shown)
+    menu.addAction (tr ("Hide filter"), this,
+                    SLOT (handle_contextmenu_filter ()));
+  else
+    menu.addAction (tr ("Show filter"), this,
+                    SLOT (handle_contextmenu_filter ()));
+
+  menu.exec (view->mapToGlobal (qpos));
 }
 
 void
@@ -356,6 +375,13 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 
       emit command_requested (cmdname + " (" + var_name + ");");
     }
+}
+
+void
+workspace_view::handle_contextmenu_filter (void)
+{
+  _filter_shown = not _filter_shown;
+  _filter_widget->setVisible (_filter_shown);
 }
 
 void

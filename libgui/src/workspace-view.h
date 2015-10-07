@@ -70,6 +70,7 @@ protected slots:
   void handle_contextmenu_disp (void);
   void handle_contextmenu_plot (void);
   void handle_contextmenu_stem (void);
+  void handle_contextmenu_filter (void);
 
   void handle_model_changed (void);
 
@@ -92,6 +93,9 @@ private:
   QSortFilterProxyModel _filter_model;
   QCheckBox *_filter_checkbox;
   QComboBox *_filter;
+  QWidget *_filter_widget;
+  bool _filter_shown;
+
   enum { MaxFilterHistory = 10 };
 };
 

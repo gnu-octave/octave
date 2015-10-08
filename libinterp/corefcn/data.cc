@@ -5211,7 +5211,7 @@ if fewer than two values are requested.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
+  octave_idx_type nargin = args.length ();
 
   octave_idx_type npoints = 100;
 
@@ -5281,6 +5281,20 @@ if fewer than two values are requested.\n\
 %! exp = [1+0i, 2-1.25i, 3-2.5i, 4-3.75i, 5-5i];
 %! obs = linspace (1, 5-5i, 5);
 %! assert (obs, exp);
+
+## Test support for vectors in BASE and LIMIT
+%!assert (linspace ([1 2 3], [7 8 9]),
+%!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)])
+%!assert (linspace ([1 2 3]', [7 8 9]'),
+%!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)])
+%!assert (linspace ([1 2 3], 9),
+%!        [linspace(1, 9); linspace(2, 9); linspace(3, 9)])
+%!assert (linspace ([1 2 3]', 9),
+%!        [linspace(1, 9); linspace(2, 9); linspace(3, 9)])
+%!assert (linspace (1, [7 8 9]),
+%!        [linspace(1, 7); linspace(1, 8); linspace(1, 9)])
+%!assert (linspace (1, [7 8 9]'),
+%!        [linspace(1, 7); linspace(1, 8); linspace(1, 9)])
 
 ## Test class of output
 %!assert (class (linspace (1, 2)), "double")

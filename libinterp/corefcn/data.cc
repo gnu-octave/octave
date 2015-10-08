@@ -5233,39 +5233,35 @@ if fewer than two values are requested.\n\
       else if (! arg_3.is_scalar_type ())
         error ("linspace: N must be a scalar");
       else
+        // Even if third arg is not an integer, it must be cast to int
         npoints = arg_3.idx_type_value ();
     }
 
-  if (! error_state)
+  octave_value arg_1 = args(0);
+  octave_value arg_2 = args(1);
+
+  dim_vector sz1 = arg_1.dims ();
+  bool isvector1 = sz1.length () == 2 && (sz1(0) == 1 || sz1(1) == 1);
+  dim_vector sz2 = arg_2.dims ();
+  bool isvector2 = sz2.length () == 2 && (sz2(0) == 1 || sz2(1) == 1);
+
+  if (! isvector1 || ! isvector2)
+    error ("linspace: A, B must be scalars or vectors");
+  else if (arg_1.is_single_type () || arg_2.is_single_type ())
     {
-      octave_value arg_1 = args(0);
-      octave_value arg_2 = args(1);
-
-      dim_vector sz1 = arg_1.dims ();
-      bool isvector1 = sz1.length () == 2 && (sz1(0) == 1 || sz1(1) == 1);
-      dim_vector sz2 = arg_2.dims ();
-      bool isvector2 = sz2.length () == 2 && (sz2(0) == 1 || sz2(1) == 1);
-
-      if (! isvector1 || ! isvector2)
-        error ("linspace: A, B must be scalars or vectors");
-      else if (arg_1.is_single_type () || arg_2.is_single_type ())
-        {
-          if (arg_1.is_complex_type () || arg_2.is_complex_type ())
-            retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
-          else
-            retval = do_linspace<FloatMatrix> (arg_1, arg_2, npoints);
-
-        }
+      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+        retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
       else
-        {
-          if (arg_1.is_complex_type () || arg_2.is_complex_type ())
-            retval = do_linspace<ComplexMatrix> (arg_1, arg_2, npoints);
-          else
-            retval = do_linspace<Matrix> (arg_1, arg_2, npoints);
-        }
+        retval = do_linspace<FloatMatrix> (arg_1, arg_2, npoints);
+
     }
   else
-    error ("linspace: N must be an integer");
+    {
+      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+        retval = do_linspace<ComplexMatrix> (arg_1, arg_2, npoints);
+      else
+        retval = do_linspace<Matrix> (arg_1, arg_2, npoints);
+    }
 
   return retval;
 }
@@ -5299,6 +5295,8 @@ if fewer than two values are requested.\n\
 %!assert (linspace (10, 20, -1), zeros (1, 0))
 %!assert (numel (linspace (0, 1, 2+eps)), 2)
 %!assert (numel (linspace (0, 1, 2-eps)), 1)
+%!assert (linspace (10, 20, 2.1), [10 20])
+%!assert (linspace (10, 20, 2.9), [10 20])
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)

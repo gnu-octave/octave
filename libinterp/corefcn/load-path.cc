@@ -2239,26 +2239,20 @@ directories with those names.\n\
 
   if (nargin == 1)
     {
-      std::string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ("genpath: DIR must be a string");
 
-      if (! error_state)
-        retval = genpath (dirname);
-      else
-        error ("genpath: DIR must be a string");
+      retval = genpath (dirname);
     }
   else if (nargin > 1)
     {
-      std::string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ("genpath: all arguments must be strings");
 
       string_vector skip (nargin - 1);
 
       for (octave_idx_type i = 1; i < nargin; i++)
-        skip[i-1] = args(i).string_value ();
+        skip[i-1] = args(i).string_value ("genpath: all arguments must be strings");
 
-      if (! error_state)
-        retval = genpath (dirname, skip);
-      else
-        error ("genpath: all arguments must be strings");
+      retval = genpath (dirname, skip);
     }
   else
     print_usage ();
@@ -2461,34 +2455,29 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          if (args(i).is_string ())
+          std::string arg = args(i).string_value ("addpath: all arguments must be strings");
+
+          std::list<std::string> dir_elts = split_path (arg);
+
+          if (! append)
+            std::reverse (dir_elts.begin (), dir_elts.end ());
+
+          for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+               p != dir_elts.end ();
+               p++)
             {
-              std::string arg = args(i).string_value ();
+              std::string dir = *p;
 
-              std::list<std::string> dir_elts = split_path (arg);
+              //dir = regexprep (dir_elts{j}, '//+', "/");
+              //dir = regexprep (dir, '/$', "");
 
-              if (! append)
-                std::reverse (dir_elts.begin (), dir_elts.end ());
+              if (append)
+                load_path::append (dir, true);
+              else
+                load_path::prepend (dir, true);
 
-              for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-                   p != dir_elts.end ();
-                   p++)
-                {
-                  std::string dir = *p;
-
-                  //dir = regexprep (dir_elts{j}, '//+', "/");
-                  //dir = regexprep (dir, '/$', "");
-
-                  if (append)
-                    load_path::append (dir, true);
-                  else
-                    load_path::prepend (dir, true);
-
-                  need_to_update = true;
-                }
+              need_to_update = true;
             }
-          else
-            error ("addpath: all arguments must be strings");
         }
 
       if (need_to_update)
@@ -2530,28 +2519,23 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          if (args(i).is_string ())
+          std::string arg = args(i).string_value ("rmpath: all arguments must be strings");
+          std::list<std::string> dir_elts = split_path (arg);
+
+          for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+               p != dir_elts.end ();
+               p++)
             {
-              std::string arg = args(i).string_value ();
-              std::list<std::string> dir_elts = split_path (arg);
+              std::string dir = *p;
 
-              for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-                   p != dir_elts.end ();
-                   p++)
-                {
-                  std::string dir = *p;
+              //dir = regexprep (dir_elts{j}, '//+', "/");
+              //dir = regexprep (dir, '/$', "");
 
-                  //dir = regexprep (dir_elts{j}, '//+', "/");
-                  //dir = regexprep (dir, '/$', "");
-
-                  if (! load_path::remove (dir))
-                    warning ("rmpath: %s: not found", dir.c_str ());
-                  else
-                    need_to_update = true;
-                }
+              if (! load_path::remove (dir))
+                warning ("rmpath: %s: not found", dir.c_str ());
+              else
+                need_to_update = true;
             }
-          else
-            error ("addpath: all arguments must be strings");
         }
 
       if (need_to_update)

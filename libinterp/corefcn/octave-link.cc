@@ -122,29 +122,19 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string file = args(0).string_value ();
+      std::string file = args(0).string_value ("expecting file name as argument");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::edit_file (file);
-        }
-      else
-        error ("expecting file name as argument");
+      retval = octave_link::edit_file (file);
     }
   else if (args.length () == 2)
     {
-      std::string file = args(0).string_value ();
+      std::string file = args(0).string_value ("expecting file name as first argument");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::prompt_new_edit_file (file);
-        }
-      else
-        error ("expecting file name as first argument");
+      retval = octave_link::prompt_new_edit_file (file);
     }
 
   return retval;
@@ -160,18 +150,13 @@ Undocumented internal function.\n\
 
   if (args.length () == 3)
     {
-      std::string dlg   = args(0).string_value ();
-      std::string msg   = args(1).string_value ();
-      std::string title = args(2).string_value ();
+      std::string dlg = args(0).string_value ("invalid arguments");
+      std::string msg = args(1).string_value ("invalid arguments");
+      std::string title = args(2).string_value ("invalid arguments");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::message_dialog (dlg, msg, title);
-        }
-      else
-        error ("invalid arguments");
+      retval = octave_link::message_dialog (dlg, msg, title);
     }
 
   return retval;
@@ -187,22 +172,17 @@ Undocumented internal function.\n\
 
   if (args.length () == 6)
     {
-      std::string msg    = args(0).string_value ();
-      std::string title  = args(1).string_value ();
-      std::string btn1   = args(2).string_value ();
-      std::string btn2   = args(3).string_value ();
-      std::string btn3   = args(4).string_value ();
-      std::string btndef = args(5).string_value ();
+      std::string msg = args(0).string_value ("invalid arguments");
+      std::string title = args(1).string_value ("invalid arguments");
+      std::string btn1 = args(2).string_value ("invalid arguments");
+      std::string btn2 = args(3).string_value ("invalid arguments");
+      std::string btn3 = args(4).string_value ("invalid arguments");
+      std::string btndef = args(5).string_value ("invalid arguments");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
-                                                 btndef);
-        }
-      else
-        error ("invalid arguments");
+      retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
+                                             btndef);
     }
 
   return retval;
@@ -327,30 +307,25 @@ Undocumented internal function.\n\
       std::string ok_string = args(6).string_value ();
       std::string cancel_string = args(7).string_value ();
 
-      if (! error_state)
+      flush_octave_stdout ();
+
+      std::pair<std::list<int>, int> result
+        = octave_link::list_dialog (list_lst, mode, width, height,
+                                    initial_lst, name, prompt_lst,
+                                    ok_string, cancel_string);
+
+      std::list<int> items_lst = result.first;
+      nel = items_lst.size ();
+      Matrix items (dim_vector (1, nel));
+      octave_idx_type i = 0;
+      for (std::list<int>::iterator it = items_lst.begin ();
+           it != items_lst.end (); it++)
         {
-          flush_octave_stdout ();
-
-          std::pair<std::list<int>, int> result
-            = octave_link::list_dialog (list_lst, mode, width, height,
-                                        initial_lst, name, prompt_lst,
-                                        ok_string, cancel_string);
-
-          std::list<int> items_lst = result.first;
-          nel = items_lst.size ();
-          Matrix items (dim_vector (1, nel));
-          octave_idx_type i = 0;
-          for (std::list<int>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
-            {
-              items.xelem(i++) = *it;
-            }
-
-          retval(1) = result.second;
-          retval(0) = items;
+          items.xelem(i++) = *it;
         }
-      else
-        error ("invalid arguments");
+
+      retval(1) = result.second;
+      retval(0) = items;
     }
 
   return retval;
@@ -392,27 +367,22 @@ Undocumented internal function.\n\
       for (octave_idx_type i = 0; i < nel; i++)
         defaults_lst.push_back (tmp(i));
 
-      if (! error_state)
+      flush_octave_stdout ();
+
+      std::list<std::string> items_lst
+        = octave_link::input_dialog (prompt_lst, title, nr, nc,
+                                     defaults_lst);
+
+      nel = items_lst.size ();
+      Cell items (dim_vector (nel, 1));
+      octave_idx_type i = 0;
+      for (std::list<std::string>::iterator it = items_lst.begin ();
+           it != items_lst.end (); it++)
         {
-          flush_octave_stdout ();
-
-          std::list<std::string> items_lst
-            = octave_link::input_dialog (prompt_lst, title, nr, nc,
-                                         defaults_lst);
-
-          nel = items_lst.size ();
-          Cell items (dim_vector (nel, 1));
-          octave_idx_type i = 0;
-          for (std::list<std::string>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
-            {
-              items.xelem(i++) = *it;
-            }
-
-          retval = items;
+          items.xelem(i++) = *it;
         }
-      else
-        error ("invalid arguments");
+
+      retval = items;
     }
 
   return retval;

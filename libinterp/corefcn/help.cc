@@ -1092,20 +1092,15 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   if (args.length () == 1)
     {
-      const std::string name = args(0).string_value ();
+      const std::string name = args(0).string_value ("get_help_text: NAME must be a string");
 
-      if (! error_state)
-        {
-          std::string text;
-          std::string format;
+      std::string text;
+      std::string format;
 
-          do_get_help_text (name, text, format);
+      do_get_help_text (name, text, format);
 
-          retval(1) = format;
-          retval(0) = text;
-        }
-      else
-        error ("get_help_text: invalid input");
+      retval(1) = format;
+      retval(0) = text;
     }
   else
     print_usage ();
@@ -1162,20 +1157,15 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   if (args.length () == 1)
     {
-      const std::string fname = args(0).string_value ();
+      const std::string fname = args(0).string_value ("get_help_text_from_file: NAME must be a string");
 
-      if (! error_state)
-        {
-          std::string text;
-          std::string format;
+      std::string text;
+      std::string format;
 
-          do_get_help_text_from_file (fname, text, format);
+      do_get_help_text_from_file (fname, text, format);
 
-          retval(1) = format;
-          retval(0) = text;
-        }
-      else
-        error ("get_help_text_from_file: invalid input");
+      retval(1) = format;
+      retval(0) = text;
     }
   else
     print_usage ();
@@ -1380,24 +1370,19 @@ Undocumented internal function.\n\
 
   if (args.length () == 0)
     retval = Cell (ffl.append (afl));
-  else if (args(0).is_string ())
+  else
     {
-      std::string dir = args(0).string_value ();
+      std::string dir = args(0).string_value ("__list_functions__: DIRECTORY argument must be a string");
 
       string_vector fl = load_path::files (dir, true);
 
-      if (! error_state)
-        {
-          // Return a sorted list with unique entries (in case of
-          // .m and .oct versions of the same function in a given
-          // directory, for example).
-          fl.sort (true);
+      // Return a sorted list with unique entries (in case of
+      // .m and .oct versions of the same function in a given
+      // directory, for example).
+      fl.sort (true);
 
-          retval = Cell (fl);
-        }
+      retval = Cell (fl);
     }
-  else
-    error ("__list_functions__: DIRECTORY argument must be a string");
 
   return retval;
 }

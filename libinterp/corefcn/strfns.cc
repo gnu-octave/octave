@@ -923,15 +923,7 @@ whos ans\n\
   std::string prefix;
 
   if (nargin > 2)
-    {
-      if (args(2).is_string ())
-        prefix = args(2).string_value ();
-      else
-        {
-          error ("list_in_columns: PREFIX must be a string");
-          return retval;
-        }
-    }
+    prefix = args(2).string_value ("list_in_columns: PREFIX must be a string");
 
   std::ostringstream buf;
 

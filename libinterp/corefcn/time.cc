@@ -473,26 +473,21 @@ Year (1970-).\n\
 
   if (args.length () == 2)
     {
-      if (args(0).is_string ())
-        {
-          std::string fmt = args(0).string_value ();
+      std::string fmt = args(0).string_value ("strftime: FMT must be a string");
 
-          octave_scalar_map map = args(1).scalar_map_value ();
+      octave_scalar_map map = args(1).scalar_map_value ();
+
+      if (! error_state)
+        {
+          octave_base_tm tm = extract_tm (map);
 
           if (! error_state)
-            {
-              octave_base_tm tm = extract_tm (map);
-
-              if (! error_state)
-                retval = tm.strftime (fmt);
-              else
-                error ("strftime: invalid TM_STRUCT argument");
-            }
+            retval = tm.strftime (fmt);
           else
-            error ("strftime: TM_STRUCT must be a structure");
+            error ("strftime: invalid TM_STRUCT argument");
         }
       else
-        error ("strftime: FMT must be a string");
+        error ("strftime: TM_STRUCT must be a structure");
     }
   else
     print_usage ();
@@ -529,24 +524,14 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   if (args.length () == 2)
     {
-      if (args(0).is_string ())
-        {
-          std::string str = args(0).string_value ();
+      std::string str = args(0).string_value ("strptime: argument STR must be a string");
 
-          if (args(1).is_string ())
-            {
-              std::string fmt = args(1).string_value ();
+      std::string fmt = args(1).string_value ("strptime: FMT must be a string");
 
-              octave_strptime t (str, fmt);
+      octave_strptime t (str, fmt);
 
-              retval(1) = t.characters_converted ();
-              retval(0) = octave_value (mk_tm_map (t));
-            }
-          else
-            error ("strptime: FMT must be a string");
-        }
-      else
-        error ("strptime: argument STR must be a string");
+      retval(1) = t.characters_converted ();
+      retval(0) = octave_value (mk_tm_map (t));
     }
   else
     print_usage ();

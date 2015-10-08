@@ -184,24 +184,19 @@ error message.\n\
 
   if (args.length () == 1)
     {
-      std::string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ("readdir: DIR must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("readdir", args(0));
+      dir_entry dir (dirname);
+
+      if (dir)
+        {
+          string_vector dirlist = dir.read ();
+          retval(1) = 0.0;
+          retval(0) = Cell (dirlist.sort ());
+        }
       else
         {
-          dir_entry dir (dirname);
-
-          if (dir)
-            {
-              string_vector dirlist = dir.read ();
-              retval(1) = 0.0;
-              retval(0) = Cell (dirlist.sort ());
-            }
-          else
-            {
-              retval(2) = dir.error ();
-            }
+          retval(2) = dir.error ();
         }
     }
   else
@@ -245,27 +240,13 @@ When creating a directory permissions will be set to\n\
 
   if (nargin == 2)
     {
-      std::string parent = args(0).string_value ();
-      std::string dir = args(1).string_value ();
+      std::string parent = args(0).string_value ("mkdir: PARENT must be a string");
+      std::string dir = args(1).string_value ("mkdir: DIR must be a string");
 
-      if (error_state)
-        {
-          gripe_wrong_type_arg ("mkdir", args(0));
-          return retval;
-        }
-      else
-        dirname = file_ops::concat (parent, dir);
+      dirname = file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
-    {
-      dirname = args(0).string_value ();
-
-      if (error_state)
-        {
-          gripe_wrong_type_arg ("mkdir", args(0));
-          return retval;
-        }
-    }
+    dirname = args(0).string_value ("mkdir: DIR must be a string");
 
   if (nargin == 1 || nargin == 2)
     {
@@ -331,48 +312,43 @@ identifier.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ("rmdir: DIR must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("rmdir", args(0));
-      else
+      std::string fulldir = file_ops::tilde_expand (dirname);
+      int status = -1;
+      std::string msg;
+
+      if (nargin == 2)
         {
-          std::string fulldir = file_ops::tilde_expand (dirname);
-          int status = -1;
-          std::string msg;
-
-          if (nargin == 2)
+          if (args(1).string_value () == "s")
             {
-              if (args(1).string_value () == "s")
+              bool doit = true;
+
+              if (interactive && ! forced_interactive
+                  && Vconfirm_recursive_rmdir)
                 {
-                  bool doit = true;
+                  std::string prompt
+                    = "remove entire contents of " + fulldir + "? ";
 
-                  if (interactive && ! forced_interactive
-                      && Vconfirm_recursive_rmdir)
-                    {
-                      std::string prompt
-                        = "remove entire contents of " + fulldir + "? ";
-
-                      doit = octave_yes_or_no (prompt);
-                    }
-
-                  if (doit)
-                    status = octave_recursive_rmdir (fulldir, msg);
+                  doit = octave_yes_or_no (prompt);
                 }
-              else
-                error ("rmdir: expecting second argument to be \"s\"");
-            }
-          else
-            status = octave_rmdir (fulldir, msg);
 
-          if (status < 0)
-            {
-              retval(2) = "rmdir";
-              retval(1) = msg;
+              if (doit)
+                status = octave_recursive_rmdir (fulldir, msg);
             }
           else
-            retval(0) = true;
+            error ("rmdir: expecting second argument to be \"s\"");
         }
+      else
+        status = octave_rmdir (fulldir, msg);
+
+      if (status < 0)
+        {
+          retval(2) = "rmdir";
+          retval(1) = msg;
+        }
+      else
+        retval(0) = true;
     }
   else
     print_usage ();
@@ -399,27 +375,17 @@ error message.\n\
 
   if (args.length () == 2)
     {
-      std::string from = args(0).string_value ();
+      std::string from = args(0).string_value ("link: OLD must be a string");
+      std::string to = args(1).string_value ("link: NEW must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("link", args(0));
-      else
-        {
-          std::string to = args(1).string_value ();
+      std::string msg;
 
-          if (error_state)
-            gripe_wrong_type_arg ("link", args(1));
-          else
-            {
-              std::string msg;
+      int status = octave_link (from, to, msg);
 
-              int status = octave_link (from, to, msg);
+      if (status < 0)
+        retval(1) = msg;
 
-              if (status < 0)
-                retval(1) = msg;
-              retval(0) = status;
-            }
-        }
+      retval(0) = status;
     }
   else
     print_usage ();
@@ -446,27 +412,17 @@ error message.\n\
 
   if (args.length () == 2)
     {
-      std::string from = args(0).string_value ();
+      std::string from = args(0).string_value ("symlink: OLD must be a string");
+      std::string to = args(1).string_value ("symlink: NEW must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("symlink", args(0));
-      else
-        {
-          std::string to = args(1).string_value ();
+      std::string msg;
 
-          if (error_state)
-            gripe_wrong_type_arg ("symlink", args(1));
-          else
-            {
-              std::string msg;
+      int status = octave_symlink (from, to, msg);
 
-              int status = octave_symlink (from, to, msg);
+      if (status < 0)
+        retval(1) = msg;
 
-              if (status < 0)
-                retval(1) = msg;
-              retval(0) = status;
-            }
-        }
+      retval(0) = status;
     }
   else
     print_usage ();
@@ -495,22 +451,18 @@ error message.\n\
 
   if (args.length () == 1)
     {
-      std::string symlink = args(0).string_value ();
+      std::string symlink = args(0).string_value ("readlink: SYMLINK must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("readlink", args(0));
-      else
-        {
-          std::string result;
-          std::string msg;
+      std::string result;
+      std::string msg;
 
-          int status = octave_readlink (symlink, result, msg);
+      int status = octave_readlink (symlink, result, msg);
 
-          if (status < 0)
-            retval(2) = msg;
-          retval(1) = status;
-          retval(0) = result;
-        }
+      if (status < 0)
+        retval(2) = msg;
+
+      retval(1) = status;
+      retval(0) = result;
     }
   else
     print_usage ();
@@ -537,27 +489,17 @@ error message.\n\
 
   if (args.length () == 2)
     {
-      std::string from = args(0).string_value ();
+      std::string from = args(0).string_value ("rename: OLD must be a string");
+      std::string to = args(1).string_value ("rename: NEW must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("rename", args(0));
-      else
-        {
-          std::string to = args(1).string_value ();
+      std::string msg;
 
-          if (error_state)
-            gripe_wrong_type_arg ("rename", args(1));
-          else
-            {
-              std::string msg;
+      int status = octave_rename (from, to, msg);
 
-              int status = octave_rename (from, to, msg);
+      if (status < 0)
+        retval(1) = msg;
 
-              if (status < 0)
-                retval(1) = msg;
-              retval(0) = status;
-            }
-        }
+      retval(0) = status;
     }
   else
     print_usage ();
@@ -620,16 +562,11 @@ glob (\"file[12]\")\n\
 
   if (args.length () == 1)
     {
-      string_vector pat = args(0).all_strings ();
+      string_vector pat = args(0).all_strings ("glob: PATTERN must be a string");
 
-      if (error_state)
-        gripe_wrong_type_arg ("glob", args(0));
-      else
-        {
-          glob_match pattern (file_ops::tilde_expand (pat));
+      glob_match pattern (file_ops::tilde_expand (pat));
 
-          retval = Cell (pattern.glob ());
-        }
+      retval = Cell (pattern.glob ());
     }
   else
     print_usage ();
@@ -727,17 +664,11 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
     retval = file_ops::dir_sep_str ();
   else if (args.length () == 1)
     {
-      std::string s = args(0).string_value ();
-
-      if (! error_state)
-        {
-          if (s == "all")
-            retval = file_ops::dir_sep_chars ();
-          else
-            gripe_wrong_type_arg ("filesep", args(0));
-        }
+      std::string s = args(0).string_value ("filesep: argument must be a string");
+      if (s == "all")
+        retval = file_ops::dir_sep_chars ();
       else
-        gripe_wrong_type_arg ("filesep", args(0));
+        error ("filesep: argument must be \"all\"");
     }
   else
     print_usage ();
@@ -762,27 +693,22 @@ Query or set the character used to separate directories in a path.\n\
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
+      std::string sval = args(0).string_value ("pathsep: argument must be a single character");
 
-      if (! error_state)
+      switch (sval.length ())
         {
-          switch (sval.length ())
-            {
-            case 1:
-              dir_path::path_sep_char (sval[0]);
-              break;
+        case 1:
+          dir_path::path_sep_char (sval[0]);
+          break;
 
-            case 0:
-              dir_path::path_sep_char ('\0');
-              break;
+        case 0:
+          dir_path::path_sep_char ('\0');
+          break;
 
-            default:
-              error ("pathsep: argument must be a single character");
-              break;
-            }
+        default:
+          error ("pathsep: argument must be a single character");
+          break;
         }
-      else
-        error ("pathsep: argument must be a single character");
     }
   else if (nargin > 1)
     print_usage ();

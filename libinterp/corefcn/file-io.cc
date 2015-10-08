@@ -538,28 +538,11 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
   fid = -1;
 
-  if (tc_name.is_string ())
-    {
-      std::string name = tc_name.string_value ();
+  std::string name = tc_name.string_value ("%s: file name must be a string", fcn);
+  std::string mode = tc_mode.string_value ("%s: file mode must be a string", fcn);
+  std::string arch = tc_arch.string_value ("%s: architecture type must be a string", fcn);
 
-      if (tc_mode.is_string ())
-        {
-          std::string mode = tc_mode.string_value ();
-
-          if (tc_arch.is_string ())
-            {
-              std::string arch = tc_arch.string_value ();
-
-              retval = do_stream_open (name, mode, arch, fid);
-            }
-          else
-            error ("%s: architecture type must be a string", fcn);
-        }
-      else
-        error ("%s: file mode must be a string", fcn);
-    }
-  else
-    error ("%s: file name must be a string", fcn);
+  retval = do_stream_open (name, mode, arch, fid);
 
   return retval;
 }
@@ -1347,44 +1330,34 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   if (! error_state)
     {
-      if (prec_arg.is_string ())
+      std::string prec = prec_arg.string_value ("fread: PRECISION must be a string");
+
+      int block_size = 1;
+      oct_data_conv::data_type input_type;
+      oct_data_conv::data_type output_type;
+
+      oct_data_conv::string_to_data_type (prec, block_size,
+                                          input_type, output_type);
+
+      if (! error_state)
         {
-          std::string prec = prec_arg.string_value ();
-
-          int block_size = 1;
-          oct_data_conv::data_type input_type;
-          oct_data_conv::data_type output_type;
-
-          oct_data_conv::string_to_data_type (prec, block_size,
-                                              input_type, output_type);
+          int skip = skip_arg.int_value (true);
 
           if (! error_state)
             {
-              int skip = skip_arg.int_value (true);
+              std::string arch = arch_arg.string_value ("fread: ARCH architecture type must be a string");
 
-              if (! error_state)
-                {
-                  if (arch_arg.is_string ())
-                    {
-                      std::string arch = arch_arg.string_value ();
+              oct_mach_info::float_format flt_fmt
+                = oct_mach_info::string_to_float_format (arch);
 
-                      oct_mach_info::float_format flt_fmt
-                        = oct_mach_info::string_to_float_format (arch);
-
-                      retval = os.read (size, block_size, input_type,
-                                        output_type, skip, flt_fmt, count);
-                    }
-                  else
-                    error ("fread: ARCH architecture type must be a string");
-                }
-              else
-                error ("fread: SKIP must be an integer");
+              retval = os.read (size, block_size, input_type,
+                                output_type, skip, flt_fmt, count);
             }
           else
-            error ("fread: invalid PRECISION specified");
+            error ("fread: SKIP must be an integer");
         }
       else
-        error ("fread: PRECISION must be a string");
+        error ("fread: invalid PRECISION specified");
     }
   else
     error ("fread: invalid SIZE specified");
@@ -1618,42 +1591,32 @@ do_fwrite (octave_stream& os, const octave_value& data,
 {
   int retval = -1;
 
-  if (prec_arg.is_string ())
+  std::string prec = prec_arg.string_value ("fwrite: PRECISION must be a string");
+
+  int block_size = 1;
+  oct_data_conv::data_type output_type;
+
+  oct_data_conv::string_to_data_type (prec, block_size, output_type);
+
+  if (! error_state)
     {
-      std::string prec = prec_arg.string_value ();
-
-      int block_size = 1;
-      oct_data_conv::data_type output_type;
-
-      oct_data_conv::string_to_data_type (prec, block_size, output_type);
+      int skip = skip_arg.int_value (true);
 
       if (! error_state)
         {
-          int skip = skip_arg.int_value (true);
+          std::string arch = arch_arg.string_value ("fwrite: ARCH architecture type must be a string");
 
-          if (! error_state)
-            {
-              if (arch_arg.is_string ())
-                {
-                  std::string arch = arch_arg.string_value ();
+          oct_mach_info::float_format flt_fmt
+            = oct_mach_info::string_to_float_format (arch);
 
-                  oct_mach_info::float_format flt_fmt
-                    = oct_mach_info::string_to_float_format (arch);
-
-                  retval = os.write (data, block_size, output_type,
-                                     skip, flt_fmt);
-                }
-              else
-                error ("fwrite: ARCH architecture type must be a string");
-            }
-          else
-            error ("fwrite: SKIP must be an integer");
+          retval = os.write (data, block_size, output_type,
+                             skip, flt_fmt);
         }
       else
-        error ("fwrite: invalid PRECISION specified");
+        error ("fwrite: SKIP must be an integer");
     }
   else
-    error ("fwrite: PRECISION must be a string");
+    error ("fwrite: invalid PRECISION specified");
 
   return retval;
 }
@@ -1843,34 +1806,23 @@ endwhile\n\
 
   if (nargin == 2)
     {
-      if (args(0).is_string ())
+      std::string name = args(0).string_value ("popen: COMMAND must be a string");
+      std::string mode = args(1).string_value ("popen: MODE must be a string");
+
+      if (mode == "r")
         {
-          std::string name = args(0).string_value ();
+          octave_stream ips = octave_iprocstream::create (name);
 
-          if (args(1).is_string ())
-            {
-              std::string mode = args(1).string_value ();
+          retval = octave_stream_list::insert (ips);
+        }
+      else if (mode == "w")
+        {
+          octave_stream ops = octave_oprocstream::create (name);
 
-              if (mode == "r")
-                {
-                  octave_stream ips = octave_iprocstream::create (name);
-
-                  retval = octave_stream_list::insert (ips);
-                }
-              else if (mode == "w")
-                {
-                  octave_stream ops = octave_oprocstream::create (name);
-
-                  retval = octave_stream_list::insert (ops);
-                }
-              else
-                error ("popen: invalid MODE specified");
-            }
-          else
-            error ("popen: MODE must be a string");
+          retval = octave_stream_list::insert (ops);
         }
       else
-        error ("popen: COMMAND must be a string");
+        error ("popen: invalid MODE specified");
     }
   else
     print_usage ();
@@ -1926,22 +1878,14 @@ see @code{tmpfile}.\n\
   if (len < 3)
     {
       std::string dir;
+
       if (len > 0)
-        {
-          if (args(0).is_string ())
-            dir = args(0).string_value ();
-          else
-            error ("DIR must be a string");
-        }
+        dir = args(0).string_value ("tempname: DIR must be a string");
 
       std::string pfx ("oct-");
+
       if (len > 1)
-        {
-          if (args(1).is_string ())
-            pfx = args(1).string_value ();
-          else
-            error ("PREFIX must be a string");
-        }
+        pfx = args(1).string_value ("tempname: PREFIX must be a string");
 
       retval = octave_tempnam (dir, pfx);
     }
@@ -2084,54 +2028,49 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      if (args(0).is_string ())
+      std::string tmpl8 = args(0).string_value ("mkstemp: TEMPLATE argument must be a string");
+
+      OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
+      strcpy (tmp, tmpl8.c_str ());
+
+      int fd = gnulib::mkostemp (tmp, O_BINARY);
+
+      if (fd < 0)
         {
-          std::string tmpl8 = args(0).string_value ();
+          retval(2) = gnulib::strerror (errno);
+          retval(0) = fd;
+        }
+      else
+        {
+          const char *fopen_mode = "w+b";
 
-          OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
-          strcpy (tmp, tmpl8.c_str ());
+          FILE *fid = fdopen (fd, fopen_mode);
 
-          int fd = gnulib::mkostemp (tmp, O_BINARY);
-
-          if (fd < 0)
+          if (fid)
             {
-              retval(2) = gnulib::strerror (errno);
-              retval(0) = fd;
+              std::string nm = tmp;
+
+              std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
+
+              octave_stream s = octave_stdiostream::create (nm, fid, md);
+
+              if (s)
+                {
+                  retval(1) = nm;
+                  retval(0) = octave_stream_list::insert (s);
+
+                  if (nargin == 2 && args(1).is_true ())
+                    mark_for_deletion (nm);
+                }
+              else
+                error ("mkstemp: failed to create octave_stdiostream object");
             }
           else
             {
-              const char *fopen_mode = "w+b";
-
-              FILE *fid = fdopen (fd, fopen_mode);
-
-              if (fid)
-                {
-                  std::string nm = tmp;
-
-                  std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
-
-                  octave_stream s = octave_stdiostream::create (nm, fid, md);
-
-                  if (s)
-                    {
-                      retval(1) = nm;
-                      retval(0) = octave_stream_list::insert (s);
-
-                      if (nargin == 2 && args(1).is_true ())
-                        mark_for_deletion (nm);
-                    }
-                  else
-                    error ("mkstemp: failed to create octave_stdiostream object");
-                }
-              else
-                {
-                  retval(2) = gnulib::strerror (errno);
-                  retval(0) = -1;
-                }
+              retval(2) = gnulib::strerror (errno);
+              retval(0) = -1;
             }
         }
-      else
-        error ("mkstemp: TEMPLATE argument must be a string");
     }
   else
     print_usage ();

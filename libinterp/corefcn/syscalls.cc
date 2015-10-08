@@ -189,51 +189,46 @@ error message.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      if (args(0).is_string ())
+      std::string exec_file = args(0).string_value ("exec: FILE must be a string");
+
+      string_vector exec_args;
+
+      if (nargin == 2)
         {
-          std::string exec_file = args(0).string_value ();
+          string_vector tmp = args(1).all_strings ();
 
-          string_vector exec_args;
-
-          if (nargin == 2)
+          if (! error_state)
             {
-              string_vector tmp = args(1).all_strings ();
+              int len = tmp.numel ();
 
-              if (! error_state)
-                {
-                  int len = tmp.numel ();
-
-                  exec_args.resize (len + 1);
-
-                  exec_args[0] = exec_file;
-
-                  for (int i = 0; i < len; i++)
-                    exec_args[i+1] = tmp[i];
-                }
-              else
-                error ("exec: all arguments must be strings");
-            }
-          else
-            {
-              exec_args.resize (1);
+              exec_args.resize (len + 1);
 
               exec_args[0] = exec_file;
+
+              for (int i = 0; i < len; i++)
+                exec_args[i+1] = tmp[i];
             }
-
-          octave_history_write_timestamp ();
-
-          if (! command_history::ignoring_entries ())
-            command_history::clean_up_and_save ();
-
-          std::string msg;
-
-          int status = octave_syscalls::execvp (exec_file, exec_args, msg);
-
-          retval(1) = msg;
-          retval(0) = status;
+          else
+            error ("exec: all arguments must be strings");
         }
       else
-        error ("exec: FILE must be a string");
+        {
+          exec_args.resize (1);
+
+          exec_args[0] = exec_file;
+        }
+
+      octave_history_write_timestamp ();
+
+      if (! command_history::ignoring_entries ())
+        command_history::clean_up_and_save ();
+
+      std::string msg;
+
+      int status = octave_syscalls::execvp (exec_file, exec_args, msg);
+
+      retval(1) = msg;
+      retval(0) = status;
     }
   else
     print_usage ();
@@ -298,74 +293,69 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      if (args(0).is_string ())
+      std::string exec_file = args(0).string_value ("popen2: COMMAND argument must be a string");
+
+      string_vector arg_list;
+
+      if (nargin >= 2)
         {
-          std::string exec_file = args(0).string_value ();
-
-          string_vector arg_list;
-
-          if (nargin >= 2)
-            {
-              string_vector tmp = args(1).all_strings ();
-
-              if (! error_state)
-                {
-                  int len = tmp.numel ();
-
-                  arg_list.resize (len + 1);
-
-                  arg_list[0] = exec_file;
-
-                  for (int i = 0; i < len; i++)
-                    arg_list[i+1] = tmp[i];
-                }
-              else
-                error ("popen2: all arguments must be strings");
-            }
-          else
-            {
-              arg_list.resize (1);
-
-              arg_list[0] = exec_file;
-            }
+          string_vector tmp = args(1).all_strings ();
 
           if (! error_state)
             {
-              bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
+              int len = tmp.numel ();
 
-              int fildes[2];
-              std::string msg;
-              pid_t pid;
+              arg_list.resize (len + 1);
 
-              pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
-                                             fildes, msg, interactive);
-              if (pid >= 0)
-                {
-                  FILE *ifile = fdopen (fildes[1], "r");
-                  FILE *ofile = fdopen (fildes[0], "w");
+              arg_list[0] = exec_file;
 
-                  std::string nm;
-
-                  octave_stream is = octave_stdiostream::create (nm, ifile,
-                                                                 std::ios::in);
-
-                  octave_stream os = octave_stdiostream::create (nm, ofile,
-                                                                 std::ios::out);
-
-                  Cell file_ids (1, 2);
-
-                  retval(2) = pid;
-                  retval(1) = octave_stream_list::insert (is);
-                  retval(0) = octave_stream_list::insert (os);
-                }
-              else
-                error (msg.c_str ());
+              for (int i = 0; i < len; i++)
+                arg_list[i+1] = tmp[i];
             }
           else
             error ("popen2: all arguments must be strings");
         }
       else
-        error ("popen2: COMMAND argument must be a string");
+        {
+          arg_list.resize (1);
+
+          arg_list[0] = exec_file;
+        }
+
+      if (! error_state)
+        {
+          bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
+
+          int fildes[2];
+          std::string msg;
+          pid_t pid;
+
+          pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
+                                         fildes, msg, interactive);
+          if (pid >= 0)
+            {
+              FILE *ifile = fdopen (fildes[1], "r");
+              FILE *ofile = fdopen (fildes[0], "w");
+
+              std::string nm;
+
+              octave_stream is = octave_stdiostream::create (nm, ifile,
+                                                             std::ios::in);
+
+              octave_stream os = octave_stdiostream::create (nm, ofile,
+                                                             std::ios::out);
+
+              Cell file_ids (1, 2);
+
+              retval(2) = pid;
+              retval(1) = octave_stream_list::insert (is);
+              retval(0) = octave_stream_list::insert (os);
+            }
+          else
+            error (msg.c_str ());
+        }
+      else
+        error ("popen2: all arguments must be strings");
     }
   else
     print_usage ();
@@ -786,7 +776,7 @@ The function outputs are described in the documentation for @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      std::string fname = args(0).string_value ();
+      std::string fname = args(0).string_value ("lstat: NAME must be a string");
 
       file_stat fs (fname, false);
 
@@ -853,35 +843,30 @@ error message.\n\
 
   if (nargin == 2)
     {
-      if (args(0).is_string ())
+      std::string name = args(0).string_value ("mkfifo: FILE must be a string");
+
+      int octal_mode = args(1).int_value ();
+
+      if (! error_state)
         {
-          std::string name = args(0).string_value ();
-
-          int octal_mode = args(1).int_value ();
-
-          if (! error_state)
-            {
-              if (octal_mode < 0)
-                error ("mkfifo: MODE must be a positive integer value");
-              else
-                {
-                  int mode = convert (octal_mode, 8, 10);
-
-                  std::string msg;
-
-                  int status = octave_mkfifo (name, mode, msg);
-
-                  retval(0) = status;
-
-                  if (status < 0)
-                    retval(1) = msg;
-                }
-            }
+          if (octal_mode < 0)
+            error ("mkfifo: MODE must be a positive integer value");
           else
-            error ("mkfifo: MODE must be an integer");
+            {
+              int mode = convert (octal_mode, 8, 10);
+
+              std::string msg;
+
+              int status = octave_mkfifo (name, mode, msg);
+
+              retval(0) = status;
+
+              if (status < 0)
+                retval(1) = msg;
+            }
         }
       else
-        error ("mkfifo: FILE must be a string");
+        error ("mkfifo: MODE must be an integer");
     }
   else
     print_usage ();
@@ -1067,7 +1052,7 @@ For example:\n\
         }
       else
         {
-          std::string fname = args(0).string_value ();
+          std::string fname = args(0).string_value ("stat: NAME must be a string");
 
           file_stat fs (fname);
 
@@ -1347,19 +1332,14 @@ error message.\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("unlink: FILE must be a string");
 
-          std::string msg;
+      std::string msg;
 
-          int status = octave_unlink (name, msg);
+      int status = octave_unlink (name, msg);
 
-          retval(1) = msg;
-          retval(0) = status;
-        }
-      else
-        error ("unlink: FILE must be a string");
+      retval(1) = msg;
+      retval(0) = status;
     }
   else
     print_usage ();
@@ -1668,19 +1648,14 @@ If the file does not exist the empty string (\"\") is returned.\n\
 
   if (args.length () == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
-          std::string msg;
+      std::string name = args(0).string_value ("canonicalize_file_name: NAME must be a string");
+      std::string msg;
 
-          std::string result = octave_canonicalize_file_name (name, msg);
+      std::string result = octave_canonicalize_file_name (name, msg);
 
-          retval(2) = msg;
-          retval(1) = msg.empty () ? 0 : -1;
-          retval(0) = result;
-        }
-      else
-        error ("canonicalize_file_name: NAME must be a string");
+      retval(2) = msg;
+      retval(1) = msg.empty () ? 0 : -1;
+      retval(0) = result;
     }
   else
     print_usage ();

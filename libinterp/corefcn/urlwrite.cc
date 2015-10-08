@@ -350,35 +350,17 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       return retval;
     }
 
-  if (! args(0).is_string ())
-    {
-      error ("urlwrite: URL must be a string");
-      return retval;
-    }
-
-  std::string url = args(0).string_value ();
-
-  if (! args(1).is_string ())
-    {
-      error ("urlwrite: LOCALFILE must be a string");
-      return retval;
-    }
+  std::string url = args(0).string_value ("urlwrite: URL must be a string");
 
   // name to store the file if download is succesful
-  std::string filename = args(1).string_value ();
+  std::string filename = args(1).string_value ("urlwrite: LOCALFILE must be a string");
 
   std::string method;
   Array<std::string> param;
 
   if (nargin == 4)
     {
-      if (! args(2).is_string ())
-        {
-          error ("urlwrite: METHOD must be a string");
-          return retval;
-        }
-
-      method = args(2).string_value ();
+      method = args(2).string_value ("urlwrite: METHOD must be a string");
 
       if (method != "get" && method != "post")
         {
@@ -511,26 +493,14 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
       return retval;
     }
 
-  if (! args(0).is_string ())
-    {
-      error ("urlread: URL must be a string");
-      return retval;
-    }
-
-  std::string url = args(0).string_value ();
+  std::string url = args(0).string_value ("urlread: URL must be a string");
 
   std::string method;
   Array<std::string> param;
 
   if (nargin == 3)
     {
-      if (! args(1).is_string ())
-        {
-          error ("urlread: METHOD must be a string");
-          return retval;
-        }
-
-      method = args(1).string_value ();
+      method = args(1).string_value ("urlread: METHOD must be a string");
 
       if (method != "get" && method != "post")
         {
@@ -599,13 +569,13 @@ Undocumented internal function\n\
     }
   else
     {
-      host = args(0).string_value ();
+      host = args(0).string_value ("__ftp__: HOST must be a string");
 
       if (nargin > 1)
-        user = args(1).string_value ();
+        user = args(1).string_value ("__ftp__: USER must be a string");
 
       if (nargin > 2)
-        passwd = args(2).string_value ();
+        passwd = args(2).string_value ("__ftp__: PASSWD must be a string");
 
       curl_handle ch
         = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
@@ -662,7 +632,7 @@ Undocumented internal function\n\
           std::string path = "";
 
           if (nargin > 1)
-            path = args(1).string_value ();
+            path = args(1).string_value ("__ftp_cwd__: PATH must be a string");
 
           if (! error_state)
             curl.cwd (path);
@@ -872,7 +842,7 @@ Undocumented internal function\n\
 
       if (curl.is_valid ())
         {
-          std::string file = args(1).string_value ();
+          std::string file = args(1).string_value ("__ftp_delete__: FILE must be a string");
 
           if (! error_state)
             curl.del (file);
@@ -904,7 +874,7 @@ Undocumented internal function\n\
 
       if (curl.is_valid ())
         {
-          std::string dir = args(1).string_value ();
+          std::string dir = args(1).string_value ("__ftp_rmdir__: DIR must be a string");
 
           if (! error_state)
             curl.rmdir (dir);
@@ -936,7 +906,7 @@ Undocumented internal function\n\
 
       if (curl.is_valid ())
         {
-          std::string dir = args(1).string_value ();
+          std::string dir = args(1).string_value ("__ftp_mkdir__: DIR must be a string");
 
           if (! error_state)
             curl.mkdir (dir);
@@ -968,8 +938,8 @@ Undocumented internal function\n\
 
       if (curl.is_valid ())
         {
-          std::string oldname = args(1).string_value ();
-          std::string newname = args(2).string_value ();
+          std::string oldname = args(1).string_value ("__ftp_rename__: OLDNAME must be a string");
+          std::string newname = args(2).string_value ("__ftp_rename__: NEWNAME must be a string");
 
           if (! error_state)
             curl.rename (oldname, newname);
@@ -1001,7 +971,7 @@ Undocumented internal function\n\
 
       if (curl.is_valid ())
         {
-          std::string pat = args(1).string_value ();
+          std::string pat = args(1).string_value ("__ftp_mput__: PATTERN must be a string");
 
           if (! error_state)
             {
@@ -1073,7 +1043,8 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_mget__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{files})\n\
+@deftypefn {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern})\n\
+@deftypefnx {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -1089,11 +1060,11 @@ Undocumented internal function\n\
 
       if (curl.is_valid ())
         {
-          std::string file = args(1).string_value ();
+          std::string file = args(1).string_value ("__ftp_mget__: PATTERN must be a string");
           std::string target;
 
           if (nargin == 3)
-            target = args(2).string_value () + file_ops::dir_sep_str ();
+            target = args(2).string_value ("__ftp_mget__: TARGET must be a string") + file_ops::dir_sep_str ();
 
           if (! error_state)
             {

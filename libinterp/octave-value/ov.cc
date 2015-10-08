@@ -2834,24 +2834,17 @@ decode_subscripts (const char* name, const octave_value& arg,
 
       for (int k = 0; k < nel; k++)
         {
-          if (type(k).is_string ())
-            {
-              std::string item = type(k).string_value ();
-              if (item == "{}")
-                type_string[k] = '{';
-              else if (item == "()")
-                type_string[k] = '(';
-              else if (item == ".")
-                type_string[k] = '.';
-              else
-                {
-                  error ("%s: invalid indexing type '%s'", name, item.c_str ());
-                  return;
-                }
-            }
+          std::string item = type(k).string_value ("%s: type(%d) must be a string", name, k+1);
+
+          if (item == "{}")
+            type_string[k] = '{';
+          else if (item == "()")
+            type_string[k] = '(';
+          else if (item == ".")
+            type_string[k] = '.';
           else
             {
-              error ("%s: type(%d) must be a string", name, k+1);
+              error ("%s: invalid indexing type '%s'", name, item.c_str ());
               return;
             }
 

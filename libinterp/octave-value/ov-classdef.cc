@@ -528,12 +528,9 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("fromName: invalid class name, expected a string value");
 
-      if (! error_state)
-        retval(0) = to_ov (lookup_class (name));
-      else
-        error ("fromName: invalid class name, expected a string value");
+      retval(0) = to_ov (lookup_class (name));
     }
   else
     error ("fromName: invalid number of parameters");
@@ -552,26 +549,21 @@ class_fevalStatic (const octave_value_list& args, int nargout)
 
       if (! error_state)
         {
-          std::string meth_name = args(1).string_value ();
+          std::string meth_name = args(1).string_value ("fevalStatic: invalid method name, expected a string value");
 
-          if (! error_state)
+          cdef_method meth = cls.find_method (meth_name);
+
+          if (meth.ok ())
             {
-              cdef_method meth = cls.find_method (meth_name);
-
-              if (meth.ok ())
-                {
-                  if (meth.is_static ())
-                    retval = meth.execute (args.splice (0, 2), nargout,
-                                           true, "fevalStatic");
-                  else
-                    error ("fevalStatic: method `%s' is not static",
-                           meth_name.c_str ());
-                }
+              if (meth.is_static ())
+                retval = meth.execute (args.splice (0, 2), nargout,
+                                       true, "fevalStatic");
               else
-                error ("fevalStatic: method not found: %s", meth_name.c_str ());
+                error ("fevalStatic: method `%s' is not static",
+                       meth_name.c_str ());
             }
           else
-            error ("fevalStatic: invalid method name, expected a string value");
+            error ("fevalStatic: method not found: %s", meth_name.c_str ());
         }
       else
         error ("fevalStatic: invalid object, expected a meta.class object");
@@ -594,26 +586,21 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
 
       if (! error_state)
         {
-          std::string prop_name = args(1).string_value ();
+          std::string prop_name = args(1).string_value ("getConstant: invalid property name, expected a string value");
 
-          if (! error_state)
+          cdef_property prop = cls.find_property (prop_name);
+
+          if (prop.ok ())
             {
-              cdef_property prop = cls.find_property (prop_name);
-
-              if (prop.ok ())
-                {
-                  if (prop.is_constant ())
-                    retval(0) = prop.get_value (true, "getConstant");
-                  else
-                    error ("getConstant: property `%s' is not constant",
-                           prop_name.c_str ());
-                }
+              if (prop.is_constant ())
+                retval(0) = prop.get_value (true, "getConstant");
               else
-                error ("getConstant: property not found: %s",
+                error ("getConstant: property `%s' is not constant",
                        prop_name.c_str ());
             }
           else
-            error ("getConstant: invalid property name, expected a string value");
+            error ("getConstant: property not found: %s",
+                   prop_name.c_str ());
         }
       else
         error ("getConstant: invalid object, expected a meta.class object");
@@ -2413,49 +2400,44 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 
       if (idx.front ().length () == 1)
         {
-          std::string nm = idx.front ()(0).string_value ();
+          std::string nm = idx.front ()(0).string_value ("invalid meta.class indexing, expected a method or property name");
 
-          if (! error_state)
+          cdef_method meth = find_method (nm);
+
+          if (meth.ok ())
             {
-              cdef_method meth = find_method (nm);
-
-              if (meth.ok ())
+              if (meth.is_static ())
                 {
-                  if (meth.is_static ())
+                  octave_value_list args;
+
+                  if (type.length () > 1 && idx.size () > 1
+                      && type[1] == '(')
                     {
-                      octave_value_list args;
-
-                      if (type.length () > 1 && idx.size () > 1
-                          && type[1] == '(')
-                        {
-                          args = *(++(idx.begin ()));
-                          skip++;
-                        }
-
-                      retval = meth.execute (args, (type.length () > skip
-                                                    ? 1 : nargout), true,
-                                             "meta.class");
+                      args = *(++(idx.begin ()));
+                      skip++;
                     }
-                  else
-                    error ("method `%s' is not static", nm.c_str ());
+
+                  retval = meth.execute (args, (type.length () > skip
+                                                ? 1 : nargout), true,
+                                         "meta.class");
                 }
               else
-                {
-                  cdef_property prop = find_property (nm);
-
-                  if (prop.ok ())
-                    {
-                      if (prop.is_constant ())
-                        retval(0) = prop.get_value (true, "meta.class");
-                      else
-                        error ("property `%s' is not constant", nm.c_str ());
-                    }
-                  else
-                    error ("no such method or property `%s'", nm.c_str ());
-                }
+                error ("method `%s' is not static", nm.c_str ());
             }
           else
-            error ("invalid meta.class indexing, expected a method or property name");
+            {
+              cdef_property prop = find_property (nm);
+
+              if (prop.ok ())
+                {
+                  if (prop.is_constant ())
+                    retval(0) = prop.get_value (true, "meta.class");
+                  else
+                    error ("property `%s' is not constant", nm.c_str ());
+                }
+              else
+                error ("no such method or property `%s'", nm.c_str ());
+            }
         }
       else
         error ("invalid meta.class indexing");
@@ -3305,12 +3287,9 @@ package_fromName (const octave_value_list& args, int /* nargout */)
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("fromName: invalid package name, expected a string value");
 
-      if (! error_state)
-        retval(0) = to_ov (lookup_package (name));
-      else
-        error ("fromName: invalid package name, expected a string value");
+      retval(0) = to_ov (lookup_package (name));
     }
   else
     error ("fromName: invalid number of parameters");
@@ -3465,54 +3444,49 @@ cdef_package::cdef_package_rep::meta_subsref
     case '.':
       if (idx.front ().length () == 1)
         {
-          std::string nm = idx.front ()(0).string_value ();
+          std::string nm = idx.front ()(0).string_value ("invalid meta.package indexing, expected a symbol name");
 
-          if (! error_state)
-            {
 #if DEBUG_TRACE
-              std::cerr << "meta.package query: " << nm << std::endl;
+          std::cerr << "meta.package query: " << nm << std::endl;
 #endif
 
-              octave_value o = find (nm);
+          octave_value o = find (nm);
 
-              if (o.is_defined ())
+          if (o.is_defined ())
+            {
+              if (o.is_function ())
                 {
-                  if (o.is_function ())
+                  octave_function* fcn = o.function_value ();
+
+                  // NOTE: the case where the package query is the last
+                  // part of this subsref index is handled in the parse
+                  // tree, because there is some logic to handle magic
+                  // "end" that makes it impossible to execute the
+                  // function call at this stage.
+
+                  if (type.size () > 1
+                      && ! fcn->is_postfix_index_handled (type[1]))
                     {
-                      octave_function* fcn = o.function_value ();
+                      octave_value_list tmp_args;
 
-                      // NOTE: the case where the package query is the last
-                      // part of this subsref index is handled in the parse
-                      // tree, because there is some logic to handle magic
-                      // "end" that makes it impossible to execute the
-                      // function call at this stage.
-
-                      if (type.size () > 1
-                          && ! fcn->is_postfix_index_handled (type[1]))
-                        {
-                          octave_value_list tmp_args;
-
-                          retval = o.do_multi_index_op (nargout,
-                                                        tmp_args);
-                        }
-                      else
-                        retval(0) = o;
-
-                      if (type.size () > 1 && idx.size () > 1)
-                        retval = retval(0).next_subsref (nargout, type,
-                                                         idx, 1);
+                      retval = o.do_multi_index_op (nargout,
+                                                    tmp_args);
                     }
-                  else if (type.size () > 1 && idx.size () > 1)
-                    retval = o.next_subsref (nargout, type, idx, 1);
                   else
                     retval(0) = o;
+
+                  if (type.size () > 1 && idx.size () > 1)
+                    retval = retval(0).next_subsref (nargout, type,
+                                                     idx, 1);
                 }
-              else if (! error_state)
-                error ("member `%s' in package `%s' does not exist",
-                       nm.c_str (), get_name ().c_str ());
+              else if (type.size () > 1 && idx.size () > 1)
+                retval = o.next_subsref (nargout, type, idx, 1);
+              else
+                retval(0) = o;
             }
-          else
-            error ("invalid meta.package indexing, expected a symbol name");
+          else if (! error_state)
+            error ("member `%s' in package `%s' does not exist",
+                   nm.c_str (), get_name ().c_str ());
         }
       else
         error ("invalid meta.package indexing");
@@ -3855,12 +3829,9 @@ DEFUN (__meta_get_package__, args, , "")
 
   if (args.length () == 1)
     {
-      std::string cname = args(0).string_value ();
+      std::string cname = args(0).string_value ("invalid package name, expected a string value");
 
-      if (! error_state)
-        retval = to_ov (lookup_package (cname));
-      else
-        error ("invalid package name, expected a string value");
+      retval = to_ov (lookup_package (cname));
     }
   else
     print_usage ();
@@ -3893,12 +3864,9 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string cls = args(0).string_value ();
+      std::string cls = args(0).string_value ("invalid class name, expected a string value");
 
-      if (! error_state)
-        retval = to_ov (lookup_class (cls));
-      else
-        error ("invalid class name, expected a string value");
+      retval = to_ov (lookup_class (cls));
     }
   else
     print_usage ();

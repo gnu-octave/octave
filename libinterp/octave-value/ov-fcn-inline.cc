@@ -681,162 +681,150 @@ functions from strings is through the use of anonymous functions\n\
 
   if (nargin > 0)
     {
-      if (args(0).is_string ())
+      std::string fun = args(0).string_value ("inline: STR argument must be a string");
+
+      string_vector fargs;
+
+      if (nargin == 1)
         {
-          std::string fun = args(0).string_value ();
-          string_vector fargs;
+          bool is_arg = false;
+          bool in_string = false;
+          std::string tmp_arg;
+          size_t i = 0;
+          size_t fun_length = fun.length ();
 
-          if (nargin == 1)
+          while (i < fun_length)
             {
-              bool is_arg = false;
-              bool in_string = false;
-              std::string tmp_arg;
-              size_t i = 0;
-              size_t fun_length = fun.length ();
+              bool terminate_arg = false;
+              char c = fun[i++];
 
-              while (i < fun_length)
+              if (in_string)
                 {
-                  bool terminate_arg = false;
-                  char c = fun[i++];
+                  if (c == '\'' || c == '\"')
+                    in_string = false;
+                }
+              else if (c == '\'' || c == '\"')
+                {
+                  in_string = true;
+                  if (is_arg)
+                    terminate_arg = true;
+                }
+              else if (! isalpha (c) && c != '_')
+                if (! is_arg)
+                  continue;
+                else if (isdigit (c))
+                  tmp_arg.append (1, c);
+                else
+                  {
+                    // Before we do anything remove trailing whitespaces.
+                    while (i < fun_length && isspace (c))
+                      c = fun[i++];
 
-                  if (in_string)
-                    {
-                      if (c == '\'' || c == '\"')
-                        in_string = false;
-                    }
-                  else if (c == '\'' || c == '\"')
-                    {
-                      in_string = true;
-                      if (is_arg)
-                        terminate_arg = true;
-                    }
-                  else if (! isalpha (c) && c != '_')
-                    if (! is_arg)
-                      continue;
-                    else if (isdigit (c))
-                      tmp_arg.append (1, c);
+                    // Do we have a variable or a function?
+                    if (c != '(')
+                      terminate_arg = true;
                     else
                       {
-                        // Before we do anything remove trailing whitespaces.
-                        while (i < fun_length && isspace (c))
-                          c = fun[i++];
-
-                        // Do we have a variable or a function?
-                        if (c != '(')
-                          terminate_arg = true;
-                        else
-                          {
-                            tmp_arg = std::string ();
-                            is_arg = false;
-                          }
+                        tmp_arg = std::string ();
+                        is_arg = false;
                       }
-                  else if (! is_arg)
+                  }
+              else if (! is_arg)
+                {
+                  if (c == 'e' || c == 'E')
                     {
-                      if (c == 'e' || c == 'E')
-                        {
-                          // possible number in exponent form, not arg
-                          if (isdigit (fun[i])
-                              || fun[i] == '-' || fun[i] == '+')
-                            continue;
-                        }
-                      is_arg = true;
-                      tmp_arg.append (1, c);
+                      // possible number in exponent form, not arg
+                      if (isdigit (fun[i])
+                          || fun[i] == '-' || fun[i] == '+')
+                        continue;
                     }
-                  else
-                    {
-                      tmp_arg.append (1, c);
-                    }
-
-                  if (terminate_arg || (i == fun_length && is_arg))
-                    {
-                      bool have_arg = false;
-
-                      for (int j = 0; j < fargs.numel (); j++)
-                        if (tmp_arg == fargs (j))
-                          {
-                            have_arg = true;
-                            break;
-                          }
-
-                      if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
-                          && tmp_arg != "NaN" && tmp_arg != "nan"
-                          && tmp_arg != "Inf" && tmp_arg != "inf"
-                          && tmp_arg != "NA" && tmp_arg != "pi"
-                          && tmp_arg != "e" && tmp_arg != "eps")
-                        fargs.append (tmp_arg);
-
-                      tmp_arg = std::string ();
-                      is_arg = false;
-                    }
+                  is_arg = true;
+                  tmp_arg.append (1, c);
+                }
+              else
+                {
+                  tmp_arg.append (1, c);
                 }
 
-              // Sort the arguments into ascii order.
-              fargs.sort ();
+              if (terminate_arg || (i == fun_length && is_arg))
+                {
+                  bool have_arg = false;
 
-              if (fargs.numel () == 0)
-                fargs.append (std::string ("x"));
+                  for (int j = 0; j < fargs.numel (); j++)
+                    if (tmp_arg == fargs (j))
+                      {
+                        have_arg = true;
+                        break;
+                      }
 
+                  if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
+                      && tmp_arg != "NaN" && tmp_arg != "nan"
+                      && tmp_arg != "Inf" && tmp_arg != "inf"
+                      && tmp_arg != "NA" && tmp_arg != "pi"
+                      && tmp_arg != "e" && tmp_arg != "eps")
+                    fargs.append (tmp_arg);
+
+                  tmp_arg = std::string ();
+                  is_arg = false;
+                }
             }
-          else if (nargin == 2 && args(1).is_numeric_type ())
+
+          // Sort the arguments into ascii order.
+          fargs.sort ();
+
+          if (fargs.numel () == 0)
+            fargs.append (std::string ("x"));
+
+        }
+      else if (nargin == 2 && args(1).is_numeric_type ())
+        {
+          if (! args(1).is_scalar_type ())
             {
-              if (! args(1).is_scalar_type ())
+              error ("inline: N must be an integer");
+              return retval;
+            }
+
+          int n = args(1).int_value ();
+
+          if (! error_state)
+            {
+              if (n >= 0)
                 {
-                  error ("inline: N must be an integer");
-                  return retval;
-                }
+                  fargs.resize (n+1);
 
-              int n = args(1).int_value ();
+                  fargs(0) = "x";
 
-              if (! error_state)
-                {
-                  if (n >= 0)
+                  for (int i = 1; i < n+1; i++)
                     {
-                      fargs.resize (n+1);
-
-                      fargs(0) = "x";
-
-                      for (int i = 1; i < n+1; i++)
-                        {
-                          std::ostringstream buf;
-                          buf << "P" << i;
-                          fargs(i) = buf.str ();
-                        }
-                    }
-                  else
-                    {
-                      error ("inline: N must be a positive integer or zero");
-                      return retval;
+                      std::ostringstream buf;
+                      buf << "P" << i;
+                      fargs(i) = buf.str ();
                     }
                 }
               else
                 {
-                  error ("inline: N must be an integer");
+                  error ("inline: N must be a positive integer or zero");
                   return retval;
                 }
             }
           else
             {
-              fargs.resize (nargin - 1);
-
-              for (int i = 1; i < nargin; i++)
-                {
-                  if (args(i).is_string ())
-                    {
-                      std::string s = args(i).string_value ();
-                      fargs(i-1) = s;
-                    }
-                  else
-                    {
-                      error ("inline: expecting string arguments");
-                      return retval;
-                    }
-                }
+              error ("inline: N must be an integer");
+              return retval;
             }
-
-          retval = octave_value (new octave_fcn_inline (fun, fargs));
         }
       else
-        error ("inline: STR argument must be a string");
+        {
+          fargs.resize (nargin - 1);
+
+          for (int i = 1; i < nargin; i++)
+            {
+              std::string s = args(i).string_value ("inline: expecting string arguments");
+              fargs(i-1) = s;
+            }
+        }
+
+      retval = octave_value (new octave_fcn_inline (fun, fargs));
     }
   else
     print_usage ();

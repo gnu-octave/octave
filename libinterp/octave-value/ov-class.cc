@@ -1856,52 +1856,47 @@ is derived.\n\
       // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
-      if (args(1).is_string ())
+      std::string id = args(1).string_value ("class: ID (class name) must be a string");
+
+      if (fcn)
         {
-          std::string id = args(1).string_value ();
-
-          if (fcn)
+          if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
             {
-              if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
+              octave_map m = args(0).map_value ();
+
+              if (! error_state)
                 {
-                  octave_map m = args(0).map_value ();
-
-                  if (! error_state)
-                    {
-                      if (nargin == 2)
-                        retval
-                          = octave_value (new octave_class
-                                          (m, id, std::list<std::string> ()));
-                      else
-                        {
-                          octave_value_list parents = args.slice (2, nargin-2);
-
-                          retval
-                            = octave_value (new octave_class (m, id, parents));
-                        }
-
-                      octave_class::exemplar_const_iterator it
-                        = octave_class::exemplar_map.find (id);
-
-                      if (it == octave_class::exemplar_map.end ())
-                        octave_class::exemplar_map[id]
-                          = octave_class::exemplar_info (retval);
-                      else if (! it->second.compare (retval))
-                        error ("class: object of class '%s' does not match previously constructed objects",
-                               id.c_str ());
-                    }
+                  if (nargin == 2)
+                    retval
+                      = octave_value (new octave_class
+                                      (m, id, std::list<std::string> ()));
                   else
-                    error ("class: expecting structure S as first argument");
+                    {
+                      octave_value_list parents = args.slice (2, nargin-2);
+
+                      retval
+                        = octave_value (new octave_class (m, id, parents));
+                    }
+
+                  octave_class::exemplar_const_iterator it
+                    = octave_class::exemplar_map.find (id);
+
+                  if (it == octave_class::exemplar_map.end ())
+                    octave_class::exemplar_map[id]
+                      = octave_class::exemplar_info (retval);
+                  else if (! it->second.compare (retval))
+                    error ("class: object of class '%s' does not match previously constructed objects",
+                           id.c_str ());
                 }
               else
-                error ("class: '%s' is invalid as a class name in this context",
-                       id.c_str ());
+                error ("class: expecting structure S as first argument");
             }
           else
-            error ("class: invalid call from outside class constructor or method");
+            error ("class: '%s' is invalid as a class name in this context",
+                   id.c_str ());
         }
       else
-        error ("class: ID (class name) must be a string");
+        error ("class: invalid call from outside class constructor or method");
     }
 
   return retval;
@@ -2187,12 +2182,7 @@ This function may only be called from a class constructor.\n\
 
   for (int i = 0; i < args.length (); i++)
     {
-      std::string inf_class = args(i).string_value ();
-      if (error_state)
-        {
-          error ("superiorto: expecting argument to be class name");
-          break;
-        }
+      std::string inf_class = args(i).string_value ("superiorto: expecting argument to be class name");
 
       // User defined classes always have higher precedence
       // than built-in classes
@@ -2233,12 +2223,7 @@ This function may only be called from a class constructor.\n\
 
   for (int i = 0; i < args.length (); i++)
     {
-      std::string sup_class = args(i).string_value ();
-      if (error_state)
-        {
-          error ("inferiorto: expecting argument to be class name");
-          break;
-        }
+      std::string sup_class = args(i).string_value ("inferiorto: expecting argument to be class name");
 
       if (is_built_in_class (sup_class))
         {

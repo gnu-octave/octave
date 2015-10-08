@@ -1859,23 +1859,19 @@ functions are ignored in the lookup.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      if (args(0).is_string ())
-        {
-          std::string nm = args(0).string_value ();
-          if (nm[0] == '@')
-            {
-              int parse_status;
-              octave_value anon_fcn_handle =
-                eval_string (nm, true, parse_status);
+      std::string nm = args(0).string_value ("str2func: FCN_NAME must be a string");
 
-              if (parse_status == 0)
-                retval = anon_fcn_handle;
-            }
-          else
-            retval = make_fcn_handle (nm, nargin != 2);
+      if (nm[0] == '@')
+        {
+          int parse_status;
+          octave_value anon_fcn_handle =
+            eval_string (nm, true, parse_status);
+
+          if (parse_status == 0)
+            retval = anon_fcn_handle;
         }
       else
-        error ("str2func: FCN_NAME must be a string");
+        retval = make_fcn_handle (nm, nargin != 2);
     }
   else
     print_usage ();

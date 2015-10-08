@@ -143,196 +143,183 @@ used per default.\n\
     }
 
 #if defined (HAVE_FFTW)
-  if (args(0).is_string ())
+  std::string arg0 = args(0).string_value ("fftw: first argument must be a string");
+
+  if (arg0 == "planner")
     {
-      std::string arg0 = args(0).string_value ();
-
-      if (arg0 == "planner")
+      if (nargin == 2)  //planner setter
         {
-          if (nargin == 2)  //planner setter
+          // Use STL function to convert to lower case
+          std::transform (arg0.begin (), arg0.end (), arg0.begin (),
+                          tolower);
+
+          std::string arg1 = args(1).string_value ("fftw: planner expects a string value as METHOD");
+
+          std::transform (arg1.begin (), arg1.end (),
+                          arg1.begin (), tolower);
+          octave_fftw_planner::FftwMethod meth
+            = octave_fftw_planner::UNKNOWN;
+          octave_float_fftw_planner::FftwMethod methf
+            = octave_float_fftw_planner::UNKNOWN;
+
+          if (arg1 == "estimate")
             {
-              if (args(1).is_string ())
-                {
-                  // Use STL function to convert to lower case
-                  std::transform (arg0.begin (), arg0.end (), arg0.begin (),
-                                  tolower);
-                  std::string arg1 = args(1).string_value ();
-
-                  std::transform (arg1.begin (), arg1.end (),
-                                  arg1.begin (), tolower);
-                  octave_fftw_planner::FftwMethod meth
-                    = octave_fftw_planner::UNKNOWN;
-                  octave_float_fftw_planner::FftwMethod methf
-                    = octave_float_fftw_planner::UNKNOWN;
-
-                  if (arg1 == "estimate")
-                    {
-                      meth = octave_fftw_planner::ESTIMATE;
-                      methf = octave_float_fftw_planner::ESTIMATE;
-                    }
-                  else if (arg1 == "measure")
-                    {
-                      meth = octave_fftw_planner::MEASURE;
-                      methf = octave_float_fftw_planner::MEASURE;
-                    }
-                  else if (arg1 == "patient")
-                    {
-                      meth = octave_fftw_planner::PATIENT;
-                      methf = octave_float_fftw_planner::PATIENT;
-                    }
-                  else if (arg1 == "exhaustive")
-                    {
-                      meth = octave_fftw_planner::EXHAUSTIVE;
-                      methf = octave_float_fftw_planner::EXHAUSTIVE;
-                    }
-                  else if (arg1 == "hybrid")
-                    {
-                      meth = octave_fftw_planner::HYBRID;
-                      methf = octave_float_fftw_planner::HYBRID;
-                    }
-                  else
-                    error ("fftw: unrecognized planner METHOD");
-
-                  meth = octave_fftw_planner::method (meth);
-                  octave_float_fftw_planner::method (methf);
-
-                  if (meth == octave_fftw_planner::MEASURE)
-                    retval = octave_value ("measure");
-                  else if (meth == octave_fftw_planner::PATIENT)
-                    retval = octave_value ("patient");
-                  else if (meth == octave_fftw_planner::EXHAUSTIVE)
-                    retval = octave_value ("exhaustive");
-                  else if (meth == octave_fftw_planner::HYBRID)
-                    retval = octave_value ("hybrid");
-                  else
-                    retval = octave_value ("estimate");
-                }
-              else
-                error ("fftw: planner expects a string value as METHOD");
+              meth = octave_fftw_planner::ESTIMATE;
+              methf = octave_float_fftw_planner::ESTIMATE;
             }
-          else //planner getter
+          else if (arg1 == "measure")
             {
-              octave_fftw_planner::FftwMethod meth =
-                octave_fftw_planner::method ();
-
-              if (meth == octave_fftw_planner::MEASURE)
-                retval = octave_value ("measure");
-              else if (meth == octave_fftw_planner::PATIENT)
-                retval = octave_value ("patient");
-              else if (meth == octave_fftw_planner::EXHAUSTIVE)
-                retval = octave_value ("exhaustive");
-              else if (meth == octave_fftw_planner::HYBRID)
-                retval = octave_value ("hybrid");
-              else
-                retval = octave_value ("estimate");
+              meth = octave_fftw_planner::MEASURE;
+              methf = octave_float_fftw_planner::MEASURE;
             }
+          else if (arg1 == "patient")
+            {
+              meth = octave_fftw_planner::PATIENT;
+              methf = octave_float_fftw_planner::PATIENT;
+            }
+          else if (arg1 == "exhaustive")
+            {
+              meth = octave_fftw_planner::EXHAUSTIVE;
+              methf = octave_float_fftw_planner::EXHAUSTIVE;
+            }
+          else if (arg1 == "hybrid")
+            {
+              meth = octave_fftw_planner::HYBRID;
+              methf = octave_float_fftw_planner::HYBRID;
+            }
+          else
+            error ("fftw: unrecognized planner METHOD");
+
+          meth = octave_fftw_planner::method (meth);
+          octave_float_fftw_planner::method (methf);
+
+          if (meth == octave_fftw_planner::MEASURE)
+            retval = octave_value ("measure");
+          else if (meth == octave_fftw_planner::PATIENT)
+            retval = octave_value ("patient");
+          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+            retval = octave_value ("exhaustive");
+          else if (meth == octave_fftw_planner::HYBRID)
+            retval = octave_value ("hybrid");
+          else
+            retval = octave_value ("estimate");
         }
-      else if (arg0 == "dwisdom")
+      else //planner getter
         {
-          if (nargin == 2)  //dwisdom setter
-            {
-              if (args(1).is_string ())
-                {
-                  // Use STL function to convert to lower case
-                  std::transform (arg0.begin (), arg0.end (), arg0.begin (),
-                                  tolower);
-                  std::string arg1 = args(1).string_value ();
+          octave_fftw_planner::FftwMethod meth =
+            octave_fftw_planner::method ();
 
-                  char *str = fftw_export_wisdom_to_string ();
-
-                  if (arg1.length () < 1)
-                    fftw_forget_wisdom ();
-                  else if (! fftw_import_wisdom_from_string (arg1.c_str ()))
-                    error ("fftw: could not import supplied WISDOM");
-
-                  retval = octave_value (std::string (str));
-
-                  // FIXME: need to free string even if there is an
-                  // exception.
-                  free (str);
-                }
-            }
-          else //dwisdom getter
-            {
-              char *str = fftw_export_wisdom_to_string ();
-              retval = octave_value (std::string (str));
-
-              // FIXME: need to free string even if there is an
-              // exception.
-              free (str);
-            }
+          if (meth == octave_fftw_planner::MEASURE)
+            retval = octave_value ("measure");
+          else if (meth == octave_fftw_planner::PATIENT)
+            retval = octave_value ("patient");
+          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+            retval = octave_value ("exhaustive");
+          else if (meth == octave_fftw_planner::HYBRID)
+            retval = octave_value ("hybrid");
+          else
+            retval = octave_value ("estimate");
         }
-      else if (arg0 == "swisdom")
+    }
+  else if (arg0 == "dwisdom")
+    {
+      if (nargin == 2)  //dwisdom setter
         {
-          //swisdom uses fftwf_ functions (float), dwisdom fftw_ (real)
-          if (nargin == 2)  //swisdom setter
-            {
-              if (args(1).is_string ())
-                {
-                  // Use STL function to convert to lower case
-                  std::transform (arg0.begin (), arg0.end (), arg0.begin (),
-                                  tolower);
-                  std::string arg1 = args(1).string_value ();
+          // Use STL function to convert to lower case
+          std::transform (arg0.begin (), arg0.end (), arg0.begin (),
+                          tolower);
 
-                  char *str = fftwf_export_wisdom_to_string ();
+          std::string arg1 = args(1).string_value ("fftw: WISDOM must be a string");
 
-                  if (arg1.length () < 1)
-                    fftwf_forget_wisdom ();
-                  else if (! fftwf_import_wisdom_from_string (arg1.c_str ()))
-                    error ("fftw: could not import supplied WISDOM");
+          char *str = fftw_export_wisdom_to_string ();
 
-                  retval = octave_value (std::string (str));
+          if (arg1.length () < 1)
+            fftw_forget_wisdom ();
+          else if (! fftw_import_wisdom_from_string (arg1.c_str ()))
+            error ("fftw: could not import supplied WISDOM");
 
-                  // FIXME: need to free string even if there is an
-                  // exception.
-                  free (str);
-                }
-            }
-          else //swisdom getter
-            {
-              char *str = fftwf_export_wisdom_to_string ();
-              retval = octave_value (std::string (str));
+          retval = octave_value (std::string (str));
 
-              // FIXME: need to free string even if there is an
-              // exception.
-              free (str);
-            }
+          // FIXME: need to free string even if there is an
+          // exception.
+          free (str);
         }
-      else if (arg0 == "threads")
+      else //dwisdom getter
         {
-          if (nargin == 2)  //threads setter
+          char *str = fftw_export_wisdom_to_string ();
+          retval = octave_value (std::string (str));
+
+          // FIXME: need to free string even if there is an
+          // exception.
+          free (str);
+        }
+    }
+  else if (arg0 == "swisdom")
+    {
+      //swisdom uses fftwf_ functions (float), dwisdom fftw_ (real)
+      if (nargin == 2)  //swisdom setter
+        {
+          // Use STL function to convert to lower case
+          std::transform (arg0.begin (), arg0.end (), arg0.begin (),
+                          tolower);
+
+          std::string arg1 = args(1).string_value ("fftw: WISDOM must be a string");
+
+          char *str = fftwf_export_wisdom_to_string ();
+
+          if (arg1.length () < 1)
+            fftwf_forget_wisdom ();
+          else if (! fftwf_import_wisdom_from_string (arg1.c_str ()))
+            error ("fftw: could not import supplied WISDOM");
+
+          retval = octave_value (std::string (str));
+
+          // FIXME: need to free string even if there is an
+          // exception.
+          free (str);
+        }
+      else //swisdom getter
+        {
+          char *str = fftwf_export_wisdom_to_string ();
+          retval = octave_value (std::string (str));
+
+          // FIXME: need to free string even if there is an
+          // exception.
+          free (str);
+        }
+    }
+  else if (arg0 == "threads")
+    {
+      if (nargin == 2)  //threads setter
+        {
+          if (args(1).is_real_scalar ())
             {
-              if (args(1).is_real_scalar ())
+              int nthreads = args(1).int_value();
+              if (nthreads >= 1)
                 {
-                  int nthreads = args(1).int_value();
-                  if (nthreads >= 1)
-                    {
 #if defined (HAVE_FFTW3_THREADS)
-                      octave_fftw_planner::threads (nthreads);
+                  octave_fftw_planner::threads (nthreads);
 #else
-                      gripe_disabled_feature ("fftw", "multithreaded FFTW");
+                  gripe_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
 #if defined (HAVE_FFTW3F_THREADS)
-                      octave_float_fftw_planner::threads (nthreads);
+                  octave_float_fftw_planner::threads (nthreads);
 #else
-                      gripe_disabled_feature ("fftw", "multithreaded FFTW");
+                  gripe_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
-                    }
-                  else
-                    error ("fftw: number of threads must be >=1");
                 }
               else
-                error ("fftw: setting threads needs one integer argument");
+                error ("fftw: number of threads must be >=1");
             }
-          else //threads getter
-#if defined (HAVE_FFTW3_THREADS)
-            retval = octave_value (octave_fftw_planner::threads());
-#else
-            retval = 1;
-#endif
+          else
+            error ("fftw: setting threads needs one integer argument");
         }
-      else
-        error ("fftw: unrecognized argument");
+      else //threads getter
+#if defined (HAVE_FFTW3_THREADS)
+        retval = octave_value (octave_fftw_planner::threads());
+#else
+      retval = 1;
+#endif
     }
   else
     error ("fftw: unrecognized argument");

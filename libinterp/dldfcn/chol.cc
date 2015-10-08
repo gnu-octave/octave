@@ -162,21 +162,16 @@ sparse matrices.\n\
   int n = 1;
   while (n < nargin)
     {
-      std::string tmp = args(n++).string_value ();
+      std::string tmp = args(n++).string_value ("chol: expecting trailing string arguments");
 
-      if (! error_state)
-        {
-          if (tmp.compare ("vector") == 0)
-            vecout = true;
-          else if (tmp.compare ("lower") == 0)
-            LLt = true;
-          else if (tmp.compare ("upper") == 0)
-            LLt = false;
-          else
-            error ("chol: unexpected second or third input");
-        }
+      if (tmp.compare ("vector") == 0)
+        vecout = true;
+      else if (tmp.compare ("lower") == 0)
+        LLt = true;
+      else if (tmp.compare ("upper") == 0)
+        LLt = false;
       else
-        error ("chol: expecting trailing string arguments");
+        error ("chol: unexpected second or third input");
     }
 
   octave_value arg = args(0);
@@ -350,7 +345,8 @@ sparse matrices.\n\
 %!error chol ()
 %!error <matrix must be positive definite> chol ([1, 2; 3, 4])
 %!error <requires square matrix> chol ([1, 2; 3, 4; 5, 6])
-%!error <unexpected second or third input> chol (1, 2)
+%!error <expecting trailing string arguments> chol (1, 2)
+%!error <unexpected second or third input> chol (1, "foobar")
 */
 
 DEFUN_DLD (cholinv, args, ,

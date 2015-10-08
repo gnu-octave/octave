@@ -84,9 +84,6 @@ is stored in the audio file.\n\
 
   std::string filename = args(0).string_value ();
 
-  if (error_state)
-    return retval;
-
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
@@ -111,9 +108,6 @@ is stored in the audio file.\n\
   if ((nargin == 2 && ! args(1).is_string ()) || nargin == 3)
     {
       RowVector range = args(1).row_vector_value ();
-
-      if (error_state)
-        return retval;
 
       if (range.numel () != 2)
         {
@@ -158,9 +152,6 @@ is stored in the audio file.\n\
         type = args(2).string_value ();
       else
         type = args(1).string_value ();
-
-      if (error_state)
-        return retval;
 
       if (type == "native")
         {
@@ -301,13 +292,7 @@ Comment.\n\
 
   std::string filename = args(0).string_value ();
 
-  if (error_state)
-    return retval;
-
   Matrix audio = args(1).matrix_value ();
-
-  if (error_state)
-    return retval;
 
   double bias = 0.0;
   double scale = 1.0;
@@ -325,9 +310,6 @@ Comment.\n\
     }
 
   int samplerate = args(2).int_value ();
-
-  if (error_state)
-    return retval;
 
   std::string ext;
   size_t dotpos = filename.find_last_of (".");
@@ -497,9 +479,6 @@ Return information about an audio file specified by @var{filename}.\n\
     }
 
   std::string filename = args(0).string_value ();
-
-  if (error_state)
-    return retval;
 
   SF_INFO info;
   info.format = 0;

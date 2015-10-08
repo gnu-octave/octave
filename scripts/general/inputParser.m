@@ -303,7 +303,6 @@ classdef inputParser < handle
                 "after ParamValue or Switch"]);
       endif
       this.validate_name ("Optional", name);
-      this.validate_default ("Optional", name, def, val);
       this.Optional{end+1} = struct ("name", name, "def", def, "val", val);
     endfunction
 
@@ -312,7 +311,6 @@ classdef inputParser < handle
         print_usage ();
       endif
       this.validate_name ("ParamValue", name);
-      this.validate_default ("ParamValue", name, def, val);
       this.ParamValue.(name).def = def;
       this.ParamValue.(name).val = val;
     endfunction
@@ -433,13 +431,6 @@ classdef inputParser < handle
                type, name);
       endif
       this.Parameters{end+1} = name;
-    endfunction
-
-    function validate_default (this, type, name, def, val)
-      if (! feval (val, def))
-        error ("inputParser.add%s: failed validation for '%s' default value",
-               type, name);
-      endif
     endfunction
 
     function validate_arg (this, name, val, in)
@@ -581,6 +572,19 @@ endclassdef
 %! r = p2.Results;
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
+
+## We must not perform validation of default values (bug #45837)
+%!test
+%! p = inputParser;
+%! p.addParamValue ("Dir", [], @ischar);
+%! p.parse ();
+%! assert (p.Results.Dir, [])
+
+%!test
+%! p = inputParser;
+%! p.addParamValue ("positive", -1, @(x) x > 5);
+%! p.parse ();
+%! assert (p.Results.positive, -1)
 
 ## FIXME: This somehow works in Matlab
 #%!test

@@ -252,6 +252,38 @@ octave_char_matrix_str::string_value (bool) const
   return retval;
 }
 
+std::string
+octave_char_matrix_str::string_value (const char *fmt, va_list args) const
+{
+  std::string retval;
+
+  if (! fmt)
+    return string_value ();
+
+  bool conversion_error = false;
+
+  if (matrix.ndims () == 2)
+    {
+      charMatrix chm (matrix);
+
+      try
+        {
+          retval = chm.row_as_string (0);  // FIXME?
+        }
+      catch (const octave_execution_exception&)
+        {
+          conversion_error = true;
+        }
+    }
+  else
+    conversion_error = true;
+
+  if (conversion_error)
+    verror (fmt, args);
+
+  return retval;
+}
+
 Array<std::string>
 octave_char_matrix_str::cellstr_value (void) const
 {

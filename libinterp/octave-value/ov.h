@@ -897,6 +897,14 @@ public:
   std::string string_value (bool force = false) const
   { return rep->string_value (force); }
 
+  std::string string_value (const char *fmt, ...) const
+  {
+    va_list args;
+    va_start (args,fmt);
+    return rep->string_value (fmt, args);
+    va_end (args);
+  }
+
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
 

@@ -564,6 +564,8 @@ public:
 
   virtual std::string string_value (bool force = false) const;
 
+  virtual std::string string_value (const char *fmt, va_list args) const;
+
   virtual Array<std::string> cellstr_value (void) const;
 
   virtual Range range_value (void) const;

@@ -129,6 +129,8 @@ public:
 
   std::string string_value (bool force = false) const;
 
+  std::string string_value (const char *fmt, va_list args) const;
+
   Array<std::string> cellstr_value (void) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const

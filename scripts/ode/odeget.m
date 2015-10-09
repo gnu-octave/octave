@@ -25,26 +25,21 @@
 ## @var{ode_opt}.
 ##
 ## If called with two input arguments and the first input argument @var{ode_opt}
-## is a structure and the second input argument @var{field} is a string then
-## return the option value @var{val} that is specified by the option name
-## @var{field} in the ODE option structure @var{ode_opt}.
+## is an ODE option structure and the second input argument @var{field} is a
+## string specifying an option name then return the option value @var{val}
+## corresponding to to @var{field} from @var{ode_opt}.
 ##
-## If called called with an optional third input argument then return the
-## default value @var{default} if @var{field} is not set in the structure
-## @var{ode_opt}.
+## If called called with an optional third input argument, and @var{field} is
+## not set in the structure @var{ode_opt}, then return the default value
+## @var{default} instead. 
 ## @seealso{odeset}
 ## @end deftypefn
 
-## FIXME: 4th input argument 'opt' is undocumented.
-
-## Note: 2006-10-22, Thomas Treichl
-##   We cannot create a function of the form odeget (@var{odestruct},
-##   @var{name1}, @var{name2}) because we would get a mismatch with
-##   the function form 1 like described above.
+## FIXME: 4th input argument "opt" is undocumented.
 
 function val = odeget (ode_opt, field, default = [], opt)
 
-  if (nargin == 1 || nargin > 4)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
@@ -85,64 +80,56 @@ function val = odeget (ode_opt, field, default = [], opt)
     return;
   endif
 
-  ## check if the given struct is a valid OdePkg struct
+  ## Check if the given struct is a valid OdePkg struct
   ode_struct_value_check (ode_opt);
 
-  ## define all the possible OdePkg fields
-  options = ["AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
-             "Explicit"; "InexactSolver"; "InitialSlope"; "InitialStep";
-             "Jacobian";"JConstant";"JPattern";"Mass"; "MassConstant";
-             "MassSingular"; "MaxNewtonIterations"; "MaxOrder"; "MaxStep";
-             "MStateDependence"; "MvPattern"; "NewtonTol"; "NonNegative";
-             "NormControl"; "OutputFcn"; "OutputSave"; "OutputSel";
-             "PolynomialDegree"; "QuadratureOrder"; "Refine"; "RelTol";
-             "Restart"; "Stats"; "TimeStepNumber"; "TimeStepSize";
-             "UseJacobian"; "Vectorized"];
+  ## Define all the possible OdePkg fields
+  persistent options = {"AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
+                        "Explicit"; "InexactSolver"; "InitialSlope";
+                        "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
+                        "Mass"; "MassConstant"; "MassSingular";
+                        "MaxNewtonIterations"; "MaxOrder"; "MaxStep";
+                        "MStateDependence"; "MvPattern"; "NewtonTol";
+                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSave";
+                        "OutputSel"; "PolynomialDegree"; "QuadratureOrder";
+                        "Refine"; "RelTol"; "Restart"; "Stats";
+                        "TimeStepNumber"; "TimeStepSize"; "UseJacobian";
+                        "Vectorized"};
+  
+  exactmatch = true;
+  match = find (strcmpi (field, options));
+  if (isempty (match))
+    match = find (strncmpi (field, options, length (field)));
+    exactmatch = false;
+  endif
 
-  while (1)
-    pos = fuzzy_compare (field, options);
-
-    if (isempty (pos))  # no match for the given option
-      if (nargin == 2)
-        error ("odeget: invalid property. No property found with name '%s'",
+  if (isempty (match))
+    if (nargin == 2)
+      error ("odeget: invalid property '%s'", field);
+    else
+      ## FIXME: Should we warn, but complete the action, or just error out?
+      warning ("odeget:InvalidArgument",
+               "odeget: invalid property '%s'.  Using supplied default value.",
                field);
-      endif
-      warning ("odeget:NoExactMatching",
-               "no property found with name '%s'. ",
-               "Assuming default value.", field);
       val = default;
-      return;
     endif
-
-    if (rows (pos) == 1)  # one matching
-      if (! strcmp (lower (deblank (field)),
-                    lower (deblank (options(pos,:)))) )
-        warning ("odeget:InvalidArgument",
-                 "no exact matching for '%s'. ",
-                 "Assuming you were intending '%s'.",
-                 field, deblank (options(pos,:)));
-      endif
-      val = ode_opt.(deblank (options(pos,:)));
-      if (isempty (val))
-        val = default;
-      endif
-      return;
+  elseif (numel (match) == 1)
+    if (! exactmatch)
+      warning ("odeget:NoExactMatching",
+               "odeget: no exact match for '%s'.  Assuming '%s'.\n",
+               field, options{match});
     endif
-
-    ## FIXME: Do we really need interactive selection?
-    ##        Matlab doesn't appear to offer this.
-    ## if there are more matching, ask the user to be more precise
-    warning ("OdePkg:InvalidArgument",
-             "no exact matching for '%s'. %d possible fields were found.",
-             field, rows (pos));
-    for j = 1:(rows (pos))
-      printf ("%s\n", deblank (options(pos(j),:)));
-    endfor
-    do
-      printf ("Please insert field name again.\n");
-      field = input ("New field name: ");
-    until (ischar (field))
-  endwhile
+    val = [];
+    try
+      val = ode_opt.(options{match});
+    end_try_catch
+    if (isempty (val))
+      val = default;
+    endif
+  else
+    error ("odeget: no exact match for '%s'.  Possible fields found: %s.",
+           field, strjoin (options(match), ", "));
+  endif
 
 endfunction
 
@@ -155,17 +142,23 @@ endfunction
 %! A = odeset ("RelTol", 1e-1, "AbsTol", 1e-2);
 %! odeget (A, "RelTol", [])
 
-%!test
-%! wstate = warning ("off", "OdePkg:InvalidArgument");
-%! unwind_protect
-%!   assert (odeget (odeset (), "RelTol"), []);
-%!   assert (odeget (odeset (), "RelTol", 10), 10);
-%!   assert (odeget (odeset (), "Stats"), []);
-%!   assert (odeget (odeset (), "Stats", "on"), "on");
-%!   assert (odeget (odeset (), "AbsTol", 1e-6, "fast"), []);
-%!   assert (odeget (odeset (), "AbsTol", 1e-6, "fast_not_empty"), 1e-6);
-%!   assert (odeget (odeset (), "AbsTol", 1e-9), 1e-9);
-%! unwind_protect_cleanup
-%!   warning (wstate);
-%! end_unwind_protect
+%!assert (odeget (odeset (), "RelTol"), [])
+%!assert (odeget (odeset ("RelTol", 10), "RelTol"), 10)
+%!assert (odeget (odeset (), "RelTol", 10), 10)
+%!assert (odeget (odeset (), "Stats"), [])
+%!assert (odeget (odeset (), "Stats", "on"), "on")
+%!assert (odeget (odeset (), "Mass"), [])
+%!assert (odeget (odeset (), "AbsTol", 1e-6, "fast"), [])
+%!assert (odeget (odeset (), "AbsTol", 1e-6, "fast_not_empty"), 1e-6)
+%!assert (odeget (odeset (), "AbsTol", 1e-9), 1e-9)
+
+%!error odeget ()
+%!error odeget (1)
+%!error odeget (1,2,3,4,5)
+%!error <ODE_OPT must be a valid ODE_STRUCT> odeget (1, "opt1")
+%!error <FIELD must be a string> odeget (struct ("opt1", 1), 1)
+%!error <invalid property 'foo'> odeget (struct ("opt1", 1), "foo")
+%!warning <Using supplied default value> odeget (struct ("opt1", 1), "foo", 3);
+%!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeget (struct ("RelTol", 1), "Rel");
+%!error <Possible fields found: InitialSlope, InitialStep> odeget (odeset (), "Initial")
 

@@ -4,7 +4,6 @@ FCN_FILE_DIRS += \
 
 scripts_ode_PRIVATE_FCN_FILES = \
   scripts/ode/private/AbsRel_Norm.m \
-  scripts/ode/private/fuzzy_compare.m \
   scripts/ode/private/integrate_adaptive.m \
   scripts/ode/private/integrate_const.m \
   scripts/ode/private/integrate_n_steps.m \

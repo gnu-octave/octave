@@ -174,7 +174,6 @@ COREFCN_SRC = \
   libinterp/corefcn/input.cc \
   libinterp/corefcn/inv.cc \
   libinterp/corefcn/kron.cc \
-	libinterp/corefcn/levenshtein.cc \
   libinterp/corefcn/load-path.cc \
   libinterp/corefcn/load-save.cc \
   libinterp/corefcn/lookup.cc \

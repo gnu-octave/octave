@@ -25,27 +25,23 @@
 ##
 ## Create or modify an ODE options structure.
 ##
-## If this function is called without an input argument then return a new ODE
-## options structure array that contains all the necessary fields and sets
-## the values of all fields to default values.
+## When called without an input argument, return a new ODE options structure
+## that contains all possible fields initialized to their default values.
 ##
-## If this function is called with string input arguments @var{"field1"},
-## @var{"field2"}, @dots{} identifying valid ODE options then return a new
-## ODE options structure with all necessary fields and set the values of the
-## fields @var{"field1"}, @var{"field2"}, @dots{} to the values @var{value1},
-## @var{value2}, @dots{}
+## If called with string input arguments @var{"field1"}, @var{"field2"},
+## @dots{} identifying valid ODE options then return a new ODE options
+## structure with all possible fields initialized @strong{and} set the values
+## of the fields @var{"field1"}, @var{"field2"}, @dots{} to the values
+## @var{value1}, @var{value2}, @dots{}
 ##
-## If this function is called with a first input argument @var{oldstruct} of
-## type structure array then overwrite all values of the options
-## @var{"field1"}, @var{"field2"}, @dots{} of the structure @var{oldstruct}
-## with new values @var{value1}, @var{value2}, @dots{} and return the
-## modified structure array.
+## If called with an input structure @var{oldstruct} then overwrite the values
+## of the options @var{"field1"}, @var{"field2"}, @dots{} with new values
+## @var{value1}, @var{value2}, @dots{} and return the modified structure.
 ##
-## If this function is called with two input arguments @var{oldstruct} and
-## @var{newstruct} of type structure array then overwrite all values in the
-## fields from the structure @var{oldstruct} with new values of the fields
-## from the structure @var{newstruct}.  Empty values of @var{newstruct} will
-## not overwrite values in @var{oldstruct}.
+## When called with two input ODE options structures @var{oldstruct} and
+## @var{newstruct} overwrite all values from the structure @var{oldstruct} with
+## new values from the structure @var{newstruct}.  Empty values in
+## @var{newstruct} will not overwrite values in @var{oldstruct}.
 ## @seealso{odeget}
 ## @end deftypefn
 
@@ -57,231 +53,179 @@ function odestruct = odeset (varargin)
     return;
   endif
 
-  ## Column vector of all possible OdePkg fields
-  fields = ["AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
-            "Explicit"; "InexactSolver"; "InitialSlope"; "InitialStep";
-            "Jacobian";"JConstant";"JPattern";"Mass"; "MassConstant";
-            "MassSingular"; "MaxNewtonIterations"; "MaxOrder"; "MaxStep";
-            "MStateDependence"; "MvPattern"; "NewtonTol"; "NonNegative";
-            "NormControl"; "OutputFcn"; "OutputSave"; "OutputSel";
-            "PolynomialDegree"; "QuadratureOrder"; "Refine"; "RelTol";
-            "Restart"; "Stats"; "TimeStepNumber"; "TimeStepSize";
-            "UseJacobian"; "Vectorized"];
-
-  fields_nb = rows (fields);
+  ## Column vector of all possible OdePkg options
+  persistent options = {"AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
+                        "Explicit"; "InexactSolver"; "InitialSlope";
+                        "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
+                        "Mass"; "MassConstant"; "MassSingular";
+                        "MaxNewtonIterations"; "MaxOrder"; "MaxStep";
+                        "MStateDependence"; "MvPattern"; "NewtonTol";
+                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSave";
+                        "OutputSel"; "PolynomialDegree"; "QuadratureOrder";
+                        "Refine"; "RelTol"; "Restart"; "Stats";
+                        "TimeStepNumber"; "TimeStepSize"; "UseJacobian";
+                        "Vectorized"};
 
   ## initialize output
-  odestruct = cell2struct (cell (rows (fields), 1), cellstr (fields));
+  odestruct = cell2struct (cell (numel (options), 1), options);
 
-  odestruct.Refine = 0;
-  odestruct.OutputSave = 1;
-
-  if (nargin == 0 && nargout == 1)
+  if (nargin == 0)
     return;
   endif
 
-  ode_fields = fieldnames (odestruct);
-  
   if (isstruct (varargin{1}))
     oldstruct = varargin{1};
     ode_struct_value_check (oldstruct);
 
-    optA_fields = fieldnames (oldstruct);
-    optA_f_nb = length (optA_fields);
+    oldstruct_fldnames = (fieldnames (oldstruct)).';
 
-    ## loop on first struct options for updating
-    for i = 1:optA_f_nb
-      name = lower (deblank (optA_fields{i}));
+    ## Copy oldstruct values into output odestruct
+    for fldname = oldstruct_fldnames
+      name = lower (fldname{1});
 
-      while (1)
-        pos = fuzzy_compare (name, fields);
-        if (isempty (pos))
-          warning ("OdePkg:InvalidArgument",
-                   "no property found with name '%s'", name);
+      exactmatch = true;
+      match = find (strcmpi (name, options));
+      if (isempty (match))
+        match = find (strncmpi (name, options, length (name)));
+        exactmatch = false;
+      endif
+
+      if (isempty (match))
+        error ("odeset: invalid property '%s'", fldname{1});
+      elseif (numel (match) == 1)
+        if (! exactmatch)
+          warning ("odeset:NoExactMatching",
+                   "no exact match for '%s'.  Assuming '%s'.",
+                   name, options{match});
         endif
-
-        if (rows (pos) == 1)
-          if (! strcmp (lower (deblank (name)),
-                        lower (deblank (fields(pos,:)))))
-            warning ("OdePkg:InvalidArgument", "no exact matching for ",
-                     "'%s'. Assuming you were intending '%s'",
-                     name, deblank (fields(pos,:)));
-          endif
-
-          odestruct.(deblank (fields(pos,:))) = oldstruct.(optA_fields{i});
-          break;
-        endif
-
-        ## FIXME: Do we really need interactive selection?
-        ## if there are more matching, ask the user to be more precise
-        warning ("OdePkg:InvalidArgument",
-                 "no exact matching for '%s'. %d possible fields were found",
-                 name, size(pos, 1));
-        for j = 1:(rows (pos))
-          printf ("%s\n", deblank (fields(pos(j),:)));
-        endfor
-        do
-          disp ("Please insert field name again");
-          name = input ("New field name: ");
-        until (ischar (name))
-      endwhile
+        odestruct.(options{match}) = oldstruct.(fldname{1});
+      else
+        error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
+               name, strjoin (options(match), ", "));
+      endif
     endfor
+
+    ## At this point, odestruct has been initialized with default values,
+    ## and if oldstruct was present it has overwritten fields in odestruct.
 
     if (nargin == 2 && isstruct (varargin{2}))
       newstruct = varargin{2};
       ode_struct_value_check (newstruct);
 
-      optB_fields = fieldnames (newstruct);
-      optB_f_nb = length (optB_fields);
+      newstruct_fldnames = (fieldnames (newstruct)).';
 
-      ## update the first struct with the values in the second one
-      for i = 1:optB_f_nb
-        name = lower (deblank (optB_fields{i}));
-        while (1)
-          pos = fuzzy_compare (name, fields);
+      ## Update the first struct with the values from the second one
+      for fldname = newstruct_fldnames
+        name = lower (fldname{1});
 
-          if (isempty (pos))
-            warning ("OdePkg:InvalidArgument",
-                     "no property found with name '%s'", name);
+        exactmatch = true;
+        match = find (strcmpi (name, options));
+        if (isempty (match))
+          match = find (strncmpi (name, options, length (name)));
+          exactmatch = false;
+        endif
+
+        if (isempty (match))
+          error ("odeset: invalid property '%s'", fldname{1});
+        elseif (numel (match) == 1)
+          if (! exactmatch)
+            warning ("odeset:NoExactMatching",
+                     "no exact match for '%s'.  Assuming '%s'.",
+                     name, options{match});
           endif
-
-          if (rows (pos) == 1)
-            if (! strcmp (lower (deblank (name)),
-                          lower (deblank (fields(pos,:)))))
-              warning ("OdePkg:InvalidArgument", "no exact matching for ",
-                       "'%s'. Assuming you were intending '%s'",
-                        name, deblank (fields(pos,:)));
-            endif
-            odestruct.(deblank (fields(pos,:))) = newstruct.(optB_fields{i});
-            break;
-          endif
-
-          ## FIXME: Do we really need interactive selection?
-          ## if there are more matching, ask the user to be more precise
-          warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
-                   "%d possible fields were found",
-                   name, rows (pos));
-          for j = 1:(rows (pos))
-            printf ("%s\n", deblank (fields(pos(j),:)));
-          endfor
-          do
-            disp ("Please insert field name again");
-            name = input ("New field name: ");
-          until (ischar (name))
-        endwhile
+          odestruct.(options{match}) = newstruct.(fldname{1});
+        else
+          error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
+                 name, strjoin (options(match), ", "));
+        endif
       endfor
+
+      ## Done copying newstruct to oldstruct
       return;
     endif
 
-    ## if the second argument is not a struct,
-    ## pass new values of the OdePkg options to the first struct
+    ## Second argument is not a struct
     if (mod (nargin, 2) != 1)
       error ("odeset: FIELD/VALUE arguments must occur in pairs");
     endif
-
     if (! all (cellfun ("isclass", varargin(2:2:end), "char")))
       error ("odeset: All FIELD names must be strings");
     endif
 
-    ## loop on the input arguments
-    for i = 2:2:(nargin - 1)
-      name = varargin{i};
+    ## Write new field/value pairs into odestruct
+    for i = 2:2:nargin
+      name = lower (varargin{i});
 
-      while (1)
-        pos = fuzzy_compare (name, fields);
+      exactmatch = true;
+      match = find (strcmpi (name, options));
+      if (isempty (match))
+        match = find (strncmpi (name, options, length (name)));
+        exactmatch = false;
+      endif
 
-        if (isempty (pos))
-          error ("OdePkg:InvalidArgument",
-                 "no property found with name '%s'", name);
+      if (isempty (match))
+        error ("odeset: invalid property '%s'", varargin{i});
+      elseif (numel (match) == 1)
+        if (! exactmatch)
+          warning ("odeset:NoExactMatching",
+                   "no exact match for '%s'.  Assuming '%s'.",
+                   name, options{match});
         endif
-
-        if (rows (pos) == 1)
-          if (! strcmp (lower (deblank (name)),
-                        lower (deblank (fields(pos,:)))))
-            warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
-                     "%d possible fields were found",
-                     name, rows (pos));
-          endif
-          odestruct.(deblank (fields(pos,:))) = varargin{i+1};
-          break;
-        endif
-
-        ## FIXME: Do we really need interactive selection?
-        ## if there are more matching, ask the user to be more precise
-        warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
-                 "%d possible fields were found",
-                 name, rows (pos));
-        for j = 1:(rows (pos))
-          printf ("%s\n", deblank (fields(pos(j),:)));
-        endfor
-        do
-          disp ("Please insert field name again");
-          name = input ("New field name: ");
-        until (ischar (name))
-      endwhile
+        odestruct.(options{match}) = varargin{i+1};
+      else
+        error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
+               name, strjoin (options(match), ", "));
+      endif
     endfor
 
-    ## check if all has been done gives a valid OdePkg struct
+    ## Check if all changes have resulted in a valid OdePkg struct
     ode_struct_value_check (odestruct);
-    return;
-  endif
 
-  ## first input argument was not a struct
-  if (mod (nargin, 2) != 0)
-    error ("odeset: FIELD/VALUE arguments must occur in pairs");
-  endif
+  else
+    ## First input argument was not a struct, must be field/value pairs
+    if (mod (nargin, 2) != 0)
+      error ("odeset: FIELD/VALUE arguments must occur in pairs");
+    elseif (! all (cellfun ("isclass", varargin(1:2:end), "char")))
+      error ("odeset: All FIELD names must be strings");
+    endif
 
-  if (! all (cellfun ("isclass", varargin(1:2:end), "char")))
-    error ("odeset: All FIELD names must be strings");
-  endif
+    for i = 1:2:nargin
+      name = lower (varargin{i});
 
-  for i = 1:2:(nargin-1)
-    name = varargin{i};
-
-    while (1)
-      pos = fuzzy_compare (name, fields);
-
-      if (isempty (pos))
-        error ("OdePkg:InvalidArgument",
-               "invalid property. No property found with name '%s'", name);
+      exactmatch = true;
+      match = find (strcmpi (name, options));
+      if (isempty (match))
+        match = find (strncmpi (name, options, length (name)));
+        exactmatch = false;
       endif
 
-      if (rows (pos) == 1)
-        if (! strcmp (lower (deblank (name)),
-                      lower (deblank (fields(pos,:)))))
-          warning ("OdePkg:InvalidArgument", "no exact matching for ",
-                   "'%s'. Assuming you were intending '%s'",
-                   name, deblank (fields(pos,:)));
+      if (isempty (match))
+        error ("odeset: invalid property '%s'", varargin{i});
+      elseif (numel (match) == 1)
+        if (! exactmatch)
+          warning ("odeset:NoExactMatching",
+                   "no exact match for '%s'.  Assuming '%s'.",
+                   name, options{match});
         endif
-        odestruct.(deblank (fields(pos,:))) = varargin{i+1};
-        break;
+        odestruct.(options{match}) = varargin{i+1};
+      else
+        error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
+               name, strjoin (options(match), ", "));
       endif
+    endfor
 
-      ## FIXME: Do we really need interactive selection?
-      ## if there are more matching, ask the user to be more precise
-      warning ("OdePkg:InvalidArgument", "no exact matching for '%s'. ",
-               "%d possible fields were found",
-               name, rows (pos));
-      for j = 1:rows (pos)
-        printf ("%s\n", deblank (fields(pos(j),:)));
-      endfor
-      do
-        disp ("Please insert field name again");
-        name = input ("New field name: ");
-      until (ischar (name))
-    endwhile
-  endfor
+    ## Check if all changes have resulted in a valid OdePkg struct
+    ode_struct_value_check (odestruct);
 
-  ## check if all has been done gives a valid OdePkg struct
-  ode_struct_value_check (odestruct);
+  endif
 
 endfunction
 
 ## function useful to print all the possible options
 function print_options ()
   
-  disp ("These following are all possible options.");
-  disp ("Default values are put in square brackets.");
+  disp ("List of all possible ODE solver options.");
+  disp ("Default values are in square brackets.");
   disp ("");
   disp ("             AbsTol:  scalar or vector, >0, [1e-6]");
   disp ("          Algorithm:  string, {['gmres'], 'pcg', 'bicgstab'}");
@@ -338,25 +282,31 @@ endfunction
 %!demo
 %! # A new OdePkg options structure is created from odeoptB with
 %! # a modified value for option "NormControl".
-
+%!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 %! odeoptC = odeset (odeoptB, "NormControl", "on");
 
 ## All tests that are needed to check if a correct resp. valid option
 ## has been set are implemented in ode_struct_value_check.m.
 %!test
-%! wstate = warning ("off", "OdePkg:InvalidArgument");
-%! unwind_protect
-%!   odeoptA = odeset ();
-%!   ## FIXME: no assert check on odeoptA
-%!   odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
-%!   assert (odeoptB.AbsTol, 1e-2);
-%!   assert (odeoptB.RelTol, 1e-1);
-%!   odeoptC = odeset (odeoptB, "NormControl", "on");
-%!   ## FIXME: no assert check on odeoptC
-%!   odeoptD = odeset (odeoptC, odeoptB);
-%!   ## FIXME: no assert check on odeoptD
-%! unwind_protect_cleanup
-%!   warning (wstate);
-%! end_unwind_protect
+%! odeoptA = odeset ();
+%! assert (isstruct (odeoptA));
+%! fields = fieldnames (odeoptA); 
+%! assert (numel (fields), 37); 
+%! assert (all (structfun ("isempty", odeoptA)));
+
+%!shared odeoptB, odeoptC
+%!test
+%! odeoptB = odeset ("ABSTOL", 1e-2, "reltol", 1e-1);
+%! assert (odeoptB.AbsTol, 1e-2);  # Check canonicalization of name
+%! assert (odeoptB.RelTol, 1e-1);
+
+%!test
+%! odeoptC = odeset (odeoptB, "NormControl", "on");
+%! assert (odeoptC.AbsTol, 1e-2);       # check values from first struct copied
+%! assert (odeoptC.NormControl, "on");  # check new values override old ones
+
+%!test
+%! odeoptD = odeset (odeoptB, odeoptC);
+%! assert (odeoptD, odeoptC); 
 

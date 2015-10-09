@@ -29,442 +29,345 @@
 ## does not modify any of the field names or field values but terminates with
 ## an error if an invalid option or value is found.
 ##
-## This function is an OdePkg internal helper function therefore it should
-## never be necessary that this function is called directly by a user.
+## This function is an OdePkg internal helper function; Therefore, it should
+## never be necessary for a user to call this function directly.
 ## @end deftypefn
 ##
 ## @seealso{odeset, odeget}
 
-function ode_struct_value_check (arg, solver)
+function ode_struct_value_check (arg, solver = [])
 
-  ## Check the number of input arguments
-  if (nargin == 0 || nargin > 2)
-    error ("OdePkg:InvalidArgument",
-           "wrong input arguments number");
-  endif
-
-  if (! isstruct (arg))
-    error ("OdePkg:InvalidArgument",
-           "first input argument is not a struct");
-  endif
-
-  if (nargin == 1)
-    solver = [];
-  elseif (! ischar (solver) )
-    error ("OdePkg:InvalidArgument",
-           "second input argument is not a string");
-  endif
-
-  fields = fieldnames (arg);
+  fields = (fieldnames (arg)).';
   fields_nb = length (fields);
 
-  for i = 1:fields_nb  # Run through the number of given structure field names
-    switch (fields{i})
+  for fldname = fields  # Cycle over all fields
+    opt = fldname{1};
+    val = arg.(opt);
+
+    switch (opt)
 
       case "AbsTol"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              || any (arg.(fields{i}) <= 0)
-              || ! isreal (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isreal (val)
+              || ! isvector (val) || any (val <= 0))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (! isvector (arg.(fields{i})))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif ( any (arg.(fields{i}) <= 0))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Algorithm"
-        if (! isempty (arg.(fields{i})))
-          if (! ischar (arg.(fields{i})))
+        if (! isempty (val))
+          if (! ischar (val))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "BDF"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "on")
-              && ! strcmp (arg.(fields{i}), "off"))
+        if (! isempty (val))
+          if (! strcmp (val, "on") && ! strcmp (val, "off"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Choice"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (arg.(fields{i}) != 1 && arg.(fields{i}) != 2)
+                   "invalid value assigned to field %s", opt);
+          elseif (val != 1 && val != 2)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Eta"
-        if ( ! isempty (arg.(fields{i})) )
-          if ( ! isreal (arg.(fields{i})) )
+        if (! isempty (val))
+          if (! isreal (val) || val < 0 || val >= 1)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif ( arg.(fields{i})<0 || arg.(fields{i})>=1 )
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Events"
-        if (! isempty (arg.(fields{i})))
-          if (! isa (arg.(fields{i}), "function_handle"))
+        if (! isempty (val))
+          if (! isa (val, "function_handle"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Explicit"
-        if (! isempty (arg.(fields{i})))
-          if (! ischar (arg.(fields{i}))
-              || (! strcmp (arg.(fields{i}), "yes")
-                  && ! strcmp (arg.(fields{i}), "no")))
+        if (! isempty (val))
+          if (! strcmp (val, "yes") && ! strcmp (val, "no"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "InexactSolver"
-        if (! isempty (arg.(fields{i})))
-          if (! ischar (arg.(fields{i})))
+        if (! isempty (val))
+          if (! ischar (val))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "InitialSlope"
-        if (! isempty (arg.(fields{i})))
-          if (! ischar (arg.(fields{i}))
-              && (! isnumeric (arg.(fields{i}))
-                  || (! isvector (arg.(fields{i}))
-                      && ! isreal (arg.(fields{i})))))
+        if (! isempty (val))
+          if (! ischar (val)
+              && (! isnumeric (val) || (! isvector (val) && ! isreal (val))))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "InitialStep"
-        if (! isempty (arg.(fields{i})) )
-          if (! isnumeric (arg.(fields{i}))
-              || ! isscalar (arg.(fields{i}))
-              || ! isreal (arg.(fields{i}))
-              || arg.(fields{i}) <=0)
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isreal (val) || ! isscalar (val)
+              || val <= 0)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Jacobian"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i})))
-            if (! isa (arg.(fields{i}), "function_handle")
-                && ! iscell (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val))
+            if (! isa (val, "function_handle") && ! iscell (val))
               error ("OdePkg:InvalidArgument",
-                     "value assigned to field %s is not a valid one",
-                     fields{i});
+                     "invalid value assigned to field %s", opt);
             endif
           endif
         endif
 
       case "JConstant"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "on")
-              && ! strcmp (arg.(fields{i}), "off"))
+        if (! isempty (val))
+          if (! strcmp (val, "on") && ! strcmp (val, "off"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "JPattern"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              && ! isscalar (arg.(fields{i}))
-              && ! isvector (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) && ! isvector (val))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Mass"
-        if (! isempty (arg.(fields{i})))
-          if ((! isnumeric (arg.(fields{i}))
-               || ! ismatrix (arg.(fields{i})))
-              && ! isa (arg.(fields{i}), "function_handle"))
+        if (! isempty (val))
+          if ((! isnumeric (val) || ! ismatrix (val))
+              && ! isa (val, "function_handle"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MassConstant"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "on")
-              && ! strcmp (arg.(fields{i}), "off"))
+        if (! isempty (val))
+          if (! strcmp (val, "on") && ! strcmp (val, "off"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MassSingular"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "yes")
-              && ! strcmp (arg.(fields{i}), "no")
-              && ! strcmp (arg.(fields{i}), "maybe"))
+        if (! isempty (val))
+          if (! any (strcmp (val, {"yes", "no", "maybe"})))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MaxNewtonIterations"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val)
+              || val != fix (val) || val <= 0)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (mod (arg.(fields{i}), 1) != 0
-                  || arg.(fields{i}) <= 0)
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MaxOrder"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val)
+              || val != fix (val) || val <= 0 || val >= 8)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (mod (arg.(fields{i}), 1) != 0
-                  || arg.(fields{i}) <= 0
-                  || arg.(fields{i}) >= 8 )
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MaxStep"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              || ! isscalar (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isscalar (val) || val <= 0)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (arg.(fields{i}) <= 0)
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MStateDependence"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "none")
-              && ! strcmp (arg.(fields{i}), "weak")
-              && ! strcmp (arg.(fields{i}), "strong"))
+        if (! isempty (val))
+          if (! any (strcmp (val, {"none", "weak", "strong"})))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "MvPattern"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              && ! isvector (arg.(fields{i})) )
+        if (! isempty (val))
+          if (! isnumeric (val) && ! isvector (val))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "NewtonTol"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              || ! isreal (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isreal (val) || any (val <= 0))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (any (arg.(fields{i}) <= 0))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "NonNegative"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              || ! isvector (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isvector (val)
+              || any (val <= 0) || any (val != fix (val)))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (any (arg.(fields{i}) <= 0)
-                  || any (mod (arg.(fields{i}), 1) != 0))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "NormControl"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "on")
-              && ! strcmp (arg.(fields{i}), "off"))
+        if (! isempty (val))
+          if (! strcmp (val, "on") && ! strcmp (val, "off"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "OutputFcn"
-        if (! isempty (arg.(fields{i})))
-          if (! isa (arg.(fields{i}), "function_handle"))
+        if (! isempty (val))
+          if (! isa (val, "function_handle"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "OutputSave"
-        if (! isempty (arg.(fields{i})))
-          if (! isscalar (arg.(fields{i}))
-              && arg.(fields{i}) != Inf)
+        if (! isempty (val))
+          if (! isscalar (val) && val != Inf)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif ((mod (arg.(fields{i}), 1) != 0 || arg.(fields{i}) <= 0)
-                  && arg.(fields{i}) != Inf)
+                   "invalid value assigned to field %s", opt);
+          elseif ((val != fix (val) || val <= 0) && val != Inf)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "OutputSel"
-        if (! isempty (arg.(fields{i})))
-          if (! isscalar (arg.(fields{i})) )
-            if (! isnumeric (arg.(fields{i}))
-                || ! isvector (arg.(fields{i})))
-              error ("OdePkg:InvalidArgument",
-                     "value assigned to field %s is not a valid one",
-                     fields{i});
-            endif
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isvector (val))
+            error ("OdePkg:InvalidArgument",
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "PolynomialDegree"
-        if (! isempty (arg.(fields{i})) )
-          if (! isnumeric (arg.(fields{i}))
-              || ! isvector (arg.(fields{i})) )
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isvector (val) || any (val <= 0))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (any (arg.(fields{i}) <= 0))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "QuadratureOrder"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              || ! isvector (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isvector (val) || any (val <= 0))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (any(arg.(fields{i}) <= 0))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Refine"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i}))
-              || ! isscalar (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isscalar (val)
+              || val != fix (val)  || val < 0 || val > 5)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (mod (arg.(fields{i}), 1) != 0
-                  || arg.(fields{i}) < 0
-                  || arg.(fields{i}) > 5 )
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "RelTol"
-        if (! isempty (arg.(fields{i})) )
-          if (! isnumeric (arg.(fields{i})) )
+        if (! isempty (val))
+          if (! isnumeric (val) || ! isreal (val) || any (val <= 0))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (! isreal (arg.(fields{i}))
-                  || any (arg.(fields{i}) <= 0))
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
-        endif
-        if (any (strcmp (solver, {"ode23", "ode23d", "ode45", "ode45d",
-                                  "ode54", "ode54d", "ode78", "ode78d"})))
-          if (! isempty (arg.(fields{i})) && ! isscalar (arg.(fields{i})))
-            error ("OdePkg:InvalidArgument",
-                   "for this type of solver, value assigned to field %s ",
-                   "is not a valid one", fields{i});
+          if (any (strcmp (solver, {"ode23", "ode23d", "ode45", "ode45d",
+                                    "ode54", "ode54d", "ode78", "ode78d"})))
+            if (! isscalar (val))
+              error ("OdePkg:InvalidArgument",
+                     "invalid value assigned to field %s", opt);
+            endif
           endif
         endif
 
       case "Restart"
-        if (! isempty (arg.(fields{i})))
-          if (! isnumeric (arg.(fields{i})))
+        if (! isempty (val))
+          if (! isnumeric (val) || val != fix (val) || val <= 0)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
-          elseif (mod (arg.(fields{i}), 1) != 0
-                  || arg.(fields{i}) <=0 )
-            error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Stats"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "on")
-              && ! strcmp (arg.(fields{i}), "off"))
+        if (! isempty (val))
+          if (! strcmp (val, "on") && ! strcmp (val, "off"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "TimeStepNumber"
-        if (! isempty (arg.(fields{i})))
-          if (mod (arg.(fields{i}), 1) != 0
-              || arg.(fields{i}) <= 0)
+        if (! isempty (val))
+          if (val != fix (val) || val <= 0)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "TimeStepSize"
-        if (! isempty (arg.(fields{i})))
-          if (! isreal (arg.(fields{i}))
-              || (arg.(fields{i}) == 0))
+        if (! isempty (val))
+          if (! isreal (val) || val == 0)
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "UseJacobian"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "yes")
-              && ! strcmp (arg.(fields{i}), "no"))
+        if (! isempty (val))
+          if (! strcmp (val, "yes") && ! strcmp (val, "no"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       case "Vectorized"
-        if (! isempty (arg.(fields{i})))
-          if (! strcmp (arg.(fields{i}), "on")
-              && ! strcmp (arg.(fields{i}), "off"))
+        if (! isempty (val))
+          if (! strcmp (val, "on") && ! strcmp (val, "off"))
             error ("OdePkg:InvalidArgument",
-                   "value assigned to field %s is not a valid one", fields{i});
+                   "invalid value assigned to field %s", opt);
           endif
         endif
 
       otherwise
         warning ("OdePkg:InvalidArgument",
-                 "no fields with name %s in ODE options.", fields{i});
+                 "invalid field '%s' in ODE options", opt);
     endswitch
   endfor
 
@@ -480,8 +383,9 @@ endfunction
 %!demo
 %! # Create the OdePkg options structure A with odeset and check it 
 %! # with odepkg_structure_check.  This actually is unnecessary
-%! # because odeset automtically calls odepkg_structure_check before
+%! # because odeset automatically calls odepkg_structure_check before
 %! # returning.
 %!
-%! A = odeset (); ode_struct_value_check (A);
+%! A = odeset ();
+%! ode_struct_value_check (A);
 

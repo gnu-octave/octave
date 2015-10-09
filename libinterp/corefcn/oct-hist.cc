@@ -171,14 +171,11 @@ do_history (const octave_value_list& args, int nargout)
         {
           if (i < nargin - 1)
             {
-              if (args(i+1).is_string ())
-                command_history::set_file (args(++i).string_value ());
-              else
-                {
-                  error ("history: expecting file name for %s option",
-                         option.c_str ());
-                  return hlist;
-                }
+              std::string fname
+                = args(++i).string_value ("history: expecting file name for %s option",
+                                          option.c_str ());
+
+              command_history::set_file (fname);
             }
           else
             command_history::set_file (default_history_file ());

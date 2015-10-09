@@ -46,39 +46,17 @@ DEFUN (__dispatch__, args, nargout,
 
   int nargin = args.length ();
 
-  std::string f, r, t;
-
   if (nargin > 0 && nargin < 4)
     {
-      f = args(0).string_value ();
+      std::string f, r, t;
 
-      if (error_state)
-        {
-          error ("__dispatch__: first argument must be a function name");
-          return retval;
-        }
+      f = args(0).string_value ("__dispatch__: first argument must be a function name");
 
       if (nargin > 1)
-        {
-          r = args(1).string_value ();
-
-          if (error_state)
-            {
-              error ("__dispatch__: second argument must be a function name");
-              return retval;
-            }
-        }
+        r = args(1).string_value ("__dispatch__: second argument must be a function name");
 
       if (nargin > 2)
-        {
-          t = args(2).string_value ();
-
-          if (error_state)
-            {
-              error ("__dispatch__: third argument must be a type name");
-              return retval;
-            }
-        }
+        t = args(2).string_value ("__dispatch__: third argument must be a type name");
 
       if (nargin == 1)
         {

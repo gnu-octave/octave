@@ -195,27 +195,22 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string file = args(0).string_value ();
+      std::string file = args(0).string_value ("__open_with_system_app__: argument must be a file name");
 
-      if (! error_state)
-        {
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-          HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
-                                           SW_SHOWNORMAL);
+      HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
+                                       SW_SHOWNORMAL);
 
-          // ShellExecute returns a value greater than 32 if successful.
-          retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+      // ShellExecute returns a value greater than 32 if successful.
+      retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
 #else
-          octave_value_list tmp
-            = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
-                            false, "async"),
-                       1);
+      octave_value_list tmp
+        = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
+                        false, "async"),
+                   1);
 
-          retval = (tmp(0).double_value () == 0);
+      retval = (tmp(0).double_value () == 0);
 #endif
-        }
-      else
-        error ("__open_with_system_app__: argument must be a file name");
     }
   else
     print_usage ();
@@ -650,20 +645,13 @@ string.\n\
 
   if (nargin == 2 || nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string var = args(0).string_value ();
+      std::string var = args(0).string_value ("setenv: VAR must be a string");
 
-          std::string val = (nargin == 2
-                             ? args(1).string_value () : std::string ());
+      std::string val = (nargin == 2
+                         ? args(1).string_value ("setenv: VALUE must be a string")
+                         : std::string ());
 
-          if (! error_state)
-            octave_env::putenv (var, val);
-          else
-            error ("setenv: VALUE must be a string");
-        }
-      else
-        error ("setenv: VAR must be a string");
+      octave_env::putenv (var, val);
     }
   else
     print_usage ();

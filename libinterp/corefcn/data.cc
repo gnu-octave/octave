@@ -6641,12 +6641,8 @@ ordered lists.\n\
           return retval;
         }
 
-      if (! args(2).is_string ())
-        {
-          error ("sort: MODE must be a string");
-          return retval;
-        }
-      std::string mode = args(2).string_value ();
+      std::string mode = args(2).string_value ("sort: MODE must be a string");
+
       if (mode == "ascend")
         smode = ASCENDING;
       else if (mode == "descend")
@@ -6924,20 +6920,16 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
   // FIXME: shouldn't these modes be scoped inside a class?
   sortmode smode = UNSORTED;
 
-  if (arg.is_string ())
-    {
-      std::string mode = arg.string_value ();
-      if (mode == "ascending")
-        smode = ASCENDING;
-      else if (mode == "descending")
-        smode = DESCENDING;
-      else if (mode == "either")
-        smode = UNSORTED;
-      else
-        error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
-    }
+  std::string mode = arg.string_value ("issorted: expecting %s argument to be a string", argn);
+
+  if (mode == "ascending")
+    smode = ASCENDING;
+  else if (mode == "descending")
+    smode = DESCENDING;
+  else if (mode == "either")
+    smode = UNSORTED;
   else
-    error ("issorted: expecting %s argument to be a string", argn);
+    error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
 
   return smode;
 }
@@ -6983,16 +6975,11 @@ This function does not support sparse matrices.\n\
       if (nargin == 3)
         smode = get_sort_mode_option (args(2), "third");
 
-      if (args(1).is_string ())
-        {
-          std::string tmp = args(1).string_value ();
-          if (tmp == "rows")
-            by_rows = true;
-          else
-            smode = get_sort_mode_option (args(1), "second");
-        }
+      std::string tmp = args(1).string_value ("issorted: second argument must be a string");
+      if (tmp == "rows")
+        by_rows = true;
       else
-        error ("issorted: second argument must be a string");
+        smode = get_sort_mode_option (args(1), "second");
     }
 
   octave_value arg = args(0);

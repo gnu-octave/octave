@@ -1673,17 +1673,12 @@ property::create (const std::string& name, const graphics_handle& h,
         error ("addproperty: missing possible values for radio property");
       else
         {
-          std::string sv = args(0).string_value ();
+          std::string sv = args(0).string_value ("addproperty: invalid argument for radio property, expected a string value");
 
-          if (! error_state)
-            {
-              retval = property (new radio_property (name, h, sv));
+          retval = property (new radio_property (name, h, sv));
 
-              if (args.length () > 1)
-                retval.set (args(1));
-            }
-          else
-            error ("addproperty: invalid argument for radio property, expected a string value");
+          if (args.length () > 1)
+            retval.set (args(1));
         }
     }
   else if (type.compare ("double"))
@@ -10694,17 +10689,12 @@ Undocumented internal function.\n\
 
           if (h.ok ())
             {
-              std::string name = args(1).string_value ();
+              std::string name = args(1).string_value ("__go_execute_callback__: invalid callback name");
 
-              if (! error_state)
-                {
-                  if (nargin == 2)
-                    gh_manager::execute_callback (h, name);
-                  else
-                    gh_manager::execute_callback (h, name, args(2));
-                }
+              if (nargin == 2)
+                gh_manager::execute_callback (h, name);
               else
-                error ("__go_execute_callback__: invalid callback name");
+                gh_manager::execute_callback (h, name, args(2));
             }
           else
             error ("__go_execute_callback__: invalid graphics object (= %g)",
@@ -10873,13 +10863,9 @@ List @var{toolkit} as an available graphics toolkit.\n\
 
   if (args.length () == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
-          gtk_manager::register_toolkit (name);
-        }
-      else
-        error ("register_graphics_toolkit: TOOLKIT must be a string");
+      std::string name = args(0).string_value ("register_graphics_toolkit: TOOLKIT must be a string");
+
+      gtk_manager::register_toolkit (name);
     }
   else
     print_usage ();
@@ -10991,97 +10977,86 @@ undocumented.\n\
           std::string term, file, debug_file;
           bool mono;
 
-          term = args(0).string_value ();
+          term = args(0).string_value ("drawnow: invalid terminal TERM, expected a string value");
+
+          file = args(1).string_value ("drawnow: invalid FILE, expected a string value");
+
+          size_t pos_p = file.find_first_of ("|");
+          size_t pos_c = file.find_first_not_of ("| ");
+
+          if (pos_p == std::string::npos &&
+              pos_c == std::string::npos)
+            {
+              error ("drawnow: empty output ''");
+
+              gh_manager::unlock ();
+
+              return retval;
+            }
+          else if (pos_c == std::string::npos)
+            {
+              error ("drawnow: empty pipe '|'");
+
+              gh_manager::unlock ();
+
+              return retval;
+            }
+          else if (pos_p != std::string::npos && pos_p < pos_c)
+            {
+              // Strip leading pipe character
+              file = file.substr (pos_c);
+            }
+          else
+            {
+              size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
+
+              if (pos != std::string::npos)
+                {
+                  std::string dirname = file.substr (pos_c, pos+1);
+
+                  file_stat fs (dirname);
+
+                  if (! (fs && fs.is_dir ()))
+                    {
+                      error ("drawnow: nonexistent directory '%s'",
+                             dirname.c_str ());
+
+                      gh_manager::unlock ();
+
+                      return retval;
+                    }
+                }
+            }
+
+          mono = (args.length () >= 3 ? args(2).bool_value () : false);
 
           if (! error_state)
             {
-              file = args(1).string_value ();
+              debug_file = (args.length () > 3 ? args(3).string_value () : "");
 
               if (! error_state)
                 {
-                  size_t pos_p = file.find_first_of ("|");
-                  size_t pos_c = file.find_first_not_of ("| ");
+                  graphics_handle h = gcf ();
 
-                  if (pos_p == std::string::npos &&
-                      pos_c == std::string::npos)
+                  if (h.ok ())
                     {
-                      error ("drawnow: empty output ''");
+                      graphics_object go = gh_manager::get_object (h);
 
                       gh_manager::unlock ();
 
-                      return retval;
-                    }
-                  else if (pos_c == std::string::npos)
-                    {
-                      error ("drawnow: empty pipe '|'");
+                      go.get_toolkit ().print_figure (go, term, file,
+                                                      mono, debug_file);
 
-                      gh_manager::unlock ();
-
-                      return retval;
-                    }
-                  else if (pos_p != std::string::npos && pos_p < pos_c)
-                    {
-                      // Strip leading pipe character
-                      file = file.substr (pos_c);
+                      gh_manager::lock ();
                     }
                   else
-                    {
-                      size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
-
-                      if (pos != std::string::npos)
-                        {
-                          std::string dirname = file.substr (pos_c, pos+1);
-
-                          file_stat fs (dirname);
-
-                          if (! (fs && fs.is_dir ()))
-                            {
-                              error ("drawnow: nonexistent directory '%s'",
-                                     dirname.c_str ());
-
-                              gh_manager::unlock ();
-
-                              return retval;
-                            }
-                        }
-                    }
-
-                  mono = (args.length () >= 3 ? args(2).bool_value () : false);
-
-                  if (! error_state)
-                    {
-                      debug_file = (args.length () > 3 ? args(3).string_value ()
-                                    : "");
-
-                      if (! error_state)
-                        {
-                          graphics_handle h = gcf ();
-
-                          if (h.ok ())
-                            {
-                              graphics_object go = gh_manager::get_object (h);
-
-                              gh_manager::unlock ();
-
-                              go.get_toolkit ().print_figure (go, term, file,
-                                                              mono, debug_file);
-
-                              gh_manager::lock ();
-                            }
-                          else
-                            error ("drawnow: nothing to draw");
-                        }
-                      else
-                        error ("drawnow: invalid DEBUG_FILE, expected a string value");
-                    }
-                  else
-                    error ("drawnow: invalid colormode MONO, expected a boolean value");
+                    error ("drawnow: nothing to draw");
                 }
               else
-                error ("drawnow: invalid FILE, expected a string value");
+                error ("drawnow: invalid DEBUG_FILE, expected a string value");
             }
           else
-            error ("drawnow: invalid terminal TERM, expected a string value");
+            error ("drawnow: invalid colormode MONO, expected a boolean value");
         }
       else
         print_usage ();
@@ -11137,31 +11112,25 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
       if (! error_state)
         {
-          std::string pname = args(1).string_value ();
+          std::string pname = args(1).string_value ("addlistener: invalid property name, expected a string value");
 
-          if (! error_state)
+          graphics_handle gh = gh_manager::lookup (h);
+
+          if (gh.ok ())
             {
-              graphics_handle gh = gh_manager::lookup (h);
+              graphics_object go = gh_manager::get_object (gh);
 
-              if (gh.ok ())
+              go.add_property_listener (pname, args(2), POSTSET);
+
+              if (args.length () == 4)
                 {
-                  graphics_object go = gh_manager::get_object (gh);
-
-                  go.add_property_listener (pname, args(2), POSTSET);
-
-                  if (args.length () == 4)
-                    {
-                      caseless_str persistent = args(3).string_value ();
-                      if (persistent.compare ("persistent"))
-                        go.add_property_listener (pname, args(2), PERSISTENT);
-                    }
+                  caseless_str persistent = args(3).string_value ();
+                  if (persistent.compare ("persistent"))
+                    go.add_property_listener (pname, args(2), PERSISTENT);
                 }
-              else
-                error ("addlistener: invalid graphics object (= %g)",
-                       h);
             }
           else
-            error ("addlistener: invalid property name, expected a string value");
+            error ("addlistener: invalid graphics object (= %g)", h);
         }
       else
         error ("addlistener: invalid handle");
@@ -11210,39 +11179,32 @@ dellistener (gcf, \"position\", c);\n\
 
       if (! error_state)
         {
-          std::string pname = args(1).string_value ();
+          std::string pname = args(1).string_value ("dellistener: invalid property name, expected a string value");
 
-          if (! error_state)
+          graphics_handle gh = gh_manager::lookup (h);
+
+          if (gh.ok ())
             {
-              graphics_handle gh = gh_manager::lookup (h);
+              graphics_object go = gh_manager::get_object (gh);
 
-              if (gh.ok ())
-                {
-                  graphics_object go = gh_manager::get_object (gh);
-
-                  if (args.length () == 2)
-                    go.delete_property_listener (pname, octave_value (),
-                                                 POSTSET);
-                  else
-                    {
-                      if (args(2).is_string ()
-                          && args(2).string_value () == "persistent")
-                        {
-                          go.delete_property_listener (pname, octave_value (),
-                                                       PERSISTENT);
-                          go.delete_property_listener (pname, octave_value (),
-                                                       POSTSET);
-                        }
-                      else
-                        go.delete_property_listener (pname, args(2), POSTSET);
-                    }
-                }
+              if (args.length () == 2)
+                go.delete_property_listener (pname, octave_value (), POSTSET);
               else
-                error ("dellistener: invalid graphics object (= %g)",
-                       h);
+                {
+                  if (args(2).is_string ()
+                      && args(2).string_value () == "persistent")
+                    {
+                      go.delete_property_listener (pname, octave_value (),
+                                                   PERSISTENT);
+                      go.delete_property_listener (pname, octave_value (),
+                                                   POSTSET);
+                    }
+                  else
+                    go.delete_property_listener (pname, args(2), POSTSET);
+                }
             }
           else
-            error ("dellistener: invalid property name, expected a string value");
+            error ("dellistener: invalid graphics object (= %g)", h);
         }
       else
         error ("dellistener: invalid handle");
@@ -11331,46 +11293,36 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 
   if (args.length () >= 3)
     {
-      std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("addproperty: invalid property NAME, expected a string value");
+
+      double h = args(1).double_value ();
 
       if (! error_state)
         {
-          double h = args(1).double_value ();
+          graphics_handle gh = gh_manager::lookup (h);
 
-          if (! error_state)
+          if (gh.ok ())
             {
-              graphics_handle gh = gh_manager::lookup (h);
+              graphics_object go = gh_manager::get_object (gh);
 
-              if (gh.ok ())
+              std::string type = args(2).string_value ("addproperty: invalid property TYPE, expected a string value");
+
+              if (! go.get_properties ().has_property (name))
                 {
-                  graphics_object go = gh_manager::get_object (gh);
+                  property p = property::create (name, gh, type,
+                                                 args.splice (0, 3));
 
-                  std::string type = args(2).string_value ();
-
-                  if (! error_state)
-                    {
-                      if (! go.get_properties ().has_property (name))
-                        {
-                          property p = property::create (name, gh, type,
-                                                         args.splice (0, 3));
-
-                          go.get_properties ().insert_property (name, p);
-                        }
-                      else
-                        error ("addproperty: a '%s' property already exists in the graphics object",
-                               name.c_str ());
-                    }
-                  else
-                    error ("addproperty: invalid property TYPE, expected a string value");
+                  go.get_properties ().insert_property (name, p);
                 }
               else
-                error ("addproperty: invalid graphics object (= %g)", h);
+                error ("addproperty: a '%s' property already exists in the graphics object",
+                       name.c_str ());
             }
           else
-            error ("addproperty: invalid handle value");
+            error ("addproperty: invalid graphics object (= %g)", h);
         }
       else
-        error ("addproperty: invalid property NAME, expected a string value");
+        error ("addproperty: invalid handle value");
     }
   else
     print_usage ();

@@ -143,15 +143,7 @@ in control (see @code{are} and @code{dare}).\n\
   std::string ord;
 
   if (nargin == 2)
-    {
-      if (args(1).is_string ())
-        ord = args(1).string_value ();
-      else
-        {
-          error ("schur: second argument must be a string");
-          return retval;
-        }
-    }
+    ord = args(1).string_value ("schur: second argument must be a string");
 
   bool force_complex = false;
 

@@ -167,21 +167,16 @@ longer running time.\n\
     }
   else if (nargin == 2)
     {
-      if (args(0).is_string ())
-        {
-          std::string str = args(0).string_value ();
+      std::string str = args(0).string_value ("spparms: first argument must be a string");
 
-          double val = args(1).double_value ();
+      double val = args(1).double_value ();
 
-          if (error_state)
-            error ("spparms: second argument must be a real scalar");
-          else if (str == "umfpack")
-            warning ("spparms: request to disable umfpack solvers ignored");
-          else if (!octave_sparse_params::set_key (str, val))
-            error ("spparms: KEY not found");
-        }
-      else
-        error ("spparms: first argument must be a string");
+      if (error_state)
+        error ("spparms: second argument must be a real scalar");
+      else if (str == "umfpack")
+        warning ("spparms: request to disable umfpack solvers ignored");
+      else if (!octave_sparse_params::set_key (str, val))
+        error ("spparms: KEY not found");
     }
   else
     error ("spparms: too many input arguments");

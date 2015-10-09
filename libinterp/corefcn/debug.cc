@@ -1417,38 +1417,33 @@ function returns.\n\
         print_usage ();
       else if (nargin == 1)
         {
-          if (args(0).is_string ())
+          std::string arg = args(0).string_value ("dbstep: input argument must be a string");
+
+          if (arg == "in")
             {
-              std::string arg = args(0).string_value ();
+              Vdebugging = false;
 
-              if (arg == "in")
-                {
-                  Vdebugging = false;
+              tree_evaluator::dbstep_flag = -1;
+            }
+          else if (arg == "out")
+            {
+              Vdebugging = false;
 
-                  tree_evaluator::dbstep_flag = -1;
-                }
-              else if (arg == "out")
-                {
-                  Vdebugging = false;
-
-                  tree_evaluator::dbstep_flag = -2;
-                }
-              else
-                {
-                  int n = atoi (arg.c_str ());
-
-                  if (n > 0)
-                    {
-                      Vdebugging = false;
-
-                      tree_evaluator::dbstep_flag = n;
-                    }
-                  else
-                    error ("dbstep: invalid argument");
-                }
+              tree_evaluator::dbstep_flag = -2;
             }
           else
-            error ("dbstep: input argument must be a string");
+            {
+              int n = atoi (arg.c_str ());
+
+              if (n > 0)
+                {
+                  Vdebugging = false;
+
+                  tree_evaluator::dbstep_flag = n;
+                }
+              else
+                error ("dbstep: invalid argument");
+            }
         }
       else
         {

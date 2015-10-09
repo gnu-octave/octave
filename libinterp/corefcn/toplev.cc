@@ -1037,23 +1037,15 @@ command shell that is started to run the command.\n\
 
       if (nargin == 3)
         {
-          if (args(2).is_string ())
-            {
-              std::string type_str = args(2).string_value ();
+          std::string type_str = args(2).string_value ("system: TYPE must be a string");
 
-              if (type_str == "sync")
-                type = et_sync;
-              else if (type_str == "async")
-                type = et_async;
-              else
-                {
-                  error ("system: TYPE must be \"sync\" or \"async\"");
-                  return retval;
-                }
-            }
+          if (type_str == "sync")
+            type = et_sync;
+          else if (type_str == "async")
+            type = et_async;
           else
             {
-              error ("system: TYPE must be a string");
+              error ("system: TYPE must be \"sync\" or \"async\"");
               return retval;
             }
         }
@@ -1075,75 +1067,70 @@ command shell that is started to run the command.\n\
           return retval;
         }
 
-      std::string cmd_str = args(0).string_value ();
+      std::string cmd_str = args(0).string_value ("system: expecting string as first argument");
 
-      if (! error_state)
-        {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-          // Work around weird double-quote handling on Windows systems.
-          if (type == et_sync)
-            cmd_str = "\"" + cmd_str + "\"";
+      // Work around weird double-quote handling on Windows systems.
+      if (type == et_sync)
+        cmd_str = "\"" + cmd_str + "\"";
 #endif
 
-          if (type == et_async)
-            {
-              // FIXME: maybe this should go in sysdep.cc?
+      if (type == et_async)
+        {
+          // FIXME: maybe this should go in sysdep.cc?
 #ifdef HAVE_FORK
-              pid_t pid = fork ();
+          pid_t pid = fork ();
 
-              if (pid < 0)
-                error ("system: fork failed -- can't create child process");
-              else if (pid == 0)
-                {
-                  // FIXME: should probably replace this
-                  // call with something portable.
+          if (pid < 0)
+            error ("system: fork failed -- can't create child process");
+          else if (pid == 0)
+            {
+              // FIXME: should probably replace this
+              // call with something portable.
 
-                  execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
-                         static_cast<void *> (0));
+              execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
+                     static_cast<void *> (0));
 
-                  panic_impossible ();
-                }
-              else
-                retval(0) = pid;
-#elif defined (__WIN32__)
-              STARTUPINFO si;
-              PROCESS_INFORMATION pi;
-              ZeroMemory (&si, sizeof (si));
-              ZeroMemory (&pi, sizeof (pi));
-              OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length ()+1);
-              strcpy (xcmd_str, cmd_str.c_str ());
-
-              if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
-                error ("system: CreateProcess failed -- can't create child process");
-              else
-                {
-                  retval(0) = pi.dwProcessId;
-                  CloseHandle (pi.hProcess);
-                  CloseHandle (pi.hThread);
-                }
-#else
-              error ("asynchronous system calls are not supported");
-#endif
+              panic_impossible ();
             }
-          else if (return_output)
-            retval = run_command_and_return_output (cmd_str);
+          else
+            retval(0) = pid;
+#elif defined (__WIN32__)
+          STARTUPINFO si;
+          PROCESS_INFORMATION pi;
+          ZeroMemory (&si, sizeof (si));
+          ZeroMemory (&pi, sizeof (pi));
+          OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length ()+1);
+          strcpy (xcmd_str, cmd_str.c_str ());
+
+          if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
+            error ("system: CreateProcess failed -- can't create child process");
           else
             {
-              int status = system (cmd_str.c_str ());
-
-              // The value in status is as returned by waitpid.  If
-              // the process exited normally, extract the actual exit
-              // status of the command.  Otherwise, return 127 as a
-              // failure code.
-
-              if (octave_wait::ifexited (status))
-                status = octave_wait::exitstatus (status);
-
-              retval(0) = status;
+              retval(0) = pi.dwProcessId;
+              CloseHandle (pi.hProcess);
+              CloseHandle (pi.hThread);
             }
+#else
+          error ("asynchronous system calls are not supported");
+#endif
         }
+      else if (return_output)
+        retval = run_command_and_return_output (cmd_str);
       else
-        error ("system: expecting string as first argument");
+        {
+          int status = system (cmd_str.c_str ());
+
+          // The value in status is as returned by waitpid.  If
+          // the process exited normally, extract the actual exit
+          // status of the command.  Otherwise, return 127 as a
+          // failure code.
+
+          if (octave_wait::ifexited (status))
+            status = octave_wait::exitstatus (status);
+
+          retval(0) = status;
+        }
     }
   else
     print_usage ();
@@ -1235,32 +1222,27 @@ from the list, so if a function was placed in the list multiple times with\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      if (args(0).is_string ())
+      std::string arg = args(0).string_value ("atexit: FCN argument must be a string");
+
+      bool add_mode = true;
+
+      if (nargin == 2)
         {
-          std::string arg = args(0).string_value ();
+          add_mode = args(1).bool_value ();
 
-          bool add_mode = true;
-
-          if (nargin == 2)
-            {
-              add_mode = args(1).bool_value ();
-
-              if (error_state)
-                error ("atexit: FLAG argument must be a logical value");
-            }
-
-          if (add_mode)
-            octave_add_atexit_function (arg);
-          else
-            {
-              bool found = octave_remove_atexit_function (arg);
-
-              if (nargout > 0)
-                retval(0) = found;
-            }
+          if (error_state)
+            error ("atexit: FLAG argument must be a logical value");
         }
+
+      if (add_mode)
+        octave_add_atexit_function (arg);
       else
-        error ("atexit: FCN argument must be a string");
+        {
+          bool found = octave_remove_atexit_function (arg);
+
+          if (nargout > 0)
+            retval(0) = found;
+        }
     }
   else
     print_usage ();

@@ -393,32 +393,27 @@ If no files are found, return an empty cell array.\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      if (args(0).is_string ())
+      std::string path = args(0).string_value ("file_in_path: PATH must be a string");
+
+      string_vector names = args(1).all_strings ();
+
+      if (! error_state && names.numel () > 0)
         {
-          std::string path = args(0).string_value ();
-
-          string_vector names = args(1).all_strings ();
-
-          if (! error_state && names.numel () > 0)
+          if (nargin == 2)
+            retval = search_path_for_file (path, names);
+          else if (nargin == 3)
             {
-              if (nargin == 2)
-                retval = search_path_for_file (path, names);
-              else if (nargin == 3)
-                {
-                  std::string opt = args(2).string_value ();
+              std::string opt = args(2).string_value ();
 
-                  if (! error_state && opt == "all")
-                    retval = Cell (make_absolute
-                                   (search_path_for_all_files (path, names)));
-                  else
-                    error ("file_in_path: invalid option");
-                }
+              if (! error_state && opt == "all")
+                retval = Cell (make_absolute
+                               (search_path_for_all_files (path, names)));
+              else
+                error ("file_in_path: invalid option");
             }
-          else
-            error ("file_in_path: all arguments must be strings");
         }
       else
-        error ("file_in_path: PATH must be a string");
+        error ("file_in_path: all arguments must be strings");
     }
   else
     print_usage ();
@@ -761,10 +756,9 @@ Escape sequences begin with a leading backslash\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        retval = do_string_escapes (args(0).string_value ());
-      else
-        error ("do_string_escapes: STRING argument must be of type string");
+      std::string str = args(0).string_value ("do_string_escapes: STRING argument must be of type string");
+
+      retval = do_string_escapes (str);
     }
   else
     print_usage ();
@@ -905,10 +899,9 @@ replaces the unprintable alert character with its printable representation.\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        retval = undo_string_escapes (args(0).string_value ());
-      else
-        error ("undo_string_escapes: S argument must be a string");
+      std::string str = args(0).string_value ("undo_string_escapes: S argument must be a string");
+
+      retval = undo_string_escapes (str);
     }
   else
     print_usage ();
@@ -1002,12 +995,9 @@ No check is done for the existence of @var{file}.\n\
 
   if (args.length () == 1)
     {
-      std::string nm = args(0).string_value ();
+      std::string nm = args(0).string_value ("make_absolute_filename: FILE argument must be a file name");
 
-      if (! error_state)
-        retval = octave_env::make_absolute (nm);
-      else
-        error ("make_absolute_filename: FILE argument must be a file name");
+      retval = octave_env::make_absolute (nm);
     }
   else
     print_usage ();
@@ -1047,17 +1037,12 @@ all name matches rather than just the first.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      dir = args(0).string_value ();
+      dir = args(0).string_value ("dir_in_loadpath: DIR must be a directory name");
 
-      if (! error_state)
-        {
-          if (nargin == 1)
-            retval = load_path::find_dir (dir);
-          else if (nargin == 2)
-            retval = Cell (load_path::find_matching_dirs (dir));
-        }
-      else
-        error ("dir_in_loadpath: DIR must be a directory name");
+      if (nargin == 1)
+        retval = load_path::find_dir (dir);
+      else if (nargin == 2)
+        retval = Cell (load_path::find_matching_dirs (dir));
     }
   else
     print_usage ();

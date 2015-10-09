@@ -80,35 +80,21 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
 
   for (int i = 1; i < nargin; i++)
     {
-      if (args(i).is_defined ())
+      std::string s = args(i).string_value ("colloc: expecting string argument \"left\" or \"right\"");
+
+      if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
+          || s == "right")
         {
-          if (! args(i).is_string ())
-            {
-              error ("colloc: expecting string argument \"left\" or \"right\"");
-              return retval;
-            }
-
-          std::string s = args(i).string_value ();
-
-          if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
-              || s == "right")
-            {
-              right = 1;
-            }
-          else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
-                   || s == "left")
-            {
-              left = 1;
-            }
-          else
-            {
-              error ("colloc: unrecognized argument");
-              return retval;
-            }
+          right = 1;
+        }
+      else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
+               || s == "left")
+        {
+          left = 1;
         }
       else
         {
-          error ("colloc: unexpected empty argument");
+          error ("colloc: unrecognized argument");
           return retval;
         }
     }

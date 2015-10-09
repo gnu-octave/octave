@@ -1688,20 +1688,16 @@ determine whether functions defined in function files need to recompiled.\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string sval = args(0).string_value ();
-          if (sval == "all")
-            Vignore_function_time_stamp = 2;
-          else if (sval == "system")
-            Vignore_function_time_stamp = 1;
-          else if (sval == "none")
-            Vignore_function_time_stamp = 0;
-          else
-            error ("ignore_function_time_stamp: argument must be \"all\", \"system\", or \"none\"");
-        }
+      std::string sval = args(0).string_value ("ignore_function_time_stamp: expecting argument to be a string");
+
+      if (sval == "all")
+        Vignore_function_time_stamp = 2;
+      else if (sval == "system")
+        Vignore_function_time_stamp = 1;
+      else if (sval == "none")
+        Vignore_function_time_stamp = 0;
       else
-        error ("ignore_function_time_stamp: expecting argument to be character string");
+        error ("ignore_function_time_stamp: argument must be \"all\", \"system\", or \"none\"");
     }
   else if (nargin > 1)
     print_usage ();
@@ -1823,27 +1819,22 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("__get_cmd_line_function_text__: expecting function name");
 
-      if (! error_state)
+      octave_value ov = symbol_table::find_cmdline_function (name);
+
+      octave_user_function *f = ov.user_function_value ();
+
+      if (f)
         {
-          octave_value ov = symbol_table::find_cmdline_function (name);
+          std::ostringstream buf;
 
-          octave_user_function *f = ov.user_function_value ();
+          tree_print_code tpc (buf);
 
-          if (f)
-            {
-              std::ostringstream buf;
+          f->accept (tpc);
 
-              tree_print_code tpc (buf);
-
-              f->accept (tpc);
-
-              retval = buf.str ();
-            }
+          retval = buf.str ();
         }
-      else
-        error ("__get_cmd_line_function_text__: expecting function name");
     }
   else
     print_usage ();
@@ -1861,12 +1852,9 @@ DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 
   if (args.length () == 2)
     {
-      std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("set_variable: expecting variable name as first argument");
 
-      if (! error_state)
-        symbol_table::assign (name, args(1));
-      else
-        error ("set_variable: expecting variable name as first argument");
+      symbol_table::assign (name, args(1));
     }
   else
     print_usage ();
@@ -1880,18 +1868,13 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
+      std::string name = args(0).string_value ("variable_value: expecting variable name as first argument");
 
-      if (! error_state)
-        {
-          retval = symbol_table::varval (name);
+      retval = symbol_table::varval (name);
 
-          if (retval.is_undefined ())
-            error ("variable_value: '%s' is not a variable in the current scope",
-                   name.c_str ());
-        }
-      else
-        error ("variable_value: expecting variable name as first argument");
+      if (retval.is_undefined ())
+        error ("variable_value: '%s' is not a variable in the current scope",
+               name.c_str ());
     }
   else
     print_usage ();

@@ -770,6 +770,8 @@ public:
 
   Cell cell_value (void) const;
 
+  Cell cell_value (const char *fmt, ...) const;
+
   Matrix matrix_value (bool frc_str_conv = false) const
   { return rep->matrix_value (frc_str_conv); }
 

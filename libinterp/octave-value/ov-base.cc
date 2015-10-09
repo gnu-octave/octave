@@ -537,6 +537,33 @@ octave_base_value::cell_value () const
   return retval;
 }
 
+Cell
+octave_base_value::cell_value (const char *fmt, va_list args) const
+{
+  // Note that this method does not need to be particularly efficient
+  // since it is already an error to end up here.
+
+  // FIXME: do we want both the wrong-type-argument error and any custom
+  // error message, or just the custom error message, or should that
+  // behavior be optional in some way?
+
+  try
+    {
+      std::string tn = type_name ();
+
+      error ("wrong type argument '%s'\n", tn.c_str ());
+    }
+  catch (const octave_execution_exception&)
+    {
+      if (fmt)
+        verror (fmt, args);
+
+      throw;
+    }
+
+  return Cell ();
+}
+
 Matrix
 octave_base_value::matrix_value (bool) const
 {

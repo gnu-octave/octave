@@ -1550,6 +1550,15 @@ octave_value::cell_value (void) const
   return rep->cell_value ();
 }
 
+Cell
+octave_value::cell_value (const char *fmt, ...) const
+{
+  va_list args;
+  va_start (args,fmt);
+  return rep->cell_value (fmt, args);
+  va_end (args);
+}
+
 // Define the idx_type_value function here instead of in ov.h to avoid
 // needing definitions for the SIZEOF_X macros in ov.h.
 

@@ -481,6 +481,8 @@ public:
 
   virtual Cell cell_value (void) const;
 
+  virtual Cell cell_value (const char *fmt, va_list args) const;
+
   virtual Matrix matrix_value (bool = false) const;
 
   virtual FloatMatrix float_matrix_value (bool = false) const;

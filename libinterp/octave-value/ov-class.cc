@@ -1301,13 +1301,7 @@ octave_class::load_ascii (std::istream& is)
                   if (! is)
                     break;
 
-                  Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-                  if (error_state)
-                    {
-                      error ("load: internal error loading class elements");
-                      return false;
-                    }
+                  Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading class elements") : Cell (t2);
 
                   m.assign (nm, tcell);
                 }
@@ -1444,13 +1438,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-          if (error_state)
-            {
-              error ("load: internal error loading class elements");
-              return false;
-            }
+          Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading class elements") : Cell (t2);
 
           m.assign (nm, tcell);
         }
@@ -1684,13 +1672,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
-
-      if (error_state)
-        {
-          error ("load: internal error loading class elements");
-          return false;
-        }
+      Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading class elements") : Cell (t2);
 
       m.assign (dsub.name, tcell);
 

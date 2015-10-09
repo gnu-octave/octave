@@ -2463,26 +2463,21 @@ endfor\n\
 
   if (args.length () >= 1)
     {
-      if (args(0).is_cell ())
+      const Cell x = args(0).cell_value ("cellindexmat: X must be a cell");
+      NoAlias<Cell> y(x.dims ());
+      octave_idx_type nel = x.numel ();
+      octave_value_list idx = args.slice (1, args.length () - 1);
+
+      for (octave_idx_type i = 0; i < nel; i++)
         {
-          const Cell x = args(0).cell_value ();
-          NoAlias<Cell> y(x.dims ());
-          octave_idx_type nel = x.numel ();
-          octave_value_list idx = args.slice (1, args.length () - 1);
+          octave_quit ();
 
-          for (octave_idx_type i = 0; i < nel; i++)
-            {
-              octave_quit ();
+          octave_value tmp = x(i);
 
-              octave_value tmp = x(i);
-
-              y(i) = tmp.do_index_op (idx);
-            }
-
-          retval = y;
+          y(i) = tmp.do_index_op (idx);
         }
-      else
-        error ("cellindexmat: X must be a cell");
+
+      retval = y;
     }
   else
     print_usage ();

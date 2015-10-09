@@ -59,7 +59,14 @@ GRAPH_PROP_TEXI_SRC = \
   doc/interpreter/plot-patchproperties.texi \
   doc/interpreter/plot-rootproperties.texi \
   doc/interpreter/plot-surfaceproperties.texi \
-  doc/interpreter/plot-textproperties.texi
+  doc/interpreter/plot-textproperties.texi \
+  doc/interpreter/plot-uimenuproperties.texi \
+  doc/interpreter/plot-uicontextmenuproperties.texi \
+  doc/interpreter/plot-uipanelproperties.texi \
+  doc/interpreter/plot-uicontrolproperties.texi \
+  doc/interpreter/plot-uitoolbarproperties.texi \
+  doc/interpreter/plot-uipushtoolproperties.texi \
+  doc/interpreter/plot-uitoggletoolproperties.texi
 
 $(GRAPH_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS)
 
@@ -92,6 +99,27 @@ doc/interpreter/plot-surfaceproperties.texi: doc/interpreter/genpropdoc.m
 
 doc/interpreter/plot-textproperties.texi: doc/interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,text)
+
+doc/interpreter/plot-uimenuproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uimenu)
+
+doc/interpreter/plot-uicontextmenuproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uicontextmenu)
+
+doc/interpreter/plot-uipanelproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uipanel)
+
+doc/interpreter/plot-uicontrolproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uicontrol)
+
+doc/interpreter/plot-uitoolbarproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uitoolbar)
+
+doc/interpreter/plot-uipushtoolproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uipushtool)
+
+doc/interpreter/plot-uitoggletoolproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uitoggletool)
 
 dist_man_MANS = \
   doc/interpreter/mkoctfile.1 \

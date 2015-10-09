@@ -1003,9 +1003,8 @@ commands can be used to save and re-create a graphics object.
 @subsection Interacting with Plots
 
 The user can select points on a plot with the @code{ginput} function or
-selection the position at which to place text on the plot with the
-@code{gtext} function using the mouse.  Menus may also be created
-and populated with specific user commands via the @code{uimenu} function.
+select the position at which to place text on the plot with the
+@code{gtext} function using the mouse.  
 
 @DOCSTRING(ginput)
 
@@ -1013,7 +1012,8 @@ and populated with specific user commands via the @code{uimenu} function.
 
 @DOCSTRING(gtext)
 
-@DOCSTRING(uimenu)
+More sophisticated user interaction mechanisms can be obtained using the ui*
+family of functions, @pxref{UI Elements}.
 
 @node Test Plotting Functions
 @subsection Test Plotting Functions
@@ -1370,6 +1370,13 @@ struct2hdl (fig_struct);
 * Image Properties::
 * Patch Properties::
 * Surface Properties::
+* Uimenu Properties::
+* Uicontextmenu Properties::
+* Uipanel Properties::
+* Uicontrol Properties::
+* Uitoolbar Properties::
+* Uipushtool Properties::
+* Uitoggletool Properties::
 @end menu
 
 In this Section the graphics object properties are discussed in detail, starting
@@ -1455,6 +1462,61 @@ The @code{surface} properties are:
 
 @include plot-surfaceproperties.texi
 
+@node Uimenu Properties
+@subsubsection Uimenu Properties
+@cindex uimenu properties
+
+The @code{uimenu} properties are:
+
+@include plot-uimenuproperties.texi
+
+@node Uicontextmenu Properties
+@subsubsection Uicontextmenu Properties
+@cindex uicontextmenu properties
+
+The @code{uicontextmenu} properties are:
+
+@include plot-uicontextmenuproperties.texi
+
+@node Uipanel Properties
+@subsubsection Uipanel Properties
+@cindex uipanel properties
+
+The @code{uipanel} properties are:
+
+@include plot-uipanelproperties.texi
+
+@node Uicontrol Properties
+@subsubsection Uicontrol Properties
+@cindex uicontrol properties
+
+The @code{uicontrol} properties are:
+
+@include plot-uicontrolproperties.texi
+
+@node Uitoolbar Properties
+@subsubsection Uitoolbar Properties
+@cindex uitoolbar properties
+
+The @code{uitoolbar} properties are:
+
+@include plot-uitoolbarproperties.texi
+
+@node Uipushtool Properties
+@subsubsection Uipushtool Properties
+@cindex uipushtool properties
+
+The @code{uipushtool} properties are:
+
+@include plot-uipushtoolproperties.texi
+
+@node Uitoggletool Properties
+@subsubsection Uitoggletool Properties
+@cindex uitoggletool properties
+
+The @code{uitoggletool} properties are:
+
+@include plot-uitoggletoolproperties.texi
 
 @node Searching Properties
 @subsection Searching Properties

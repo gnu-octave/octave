@@ -30,7 +30,9 @@
 
 function genpropdoc (objname, fname)
   objnames = {"root", "figure", "axes", "line", ...
-              "text", "image", "patch", "surface"};
+              "text", "image", "patch", "surface", ...
+              "uimenu", "uicontextmenu", "uipanel", ...
+              "uicontrol", "uitoolbar", "uipushtool", "uitoggletool"};
 
   ## Base properties
   base = getstructure ("base");
@@ -1233,6 +1235,140 @@ it defines the color at each vertex.";
 
       case "zdata"
         s.valid = valid_vecmat;
+
+    endswitch
+      
+  ## uimenu properties
+  elseif (strcmp (objname, "uimenu"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "accelerator"
+      case "callback"
+      case "checked"
+      case "enable"
+      case "foregroundcolor"
+      case "label"
+      case "position"
+      case "separator"  
+        
+    endswitch
+
+  ## uicontextmenu properties
+  elseif (strcmp (objname, "uicontextmenu"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "callback"
+      case "position" 
+        
+    endswitch
+
+  ## uipanel properties
+  elseif (strcmp (objname, "uipanel"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+      case "backgroundcolor"
+      case "bordertype"
+      case "borderwidth"
+      case "fontangle"
+      case "fontname"
+      case "fontsize"
+      case "fontunits"
+      case "fontweight"
+      case "foregroundcolor"
+      case "highlightcolor"
+      case "position"
+      case "resizefcn"
+      case "shadowcolor"
+      case "title"
+      case "titleposition"
+      case "units"
+
+    endswitch
+
+  ## uicontrol properties
+  elseif (strcmp (objname, "uicontrol"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+      case "backgroundcolor"
+      case "callback"
+      case "cdata"
+      case "enable"
+      case "extent"
+      case "fontangle"
+      case "fontname"
+      case "fontsize"
+      case "fontunits"
+      case "fontweight"
+      case "foregroundcolor"
+      case "horizontalalignment"
+      case "keypressfcn"
+      case "listboxtop"
+      case "max"
+      case "min"
+      case "position"
+      case "sliderstep"
+      case "string"
+      case "style"
+      case "tooltipstring"
+      case "units"
+      case "value"
+      case "verticalalignment"
+
+    endswitch
+
+  ## uitoolbar properties
+  elseif (strcmp (objname, "uitoolbar"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+    endswitch
+
+  ## uipushtool properties
+  elseif (strcmp (objname, "uipushtool"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "cdata"
+      case "clickedcallback"
+      case "enable"
+      case "separator"
+      case "tooltipstring"
+
+    endswitch
+
+  ## uitoggletool properties
+  elseif (strcmp (objname, "uitoggletool"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "cdata"
+      case "clickedcallback"
+      case "enable"
+      case "offcallback"
+      case "oncallback"
+      case "separator"
+      case "state"
+      case "tooltipstring"
 
     endswitch
   endif

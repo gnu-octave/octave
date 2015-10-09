@@ -5321,7 +5321,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uimenu)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
       string_property accelerator , ""
       callback_property callback , Matrix ()
       bool_property checked , "off"
@@ -5387,7 +5387,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontextmenu)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
       callback_property callback , Matrix ()
       array_property position , Matrix (1, 2, 0.0)
     END_PROPERTIES
@@ -5449,7 +5449,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontrol)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
       color_property backgroundcolor , color_values (1, 1, 1)
       callback_property callback , Matrix ()
       array_property cdata , Matrix ()
@@ -5547,7 +5547,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipanel)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
       color_property backgroundcolor , color_values (1, 1, 1)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
@@ -5615,7 +5615,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uitoolbar)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -5715,7 +5715,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipushtool)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
       array_property cdata , Matrix ()
       callback_property clickedcallback , Matrix ()
       bool_property enable , "on"
@@ -5771,7 +5771,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uitoggletool)
-      any_property __object__ , Matrix ()
+      any_property __object__ h , Matrix ()
       array_property cdata , Matrix ()
       callback_property clickedcallback , Matrix ()
       bool_property enable , "on"

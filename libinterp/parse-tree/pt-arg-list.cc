@@ -240,20 +240,20 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
       if (elt)
         {
-          octave_value tmp = elt->rvalue1 ();
+          try
+            {
+              octave_value tmp = elt->rvalue1 ();
 
-          if (error_state)
-            {
-              error ("evaluating argument list element number %d", k+1);
-              args.clear ();
-              break;
-            }
-          else
-            {
               if (tmp.is_cs_list ())
                 args.push_back (tmp.list_value ());
               else if (tmp.is_defined ())
                 args.push_back (tmp);
+            }
+          catch (const octave_execution_exception&)
+            {
+              args.clear ();
+
+              error ("evaluating argument list element number %d", k+1);
             }
         }
       else

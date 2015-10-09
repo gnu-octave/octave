@@ -90,64 +90,46 @@ tree_colon_expression::rvalue1 (int)
 
   octave_value ov_base = op_base->rvalue1 ();
 
-  if (error_state || ov_base.is_undefined ())
-    eval_error ("invalid base value in colon expression");
-  else
+  octave_value ov_limit = op_limit->rvalue1 ();
+
+  if (ov_base.is_object () || ov_limit.is_object ())
     {
-      octave_value ov_limit = op_limit->rvalue1 ();
+      octave_value_list tmp1;
 
-      if (error_state || ov_limit.is_undefined ())
-        eval_error ("invalid limit value in colon expression");
-      else if (ov_base.is_object () || ov_limit.is_object ())
+      if (op_increment)
         {
-          octave_value_list tmp1;
+          octave_value ov_increment = op_increment->rvalue1 ();
 
-          if (op_increment)
-            {
-              octave_value ov_increment = op_increment->rvalue1 ();
-
-              if (error_state || ov_increment.is_undefined ())
-                eval_error ("invalid increment value in colon expression");
-              else
-                {
-                  tmp1(2) = ov_limit;
-                  tmp1(1) = ov_increment;
-                  tmp1(0) = ov_base;
-                }
-            }
-          else
-            {
-              tmp1(1) = ov_limit;
-              tmp1(0) = ov_base;
-            }
-
-          octave_value fcn = symbol_table::find_function ("colon", tmp1);
-
-          if (fcn.is_defined ())
-            {
-              octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-
-              if (! error_state)
-                retval = tmp2 (0);
-            }
-          else
-            error ("can not find overloaded colon function");
+          tmp1(2) = ov_limit;
+          tmp1(1) = ov_increment;
+          tmp1(0) = ov_base;
         }
       else
         {
-          octave_value ov_increment = 1.0;
-
-          if (op_increment)
-            {
-              ov_increment = op_increment->rvalue1 ();
-
-              if (error_state || ov_increment.is_undefined ())
-                eval_error ("invalid increment value in colon expression");
-            }
-
-          retval = do_colon_op (ov_base, ov_increment, ov_limit,
-                                is_for_cmd_expr ());
+          tmp1(1) = ov_limit;
+          tmp1(0) = ov_base;
         }
+
+      octave_value fcn = symbol_table::find_function ("colon", tmp1);
+
+      if (fcn.is_defined ())
+        {
+          octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+
+          retval = tmp2 (0);
+        }
+      else
+        error ("can not find overloaded colon function");
+    }
+  else
+    {
+      octave_value ov_increment = 1.0;
+
+      if (op_increment)
+        ov_increment = op_increment->rvalue1 ();
+
+      retval = do_colon_op (ov_base, ov_increment, ov_limit,
+                            is_for_cmd_expr ());
     }
 
   return retval;

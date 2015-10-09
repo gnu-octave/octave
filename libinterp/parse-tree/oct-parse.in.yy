@@ -4548,15 +4548,7 @@ the file name and the extension.\n\
   std::string arg;
 
   if (nargin == 1)
-    {
-      arg = args(0).string_value ();
-
-      if (error_state)
-        {
-          error ("mfilename: expecting argument to be a character string");
-          return retval;
-        }
-    }
+    arg = args(0).string_value ("mfilename: expecting argument to be a character string");
 
   std::string fname;
 
@@ -4607,22 +4599,14 @@ requiring the file to be named @file{@var{file}.m}.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string file_name = args(0).string_value ();
+      std::string file_name = args(0).string_value ("source: expecting file name as argument");
 
-      if (! error_state)
-        {
-          std::string context;
+      std::string context;
 
-          if (nargin == 2)
-            context = args(1).string_value ();
+      if (nargin == 2)
+        context = args(1).string_value ("source: expecting context to be character string");
 
-          if (! error_state)
-            source_file (file_name, context);
-          else
-            error ("source: expecting context to be character string");
-        }
-      else
-        error ("source: expecting file name as argument");
+      source_file (file_name, context);
     }
   else
     print_usage ();
@@ -4801,20 +4785,14 @@ builtin (\"sin\", 0)\n\
 
   if (nargin > 0)
     {
-      const std::string name (args(0).string_value ());
+      const std::string name (args(0).string_value ("builtin: function name (F) must be a string"));
 
-      if (! error_state)
-        {
-          octave_value fcn = symbol_table::builtin_find (name);
+      octave_value fcn = symbol_table::builtin_find (name);
 
-          if (fcn.is_defined ())
-            retval = feval (fcn.function_value (), args.splice (0, 1),
-                            nargout);
-          else
-            error ("builtin: lookup for symbol '%s' failed", name.c_str ());
-        }
+      if (fcn.is_defined ())
+        retval = feval (fcn.function_value (), args.splice (0, 1), nargout);
       else
-        error ("builtin: function name (F) must be a string");
+        error ("builtin: lookup for symbol '%s' failed", name.c_str ());
     }
   else
     print_usage ();
@@ -4907,13 +4885,7 @@ static octave_value_list
 eval_string (const octave_value& arg, bool silent, int& parse_status,
              int nargout)
 {
-  std::string s = arg.string_value ();
-
-  if (error_state)
-    {
-      error ("eval: expecting std::string argument");
-      return octave_value (-1);
-    }
+  std::string s = arg.string_value ("eval: expecting std::string argument");
 
   return eval_string (s, silent, parse_status, nargout);
 }
@@ -5077,35 +5049,25 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 
   if (nargin == 3)
     {
-      std::string context = args(0).string_value ();
+      std::string context = args(0).string_value ("assignin: CONTEXT must be a string");
 
-      if (! error_state)
-        {
-          unwind_protect frame;
+      unwind_protect frame;
 
-          if (context == "caller")
-            octave_call_stack::goto_caller_frame ();
-          else if (context == "base")
-            octave_call_stack::goto_base_frame ();
-          else
-            error ("assignin: CONTEXT must be \"caller\" or \"base\"");
-
-          frame.add_fcn (octave_call_stack::pop);
-
-          std::string nm = args(1).string_value ();
-
-          if (! error_state)
-            {
-              if (valid_identifier (nm))
-                symbol_table::assign (nm, args(2));
-              else
-                error ("assignin: invalid variable name in argument VARNAME");
-            }
-          else
-            error ("assignin: VARNAME must be a string");
-        }
+      if (context == "caller")
+        octave_call_stack::goto_caller_frame ();
+      else if (context == "base")
+        octave_call_stack::goto_base_frame ();
       else
-        error ("assignin: CONTEXT must be a string");
+        error ("assignin: CONTEXT must be \"caller\" or \"base\"");
+
+      frame.add_fcn (octave_call_stack::pop);
+
+      std::string nm = args(1).string_value ("assignin: VARNAME must be a string");
+
+      if (valid_identifier (nm))
+        symbol_table::assign (nm, args(2));
+      else
+        error ("assignin: invalid variable name in argument VARNAME");
     }
   else
     print_usage ();
@@ -5128,69 +5090,64 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 
   if (nargin > 1)
     {
-      std::string context = args(0).string_value ();
+      std::string context = args(0).string_value ("evalin: CONTEXT must be a string");
 
-      if (! error_state)
+      unwind_protect frame;
+
+      if (context == "caller")
+        octave_call_stack::goto_caller_frame ();
+      else if (context == "base")
+        octave_call_stack::goto_base_frame ();
+      else
+        error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+
+      frame.add_fcn (octave_call_stack::pop);
+
+      if (nargin > 2)
         {
-          unwind_protect frame;
+          frame.protect_var (buffer_error_messages);
+          buffer_error_messages++;
+        }
 
-          if (context == "caller")
-            octave_call_stack::goto_caller_frame ();
-          else if (context == "base")
-            octave_call_stack::goto_base_frame ();
-          else
-            error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+      int parse_status = 0;
 
-          frame.add_fcn (octave_call_stack::pop);
+      bool execution_error = false;
 
-          if (nargin > 2)
-            {
-              frame.protect_var (buffer_error_messages);
-              buffer_error_messages++;
-            }
+      octave_value_list tmp;
 
-          int parse_status = 0;
+      try
+        {
+          tmp = eval_string (args(1), nargout > 0,
+                             parse_status, nargout);
+        }
+      catch (const octave_execution_exception&)
+        {
+          execution_error = true;
+        }
 
-          bool execution_error = false;
+      if (nargin > 2 && (parse_status != 0 || execution_error))
+        {
+          // Set up for letting the user print any messages from
+          // errors that occurred in the first part of this eval().
 
-          octave_value_list tmp;
+          buffer_error_messages--;
 
-          try
-            {
-              tmp = eval_string (args(1), nargout > 0,
-                                 parse_status, nargout);
-            }
-          catch (const octave_execution_exception&)
-            {
-              execution_error = true;
-            }
+          tmp = eval_string (args(2), nargout > 0,
+                             parse_status, nargout);
 
-          if (nargin > 2 && (parse_status != 0 || execution_error))
-            {
-              // Set up for letting the user print any messages from
-              // errors that occurred in the first part of this eval().
-
-              buffer_error_messages--;
-
-              tmp = eval_string (args(2), nargout > 0,
-                                 parse_status, nargout);
-
-              retval = (nargout > 0) ? tmp : octave_value_list ();
-            }
-          else
-            {
-              if (nargout > 0)
-                retval = tmp;
-
-              // FIXME: we should really be rethrowing whatever
-              // exception occurred, not just throwing an
-              // execution exception.
-              if (execution_error)
-                octave_throw_execution_exception ();
-            }
+          retval = (nargout > 0) ? tmp : octave_value_list ();
         }
       else
-        error ("evalin: CONTEXT must be a string");
+        {
+          if (nargout > 0)
+            retval = tmp;
+
+          // FIXME: we should really be rethrowing whatever
+          // exception occurred, not just throwing an
+          // execution exception.
+          if (execution_error)
+            octave_throw_execution_exception ();
+        }
     }
   else
     print_usage ();
@@ -5231,7 +5188,7 @@ Undocumented internal function.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string file = args(0).string_value ();
+      std::string file = args(0).string_value ("__parse_file__: expecting file name as argument");
 
       std::string full_file = octave_env::make_absolute (file);
 
@@ -5249,20 +5206,15 @@ Undocumented internal function.\n\
             file = file.substr (pos+1);
         }
 
-      if (! error_state)
-        {
-          if (nargin == 2)
-            octave_stdout << "parsing " << full_file << std::endl;
+      if (nargin == 2)
+        octave_stdout << "parsing " << full_file << std::endl;
 
-          octave_function *fcn = parse_fcn_file (full_file, file, "", "",
-                                                 true, false, false,
-                                                 false, "__parse_file__");
+      octave_function *fcn = parse_fcn_file (full_file, file, "", "",
+                                             true, false, false,
+                                             false, "__parse_file__");
 
-          if (fcn)
-            delete fcn;
-        }
-      else
-        error ("__parse_file__: expecting file name as argument");
+      if (fcn)
+        delete fcn;
     }
   else
     print_usage ();

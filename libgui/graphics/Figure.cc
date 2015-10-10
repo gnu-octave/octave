@@ -723,6 +723,14 @@ Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
                   enableMouseTracking ();
                 }
 
+            case QEvent::ChildRemoved:
+              if (dynamic_cast<QChildEvent*> (xevent)->child
+                  ()->isWidgetType())
+                {
+                  gh_manager::auto_lock lock;
+                  update (figure::properties::ID_TOOLBAR);
+                }
+
             default:
               break;
             }

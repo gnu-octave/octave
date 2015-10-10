@@ -113,8 +113,8 @@ function q = quantile (x, p = [], dim, method = 5)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("quantile: X must be a numeric vector or matrix");
+  if (! (isnumeric (x) || islogical (x)) || isempty (x))
+    error ("quantile: X must be a non-empty numeric vector or matrix");
   endif
 
   if (isempty (p))
@@ -321,6 +321,9 @@ endfunction
 %! yexp = median (x, dim);
 %! assert (yobs, yexp);
 
+## Bug #45455 
+%!assert (quantile ([1 3 2], 0.5, 1), [1 3 2])
+
 ## Test input validation
 %!error quantile ()
 %!error quantile (1, 2, 3, 4, 5)
@@ -358,8 +361,7 @@ function inv = __quantile__ (x, p, method = 5)
   p = p(:);
 
   ## Save length and set shape of samples.
-  ## FIXME: does sort guarantee that NaN's come at the end?
-  x = sort (x);
+  x = sort (x, 1);
   m = sum (! isnan (x));
   [xr, xc] = size (x);
 
@@ -431,7 +433,7 @@ function inv = __quantile__ (x, p, method = 5)
         endswitch
 
         ## Duplicate single values.
-        imm1 = (mm == 1);
+        imm1 = (mm(1,:) == 1);
         x(2,imm1) = x(1,imm1);
 
         ## Interval indices.

@@ -526,13 +526,13 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
     }
 
   // Update mouse coordinates in the figure window status bar
-  graphics_object figObj =
-    gh_manager::get_object (m_handle).get_ancestor ("figure");
+  graphics_object obj = gh_manager::get_object (m_handle);
+  graphics_object figObj = obj.get_ancestor ("figure");
 
-  if (figObj.valid_object ())
+  if (figObj.valid_object () && obj.valid_object ())
     {
       graphics_object currentObj, axesObj;
-      select_object (figObj, event, currentObj, axesObj, true);
+      select_object (obj, event, currentObj, axesObj, true);
 
       if (axesObj.valid_object ())
         {

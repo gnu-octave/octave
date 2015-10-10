@@ -70,7 +70,6 @@ public:
   virtual void toggleAxes (const graphics_handle& handle) = 0;
   virtual void toggleGrid (const graphics_handle& handle) = 0;
   virtual void autoAxes (const graphics_handle& handle) = 0;
-  void enableCurrentPointUpdates (bool on) { m_updateCurrentPoint = on; }
 
 protected:
   virtual void draw (const graphics_handle& handle) = 0;
@@ -86,8 +85,7 @@ protected:
       m_mouseMode (NoMode),
       m_clickMode (false),
       m_eventMask (0),
-      m_rectMode (false),
-      m_updateCurrentPoint (false)
+      m_rectMode (false)
     { }
 
   void canvasToggleAxes (const graphics_handle& handle);
@@ -122,7 +120,6 @@ private:
   graphics_handle m_mouseAxes;
   int m_eventMask;
   bool m_rectMode;
-  bool m_updateCurrentPoint;
 };
 
 }; // namespace QtHandles

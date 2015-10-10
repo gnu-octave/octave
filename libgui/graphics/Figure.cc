@@ -132,11 +132,6 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
 
   figure::properties& fp = properties<figure> ();
 
-  // Enable mouse tracking
-  m_container->setMouseTracking (true);
-  foreach (QWidget* w, m_container->findChildren<QWidget*> ())
-    { w->setMouseTracking (true); }
-
   // Status bar
   m_statusBar = win->statusBar ();
   int boffset = 0;
@@ -168,6 +163,9 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
 
   win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
 
+  // Enable mouse tracking unconditionally  
+  enableMouseTracking ();
+
   // When this constructor gets called all properties are already 
   // set, even non default. We force "update" here to get things right.
 
@@ -178,10 +176,6 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   m_container->canvas (m_handle)->setEventMask (0);
   update (figure::properties::ID_KEYPRESSFCN);
   update (figure::properties::ID_KEYRELEASEFCN);
-
-  // Decide if the "currentpoint" is updated on mouse movements and
-  // if the windowbuttonmotionfcn is executed  
-  update (figure::properties::ID_WINDOWBUTTONMOTIONFCN);
 
   // Visibility
   update (figure::properties::ID_VISIBLE);
@@ -485,14 +479,6 @@ Figure::update (int pId)
         m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
       break;
 
-    case figure::properties::ID_WINDOWBUTTONMOTIONFCN:
-        {
-          bool hasCallback = ! fp.get_windowbuttonmotionfcn ().is_empty ();
-
-          m_container->canvas (m_handle)->enableCurrentPointUpdates (hasCallback);
-        }
-      break;
-
     default:
       break;
     }
@@ -733,6 +719,8 @@ Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
                 {
                   gh_manager::auto_lock lock;
                   update (figure::properties::ID_TOOLBAR);
+
+                  enableMouseTracking ();
                 }
 
             default:
@@ -979,6 +967,16 @@ Figure::autoAxes (void)
 
   if (canvas)
     canvas->autoAxes (m_handle);
+}
+
+void
+Figure::enableMouseTracking (void)
+{
+  // Enable mouse tracking on every widgets
+  m_container->setMouseTracking (true);
+  m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
+  foreach (QWidget* w, m_container->findChildren<QWidget*> ())
+    { w->setMouseTracking (true); }
 }
 
 }; // namespace QtHandles

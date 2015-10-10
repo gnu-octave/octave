@@ -507,7 +507,7 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
           break;
         }
     }
-  else if (m_mouseMode == NoMode && m_updateCurrentPoint)
+  else if (m_mouseMode == NoMode)
     {
       graphics_object obj = gh_manager::get_object (m_handle);
 
@@ -515,9 +515,13 @@ Canvas::canvasMouseMoveEvent (QMouseEvent* event)
         {
           graphics_object figObj (obj.get_ancestor ("figure"));
 
-          updateCurrentPoint (figObj, obj, event);
-          gh_manager::post_callback (figObj.get_handle (),
-                                     "windowbuttonmotionfcn");
+          if (figObj.valid_object () &&
+              ! figObj.get ("windowbuttonmotionfcn").is_empty ())
+            {
+              updateCurrentPoint (figObj, obj, event);
+              gh_manager::post_callback (figObj.get_handle (),
+                                         "windowbuttonmotionfcn");
+            }
         }
     }
 

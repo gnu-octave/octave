@@ -47,10 +47,14 @@ function mtds = methods (obj)
       mtds_list = ostrsplit (mtds_str, ';');
     endif
   elseif (isjava (obj))
-    ## FIXME: Function prototype that excepts java obj exists, but doesn't
-    ##        work if obj is java.lang.String.  Convert obj to classname.
-    obj = class (obj);
-    mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
+    ## FIXME: Function prototype accepts java obj, but doesn't work if obj
+    ##        is e.g., java.lang.String.  Convert obj to classname then.
+    try
+      mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
+    catch
+      obj = class (obj);
+      mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
+    end_try_catch
     mtds_list = strsplit (mtds_str, ';');
   else
     error ("methods: Invalid input argument");

@@ -143,10 +143,10 @@ function varargout = textread (filename, format = "%f", varargin)
     ## Beware of zero valued headerline, fskipl would skip to EOF
     if (varargin{headerlines + 1} > 0)
       fskipl (fid, varargin{headerlines + 1});
-      varargin(headerlines:headerlines+1) = [];
     elseif (varargin{headerlines + 1} < 0)
       warning ("textread: negative headerline value ignored");
     endif
+    varargin(headerlines:headerlines+1) = [];
   endif
   st_pos = ftell (fid);
 

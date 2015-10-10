@@ -185,8 +185,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
                || any (strcmp (term, {"canvas", "emf", "gif", "jpeg", ...
                                       "pbm", "png", "pngcairo", "svg"}))))
           ## Convert to inches
-          gnuplot_pos /= 72;
-          gnuplot_size /= 72;
+          gnuplot_pos = gnuplot_pos / get (0, "screenpixelsperinch");
+          gnuplot_size = gnuplot_size / get (0, "screenpixelsperinch");
         endif
         if (all (gnuplot_size > 0))
           terminals_with_size = {"canvas", "emf", "epslatex", "fig", ...

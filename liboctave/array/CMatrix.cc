@@ -1131,11 +1131,14 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
       // Calculate the norm of the matrix, for later use.
       double anorm;
-      if (calc_cond)
-        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
-                .max ();
+      //if (calc_cond)   // Must always calculate anorm for bug #45577 
+      anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
-      F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
+      // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+      if (xisnan (anorm))
+        info = -1;
+      else
+        F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
       // Throw-away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
@@ -1698,9 +1701,14 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
           // Calculate the norm of the matrix, for later use.
           double anorm = 0;
-          if (calc_cond) anorm = xnorm (*this, 1);
+          //if (calc_cond)   // Must always calculate anorm for bug #45577 
+          anorm = xnorm (*this, 1);
 
-          F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+          // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+          if (xisnan (anorm))
+            info = -1;
+          else
+            F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
@@ -1891,7 +1899,11 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               Array<double> rz (dim_vector (2 * nc, 1));
               double *prz = rz.fortran_vec ();
 
-              F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+              // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+              if (xisnan (anorm))
+                info = -1;
+              else
+                F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
               if (info != 0)
                 {
@@ -2225,7 +2237,11 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
             anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0))
                     .max ();
 
-          F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+          // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+          if (xisnan (anorm))
+            info = -2;
+          else
+            F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;

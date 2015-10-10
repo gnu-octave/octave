@@ -64,6 +64,7 @@ object) relevant global values before and after the nested call.
 
 #include <cctype>
 #include <cstring>
+#include <stdint.h>
 
 #include <iostream>
 #include <set>
@@ -328,9 +329,10 @@ CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 FQIDENT ({IDENT}(\.{IDENT})*)
 EXPON   ([DdEe][+-]?{D}{D_}*)
-NUMREAL (({D}{D_}*\.?{D_}*{EXPON}?)|(\.{D}{D_}*{EXPON}?))
+NUMBIN  (0[bB][01_]+)
 NUMHEX  (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
-NUMBER  ({NUMREAL}|{NUMHEX})
+NUMREAL (({D}{D_}*\.?{D_}*{EXPON}?)|(\.{D}{D_}*{EXPON}?))
+NUMBER  ({NUMREAL}|{NUMHEX}|{NUMBIN})
 
 ANY_EXCEPT_NL [^\r\n]
 ANY_INCLUDING_NL (.|{NL})
@@ -2658,6 +2660,12 @@ octave_base_lexer::whitespace_is_significant (void)
 }
 
 static inline bool
+looks_like_bin (const char *s, int len)
+{
+  return (len > 2 && s[0] == '0' && (s[1] == 'b' || s[1] == 'B'));
+}
+
+static inline bool
 looks_like_hex (const char *s, int len)
 {
   return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
@@ -2689,6 +2697,19 @@ octave_base_lexer::handle_number (void)
       nread = sscanf (tmptxt, "%lx", &ival);
 
       value = static_cast<double> (ival);
+    }
+  else if (looks_like_bin (tmptxt, strlen (tmptxt)))
+    {
+      uint64_t ivalue = 0;
+
+      for (int i = 0; i < strlen (tmptxt); i++)
+        {
+          ivalue <<= 1;
+          ivalue += static_cast<uint64_t> (tmptxt[i] == '1');
+        }
+
+      value = static_cast<double> (ivalue);
+      nread = 1;  // Just to pass the assert stmt below
     }
   else
     {

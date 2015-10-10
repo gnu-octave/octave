@@ -7,6 +7,13 @@ Summary of important user-visible changes for version 4.2:
 
     Examples: 1_000_000 == 1e6 or 0xDE_AD_BE_EF
 
+ ** The parser has been extended to understand binary numbers which begin
+    with the prefix '0b' or '0B'.  The value returned is Octave's default
+    numeric class of double, not at unsigned integer class.  Therefore numbers
+    greater than flintmax (2^53) will lose some precision.
+
+    Examples: 0b101 == 5 or 0B1100_0001 == 0xC1
+
  ** The default colormap is now set to 'viridis' which is also
     the default colormap in matplotlib. This new colormap fixes
     some of the main issues with the old default colormap 'jet'

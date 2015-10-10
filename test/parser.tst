@@ -282,6 +282,11 @@
 %!assert (0xAB_CD, 43981)
 %!assert (2e0_1, 20);
 
+## Test binary constants
+%!assert (0b101, 5)
+%!assert (0B1100_0001, 0xC1)
+%!assert (class (0b1), "double")
+
 ## Test creation of anonymous functions
 
 %!test

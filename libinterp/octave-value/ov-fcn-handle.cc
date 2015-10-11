@@ -2066,29 +2066,32 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                     {
                       // It's a name.
                       std::string head_name = head_id->name ();
-                      // Function handles can't handle legacy dispatch, so
-                      // we make sure it's not defined.
-                      if (symbol_table::get_dispatch (head_name).size () > 0)
+
+                      if (head_name == "eval" || head_name == "feval")
                         bad = true;
                       else
                         {
-                          // Simulate try/catch.
-                          unwind_protect frame;
-                          interpreter_try (frame);
+                          // Function handles can't handle legacy
+                          // dispatch, so we make sure it's not
+                          // defined.
 
-                          bool execution_error = false;
-
-                          try
-                            {
-                              root_val = make_fcn_handle (head_name);
-                            }
-                          catch (const octave_execution_exception&)
-                            {
-                              execution_error = true;
-                            }
-
-                          if (execution_error)
+                          if (symbol_table::get_dispatch (head_name).size () > 0)
                             bad = true;
+                          else
+                            {
+                              // Simulate try/catch.
+                              unwind_protect frame;
+                              interpreter_try (frame);
+
+                              try
+                                {
+                                  root_val = make_fcn_handle (head_name);
+                                }
+                              catch (const octave_execution_exception&)
+                                {
+                                  bad = true;
+                                }
+                            }
                         }
                     }
                 }
@@ -2112,6 +2115,12 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
   return retval;
 }
+
+/*
+%!test
+%! f = @(t) eval ('2*t');
+%! assert (f (21), 42);
+*/
 
 octave_value_list
 octave_fcn_binder::do_multi_index_op (int nargout,

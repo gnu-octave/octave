@@ -238,10 +238,10 @@ function varargout = ode45 (vfun, vtrange, vinit, varargin)
     vodeoptions.vhaveoutputselection = false; 
   endif
 
-  ## Implementation of the option OutputSave has been finished.
-  ## This option can be set by the user to another value than default value.
-  if (isempty (vodeoptions.OutputSave))
-    vodeoptions.OutputSave = 1;
+  ## "OutputSave" option will be ignored.
+  if (! isempty (vodeoptions.OutputSave))
+    warning ("OdePkg:InvalidArgument",
+             "Option 'OutputSave' will be ignored.");
   endif
 
   ## Implementation of the option Refine has been finished.
@@ -406,12 +406,12 @@ function varargout = ode45 (vfun, vtrange, vinit, varargin)
   ## Print additional information if option Stats is set
   if (strcmp (vodeoptions.Stats, "on"))
     vhavestats = true;
-    vnsteps    = solution.vcntloop-2;        # vcntloop from 2..end
+    vnsteps    = solution.vcntloop-2;                 # vcntloop from 2..end
     vnfailed   = (solution.vcntcycles-1)-(vnsteps)+1; # vcntcycl from 1..end
-    vnfevals   = 7*(solution.vcntcycles-1);  # number of ode evaluations
-    vndecomps  = 0;                          # number of LU decompositions
-    vnpds      = 0;                          # number of partial derivatives
-    vnlinsols  = 0;                          # no. of linear systems solutions
+    vnfevals   = 7*(solution.vcntcycles-1);           # number of ode evaluations
+    vndecomps  = 0;                                   # number of LU decompositions
+    vnpds      = 0;                                   # number of partial derivatives
+    vnlinsols  = 0;                                   # no. of linear systems solutions
     ## Print cost statistics if no output argument is given
     if (nargout == 0)
       printf ("Number of successful steps: %d\n", vnsteps);
@@ -598,12 +598,6 @@ endfunction
 %!test  # Details of OutputSel and Refine can't be tested
 %! vopt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
 %! vsol = ode45 (@fpol, [0 2], [2 0], vopt);
-%!test  # Details of OutputSave can't be tested
-%! vopt = odeset ("OutputSave", 1, "OutputSel", 1);
-%! vsla = ode45 (@fpol, [0 2], [2 0], vopt);
-%! vopt = odeset ("OutputSave", 2);
-%! vslb = ode45 (@fpol, [0 2], [2 0], vopt);
-%! assert (length (vsla.x) + 1 >= 2 * length (vslb.x))
 %!test  # Stats must add further elements in vsol
 %! vopt = odeset ("Stats", "on");
 %! vsol = ode45 (@fpol, [0 2], [2 0], vopt);

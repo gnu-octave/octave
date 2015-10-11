@@ -62,35 +62,25 @@
 
 function solution = integrate_adaptive (stepper, order, func, tspan, x0, options)
 
-  solution = struct ();
+  fixed_times = numel (tspan) > 2;
 
-  ## first values for time and solution
-  t = tspan(1);
-  x = x0(:);
+  t_new = t_old = t = tspan(1);
+  x_new = x_old = x = x0(:);
   
   ## get first initial timestep
-  dt = odeget (options, "InitialStep",
-               starting_stepsize (order, func, t, x, options.AbsTol,
-                                  options.RelTol, options.vnormcontrol),
-               "fast_not_empty");
-  vdirection = odeget (options, "vdirection", [], "fast");
-  if (sign (dt) != vdirection)
-    dt = -dt;
-  endif
-  dt = vdirection * min (abs (dt), options.MaxStep);
+  dt = starting_stepsize (order, func, t, x, options.AbsTol,
+                          options.RelTol, options.vnormcontrol);
+  dt = odeget (options, "InitialStep", dt, "fast_not_empty");
+  
+  dir = odeget (options, "vdirection", [], "fast");
+  dt = dir * min (abs (dt), options.MaxStep);
 
-  ## Set parameters
-  k = length (tspan);
-  counter = 2;
-  comp = 0.0;
-  tk = tspan(1);
-  options.comp = comp;
+  options.comp = 0.0;
   
   ## Factor multiplying the stepsize guess
   facmin = 0.8;
+  facmax = 1.5;
   fac = 0.38^(1/(order+1));  # formula taken from Hairer
-  t_caught = false;
-
 
   ## Initialize the OutputFcn
   if (options.vhaveoutputfunction)
@@ -105,230 +95,207 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
   ## Initialize the EventFcn
   if (options.vhaveeventfunction)
-    odepkg_event_handle (options.Events, t(end), x,
+    odepkg_event_handle (options.Events, tspan(end), x,
                          "init", options.vfunarguments{:});
   endif
 
+  if (options.vhavenonnegative)
+    nn = options.NonNegative;
+  endif
+  
   solution.vcntloop = 2;
   solution.vcntcycles = 1;
-  vcntiter = 0;
-  solution.vunhandledtermination = true;
   solution.vcntsave = 2;
-  
-  z = t;
-  u = x;
+  solution.vunhandledtermination = true;
+  ireject = 0;
 
   k_vals = []; 
-  
-  while (counter <= k)
-    facmax = 1.5;
+  iout = istep = 1;
+  while (dir * t_old < dir * tspan(end))
 
-    ## Compute integration step from t to t+dt
-    if (isempty (k_vals))
-      [s, y, y_est, new_k_vals] = stepper (func, z(end), u(:,end),
-                                           dt, options);
-    else
-      [s, y, y_est, new_k_vals] = stepper (func, z(end), u(:,end),
-                                           dt, options, k_vals);
-    endif
-    
+    ## Compute integration step from t_old to t_new = t_old + dt
+    [t_new, options.comp] = kahan (t_old, options.comp, dt);
+    [t_new, x_new, x_est, new_k_vals] = ...
+    stepper (func, t_old, x_old, dt, options, k_vals, t_new);
+
+    solution.vcntcycles++;
+
     if (options.vhavenonnegative)
-      x(options.NonNegative,end) = abs (x(options.NonNegative,end));
-      y(options.NonNegative,end) = abs (y(options.NonNegative,end));
-      y_est(options.NonNegative,end) = abs (y_est(options.NonNegative,end));
+      x(nn,end) = abs (x(nn,end));
+      y(nn,end) = abs (y(nn,end));
+      y_est(nn,end) = abs (y_est(nn,end));
     endif
 
-    if (options.vhaveoutputfunction && options.vhaverefine)
-      vSaveVUForRefine = u(:,end);
-    endif
-
-    err = AbsRel_Norm (y(:,end), u(:,end), options.AbsTol, options.RelTol,
-                       options.vnormcontrol, y_est(:,end));
+    err = AbsRel_Norm (x_new, x_old, options.AbsTol, options.RelTol,
+                       options.vnormcontrol, x_est);
     
-    ## Solution accepted only if the error is less or equal to 1.0
+    ## Accepted solution only if err <= 1.0
     if (err <= 1)
-      
-      [tk, options.comp] = kahan (tk, options.comp, dt);
-      s(end) = tk;
 
-      ## values on this interval for time and solution
-      z = [z(end); s];
-      u = [u(:,end), y];
-      k_vals = new_k_vals;
-      
-      ## if next tspan value is caught, update counter
-      if ((z(end) == tspan(counter))
-          || (abs (z(end) - tspan(counter)) /
-              (max (abs (z(end)), abs (tspan(counter)))) < 8*eps) )
-        counter++;
+      solution.vcntloop++;
+      ireject = 0;
+            
+      ## if output time steps are fixed
+      if (fixed_times)
+
+        t_caught = find ((tspan(iout:end) > t_old)
+                         & (tspan(iout:end) <= t_new));
+        if (! isempty (t_caught))
+          t(t_caught) = tspan(t_caught);
+          iout = max (t_caught);
+          x(:, t_caught) = interpolate ([t_old, t_new], [x_old, x_new],
+                                        t(t_caught));
+
+          istep++;
+
+          if (options.vhaveeventfunction)
+            ## Call event on each dense output timestep.
+            ##  Stop integration if veventbreak is true
+            break_loop = false;
+            for idenseout = 1:numel (t_caught)
+              id = t_caught(idenseout);
+              td = t(id);
+              solution.vevent = ...
+              odepkg_event_handle (options.Events, t(id), x(:, id), [],
+                                   options.vfunarguments{:});
+              if (! isempty (solution.vevent{1})
+                  && solution.vevent{1} == 1)
+                t(id) = solution.vevent{3}(end);
+                t = t(1:id);
+                x(:, id) = solution.vevent{4}(end, :).';
+                x = x(:,1:id);
+                solution.vunhandledtermination = false; 
+                break_loop = true;
+                break;
+              endif
+            endfor
+            if (break_loop)
+              break;
+            endif
+          endif
+
+          ## Call plot.  Stop integration if plot function
+          ## returns true.
+          if (options.vhaveoutputfunction)
+            vcnt = options.Refine + 1;
+            vapproxtime = linspace (t_old, t_new, vcnt);
+            vapproxvals = interp1 ([t_old, t(t_caught), t_new],
+                                   [x_old, x(:, t_caught), x_new],
+                                   vapproxtime, 'linear');
+            if (options.vhaveoutputselection)
+              vapproxvals = vapproxvals(options.OutputSel);
+            endif
+            vpltret = feval (options.OutputFcn, vapproxtime,
+                             vapproxvals, [], options.vfunarguments{:});
+            if (vpltret)  # Leave main loop
+              solution.vunhandledtermination = false;
+              break;
+            endif
+          endif
+
+        endif
         
-        ## if there is an element in time vector at which the solution is
-        ## required the program must compute this solution before going on with
-        ## next steps
-      elseif (vdirection * z(end) > vdirection * tspan(counter))
+      else
 
-        ## initialize counter for the following cycle
-        i = 2;
-        while (i <= length (z))
+        t(++istep)  = t_new;
+        x(:, istep) = x_new;
+        iout = istep;
 
-          ## if next tspan value is caught, update counter
-          if ((counter <= k)
-              && ((z(i) == tspan(counter))
-                  || (abs (z(i) - tspan(counter)) /
-                      (max (abs (z(i)), abs (tspan(counter)))) < 8*eps)) )
-            counter++;
-          endif
-          ## else, loop until there are requested values inside this subinterval
-          while ((counter <= k)
-                 && (vdirection * z(i) > vdirection * tspan(counter)))
-            ## choose interpolation scheme according to order of the solver
+        ## Call event handler on new timestep.
+        ##  Stop integration if veventbreak is true
+        if (options.vhaveeventfunction)
+          solution.vevent = ...
+          odepkg_event_handle (options.Events, t(istep), x(:, istep), [],
+                                   options.vfunarguments{:});
+              if (! isempty (solution.vevent{1})
+                  && solution.vevent{1} == 1)
+                t(istep) = solution.vevent{3}(end);
+                x(:, istep) = solution.vevent{4}(end, :).';
+                solution.vunhandledtermination = false; 
+                break;
+              endif
+        endif
 
-            u_interp = ...
-            ode_rk_interpolate (order, [z(i-1) z(i)], [u(:,i-1) u(:,i)],
-                                tspan(counter), k_vals, dt,
-                                options.vfunarguments{:});
-            
-
-            ## add the interpolated value of the solution
-            u = [u(:,1:i-1), u_interp, u(:,i:end)];
-            
-            ## add the time requested
-            z = [z(1:i-1); tspan(counter); z(i:end)];
-
-            ## update counters
-            counter++;
-            i++;
-          endwhile
-
-          ## if new time requested is not out of this interval
-          if ((counter <= k)
-              && (vdirection * z(end) > vdirection * tspan(counter)))
-            ## update the counter
-            i++;
-          else
-            ## stop the cycle and go on with the next iteration
-            i = length (z) + 1;
-          endif
-
-        endwhile
-      endif
-
-      if (mod (solution.vcntloop-1, options.OutputSave) == 0)
-        x = [x,u(:,2:end)];
-        t = [t;z(2:end)];
-        solution.vcntsave = solution.vcntsave + 1;    
-      endif
-      solution.vcntloop = solution.vcntloop + 1;
-      vcntiter = 0;
-      
-      ## Call plot only if a valid result has been found, therefore this
-      ## code fragment has moved here.  Stop integration if plot function
-      ## returns false
-      if (options.vhaveoutputfunction)
-        for vcnt = 0:options.Refine  # Approximation between told and t
-          if (options.vhaverefine)   # Do interpolation
-            vapproxtime = (vcnt + 1) / (options.Refine + 2);
-            vapproxvals = (1 - vapproxtime) * vSaveVUForRefine ...
-                          + (vapproxtime) * y(:,end);
-            vapproxtime = s(end) + vapproxtime * dt;
-          else
-            vapproxvals = x(:,end);
-            vapproxtime = t(end);
-          endif
+        ## Call plot.  Stop integration if plot function
+        ## returns true.
+        if (options.vhaveoutputfunction)
+          vcnt = options.Refine + 1;
+          vapproxtime = linspace (t_old, t_new, vcnt);
+          vapproxvals = interp1 ([t_old, t_new],
+                                 [x_old, x_new],
+                                 vapproxtime, 'linear');
           if (options.vhaveoutputselection)
             vapproxvals = vapproxvals(options.OutputSel);
           endif
           vpltret = feval (options.OutputFcn, vapproxtime,
                            vapproxvals, [], options.vfunarguments{:});
-          if (vpltret)  # Leave refinement loop
+          if (vpltret)  # Leave main loop
+            solution.vunhandledtermination = false;
             break;
           endif
-        endfor
-        if (vpltret)  # Leave main loop
-          solution.vunhandledtermination = false;
-          break;
         endif
+
       endif
-      
-      ## Call event only if a valid result has been found, therefore this
-      ## code fragment has moved here.  Stop integration if veventbreak is
-      ## true
-      if (options.vhaveeventfunction)
-        solution.vevent = odepkg_event_handle (options.Events, t(end),
-                                               x(:,end), [],
-                                               options.vfunarguments{:});
-        if (! isempty (solution.vevent{1})
-            && solution.vevent{1} == 1)
-          t(solution.vcntloop-1,:) = solution.vevent{3}(end,:);
-          x(:,solution.vcntloop-1) = solution.vevent{4}(end,:)';
-          solution.vunhandledtermination = false; 
-          break;
-        endif
-      endif
-      
+
+      ## move to next time-step
+      t_old = t_new;
+      x_old = x_new;
+      k_vals = new_k_vals;
+
+      solution.vcntloop = solution.vcntloop + 1;
+      vcntiter = 0;
+            
     else
-      
-      facmax = 1.0;
-      
+
+      ireject++;
+
+      ## Stop solving because in the last 5000 steps no successful valid
+      ## value has been found
+      if (ireject >= 5000)
+        error (["integrate_adaptive: Solving has not been successful. ",
+                " The iterative integration loop exited at time",
+                " t = %f before endpoint at tend = %f was reached. ",
+                " This happened because the iterative integration loop",
+                " does not find a valid solution at this time",
+                " stamp.  Try to reduce the value of 'InitialStep' and/or",
+                " 'MaxStep' with the command 'odeset'.\n"],
+               t_old, tspan(end));
+      endif
+
     endif
     
     ## Compute next timestep, formula taken from Hairer
-    err += eps;    # adding an eps to avoid divisions by zero
-    dt = dt * min (facmax,
-                   max (facmin, fac * (1 / err)^(1 / (order + 1))));
-    dt = vdirection * min (abs (dt), options.MaxStep);
-    
-    ## Update counters that count the number of iteration cycles
-    solution.vcntcycles += 1;  # Needed for cost statistics
-    vcntiter += 1;  # Needed to find iteration problems
+    err += eps;    # avoid divisions by zero
+    dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
+    dt = dir * min (abs (dt), options.MaxStep);    
 
-    ## Stop solving because in the last 1000 steps no successful valid
-    ## value has been found
-    if (vcntiter >= 5000)
-      error (["Solving has not been successful.  The iterative",
-              " integration loop exited at time t = %f before endpoint at",
-              " tend = %f was reached.  This happened because the iterative",
-              " integration loop does not find a valid solution at this time",
-              " stamp.  Try to reduce the value of 'InitialStep' and/or",
-              " 'MaxStep' with the command 'odeset'.\n"],
-             s(end), tspan(end));
-    endif
-
-    ## if this is the last iteration, save the length of last interval
-    if (counter > k)
-      j = length (z);
-    endif
   endwhile
   
   ## Check if integration of the ode has been successful
-  if (vdirection * z(end) < vdirection * tspan(end))
+  if (dir * t(end) < dir * tspan(end))
     if (solution.vunhandledtermination == true)
-      error ("OdePkg:InvalidArgument",
+      error ("integrate_adaptive: InvalidArgument",
              ["Solving has not been successful.  The iterative",
               " integration loop exited at time t = %f",
               " before endpoint at tend = %f was reached.  This may",
-              " happen if the stepsize grows smaller than defined in",
-              " vminstepsize.  Try to reduce the value of 'InitialStep'",
+              " happen if the stepsize grows too small. ",
+              " Try to reduce the value of 'InitialStep'",
               " and/or 'MaxStep' with the command 'odeset'.\n"],
-             z(end), tspan(end));
+             t(end), tspan(end));
     else
-      warning ("OdePkg:InvalidArgument",
+      warning ("integrate_adaptive: InvalidArgument",
                ["Solver has been stopped by a call of 'break' in the main",
                 " iteration loop at time t = %f before endpoint at tend = %f ",
                 " was reached.  This may happen because the @odeplot function",
                 " returned 'true' or the @event function returned",
                 " 'true'.\n"],
-               z(end), tspan(end));
+               t(end), tspan(end));
     endif
   endif
 
-  ## Compute how many values are out of time inerval
-  d = vdirection * t((end-(j-1)):end) > vdirection * tspan(end)*ones (j, 1);
-  f = sum (d);
-
   ## Remove not-requested values of time and solution
-  solution.t = t(1:end-f);
-  solution.x = x(:,1:end-f)';
+  solution.t = t;
+  solution.x = x.';
   
 endfunction
 

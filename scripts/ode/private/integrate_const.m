@@ -180,11 +180,10 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
       endwhile
     endif
 
-    if (mod (solution.vcntloop-1, options.OutputSave) == 0)
-      x = [x,u(:,2:end)];
-      t = [t;z(2:end)];
-      solution.vcntsave = solution.vcntsave + 1;    
-    endif
+
+    x = [x,u(:,2:end)];
+    t = [t;z(2:end)];
+    solution.vcntsave = solution.vcntsave + 1;
     solution.vcntloop = solution.vcntloop + 1;
     vcntiter = 0;
       

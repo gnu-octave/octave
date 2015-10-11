@@ -121,9 +121,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     solution.vcntcycles++;
 
     if (options.vhavenonnegative)
-      x(nn,end) = abs (x(nn,end));
-      y(nn,end) = abs (y(nn,end));
-      y_est(nn,end) = abs (y_est(nn,end));
+      x_new(nn, end) = abs (x_new(nn, end)); 
+      x_est(nn, end) = abs (x_est(nn, end));
     endif
 
     err = AbsRel_Norm (x_new, x_old, options.AbsTol, options.RelTol,
@@ -138,8 +137,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
       ## if output time steps are fixed
       if (fixed_times)
 
-        t_caught = find ((tspan(iout:end) > t_old)
-                         & (tspan(iout:end) <= t_new));
+        t_caught = find ((dir * tspan(iout:end) > dir * t_old)
+                         & (dir * tspan(iout:end) <= dir * t_new));
         t_caught = t_caught + iout - 1;
 
         if (! isempty (t_caught))
@@ -184,13 +183,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
             vcnt = options.Refine + 1;
             vapproxtime = linspace (t_old, t_new, vcnt);
             vapproxvals = interp1 ([t_old, t(t_caught), t_new],
-                                   [x_old, x(:, t_caught), x_new],
-                                   vapproxtime, 'linear');
+                                   [x_old, x(:, t_caught), x_new] .',
+                                   vapproxtime, 'linear') .';
             if (options.vhaveoutputselection)
-              vapproxvals = vapproxvals(options.OutputSel);
+              vapproxvals = vapproxvals(options.OutputSel, :);
             endif
-            vpltret = feval (options.OutputFcn, vapproxtime,
-                             vapproxvals, [], options.vfunarguments{:});
+            for ii = 1:numel (vapproxtime)
+              vpltret = feval (options.OutputFcn, vapproxtime(ii),
+                               vapproxvals(:, ii), [],
+                               options.vfunarguments{:});
+            endfor
             if (vpltret)  # Leave main loop
               solution.vunhandledtermination = false;
               break;
@@ -226,13 +228,15 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
           vcnt = options.Refine + 1;
           vapproxtime = linspace (t_old, t_new, vcnt);
           vapproxvals = interp1 ([t_old, t_new],
-                                 [x_old, x_new],
-                                 vapproxtime, 'linear');
+                                 [x_old, x_new] .',
+                                 vapproxtime, 'linear') .';
           if (options.vhaveoutputselection)
-            vapproxvals = vapproxvals(options.OutputSel);
+            vapproxvals = vapproxvals(options.OutputSel, :);
           endif
-          vpltret = feval (options.OutputFcn, vapproxtime,
-                           vapproxvals, [], options.vfunarguments{:});
+          for ii = 1:numel (vapproxtime)
+            vpltret = feval (options.OutputFcn, vapproxtime(ii),
+                             vapproxvals(:, ii), [], options.vfunarguments{:});
+          endfor
           if (vpltret)  # Leave main loop
             solution.vunhandledtermination = false;
             break;
@@ -283,19 +287,20 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   if (dir * t(end) < dir * tspan(end))
     if (solution.vunhandledtermination == true)
       error ("integrate_adaptive:unexpected_termination",
-             [" Solving has not been successful.  The iterative",
-              " integration loop exited at time t = %f",
-              " before endpoint at tend = %f was reached.  This may",
-              " happen if the stepsize grows too small. ",
-              " Try to reduce the value of 'InitialStep'",
+             [" Solving has not been successful.  The iterative", ...
+              " integration loop exited at time t = %f ", ...
+              " before endpoint at tend = %f was reached.  This may", ...
+              " happen if the stepsize grows too small. ", ...
+              " Try to reduce the value of 'InitialStep'", ...
               " and/or 'MaxStep' with the command 'odeset'.\n"],
              t(end), tspan(end));
     else
       warning ("integrate_adaptive:unexpected_termination",
-               ["Solver has been stopped by a call of 'break' in the main",
-                " iteration loop at time t = %f before endpoint at tend = %f ",
-                " was reached.  This may happen because the @odeplot function",
-                " returned 'true' or the @event function returned",
+               ["Solver has been stopped by a call of 'break' ", ...
+                " in the main iteration loop at time t = %f before", ...
+                " endpoint at tend = %f was reached.  This may", ...
+                " happen because the @odeplot function", ...
+                " returned 'true' or the @event function returned", ...
                 " 'true'.\n"],
                t(end), tspan(end));
     endif

@@ -129,11 +129,9 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
     z = [t(end);s];
     u = [x(:,end),y];
 
-    if (mod (solution.vcntloop-1, options.OutputSave) == 0)
-      x = [x,u(:,2:end)];
-      t = [t;z(2:end)];
-      solution.vcntsave = solution.vcntsave + 1;    
-    endif
+    x = [x,u(:,2:end)];
+    t = [t;z(2:end)];
+    solution.vcntsave = solution.vcntsave + 1;    
     solution.vcntloop = solution.vcntloop + 1;
     vcntiter = 0;
       

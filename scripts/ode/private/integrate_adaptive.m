@@ -66,17 +66,17 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
   t_new = t_old = t = tspan(1);
   x_new = x_old = x = x0(:);
-  
+
   ## get first initial timestep
   dt = starting_stepsize (order, func, t, x, options.AbsTol,
                           options.RelTol, options.vnormcontrol);
   dt = odeget (options, "InitialStep", dt, "fast_not_empty");
-  
+
   dir = odeget (options, "vdirection", [], "fast");
   dt = dir * min (abs (dt), options.MaxStep);
 
   options.comp = 0.0;
-  
+
   ## Factor multiplying the stepsize guess
   facmin = 0.8;
   facmax = 1.5;
@@ -86,7 +86,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   if (options.vhaveoutputfunction)
     if (options.vhaveoutputselection)
       solution.vretout = x(options.OutputSel,end);
-    else 
+    else
       solution.vretout = x;
     endif
     feval (options.OutputFcn, tspan, solution.vretout,
@@ -102,14 +102,14 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   if (options.vhavenonnegative)
     nn = options.NonNegative;
   endif
-  
+
   solution.vcntloop = 2;
   solution.vcntcycles = 1;
   solution.vcntsave = 2;
   solution.vunhandledtermination = true;
   ireject = 0;
 
-  k_vals = []; 
+  k_vals = [];
   iout = istep = 1;
   while (dir * t_old < dir * tspan(end))
 
@@ -128,20 +128,20 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
     err = AbsRel_Norm (x_new, x_old, options.AbsTol, options.RelTol,
                        options.vnormcontrol, x_est);
-    
+
     ## Accepted solution only if err <= 1.0
     if (err <= 1)
 
       solution.vcntloop++;
       ireject = 0;
-            
+
       ## if output time steps are fixed
       if (fixed_times)
 
         t_caught = find ((tspan(iout:end) > t_old)
                          & (tspan(iout:end) <= t_new));
         t_caught = t_caught + iout - 1;
-        
+
         if (! isempty (t_caught))
           t(t_caught) = tspan(t_caught);
           iout = max (t_caught);
@@ -168,7 +168,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
                 t = t(1:id);
                 x(:, id) = solution.vevent{4}(end, :).';
                 x = x(:,1:id);
-                solution.vunhandledtermination = false; 
+                solution.vunhandledtermination = false;
                 break_loop = true;
                 break;
               endif
@@ -198,7 +198,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
           endif
 
         endif
-        
+
       else
 
         t(++istep)  = t_new;
@@ -215,7 +215,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
                   && solution.vevent{1} == 1)
                 t(istep) = solution.vevent{3}(end);
                 x(:, istep) = solution.vevent{4}(end, :).';
-                solution.vunhandledtermination = false; 
+                solution.vunhandledtermination = false;
                 break;
               endif
         endif
@@ -248,7 +248,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
       solution.vcntloop = solution.vcntloop + 1;
       vcntiter = 0;
-            
+
     else
 
       ireject++;
@@ -267,14 +267,18 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
       endif
 
     endif
-    
+
     ## Compute next timestep, formula taken from Hairer
     err += eps;    # avoid divisions by zero
     dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
-    dt = dir * min (abs (dt), options.MaxStep);    
+    dt = dir * min (abs (dt), options.MaxStep);
+
+    ## make sure we don't go past tpan(end)
+    dt = dir * min (abs (dt), abs (tspan(end) - t_old));
 
   endwhile
-  
+
+
   ## Check if integration of the ode has been successful
   if (dir * t(end) < dir * tspan(end))
     if (solution.vunhandledtermination == true)
@@ -300,6 +304,6 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   ## Set up return structure
   solution.t = t(:);
   solution.x = x.';
-  
+
 endfunction
 

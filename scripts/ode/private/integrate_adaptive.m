@@ -140,11 +140,15 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
         t_caught = find ((tspan(iout:end) > t_old)
                          & (tspan(iout:end) <= t_new));
+        t_caught = t_caught + iout - 1;
+        
         if (! isempty (t_caught))
           t(t_caught) = tspan(t_caught);
           iout = max (t_caught);
-          x(:, t_caught) = interpolate ([t_old, t_new], [x_old, x_new],
-                                        t(t_caught));
+          x(:, t_caught) = ...
+          ode_rk_interpolate (order, [t_old t_new], [x_old x_new],
+                              tspan(t_caught), new_k_vals, dt,
+                              options.vfunarguments{:});
 
           istep++;
 
@@ -274,8 +278,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
   ## Check if integration of the ode has been successful
   if (dir * t(end) < dir * tspan(end))
     if (solution.vunhandledtermination == true)
-      error ("integrate_adaptive: InvalidArgument",
-             ["Solving has not been successful.  The iterative",
+      error ("integrate_adaptive:unexpected_termination",
+             [" Solving has not been successful.  The iterative",
               " integration loop exited at time t = %f",
               " before endpoint at tend = %f was reached.  This may",
               " happen if the stepsize grows too small. ",
@@ -283,7 +287,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
               " and/or 'MaxStep' with the command 'odeset'.\n"],
              t(end), tspan(end));
     else
-      warning ("integrate_adaptive: InvalidArgument",
+      warning ("integrate_adaptive:unexpected_termination",
                ["Solver has been stopped by a call of 'break' in the main",
                 " iteration loop at time t = %f before endpoint at tend = %f ",
                 " was reached.  This may happen because the @odeplot function",
@@ -293,8 +297,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     endif
   endif
 
-  ## Remove not-requested values of time and solution
-  solution.t = t;
+  ## Set up return structure
+  solution.t = t(:);
   solution.x = x.';
   
 endfunction

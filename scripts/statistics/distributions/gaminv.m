@@ -79,8 +79,10 @@ function inv = gaminv (x, a, b)
       y(l) = sqrt (myeps) * ones (length (l), 1);
     endif
 
-    y_old = y;
-    for i = 1 : 100
+    y_new = y;
+    loopcnt = 0;
+    do
+      y_old = y_new;
       h     = (gamcdf (y_old, a, b) - x) ./ gampdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= myeps);
@@ -88,13 +90,14 @@ function inv = gaminv (x, a, b)
         y_new(ind) = y_old(ind) / 10;
         h = y_old - y_new;
       endif
-      if (max (abs (h)) < sqrt (myeps))
-        break;
-      endif
-      y_old = y_new;
-    endfor
+    until (max (abs (h)) < sqrt (myeps) || ++loopcnt == 40)
+
+    if (loopcnt == 40)
+      warning ("gaminv: calculation failed to converge for some values");
+    endif
 
     inv(k) = y_new;
+
   endif
 
 endfunction

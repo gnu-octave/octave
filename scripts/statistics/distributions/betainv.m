@@ -81,8 +81,10 @@ function inv = betainv (x, a, b)
       y(l) = 1 - sqrt (myeps) * ones (length (l), 1);
     endif
 
-    y_old = y;
-    for i = 1 : 10000
+    y_new = y;
+    loopcnt = 0;
+    do
+      y_old = y_new;
       h     = (betacdf (y_old, a, b) - x) ./ betapdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= myeps);
@@ -94,11 +96,11 @@ function inv = betainv (x, a, b)
         y_new(ind) = 1 - (1 - y_old(ind)) / 10;
       endif
       h = y_old - y_new;
-      if (max (abs (h)) < sqrt (myeps))
-        break;
-      endif
-      y_old = y_new;
-    endfor
+    until (max (abs (h)) < sqrt (myeps) || ++loopcnt == 40)
+
+    if (loopcnt == 40)
+      warning ("betainv: calculation failed to converge for some values");
+    endif
 
     inv(k) = y_new;
   endif

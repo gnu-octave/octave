@@ -36,7 +36,8 @@ glps_renderer : public opengl_renderer
 {
 public:
   glps_renderer (FILE *_fp, const std::string& _term)
-    : opengl_renderer () , fp (_fp), term (_term), fontsize (), fontname () { }
+    : opengl_renderer () , fp (_fp), term (_term), fontsize (), 
+    fontname (), naxes (0) { }
 
   ~glps_renderer (void) { }
 
@@ -49,6 +50,24 @@ protected:
                       int halign, int valign, double rotation = 0.0);
 
   void set_font (const base_properties& props);
+
+  void draw_axes (const axes::properties& props)
+  {
+    // Finish previous sorting tree here, the last one will be closed 
+    // by gl2psEndPage ()
+    if (naxes++)
+      gl2psEndViewport ();
+      
+    // Initialize a sorting tree in gl2ps for each axes
+    GLint vp[4];
+    glGetIntegerv (GL_VIEWPORT, vp);
+    gl2psBeginViewport (vp);
+
+    // Draw and  glFinish () or there may primitives missing in the
+    // gl2ps output.
+    opengl_renderer::draw_axes (props);
+    glFinish ();
+  }
 
   void draw_text (const text::properties& props);
   void draw_pixels (GLsizei w, GLsizei h, GLenum format,
@@ -89,6 +108,7 @@ private:
   caseless_str term;
   double fontsize;
   std::string fontname;
+  int naxes;
 };
 
 #endif  // HAVE_GL2PS_H

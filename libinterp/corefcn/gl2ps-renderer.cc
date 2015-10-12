@@ -137,17 +137,13 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 
           opengl_renderer::draw (go);
 
-          // Without glFinish () there may primitives be missing in the
+          // Without glFinish () there may be primitives missing in the
           // gl2ps output.
           glFinish ();
 
           state = gl2psEndPage ();
 
-          if (state == GL2PS_NO_FEEDBACK)
-            {
-              warning ("gl2ps-renderer::draw: empty feedback buffer and/or nothing else to print");
-            }
-          else if (state == GL2PS_ERROR)
+          if (state == GL2PS_ERROR)
             {
               old_print_cmd.clear ();
               error ("gl2ps-renderer::draw: gl2psEndPage returned GL2PS_ERROR");

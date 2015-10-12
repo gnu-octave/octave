@@ -2170,7 +2170,7 @@ tree_jit::trip_count (const octave_value& bounds) const
   if (bounds.is_range ())
     {
       Range rng = bounds.range_value ();
-      return rng.nelem ();
+      return rng.numel ();
     }
 
   // unsupported type

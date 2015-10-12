@@ -45,7 +45,7 @@ struct
 jit_range
 {
   jit_range (const Range& from) : base (from.base ()), limit (from.limit ()),
-                                  inc (from.inc ()), nelem (from.nelem ())
+                                  inc (from.inc ()), nelem (from.numel ())
   { }
 
   operator Range () const

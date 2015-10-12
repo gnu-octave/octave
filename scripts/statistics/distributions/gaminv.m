@@ -58,7 +58,7 @@ function inv = gaminv (x, a, b)
   inv(k) = Inf;
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (a < Inf) & (b > 0) & (b < Inf));
-  if (any (k))
+  if (! isempty (k))
     if (! isscalar (a) || ! isscalar (b))
       a = a(k);
       b = b(k);

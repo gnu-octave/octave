@@ -55,7 +55,7 @@ function inv = binoinv (x, n, p)
 
   k = find ((x >= 0) & (x <= 1) & (n >= 0) & (n == fix (n)
              & (p >= 0) & (p <= 1)));
-  if (any (k))
+  if (! isempty (k))
     x = x(k);
     if (isscalar (n) && isscalar (p))
       [inv(k), unfinished] = scalar_binoinv (x(:), n, p);

@@ -61,9 +61,8 @@ function inv = poissinv (x, lambda)
   inv(k) = Inf;
 
   k = (x > 0) & (x < 1) & (lambda > 0);
-
-  limit = 20;                           # After 'limit' iterations, use approx
-  if (! isempty (k))
+  if (any (k(:)))
+    limit = 20;                         # After 'limit' iterations, use approx
     if (isscalar (lambda))
       cdf = [(cumsum (poisspdf (0:limit-1,lambda))), 2];
       y = x(:);                         # force to column
@@ -75,11 +74,11 @@ function inv = poissinv (x, lambda)
       cdf = exp (-lambda(kk));
       for i = 1:limit
         m = find (cdf < x(kk));
-        if (any (m))
+        if (isempty (m))
+          break;
+        else
           inv(kk(m)) += 1;
           cdf(m) += poisspdf (i, lambda(kk(m)));
-        else
-          break;
         endif
       endfor
     endif
@@ -186,6 +185,7 @@ function inv = analytic_approx (x, lambda)
     y = lambda(k) .* r + log (sqrt (2*r.*((1-r) + r.*t)) ./ abs (r-1)) ./ t;
     inv(k) = floor (y - 0.0218 ./ (y + 0.065 * lambda(k)));
   endif
+
 endfunction
 
 

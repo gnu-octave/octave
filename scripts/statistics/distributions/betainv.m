@@ -56,7 +56,7 @@ function inv = betainv (x, a, b)
   inv(k) = 1;
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
-  if (any (k))
+  if (! isempty (k))
     if (! isscalar (a) || ! isscalar (b))
       a = a(k);
       b = b(k);

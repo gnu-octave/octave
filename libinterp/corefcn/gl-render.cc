@@ -3234,6 +3234,18 @@ opengl_renderer::text_to_pixels (const std::string& txt,
 #endif
 }
 
+void
+opengl_renderer::text_to_strlist (const std::string& txt,
+                                  std::list<ft_render::ft_string>& lst,
+                                  Matrix& bbox,
+                                  int halign, int valign, double rotation)
+{
+#if HAVE_FREETYPE
+  text_renderer.text_to_strlist (txt, lst, bbox,
+                                 halign, valign, rotation, interpreter);
+#endif
+}
+
 Matrix
 opengl_renderer::render_text (const std::string& txt,
                               double x, double y, double z,

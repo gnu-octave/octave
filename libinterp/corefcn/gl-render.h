@@ -124,6 +124,12 @@ protected:
                                int halign = 0, int valign = 0,
                                double rotation = 0.0);
 
+  virtual void text_to_strlist (const std::string& txt,
+                                std::list<ft_render::ft_string>& lst,
+                                Matrix& bbox,
+                                int halign = 0, int valign = 0, 
+                                double rotation = 0.0);
+
   virtual Matrix render_text (const std::string& txt,
                               double x, double y, double z,
                               int halign, int valign, double rotation = 0.0);

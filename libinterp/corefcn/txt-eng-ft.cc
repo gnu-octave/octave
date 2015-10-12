@@ -366,7 +366,7 @@ ft_render::push_new_line (void)
         line_bbox.pop_front ();
         Matrix new_bbox = line_bbox.front ();
 
-        xoffset = compute_line_xoffset (new_bbox);
+        xoffset = line_xoffset = compute_line_xoffset (new_bbox);
         line_yoffset += (old_bbox(1) - (new_bbox(1) + new_bbox(3)));
         yoffset = 0;
       }
@@ -637,9 +637,13 @@ ft_render::visit (text_element_string& e)
       std::string str = e.string_value ();
       size_t n = str.length ();
       size_t curr = 0;
+      size_t idx = 0;
       mbstate_t ps;
       memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;
+
+      ft_string fs (str, font.get_angle (), font.get_weight (), 
+                    font.get_name (), font.get_size (), xoffset, yoffset);
 
       while (n > 0)
         {
@@ -652,10 +656,32 @@ ft_render::visit (text_element_string& e)
               n -= r;
               curr += r;
 
+              if (wc == L'\n')
+                {
+                  // Finish previous string in srtlist before processing 
+                  // the newline character
+                  fs.set_y (line_yoffset + yoffset);
+                  fs.set_color (color);
+                  std::string s = str.substr (idx, curr - idx - 1);
+                  if (! s.empty ())
+                    {
+                      fs.set_string (s);
+                      strlist.push_back (fs);
+                    }
+                }
+
               glyph_index = process_character (wc, previous);
 
               if (wc == L'\n')
-                previous = 0;
+                {
+                  previous = 0;
+                  // Start a new string in strlist
+                  idx = curr;
+                  fs = ft_string (str.substr (idx), font.get_angle (), 
+                                  font.get_weight (), font.get_name (), 
+                                  font.get_size (), line_xoffset, yoffset);
+                  
+                }
               else
                 previous = glyph_index;
             }
@@ -667,6 +693,12 @@ ft_render::visit (text_element_string& e)
                            std::setlocale (LC_CTYPE, 0));
               break;
             }
+        }
+      if (! fs.get_string ().empty ())
+        {
+          fs.set_y (line_yoffset + yoffset);
+          fs.set_color (color);
+          strlist.push_back (fs);
         }
     }
 }
@@ -805,11 +837,24 @@ void
 ft_render::visit (text_element_symbol& e)
 {
   uint32_t code = e.get_symbol_code ();
+ 
+  ft_string fs (std::string ("-"), font.get_angle (), font.get_weight (), 
+                font.get_name (), font.get_size (), xoffset, yoffset);
 
   if (code != text_element_symbol::invalid_code && font.is_valid ())
-    process_character (code);
+    {
+      process_character (code);
+      fs.set_code (code);
+    }
   else if (font.is_valid ())
     ::warning ("ignoring unknown symbol: %d", e.get_symbol ());
+
+  if (fs.get_code ())
+    {
+      fs.set_y (line_yoffset + yoffset);
+      fs.set_color (color);
+      strlist.push_back (fs);
+   }
 }
 
 void
@@ -857,6 +902,9 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
   box = bbox;
 
   set_mode (MODE_RENDER);
+  // Clear the list of parsed strings
+  strlist.clear ();
+
   if (pixels.numel () > 0)
     {
       elt->accept (*this);
@@ -976,7 +1024,8 @@ void
 ft_render::text_to_pixels (const std::string& txt,
                            uint8NDArray& pixels_, Matrix& box,
                            int _halign, int valign, double rotation,
-                           const caseless_str& interpreter)
+                           const caseless_str& interpreter, 
+                           bool handle_rotation)
 {
   int rot_mode = rotation_to_mode (rotation);
 
@@ -1007,23 +1056,24 @@ ft_render::text_to_pixels (const std::string& txt,
     case 4: box(1) = -box(3)-box(1); break;
     }
 
-  switch (rot_mode)
-    {
-    case ROTATION_90:
-      std::swap (box(0), box(1));
-      std::swap (box(2), box(3));
-      box(0) = -box(0)-box(2);
-      break;
-    case ROTATION_180:
-      box(0) = -box(0)-box(2);
-      box(1) = -box(1)-box(3);
-      break;
-    case ROTATION_270:
-      std::swap (box(0), box(1));
-      std::swap (box(2), box(3));
-      box(1) = -box(1)-box(3);
-      break;
-    }
+  if (handle_rotation)
+    switch (rot_mode)
+      {
+      case ROTATION_90:
+        std::swap (box(0), box(1));
+        std::swap (box(2), box(3));
+        box(0) = -box(0)-box(2);
+        break;
+      case ROTATION_180:
+        box(0) = -box(0)-box(2);
+        box(1) = -box(1)-box(3);
+        break;
+      case ROTATION_270:
+        std::swap (box(0), box(1));
+        std::swap (box(2), box(3));
+        box(1) = -box(1)-box(3);
+        break;
+      }
 }
 
 ft_render::ft_font::ft_font (const ft_font& ft)

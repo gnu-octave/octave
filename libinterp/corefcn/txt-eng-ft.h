@@ -55,6 +55,7 @@ public:
   };
 
 public:
+  
   ft_render (void);
 
   ~ft_render (void);
@@ -102,7 +103,8 @@ public:
   void text_to_pixels (const std::string& txt,
                        uint8NDArray& pixels_, Matrix& bbox,
                        int halign, int valign, double rotation,
-                       const caseless_str& interpreter = "tex");
+                       const caseless_str& interpreter = "tex",
+                       bool handle_rotation = true);
 
 private:
   int rotation_to_mode (double rotation) const;
@@ -165,6 +167,66 @@ private:
 
   FT_UInt process_character (FT_ULong code, FT_UInt previous = 0);
 
+public:
+  // A class to store informations on substrings after parsing. 
+  class ft_string : public ft_font
+  {
+  public:
+    ft_string (const std::string s, const std::string fontang,
+              const std::string fontwgt, const std::string nm,
+              const double fontsz, const double x0, const double y0)
+      : ft_font (nm, fontwgt, fontang, fontsz),
+        string(s), x(x0), y(y0), z(0.0), code(0),
+        color(Matrix (1,3,0.0)){ }
+  
+    void set_string (const std::string str) { string = str; }
+
+    std::string get_string (void) const { return string; }
+
+    void set_x (const double x0) { x = x0; }
+
+    double get_x (void) const { return x; }
+
+    void set_y (const double y0) { y = y0; }
+
+    double get_y (void) const { return y; }
+
+    void set_z (const double z0) { z = z0; }
+
+    double get_z (void) const { return z; }
+
+    void set_code (const uint32_t c) { code = c; }
+
+    uint32_t get_code (void) const { return code; }
+
+    void set_color (const uint8NDArray c) 
+    { 
+      color(0) = static_cast<double> (c(0)) / 255; 
+      color(1) = static_cast<double> (c(1)) / 255;
+      color(2) = static_cast<double> (c(2)) / 255;
+    }
+
+    Matrix get_color (void) const { return color; }
+  
+  private:
+    std::string  string;
+    double x, y, z;
+    uint32_t code;
+    Matrix color;
+  };
+
+ void text_to_strlist (const std::string& txt,
+                        std::list<ft_string>& lst, Matrix& box,
+                        int ha, int va, double rot,
+                        const caseless_str& interp = "tex")  
+  {
+    uint8NDArray pixels_;
+    // First run text_to_pixels which will also build the string list 
+    text_to_pixels (txt, pixels_, box, ha, va, rot, interp, false);
+    
+    lst = strlist;
+  }
+
 private:
   // The current font used by the renderer.
   ft_font font;
@@ -203,6 +265,13 @@ private:
 
   // The base color of the rendered text.
   uint8NDArray color;
+
+  // A list of parsed strings to be used for printing.
+  std::list<ft_string> strlist;
+
+  // The X offset of the baseline for the current line.
+  int line_xoffset;
+
 };
 
 #endif // HAVE_FREETYPE

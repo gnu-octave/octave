@@ -32,6 +32,8 @@
 ## Any provided property value pairs will override the default values of the created 
 ## uipanel object.
 ##
+## Uipanel propertes are documented at @ref{Uipanel Properties}.
+##
 ## Examples:
 ##
 ## @example

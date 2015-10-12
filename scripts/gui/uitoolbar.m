@@ -30,6 +30,8 @@
 ## Any provided property value pairs will override the default values of the created 
 ## uitoolbar object. 
 ##
+## Uitoolbar propertes are documented at @ref{Uitoolbar Properties}.
+##
 ## Examples:
 ##
 ## @example

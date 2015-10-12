@@ -1,5 +1,6 @@
-## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 2015 Lachlan Andrew
+## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 1995-2012 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -29,9 +30,6 @@
 ## The number of failures in a Bernoulli experiment with success probability
 ## @var{p} before the @var{n}-th success follows this distribution.
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Quantile function of the Pascal distribution
 
 function inv = nbininv (x, n, p)
 
@@ -65,34 +63,70 @@ function inv = nbininv (x, n, p)
 
   k = find ((x >= 0) & (x < 1) & (n > 0) & (n < Inf)
             & (p > 0) & (p <= 1));
-  m = zeros (size (k));
-  x = x(k);
-  if (isscalar (n) && isscalar (p))
-    s = p ^ n * ones (size (k));
-    while (1)
-      l = find (s < x);
-      if (any (l))
-        m(l) = m(l) + 1;
-        s(l) = s(l) + nbinpdf (m(l), n, p);
-      else
-        break;
-      endif
-    endwhile
-  else
-    n = n(k);
-    p = p(k);
-    s = p .^ n;
-    while (1)
-      l = find (s < x);
-      if (any (l))
-        m(l) = m(l) + 1;
-        s(l) = s(l) + nbinpdf (m(l), n(l), p(l));
-      else
-        break;
-      endif
-    endwhile
+  if (! isempty (k))
+    x = x(k);
+    m = zeros (size (k));
+    if (isscalar (n) && isscalar (p))
+      [m, unfinished] = scalar_nbininv (x(:), n, p);
+      m(unfinished) = bin_search_nbininv (x(unfinished), n, p);
+    else
+      m = bin_search_nbininv (x, n(k), p(k));
+    endif
+    inv(k) = m;
   endif
-  inv(k) = m;
+
+endfunction
+
+
+## Core algorithm to calculate the inverse negative binomial, for n and p real
+## scalars and y a column vector, and for which the output is not NaN or Inf.
+## Compute CDF in batches of doubling size until CDF > x, or answer > 500.
+## Return the locations of unfinished cases in k.
+function [m, k] = scalar_nbininv (x, n, p)
+  k = 1:length (x);
+  m = zeros (size (x));
+  prev_limit = 0;
+  limit = 10;
+  do
+    cdf = nbincdf (prev_limit:limit, n, p);
+    r = bsxfun (@le, x(k), cdf);
+    [v, m(k)] = max (r, [], 2);     # find first instance of x <= cdf
+    m(k) += prev_limit - 1;
+    k = k(v == 0);
+
+    prev_limit = limit;
+    limit += limit;
+  until (isempty (k) || limit >= 1000)
+
+endfunction
+
+## Vectorized binary search.
+## Can handle vectors n and p, and is faster than the scalar case when the
+## answer is large.
+## Could be optimized to call nbincdf only for a subset of the x at each stage,
+## but care must be taken to handle both scalar and vector n,p.  Bookkeeping
+## may cost more than the extra computations.
+function m = bin_search_nbininv (x, n, p)
+  k = 1:length (x);
+  lower = zeros (size (x));
+  limit = 1;
+  while (any (k) && limit < 1e100)
+    cdf = nbincdf (limit, n, p);
+    k = (x > cdf);
+    lower(k) = limit;
+    limit += limit;
+  end
+  upper = max (2*lower, 1);
+  k = find (lower != limit/2);    # elements for which above loop finished
+  for i = 1:ceil (log2 (max (lower)))
+    mid = (upper + lower)/2;
+    cdf = nbincdf (floor (mid), n, p);
+    r = (x <= cdf);
+    upper(r)  = mid(r);
+    lower(!r) = mid(!r);
+  endfor
+  m = ceil (lower);
+  m(x > nbincdf (m, n, p)) += 1;  # fix off-by-one errors from binary search
 
 endfunction
 
@@ -112,6 +146,14 @@ endfunction
 %!assert (nbininv (single ([x, NaN]), 1, 0.5), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (nbininv ([x, NaN], single (1), 0.5), single ([NaN 0 1 Inf NaN NaN]))
 %!assert (nbininv ([x, NaN], 1, single (0.5)), single ([NaN 0 1 Inf NaN NaN]))
+
+## Test accuracy, to within +/- 1 since it is a discrete distribution
+%!shared y, tol
+%! y = magic (3) + 1;
+%! tol = 1;
+%!assert (nbininv (nbincdf (1:10, 3, 0.1), 3, 0.1), 1:10, tol)
+%!assert (nbininv (nbincdf (1:10, 3./(1:10), 0.1), 3./(1:10), 0.1), 1:10, tol)
+%!assert (nbininv (nbincdf (y, 3./y, 1./y), 3./y, 1./y), y, tol)
 
 ## Test input validation
 %!error nbininv ()

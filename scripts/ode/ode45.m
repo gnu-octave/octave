@@ -131,7 +131,10 @@ function varargout = ode45 (vfun, vtrange, vinit, varargin)
   endif
   vinit = vinit(:);
 
-  if (! (isa (vfun, "function_handle")))
+  if (ischar (vfun))
+    try; vfun = str2func (vfun); catch; warning (lasterr); end_try_catch
+  endif
+  if (! (isa (vfun, "function_handle")))        
     error ("OdePkg:InvalidArgument",
            "first input argument must be a valid function handle");
   endif
@@ -509,6 +512,8 @@ endfunction
 %! B = ode45 (1, [0 25], [3 15 1]);
 %!error  # input argument number one
 %! [vt, vy] = ode45 (1, [0 25], [3 15 1]);
+%!error  # input argument number one as name of non existing function
+%! [vt, vy] = ode45 ("non-existing-function"", [0 25], [3 15 1]);
 %!error  # input argument number two
 %! [vt, vy] = ode45 (@fpol, 1, [3 15 1]);
 %!test  # two output arguments
@@ -520,6 +525,10 @@ endfunction
 %!test  # anonymous function instead of real function
 %! fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
 %! [vt, vy] = ode45 (fvdb, [0 2], [2 0]);
+%! assert ([vt(end), vy(end,:)], [2, fref], 1e-2);
+%!test  # string instead of function
+%! fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%! [vt, vy] = ode45 ("atan2", [0 2], [2 0]);
 %! assert ([vt(end), vy(end,:)], [2, fref], 1e-2);
 %!test  # extra input arguments passed through
 %! [vt, vy] = ode45 (@fpol, [0 2], [2 0], 12, 13, "KL");
@@ -658,10 +667,9 @@ endfunction
 %! vopt = odeset ("BDF", "on");
 %! [vt, vy] = ode45 (@fpol, [0 2], [2 0], vopt);
 %! assert ([vt(end), vy(end,:)], [2, fref], 1e-3);
-%!
+%!test  #
 %!## test for MvPattern option is missing
 %!## test for InitialSlope option is missing
 %!## test for MaxOrder option is missing
 %!
 %! warning ("on", "OdePkg:InvalidArgument");
-

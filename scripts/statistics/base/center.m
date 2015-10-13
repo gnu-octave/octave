@@ -70,7 +70,7 @@ function retval = center (x, dim)
   if (n == 0)
     retval = x;
   else
-    retval = bsxfun (@minus, x, mean (x, dim));
+    retval = x - mean (x, dim);
   endif
 
 endfunction

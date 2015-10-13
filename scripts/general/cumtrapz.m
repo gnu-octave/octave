@@ -100,7 +100,7 @@ function z = cumtrapz (x, y, dim)
       shape = ones (nd, 1);
       shape(dim) = sz(dim);
       x = reshape (x, shape);
-      z = 0.5 * cumsum (bsxfun (@times, diff (x), y(idx1{:}) + y(idx2{:})), dim);
+      z = 0.5 * cumsum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
     else
       if (! size_equal (x, y))
         error ("cumtrapz: X and Y must have same shape");

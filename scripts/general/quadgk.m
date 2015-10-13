@@ -420,7 +420,7 @@ function [q, err] = __quadgk_eval__ (f, subs)
 
   halfwidth = diff (subs, [], 2) ./ 2;
   center = sum (subs, 2) ./ 2;;
-  x = bsxfun (@plus, halfwidth * abscissa, center);
+  x = (halfwidth * abscissa) + center;
   y = reshape (f (x(:)), size (x));
 
   ## This is faster than using bsxfun as the * operator can use a

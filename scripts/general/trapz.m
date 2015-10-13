@@ -114,7 +114,7 @@ function z = trapz (x, y, dim)
       shape = ones (nd, 1);
       shape(dim) = sz(dim);
       x = reshape (x, shape);
-      z = 0.5 * sum (bsxfun (@times, diff (x), y(idx1{:}) + y(idx2{:})), dim);
+      z = 0.5 * sum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
     else
       if (! size_equal (x, y))
         error ("trapz: X and Y must have same shape");

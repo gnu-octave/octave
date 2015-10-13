@@ -86,8 +86,7 @@ function [z, mu, sigma] = zscore (x, opt, dim)
     sigma = std (x, opt, dim);
     s = sigma;
     s(s==0) = 1;
-    ## FIXME: Use normal broadcasting once we can disable that warning
-    z = bsxfun (@rdivide, bsxfun (@minus, x, mu), s);
+    z = (x - mu) ./ s;
   endif
 
 endfunction

@@ -57,21 +57,14 @@
 %! s.a = 2;
 %! assert (isfield (s, 2) == 0);
 
-%!assert (!(isstruct (1)))
-
-%!assert (!(isstruct ([1, 2])))
-
-%!assert (!(isstruct ([])))
-
-%!assert (!(isstruct ([1, 2; 3, 4])))
-
-%!assert (!(isstruct ("t")))
-
-%!assert (!(isstruct ("test")))
-
-%!assert (!(isstruct (["test"; "ing"])))
-
-%!assert (!(isstruct ({1})))
+%!assert (isstruct (1), false)
+%!assert (isstruct ([1, 2]), false)
+%!assert (isstruct ([]), false)
+%!assert (isstruct ([1, 2; 3, 4]), false)
+%!assert (isstruct ("t"), false)
+%!assert (isstruct ("test"), false)
+%!assert (isstruct (["test"; "ing"]), false)
+%!assert (isstruct ({1}), false)
 
 %!test
 %! s.a = 1;
@@ -237,6 +230,14 @@
 %! s = resize (struct (), 3,2);
 %! s(3).foo = 42;
 %! assert (s(3), struct ("foo", 42));
+
+## test assigning to multi-dim struct with trailing singleton dimensions,
+## Bug #35841.
+%!test
+%! a(1,1,1).b(1) = 1;
+%! a(1,1,1).b(1) = 2;
+%! a(1,1,:).b(1) = 3;
+%! assert (a(1,1,1).b(1) == 3);
 
 %!error id=Octave:index-out-of-bounds
 %! s = resize (struct (),3,2);

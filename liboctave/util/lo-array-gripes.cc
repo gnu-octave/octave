@@ -122,8 +122,7 @@ std::string
 index_exception:: access (void) const
 {
   // FIXME: don't use a fixed size buffer!
-
-  int buf_len = 300;
+  const int buf_len = 300;
 
   char output [buf_len];
   char pre [buf_len];
@@ -228,8 +227,8 @@ void
 gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
                      octave_idx_type dim, const char *var)
 {
-  // FIXME: don't use a fixed size buffer!
-  char buf [100];
+  // Note: log10 (2^63) = 19 digits.  Use 64 for ease of memory alignment. 
+  char buf[64];
 
   sprintf (buf, "%d", n+1);
 
@@ -240,8 +239,7 @@ void
 gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
                      const char *var)
 {
-  // FIXME: don't use a fixed size buffer!
-  char buf [100];
+  char buf[64];
 
   sprintf (buf, "%g", n+1);
 
@@ -275,8 +273,7 @@ public:
       }
     else
       {
-        // FIXME: don't use a fixed size buffer!
-        char buf [100];
+        char buf[64];
         sprintf (buf, "%d", extent);
         expl = "out of bound " + std::string (buf);
       }
@@ -296,7 +293,7 @@ public:
 
 private:
 
-  dim_vector  size;         // dimension of object being accessed
+  dim_vector size;          // dimension of object being accessed
 
   octave_idx_type extent;   // length of dimension being accessed
 };
@@ -306,12 +303,12 @@ void
 gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
                           octave_idx_type ext)
 {
-    char buf [100];
+    char buf[64];
     sprintf (buf, "%d", idx);
     out_of_range e (buf, nd, dim);
 
     e.set_extent (ext);
-    dim_vector d (1,1,1,1,1,1,1);   // make  explain()  give extent not size
+    dim_vector d (1,1,1,1,1,1,1);   // make explain() give extent not size
     e.set_size (d);
     throw e;
 }
@@ -321,7 +318,7 @@ void
 gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
                           octave_idx_type ext, const dim_vector& d)
 {
-    char buf [100];
+    char buf[64];
     sprintf (buf, "%d", idx);
     out_of_range e (buf, nd, dim);
 

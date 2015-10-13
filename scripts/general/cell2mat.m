@@ -114,10 +114,22 @@ endfunction
 %! m = {1, 2, 3};
 %! assert (cell2mat (mat2cell (m, 1, [1 1 1])), m);
 
+## cell2mat from cell into another cell
+%!assert (cell2mat ({{"foo", "bar", "qux"}}), {"foo", "bar", "qux"})
+%!assert (cell2mat ({{"foo"}, {"bar", "qux"}}), {"foo", "bar", "qux"})
+%!assert (cell2mat ({{"foo"}; {"bar"; "qux"}}), {"foo"; "bar"; "qux"})
+%!assert (cell2mat ({{"foo", "lol"}; {"bar", "qux"}}),
+%!        {"foo", "lol"; "bar", "qux"})
+
+## cell2mat cell strings
+%!assert (cell2mat ({"foo", "lol"; "bar", "qux"}),
+%!        reshape ("fboaorlqoulx", [2 6]))
+
 %!error cell2mat ()
 %!error cell2mat (1,2)
 %!error <C must be a cell array> cell2mat ([1,2])
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], struct()})
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], {1}})
 %!error <mixed cells, structs, and matrices> cell2mat ({struct(), {1}})
-
+%!error <dimension mismatch> cell2mat ({{"foo"}; {"bar", "qux"}})
+%!error <dimension mismatch> cell2mat ({"foox", "lol"; "bar", "qux"})

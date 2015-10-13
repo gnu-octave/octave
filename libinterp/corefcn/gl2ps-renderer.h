@@ -103,6 +103,13 @@ protected:
   }
 
 private:
+  // Use xform to compute the coordinates of the ft_string list 
+  // that have been parsed by freetype
+  void fix_strlist_position (double x, double y, double z, 
+                             Matrix box, double rotation, 
+                             std::list<ft_render::ft_string>& lst);
+
+private:
   int alignment_to_mode (int ha, int va) const;
   FILE *fp;
   caseless_str term;

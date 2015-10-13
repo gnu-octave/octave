@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "gl2ps-renderer.h"
+#include "txt-eng-ft.h"
 
 #ifdef HAVE_GL2PS_H
 
@@ -194,42 +195,194 @@ glps_renderer::alignment_to_mode (int ha, int va) const
   return gl2psa;
 }
 
-Matrix
-glps_renderer::render_text (const std::string& txt,
-                            double x, double y, double z,
-                            int ha, int va, double rotation)
+void 
+glps_renderer::fix_strlist_position (double x, double y, double z, 
+                                     Matrix box, double rotation,
+                                     std::list<ft_render::ft_string>& lst)
 {
-  if (txt.empty ())
-    return Matrix (1, 4, 0.0);
+  for (std::list<ft_render::ft_string>::iterator p = lst.begin (); 
+       p != lst.end (); p++)
+    {
+      // Get pixel coordinates
+      ColumnVector coord_pix = get_transform ().transform (x, y, z, false);
 
-  glRasterPos3d (x, y, z);
-
-  gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize,
-                alignment_to_mode (ha, va), rotation);
-
-  // FIXME?
-  // We have no way of getting a bounding box from gl2ps, so we use FreeType.
-  Matrix bbox;
-  uint8NDArray pixels;
-  text_to_pixels (txt, pixels, bbox, 0, 0, rotation);
-
-  return bbox;
+      // Translate and rotate
+      double rot = rotation * 4.0 * atan (1.0) / 180;
+      coord_pix(0) += ((*p).get_x () + box(0))*cos (rot)
+                      - ((*p).get_y () + box(1))*sin (rot);
+      coord_pix(1) -= ((*p).get_y () + box(1))*cos (rot)
+                      + ((*p).get_x () + box(0))*sin (rot);;
+      
+      // Turn coordinates back into current gl coordinates
+      ColumnVector coord = 
+        get_transform ().untransform (coord_pix(0), coord_pix(1), 
+                                      coord_pix(2), false);
+      (*p).set_x (coord(0));
+      (*p).set_y (coord(1));
+      (*p).set_z (coord(2));
+    }
 }
 
-void
-glps_renderer::set_font (const base_properties& props)
+static std::string 
+code_to_symbol (uint32_t code)
 {
-  opengl_renderer::set_font (props);
+  std::string retval;
 
-  fontsize = props.get ("fontsize_points").double_value ();
+  uint32_t idx = code - 945;
+  if (idx < 25)
+    {
+      std::string characters("abgdezhqiklmnxoprVstufcyw");
+      retval = characters[idx];
+      return retval;
+    }
 
-  caseless_str fn = props.get ("fontname").xtolower ().string_value ();
-  bool isbold =
-    (props.get ("fontweight").xtolower ().string_value () == "bold");
-  bool isitalic =
-    (props.get ("fontangle").xtolower ().string_value () == "italic");
+  idx = code - 913;
+  if (idx < 25)
+    {
+      std::string characters("ABGDEZHQIKLMNXOPRVSTUFCYW");
+      retval = characters[idx];
+    }
+  else if (code == 978)
+    retval = std::string ("U");
+  else if (code == 215)
+    retval = std::string ("\xb4");
+  else if (code == 177)
+    retval = std::string ("\xb1");
+  else if (code == 8501)
+    retval = std::string ("\xc0");
+  else if (code == 8465)
+    retval = std::string ("\xc1");
+  else if (code == 8242)
+    retval = std::string ("\xa2");
+  else if (code == 8736)
+    retval = std::string ("\xd0");
+  else if (code == 172)
+    retval = std::string ("\xd8");
+  else if (code == 9829)
+    retval = std::string ("\xa9");
+  else if (code == 8472)
+    retval = std::string ("\xc3");
+  else if (code == 8706)
+    retval = std::string ("\xb6");
+  else if (code == 8704)
+    retval = std::string ("\x22");
+  else if (code == 9827)
+    retval = std::string ("\xa7");
+  else if (code == 9824)
+    retval = std::string ("\xaa");
+  else if (code == 8476)
+    retval = std::string ("\xc2");
+  else if (code == 8734)
+    retval = std::string ("\xa5");
+  else if (code == 8730)
+    retval = std::string ("\xd6");
+  else if (code == 8707)
+  retval = std::string ("\x24");
+  else if (code == 9830)
+    retval = std::string ("\xa8");
+  else if (code == 8747)
+    retval = std::string ("\xf2");
+  else if (code == 8727)
+    retval = std::string ("\x2a");
+  else if (code == 8744)
+    retval = std::string ("\xda");
+  else if (code == 8855)
+    retval = std::string ("\xc4");
+  else if (code == 8901)
+    retval = std::string ("\xd7");
+  else if (code == 8728)
+    retval = std::string ("\xb0");
+  else if (code == 8745)
+    retval = std::string ("\xc7");
+  else if (code == 8743)
+    retval = std::string ("\xd9");
+  else if (code == 8856)
+    retval = std::string ("\xc6");
+  else if (code == 8729)
+    retval = std::string ("\xb7");
+  else if (code == 8746)
+    retval = std::string ("\xc8");
+  else if (code == 8853)
+    retval = std::string ("\xc5");
+  else if (code == 8804)
+    retval = std::string ("\xa3");
+  else if (code == 8712)
+    retval = std::string ("\xce");
+  else if (code == 8839)
+    retval = std::string ("\xca");
+  else if (code == 8801)
+    retval = std::string ("\xba");
+  else if (code == 8773)
+    retval = std::string ("\x40");
+  else if (code == 8834)
+    retval = std::string ("\xcc");
+  else if (code == 8805)
+    retval = std::string ("\xb3");
+  else if (code == 8715)
+    retval = std::string ("\x27");
+  else if (code == 8764)
+    retval = std::string ("\x7e");
+  else if (code == 8733)
+    retval = std::string ("\xb5");
+  else if (code == 8838)
+    retval = std::string ("\xcd");
+  else if (code == 8835)
+    retval = std::string ("\xc9");
+  else if (code == 8739)
+    retval = std::string ("\xbd");
+  else if (code == 8776)
+    retval = std::string ("\xbb");
+  else if (code == 8869)
+    retval = std::string ("\x5e");
+  else if (code == 8656)
+    retval = std::string ("\xdc");
+  else if (code == 8592)
+    retval = std::string ("\xac");
+  else if (code == 8658)
+    retval = std::string ("\xde");
+  else if (code == 8594)
+    retval = std::string ("\xae");
+  else if (code == 8596)
+    retval = std::string ("\xab");
+  else if (code == 8593)
+    retval = std::string ("\xad");
+  else if (code == 8595)
+    retval = std::string ("\xaf");
+  else if (code == 8970)
+    retval = std::string ("\xeb");
+  else if (code == 8971)
+    retval = std::string ("\xfb");
+  else if (code == 10216)
+    retval = std::string ("\xe1");
+  else if (code == 10217)
+    retval = std::string ("\xf1");
+  else if (code == 8968)
+    retval = std::string ("\xe9");
+  else if (code == 8969)
+    retval = std::string ("\xf9");
+  else if (code == 8800)
+    retval = std::string ("\xb9");
+  else if (code == 8230)
+    retval = std::string ("\xbc");
+  else if (code == 176)
+    retval = std::string ("\xb0");
+  else if (code == 8709)
+    retval = std::string ("\xc6");
+  else if (code == 169)
+    retval = std::string ("\xd3");
 
-  fontname = "";
+  if (retval.empty ())
+    warning ("print: unhandled symbol %d", code);
+
+  return retval;
+}
+
+
+static std::string 
+select_font (caseless_str fn, bool isbold, bool isitalic)
+{
+  std::transform (fn.begin (), fn.end (), fn.begin (), ::tolower);
+  std::string fontname;
   if (fn == "times" || fn == "times-roman")
     {
       if (isitalic && isbold)
@@ -242,7 +395,7 @@ glps_renderer::set_font (const base_properties& props)
         fontname = "Times-Roman";
     }
   else if (fn == "courier")
-    {
+    { 
       if (isitalic && isbold)
         fontname = "Courier-BoldOblique";
       else if (isitalic)
@@ -267,6 +420,135 @@ glps_renderer::set_font (const base_properties& props)
       else
         fontname = "Helvetica";
     }
+  return fontname;
+}
+
+static void 
+escape_character (const std::string chr, std::string& str)
+{
+  std::size_t idx = str.find (chr);
+  while (idx != std::string::npos)
+    {
+      str.insert (idx, "\\");
+      idx = str.find (chr, idx + 2);
+    }
+}
+
+Matrix
+glps_renderer::render_text (const std::string& txt,
+                            double x, double y, double z,
+                            int ha, int va, double rotation)
+{
+  std::string saved_font = fontname;
+
+  if (txt.empty ())
+    return Matrix (1, 4, 0.0);
+  
+  // We have no way to get a bounding box from gl2ps, so we parse the raw 
+  // string using freetype
+  Matrix bbox;
+  std::string str = txt;
+  std::list<ft_render::ft_string> lst;
+
+  text_to_strlist (str, lst, bbox, ha, va, rotation);
+
+  // When using "tex" or when the string has only one line and no 
+  // special characters, use gl2ps for alignment
+  if (lst.empty () || term.find ("tex") != std::string::npos 
+      || (lst.size () == 1  && ! lst.front ().get_code ()))
+    {
+      std::string name = fontname;
+      int sz = fontsize;
+      if (! lst.empty () && term.find ("tex") == std::string::npos)
+        {
+          ft_render::ft_string s = lst.front ();
+          name = select_font (s.get_name (), s.get_weight () == "bold",
+                              s.get_angle () == "italic");
+          set_color (s.get_color ());
+          str = s.get_string ();
+          sz = s.get_size ();
+        }
+
+      glRasterPos3d (x, y, z);
+
+      // Escape parenthesis until gl2ps does it (see bug ##45301).
+      if (term.find ("svg") == std::string::npos 
+          && term.find ("tex") == std::string::npos)
+        {
+          escape_character ("(", str);
+          escape_character (")", str);
+        }
+
+      gl2psTextOpt (str.c_str (), name.c_str (), sz,
+                    alignment_to_mode (ha, va), rotation);
+      return bbox;
+    }
+
+  // Translate and rotate coordinates in order to use bottom-left alignment
+  fix_strlist_position (x, y, z, bbox, rotation, lst);
+
+  for (std::list<ft_render::ft_string>::iterator p = lst.begin (); 
+       p != lst.end (); p++)
+    {
+      fontname = select_font ((*p).get_name (), 
+                              (*p).get_weight () == "bold",
+                              (*p).get_angle () == "italic");
+      if ((*p).get_code ())
+        {
+          // This is only one character represented by a uint32 (utf8) code. 
+          // We replace it by the corresponding character in the 
+          // "Symbol" font except for svg which has built-in utf8 support.
+          if (term.find ("svg") == std::string::npos)
+            {
+              fontname = "Symbol";
+              str = code_to_symbol ((*p).get_code ());
+            }
+          else
+            {
+              std::stringstream ss;
+              ss << (*p).get_code ();
+              str = "&#" + ss.str () + ";";
+            }
+        }
+      else
+        {
+          str = (*p).get_string ();
+          // Escape parenthesis until gl2ps does it (see bug ##45301).
+          if (term.find ("svg") == std::string::npos)
+            {
+              escape_character ("(", str);
+              escape_character (")", str);
+            }
+        }
+ 
+      set_color ((*p).get_color ());
+      glRasterPos3d ((*p).get_x (), (*p).get_y (), (*p).get_z ());
+      gl2psTextOpt (str.c_str (), fontname.c_str (), (*p).get_size (),
+                    GL2PS_TEXT_BL, rotation);
+    }
+  
+  fontname = saved_font;
+  return bbox;
+}
+
+void
+glps_renderer::set_font (const base_properties& props)
+{
+  opengl_renderer::set_font (props);
+
+  // Set the interpreter so that text_to_pixels can parse strings properly 
+  if (props.has_property ("interpreter"))
+    set_interpreter (props.get ("interpreter").string_value ());
+
+  fontsize = props.get ("fontsize_points").double_value ();
+
+  caseless_str fn = props.get ("fontname").xtolower ().string_value ();
+  bool isbold =
+    (props.get ("fontweight").xtolower ().string_value () == "bold");
+  bool isitalic =
+    (props.get ("fontangle").xtolower ().string_value () == "italic");
+
+  fontname = select_font (fn, isbold, isitalic);
 }
 
 template <typename T>
@@ -302,10 +584,15 @@ glps_renderer::draw_text (const text::properties& props)
   if (props.get_string ().is_empty ())
     return;
 
+  // First set font properties: freetype will use them to compute
+  // coordinates and gl2ps will retrieve the color directly from the 
+  // feedback buffer 
   set_font (props);
   set_color (props.get_color_rgb ());
 
-  const Matrix pos = get_transform ().scale (props.get_data_position ());
+  std::string saved_font = fontname;
+
+  // Alignment
   int halign = 0;
   int valign = 0;
 
@@ -323,16 +610,12 @@ glps_renderer::draw_text (const text::properties& props)
 
   // FIXME: handle margin and surrounding box
 
-  glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
+  Matrix bbox;
+  const Matrix pos = get_transform ().scale (props.get_data_position ());
+  std::string str = props.get_string ().all_strings ().join ("\n");
 
-  octave_value string_prop = props.get_string ();
-
-  string_vector sv = string_prop.all_strings ();
-
-  std::string s = sv.join ("\n");
-
-  gl2psTextOpt (s.c_str (), fontname.c_str (), fontsize,
-                alignment_to_mode (halign, valign), props.get_rotation ());
+  render_text (str, pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0,
+               halign, valign, props.get_rotation ());
 }
 
 static void

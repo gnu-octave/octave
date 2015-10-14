@@ -1,4 +1,4 @@
-## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -17,37 +17,36 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{sum} =} kahan (@var{sum}, @var{comp}, @var{temp})
-## @deftypefnx {Function File} {[@var{sum}, @var{comp}] =} kahan (@var{sum}, @var{comp}, @var{temp})
+## @deftypefn  {Function File} {@var{sum} =} kahan (@var{sum}, @var{comp}, @var{term})
+## @deftypefnx {Function File} {[@var{sum}, @var{comp}] =} kahan (@var{sum}, @var{comp}, @var{term})
 ##
-## This function is the implementation of the Kahan summation algorithm,
-## also known as compensated summation.
+## This function implements the Kahan summation algorithm, also known as
+## compensated summation.
 ##
-## It significantly reduces the numerical error in the total obtained by adding
-## a sequence of finite precision floating point numbers, compared to the
-## obvious approach.  For more details
+## The algorithm significantly reduces the numerical error in the total
+## obtained by adding a sequence of finite precision floating point numbers,
+## compared to the straightforward approach.  For more details
 ## see @url{http://en.wikipedia.org/wiki/Kahan_summation_algorithm}.
-## This function is called in @command{integrate_adaptive} and in
+## This function is called by @command{integrate_adaptive} and
 ## @command{integrate_const} to better catch equality comparisons.
 ##
 ## The first input argument is the variable that will contain the summation,
 ## so that is also returned as first output argument in order to reuse it in
-## next calls to kahan function.
+## next calls to @code{kahan} function.
 ##
 ## The second input argument contains the compensation term and it is returned
-## as second output argument so that it can be reused in the next calls of the
-## same computation.
+## as the second output argument so that it can be reused in future calls of
+## the same summation.
 ##
-## The third input argument is the variable that contains the term to be added
-## to @var{Sum}.
+## The third input argument @var{term} is the variable to be added to @var{sum}.
 ## @end deftypefn
 
-function [Sum, comp] = kahan (Sum, comp, term)
+function [sum, comp] = kahan (sum, comp, term)
 
-    y = term - comp;
-    t = Sum + y;
-    comp = (t - Sum) - y;
-    Sum = t;
+  y = term - comp;
+  t = sum + y;
+  comp = (t - sum) - y;
+  sum = t;
 
 endfunction
 

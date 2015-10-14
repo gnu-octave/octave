@@ -1,4 +1,4 @@
-## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -17,20 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} starting_stepsize (@var{order}, @var{@@fun}, @var{t0}, @var{x0})
+## @deftypefn {Function File} {@var{h} =} starting_stepsize (@var{order}, @var{@@func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol})
 ##
-## This function file can be used to determine a good initial step for an ODE
-## solver of order @var{order}.  The algorithm is that one described in [1].
+## Determine a good initial timestep for an ODE solver of order @var{order}
+## using the algorithm described in reference [1].
 ##
-## Second input argument, which is @var{@@fun}, is the function describing
-## the differential equations, @var{t0} is the initial time and @var{x0} is
-## the initial condition.
+## The input argument @var{@@func}, is the function describing the differential
+## equations, @var{t0} is the initial time, and @var{x0} is the initial
+## condition.  @var{AbsTol} and @var{RelTol} are the absolute and relative
+## tolerance on the ODE integration taken from an ode options structure.
 ## 
-## This function returns a good guess for the initial timestep @var{h}.
-##
 ## References:
 ## [1] E. Hairer, S.P. Norsett and G. Wanner,
-## "Solving Ordinary Differential Equations I: Nonstiff Problems", Springer.
+## @cite{Solving Ordinary Differential Equations I: Nonstiff Problems},
+## Springer.
 ## @end deftypefn
 ##
 ## @seealso{odepkg}
@@ -59,7 +59,7 @@ function h = starting_stepsize (order, func, t0, x0,
        AbsRel_Norm (func (t0+h0, x1) - y,
                     func (t0+h0, x1) - y, AbsTol, RelTol, normcontrol);
 
-  if (max(d1, d2) <= 1e-15)
+  if (max (d1, d2) <= 1e-15)
     h1 = max (1e-6, h0*1e-3);
   else
     h1 = (1e-2 / max (d1, d2)) ^(1 / (order+1));

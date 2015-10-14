@@ -1,5 +1,5 @@
-## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
-## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
+## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -379,7 +379,7 @@ endfunction
 %! # the command odeset.
 %!
 %! ode_struct_value_check (odeset);
-%!
+
 %!demo
 %! # Create the OdePkg options structure A with odeset and check it 
 %! # with odepkg_structure_check.  This actually is unnecessary

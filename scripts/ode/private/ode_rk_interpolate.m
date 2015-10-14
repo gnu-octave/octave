@@ -19,8 +19,9 @@
 
 function u_interp = ode_rk_interpolate (order, z, u, t, k_vals, dt, args)
 
-  switch order
+  switch (order)
 
+    ## FIXME: Can interpolations for orders 1-4 simply be deleted? 2015-10-14.
     #{
     case 1
       u_interp = linear_interpolation (z, u, t);
@@ -40,13 +41,11 @@ function u_interp = ode_rk_interpolate (order, z, u, t, k_vals, dt, args)
       u_interp = dorpri_interpolation ([z(i-1) z(i)],
                                        [u(:,i-1) u(:,i)],
                                        k_vals, tspan(counter));
-
     #}
          
     case 5
       ## ode45 with Dormand-Prince scheme:     
-      u_interp = ...
-      hermite_quartic_interpolation (z, u, k_vals, t);
+      u_interp = hermite_quartic_interpolation (z, u, k_vals, t);
 
       ## it is also possible to do a new function evaluation and use
       ## the quintic hermite interpolator
@@ -58,21 +57,21 @@ function u_interp = ode_rk_interpolate (order, z, u, t, k_vals, dt, args)
       ##                                  [k_vals(:,1) f_half ...
       ##                                   k_vals(:,end)],
       ##                                  tspan(counter));
+
     otherwise
-      warning ("High order interpolation not yet implemented: ",
-               "using cubic interpolation instead");
-      der(:,1) = feval (func, z(1) , u(:,1), args);
-      der(:,2) = feval (func, z(2) , u(:,2), args);
+      warning (["High order interpolation not yet implemented: ", ...
+                "using cubic interpolation instead"]);
+      der(:,1) = feval (func, z(1), u(:,1), args);
+      der(:,2) = feval (func, z(2), u(:,2), args);
       u_interp = hermite_cubic_interpolation (z, u, der, t);
+
   endswitch
 
 endfunction
 
 
-
-## The function below can be used in an ODE solver to
-## interpolate the solution at the time t_out using 4th order
-## hermite interpolation.
+## The function below can be used in an ODE solver to interpolate the solution
+## at the time t_out using 4th order hermite interpolation.
 function x_out = hermite_quartic_interpolation (t, x, der, t_out)
 
   persistent coefs_u_half = ...
@@ -80,9 +79,8 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
    (-2691868925/45128329728), (187940372067/1594534317056), ...
    (-1776094331/19743644256), (11237099/235043384)].';
 
-  ## 4th order approximation of y in t+dt/2 as proposed by
-  ## Shampine in Lawrence, Shampine, "Some Practical
-  ## Runge-Kutta Formulas", 1986.
+  ## 4th order approximation of y in t+dt/2 as proposed by Shampine in
+  ## Lawrence, Shampine, "Some Practical Runge-Kutta Formulas", 1986.
   dt = t(2) - t(1);
   u_half = x(:,1) + (1/2) * dt * (der(:,1:7) * coefs_u_half);
   
@@ -97,10 +95,11 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
   ## H4 =          s.^2 -  3*s.^3 +  2*s.^4;
 
   x_out = zeros (rows (x), length (t_out));
-  x_out = (1   - 11*s.^2 + 18*s.^3 -  8*s.^4)   .* x(:,1) + ...
-          (  s -  4*s.^2 +  5*s.^3 -  2*s.^4)   .* (dt * der(:,1)) + ...
-          (      16*s.^2 - 32*s.^3 + 16*s.^4)   .* u_half + ...
-          (    -  5*s.^2 + 14*s.^3 -  8*s.^4)   .* x(:,2) + ...
-          (         s.^2 -  3*s.^3 +  2*s.^4)   .* (dt * der(:,end));
+  x_out = (1   - 11*s.^2 + 18*s.^3 -  8*s.^4) .* x(:,1) + ...
+          (  s -  4*s.^2 +  5*s.^3 -  2*s.^4) .* (dt * der(:,1)) + ...
+          (      16*s.^2 - 32*s.^3 + 16*s.^4) .* u_half + ...
+          (    -  5*s.^2 + 14*s.^3 -  8*s.^4) .* x(:,2) + ...
+          (         s.^2 -  3*s.^3 +  2*s.^4) .* (dt * der(:,end));
 
 endfunction
+

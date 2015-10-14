@@ -1,5 +1,5 @@
-## Copyright (C) 2015, Carlo de Falco
-## Copyright (C) 2013, Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2015 Carlo de Falco
+## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -18,28 +18,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{t}, @var{y}] =} integrate_adaptive (@var{@@stepper}, @var{order}, @var{@@fun}, @var{tspan}, @var{x0}, @var{options})
+## @deftypefn {Function File} {@var{solution} =} integrate_adaptive (@var{@@stepper}, @var{order}, @var{@@func}, @var{tspan}, @var{x0}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
-## integrate the set of ODEs on the interval @var{[t0,t1]} with an
+## integrate the set of ODEs on the interval @var{[t0, t1]} with an
 ## adaptive timestep.
 ##
-## This function must be called with two output arguments: @var{t} and @var{y}.
-## Variable @var{t} is a column vector and contains the time stamps, instead
+## The function returns a structure @var{solution} with two fieldss: @var{t}
+## and @var{y}.  @var{t} is a column vector and contains the time stamps.
 ## @var{y} is a matrix in which each column refers to a different unknown
-## of the problem and the rows number is the same of @var{t} rows number so
-## that each row of @var{y} contains the values of all unknowns at the time
-## value contained in the corresponding row in @var{t}.
+## of the problem and the row number is the same as the @var{t} row number.
+## Thus, each row of the matrix @var{y} contains the values of all unknowns at
+## the time value contained in the corresponding row in @var{t}.
 ##
-## The first input argument must be a function_handle or an inline function
-## representing the stepper, that is the function responsible for step-by-step
+## The first input argument must be a function handle or inline function
+## representing the stepper, i.e., the function responsible for step-by-step
 ## integration.  This function discriminates one method from the others.
 ##
 ## The second input argument is the order of the stepper.  It is needed
 ## to compute the adaptive timesteps.
 ##
-## The third input argument is a function_handle or an inline function that
-## defines the set of ODE:
+## The third input argument is a function handle or inline function that
+## defines the ODE:
+##
 ## @ifhtml
 ## @example
 ## @math{y' = f(t,y)}
@@ -49,9 +50,9 @@
 ## @math{y' = f(t,y)}.
 ## @end ifnothtml
 ##
-## The fourth input argument is the time vector which defines integration
-## interval, that is @var{[tspan(1),tspan(end)]} and all the intermediate
-## elements are taken as times at which the solution is required.
+## The fourth input argument is the time vector which defines the integration
+## interval, i.e, @var{[tspan(1), tspan(end)]} and all intermediate elements
+## are taken as times at which the solution is required.
 ##
 ## The fifth argument represents the initial conditions for the ODEs and the
 ## last input argument contains some options that may be needed for the stepper.
@@ -60,17 +61,20 @@
 ##
 ## @seealso{integrate_const, integrate_n_steps}
 
-function solution = integrate_adaptive (stepper, order, func, tspan, x0, options)
+function solution = integrate_adaptive (stepper, order, func, tspan, x0,
+                                        options)
 
   fixed_times = numel (tspan) > 2;
 
   t_new = t_old = t = tspan(1);
   x_new = x_old = x = x0(:);
 
-  ## get first initial timestep
-  dt = starting_stepsize (order, func, t, x, options.AbsTol,
-                          options.RelTol, options.vnormcontrol);
-  dt = odeget (options, "InitialStep", dt, "fast_not_empty");
+  ## Get first initial timestep
+  dt = odeget (options, "InitialStep", [], "fast");
+  if (isempty (dt))
+    dt = starting_stepsize (order, func, t, x, options.AbsTol, options.RelTol,
+                            options.vnormcontrol);
+  endif
 
   dir = odeget (options, "vdirection", [], "fast");
   dt = dir * min (abs (dt), options.MaxStep);
@@ -116,7 +120,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     ## Compute integration step from t_old to t_new = t_old + dt
     [t_new, options.comp] = kahan (t_old, options.comp, dt);
     [t_new, x_new, x_est, new_k_vals] = ...
-    stepper (func, t_old, x_old, dt, options, k_vals, t_new);
+      stepper (func, t_old, x_old, dt, options, k_vals, t_new);
 
     solution.vcntcycles++;
 
@@ -128,7 +132,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     err = AbsRel_Norm (x_new, x_old, options.AbsTol, options.RelTol,
                        options.vnormcontrol, x_est);
 
-    ## Accepted solution only if err <= 1.0
+    ## Accept solution only if err <= 1.0
     if (err <= 1)
 
       solution.vcntloop++;
@@ -145,24 +149,23 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
           t(t_caught) = tspan(t_caught);
           iout = max (t_caught);
           x(:, t_caught) = ...
-          ode_rk_interpolate (order, [t_old t_new], [x_old x_new],
-                              tspan(t_caught), new_k_vals, dt,
-                              options.vfunarguments{:});
+            ode_rk_interpolate (order, [t_old t_new], [x_old x_new],
+                                tspan(t_caught), new_k_vals, dt,
+                                options.vfunarguments{:});
 
           istep++;
 
+          ## Call Events function only if a valid result has been found.
+          ## Stop integration if veventbreak is true.
           if (options.vhaveeventfunction)
-            ## Call event on each dense output timestep.
-            ##  Stop integration if veventbreak is true
             break_loop = false;
             for idenseout = 1:numel (t_caught)
               id = t_caught(idenseout);
               td = t(id);
               solution.vevent = ...
-              odepkg_event_handle (options.Events, t(id), x(:, id), [],
-                                   options.vfunarguments{:});
-              if (! isempty (solution.vevent{1})
-                  && solution.vevent{1} == 1)
+                odepkg_event_handle (options.Events, t(id), x(:, id), [],
+                                     options.vfunarguments{:});
+              if (! isempty (solution.vevent{1}) && solution.vevent{1} == 1)
                 t(id) = solution.vevent{3}(end);
                 t = t(1:id);
                 x(:, id) = solution.vevent{4}(end, :).';
@@ -177,8 +180,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
             endif
           endif
 
-          ## Call plot.  Stop integration if plot function
-          ## returns true.
+          ## Call OutputFcn only if a valid result has been found.
+          ## Stop integration if function returns false.
           if (options.vhaveoutputfunction)
             vcnt = options.Refine + 1;
             vapproxtime = linspace (t_old, t_new, vcnt);
@@ -207,23 +210,22 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
         x(:, istep) = x_new;
         iout = istep;
 
-        ## Call event handler on new timestep.
-        ##  Stop integration if veventbreak is true
+        ## Call Events function only if a valid result has been found.
+        ## Stop integration if veventbreak is true.
         if (options.vhaveeventfunction)
           solution.vevent = ...
-          odepkg_event_handle (options.Events, t(istep), x(:, istep), [],
-                                   options.vfunarguments{:});
-              if (! isempty (solution.vevent{1})
-                  && solution.vevent{1} == 1)
-                t(istep) = solution.vevent{3}(end);
-                x(:, istep) = solution.vevent{4}(end, :).';
-                solution.vunhandledtermination = false;
-                break;
-              endif
+            odepkg_event_handle (options.Events, t(istep), x(:, istep), [],
+                                 options.vfunarguments{:});
+          if (! isempty (solution.vevent{1}) && solution.vevent{1} == 1)
+            t(istep) = solution.vevent{3}(end);
+            x(:, istep) = solution.vevent{4}(end, :).';
+            solution.vunhandledtermination = false;
+            break;
+          endif
         endif
 
-        ## Call plot.  Stop integration if plot function
-        ## returns true.
+        ## Call OutputFcn only if a valid result has been found.
+        ## Stop integration if function returns false.
         if (options.vhaveoutputfunction)
           vcnt = options.Refine + 1;
           vapproxtime = linspace (t_old, t_new, vcnt);
@@ -250,22 +252,22 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
       x_old = x_new;
       k_vals = new_k_vals;
 
-      solution.vcntloop = solution.vcntloop + 1;
+      solution.vcntloop += 1;
       vcntiter = 0;
 
     else
 
       ireject++;
 
-      ## Stop solving because in the last 5000 steps no successful valid
+      ## Stop solving because, in the last 5,000 steps, no successful valid
       ## value has been found
-      if (ireject >= 5000)
-        error (["integrate_adaptive: Solving has not been successful. ",
-                " The iterative integration loop exited at time",
-                " t = %f before endpoint at tend = %f was reached. ",
-                " This happened because the iterative integration loop",
-                " does not find a valid solution at this time",
-                " stamp.  Try to reduce the value of 'InitialStep' and/or",
+      if (ireject >= 5_000)
+        error (["integrate_adaptive: Solving was not successful. ", ...
+                " The iterative integration loop exited at time", ...
+                " t = %f before the endpoint at tend = %f was reached. ", ...
+                " This happened because the iterative integration loop", ...
+                " did not find a valid solution at this time stamp. ", ...
+                " Try to reduce the value of 'InitialStep' and/or", ...
                 " 'MaxStep' with the command 'odeset'.\n"],
                t_old, tspan(end));
       endif
@@ -273,7 +275,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
     endif
 
     ## Compute next timestep, formula taken from Hairer
-    err += eps;    # avoid divisions by zero
+    err += eps;  # avoid divisions by zero
     dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
     dt = dir * min (abs (dt), options.MaxStep);
 
@@ -282,26 +284,24 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0, options
 
   endwhile
 
-
   ## Check if integration of the ode has been successful
   if (dir * t(end) < dir * tspan(end))
     if (solution.vunhandledtermination == true)
       error ("integrate_adaptive:unexpected_termination",
-             [" Solving has not been successful.  The iterative", ...
-              " integration loop exited at time t = %f ", ...
-              " before endpoint at tend = %f was reached.  This may", ...
-              " happen if the stepsize grows too small. ", ...
+             [" Solving was not successful. ", ...
+              " The iterative integration loop exited at time", ...
+              " t = %f before the endpoint at tend = %f was reached. ", ...
+              " This may happen if the stepsize becomes too small. ", ...
               " Try to reduce the value of 'InitialStep'", ...
               " and/or 'MaxStep' with the command 'odeset'.\n"],
              t(end), tspan(end));
     else
       warning ("integrate_adaptive:unexpected_termination",
-               ["Solver has been stopped by a call of 'break' ", ...
-                " in the main iteration loop at time t = %f before", ...
-                " endpoint at tend = %f was reached.  This may", ...
-                " happen because the @odeplot function", ...
-                " returned 'true' or the @event function returned", ...
-                " 'true'.\n"],
+               ["Solver was stopped by a call of 'break'", ...
+                " in the main iteration loop at time ", ...
+                " t = %f before the endpoint at tend = %f was reached. ", ...
+                " This may happen because the @odeplot function ", ...
+                " returned 'true' or the @event function returned 'true'.\n"],
                t(end), tspan(end));
     endif
   endif

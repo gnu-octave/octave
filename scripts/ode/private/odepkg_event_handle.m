@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
+## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -153,5 +153,6 @@ function vretval = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
     vretcell = cell (1,4);
 
   endif
+
 endfunction
 

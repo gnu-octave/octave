@@ -271,18 +271,12 @@ sparse matrices.\n\
           octave_idx_type info;
 
           FloatComplexCHOL fact;
-          if (LLt)
-            fact = FloatComplexCHOL (m.transpose (), info);
-          else
-            fact = FloatComplexCHOL (m, info);
+          fact = FloatComplexCHOL (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
             {
               retval(1) = info;
-              if (LLt)
-                retval(0) = get_chol_l (fact);
-              else
-                retval(0) = get_chol_r (fact);
+              retval(0) = get_chol (fact);
             }
           else
             error ("chol: input matrix must be positive definite");

@@ -343,7 +343,7 @@ FloatCHOL::update (const FloatColumnVector& u)
   if (u.numel () == n)
     {
       init (chol_mat.transpose () * chol_mat
-            + FloatMatrix (u) * FloatMatrix (u).transpose (), false);
+            + FloatMatrix (u) * FloatMatrix (u).transpose (), true, false);
     }
   else
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -373,7 +373,8 @@ FloatCHOL::downdate (const FloatColumnVector& u)
       else
         {
           info = init (chol_mat.transpose () * chol_mat
-                       - FloatMatrix (u) * FloatMatrix (u).transpose (), false);
+                       - FloatMatrix (u) * FloatMatrix (u).transpose (), true,
+                       false);
           if (info) info = 1;
         }
     }
@@ -414,7 +415,7 @@ FloatCHOL::insert_sym (const FloatColumnVector& u, octave_idx_type j)
                 else
                   a1(k, l) = a(k < j ? k : k-1, l < j ? l : l-1);
               }
-          info = init (a1, false);
+          info = init (a1, true, false);
           if (info) info = 1;
         }
     }
@@ -436,7 +437,7 @@ FloatCHOL::delete_sym (octave_idx_type j)
       FloatMatrix a = chol_mat.transpose () * chol_mat;
       a.delete_elements (1, idx_vector (j));
       a.delete_elements (0, idx_vector (j));
-      init (a, false);
+      init (a, true, false);
     }
 }
 
@@ -465,7 +466,7 @@ FloatCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
           for (octave_idx_type k = j+1; k < i+1; k++) p(k) = k-1;
         }
 
-      init (a.index (idx_vector (p), idx_vector (p)), false);
+      init (a.index (idx_vector (p), idx_vector (p)), true, false);
     }
 }
 

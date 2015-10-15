@@ -118,9 +118,9 @@ FloatCHOL::init (const FloatMatrix& a, bool upper, bool calc_cond)
     {
       for (octave_idx_type j = 0; j < n; j++)
         {
-          for (octave_idx_type i = 0; i <= j; i++)
+          for (octave_idx_type i = 0; i < j; i++)
             chol_mat.xelem (i, j) = 0.0f;
-          for (octave_idx_type i = j+1; i < n; i++)
+          for (octave_idx_type i = j; i < n; i++)
             chol_mat.xelem (i, j) = a(i, j);
         }
     }

@@ -185,14 +185,16 @@ chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
       // faster for that matter :-)), please let me know!
 
       if (n > 1)
-        if (is_upper)
-          for (octave_idx_type j = 0; j < r_nc; j++)
-            for (octave_idx_type i = j+1; i < r_nr; i++)
-              tmp.xelem (i, j) = tmp.xelem (j, i);
-        else
-          for (octave_idx_type j = 0; j < r_nc; j++)
-            for (octave_idx_type i = j+1; i < r_nr; i++)
-              tmp.xelem (j, i) = tmp.xelem (i, j);
+        {
+          if (is_upper)
+            for (octave_idx_type j = 0; j < r_nc; j++)
+              for (octave_idx_type i = j+1; i < r_nr; i++)
+                tmp.xelem (i, j) = tmp.xelem (j, i);
+          else
+            for (octave_idx_type j = 0; j < r_nc; j++)
+              for (octave_idx_type i = j+1; i < r_nr; i++)
+                tmp.xelem (j, i) = tmp.xelem (i, j);
+        }
 
       retval = tmp;
     }

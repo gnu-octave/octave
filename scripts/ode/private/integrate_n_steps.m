@@ -72,7 +72,7 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
 
   vdirection = odeget (options, "vdirection", [], "fast");
   if (sign (dt) != vdirection)
-    error ("OdePkg:InvalidArgument", "option 'InitialStep' has a wrong sign");
+    error ("Octave:invalid-input-arg", "option 'InitialStep' has a wrong sign");
   endif
 
   comp = 0.0;

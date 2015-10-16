@@ -26,12 +26,12 @@ function retval = AbsRel_Norm (x, x_old, AbsTol, RelTol, normcontrol, y)
   endif
 
   if (length (x_old) != n || length (y) != n)
-    error ("OdePkg:InvalidArgument", "invalid dimensions of input arguments");
+    error ("Octave:invalid-input-arg", "invalid dimensions of input arguments");
   endif
   
   if ((length (AbsTol) != 1 && length (AbsTol) != n)
       || (length (RelTol) != 1 && length (RelTol) != n))
-    error ("OdePkg:InvalidArgument", "invalid dimensions of input arguments");
+    error ("Octave:invalid-input-arg", "invalid dimensions of input arguments");
   endif
   
   sc = AbsTol + max (abs (x), abs (x_old)) .* RelTol;

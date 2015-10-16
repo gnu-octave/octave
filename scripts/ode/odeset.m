@@ -53,18 +53,13 @@ function odestruct = odeset (varargin)
     return;
   endif
 
-  ## Column vector of all possible OdePkg options
-  persistent options = {"AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
-                        "Explicit"; "InexactSolver"; "InitialSlope";
+  ## Column vector of all possible ODE options
+  persistent options = {"AbsTol"; "BDF"; "Events"; "InitialSlope";
                         "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
-                        "Mass"; "MassConstant"; "MassSingular";
-                        "MaxNewtonIterations"; "MaxOrder"; "MaxStep";
-                        "MStateDependence"; "MvPattern"; "NewtonTol";
-                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSave";
-                        "OutputSel"; "PolynomialDegree"; "QuadratureOrder";
-                        "Refine"; "RelTol"; "Restart"; "Stats";
-                        "TimeStepNumber"; "TimeStepSize"; "UseJacobian";
-                        "Vectorized"};
+                        "Mass"; "MassConstant"; "MassSingular"; "MaxOrder";
+                        "MaxStep"; "MStateDependence"; "MvPattern";
+                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
+                        "Refine"; "RelTol"; "Stats"; "Vectorized"};
 
   ## initialize output
   odestruct = cell2struct (cell (numel (options), 1), options);
@@ -75,13 +70,9 @@ function odestruct = odeset (varargin)
 
   if (isstruct (varargin{1}))
     oldstruct = varargin{1};
-    ode_struct_value_check (oldstruct);
-
-    oldstruct_fldnames = (fieldnames (oldstruct)).';
 
     ## Copy oldstruct values into output odestruct
-    for fldname = oldstruct_fldnames
-      name = lower (fldname{1});
+    for [val, name] = oldstruct
 
       exactmatch = true;
       match = find (strcmpi (name, options));
@@ -91,18 +82,25 @@ function odestruct = odeset (varargin)
       endif
 
       if (isempty (match))
-        error ("odeset: invalid property '%s'", fldname{1});
+        odestruct.(name) = val;
       elseif (numel (match) == 1)
         if (! exactmatch)
           warning ("odeset:NoExactMatching",
                    "no exact match for '%s'.  Assuming '%s'.",
                    name, options{match});
         endif
-        odestruct.(options{match}) = oldstruct.(fldname{1});
+        odestruct.(options{match}) = val;
       else
         error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
                name, strjoin (options(match), ", "));
       endif
+
+      if (nargin == 1)
+        ## Check if all changes have resulted in a valid ODEOPT struct
+        ode_struct_value_check ("odeset", odestruct);
+        return;
+      endif
+
     endfor
 
     ## At this point, odestruct has been initialized with default values,
@@ -110,13 +108,9 @@ function odestruct = odeset (varargin)
 
     if (nargin == 2 && isstruct (varargin{2}))
       newstruct = varargin{2};
-      ode_struct_value_check (newstruct);
-
-      newstruct_fldnames = (fieldnames (newstruct)).';
 
       ## Update the first struct with the values from the second one
-      for fldname = newstruct_fldnames
-        name = lower (fldname{1});
+      for [val, name] = newstruct
 
         exactmatch = true;
         match = find (strcmpi (name, options));
@@ -126,21 +120,22 @@ function odestruct = odeset (varargin)
         endif
 
         if (isempty (match))
-          error ("odeset: invalid property '%s'", fldname{1});
+          odestruct.(name) = val;
         elseif (numel (match) == 1)
           if (! exactmatch)
             warning ("odeset:NoExactMatching",
                      "no exact match for '%s'.  Assuming '%s'.",
                      name, options{match});
           endif
-          odestruct.(options{match}) = newstruct.(fldname{1});
+          odestruct.(options{match}) = val;
         else
           error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
                  name, strjoin (options(match), ", "));
         endif
       endfor
 
-      ## Done copying newstruct to oldstruct
+      ## Check if all changes have resulted in a valid ODEOPT struct
+      ode_struct_value_check ("odeset", odestruct);
       return;
     endif
 
@@ -154,7 +149,7 @@ function odestruct = odeset (varargin)
 
     ## Write new field/value pairs into odestruct
     for i = 2:2:nargin
-      name = lower (varargin{i});
+      name = varargin{i};
 
       exactmatch = true;
       match = find (strcmpi (name, options));
@@ -164,7 +159,7 @@ function odestruct = odeset (varargin)
       endif
 
       if (isempty (match))
-        error ("odeset: invalid property '%s'", varargin{i});
+        odestruct.(name) = varargin{i+1};
       elseif (numel (match) == 1)
         if (! exactmatch)
           warning ("odeset:NoExactMatching",
@@ -178,8 +173,8 @@ function odestruct = odeset (varargin)
       endif
     endfor
 
-    ## Check if all changes have resulted in a valid OdePkg struct
-    ode_struct_value_check (odestruct);
+    ## Check if all changes have resulted in a valid ODEOPT struct
+    ode_struct_value_check ("odeset", odestruct);
 
   else
     ## First input argument was not a struct, must be field/value pairs
@@ -190,7 +185,7 @@ function odestruct = odeset (varargin)
     endif
 
     for i = 1:2:nargin
-      name = lower (varargin{i});
+      name = varargin{i};
 
       exactmatch = true;
       match = find (strcmpi (name, options));
@@ -200,7 +195,7 @@ function odestruct = odeset (varargin)
       endif
 
       if (isempty (match))
-        error ("odeset: invalid property '%s'", varargin{i});
+        odestruct.(name) = varargin{i+1};
       elseif (numel (match) == 1)
         if (! exactmatch)
           warning ("odeset:NoExactMatching",
@@ -214,27 +209,22 @@ function odestruct = odeset (varargin)
       endif
     endfor
 
-    ## Check if all changes have resulted in a valid OdePkg struct
-    ode_struct_value_check (odestruct);
+    ## Check if all changes have resulted in a valid ODEOPT struct
+    ode_struct_value_check ("odeset", odestruct);
 
   endif
 
 endfunction
 
-## function useful to print all the possible options
+## function to print all possible options
 function print_options ()
   
   disp ("List of all possible ODE solver options.");
   disp ("Default values are in square brackets.");
   disp ("");
   disp ("             AbsTol:  scalar or vector, >0, [1e-6]");
-  disp ("          Algorithm:  string, {['gmres'], 'pcg', 'bicgstab'}");
   disp ("                BDF:  binary, {'on', ['off']}");
-  disp ("             Choice:  switch, {[1], 2}");
-  disp ("                Eta:  scalar, >=0, <1, [0.5]");
   disp ("             Events:  function_handle, []");
-  disp ("           Explicit:  binary, {'yes', ['no']}");
-  disp ("      InexactSolver:  string, {'inexact_newton', 'fsolve', []}");
   disp ("       InitialSlope:  vector, []");
   disp ("        InitialStep:  scalar, >0, []");
   disp ("           Jacobian:  matrix or function_handle, []");
@@ -243,56 +233,46 @@ function print_options ()
   disp ("               Mass:  matrix or function_handle, []");
   disp ("       MassConstant:  binary, {'on', ['off']}");
   disp ("       MassSingular:  switch, {'yes', ['maybe'], 'no'}");
-  disp ("MaxNewtonIterations:  scalar, integer, >0, [1e3]");
   disp ("           MaxOrder:  switch, {1, 2, 3, 4, [5]}");
   disp ("            MaxStep:  scalar, >0, []");
   disp ("   MStateDependence:  switch, {'none', ['weak'], 'strong'}");
   disp ("          MvPattern:  sparse matrix, []");
-  disp ("          NewtonTol:  scalar or vector, >0, []");
   disp ("        NonNegative:  vector of integers, []");
   disp ("        NormControl:  binary, {'on', ['off']}");
   disp ("          OutputFcn:  function_handle, []");
-  disp ("         OutputSave:  scalar, integer, >0, []");
   disp ("          OutputSel:  scalar or vector, []");
-  disp ("   PolynomialDegree:  scalar, integer, >0, []");
-  disp ("    QuadratureOrder:  scalar, integer, >0, []");
   disp ("             Refine:  scalar, integer, >0, []");
   disp ("             RelTol:  scalar, >0, [1e-3]");
-  disp ("            Restart:  scalar, integer, >0, [20]");
   disp ("              Stats:  binary, {'on', ['off']}");
-  disp ("     TimeStepNumber:  scalar, integer, >0, []");
-  disp ("       TimeStepSize:  scalar, >0, []");
-  disp ("        UseJacobian:  binary, {'yes', ['no']}");
   disp ("         Vectorized:  binary, {'on', ['off']}");
 
 endfunction
 
 
 %!demo
-%! # A new OdePkg options structure with default values is created.
+%! # A new ODE options structure with default values is created.
 %!
 %! odeoptA = odeset ();
 
 %!demo
-%! # A new OdePkg options structure with manually set options 
+%! # A new ODE options structure with manually set options 
 %! # for "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 
 %!demo
-%! # A new OdePkg options structure is created from odeoptB with
+%! # A new ODE options structure is created from odeoptB with
 %! # a modified value for option "NormControl".
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 %! odeoptC = odeset (odeoptB, "NormControl", "on");
 
-## All tests that are needed to check if a correct resp. valid option
-## has been set are implemented in ode_struct_value_check.m.
+## All tests that are needed to check if a valid option has been set are
+## implemented in ode_struct_value_check.m
 %!test
 %! odeoptA = odeset ();
 %! assert (isstruct (odeoptA));
-%! fields = fieldnames (odeoptA); 
-%! assert (numel (fields), 37); 
+%! assert (numel (fieldnames (odeoptA)), 23); 
 %! assert (all (structfun ("isempty", odeoptA)));
 
 %!shared odeoptB, odeoptC
@@ -309,4 +289,22 @@ endfunction
 %!test
 %! odeoptD = odeset (odeoptB, odeoptC);
 %! assert (odeoptD, odeoptC); 
+
+## Test custom user-defined option
+%!test
+%! wstate = warning ("off", "Octave:invalid-input-arg");
+%! unwind_protect
+%!   odeopt = odeset ("NewtonTol", 3);
+%!   assert (odeopt.NewtonTol, 3);
+%! unwind_protect_cleanup
+%!   warning (wstate);
+%! end_unwind_protect
+
+## Test input validation
+%!error <FIELD/VALUE arguments must occur in pairs> odeset ("opt1")
+%!error <FIELD names must be strings> odeset (1, 1)
+%!error <FIELD/VALUE arguments must occur in pairs> odeset (odeset (), "opt1")
+%!error <FIELD names must be strings> odeset (odeset (), 1, 1)
+%!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
+%!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
 

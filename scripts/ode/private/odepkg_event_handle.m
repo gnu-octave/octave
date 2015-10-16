@@ -47,7 +47,7 @@
 ## any type are given then pass these parameters through
 ## @command{odepkg_event_handle} to the event function.
 ##
-## This function is an OdePkg internal helper function therefore it should
+## This function is an ODE internal helper function therefore it should
 ## never be necessary that this function is called directly by a user.  There
 ## is only little error detection implemented in this function file to
 ## achieve the highest performance.

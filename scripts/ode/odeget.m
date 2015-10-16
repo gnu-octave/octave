@@ -26,7 +26,7 @@
 ##
 ## If called with two input arguments and the first input argument @var{ode_opt}
 ## is an ODE option structure and the second input argument @var{field} is a
-## string specifying an option name then return the option value @var{val}
+## string specifying an option name, then return the option value @var{val}
 ## corresponding to to @var{field} from @var{ode_opt}.
 ##
 ## If called called with an optional third input argument, and @var{field} is
@@ -43,7 +43,7 @@ function val = odeget (ode_opt, field, default = [], opt)
     print_usage ();
   endif
 
-  ## Shortcut for empty options structures
+  ## Shortcut for empty option structures
   if (isempty (ode_opt))
     if (nargin < 3)
       val = [];
@@ -80,21 +80,16 @@ function val = odeget (ode_opt, field, default = [], opt)
     return;
   endif
 
-  ## Check if the given struct is a valid OdePkg struct
-  ode_struct_value_check (ode_opt);
+  ## Check if the given struct is a valid ODEOPT struct
+  ode_struct_value_check ("odeget", ode_opt);
 
-  ## Define all the possible OdePkg fields
-  persistent options = {"AbsTol"; "Algorithm"; "BDF"; "Choice"; "Eta"; "Events";
-                        "Explicit"; "InexactSolver"; "InitialSlope";
+  ## Define all the possible ODEOPT fields
+  persistent options = {"AbsTol"; "BDF"; "Events"; "InitialSlope";
                         "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
-                        "Mass"; "MassConstant"; "MassSingular";
-                        "MaxNewtonIterations"; "MaxOrder"; "MaxStep";
-                        "MStateDependence"; "MvPattern"; "NewtonTol";
-                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSave";
-                        "OutputSel"; "PolynomialDegree"; "QuadratureOrder";
-                        "Refine"; "RelTol"; "Restart"; "Stats";
-                        "TimeStepNumber"; "TimeStepSize"; "UseJacobian";
-                        "Vectorized"};
+                        "Mass"; "MassConstant"; "MassSingular"; "MaxOrder";
+                        "MaxStep"; "MStateDependence"; "MvPattern";
+                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
+                        "Refine"; "RelTol"; "Stats"; "Vectorized"};
   
   exactmatch = true;
   match = find (strcmpi (field, options));
@@ -104,15 +99,14 @@ function val = odeget (ode_opt, field, default = [], opt)
   endif
 
   if (isempty (match))
-    if (nargin == 2)
-      error ("odeget: invalid property '%s'", field);
-    else
-      ## FIXME: Should we warn, but complete the action, or just error out?
-      warning ("odeget:InvalidArgument",
-               "odeget: invalid property '%s'.  Using supplied default value.",
-               field);
+    ## Possibly a custom user-defined option
+    try
+      val = ode_opt.(field);
+    catch
+      warning ("Octave:invalid-input-arg",
+               "odeget: no field '%s' exists in ODE_OPT\n", field);
       val = default;
-    endif
+    end_try_catch
   elseif (numel (match) == 1)
     if (! exactmatch)
       warning ("odeget:NoExactMatching",
@@ -135,7 +129,7 @@ endfunction
 
 
 %!demo
-%! # Return the manually changed value RelTol of the OdePkg options
+%! # Return the manually changed value RelTol of the ODE options
 %! # structure A.  If RelTol wouldn't have been changed then an
 %! # empty matrix value would have been returned.
 %!
@@ -157,8 +151,7 @@ endfunction
 %!error odeget (1,2,3,4,5)
 %!error <ODE_OPT must be a valid ODE_STRUCT> odeget (1, "opt1")
 %!error <FIELD must be a string> odeget (struct ("opt1", 1), 1)
-%!error <invalid property 'foo'> odeget (struct ("opt1", 1), "foo")
-%!warning <Using supplied default value> odeget (struct ("opt1", 1), "foo", 3);
+%!warning <no field 'foo' exists> odeget (struct ("opt1", 1), "foo");
 %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeget (struct ("RelTol", 1), "Rel");
 %!error <Possible fields found: InitialSlope, InitialStep> odeget (odeset (), "Initial")
 

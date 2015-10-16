@@ -39,7 +39,6 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
 
   setWidget (terminal);
   setFocusProxy (terminal);
-  setFocusPolicy (Qt::StrongFocus);
 
   connect (terminal, SIGNAL (interrupt_signal (void)),
            this, SLOT (terminal_interrupt ()));

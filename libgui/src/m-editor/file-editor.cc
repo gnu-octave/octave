@@ -1222,6 +1222,9 @@ file_editor::enable_menu_shortcuts (bool enable)
      i.key ()->setTitle (i.value ().at (! enable));
      ++i;
    }
+
+  if (enable)
+    focus ();
 }
 
 QMenu*

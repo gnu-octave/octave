@@ -241,6 +241,9 @@ webinfo::load_ref (const QString &ref_name)
 void
 webinfo::search ()
 {
+  if (_search_line_edit->text ().trimmed ().isEmpty ())
+    return;   // do nothing if search field is empty or only has whitespaces
+
   if (_search_check_box->isChecked ())
     {
       // Global search

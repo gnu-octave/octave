@@ -83,17 +83,17 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
   k = zeros (rows (x), 7);
 
   if (! isempty (options))  # extra arguments for function evaluator
-    args = options.vfunarguments;
+    args = options.funarguments;
   else
     args = {};
   endif
 
   if (! isempty (k_vals))    # k values from previous step are passed
     k(:,1) = k_vals(:,end);  # FSAL property
-  else      
+  else
     k(:,1) = feval (f, t, x, args{:});
   endif
-    
+
   k(:,2) = feval (f, s(2), x + k(:,1)   * aa(2, 1).'  , args{:});
   k(:,3) = feval (f, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
   k(:,4) = feval (f, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
@@ -111,6 +111,6 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
     cc_prime = dt * c_prime;
     x_est = x + k * cc_prime(:);
   endif
-  
+
 endfunction
 

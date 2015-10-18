@@ -67,60 +67,60 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
   solution = struct ();
 
   ## first values for time and solution
-  x = x0(:); 
+  x = x0(:);
   t = t0;
 
-  vdirection = odeget (options, "vdirection", [], "fast");
-  if (sign (dt) != vdirection)
+  direction = odeget (options, "direction", [], "fast");
+  if (sign (dt) != direction)
     error ("Octave:invalid-input-arg", "option 'InitialStep' has a wrong sign");
   endif
 
   comp = 0.0;
   tk = t0;
   options.comp = comp;
-  
+
   ## Initialize the OutputFcn
-  if (options.vhaveoutputfunction)
-    if (options.vhaveoutputselection)
-      solution.vretout = x(options.OutputSel,end);
-    else 
-      solution.vretout = x;
+  if (options.haveoutputfunction)
+    if (options.haveoutputselection)
+      solution.retout = x(options.OutputSel,end);
+    else
+      solution.retout = x;
     endif
-    feval (options.OutputFcn, tspan, solution.vretout, "init",
-           options.vfunarguments{:});
+    feval (options.OutputFcn, tspan, solution.retout, "init",
+           options.funarguments{:});
   endif
 
   ## Initialize the EventFcn
-  if (options.vhaveeventfunction)
-    odepkg_event_handle (options.Events, t(end), x, "init",
-                         options.vfunarguments{:});
+  if (options.haveeventfunction)
+    ode_event_handler (options.Events, t(end), x, "init",
+                         options.funarguments{:});
   endif
-  
-  solution.vcntloop = 2;
-  solution.vcntcycles = 1;
-  vcntiter = 0;
-  solution.vunhandledtermination = true;
-  solution.vcntsave = 2;
-  
+
+  solution.cntloop = 2;
+  solution.cntcycles = 1;
+  cntiter = 0;
+  solution.unhandledtermination = true;
+  solution.cntsave = 2;
+
   z = t;
   u = x;
-  k_vals = feval (func, t , x, options.vfunarguments{:});
+  k_vals = feval (func, t , x, options.funarguments{:});
 
   for i = 1:n
     ## Compute the integration step from t to t+dt
     [s, y, ~, k_vals] = stepper (func, z(end), u(:,end), dt, options, k_vals);
-    
+
     [tk, comp] = kahan (tk, comp, dt);
     options.comp = comp;
     s(end) = tk;
-    
-    if (options.vhavenonnegative)
+
+    if (options.havenonnegative)
       x(options.NonNegative,end) = abs (x(options.NonNegative,end));
       y(options.NonNegative,end) = abs (y(options.NonNegative,end));
     endif
-    
-    if (options.vhaveoutputfunction && options.vhaverefine)
-      vSaveVUForRefine = u(:,end);
+
+    if (options.haveoutputfunction && options.haverefine)
+      SaveVUForRefine = u(:,end);
     endif
 
     ## values on this interval for time and solution
@@ -129,92 +129,93 @@ function solution = integrate_n_steps (stepper, func, t0, x0, dt, n, options)
 
     x = [x,u(:,2:end)];
     t = [t;z(2:end)];
-    solution.vcntsave += 1;    
-    solution.vcntloop += 1;
-    vcntiter = 0;
-      
+    solution.cntsave += 1;
+    solution.cntloop += 1;
+    cntiter = 0;
+
     ## Call OutputFcn only if a valid result has been found.
     ## Stop integration if function returns false.
-    if (options.vhaveoutputfunction)
-      for vcnt = 0:options.Refine  # Approximation between told and t
-        if (options.vhaverefine)   # Do interpolation
-          vapproxtime = (vcnt + 1) / (options.Refine + 2);
-          vapproxvals = (1 - vapproxtime) * vSaveVUForRefine ...
-                        + (vapproxtime) * y(:,end);
-          vapproxtime = s(end) + vapproxtime*dt;
+    if (options.haveoutputfunction)
+      for cnt = 0:options.Refine  # Approximation between told and t
+        if (options.haverefine)   # Do interpolation
+          approxtime = (cnt + 1) / (options.Refine + 2);
+          approxvals = (1 - approxtime) * SaveVUForRefine ...
+                        + (approxtime) * y(:,end);
+          approxtime = s(end) + approxtime*dt;
         else
-          vapproxvals = x(:,end);
-          vapproxtime = t(end);
+          approxvals = x(:,end);
+          approxtime = t(end);
         endif
-        if (options.vhaveoutputselection)
-          vapproxvals = vapproxvals(options.OutputSel);
+        if (options.haveoutputselection)
+          approxvals = approxvals(options.OutputSel);
         endif
-        vpltret = feval (options.OutputFcn, vapproxtime, vapproxvals, [],
-                         options.vfunarguments{:});
-        if (vpltret)  # Leave refinement loop
+        pltret = feval (options.OutputFcn, approxtime, approxvals, [],
+                        options.funarguments{:});
+        if (pltret)  # Leave refinement loop
           break;
         endif
       endfor
-      if (vpltret)  # Leave main loop
-        solution.vunhandledtermination = false;
+      if (pltret)  # Leave main loop
+        solution.unhandledtermination = false;
         break;
       endif
     endif
-      
+
     ## Call Events function only if a valid result has been found.
-    ## Stop integration if veventbreak is true.
-    if (options.vhaveeventfunction)
-      solution.vevent = odepkg_event_handle (options.Events, t(end), x(:,end),
-                                             [], options.vfunarguments{:});
-      if (! isempty (solution.vevent{1}) && solution.vevent{1} == 1)
-        t(solution.vcntloop-1,:) = solution.vevent{3}(end,:);
-        x(:,solution.vcntloop-1) = solution.vevent{4}(end,:)';
-        solution.vunhandledtermination = false; 
+    ## Stop integration if eventbreak is true.
+    if (options.haveeventfunction)
+      solution.event = ode_event_handler (options.Events, t(end), x(:,end),
+                                             [], options.funarguments{:});
+      if (! isempty (solution.event{1}) && solution.event{1} == 1)
+        t(solution.cntloop-1,:) = solution.event{3}(end,:);
+        x(:,solution.cntloop-1) = solution.event{4}(end,:)';
+        solution.unhandledtermination = false;
         break;
       endif
     endif
-    
+
     ## Update counters that count the number of iteration cycles
-    solution.vcntcycles += 1;  # Needed for cost statistics
-    vcntiter += 1;             # Needed to find iteration problems
+    solution.cntcycles += 1;  # Needed for cost statistics
+    cntiter += 1;             # Needed to find iteration problems
 
     ## Stop solving because, in the last 5,000 steps, no successful valid
     ## value has been found
-    if (vcntiter >= 5000)
-      error (["Solving has not been successful.  The iterative",
-              " integration loop exited at time t = %f before endpoint at",
-              " tend = %f was reached.  This happened because the iterative",
-              " integration loop does not find a valid solution at this time",
-              " stamp.  Try to reduce the value of 'InitialStep' and/or",
-              " 'MaxStep' with the command 'odeset'.\n"],
+    if (cntiter >= 5_000)
+      error (["integrate_n_steps: Solving was not successful. ", ...
+              " The iterative integration loop exited at time", ...
+              " t = %f before the endpoint at tend = %f was reached. ", ...
+              " This happened because the iterative integration loop", ...
+              " did not find a valid solution at this time stamp. ", ...
+              " Try to reduce the value of 'InitialStep' and/or", ...
+              " 'MaxStep' with the command 'odeset'.],
              s(end), tspan(end));
     endif
   endfor
 
   ## Check if integration of the ode has been successful
-  #if (vdirection * z(end) < vdirection * tspan(end))
-  #  if (solution.vunhandledtermination == true)
+  #if (direction * z(end) < direction * tspan(end))
+  #  if (solution.unhandledtermination == true)
   #   error ("integrate_n_steps:unexpected_termination",
   #          [" Solving was not successful. ", ...
   #           " The iterative integration loop exited at time", ...
   #           " t = %f before the endpoint at tend = %f was reached. ", ...
   #           " This may happen if the stepsize becomes too small. ", ...
   #           " Try to reduce the value of 'InitialStep'", ...
-  #           " and/or 'MaxStep' with the command 'odeset'.\n"],
+  #           " and/or 'MaxStep' with the command 'odeset'."],
   #           z(end), tspan(end));
   #  else
   #   warning ("integrate_n_steps:unexpected_termination",
   #            ["Solver was stopped by a call of 'break'", ...
-  #             " in the main iteration loop at time ", ...
+  #             " in the main iteration loop at time", ...
   #             " t = %f before the endpoint at tend = %f was reached. ", ...
-  #             " This may happen because the @odeplot function ", ...
-  #             " returned 'true' or the @event function returned 'true'.\n"],
+  #             " This may happen because the @odeplot function", ...
+  #             " returned 'true' or the @event function returned 'true'."],
   #             z(end), tspan(end));
   #  endif
   #endif
 
   solution.t = t;
   solution.x = x';
-  
+
 endfunction
 

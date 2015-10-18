@@ -26,7 +26,7 @@
 ## equations, @var{t0} is the initial time, and @var{x0} is the initial
 ## condition.  @var{AbsTol} and @var{RelTol} are the absolute and relative
 ## tolerance on the ODE integration taken from an ode options structure.
-## 
+##
 ## References:
 ## [1] E. Hairer, S.P. Norsett and G. Wanner,
 ## @cite{Solving Ordinary Differential Equations I: Nonstiff Problems},

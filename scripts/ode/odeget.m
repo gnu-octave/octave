@@ -31,7 +31,7 @@
 ##
 ## If called called with an optional third input argument, and @var{field} is
 ## not set in the structure @var{ode_opt}, then return the default value
-## @var{default} instead. 
+## @var{default} instead.
 ## @seealso{odeset}
 ## @end deftypefn
 
@@ -90,7 +90,7 @@ function val = odeget (ode_opt, field, default = [], opt)
                         "MaxStep"; "MStateDependence"; "MvPattern";
                         "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
                         "Refine"; "RelTol"; "Stats"; "Vectorized"};
-  
+
   exactmatch = true;
   match = find (strcmpi (field, options));
   if (isempty (match))

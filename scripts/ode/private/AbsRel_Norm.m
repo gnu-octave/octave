@@ -28,12 +28,12 @@ function retval = AbsRel_Norm (x, x_old, AbsTol, RelTol, normcontrol, y)
   if (length (x_old) != n || length (y) != n)
     error ("Octave:invalid-input-arg", "invalid dimensions of input arguments");
   endif
-  
+
   if ((length (AbsTol) != 1 && length (AbsTol) != n)
       || (length (RelTol) != 1 && length (RelTol) != n))
     error ("Octave:invalid-input-arg", "invalid dimensions of input arguments");
   endif
-  
+
   sc = AbsTol + max (abs (x), abs (x_old)) .* RelTol;
   if (normcontrol)
     retval = max (abs (x - y) ./ sc);

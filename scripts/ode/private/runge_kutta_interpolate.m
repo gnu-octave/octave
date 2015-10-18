@@ -17,7 +17,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function u_interp = ode_rk_interpolate (order, z, u, t, k_vals, dt, args)
+function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, args)
 
   switch (order)
 
@@ -42,15 +42,15 @@ function u_interp = ode_rk_interpolate (order, z, u, t, k_vals, dt, args)
                                        [u(:,i-1) u(:,i)],
                                        k_vals, tspan(counter));
     #}
-         
+
     case 5
-      ## ode45 with Dormand-Prince scheme:     
+      ## ode45 with Dormand-Prince scheme:
       u_interp = hermite_quartic_interpolation (z, u, k_vals, t);
 
       ## it is also possible to do a new function evaluation and use
       ## the quintic hermite interpolator
       ## f_half = feval (func, t+1/2*dt, u_half,
-      ##                 options.vfunarguments{:});
+      ##                 options.funarguments{:});
       ## u_interp =
       ##   hermite_quintic_interpolation ([z(i-1) z(i)],
       ##                                  [u(:,i-1) u_half u(:,i)],
@@ -83,7 +83,7 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
   ## Lawrence, Shampine, "Some Practical Runge-Kutta Formulas", 1986.
   dt = t(2) - t(1);
   u_half = x(:,1) + (1/2) * dt * (der(:,1:7) * coefs_u_half);
-  
+
   ## Rescale time on [0,1]
   s = (t_out - t(1)) / dt;
 

@@ -218,7 +218,7 @@ endfunction
 
 ## function to print all possible options
 function print_options ()
-  
+
   disp ("List of all possible ODE solver options.");
   disp ("Default values are in square brackets.");
   disp ("");
@@ -255,7 +255,7 @@ endfunction
 %! odeoptA = odeset ();
 
 %!demo
-%! # A new ODE options structure with manually set options 
+%! # A new ODE options structure with manually set options
 %! # for "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
@@ -272,7 +272,7 @@ endfunction
 %!test
 %! odeoptA = odeset ();
 %! assert (isstruct (odeoptA));
-%! assert (numel (fieldnames (odeoptA)), 23); 
+%! assert (numel (fieldnames (odeoptA)), 23);
 %! assert (all (structfun ("isempty", odeoptA)));
 
 %!shared odeoptB, odeoptC
@@ -288,7 +288,7 @@ endfunction
 
 %!test
 %! odeoptD = odeset (odeoptB, odeoptC);
-%! assert (odeoptD, odeoptC); 
+%! assert (odeoptD, odeoptC);
 
 ## Test custom user-defined option
 %!test

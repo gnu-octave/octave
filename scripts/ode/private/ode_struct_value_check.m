@@ -267,7 +267,7 @@ endfunction
 %! ode_struct_value_check (odeset);
 
 %!demo
-%! # Create the ODE options structure A with odeset and check it 
+%! # Create the ODE options structure A with odeset and check it
 %! # with ode_struct_value_check.  This actually is unnecessary
 %! # because odeset automatically calls ode_struct_value_check before
 %! # returning.

@@ -122,7 +122,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     [t_new, x_new, x_est, new_k_vals] = ...
       stepper (func, t_old, x_old, dt, options, k_vals, t_new);
 
-    solution.cntcycles++;
+    solution.cntcycles += 1;
 
     if (options.havenonnegative)
       x_new(nn, end) = abs (x_new(nn, end));
@@ -135,8 +135,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     ## Accept solution only if err <= 1.0
     if (err <= 1)
 
-      solution.cntloop++;
-      ireject = 0;
+      solution.cntloop += 1;
+      ireject = 0;              # Clear reject counter
 
       ## if output time steps are fixed
       if (fixed_times)
@@ -150,10 +150,10 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           iout = max (t_caught);
           x(:, t_caught) = ...
             runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
-                                tspan(t_caught), new_k_vals, dt,
-                                options.funarguments{:});
+                                     tspan(t_caught), new_k_vals, dt,
+                                     options.funarguments{:});
 
-          istep++;
+          istep += 1;
 
           ## Call Events function only if a valid result has been found.
           ## Stop integration if eventbreak is true.
@@ -256,7 +256,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
     else
 
-      ireject++;
+      ireject += 1;
 
       ## Stop solving because, in the last 5,000 steps, no successful valid
       ## value has been found

@@ -37,7 +37,20 @@
 
 ## FIXME: 4th input argument "opt" is undocumented.
 
-function val = odeget (ode_opt, field, default = [], opt)
+function val = odeget (ode_opt, field, default = [], opt = "")
+
+  ## Shortcut for quickly extracting option
+  if (strncmp (opt, "fast", 4))
+    try
+      val = ode_opt.(field);
+      if (strcmp (opt, "fast_not_empty") && isempty (val))
+        val = default;
+      endif
+    catch
+      val = default;
+    end_try_catch
+    return;
+  endif
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
@@ -57,27 +70,6 @@ function val = odeget (ode_opt, field, default = [], opt)
     error ("odeget: ODE_OPT must be a valid ODE_STRUCT");
   elseif (! ischar (field))
     error ("odeget: FIELD must be a string");
-  endif
-
-  if (nargin == 4 && strcmpi (opt, "fast"))
-    try
-      val = ode_opt.(field);
-    catch
-      val = default;
-    end_try_catch
-    return;
-  endif
-
-  if (nargin == 4 && strcmpi (opt, "fast_not_empty"))
-    try
-      val = ode_opt.(field);
-      if (isempty (val))
-        val = default;
-      endif
-    catch
-      val = default;
-    end_try_catch
-    return;
   endif
 
   ## Check if the given struct is a valid ODEOPT struct

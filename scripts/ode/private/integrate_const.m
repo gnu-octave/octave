@@ -135,7 +135,7 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
     if ((z(end) == tspan(counter))
         || (abs (z(end) - tspan(counter)) /
             (max (abs (z(end)), abs (tspan(counter)))) < 8*eps) )
-      counter++;
+      counter += 1;
 
     ## if there is an element in time vector at which the solution is required
     ## the program must compute this solution before going on with next steps
@@ -149,7 +149,7 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
             && (((z(i) == tspan(counter))
                  || (abs (z(i) - tspan(counter)) /
                      (max (abs (z(i)), abs (tspan(counter)))) < 8*eps))) )
-          counter++;
+          counter += 1;
         endif
         ## else, loop until there are requested values inside this subinterval
         while ((counter <= k)
@@ -161,14 +161,14 @@ function solution = integrate_const (stepper, func, tspan, x0, dt, options)
           z = [z(1:i-1);tspan(counter);z(i:end)];
 
           ## update counters
-          counter++;
-          i++;
+          counter += 1;
+          i += 1;
         endwhile
 
         ## if new time requested is not out of this interval
         if (counter <= k && direction * z(end) > direction * tspan(counter))
           ## update the counter
-          i++;
+          i += 1;
         else
           ## else, stop the cycle and go on with the next iteration
           i = length (z)+1;

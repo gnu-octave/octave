@@ -47,12 +47,6 @@
 
 function odestruct = odeset (varargin)
 
-  ## Special calling syntax to display defaults
-  if (nargin == 0 && nargout == 0)
-    print_options ();
-    return;
-  endif
-
   ## Column vector of all possible ODE options
   persistent options = {"AbsTol"; "BDF"; "Events"; "InitialSlope";
                         "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
@@ -61,12 +55,18 @@ function odestruct = odeset (varargin)
                         "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
                         "Refine"; "RelTol"; "Stats"; "Vectorized"};
 
-  ## initialize output
-  odestruct = cell2struct (cell (numel (options), 1), options);
-
   if (nargin == 0)
+    ## Special calling syntax to display defaults
+    if (nargout == 0)
+      print_options ();
+    else
+      odestruct = cell2struct (cell (numel (options), 1), options);
+    endif
     return;
   endif
+
+  ## initialize output
+  odestruct = cell2struct (cell (numel (options), 1), options);
 
   if (isstruct (varargin{1}))
     oldstruct = varargin{1};

@@ -99,12 +99,14 @@
 ## in pairs.  These arguments are applied to the line objects drawn by
 ## @code{plot}.  Useful properties to modify are @qcode{"linestyle"},
 ## @qcode{"linewidth"}, @qcode{"color"}, @qcode{"marker"},
-## @qcode{"markersize"}, @qcode{"markeredgecolor"}, @qcode{"markerfacecolor"}.
+## @qcode{"markersize"}, @qcode{"markeredgecolor"}, @qcode{"markerfacecolor"}.  
+## @xref{Line Properties}.  
 ##
 ## The @var{fmt} format argument can also be used to control the plot style.
-## The format is composed of three parts: linestyle, markerstyle, color.
-## When a markerstyle is specified, but no linestyle, only the markers are
-## plotted.  Similarly, if a linestyle is specified, but no markerstyle, then
+## It is a string composed of four optional parts:
+## "<linestyle><marker><color><;displayname;>".
+## When a marker is specified, but no linestyle, only the markers are
+## plotted.  Similarly, if a linestyle is specified, but no marker, then
 ## only lines are drawn.  If both are specified then lines and markers will
 ## be plotted.  If no @var{fmt} and no @var{property}/@var{value} pairs are
 ## given, then the default plot style is solid lines with no markers and the
@@ -122,7 +124,7 @@
 ## @item @samp{-.} @tab Use dash-dotted lines.
 ## @end multitable
 ##
-## @item markerstyle
+## @item marker
 ##
 ## @multitable @columnfractions 0.06 0.94
 ## @item @samp{+} @tab crosshair
@@ -152,11 +154,11 @@
 ## @item @samp{w} @tab White
 ## @end multitable
 ##
-## @item @qcode{";key;"}
-## Here @qcode{"key"} is the label to use for the plot legend.
+## @item @qcode{";displayname;"}
+## Here @qcode{"displayname"} is the label to use for the plot legend.
 ## @end table
 ##
-## The @var{fmt} argument may also be used to assign legend keys.
+## The @var{fmt} argument may also be used to assign legend labels.
 ## To do so, include the desired label between semicolons after the
 ## formatting sequence described above, e.g., @qcode{"+b;Key Title;"}.
 ## Note that the last semicolon is required and Octave will generate

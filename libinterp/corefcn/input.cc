@@ -600,27 +600,32 @@ get_debug_input (const std::string& prompt)
 
   while (Vdebugging)
     {
-      unwind_protect middle_frame;
-
-      reset_error_handler ();
-
-      curr_parser.reset ();
-
-      int retval = curr_parser.run ();
-
-      if (command_editor::interrupt (false))
-        break;
-      else
+      try
         {
-          if (retval == 0 && curr_parser.stmt_list)
+          reset_error_handler ();
+
+          curr_parser.reset ();
+
+          int retval = curr_parser.run ();
+
+          if (command_editor::interrupt (false))
+            break;
+          else
             {
-              curr_parser.stmt_list->accept (*current_evaluator);
+              if (retval == 0 && curr_parser.stmt_list)
+                {
+                  curr_parser.stmt_list->accept (*current_evaluator);
 
-              if (octave_completion_matches_called)
-                octave_completion_matches_called = false;
+                  if (octave_completion_matches_called)
+                    octave_completion_matches_called = false;
+                }
+
+              octave_quit ();
             }
-
-          octave_quit ();
+        }
+      catch (const octave_execution_exception&)
+        {
+          // Ignore errors when in debugging mode;
         }
     }
 }

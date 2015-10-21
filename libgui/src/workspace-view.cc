@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 #include <QLabel>
 #include <QCompleter>
+#include <QSignalMapper>
 
 #include "workspace-view.h"
 #include "resource-manager.h"
@@ -116,6 +117,11 @@ workspace_view::workspace_view (QWidget *p)
   );
   view->horizontalHeader ()->setSortIndicatorShown (true);
 
+  view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
+  connect (view->horizontalHeader (),
+           SIGNAL (customContextMenuRequested (const QPoint &)),
+           this, SLOT (header_contextmenu_requested (const QPoint &)));
+
   // Init state of the filter
   _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
 
@@ -162,6 +168,9 @@ workspace_view::~workspace_view (void)
   settings->setValue ("workspaceview/mru_list", mru);
 
   settings->sync ();
+
+  if (_sig_mapper)
+    delete _sig_mapper;
 }
 
 void workspace_view::setModel (workspace_model *model)
@@ -229,6 +238,46 @@ workspace_view::get_var_name (QModelIndex index)
   QMap<int, QVariant> item_data = m->itemData (index);
 
   return item_data[0].toString ();
+}
+
+void
+workspace_view::header_contextmenu_requested (const QPoint& mpos)
+{
+  QMenu menu (this);
+
+  if (_sig_mapper)
+    delete _sig_mapper;
+  _sig_mapper = new QSignalMapper (this);
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  for (int i = 0; i < _columns_shown.size (); i++)
+    {
+      QAction *action = menu.addAction (_columns_shown.at (i),
+                                        _sig_mapper, SLOT (map ()));
+      _sig_mapper->setMapping(action, i);
+      action->setCheckable (true);
+      action->setChecked (
+            settings->value (_columns_shown_keys.at (i),true).toBool ());
+    }
+
+  connect (_sig_mapper, SIGNAL (mapped (int)), this, SLOT (toggle_header (int)));
+
+  menu.exec (view->mapToGlobal (mpos));
+}
+
+void
+workspace_view::toggle_header (int col)
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  QString key = _columns_shown_keys.at (col);
+  bool shown = settings->value (key,true).toBool ();
+
+  view->setColumnHidden (col + 1, shown);
+
+  settings->setValue (key, ! shown);
+  settings->sync ();
 }
 
 void
@@ -401,7 +450,15 @@ workspace_view::handle_model_changed (void)
 void
 workspace_view::notice_settings (const QSettings *settings)
 {
+  int i;
+
   _model->notice_settings (settings); // update colors of model first
+
+  for (i = 0; i < _columns_shown_keys.size (); i++)
+    {
+      view->setColumnHidden ( i + 1,
+            ! settings->value (_columns_shown_keys.at (i),true).toBool ());
+    }
 
   QString tool_tip;
 
@@ -409,7 +466,7 @@ workspace_view::notice_settings (const QSettings *settings)
     {
       tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
       tool_tip += QString (tr ("Colors for variable attributes:"));
-      for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+      for (i = 0; i < resource_manager::storage_class_chars ().length (); i++)
         {
           tool_tip +=
             QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
@@ -420,6 +477,19 @@ workspace_view::notice_settings (const QSettings *settings)
 
   setToolTip (tool_tip);
 
+  _columns_shown = QStringList ();
+  _columns_shown.append (tr ("Class"));
+  _columns_shown.append (tr ("Dimension"));
+  _columns_shown.append (tr ("Value"));
+  _columns_shown.append (tr ("Attribute"));
+
+  _columns_shown_keys = QStringList ();
+  _columns_shown_keys.append ("workspaceview/show_class");
+  _columns_shown_keys.append ("workspaceview/show_dimension");
+  _columns_shown_keys.append ("workspaceview/show_value");
+  _columns_shown_keys.append ("workspaceview/show_attribute");
+
+  _sig_mapper = 0;
 }
 
 void

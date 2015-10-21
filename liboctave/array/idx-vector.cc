@@ -144,18 +144,18 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
               gripe_invalid_index (start);
               err = true;
             }
-          else if (step < 0 && start + (len-1)*step < 0)
+          else if (step < 0 && start + (len - 1)*step < 0)
             {
-              gripe_invalid_index (start + (len-1)*step);
+              gripe_invalid_index (start + (len - 1)*step);
               err = true;
             }
         }
       else
         {
           // find first non-integer, then gripe about it
-          double b = r.base();
-          double inc = r.inc();
-          gripe_invalid_index (b != floor(b) ? b : b+inc);
+          double b = r.base ();
+          double inc = r.inc ();
+          gripe_invalid_index (b != gnulib::floor (b) ? b : b + inc);
           err = true;
         }
     }

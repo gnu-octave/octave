@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAction>
 #include <QTreeView>
 #include <QMouseEvent>
+#include <QSignalMapper>
 
 #include <QComboBox>
 #include "octave-dock-widget.h"
@@ -80,16 +81,12 @@ public slots:
   void notice_settings (const QSettings *settings);
 
 private slots:
-  /** context menu wanted */
-  void contextmenu_requested (const QPoint& pos);
-
-  void toggle_headercontextitem_filesize ();
-  void toggle_headercontextitem_filetype ();
-  void toggle_headercontextitem_datemodified ();
-  void toggle_headercontextitem_showhidden ();
 
   void headercontextmenu_requested (const QPoint& pos);
+  void toggle_header (int col);
 
+  /** context menu wanted */
+  void contextmenu_requested (const QPoint& pos);
   /* context menu actions */
   void contextmenu_open (bool);
   void contextmenu_open_in_app (bool);
@@ -160,6 +157,10 @@ private:
   QString           _octave_dir;         // the actual octave dir
 
   enum { MaxMRUDirs = 10 };
+
+  QStringList _columns_shown;
+  QStringList _columns_shown_keys;
+  QSignalMapper *_sig_mapper;
 };
 
 #endif // FILESDOCKWIDGET_H

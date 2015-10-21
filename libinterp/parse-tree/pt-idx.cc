@@ -280,7 +280,7 @@ final_index_error (index_exception& e, const tree_expression *expr)
       && dynamic_cast<const tree_identifier *> (expr)->is_variable ())
     e.set_var (expr->name ());
 
-  (*current_liboctave_error_with_id_handler) (e.id (), e.err ());
+  error_with_id (e.id (), e.err ());
 }
 
 octave_value_list

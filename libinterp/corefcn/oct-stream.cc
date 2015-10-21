@@ -3342,8 +3342,7 @@ octave_stream::finalize_read (std::list<void *>& input_buf_list,
 
     default:
       retval = false;
-      (*current_liboctave_error_handler)
-        ("read: invalid type specification");
+      error ("read: invalid type specification");
       break;
     }
 
@@ -3713,8 +3712,7 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
 
     default:
       retval = false;
-      (*current_liboctave_error_handler)
-        ("write: invalid type specification");
+      error ("write: invalid type specification");
       break;
     }
 

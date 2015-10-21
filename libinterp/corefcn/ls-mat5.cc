@@ -1769,8 +1769,7 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
         break;
 
       default:
-        (*current_liboctave_error_handler)
-          ("unrecognized data format requested");
+        error ("unrecognized data format requested");
         break;
       }
   }
@@ -1855,8 +1854,7 @@ write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
         break;
 
       default:
-        (*current_liboctave_error_handler)
-          ("unrecognized data format requested");
+        error ("unrecognized data format requested");
         break;
       }
   }

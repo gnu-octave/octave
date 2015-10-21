@@ -107,9 +107,8 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
               catch (index_exception& e)
                 {
                   e.set_pos_if_unset (nargin-1, j+1);
-                  e.set_var ("");     // no particular variable
-                  (*current_liboctave_error_with_id_handler)
-                    (e.id(), e.err());
+                  e.set_var ();
+                  error_with_id (e.id (), e.err ());
                 }
             }
           else

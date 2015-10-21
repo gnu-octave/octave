@@ -649,9 +649,7 @@ permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
 
       if (error_state)
         {
-          // Use liboctave exception to be consistent.
-          (*current_liboctave_error_handler)
-            ("cat: field names mismatch in concatenating structs");
+          error ("cat: field names mismatch in concatenating structs");
           break;
         }
     }
@@ -667,8 +665,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
   if (dim == -1 || dim == -2)
     dim = -dim - 1;
   else if (dim < 0)
-    (*current_liboctave_error_handler)
-      ("cat: invalid dimension");
+    error ("cat: invalid dimension");
 
   if (n == 1)
     retval = map_list[0];
@@ -732,8 +729,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
   if (dim == -1 || dim == -2)
     dim = -dim - 1;
   else if (dim < 0)
-    (*current_liboctave_error_handler)
-      ("cat: invalid dimension");
+    error ("cat: invalid dimension");
 
   if (n == 1)
     retval = map_list[0];

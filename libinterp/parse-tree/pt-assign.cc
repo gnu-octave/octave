@@ -133,9 +133,9 @@ tree_simple_assignment::rvalue1 (int)
                 }
             }
           catch (index_exception& e)
-            {       // problems with range, invalid index type etc.
+            {
               e.set_var (lhs->name ());
-              (*current_liboctave_error_with_id_handler) (e.id(), e.err());
+              error_with_id (e.id (), e.err ());
             }
         }
     }

@@ -40,8 +40,7 @@ static double
 simple_gcd (double a, double b)
 {
   if (! xisinteger (a) || ! xisinteger (b))
-    (*current_liboctave_error_handler)
-      ("gcd: all values must be integers");
+    error ("gcd: all values must be integers");
 
   double aa = fabs (a);
   double bb = fabs (b);
@@ -78,8 +77,7 @@ simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
   if (! xisinteger (a.real ()) || ! xisinteger (a.imag ())
       || ! xisinteger (b.real ()) || ! xisinteger (b.imag ()))
-    (*current_liboctave_error_handler)
-      ("gcd: all complex parts must be integers");
+    error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
   std::complex<FP> bb = b;
@@ -119,8 +117,7 @@ static double
 extended_gcd (double a, double b, double& x, double& y)
 {
   if (! xisinteger (a) || ! xisinteger (b))
-    (*current_liboctave_error_handler)
-      ("gcd: all values must be integers");
+    error ("gcd: all values must be integers");
 
   double aa = fabs (a);
   double bb = fabs (b);
@@ -159,8 +156,7 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
 {
   if (! xisinteger (a.real ()) || ! xisinteger (a.imag ())
       || ! xisinteger (b.real ()) || ! xisinteger (b.imag ()))
-    (*current_liboctave_error_handler)
-      ("gcd: all complex parts must be integers");
+    error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
   std::complex<FP> bb = b;

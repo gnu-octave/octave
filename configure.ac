@@ -2160,7 +2160,7 @@ AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
 AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
 AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
 AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
-AC_CHECK_HEADERS([sys/select.h termcap.h])
+AC_CHECK_HEADERS([sys/select.h sys/stropts.h termcap.h])
 
 ## C++ headers
 

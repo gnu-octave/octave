@@ -263,9 +263,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
             break;
         }
     }
-  catch (index_exception& e)
+  catch (const index_exception& e)
     {
-      gripe_invalid_index (e.idx(), n_idx, k+1);
+      gripe_invalid_index (e.idx (), n_idx, k+1);
     }
 
   // Clear cache.
@@ -369,7 +369,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
     }
   catch (const index_exception& e)
     {
-      gripe_invalid_index (e.idx(), n_idx, k+1);
+      gripe_invalid_index (e.idx (), n_idx, k+1);
      }
 
   // Clear cache.

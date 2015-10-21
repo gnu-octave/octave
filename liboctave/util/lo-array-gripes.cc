@@ -260,7 +260,7 @@ public:
   const char* explain (void) const
   {
     static std::string expl;    // should probably be member variable, but
-                                // then explain() can't be const.
+                                // then explain can't be const.
 
     if (nd >= size.length ())   // if not an index slice
       {
@@ -308,7 +308,7 @@ gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
     out_of_range e (buf, nd, dim);
 
     e.set_extent (ext);
-    dim_vector d (1,1,1,1,1,1,1);   // make explain() give extent not size
+    dim_vector d (1,1,1,1,1,1,1);   // make explain give extent not size
     e.set_size (d);
     throw e;
 }

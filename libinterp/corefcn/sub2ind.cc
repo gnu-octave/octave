@@ -203,7 +203,7 @@ moving from one column to next, filling up all rows in each column.\n\
           
           retval = Array<octave_value> (ind2sub (dv, idx));
         }
-      catch (index_exception& e)
+      catch (const index_exception& e)
         {
           error ("ind2sub: Invalid index %s. %s", e.idx (), e.explain ());
         }

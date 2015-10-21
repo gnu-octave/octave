@@ -7132,9 +7132,10 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
                 gripe_wrong_type_arg ("nth_element", argx);
             }
         }
-      catch (index_exception& e)
+      catch (const index_exception& e)
         {
-          error ("nth_element: invalid N value %s. %s", e.idx (), e.explain ());
+          error ("nth_element: invalid N value %s. %s",
+                 e.idx (), e.explain ());
         }
     }
   else
@@ -7213,10 +7214,10 @@ Undocumented internal function.\n\
           else
             gripe_wrong_type_arg ("accumarray", vals);
         }
-      catch (index_exception& e)
+      catch (const index_exception& e)
         {
           error ("__accumarray_sum__: invalid IDX %s. %s",
-                 e.idx(), e.explain ());
+                 e.idx (), e.explain ());
         }
     }
   else
@@ -7316,10 +7317,10 @@ do_accumarray_minmax_fun (const octave_value_list& args,
               gripe_wrong_type_arg ("accumarray", vals);
             }
         }
-      catch (index_exception& e)
+      catch (const index_exception& e)
         {
           error ("do_accumarray_minmax_fun: invalid index %s. %s",
-                                        e.idx (), e.explain ());
+                 e.idx (), e.explain ());
         }
 
     }
@@ -7422,9 +7423,10 @@ Undocumented internal function.\n\
           else
             gripe_wrong_type_arg ("accumdim", vals);
         }
-      catch (index_exception& e)
+      catch (const index_exception& e)
         {
-          error ("__accumdim_sum__: invalid IDX %s. %s", e.idx(), e.explain ());
+          error ("__accumdim_sum__: invalid IDX %s. %s",
+                 e.idx (), e.explain ());
         }
     }
   else

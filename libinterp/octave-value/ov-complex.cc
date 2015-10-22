@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
+#include <sstream>
 
 #include "lo-ieee.h"
 #include "lo-specfun.h"
@@ -54,6 +55,39 @@ template class octave_base_scalar<Complex>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
                                      "complex scalar", "double");
+
+// Complain if a complex value is used as a subscript.
+
+class complex_index_exception : public index_exception
+{
+public:
+
+  complex_index_exception (const std::string& value)
+    : index_exception (value) { }
+
+  ~complex_index_exception (void) { }
+
+  std::string details (void) const
+  {
+    return "subscripts must be real (forgot to initialize i or j?)";
+  }
+
+  // ID of error to throw.
+  const char *err_id (void) const
+  {
+    return error_id_invalid_index;
+  }
+};
+
+static void
+gripe_complex_index (const Complex& idx)
+{
+  std::ostringstream buf;
+  buf << std::real (idx) << std::showpos << std::imag (idx) << "i";
+  complex_index_exception e (buf.str ());
+
+  throw e;
+}
 
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
@@ -100,6 +134,14 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
   octave_value tmp (new octave_complex_matrix (complex_matrix_value ()));
 
   return tmp.do_index_op (idx, resize_ok);
+}
+
+idx_vector
+octave_complex::index_vector (bool) const
+{
+  gripe_complex_index (scalar);
+
+  return idx_vector ();
 }
 
 double
@@ -480,41 +522,4 @@ octave_complex::map (unary_mapper_t umap) const
     default:
       return octave_base_value::map (umap);
     }
-}
-
-class complex_index_exception : public index_exception
-{
-public:
-
-  complex_index_exception (const std::string& value)
-    : index_exception (value) { }
-
-  ~complex_index_exception (void) { }
-
-  std::string details (void) const
-  {
-    return "subscripts must be real (forgot to initialize i or j?)";
-  }
-
-  // ID of error to throw.
-  const char *err_id (void) const
-  {
-    return error_id_invalid_index;
-  }
-};
-
-// Complain if a complex value is used as a subscript
-
-void
-gripe_complex_index (Complex idx)
-{
-  // FIXME: don't use a fixed size buffer!
-
-  char buf [100];
-
-  sprintf (buf, "%g%+gi", std::real(idx), std::imag(idx));
-
-  complex_index_exception e (buf);
-
-  throw e;
 }

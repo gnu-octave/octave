@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <cstring>
+#include <sstream>
 
 #include "lo-array-gripes.h"
 #include "lo-error.h"
@@ -122,71 +122,45 @@ index_exception::message (void) const
 std::string
 index_exception::expression (void) const
 {
-  // FIXME: don't use a fixed size buffer!
-  const int buf_len = 300;
+  std::ostringstream buf;
 
-  char output [buf_len];
-  char pre [buf_len];
-  char post [buf_len];
-
-  // dim == 0 if position not yet given, or
-  // <static_cast unsigned int>(-1) if explicitly shown to be unknown
-  // both are caught by this condition
-
-  if (static_cast <unsigned int> (dim-1) > 100000)
-    {
-      // No parentheses are given if the dimension is not known.
-      pre[0] = post[0] = '\0';
-    }
+  if (var.empty () || var == "<unknown>")
+    buf << "index ";
   else
+    buf << var;
+
+  bool show_parens = dim > 0;
+
+  if (show_parens)
     {
       if (dim < 5)
         {
-          pre[0] = '(';
-          octave_idx_type i;
+          buf << "(";
 
-          for (i = 1; i < dim; i++)
-            {
-              pre[2*i-1] = '_';
-              pre[2*i]   = ',';
-            }
-
-          pre[2*i-1] = '\0';    // i == min (1, dim)
+          for (octave_idx_type i = 1; i < dim; i++)
+            buf << "_,";
         }
       else
-        {
-          sprintf (pre, "(...[x%d]...", dim-1);
-        }
-
-      if (static_cast <unsigned int> (nd-dim) < 5)
-        {
-          for (octave_idx_type i = 0; i < nd-dim; i++)
-            {
-              post[2*i]   = ',';
-              post[2*i+1] = '_';
-            }
-
-          if (nd >= dim)
-            {
-              post[2*(nd-dim)] = ')';
-              post[2*(nd-dim)+1] = '\0';
-            }
-        }
-      else
-        sprintf (post, "...[x%d]...)", nd-dim);
+        buf << "(...[x" << dim - 1 << "]...";
     }
 
-  const char *v;
+  buf << idx ();
 
-  if (var[0] == '\0' || var == "<unknown>")
-    v = "index ";
-  else
-    v = var.c_str ();
+  if (show_parens)
+    {
+      if (nd - dim < 5)
+        {
+          for (octave_idx_type i = 0; i < nd - dim; i++)
+            buf << ",_";
 
-  std::string tmp_idx = idx ();
-  snprintf (output, buf_len, "%s%s%s%s", v, pre, tmp_idx.c_str (), post);
+          if (nd >= dim)
+            buf << ")";
+        }
+      else
+        buf << "...[x" << nd - dim << "]...)";
+    }
 
-  return output;
+  return buf.str ();
 }
 
 class invalid_index : public index_exception
@@ -229,23 +203,18 @@ void
 gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
                      octave_idx_type dim, const std::string& var)
 {
-  // Note: log10 (2^63) = 19 digits.
-  char buf[64];
-
-  sprintf (buf, "%d", n+1);
-
-  gripe_invalid_index (buf, nd, dim, var);
+  std::ostringstream buf;
+  buf << n + 1;
+  gripe_invalid_index (buf.str (), nd, dim, var);
 }
 
 void
 gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
                      const std::string& var)
 {
-  char buf[64];
-
-  sprintf (buf, "%g", n+1);
-
-  gripe_invalid_index (buf, nd, dim, var);
+  std::ostringstream buf;
+  buf << n + 1;
+  gripe_invalid_index (buf.str (), nd, dim, var);
 }
 
 
@@ -275,9 +244,9 @@ public:
       }
     else
       {
-        char buf[64];
-        sprintf (buf, "%d", extent);
-        expl = "out of bound " + std::string (buf);
+        std::ostringstream buf;
+        buf << extent;
+        expl = "out of bound " + buf.str ();
       }
 
     return expl;
@@ -295,9 +264,11 @@ public:
 
 private:
 
-  dim_vector size;          // dimension of object being accessed
+  // Dimension of object being accessed.
+  dim_vector size;
 
-  octave_idx_type extent;   // length of dimension being accessed
+  // Length of dimension being accessed.
+  octave_idx_type extent;
 };
 
 // Complain of an index that is out of range, but we don't know matrix size
@@ -305,14 +276,15 @@ void
 gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
                           octave_idx_type ext)
 {
-    char buf[64];
-    sprintf (buf, "%d", idx);
-    out_of_range e (buf, nd, dim);
+  std::ostringstream buf;
+  buf << idx;
+  out_of_range e (buf.str (), nd, dim);
 
-    e.set_extent (ext);
-    dim_vector d (1,1,1,1,1,1,1);   // make explain give extent not size
-    e.set_size (d);
-    throw e;
+  e.set_extent (ext);
+  // ??? Make details method give extent not size.
+  e.set_size (dim_vector (1, 1, 1, 1, 1, 1,1));
+
+  throw e;
 }
 
 // Complain of an index that is out of range
@@ -320,13 +292,14 @@ void
 gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
                           octave_idx_type ext, const dim_vector& d)
 {
-    char buf[64];
-    sprintf (buf, "%d", idx);
-    out_of_range e (buf, nd, dim);
+  std::ostringstream buf;
+  buf << idx;
+  out_of_range e (buf.str (), nd, dim);
 
-    e.set_extent (ext);
-    e.set_size (d);
-    throw e;
+  e.set_extent (ext);
+  e.set_size (d);
+
+  throw e;
 }
 
 void

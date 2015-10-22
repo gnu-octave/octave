@@ -43,9 +43,6 @@ class octave_value_list;
 
 class tree_walker;
 
-extern void OCTAVE_API
-gripe_complex_index (Complex idx);
-
 // Complex scalar values.
 
 class
@@ -81,12 +78,8 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  // Use this to give a more specific error message
-  idx_vector index_vector (bool /* require_integers */ = false) const
-  {
-    gripe_complex_index (scalar);
-    return idx_vector ();
-  }
+  // Use this to give a more specific error message.
+  idx_vector index_vector (bool /* require_integers */ = false) const;
 
   octave_value any (int = 0) const
   {

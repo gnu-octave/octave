@@ -37,9 +37,9 @@ class index_exception : public octave_execution_exception
 {
 public:
 
-  index_exception (const std::string& index_in, octave_idx_type nd_in = 0,
-                   octave_idx_type dim_in = 0, const char *var_in = "")
-    : index (index_in), nd (nd_in), dim (dim_in), var (var_in)
+  index_exception (const std::string& index_arg, octave_idx_type nd_arg = 0,
+                   octave_idx_type dim_arg = -1, const char *var_arg = "")
+    : index (index_arg), nd (nd_arg), dim (dim_arg), var (var_arg)
   { }
 
   ~index_exception (void) { }
@@ -57,23 +57,26 @@ public:
   virtual std::string message (void) const;
 
   // Position of error: dimension in error, and number of dimensions.
-  void set_pos (octave_idx_type nd_in, octave_idx_type dim_in)
+  void set_pos (octave_idx_type nd_arg, octave_idx_type dim_arg)
   {
-    nd = nd_in;
-    dim = dim_in;
+    nd = nd_arg;
+    dim = dim_arg;
   }
 
-  void set_pos_if_unset (octave_idx_type nd_in, octave_idx_type dim_in)
+  void set_pos_if_unset (octave_idx_type nd_arg, octave_idx_type dim_arg)
   {
     if (nd == 0)
       {
-        nd  = nd_in;
-        dim = dim_in;
+        nd  = nd_arg;
+        dim = dim_arg;
       }
   }
 
   // Name of variable being indexed.  eye(2)(1,1) gives "<unknown>".
-  void set_var (const std::string& var_in = std::string ()) { var = var_in; }
+  void set_var (const std::string& var_arg = std::string ())
+  {
+    var = var_arg;
+  }
 
 private:
 

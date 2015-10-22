@@ -252,15 +252,33 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
 
   idx = strfind (f, "FFF");
   if (! isempty (idx))
-    ## Kludge to handle FFF millisecond format since strptime does not
-    f(idx:idx+2) = [];
-    [~, nc] = strptime (ds, f);
+    ## Kludge to handle FFF millisecond format since strptime does not.
+
+    ## Find location of FFF in ds.
+    ## Might not match idx because of things like yyyy -> %y.
+    [~, nc] = strptime (ds, f(1:idx-1));
+    
+    msec = ds(nc:min (nc+2,end)); # pull 3-digit fractional seconds.
+    msec_idx = find (! isdigit (msec), 1);
+    
+    if (! isempty (msec_idx))  # non-digits in msec
+      msec = msec(1:msec_idx-1);
+      msec(end+1:3) = "0";     # pad msec with trailing zeros
+      ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
+    elseif (numel (msec) < 3)  # less than three digits in msec
+      m_len = numel (msec); 
+      msec(end+1:3) = "0";     # pad msec with trailing zeros
+      ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
+    endif
+    
+    ## replace FFF with digits to guarantee match in strptime.
+    f(idx:idx+2) = msec;
+  
     if (nc > 0)
-      msec = ds(nc:min(nc+2, end));
-      f = [f(1:idx-1) msec f(idx:end)];
       [tm, nc] = strptime (ds, f);
       tm.usec = 1000 * str2double (msec);
     endif
+
   else
     [tm, nc] = strptime (ds, f);
   endif
@@ -323,7 +341,25 @@ endfunction
 %!assert (datevec ("03/13/1962"), [1962,3,13,0,0,0])
 
 ## Test millisecond format FFF
-%!assert (datevec ("15:38:21.25", "HH:MM:SS.FFF"), [yr,1,1,15,38,21.025])
+%!assert (datevec ("15:38:21.2", "HH:MM:SS.FFF"), [yr,1,1,15,38,21.2])
+%!assert (datevec ("15:38:21.25", "HH:MM:SS.FFF"), [yr,1,1,15,38,21.25])
+%!assert (datevec ("15:38:21.251", "HH:MM:SS.FFF"), [yr,1,1,15,38,21.251])
+
+## Test millisecond format FFF with AM/PM, and 1,2, or 3 FFF digits
+%!assert (datevec ("06/01/2015 3:07:12.102 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,15,7,12.102])
+%!assert (datevec ("06/01/2015 11:07:12.102 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,23,7,12.102])
+%!assert (datevec ("06/01/2015 3:07:12.102 AM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,3,7,12.102])
+%!assert (datevec ("06/01/2015 11:07:12.102 AM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,11,7,12.102])
+%!assert (datevec ("06/01/2015 3:07:12.1 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,15,7,12.1])
+%!assert (datevec ("06/01/2015 3:07:12.12 AM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,3,7,12.12])
+%!assert (datevec ("06/01/2015 3:07:12.12 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
+%!        [2015,6,1,15,7,12.12])
 
 ## Test structure of return value (bug #42334)
 %!test

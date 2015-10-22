@@ -280,7 +280,8 @@ final_index_error (index_exception& e, const tree_expression *expr)
       && dynamic_cast<const tree_identifier *> (expr)->is_variable ())
     e.set_var (expr->name ());
 
-  error_with_id (e.id (), e.err ());
+  std::string msg = e.message ();
+  error_with_id (e.err_id (), msg.c_str ());
 }
 
 octave_value_list

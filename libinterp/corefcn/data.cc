@@ -82,6 +82,12 @@ along with Octave; see the file COPYING.  If not, see
 #define HAVE_HYPOTF 1
 #endif
 
+static void
+index_error (const char *fmt, const std::string& idx, const std::string& msg)
+{
+  error (fmt, idx.c_str (), msg.c_str ());
+}
+
 #define ANY_ALL(FCN) \
  \
   octave_value retval; \
@@ -7134,8 +7140,8 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
         }
       catch (const index_exception& e)
         {
-          error ("nth_element: invalid N value %s. %s",
-                 e.idx (), e.explain ());
+          index_error ("nth_element: invalid N value %s. %s",
+                       e.idx (), e.details ());
         }
     }
   else
@@ -7216,8 +7222,8 @@ Undocumented internal function.\n\
         }
       catch (const index_exception& e)
         {
-          error ("__accumarray_sum__: invalid IDX %s. %s",
-                 e.idx (), e.explain ());
+          index_error ("__accumarray_sum__: invalid IDX %s. %s",
+                       e.idx (), e.details ());
         }
     }
   else
@@ -7319,8 +7325,8 @@ do_accumarray_minmax_fun (const octave_value_list& args,
         }
       catch (const index_exception& e)
         {
-          error ("do_accumarray_minmax_fun: invalid index %s. %s",
-                 e.idx (), e.explain ());
+          index_error ("do_accumarray_minmax_fun: invalid index %s. %s",
+                       e.idx (), e.details ());
         }
 
     }
@@ -7425,8 +7431,8 @@ Undocumented internal function.\n\
         }
       catch (const index_exception& e)
         {
-          error ("__accumdim_sum__: invalid IDX %s. %s",
-                 e.idx (), e.explain ());
+          index_error ("__accumdim_sum__: invalid IDX %s. %s",
+                       e.idx (), e.details ());
         }
     }
   else

@@ -563,8 +563,10 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
           catch (index_exception& e)
             {
               e.set_pos_if_unset (len, i+1);
-              e.set_var ("");           // no particular variable
-              (*current_liboctave_error_with_id_handler) (e.id(), e.err());
+              e.set_var ();
+              std::string msg = e.message ();
+              (*current_liboctave_error_with_id_handler)
+                (e.err_id (), msg.c_str ());
             }
         }
       // idxa known to be valid. Shouldn't need to catch index_exception below here.

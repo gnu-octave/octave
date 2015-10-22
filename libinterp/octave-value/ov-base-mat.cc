@@ -370,7 +370,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
   catch (const index_exception& e)
     {
       gripe_invalid_index (e.idx (), n_idx, k+1);
-     }
+    }
 
   // Clear cache.
   clear_cached_info ();

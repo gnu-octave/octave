@@ -486,17 +486,18 @@ class complex_index_exception : public index_exception
 {
 public:
 
-  complex_index_exception (const char *value) : index_exception (value) { }
+  complex_index_exception (const std::string& value)
+    : index_exception (value) { }
 
   ~complex_index_exception (void) { }
 
-  const char* explain (void) const
+  std::string details (void) const
   {
     return "subscripts must be real (forgot to initialize i or j?)";
   }
 
   // ID of error to throw.
-  const char* id (void) const
+  const char *err_id (void) const
   {
     return error_id_invalid_index;
   }

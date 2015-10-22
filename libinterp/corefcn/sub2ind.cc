@@ -108,7 +108,8 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
                 {
                   e.set_pos_if_unset (nargin-1, j+1);
                   e.set_var ();
-                  error_with_id (e.id (), e.err ());
+                  std::string msg = e.message ();
+                  error_with_id (e.err_id (), msg.c_str ());
                 }
             }
           else
@@ -205,7 +206,9 @@ moving from one column to next, filling up all rows in each column.\n\
         }
       catch (const index_exception& e)
         {
-          error ("ind2sub: Invalid index %s. %s", e.idx (), e.explain ());
+          std::string idx = e.idx ();
+          std::string msg = e.details ();
+          error ("ind2sub: Invalid index %s. %s", idx.c_str (), msg.c_str ());
         }
     }
 

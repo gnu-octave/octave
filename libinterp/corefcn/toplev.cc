@@ -662,7 +662,7 @@ main_loop (void)
         {
           recover_from_exception ();
           std::cerr << "error: unhandled index exception: "
-                    << e.err () << " -- trying to return to prompt"
+                    << e.message () << " -- trying to return to prompt"
                     << std::endl;
         }
       catch (const octave_execution_exception&)

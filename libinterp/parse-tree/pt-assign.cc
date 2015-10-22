@@ -135,7 +135,8 @@ tree_simple_assignment::rvalue1 (int)
           catch (index_exception& e)
             {
               e.set_var (lhs->name ());
-              error_with_id (e.id (), e.err ());
+              std::string msg = e.message ();
+              error_with_id (e.err_id (), msg.c_str ());
             }
         }
     }

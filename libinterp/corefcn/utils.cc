@@ -1255,11 +1255,11 @@ get_dimensions (const octave_value& a, const octave_value& b,
 }
 
 octave_idx_type
-dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
+dims_to_numel (const dim_vector& dims, const octave_value_list& idx_arg)
 {
   octave_idx_type retval;
 
-  octave_idx_type len = idx.length ();
+  octave_idx_type len = idx_arg.length ();
 
   if (len == 0)
     retval = dims.numel ();
@@ -1269,7 +1269,7 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
       retval = 1;
       for (octave_idx_type i = 0; i < len; i++)
         {
-          octave_value idxi = idx(i);
+          octave_value idxi = idx_arg(i);
           if (idxi.is_magic_colon ())
             retval *= dv(i);
           else if (idxi.is_numeric_type ())
@@ -1284,8 +1284,10 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
                 }
               catch (const index_exception& e)
                 {
+                  std::string idx = e.idx ();
+                  std::string msg = e.details ();
                   error ("dims_to_numel: Invalid IDX %s. %s",
-                         e.idx (), e.explain ());
+                         idx.c_str (), msg.c_str ());
                 }
             }
         }

@@ -25,7 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <string.h>
+#include <cstring>
+
 #include "lo-array-gripes.h"
 #include "lo-error.h"
 
@@ -107,19 +108,19 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
 // object is indexed incorrectly, such as by an index that is out of
 // range, negative, fractional, complex, or of a non-numeric type.
 
-const char *
-index_exception::err (void) throw ()
+std::string
+index_exception::message (void) const
 {
-  msg = access () + "; " + explain ();
+  std::string msg = expression () + "; " + details ();
   return msg.c_str ();
 }
 
-// Show what was illegally accessed, e.g.,  "A(-1,_)", "A(0+1i)", "A(_,3)"
-// Show how many indices come before/after the offending one,
-// e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)
+// Show the expression that caused the error, e.g.,  "A(-1,_)",
+// "A(0+1i)", "A(_,3)".  Show how many indices come before/after the
+// offending one, e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)
 
 std::string
-index_exception:: access (void) const
+index_exception::expression (void) const
 {
   // FIXME: don't use a fixed size buffer!
   const int buf_len = 300;
@@ -182,7 +183,8 @@ index_exception:: access (void) const
   else
     v = var.c_str ();
 
-  snprintf (output, buf_len, "%s%s%s%s", v, pre, idx(), post);
+  std::string tmp_idx = idx ();
+  snprintf (output, buf_len, "%s%s%s%s", v, pre, tmp_idx.c_str (), post);
 
   return output;
 }
@@ -191,12 +193,12 @@ class invalid_index : public index_exception
 {
 public:
 
-  invalid_index (const char *value, octave_idx_type ndim,
+  invalid_index (const std::string& value, octave_idx_type ndim,
                  octave_idx_type dimen)
     : index_exception (value, ndim, dimen)
   { }
 
-  const char* explain (void) const
+  std::string details (void) const
   {
 #ifdef USE_64_BIT_IDX_T
     return "subscripts must be either integers 1 to (2^63)-1 or logicals";
@@ -206,17 +208,17 @@ public:
   }
 
   // ID of error to throw
-  const char* id (void) const
+  const char *err_id (void) const
   {
     return error_id_invalid_index;
   }
 };
 
-// Complain of an index that is: negative, fractional, or too big.
+// Complain if an index is negative, fractional, or too big.
 
 void
-gripe_invalid_index (const char *idx, octave_idx_type nd,
-                     octave_idx_type dim, const char * /* var */)
+gripe_invalid_index (const std::string& idx, octave_idx_type nd,
+                     octave_idx_type dim, const std::string&)
 {
     invalid_index e (idx, nd, dim);
 
@@ -225,9 +227,9 @@ gripe_invalid_index (const char *idx, octave_idx_type nd,
 
 void
 gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
-                     octave_idx_type dim, const char *var)
+                     octave_idx_type dim, const std::string& var)
 {
-  // Note: log10 (2^63) = 19 digits.  Use 64 for ease of memory alignment. 
+  // Note: log10 (2^63) = 19 digits.
   char buf[64];
 
   sprintf (buf, "%d", n+1);
@@ -237,7 +239,7 @@ gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
 
 void
 gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
-                     const char *var)
+                     const std::string& var)
 {
   char buf[64];
 
@@ -253,14 +255,14 @@ class out_of_range : public index_exception
 {
 public:
 
-  out_of_range (const char *value, octave_idx_type nd_in,octave_idx_type dim_in)
-        : index_exception (value, nd_in, dim_in), extent(0)
-    { }
+  out_of_range (const std::string& value, octave_idx_type nd_in,
+                octave_idx_type dim_in)
+    : index_exception (value, nd_in, dim_in), extent (0)
+  { }
 
-  const char* explain (void) const
+  std::string details (void) const
   {
-    static std::string expl;    // should probably be member variable, but
-                                // then explain can't be const.
+    std::string expl;
 
     if (nd >= size.length ())   // if not an index slice
       {
@@ -278,13 +280,13 @@ public:
         expl = "out of bound " + std::string (buf);
       }
 
-    return expl.c_str ();
+    return expl;
   }
 
   // ID of error to throw.
-  const char* id (void) const
+  const char *err_id (void) const
   {
-    return (error_id_index_out_of_bounds);
+    return error_id_index_out_of_bounds;
   }
 
   void set_size (const dim_vector& size_in) { size = size_in; }

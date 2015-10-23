@@ -285,6 +285,9 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
                                          xscale, yscale)
   if (strcmp (xscale, "linear"))
     dx = 0.01 * (max (xdata(:)) - min (xdata(:)));
+    if (dx == 0)
+      dx = .1;
+    endif
     xlo = xdata - dx;
     xhi = xdata + dx;
   else
@@ -299,6 +302,9 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
   endif
   if (strcmp (yscale, "linear"))
     dy = 0.01 * (max (ydata(:)) - min (ydata(:)));
+    if (dy == 0)
+      dy = .1;
+    endif
     ylo = ydata - dy;
     yhi = ydata + dy;
   else

@@ -359,7 +359,6 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
           _file_tree_view->setRootIndex (_file_system_model->
                                          index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
-          _file_system_model->sort (0, Qt::AscendingOrder);
           if (_sync_octave_dir && set_octave_dir)
             process_set_current_dir (fileInfo.absoluteFilePath ());
 

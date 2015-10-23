@@ -496,16 +496,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     ui->terminal_cursorType->setCurrentIndex (2);
 
   // file browser
-  ui->showFileSize->setChecked (
-    settings->value ("filesdockwidget/showFileSize", false).toBool ());
-  ui->showFileType->setChecked (
-    settings->value ("filesdockwidget/showFileType", false).toBool ());
-  ui->showLastModified->setChecked (
-    settings->value ("filesdockwidget/showLastModified",false).toBool ());
-  ui->showHiddenFiles->setChecked (
-    settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
-  ui->useAlternatingRowColors->setChecked (
-    settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
   connect (ui->sync_octave_directory, SIGNAL (toggled (bool)),
            this, SLOT (set_disabled_pref_file_browser_dir (bool)));
   ui->sync_octave_directory->setChecked (
@@ -840,16 +830,7 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("terminal/fontName",
                       ui->terminal_fontName->currentFont ().family ());
 
-  settings->setValue ("filesdockwidget/showFileSize",
-                      ui->showFileSize->isChecked ());
-  settings->setValue ("filesdockwidget/showFileType",
-                      ui->showFileType->isChecked ());
-  settings->setValue ("filesdockwidget/showLastModified",
-                      ui->showLastModified->isChecked ());
-  settings->setValue ("filesdockwidget/showHiddenFiles",
-                      ui->showHiddenFiles->isChecked ());
-  settings->setValue ("filesdockwidget/useAlternatingRowColors",
-                      ui->useAlternatingRowColors->isChecked ());
+  // file browser
   settings->setValue ("filesdockwidget/sync_octave_directory",
                       ui->sync_octave_directory->isChecked ());
   settings->setValue ("filesdockwidget/restore_last_dir",

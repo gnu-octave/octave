@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -51,8 +51,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-4</y>
-            <width>662</width>
+            <y>0</y>
+            <width>570</width>
             <height>382</height>
            </rect>
           </property>
@@ -1461,8 +1461,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>488</width>
+            <height>236</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1755,57 +1755,6 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
            <item>
-            <widget class="QGroupBox" name="groupBox_3">
-             <property name="title">
-              <string>Display</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_23">
-              <item>
-               <layout class="QGridLayout" name="gridLayout_11">
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <item row="1" column="0">
-                 <widget class="QCheckBox" name="showFileType">
-                  <property name="text">
-                   <string>Show file type</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QCheckBox" name="showHiddenFiles">
-                  <property name="text">
-                   <string>Show hidden files</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QCheckBox" name="showFileSize">
-                  <property name="text">
-                   <string>Show file size</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QCheckBox" name="showLastModified">
-                  <property name="text">
-                   <string>Show date of last modification</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QCheckBox" name="useAlternatingRowColors">
-                  <property name="text">
-                   <string>Alternating row colors</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
               <string>Behavior</string>
@@ -1926,8 +1875,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>203</width>
+            <height>79</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1995,8 +1944,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>368</width>
+            <height>244</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2258,8 +2207,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>529</width>
+            <height>204</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

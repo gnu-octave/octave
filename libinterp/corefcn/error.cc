@@ -134,63 +134,6 @@ initialize_last_error_stack (void)
 }
 
 static void
-debug_or_throw_exception (void)
-{
-  if ((interactive || forced_interactive)
-      && Vdebug_on_error && octave_call_stack::caller_user_code ())
-    {
-      unwind_protect frame;
-      frame.protect_var (Vdebug_on_error);
-      Vdebug_on_error = false;
-
-      tree_evaluator::debug_mode = true;
-
-      tree_evaluator::current_frame = octave_call_stack::current_frame ();
-
-      do_keyboard (octave_value_list ());
-    }
-  else
-    octave_throw_execution_exception ();
-}
-
-// Warning messages are never buffered.
-
-static void
-vwarning (const char *name, const char *id, const char *fmt, va_list args)
-{
-  if (discard_warning_messages)
-    return;
-
-  flush_octave_stdout ();
-
-  std::ostringstream output_buf;
-
-  octave_vformat (output_buf, fmt, args);
-
-  // FIXME: we really want to capture the message before it has all the
-  //        formatting goop attached to it.  We probably also want just the
-  //        message, not the traceback information.
-
-  std::string base_msg = output_buf.str ();
-  std::string msg_string;
-
-  if (name)
-    msg_string = std::string (name) + ": ";
-
-  msg_string += base_msg + "\n";
-
-  Vlast_warning_id = id;
-  Vlast_warning_message = base_msg;
-
-  if (! Vquiet_warning)
-    {
-      octave_diary << msg_string;
-
-      std::cerr << msg_string;
-    }
-}
-
-static void
 verror (bool save_last_error, std::ostream& os,
         const char *name, const char *id, const char *fmt, va_list args,
         bool with_cfn = false)
@@ -272,7 +215,7 @@ verror (bool save_last_error, std::ostream& os,
 }
 
 static void
-pr_where_2 (const char *fmt, va_list args)
+pr_where_2 (std::ostream& os, const char *fmt, va_list args)
 {
   if (fmt)
     {
@@ -288,12 +231,12 @@ pr_where_2 (const char *fmt, va_list args)
                     {
                       char *tmp_fmt = strsave (fmt);
                       tmp_fmt[len - 1] = '\0';
-                      verror (false, std::cerr, 0, "", tmp_fmt, args);
+                      verror (false, os, 0, "", tmp_fmt, args);
                       delete [] tmp_fmt;
                     }
                 }
               else
-                verror (false, std::cerr, 0, "", fmt, args);
+                verror (false, os, 0, "", fmt, args);
             }
         }
     }
@@ -302,16 +245,16 @@ pr_where_2 (const char *fmt, va_list args)
 }
 
 static void
-pr_where_1 (const char *fmt, ...)
+pr_where_1 (std::ostream& os, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  pr_where_2 (fmt, args);
+  pr_where_2 (os, fmt, args);
   va_end (args);
 }
 
 static void
-pr_where (const char *who)
+pr_where (std::ostream& os, const char *who)
 {
   std::list<octave_call_stack::stack_frame> frames
     = octave_call_stack::backtrace_frames ();
@@ -319,7 +262,7 @@ pr_where (const char *who)
   size_t nframes = frames.size ();
 
   if (nframes > 0)
-    pr_where_1 ("%s: called from\n", who);
+    pr_where_1 (os, "%s: called from\n", who);
 
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
@@ -334,8 +277,82 @@ pr_where (const char *who)
       int line = elt.line ();
       int column = elt.column ();
 
-      pr_where_1 ("    %s at line %d column %d\n",
+      pr_where_1 (os, "    %s at line %d column %d\n",
                   fcn_name.c_str (), line, column);
+    }
+}
+
+static void
+debug_or_throw_exception (bool show_stack_trace = false)
+{
+  if ((interactive || forced_interactive)
+      && Vdebug_on_error && octave_call_stack::caller_user_code ())
+    {
+      unwind_protect frame;
+      frame.protect_var (Vdebug_on_error);
+      Vdebug_on_error = false;
+
+      tree_evaluator::debug_mode = true;
+
+      tree_evaluator::current_frame = octave_call_stack::current_frame ();
+
+      if (show_stack_trace)
+        pr_where (std::cerr, "error");
+
+      do_keyboard (octave_value_list ());
+    }
+  else
+    {
+      octave_execution_exception e;
+
+      if (show_stack_trace
+          && octave_exception_state != octave_exec_exception)
+        {
+          std::ostringstream buf;
+          pr_where (buf, "error");
+          e.set_stack_trace (buf.str ());
+        }
+
+      octave_exception_state = octave_exec_exception;
+
+      throw e;
+    }
+}
+
+// Warning messages are never buffered.
+
+static void
+vwarning (const char *name, const char *id, const char *fmt, va_list args)
+{
+  if (discard_warning_messages)
+    return;
+
+  flush_octave_stdout ();
+
+  std::ostringstream output_buf;
+
+  octave_vformat (output_buf, fmt, args);
+
+  // FIXME: we really want to capture the message before it has all the
+  //        formatting goop attached to it.  We probably also want just the
+  //        message, not the traceback information.
+
+  std::string base_msg = output_buf.str ();
+  std::string msg_string;
+
+  if (name)
+    msg_string = std::string (name) + ": ";
+
+  msg_string += base_msg + "\n";
+
+  Vlast_warning_id = id;
+  Vlast_warning_message = base_msg;
+
+  if (! Vquiet_warning)
+    {
+      octave_diary << msg_string;
+
+      std::cerr << msg_string;
     }
 }
 
@@ -412,6 +429,8 @@ static void
 error_1 (std::ostream& os, const char *name, const char *id,
          const char *fmt, va_list args, bool with_cfn = false)
 {
+  bool show_stack_trace = false;
+
   if (fmt)
     {
       if (*fmt)
@@ -437,7 +456,7 @@ error_1 (std::ostream& os, const char *name, const char *id,
                   bool in_user_code = octave_call_stack::caller_user_code () != 0;
 
                   if (in_user_code && ! discard_error_messages)
-                    pr_where ("error");
+                    show_stack_trace = true;
                 }
             }
         }
@@ -445,7 +464,7 @@ error_1 (std::ostream& os, const char *name, const char *id,
   else
     panic ("error_1: invalid format");
 
-  debug_or_throw_exception ();
+  debug_or_throw_exception (show_stack_trace);
 }
 
 void
@@ -632,7 +651,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning
           && ! discard_warning_messages)
-        pr_where ("warning");
+        pr_where (std::cerr, "warning");
 
       if ((interactive || forced_interactive)
           && Vdebug_on_warning && in_user_code)
@@ -896,10 +915,11 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
                       if (l > 0)
                         {
                           if (c > 0)
-                            pr_where_1 ("error: near line %d, column %d",
+                            pr_where_1 (std::cerr,
+                                        "error: near line %d, column %d",
                                         l, c);
                           else
-                            pr_where_1 ("error: near line %d", l);
+                            pr_where_1 (std::cerr, "error: near line %d", l);
                         }
                     }
                   else
@@ -907,10 +927,12 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
                       if (l > 0)
                         {
                           if (c > 0)
-                            pr_where_1 ("error: called from '%s' near line %d, column %d",
+                            pr_where_1 (std::cerr,
+                                        "error: called from '%s' near line %d, column %d",
                                         nm.c_str (), l, c);
                           else
-                            pr_where_1 ("error: called from '%d' near line %d",
+                            pr_where_1 (std::cerr,
+                                        "error: called from '%d' near line %d",
                                         nm.c_str (), l);
                         }
                     }
@@ -922,10 +944,12 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
                       if (l > 0)
                         {
                           if (c > 0)
-                            pr_where_1 ("error: in file %s near line %d, column %d",
+                            pr_where_1 (std::cerr,
+                                        "error: in file %s near line %d, column %d",
                                         file.c_str (), l, c);
                           else
-                            pr_where_1 ("error: in file %s near line %d",
+                            pr_where_1 (std::cerr,
+                                        "error: in file %s near line %d",
                                         file.c_str (), l);
                         }
                     }
@@ -934,10 +958,12 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
                       if (l > 0)
                         {
                           if (c > 0)
-                            pr_where_1 ("error: called from '%s' in file %s near line %d, column %d",
+                            pr_where_1 (std::cerr,
+                                        "error: called from '%s' in file %s near line %d, column %d",
                                         nm.c_str (), file.c_str (), l, c);
                           else
-                            pr_where_1 ("error: called from '%d' in file %s near line %d",
+                            pr_where_1 (std::cerr,
+                                        "error: called from '%d' in file %s near line %d",
                                         nm.c_str (), file.c_str (), l);
                         }
                     }

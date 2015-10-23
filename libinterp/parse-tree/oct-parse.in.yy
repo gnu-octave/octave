@@ -4965,6 +4965,8 @@ the security considerations that the evaluation of arbitrary code does.\n\
         }
       catch (const octave_execution_exception&)
         {
+          recover_from_exception ();
+
           execution_error = true;
         }
 
@@ -5122,6 +5124,8 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
         }
       catch (const octave_execution_exception&)
         {
+          recover_from_exception ();
+
           execution_error = true;
         }
 

@@ -665,8 +665,13 @@ main_loop (void)
                     << e.message () << " -- trying to return to prompt"
                     << std::endl;
         }
-      catch (const octave_execution_exception&)
+      catch (const octave_execution_exception& e)
         {
+          std::string stack_trace = e.info ();
+
+          if (! stack_trace.empty ())
+            std::cerr << stack_trace;
+
           recover_from_exception ();
         }
       catch (const std::bad_alloc&)

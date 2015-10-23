@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef __cplusplus
 #include <new>
+#include <string>
 extern "C" {
 #endif
 
@@ -75,6 +76,35 @@ CRUFT_API extern void octave_restore_signal_mask (void);
 class
 octave_execution_exception
 {
+public:
+
+  octave_execution_exception (void) : m_stack_trace () { }
+
+  octave_execution_exception (const octave_execution_exception& x)
+    : m_stack_trace (x.m_stack_trace) { }
+
+  octave_execution_exception& operator = (const octave_execution_exception& x)
+  {
+    if (&x != this)
+      m_stack_trace = x.m_stack_trace;
+
+    return *this;
+  }
+
+  ~octave_execution_exception (void) { }
+
+  virtual void set_stack_trace (const std::string& st)
+  {
+    m_stack_trace = st;
+  }
+
+  virtual std::string info (void) const
+  {
+    return m_stack_trace;
+  }
+
+private:
+  std::string m_stack_trace;
 };
 
 class

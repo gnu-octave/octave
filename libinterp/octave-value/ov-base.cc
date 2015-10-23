@@ -549,9 +549,7 @@ octave_base_value::cell_value (const char *fmt, va_list args) const
 
   try
     {
-      std::string tn = type_name ();
-
-      error ("wrong type argument '%s'\n", tn.c_str ());
+      gripe_wrong_type_arg ("cell value", type_name ());
     }
   catch (const octave_execution_exception&)
     {
@@ -949,9 +947,7 @@ octave_base_value::string_value (const char *fmt, va_list args) const
 
   try
     {
-      std::string tn = type_name ();
-
-      error ("wrong type argument '%s'\n", tn.c_str ());
+      gripe_wrong_type_arg ("string value", type_name ());
     }
   catch (const octave_execution_exception&)
     {

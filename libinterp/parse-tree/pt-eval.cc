@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-all.h"
 #include "pt-eval.h"
 #include "symtab.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 
 //FIXME: This should be part of tree_evaluator
@@ -867,6 +868,8 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
         }
       catch (const octave_execution_exception&)
         {
+          recover_from_exception ();
+
           execution_error = true;
         }
     }
@@ -937,6 +940,8 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
     }
   catch (const octave_execution_exception&)
     {
+      recover_from_exception ();
+
       execution_error_in_cleanup = true;
     }
 
@@ -1011,6 +1016,8 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
         }
       catch (const octave_execution_exception&)
         {
+          recover_from_exception ();
+
           unwind_protect_exception = true;
 
           // Run the cleanup code on exceptions, so that it is run even in case

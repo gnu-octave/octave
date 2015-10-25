@@ -70,6 +70,11 @@ function rgb = ntsc2rgb (yiq)
   rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd, is_int);
 endfunction
 
+%!shared trans
+%! trans = [ 1.0,      1.0,      1.0;
+%!          0.95617, -0.27269, -1.10374;
+%!          0.62143, -0.64681,  1.70062 ];
+
 ## Test pure R, G, B colors
 %!assert (ntsc2rgb ([.299  .596  .211]), [1 0 0], 1e-5)
 %!assert (ntsc2rgb ([.587 -.274 -.523]), [0 1 0], 1e-5)
@@ -85,6 +90,35 @@ endfunction
 
 ## test cropping of rgb output
 %!assert (ntsc2rgb ([1.5 0 0]), [1   1   1]);
+
+## Test scaling of output.  After conversion, cut of negative values
+## and scaling of all the others relative to the maximum above 1.
+%!test
+%! ntsc = [0.4229  0.0336  0.7184];
+%! rgb = ntsc * trans;    # [0.9014  -0.0509  1.6075]
+%! rgb(1) /= rgb(3); # scaled based on the maximum
+%! rgb(2) = 0; # cut to 0
+%! rgb(3) = 1; # cut to 1
+%! assert (ntsc2rgb (ntsc), rgb)
+
+## test scaling when conversion has more than one value above 1
+## (check that it does pick the maximum)
+%!test
+%! ntsc = [0.8229  0.3336  0.7184];
+%! rgb = ntsc * trans;    # [1.58831   0.26726   1.67642]
+%! rgb /= rgb(3);
+%! assert (ntsc2rgb (ntsc), rgb)
+
+## check scaling for more than 1 row
+%!test
+%! ntsc = [0.4229  0.0336  0.7184
+%!         0.8229  0.3336  0.7184];
+%! rgb = ntsc * trans; # [0.9014  -0.0509  1.6075;  1.58831  0.26726  1.67642]
+%! rgb(1,1) /= rgb(1,3);
+%! rgb(1,2) = 0;
+%! rgb(1,3) = 1;
+%! rgb(2,:) /= rgb(2,3);
+%! assert (ntsc2rgb (ntsc), rgb)
 
 ## Test input validation
 %!error ntsc2rgb ()

@@ -62,7 +62,7 @@ function [in_arg, cls, sz, is_im, is_nd, is_int] ...
 
   ## Convert to floating point (remember to leave class single alone)
   if (isinteger (in_arg))
-    in_arg = double (in_arg) / double (intmin (cls));
+    in_arg = double (in_arg) / double (intmax (cls));
     is_int = true;
   else
     is_int = false;

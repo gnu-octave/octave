@@ -59,13 +59,9 @@ function rgb = ntsc2rgb (yiq)
   rgb = yiq * trans;
 
   ## truncating / scaling of double rgb values for Matlab compatibility
-  ## (Other input types are not supported by Matlab. We deal with
-  ## them anyways, but do not truncate or scale those.)
-  if (cls == "double")
-    rgb = max (0,rgb);
-    idx = find (any (rgb'>1));
-    rgb(idx,:) = rgb(idx,:) ./ (max (rgb(idx,:), [], 2) * ones (1,3));
-  endif
+  rgb = max (0, rgb);
+  idx = any (rgb > 1, 2);
+  rgb(idx,:) = rgb(idx,:) ./ max (rgb(idx,:), [], 2);
 
   rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd, is_int);
 endfunction

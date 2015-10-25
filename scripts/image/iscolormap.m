@@ -20,9 +20,9 @@
 ## @deftypefn {Function File} {} iscolormap (@var{cmap})
 ## Return true if @var{cmap} is a colormap.
 ##
-## A colormap is a real matrix with @var{n} rows and 3 columns.  Each row
-## represents a single color.  The columns contain red, green, and blue
-## intensities respectively.
+## A colormap is a real matrix, of class single or double, with 3 columns.
+## Each row represents a single color.  The 3 columns contain red, green,
+## and blue intensities respectively.
 ##
 ## All values in a colormap should be in the [0 1] range but this is not
 ## enforced.  Each function must decide what to do for values outside this

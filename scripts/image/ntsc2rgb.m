@@ -45,7 +45,7 @@ function rgb = ntsc2rgb (yiq)
     print_usage ();
   endif
 
-  [yiq, cls, sz, is_im, is_nd, is_int] ...
+  [yiq, cls, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("ntsc2rgb", "YIQ", yiq);
 
   ## Conversion matrix constructed from 'inv (rgb2ntsc matrix)'.
@@ -57,13 +57,16 @@ function rgb = ntsc2rgb (yiq)
             0.95617, -0.27269, -1.10374;
             0.62143, -0.64681,  1.70062 ];
   rgb = yiq * trans;
+  ## Note that if the input is of class single, we also return an image
+  ## of class single.  This is Matlab incompatible by design, since
+  ## Matlab always returning class double, is a Matlab bug (see patch #8709)
 
   ## truncating / scaling of double rgb values for Matlab compatibility
   rgb = max (0, rgb);
   idx = any (rgb > 1, 2);
   rgb(idx,:) = rgb(idx,:) ./ max (rgb(idx,:), [], 2);
 
-  rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd, is_int);
+  rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd);
 endfunction
 
 %!shared trans

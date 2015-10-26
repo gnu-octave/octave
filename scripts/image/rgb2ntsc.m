@@ -51,7 +51,7 @@ function yiq = rgb2ntsc (rgb)
     print_usage ();
   endif
 
-  [rgb, cls, sz, is_im, is_nd, is_int] ...
+  [rgb, cls, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("rgb2ntsc", "RGB", rgb);
 
   ## Reference matrix for transformation from http://en.wikipedia.org/wiki/YIQ
@@ -61,8 +61,12 @@ function yiq = rgb2ntsc (rgb)
             0.587, -0.274, -0.523;
             0.114, -0.322,  0.312 ];
   yiq = rgb * trans;
+  ## Note that if the input is of class single, we also return an image
+  ## of class single.  This is Matlab incompatible by design, since
+  ## Matlab always returning class double, is a Matlab bug (see patch #8709)
 
-  yiq = colorspace_conversion_revert (yiq, cls, sz, is_im, is_nd, is_int);
+  yiq = colorspace_conversion_revert (yiq, cls, sz, is_im, is_nd);
+
 endfunction
 
 ## Test pure RED, GREEN, BLUE colors
@@ -77,6 +81,9 @@ endfunction
 %!test
 %! rgb_img = rand (64, 64, 3);
 %! assert (ntsc2rgb (rgb2ntsc (rgb_img)), rgb_img, 1e-3);
+
+## test tolerance input checking on floats
+%! assert (rgb2ntsc ([1.5 1 1]), [1.149   0.298   0.105], 1e-3);
 
 ## Test input validation
 %!error rgb2ntsc ()

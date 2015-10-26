@@ -22,7 +22,7 @@
 ## to come from  complementary private function
 ## colorspace_conversion_input_check()
 
-function rv = colorspace_conversion_revert (rv, cls, sz, is_im, is_nd, is_int)
+function rv = colorspace_conversion_revert (rv, cls, sz, is_im, is_nd)
   if (is_im)
     if (is_nd)
       rv = reshape (rv, [sz(1:2) sz(4) sz(3)]);
@@ -30,8 +30,5 @@ function rv = colorspace_conversion_revert (rv, cls, sz, is_im, is_nd, is_int)
     else
       rv = reshape (rv, sz);
     endif
-  endif
-  if (is_int)
-    rv *= intmax (cls);
   endif
 endfunction

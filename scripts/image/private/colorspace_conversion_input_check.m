@@ -21,7 +21,7 @@
 ## handle input in the same way.  The returned flags are meant to be handled
 ## by the complementary private function colorspace_conversion_revert()
 
-function [in_arg, cls, sz, is_im, is_nd, is_int] ...
+function [in_arg, cls, sz, is_im, is_nd] ...
             = colorspace_conversion_input_check (func, arg_name, in_arg)
 
   cls = class (in_arg);
@@ -63,9 +63,6 @@ function [in_arg, cls, sz, is_im, is_nd, is_int] ...
   ## Convert to floating point (remember to leave class single alone)
   if (isinteger (in_arg))
     in_arg = double (in_arg) / double (intmax (cls));
-    is_int = true;
-  else
-    is_int = false;
   endif
 
 endfunction

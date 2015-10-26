@@ -542,6 +542,13 @@ Graphics Object Properties
 * Image Properties::
 * Patch Properties::
 * Surface Properties::
+* Uimenu Properties::
+* Uicontextmenu Properties::
+* Uipanel Properties::
+* Uicontrol Properties::
+* Uitoolbar Properties::
+* Uipushtool Properties::
+* Uitoggletool Properties::
 
 Advanced Plotting
 
@@ -667,6 +674,10 @@ Differential Equations
 
 * Ordinary Differential Equations::
 * Differential-Algebraic Equations::
+
+Ordinary Differential Equations
+
+* Matlab-compatible solvers::
 
 Optimization
 

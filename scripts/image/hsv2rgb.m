@@ -143,3 +143,53 @@ endfunction
 %!   rgb(:,:,:,i) = hsv2rgb (hsv(:,:,:,i));
 %! endfor
 %! assert (hsv2rgb (hsv), rgb)
+
+## Test output class and size for input images.
+## Most of the tests only test for colormap input.
+
+%!test
+%! rgb = hsv2rgb (rand (10, 10, 3));
+%! assert (class (rgb), "double")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! rgb = hsv2rgb (rand (10, 10, 3, "single"));
+%! assert (class (rgb), "single")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! rgb = (rand (10, 10, 3) * 3 ) - 0.5; # values outside range [0 1]
+%! rgb = hsv2rgb (rgb);
+%! assert (class (rgb), "double")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! rgb = (rand (10, 10, 3, "single") * 3 ) - 0.5; # values outside range [0 1]
+%! rgb = hsv2rgb (rgb);
+%! assert (class (rgb), "single")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! rgb = hsv2rgb (randi ([0 255], 10, 10, 3, "uint8"));
+%! assert (class (rgb), "double")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! rgb = hsv2rgb (randi ([0 65535], 10, 10, 3, "uint16"));
+%! assert (class (rgb), "double")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! rgb = hsv2rgb (randi ([-128 127], 10, 10, 3, "uint16"));
+%! assert (class (rgb), "double")
+%! assert (size (rgb), [10 10 3])
+
+%!test
+%! hsv_double = reshape ([2/3 1/3 1 0 1 1 1 0, 1 1 1 1], [2 2 3]);
+%! hsv_uint8  = reshape (uint8 ([170 85 255 0 255 255 255 0 255 255 255 255]),
+%!                       [2 2 3]);
+%! expected = reshape ([0 0 1 1 0 1 0 1 1 0 0 1], [2 2 3]);
+%!
+%! assert (hsv2rgb (hsv_double), expected)
+%! assert (hsv2rgb (hsv_uint8), expected)
+%! assert (hsv2rgb (single (hsv_double)), single (expected), eps (single (2)))

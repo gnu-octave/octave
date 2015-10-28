@@ -99,3 +99,54 @@ endfunction
 %!   yiq(:,:,:,i) = rgb2ntsc (rgb(:,:,:,i));
 %! endfor
 %! assert (rgb2ntsc (rgb), yiq)
+
+## Test output class and size for input images.
+## Most of the tests only test for colormap input.
+
+%!test
+%! ntsc = rgb2ntsc (rand (10, 10, 3));
+%! assert (class (ntsc), "double")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! ntsc = rgb2ntsc (rand (10, 10, 3, "single"));
+%! assert (class (ntsc), "single")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! rgb = (rand (10, 10, 3) * 3 ) - 0.5; # values outside range [0 1]
+%! ntsc = rgb2ntsc (rgb);
+%! assert (class (ntsc), "double")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! rgb = (rand (10, 10, 3, "single") * 3 ) - 0.5; # values outside range [0 1]
+%! ntsc = rgb2ntsc (rgb);
+%! assert (class (ntsc), "single")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! ntsc = rgb2ntsc (randi ([0 255], 10, 10, 3, "uint8"));
+%! assert (class (ntsc), "double")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! ntsc = rgb2ntsc (randi ([0 65535], 10, 10, 3, "uint16"));
+%! assert (class (ntsc), "double")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! ntsc = rgb2ntsc (randi ([-128 127], 10, 10, 3, "uint16"));
+%! assert (class (ntsc), "double")
+%! assert (size (ntsc), [10 10 3])
+
+%!test
+%! rgb_double = reshape ([1 0 0 0 0 1 0 0 0 0 1 0], [2 2 3]);
+%! rgb_uint8  = reshape (uint8 ([255 0 0 0 0 255 0 0 0 0 255 0]),
+%!                       [2 2 3]);
+%! expected = reshape ([.299 .587 .114 0 .596 -.274 -.322 0 .211 -.523 .312 0],
+%!                     [2 2 3]);
+%!
+%! assert (rgb2ntsc (rgb_double), expected)
+%! assert (rgb2ntsc (rgb_uint8), expected)
+%! assert (rgb2ntsc (single (rgb_double)), single (expected))

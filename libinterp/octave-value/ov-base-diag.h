@@ -86,7 +86,14 @@ public:
   { return to_dense ().reshape (new_dims); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-  { return to_dense ().permute (vec, inv); }
+  { 
+    if (vec.numel () == 2
+        && ((vec.xelem (0) == 1 && vec.xelem (1) == 0)
+            || (vec.xelem (0) == 0 && vec.xelem (1) == 1)))
+      return DMT (matrix);
+    else
+      return to_dense ().permute (vec, inv);
+  }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 

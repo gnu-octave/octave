@@ -166,6 +166,7 @@ endfunction
 %! rgb_double = reshape ([1 0 1 .5 1 1 0 .5 0 1 1 .5], [2 2 3]);
 %! rgb_uint8  = reshape (uint8 ([255 0 255 128 255 255 0 128 0 255 255 128]),
 %!                       [2 2 3]);
+%! rgb_int16 = int16 (double (rgb_double * uint16 (65535)) -32768);
 %! expected = reshape ([1/6 1/2 5/6 0 1 1 1 0 1 1 1 .5], [2 2 3]);
 %!
 %! assert (rgb2hsv (rgb_double), expected)

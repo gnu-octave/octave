@@ -29,7 +29,8 @@ function [in_arg, cls, sz, is_im, is_nd] ...
 
   ## If we have an image convert it into a color map.
   if (! iscolormap (in_arg))
-    if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
+    if (! any (strcmp (cls, {"uint8", "int8", "int16", "uint16", ...
+                             "single", "double"})))
       error ("%s: %s of invalid data type '%s'", func, arg_name, cls);
     elseif (size (in_arg, 3) != 3)
       error ("%s: %s must be a colormap or %s image", func, arg_name, arg_name);
@@ -62,7 +63,13 @@ function [in_arg, cls, sz, is_im, is_nd] ...
 
   ## Convert to floating point (remember to leave class single alone)
   if (isinteger (in_arg))
-    in_arg = double (in_arg) / double (intmax (cls));
+    int_max = double (intmax (cls));
+    int_min = double (intmin (cls));
+    if (int_min < 0)
+      in_arg = (double (in_arg) - int_min) / (int_max - int_min);
+    else
+      in_arg = double (in_arg) / int_max;
+    endif
   endif
 
 endfunction

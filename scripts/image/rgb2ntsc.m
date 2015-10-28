@@ -144,6 +144,7 @@ endfunction
 %! rgb_double = reshape ([1 0 0 0 0 1 0 0 0 0 1 0], [2 2 3]);
 %! rgb_uint8  = reshape (uint8 ([255 0 0 0 0 255 0 0 0 0 255 0]),
 %!                       [2 2 3]);
+%! rgb_int16 = int16 (double (rgb_double * uint16 (65535)) -32768);
 %! expected = reshape ([.299 .587 .114 0 .596 -.274 -.322 0 .211 -.523 .312 0],
 %!                     [2 2 3]);
 %!

@@ -188,8 +188,10 @@ endfunction
 %! hsv_double = reshape ([2/3 1/3 1 0 1 1 1 0, 1 1 1 1], [2 2 3]);
 %! hsv_uint8  = reshape (uint8 ([170 85 255 0 255 255 255 0 255 255 255 255]),
 %!                       [2 2 3]);
+%! hsv_int16 = int16 (double (hsv_double * uint16 (65535)) -32768);
 %! expected = reshape ([0 0 1 1 0 1 0 1 1 0 0 1], [2 2 3]);
 %!
 %! assert (hsv2rgb (hsv_double), expected)
 %! assert (hsv2rgb (hsv_uint8), expected)
+%! assert (hsv2rgb (hsv_int16), expected)
 %! assert (hsv2rgb (single (hsv_double)), single (expected), eps (single (2)))

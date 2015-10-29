@@ -312,19 +312,14 @@ Undocumented internal function.\n\
       Matrix Z = args(2).matrix_value ();
       RowVector L = args(3).row_vector_value ();
 
-      if (! error_state)
-        {
-          contourc.resize (2, 0);
+      contourc.resize (2, 0);
 
-          for (int i = 0; i < L.numel (); i++)
-            cntr (X, Y, Z, L (i));
+      for (int i = 0; i < L.numel (); i++)
+        cntr (X, Y, Z, L (i));
 
-          end_contour ();
+      end_contour ();
 
-          retval = contourc;
-        }
-      else
-        error ("__contourc__: invalid argument values");
+      retval = contourc;
     }
   else
     print_usage ();

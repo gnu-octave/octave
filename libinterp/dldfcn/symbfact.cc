@@ -198,165 +198,152 @@ factorization as determined by @var{typ}.\n\
   if (A->stype && A->nrow != A->ncol)
     error ("symbfact: S must be a square matrix");
 
-  if (!error_state)
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Parent, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Post, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, ColCount, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, First, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Level, n);
+
+  cholmod_sparse *F = CHOLMOD_NAME(transpose) (A, 0, cm);
+  cholmod_sparse *Aup, *Alo;
+
+  if (A->stype == 1 || coletree)
     {
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, Parent, n);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, Post, n);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, ColCount, n);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, First, n);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, Level, n);
+      Aup = A ;
+      Alo = F ;
+    }
+  else
+    {
+      Aup = F ;
+      Alo = A ;
+    }
 
-      cholmod_sparse *F = CHOLMOD_NAME(transpose) (A, 0, cm);
-      cholmod_sparse *Aup, *Alo;
+  CHOLMOD_NAME(etree) (Aup, Parent, cm);
 
-      if (A->stype == 1 || coletree)
+  if (cm->status < CHOLMOD_OK)
+    error ("matrix corrupted");
+
+  if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
+    error ("postorder failed");
+
+  CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0,
+                              ColCount, First, Level, cm);
+
+  if (cm->status < CHOLMOD_OK)
+    error ("matrix corrupted");
+
+  if (nargout > 4)
+    {
+      cholmod_sparse *A1, *A2;
+
+      if (A->stype == 1)
         {
-          Aup = A ;
-          Alo = F ;
+          A1 = A;
+          A2 = 0;
+        }
+      else if (A->stype == -1)
+        {
+          A1 = F;
+          A2 = 0;
+        }
+      else if (coletree)
+        {
+          A1 = F;
+          A2 = A;
         }
       else
         {
-          Aup = F ;
-          Alo = A ;
+          A1 = A;
+          A2 = F;
         }
 
-      CHOLMOD_NAME(etree) (Aup, Parent, cm);
+      // count the total number of entries in L
+      octave_idx_type lnz = 0 ;
+      for (octave_idx_type j = 0 ; j < n ; j++)
+        lnz += ColCount[j];
 
-      if (cm->status < CHOLMOD_OK)
+
+      // allocate the output matrix L (pattern-only)
+      SparseBoolMatrix L (n, n, lnz);
+
+      // initialize column pointers
+      lnz = 0;
+      for (octave_idx_type j = 0 ; j < n ; j++)
         {
-          error ("matrix corrupted");
-          goto symbfact_error;
+          L.xcidx(j) = lnz;
+          lnz += ColCount[j];
         }
+      L.xcidx(n) = lnz;
 
-      if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
+
+      /* create a copy of the column pointers */
+      octave_idx_type *W = First;
+      for (octave_idx_type j = 0 ; j < n ; j++)
+        W[j] = L.xcidx (j);
+
+      // get workspace for computing one row of L
+      cholmod_sparse *R
+        = CHOLMOD_NAME (allocate_sparse) (n, 1, n, false, true,
+                                          0, CHOLMOD_PATTERN, cm);
+      octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
+      octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);
+
+      // compute L one row at a time
+      for (octave_idx_type k = 0 ; k < n ; k++)
         {
-          error ("postorder failed");
-          goto symbfact_error;
+          // get the kth row of L and store in the columns of L
+          CHOLMOD_NAME (row_subtree) (A1, A2, k, Parent, R, cm) ;
+          for (octave_idx_type p = 0 ; p < Rp[1] ; p++)
+            L.xridx (W[Ri[p]]++) = k ;
+
+          // add the diagonal entry
+          L.xridx (W[k]++) = k ;
         }
 
-      CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0,
-                                  ColCount, First, Level, cm);
-
-      if (cm->status < CHOLMOD_OK)
-        {
-          error ("matrix corrupted");
-          goto symbfact_error;
-        }
-
-      if (nargout > 4)
-        {
-          cholmod_sparse *A1, *A2;
-
-          if (A->stype == 1)
-            {
-              A1 = A;
-              A2 = 0;
-            }
-          else if (A->stype == -1)
-            {
-              A1 = F;
-              A2 = 0;
-            }
-          else if (coletree)
-            {
-              A1 = F;
-              A2 = A;
-            }
-          else
-            {
-              A1 = A;
-              A2 = F;
-            }
-
-          // count the total number of entries in L
-          octave_idx_type lnz = 0 ;
-          for (octave_idx_type j = 0 ; j < n ; j++)
-            lnz += ColCount[j];
+      // free workspace
+      CHOLMOD_NAME (free_sparse) (&R, cm) ;
 
 
-          // allocate the output matrix L (pattern-only)
-          SparseBoolMatrix L (n, n, lnz);
+      // transpose L to get R, or leave as is
+      if (nargin < 3)
+        L = L.transpose ();
 
-          // initialize column pointers
-          lnz = 0;
-          for (octave_idx_type j = 0 ; j < n ; j++)
-            {
-              L.xcidx(j) = lnz;
-              lnz += ColCount[j];
-            }
-          L.xcidx(n) = lnz;
+      // fill numerical values of L with one's
+      for (octave_idx_type p = 0 ; p < lnz ; p++)
+        L.xdata(p) = true;
 
-
-          /* create a copy of the column pointers */
-          octave_idx_type *W = First;
-          for (octave_idx_type j = 0 ; j < n ; j++)
-            W[j] = L.xcidx (j);
-
-          // get workspace for computing one row of L
-          cholmod_sparse *R
-            = CHOLMOD_NAME (allocate_sparse) (n, 1, n, false, true,
-                                              0, CHOLMOD_PATTERN, cm);
-          octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
-          octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);
-
-          // compute L one row at a time
-          for (octave_idx_type k = 0 ; k < n ; k++)
-            {
-              // get the kth row of L and store in the columns of L
-              CHOLMOD_NAME (row_subtree) (A1, A2, k, Parent, R, cm) ;
-              for (octave_idx_type p = 0 ; p < Rp[1] ; p++)
-                L.xridx (W[Ri[p]]++) = k ;
-
-              // add the diagonal entry
-              L.xridx (W[k]++) = k ;
-            }
-
-          // free workspace
-          CHOLMOD_NAME (free_sparse) (&R, cm) ;
-
-
-          // transpose L to get R, or leave as is
-          if (nargin < 3)
-            L = L.transpose ();
-
-          // fill numerical values of L with one's
-          for (octave_idx_type p = 0 ; p < lnz ; p++)
-            L.xdata(p) = true;
-
-          retval(4) = L;
-        }
-
-      ColumnVector tmp (n);
-      if (nargout > 3)
-        {
-          for (octave_idx_type i = 0; i < n; i++)
-            tmp(i) = Post[i] + 1;
-          retval(3) = tmp;
-        }
-
-      if (nargout > 2)
-        {
-          for (octave_idx_type i = 0; i < n; i++)
-            tmp(i) = Parent[i] + 1;
-          retval(2) = tmp;
-        }
-
-      if (nargout > 1)
-        {
-          /* compute the elimination tree height */
-          octave_idx_type height = 0 ;
-          for (int i = 0 ; i < n ; i++)
-            height = (height > Level[i] ? height : Level[i]);
-          height++ ;
-          retval(1) = static_cast<double> (height);
-        }
-
-      for (octave_idx_type i = 0; i < n; i++)
-        tmp(i) = ColCount[i];
-      retval(0) = tmp;
+      retval(4) = L;
     }
 
-symbfact_error:
+  ColumnVector tmp (n);
+  if (nargout > 3)
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        tmp(i) = Post[i] + 1;
+      retval(3) = tmp;
+    }
+
+  if (nargout > 2)
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        tmp(i) = Parent[i] + 1;
+      retval(2) = tmp;
+    }
+
+  if (nargout > 1)
+    {
+      /* compute the elimination tree height */
+      octave_idx_type height = 0 ;
+      for (int i = 0 ; i < n ; i++)
+        height = (height > Level[i] ? height : Level[i]);
+      height++ ;
+      retval(1) = static_cast<double> (height);
+    }
+
+  for (octave_idx_type i = 0; i < n; i++)
+    tmp(i) = ColCount[i];
+  retval(0) = tmp;
+
 #else
   error ("symbfact: not available in this version of Octave");
 #endif

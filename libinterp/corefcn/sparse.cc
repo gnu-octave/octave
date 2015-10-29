@@ -185,7 +185,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
         {
           get_dimensions (args(3), args(4), "sparse", m, n);
 
-          if (! error_state && (m < 0 || n < 0))
+          if (m < 0 || n < 0)
             error ("sparse: dimensions must be non-negative");
         }
       else if (nargin != 3)

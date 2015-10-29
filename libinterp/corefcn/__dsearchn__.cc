@@ -52,20 +52,18 @@ Undocumented internal function.\n\
   Matrix x = args(0).matrix_value ().transpose ();
   Matrix xi = args(1).matrix_value ().transpose ();
 
-  if (! error_state)
+  if (x.rows () != xi.rows () || x.columns () < 1)
+    error ("__dsearch__: number of rows of X and XI must match");
+  else
     {
-      if (x.rows () != xi.rows () || x.columns () < 1)
-        error ("__dsearch__: number of rows of X and XI must match");
-      else
-        {
-          octave_idx_type n = x.rows ();
-          octave_idx_type nx = x.columns ();
-          octave_idx_type nxi = xi.columns ();
+      octave_idx_type n = x.rows ();
+      octave_idx_type nx = x.columns ();
+      octave_idx_type nxi = xi.columns ();
 
-          ColumnVector idx (nxi);
-          double *pidx = idx.fortran_vec ();
-          ColumnVector dist (nxi);
-          double *pdist = dist.fortran_vec ();
+      ColumnVector idx (nxi);
+      double *pidx = idx.fortran_vec ();
+      ColumnVector dist (nxi);
+      double *pdist = dist.fortran_vec ();
 
 #define DIST(dd, y, yi, m) \
   dd = 0.; \
@@ -76,34 +74,33 @@ Undocumented internal function.\n\
    } \
   dd = sqrt (dd);
 
-          const double *pxi = xi.fortran_vec ();
-          for (octave_idx_type i = 0; i < nxi; i++)
+      const double *pxi = xi.fortran_vec ();
+      for (octave_idx_type i = 0; i < nxi; i++)
+        {
+          double d0;
+          const double *px = x.fortran_vec ();
+          DIST(d0, px, pxi, n);
+          *pidx = 1.;
+          for (octave_idx_type j = 1; j < nx; j++)
             {
-              double d0;
-              const double *px = x.fortran_vec ();
-              DIST(d0, px, pxi, n);
-              *pidx = 1.;
-              for (octave_idx_type j = 1; j < nx; j++)
+              px += n;
+              double d;
+              DIST (d, px, pxi, n);
+              if (d < d0)
                 {
-                  px += n;
-                  double d;
-                  DIST (d, px, pxi, n);
-                  if (d < d0)
-                    {
-                      d0 = d;
-                      *pidx = static_cast<double>(j + 1);
-                    }
-                  OCTAVE_QUIT;
+                  d0 = d;
+                  *pidx = static_cast<double>(j + 1);
                 }
-
-              *pdist++ = d0;
-              pidx++;
-              pxi += n;
+              OCTAVE_QUIT;
             }
 
-          retval(1) = dist;
-          retval(0) = idx;
+          *pdist++ = d0;
+          pidx++;
+          pxi += n;
         }
+
+      retval(1) = dist;
+      retval(0) = idx;
     }
 
   return retval;

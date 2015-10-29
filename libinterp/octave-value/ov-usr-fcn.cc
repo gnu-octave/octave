@@ -1083,11 +1083,6 @@ element-by-element and a logical array is returned.  At the top level,\n\
       if (! symbol_table::at_top_level ())
         {
           int nargout1 = symbol_table::varval (".nargout.").int_value ();
-          if (error_state)
-            {
-              error ("isargout: internal error");
-              return retval;
-            }
 
           Matrix ignored;
           octave_value tmp = symbol_table::varval (".ignored.");
@@ -1105,9 +1100,7 @@ element-by-element and a logical array is returned.  At the top level,\n\
               const NDArray ka = args(0).array_value ();
 
               boolNDArray r (ka.dims ());
-              for (octave_idx_type i = 0;
-                   i < ka.numel () && ! error_state;
-                   i++)
+              for (octave_idx_type i = 0; i < ka.numel (); i++)
                 r(i) = isargout1 (nargout1, ignored, ka(i));
 
               retval = r;

@@ -1546,15 +1546,7 @@ With a logical argument @var{flag}, set the state on or off.\n\
       bool state = true;
 
       if (nargin == 1)
-        {
-          state = args(0).bool_value ();
-
-          if (error_state)
-            {
-              gripe_wrong_type_arg ("db_next_breakpoint", args(0), true);
-              return retval;
-            }
-        }
+        state = args(0).bool_value ();
 
       tree_evaluator::quiet_breakpoint_flag = state;
     }

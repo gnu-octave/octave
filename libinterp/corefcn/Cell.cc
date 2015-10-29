@@ -191,8 +191,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
             k = 1;
             idx_vector j = idx_arg(1).index_vector ();
 
-            if (! error_state)
-              retval = Array<octave_value>::index (i, j, resize_ok, Matrix ());
+            retval = Array<octave_value>::index (i, j, resize_ok, Matrix ());
           }
           break;
 

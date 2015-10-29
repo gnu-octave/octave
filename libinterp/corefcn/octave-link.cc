@@ -214,55 +214,50 @@ Undocumented internal function.\n\
                                               (flist.columns () > 1
                                                ? flist(i,1) : "")));
 
-      if (! error_state)
+      flush_octave_stdout ();
+
+      std::list<std::string> items_lst
+        = octave_link::file_dialog (filter_lst, title, filename, pathname,
+                                    multi_on);
+
+      nel = items_lst.size ();
+
+      retval.resize (3);
+
+      // If 3, then retval is filename, directory, and selected index.
+      if (nel <= 3)
         {
-          flush_octave_stdout ();
-
-          std::list<std::string> items_lst
-            = octave_link::file_dialog (filter_lst, title, filename, pathname,
-                                        multi_on);
-
-          nel = items_lst.size ();
-
-          retval.resize (3);
-
-          // If 3, then retval is filename, directory, and selected index.
-          if (nel <= 3)
+          int idx = 0;
+          for (std::list<std::string>::iterator it = items_lst.begin ();
+               it != items_lst.end (); it++)
             {
-              int idx = 0;
-              for (std::list<std::string>::iterator it = items_lst.begin ();
-                   it != items_lst.end (); it++)
-                {
-                  retval(idx++) = *it;
+              retval(idx++) = *it;
 
-                  if (idx == 1 && retval(0).string_value ().length () == 0)
-                    retval(0) = 0;
+              if (idx == 1 && retval(0).string_value ().length () == 0)
+                retval(0) = 0;
 
-                  if (idx == 3)
-                    retval(2) = atoi (retval(2).string_value ().c_str ());
-                }
-            }
-          else
-            {
-              // Multiple files.
-              nel = items_lst.size () - 2;
-              Cell items (dim_vector (1, nel));
-
-              std::list<std::string>::iterator it = items_lst.begin ();
-
-              for (int idx = 0; idx < nel; idx++)
-                {
-                  items.xelem (idx) = *it;
-                  it++;
-                }
-
-              retval(0) = items;
-              retval(1) = *it++;
-              retval(2) = atoi (it->c_str ());
+              if (idx == 3)
+                retval(2) = atoi (retval(2).string_value ().c_str ());
             }
         }
       else
-        error ("invalid arguments");
+        {
+          // Multiple files.
+          nel = items_lst.size () - 2;
+          Cell items (dim_vector (1, nel));
+
+          std::list<std::string>::iterator it = items_lst.begin ();
+
+          for (int idx = 0; idx < nel; idx++)
+            {
+              items.xelem (idx) = *it;
+              it++;
+            }
+
+          retval(0) = items;
+          retval(1) = *it++;
+          retval(2) = atoi (it->c_str ());
+        }
     }
 
   return retval;

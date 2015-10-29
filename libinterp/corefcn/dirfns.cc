@@ -630,14 +630,9 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
       string_vector pat = args(0).all_strings ();
       string_vector str = args(1).all_strings ();
 
-      if (error_state)
-        gripe_wrong_type_arg ("fnmatch", args(0));
-      else
-        {
-          glob_match pattern (file_ops::tilde_expand (pat));
+      glob_match pattern (file_ops::tilde_expand (pat));
 
-          retval = pattern.match (str);
-        }
+      retval = pattern.match (str);
     }
   else
     print_usage ();

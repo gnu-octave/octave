@@ -117,7 +117,7 @@
 ## @item @qcode{"nonnan"}
 ## No value is a @code{NaN}.
 ##
-## @item @qcode{"non-negative"}
+## @item @qcode{"nonnegative"}
 ## All values are non negative.
 ##
 ## @item @qcode{"nonsparse"}

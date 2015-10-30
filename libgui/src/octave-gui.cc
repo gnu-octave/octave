@@ -175,6 +175,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       shortcut_manager::init_data ();
     }
 
+  // Force left-to-right alignment (see bug #46204)
+  application.setLayoutDirection (Qt::LeftToRight);
+
   // Create and show main window.
 
   main_window w (0, start_gui);

@@ -89,6 +89,7 @@ private slots:
   void contextmenu_requested (const QPoint& pos);
   /* context menu actions */
   void contextmenu_open (bool);
+  void contextmenu_open_in_editor (bool);
   void contextmenu_open_in_app (bool);
   void contextmenu_copy_selection (bool);
   void contextmenu_run (bool);

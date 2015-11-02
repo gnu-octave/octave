@@ -377,12 +377,21 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
         {
           QString abs_fname = fileInfo.absoluteFilePath ();
 
+          QString suffix = fileInfo.suffix ().toLower ();
+          QSettings *settings = resource_manager::get_settings ();
+          QString ext = settings->value ("filesdockwidget/txt_file_extensions",
+                                         "m;c;cc;cpp;h;txt").toString ();
+          QStringList extensions = ext.split(";", QString::SkipEmptyParts);
+
           if (QFile::exists (abs_fname))
             {
               if (is_octave_data_file (abs_fname.toStdString ()))
                 emit load_file_signal (abs_fname);
-              else
+              else if (extensions.contains (suffix))
                 emit open_file (fileInfo.absoluteFilePath ());
+              else
+                open_item_in_app (_file_tree_view->selectionModel ()
+                                  ->currentIndex ());
             }
         }
     }
@@ -477,8 +486,16 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       menu.addAction (resource_manager::icon ("document-open"), tr ("Open"),
                       this, SLOT (contextmenu_open (bool)));
 
-      menu.addAction (tr ("Open in Default Application"),
-                      this, SLOT (contextmenu_open_in_app (bool)));
+      if (info.isDir ())
+        {
+          menu.addAction (tr ("Open in System File Explorer"),
+                          this, SLOT (contextmenu_open_in_app (bool)));
+        }
+
+      if (info.isFile ())
+        menu.addAction (tr ("Open in Text Editor"),
+                        this, SLOT (contextmenu_open_in_editor (bool)));
+
 
       menu.addAction (tr ("Copy Selection to Clipboard"),
                       this, SLOT (contextmenu_copy_selection (bool)));
@@ -535,12 +552,23 @@ files_dock_widget::contextmenu_open (bool)
     {
       QFileInfo file = _file_system_model->fileInfo (*it);
       if (file.exists ())
-        {
-          if (file.isFile ())
-            emit open_file (file.absoluteFilePath ());
-          else
-            set_current_directory (file.absoluteFilePath ());
-        }
+        display_directory (file.absoluteFilePath ());
+    }
+}
+
+
+void
+files_dock_widget::contextmenu_open_in_editor (bool)
+{
+
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    {
+      QFileInfo file = _file_system_model->fileInfo (*it);
+      if (file.exists ())
+        emit open_file (file.absoluteFilePath ());
     }
 }
 

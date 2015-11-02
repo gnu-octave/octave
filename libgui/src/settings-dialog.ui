@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>480</height>
+    <width>678</width>
+    <height>474</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -499,8 +499,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>662</width>
-            <height>751</height>
+            <width>690</width>
+            <height>783</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1749,28 +1749,74 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>636</width>
+            <height>370</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_18">
-           <item>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
               <string>Behavior</string>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_24">
-              <item>
-               <layout class="QGridLayout" name="gridLayout_8">
-                <item row="4" column="0">
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_18">
+                <item>
                  <widget class="QCheckBox" name="sync_octave_directory">
                   <property name="text">
                    <string>Synchronize Octave working directory with file browser</string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item>
                  <layout class="QGridLayout" name="lo_file_browser_startup">
+                  <item row="1" column="3">
+                   <spacer name="horizontalSpacer_30">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QCheckBox" name="cb_restore_file_browser_dir">
+                    <property name="text">
+                     <string>Restore last directory of previous session</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <spacer name="horizontalSpacer_29">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QPushButton" name="pb_file_browser_dir">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Browse</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="lbl_file_browser_dir">
                     <property name="text">
@@ -1788,51 +1834,23 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QCheckBox" name="cb_restore_file_browser_dir">
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_9">
+                  <item>
+                   <widget class="QLabel" name="lbl_file_browser_extensions">
                     <property name="text">
-                     <string>Restore last directory of previous session</string>
+                     <string>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="pb_file_browser_dir">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
+                  <item>
+                   <widget class="QLineEdit" name="le_file_browser_extensions">
                     <property name="text">
-                     <string>Browse</string>
+                     <string/>
                     </property>
                    </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <spacer name="horizontalSpacer_29">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="3">
-                   <spacer name="horizontalSpacer_30">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -1841,7 +1859,7 @@
              </layout>
             </widget>
            </item>
-           <item>
+           <item row="1" column="0">
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>

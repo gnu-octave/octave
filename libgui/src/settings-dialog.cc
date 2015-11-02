@@ -506,6 +506,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("filesdockwidget/startup_dir").toString ());
   connect (ui->pb_file_browser_dir, SIGNAL (pressed ()),
            this, SLOT (get_file_browser_dir ()));
+  ui->le_file_browser_extensions->setText (
+    settings->value ("filesdockwidget/txt_file_extensions", "m;c;cc;cpp;h;txt")
+    .toString ());
 
   ui->checkbox_allow_web_connect->setChecked (
     settings->value ("news/allow_web_connection",false).toBool ());
@@ -832,7 +835,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_restore_file_browser_dir->isChecked ());
   settings->setValue ("filesdockwidget/startup_dir",
                       ui->le_file_browser_dir->text ());
-
+  settings->setValue ("filesdockwidget/txt_file_extensions",
+                      ui->le_file_browser_extensions->text ());
 
   settings->setValue ("news/allow_web_connection",
                       ui->checkbox_allow_web_connect->isChecked ());

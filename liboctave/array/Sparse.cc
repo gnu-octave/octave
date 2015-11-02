@@ -2213,6 +2213,10 @@ Sparse<T>::assign (const idx_vector& idx_i,
       else
         assign (idx_i, idx_j, Sparse<T> (n, m));
     }
+  else if (idx_i.length (nr) == m && idx_j.length (nc) == n && (n==1 || m==1))
+    {
+      assign (idx_i, idx_j, rhs.transpose ());
+    }
   else
     gripe_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
 }
@@ -2895,6 +2899,14 @@ bug #35570:
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
 %!test a=sparse (2,2); assert (isequal (all (a), sparse ([0 0])));
+
+## Test assigning row to a column slice (bug #45589)
+%!test
+%! a = sparse (magic (3));
+%! b = a;
+%! a(1,:) = 1:3;
+%! b(1,:) = (1:3)';
+%! assert (a, b);
 
 */
 

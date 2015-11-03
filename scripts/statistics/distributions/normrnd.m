@@ -90,7 +90,7 @@ function rnd = normrnd (mu, sigma, varargin)
     endif
   else
     rnd = mu + sigma .* randn (sz, cls);
-    k = ! isfinite (mu) | !(sigma > 0) | !(sigma < Inf);
+    k = ! isfinite (mu) | !(sigma >= 0) | !(sigma < Inf);
     rnd(k) = NaN;
   endif
 

@@ -168,6 +168,8 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   QSettings *settings = resource_manager::get_settings ();
   if (settings)
     notice_settings (settings, true);
+
+  setFocusProxy (_edit_area);
 }
 
 file_editor_tab::~file_editor_tab (void)

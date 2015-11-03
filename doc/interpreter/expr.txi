@@ -931,7 +931,7 @@ using the equivalent of the operation @code{all (@var{boolean1}(:))}.
 If it is false, the result of the overall expression is 0.  If it is
 true, the expression @var{boolean2} is evaluated and converted to a
 scalar using the equivalent of the operation @code{all
-(@var{boolean1}(:))}.  If it is true, the result of the overall expression
+(@var{boolean2}(:))}.  If it is true, the result of the overall expression
 is 1.  Otherwise, the result of the overall expression is 0.
 
 @strong{Warning:} there is one exception to the rule of evaluating
@@ -947,7 +947,7 @@ using the equivalent of the operation @code{all (@var{boolean1}(:))}.
 If it is true, the result of the overall expression is 1.  If it is
 false, the expression @var{boolean2} is evaluated and converted to a
 scalar using the equivalent of the operation @code{all
-(@var{boolean1}(:))}.  If it is true, the result of the overall expression
+(@var{boolean2}(:))}.  If it is true, the result of the overall expression
 is 1.  Otherwise, the result of the overall expression is 0.
 
 @strong{Warning:} the truth value of an empty matrix is always @code{false},

@@ -194,7 +194,7 @@ This is conceptually equivalent to
 $@code{A}^{-1}@code{b}$,
 @end tex
 @ifnottex
-@code{inv (a) * b},
+@code{inv (A) * b},
 @end ifnottex
 but avoids computing the inverse of a matrix directly.
 

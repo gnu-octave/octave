@@ -124,6 +124,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 
   installEventFilter (this);
 
+  setFocusPolicy (Qt::StrongFocus);
 }
 
 octave_dock_widget::~octave_dock_widget ()

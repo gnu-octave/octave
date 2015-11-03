@@ -146,7 +146,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
   fputs (plot_stream, "unset ytics;\n");
   fputs (plot_stream, "unset ztics;\n");
   fputs (plot_stream, "unset x2tics;\n");
-  fputs (plot_stream, "unset x2tics;\n");
+  fputs (plot_stream, "unset y2tics;\n");
 
   if (! isempty (axis_obj.title))
     t = get (axis_obj.title);

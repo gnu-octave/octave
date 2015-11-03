@@ -45,6 +45,21 @@ function rgb = ntsc2rgb (yiq)
     print_usage ();
   endif
 
+  ## Unlike other colorspace conversion functions, we do not accept
+  ## integers as valid input.  We check this before
+  ## colorspace_conversion_input_check() which is general and would
+  ## convert integers to double assuming a [0 1] interval range.
+  ## The reason for not supporting integers here is that there's no
+  ## common such conversion.  If we were to support a conversion
+  ## the most reasonable definition would be to convert the YIQ
+  ## from their integer range into the ranges:
+  ##    Y = [ 0      1.106]
+  ##    I = [-0.797  0.587]
+  ##    Q = [-0.322  0.426]
+  ## See https://savannah.gnu.org/patch/?8709#comment11
+  if (! isfloat (yiq))
+    error ("ntsc2rgb: YIQ must be of floating point class");
+  endif
   [yiq, cls, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("ntsc2rgb", "YIQ", yiq);
 
@@ -122,8 +137,11 @@ endfunction
 ## Test input validation
 %!error ntsc2rgb ()
 %!error ntsc2rgb (1,2)
-%!error <YIQ must be a colormap or YIQ image> ntsc2rgb (uint8 (1))
+%!error <YIQ must be of floating point class> ntsc2rgb (uint8 (1))
 %!error <YIQ must be a colormap or YIQ image> ntsc2rgb (ones (2,2))
+%!error <YIQ must be of floating point class> ntsc2rgb (ones ([10 10 3], "uint8"))
+%!error <YIQ must be of floating point class> ntsc2rgb (ones ([10 10 3], "uint16"))
+%!error <YIQ must be of floating point class> ntsc2rgb (ones ([10 10 3], "int16"))
 
 ## Test ND input
 %!test
@@ -157,21 +175,6 @@ endfunction
 %! ntsc = (rand (10, 10, 3, "single") * 3 ) - 0.5; # values outside range [0 1]
 %! rgb = ntsc2rgb (ntsc);
 %! assert (class (rgb), "single")
-%! assert (size (rgb), [10 10 3])
-
-%!test
-%! rgb = ntsc2rgb (randi ([0 255], 10, 10, 3, "uint8"));
-%! assert (class (rgb), "double")
-%! assert (size (rgb), [10 10 3])
-
-%!test
-%! rgb = ntsc2rgb (randi ([0 65535], 10, 10, 3, "uint16"));
-%! assert (class (rgb), "double")
-%! assert (size (rgb), [10 10 3])
-
-%!test
-%! rgb = ntsc2rgb (randi ([-128 127], 10, 10, 3, "uint16"));
-%! assert (class (rgb), "double")
 %! assert (size (rgb), [10 10 3])
 
 %!test

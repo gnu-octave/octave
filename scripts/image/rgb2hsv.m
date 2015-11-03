@@ -43,7 +43,7 @@ function hsv = rgb2hsv (rgb)
     print_usage ();
   endif
 
-  [rgb, cls, sz, is_im, is_nd] ...
+  [rgb, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("rgb2hsv", "RGB", rgb);
 
   ## get the max and min for each row
@@ -78,7 +78,7 @@ function hsv = rgb2hsv (rgb)
   s(notgray) = 1 - s(notgray) ./ v(notgray);
 
   hsv = [h, s, v];
-  hsv = colorspace_conversion_revert (hsv, cls, sz, is_im, is_nd);
+  hsv = colorspace_conversion_revert (hsv, sz, is_im, is_nd);
 
 endfunction
 

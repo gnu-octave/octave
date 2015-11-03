@@ -21,7 +21,7 @@
 ## handle input in the same way.  The returned flags are meant to be handled
 ## by the complementary private function colorspace_conversion_revert()
 
-function [in_arg, cls, sz, is_im, is_nd] ...
+function [in_arg, sz, is_im, is_nd] ...
             = colorspace_conversion_input_check (func, arg_name, in_arg)
 
   cls = class (in_arg);

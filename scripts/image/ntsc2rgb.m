@@ -60,7 +60,7 @@ function rgb = ntsc2rgb (yiq)
   if (! isfloat (yiq))
     error ("ntsc2rgb: YIQ must be of floating point class");
   endif
-  [yiq, cls, sz, is_im, is_nd] ...
+  [yiq, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("ntsc2rgb", "YIQ", yiq);
 
   ## Conversion matrix constructed from 'inv (rgb2ntsc matrix)'.
@@ -81,7 +81,7 @@ function rgb = ntsc2rgb (yiq)
   idx = any (rgb > 1, 2);
   rgb(idx,:) = rgb(idx,:) ./ max (rgb(idx,:), [], 2);
 
-  rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd);
+  rgb = colorspace_conversion_revert (rgb, sz, is_im, is_nd);
 endfunction
 
 %!shared trans

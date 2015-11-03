@@ -63,7 +63,7 @@ function rgb = hsv2rgb (hsv)
     print_usage ();
   endif
 
-  [hsv, cls, sz, is_im, is_nd] ...
+  [hsv, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("hsv2rgb", "HSV", hsv);
 
   h = hsv(:,1);
@@ -92,7 +92,7 @@ function rgb = hsv2rgb (hsv)
                + (hue >= 1/6 & hue < 1/2)
                + (hue >= 1/2 & hue < 2/3) .* (4 - 6 * hue));
 
-  rgb = colorspace_conversion_revert (rgb, cls, sz, is_im, is_nd);
+  rgb = colorspace_conversion_revert (rgb, sz, is_im, is_nd);
 
 endfunction
 

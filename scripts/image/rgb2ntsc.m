@@ -51,7 +51,7 @@ function yiq = rgb2ntsc (rgb)
     print_usage ();
   endif
 
-  [rgb, cls, sz, is_im, is_nd] ...
+  [rgb, sz, is_im, is_nd] ...
     = colorspace_conversion_input_check ("rgb2ntsc", "RGB", rgb);
 
   ## Reference matrix for transformation from http://en.wikipedia.org/wiki/YIQ
@@ -65,7 +65,7 @@ function yiq = rgb2ntsc (rgb)
   ## of class single.  This is Matlab incompatible by design, since
   ## Matlab always returning class double, is a Matlab bug (see patch #8709)
 
-  yiq = colorspace_conversion_revert (yiq, cls, sz, is_im, is_nd);
+  yiq = colorspace_conversion_revert (yiq, sz, is_im, is_nd);
 
 endfunction
 

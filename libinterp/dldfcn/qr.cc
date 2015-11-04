@@ -240,52 +240,45 @@ x = @var{R} \\ @var{C}\n\
             is_cmplx = true;
         }
 
-      if (!error_state)
+      if (have_b && nargout < 2)
+        error ("qr: incorrect number of output arguments");
+      else if (is_cmplx)
         {
-          if (have_b && nargout < 2)
-            error ("qr: incorrect number of output arguments");
-          else if (is_cmplx)
+          SparseComplexQR q (arg.sparse_complex_matrix_value ());
+
+          if (have_b > 0)
             {
-              SparseComplexQR q (arg.sparse_complex_matrix_value ());
-              if (!error_state)
-                {
-                  if (have_b > 0)
-                    {
-                      retval(1) = q.R (economy);
-                      retval(0) = q.C (args(have_b).complex_matrix_value ());
-                      if (arg.rows () < arg.columns ())
-                        warning ("qr: non minimum norm solution for under-determined problem");
-                    }
-                  else if (nargout > 1)
-                    {
-                      retval(1) = q.R (economy);
-                      retval(0) = q.Q ();
-                    }
-                  else
-                    retval(0) = q.R (economy);
-                }
+              retval(1) = q.R (economy);
+              retval(0) = q.C (args(have_b).complex_matrix_value ());
+              if (arg.rows () < arg.columns ())
+                warning ("qr: non minimum norm solution for under-determined problem");
+            }
+          else if (nargout > 1)
+            {
+              retval(1) = q.R (economy);
+              retval(0) = q.Q ();
             }
           else
+            retval(0) = q.R (economy);
+        }
+      else
+        {
+          SparseQR q (arg.sparse_matrix_value ());
+
+          if (have_b > 0)
             {
-              SparseQR q (arg.sparse_matrix_value ());
-              if (!error_state)
-                {
-                  if (have_b > 0)
-                    {
-                      retval(1) = q.R (economy);
-                      retval(0) = q.C (args(have_b).matrix_value ());
-                      if (args(0).rows () < args(0).columns ())
-                        warning ("qr: non minimum norm solution for under-determined problem");
-                    }
-                  else if (nargout > 1)
-                    {
-                      retval(1) = q.R (economy);
-                      retval(0) = q.Q ();
-                    }
-                  else
-                    retval(0) = q.R (economy);
-                }
+              retval(1) = q.R (economy);
+              retval(0) = q.C (args(have_b).matrix_value ());
+              if (args(0).rows () < args(0).columns ())
+                warning ("qr: non minimum norm solution for under-determined problem");
             }
+          else if (nargout > 1)
+            {
+              retval(1) = q.R (economy);
+              retval(0) = q.Q ();
+            }
+          else
+            retval(0) = q.R (economy);
         }
     }
   else
@@ -300,76 +293,70 @@ x = @var{R} \\ @var{C}\n\
             {
               FloatMatrix m = arg.float_matrix_value ();
 
-              if (! error_state)
+              switch (nargout)
                 {
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      {
-                        FloatQR fact (m, type);
-                        retval(0) = fact.R ();
-                      }
-                      break;
+                case 0:
+                case 1:
+                  {
+                    FloatQR fact (m, type);
+                    retval(0) = fact.R ();
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        FloatQR fact (m, type);
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
+                case 2:
+                  {
+                    FloatQR fact (m, type);
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
 
-                    default:
-                      {
-                        FloatQRP fact (m, type);
-                        if (type == QR::economy)
-                          retval(2) = fact.Pvec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
-                    }
+                default:
+                  {
+                    FloatQRP fact (m, type);
+                    if (type == QR::economy)
+                      retval(2) = fact.Pvec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
                 }
             }
           else if (arg.is_complex_type ())
             {
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-              if (! error_state)
+              switch (nargout)
                 {
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      {
-                        FloatComplexQR fact (m, type);
-                        retval(0) = fact.R ();
-                      }
-                      break;
+                case 0:
+                case 1:
+                  {
+                    FloatComplexQR fact (m, type);
+                    retval(0) = fact.R ();
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        FloatComplexQR fact (m, type);
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
+                case 2:
+                  {
+                    FloatComplexQR fact (m, type);
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
 
-                    default:
-                      {
-                        FloatComplexQRP fact (m, type);
-                        if (type == QR::economy)
-                          retval(2) = fact.Pvec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
-                    }
+                default:
+                  {
+                    FloatComplexQRP fact (m, type);
+                    if (type == QR::economy)
+                      retval(2) = fact.Pvec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
                 }
             }
         }
@@ -379,76 +366,70 @@ x = @var{R} \\ @var{C}\n\
             {
               Matrix m = arg.matrix_value ();
 
-              if (! error_state)
+              switch (nargout)
                 {
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      {
-                        QR fact (m, type);
-                        retval(0) = fact.R ();
-                      }
-                      break;
+                case 0:
+                case 1:
+                  {
+                    QR fact (m, type);
+                    retval(0) = fact.R ();
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        QR fact (m, type);
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
+                case 2:
+                  {
+                    QR fact (m, type);
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
 
-                    default:
-                      {
-                        QRP fact (m, type);
-                        if (type == QR::economy)
-                          retval(2) = fact.Pvec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
-                    }
+                default:
+                  {
+                    QRP fact (m, type);
+                    if (type == QR::economy)
+                      retval(2) = fact.Pvec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
                 }
             }
           else if (arg.is_complex_type ())
             {
               ComplexMatrix m = arg.complex_matrix_value ();
 
-              if (! error_state)
+              switch (nargout)
                 {
-                  switch (nargout)
-                    {
-                    case 0:
-                    case 1:
-                      {
-                        ComplexQR fact (m, type);
-                        retval(0) = fact.R ();
-                      }
-                      break;
+                case 0:
+                case 1:
+                  {
+                    ComplexQR fact (m, type);
+                    retval(0) = fact.R ();
+                  }
+                  break;
 
-                    case 2:
-                      {
-                        ComplexQR fact (m, type);
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
+                case 2:
+                  {
+                    ComplexQR fact (m, type);
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
 
-                    default:
-                      {
-                        ComplexQRP fact (m, type);
-                        if (type == QR::economy)
-                          retval(2) = fact.Pvec ();
-                        else
-                          retval(2) = fact.P ();
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
-                      break;
-                    }
+                default:
+                  {
+                    ComplexQRP fact (m, type);
+                    if (type == QR::economy)
+                      retval(2) = fact.Pvec ();
+                    else
+                      retval(2) = fact.P ();
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                  break;
                 }
             }
           else

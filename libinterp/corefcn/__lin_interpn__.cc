@@ -293,22 +293,10 @@ Undocumented internal function.\n\
 
       const FloatNDArray V = args(n).float_array_value ();
 
-      if (error_state)
-        {
-          print_usage ();
-          return retval;
-        }
-
       for (int i = 0; i < n; i++)
         {
           X[i] = args(i).float_array_value ();
           Y[i] = args(n+i+1).float_array_value ();
-
-          if (error_state)
-            {
-              print_usage ();
-              return retval;
-            }
 
           if (Y[0].dims () != Y[i].dims ())
             {
@@ -326,22 +314,10 @@ Undocumented internal function.\n\
 
       const NDArray V = args(n).array_value ();
 
-      if (error_state)
-        {
-          print_usage ();
-          return retval;
-        }
-
       for (int i = 0; i < n; i++)
         {
           X[i] = args(i).array_value ();
           Y[i] = args(n+i+1).array_value ();
-
-          if (error_state)
-            {
-              print_usage ();
-              return retval;
-            }
 
           if (Y[0].dims () != Y[i].dims ())
             {

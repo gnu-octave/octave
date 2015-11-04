@@ -138,22 +138,18 @@ sparse matrix if possible.\n\
       if (arg.is_real_type ())
         {
           FloatMatrix m = arg.float_matrix_value ();
-          if (! error_state)
-            {
-              MatrixType mattyp = args(0).matrix_type ();
-              result = m.inverse (mattyp, info, frcond, 1);
-              args(0).matrix_type (mattyp);
-            }
+
+          MatrixType mattyp = args(0).matrix_type ();
+          result = m.inverse (mattyp, info, frcond, 1);
+          args(0).matrix_type (mattyp);
         }
       else if (arg.is_complex_type ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
-          if (! error_state)
-            {
-              MatrixType mattyp = args(0).matrix_type ();
-              result = m.inverse (mattyp, info, frcond, 1);
-              args(0).matrix_type (mattyp);
-            }
+
+          MatrixType mattyp = args(0).matrix_type ();
+          result = m.inverse (mattyp, info, frcond, 1);
+          args(0).matrix_type (mattyp);
         }
     }
   else
@@ -163,22 +159,18 @@ sparse matrix if possible.\n\
           if (arg.is_sparse_type ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
-              if (! error_state)
-                {
-                  MatrixType mattyp = args(0).matrix_type ();
-                  result = m.inverse (mattyp, info, rcond, 1);
-                  args(0).matrix_type (mattyp);
-                }
+
+              MatrixType mattyp = args(0).matrix_type ();
+              result = m.inverse (mattyp, info, rcond, 1);
+              args(0).matrix_type (mattyp);
             }
           else
             {
               Matrix m = arg.matrix_value ();
-              if (! error_state)
-                {
-                  MatrixType mattyp = args(0).matrix_type ();
-                  result = m.inverse (mattyp, info, rcond, 1);
-                  args(0).matrix_type (mattyp);
-                }
+
+              MatrixType mattyp = args(0).matrix_type ();
+              result = m.inverse (mattyp, info, rcond, 1);
+              args(0).matrix_type (mattyp);
             }
         }
       else if (arg.is_complex_type ())
@@ -186,51 +178,44 @@ sparse matrix if possible.\n\
           if (arg.is_sparse_type ())
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-              if (! error_state)
-                {
-                  MatrixType mattyp = args(0).matrix_type ();
-                  result = m.inverse (mattyp, info, rcond, 1);
-                  args(0).matrix_type (mattyp);
-                }
+
+              MatrixType mattyp = args(0).matrix_type ();
+              result = m.inverse (mattyp, info, rcond, 1);
+              args(0).matrix_type (mattyp);
             }
           else
             {
               ComplexMatrix m = arg.complex_matrix_value ();
-              if (! error_state)
-                {
-                  MatrixType mattyp = args(0).matrix_type ();
-                  result = m.inverse (mattyp, info, rcond, 1);
-                  args(0).matrix_type (mattyp);
-                }
+
+              MatrixType mattyp = args(0).matrix_type ();
+              result = m.inverse (mattyp, info, rcond, 1);
+              args(0).matrix_type (mattyp);
             }
         }
       else
         gripe_wrong_type_arg ("inv", arg);
     }
 
-  if (! error_state)
+  if (nargout > 1)
+    retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
+
+  retval(0) = result;
+
+  bool rcond_plus_one_eq_one = false;
+
+  if (isfloat)
     {
-      if (nargout > 1)
-        retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
-
-      retval(0) = result;
-
-      bool rcond_plus_one_eq_one = false;
-
-      if (isfloat)
-        {
-          volatile float xrcond = frcond;
-          rcond_plus_one_eq_one = xrcond + 1.0F == 1.0F;
-        }
-      else
-        {
-          volatile double xrcond = rcond;
-          rcond_plus_one_eq_one = xrcond + 1.0 == 1.0;
-        }
-
-      if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-        gripe_singular_matrix (isfloat ? frcond : rcond);
+      volatile float xrcond = frcond;
+      rcond_plus_one_eq_one = xrcond + 1.0F == 1.0F;
     }
+  else
+    {
+      volatile double xrcond = rcond;
+      rcond_plus_one_eq_one = xrcond + 1.0 == 1.0;
+    }
+
+  if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
+    gripe_singular_matrix (isfloat ? frcond : rcond);
 
   return retval;
 }

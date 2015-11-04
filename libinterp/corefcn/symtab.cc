@@ -696,7 +696,7 @@ symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
 {
   octave_value retval = xfind (args, local_funcs);
 
-  if (! (error_state || retval.is_defined ()))
+  if (retval.is_undefined ())
     {
       // It is possible that the user created a file on the fly since
       // the last prompt or chdir, so try updating the load path and
@@ -1076,7 +1076,7 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
   if (function_on_path.is_defined ())
     out_of_date_check (function_on_path);
 
-  if (! (error_state || function_on_path.is_defined ()))
+  if (function_on_path.is_undefined ())
     {
       std::string dir_name;
 
@@ -1103,7 +1103,7 @@ symbol_table::fcn_info::fcn_info_rep::find_package (void)
   //if (package.is_defined ())
   //  out_of_date_check (package);
 
-  if (! (error_state || package.is_defined ()))
+  if (package.is_undefined ())
     {
       octave_function * fcn =
         cdef_manager::find_package_symbol (full_name ());

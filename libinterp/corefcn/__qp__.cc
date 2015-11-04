@@ -498,30 +498,20 @@ Undocumented internal function.\n\
       const ColumnVector bin (args(6) . vector_value ());
       const int maxit        (args(7) . int_value ());
 
-      if (! error_state)
-        {
-          int iter = 0;
+      int iter = 0;
 
-          // Copying the initial guess in the working variable
-          ColumnVector x = x0;
+      // Copying the initial guess in the working variable
+      ColumnVector x = x0;
 
-          // Reordering the Lagrange multipliers
-          ColumnVector lambda;
+      // Reordering the Lagrange multipliers
+      ColumnVector lambda;
 
-          int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
+      int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
 
-          if (! error_state)
-            {
-              retval(3) = iter;
-              retval(2) = info;
-              retval(1) = lambda;
-              retval(0) = x;
-            }
-          else
-            error ("qp: internal error");
-        }
-      else
-        error ("__qp__: invalid arguments");
+      retval(3) = iter;
+      retval(2) = info;
+      retval(1) = lambda;
+      retval(0) = x;
     }
   else
     print_usage ();

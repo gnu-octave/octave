@@ -845,24 +845,20 @@ to run using @code{atexit}.\n\
         {
           int tmp = args(0).nint_value ();
 
-          if (! error_state)
-            exit_status = tmp;
+          exit_status = tmp;
         }
 
-      if (! error_state)
-        {
-          // Instead of simply calling exit, we simulate an interrupt
-          // with a request to exit cleanly so that no matter where the
-          // call to quit occurs, we will run the unwind_protect stack,
-          // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
-          // exiting.
+      // Instead of simply calling exit, we simulate an interrupt
+      // with a request to exit cleanly so that no matter where the
+      // call to quit occurs, we will run the unwind_protect stack,
+      // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
+      // exiting.
 
-          quitting_gracefully = true;
+      quitting_gracefully = true;
 
-          octave_interrupt_state = -1;
+      octave_interrupt_state = -1;
 
-          octave_throw_interrupt_exception ();
-        }
+      octave_throw_interrupt_exception ();
     }
 
   return retval;

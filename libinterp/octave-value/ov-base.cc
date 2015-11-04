@@ -988,17 +988,16 @@ octave_base_value::map_value (void) const
 octave_scalar_map
 octave_base_value::scalar_map_value (void) const
 {
+  octave_scalar_map retval;
+
   octave_map tmp = map_value ();
 
   if (tmp.numel () == 1)
-    return tmp.checkelem (0);
+    retval = tmp.checkelem (0);
   else
-    {
-      if (! error_state)
-        error ("invalid conversion of multi-dimensional struct to scalar struct");
+    error ("invalid conversion of multi-dimensional struct to scalar struct");
 
-      return octave_scalar_map ();
-    }
+  return retval;
 }
 
 string_vector

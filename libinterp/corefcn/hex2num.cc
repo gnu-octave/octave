@@ -83,7 +83,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
         error ("hex2num: S must be no more than %d characters", nchars);
       else if (prec != "double" && prec != "single")
         error ("hex2num: CLASS must be either \"double\" or \"single\"");
-      else if (! error_state)
+      else
         {
           octave_idx_type nr = cmat.rows ();
           octave_idx_type nc = cmat.columns ();
@@ -123,19 +123,13 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
                         }
                     }
 
-                  if (error_state)
-                    break;
-                  else
-                    {
-                      if (nc < nchars)
-                        num.ival <<= (nchars - nc) * 4;
+                  if (nc < nchars)
+                    num.ival <<= (nchars - nc) * 4;
 
-                      m(i) = num.dval;
-                    }
+                  m(i) = num.dval;
                 }
 
-              if (! error_state)
-                retval =  m;
+              retval =  m;
             }
           else
             {
@@ -172,19 +166,13 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
                         }
                     }
 
-                  if (error_state)
-                    break;
-                  else
-                    {
-                      if (nc < nchars)
-                        num.ival <<= (nchars - nc) * 4;
+                  if (nc < nchars)
+                    num.ival <<= (nchars - nc) * 4;
 
-                      m(i) = num.dval;
-                    }
+                  m(i) = num.dval;
                 }
 
-              if (! error_state)
-                retval =  m;
+              retval =  m;
             }
         }
     }
@@ -239,75 +227,69 @@ num2hex (single ([-1, 1, e, Inf]))\n\
     {
       const FloatColumnVector v (args(0).float_vector_value ());
 
-      if (! error_state)
+      octave_idx_type nchars = 8;
+      octave_idx_type nr = v.numel ();
+      charMatrix m (nr, nchars);
+      const float *pv = v.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          octave_idx_type nchars = 8;
-          octave_idx_type nr = v.numel ();
-          charMatrix m (nr, nchars);
-          const float *pv = v.fortran_vec ();
+          union
+          {
+            uint32_t ival;
+            float dval;
+          } num;
 
-          for (octave_idx_type i = 0; i < nr; i++)
+          num.dval = *pv++;
+
+          for (octave_idx_type j = 0; j < nchars; j++)
             {
-              union
-              {
-                uint32_t ival;
-                float dval;
-              } num;
+              unsigned char ch =
+                static_cast<char>(num.ival >> ((nchars - 1 - j) * 4) & 0xF);
+              if (ch >= 10)
+                ch += 'a' - 10;
+              else
+                ch += '0';
 
-              num.dval = *pv++;
-
-              for (octave_idx_type j = 0; j < nchars; j++)
-                {
-                  unsigned char ch =
-                    static_cast<char>(num.ival >> ((nchars - 1 - j) * 4) & 0xF);
-                  if (ch >= 10)
-                    ch += 'a' - 10;
-                  else
-                    ch += '0';
-
-                  m.elem (i, j) = ch;
-                }
+              m.elem (i, j) = ch;
             }
-
-          retval = m;
         }
+
+      retval = m;
     }
   else
     {
       const ColumnVector v (args(0).vector_value ());
 
-      if (! error_state)
+      octave_idx_type nchars = 16;
+      octave_idx_type nr = v.numel ();
+      charMatrix m (nr, nchars);
+      const double *pv = v.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          octave_idx_type nchars = 16;
-          octave_idx_type nr = v.numel ();
-          charMatrix m (nr, nchars);
-          const double *pv = v.fortran_vec ();
+          union
+          {
+            uint64_t ival;
+            double dval;
+          } num;
 
-          for (octave_idx_type i = 0; i < nr; i++)
+          num.dval = *pv++;
+
+          for (octave_idx_type j = 0; j < nchars; j++)
             {
-              union
-              {
-                uint64_t ival;
-                double dval;
-              } num;
+              unsigned char ch =
+                static_cast<char>(num.ival >> ((nchars - 1 - j) * 4) & 0xF);
+              if (ch >= 10)
+                ch += 'a' - 10;
+              else
+                ch += '0';
 
-              num.dval = *pv++;
-
-              for (octave_idx_type j = 0; j < nchars; j++)
-                {
-                  unsigned char ch =
-                    static_cast<char>(num.ival >> ((nchars - 1 - j) * 4) & 0xF);
-                  if (ch >= 10)
-                    ch += 'a' - 10;
-                  else
-                    ch += '0';
-
-                  m.elem (i, j) = ch;
-                }
+              m.elem (i, j) = ch;
             }
-
-          retval = m;
         }
+
+      retval = m;
     }
 
   return retval;

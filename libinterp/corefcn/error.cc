@@ -1424,220 +1424,211 @@ disable escape sequence expansion use a second backslash before the sequence\n\
     {
       string_vector argv = args.make_argv ("warning");
 
-      if (! error_state)
+      std::string arg1 = argv(1);
+      std::string arg2 = "all";
+
+      if (argc >= 3)
+        arg2 = argv(2);
+
+      if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
-          std::string arg1 = argv(1);
-          std::string arg2 = "all";
+          octave_map old_warning_options = warning_options;
 
-          if (argc >= 3)
-            arg2 = argv(2);
-
-          if (arg1 == "on" || arg1 == "off" || arg1 == "error")
+          if (argc == 4 && argv(3) == "local"
+              && ! symbol_table::at_top_level ())
             {
-              octave_map old_warning_options = warning_options;
+              symbol_table::scope_id scope
+                = octave_call_stack::current_scope ();
 
-              if (argc == 4 && argv(3) == "local"
-                  && ! symbol_table::at_top_level ())
+              symbol_table::context_id context
+                = octave_call_stack::current_context ();
+
+              octave_scalar_map val = warning_query (arg2);
+
+              octave_value curr_state = val.contents ("state");
+
+              // FIXME: this might be better with a dictionary object.
+
+              octave_value curr_warning_states
+                = symbol_table::varval (".saved_warning_states.",
+                                        scope, context);
+
+              octave_map m;
+
+              if (curr_warning_states.is_defined ())
+                m = curr_warning_states.map_value ();
+              else
                 {
-                  symbol_table::scope_id scope
-                    = octave_call_stack::current_scope ();
+                  string_vector fields (2);
 
-                  symbol_table::context_id context
-                    = octave_call_stack::current_context ();
+                  fields(0) = "identifier";
+                  fields(1) = "state";
 
-                  octave_scalar_map val = warning_query (arg2);
-
-                  octave_value curr_state = val.contents ("state");
-
-                  // FIXME: this might be better with a dictionary object.
-
-                  octave_value curr_warning_states
-                    = symbol_table::varval (".saved_warning_states.",
-                                            scope, context);
-
-                  octave_map m;
-
-                  if (curr_warning_states.is_defined ())
-                    m = curr_warning_states.map_value ();
-                  else
-                    {
-                      string_vector fields (2);
-
-                      fields(0) = "identifier";
-                      fields(1) = "state";
-
-                      m = octave_map (dim_vector (0, 1), fields);
-                    }
-
-                  if (error_state)
-                    panic_impossible ();
-
-                  Cell ids = m.contents ("identifier");
-                  Cell states = m.contents ("state");
-
-                  octave_idx_type nel = states.numel ();
-                  bool found = false;
-                  octave_idx_type i;
-                  for (i = 0; i < nel; i++)
-                    {
-                      std::string id = ids(i).string_value ();
-
-                      if (error_state)
-                        panic_impossible ();
-
-                      if (id == arg2)
-                        {
-                          states(i) = curr_state;
-                          found = true;
-                          break;
-                        }
-                    }
-
-                  if (! found)
-                    {
-                      m.resize (dim_vector (nel+1, 1));
-
-                      ids.resize (dim_vector (nel+1, 1));
-                      states.resize (dim_vector (nel+1, 1));
-
-                      ids(nel) = arg2;
-                      states(nel) = curr_state;
-                    }
-
-                  m.contents ("identifier") = ids;
-                  m.contents ("state") = states;
-
-                  symbol_table::assign
-                    (".saved_warning_states.", m, scope, context);
-
-                  // Now ignore the "local" argument and continue to
-                  // handle the current setting.
-                  argc--;
+                  m = octave_map (dim_vector (0, 1), fields);
                 }
 
-              if (arg2 == "all")
+              Cell ids = m.contents ("identifier");
+              Cell states = m.contents ("state");
+
+              octave_idx_type nel = states.numel ();
+              bool found = false;
+              octave_idx_type i;
+              for (i = 0; i < nel; i++)
                 {
-                  octave_map tmp;
+                  std::string id = ids(i).string_value ();
 
-                  Cell id (1, 1);
-                  Cell st (1, 1);
-
-                  id(0) = arg2;
-                  st(0) = arg1;
-
-                  // Since internal Octave functions are not
-                  // compatible, turning all warnings into errors
-                  // should leave the state of
-                  // Octave:language-extension alone.
-
-                  if (arg1 == "error"
-                      && warning_options.contains ("identifier"))
+                  if (id == arg2)
                     {
-                      octave_idx_type n = 1;
+                      states(i) = curr_state;
+                      found = true;
+                      break;
+                    }
+                }
 
-                      Cell tid = warning_options.contents ("identifier");
-                      Cell tst = warning_options.contents ("state");
+              if (! found)
+                {
+                  m.resize (dim_vector (nel+1, 1));
 
-                      for (octave_idx_type i = 0; i < tid.numel (); i++)
+                  ids.resize (dim_vector (nel+1, 1));
+                  states.resize (dim_vector (nel+1, 1));
+
+                  ids(nel) = arg2;
+                  states(nel) = curr_state;
+                }
+
+              m.contents ("identifier") = ids;
+              m.contents ("state") = states;
+
+              symbol_table::assign
+                (".saved_warning_states.", m, scope, context);
+
+              // Now ignore the "local" argument and continue to
+              // handle the current setting.
+              argc--;
+            }
+
+          if (arg2 == "all")
+            {
+              octave_map tmp;
+
+              Cell id (1, 1);
+              Cell st (1, 1);
+
+              id(0) = arg2;
+              st(0) = arg1;
+
+              // Since internal Octave functions are not
+              // compatible, turning all warnings into errors
+              // should leave the state of
+              // Octave:language-extension alone.
+
+              if (arg1 == "error"
+                  && warning_options.contains ("identifier"))
+                {
+                  octave_idx_type n = 1;
+
+                  Cell tid = warning_options.contents ("identifier");
+                  Cell tst = warning_options.contents ("state");
+
+                  for (octave_idx_type i = 0; i < tid.numel (); i++)
+                    {
+                      octave_value vid = tid(i);
+
+                      if (vid.is_string ())
                         {
-                          octave_value vid = tid(i);
+                          std::string key = vid.string_value ();
 
-                          if (vid.is_string ())
+                          if (key == "Octave:language-extension"
+                              || key == "Octave:single-quote-string")
                             {
-                              std::string key = vid.string_value ();
+                              id.resize (dim_vector (1, n+1));
+                              st.resize (dim_vector (1, n+1));
 
-                              if (key == "Octave:language-extension"
-                                  || key == "Octave:single-quote-string")
-                                {
-                                  id.resize (dim_vector (1, n+1));
-                                  st.resize (dim_vector (1, n+1));
+                              id(n) = tid(i);
+                              st(n) = tst(i);
 
-                                  id(n) = tid(i);
-                                  st(n) = tst(i);
-
-                                  n++;
-                                }
+                              n++;
                             }
                         }
                     }
-
-                  tmp.assign ("identifier", id);
-                  tmp.assign ("state", st);
-
-                  warning_options = tmp;
-
-                  done = true;
-                }
-              else if (arg2 == "backtrace")
-                {
-                  if (arg1 != "error")
-                    {
-                      Vbacktrace_on_warning = (arg1 == "on");
-                      done = true;
-                    }
-                }
-              else if (arg2 == "debug")
-                {
-                  if (arg1 != "error")
-                    {
-                      Vdebug_on_warning = (arg1 == "on");
-                      done = true;
-                    }
-                }
-              else if (arg2 == "verbose")
-                {
-                  if (arg1 != "error")
-                    {
-                      Vverbose_warning = (arg1 == "on");
-                      done = true;
-                    }
-                }
-              else if (arg2 == "quiet")
-                {
-                  if (arg1 != "error")
-                    {
-                      Vquiet_warning = (arg1 == "on");
-                      done = true;
-                    }
-                }
-              else
-                {
-                  if (arg2 == "last")
-                    arg2 = Vlast_warning_id;
-
-                  set_warning_option (arg1, arg2);
-
-                  done = true;
                 }
 
-              if (done && nargout > 0)
-                retval = old_warning_options;
-            }
-          else if (arg1 == "query")
-            {
-              if (arg2 == "all")
-                retval = warning_options;
-              else if (arg2 == "backtrace" || arg2 == "debug"
-                       || arg2 == "verbose" || arg2 == "quiet")
-                {
-                  octave_scalar_map tmp;
-                  tmp.assign ("identifier", arg2);
-                  if (arg2 == "backtrace")
-                    tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
-                  else if (arg2 == "debug")
-                    tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
-                  else if (arg2 == "verbose")
-                    tmp.assign ("state", Vverbose_warning ? "on" : "off");
-                  else
-                    tmp.assign ("state", Vquiet_warning ? "on" : "off");
+              tmp.assign ("identifier", id);
+              tmp.assign ("state", st);
 
-                  retval = tmp;
-                }
-              else
-                retval = warning_query (arg2);
+              warning_options = tmp;
 
               done = true;
             }
+          else if (arg2 == "backtrace")
+            {
+              if (arg1 != "error")
+                {
+                  Vbacktrace_on_warning = (arg1 == "on");
+                  done = true;
+                }
+            }
+          else if (arg2 == "debug")
+            {
+              if (arg1 != "error")
+                {
+                  Vdebug_on_warning = (arg1 == "on");
+                  done = true;
+                }
+            }
+          else if (arg2 == "verbose")
+            {
+              if (arg1 != "error")
+                {
+                  Vverbose_warning = (arg1 == "on");
+                  done = true;
+                }
+            }
+          else if (arg2 == "quiet")
+            {
+              if (arg1 != "error")
+                {
+                  Vquiet_warning = (arg1 == "on");
+                  done = true;
+                }
+            }
+          else
+            {
+              if (arg2 == "last")
+                arg2 = Vlast_warning_id;
+
+              set_warning_option (arg1, arg2);
+
+              done = true;
+            }
+
+          if (done && nargout > 0)
+            retval = old_warning_options;
+        }
+      else if (arg1 == "query")
+        {
+          if (arg2 == "all")
+            retval = warning_options;
+          else if (arg2 == "backtrace" || arg2 == "debug"
+                   || arg2 == "verbose" || arg2 == "quiet")
+            {
+              octave_scalar_map tmp;
+              tmp.assign ("identifier", arg2);
+              if (arg2 == "backtrace")
+                tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
+              else if (arg2 == "debug")
+                tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
+              else if (arg2 == "verbose")
+                tmp.assign ("state", Vverbose_warning ? "on" : "off");
+              else
+                tmp.assign ("state", Vquiet_warning ? "on" : "off");
+
+              retval = tmp;
+            }
+          else
+            retval = warning_query (arg2);
+
+          done = true;
         }
     }
   else if (argc == 1)
@@ -1673,9 +1664,6 @@ disable escape sequence expansion use a second backslash before the sequence\n\
                   std::string tst = state(i).string_value ();
                   std::string tid = ident(i).string_value ();
 
-                  if (error_state)
-                    return retval;
-
                   set_warning_option (tst, tid);
                 }
             }
@@ -1689,16 +1677,13 @@ disable escape sequence expansion use a second backslash before the sequence\n\
         }
     }
 
-  if (! (error_state || done))
+  if (! done)
     {
       octave_value_list nargs = args;
 
       std::string id;
 
       bool have_fmt = maybe_extract_message_id ("warning", args, nargs, id);
-
-      if (error_state)
-        return retval;
 
       std::string prev_msg = Vlast_warning_message;
 

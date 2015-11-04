@@ -935,16 +935,17 @@ raw_help (const std::string& nm, bool& symbol_found)
   bool found;
 
   found = raw_help_from_symbol_table (nm, h, w, symbol_found);
-  if (! found && ! error_state)
+
+  if (! found)
     {
       found = raw_help_from_file (nm, h, f, symbol_found);
-      if (! found && ! error_state)
+
+      if (! found)
         {
           found = raw_help_from_map (nm, h, operators_map, symbol_found);
-          if (! found && ! error_state)
-            {
-              raw_help_from_map (nm, h, keywords_map, symbol_found);
-            }
+
+          if (! found)
+            raw_help_from_map (nm, h, keywords_map, symbol_found);
         }
     }
 
@@ -1291,40 +1292,37 @@ Undocumented internal function.\n\
 
   string_vector argv = args.make_argv ("which");
 
-  if (! error_state)
+  int argc = argv.numel ();
+
+  if (argc > 1)
     {
-      int argc = argv.numel ();
+      octave_map m (dim_vector (1, argc-1));
 
-      if (argc > 1)
+      Cell names (1, argc-1);
+      Cell files (1, argc-1);
+      Cell types (1, argc-1);
+
+      for (int i = 1; i < argc; i++)
         {
-          octave_map m (dim_vector (1, argc-1));
+          std::string name = argv[i];
 
-          Cell names (1, argc-1);
-          Cell files (1, argc-1);
-          Cell types (1, argc-1);
+          std::string type;
 
-          for (int i = 1; i < argc; i++)
-            {
-              std::string name = argv[i];
+          std::string file = do_which (name, type);
 
-              std::string type;
-
-              std::string file = do_which (name, type);
-
-              names(i-1) = name;
-              files(i-1) = file;
-              types(i-1) = type;
-            }
-
-          m.assign ("name", names);
-          m.assign ("file", files);
-          m.assign ("type", types);
-
-          retval = m;
+          names(i-1) = name;
+          files(i-1) = file;
+          types(i-1) = type;
         }
-      else
-        print_usage ();
+
+      m.assign ("name", names);
+      m.assign ("file", files);
+      m.assign ("type", types);
+
+      retval = m;
     }
+  else
+    print_usage ();
 
   return retval;
 }

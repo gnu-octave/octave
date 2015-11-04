@@ -634,9 +634,6 @@ Force Octave to assume the file is in Octave's text format.\n\
 
   string_vector argv = args.make_argv ("load");
 
-  if (error_state)
-    return retval;
-
   int i = 1;
   std::string orig_fname = "";
 
@@ -760,9 +757,6 @@ Force Octave to assume the file is in Octave's text format.\n\
       std::string fname = file_ops::tilde_expand (orig_fname);
 
       fname = find_file_to_load (fname, orig_fname);
-
-      if (error_state)
-        return retval;
 
       bool use_zlib = false;
 
@@ -1029,9 +1023,6 @@ save_vars (std::ostream& os, const std::string& pattern,
   for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
     {
       do_save (os, *p, fmt, save_as_floats);
-
-      if (error_state)
-        break;
 
       saved++;
     }
@@ -1372,9 +1363,6 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
               save_mem_size += val_size;
 
               do_save (os, val, name, help, global, fmt, save_as_floats);
-
-              if (error_state)
-                break;
             }
         }
     }
@@ -1607,9 +1595,6 @@ the file @file{data} in Octave's binary format.\n\
 
   string_vector argv = args.make_argv ();
 
-  if (error_state)
-    return retval;
-
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
 
@@ -1630,9 +1615,6 @@ the file @file{data} in Octave's binary format.\n\
                              use_zlib);
   int argc = argv.numel ();
   int i = 0;
-
-  if (error_state)
-    return retval;
 
   if (i == argc)
     {

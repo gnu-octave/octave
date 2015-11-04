@@ -194,13 +194,7 @@ lookup_classes (const Cell& cls_list)
     {
       cdef_class c = lookup_class (cls_list(i));
 
-      if (! error_state)
-        retval.push_back (c);
-      else
-        {
-          retval.clear ();
-          break;
-        }
+      retval.push_back (c);
     }
 
   return retval;
@@ -1189,7 +1183,7 @@ public:
 
     ctx = get_class_context (meth_name, in_constructor);
 
-    if (! error_state && ctx.ok ())
+    if (ctx.ok ())
       {
         std::string mname = args(0).string_value ();
         std::string cname = args(1).string_value ();
@@ -1251,7 +1245,7 @@ public:
                      mname.c_str (), meth_name.c_str ());
           }
       }
-    else if (! error_state)
+    else
       error ("superclass calls can only occur in methods or constructors");
 
     return retval;
@@ -3484,7 +3478,7 @@ cdef_package::cdef_package_rep::meta_subsref
               else
                 retval(0) = o;
             }
-          else if (! error_state)
+          else
             error ("member `%s' in package `%s' does not exist",
                    nm.c_str (), get_name ().c_str ());
         }
@@ -3886,10 +3880,7 @@ Returns the meta.class object corresponding to the class of @var{obj}.\n\
     {
       cdef_object obj = to_cdef (args(0));
 
-      if (! error_state)
-        retval = to_ov (obj.get_class ());
-      else
-        print_usage ();
+      retval = to_ov (obj.get_class ());
     }
   else
     print_usage ();

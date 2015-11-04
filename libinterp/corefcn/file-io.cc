@@ -1228,22 +1228,17 @@ character to be read is returned in @var{pos}.\n\
     {
       std::string data = get_sscanf_data (args(0));
 
-      if (! error_state)
-        {
-          octave_stream os = octave_istrstream::create (data);
+      octave_stream os = octave_istrstream::create (data);
 
-          if (os.is_valid ())
-            {
-              if (args(1).is_string ())
-                retval = os.oscanf (args(1), who);
-              else
-                error ("%s: format TEMPLATE must be a string", who.c_str ());
-            }
+      if (os.is_valid ())
+        {
+          if (args(1).is_string ())
+            retval = os.oscanf (args(1), who);
           else
-            error ("%s: unable to create temporary input buffer", who.c_str ());
+            error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
       else
-        error ("%s: argument STRING must be a string", who.c_str ());
+        error ("%s: unable to create temporary input buffer", who.c_str ());
     }
   else
     {

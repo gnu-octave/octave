@@ -2151,16 +2151,11 @@ graphics_object::set (const octave_value_list& args)
     {
       for (int i = 0; i < nargin; i += 2)
         {
-          caseless_str pname = args(i).string_value ();
+          caseless_str pname = args(i).string_value ("set: expecting argument %d to be a property name", i);
 
-          if (! error_state)
-            {
-              octave_value val = args(i+1);
+          octave_value val = args(i+1);
 
-              set_value_or_default (pname, val);
-            }
-          else
-            error ("set: expecting argument %d to be a property name", i);
+          set_value_or_default (pname, val);
         }
     }
 }
@@ -11039,28 +11034,23 @@ undocumented.\n\
 
           if (! error_state)
             {
-              debug_file = (args.length () > 3 ? args(3).string_value () : "");
+              debug_file = (args.length () > 3 ? args(3).string_value ("drawnow: invalid DEBUG_FILE, expected a string value") : "");
 
-              if (! error_state)
+              graphics_handle h = gcf ();
+
+              if (h.ok ())
                 {
-                  graphics_handle h = gcf ();
+                  graphics_object go = gh_manager::get_object (h);
 
-                  if (h.ok ())
-                    {
-                      graphics_object go = gh_manager::get_object (h);
+                  gh_manager::unlock ();
 
-                      gh_manager::unlock ();
+                  go.get_toolkit ().print_figure (go, term, file,
+                                                  mono, debug_file);
 
-                      go.get_toolkit ().print_figure (go, term, file,
-                                                      mono, debug_file);
-
-                      gh_manager::lock ();
-                    }
-                  else
-                    error ("drawnow: nothing to draw");
+                  gh_manager::lock ();
                 }
               else
-                error ("drawnow: invalid DEBUG_FILE, expected a string value");
+                error ("drawnow: nothing to draw");
             }
           else
             error ("drawnow: invalid colormode MONO, expected a boolean value");
@@ -11705,7 +11695,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
           if (timeout > 0)
             start = time (0);
 
-          while (! error_state)
+          while (true)
             {
               if (true)
                 {

@@ -190,12 +190,7 @@ private:
     url_transfer obj (host, user, passwd, os);
 
     if (obj.is_valid ())
-      {
-        if (! error_state)
-          handle_map[h] = obj;
-        else
-          h = curl_handle ();
-      }
+      handle_map[h] = obj;
     else
       error ("support for url transfers was disabled when Octave was built");
 
@@ -634,10 +629,7 @@ Undocumented internal function\n\
           if (nargin > 1)
             path = args(1).string_value ("__ftp_cwd__: PATH must be a string");
 
-          if (! error_state)
-            curl.cwd (path);
-          else
-            error ("__ftp_cwd__: expecting path as second argument");
+          curl.cwd (path);
         }
       else
         error ("__ftp_cwd__: invalid ftp handle");
@@ -844,10 +836,7 @@ Undocumented internal function\n\
         {
           std::string file = args(1).string_value ("__ftp_delete__: FILE must be a string");
 
-          if (! error_state)
-            curl.del (file);
-          else
-            error ("__ftp_delete__: expecting file name as second argument");
+          curl.del (file);
         }
       else
         error ("__ftp_delete__: invalid ftp handle");
@@ -876,10 +865,7 @@ Undocumented internal function\n\
         {
           std::string dir = args(1).string_value ("__ftp_rmdir__: DIR must be a string");
 
-          if (! error_state)
-            curl.rmdir (dir);
-          else
-            error ("__ftp_rmdir__: expecting directory name as second argument");
+          curl.rmdir (dir);
         }
       else
         error ("__ftp_rmdir__: invalid ftp handle");
@@ -908,10 +894,7 @@ Undocumented internal function\n\
         {
           std::string dir = args(1).string_value ("__ftp_mkdir__: DIR must be a string");
 
-          if (! error_state)
-            curl.mkdir (dir);
-          else
-            error ("__ftp_mkdir__: expecting directory name as second argument");
+          curl.mkdir (dir);
         }
       else
         error ("__ftp_mkdir__: invalid ftp handle");
@@ -941,10 +924,7 @@ Undocumented internal function\n\
           std::string oldname = args(1).string_value ("__ftp_rename__: OLDNAME must be a string");
           std::string newname = args(2).string_value ("__ftp_rename__: NEWNAME must be a string");
 
-          if (! error_state)
-            curl.rename (oldname, newname);
-          else
-            error ("__ftp_rename__: expecting file names for second and third arguments");
+          curl.rename (oldname, newname);
         }
       else
         error ("__ftp_rename__: invalid ftp handle");
@@ -973,66 +953,61 @@ Undocumented internal function\n\
         {
           std::string pat = args(1).string_value ("__ftp_mput__: PATTERN must be a string");
 
-          if (! error_state)
+          string_vector file_list;
+
+          glob_match pattern (file_ops::tilde_expand (pat));
+          string_vector files = pattern.glob ();
+
+          for (octave_idx_type i = 0; i < files.numel (); i++)
             {
-              string_vector file_list;
+              std::string file = files (i);
 
-              glob_match pattern (file_ops::tilde_expand (pat));
-              string_vector files = pattern.glob ();
+              file_stat fs (file);
 
-              for (octave_idx_type i = 0; i < files.numel (); i++)
+              if (! fs.exists ())
                 {
-                  std::string file = files (i);
+                  error ("__ftp__mput: file does not exist");
+                  break;
+                }
 
-                  file_stat fs (file);
+              if (fs.is_dir ())
+                {
+                  file_list.append (curl.mput_directory ("", file));
 
-                  if (! fs.exists ())
+                  if (! curl.good ())
                     {
-                      error ("__ftp__mput: file does not exist");
+                      error ("__ftp_mput__: %s", curl.lasterror().c_str());
+                      break;
+                    }
+                }
+              else
+                {
+                  // FIXME: Does ascii mode need to be flagged here?
+                  std::ifstream ifile (file.c_str (), std::ios::in |
+                                       std::ios::binary);
+
+                  if (! ifile.is_open ())
+                    {
+                      error ("__ftp_mput__: unable to open file");
                       break;
                     }
 
-                  if (fs.is_dir ())
+                  curl.put (file, ifile);
+
+                  ifile.close ();
+
+                  if (! curl.good ())
                     {
-                      file_list.append (curl.mput_directory ("", file));
-
-                      if (! curl.good ())
-                        {
-                          error ("__ftp_mput__: %s", curl.lasterror().c_str());
-                          break;
-                        }
+                      error ("__ftp_mput__: %s", curl.lasterror().c_str());
+                      break;
                     }
-                  else
-                    {
-                      // FIXME: Does ascii mode need to be flagged here?
-                      std::ifstream ifile (file.c_str (), std::ios::in |
-                                           std::ios::binary);
 
-                      if (! ifile.is_open ())
-                        {
-                          error ("__ftp_mput__: unable to open file");
-                          break;
-                        }
-
-                      curl.put (file, ifile);
-
-                      ifile.close ();
-
-                      if (! curl.good ())
-                        {
-                          error ("__ftp_mput__: %s", curl.lasterror().c_str());
-                          break;
-                        }
-
-                      file_list.append (file);
-                    }
+                  file_list.append (file);
                 }
-
-              if (nargout > 0)
-                retval = file_list;
             }
-          else
-            error ("__ftp_mput__: expecting file name patter as second argument");
+
+          if (nargout > 0)
+            retval = file_list;
         }
       else
         error ("__ftp_mput__: invalid ftp handle");
@@ -1066,63 +1041,59 @@ Undocumented internal function\n\
           if (nargin == 3)
             target = args(2).string_value ("__ftp_mget__: TARGET must be a string") + file_ops::dir_sep_str ();
 
-          if (! error_state)
+          string_vector sv = curl.list ();
+          octave_idx_type n = 0;
+          glob_match pattern (file);
+
+
+          for (octave_idx_type i = 0; i < sv.numel (); i++)
             {
-              string_vector sv = curl.list ();
-              octave_idx_type n = 0;
-              glob_match pattern (file);
-
-
-              for (octave_idx_type i = 0; i < sv.numel (); i++)
+              if (pattern.match (sv(i)))
                 {
-                  if (pattern.match (sv(i)))
+                  n++;
+
+                  time_t ftime;
+                  bool fisdir;
+                  double fsize;
+
+                  curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+
+                  if (fisdir)
+                    curl.mget_directory (sv(i), target);
+                  else
                     {
-                      n++;
+                      std::ofstream ofile ((target + sv(i)).c_str (),
+                                           std::ios::out |
+                                           std::ios::binary);
 
-                      time_t ftime;
-                      bool fisdir;
-                      double fsize;
-
-                      curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
-
-                      if (fisdir)
-                        curl.mget_directory (sv(i), target);
-                      else
+                      if (! ofile.is_open ())
                         {
-                          std::ofstream ofile ((target + sv(i)).c_str (),
-                                               std::ios::out |
-                                               std::ios::binary);
-
-                          if (! ofile.is_open ())
-                            {
-                              error ("__ftp_mget__: unable to open file");
-                              break;
-                            }
-
-                          unwind_protect_safe frame;
-
-                          frame.add_fcn (delete_file, target + sv(i));
-
-                          curl.get (sv(i), ofile);
-
-                          ofile.close ();
-
-                          if (curl.good ())
-                            frame.discard ();
-                        }
-
-                      if (! curl.good ())
-                        {
-                          error ("__ftp_mget__: %s", curl.lasterror().c_str());
+                          error ("__ftp_mget__: unable to open file");
                           break;
                         }
+
+                      unwind_protect_safe frame;
+
+                      frame.add_fcn (delete_file, target + sv(i));
+
+                      curl.get (sv(i), ofile);
+
+                      ofile.close ();
+
+                      if (curl.good ())
+                        frame.discard ();
+                    }
+
+                  if (! curl.good ())
+                    {
+                      error ("__ftp_mget__: %s", curl.lasterror().c_str());
+                      break;
                     }
                 }
-              if (n == 0)
-                error ("__ftp_mget__: file not found");
             }
-          else
-            error ("__ftp_mget__: expecting file name and target as second and third arguments");
+
+          if (n == 0)
+            error ("__ftp_mget__: file not found");
         }
       else
         error ("__ftp_mget__: invalid ftp handle");

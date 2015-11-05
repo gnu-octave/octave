@@ -54,6 +54,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun.h"
 
+static void
+gripe_failed_diagonalization (void)
+{
+  gripe_failed_diagonalization ();
+}
+
 static inline int
 xisint (double x)
 {
@@ -106,10 +112,10 @@ xpow (double a, const Matrix& b)
     error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
-      EIG b_eig (b);
-
-      if (! error_state)
+      try
         {
+          EIG b_eig (b);
+
           ComplexColumnVector lambda (b_eig.eigenvalues ());
           ComplexMatrix Q (b_eig.eigenvectors ());
 
@@ -129,8 +135,10 @@ xpow (double a, const Matrix& b)
           else
             retval = C;
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -159,7 +167,7 @@ xpow (double a, const ComplexMatrix& b)
     {
       EIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           ComplexColumnVector lambda (b_eig.eigenvalues ());
           ComplexMatrix Q (b_eig.eigenvectors ());
@@ -176,8 +184,10 @@ xpow (double a, const ComplexMatrix& b)
 
           retval = ComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -248,7 +258,7 @@ xpow (const Matrix& a, double b)
         {
           EIG a_eig (a);
 
-          if (! error_state)
+          try
             {
               ComplexColumnVector lambda (a_eig.eigenvalues ());
               ComplexMatrix Q (a_eig.eigenvectors ());
@@ -260,8 +270,10 @@ xpow (const Matrix& a, double b)
 
               retval = ComplexMatrix (Q * D * Q.inverse ());
             }
-          else
-            error ("xpow: matrix diagonalization failed");
+          catch (const octave_execution_exception&)
+            {
+              gripe_failed_diagonalization ();
+            }
         }
     }
 
@@ -327,7 +339,7 @@ xpow (const Matrix& a, const Complex& b)
     {
       EIG a_eig (a);
 
-      if (! error_state)
+      try
         {
           ComplexColumnVector lambda (a_eig.eigenvalues ());
           ComplexMatrix Q (a_eig.eigenvectors ());
@@ -339,8 +351,10 @@ xpow (const Matrix& a, const Complex& b)
 
           retval = ComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -375,7 +389,7 @@ xpow (const Complex& a, const Matrix& b)
     {
       EIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           ComplexColumnVector lambda (b_eig.eigenvalues ());
           ComplexMatrix Q (b_eig.eigenvectors ());
@@ -392,8 +406,10 @@ xpow (const Complex& a, const Matrix& b)
 
           retval = ComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -423,7 +439,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
     {
       EIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           ComplexColumnVector lambda (b_eig.eigenvalues ());
           ComplexMatrix Q (b_eig.eigenvectors ());
@@ -440,8 +456,10 @@ xpow (const Complex& a, const ComplexMatrix& b)
 
           retval = ComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -512,7 +530,7 @@ xpow (const ComplexMatrix& a, double b)
         {
           EIG a_eig (a);
 
-          if (! error_state)
+          try
             {
               ComplexColumnVector lambda (a_eig.eigenvalues ());
               ComplexMatrix Q (a_eig.eigenvectors ());
@@ -524,8 +542,10 @@ xpow (const ComplexMatrix& a, double b)
 
               retval = ComplexMatrix (Q * D * Q.inverse ());
             }
-          else
-            error ("xpow: matrix diagonalization failed");
+          catch (const octave_execution_exception&)
+            {
+              gripe_failed_diagonalization ();
+            }
         }
     }
 
@@ -547,7 +567,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
     {
       EIG a_eig (a);
 
-      if (! error_state)
+      try
         {
           ComplexColumnVector lambda (a_eig.eigenvalues ());
           ComplexMatrix Q (a_eig.eigenvectors ());
@@ -559,8 +579,10 @@ xpow (const ComplexMatrix& a, const Complex& b)
 
           retval = ComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -1553,7 +1575,7 @@ xpow (float a, const FloatMatrix& b)
     {
       FloatEIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           FloatComplexColumnVector lambda (b_eig.eigenvalues ());
           FloatComplexMatrix Q (b_eig.eigenvectors ());
@@ -1575,8 +1597,10 @@ xpow (float a, const FloatMatrix& b)
           else
             retval = C;
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -1605,7 +1629,7 @@ xpow (float a, const FloatComplexMatrix& b)
     {
       FloatEIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           FloatComplexColumnVector lambda (b_eig.eigenvalues ());
           FloatComplexMatrix Q (b_eig.eigenvectors ());
@@ -1622,8 +1646,10 @@ xpow (float a, const FloatComplexMatrix& b)
 
           retval = FloatComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -1694,7 +1720,7 @@ xpow (const FloatMatrix& a, float b)
         {
           FloatEIG a_eig (a);
 
-          if (! error_state)
+          try
             {
               FloatComplexColumnVector lambda (a_eig.eigenvalues ());
               FloatComplexMatrix Q (a_eig.eigenvectors ());
@@ -1706,8 +1732,10 @@ xpow (const FloatMatrix& a, float b)
 
               retval = FloatComplexMatrix (Q * D * Q.inverse ());
             }
-          else
-            error ("xpow: matrix diagonalization failed");
+          catch (const octave_execution_exception&)
+            {
+              gripe_failed_diagonalization ();
+            }
         }
     }
 
@@ -1762,7 +1790,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
     {
       FloatEIG a_eig (a);
 
-      if (! error_state)
+      try
         {
           FloatComplexColumnVector lambda (a_eig.eigenvalues ());
           FloatComplexMatrix Q (a_eig.eigenvectors ());
@@ -1774,8 +1802,10 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
 
           retval = FloatComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -1810,7 +1840,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
     {
       FloatEIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           FloatComplexColumnVector lambda (b_eig.eigenvalues ());
           FloatComplexMatrix Q (b_eig.eigenvectors ());
@@ -1827,8 +1857,10 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
 
           retval = FloatComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -1858,7 +1890,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
     {
       FloatEIG b_eig (b);
 
-      if (! error_state)
+      try
         {
           FloatComplexColumnVector lambda (b_eig.eigenvalues ());
           FloatComplexMatrix Q (b_eig.eigenvectors ());
@@ -1875,8 +1907,10 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
 
           retval = FloatComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;
@@ -1947,7 +1981,7 @@ xpow (const FloatComplexMatrix& a, float b)
         {
           FloatEIG a_eig (a);
 
-          if (! error_state)
+          try
             {
               FloatComplexColumnVector lambda (a_eig.eigenvalues ());
               FloatComplexMatrix Q (a_eig.eigenvectors ());
@@ -1959,8 +1993,10 @@ xpow (const FloatComplexMatrix& a, float b)
 
               retval = FloatComplexMatrix (Q * D * Q.inverse ());
             }
-          else
-            error ("xpow: matrix diagonalization failed");
+          catch (const octave_execution_exception&)
+            {
+              gripe_failed_diagonalization ();
+            }
         }
     }
 
@@ -1982,7 +2018,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
     {
       FloatEIG a_eig (a);
 
-      if (! error_state)
+      try
         {
           FloatComplexColumnVector lambda (a_eig.eigenvalues ());
           FloatComplexMatrix Q (a_eig.eigenvectors ());
@@ -1994,8 +2030,10 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
 
           retval = FloatComplexMatrix (Q * D * Q.inverse ());
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      catch (const octave_execution_exception&)
+        {
+          gripe_failed_diagonalization ();
+        }
     }
 
   return retval;

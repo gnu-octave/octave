@@ -289,19 +289,14 @@ octave_class::dotref (const octave_value_list& idx)
 
   octave_map my_map = (obvp != this) ? obvp->map_value () : map;
 
-  std::string nm = idx(0).string_value ();
+  std::string nm = idx(0).string_value ("invalid index for class");
 
-  if (! error_state)
-    {
-      octave_map::const_iterator p = my_map.seek (nm);
+  octave_map::const_iterator p = my_map.seek (nm);
 
-      if (p != my_map.end ())
-        retval = my_map.contents (p);
-      else
-        error ("class has no member '%s'", nm.c_str ());
-    }
+  if (p != my_map.end ())
+    retval = my_map.contents (p);
   else
-    gripe_invalid_index1 ();
+    error ("class has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -655,37 +650,32 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 assert (key_idx.length () == 1);
 
-                std::string key = key_idx(0).string_value ();
+                std::string key = key_idx(0).string_value ("invalid index for class assignment");
 
-                if (! error_state)
-                  {
-                    octave_value u;
+                octave_value u;
 
-                    if (! map.contains (key))
-                      u = octave_value::empty_conv (type.substr (2), rhs);
-                    else
-                      {
-                        Cell map_val = map.contents (key);
-
-                        Cell map_elt = map_val.index (idx.front (), true);
-
-                        u = numeric_conv (map_elt, type.substr (2));
-                      }
-
-                    std::list<octave_value_list> next_idx (idx);
-
-                    // We handled two index elements, so subsasgn to
-                    // needs to skip both of them.
-
-                    next_idx.erase (next_idx.begin ());
-                    next_idx.erase (next_idx.begin ());
-
-                    u.make_unique ();
-
-                    t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
-                  }
+                if (! map.contains (key))
+                  u = octave_value::empty_conv (type.substr (2), rhs);
                 else
-                  gripe_invalid_index_for_assignment ();
+                  {
+                    Cell map_val = map.contents (key);
+
+                    Cell map_elt = map_val.index (idx.front (), true);
+
+                    u = numeric_conv (map_elt, type.substr (2));
+                  }
+
+                std::list<octave_value_list> next_idx (idx);
+
+                // We handled two index elements, so subsasgn to
+                // needs to skip both of them.
+
+                next_idx.erase (next_idx.begin ());
+                next_idx.erase (next_idx.begin ());
+
+                u.make_unique ();
+
+                t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
               }
             else
               gripe_invalid_index_for_assignment ();
@@ -757,19 +747,14 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 assert (key_idx.length () == 1);
 
-                std::string key = key_idx(0).string_value ();
+                std::string key = key_idx(0).string_value ("assignment to class element failed");
+
+                map.assign (idx.front (), key, t_rhs);
 
                 if (! error_state)
                   {
-                    map.assign (idx.front (), key, t_rhs);
-
-                    if (! error_state)
-                      {
-                        count++;
-                        retval = octave_value (this);
-                      }
-                    else
-                      gripe_failed_assignment ();
+                    count++;
+                    retval = octave_value (this);
                   }
                 else
                   gripe_failed_assignment ();

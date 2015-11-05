@@ -386,7 +386,7 @@ read_mat5_integer_data (std::istream& is, int *m,
         read_mat5_integer_data (is, re.fortran_vec (), n, swap, \
                                 static_cast<enum mat5_data_type> (type)); \
   \
-        if (! is || error_state) \
+        if (! is) \
           { \
             error ("load: reading matrix data for '%s'", retval.c_str ()); \
             goto data_read_error; \
@@ -411,7 +411,7 @@ read_mat5_integer_data (std::istream& is, int *m,
             read_mat5_binary_data (is, im.fortran_vec (), n, swap, \
                                    static_cast<enum mat5_data_type> (type), flt_fmt); \
   \
-            if (! is || error_state) \
+            if (! is) \
               { \
                 error ("load: reading imaginary matrix data for '%s'", \
                        retval.c_str ()); \
@@ -737,7 +737,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             std::string nm
               = read_mat5_binary_element (is, filename, swap, global, tc2);
 
-            if (! is || error_state)
+            if (! is)
               {
                 error ("load: reading cell data for '%s'", nm.c_str ());
                 goto data_read_error;
@@ -790,7 +790,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         read_mat5_integer_data (is, ridx, nzmax, swap,
                                 static_cast<enum mat5_data_type> (type));
 
-        if (! is || error_state)
+        if (! is)
           {
             error ("load: reading sparse row data for '%s'", retval.c_str ());
             goto data_read_error;
@@ -812,7 +812,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         read_mat5_integer_data (is, cidx, nc + 1, swap,
                                 static_cast<enum mat5_data_type> (type));
 
-        if (! is || error_state)
+        if (! is)
           {
             error ("load: reading sparse column data for '%s'",
                    retval.c_str ());
@@ -843,7 +843,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
-        if (! is || error_state)
+        if (! is)
           {
             error ("load: reading sparse matrix data for '%s'",
                    retval.c_str ());
@@ -869,7 +869,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
-            if (! is || error_state)
+            if (! is)
               {
                 error ("load: reading imaginary sparse matrix data for '%s'",
                        retval.c_str ());
@@ -892,7 +892,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::string nm
           = read_mat5_binary_element (is, filename, swap, global, tc2);
 
-        if (! is || error_state)
+        if (! is)
           goto data_read_error;
 
         // Octave can handle both "/" and "\" as a directory seperator
@@ -1139,7 +1139,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     octave_value fieldtc;
                     read_mat5_binary_element (is, filename, swap, global,
                                               fieldtc);
-                    if (! is || error_state)
+                    if (! is)
                       goto data_read_error;
 
                     elt[i](j) = fieldtc;
@@ -1282,12 +1282,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     if (load_path::find_method (classname, "loadobj")
                         != std::string ())
                       {
-                        octave_value_list tmp = feval ("loadobj", tc, 1);
+                        try
+                          {
+                            octave_value_list tmp = feval ("loadobj", tc, 1);
 
-                        if (! error_state)
-                          tc = tmp(0);
-                        else
-                          goto data_read_error;
+                            tc = tmp(0);
+                          }
+                        catch (const octave_execution_exception&)
+                          {
+                            goto data_read_error;
+                          }
                       }
                   }
                 else
@@ -1373,7 +1377,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
-        if (! is || error_state)
+        if (! is)
           {
             error ("load: reading matrix data for '%s'", retval.c_str ());
             goto data_read_error;
@@ -1399,7 +1403,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
-            if (! is || error_state)
+            if (! is)
               {
                 error ("load: reading imaginary matrix data for '%s'",
                        retval.c_str ());
@@ -1442,7 +1446,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
-        if (! is || error_state)
+        if (! is)
           {
             error ("load: reading matrix data for '%s'", retval.c_str ());
             goto data_read_error;
@@ -1481,7 +1485,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
-            if (! is || error_state)
+            if (! is)
               {
                 error ("load: reading imaginary matrix data for '%s'",
                        retval.c_str ());
@@ -1611,7 +1615,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
       bool global;
       read_mat5_binary_element (is, filename, swap, global, tc);
 
-      if (!is || error_state)
+      if (! is)
         return -1;
 
       if (tc.is_uint8_type ())
@@ -1631,7 +1635,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
 
           read_mat5_binary_element (fh_ws, filename, swap, global, subsys_ov);
 
-          if (error_state)
+          if (! is)
             return -1;
         }
       else
@@ -2703,11 +2707,16 @@ save_mat5_binary_element (std::ostream& os,
           && load_path::find_method (tc.class_name (),
                                      "saveobj") != std::string ())
         {
-          octave_value_list tmp = feval ("saveobj", tc, 1);
-          if (! error_state)
-            m = tmp(0).map_value ();
-          else
-            goto error_cleanup;
+          try
+            {
+              octave_value_list tmp = feval ("saveobj", tc, 1);
+
+              m = tmp(0).map_value ();
+            }
+          catch (const octave_execution_exception&)
+            {
+              goto error_cleanup;
+            }
         }
       else
         m = tc.map_value ();

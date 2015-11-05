@@ -1553,10 +1553,12 @@ octave_value::cell_value (void) const
 Cell
 octave_value::cell_value (const char *fmt, ...) const
 {
+  Cell retval;
   va_list args;
   va_start (args,fmt);
-  return rep->cell_value (fmt, args);
+  retval = rep->cell_value (fmt, args);
   va_end (args);
+  return retval;
 }
 
 // Define the idx_type_value function here instead of in ov.h to avoid

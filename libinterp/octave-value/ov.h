@@ -901,10 +901,12 @@ public:
 
   std::string string_value (const char *fmt, ...) const
   {
+    std::string retval;
     va_list args;
     va_start (args,fmt);
-    return rep->string_value (fmt, args);
+    retval = rep->string_value (fmt, args);
     va_end (args);
+    return retval;
   }
 
   Array<std::string> cellstr_value (void) const

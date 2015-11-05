@@ -1814,10 +1814,9 @@ produces a struct @strong{array}.\n\
 
       if (nargin == 2)
         {
-          if (args(1).is_cellstr ())
-            retval = octave_map (args(0).dims (), args(1).cellstr_value ());
-          else
-            error ("struct: expecting cell array of field names as second argument");
+          Array<std::string> cstr = args(1).cellstr_value ("struct: expecting cell array of field names as second argument");
+
+          retval = octave_map (args(0).dims (), cstr);
         }
       else
         retval = octave_map (args(0).dims ());

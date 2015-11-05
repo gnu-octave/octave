@@ -303,6 +303,41 @@ octave_char_matrix_str::cellstr_value (void) const
   return retval;
 }
 
+Array<std::string>
+octave_char_matrix_str::cellstr_value (const char *fmt, va_list args) const
+{
+  Array<std::string> retval;
+
+  if (! fmt)
+    return cellstr_value ();
+
+  bool conversion_error = false;
+
+  if (matrix.ndims () == 2)
+    {
+      const charMatrix chm (matrix);
+      octave_idx_type nr = chm.rows ();
+      retval.clear (nr, 1);
+
+      try
+        {
+          for (octave_idx_type i = 0; i < nr; i++)
+            retval.xelem (i) = chm.row_as_string (i);
+        }
+      catch (const octave_execution_exception&)
+        {
+          conversion_error = true;
+        }
+    }
+  else
+    conversion_error = true;
+
+  if (conversion_error)
+    verror (fmt, args);
+
+  return retval;
+}
+
 void
 octave_char_matrix_str::print_raw (std::ostream& os,
                                    bool pr_as_read_syntax) const

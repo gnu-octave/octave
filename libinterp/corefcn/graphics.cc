@@ -10024,50 +10024,40 @@ lists respectively.\n\
 
           if (nargin > 1 && args(1).is_cellstr ())
             {
-              Array<std::string> plist = args(1).cellstr_value ();
+              Array<std::string> plist = args(1).cellstr_value ("get: expecting property name or cell array of property names as second argument");
 
-              if (! error_state)
+              octave_idx_type plen = plist.numel ();
+
+              use_cell_format = true;
+
+              vals.resize (dim_vector (len, plen));
+
+              for (octave_idx_type n = 0; n < len; n++)
                 {
-                  octave_idx_type plen = plist.numel ();
+                  graphics_object go = gh_manager::get_object (hcv(n));
 
-                  use_cell_format = true;
-
-                  vals.resize (dim_vector (len, plen));
-
-                  for (octave_idx_type n = 0; n < len; n++)
+                  if (go)
                     {
-                      graphics_object go = gh_manager::get_object (hcv(n));
-
-                      if (go)
+                      for (octave_idx_type m = 0; m < plen; m++)
                         {
-                          for (octave_idx_type m = 0; m < plen; m++)
-                            {
-                              caseless_str property = plist(m);
+                          caseless_str property = plist(m);
 
-                              vals(n, m) = go.get (property);
-                            }
-                        }
-                      else
-                        {
-                          error ("get: invalid handle (= %g)", hcv(n));
-                          break;
+                          vals(n, m) = go.get (property);
                         }
                     }
+                  else
+                    {
+                      error ("get: invalid handle (= %g)", hcv(n));
+                      break;
+                    }
                 }
-              else
-                error ("get: expecting property name or cell array of property names as second argument");
             }
           else
             {
               caseless_str property;
 
               if (nargin > 1)
-                {
-                  property = args(1).string_value ();
-
-                  if (error_state)
-                    error ("get: expecting property name or cell array of property names as second argument");
-                }
+                property = args(1).string_value ("get: expecting property name or cell array of property names as second argument");
 
               vals.resize (dim_vector (len, 1));
 

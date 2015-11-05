@@ -363,13 +363,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
           return retval;
         }
 
-      param = args(3).cellstr_value ();
-
-      if (error_state)
-        {
-          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
-          return retval;
-        }
+      param = args(3).cellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
         {
@@ -503,13 +497,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
           return retval;
         }
 
-      param = args(2).cellstr_value ();
-
-      if (error_state)
-        {
-          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
-          return retval;
-        }
+      param = args(2).cellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
         {

@@ -912,6 +912,16 @@ public:
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
 
+  Array<std::string> cellstr_value (const char *fmt, ...) const
+  {
+    Array<std::string> retval;
+    va_list args;
+    va_start (args,fmt);
+    retval = rep->cellstr_value (fmt, args);
+    va_end (args);
+    return retval;
+  }
+
   Range range_value (void) const
   { return rep->range_value (); }
 

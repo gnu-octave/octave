@@ -1917,12 +1917,7 @@ belongs to.\n\
 
   octave_value obj = args(0);  // not const because of find_parent_class ()
   std::string obj_cls = obj.class_name ();
-  Array<std::string> clsnames = args(1).cellstr_value ();
-  if (error_state)
-    {
-      error ("isa: CLASSNAME must be a string or cell array of strings");
-      return retval;
-    }
+  Array<std::string> clsnames = args(1).cellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
 
   boolNDArray matches (clsnames.dims (), false);
   for (octave_idx_type idx = 0; idx < clsnames.numel (); idx++)

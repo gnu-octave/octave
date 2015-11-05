@@ -570,6 +570,9 @@ public:
 
   virtual Array<std::string> cellstr_value (void) const;
 
+  virtual Array<std::string>
+  cellstr_value (const char *fmt, va_list args) const;
+
   virtual Range range_value (void) const;
 
   virtual octave_map map_value (void) const;

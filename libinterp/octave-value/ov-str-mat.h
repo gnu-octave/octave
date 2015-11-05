@@ -133,6 +133,8 @@ public:
 
   Array<std::string> cellstr_value (void) const;
 
+  Array<std::string> cellstr_value (const char *fmt, va_list args) const;
+
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
   { return octave_value (matrix.sort (dim, mode)); }
 

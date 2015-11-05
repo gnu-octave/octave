@@ -146,6 +146,10 @@ public:
 
   Array<std::string> cellstr_value (void) const;
 
+  Array<std::string> cellstr_value (const char *fmt, ...) const;
+
+  Array<std::string> cellstr_value (const char *fmt, va_list args) const;
+
   bool print_as_scalar (void) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);

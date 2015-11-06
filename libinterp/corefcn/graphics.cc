@@ -9848,104 +9848,99 @@ being @qcode{\"portrait\"}.\n\
   if (nargin > 0)
     {
       // get vector of graphics handles
-      ColumnVector hcv (args(0).vector_value ());
+      ColumnVector hcv (args(0).vector_value ("set: expecting graphics handle as first argument"));
 
-      if (! error_state)
+      bool request_drawnow = false;
+
+      // loop over graphics objects
+      for (octave_idx_type n = 0; n < hcv.numel (); n++)
         {
-          bool request_drawnow = false;
+          graphics_object go = gh_manager::get_object (hcv(n));
 
-          // loop over graphics objects
-          for (octave_idx_type n = 0; n < hcv.numel (); n++)
+          if (go)
             {
-              graphics_object go = gh_manager::get_object (hcv(n));
-
-              if (go)
+              if (nargin == 3
+                  && args(1).is_cellstr () && args(2).is_cell ())
                 {
-                  if (nargin == 3
-                      && args(1).is_cellstr () && args(2).is_cell ())
+                  if (args(2).cell_value ().rows () == 1)
                     {
-                      if (args(2).cell_value ().rows () == 1)
-                        {
-                          go.set (args(1).cellstr_value (),
-                                  args(2).cell_value (), 0);
-                        }
-                      else if (hcv.numel () == args(2).cell_value ().rows ())
-                        {
-                          go.set (args(1).cellstr_value (),
-                                  args(2).cell_value (), n);
-                        }
-                      else
-                        {
-                          error ("set: number of graphics handles must match number of value rows (%d != %d)",
-                                 hcv.numel (), args(2).cell_value ().rows ());
-                          break;
-
-                        }
+                      go.set (args(1).cellstr_value (),
+                              args(2).cell_value (), 0);
                     }
-                  else if (nargin == 2 && args(1).is_map ())
+                  else if (hcv.numel () == args(2).cell_value ().rows ())
                     {
-                      go.set (args(1).map_value ());
+                      go.set (args(1).cellstr_value (),
+                              args(2).cell_value (), n);
                     }
-                  else if (nargin == 2 && args(1).is_string ())
+                  else
                     {
-                      std::string property = args(1).string_value ();
+                      error ("set: number of graphics handles must match number of value rows (%d != %d)",
+                             hcv.numel (), args(2).cell_value ().rows ());
+                      break;
 
-                      octave_map pmap = go.values_as_struct ();
-
-                      if (go.has_readonly_property (property))
-                        if (nargout != 0)
-                          retval = Matrix ();
-                        else
-                          octave_stdout << "set: " << property
-                                        <<" is read-only" << std::endl;
-                      else if (pmap.isfield (property))
-                        {
-                          if (nargout != 0)
-                            retval = pmap.getfield (property)(0);
-                          else
-                            {
-                              std::string s = go.value_as_string (property);
-
-                              octave_stdout << s;
-                            }
-                        }
-                      else
-                        {
-                          error ("set: unknown property");
-                          break;
-                        }
                     }
-                  else if (nargin == 1)
+                }
+              else if (nargin == 2 && args(1).is_map ())
+                {
+                  go.set (args(1).map_value ());
+                }
+              else if (nargin == 2 && args(1).is_string ())
+                {
+                  std::string property = args(1).string_value ();
+
+                  octave_map pmap = go.values_as_struct ();
+
+                  if (go.has_readonly_property (property))
+                    if (nargout != 0)
+                      retval = Matrix ();
+                    else
+                      octave_stdout << "set: " << property
+                                    <<" is read-only" << std::endl;
+                  else if (pmap.isfield (property))
                     {
                       if (nargout != 0)
-                        retval = go.values_as_struct ();
+                        retval = pmap.getfield (property)(0);
                       else
                         {
-                          std::string s = go.values_as_string ();
+                          std::string s = go.value_as_string (property);
 
                           octave_stdout << s;
                         }
                     }
                   else
                     {
-                      go.set (args.splice (0, 1));
-                      request_drawnow = true;
+                      error ("set: unknown property");
+                      break;
+                    }
+                }
+              else if (nargin == 1)
+                {
+                  if (nargout != 0)
+                    retval = go.values_as_struct ();
+                  else
+                    {
+                      std::string s = go.values_as_string ();
+
+                      octave_stdout << s;
                     }
                 }
               else
                 {
-                  error ("set: invalid handle (= %g)", hcv(n));
-                  break;
+                  go.set (args.splice (0, 1));
+                  request_drawnow = true;
                 }
-
-              request_drawnow = true;
+            }
+          else
+            {
+              error ("set: invalid handle (= %g)", hcv(n));
+              break;
             }
 
-          if (request_drawnow)
-            Vdrawnow_requested = true;
+          request_drawnow = true;
         }
-      else
-        error ("set: expecting graphics handle as first argument");
+
+      if (request_drawnow)
+        Vdrawnow_requested = true;
     }
   else
     print_usage ();
@@ -10000,88 +9995,83 @@ lists respectively.\n\
           return retval;
         }
 
-      ColumnVector hcv (args(0).vector_value ());
+      ColumnVector hcv (args(0).vector_value ("get: expecting graphics handle as first argument"));
 
-      if (! error_state)
+      octave_idx_type len = hcv.numel ();
+
+      if (nargin == 1 && len > 1)
         {
-          octave_idx_type len = hcv.numel ();
+          std::string typ0 = get_graphics_object_type (hcv(0));
 
-          if (nargin == 1 && len > 1)
+          for (octave_idx_type n = 1; n < len; n++)
             {
-              std::string typ0 = get_graphics_object_type (hcv(0));
+              std::string typ = get_graphics_object_type (hcv(n));
 
-              for (octave_idx_type n = 1; n < len; n++)
+              if (typ != typ0)
                 {
-                  std::string typ = get_graphics_object_type (hcv(n));
-
-                  if (typ != typ0)
-                    {
-                      error ("get: vector of handles must all have same type");
-                      break;
-                    }
+                  error ("get: vector of handles must all have same type");
+                  break;
                 }
             }
+        }
 
-          if (nargin > 1 && args(1).is_cellstr ())
+      if (nargin > 1 && args(1).is_cellstr ())
+        {
+          Array<std::string> plist = args(1).cellstr_value ("get: expecting property name or cell array of property names as second argument");
+
+          octave_idx_type plen = plist.numel ();
+
+          use_cell_format = true;
+
+          vals.resize (dim_vector (len, plen));
+
+          for (octave_idx_type n = 0; n < len; n++)
             {
-              Array<std::string> plist = args(1).cellstr_value ("get: expecting property name or cell array of property names as second argument");
+              graphics_object go = gh_manager::get_object (hcv(n));
 
-              octave_idx_type plen = plist.numel ();
-
-              use_cell_format = true;
-
-              vals.resize (dim_vector (len, plen));
-
-              for (octave_idx_type n = 0; n < len; n++)
+              if (go)
                 {
-                  graphics_object go = gh_manager::get_object (hcv(n));
-
-                  if (go)
+                  for (octave_idx_type m = 0; m < plen; m++)
                     {
-                      for (octave_idx_type m = 0; m < plen; m++)
-                        {
-                          caseless_str property = plist(m);
+                      caseless_str property = plist(m);
 
-                          vals(n, m) = go.get (property);
-                        }
-                    }
-                  else
-                    {
-                      error ("get: invalid handle (= %g)", hcv(n));
-                      break;
+                      vals(n, m) = go.get (property);
                     }
                 }
-            }
-          else
-            {
-              caseless_str property;
-
-              if (nargin > 1)
-                property = args(1).string_value ("get: expecting property name or cell array of property names as second argument");
-
-              vals.resize (dim_vector (len, 1));
-
-              for (octave_idx_type n = 0; n < len; n++)
+              else
                 {
-                  graphics_object go = gh_manager::get_object (hcv(n));
-
-                  if (go)
-                    {
-                      if (nargin == 1)
-                        vals(n) = go.get ();
-                      else
-                        vals(n) = go.get (property);
-                    }
-                  else
-                    {
-                      error ("get: invalid handle (= %g)", hcv(n));
-                      break;
-                    }
+                  error ("get: invalid handle (= %g)", hcv(n));
+                  break;
                 }
             }
         }
       else
-        error ("get: expecting graphics handle as first argument");
+        {
+          caseless_str property;
+
+          if (nargin > 1)
+            property = args(1).string_value ("get: expecting property name or cell array of property names as second argument");
+
+          vals.resize (dim_vector (len, 1));
+
+          for (octave_idx_type n = 0; n < len; n++)
+            {
+              graphics_object go = gh_manager::get_object (hcv(n));
+
+              if (go)
+                {
+                  if (nargin == 1)
+                    vals(n) = go.get ();
+                  else
+                    vals(n) = go.get (property);
+                }
+              else
+                {
+                  error ("get: invalid handle (= %g)", hcv(n));
+                  break;
+                }
+            }
+        }
     }
   else
     print_usage ();
@@ -10136,29 +10126,24 @@ Undocumented internal function.\n\
 
   if (nargin == 1)
     {
-      ColumnVector hcv (args(0).vector_value ());
+      ColumnVector hcv (args(0).vector_value ("get: expecting graphics handle as first argument"));
 
-      if (! error_state)
+      octave_idx_type len = hcv.numel ();
+
+      vals.resize (dim_vector (len, 1));
+
+      for (octave_idx_type n = 0; n < len; n++)
         {
-          octave_idx_type len = hcv.numel ();
+          graphics_object go = gh_manager::get_object (hcv(n));
 
-          vals.resize (dim_vector (len, 1));
-
-          for (octave_idx_type n = 0; n < len; n++)
+          if (go)
+            vals(n) = go.get (true);
+          else
             {
-              graphics_object go = gh_manager::get_object (hcv(n));
-
-              if (go)
-                vals(n) = go.get (true);
-              else
-                {
-                  error ("get: invalid handle (= %g)", hcv(n));
-                  break;
-                }
+              error ("get: invalid handle (= %g)", hcv(n));
+              break;
             }
         }
-      else
-        error ("get: expecting graphics handle as first argument");
     }
   else
     print_usage ();

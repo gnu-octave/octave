@@ -770,12 +770,8 @@ Use @code{imread} instead.\n\
     }
   else
     {
-      frameidx = indexes.int_vector_value ();
-      if (error_state)
-        {
-          error ("__magick_read__: invalid value for Index/Frame");
-          return output;
-        }
+      frameidx = indexes.int_vector_value ("__magick_read__: invalid value for Index/Frame");
+
       // Fix indexes from base 1 to base 0, and at the same time, make
       // sure none of the indexes is outside the range of image number.
       const octave_idx_type n = frameidx.numel ();

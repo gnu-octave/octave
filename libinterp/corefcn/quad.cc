@@ -151,7 +151,7 @@ quad_float_user_function (float x)
   do \
     { \
       if (fcn_name.length ()) \
-        clear_function (fcn_name); \
+       clear_function (fcn_name); \
       return retval; \
     } \
   while (0)
@@ -301,16 +301,10 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
               have_sing = true;
 
-              sing = FloatColumnVector (args(4).float_vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
+              sing = args(4).float_vector_value ("quad: expecting vector of singularities as fourth argument");
 
             case 4:
-              tol = FloatColumnVector (args(3).float_vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
+              tol = args(3).float_vector_value ("quad: expecting vector of tolerances as fifth argument");
 
               switch (tol.numel ())
                 {
@@ -410,16 +404,10 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
               have_sing = true;
 
-              sing = ColumnVector (args(4).vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
+              sing = args(4).vector_value ("quad: expecting vector of singularities as fourth argument");
 
             case 4:
-              tol = ColumnVector (args(3).vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
+              tol = args(3).vector_value ("quad: expecting vector of tolerances as fifth argument");
 
               switch (tol.numel ())
                 {

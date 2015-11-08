@@ -624,13 +624,15 @@ shortcut_manager::do_import_export (bool import)
     {
       file = QFileDialog::getOpenFileName (this,
               tr ("Import shortcuts from file ..."), QString (),
-              tr ("Octave Shortcut Files (*.osc);;All Files (*)"));
+              tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
+              0,QFileDialog::DontUseNativeDialog);
     }
   else
     {
       file = QFileDialog::getSaveFileName (this,
               tr ("Export shortcuts into file ..."), QString (),
-              tr ("Octave Shortcut Files (*.osc);;All Files (*)"));
+              tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
+              0,QFileDialog::DontUseNativeDialog);
     }
 
   // create a settings object related to this file

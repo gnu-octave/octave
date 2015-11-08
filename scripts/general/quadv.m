@@ -59,64 +59,61 @@
 ## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn
 
-function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
-  ## TODO: Make norm for convergence testing configurable
+function [q, nfun] = quadv (f, a, b, tol = [], trace = [], varargin)
 
   if (nargin < 3)
     print_usage ();
   endif
-  if (nargin < 4)
-    tol = [];
-  endif
-  if (nargin < 5)
-    trace = [];
-  endif
+
   if (isa (a, "single") || isa (b, "single"))
-    myeps = eps ("single");
+    eps = eps ("single");
   else
-    myeps = eps;
+    eps = eps ("double");
   endif
   if (isempty (tol))
     tol = 1e-6;
+  elseif (! isscalar (tol) || tol < 0)
+    error ("quadv: TOL must be a scalar >=0");
   endif
   if (isempty (trace))
-    trace = 0;
+    trace = false;
   endif
 
-  ## Split the interval into 3 abscissa, and apply a 3 point Simpson's rule
+  ## Split the interval into 3 abscissa, and apply a 3-point Simpson's rule
   c = (a + b) / 2;
   fa = feval (f, a, varargin{:});
   fc = feval (f, c, varargin{:});
   fb = feval (f, b, varargin{:});
   nfun = 3;
 
-  ## If have edge singularities, move edge point by eps*(b-a) as
-  ## discussed in Shampine paper used to implement quadgk
+  ## If there are edge singularities, move edge point by eps*(b-a) as
+  ## discussed in Shampine paper used to implement quadgk.
   if (any (isinf (fa(:))))
-    fa = feval (f, a + myeps * (b-a), varargin{:});
+    fa = feval (f, a + eps * (b-a), varargin{:});
   endif
   if (any (isinf (fb(:))))
-    fb = feval (f, b - myeps * (b-a), varargin{:});
+    fb = feval (f, b - eps * (b-a), varargin{:});
   endif
 
   h = (b - a);
-  q = (b - a) / 6 * (fa + 4 * fc + fb);
+  q = h / 6 * (fa + 4 * fc + fb);
 
   [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, nfun, abs (h),
                                 tol, trace, varargin{:});
 
-  if (nfun > 10000)
-    warning ("maximum iteration count reached");
+  if (nfun > 10_000)
+    warning ("quadv: maximum iteration count reached");
   elseif (any (! isfinite (q(:))))
-    warning ("infinite or NaN function evaluations were returned");
-  elseif (hmin < (b - a) * myeps)
-    warning ("minimum step size reached -- possibly singular integral");
+    warning ("quadv: infinite or NaN function evaluations were returned");
+  elseif (hmin < (b - a) * eps)
+    warning ("quadv: minimum step size reached -- possibly singular integral");
   endif
+
 endfunction
 
 function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
                                        nfun, hmin, tol, trace, varargin)
-  if (nfun > 10000)
+  if (nfun > 10_000)
     q = q0;
   else
     d = (a + c) / 2;
@@ -128,7 +125,7 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
     q2 = (b - c) / 6 * (fc + 4 * fe + fb);
     q = q1 + q2;
 
-    if (abs(a -  c) < hmin)
+    if (abs (a - c) < hmin)
       hmin = abs (a - c);
     endif
 
@@ -136,29 +133,37 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
       disp ([nfun, a, b-a, q]);
     endif
 
-    ## Force at least one adpative step.
+    ## Force at least one adaptive step (nfun == 5 test).
     ## Not vectorizing q-q0 in the norm provides a more rigid criterion for
     ## matrix-valued functions.
-    if (nfun == 5 || norm (q - q0, Inf) > tol)
+    if (norm (q - q0, Inf) > tol || nfun == 5)
       [q1, nfun, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, nfun, hmin,
-                                    tol, trace, varargin{:});
+                                     tol, trace, varargin{:});
       [q2, nfun, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, nfun, hmin,
                                      tol, trace, varargin{:});
       q = q1 + q2;
     endif
   endif
+
 endfunction
 
 
-%!assert (quadv (@sin, 0, 2 * pi), 0, 1e-5)
+%!assert (quadv (@sin, 0, 2*pi), 0, 1e-5)
 %!assert (quadv (@sin, 0, pi), 2, 1e-5)
 
-## Handles weak singularities at the edge
+## Test weak singularities at the edge
 %!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 1e-5)
 
-## Handles vector-valued functions
+## Test vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-5)
 
-## Handles matrix-valued functions
-%!assert (quadv (@(x) [ x, x, x; x, 1./sqrt(x), x; x, x, x ], 0, 1 ), [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5)
+## Test matrix-valued functions
+%!assert (quadv (@(x) [ x, x, x; x, 1./sqrt(x), x; x, x, x ], 0, 1),
+%!        [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5)
+
+## Test input validation
+%!error quadv ()
+%!error quadv (@sin)
+%!error quadv (@sin,1)
+%!error <TOL must be a scalar> quadv (@sin,0,1, ones (2,2))
 

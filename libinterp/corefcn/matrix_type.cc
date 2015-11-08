@@ -276,21 +276,27 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
               if (nargin == 3
                   && (str_typ == "upper" || str_typ == "lower"))
                 {
-                  const ColumnVector perm (args(2).vector_value ("matrix_type: invalid permutation vector PERM"));
+                  const ColumnVector perm =
+                    ColumnVector (args(2).vector_value ());
 
-                  octave_idx_type len = perm.numel ();
-                  dim_vector dv = args(0).dims ();
-
-                  if (len != dv(0))
+                  if (error_state)
                     error ("matrix_type: Invalid permutation vector PERM");
                   else
                     {
-                      OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+                      octave_idx_type len = perm.numel ();
+                      dim_vector dv = args(0).dims ();
 
-                      for (octave_idx_type i = 0; i < len; i++)
-                        p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+                      if (len != dv(0))
+                        error ("matrix_type: Invalid permutation vector PERM");
+                      else
+                        {
+                          OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                      mattyp.mark_as_permuted (len, p);
+                          for (octave_idx_type i = 0; i < len; i++)
+                            p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+
+                          mattyp.mark_as_permuted (len, p);
+                        }
                     }
                 }
               else if (nargin != 2
@@ -416,21 +422,27 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 
               if (nargin == 3 && (str_typ == "upper" || str_typ == "lower"))
                 {
-                  const ColumnVector perm (args(2).vector_value ("matrix_type: invalid permutation vector PERM"));
+                  const ColumnVector perm =
+                    ColumnVector (args(2).vector_value ());
 
-                  octave_idx_type len = perm.numel ();
-                  dim_vector dv = args(0).dims ();
-
-                  if (len != dv(0))
+                  if (error_state)
                     error ("matrix_type: Invalid permutation vector PERM");
                   else
                     {
-                      OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
+                      octave_idx_type len = perm.numel ();
+                      dim_vector dv = args(0).dims ();
 
-                      for (octave_idx_type i = 0; i < len; i++)
-                        p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+                      if (len != dv(0))
+                        error ("matrix_type: Invalid permutation vector PERM");
+                      else
+                        {
+                          OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                      mattyp.mark_as_permuted (len, p);
+                          for (octave_idx_type i = 0; i < len; i++)
+                            p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+
+                          mattyp.mark_as_permuted (len, p);
+                        }
                     }
                 }
               else if (nargin != 2)

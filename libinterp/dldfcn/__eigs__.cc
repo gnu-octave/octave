@@ -73,7 +73,13 @@ eigs_func (const ColumnVector &x, int &eigs_error)
               warned_imaginary = true;
             }
 
-          retval = tmp(0).vector_value ("eigs: evaluation of user-supplied function failed");
+          retval = ColumnVector (tmp(0).vector_value ());
+
+          if (error_state)
+            {
+              eigs_error = 1;
+              gripe_user_supplied_eval ("eigs");
+            }
         }
       else
         {
@@ -105,7 +111,13 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          retval = tmp(0).complex_vector_value ("eigs: evaluation of user-supplied function failed");
+          retval = ComplexColumnVector (tmp(0).complex_vector_value ());
+
+          if (error_state)
+            {
+              eigs_error = 1;
+              gripe_user_supplied_eval ("eigs");
+            }
         }
       else
         {

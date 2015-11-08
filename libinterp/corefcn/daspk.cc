@@ -90,7 +90,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
               warned_fcn_imaginary = true;
             }
 
-          retval = tmp(0).vector_value ();
+          retval = ColumnVector (tmp(0).vector_value ());
 
           if (tlen > 1)
             ires = tmp(1).int_value ();
@@ -393,20 +393,32 @@ parameters for @code{daspk}.\n\
             }
         }
 
-      if (! daspk_fcn)
+      if (error_state || ! daspk_fcn)
         DASPK_ABORT ();
 
-      ColumnVector state = args(1).vector_value ("expecting state vector as second argument");
+      ColumnVector state = ColumnVector (args(1).vector_value ());
 
-      ColumnVector deriv = args(2).vector_value ("expecting derivative vector as third argument");
+      if (error_state)
+        DASPK_ABORT1 ("expecting state vector as second argument");
 
-      ColumnVector out_times = args(3).vector_value ("expecting output time vector as fourth argument");
+      ColumnVector deriv (args(2).vector_value ());
+
+      if (error_state)
+        DASPK_ABORT1 ("expecting derivative vector as third argument");
+
+      ColumnVector out_times (args(3).vector_value ());
+
+      if (error_state)
+        DASPK_ABORT1 ("expecting output time vector as fourth argument");
 
       ColumnVector crit_times;
       int crit_times_set = 0;
       if (nargin > 4)
         {
-          crit_times = args(4).vector_value ("expecting critical time vector as fifth argument");
+          crit_times = ColumnVector (args(4).vector_value ());
+
+          if (error_state)
+            DASPK_ABORT1 ("expecting critical time vector as fifth argument");
 
           crit_times_set = 1;
         }

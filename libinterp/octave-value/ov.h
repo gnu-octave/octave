@@ -903,7 +903,7 @@ public:
   {
     std::string retval;
     va_list args;
-    va_start (args, fmt);
+    va_start (args,fmt);
     retval = rep->string_value (fmt, args);
     va_end (args);
     return retval;
@@ -916,7 +916,7 @@ public:
   {
     Array<std::string> retval;
     va_list args;
-    va_start (args, fmt);
+    va_start (args,fmt);
     retval = rep->cellstr_value (fmt, args);
     va_end (args);
     return retval;
@@ -998,8 +998,6 @@ public:
                                bool frc_str_conv = false,
                                bool frc_vec_conv = false) const;
 
-  Array<int> int_vector_value (const char *fmt, ...) const;
-
   Array<octave_idx_type>
   octave_idx_type_vector_value (bool req_int = false,
                                 bool frc_str_conv = false,
@@ -1008,23 +1006,15 @@ public:
   Array<double> vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
 
-  Array<double> vector_value (const char *fmt, ...) const;
-
   Array<Complex> complex_vector_value (bool frc_str_conv = false,
                                        bool frc_vec_conv = false) const;
-
-  Array<Complex> complex_vector_value (const char *fmt, ...) const;
 
   Array<float> float_vector_value (bool frc_str_conv = false,
                                    bool frc_vec_conv = false) const;
 
-  Array<float> float_vector_value (const char *fmt, ...) const;
-
   Array<FloatComplex>
   float_complex_vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
-
-  Array<FloatComplex> float_complex_vector_value (const char *fmt, ...) const;
 
   // Possibly economize a lazy-indexed value.
 

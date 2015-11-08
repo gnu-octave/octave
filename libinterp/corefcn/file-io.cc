@@ -1321,36 +1321,41 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   count = -1;
 
-  Array<double> size = size_arg.vector_value ("fread: invalid SIZE specified");
-
-  std::string prec = prec_arg.string_value ("fread: PRECISION must be a string");
-
-  int block_size = 1;
-  oct_data_conv::data_type input_type;
-  oct_data_conv::data_type output_type;
-
-  oct_data_conv::string_to_data_type (prec, block_size,
-                                      input_type, output_type);
+  Array<double> size = size_arg.vector_value ();
 
   if (! error_state)
     {
-      int skip = skip_arg.int_value (true);
+      std::string prec = prec_arg.string_value ("fread: PRECISION must be a string");
+
+      int block_size = 1;
+      oct_data_conv::data_type input_type;
+      oct_data_conv::data_type output_type;
+
+      oct_data_conv::string_to_data_type (prec, block_size,
+                                          input_type, output_type);
 
       if (! error_state)
         {
-          std::string arch = arch_arg.string_value ("fread: ARCH architecture type must be a string");
+          int skip = skip_arg.int_value (true);
 
-          oct_mach_info::float_format flt_fmt
-            = oct_mach_info::string_to_float_format (arch);
+          if (! error_state)
+            {
+              std::string arch = arch_arg.string_value ("fread: ARCH architecture type must be a string");
 
-          retval = os.read (size, block_size, input_type,
-                            output_type, skip, flt_fmt, count);
+              oct_mach_info::float_format flt_fmt
+                = oct_mach_info::string_to_float_format (arch);
+
+              retval = os.read (size, block_size, input_type,
+                                output_type, skip, flt_fmt, count);
+            }
+          else
+            error ("fread: SKIP must be an integer");
         }
       else
-        error ("fread: SKIP must be an integer");
+        error ("fread: invalid PRECISION specified");
     }
   else
-    error ("fread: invalid PRECISION specified");
+    error ("fread: invalid SIZE specified");
 
   return retval;
 }

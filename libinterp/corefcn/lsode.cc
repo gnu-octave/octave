@@ -86,9 +86,9 @@ lsode_user_function (const ColumnVector& x, double t)
               warned_fcn_imaginary = true;
             }
 
-          retval = tmp(0).vector_value ("lsode: evaluation of user-supplied function failed");
+          retval = ColumnVector (tmp(0).vector_value ());
 
-          if (retval.numel () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("lsode");
         }
       else
@@ -404,16 +404,25 @@ parameters for @code{lsode}.\n\
       if (error_state || ! lsode_fcn)
         LSODE_ABORT ();
 
-      ColumnVector state = args(1).vector_value ("lsode: expecting state vector as second argument");
+      ColumnVector state (args(1).vector_value ());
 
-      ColumnVector out_times = args(2).vector_value ("lsode: expecting output time vector as third argument");
+      if (error_state)
+        LSODE_ABORT1 ("expecting state vector as second argument");
+
+      ColumnVector out_times (args(2).vector_value ());
+
+      if (error_state)
+        LSODE_ABORT1 ("expecting output time vector as third argument");
 
       ColumnVector crit_times;
 
       int crit_times_set = 0;
       if (nargin > 3)
         {
-          crit_times = args(3).vector_value ("lsode: expecting critical time vector as fourth argument");
+          crit_times = ColumnVector (args(3).vector_value ());
+
+          if (error_state)
+            LSODE_ABORT1 ("expecting critical time vector as fourth argument");
 
           crit_times_set = 1;
         }

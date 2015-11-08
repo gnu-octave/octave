@@ -271,9 +271,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   octave_rand::reset (fcn);
                 else
                   {
-                    Array<double> tmp = args(idx+1).array_value ();
-
-                    ColumnVector s = tmp.reshape (tmp.numel (), 1);
+                    ColumnVector s =
+                      ColumnVector (args(idx+1).vector_value(false, true));
 
                     octave_rand::state (s, fcn);
                   }

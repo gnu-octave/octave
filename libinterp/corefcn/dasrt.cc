@@ -89,9 +89,9 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
               warned_fcn_imaginary = true;
             }
 
-          retval = tmp(0).vector_value ("dasrt: evaluation of user-supplied function failed");
+          retval = ColumnVector (tmp(0).vector_value ());
 
-          if (retval.numel () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -129,9 +129,9 @@ dasrt_user_cf (const ColumnVector& x, double t)
               warned_cf_imaginary = true;
             }
 
-          retval = tmp(0).vector_value ("dasrt: evaluation of user-supplied function failed");
+          retval = ColumnVector (tmp(0).vector_value ());
 
-          if (retval.numel () == 0)
+          if (error_state || retval.numel () == 0)
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -477,7 +477,7 @@ parameters for @code{dasrt}.\n\
         }
     }
 
-  if (! dasrt_f)
+  if (error_state || (! dasrt_f))
     DASRT_ABORT;
 
   DAERTFunc func (dasrt_user_f);
@@ -506,13 +506,21 @@ parameters for @code{dasrt}.\n\
       func.set_constraint_function (dasrt_user_cf);
     }
 
-  ColumnVector state = args(argp).vector_value ("expecting state vector as argument %d", ++argp);
+  ColumnVector state (args(argp++).vector_value ());
 
-  ColumnVector stateprime = args(argp).vector_value ("expecting time derivative of state vector as argument %d", argp);
-  argp++;
+  if (error_state)
+    DASRT_ABORT2 ("expecting state vector as argument %d", argp);
 
-  ColumnVector out_times = args(argp).vector_value ("expecting output time vector as %s argument %d", argp);
-  argp++;
+  ColumnVector stateprime (args(argp++).vector_value ());
+
+  if (error_state)
+    DASRT_ABORT2 ("expecting time derivative of state vector as argument %d",
+                  argp);
+
+  ColumnVector out_times (args(argp++).vector_value ());
+
+  if (error_state)
+    DASRT_ABORT2 ("expecting output time vector as %s argument %d", argp);
 
   double tzero = out_times (0);
 
@@ -522,8 +530,10 @@ parameters for @code{dasrt}.\n\
 
   if (argp < nargin)
     {
-      crit_times = args(argp).vector_value ("expecting critical time vector as argument %d", argp);
-      argp++;
+      crit_times = ColumnVector (args(argp++).vector_value ());
+
+      if (error_state)
+        DASRT_ABORT2 ("expecting critical time vector as argument %d", argp);
 
       crit_times_set = true;
     }

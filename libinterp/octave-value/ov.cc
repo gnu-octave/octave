@@ -1555,7 +1555,7 @@ octave_value::cell_value (const char *fmt, ...) const
 {
   Cell retval;
   va_list args;
-  va_start (args, fmt);
+  va_start (args,fmt);
   retval = rep->cell_value (fmt, args);
   va_end (args);
   return retval;
@@ -1690,31 +1690,6 @@ octave_value::vector_value (bool force_string_conv,
                                            type_name (), "real vector"));
 }
 
-Array<double>
-octave_value::vector_value (const char *fmt, ...) const
-{
-  Array<double> retval;
-
-  try
-    {
-      retval = vector_value ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      if (fmt)
-        {
-          va_list args;
-          va_start (args, fmt);
-          verror (fmt, args);
-          va_end (args);
-        }
-
-      throw;
-    }
-
-  return retval;
-}
-
 template <class T>
 static Array<int>
 convert_to_int_array (const Array<octave_int<T> >& A)
@@ -1782,31 +1757,6 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
   return retval.reshape (make_vector_dims (retval.dims (),
                                            force_vector_conversion,
                                            type_name (), "integer vector"));
-}
-
-Array<int>
-octave_value::int_vector_value (const char *fmt, ...) const
-{
-  Array<int> retval;
-
-  try
-    {
-      retval = int_vector_value ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      if (fmt)
-        {
-          va_list args;
-          va_start (args, fmt);
-          verror (fmt, args);
-          va_end (args);
-        }
-
-      throw;
-    }
-
-  return retval;
 }
 
 template <class T>
@@ -1890,31 +1840,6 @@ octave_value::complex_vector_value (bool force_string_conv,
                                            type_name (), "complex vector"));
 }
 
-Array<Complex>
-octave_value::complex_vector_value (const char *fmt, ...) const
-{
-  Array<Complex> retval;
-
-  try
-    {
-      retval = complex_vector_value ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      if (fmt)
-        {
-          va_list args;
-          va_start (args, fmt);
-          verror (fmt, args);
-          va_end (args);
-        }
-
-      throw;
-    }
-
-  return retval;
-}
-
 FloatColumnVector
 octave_value::float_column_vector_value (bool force_string_conv,
                                          bool frc_vec_conv) const
@@ -1959,31 +1884,6 @@ octave_value::float_vector_value (bool force_string_conv,
                                            type_name (), "real vector"));
 }
 
-Array<float>
-octave_value::float_vector_value (const char *fmt, ...) const
-{
-  Array<float> retval;
-
-  try
-    {
-      retval = float_vector_value ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      if (fmt)
-        {
-          va_list args;
-          va_start (args, fmt);
-          verror (fmt, args);
-          va_end (args);
-        }
-
-      throw;
-    }
-
-  return retval;
-}
-
 Array<FloatComplex>
 octave_value::float_complex_vector_value (bool force_string_conv,
                                           bool force_vector_conversion) const
@@ -1993,31 +1893,6 @@ octave_value::float_complex_vector_value (bool force_string_conv,
   return retval.reshape (make_vector_dims (retval.dims (),
                                            force_vector_conversion,
                                            type_name (), "complex vector"));
-}
-
-Array<FloatComplex>
-octave_value::float_complex_vector_value (const char *fmt, ...) const
-{
-  Array<FloatComplex> retval;
-
-  try
-    {
-      retval = float_complex_vector_value ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      if (fmt)
-        {
-          va_list args;
-          va_start (args, fmt);
-          verror (fmt, args);
-          va_end (args);
-        }
-
-      throw;
-    }
-
-  return retval;
 }
 
 octave_value

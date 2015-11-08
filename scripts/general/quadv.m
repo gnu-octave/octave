@@ -35,8 +35,8 @@
 ## @var{a} and @var{b} are the lower and upper limits of integration.  Both
 ## limits must be finite.
 ##
-## The optional argument @var{tol} defines the tolerance used to stop the
-## adaptation procedure.  The default value is 1e-6.
+## The optional argument @var{tol} defines the absolute tolerance used to stop
+## the adaptation procedure.  The default value is 1e-6.
 ##
 ## The algorithm used by @code{quadv} involves recursively subdividing the
 ## integration interval and applying Simpson's rule on each subinterval.

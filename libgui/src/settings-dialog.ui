@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,7 +52,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>570</width>
+            <width>662</width>
             <height>382</height>
            </rect>
           </property>
@@ -1461,8 +1461,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>236</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1875,8 +1875,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>203</width>
-            <height>79</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1944,8 +1944,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>368</width>
-            <height>244</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -1986,52 +1986,14 @@
                <property name="topMargin">
                 <number>10</number>
                </property>
-               <item row="3" column="0">
+               <item row="2" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_16">
                  <property name="topMargin">
                   <number>0</number>
                  </property>
                 </layout>
                </item>
-               <item row="1" column="2">
-                <widget class="QRadioButton" name="rb_sc_set2">
-                 <property name="text">
-                  <string>Use this set</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_23">
-                 <property name="text">
-                  <string>Set 1:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="4">
-                <widget class="QPushButton" name="btn_export_shortcut_set2">
-                 <property name="text">
-                  <string>Export</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QPushButton" name="btn_import_shortcut_set2">
-                 <property name="text">
-                  <string>Import</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="2">
-                <widget class="QRadioButton" name="rb_sc_set1">
-                 <property name="text">
-                  <string>Use this set</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="5">
                 <spacer name="horizontalSpacer_26">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -2044,42 +2006,19 @@
                  </property>
                 </spacer>
                </item>
-               <item row="0" column="4">
-                <widget class="QPushButton" name="btn_export_shortcut_set1">
-                 <property name="text">
-                  <string>Export</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="3">
-                <widget class="QPushButton" name="btn_import_shortcut_set1">
+               <item row="0" column="0">
+                <widget class="QPushButton" name="btn_import_shortcut_set">
                  <property name="text">
                   <string>Import</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_24">
+               <item row="0" column="1">
+                <widget class="QPushButton" name="btn_export_shortcut_set">
                  <property name="text">
-                  <string>Set 2:</string>
+                  <string>Export</string>
                  </property>
                 </widget>
-               </item>
-               <item row="0" column="1">
-                <spacer name="horizontalSpacer_33">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
               </layout>
              </item>
@@ -2128,7 +2067,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="columnCount">
-                  <number>5</number>
+                  <number>3</number>
                  </property>
                  <attribute name="headerCascadingSectionResizes">
                   <bool>false</bool>
@@ -2157,27 +2096,12 @@
                  </column>
                  <column>
                   <property name="text">
-                   <string>Set 1 Default</string>
+                   <string>Default</string>
                   </property>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Set 1 Actual</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Set 2 Default</string>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <italic>false</italic>
-                   </font>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Set 2 Actual</string>
+                   <string>Actual</string>
                   </property>
                  </column>
                 </widget>
@@ -2207,8 +2131,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>529</width>
-            <height>204</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

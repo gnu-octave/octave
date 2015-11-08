@@ -55,10 +55,8 @@ private slots:
   void button_clicked (QAbstractButton *button);
 
   // slots for import/export-buttons of shortcut sets
-  void import_shortcut_set1 ();
-  void export_shortcut_set1 ();
-  void import_shortcut_set2 ();
-  void export_shortcut_set2 ();
+  void import_shortcut_set ();
+  void export_shortcut_set ();
 
 private:
   Ui::settings_dialog * ui;

@@ -49,9 +49,10 @@
 ## @var{f}.  To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices ([]).
 ##
-## The result of the integration is returned in @var{q}
+## The result of the integration is returned in @var{q}.
 ##
-## @var{nfun} indicates the number of function evaluations that were made.
+## The optional output @var{nfun} indicates the total number of function
+## evaluations performed.
 ##
 ## Note: @code{quadv} is written in Octave's scripting language and can be
 ## used recursively in @code{dblquad} and @code{triplequad}, unlike the
@@ -102,17 +103,17 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = [], varargin)
                                 tol, trace, varargin{:});
 
   if (nfun > 10_000)
-    warning ("quadv: maximum iteration count reached");
+    warning ("quadv: maximum iteration count reached -- possible singular integral");
   elseif (any (! isfinite (q(:))))
     warning ("quadv: infinite or NaN function evaluations were returned");
   elseif (hmin < (b - a) * eps)
-    warning ("quadv: minimum step size reached -- possibly singular integral");
+    warning ("quadv: minimum step size reached -- possible singular integral");
   endif
 
 endfunction
 
-function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
-                                       nfun, hmin, tol, trace, varargin)
+function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, nfun, hmin,
+                                       tol, trace, varargin)
   if (nfun > 10_000)
     q = q0;
   else

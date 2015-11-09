@@ -10,15 +10,14 @@ Summary of important user-visible changes for version 4.2:
  ** The parser has been extended to understand binary numbers which begin
     with the prefix '0b' or '0B'.  The value returned is Octave's default
     numeric class of double, not at unsigned integer class.  Therefore numbers
-    greater than flintmax (2^53) will lose some precision.
+    greater than flintmax, i.e., 2^53, will lose some precision.
 
     Examples: 0b101 == 5 or 0B1100_0001 == 0xC1
 
- ** The default colormap is now set to 'viridis' which is also
-    the default colormap in matplotlib. This new colormap fixes
-    some of the main issues with the old default colormap 'jet'
-    such as its bad 'luminance profile' and is also more similar
-    to Matlab's new default colormap 'parula'.
+ ** The default colormap is now set to "viridis" which is also the default
+    colormap in matplotlib.  This new colormap fixes some of the main issues
+    with the old default colormap "jet" such as its bad "luminance profile"
+    and is also more similar to Matlab's new default colormap "parula".
 
  ** Octal ('\NNN') and hex ('\xNN') escape sequences in single quoted
     strings are now interpreted by the function do_string_escapes().
@@ -52,6 +51,12 @@ Summary of important user-visible changes for version 4.2:
 
  ** The surfnorm function now returns unnormalized (magnitude != 1) normal
     vectors for compatibility with Matlab.
+
+ ** The quadl function now uses an absolute, rather than relative, tolerance
+    for Matlab compatibility.  The default tolerance is 1e-6 which may result
+    in lower precision results than previous versions of Octave which used
+    eps as the relative tolerance.  The quadl function has also been extended
+    to return a second output with the total number of function evaluations.
 
  ** Other new functions added in 4.2:
 

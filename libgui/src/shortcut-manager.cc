@@ -316,6 +316,13 @@ shortcut_manager::do_init_data ()
         QKeySequence::HelpContents);
   init (tr ("Document on Keyword"), "editor_help:doc_keyword",
         QKeySequence (Qt::SHIFT + Qt::Key_F1));
+
+  // tab navigation
+  init (tr ("Switch to left tab"), "editor_tabs:switch_left_tab",
+        QKeySequence (ctrl + Qt::Key_PageDown));
+  init (tr ("Switch to right tab"), "editor_tabs:switch_right_tab",
+        QKeySequence (ctrl + Qt::Key_PageUp));
+
 }
 
 void
@@ -385,6 +392,8 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   editor_run->setText (0, tr ("Run"));
   QTreeWidgetItem *editor_help = new QTreeWidgetItem (editor);
   editor_help->setText (0, tr ("Help"));
+  QTreeWidgetItem *editor_tabs = new QTreeWidgetItem (editor);
+  editor_tabs->setText (0, tr ("Tabs"));
 
   _level_hash["editor_file"] = editor_file;
   _level_hash["editor_edit"] = editor_edit;
@@ -392,6 +401,7 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   _level_hash["editor_debug"] = editor_debug;
   _level_hash["editor_run"] = editor_run;
   _level_hash["editor_help"] = editor_help;
+  _level_hash["editor_tabs"] = editor_tabs;
 
   connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
            this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));

@@ -234,6 +234,9 @@ private slots:
   void zoom_out (bool);
   void zoom_normal (bool);
 
+  void switch_left_tab ();
+  void switch_right_tab ();
+
   void create_context_menu (QMenu *);
   void edit_status_update (bool, bool);
 
@@ -252,6 +255,8 @@ private:
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
   void toggle_preference (const QString& preference, bool def);
+
+  void switch_tab (int direction);
 
   bool editor_tab_has_focus ();
 
@@ -337,6 +342,9 @@ private:
 
   QAction *_preferences_action;
   QAction *_styles_preferences_action;
+
+  QAction *_switch_left_tab_action;
+  QAction *_switch_right_tab_action;
 
   QAction *_toggle_breakpoint_action;
   QAction *_next_breakpoint_action;

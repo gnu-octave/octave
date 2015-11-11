@@ -1206,9 +1206,19 @@ QAction*
 file_editor::add_action (QMenu *menu, const QIcon &icon, const QString &text,
                          const char *member)
 {
-  QAction *a = menu->addAction (icon, text, this, member);
+  QAction *a;
+
+  if (menu)
+    a = menu->addAction (icon, text, this, member);
+  else
+    {
+      a = new QAction (this);
+      connect (a, SIGNAL (triggered ()), this, member);
+    }
+
   addAction (a);  // important for shortcut context
   a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+
   return a;
 }
 
@@ -1518,6 +1528,13 @@ file_editor::construct (void)
           tr ("&Help on Keyword"), SLOT (request_context_help (bool)));
   _context_doc_action = add_action (_help_menu, QIcon (),
           tr ("&Documentation on Keyword"), SLOT (request_context_doc (bool)));
+
+  // tab navigation (no menu, only actions)
+
+  _switch_left_tab_action = add_action (0, QIcon (), "",
+                                        SLOT (switch_left_tab ()));
+  _switch_right_tab_action = add_action (0, QIcon (), "",
+                                         SLOT (switch_right_tab ()));
 
   // toolbar
 
@@ -1876,6 +1893,10 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_context_help_action, "editor_help:help_keyword");
   shortcut_manager::set_shortcut (_context_doc_action,  "editor_help:doc_keyword");
 
+  // Tab navigation without menu entries
+  shortcut_manager::set_shortcut (_switch_left_tab_action, "editor_tabs:switch_left_tab");
+  shortcut_manager::set_shortcut (_switch_right_tab_action, "editor_tabs:switch_right_tab");
+
 }
 
 void
@@ -2002,5 +2023,32 @@ file_editor::dropEvent (QDropEvent *e)
         }
       }
   }
+
+// slots for tab navigation
+void
+file_editor::switch_left_tab ()
+{
+  switch_tab (-1);
+}
+void
+file_editor::switch_right_tab ()
+{
+  switch_tab (1);
+}
+void
+file_editor::switch_tab (int direction)
+{
+  int tabs = _tab_widget->count ();
+
+  if (tabs < 2)
+    return;
+
+  int new_index = _tab_widget->currentIndex () + direction;
+
+  if (new_index < 0 || new_index >= tabs)
+    new_index = new_index - direction*tabs;
+
+  _tab_widget->setCurrentIndex (new_index);
+}
 
 #endif

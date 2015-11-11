@@ -1382,12 +1382,6 @@ OV_COMP_BINOP_FN (op_mul_herm)
 
 extern OCTINTERP_API void install_types (void);
 
-// This will eventually go away, but for now it can be used to
-// simplify the transition to the new octave_value class hierarchy,
-// which uses octave_base_value instead of octave_value for the type
-// of octave_value::rep.
-#define OV_REP_TYPE octave_base_value
-
 // Templated value extractors.
 template<class Value>
 inline Value octave_value_extract (const octave_value&)

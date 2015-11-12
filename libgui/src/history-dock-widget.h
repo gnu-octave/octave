@@ -74,6 +74,8 @@ private slots:
   void pasteClipboard ();
   void selectAll ();
 
+  virtual void handle_visibility (bool visible);
+
 private:
 
   void construct ();

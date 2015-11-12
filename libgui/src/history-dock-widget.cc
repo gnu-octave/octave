@@ -346,3 +346,14 @@ history_dock_widget::selectAll ()
       _history_list_view->selectAll ();
     }
 }
+
+void history_dock_widget::handle_visibility (bool visible)
+{
+  octave_dock_widget::handle_visibility (visible);
+
+  if (visible)
+    {
+      int filter_state = _filter_checkbox->isChecked ();
+      filter_activate (filter_state);
+    }
+}

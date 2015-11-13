@@ -50,13 +50,13 @@ DEFUN (__dispatch__, args, nargout,
     {
       std::string f, r, t;
 
-      f = args(0).string_value ("__dispatch__: first argument must be a function name");
+      f = args(0).xstring_value ("__dispatch__: first argument must be a function name");
 
       if (nargin > 1)
-        r = args(1).string_value ("__dispatch__: second argument must be a function name");
+        r = args(1).xstring_value ("__dispatch__: second argument must be a function name");
 
       if (nargin > 2)
-        t = args(2).string_value ("__dispatch__: third argument must be a type name");
+        t = args(2).xstring_value ("__dispatch__: third argument must be a type name");
 
       if (nargin == 1)
         {

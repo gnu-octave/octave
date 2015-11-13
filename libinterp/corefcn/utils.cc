@@ -393,7 +393,7 @@ If no files are found, return an empty cell array.\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      std::string path = args(0).string_value ("file_in_path: PATH must be a string");
+      std::string path = args(0).xstring_value ("file_in_path: PATH must be a string");
 
       string_vector names = args(1).all_strings ();
 
@@ -756,7 +756,7 @@ Escape sequences begin with a leading backslash\n\
 
   if (nargin == 1)
     {
-      std::string str = args(0).string_value ("do_string_escapes: STRING argument must be of type string");
+      std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
 
       retval = do_string_escapes (str);
     }
@@ -899,7 +899,7 @@ replaces the unprintable alert character with its printable representation.\n\
 
   if (nargin == 1)
     {
-      std::string str = args(0).string_value ("undo_string_escapes: S argument must be a string");
+      std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");
 
       retval = undo_string_escapes (str);
     }
@@ -995,7 +995,7 @@ No check is done for the existence of @var{file}.\n\
 
   if (args.length () == 1)
     {
-      std::string nm = args(0).string_value ("make_absolute_filename: FILE argument must be a file name");
+      std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a file name");
 
       retval = octave_env::make_absolute (nm);
     }
@@ -1037,7 +1037,7 @@ all name matches rather than just the first.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      dir = args(0).string_value ("dir_in_loadpath: DIR must be a directory name");
+      dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
 
       if (nargin == 1)
         retval = load_path::find_dir (dir);

@@ -522,7 +522,7 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("fromName: invalid class name, expected a string value");
+      std::string name = args(0).xstring_value ("fromName: invalid class name, expected a string value");
 
       retval(0) = to_ov (lookup_class (name));
     }
@@ -543,7 +543,7 @@ class_fevalStatic (const octave_value_list& args, int nargout)
 
       if (! error_state)
         {
-          std::string meth_name = args(1).string_value ("fevalStatic: invalid method name, expected a string value");
+          std::string meth_name = args(1).xstring_value ("fevalStatic: invalid method name, expected a string value");
 
           cdef_method meth = cls.find_method (meth_name);
 
@@ -580,7 +580,7 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
 
       if (! error_state)
         {
-          std::string prop_name = args(1).string_value ("getConstant: invalid property name, expected a string value");
+          std::string prop_name = args(1).xstring_value ("getConstant: invalid property name, expected a string value");
 
           cdef_property prop = cls.find_property (prop_name);
 
@@ -2394,7 +2394,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 
       if (idx.front ().length () == 1)
         {
-          std::string nm = idx.front ()(0).string_value ("invalid meta.class indexing, expected a method or property name");
+          std::string nm = idx.front ()(0).xstring_value ("invalid meta.class indexing, expected a method or property name");
 
           cdef_method meth = find_method (nm);
 
@@ -3281,7 +3281,7 @@ package_fromName (const octave_value_list& args, int /* nargout */)
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("fromName: invalid package name, expected a string value");
+      std::string name = args(0).xstring_value ("fromName: invalid package name, expected a string value");
 
       retval(0) = to_ov (lookup_package (name));
     }
@@ -3438,7 +3438,7 @@ cdef_package::cdef_package_rep::meta_subsref
     case '.':
       if (idx.front ().length () == 1)
         {
-          std::string nm = idx.front ()(0).string_value ("invalid meta.package indexing, expected a symbol name");
+          std::string nm = idx.front ()(0).xstring_value ("invalid meta.package indexing, expected a symbol name");
 
 #if DEBUG_TRACE
           std::cerr << "meta.package query: " << nm << std::endl;
@@ -3823,7 +3823,7 @@ DEFUN (__meta_get_package__, args, , "")
 
   if (args.length () == 1)
     {
-      std::string cname = args(0).string_value ("invalid package name, expected a string value");
+      std::string cname = args(0).xstring_value ("invalid package name, expected a string value");
 
       retval = to_ov (lookup_package (cname));
     }
@@ -3858,7 +3858,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string cls = args(0).string_value ("invalid class name, expected a string value");
+      std::string cls = args(0).xstring_value ("invalid class name, expected a string value");
 
       retval = to_ov (lookup_class (cls));
     }

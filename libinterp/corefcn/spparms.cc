@@ -167,7 +167,7 @@ longer running time.\n\
     }
   else if (nargin == 2)
     {
-      std::string str = args(0).string_value ("spparms: first argument must be a string");
+      std::string str = args(0).xstring_value ("spparms: first argument must be a string");
 
       double val = args(1).double_value ();
 

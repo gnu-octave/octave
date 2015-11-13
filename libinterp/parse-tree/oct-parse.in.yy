@@ -4548,7 +4548,7 @@ the file name and the extension.\n\
   std::string arg;
 
   if (nargin == 1)
-    arg = args(0).string_value ("mfilename: expecting argument to be a character string");
+    arg = args(0).xstring_value ("mfilename: expecting argument to be a character string");
 
   std::string fname;
 
@@ -4599,12 +4599,12 @@ requiring the file to be named @file{@var{file}.m}.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string file_name = args(0).string_value ("source: expecting file name as argument");
+      std::string file_name = args(0).xstring_value ("source: expecting file name as argument");
 
       std::string context;
 
       if (nargin == 2)
-        context = args(1).string_value ("source: expecting context to be character string");
+        context = args(1).xstring_value ("source: expecting context to be character string");
 
       source_file (file_name, context);
     }
@@ -4785,7 +4785,7 @@ builtin (\"sin\", 0)\n\
 
   if (nargin > 0)
     {
-      const std::string name (args(0).string_value ("builtin: function name (F) must be a string"));
+      const std::string name (args(0).xstring_value ("builtin: function name (F) must be a string"));
 
       octave_value fcn = symbol_table::builtin_find (name);
 
@@ -4885,7 +4885,7 @@ static octave_value_list
 eval_string (const octave_value& arg, bool silent, int& parse_status,
              int nargout)
 {
-  std::string s = arg.string_value ("eval: expecting std::string argument");
+  std::string s = arg.xstring_value ("eval: expecting std::string argument");
 
   return eval_string (s, silent, parse_status, nargout);
 }
@@ -5051,7 +5051,7 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 
   if (nargin == 3)
     {
-      std::string context = args(0).string_value ("assignin: CONTEXT must be a string");
+      std::string context = args(0).xstring_value ("assignin: CONTEXT must be a string");
 
       unwind_protect frame;
 
@@ -5064,7 +5064,7 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 
       frame.add_fcn (octave_call_stack::pop);
 
-      std::string nm = args(1).string_value ("assignin: VARNAME must be a string");
+      std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
 
       if (valid_identifier (nm))
         symbol_table::assign (nm, args(2));
@@ -5092,7 +5092,7 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 
   if (nargin > 1)
     {
-      std::string context = args(0).string_value ("evalin: CONTEXT must be a string");
+      std::string context = args(0).xstring_value ("evalin: CONTEXT must be a string");
 
       unwind_protect frame;
 
@@ -5192,7 +5192,7 @@ Undocumented internal function.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string file = args(0).string_value ("__parse_file__: expecting file name as argument");
+      std::string file = args(0).xstring_value ("__parse_file__: expecting file name as argument");
 
       std::string full_file = octave_env::make_absolute (file);
 

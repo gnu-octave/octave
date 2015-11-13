@@ -538,9 +538,9 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
   fid = -1;
 
-  std::string name = tc_name.string_value ("%s: file name must be a string", fcn);
-  std::string mode = tc_mode.string_value ("%s: file mode must be a string", fcn);
-  std::string arch = tc_arch.string_value ("%s: architecture type must be a string", fcn);
+  std::string name = tc_name.xstring_value ("%s: file name must be a string", fcn);
+  std::string mode = tc_mode.xstring_value ("%s: file mode must be a string", fcn);
+  std::string arch = tc_arch.xstring_value ("%s: architecture type must be a string", fcn);
 
   retval = do_stream_open (name, mode, arch, fid);
 
@@ -1325,7 +1325,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   if (! error_state)
     {
-      std::string prec = prec_arg.string_value ("fread: PRECISION must be a string");
+      std::string prec = prec_arg.xstring_value ("fread: PRECISION must be a string");
 
       int block_size = 1;
       oct_data_conv::data_type input_type;
@@ -1340,7 +1340,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
           if (! error_state)
             {
-              std::string arch = arch_arg.string_value ("fread: ARCH architecture type must be a string");
+              std::string arch = arch_arg.xstring_value ("fread: ARCH architecture type must be a string");
 
               oct_mach_info::float_format flt_fmt
                 = oct_mach_info::string_to_float_format (arch);
@@ -1586,7 +1586,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
 {
   int retval = -1;
 
-  std::string prec = prec_arg.string_value ("fwrite: PRECISION must be a string");
+  std::string prec = prec_arg.xstring_value ("fwrite: PRECISION must be a string");
 
   int block_size = 1;
   oct_data_conv::data_type output_type;
@@ -1599,7 +1599,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
       if (! error_state)
         {
-          std::string arch = arch_arg.string_value ("fwrite: ARCH architecture type must be a string");
+          std::string arch = arch_arg.xstring_value ("fwrite: ARCH architecture type must be a string");
 
           oct_mach_info::float_format flt_fmt
             = oct_mach_info::string_to_float_format (arch);
@@ -1801,8 +1801,8 @@ endwhile\n\
 
   if (nargin == 2)
     {
-      std::string name = args(0).string_value ("popen: COMMAND must be a string");
-      std::string mode = args(1).string_value ("popen: MODE must be a string");
+      std::string name = args(0).xstring_value ("popen: COMMAND must be a string");
+      std::string mode = args(1).xstring_value ("popen: MODE must be a string");
 
       if (mode == "r")
         {
@@ -1875,12 +1875,12 @@ see @code{tmpfile}.\n\
       std::string dir;
 
       if (len > 0)
-        dir = args(0).string_value ("tempname: DIR must be a string");
+        dir = args(0).xstring_value ("tempname: DIR must be a string");
 
       std::string pfx ("oct-");
 
       if (len > 1)
-        pfx = args(1).string_value ("tempname: PREFIX must be a string");
+        pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
 
       retval = octave_tempnam (dir, pfx);
     }
@@ -2023,7 +2023,7 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string tmpl8 = args(0).string_value ("mkstemp: TEMPLATE argument must be a string");
+      std::string tmpl8 = args(0).xstring_value ("mkstemp: TEMPLATE argument must be a string");
 
       OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
       strcpy (tmp, tmpl8.c_str ());

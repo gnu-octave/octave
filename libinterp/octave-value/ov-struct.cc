@@ -803,7 +803,7 @@ octave_struct::load_ascii (std::istream& is)
               if (!is)
                 break;
 
-              Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading struct elements") : Cell (t2);
+              Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
 
               m.setfield (nm, tcell);
             }
@@ -925,7 +925,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           if (!is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading struct elements") : Cell (t2);
+          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
 
           m.setfield (nm, tcell);
         }
@@ -1022,7 +1022,7 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading struct elements") : Cell (t2);
+      Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
 
       m.setfield (dsub.name, tcell);
 
@@ -1814,7 +1814,7 @@ produces a struct @strong{array}.\n\
 
       if (nargin == 2)
         {
-          Array<std::string> cstr = args(1).cellstr_value ("struct: expecting cell array of field names as second argument");
+          Array<std::string> cstr = args(1).xcellstr_value ("struct: expecting cell array of field names as second argument");
 
           retval = octave_map (args(0).dims (), cstr);
         }

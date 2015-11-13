@@ -122,7 +122,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string file = args(0).string_value ("expecting file name as argument");
+      std::string file = args(0).xstring_value ("expecting file name as argument");
 
       flush_octave_stdout ();
 
@@ -130,7 +130,7 @@ Undocumented internal function.\n\
     }
   else if (args.length () == 2)
     {
-      std::string file = args(0).string_value ("expecting file name as first argument");
+      std::string file = args(0).xstring_value ("expecting file name as first argument");
 
       flush_octave_stdout ();
 
@@ -150,9 +150,9 @@ Undocumented internal function.\n\
 
   if (args.length () == 3)
     {
-      std::string dlg = args(0).string_value ("invalid arguments");
-      std::string msg = args(1).string_value ("invalid arguments");
-      std::string title = args(2).string_value ("invalid arguments");
+      std::string dlg = args(0).xstring_value ("invalid arguments");
+      std::string msg = args(1).xstring_value ("invalid arguments");
+      std::string title = args(2).xstring_value ("invalid arguments");
 
       flush_octave_stdout ();
 
@@ -172,12 +172,12 @@ Undocumented internal function.\n\
 
   if (args.length () == 6)
     {
-      std::string msg = args(0).string_value ("invalid arguments");
-      std::string title = args(1).string_value ("invalid arguments");
-      std::string btn1 = args(2).string_value ("invalid arguments");
-      std::string btn2 = args(3).string_value ("invalid arguments");
-      std::string btn3 = args(4).string_value ("invalid arguments");
-      std::string btndef = args(5).string_value ("invalid arguments");
+      std::string msg = args(0).xstring_value ("invalid arguments");
+      std::string title = args(1).xstring_value ("invalid arguments");
+      std::string btn1 = args(2).xstring_value ("invalid arguments");
+      std::string btn2 = args(3).xstring_value ("invalid arguments");
+      std::string btn3 = args(4).xstring_value ("invalid arguments");
+      std::string btndef = args(5).xstring_value ("invalid arguments");
 
       flush_octave_stdout ();
 

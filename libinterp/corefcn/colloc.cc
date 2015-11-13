@@ -80,7 +80,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
 
   for (int i = 1; i < nargin; i++)
     {
-      std::string s = args(i).string_value ("colloc: expecting string argument \"left\" or \"right\"");
+      std::string s = args(i).xstring_value ("colloc: expecting string argument \"left\" or \"right\"");
 
       if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
           || s == "right")

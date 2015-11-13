@@ -215,7 +215,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
             {
               // Ok, we're changing the matrix type
 
-              std::string str_typ = args(1).string_value ("matrix_type: TYPE must be a string");
+              std::string str_typ = args(1).xstring_value ("matrix_type: TYPE must be a string");
 
               // FIXME: why do I have to explicitly call the constructor?
               MatrixType mattyp = MatrixType ();
@@ -393,7 +393,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
             {
               // Ok, we're changing the matrix type
 
-              std::string str_typ = args(1).string_value ("matrix_type: TYPE must be a string");
+              std::string str_typ = args(1).xstring_value ("matrix_type: TYPE must be a string");
 
               // FIXME: why do I have to explicitly call the constructor?
               MatrixType mattyp = MatrixType (MatrixType::Unknown, true);

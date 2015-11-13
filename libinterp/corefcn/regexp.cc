@@ -288,7 +288,7 @@ parse_options (regexp::opts& options, const octave_value_list& args,
     {
       std::string str;
 
-      str = args(i).string_value ("%s: optional arguments must be strings", who.c_str ());
+      str = args(i).xstring_value ("%s: optional arguments must be strings", who.c_str ());
 
       std::transform (str.begin (), str.end (), str.begin (), tolower);
 

@@ -473,7 +473,7 @@ Year (1970-).\n\
 
   if (args.length () == 2)
     {
-      std::string fmt = args(0).string_value ("strftime: FMT must be a string");
+      std::string fmt = args(0).xstring_value ("strftime: FMT must be a string");
 
       octave_scalar_map map = args(1).scalar_map_value ();
 
@@ -524,9 +524,9 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   if (args.length () == 2)
     {
-      std::string str = args(0).string_value ("strptime: argument STR must be a string");
+      std::string str = args(0).xstring_value ("strptime: argument STR must be a string");
 
-      std::string fmt = args(1).string_value ("strptime: FMT must be a string");
+      std::string fmt = args(1).xstring_value ("strptime: FMT must be a string");
 
       octave_strptime t (str, fmt);
 

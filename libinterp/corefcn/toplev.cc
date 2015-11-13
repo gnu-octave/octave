@@ -1038,7 +1038,7 @@ command shell that is started to run the command.\n\
 
       if (nargin == 3)
         {
-          std::string type_str = args(2).string_value ("system: TYPE must be a string");
+          std::string type_str = args(2).xstring_value ("system: TYPE must be a string");
 
           if (type_str == "sync")
             type = et_sync;
@@ -1068,7 +1068,7 @@ command shell that is started to run the command.\n\
           return retval;
         }
 
-      std::string cmd_str = args(0).string_value ("system: expecting string as first argument");
+      std::string cmd_str = args(0).xstring_value ("system: expecting string as first argument");
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
       // Work around weird double-quote handling on Windows systems.
@@ -1223,7 +1223,7 @@ from the list, so if a function was placed in the list multiple times with\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string arg = args(0).string_value ("atexit: FCN argument must be a string");
+      std::string arg = args(0).xstring_value ("atexit: FCN argument must be a string");
 
       bool add_mode = true;
 

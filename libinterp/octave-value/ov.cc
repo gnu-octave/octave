@@ -1550,17 +1550,6 @@ octave_value::cell_value (void) const
   return rep->cell_value ();
 }
 
-Cell
-octave_value::cell_value (const char *fmt, ...) const
-{
-  Cell retval;
-  va_list args;
-  va_start (args,fmt);
-  retval = rep->cell_value (fmt, args);
-  va_end (args);
-  return retval;
-}
-
 // Define the idx_type_value function here instead of in ov.h to avoid
 // needing definitions for the SIZEOF_X macros in ov.h.
 
@@ -1894,6 +1883,42 @@ octave_value::float_complex_vector_value (bool force_string_conv,
                                            force_vector_conversion,
                                            type_name (), "complex vector"));
 }
+
+// NAME can't always be "x ## FCN" because some of the original
+// value extraction functions perform implicit type conversions that we
+// wish to avoid for these functions.
+
+#define XVALUE_EXTRACTOR(TYPE, NAME, FCN) \
+  TYPE \
+  octave_value::NAME (const char *fmt, ...) const \
+  { \
+    TYPE retval; \
+ \
+    try \
+      { \
+        retval = FCN (); \
+      } \
+    catch (const octave_execution_exception&) \
+      { \
+        if (fmt) \
+          { \
+            va_list args; \
+            va_start (args, fmt); \
+            verror (fmt, args); \
+            va_end (args); \
+          } \
+ \
+        throw; \
+      } \
+ \
+    return retval; \
+  }
+
+XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
+XVALUE_EXTRACTOR (std::string, xstring_value, rep->xstring_value)
+XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
+
+#undef XVALUE_EXTRACTOR
 
 octave_value
 octave_value::storable_value (void) const
@@ -2845,7 +2870,7 @@ decode_subscripts (const char* name, const octave_value& arg,
 
       for (int k = 0; k < nel; k++)
         {
-          std::string item = type(k).string_value ("%s: type(%d) must be a string", name, k+1);
+          std::string item = type(k).xstring_value ("%s: type(%d) must be a string", name, k+1);
 
           if (item == "{}")
             type_string[k] = '{';

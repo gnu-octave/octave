@@ -195,7 +195,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string file = args(0).string_value ("__open_with_system_app__: argument must be a file name");
+      std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a file name");
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
       HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
@@ -645,10 +645,10 @@ string.\n\
 
   if (nargin == 2 || nargin == 1)
     {
-      std::string var = args(0).string_value ("setenv: VAR must be a string");
+      std::string var = args(0).xstring_value ("setenv: VAR must be a string");
 
       std::string val = (nargin == 2
-                         ? args(1).string_value ("setenv: VALUE must be a string")
+                         ? args(1).xstring_value ("setenv: VALUE must be a string")
                          : std::string ());
 
       octave_env::putenv (var, val);

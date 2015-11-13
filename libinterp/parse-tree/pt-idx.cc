@@ -209,7 +209,7 @@ tree_index_expression::get_struct_index
         {
           octave_value t = df->rvalue1 ();
 
-          fn = t.string_value ("dynamic structure field names must be strings");
+          fn = t.xstring_value ("dynamic structure field names must be strings");
         }
       else
         panic_impossible ();

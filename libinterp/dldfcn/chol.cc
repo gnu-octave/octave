@@ -162,7 +162,7 @@ sparse matrices.\n\
   int n = 1;
   while (n < nargin)
     {
-      std::string tmp = args(n++).string_value ("chol: expecting trailing string arguments");
+      std::string tmp = args(n++).xstring_value ("chol: expecting trailing string arguments");
 
       if (tmp.compare ("vector") == 0)
         vecout = true;

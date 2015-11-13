@@ -189,7 +189,7 @@ error message.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string exec_file = args(0).string_value ("exec: FILE must be a string");
+      std::string exec_file = args(0).xstring_value ("exec: FILE must be a string");
 
       string_vector exec_args;
 
@@ -293,7 +293,7 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      std::string exec_file = args(0).string_value ("popen2: COMMAND argument must be a string");
+      std::string exec_file = args(0).xstring_value ("popen2: COMMAND argument must be a string");
 
       string_vector arg_list;
 
@@ -776,7 +776,7 @@ The function outputs are described in the documentation for @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      std::string fname = args(0).string_value ("lstat: NAME must be a string");
+      std::string fname = args(0).xstring_value ("lstat: NAME must be a string");
 
       file_stat fs (fname, false);
 
@@ -843,7 +843,7 @@ error message.\n\
 
   if (nargin == 2)
     {
-      std::string name = args(0).string_value ("mkfifo: FILE must be a string");
+      std::string name = args(0).xstring_value ("mkfifo: FILE must be a string");
 
       int octal_mode = args(1).int_value ();
 
@@ -1052,7 +1052,7 @@ For example:\n\
         }
       else
         {
-          std::string fname = args(0).string_value ("stat: NAME must be a string");
+          std::string fname = args(0).xstring_value ("stat: NAME must be a string");
 
           file_stat fs (fname);
 
@@ -1332,7 +1332,7 @@ error message.\n\
 
   if (nargin == 1)
     {
-      std::string name = args(0).string_value ("unlink: FILE must be a string");
+      std::string name = args(0).xstring_value ("unlink: FILE must be a string");
 
       std::string msg;
 
@@ -1648,7 +1648,7 @@ If the file does not exist the empty string (\"\") is returned.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("canonicalize_file_name: NAME must be a string");
+      std::string name = args(0).xstring_value ("canonicalize_file_name: NAME must be a string");
       std::string msg;
 
       std::string result = octave_canonicalize_file_name (name, msg);

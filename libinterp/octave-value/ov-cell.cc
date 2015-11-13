@@ -480,7 +480,10 @@ octave_cell::sort (octave_idx_type dim, sortmode mode) const
 {
   octave_value retval;
 
-  Array<std::string> tmp = cellstr_value ("sort: only cell arrays of character strings may be sorted");
+  if (! is_cellstr ())
+    error ("sort: only cell arrays of character strings may be sorted");
+
+  Array<std::string> tmp = cellstr_value ();
 
   tmp = tmp.sort (dim, mode);
 
@@ -496,7 +499,10 @@ octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 {
   octave_value retval;
 
-  Array<std::string> tmp = cellstr_value ("sort: only cell arrays of character strings may be sorted");
+  if (! is_cellstr ())
+    error ("sort: only cell arrays of character strings may be sorted");
+
+  Array<std::string> tmp = cellstr_value ();
 
   tmp = tmp.sort (sidx, dim, mode);
 
@@ -511,7 +517,10 @@ octave_cell::is_sorted (sortmode mode) const
 {
   sortmode retval = UNSORTED;
 
-  Array<std::string> tmp = cellstr_value ("issorted: A is not a cell array of strings");
+  if (! is_cellstr ())
+    error ("issorted: A is not a cell array of strings");
+
+  Array<std::string> tmp = cellstr_value ();
 
   retval = tmp.is_sorted (mode);
 
@@ -524,7 +533,10 @@ octave_cell::sort_rows_idx (sortmode mode) const
 {
   Array<octave_idx_type> retval;
 
-  Array<std::string> tmp = cellstr_value ("sortrows: only cell arrays of character strings may be sorted");
+  if (! is_cellstr ())
+    error ("sortrows: only cell arrays of character strings may be sorted");
+
+  Array<std::string> tmp = cellstr_value ();
 
   retval = tmp.sort_rows_idx (mode);
 
@@ -536,7 +548,10 @@ octave_cell::is_sorted_rows (sortmode mode) const
 {
   sortmode retval = UNSORTED;
 
-  Array<std::string> tmp = cellstr_value ("issorted: A is not a cell array of strings");
+  if (! is_cellstr ())
+    error ("issorted: A is not a cell array of strings");
+
+  Array<std::string> tmp = cellstr_value ();
 
   retval = tmp.is_sorted_rows (mode);
 
@@ -632,49 +647,6 @@ octave_cell::cellstr_value (void) const
     }
   else
     error ("invalid conversion from cell array to array of strings");
-
-  return retval;
-}
-
-Array<std::string>
-octave_cell::cellstr_value (const char *fmt, ...) const
-{
-  Array<std::string> retval;
-  va_list args;
-  retval = cellstr_value (fmt, args);
-  va_end (args);
-  return retval;
-}
-
-Array<std::string>
-octave_cell::cellstr_value (const char *fmt, va_list args) const
-{
-  Array<std::string> retval;
-
-  if (! fmt)
-    return cellstr_value ();
-
-  bool conversion_error = false;
-
-  if (is_cellstr ())
-    {
-      try
-        {
-          if (cellstr_cache->is_empty ())
-            *cellstr_cache = matrix.cellstr_value ();
-
-          retval = *cellstr_cache;
-        }
-      catch (const octave_execution_exception&)
-        {
-          conversion_error = true;
-        }
-    }
-  else
-    conversion_error = true;
-
-  if (conversion_error)
-    verror (fmt, args);
 
   return retval;
 }

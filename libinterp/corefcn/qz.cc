@@ -405,7 +405,7 @@ compatibility with @sc{matlab}.\n\
     ord_job = 'N';
   else
     {
-      std::string tmp = args(2).string_value ("qz: OPT must be a string");
+      std::string tmp = args(2).xstring_value ("qz: OPT must be a string");
 
       if (! tmp.empty ())
         ord_job = tmp[0];

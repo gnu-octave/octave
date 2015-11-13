@@ -289,7 +289,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   octave_map my_map = (obvp != this) ? obvp->map_value () : map;
 
-  std::string nm = idx(0).string_value ("invalid index for class");
+  std::string nm = idx(0).xstring_value ("invalid index for class");
 
   octave_map::const_iterator p = my_map.seek (nm);
 
@@ -650,7 +650,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 assert (key_idx.length () == 1);
 
-                std::string key = key_idx(0).string_value ("invalid index for class assignment");
+                std::string key = key_idx(0).xstring_value ("invalid index for class assignment");
 
                 octave_value u;
 
@@ -747,7 +747,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 assert (key_idx.length () == 1);
 
-                std::string key = key_idx(0).string_value ("assignment to class element failed");
+                std::string key = key_idx(0).xstring_value ("assignment to class element failed");
 
                 map.assign (idx.front (), key, t_rhs);
 
@@ -1286,7 +1286,7 @@ octave_class::load_ascii (std::istream& is)
                   if (! is)
                     break;
 
-                  Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading class elements") : Cell (t2);
+                  Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
 
                   m.assign (nm, tcell);
                 }
@@ -1423,7 +1423,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading class elements") : Cell (t2);
+          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
 
           m.assign (nm, tcell);
         }
@@ -1657,7 +1657,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.cell_value ("load: internal error loading class elements") : Cell (t2);
+      Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
 
       m.assign (dsub.name, tcell);
 
@@ -1823,7 +1823,7 @@ is derived.\n\
       // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
-      std::string id = args(1).string_value ("class: ID (class name) must be a string");
+      std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
       if (fcn)
         {
@@ -1917,7 +1917,7 @@ belongs to.\n\
 
   octave_value obj = args(0);  // not const because of find_parent_class ()
   std::string obj_cls = obj.class_name ();
-  Array<std::string> clsnames = args(1).cellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
+  Array<std::string> clsnames = args(1).xcellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
 
   boolNDArray matches (clsnames.dims (), false);
   for (octave_idx_type idx = 0; idx < clsnames.numel (); idx++)
@@ -2144,7 +2144,7 @@ This function may only be called from a class constructor.\n\
 
   for (int i = 0; i < args.length (); i++)
     {
-      std::string inf_class = args(i).string_value ("superiorto: expecting argument to be class name");
+      std::string inf_class = args(i).xstring_value ("superiorto: expecting argument to be class name");
 
       // User defined classes always have higher precedence
       // than built-in classes
@@ -2185,7 +2185,7 @@ This function may only be called from a class constructor.\n\
 
   for (int i = 0; i < args.length (); i++)
     {
-      std::string sup_class = args(i).string_value ("inferiorto: expecting argument to be class name");
+      std::string sup_class = args(i).xstring_value ("inferiorto: expecting argument to be class name");
 
       if (is_built_in_class (sup_class))
         {

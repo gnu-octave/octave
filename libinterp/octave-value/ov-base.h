@@ -481,8 +481,6 @@ public:
 
   virtual Cell cell_value (void) const;
 
-  virtual Cell cell_value (const char *fmt, va_list args) const;
-
   virtual Matrix matrix_value (bool = false) const;
 
   virtual FloatMatrix float_matrix_value (bool = false) const;
@@ -566,12 +564,7 @@ public:
 
   virtual std::string string_value (bool force = false) const;
 
-  virtual std::string string_value (const char *fmt, va_list args) const;
-
   virtual Array<std::string> cellstr_value (void) const;
-
-  virtual Array<std::string>
-  cellstr_value (const char *fmt, va_list args) const;
 
   virtual Range range_value (void) const;
 
@@ -616,6 +609,11 @@ public:
   convert_to_str_internal (bool pad, bool force, char type) const;
 
   virtual void convert_to_row_or_column_vector (void);
+
+  // The following extractor functions don't perform any implicit type
+  // conversions.
+
+  virtual std::string xstring_value () const;
 
   virtual bool print_as_scalar (void) const { return false; }
 
@@ -831,6 +829,8 @@ protected:
   void gripe_save (const char *type) const;
 
 private:
+
+  void wrong_type_arg_error (void) const;
 
   static int curr_print_indent_level;
   static bool beginning_of_line;

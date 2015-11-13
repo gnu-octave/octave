@@ -244,7 +244,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       if (nargin == 2)
         bal_job = "B";
       else
-        bal_job = args(2).string_value ("balance: OPT argument must be a string");
+        bal_job = args(2).xstring_value ("balance: OPT argument must be a string");
 
       if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
         {

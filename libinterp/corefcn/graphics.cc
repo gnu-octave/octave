@@ -1673,7 +1673,7 @@ property::create (const std::string& name, const graphics_handle& h,
         error ("addproperty: missing possible values for radio property");
       else
         {
-          std::string sv = args(0).string_value ("addproperty: invalid argument for radio property, expected a string value");
+          std::string sv = args(0).xstring_value ("addproperty: invalid argument for radio property, expected a string value");
 
           retval = property (new radio_property (name, h, sv));
 
@@ -2151,7 +2151,7 @@ graphics_object::set (const octave_value_list& args)
     {
       for (int i = 0; i < nargin; i += 2)
         {
-          caseless_str pname = args(i).string_value ("set: expecting argument %d to be a property name", i);
+          caseless_str pname = args(i).xstring_value ("set: expecting argument %d to be a property name", i);
 
           octave_value val = args(i+1);
 
@@ -10024,7 +10024,7 @@ lists respectively.\n\
 
           if (nargin > 1 && args(1).is_cellstr ())
             {
-              Array<std::string> plist = args(1).cellstr_value ("get: expecting property name or cell array of property names as second argument");
+              Array<std::string> plist = args(1).xcellstr_value ("get: expecting property name or cell array of property names as second argument");
 
               octave_idx_type plen = plist.numel ();
 
@@ -10057,7 +10057,7 @@ lists respectively.\n\
               caseless_str property;
 
               if (nargin > 1)
-                property = args(1).string_value ("get: expecting property name or cell array of property names as second argument");
+                property = args(1).xstring_value ("get: expecting property name or cell array of property names as second argument");
 
               vals.resize (dim_vector (len, 1));
 
@@ -10681,7 +10681,7 @@ Undocumented internal function.\n\
 
           if (h.ok ())
             {
-              std::string name = args(1).string_value ("__go_execute_callback__: invalid callback name");
+              std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
 
               if (nargin == 2)
                 gh_manager::execute_callback (h, name);
@@ -10855,7 +10855,7 @@ List @var{toolkit} as an available graphics toolkit.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("register_graphics_toolkit: TOOLKIT must be a string");
+      std::string name = args(0).xstring_value ("register_graphics_toolkit: TOOLKIT must be a string");
 
       gtk_manager::register_toolkit (name);
     }
@@ -10969,9 +10969,9 @@ undocumented.\n\
           std::string term, file, debug_file;
           bool mono;
 
-          term = args(0).string_value ("drawnow: invalid terminal TERM, expected a string value");
+          term = args(0).xstring_value ("drawnow: invalid terminal TERM, expected a string value");
 
-          file = args(1).string_value ("drawnow: invalid FILE, expected a string value");
+          file = args(1).xstring_value ("drawnow: invalid FILE, expected a string value");
 
           size_t pos_p = file.find_first_of ("|");
           size_t pos_c = file.find_first_not_of ("| ");
@@ -11024,7 +11024,7 @@ undocumented.\n\
 
           if (! error_state)
             {
-              debug_file = (args.length () > 3 ? args(3).string_value ("drawnow: invalid DEBUG_FILE, expected a string value") : "");
+              debug_file = (args.length () > 3 ? args(3).xstring_value ("drawnow: invalid DEBUG_FILE, expected a string value") : "");
 
               graphics_handle h = gcf ();
 
@@ -11099,7 +11099,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
       if (! error_state)
         {
-          std::string pname = args(1).string_value ("addlistener: invalid property name, expected a string value");
+          std::string pname = args(1).xstring_value ("addlistener: invalid property name, expected a string value");
 
           graphics_handle gh = gh_manager::lookup (h);
 
@@ -11166,7 +11166,7 @@ dellistener (gcf, \"position\", c);\n\
 
       if (! error_state)
         {
-          std::string pname = args(1).string_value ("dellistener: invalid property name, expected a string value");
+          std::string pname = args(1).xstring_value ("dellistener: invalid property name, expected a string value");
 
           graphics_handle gh = gh_manager::lookup (h);
 
@@ -11280,7 +11280,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 
   if (args.length () >= 3)
     {
-      std::string name = args(0).string_value ("addproperty: invalid property NAME, expected a string value");
+      std::string name = args(0).xstring_value ("addproperty: invalid property NAME, expected a string value");
 
       double h = args(1).double_value ();
 
@@ -11292,7 +11292,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
             {
               graphics_object go = gh_manager::get_object (gh);
 
-              std::string type = args(2).string_value ("addproperty: invalid property TYPE, expected a string value");
+              std::string type = args(2).xstring_value ("addproperty: invalid property TYPE, expected a string value");
 
               if (! go.get_properties ().has_property (name))
                 {

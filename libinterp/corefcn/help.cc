@@ -1093,7 +1093,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   if (args.length () == 1)
     {
-      const std::string name = args(0).string_value ("get_help_text: NAME must be a string");
+      const std::string name = args(0).xstring_value ("get_help_text: NAME must be a string");
 
       std::string text;
       std::string format;
@@ -1158,7 +1158,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   if (args.length () == 1)
     {
-      const std::string fname = args(0).string_value ("get_help_text_from_file: NAME must be a string");
+      const std::string fname = args(0).xstring_value ("get_help_text_from_file: NAME must be a string");
 
       std::string text;
       std::string format;
@@ -1370,7 +1370,7 @@ Undocumented internal function.\n\
     retval = Cell (ffl.append (afl));
   else
     {
-      std::string dir = args(0).string_value ("__list_functions__: DIRECTORY argument must be a string");
+      std::string dir = args(0).xstring_value ("__list_functions__: DIRECTORY argument must be a string");
 
       string_vector fl = load_path::files (dir, true);
 

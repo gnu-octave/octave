@@ -2239,18 +2239,18 @@ directories with those names.\n\
 
   if (nargin == 1)
     {
-      std::string dirname = args(0).string_value ("genpath: DIR must be a string");
+      std::string dirname = args(0).xstring_value ("genpath: DIR must be a string");
 
       retval = genpath (dirname);
     }
   else if (nargin > 1)
     {
-      std::string dirname = args(0).string_value ("genpath: all arguments must be strings");
+      std::string dirname = args(0).xstring_value ("genpath: all arguments must be strings");
 
       string_vector skip (nargin - 1);
 
       for (octave_idx_type i = 1; i < nargin; i++)
-        skip[i-1] = args(i).string_value ("genpath: all arguments must be strings");
+        skip[i-1] = args(i).xstring_value ("genpath: all arguments must be strings");
 
       retval = genpath (dirname, skip);
     }
@@ -2455,7 +2455,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          std::string arg = args(i).string_value ("addpath: all arguments must be strings");
+          std::string arg = args(i).xstring_value ("addpath: all arguments must be strings");
 
           std::list<std::string> dir_elts = split_path (arg);
 
@@ -2519,7 +2519,7 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          std::string arg = args(i).string_value ("rmpath: all arguments must be strings");
+          std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
           std::list<std::string> dir_elts = split_path (arg);
 
           for (std::list<std::string>::const_iterator p = dir_elts.begin ();

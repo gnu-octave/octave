@@ -143,7 +143,7 @@ used per default.\n\
     }
 
 #if defined (HAVE_FFTW)
-  std::string arg0 = args(0).string_value ("fftw: first argument must be a string");
+  std::string arg0 = args(0).xstring_value ("fftw: first argument must be a string");
 
   if (arg0 == "planner")
     {
@@ -153,7 +153,7 @@ used per default.\n\
           std::transform (arg0.begin (), arg0.end (), arg0.begin (),
                           tolower);
 
-          std::string arg1 = args(1).string_value ("fftw: planner expects a string value as METHOD");
+          std::string arg1 = args(1).xstring_value ("fftw: planner expects a string value as METHOD");
 
           std::transform (arg1.begin (), arg1.end (),
                           arg1.begin (), tolower);
@@ -229,7 +229,7 @@ used per default.\n\
           std::transform (arg0.begin (), arg0.end (), arg0.begin (),
                           tolower);
 
-          std::string arg1 = args(1).string_value ("fftw: WISDOM must be a string");
+          std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftw_export_wisdom_to_string ();
 
@@ -263,7 +263,7 @@ used per default.\n\
           std::transform (arg0.begin (), arg0.end (), arg0.begin (),
                           tolower);
 
-          std::string arg1 = args(1).string_value ("fftw: WISDOM must be a string");
+          std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftwf_export_wisdom_to_string ();
 

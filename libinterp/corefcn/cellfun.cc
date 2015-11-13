@@ -2463,7 +2463,7 @@ endfor\n\
 
   if (args.length () >= 1)
     {
-      const Cell x = args(0).cell_value ("cellindexmat: X must be a cell");
+      const Cell x = args(0).xcell_value ("cellindexmat: X must be a cell");
       NoAlias<Cell> y(x.dims ());
       octave_idx_type nel = x.numel ();
       octave_value_list idx = args.slice (1, args.length () - 1);

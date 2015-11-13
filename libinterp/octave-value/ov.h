@@ -770,8 +770,6 @@ public:
 
   Cell cell_value (void) const;
 
-  Cell cell_value (const char *fmt, ...) const;
-
   Matrix matrix_value (bool frc_str_conv = false) const
   { return rep->matrix_value (frc_str_conv); }
 
@@ -899,28 +897,8 @@ public:
   std::string string_value (bool force = false) const
   { return rep->string_value (force); }
 
-  std::string string_value (const char *fmt, ...) const
-  {
-    std::string retval;
-    va_list args;
-    va_start (args,fmt);
-    retval = rep->string_value (fmt, args);
-    va_end (args);
-    return retval;
-  }
-
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
-
-  Array<std::string> cellstr_value (const char *fmt, ...) const
-  {
-    Array<std::string> retval;
-    va_list args;
-    va_start (args,fmt);
-    retval = rep->cellstr_value (fmt, args);
-    va_end (args);
-    return retval;
-  }
 
   Range range_value (void) const
   { return rep->range_value (); }
@@ -1015,6 +993,21 @@ public:
   Array<FloatComplex>
   float_complex_vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
+
+  // Extract values of specific types without any implicit type
+  // conversions.  Throw an error if an object is the wrong type for
+  // the requested value extraction.
+  //
+  // These functions are intended to provide a simple way to extract
+  // values of specific types and display error messages that are more
+  // meaningful than the generic "error: wrong type argument 'cell'"
+  // message.
+
+  Cell xcell_value (const char *fmt, ...) const;
+
+  std::string xstring_value (const char *fmt, ...) const;
+
+  Array<std::string> xcellstr_value (const char *fmt, ...) const;
 
   // Possibly economize a lazy-indexed value.
 

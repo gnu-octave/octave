@@ -135,8 +135,6 @@ public:
 
   Cell cell_value (void) const { return matrix; }
 
-  Cell cell_value (const char *, va_list) const { return matrix; }
-
   octave_value_list list_value (void) const;
 
   octave_value convert_to_str_internal (bool pad, bool, char type) const
@@ -147,8 +145,6 @@ public:
   Array<std::string> cellstr_value (void) const;
 
   Array<std::string> cellstr_value (const char *fmt, ...) const;
-
-  Array<std::string> cellstr_value (const char *fmt, va_list args) const;
 
   bool print_as_scalar (void) const;
 

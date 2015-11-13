@@ -1859,7 +1859,7 @@ functions are ignored in the lookup.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string nm = args(0).string_value ("str2func: FCN_NAME must be a string");
+      std::string nm = args(0).xstring_value ("str2func: FCN_NAME must be a string");
 
       if (nm[0] == '@')
         {

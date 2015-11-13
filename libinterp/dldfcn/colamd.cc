@@ -705,7 +705,7 @@ permutations on the tree.\n\
 
       if (nargin == 2)
         {
-          std::string str = args(1).string_value ("etree: TYP must be a string");
+          std::string str = args(1).xstring_value ("etree: TYP must be a string");
           if (str.find ("C") == 0 || str.find ("c") == 0)
             is_sym = false;
         }

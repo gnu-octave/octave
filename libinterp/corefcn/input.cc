@@ -693,7 +693,7 @@ get_user_input (const octave_value_list& args, int nargout)
   if (nargin == 2)
     read_as_string++;
 
-  std::string prompt = args(0).string_value ("input: unrecognized argument");
+  std::string prompt = args(0).xstring_value ("input: unrecognized argument");
 
   flush_octave_stdout ();
 
@@ -836,7 +836,7 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
       std::string prompt;
 
       if (nargin == 1)
-        prompt = args(0).string_value ("yes_or_no: PROMPT must be a string");
+        prompt = args(0).xstring_value ("yes_or_no: PROMPT must be a string");
 
       retval = octave_yes_or_no (prompt);
     }

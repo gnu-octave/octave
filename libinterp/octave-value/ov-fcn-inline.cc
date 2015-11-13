@@ -681,7 +681,7 @@ functions from strings is through the use of anonymous functions\n\
 
   if (nargin > 0)
     {
-      std::string fun = args(0).string_value ("inline: STR argument must be a string");
+      std::string fun = args(0).xstring_value ("inline: STR argument must be a string");
 
       string_vector fargs;
 
@@ -819,7 +819,7 @@ functions from strings is through the use of anonymous functions\n\
 
           for (int i = 1; i < nargin; i++)
             {
-              std::string s = args(i).string_value ("inline: expecting string arguments");
+              std::string s = args(i).xstring_value ("inline: expecting string arguments");
               fargs(i-1) = s;
             }
         }

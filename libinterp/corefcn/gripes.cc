@@ -163,6 +163,29 @@ gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
 }
 
 void
+gripe_wrong_type_arg (const char *s, bool is_error)
+{
+  if (is_error)
+    error ("wrong type argument '%s'", s);
+  else
+    warning ("wrong type argument '%s'", s);
+}
+
+void
+gripe_wrong_type_arg (const std::string& s, bool is_error)
+{
+  gripe_wrong_type_arg (s.c_str (), is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_value& tc, bool is_error)
+{
+  std::string type = tc.type_name ();
+
+  gripe_wrong_type_arg (type, is_error);
+}
+
+void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op)
 {
   std::string type = op.type_name ();

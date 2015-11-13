@@ -635,7 +635,7 @@ octave_user_function::do_multi_index_op (int nargout,
           octave_value varargout_varval = symbol_table::varval ("varargout");
 
           if (varargout_varval.is_defined ())
-            varargout = varargout_varval.cell_value ("expecting varargout to be a cell array object");
+            varargout = varargout_varval.xcell_value ("expecting varargout to be a cell array object");
         }
 
       retval = ret_list->convert_to_const_vector (nargout, varargout);

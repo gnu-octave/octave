@@ -95,6 +95,15 @@ gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
                       bool is_error = true);
 
 extern OCTINTERP_API void
+gripe_wrong_type_arg (const char *s, bool is_error = true);
+
+extern OCTINTERP_API void
+gripe_wrong_type_arg (const std::string& s, bool is_error = true);
+
+extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_value& tc, bool is_error = true);
+
+extern OCTINTERP_API void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op);
 
 extern OCTINTERP_API void

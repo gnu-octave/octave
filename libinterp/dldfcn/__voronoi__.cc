@@ -87,7 +87,7 @@ Undocumented internal function.\n\
 {
   octave_value_list retval;
 
-  std::string caller = args(0).string_value ("__voronoi__: CALLER must be a string");
+  std::string caller = args(0).xstring_value ("__voronoi__: CALLER must be a string");
 
 #if defined (HAVE_QHULL)
 

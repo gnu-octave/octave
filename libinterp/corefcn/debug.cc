@@ -1389,7 +1389,7 @@ function returns.\n\
         print_usage ();
       else if (nargin == 1)
         {
-          std::string arg = args(0).string_value ("dbstep: input argument must be a string");
+          std::string arg = args(0).xstring_value ("dbstep: input argument must be a string");
 
           if (arg == "in")
             {

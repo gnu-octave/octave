@@ -147,7 +147,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
-      std::string s = arg.string_value ("%s: expecting first argument to be a string",
+      std::string s = arg.xstring_value ("%s: expecting first argument to be a string",
                                         warn_for.c_str ());
 
       std::string cmd = header;
@@ -590,11 +590,11 @@ not on the search path you should use some combination of the functions\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string name = args(0).string_value ("exist: NAME must be a string");
+      std::string name = args(0).xstring_value ("exist: NAME must be a string");
 
       if (nargin == 2)
         {
-          std::string type = args(1).string_value ("exist: TYPE must be a string");
+          std::string type = args(1).xstring_value ("exist: TYPE must be a string");
 
           if (type == "class")
             warning ("exist: \"class\" type argument is not implemented");
@@ -811,7 +811,7 @@ set_internal_variable (char& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ("%s: argument must be a single character", nm);
+      std::string sval = args(0).xstring_value ("%s: argument must be a single character", nm);
 
       switch (sval.length ())
         {
@@ -934,7 +934,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ("%s: first argument must be a string", nm);
+      std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
 
       if (empty_ok || ! sval.empty ())
         var = sval;
@@ -970,7 +970,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ("%s: first argument must be a string", nm);
+      std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
 
       int i = 0;
       for (; i < nchoices; i++)
@@ -2063,7 +2063,7 @@ If no function is named then unlock the current function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("munlock: FCN must be a string");
+      std::string name = args(0).xstring_value ("munlock: FCN must be a string");
 
       munlock (name);
     }
@@ -2097,7 +2097,7 @@ If no function is named then return true if the current function is locked.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("mislocked: FCN must be a string");
+      std::string name = args(0).xstring_value ("mislocked: FCN must be a string");
 
       retval = mislocked (name);
     }
@@ -2674,7 +2674,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ("__varval__: expecting argument to be variable name");
+      std::string name = args(0).xstring_value ("__varval__: expecting argument to be variable name");
 
       retval = symbol_table::varval (args(0).string_value ());
     }

@@ -329,7 +329,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
       return retval;
     }
   else if (nargin == 3)
-    shape = args(2).string_value ("convn: SHAPE must be a string");
+    shape = args(2).xstring_value ("convn: SHAPE must be a string");
 
   if (shape == "full")
     ct = convn_full;

@@ -184,7 +184,7 @@ error message.\n\
 
   if (args.length () == 1)
     {
-      std::string dirname = args(0).string_value ("readdir: DIR must be a string");
+      std::string dirname = args(0).xstring_value ("readdir: DIR must be a string");
 
       dir_entry dir (dirname);
 
@@ -240,13 +240,13 @@ When creating a directory permissions will be set to\n\
 
   if (nargin == 2)
     {
-      std::string parent = args(0).string_value ("mkdir: PARENT must be a string");
-      std::string dir = args(1).string_value ("mkdir: DIR must be a string");
+      std::string parent = args(0).xstring_value ("mkdir: PARENT must be a string");
+      std::string dir = args(1).xstring_value ("mkdir: DIR must be a string");
 
       dirname = file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
-    dirname = args(0).string_value ("mkdir: DIR must be a string");
+    dirname = args(0).xstring_value ("mkdir: DIR must be a string");
 
   if (nargin == 1 || nargin == 2)
     {
@@ -312,7 +312,7 @@ identifier.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string dirname = args(0).string_value ("rmdir: DIR must be a string");
+      std::string dirname = args(0).xstring_value ("rmdir: DIR must be a string");
 
       std::string fulldir = file_ops::tilde_expand (dirname);
       int status = -1;
@@ -375,8 +375,8 @@ error message.\n\
 
   if (args.length () == 2)
     {
-      std::string from = args(0).string_value ("link: OLD must be a string");
-      std::string to = args(1).string_value ("link: NEW must be a string");
+      std::string from = args(0).xstring_value ("link: OLD must be a string");
+      std::string to = args(1).xstring_value ("link: NEW must be a string");
 
       std::string msg;
 
@@ -412,8 +412,8 @@ error message.\n\
 
   if (args.length () == 2)
     {
-      std::string from = args(0).string_value ("symlink: OLD must be a string");
-      std::string to = args(1).string_value ("symlink: NEW must be a string");
+      std::string from = args(0).xstring_value ("symlink: OLD must be a string");
+      std::string to = args(1).xstring_value ("symlink: NEW must be a string");
 
       std::string msg;
 
@@ -451,7 +451,7 @@ error message.\n\
 
   if (args.length () == 1)
     {
-      std::string symlink = args(0).string_value ("readlink: SYMLINK must be a string");
+      std::string symlink = args(0).xstring_value ("readlink: SYMLINK must be a string");
 
       std::string result;
       std::string msg;
@@ -489,8 +489,8 @@ error message.\n\
 
   if (args.length () == 2)
     {
-      std::string from = args(0).string_value ("rename: OLD must be a string");
-      std::string to = args(1).string_value ("rename: NEW must be a string");
+      std::string from = args(0).xstring_value ("rename: OLD must be a string");
+      std::string to = args(1).xstring_value ("rename: NEW must be a string");
 
       std::string msg;
 
@@ -659,7 +659,7 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
     retval = file_ops::dir_sep_str ();
   else if (args.length () == 1)
     {
-      std::string s = args(0).string_value ("filesep: argument must be a string");
+      std::string s = args(0).xstring_value ("filesep: argument must be a string");
       if (s == "all")
         retval = file_ops::dir_sep_chars ();
       else
@@ -688,7 +688,7 @@ Query or set the character used to separate directories in a path.\n\
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ("pathsep: argument must be a single character");
+      std::string sval = args(0).xstring_value ("pathsep: argument must be a single character");
 
       switch (sval.length ())
         {

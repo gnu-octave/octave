@@ -85,7 +85,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
   if (nargin == 3)
     {
-      std::string s = args(2).string_value ("gammainc: third argument must be \"lower\" or \"upper\"");
+      std::string s = args(2).xstring_value ("gammainc: third argument must be \"lower\" or \"upper\"");
 
       std::transform (s.begin (), s.end (), s.begin (), tolower);
 

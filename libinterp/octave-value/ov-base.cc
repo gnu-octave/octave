@@ -56,30 +56,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "variables.h"
 
-static void
-gripe_wrong_type_arg_with_msg (const char *name, const std::string& type,
-                               const char *fmt, va_list args)
-{
-  // Note that this method does not need to be particularly efficient
-  // since it is already an error to end up here.
-
-  // FIXME: do we want both the wrong-type-argument error and any custom
-  // error message, or just the custom error message, or should that
-  // behavior be optional in some way?
-
-  try
-    {
-      gripe_wrong_type_arg (name, type);
-    }
-  catch (const octave_execution_exception&)
-    {
-      if (fmt)
-        verror (fmt, args);
-
-      throw;
-    }
-}
-
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
 {
   builtin_type_t retval = btyp_unknown;
@@ -561,14 +537,6 @@ octave_base_value::cell_value () const
   return retval;
 }
 
-Cell
-octave_base_value::cell_value (const char *fmt, va_list args) const
-{
-  gripe_wrong_type_arg_with_msg ("cell value", type_name (), fmt, args);
-
-  return Cell ();
-}
-
 Matrix
 octave_base_value::matrix_value (bool) const
 {
@@ -943,11 +911,11 @@ octave_base_value::string_value (bool force) const
 }
 
 std::string
-octave_base_value::string_value (const char *fmt, va_list args) const
+octave_base_value::xstring_value (void) const
 {
-  gripe_wrong_type_arg_with_msg ("string value", type_name (), fmt, args);
-
-  return std::string ();
+  std::string retval;
+  wrong_type_arg_error ();
+  return retval;
 }
 
 Array<std::string>
@@ -957,14 +925,6 @@ octave_base_value::cellstr_value (void) const
   gripe_wrong_type_arg ("octave_base_value::cellstr_value()",
                         type_name ());
   return retval;
-}
-
-Array<std::string>
-octave_base_value::cellstr_value (const char *fmt, va_list args) const
-{
-  gripe_wrong_type_arg_with_msg ("cellstr value", type_name (), fmt, args);
-
-  return Array<std::string> ();
 }
 
 Range
@@ -1314,6 +1274,12 @@ octave_base_value::gripe_save (const char *type) const
     ("Octave:load-save-unavailable",
      "%s: saving %s files not available in this version of Octave",
      t_name.c_str (), type);
+}
+
+void
+octave_base_value::wrong_type_arg_error (void) const
+{
+  gripe_wrong_type_arg (type_name ());
 }
 
 octave_value

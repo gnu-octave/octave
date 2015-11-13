@@ -6661,7 +6661,7 @@ ordered lists.\n\
           return retval;
         }
 
-      std::string mode = args(2).string_value ("sort: MODE must be a string");
+      std::string mode = args(2).xstring_value ("sort: MODE must be a string");
 
       if (mode == "ascend")
         smode = ASCENDING;
@@ -6940,7 +6940,7 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
   // FIXME: shouldn't these modes be scoped inside a class?
   sortmode smode = UNSORTED;
 
-  std::string mode = arg.string_value ("issorted: expecting %s argument to be a string", argn);
+  std::string mode = arg.xstring_value ("issorted: expecting %s argument to be a string", argn);
 
   if (mode == "ascending")
     smode = ASCENDING;
@@ -6995,7 +6995,7 @@ This function does not support sparse matrices.\n\
       if (nargin == 3)
         smode = get_sort_mode_option (args(2), "third");
 
-      std::string tmp = args(1).string_value ("issorted: second argument must be a string");
+      std::string tmp = args(1).xstring_value ("issorted: second argument must be a string");
       if (tmp == "rows")
         by_rows = true;
       else

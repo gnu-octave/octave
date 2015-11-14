@@ -549,6 +549,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            this, SLOT (import_shortcut_set ()));
   connect (ui->btn_export_shortcut_set, SIGNAL (clicked ()),
            this, SLOT (export_shortcut_set ()));
+  connect (ui->btn_default_shortcut_set, SIGNAL (clicked ()),
+           this, SLOT (default_shortcut_set ()));
 
 
 #ifdef HAVE_QSCINTILLA
@@ -1013,11 +1015,17 @@ settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
 void
 settings_dialog::import_shortcut_set ()
 {
-  shortcut_manager::import_export (true);
+  shortcut_manager::import_export (shortcut_manager::OSC_IMPORT);
 }
 
 void
 settings_dialog::export_shortcut_set ()
 {
-  shortcut_manager::import_export (false);
+  shortcut_manager::import_export (shortcut_manager::OSC_EXPORT);
+}
+
+void
+settings_dialog::default_shortcut_set ()
+{
+  shortcut_manager::import_export (shortcut_manager::OSC_DEFAULT);
 }

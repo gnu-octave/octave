@@ -1986,14 +1986,10 @@
                <property name="topMargin">
                 <number>10</number>
                </property>
-               <item row="2" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                </layout>
-               </item>
-               <item row="0" column="2">
+               <property name="bottomMargin">
+                <number>10</number>
+               </property>
+               <item row="0" column="3">
                 <spacer name="horizontalSpacer_26">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -2008,6 +2004,9 @@
                </item>
                <item row="0" column="0">
                 <widget class="QPushButton" name="btn_import_shortcut_set">
+                 <property name="toolTip">
+                  <string>Import shortcut set</string>
+                 </property>
                  <property name="text">
                   <string>Import</string>
                  </property>
@@ -2015,8 +2014,21 @@
                </item>
                <item row="0" column="1">
                 <widget class="QPushButton" name="btn_export_shortcut_set">
+                 <property name="toolTip">
+                  <string>Export current shortcut set</string>
+                 </property>
                  <property name="text">
                   <string>Export</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QPushButton" name="btn_default_shortcut_set">
+                 <property name="toolTip">
+                  <string>Reset shortcuts to their defaults</string>
+                 </property>
+                 <property name="text">
+                  <string>Default</string>
                  </property>
                 </widget>
                </item>

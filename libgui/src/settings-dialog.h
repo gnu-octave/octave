@@ -57,6 +57,7 @@ private slots:
   // slots for import/export-buttons of shortcut sets
   void import_shortcut_set ();
   void export_shortcut_set ();
+  void default_shortcut_set ();
 
 private:
   Ui::settings_dialog * ui;

@@ -54,6 +54,14 @@ class shortcut_manager : public QWidget
   Q_OBJECT
 
 public:
+
+  enum
+  {
+    OSC_IMPORT  = 0,
+    OSC_EXPORT  = 1,
+    OSC_DEFAULT = 2
+  };
+
   shortcut_manager ();
   ~shortcut_manager ();
 
@@ -81,10 +89,10 @@ public:
       instance->do_fill_treewidget (tree_view);
   }
 
-  static void import_export (bool import)
+  static void import_export (int action)
   {
     if (instance_ok ())
-      instance->do_import_export (import);
+      instance->do_import_export (action);
   }
 
 public slots:
@@ -116,9 +124,10 @@ private:
   void do_write_shortcuts (QSettings *settings, bool closing);
   void do_set_shortcut (QAction *action, const QString& key);
   void do_fill_treewidget (QTreeWidget *tree_view);
-  void do_import_export (bool import);
+  bool do_import_export (int action);
   void shortcut_dialog (int);
   void import_shortcuts (QSettings *settings);
+  bool overwrite_all_shortcuts (void);
 
   class shortcut_t
   {

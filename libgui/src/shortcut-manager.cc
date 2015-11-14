@@ -602,7 +602,8 @@ shortcut_manager::shortcut_dialog_set_default ()
   _edit_actual->setText (_label_default->text ());
 }
 
-// import a shortcut set from a given settings file and refresh the tree view
+// import a shortcut set from a given settings file or reset to
+// the defaults (settings = 0) and refresh the tree view
 void
 shortcut_manager::import_shortcuts (QSettings *settings)
 {
@@ -610,9 +611,14 @@ shortcut_manager::import_shortcuts (QSettings *settings)
     {
       // update the list of all shortcuts
       shortcut_t sc = _sc.at (i);           // make a copy
-      sc.actual_sc = QKeySequence (         // get new shortcut from settings
-        settings->value ("shortcuts/"+sc.settings_key,sc.actual_sc).
-                        toString ());       // and use the old one as default
+
+      if (settings)
+        sc.actual_sc = QKeySequence (         // get new shortcut from settings
+          settings->value ("shortcuts/"+sc.settings_key,sc.actual_sc).
+                          toString ());       // and use the old one as default
+      else
+        sc.actual_sc = QKeySequence (sc.default_sc); // get default shortcut
+
       _sc.replace (i,sc);                   // replace the old with the new one
 
       // update the tree view
@@ -621,43 +627,90 @@ shortcut_manager::import_shortcuts (QSettings *settings)
     }
 }
 
-// import or export of shortcut sets,
-// called from settings dialog when related buttons are clicked
-void
-shortcut_manager::do_import_export (bool import)
+// ask the user whether to save the current shortcut set;
+// returns true to proceed with import action, false to abort it
+bool
+shortcut_manager::overwrite_all_shortcuts ()
 {
-  QString file;
+  QMessageBox msg_box;
+  msg_box.setWindowTitle(tr ("Overwriting Shortcuts"));
+  msg_box.setIcon (QMessageBox::Warning);
+  msg_box.setText(tr ("You are about to overwrite all shortcuts.\n"
+     "Would you like to save the current shortcut set or cancel the action?"));
+  msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+  QPushButton *discard = msg_box.addButton (tr ("Don't save"),
+                                            QMessageBox::DestructiveRole);
+  msg_box.setDefaultButton(QMessageBox::Save);
+
+  int ret = msg_box.exec ();
+
+  if (msg_box.clickedButton () == discard)
+    return true;  // do not save and go ahead
+
+  if (ret == QMessageBox::Save)
+    {
+      if (do_import_export (OSC_EXPORT))
+        return true;  // go ahead
+    }
+
+  return false; // abort the import
+}
+
+// import or export of shortcut sets,
+// called from settings dialog when related buttons are clicked;
+// returns true on success, false otherwise
+bool
+shortcut_manager::do_import_export (int action)
+{
+  // ask to save the current shortcuts, maybe abort import
+  if (action == OSC_DEFAULT || action == OSC_IMPORT)
+    {
+      if (! overwrite_all_shortcuts ())
+        return false;
+    }
 
   // get the file name to read or write the shortcuts,
   // the default extension is .osc (octave shortcuts)
-  if (import)
+  if (action != OSC_DEFAULT)
     {
-      file = QFileDialog::getOpenFileName (this,
-              tr ("Import shortcuts from file ..."), QString (),
-              tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-              0,QFileDialog::DontUseNativeDialog);
-    }
-  else
-    {
-      file = QFileDialog::getSaveFileName (this,
-              tr ("Export shortcuts into file ..."), QString (),
-              tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-              0,QFileDialog::DontUseNativeDialog);
-    }
+      QString file;
 
-  // create a settings object related to this file
-  QSettings *osc_settings = new QSettings (file, QSettings::IniFormat);
-  if (osc_settings)
-    {
-      // the settings object was successfully created: carry on
-      if (import)
-        import_shortcuts (osc_settings);   // import (special action)
+      if (action == OSC_IMPORT)
+        file  = QFileDialog::getOpenFileName (this,
+                    tr ("Import shortcuts from file ..."), QString (),
+                    tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
+                    0,QFileDialog::DontUseNativeDialog);
+      else if (action == OSC_EXPORT)
+        file = QFileDialog::getSaveFileName (this,
+                    tr ("Export shortcuts into file ..."), QString (),
+                    tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
+                    0,QFileDialog::DontUseNativeDialog);
+
+      if (file.isEmpty ())
+          return false;
+
+      QSettings *osc_settings = new QSettings (file, QSettings::IniFormat);
+
+      if (! osc_settings)
+        {
+          qWarning () << tr ("Failed to open %1 as octave shortcut file")
+                         .arg (file);
+          return false;
+        }
       else
-        do_write_shortcuts (osc_settings, false); // export, (saving settings)
+        {
+          if (action == OSC_IMPORT)
+            import_shortcuts (osc_settings);   // import (special action)
+          else if (action == OSC_EXPORT)
+            do_write_shortcuts (osc_settings, false); // export, (save settings)
+        }
     }
   else
-    qWarning () << tr ("Failed to open %1 as octave shortcut file"). arg (file);
+    {
+      import_shortcuts (0);
+    }
 
+  return true;
 }
 
 

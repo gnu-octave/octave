@@ -1513,27 +1513,22 @@ handle_property::do_set (const octave_value& v)
         return false;
     }
 
-  double dv = v.double_value ();
+  double dv = v.xdouble_value ("set: invalid graphics handle for property \"%s\"",
+                              get_name ().c_str ());
 
-  if (! error_state)
+  graphics_handle gh = gh_manager::lookup (dv);
+
+  if (xisnan (gh.value ()) || gh.ok ())
     {
-      graphics_handle gh = gh_manager::lookup (dv);
-
-      if (xisnan (gh.value ()) || gh.ok ())
+      if (current_val != gh)
         {
-          if (current_val != gh)
-            {
-              current_val = gh;
-              return true;
-            }
+          current_val = gh;
+          return true;
         }
-      else
-        error ("set: invalid graphics handle (= %g) for property \"%s\"",
-               dv, get_name ().c_str ());
     }
   else
-    error ("set: invalid graphics handle for property \"%s\"",
-           get_name ().c_str ());
+    error ("set: invalid graphics handle (= %g) for property \"%s\"",
+           dv, get_name ().c_str ());
 
   return false;
 }
@@ -2557,34 +2552,29 @@ reparent (const octave_value& ov, const std::string& who,
 {
   graphics_handle h = octave_NaN;
 
-  double hv = ov.double_value ();
+  double hv = ov.xdouble_value ("%s: expecting %s to be a graphics handle",
+                               who.c_str (), pname.c_str ());
 
-  if (! error_state)
+  h = gh_manager::lookup (hv);
+
+  if (h.ok ())
     {
-      h = gh_manager::lookup (hv);
+      graphics_object go = gh_manager::get_object (h);
 
-      if (h.ok ())
-        {
-          graphics_object go = gh_manager::get_object (h);
+      graphics_handle parent_h = go.get_parent ();
 
-          graphics_handle parent_h = go.get_parent ();
+      graphics_object parent_go = gh_manager::get_object (parent_h);
 
-          graphics_object parent_go = gh_manager::get_object (parent_h);
+      parent_go.remove_child (h);
 
-          parent_go.remove_child (h);
-
-          if (adopt)
-            go.set ("parent", new_parent.value ());
-          else
-            go.reparent (new_parent);
-        }
+      if (adopt)
+        go.set ("parent", new_parent.value ());
       else
-        error ("%s: invalid graphics handle (= %g) for %s",
-               who.c_str (), hv, pname.c_str ());
+        go.reparent (new_parent);
     }
   else
-    error ("%s: expecting %s to be a graphics handle",
-           who.c_str (), pname.c_str ());
+    error ("%s: invalid graphics handle (= %g) for %s",
+           who.c_str (), hv, pname.c_str ());
 
   return h;
 }
@@ -2975,48 +2965,43 @@ base_properties::get_property_dynamic (const caseless_str& pname)
 void
 base_properties::set_parent (const octave_value& val)
 {
-  double hp = val.double_value ();
+  double hp = val.xdouble_value ("set: expecting parent to be a graphics handle");
 
   graphics_handle new_parent = octave_NaN;
 
-  if (! error_state)
-    {
-      if (hp == __myhandle__)
-        error ("set: can not set object parent to be object itself");
-      else
-        {
-          new_parent = gh_manager::lookup (hp);
-
-          if (new_parent.ok ())
-            {
-              // Remove child from current parent
-              graphics_object old_parent_go;
-              old_parent_go = gh_manager::get_object (get_parent ());
-
-              if (old_parent_go.get_handle () != hp)
-                old_parent_go.remove_child (__myhandle__);
-              else
-                return;  // Do nothing more
-
-              // Check new parent's parent is not this child to avoid recursion
-              graphics_object new_parent_go;
-              new_parent_go = gh_manager::get_object (new_parent);
-              if (new_parent_go.get_parent () == __myhandle__)
-                {
-                  // new parent's parent gets child's original parent
-                  new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
-                }
-
-              // Set parent property to new_parent and do adoption
-              parent = new_parent.as_octave_value ();
-              ::adopt (parent.handle_value (), __myhandle__);
-            }
-          else
-            error ("set: invalid graphics handle (= %g) for parent", hp);
-        }
-    }
+  if (hp == __myhandle__)
+    error ("set: can not set object parent to be object itself");
   else
-    error ("set: expecting parent to be a graphics handle");
+    {
+      new_parent = gh_manager::lookup (hp);
+
+      if (new_parent.ok ())
+        {
+          // Remove child from current parent
+          graphics_object old_parent_go;
+          old_parent_go = gh_manager::get_object (get_parent ());
+
+          if (old_parent_go.get_handle () != hp)
+            old_parent_go.remove_child (__myhandle__);
+          else
+            return;  // Do nothing more
+
+          // Check new parent's parent is not this child to avoid recursion
+          graphics_object new_parent_go;
+          new_parent_go = gh_manager::get_object (new_parent);
+          if (new_parent_go.get_parent () == __myhandle__)
+            {
+              // new parent's parent gets child's original parent
+              new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
+            }
+
+          // Set parent property to new_parent and do adoption
+          parent = new_parent.as_octave_value ();
+          ::adopt (parent.handle_value (), __myhandle__);
+        }
+      else
+        error ("set: invalid graphics handle (= %g) for parent", hp);
+    }
 }
 
 /*
@@ -10172,52 +10157,49 @@ make_graphics_object (const std::string& go_name,
   caseless_str p ("parent");
 
   for (int i = 0; i < xargs.length (); i++)
-    if (xargs(i).is_string () && p.compare (xargs(i).string_value ()))
-      {
-        if (i < (xargs.length () - 1))
-          {
-            val = xargs(i+1).double_value ();
-
-            xargs = xargs.splice (i, 2);
-            break;
-          }
-        else
-          error ("__go_%s__: missing value for parent property",
-                 go_name.c_str ());
-      }
-
-  if (xisnan (val))
-    val = args(0).double_value ();
-
-  if (! error_state)
     {
-      graphics_handle parent = gh_manager::lookup (val);
-
-      if (parent.ok ())
+      if (xargs(i).is_string () && p.compare (xargs(i).string_value ()))
         {
-          graphics_handle h
-            = gh_manager::make_graphics_handle (go_name, parent,
-                                                integer_figure_handle,
-                                                false, false);
-
-          if (! error_state)
+          if (i < (xargs.length () - 1))
             {
-              adopt (parent, h);
+              val = xargs(i+1).double_value ();
 
-              xset (h, xargs);
-              xcreatefcn (h);
-              xinitialize (h);
-
-              retval = h.value ();
-
-              Vdrawnow_requested = true;
+              xargs = xargs.splice (i, 2);
+              break;
             }
           else
-            error ("__go%s__: unable to create graphics handle",
+            error ("__go_%s__: missing value for parent property",
                    go_name.c_str ());
         }
+    }
+
+  if (xisnan (val))
+    val = args(0).xdouble_value ("__go_%s__: invalid parent", go_name.c_str ());
+
+  graphics_handle parent = gh_manager::lookup (val);
+
+  if (parent.ok ())
+    {
+      graphics_handle h
+        = gh_manager::make_graphics_handle (go_name, parent,
+                                            integer_figure_handle,
+                                            false, false);
+
+      if (! error_state)
+        {
+          adopt (parent, h);
+
+          xset (h, xargs);
+          xcreatefcn (h);
+          xinitialize (h);
+
+          retval = h.value ();
+
+          Vdrawnow_requested = true;
+        }
       else
-        error ("__go_%s__: invalid parent", go_name.c_str ());
+        error ("__go%s__: unable to create graphics handle",
+               go_name.c_str ());
     }
   else
     error ("__go_%s__: invalid parent", go_name.c_str ());
@@ -10237,83 +10219,78 @@ Undocumented internal function.\n\
 
   if (args.length () > 0)
     {
-      double val = args(0).double_value ();
+      double val = args(0).xdouble_value ("__go_figure__: expecting figure number to be double value");
 
-      if (! error_state)
+      if (is_figure (val))
         {
-          if (is_figure (val))
-            {
-              graphics_handle h = gh_manager::lookup (val);
+          graphics_handle h = gh_manager::lookup (val);
 
-              xset (h, args.splice (0, 1));
+          xset (h, args.splice (0, 1));
+
+          retval = h.value ();
+        }
+      else
+        {
+          bool int_fig_handle = true;
+
+          octave_value_list xargs = args.splice (0, 1);
+
+          graphics_handle h = octave_NaN;
+
+          if (xisnan (val))
+            {
+              caseless_str pname ("integerhandle");
+
+              for (int i = 0; i < xargs.length (); i++)
+                {
+                  if (xargs(i).is_string ()
+                      && pname.compare (xargs(i).string_value ()))
+                    {
+                      if (i < (xargs.length () - 1))
+                        {
+                          std::string pval = xargs(i+1).string_value ();
+
+                          caseless_str on ("on");
+                          int_fig_handle = on.compare (pval);
+                          xargs = xargs.splice (i, 2);
+
+                          break;
+                        }
+                    }
+                }
+
+              h = gh_manager::make_graphics_handle ("figure", 0,
+                                                    int_fig_handle,
+                                                    false, false);
+
+              if (! int_fig_handle)
+                {
+                  // We need to initialize the integerhandle property
+                  // without calling the set_integerhandle method,
+                  // because doing that will generate a new handle value...
+
+                  graphics_object go = gh_manager::get_object (h);
+                  go.get_properties ().init_integerhandle ("off");
+                }
+            }
+          else if (val > 0 && D_NINT (val) == val)
+            h = gh_manager::make_figure_handle (val, false);
+
+          if (! error_state && h.ok ())
+            {
+              adopt (0, h);
+
+              gh_manager::push_figure (h);
+
+              xset (h, xargs);
+              xcreatefcn (h);
+              xinitialize (h);
 
               retval = h.value ();
             }
           else
-            {
-              bool int_fig_handle = true;
-
-              octave_value_list xargs = args.splice (0, 1);
-
-              graphics_handle h = octave_NaN;
-
-              if (xisnan (val))
-                {
-                  caseless_str pname ("integerhandle");
-
-                  for (int i = 0; i < xargs.length (); i++)
-                    {
-                      if (xargs(i).is_string ()
-                          && pname.compare (xargs(i).string_value ()))
-                        {
-                          if (i < (xargs.length () - 1))
-                            {
-                              std::string pval = xargs(i+1).string_value ();
-
-                              caseless_str on ("on");
-                              int_fig_handle = on.compare (pval);
-                              xargs = xargs.splice (i, 2);
-
-                              break;
-                            }
-                        }
-                    }
-
-                  h = gh_manager::make_graphics_handle ("figure", 0,
-                                                        int_fig_handle,
-                                                        false, false);
-
-                  if (! int_fig_handle)
-                    {
-                      // We need to initialize the integerhandle property
-                      // without calling the set_integerhandle method,
-                      // because doing that will generate a new handle value...
-
-                      graphics_object go = gh_manager::get_object (h);
-                      go.get_properties ().init_integerhandle ("off");
-                    }
-                }
-              else if (val > 0 && D_NINT (val) == val)
-                h = gh_manager::make_figure_handle (val, false);
-
-              if (! error_state && h.ok ())
-                {
-                  adopt (0, h);
-
-                  gh_manager::push_figure (h);
-
-                  xset (h, xargs);
-                  xcreatefcn (h);
-                  xinitialize (h);
-
-                  retval = h.value ();
-                }
-              else
-                error ("__go_figure__: failed to create figure handle");
-            }
+            error ("__go_figure__: failed to create figure handle");
         }
-      else
-        error ("__go_figure__: expecting figure number to be double value");
     }
   else
     print_usage ();
@@ -10383,11 +10360,9 @@ Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 
   if (nargin == 1)
     {
-      double h = args(0).double_value ();
-      if (! error_state)
-        retval = calc_dimensions (gh_manager::get_object (h));
-      else
-        error ("__calc_dimensions__: expecting graphics handle as only argument");
+      double h = args(0).xdouble_value ("__calc_dimensions__: expecting graphics handle as only argument");
+
+      retval = calc_dimensions (gh_manager::get_object (h));
     }
   else
     print_usage ();
@@ -10535,27 +10510,22 @@ Undocumented internal function.\n\
     {
       graphics_handle h = octave_NaN;
 
-      const NDArray vals = args(0).array_value ();
+      const NDArray vals = args(0).xarray_value ("delete: invalid graphics object");
 
-      if (! error_state)
+      // Check all the handles to delete are valid first, as callbacks
+      // might delete one of the handles we later want to delete
+      for (octave_idx_type i = 0; i < vals.numel (); i++)
         {
-          // Check all the handles to delete are valid first, as callbacks
-          // might delete one of the handles we later want to delete
-          for (octave_idx_type i = 0; i < vals.numel (); i++)
+          h = gh_manager::lookup (vals(i));
+
+          if (! h.ok ())
             {
-              h = gh_manager::lookup (vals(i));
-
-              if (! h.ok ())
-                {
-                  error ("delete: invalid graphics object (= %g)", vals(i));
-                  break;
-                }
+              error ("delete: invalid graphics object (= %g)", vals(i));
+              break;
             }
-
-          delete_graphics_objects (vals);
         }
-      else
-        error ("delete: invalid graphics object");
+
+      delete_graphics_objects (vals);
     }
   else
     print_usage ();
@@ -10584,28 +10554,23 @@ Undocumented internal function.\n\
     {
       graphics_handle h = octave_NaN;
 
-      double val = args(0).double_value ();
+      double val = args(0).xdouble_value ("__go_axes_init__: invalid graphics object");
 
-      if (! error_state)
+      h = gh_manager::lookup (val);
+
+      if (h.ok ())
         {
+          graphics_object go = gh_manager::get_object (h);
+
+          go.set_defaults (mode);
+
           h = gh_manager::lookup (val);
-
-          if (h.ok ())
-            {
-              graphics_object go = gh_manager::get_object (h);
-
-              go.set_defaults (mode);
-
-              h = gh_manager::lookup (val);
-              if (! h.ok ())
-                error ("__go_axes_init__: axis deleted during initialization (= %g)",
-                       val);
-            }
-          else
-            error ("__go_axes_init__: invalid graphics object (= %g)", val);
+          if (! h.ok ())
+            error ("__go_axes_init__: axis deleted during initialization (= %g)",
+                   val);
         }
       else
-        error ("__go_axes_init__: invalid graphics object");
+        error ("__go_axes_init__: invalid graphics object (= %g)", val);
     }
   else
     print_usage ();
@@ -10658,27 +10623,22 @@ Undocumented internal function.\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      double val = args(0).double_value ();
+      double val = args(0).xdouble_value ("__go_execute_callback__: invalid graphics object");
 
-      if (! error_state)
+      graphics_handle h = gh_manager::lookup (val);
+
+      if (h.ok ())
         {
-          graphics_handle h = gh_manager::lookup (val);
+          std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
 
-          if (h.ok ())
-            {
-              std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
-
-              if (nargin == 2)
-                gh_manager::execute_callback (h, name);
-              else
-                gh_manager::execute_callback (h, name, args(2));
-            }
+          if (nargin == 2)
+            gh_manager::execute_callback (h, name);
           else
-            error ("__go_execute_callback__: invalid graphics object (= %g)",
-                   val);
+            gh_manager::execute_callback (h, name, args(2));
         }
       else
-        error ("__go_execute_callback__: invalid graphics object");
+        error ("__go_execute_callback__: invalid graphics object (= %g)",
+               val);
     }
   else
     print_usage ();
@@ -10698,26 +10658,21 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 
   if (nargin == 1)
     {
-      double h = args(0).double_value ();
+      double h = args(0).xdouble_value ("__image_pixel_size__: argument is not a handle");
 
-      if (! error_state)
+      graphics_object go = gh_manager::get_object (h);
+      if (go && go.isa ("image"))
         {
-          graphics_object go = gh_manager::get_object (h);
-          if (go && go.isa ("image"))
-            {
-              image::properties& ip =
-                dynamic_cast<image::properties&> (go.get_properties ());
+          image::properties& ip =
+            dynamic_cast<image::properties&> (go.get_properties ());
 
-              Matrix dp = Matrix (1, 2);
-              dp(0) = ip.pixel_xsize ();
-              dp(1) = ip.pixel_ysize ();
-              retval = dp;
-            }
-          else
-            error ("__image_pixel_size__: object is not an image");
+          Matrix dp = Matrix (1, 2);
+          dp(0) = ip.pixel_xsize ();
+          dp(1) = ip.pixel_ysize ();
+          retval = dp;
         }
       else
-        error ("__image_pixel_size__: argument is not a handle");
+        error ("__image_pixel_size__: object is not an image");
     }
   else
     print_usage ();
@@ -10926,9 +10881,9 @@ undocumented.\n\
 
           if (args.length () == 1)
             {
-              caseless_str val (args(0).string_value ());
+              caseless_str val (args(0).xstring_value ("drawnow: expecting argument to be a string"));
 
-              if (! error_state && val.compare ("expose"))
+              if (val.compare ("expose"))
                 do_events = false;
               else
                 {
@@ -11005,30 +10960,25 @@ undocumented.\n\
                 }
             }
 
-          mono = (args.length () >= 3 ? args(2).bool_value () : false);
+          mono = (args.length () >= 3 ? args(2).xbool_value ("drawnow: invalid colormode MONO, expected a boolean value") : false);
 
-          if (! error_state)
+          debug_file = (args.length () > 3 ? args(3).xstring_value ("drawnow: invalid DEBUG_FILE, expected a string value") : "");
+
+          graphics_handle h = gcf ();
+
+          if (h.ok ())
             {
-              debug_file = (args.length () > 3 ? args(3).xstring_value ("drawnow: invalid DEBUG_FILE, expected a string value") : "");
+              graphics_object go = gh_manager::get_object (h);
 
-              graphics_handle h = gcf ();
+              gh_manager::unlock ();
 
-              if (h.ok ())
-                {
-                  graphics_object go = gh_manager::get_object (h);
+              go.get_toolkit ().print_figure (go, term, file,
+                                              mono, debug_file);
 
-                  gh_manager::unlock ();
-
-                  go.get_toolkit ().print_figure (go, term, file,
-                                                  mono, debug_file);
-
-                  gh_manager::lock ();
-                }
-              else
-                error ("drawnow: nothing to draw");
+              gh_manager::lock ();
             }
           else
-            error ("drawnow: invalid colormode MONO, expected a boolean value");
+            error ("drawnow: nothing to draw");
         }
       else
         print_usage ();
@@ -11080,32 +11030,27 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
   if (args.length () >= 3 && args.length () <= 4)
     {
-      double h = args(0).double_value ();
+      double h = args(0).xdouble_value ("addlistener: invalid handle");
 
-      if (! error_state)
+      std::string pname = args(1).xstring_value ("addlistener: invalid property name, expected a string value");
+
+      graphics_handle gh = gh_manager::lookup (h);
+
+      if (gh.ok ())
         {
-          std::string pname = args(1).xstring_value ("addlistener: invalid property name, expected a string value");
+          graphics_object go = gh_manager::get_object (gh);
 
-          graphics_handle gh = gh_manager::lookup (h);
+          go.add_property_listener (pname, args(2), POSTSET);
 
-          if (gh.ok ())
+          if (args.length () == 4)
             {
-              graphics_object go = gh_manager::get_object (gh);
-
-              go.add_property_listener (pname, args(2), POSTSET);
-
-              if (args.length () == 4)
-                {
-                  caseless_str persistent = args(3).string_value ();
-                  if (persistent.compare ("persistent"))
-                    go.add_property_listener (pname, args(2), PERSISTENT);
-                }
+              caseless_str persistent = args(3).string_value ();
+              if (persistent.compare ("persistent"))
+                go.add_property_listener (pname, args(2), PERSISTENT);
             }
-          else
-            error ("addlistener: invalid graphics object (= %g)", h);
         }
       else
-        error ("addlistener: invalid handle");
+        error ("addlistener: invalid graphics object (= %g)", h);
     }
   else
     print_usage ();
@@ -11147,39 +11092,34 @@ dellistener (gcf, \"position\", c);\n\
 
   if (args.length () == 3 || args.length () == 2)
     {
-      double h = args(0).double_value ();
+      double h = args(0).xdouble_value ("dellistener: invalid handle");
 
-      if (! error_state)
+      std::string pname = args(1).xstring_value ("dellistener: invalid property name, expected a string value");
+
+      graphics_handle gh = gh_manager::lookup (h);
+
+      if (gh.ok ())
         {
-          std::string pname = args(1).xstring_value ("dellistener: invalid property name, expected a string value");
+          graphics_object go = gh_manager::get_object (gh);
 
-          graphics_handle gh = gh_manager::lookup (h);
-
-          if (gh.ok ())
-            {
-              graphics_object go = gh_manager::get_object (gh);
-
-              if (args.length () == 2)
-                go.delete_property_listener (pname, octave_value (), POSTSET);
-              else
-                {
-                  if (args(2).is_string ()
-                      && args(2).string_value () == "persistent")
-                    {
-                      go.delete_property_listener (pname, octave_value (),
-                                                   PERSISTENT);
-                      go.delete_property_listener (pname, octave_value (),
-                                                   POSTSET);
-                    }
-                  else
-                    go.delete_property_listener (pname, args(2), POSTSET);
-                }
-            }
+          if (args.length () == 2)
+            go.delete_property_listener (pname, octave_value (), POSTSET);
           else
-            error ("dellistener: invalid graphics object (= %g)", h);
+            {
+              if (args(2).is_string ()
+                  && args(2).string_value () == "persistent")
+                {
+                  go.delete_property_listener (pname, octave_value (),
+                                               PERSISTENT);
+                  go.delete_property_listener (pname, octave_value (),
+                                               POSTSET);
+                }
+              else
+                go.delete_property_listener (pname, args(2), POSTSET);
+            }
         }
       else
-        error ("dellistener: invalid handle");
+        error ("dellistener: invalid graphics object (= %g)", h);
     }
   else
     print_usage ();
@@ -11267,34 +11207,29 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
     {
       std::string name = args(0).xstring_value ("addproperty: invalid property NAME, expected a string value");
 
-      double h = args(1).double_value ();
+      double h = args(1).xdouble_value ("addproperty: invalid handle value");
 
-      if (! error_state)
+      graphics_handle gh = gh_manager::lookup (h);
+
+      if (gh.ok ())
         {
-          graphics_handle gh = gh_manager::lookup (h);
+          graphics_object go = gh_manager::get_object (gh);
 
-          if (gh.ok ())
+          std::string type = args(2).xstring_value ("addproperty: invalid property TYPE, expected a string value");
+
+          if (! go.get_properties ().has_property (name))
             {
-              graphics_object go = gh_manager::get_object (gh);
+              property p = property::create (name, gh, type,
+                                             args.splice (0, 3));
 
-              std::string type = args(2).xstring_value ("addproperty: invalid property TYPE, expected a string value");
-
-              if (! go.get_properties ().has_property (name))
-                {
-                  property p = property::create (name, gh, type,
-                                                 args.splice (0, 3));
-
-                  go.get_properties ().insert_property (name, p);
-                }
-              else
-                error ("addproperty: a '%s' property already exists in the graphics object",
-                       name.c_str ());
+              go.get_properties ().insert_property (name, p);
             }
           else
-            error ("addproperty: invalid graphics object (= %g)", h);
+            error ("addproperty: a '%s' property already exists in the graphics object",
+                   name.c_str ());
         }
       else
-        error ("addproperty: invalid handle value");
+        error ("addproperty: invalid graphics object (= %g)", h);
     }
   else
     print_usage ();
@@ -11494,214 +11429,204 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 {
   if (args.length () > 0)
     {
-      double h = args(0).double_value ();
+      double h = args(0).xdouble_value ("waitfor: invalid handle value");
 
-      if (! error_state)
+      caseless_str pname;
+
+      unwind_protect frame;
+
+      static uint32_t id_counter = 0;
+      uint32_t id = 0;
+
+      int max_arg_index = 0;
+      int timeout_index = -1;
+
+      int timeout = 0;
+
+      if (args.length () > 1)
         {
-          caseless_str pname;
+          pname = args(1).string_value ();
 
-          unwind_protect frame;
-
-          static uint32_t id_counter = 0;
-          uint32_t id = 0;
-
-          int max_arg_index = 0;
-          int timeout_index = -1;
-
-          int timeout = 0;
-
-          if (args.length () > 1)
+          if (! error_state
+              && ! pname.empty () && ! pname.compare ("timeout"))
             {
-              pname = args(1).string_value ();
+              if (pname.compare ("\\timeout"))
+                pname = "timeout";
 
-              if (! error_state
-                  && ! pname.empty () && ! pname.compare ("timeout"))
+              static octave_value wf_listener;
+
+              if (! wf_listener.is_defined ())
+                wf_listener =
+                  octave_value (new octave_builtin (waitfor_listener,
+                                                    "waitfor_listener"));
+
+              max_arg_index++;
+              if (args.length () > 2)
                 {
-                  if (pname.compare ("\\timeout"))
-                    pname = "timeout";
-
-                  static octave_value wf_listener;
-
-                  if (! wf_listener.is_defined ())
-                    wf_listener =
-                      octave_value (new octave_builtin (waitfor_listener,
-                                                        "waitfor_listener"));
-
-                  max_arg_index++;
-                  if (args.length () > 2)
+                  if (args(2).is_string ())
                     {
-                      if (args(2).is_string ())
-                        {
-                          caseless_str s = args(2).string_value ();
+                      caseless_str s = args(2).string_value ();
 
-                          if (s.compare ("timeout"))
-                            timeout_index = 2;
-                          else
-                            max_arg_index++;
-                        }
+                      if (s.compare ("timeout"))
+                        timeout_index = 2;
                       else
                         max_arg_index++;
                     }
+                  else
+                    max_arg_index++;
+                }
 
-                  Cell listener (1, max_arg_index >= 2 ? 5 : 4);
+              Cell listener (1, max_arg_index >= 2 ? 5 : 4);
 
-                  id = id_counter++;
-                  frame.add_fcn (cleanup_waitfor_id, id);
-                  waitfor_results[id] = false;
+              id = id_counter++;
+              frame.add_fcn (cleanup_waitfor_id, id);
+              waitfor_results[id] = false;
 
-                  listener(0) = wf_listener;
-                  listener(1) = octave_uint32 (id);
-                  listener(2) = h;
-                  listener(3) = pname;
+              listener(0) = wf_listener;
+              listener(1) = octave_uint32 (id);
+              listener(2) = h;
+              listener(3) = pname;
 
-                  if (max_arg_index >= 2)
-                    listener(4) = args(2);
+              if (max_arg_index >= 2)
+                listener(4) = args(2);
 
-                  octave_value ov_listener (listener);
+              octave_value ov_listener (listener);
 
-                  gh_manager::auto_lock guard;
+              gh_manager::auto_lock guard;
 
-                  graphics_handle gh = gh_manager::lookup (h);
+              graphics_handle gh = gh_manager::lookup (h);
 
-                  if (gh.ok ())
+              if (gh.ok ())
+                {
+                  graphics_object go = gh_manager::get_object (gh);
+
+                  if (max_arg_index >= 2
+                      && compare_property_values (go.get (pname),
+                                                  args(2)))
+                    waitfor_results[id] = true;
+                  else
                     {
-                      graphics_object go = gh_manager::get_object (gh);
 
-                      if (max_arg_index >= 2
-                          && compare_property_values (go.get (pname),
-                                                      args(2)))
-                        waitfor_results[id] = true;
-                      else
+                      frame.add_fcn (cleanup_waitfor_postset_listener,
+                                     ov_listener);
+                      go.add_property_listener (pname, ov_listener,
+                                                POSTSET);
+                      go.add_property_listener (pname, ov_listener,
+                                                PERSISTENT);
+
+                      if (go.get_properties ()
+                          .has_dynamic_property (pname))
                         {
+                          static octave_value wf_del_listener;
 
-                          frame.add_fcn (cleanup_waitfor_postset_listener,
-                                         ov_listener);
-                          go.add_property_listener (pname, ov_listener,
-                                                    POSTSET);
-                          go.add_property_listener (pname, ov_listener,
-                                                    PERSISTENT);
+                          if (! wf_del_listener.is_defined ())
+                            wf_del_listener =
+                              octave_value (new octave_builtin
+                                            (waitfor_del_listener,
+                                             "waitfor_del_listener"));
 
-                          if (go.get_properties ()
-                              .has_dynamic_property (pname))
-                            {
-                              static octave_value wf_del_listener;
+                          Cell del_listener (1, 4);
 
-                              if (! wf_del_listener.is_defined ())
-                                wf_del_listener =
-                                  octave_value (new octave_builtin
-                                                (waitfor_del_listener,
-                                                 "waitfor_del_listener"));
+                          del_listener(0) = wf_del_listener;
+                          del_listener(1) = octave_uint32 (id);
+                          del_listener(2) = h;
+                          del_listener(3) = pname;
 
-                              Cell del_listener (1, 4);
+                          octave_value ov_del_listener (del_listener);
 
-                              del_listener(0) = wf_del_listener;
-                              del_listener(1) = octave_uint32 (id);
-                              del_listener(2) = h;
-                              del_listener(3) = pname;
-
-                              octave_value ov_del_listener (del_listener);
-
-                              frame.add_fcn (cleanup_waitfor_predelete_listener,
-                                             ov_del_listener);
-                              go.add_property_listener (pname, ov_del_listener,
-                                                        PREDELETE);
-                            }
+                          frame.add_fcn (cleanup_waitfor_predelete_listener,
+                                         ov_del_listener);
+                          go.add_property_listener (pname, ov_del_listener,
+                                                    PREDELETE);
                         }
                     }
                 }
-              else if (error_state || pname.empty ())
-                error ("waitfor: invalid property name, expected a non-empty string value");
             }
+          else if (error_state || pname.empty ())
+            error ("waitfor: invalid property name, expected a non-empty string value");
+        }
 
-          if (timeout_index < 0 && args.length () > (max_arg_index + 1))
+      if (timeout_index < 0 && args.length () > (max_arg_index + 1))
+        {
+          caseless_str s = args(max_arg_index + 1).string_value ();
+
+          if (! error_state)
             {
-              caseless_str s = args(max_arg_index + 1).string_value ();
+              if (s.compare ("timeout"))
+                timeout_index = max_arg_index + 1;
+              else
+                error ("waitfor: invalid parameter '%s'", s.c_str ());
+            }
+          else
+            error ("waitfor: invalid parameter, expected 'timeout'");
+        }
 
-              if (! error_state)
+      if (timeout_index >= 0)
+        {
+          if (args.length () > (timeout_index + 1))
+            {
+              timeout = static_cast<int>
+                (args(timeout_index + 1).xscalar_value ("waitfor: invalid timeout value, expected a value >= 1"));
+
+              if (timeout < 1)
                 {
-                  if (s.compare ("timeout"))
-                    timeout_index = max_arg_index + 1;
-                  else
-                    error ("waitfor: invalid parameter '%s'", s.c_str ());
+                  warning ("waitfor: the timeout value must be >= 1, using 1 instead");
+                  timeout = 1;
+                }
+            }
+          else
+            error ("waitfor: missing timeout value");
+        }
+
+      // FIXME: There is still a "hole" in the following loop. The code
+      //        assumes that an object handle is unique, which is a fair
+      //        assumption, except for figures.  If a figure is destroyed
+      //        then recreated with the same figure ID, within the same
+      //        run of event hooks, then the figure destruction won't be
+      //        caught and the loop will not stop.  This is an unlikely
+      //        possibility in practice, though.
+      //
+      //        Using deletefcn callback is also unreliable as it could be
+      //        modified during a callback execution and the waitfor loop
+      //        would not stop.
+      //
+      //        The only "good" implementation would require object
+      //        listeners, similar to property listeners.
+
+      time_t start = 0;
+
+      if (timeout > 0)
+        start = time (0);
+
+      while (true)
+        {
+          if (true)
+            {
+              gh_manager::auto_lock guard;
+
+              graphics_handle gh = gh_manager::lookup (h);
+
+              if (gh.ok ())
+                {
+                  if (! pname.empty () && waitfor_results[id])
+                    break;
                 }
               else
-                error ("waitfor: invalid parameter, expected 'timeout'");
+                break;
             }
 
-          if (timeout_index >= 0)
-            {
-              if (args.length () > (timeout_index + 1))
-                {
-                  timeout = static_cast<int>
-                            (args(timeout_index + 1).scalar_value ());
+          octave_usleep (100000);
 
-                  if (! error_state)
-                    {
-                      if (timeout < 1)
-                        {
-                          warning ("waitfor: the timeout value must be >= 1, using 1 instead");
-                          timeout = 1;
-                        }
-                    }
-                  else
-                    error ("waitfor: invalid timeout value, expected a value >= 1");
-                }
-              else
-                error ("waitfor: missing timeout value");
-            }
+          OCTAVE_QUIT;
 
-          // FIXME: There is still a "hole" in the following loop. The code
-          //        assumes that an object handle is unique, which is a fair
-          //        assumption, except for figures.  If a figure is destroyed
-          //        then recreated with the same figure ID, within the same
-          //        run of event hooks, then the figure destruction won't be
-          //        caught and the loop will not stop.  This is an unlikely
-          //        possibility in practice, though.
-          //
-          //        Using deletefcn callback is also unreliable as it could be
-          //        modified during a callback execution and the waitfor loop
-          //        would not stop.
-          //
-          //        The only "good" implementation would require object
-          //        listeners, similar to property listeners.
-
-          time_t start = 0;
+          command_editor::run_event_hooks ();
 
           if (timeout > 0)
-            start = time (0);
-
-          while (true)
             {
-              if (true)
-                {
-                  gh_manager::auto_lock guard;
-
-                  graphics_handle gh = gh_manager::lookup (h);
-
-                  if (gh.ok ())
-                    {
-                      if (! pname.empty () && waitfor_results[id])
-                        break;
-                    }
-                  else
-                    break;
-                }
-
-              octave_usleep (100000);
-
-              OCTAVE_QUIT;
-
-              command_editor::run_event_hooks ();
-
-              if (timeout > 0)
-                {
-                  if (start + timeout < time (0))
-                    break;
-                }
+              if (start + timeout < time (0))
+                break;
             }
         }
-      else
-        error ("waitfor: invalid handle value.");
     }
   else
     print_usage ();

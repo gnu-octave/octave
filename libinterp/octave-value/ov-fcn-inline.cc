@@ -784,32 +784,24 @@ functions from strings is through the use of anonymous functions\n\
               return retval;
             }
 
-          int n = args(1).int_value ();
+          int n = args(1).int_value ("inline: N must be an integer");
 
-          if (! error_state)
+          if (n >= 0)
             {
-              if (n >= 0)
-                {
-                  fargs.resize (n+1);
+              fargs.resize (n+1);
 
-                  fargs(0) = "x";
+              fargs(0) = "x";
 
-                  for (int i = 1; i < n+1; i++)
-                    {
-                      std::ostringstream buf;
-                      buf << "P" << i;
-                      fargs(i) = buf.str ();
-                    }
-                }
-              else
+              for (int i = 1; i < n+1; i++)
                 {
-                  error ("inline: N must be a positive integer or zero");
-                  return retval;
+                  std::ostringstream buf;
+                  buf << "P" << i;
+                  fargs(i) = buf.str ();
                 }
             }
           else
             {
-              error ("inline: N must be an integer");
+              error ("inline: N must be a positive integer or zero");
               return retval;
             }
         }

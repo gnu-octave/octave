@@ -242,21 +242,16 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                     error ("matrix_type: banded matrix type requires 4 arguments");
                   else
                     {
-                      nl = args(2).nint_value ();
-                      nu = args(3).nint_value ();
+                      nl = args(2).xnint_value ("matrix_type: band size NL, NU must be integers");
+                      nu = args(3).xnint_value ("matrix_type: band size NL, NU must be integers");
 
-                      if (error_state)
-                        error ("matrix_type: band size NL, NU must be integers");
+                      if (nl == 1 && nu == 1)
+                        mattyp.mark_as_tridiagonal ();
                       else
-                        {
-                          if (nl == 1 && nu == 1)
-                            mattyp.mark_as_tridiagonal ();
-                          else
-                            mattyp.mark_as_banded (nu, nl);
+                        mattyp.mark_as_banded (nu, nl);
 
-                          if (str_typ == "banded positive definite")
-                            mattyp.mark_as_symmetric ();
-                        }
+                      if (str_typ == "banded positive definite")
+                        mattyp.mark_as_symmetric ();
                     }
                 }
               else if (str_typ == "positive definite")

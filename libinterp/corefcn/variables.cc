@@ -779,12 +779,9 @@ set_internal_variable (bool& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      bool bval = args(0).bool_value ();
+      bool bval = args(0).xbool_value ("%s: expecting arg to be a logical value", nm);
 
-      if (! error_state)
-        var = bval;
-      else
-        error ("%s: expecting arg to be a logical value", nm);
+      var = bval;
     }
   else if (nargin > 1)
     print_usage ();
@@ -854,20 +851,15 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      int ival = args(0).int_value ();
+      int ival = args(0).xint_value ("%s: expecting arg to be an integer value", nm);
 
-      if (! error_state)
-        {
-          if (ival < minval)
-            error ("%s: expecting arg to be greater than %d", nm, minval);
-          else if (ival > maxval)
-            error ("%s: expecting arg to be less than or equal to %d",
-                   nm, maxval);
-          else
-            var = ival;
-        }
+      if (ival < minval)
+        error ("%s: expecting arg to be greater than %d", nm, minval);
+      else if (ival > maxval)
+        error ("%s: expecting arg to be less than or equal to %d",
+               nm, maxval);
       else
-        error ("%s: expecting arg to be an integer value", nm);
+        var = ival;
     }
   else if (nargin > 1)
     print_usage ();
@@ -895,19 +887,14 @@ set_internal_variable (double& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      double dval = args(0).scalar_value ();
+      double dval = args(0).xscalar_value ("%s: expecting arg to be a scalar value", nm);
 
-      if (! error_state)
-        {
-          if (dval < minval)
-            error ("%s: expecting arg to be greater than %g", minval);
-          else if (dval > maxval)
-            error ("%s: expecting arg to be less than or equal to %g", maxval);
-          else
-            var = dval;
-        }
+      if (dval < minval)
+        error ("%s: expecting arg to be greater than %g", minval);
+      else if (dval > maxval)
+        error ("%s: expecting arg to be less than or equal to %g", maxval);
       else
-        error ("%s: expecting arg to be a scalar value", nm);
+        var = dval;
     }
   else if (nargin > 1)
     print_usage ();

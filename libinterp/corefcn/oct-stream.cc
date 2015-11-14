@@ -2359,13 +2359,10 @@ printf_value_cache::int_value (void)
 
   double dval = val.double_value (true);
 
-  if (! error_state)
-    {
-      if (D_NINT (dval) == dval)
-        retval = NINT (dval);
-      else
-        curr_state = conversion_error;
-    }
+  if (D_NINT (dval) == dval)
+    retval = NINT (dval);
+  else
+    curr_state = conversion_error;
 
   return retval;
 }
@@ -3068,57 +3065,52 @@ octave_stream::seek (const octave_value& tc_offset,
   int retval = -1;
 
   // FIXME: should we have octave_value methods that handle off_t explicitly?
-  octave_int64 val = tc_offset.int64_scalar_value ();
+  octave_int64 val = tc_offset.xint64_scalar_value ("fseek: invalid value for offset");
   off_t xoffset = val.value ();
 
-  if (! error_state)
+  int conv_err = 0;
+
+  int origin = SEEK_SET;
+
+  if (tc_origin.is_string ())
     {
-      int conv_err = 0;
+      std::string xorigin = tc_origin.string_value ("fseek: invalid value for origin");
 
-      int origin = SEEK_SET;
+      if (xorigin == "bof")
+        origin = SEEK_SET;
+      else if (xorigin == "cof")
+        origin = SEEK_CUR;
+      else if (xorigin == "eof")
+        origin = SEEK_END;
+      else
+        conv_err = -1;
+    }
+  else
+    {
+      int xorigin = convert_to_valid_int (tc_origin, conv_err);
 
-      if (tc_origin.is_string ())
+      if (! conv_err)
         {
-          std::string xorigin = tc_origin.string_value ();
-
-          if (xorigin == "bof")
+          if (xorigin == -1)
             origin = SEEK_SET;
-          else if (xorigin == "cof")
+          else if (xorigin == 0)
             origin = SEEK_CUR;
-          else if (xorigin == "eof")
+          else if (xorigin == 1)
             origin = SEEK_END;
           else
             conv_err = -1;
         }
-      else
-        {
-          int xorigin = convert_to_valid_int (tc_origin, conv_err);
+    }
 
-          if (! conv_err)
-            {
-              if (xorigin == -1)
-                origin = SEEK_SET;
-              else if (xorigin == 0)
-                origin = SEEK_CUR;
-              else if (xorigin == 1)
-                origin = SEEK_END;
-              else
-                conv_err = -1;
-            }
-        }
+  if (! conv_err)
+    {
+      retval = seek (xoffset, origin);
 
-      if (! conv_err)
-        {
-          retval = seek (xoffset, origin);
-
-          if (retval != 0)
-            error ("fseek: failed to seek to requested position");
-        }
-      else
-        error ("fseek: invalid value for origin");
+      if (retval != 0)
+        error ("fseek: failed to seek to requested position");
     }
   else
-    error ("fseek: invalid value for offset");
+    error ("fseek: invalid value for origin");
 
   return retval;
 }

@@ -94,12 +94,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
         additional_arg = false;
       else
         {
-          a = args(0).array_value ();
-          if (error_state)
-            {
-              error ("%s: expecting scalar or matrix arguments", fcn);
-              goto done;
-            }
+          a = args(0).xarray_value ("%s: expecting scalar or matrix arguments", fcn);
+
           idx++;
           nargin--;
         }
@@ -286,12 +282,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                octave_idx_type elt = args(idx+i).int_value ();
-                if (error_state)
-                  {
-                    error ("%s: expecting integer arguments", fcn);
-                    goto done;
-                  }
+                octave_idx_type elt = args(idx+i).xint_value ("%s: expecting integer arguments", fcn);
+
                 //Negative is zero for Matlab compatibility
                 dims(i) = elt >= 0 ? elt : 0;
               }

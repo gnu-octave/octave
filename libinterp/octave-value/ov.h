@@ -1111,6 +1111,8 @@ public:
 
   std::string xstring_value (const char *fmt, ...) const;
 
+  string_vector xall_strings (const char *fmt, ...) const;
+
   Cell xcell_value (const char *fmt, ...) const;
 
   Array<std::string> xcellstr_value (const char *fmt, ...) const;

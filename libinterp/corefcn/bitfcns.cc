@@ -574,27 +574,20 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
     {
       int nbits = 64;
 
-      NDArray n = args(1).array_value ();
+      NDArray n = args(1).xarray_value ("bitshift: expecting integer as second argument");
 
-      if (error_state)
-        error ("bitshift: expecting integer as second argument");
-      else
+      if (nargin == 3)
         {
-          if (nargin == 3)
+          // FIXME: for compatibility, we should accept an array
+          // or a scalar as the third argument.
+          if (args(2).numel () > 1)
+            error ("bitshift: N must be a scalar integer");
+          else
             {
-              // FIXME: for compatibility, we should accept an array
-              // or a scalar as the third argument.
-              if (args(2).numel () > 1)
-                error ("bitshift: N must be a scalar integer");
-              else
-                {
-                  nbits = args(2).int_value ();
+              nbits = args(2).xint_value ("bitshift: N must be an integer");
 
-                  if (error_state)
-                    error ("bitshift: N must be an integer");
-                  else if (nbits < 0)
-                    error ("bitshift: N must be positive");
-                }
+              if (nbits < 0)
+                error ("bitshift: N must be positive");
             }
         }
 

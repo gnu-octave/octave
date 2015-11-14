@@ -96,17 +96,12 @@ index_error (const char *fmt, const std::string& idx, const std::string& msg)
  \
   if (nargin == 1 || nargin == 2) \
     { \
-      int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
+      int dim = (nargin == 1 ? -1 : args(1).int_value (#FCN ": expecting dimension argument to be an integer") - 1); \
  \
-      if (! error_state) \
-        { \
-          if (dim >= -1) \
-            retval = args(0).FCN (dim); \
-          else \
-            error (#FCN ": invalid dimension argument = %d", dim + 1); \
-        } \
+      if (dim >= -1) \
+        retval = args(0).FCN (dim); \
       else \
-        error (#FCN ": expecting dimension argument to be an integer"); \
+        error (#FCN ": invalid dimension argument = %d", dim + 1); \
     } \
   else \
     print_usage (); \
@@ -1384,12 +1379,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
     retval = args(0).diag ();
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      octave_idx_type k = args(1).int_value ();
+      octave_idx_type k = args(1).xint_value ("diag: invalid argument K");
 
-      if (error_state)
-        error ("diag: invalid argument K");
-      else
-        retval = args(0).diag (k);
+      retval = args(0).diag (k);
     }
   else if (nargin == 3)
     {
@@ -1397,13 +1389,10 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
       if (arg0.ndims () == 2 && (arg0.rows () == 1 || arg0.columns () == 1))
         {
-          octave_idx_type m = args(1).int_value ();
-          octave_idx_type n = args(2).int_value ();
+          octave_idx_type m = args(1).xint_value ("diag: invalid dimensions");
+          octave_idx_type n = args(2).xint_value ("diag: invalid dimensions");
 
-          if (! error_state)
-            retval = arg0.diag (m, n);
-          else
-            error ("diag: invalid dimensions");
+          retval = arg0.diag (m, n);
         }
       else
         error ("diag: V must be a vector");
@@ -2405,17 +2394,12 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 
   if (args.length () > 0)
     {
-      int dim = args(0).int_value () - 1;
+      int dim = args(0).xint_value ("cat: DIM must be an integer") - 1;
 
-      if (! error_state)
-        {
-          if (dim >= 0)
-            retval = do_cat (args.slice (1, args.length () - 1), dim, "cat");
-          else
-            error ("cat: DIM must be a valid dimension");
-        }
+      if (dim >= 0)
+        retval = do_cat (args.slice (1, args.length () - 1), dim, "cat");
       else
-        error ("cat: DIM must be an integer");
+        error ("cat: DIM must be a valid dimension");
     }
   else
     print_usage ();
@@ -2820,24 +2804,19 @@ returns the number of columns in the given matrix.\n\
     }
   else if (nargin == 2 && nargout < 2)
     {
-      octave_idx_type nd = args(1).int_value (true);
+      octave_idx_type nd = args(1).xint_value ("size: DIM must be an integer");
 
-      if (error_state)
-        error ("size: DIM must be a scalar");
-      else
+      const dim_vector dv = args(0).dims ();
+
+      if (nd > 0)
         {
-          const dim_vector dv = args(0).dims ();
-
-          if (nd > 0)
-            {
-              if (nd <= dv.length ())
-                retval(0) = dv(nd-1);
-              else
-                retval(0) = 1;
-            }
+          if (nd <= dv.length ())
+            retval(0) = dv(nd-1);
           else
-            error ("size: requested dimension DIM (= %d) out of range", nd);
+            retval(0) = 1;
         }
+      else
+        error ("size: requested dimension DIM (= %d) out of range", nd);
     }
   else
     print_usage ();
@@ -3347,7 +3326,7 @@ complex ([1, 2], [3, 4])\n\
         {
           if (arg.is_sparse_type ())
             {
-              SparseComplexMatrix val = arg.sparse_complex_matrix_value ();
+              SparseComplexMatrix val = arg.xsparse_complex_matrix_value ("complex: invalid conversion");
 
               retval = octave_value (new octave_sparse_complex_matrix (val));
             }
@@ -3355,13 +3334,13 @@ complex ([1, 2], [3, 4])\n\
             {
               if (arg.numel () == 1)
                 {
-                  FloatComplex val = arg.float_complex_value ();
+                  FloatComplex val = arg.xfloat_complex_value ("complex: invalid conversion");
 
                   retval = octave_value (new octave_float_complex (val));
                 }
               else
                 {
-                  FloatComplexNDArray val = arg.float_complex_array_value ();
+                  FloatComplexNDArray val = arg.xfloat_complex_array_value ("complex: invalid conversion");
 
                   retval = octave_value (new octave_float_complex_matrix (val));
                 }
@@ -3370,20 +3349,17 @@ complex ([1, 2], [3, 4])\n\
             {
               if (arg.numel () == 1)
                 {
-                  Complex val = arg.complex_value ();
+                  Complex val = arg.xcomplex_value ("complex: invalid conversion");
 
                   retval = octave_value (new octave_complex (val));
                 }
               else
                 {
-                  ComplexNDArray val = arg.complex_array_value ();
+                  ComplexNDArray val = arg.xcomplex_array_value ("complex: invalid conversion");
 
                   retval = octave_value (new octave_complex_matrix (val));
                 }
             }
-
-          if (error_state)
-            error ("complex: invalid conversion");
         }
     }
   else if (nargin == 2)
@@ -3576,9 +3552,6 @@ complex ([1, 2], [3, 4])\n\
                 error ("complex: dimension mismatch");
             }
         }
-
-      if (error_state)
-        error ("complex: invalid conversion");
     }
   else
     print_usage ();
@@ -3965,15 +3938,8 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          {
-            dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
-
-            if (error_state)
-              {
-                error ("%s: expecting scalar integer arguments", fcn);
-                break;
-              }
-          }
+          dims(i) = (args(i).is_empty ()
+                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
       }
       break;
     }
@@ -4082,15 +4048,8 @@ fill_matrix (const octave_value_list& args, double val, float fval,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          {
-            dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
-
-            if (error_state)
-              {
-                error ("%s: expecting scalar integer arguments", fcn);
-                break;
-              }
-          }
+          dims(i) = (args(i).is_empty ()
+                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
       }
       break;
     }
@@ -4153,15 +4112,8 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          {
-            dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
-
-            if (error_state)
-              {
-                error ("%s: expecting scalar integer arguments", fcn);
-                break;
-              }
-          }
+          dims(i) = (args(i).is_empty ()
+                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
       }
       break;
     }
@@ -4225,15 +4177,8 @@ fill_matrix (const octave_value_list& args, const Complex& val,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          {
-            dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
-
-            if (error_state)
-              {
-                error ("%s: expecting scalar integer arguments", fcn);
-                break;
-              }
-          }
+          dims(i) = (args(i).is_empty ()
+                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
       }
       break;
     }
@@ -4287,15 +4232,8 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          {
-            dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
-
-            if (error_state)
-              {
-                error ("%s: expecting scalar integer arguments", fcn);
-                break;
-              }
-          }
+          dims(i) = (args(i).is_empty ()
+                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
       }
       break;
     }
@@ -6433,22 +6371,17 @@ DEFUN (toc, args, nargout,
     {
       if (nargin == 1)
         {
-          octave_uint64 id = args(0).uint64_scalar_value ();
+          octave_uint64 id = args(0).xuint64_scalar_value ("toc: invalid ID");
 
-          if (! error_state)
-            {
-              uint64_t val = id.value ();
+          uint64_t val = id.value ();
 
-              start_time
-                = (static_cast<double> (val / CLOCKS_PER_SEC)
-                   + static_cast<double> (val % CLOCKS_PER_SEC)
-                   / CLOCKS_PER_SEC);
+          start_time
+            = (static_cast<double> (val / CLOCKS_PER_SEC)
+               + static_cast<double> (val % CLOCKS_PER_SEC)
+               / CLOCKS_PER_SEC);
 
-              // FIXME: should we also check to see whether the start
-              // time is after the beginning of this Octave session?
-            }
-          else
-            error ("toc: invalid ID");
+          // FIXME: should we also check to see whether the start
+          // time is after the beginning of this Octave session?
         }
 
       if (start_time < 0)

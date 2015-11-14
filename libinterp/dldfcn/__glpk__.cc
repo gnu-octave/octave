@@ -307,18 +307,10 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       if (tmp.is_defined ()) \
         { \
           if (! tmp.is_empty ()) \
-            { \
-              VAL = tmp.scalar_value (); \
- \
-              if (error_state) \
-                { \
-                  error ("glpk: invalid value in PARAM." NAME); \
-                  return retval; \
-                } \
-            } \
+            VAL = tmp.xscalar_value ("glpk: invalid value in PARAM" NAME); \
           else \
             { \
-              error ("glpk: invalid value in PARAM." NAME); \
+              error ("glpk: invalid value in PARAM" NAME); \
               return retval; \
             } \
         } \
@@ -333,18 +325,10 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       if (tmp.is_defined ()) \
         { \
           if (! tmp.is_empty ()) \
-            { \
-              VAL = tmp.int_value (); \
- \
-              if (error_state) \
-                { \
-                  error ("glpk: invalid value in PARAM." NAME); \
-                  return retval; \
-                } \
-            } \
+            VAL = tmp.xint_value ("glpk: invalid value in PARAM" NAME); \
           else \
             { \
-              error ("glpk: invalid value in PARAM." NAME); \
+              error ("glpk: invalid value in PARAM" NAME); \
               return retval; \
             } \
         } \
@@ -374,13 +358,7 @@ Undocumented internal function.\n\
   //--            coefficients.
   volatile int mrowsc = args(0).rows ();
 
-  Matrix C (args(0).matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of C");
-      return retval;
-    }
+  Matrix C = args(0).xmatrix_value ("__glpk__: invalid value of C");
 
   double *c = C.fortran_vec ();
   Array<int> rn;
@@ -393,13 +371,7 @@ Undocumented internal function.\n\
   // If matrix A is NOT a sparse matrix
   if (args(1).is_sparse_type ())
     {
-      SparseMatrix A = args(1).sparse_matrix_value (); // get the sparse matrix
-
-      if (error_state)
-        {
-          error ("__glpk__: invalid value of A");
-          return retval;
-        }
+      SparseMatrix A = args(1).xsparse_matrix_value ("__glpk__: invalid value of A");
 
       mrowsA = A.rows ();
       octave_idx_type Anc = A.cols ();
@@ -425,13 +397,7 @@ Undocumented internal function.\n\
     }
   else
     {
-      Matrix A (args(1).matrix_value ()); // get the matrix
-
-      if (error_state)
-        {
-          error ("__glpk__: invalid value of A");
-          return retval;
-        }
+      Matrix A = args(1).xmatrix_value ("__glpk__: invalid value of A");
 
       mrowsA = A.rows ();
       rn.resize (dim_vector (mrowsA*mrowsc+1, 1));
@@ -456,23 +422,17 @@ Undocumented internal function.\n\
 
   //-- 3rd Input. A column array containing the right-hand side value
   //               for each constraint in the constraint matrix.
-  Matrix B (args(2).matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of B");
-      return retval;
-    }
+  Matrix B = args(2).xmatrix_value ("__glpk__: invalid value of B");
 
   double *b = B.fortran_vec ();
 
   //-- 4th Input. An array of length mrowsc containing the lower
   //--            bound on each of the variables.
-  Matrix LB (args(3).matrix_value ());
+  Matrix LB = args(3).xmatrix_value ("__glpk__: invalid value of LB");
 
-  if (error_state || LB.numel () < mrowsc)
+  if (LB.numel () < mrowsc)
     {
-      error ("__glpk__: invalid value of LB");
+      error ("__glpk__: invalid dimensions for LB");
       return retval;
     }
 
@@ -493,11 +453,11 @@ Undocumented internal function.\n\
 
   //-- 5th Input. An array of at least length numcols containing the upper
   //--            bound on each of the variables.
-  Matrix UB (args(4).matrix_value ());
+  Matrix UB = args(4).xmatrix_value ("__glpk__: invalid value of UB");
 
-  if (error_state || UB.numel () < mrowsc)
+  if (UB.numel () < mrowsc)
     {
-      error ("__glpk__: invalid value of UB");
+      error ("__glpk__: invalid dimensions for UB");
       return retval;
     }
 
@@ -517,24 +477,12 @@ Undocumented internal function.\n\
 
   //-- 6th Input. A column array containing the sense of each constraint
   //--            in the constraint matrix.
-  charMatrix CTYPE (args(5).char_matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of CTYPE");
-      return retval;
-    }
+  charMatrix CTYPE = args(5).char_matrix_value ("__glpk__: invalid value of CTYPE");
 
   char *ctype = CTYPE.fortran_vec ();
 
   //-- 7th Input. A column array containing the types of the variables.
-  charMatrix VTYPE (args(6).char_matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of VARTYPE");
-      return retval;
-    }
+  charMatrix VTYPE = args(6).char_matrix_value ("__glpk__: invalid value of VARTYPE");
 
   Array<int> vartype (dim_vector (mrowsc, 1));
   volatile int isMIP = 0;
@@ -551,13 +499,7 @@ Undocumented internal function.\n\
 
   //-- 8th Input. Sense of optimization.
   volatile int sense;
-  double SENSE = args(7).scalar_value ();
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of SENSE");
-      return retval;
-    }
+  double SENSE = args(7).scalar_value ("__glpk__: invalid value of SENSE");
 
   if (SENSE >= 0)
     sense = 1;
@@ -565,13 +507,7 @@ Undocumented internal function.\n\
     sense = -1;
 
   //-- 9th Input. A structure containing the control parameters.
-  octave_scalar_map PARAM = args(8).scalar_map_value ();
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of PARAM");
-      return retval;
-    }
+  octave_scalar_map PARAM = args(8).xscalar_map_value ("__glpk__: invalid value of PARAM");
 
   control_params par;
 

@@ -1994,6 +1994,7 @@ XVALUE_EXTRACTOR (uint32NDArray, xuint32_array_value, uint32_array_value)
 XVALUE_EXTRACTOR (uint64NDArray, xuint64_array_value, uint64_array_value)
 
 XVALUE_EXTRACTOR (std::string, xstring_value, rep->xstring_value)
+XVALUE_EXTRACTOR (string_vector, xall_strings, all_strings)
 
 XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
 XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
@@ -2958,10 +2959,9 @@ decode_subscripts (const char* name, const octave_value& arg,
                    std::string& type_string,
                    std::list<octave_value_list>& idx)
 {
-  const octave_map m = arg.map_value ();
+  const octave_map m = arg.xmap_value ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
 
-  if (! error_state
-      && m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
+  if (m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
     {
       octave_idx_type nel = m.numel ();
 

@@ -137,22 +137,17 @@ The author of the code itself is Timothy A. Davis\n\
       AMD_NAME (_defaults) (Control) ;
       if (nargin > 1)
         {
-          octave_scalar_map arg1 = args(1).scalar_map_value ();
+          octave_scalar_map arg1 = args(1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
 
-          if (!error_state)
-            {
-              octave_value tmp;
+          octave_value tmp;
 
-              tmp = arg1.getfield ("dense");
-              if (tmp.is_defined ())
-                Control[AMD_DENSE] = tmp.double_value ();
+          tmp = arg1.getfield ("dense");
+          if (tmp.is_defined ())
+            Control[AMD_DENSE] = tmp.double_value ();
 
-              tmp = arg1.getfield ("aggressive");
-              if (tmp.is_defined ())
-                Control[AMD_AGGRESSIVE] = tmp.double_value ();
-            }
-          else
-            error ("amd: OPTS argument must be a scalar structure");
+          tmp = arg1.getfield ("aggressive");
+          if (tmp.is_defined ())
+            Control[AMD_AGGRESSIVE] = tmp.double_value ();
         }
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);

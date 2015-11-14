@@ -195,21 +195,16 @@ error message.\n\
 
       if (nargin == 2)
         {
-          string_vector tmp = args(1).all_strings ();
+          string_vector tmp = args(1).xall_strings ("exec: all arguments must be strings");
 
-          if (! error_state)
-            {
-              int len = tmp.numel ();
+          int len = tmp.numel ();
 
-              exec_args.resize (len + 1);
+          exec_args.resize (len + 1);
 
-              exec_args[0] = exec_file;
+          exec_args[0] = exec_file;
 
-              for (int i = 0; i < len; i++)
-                exec_args[i+1] = tmp[i];
-            }
-          else
-            error ("exec: all arguments must be strings");
+          for (int i = 0; i < len; i++)
+            exec_args[i+1] = tmp[i];
         }
       else
         {
@@ -299,21 +294,16 @@ exit status, it will linger until Octave exits.\n\
 
       if (nargin >= 2)
         {
-          string_vector tmp = args(1).all_strings ();
+          string_vector tmp = args(1).xall_strings ("popen2: all arguments must be strings");
 
-          if (! error_state)
-            {
-              int len = tmp.numel ();
+          int len = tmp.numel ();
 
-              arg_list.resize (len + 1);
+          arg_list.resize (len + 1);
 
-              arg_list[0] = exec_file;
+          arg_list[0] = exec_file;
 
-              for (int i = 0; i < len; i++)
-                arg_list[i+1] = tmp[i];
-            }
-          else
-            error ("popen2: all arguments must be strings");
+          for (int i = 0; i < len; i++)
+            arg_list[i+1] = tmp[i];
         }
       else
         {
@@ -322,40 +312,35 @@ exit status, it will linger until Octave exits.\n\
           arg_list[0] = exec_file;
         }
 
-      if (! error_state)
+      bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
+
+      int fildes[2];
+      std::string msg;
+      pid_t pid;
+
+      pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
+                                     fildes, msg, interactive);
+      if (pid >= 0)
         {
-          bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
+          FILE *ifile = fdopen (fildes[1], "r");
+          FILE *ofile = fdopen (fildes[0], "w");
 
-          int fildes[2];
-          std::string msg;
-          pid_t pid;
+          std::string nm;
 
-          pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
-                                         fildes, msg, interactive);
-          if (pid >= 0)
-            {
-              FILE *ifile = fdopen (fildes[1], "r");
-              FILE *ofile = fdopen (fildes[0], "w");
+          octave_stream is = octave_stdiostream::create (nm, ifile,
+                                                         std::ios::in);
 
-              std::string nm;
+          octave_stream os = octave_stdiostream::create (nm, ofile,
+                                                         std::ios::out);
 
-              octave_stream is = octave_stdiostream::create (nm, ifile,
-                                                             std::ios::in);
+          Cell file_ids (1, 2);
 
-              octave_stream os = octave_stdiostream::create (nm, ofile,
-                                                             std::ios::out);
-
-              Cell file_ids (1, 2);
-
-              retval(2) = pid;
-              retval(1) = octave_stream_list::insert (is);
-              retval(0) = octave_stream_list::insert (os);
-            }
-          else
-            error (msg.c_str ());
+          retval(2) = pid;
+          retval(1) = octave_stream_list::insert (is);
+          retval(0) = octave_stream_list::insert (os);
         }
       else
-        error ("popen2: all arguments must be strings");
+        error (msg.c_str ());
     }
   else
     print_usage ();
@@ -845,28 +830,23 @@ error message.\n\
     {
       std::string name = args(0).xstring_value ("mkfifo: FILE must be a string");
 
-      int octal_mode = args(1).int_value ();
+      int octal_mode = args(1).xint_value ("mkfifo: MODE must be an integer");
 
-      if (! error_state)
-        {
-          if (octal_mode < 0)
-            error ("mkfifo: MODE must be a positive integer value");
-          else
-            {
-              int mode = convert (octal_mode, 8, 10);
-
-              std::string msg;
-
-              int status = octave_mkfifo (name, mode, msg);
-
-              retval(0) = status;
-
-              if (status < 0)
-                retval(1) = msg;
-            }
-        }
+      if (octal_mode < 0)
+        error ("mkfifo: MODE must be a positive integer value");
       else
-        error ("mkfifo: MODE must be an integer");
+        {
+          int mode = convert (octal_mode, 8, 10);
+
+          std::string msg;
+
+          int status = octave_mkfifo (name, mode, msg);
+
+          retval(0) = status;
+
+          if (status < 0)
+            retval(1) = msg;
+        }
     }
   else
     print_usage ();
@@ -1078,12 +1058,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISREG: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_reg (static_cast<mode_t> (mode));
-      else
-        error ("S_ISREG: invalid MODE value");
+      retval = file_stat::is_reg (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1104,12 +1081,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISDIR: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_dir (static_cast<mode_t> (mode));
-      else
-        error ("S_ISDIR: invalid MODE value");
+      retval = file_stat::is_dir (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1130,12 +1104,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISCHR: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_chr (static_cast<mode_t> (mode));
-      else
-        error ("S_ISCHR: invalid MODE value");
+      retval = file_stat::is_chr (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1156,12 +1127,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISBLK: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_blk (static_cast<mode_t> (mode));
-      else
-        error ("S_ISBLK: invalid MODE value");
+      retval = file_stat::is_blk (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1182,12 +1150,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISFIFO: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_fifo (static_cast<mode_t> (mode));
-      else
-        error ("S_ISFIFO: invalid MODE value");
+      retval = file_stat::is_fifo (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1208,12 +1173,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISLNK: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_lnk (static_cast<mode_t> (mode));
-      else
-        error ("S_ISLNK: invalid MODE value");
+      retval = file_stat::is_lnk (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1234,12 +1196,9 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   if (args.length () == 1)
     {
-      double mode = args(0).double_value ();
+      double mode = args(0).xdouble_value ("S_ISSOCK: invalid MODE value");
 
-      if (! error_state)
-        retval = file_stat::is_sock (static_cast<mode_t> (mode));
-      else
-        error ("S_ISSOCK: invalid MODE value");
+      retval = file_stat::is_sock (static_cast<mode_t> (mode));
     }
   else
     print_usage ();
@@ -1404,33 +1363,23 @@ about the subprocess that exited.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      pid_t pid = args(0).int_value (true);
+      pid_t pid = args(0).xint_value ("waitpid: OPTIONS must be an integer");
 
-      if (! error_state)
-        {
-          int options = 0;
+      int options = 0;
 
-          if (args.length () == 2)
-            options = args(1).int_value (true);
+      if (args.length () == 2)
+        options = args(1).xint_value ("waitpid: PID must be an integer value");
 
-          if (! error_state)
-            {
-              std::string msg;
+      std::string msg;
 
-              int status = 0;
+      int status = 0;
 
-              pid_t result = octave_syscalls::waitpid (pid, &status,
-                                                       options, msg);
+      pid_t result = octave_syscalls::waitpid (pid, &status,
+                                               options, msg);
 
-              retval(2) = msg;
-              retval(1) = status;
-              retval(0) = result;
-            }
-          else
-            error ("waitpid: OPTIONS must be an integer");
-        }
-      else
-        error ("waitpid: PID must be an integer value");
+      retval(2) = msg;
+      retval(1) = status;
+      retval(0) = result;
     }
   else
     print_usage ();
@@ -1450,13 +1399,12 @@ true if the child terminated normally.\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WIFEXITED: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::ifexited (status);
-      else
-        error ("WIFEXITED: STATUS must be an integer");
+      retval = octave_wait::ifexited (status);
     }
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1475,12 +1423,9 @@ This function should only be employed if @code{WIFEXITED} returned true.\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WEXITSTATUS: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::exitstatus (status);
-      else
-        error ("WEXITSTATUS: STATUS must be an integer");
+      retval = octave_wait::exitstatus (status);
     }
 
   return retval;
@@ -1498,13 +1443,12 @@ true if the child process was terminated by a signal.\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WIFSIGNALED: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::ifsignaled (status);
-      else
-        error ("WIFSIGNALED: STATUS must be an integer");
+      retval = octave_wait::ifsignaled (status);
     }
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1523,13 +1467,12 @@ This function should only be employed if @code{WIFSIGNALED} returned true.\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WTERMSIG: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::termsig (status);
-      else
-        error ("WTERMSIG: STATUS must be an integer");
+      retval = octave_wait::termsig (status);
     }
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1550,13 +1493,12 @@ and is not available on some Unix implementations (e.g., AIX, SunOS).\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WCOREDUMP: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::coredump (status);
-      else
-        error ("WCOREDUMP: STATUS must be an integer");
+      retval = octave_wait::coredump (status);
     }
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1576,13 +1518,12 @@ the child is being traced (see ptrace(2)).\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WIFSTOPPED: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::ifstopped (status);
-      else
-        error ("WIFSTOPPED: STATUS must be an integer");
+      retval = octave_wait::ifstopped (status);
     }
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1601,13 +1542,12 @@ This function should only be employed if @code{WIFSTOPPED} returned true.\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WSTOPSIG: STATUS must be an integer");
 
-      if (! error_state)
         retval = octave_wait::stopsig (status);
-      else
-        error ("WSTOPSIG: STATUS must be an integer");
     }
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1624,13 +1564,12 @@ true if the child process was resumed by delivery of @code{SIGCONT}.\n\
 
   if (args.length () == 1)
     {
-      int status = args(0).int_value ();
+      int status = args(0).xint_value ("WIFCONTINUED: STATUS must be an integer");
 
-      if (! error_state)
-        retval = octave_wait::ifcontinued (status);
-      else
-        error ("WIFCONTINUED: STATUS must be an integer");
+      retval = octave_wait::ifcontinued (status);
     }
+  else
+    print_usage ();
 
   return retval;
 }

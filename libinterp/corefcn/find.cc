@@ -405,13 +405,10 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
   octave_idx_type n_to_find = -1;
   if (nargin > 1)
     {
-      double val = args(1).scalar_value ();
+      double val = args(1).xscalar_value ("find: N must be an integer");
 
-      if (error_state || (val < 0 || (! xisinf (val) && val != xround (val))))
-        {
-          error ("find: N must be a non-negative integer");
-          return retval;
-        }
+      if (val < 0 || (! xisinf (val) && val != xround (val)))
+        error ("find: N must be a non-negative integer");
       else if (! xisinf (val))
         n_to_find = val;
     }

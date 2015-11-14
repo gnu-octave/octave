@@ -505,22 +505,17 @@ octave_struct::subsasgn (const std::string& type,
               {
                 if (t_rhs.is_map () || t_rhs.is_object ())
                   {
-                    octave_map rhs_map = t_rhs.map_value ();
+                    octave_map rhs_map = t_rhs.xmap_value ("invalid structure assignment");
+
+                    map.assign (idx.front (), rhs_map);
 
                     if (! error_state)
                       {
-                        map.assign (idx.front (), rhs_map);
-
-                        if (! error_state)
-                          {
-                            count++;
-                            retval = octave_value (this);
-                          }
-                        else
-                          gripe_failed_assignment ();
+                        count++;
+                        retval = octave_value (this);
                       }
                     else
-                      error ("invalid structure assignment");
+                      gripe_failed_assignment ();
                   }
                 else
                   {

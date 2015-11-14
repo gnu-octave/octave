@@ -155,11 +155,9 @@ longer running time.\n\
         }
       else
         {
-          NDArray vals = args(0).array_value ();
+          NDArray vals = args(0).xarray_value ("spparms: input must be a string or a vector");
 
-          if (error_state)
-            error ("spparms: input must be a string or a vector");
-          else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
+          if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
             error ("spparms: too many elements in vector VALS");
           else
             octave_sparse_params::set_vals (vals);
@@ -169,11 +167,9 @@ longer running time.\n\
     {
       std::string str = args(0).xstring_value ("spparms: first argument must be a string");
 
-      double val = args(1).double_value ();
+      double val = args(1).xdouble_value ("spparms: second argument must be a real scalar");
 
-      if (error_state)
-        error ("spparms: second argument must be a real scalar");
-      else if (str == "umfpack")
+      if (str == "umfpack")
         warning ("spparms: request to disable umfpack solvers ignored");
       else if (!octave_sparse_params::set_key (str, val))
         error ("spparms: KEY not found");

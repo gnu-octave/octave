@@ -1795,12 +1795,9 @@ Undocumented internal function.\n\
         }
       else
         {
-          int s = arg.int_value ();
+          int s = arg.xint_value ("__dump_symtab_info__: expecting string or scope id");
 
-          if (! error_state)
-            symbol_table::dump (octave_stdout, s);
-          else
-            error ("__dump_symtab_info__: expecting string or scope id");
+          symbol_table::dump (octave_stdout, s);
         }
     }
   else

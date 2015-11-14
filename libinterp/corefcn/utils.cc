@@ -314,9 +314,9 @@ If no files are found, return an empty cell array.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      string_vector names = args(0).all_strings ();
+      string_vector names = args(0).xall_strings ("file_in_loadpath: FILE argument must be a string");
 
-      if (! error_state && names.numel () > 0)
+      if (names.numel () > 0)
         {
           if (nargin == 1)
             retval =
@@ -333,7 +333,7 @@ If no files are found, return an empty cell array.\n\
             }
         }
       else
-        error ("file_in_loadpath: FILE argument must be a string");
+        error ("file_in_loadpath: FILE argument must not be empty");
     }
   else
     print_usage ();
@@ -395,9 +395,9 @@ If no files are found, return an empty cell array.\n\
     {
       std::string path = args(0).xstring_value ("file_in_path: PATH must be a string");
 
-      string_vector names = args(1).all_strings ();
+      string_vector names = args(1).xall_strings ("file_in_path: FILE argument must be a string");
 
-      if (! error_state && names.numel () > 0)
+      if (names.numel () > 0)
         {
           if (nargin == 2)
             retval = search_path_for_file (path, names);
@@ -413,7 +413,7 @@ If no files are found, return an empty cell array.\n\
             }
         }
       else
-        error ("file_in_path: all arguments must be strings");
+        error ("file_in_path: FILE argument must not be empty");
     }
   else
     print_usage ();

@@ -95,13 +95,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
       for (int i = 0; i < nargin; i++)
         {
-          string_vector s = args(i).all_strings ();
-
-          if (error_state)
-            {
-              error ("char: unable to convert some args to strings");
-              return retval;
-            }
+          string_vector s = args(i).xall_strings ("char: unable to convert some args to strings");
 
           if (s.numel () > 0)
             n_elts += s.numel ();
@@ -216,13 +210,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
   for (int i = 0; i < nargin; i++)
     {
-      string_vector s = args(i).all_strings ();
-
-      if (error_state)
-        {
-          error ("strvcat: unable to convert some args to strings");
-          return retval;
-        }
+      string_vector s = args(i).xall_strings ("strvcat: unable to convert some args to strings");
 
       size_t n = s.numel ();
 
@@ -899,26 +887,12 @@ whos ans\n\
       return retval;
     }
 
-  string_vector s = args(0).all_strings ();
-
-  if (error_state)
-    {
-      error ("list_in_columns: ARG must be a cellstr or char array");
-      return retval;
-    }
+  string_vector s = args(0).xall_strings ("list_in_columns: ARG must be a cellstr or char array");
 
   int width = -1;
 
   if (nargin > 1 && ! args(1).is_empty ())
-    {
-      width = args(1).int_value ();
-
-      if (error_state)
-        {
-          error ("list_in_columns: WIDTH must be an integer");
-          return retval;
-        }
-    }
+    width = args(1).xint_value ("list_in_columns: WIDTH must be an integer");
 
   std::string prefix;
 
@@ -951,5 +925,5 @@ whos ans\n\
 %!error list_in_columns ()
 %!error list_in_columns (["abc", "def"], 20, 2)
 %!error list_in_columns (["abc", "def"], 20, "  ", 3)
-%!error <invalid conversion from string to real scalar> list_in_columns (["abc", "def"], "a")
+%!error <list_in_columns: WIDTH must be an integer> list_in_columns (["abc", "def"], "a")
 */

@@ -139,13 +139,8 @@ is in the upper left corner, by doing:\n\
                             || args(1).is_complex_type ();
 
 #define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND) \
-          TYPE ## Matrix U = args(0).TYPE_M ## _value (); \
-          TYPE ## Matrix S = args(1).TYPE_M ## _value (); \
-          if (error_state) \
-            { \
-              error ("ordschur: U and S must be real or complex floating point matrices"); \
-              return retval; \
-            } \
+          TYPE ## Matrix U = args(0).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
+          TYPE ## Matrix S = args(1).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
           TYPE ## Matrix w (dim_vector (n, 1)); \
           TYPE ## Matrix work (dim_vector (n, 1)); \
           octave_idx_type m; \

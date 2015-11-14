@@ -57,48 +57,48 @@ mk_tm_map (const octave_base_tm& t)
 }
 
 static inline int
-intfield (const octave_scalar_map& m, const std::string& k)
+intfield (const octave_scalar_map& m, const std::string& k, const char *who)
 {
   int retval = 0;
 
   octave_value v = m.getfield (k);
 
   if (! v.is_empty ())
-    retval = v.int_value ();
+    retval = v.xint_value ("%s: invalid TM_STRUCT argument", who);
 
   return retval;
 }
 
 static inline std::string
-stringfield (const octave_scalar_map& m, const std::string& k)
+stringfield (const octave_scalar_map& m, const std::string& k, const char *who)
 {
   std::string retval;
 
   octave_value v = m.getfield (k);
 
   if (! v.is_empty ())
-    retval = v.string_value ();
+    retval = v.xstring_value ("%s: invalid TM_STRUCT argument", who);
 
   return retval;
 }
 
 static octave_base_tm
-extract_tm (const octave_scalar_map& m)
+extract_tm (const octave_scalar_map& m, const char *who)
 {
   octave_base_tm tm;
 
-  tm.usec (intfield (m, "usec"));
-  tm.sec (intfield (m, "sec"));
-  tm.min (intfield (m, "min"));
-  tm.hour (intfield (m, "hour"));
-  tm.mday (intfield (m, "mday"));
-  tm.mon (intfield (m, "mon"));
-  tm.year (intfield (m, "year"));
-  tm.wday (intfield (m, "wday"));
-  tm.yday (intfield (m, "yday"));
-  tm.isdst (intfield (m, "isdst"));
-  tm.gmtoff (intfield (m, "gmtoff"));
-  tm.zone (stringfield (m, "zone"));
+  tm.usec (intfield (m, "usec", who));
+  tm.sec (intfield (m, "sec", who));
+  tm.min (intfield (m, "min", who));
+  tm.hour (intfield (m, "hour", who));
+  tm.mday (intfield (m, "mday", who));
+  tm.mon (intfield (m, "mon", who));
+  tm.year (intfield (m, "year", who));
+  tm.wday (intfield (m, "wday", who));
+  tm.yday (intfield (m, "yday", who));
+  tm.isdst (intfield (m, "isdst", who));
+  tm.gmtoff (intfield (m, "gmtoff", who));
+  tm.zone (stringfield (m, "zone", who));
 
   return tm;
 }
@@ -275,19 +275,11 @@ mktime (localtime (time ()))\n\
 
   if (args.length () == 1)
     {
-      octave_scalar_map map = args(0).scalar_map_value ();
+      octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
 
-      if (! error_state)
-        {
-          octave_base_tm tm = extract_tm (map);
+      octave_base_tm tm = extract_tm (map, "mktime");
 
-          if (! error_state)
-            retval = octave_time (tm);
-          else
-            error ("mktime: invalid TM_STRUCT argument");
-        }
-      else
-        error ("mktime: TM_STRUCT argument must be a structure");
+      retval = octave_time (tm);
     }
   else
     print_usage ();
@@ -475,19 +467,11 @@ Year (1970-).\n\
     {
       std::string fmt = args(0).xstring_value ("strftime: FMT must be a string");
 
-      octave_scalar_map map = args(1).scalar_map_value ();
+      octave_scalar_map map = args(1).xscalar_map_value ("strftime: TM_STRUCT must be a structure");
 
-      if (! error_state)
-        {
-          octave_base_tm tm = extract_tm (map);
+      octave_base_tm tm = extract_tm (map, "strftime");
 
-          if (! error_state)
-            retval = tm.strftime (fmt);
-          else
-            error ("strftime: invalid TM_STRUCT argument");
-        }
-      else
-        error ("strftime: TM_STRUCT must be a structure");
+      retval = tm.strftime (fmt);
     }
   else
     print_usage ();

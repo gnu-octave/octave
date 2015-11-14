@@ -2123,26 +2123,18 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
 
   if (args.length () == 1)
     {
-      int mask = args(0).int_value (true);
+      int mask = args(0).xint_value ("umask: MASK must be an integer");
 
-      if (! error_state)
+      if (mask < 0)
         {
-          if (mask < 0)
-            {
-              status = -1;
-              error ("umask: MASK must be a positive integer value");
-            }
-          else
-            {
-              int oct_mask = convert (mask, 8, 10);
-
-              status = convert (octave_umask (oct_mask), 10, 8);
-            }
+          status = -1;
+          error ("umask: MASK must be a positive integer value");
         }
       else
         {
-          status = -1;
-          error ("umask: MASK must be an integer");
+          int oct_mask = convert (mask, 8, 10);
+
+          status = convert (octave_umask (oct_mask), 10, 8);
         }
     }
   else

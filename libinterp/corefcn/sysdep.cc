@@ -968,19 +968,14 @@ tilde_expand (\"~/bin\")\n\
     {
       octave_value arg = args(0);
 
-      string_vector sv = arg.all_strings ();
+      string_vector sv = arg.all_strings ("tilde_expand: expecting argument to be char or cellstr object");
 
-      if (! error_state)
-        {
-          sv = file_ops::tilde_expand (sv);
+      sv = file_ops::tilde_expand (sv);
 
-          if (arg.is_cellstr ())
-            retval = Cell (arg.dims (), sv);
-          else
-            retval = sv;
-        }
+      if (arg.is_cellstr ())
+        retval = Cell (arg.dims (), sv);
       else
-        error ("tilde_expand: expecting argument to be char or cellstr object");
+        retval = sv;
     }
   else
     print_usage ();

@@ -123,53 +123,45 @@ values of @var{p} @var{q} as vector values.\n\
         }
       else if (args(1).is_map ())
         {
-          octave_scalar_map map = args(1).scalar_map_value ();
+          octave_scalar_map map = args(1).xscalar_map_value ("luinc: OPTS must be a scalar structure");
 
-          if (! error_state)
+          octave_value tmp;
+
+          tmp = map.getfield ("droptol");
+          if (tmp.is_defined ())
+            droptol = tmp.double_value ();
+
+          tmp = map.getfield ("milu");
+          if (tmp.is_defined ())
             {
-              octave_value tmp;
+              double val = tmp.double_value ();
 
-              tmp = map.getfield ("droptol");
-              if (tmp.is_defined ())
-                droptol = tmp.double_value ();
-
-              tmp = map.getfield ("milu");
-              if (tmp.is_defined ())
-                {
-                  double val = tmp.double_value ();
-
-                  milu = (val == 0. ? false : true);
-                }
-
-              tmp = map.getfield ("udiag");
-              if (tmp.is_defined ())
-                {
-                  double val = tmp.double_value ();
-
-                  udiag = (val == 0. ? false : true);
-                }
-
-              tmp = map.getfield ("thresh");
-              if (tmp.is_defined ())
-                {
-                  thresh = tmp.matrix_value ();
-
-                  if (thresh.numel () == 1)
-                    {
-                      thresh.resize (1,2);
-                      thresh(1) = thresh(0);
-                    }
-                  else if (thresh.numel () != 2)
-                    {
-                      error ("luinc: expecting 2-element vector for thresh");
-                      return retval;
-                    }
-                }
+              milu = (val == 0. ? false : true);
             }
-          else
+
+          tmp = map.getfield ("udiag");
+          if (tmp.is_defined ())
             {
-              error ("luinc: OPTS must be a scalar structure");
-              return retval;
+              double val = tmp.double_value ();
+
+              udiag = (val == 0. ? false : true);
+            }
+
+          tmp = map.getfield ("thresh");
+          if (tmp.is_defined ())
+            {
+              thresh = tmp.matrix_value ();
+
+              if (thresh.numel () == 1)
+                {
+                  thresh.resize (1,2);
+                  thresh(1) = thresh(0);
+                }
+              else if (thresh.numel () != 2)
+                {
+                  error ("luinc: expecting 2-element vector for thresh");
+                  return retval;
+                }
             }
         }
       else

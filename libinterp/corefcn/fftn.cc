@@ -62,11 +62,12 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 
   if (nargin > 1)
     {
-      Matrix val = args(1).matrix_value ();
+      Matrix val = args(1).xmatrix_value ("%s: SIZE must be a vector of length dim", fcn);
+
       if (val.rows () > val.columns ())
         val = val.transpose ();
 
-      if (error_state || val.columns () != dims.length () || val.rows () != 1)
+      if (val.columns () != dims.length () || val.rows () != 1)
         error ("%s: SIZE must be a vector of length dim", fcn);
       else
         {

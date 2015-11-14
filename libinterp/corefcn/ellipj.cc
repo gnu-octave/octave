@@ -28,12 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "lo-specfun.h"
 
-static void
-gripe_ellipj_arg (const char *arg)
-{
-  error ("ellipj: expecting scalar or matrix as %s argument", arg);
-}
-
 DEFUN (ellipj, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
@@ -89,26 +83,14 @@ and 16.15), Dover, 1965.\n\
 
   if (m_arg.is_scalar_type ())
     {
-      double m = args(1).double_value ();
-
-      if (error_state)
-        {
-          gripe_ellipj_arg ("second");
-          return retval;
-        }
+      double m = args(1).xdouble_value ("ellipj: expecting scalar or matrix as second argument");
 
       if (u_arg.is_scalar_type ())
         {
           if (u_arg.is_real_type ())
             {
               // u real, m scalar
-              double u = args(0).double_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              double u = args(0).xdouble_value ("ellipj: expecting scalar or matrix as first argument");
 
               double sn, cn, dn;
               double err = 0;
@@ -124,13 +106,7 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u complex, m scalar
-              Complex u = u_arg.complex_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              Complex u = u_arg.xcomplex_value ("ellipj: expecting scalar or matrix as first argument");
 
               Complex sn, cn, dn;
               double err = 0;
@@ -147,13 +123,7 @@ and 16.15), Dover, 1965.\n\
       else
         {
           // u is matrix, m is scalar
-          ComplexNDArray u = u_arg.complex_array_value ();
-
-          if (error_state)
-            {
-              gripe_ellipj_arg ("first");
-              return retval;
-            }
+          ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: expecting scalar or matrix as first argument");
 
           dim_vector sz_u = u.dims ();
 
@@ -179,13 +149,7 @@ and 16.15), Dover, 1965.\n\
     }
   else
     {
-      NDArray m = args(1).array_value ();
-
-      if (error_state)
-        {
-          gripe_ellipj_arg ("second");
-          return retval;
-        }
+      NDArray m = args(1).xarray_value ("ellipj: expecting scalar or matrix as second argument");
 
       dim_vector sz_m = m.dims ();
 
@@ -195,13 +159,7 @@ and 16.15), Dover, 1965.\n\
           if (u_arg.is_real_type ())
             {
               // u is real scalar, m is array
-              double u = u_arg.double_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              double u = u_arg.xdouble_value ("ellipj: expecting scalar or matrix as first argument");
 
               NDArray sn (sz_m), cn (sz_m), dn (sz_m);
               NDArray err (sz_m);
@@ -225,13 +183,7 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u is complex scalar, m is array
-              Complex u = u_arg.complex_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              Complex u = u_arg.xcomplex_value ("ellipj: expecting scalar or matrix as first argument");
 
               ComplexNDArray sn (sz_m), cn (sz_m), dn (sz_m);
               NDArray err (sz_m);
@@ -259,13 +211,7 @@ and 16.15), Dover, 1965.\n\
           if (u_arg.is_real_type ())
             {
               // u is real array, m is array
-              NDArray u = u_arg.array_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              NDArray u = u_arg.xarray_value ("ellipj: expecting scalar or matrix as first argument");
 
               dim_vector sz_u = u.dims ();
 
@@ -322,13 +268,7 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u is complex array, m is array
-              ComplexNDArray u = u_arg.complex_array_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("second");
-                  return retval;
-                }
+              ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: expecting scalar or matrix as second argument");
 
               dim_vector sz_u = u.dims ();
 

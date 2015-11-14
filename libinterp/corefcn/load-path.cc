@@ -2427,22 +2427,14 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
         }
       else if (option_arg.is_numeric_type ())
         {
-          int val = option_arg.int_value ();
+          int val = option_arg.xint_value ("addpath: expecting final argument to be 1 or 0");
 
-          if (! error_state)
+          if (val == 0)
+            nargin--;
+          else if (val == 1)
             {
-              if (val == 0)
-                nargin--;
-              else if (val == 1)
-                {
-                  append = true;
-                  nargin--;
-                }
-              else
-                {
-                  error ("addpath: expecting final argument to be 1 or 0");
-                  return retval;
-                }
+              append = true;
+              nargin--;
             }
           else
             {

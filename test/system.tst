@@ -202,13 +202,13 @@
 %! unlink (nm);
 %! assert (r(:), [true; false; false; false; false; false; false]);
 
-%!error <octave_base_value::double_value> S_ISREG ({})
-%!error <octave_base_value::double_value> S_ISDIR ({})
-%!error <octave_base_value::double_value> S_ISCHR ({})
-%!error <octave_base_value::double_value> S_ISBLK ({})
-%!error <octave_base_value::double_value> S_ISFIFO ({})
-%!error <octave_base_value::double_value> S_ISLNK ({})
-%!error <octave_base_value::double_value> S_ISSOCK ({})
+%!error <S_ISREG: invalid MODE value> S_ISREG ({})
+%!error <S_ISDIR: invalid MODE value> S_ISDIR ({})
+%!error <S_ISCHR: invalid MODE value> S_ISCHR ({})
+%!error <S_ISBLK: invalid MODE value> S_ISBLK ({})
+%!error <S_ISFIFO: invalid MODE value> S_ISFIFO ({})
+%!error <S_ISLNK: invalid MODE value> S_ISLNK ({})
+%!error <S_ISSOCK: invalid MODE value> S_ISSOCK ({})
 
 %!error <Invalid call to S_ISREG> S_ISREG ()
 %!error <Invalid call to S_ISDIR> S_ISDIR ()

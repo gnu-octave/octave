@@ -748,12 +748,7 @@ Use @code{imread} instead.\n\
       return output;
     }
 
-  const octave_scalar_map options = args(1).scalar_map_value ();
-  if (error_state)
-    {
-      error ("__magick_read__: OPTIONS must be a struct");
-      return output;
-    }
+  const octave_scalar_map options = args(1).xscalar_map_value ("__magick_read__: OPTIONS must be a struct");
 
   std::vector<Magick::Image> imvec;
   read_file (args(0).string_value (), imvec);
@@ -1405,22 +1400,12 @@ Use @code{imwrite} instead.\n\
       return retval;
     }
   const std::string filename = args(0).string_value ();
-  const std::string ext      = args(1).string_value ();
+  const std::string ext = args(1).string_value ();
 
-  const octave_scalar_map options = args(4).scalar_map_value ();
-  if (error_state)
-    {
-      error ("__magick_write__: OPTIONS must be a struct");
-      return retval;
-    }
+  const octave_scalar_map options = args(4).xscalar_map_value ("__magick_write__: OPTIONS must be a struct");
 
   const octave_value img  = args(2);
-  const Matrix       cmap = args(3).matrix_value ();
-  if (error_state)
-    {
-      error ("__magick_write__: invalid IMG or MAP");
-      return retval;
-    }
+  const Matrix cmap = args(3).xmatrix_value ("__magick_write__: invalid MAP");
 
   std::vector<Magick::Image> imvec;
 

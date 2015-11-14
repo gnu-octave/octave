@@ -1288,26 +1288,21 @@ for input.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string hook_fcn_id = args(0).string_value ();
+      std::string hook_fcn_id = args(0).string_value ("remove_input_event_hook: argument not valid as a hook function name or id");
 
       bool warn = (nargin < 2);
 
-      if (! error_state)
-        {
-          hook_function_list::iterator p
-            = input_event_hook_functions.find (hook_fcn_id);
+      hook_function_list::iterator p
+        = input_event_hook_functions.find (hook_fcn_id);
 
-          if (p != input_event_hook_functions.end ())
-            input_event_hook_functions.erase (p);
-          else if (warn)
-            warning ("remove_input_event_hook: %s not found in list",
-                     hook_fcn_id.c_str ());
+      if (p != input_event_hook_functions.end ())
+        input_event_hook_functions.erase (p);
+      else if (warn)
+        warning ("remove_input_event_hook: %s not found in list",
+                 hook_fcn_id.c_str ());
 
-          if (input_event_hook_functions.empty ())
-            command_editor::remove_event_hook (internal_input_event_hook_fcn);
-        }
-      else
-        error ("remove_input_event_hook: argument not valid as a hook function name or id");
+      if (input_event_hook_functions.empty ())
+        command_editor::remove_event_hook (internal_input_event_hook_fcn);
     }
   else
     print_usage ();

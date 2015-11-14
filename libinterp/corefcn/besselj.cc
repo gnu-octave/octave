@@ -126,52 +126,37 @@ do_bessel (enum bessel_type type, const char *fn,
         {
           if (alpha_arg.is_scalar_type ())
             {
-              float alpha = args(0).float_value ();
+              float alpha = args(0).xfloat_value ("%s: expecting scalar or matrix as first argument", fn);
 
-              if (! error_state)
+              if (x_arg.is_scalar_type ())
                 {
-                  if (x_arg.is_scalar_type ())
-                    {
-                      FloatComplex x = x_arg.float_complex_value ();
+                  FloatComplex x = x_arg.xfloat_complex_value ("%s: expecting scalar or matrix as second argument", fn);
 
-                      if (! error_state)
-                        {
-                          octave_idx_type ierr;
-                          octave_value result;
+                  octave_idx_type ierr;
+                  octave_value result;
 
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                          if (nargout > 1)
-                            retval(1) = static_cast<float> (ierr);
+                  if (nargout > 1)
+                    retval(1) = static_cast<float> (ierr);
 
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    {
-                      FloatComplexNDArray x
-                        = x_arg.float_complex_array_value ();
-
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
-
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
+                  retval(0) = result;
                 }
               else
-                gripe_bessel_arg (fn, "first");
+                {
+                  FloatComplexNDArray x
+                    = x_arg.xfloat_complex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
+
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
+
+                  retval(0) = result;
+                }
             }
           else
             {
@@ -183,79 +168,54 @@ do_bessel (enum bessel_type type, const char *fn,
 
               if (args0_is_row_vector && args1_is_col_vector)
                 {
-                  FloatRowVector ralpha = args(0).float_row_vector_value ();
+                  FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: expecting scalar or matrix as first argument", fn);
 
-                  if (! error_state)
-                    {
-                      FloatComplexColumnVector cx =
-                        x_arg.float_complex_column_vector_value ();
+                  FloatComplexColumnVector cx =
+                    x_arg.xfloat_complex_column_vector_value ("%s: expecting scalar or matrix as second argument", fn);
 
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
 
-                          DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+                  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
 
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    gripe_bessel_arg (fn, "first");
+                  retval(0) = result;
                 }
               else
                 {
-                  FloatNDArray alpha = args(0).float_array_value ();
+                  FloatNDArray alpha = args(0).xfloat_array_value ("%s: expecting scalar or matrix as first argument", fn);
 
-                  if (! error_state)
+                  if (x_arg.is_scalar_type ())
                     {
-                      if (x_arg.is_scalar_type ())
-                        {
-                          FloatComplex x = x_arg.float_complex_value ();
+                      FloatComplex x = x_arg.xfloat_complex_value ("%s: expecting scalar or matrix as second argument", fn);
 
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
+                      Array<octave_idx_type> ierr;
+                      octave_value result;
 
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
+                      if (nargout > 1)
+                        retval(1) = NDArray (ierr);
 
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
-                      else
-                        {
-                          FloatComplexNDArray x
-                            = x_arg.float_complex_array_value ();
-
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
-
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
-
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
+                      retval(0) = result;
                     }
                   else
-                    gripe_bessel_arg (fn, "first");
+                    {
+                      FloatComplexNDArray x
+                        = x_arg.xfloat_complex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+
+                      Array<octave_idx_type> ierr;
+                      octave_value result;
+
+                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+                      if (nargout > 1)
+                        retval(1) = NDArray (ierr);
+
+                      retval(0) = result;
+                    }
                 }
             }
         }
@@ -263,51 +223,36 @@ do_bessel (enum bessel_type type, const char *fn,
         {
           if (alpha_arg.is_scalar_type ())
             {
-              double alpha = args(0).double_value ();
+              double alpha = args(0).xdouble_value ("%s: expecting scalar or matrix as first argument", fn);
 
-              if (! error_state)
+              if (x_arg.is_scalar_type ())
                 {
-                  if (x_arg.is_scalar_type ())
-                    {
-                      Complex x = x_arg.complex_value ();
+                  Complex x = x_arg.xcomplex_value ("%s: expecting scalar or matrix as second argument", fn);
 
-                      if (! error_state)
-                        {
-                          octave_idx_type ierr;
-                          octave_value result;
+                  octave_idx_type ierr;
+                  octave_value result;
 
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                          if (nargout > 1)
-                            retval(1) = static_cast<double> (ierr);
+                  if (nargout > 1)
+                    retval(1) = static_cast<double> (ierr);
 
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    {
-                      ComplexNDArray x = x_arg.complex_array_value ();
-
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
-
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
+                  retval(0) = result;
                 }
               else
-                gripe_bessel_arg (fn, "first");
+                {
+                  ComplexNDArray x = x_arg.xcomplex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
+
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
+
+                  retval(0) = result;
+                }
             }
           else
             {
@@ -319,78 +264,53 @@ do_bessel (enum bessel_type type, const char *fn,
 
               if (args0_is_row_vector && args1_is_col_vector)
                 {
-                  RowVector ralpha = args(0).row_vector_value ();
+                  RowVector ralpha = args(0).xrow_vector_value ("%s: expecting scalar or matrix as first argument", fn);
 
-                  if (! error_state)
-                    {
-                      ComplexColumnVector cx =
-                        x_arg.complex_column_vector_value ();
+                  ComplexColumnVector cx =
+                    x_arg.xcomplex_column_vector_value ("%s: expecting scalar or matrix as second argument", fn);
 
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
 
-                          DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+                  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
 
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    gripe_bessel_arg (fn, "first");
+                  retval(0) = result;
                 }
               else
                 {
-                  NDArray alpha = args(0).array_value ();
+                  NDArray alpha = args(0).xarray_value ("%s: expecting scalar or matrix as first argument", fn);
 
-                  if (! error_state)
+                  if (x_arg.is_scalar_type ())
                     {
-                      if (x_arg.is_scalar_type ())
-                        {
-                          Complex x = x_arg.complex_value ();
+                      Complex x = x_arg.xcomplex_value ("%s: expecting scalar or matrix as second argument", fn);
 
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
+                      Array<octave_idx_type> ierr;
+                      octave_value result;
 
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
+                      if (nargout > 1)
+                        retval(1) = NDArray (ierr);
 
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
-                      else
-                        {
-                          ComplexNDArray x = x_arg.complex_array_value ();
-
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
-
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
-
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
+                      retval(0) = result;
                     }
                   else
-                    gripe_bessel_arg (fn, "first");
+                    {
+                      ComplexNDArray x = x_arg.xcomplex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+
+                      Array<octave_idx_type> ierr;
+                      octave_value result;
+
+                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+                      if (nargout > 1)
+                        retval(1) = NDArray (ierr);
+
+                      retval(0) = result;
+                    }
                 }
             }
         }
@@ -518,27 +438,22 @@ See besselj.\n\
     }
   else if (nargin == 3 || nargin == 4)
     {
-      octave_idx_type kind = args(1).int_value ();
+      octave_idx_type kind = args(1).xint_value ("besselh: invalid value of K");
 
-      if (! error_state)
-        {
-          octave_value_list tmp_args;
+      octave_value_list tmp_args;
 
-          if (nargin == 4)
-            tmp_args(2) = args(3);
+      if (nargin == 4)
+        tmp_args(2) = args(3);
 
-          tmp_args(1) = args(2);
-          tmp_args(0) = args(0);
+      tmp_args(1) = args(2);
+      tmp_args(0) = args(0);
 
-          if (kind == 1)
-            retval = do_bessel (BESSEL_H1, "besselh", tmp_args, nargout);
-          else if (kind == 2)
-            retval = do_bessel (BESSEL_H2, "besselh", tmp_args, nargout);
-          else
-            error ("besselh: expecting K = 1 or 2");
-        }
+      if (kind == 1)
+        retval = do_bessel (BESSEL_H1, "besselh", tmp_args, nargout);
+      else if (kind == 2)
+        retval = do_bessel (BESSEL_H2, "besselh", tmp_args, nargout);
       else
-        error ("besselh: invalid value of K");
+        error ("besselh: expecting K = 1 or 2");
     }
   else
     print_usage ();
@@ -605,62 +520,47 @@ return @code{NaN}.\n\
 
       if (nargin > 1)
         {
-          kind = args(0).int_value ();
+          kind = args(0).xint_value ("airy: K must be an integer value");
 
-          if (! error_state)
-            {
-              if (kind < 0 || kind > 3)
-                error ("airy: expecting K = 0, 1, 2, or 3");
-            }
-          else
-            error ("airy: K must be an integer value");
+          if (kind < 0 || kind > 3)
+            error ("airy: expecting K = 0, 1, 2, or 3");
         }
 
       int idx = nargin == 1 ? 0 : 1;
 
       if (args(idx).is_single_type ())
         {
-          FloatComplexNDArray z = args(idx).float_complex_array_value ();
+          FloatComplexNDArray z = args(idx).xfloat_complex_array_value ("airy: Z must be a complex matrix");
 
-          if (! error_state)
-            {
-              Array<octave_idx_type> ierr;
-              octave_value result;
+          Array<octave_idx_type> ierr;
+          octave_value result;
 
-              if (kind > 1)
-                result = biry (z, kind == 3, scale, ierr);
-              else
-                result = airy (z, kind == 1, scale, ierr);
-
-              if (nargout > 1)
-                retval(1) = NDArray (ierr);
-
-              retval(0) = result;
-            }
+          if (kind > 1)
+            result = biry (z, kind == 3, scale, ierr);
           else
-            error ("airy: Z must be a complex matrix");
+            result = airy (z, kind == 1, scale, ierr);
+
+          if (nargout > 1)
+            retval(1) = NDArray (ierr);
+
+          retval(0) = result;
         }
       else
         {
-          ComplexNDArray z = args(idx).complex_array_value ();
+          ComplexNDArray z = args(idx).xcomplex_array_value ("airy: Z must be a complex matrix");
 
-          if (! error_state)
-            {
-              Array<octave_idx_type> ierr;
-              octave_value result;
+          Array<octave_idx_type> ierr;
+          octave_value result;
 
-              if (kind > 1)
-                result = biry (z, kind == 3, scale, ierr);
-              else
-                result = airy (z, kind == 1, scale, ierr);
-
-              if (nargout > 1)
-                retval(1) = NDArray (ierr);
-
-              retval(0) = result;
-            }
+          if (kind > 1)
+            result = biry (z, kind == 3, scale, ierr);
           else
-            error ("airy: Z must be a complex matrix");
+            result = airy (z, kind == 1, scale, ierr);
+
+          if (nargout > 1)
+            retval(1) = NDArray (ierr);
+
+          retval(0) = result;
         }
     }
   else

@@ -1094,12 +1094,9 @@ if @var{name} is not found.\n\
         }
       else
         {
-          int val = args(0).int_value ();
+          int val = args(0).xint_value ("errno: argument must be string or integer");
 
-          if (! error_state)
-            retval = octave_errno::set (val);
-          else
-            error ("errno: argument must be string or integer");
+          retval = octave_errno::set (val);
         }
     }
   else if (nargin == 0)
@@ -1245,13 +1242,10 @@ void
 get_dimensions (const octave_value& a, const octave_value& b,
                 const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
-  nr = a.is_empty () ? 0 : a.int_value ();
-  nc = b.is_empty () ? 0 : b.int_value ();
+  nr = a.is_empty () ? 0 : a.int_value ("%s: expecting two scalar arguments", warn_for);
+  nc = b.is_empty () ? 0 : b.int_value ("%s: expecting two scalar arguments", warn_for);
 
-  if (error_state)
-    error ("%s: expecting two scalar arguments", warn_for);
-  else
-    check_dimensions (nr, nc, warn_for);
+  check_dimensions (nr, nc, warn_for);
 }
 
 octave_idx_type

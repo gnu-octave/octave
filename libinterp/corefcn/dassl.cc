@@ -75,12 +75,6 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
     {
       octave_value_list tmp = dassl_fcn->do_multi_index_op (1, args);
 
-      if (error_state)
-        {
-          gripe_user_supplied_eval ("dassl");
-          return retval;
-        }
-
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
         {
@@ -90,12 +84,12 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
               warned_fcn_imaginary = true;
             }
 
-          retval = ColumnVector (tmp(0).vector_value ());
+          retval = tmp(0).vector_value ();
 
           if (tlen > 1)
             ires = tmp(1).int_value ();
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("dassl");
         }
       else
@@ -124,12 +118,6 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
     {
       octave_value_list tmp = dassl_jac->do_multi_index_op (1, args);
 
-      if (error_state)
-        {
-          gripe_user_supplied_eval ("dassl");
-          return retval;
-        }
-
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
         {
@@ -141,7 +129,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
           retval = tmp(0).matrix_value ();
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("dassl");
         }
       else
@@ -394,32 +382,20 @@ parameters for @code{dassl}.\n\
             }
         }
 
-      if (error_state || ! dassl_fcn)
+      if (! dassl_fcn)
         DASSL_ABORT ();
 
-      ColumnVector state = ColumnVector (args(1).vector_value ());
+      ColumnVector state = args(1).xvector_value ("expecting state vector as second argument");
 
-      if (error_state)
-        DASSL_ABORT1 ("expecting state vector as second argument");
+      ColumnVector deriv = args(2).xvector_value ("expecting derivative vector as third argument");
 
-      ColumnVector deriv (args(2).vector_value ());
-
-      if (error_state)
-        DASSL_ABORT1 ("expecting derivative vector as third argument");
-
-      ColumnVector out_times (args(3).vector_value ());
-
-      if (error_state)
-        DASSL_ABORT1 ("expecting output time vector as fourth argument");
+      ColumnVector out_times = args(3).xvector_value ("expecting output time vector as fourth argument");
 
       ColumnVector crit_times;
       int crit_times_set = 0;
       if (nargin > 4)
         {
-          crit_times = ColumnVector (args(4).vector_value ());
-
-          if (error_state)
-            DASSL_ABORT1 ("expecting critical time vector as fifth argument");
+          crit_times = args(4).xvector_value ("expecting critical time vector as fifth argument");
 
           crit_times_set = 1;
         }

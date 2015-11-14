@@ -304,15 +304,9 @@ Undocumented internal function.\n\
         }
       else
         {
-          sigma = args(2+arg_offset).complex_value ();
+          sigma = args(2+arg_offset).xcomplex_value ("eigs: SIGMA must be a scalar or a string");
 
-          if (! error_state)
-            have_sigma = true;
-          else
-            {
-              error ("eigs: SIGMA must be a scalar or a string");
-              return retval;
-            }
+          have_sigma = true;
         }
     }
 
@@ -323,69 +317,58 @@ Undocumented internal function.\n\
     {
       if (args(3+arg_offset).is_map ())
         {
-          octave_scalar_map map = args(3+arg_offset).scalar_map_value ();
+          octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
 
-          if (! error_state)
+          octave_value tmp;
+
+          // issym is ignored for complex matrix inputs
+          tmp = map.getfield ("issym");
+          if (tmp.is_defined () && !sym_tested)
             {
-              octave_value tmp;
-
-              // issym is ignored for complex matrix inputs
-              tmp = map.getfield ("issym");
-              if (tmp.is_defined () && !sym_tested)
-                {
-                  symmetric = tmp.double_value () != 0.;
-                  sym_tested = true;
-                }
-
-              // isreal is ignored if A is not a function
-              tmp = map.getfield ("isreal");
-              if (tmp.is_defined () && have_a_fun)
-                a_is_complex = ! (tmp.double_value () != 0.);
-
-              tmp = map.getfield ("tol");
-              if (tmp.is_defined ())
-                tol = tmp.double_value ();
-
-              tmp = map.getfield ("maxit");
-              if (tmp.is_defined ())
-                maxit = tmp.nint_value ();
-
-              tmp = map.getfield ("p");
-              if (tmp.is_defined ())
-                p = tmp.nint_value ();
-
-              tmp = map.getfield ("v0");
-              if (tmp.is_defined ())
-                {
-                  if (a_is_complex || b_is_complex)
-                    cresid = ComplexColumnVector (tmp.complex_vector_value ());
-                  else
-                    resid = ColumnVector (tmp.vector_value ());
-                }
-
-              tmp = map.getfield ("disp");
-              if (tmp.is_defined ())
-                disp = tmp.nint_value ();
-
-              tmp = map.getfield ("cholB");
-              if (tmp.is_defined ())
-                cholB = tmp.double_value () != 0.;
-
-              tmp = map.getfield ("permB");
-              if (tmp.is_defined ())
-                permB = ColumnVector (tmp.vector_value ()) - 1.0;
+              symmetric = tmp.double_value () != 0.;
+              sym_tested = true;
             }
-          else
+
+          // isreal is ignored if A is not a function
+          tmp = map.getfield ("isreal");
+          if (tmp.is_defined () && have_a_fun)
+            a_is_complex = ! (tmp.double_value () != 0.);
+
+          tmp = map.getfield ("tol");
+          if (tmp.is_defined ())
+            tol = tmp.double_value ();
+
+          tmp = map.getfield ("maxit");
+          if (tmp.is_defined ())
+            maxit = tmp.nint_value ();
+
+          tmp = map.getfield ("p");
+          if (tmp.is_defined ())
+            p = tmp.nint_value ();
+
+          tmp = map.getfield ("v0");
+          if (tmp.is_defined ())
             {
-              error ("eigs: OPTS argument must be a scalar structure");
-              return retval;
+              if (a_is_complex || b_is_complex)
+                cresid = ComplexColumnVector (tmp.complex_vector_value ());
+              else
+                resid = ColumnVector (tmp.vector_value ());
             }
+
+          tmp = map.getfield ("disp");
+          if (tmp.is_defined ())
+            disp = tmp.nint_value ();
+
+          tmp = map.getfield ("cholB");
+          if (tmp.is_defined ())
+            cholB = tmp.double_value () != 0.;
+
+          tmp = map.getfield ("permB");
+          if (tmp.is_defined ())
+            permB = ColumnVector (tmp.vector_value ()) - 1.0;
         }
       else
-        {
-          error ("eigs: OPTS argument must be a structure");
-          return retval;
-        }
+        error ("eigs: OPTS argument must be a structure");
     }
 
   if (nargin > (4+arg_offset))

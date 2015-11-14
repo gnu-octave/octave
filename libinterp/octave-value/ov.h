@@ -768,8 +768,6 @@ public:
   float float_scalar_value (bool frc_str_conv = false) const
   { return rep->float_scalar_value (frc_str_conv); }
 
-  Cell cell_value (void) const;
-
   Matrix matrix_value (bool frc_str_conv = false) const
   { return rep->matrix_value (frc_str_conv); }
 
@@ -891,11 +889,13 @@ public:
   uint64NDArray uint64_array_value (void) const
   { return rep->uint64_array_value (); }
 
+  std::string string_value (bool force = false) const
+  { return rep->string_value (force); }
+
   string_vector all_strings (bool pad = false) const
   { return rep->all_strings (pad); }
 
-  std::string string_value (bool force = false) const
-  { return rep->string_value (force); }
+  Cell cell_value (void) const;
 
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
@@ -1003,11 +1003,155 @@ public:
   // meaningful than the generic "error: wrong type argument 'cell'"
   // message.
 
-  Cell xcell_value (const char *fmt, ...) const;
+  short int xshort_value (const char *fmt, ...) const;
+
+  unsigned short int xushort_value (const char *fmt, ...) const;
+
+  int xint_value (const char *fmt, ...) const;
+
+  unsigned int xuint_value (const char *fmt, ...) const;
+
+  int xnint_value (const char *fmt, ...) const;
+
+  long int xlong_value (const char *fmt, ...) const;
+
+  unsigned long int xulong_value (const char *fmt, ...) const;
+
+  int64_t xint64_value (const char *fmt, ...) const;
+
+  uint64_t xuint64_value (const char *fmt, ...) const;
+
+  octave_idx_type xidx_type_value (const char *fmt, ...) const;
+
+  double xdouble_value (const char *fmt, ...) const;
+
+  float xfloat_value (const char *fmt, ...) const;
+
+  double xscalar_value (const char *fmt, ...) const;
+
+  float xfloat_scalar_value (const char *fmt, ...) const;
+
+  Matrix xmatrix_value (const char *fmt, ...) const;
+
+  FloatMatrix xfloat_matrix_value (const char *fmt, ...) const;
+
+  NDArray xarray_value (const char *fmt, ...) const;
+
+  FloatNDArray xfloat_array_value (const char *fmt, ...) const;
+
+  Complex xcomplex_value (const char *fmt, ...) const;
+
+  FloatComplex xfloat_complex_value (const char *fmt, ...) const;
+
+  ComplexMatrix xcomplex_matrix_value (const char *fmt, ...) const;
+
+  FloatComplexMatrix xfloat_complex_matrix_value (const char *fmt, ...) const;
+
+  ComplexNDArray xcomplex_array_value (const char *fmt, ...) const;
+
+  FloatComplexNDArray xfloat_complex_array_value (const char *fmt, ...) const;
+
+  bool xbool_value (const char *fmt, ...) const;
+
+  boolMatrix xbool_matrix_value (const char *fmt, ...) const;
+
+  boolNDArray xbool_array_value (const char *fmt, ...) const;
+
+  charMatrix xchar_matrix_value (const char *fmt, ...) const;
+
+  charNDArray xchar_array_value (const char *fmt, ...) const;
+
+  SparseMatrix xsparse_matrix_value (const char *fmt, ...) const;
+
+  SparseComplexMatrix xsparse_complex_matrix_value (const char *fmt, ...) const;
+
+  SparseBoolMatrix xsparse_bool_matrix_value (const char *fmt, ...) const;
+
+  DiagMatrix xdiag_matrix_value (const char *fmt, ...) const;
+
+  FloatDiagMatrix xfloat_diag_matrix_value (const char *fmt, ...) const;
+
+  ComplexDiagMatrix xcomplex_diag_matrix_value (const char *fmt, ...) const;
+
+  FloatComplexDiagMatrix xfloat_complex_diag_matrix_value (const char *fmt, ...) const;
+
+  PermMatrix xperm_matrix_value (const char *fmt, ...) const;
+
+  octave_int8 xint8_scalar_value (const char *fmt, ...) const;
+
+  octave_int16 xint16_scalar_value (const char *fmt, ...) const;
+
+  octave_int32 xint32_scalar_value (const char *fmt, ...) const;
+
+  octave_int64 xint64_scalar_value (const char *fmt, ...) const;
+
+  octave_uint8 xuint8_scalar_value (const char *fmt, ...) const;
+
+  octave_uint16 xuint16_scalar_value (const char *fmt, ...) const;
+
+  octave_uint32 xuint32_scalar_value (const char *fmt, ...) const;
+
+  octave_uint64 xuint64_scalar_value (const char *fmt, ...) const;
+
+  int8NDArray xint8_array_value (const char *fmt, ...) const;
+
+  int16NDArray xint16_array_value (const char *fmt, ...) const;
+
+  int32NDArray xint32_array_value (const char *fmt, ...) const;
+
+  int64NDArray xint64_array_value (const char *fmt, ...) const;
+
+  uint8NDArray xuint8_array_value (const char *fmt, ...) const;
+
+  uint16NDArray xuint16_array_value (const char *fmt, ...) const;
+
+  uint32NDArray xuint32_array_value (const char *fmt, ...) const;
+
+  uint64NDArray xuint64_array_value (const char *fmt, ...) const;
 
   std::string xstring_value (const char *fmt, ...) const;
 
+  Cell xcell_value (const char *fmt, ...) const;
+
   Array<std::string> xcellstr_value (const char *fmt, ...) const;
+
+  Range xrange_value (const char *fmt, ...) const;
+
+  octave_map xmap_value (const char *fmt, ...) const;
+
+  octave_scalar_map xscalar_map_value (const char *fmt, ...) const;
+
+  ColumnVector xcolumn_vector_value (const char *fmt, ...) const;
+
+  ComplexColumnVector
+  xcomplex_column_vector_value (const char *fmt, ...) const;
+
+  RowVector xrow_vector_value (const char *fmt, ...) const;
+
+  ComplexRowVector xcomplex_row_vector_value (const char *fmt, ...) const;
+
+  FloatColumnVector xfloat_column_vector_value (const char *fmt, ...) const;
+
+  FloatComplexColumnVector
+  xfloat_complex_column_vector_value (const char *fmt, ...) const;
+
+  FloatRowVector xfloat_row_vector_value (const char *fmt, ...) const;
+
+  FloatComplexRowVector
+  xfloat_complex_row_vector_value (const char *fmt, ...) const;
+
+  Array<int> xint_vector_value (const char *fmt, ...) const;
+
+  Array<octave_idx_type>
+  xoctave_idx_type_vector_value (const char *fmt, ...) const;
+
+  Array<double> xvector_value (const char *fmt, ...) const;
+
+  Array<Complex> xcomplex_vector_value (const char *fmt, ...) const;
+
+  Array<float> xfloat_vector_value (const char *fmt, ...) const;
+
+  Array<FloatComplex> xfloat_complex_vector_value (const char *fmt, ...) const;
 
   // Possibly economize a lazy-indexed value.
 

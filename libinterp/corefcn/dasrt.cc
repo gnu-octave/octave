@@ -75,12 +75,6 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
     {
       octave_value_list tmp = dasrt_f->do_multi_index_op (1, args);
 
-      if (error_state)
-        {
-          gripe_user_supplied_eval ("dasrt");
-          return retval;
-        }
-
       if (tmp.length () > 0 && tmp(0).is_defined ())
         {
           if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
@@ -89,9 +83,9 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
               warned_fcn_imaginary = true;
             }
 
-          retval = ColumnVector (tmp(0).vector_value ());
+          retval = tmp(0).vector_value ();
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -115,12 +109,6 @@ dasrt_user_cf (const ColumnVector& x, double t)
     {
       octave_value_list tmp = dasrt_cf->do_multi_index_op (1, args);
 
-      if (error_state)
-        {
-          gripe_user_supplied_eval ("dasrt");
-          return retval;
-        }
-
       if (tmp.length () > 0 && tmp(0).is_defined ())
         {
           if (! warned_cf_imaginary && tmp(0).is_complex_type ())
@@ -129,9 +117,9 @@ dasrt_user_cf (const ColumnVector& x, double t)
               warned_cf_imaginary = true;
             }
 
-          retval = ColumnVector (tmp(0).vector_value ());
+          retval = tmp(0).vector_value ();
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -160,12 +148,6 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
     {
       octave_value_list tmp = dasrt_j->do_multi_index_op (1, args);
 
-      if (error_state)
-        {
-          gripe_user_supplied_eval ("dasrt");
-          return retval;
-        }
-
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
         {
@@ -177,7 +159,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
           retval = tmp(0).matrix_value ();
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -477,7 +459,7 @@ parameters for @code{dasrt}.\n\
         }
     }
 
-  if (error_state || (! dasrt_f))
+  if (! dasrt_f)
     DASRT_ABORT;
 
   DAERTFunc func (dasrt_user_f);
@@ -506,21 +488,13 @@ parameters for @code{dasrt}.\n\
       func.set_constraint_function (dasrt_user_cf);
     }
 
-  ColumnVector state (args(argp++).vector_value ());
+  ColumnVector state = args(argp).xvector_value ("expecting state vector as argument %d", ++argp);
 
-  if (error_state)
-    DASRT_ABORT2 ("expecting state vector as argument %d", argp);
+  ColumnVector stateprime = args(argp).xvector_value ("expecting time derivative of state vector as argument %d", argp);
+  argp++;
 
-  ColumnVector stateprime (args(argp++).vector_value ());
-
-  if (error_state)
-    DASRT_ABORT2 ("expecting time derivative of state vector as argument %d",
-                  argp);
-
-  ColumnVector out_times (args(argp++).vector_value ());
-
-  if (error_state)
-    DASRT_ABORT2 ("expecting output time vector as %s argument %d", argp);
+  ColumnVector out_times = args(argp).xvector_value ("expecting output time vector as %s argument %d", argp);
+  argp++;
 
   double tzero = out_times (0);
 
@@ -530,10 +504,8 @@ parameters for @code{dasrt}.\n\
 
   if (argp < nargin)
     {
-      crit_times = ColumnVector (args(argp++).vector_value ());
-
-      if (error_state)
-        DASRT_ABORT2 ("expecting critical time vector as argument %d", argp);
+      crit_times = args(argp).xvector_value ("expecting critical time vector as argument %d", argp);
+      argp++;
 
       crit_times_set = true;
     }

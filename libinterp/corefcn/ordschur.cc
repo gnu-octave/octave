@@ -116,12 +116,8 @@ is in the upper left corner, by doing:\n\
       return retval;
     }
 
-  const Array<octave_idx_type> sel = args(2).octave_idx_type_vector_value ();
-  if (error_state)
-    {
-      error ("ordschur: SELECT must be an array of integers");
-      return retval;
-    }
+  const Array<octave_idx_type> sel = args(2).octave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
+
   const octave_idx_type n = sel.numel ();
 
   const dim_vector dimU = args(0).dims ();

@@ -1544,12 +1544,6 @@ octave_value::is_equal (const octave_value& test) const
   return retval;
 }
 
-Cell
-octave_value::cell_value (void) const
-{
-  return rep->cell_value ();
-}
-
 // Define the idx_type_value function here instead of in ov.h to avoid
 // needing definitions for the SIZEOF_X macros in ov.h.
 
@@ -1561,6 +1555,12 @@ octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 #else
   return int_value (req_int, frc_str_conv);
 #endif
+}
+
+Cell
+octave_value::cell_value (void) const
+{
+  return rep->cell_value ();
 }
 
 octave_map
@@ -1914,9 +1914,115 @@ octave_value::float_complex_vector_value (bool force_string_conv,
     return retval; \
   }
 
-XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
+XVALUE_EXTRACTOR (short int, xshort_value, short_value)
+
+XVALUE_EXTRACTOR (unsigned short int, xushort_value, ushort_value)
+
+XVALUE_EXTRACTOR (int, xint_value, int_value)
+
+XVALUE_EXTRACTOR (unsigned int, xuint_value, uint_value)
+
+XVALUE_EXTRACTOR (int, xnint_value, nint_value)
+
+XVALUE_EXTRACTOR (long int, xlong_value, long_value)
+
+XVALUE_EXTRACTOR (unsigned long int, xulong_value, ulong_value)
+
+XVALUE_EXTRACTOR (int64_t, xint64_value, int64_value)
+
+XVALUE_EXTRACTOR (uint64_t, xuint64_value, uint64_value)
+
+XVALUE_EXTRACTOR (octave_idx_type, xidx_type_value, idx_type_value)
+
+XVALUE_EXTRACTOR (double, xdouble_value, double_value)
+XVALUE_EXTRACTOR (float, xfloat_value, float_value)
+
+XVALUE_EXTRACTOR (double, xscalar_value, scalar_value)
+XVALUE_EXTRACTOR (float, xfloat_scalar_value, float_scalar_value)
+
+XVALUE_EXTRACTOR (Matrix, xmatrix_value, matrix_value)
+XVALUE_EXTRACTOR (FloatMatrix, xfloat_matrix_value, float_matrix_value)
+
+XVALUE_EXTRACTOR (NDArray, xarray_value, array_value)
+XVALUE_EXTRACTOR (FloatNDArray, xfloat_array_value, float_array_value)
+
+XVALUE_EXTRACTOR (Complex, xcomplex_value, complex_value)
+XVALUE_EXTRACTOR (FloatComplex, xfloat_complex_value, float_complex_value)
+
+XVALUE_EXTRACTOR (ComplexMatrix, xcomplex_matrix_value, complex_matrix_value)
+XVALUE_EXTRACTOR (FloatComplexMatrix, xfloat_complex_matrix_value, float_complex_matrix_value)
+
+XVALUE_EXTRACTOR (ComplexNDArray, xcomplex_array_value, complex_array_value)
+XVALUE_EXTRACTOR (FloatComplexNDArray, xfloat_complex_array_value, float_complex_array_value)
+
+XVALUE_EXTRACTOR (bool, xbool_value, bool_value)
+XVALUE_EXTRACTOR (boolMatrix, xbool_matrix_value, bool_matrix_value)
+XVALUE_EXTRACTOR (boolNDArray, xbool_array_value, bool_array_value)
+
+XVALUE_EXTRACTOR (charMatrix, xchar_matrix_value, char_matrix_value)
+XVALUE_EXTRACTOR (charNDArray, xchar_array_value, char_array_value)
+
+XVALUE_EXTRACTOR (SparseMatrix, xsparse_matrix_value, sparse_matrix_value)
+XVALUE_EXTRACTOR (SparseComplexMatrix, xsparse_complex_matrix_value, sparse_complex_matrix_value)
+XVALUE_EXTRACTOR (SparseBoolMatrix, xsparse_bool_matrix_value, sparse_bool_matrix_value)
+
+XVALUE_EXTRACTOR (DiagMatrix, xdiag_matrix_value, diag_matrix_value)
+XVALUE_EXTRACTOR (FloatDiagMatrix, xfloat_diag_matrix_value, float_diag_matrix_value)
+XVALUE_EXTRACTOR (ComplexDiagMatrix, xcomplex_diag_matrix_value, complex_diag_matrix_value)
+XVALUE_EXTRACTOR (FloatComplexDiagMatrix, xfloat_complex_diag_matrix_value, float_complex_diag_matrix_value)
+
+XVALUE_EXTRACTOR (PermMatrix, xperm_matrix_value, perm_matrix_value)
+
+XVALUE_EXTRACTOR (octave_int8, xint8_scalar_value, int8_scalar_value)
+XVALUE_EXTRACTOR (octave_int16, xint16_scalar_value, int16_scalar_value)
+XVALUE_EXTRACTOR (octave_int32, xint32_scalar_value, int32_scalar_value)
+XVALUE_EXTRACTOR (octave_int64, xint64_scalar_value, int64_scalar_value)
+
+XVALUE_EXTRACTOR (octave_uint8, xuint8_scalar_value, uint8_scalar_value)
+XVALUE_EXTRACTOR (octave_uint16, xuint16_scalar_value, uint16_scalar_value)
+XVALUE_EXTRACTOR (octave_uint32, xuint32_scalar_value, uint32_scalar_value)
+XVALUE_EXTRACTOR (octave_uint64, xuint64_scalar_value, uint64_scalar_value)
+
+XVALUE_EXTRACTOR (int8NDArray, xint8_array_value, int8_array_value)
+XVALUE_EXTRACTOR (int16NDArray, xint16_array_value, int16_array_value)
+XVALUE_EXTRACTOR (int32NDArray, xint32_array_value, int32_array_value)
+XVALUE_EXTRACTOR (int64NDArray, xint64_array_value, int64_array_value)
+
+XVALUE_EXTRACTOR (uint8NDArray, xuint8_array_value, uint8_array_value)
+XVALUE_EXTRACTOR (uint16NDArray, xuint16_array_value, uint16_array_value)
+XVALUE_EXTRACTOR (uint32NDArray, xuint32_array_value, uint32_array_value)
+XVALUE_EXTRACTOR (uint64NDArray, xuint64_array_value, uint64_array_value)
+
 XVALUE_EXTRACTOR (std::string, xstring_value, rep->xstring_value)
+
+XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
 XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
+
+XVALUE_EXTRACTOR (Range, xrange_value, range_value)
+
+XVALUE_EXTRACTOR (octave_map, xmap_value, map_value)
+XVALUE_EXTRACTOR (octave_scalar_map, xscalar_map_value, scalar_map_value)
+
+XVALUE_EXTRACTOR (ColumnVector, xcolumn_vector_value, column_vector_value)
+XVALUE_EXTRACTOR (ComplexColumnVector, xcomplex_column_vector_value, complex_column_vector_value)
+
+XVALUE_EXTRACTOR (RowVector, xrow_vector_value, row_vector_value)
+XVALUE_EXTRACTOR (ComplexRowVector, xcomplex_row_vector_value, complex_row_vector_value)
+
+XVALUE_EXTRACTOR (FloatColumnVector, xfloat_column_vector_value, float_column_vector_value)
+XVALUE_EXTRACTOR (FloatComplexColumnVector, xfloat_complex_column_vector_value, float_complex_column_vector_value)
+
+XVALUE_EXTRACTOR (FloatRowVector, xfloat_row_vector_value, float_row_vector_value)
+XVALUE_EXTRACTOR (FloatComplexRowVector, xfloat_complex_row_vector_value, float_complex_row_vector_value)
+
+XVALUE_EXTRACTOR (Array<int>, xint_vector_value, int_vector_value)
+XVALUE_EXTRACTOR (Array<octave_idx_type>, xoctave_idx_type_vector_value, octave_idx_type_vector_value)
+
+XVALUE_EXTRACTOR (Array<double>, xvector_value, vector_value)
+XVALUE_EXTRACTOR (Array<Complex>, xcomplex_vector_value, complex_vector_value)
+
+XVALUE_EXTRACTOR (Array<float>, xfloat_vector_value, float_vector_value)
+XVALUE_EXTRACTOR (Array<FloatComplex>, xfloat_complex_vector_value, float_complex_vector_value)
 
 #undef XVALUE_EXTRACTOR
 

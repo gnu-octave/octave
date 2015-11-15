@@ -318,10 +318,14 @@ shortcut_manager::do_init_data ()
         QKeySequence (Qt::SHIFT + Qt::Key_F1));
 
   // tab navigation
-  init (tr ("Switch to left tab"), "editor_tabs:switch_left_tab",
+  init (tr ("Switch to Left Tab"), "editor_tabs:switch_left_tab",
         QKeySequence (ctrl + Qt::Key_PageDown));
-  init (tr ("Switch to right tab"), "editor_tabs:switch_right_tab",
+  init (tr ("Switch to Right Tab"), "editor_tabs:switch_right_tab",
         QKeySequence (ctrl + Qt::Key_PageUp));
+  init (tr ("Move Tab Left"), "editor_tabs:move_tab_left",
+        QKeySequence (Qt::AltModifier + Qt::Key_PageDown));
+  init (tr ("Move Tab Right"), "editor_tabs:move_tab_right",
+        QKeySequence (Qt::AltModifier + Qt::Key_PageUp));
 
 }
 

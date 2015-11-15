@@ -39,6 +39,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
+// subclassed QTabWidget for usable tab-bar
+class tab_widget : public QTabWidget
+{
+  Q_OBJECT
+
+public:
+  tab_widget (QWidget *p) : QTabWidget (p) { }
+  ~tab_widget () { }
+  QTabBar* tabBar() const { return (QTabWidget::tabBar()); }
+};
+
 class file_editor : public file_editor_interface
 {
   Q_OBJECT
@@ -236,6 +247,8 @@ private slots:
 
   void switch_left_tab ();
   void switch_right_tab ();
+  void move_tab_left ();
+  void move_tab_right ();
 
   void create_context_menu (QMenu *);
   void edit_status_update (bool, bool);
@@ -256,7 +269,7 @@ private:
 
   void toggle_preference (const QString& preference, bool def);
 
-  void switch_tab (int direction);
+  void switch_tab (int direction, bool move = false);
 
   bool editor_tab_has_focus ();
 
@@ -345,6 +358,8 @@ private:
 
   QAction *_switch_left_tab_action;
   QAction *_switch_right_tab_action;
+  QAction *_move_tab_left_action;
+  QAction *_move_tab_right_action;
 
   QAction *_toggle_breakpoint_action;
   QAction *_next_breakpoint_action;
@@ -357,7 +372,7 @@ private:
   QMenu *_fileMenu;
   QMenu *_view_editor_menu;
 
-  QTabWidget *_tab_widget;
+  tab_widget *_tab_widget;
 
   int _marker_breakpoint;
 

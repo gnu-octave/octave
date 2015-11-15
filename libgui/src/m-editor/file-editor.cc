@@ -1266,7 +1266,7 @@ file_editor::construct (void)
 #endif
   _tool_bar = new QToolBar (editor_widget);
   _tool_bar->setMovable (true);
-  _tab_widget = new QTabWidget (editor_widget);
+  _tab_widget = new tab_widget (editor_widget);
   _tab_widget->setTabsClosable (true);
 #ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_widget->setMovable (true);
@@ -1532,6 +1532,10 @@ file_editor::construct (void)
                                         SLOT (switch_left_tab ()));
   _switch_right_tab_action = add_action (0, QIcon (), "",
                                          SLOT (switch_right_tab ()));
+  _move_tab_left_action = add_action (0, QIcon (), "",
+                                      SLOT (move_tab_left ()));
+  _move_tab_right_action = add_action (0, QIcon (), "",
+                                       SLOT (move_tab_right ()));
 
   // toolbar
 
@@ -1893,6 +1897,8 @@ file_editor::set_shortcuts ()
   // Tab navigation without menu entries
   shortcut_manager::set_shortcut (_switch_left_tab_action, "editor_tabs:switch_left_tab");
   shortcut_manager::set_shortcut (_switch_right_tab_action, "editor_tabs:switch_right_tab");
+  shortcut_manager::set_shortcut (_move_tab_left_action, "editor_tabs:move_tab_left");
+  shortcut_manager::set_shortcut (_move_tab_right_action, "editor_tabs:move_tab_right");
 
 }
 
@@ -2033,19 +2039,44 @@ file_editor::switch_right_tab ()
   switch_tab (1);
 }
 void
-file_editor::switch_tab (int direction)
+file_editor::move_tab_left ()
+{
+#ifdef HAVE_QTABWIDGET_SETMOVABLE
+  switch_tab (-1, true);
+#endif
+}
+void
+file_editor::move_tab_right ()
+{
+#ifdef HAVE_QTABWIDGET_SETMOVABLE
+  switch_tab (1, true);
+#endif
+}
+void
+file_editor::switch_tab (int direction, bool move)
 {
   int tabs = _tab_widget->count ();
 
   if (tabs < 2)
     return;
 
-  int new_index = _tab_widget->currentIndex () + direction;
+  int old_pos = _tab_widget->currentIndex ();
+  int new_pos = _tab_widget->currentIndex () + direction;
 
-  if (new_index < 0 || new_index >= tabs)
-    new_index = new_index - direction*tabs;
+  if (new_pos < 0 || new_pos >= tabs)
+    new_pos = new_pos - direction*tabs;
 
-  _tab_widget->setCurrentIndex (new_index);
+  if (move)
+    {
+#ifdef HAVE_QTABWIDGET_SETMOVABLE
+      _tab_widget->tabBar ()->moveTab (old_pos,new_pos);
+      _tab_widget->setCurrentIndex (old_pos);
+      _tab_widget->setCurrentIndex (new_pos);
+      focus ();
+#endif
+    }
+  else
+    _tab_widget->setCurrentIndex (new_pos);
 }
 
 #endif

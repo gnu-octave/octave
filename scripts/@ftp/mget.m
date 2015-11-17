@@ -28,13 +28,13 @@
 ## The arguments @var{file} and @var{dir} can include wildcards and any
 ## files or directories on the remote server that match will be downloaded.
 ##
-## If a third argument @var{target} is given, then a single file or
-## directory will be downloaded to the local directory and the local name
-## will be changed to @var{target}.
+## If a third string argument @var{target} is given, then it must indicate
+## the path to the local destination directory. @var{target} may be a
+## relative or absolute path.
 ## @end deftypefn
 
-function mget (f, file)
-  __ftp_mget__ (f.curlhandle, file);
+function mget (f, file, target = "")
+  __ftp_mget__ (f.curlhandle, file, target);
 endfunction
 
 

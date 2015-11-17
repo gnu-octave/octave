@@ -1026,7 +1026,7 @@ Undocumented internal function\n\
           std::string file = args(1).xstring_value ("__ftp_mget__: PATTERN must be a string");
           std::string target;
 
-          if (nargin == 3)
+          if (nargin == 3 && ! args(2).is_empty ())
             target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + file_ops::dir_sep_str ();
 
           string_vector sv = curl.list ();

@@ -68,6 +68,12 @@
 ## Install a package directly from the Octave-Forge repository.  This
 ## requires an internet connection and the cURL library.
 ##
+## @emph{Security risk}: no verification of the package is performed
+## before the installation.  There are no signature for packages, or
+## checksums to confirm the correct file was downloaded.  It has the
+## same security issues as manually downloading the package from the
+## Octave Forge repository and installing it.
+##
 ## @item -verbose
 ## The package manager will print the output of all commands as
 ## they are performed.

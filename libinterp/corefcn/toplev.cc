@@ -1228,12 +1228,7 @@ from the list, so if a function was placed in the list multiple times with\n\
       bool add_mode = true;
 
       if (nargin == 2)
-        {
-          add_mode = args(1).bool_value ();
-
-          if (error_state)
-            error ("atexit: FLAG argument must be a logical value");
-        }
+        add_mode = args(1).xbool_value ("atexit: FLAG argument must be a logical value");
 
       if (add_mode)
         octave_add_atexit_function (arg);

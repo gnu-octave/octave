@@ -147,31 +147,6 @@ quad_float_user_function (float x)
   return retval;
 }
 
-#define QUAD_ABORT() \
-  do \
-    { \
-      if (fcn_name.length ()) \
-        clear_function (fcn_name); \
-      return retval; \
-    } \
-  while (0)
-
-#define QUAD_ABORT1(msg) \
-  do \
-    { \
-      error ("quad: " msg); \
-      QUAD_ABORT (); \
-    } \
-  while (0)
-
-#define QUAD_ABORT2(fmt, arg) \
-  do \
-    { \
-      error ("quad: " fmt, arg); \
-      QUAD_ABORT (); \
-    } \
-  while (0)
-
 DEFUN (quad, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
@@ -230,7 +205,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
   call_depth++;
 
   if (call_depth > 1)
-    QUAD_ABORT1 ("invalid recursive call");
+    error ("quad: invalid recursive call");
 
   int nargin = args.length ();
 
@@ -246,22 +221,16 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
           fname.append ("(x) y = ");
           quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
                                        "; endfunction");
+          frame.add_fcn (clear_function, fcn_name);
         }
 
       if (! quad_fcn)
-        QUAD_ABORT ();
+        error ("quad: FCN argument is not a valid function name or handle");
 
       if (args(1).is_single_type () || args(2).is_single_type ())
         {
-          float a = args(1).float_value ();
-
-          if (error_state)
-            QUAD_ABORT1 ("expecting second argument to be a scalar");
-
-          float b = args(2).float_value ();
-
-          if (error_state)
-            QUAD_ABORT1 ("expecting third argument to be a scalar");
+          float a = args(1).xfloat_value ("quad: expecting second argument to be a scalar");
+          float b = args(2).xfloat_value ("quad: expecting third argument to be a scalar");
 
           int indefinite = 0;
           FloatIndefQuad::IntegralType indef_type
@@ -297,20 +266,14 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
             {
             case 5:
               if (indefinite)
-                QUAD_ABORT1 ("singularities not allowed on infinite intervals");
+                error ("quad: singularities not allowed on infinite intervals");
 
               have_sing = true;
 
-              sing = FloatColumnVector (args(4).float_vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
+              sing = args(4).xfloat_vector_value ("quad: expecting vector of singularities as fourth argument");
 
             case 4:
-              tol = FloatColumnVector (args(3).float_vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
+              tol = args(3).xfloat_vector_value ("quad: expecting vector of tolerances as fifth argument");
 
               switch (tol.numel ())
                 {
@@ -322,7 +285,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
                   break;
 
                 default:
-                  QUAD_ABORT1 ("expecting tol to contain no more than two values");
+                  error ("quad: expecting tol to contain no more than two values");
                 }
 
             case 3:
@@ -363,15 +326,8 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
         }
       else
         {
-          double a = args(1).double_value ();
-
-          if (error_state)
-            QUAD_ABORT1 ("expecting second argument to be a scalar");
-
-          double b = args(2).double_value ();
-
-          if (error_state)
-            QUAD_ABORT1 ("expecting third argument to be a scalar");
+          double a = args(1).xdouble_value ("quad: expecting second argument to be a scalar");
+          double b = args(2).xdouble_value ("quad: expecting third argument to be a scalar");
 
           int indefinite = 0;
           IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
@@ -406,20 +362,14 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
             {
             case 5:
               if (indefinite)
-                QUAD_ABORT1 ("singularities not allowed on infinite intervals");
+                error ("quad: singularities not allowed on infinite intervals");
 
               have_sing = true;
 
-              sing = ColumnVector (args(4).vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
+              sing = args(4).vector_value ("quad: expecting vector of singularities as fourth argument");
 
             case 4:
-              tol = ColumnVector (args(3).vector_value ());
-
-              if (error_state)
-                QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
+              tol = args(3).xvector_value ("quad: expecting vector of tolerances as fifth argument");
 
               switch (tol.numel ())
                 {
@@ -431,7 +381,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
                   break;
 
                 default:
-                  QUAD_ABORT1 ("expecting tol to contain no more than two values");
+                  error ("quad: expecting tol to contain no more than two values");
                 }
 
             case 3:

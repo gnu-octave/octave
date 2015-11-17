@@ -323,13 +323,13 @@ If no files are found, return an empty cell array.\n\
               octave_env::make_absolute (load_path::find_first_of (names));
           else if (nargin == 2)
             {
-              std::string opt = args(1).string_value ();
+              std::string opt = args(1).xstring_value ("file_in_loadpath: expecting option to be a string");
 
-              if (! error_state && opt == "all")
+              if (opt == "all")
                 retval = Cell (make_absolute
                                (load_path::find_all_first_of (names)));
               else
-                error ("file_in_loadpath: invalid option");
+                error ("file_in_loadpath: invalid option `%s'", opt.c_str ());
             }
         }
       else
@@ -403,13 +403,13 @@ If no files are found, return an empty cell array.\n\
             retval = search_path_for_file (path, names);
           else if (nargin == 3)
             {
-              std::string opt = args(2).string_value ();
+              std::string opt = args(2).xstring_value ("file_in_path: expecting option to be a string");
 
-              if (! error_state && opt == "all")
+              if (opt == "all")
                 retval = Cell (make_absolute
                                (search_path_for_all_files (path, names)));
               else
-                error ("file_in_path: invalid option");
+                error ("file_in_path: invalid option `%s'", opt.c_str ());
             }
         }
       else

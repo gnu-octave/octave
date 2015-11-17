@@ -137,25 +137,6 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   return retval;
 }
 
-#define LSODE_ABORT() \
-  return retval
-
-#define LSODE_ABORT1(msg) \
-  do \
-    { \
-      error ("lsode: " msg); \
-      LSODE_ABORT (); \
-    } \
-  while (0)
-
-#define LSODE_ABORT2(fmt, arg) \
-  do \
-    { \
-      error ("lsode: " fmt, arg); \
-      LSODE_ABORT (); \
-    } \
-  while (0)
-
 DEFUN (lsode, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})\n\
@@ -285,7 +266,7 @@ parameters for @code{lsode}.\n\
   call_depth++;
 
   if (call_depth > 1)
-    LSODE_ABORT1 ("invalid recursive call");
+    error ("lsode: invalid recursive call");
 
   int nargin = args.length ();
 
@@ -339,7 +320,7 @@ parameters for @code{lsode}.\n\
                 }
             }
           else
-            LSODE_ABORT1 ("incorrect number of elements in cell array");
+            error ("lsode: incorrect number of elements in cell array");
         }
 
       if (!lsode_fcn && ! f_arg.is_cell ())
@@ -395,34 +376,23 @@ parameters for @code{lsode}.\n\
                   break;
 
                 default:
-                  LSODE_ABORT1
-                  ("first arg should be a string or 2-element string array");
+                  error ("lsode: first arg should be a string or 2-element string array");
                 }
             }
         }
 
-      if (error_state || ! lsode_fcn)
-        LSODE_ABORT ();
+      if (! lsode_fcn)
+        error ("lsode: FCN argument is not a valid function name or handle");
 
-      ColumnVector state (args(1).vector_value ());
-
-      if (error_state)
-        LSODE_ABORT1 ("expecting state vector as second argument");
-
-      ColumnVector out_times (args(2).vector_value ());
-
-      if (error_state)
-        LSODE_ABORT1 ("expecting output time vector as third argument");
+      ColumnVector state = args(1).xvector_value ("lsode: expecting state vector as second argument");
+      ColumnVector out_times = args(2).xvector_value ("lsode: expecting output time vector as third argument");
 
       ColumnVector crit_times;
 
       int crit_times_set = 0;
       if (nargin > 3)
         {
-          crit_times = ColumnVector (args(3).vector_value ());
-
-          if (error_state)
-            LSODE_ABORT1 ("expecting critical time vector as fourth argument");
+          crit_times = args(3).xvector_value ("lsode: expecting critical time vector as fourth argument");
 
           crit_times_set = 1;
         }

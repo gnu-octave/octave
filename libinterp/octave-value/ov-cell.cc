@@ -1299,15 +1299,8 @@ dimensions.\n\
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          {
-            dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
-
-            if (error_state)
-              {
-                error ("cell: expecting scalar arguments");
-                break;
-              }
-          }
+          dims(i) = (args(i).is_empty ()
+                     ? 0 : args(i).xnint_value ("cell: expecting scalar arguments"));
       }
       break;
     }

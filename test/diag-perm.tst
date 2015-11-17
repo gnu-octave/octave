@@ -270,3 +270,20 @@
 %! assert (inv (x), diag ([1 1/2 1/3]));
 %! x = diag (0:2);
 %! assert (inv (x), diag ([Inf 1 1/2]));
+
+## assignment to diagonal elements preserves diagonal structure (bug #36932)
+%!test
+%! x = diag (1:3);
+%! x(1,1) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+%! x(3,3) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+
+%!test
+%! x = diag (1:3);
+%! x(1) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+%! x(9) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+
+

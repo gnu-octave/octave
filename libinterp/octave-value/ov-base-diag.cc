@@ -158,11 +158,46 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
         if (type.length () == 1)
           {
             octave_value_list jdx = idx.front ();
-            // Check for a simple element assignment. That means, if D is a
-            // diagonal matrix, 'D(i,i) = x' will not destroy its diagonality
-            // (provided i is a valid index).
-            if (jdx.length () == 2
-                && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
+
+            // FIXME: Mostly repeated code for cases 1 and 2 could be
+            //        consolidated for DRY (Don't Repeat Yourself).
+            // Check for assignments to diagonal elements which should not
+            // destroy the diagonal property of the matrix.
+            // If D is a diagonal matrix then the assignment can be
+            // 1) linear, D(i) = x, where ind2sub results in case #2 below
+            // 2) subscript D(i,i) = x, where both indices are equal.
+            if (jdx.length () == 1 && jdx(0).is_scalar_type ())
+              {
+                typename DMT::element_type val;
+                int k = 0;
+                try
+                  {
+                    idx_vector ind = jdx(0).index_vector ();
+                    k = 1;
+                    dim_vector dv (matrix.rows (), matrix.cols ());
+                    Array<idx_vector> ivec = ind2sub (dv, ind);
+                    idx_vector i0 = ivec(0);
+                    idx_vector i1 = ivec(1);
+
+                    if (i0(0) == i1(0)
+                        && chk_valid_scalar (rhs, val))
+                      {
+                        matrix.dgelem (i0(0)) = val;
+                        retval = this;
+                        this->count++;
+                        // invalidate cache
+                        dense_cache = octave_value ();
+                      }
+                  }
+                catch (index_exception& e)
+                  {
+                    // Rethrow to allow more info to be reported later.
+                    e.set_pos_if_unset (2, k+1);
+                    throw;
+                  }
+              }
+            else if (jdx.length () == 2
+                     && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
               {
                 typename DMT::element_type val;
                 int k = 0;

@@ -28,7 +28,7 @@ function retval = __fltk_file_filter__ (file_filter)
   retval = "";
   [r, c] = size (file_filter);
   if ((c == 0) || (c > 2))
-    error ("expecting 1 or to 2 columns for file filter cell");
+    error ("file filter cell must have 1 or 2 columns");
   endif
   fltk_str = "";
   for idx = 1 : r

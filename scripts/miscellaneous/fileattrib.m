@@ -84,7 +84,7 @@ function [status, msg, msgid] = fileattrib (file)
       nfiles = length (files);
     endif
   else
-    error ("fileattrib: expecting first argument to be a character string");
+    error ("fileattrib: FILE must be a string");
   endif
 
   if (nargin == 0 || nargin == 1)

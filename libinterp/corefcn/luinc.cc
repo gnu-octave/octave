@@ -159,7 +159,7 @@ values of @var{p} @var{q} as vector values.\n\
                 }
               else if (thresh.numel () != 2)
                 {
-                  error ("luinc: expecting 2-element vector for thresh");
+                  error ("luinc: THRESH must be a 1 or 2-element vector");
                   return retval;
                 }
             }

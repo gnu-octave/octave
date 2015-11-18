@@ -42,11 +42,12 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
       if (ischar (val))
         set (h, arg, val);
       else
-        error ("%s: expecting data source to be a string", fcn);
+        error ("%s: datasource must be a string", fcn);
       endif
     else
       newargs{end + 1} = arg;
     endif
   endwhile
+
 endfunction
 

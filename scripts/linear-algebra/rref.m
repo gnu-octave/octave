@@ -41,7 +41,7 @@ function [A, k] = rref (A, tol)
   endif
 
   if (ndims (A) > 2)
-    error ("rref: expecting matrix argument");
+    error ("rref: A must be a 2-dimensional matrix");
   endif
 
   [rows, cols] = size (A);

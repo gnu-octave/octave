@@ -1809,7 +1809,7 @@ produces a struct @strong{array}.\n\
 
       if (nargin == 2)
         {
-          Array<std::string> cstr = args(1).xcellstr_value ("struct: expecting cell array of field names as second argument");
+          Array<std::string> cstr = args(1).xcellstr_value ("struct: second argument should be a cell array of field names");
 
           retval = octave_map (args(0).dims (), cstr);
         }
@@ -1825,7 +1825,7 @@ produces a struct @strong{array}.\n\
     {
       if (! args(i).is_string () || i + 1 >= nargin)
         {
-          error ("struct: expecting alternating \"field\", VALUE pairs");
+          error ("struct: additional arguments must occur as \"field\", VALUE pairs");
           return retval;
         }
     }
@@ -1909,8 +1909,8 @@ produces a struct @strong{array}.\n\
 %!assert (isstruct (x))
 %!assert (isempty (fieldnames (x)))
 %!fail ('struct ("a",{1,2},"b",{1,2,3})', 'dimensions of parameter 2 do not match those of parameter 4')
-%!fail ('struct (1,2,3,4)', 'struct: expecting alternating "field", VALUE pairs')
-%!fail ('struct ("1",2,"3")', 'struct: expecting alternating "field", VALUE pairs')
+%!error <arguments must occur as "field", VALUE pairs> struct (1,2,3,4)
+%!fail ('struct ("1",2,"3")', 'struct: additional arguments must occur as "field", VALUE pairs')
 */
 
 DEFUN (isstruct, args, ,

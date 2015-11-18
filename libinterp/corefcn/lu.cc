@@ -184,7 +184,7 @@ information.\n\
           else if (tmp.numel () == 2)
             thres = tmp;
           else
-            error ("lu: expecting 2-element vector for THRES");
+            error ("lu: THRES must be a 1 or 2-element vector");
         }
     }
 

@@ -80,7 +80,7 @@ function limits = __caxis__ (ca, ax, varargin)
   elseif (isvector (ax))
     len = length (ax);
     if (len != 2)
-      error ("caxis: expecting vector with 2 elements");
+      error ("caxis: LIMITS must be a 2-element vector");
     endif
 
     set (ca, "clim", [ax(1), ax(2)]);

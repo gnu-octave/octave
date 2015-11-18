@@ -101,8 +101,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       Ax  = @(x) A  * x;
       Atx = @(x) A' * x;
     else
-      error (["qmr: first argument is expected to " ...
-                "be a function or a square matrix"]);
+      error ("qmr: A must be a square matrix or function");
     endif
 
     if (nargin < 3 || isempty (tol))
@@ -129,8 +128,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       M1m1x  = @(x) M1  \ x;
       M1tm1x = @(x) M1' \ x;
     else
-      error (["qmr: preconditioner is expected to " ...
-                "be a function or matrix"]);
+      error ("qmr: preconditioner must be a function or matrix");
     endif
 
     if (nargin < 6 || isempty (M2))
@@ -147,8 +145,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       M2m1x  = @(x) M2  \ x;
       M2tm1x = @(x) M2' \ x;
     else
-      error (["qmr: preconditioner is expected to " ...
-                "be a function or matrix"]);
+      error ("qmr: preconditioner must be a function or matrix");
     endif
 
 

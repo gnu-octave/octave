@@ -189,7 +189,7 @@ function varargout = annotation (varargin)
             && length (x) == 2 && length (y) == 2)
           lims = [x(1) y(1) diff(x) diff(y)];
         else
-          error ("annotation: expect 2 elements vectors for X and Y");
+          error ("annotation: X and Y must be 2-element vectors");
         endif
       else
         print_usage ();
@@ -202,11 +202,11 @@ function varargout = annotation (varargin)
         varargin(1) = [];
 
         if (! isvector (lims) || length (lims) != 4)
-          error ("annotation: expect 4 elements vector for POS")
+          error ("annotation: POS must be a 4-element vector");
         endif
       endif
     otherwise
-      error ("annotation: unknown annotation type %s", objtype)
+      error ("annotation: unknown annotation type %s", objtype);
   endswitch
 
   ## options
@@ -938,7 +938,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
     headstyle = get (h, "head2style");
     pos = pos(1:2) .+ pos(3:4);
   else
-    error ("annotation: %d, no such arrow number")
+    error ("annotation: %d, no such arrow number");
   endif
 
   switch (headstyle)
@@ -968,7 +968,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
       x = [0 0 0];
       y = [0 0 0];
     otherwise
-      error ("annotation: \"%s\" headstyle not implemented", headstyle)
+      error ("annotation: \"%s\" headstyle not implemented", headstyle);
   endswitch
 
   R = [cos(ang) -sin(ang);
@@ -1489,5 +1489,6 @@ endfunction
 %!error annotation ([], "foo")
 %!error annotation ({})
 %!error annotation ("line", [.5 .6])
-%!error <expect 2 elements vectors for X and Y> annotation ("line", 1:3, 1:3)
-%!error <expect 4 elements vector for POS> annotation ("textbox", 1:3)
+%!error <X and Y must be 2-element vectors> annotation ("line", 1:3, 1:3)
+%!error <POS must be a 4-element vector> annotation ("textbox", 1:3)
+

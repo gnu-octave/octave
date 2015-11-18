@@ -40,7 +40,7 @@ function p = powerset (a, byrows_arg)
   byrows = false;
   if (nargin == 2)
     if (! strcmpi (byrows_arg, "rows"))
-      error ('powerset: expecting second argument to be "rows"');
+      error ('powerset: optional second argument must be "rows"');
     elseif (iscell (a))
       error ('powerset: "rows" not valid for cell arrays');
     else
@@ -103,7 +103,7 @@ endfunction
 ## Test input validation
 %!error powerset ()
 %!error powerset (1,2,3)
-%!error <expecting second argument to be "rows"> powerset (1, "cols")
+%!error <second argument must be "rows"> powerset (1, "cols")
 %!error <"rows" not valid for cell arrays> powerset ({1}, "rows")
 %!error <cell arrays can only be used for character> powerset ({1})
 %!error <not implemented for more than 32 elements> powerset (1:33)

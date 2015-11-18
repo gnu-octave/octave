@@ -471,7 +471,7 @@ parameters for @code{dasrt}.\n\
       dasrt_cf = args(1).function_value ();
 
       if (! dasrt_cf)
-        DASRT_ABORT1 ("expecting function name as argument 2");
+        DASRT_ABORT1 ("invalid constraint function G");
 
       argp++;
 
@@ -481,19 +481,19 @@ parameters for @code{dasrt}.\n\
     {
       dasrt_cf = is_valid_function (args(1), "dasrt", true);
       if (! dasrt_cf)
-        DASRT_ABORT1 ("expecting function name as argument 2");
+        DASRT_ABORT1 ("invalid constraint function G");
 
       argp++;
 
       func.set_constraint_function (dasrt_user_cf);
     }
 
-  ColumnVector state = args(argp).xvector_value ("expecting state vector as argument %d", ++argp);
+  ColumnVector state = args(argp).xvector_value ("dasrt: initial state X_0 must be a vector");
 
-  ColumnVector stateprime = args(argp).xvector_value ("expecting time derivative of state vector as argument %d", argp);
+  ColumnVector stateprime = args(argp).xvector_value ("dasrt: initial derivatives XDOT_0 must be a vector");
   argp++;
 
-  ColumnVector out_times = args(argp).xvector_value ("expecting output time vector as %s argument %d", argp);
+  ColumnVector out_times = args(argp).xvector_value ("dasrt: output time variable T must be a vector");
   argp++;
 
   double tzero = out_times (0);
@@ -504,7 +504,7 @@ parameters for @code{dasrt}.\n\
 
   if (argp < nargin)
     {
-      crit_times = args(argp).xvector_value ("expecting critical time vector as argument %d", argp);
+      crit_times = args(argp).xvector_value ("dasrt: list of critical times T_CRIT must be a vector");
       argp++;
 
       crit_times_set = true;

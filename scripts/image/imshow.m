@@ -103,7 +103,7 @@ function h = imshow (im, varargin)
       error ("imshow: TrueColor image must be uint8, uint16, double, or single");
     endif
   else
-    error ("imshow: expecting MxN or MxNx3 matrix for image");
+    error ("imshow: image must be MxN or MxNx3 matrix");
   endif
 
   narg = 1;
@@ -257,7 +257,7 @@ endfunction
 %!error <IM must be an image> imshow ({"cell"})
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "uint32"))
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "int16"))
-%!error <expecting MxN or MxNx3 matrix> imshow (ones (4,4,4))
+%!error <image must be MxN or MxNx3 matrix> imshow (ones (4,4,4))
 
 %!test
 %! hf = figure ("visible", "off");

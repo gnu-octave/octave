@@ -2427,7 +2427,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
         }
       else if (option_arg.is_numeric_type ())
         {
-          int val = option_arg.xint_value ("addpath: expecting final argument to be 1 or 0");
+          int val = option_arg.xint_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
 
           if (val == 0)
             nargin--;
@@ -2438,7 +2438,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
             }
           else
             {
-              error ("addpath: expecting final argument to be 1 or 0");
+              error ("addpath: OPTION must be '-begin'/0 or '-end'/1");
               return retval;
             }
         }

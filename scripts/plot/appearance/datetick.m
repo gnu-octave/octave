@@ -132,10 +132,10 @@ function __datetick__ (varargin)
   if (! isempty (form))
     if (isnumeric (form))
       if (! isscalar (form) || form < 0 || form != fix (form))
-        error ("datetick: expecting FORM argument to be a positive integer");
+        error ("datetick: FORM argument must be a positive integer");
       endif
     elseif (! ischar (form))
-      error ("datetick: expecting valid date format string");
+      error ("datetick: FORM argument must be a valid date format string");
     endif
   endif
 

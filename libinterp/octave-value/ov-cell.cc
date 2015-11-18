@@ -1300,7 +1300,7 @@ dimensions.\n\
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xnint_value ("cell: expecting scalar arguments"));
+                     ? 0 : args(i).xnint_value ("cell: dimension must be a scalar integer"));
       }
       break;
     }

@@ -3652,7 +3652,7 @@ ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
   if (m < 0 || m > 1)
     {
       (*current_liboctave_warning_with_id_handler)
-        ("Octave:ellipj-invalid-m", "ellipj: expecting 0 <= M <= 1");
+        ("Octave:ellipj-invalid-m", "ellipj: invalid M value, required value 0 <= M <= 1");
 
       sn = cn = dn = lo_ieee_nan_value ();
 

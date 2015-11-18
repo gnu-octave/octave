@@ -109,7 +109,7 @@ function h = colorbar (varargin)
           else
             ax = varargin{i++};
             if (! isscalar (ax) && ! isaxes (ax))
-              error ('colorbar: expecting an axes handle following "peer"');
+              error ('colorbar: invalid axes handle following "peer"');
             endif
           endif
         case {"north", "south", "east", "west",

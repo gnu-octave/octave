@@ -58,7 +58,7 @@ function retval = getpref (group, pref, default)
         retval = [];
       endif
     else
-      error ("expecting group to be a character string");
+      error ("getpref: GROUP must be a character string");
     endif
   elseif (nargin == 2 || nargin == 3)
     grp = getpref (group);
@@ -68,7 +68,7 @@ function retval = getpref (group, pref, default)
       elseif (nargin == 3)
         retval = default;
       else
-        error ("preference %s does not exist in group %s", pref, group);
+        error ("getpref: preference %s does not exist in group %s", pref, group);
       endif
     elseif (iscellstr (pref))
       if (nargin == 2 || size_equal (pref, default))
@@ -78,14 +78,14 @@ function retval = getpref (group, pref, default)
           elseif (nargin == 3)
             retval.(pref) = default{i};
           else
-            error ("preference %s does not exist in group %s", pref{i}, group);
+            error ("getpref: preference %s does not exist in group %s", pref{i}, group);
           endif
         endfor
       else
-        error ("size mismatch for pref and default");
+        error ("getpref: size mismatch for PREF and DEFAULT");
       endif
     else
-      error ("expecting pref to be a character string or cellstr");
+      error ("getpref: PREF must be a character string or cellstr");
     endif
   else
     print_usage ();

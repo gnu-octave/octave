@@ -811,7 +811,7 @@ functions from strings is through the use of anonymous functions\n\
 
           for (int i = 1; i < nargin; i++)
             {
-              std::string s = args(i).xstring_value ("inline: expecting string arguments");
+              std::string s = args(i).xstring_value ("inline: additional arguments must be strings");
               fargs(i-1) = s;
             }
         }
@@ -838,7 +838,7 @@ functions from strings is through the use of anonymous functions\n\
 %!error <STR argument must be a string> inline (1)
 %!error <N must be an integer> inline ("2", ones (2,2))
 %!error <N must be a positive integer> inline ("2", -1)
-%!error <expecting string arguments> inline ("2", "x", -1, "y")
+%!error <additional arguments must be strings> inline ("2", "x", -1, "y")
 */
 
 DEFUN (formula, args, ,

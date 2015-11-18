@@ -80,7 +80,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
 
   for (int i = 1; i < nargin; i++)
     {
-      std::string s = args(i).xstring_value ("colloc: expecting string argument \"left\" or \"right\"");
+      std::string s = args(i).xstring_value ("colloc: optional arguments must be strings");
 
       if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
           || s == "right")
@@ -94,7 +94,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
         }
       else
         {
-          error ("colloc: unrecognized argument");
+          error ("colloc: string argument must be \"left\" or \"right\"");
           return retval;
         }
     }

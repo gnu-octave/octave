@@ -131,7 +131,7 @@ is_valid_function (const octave_value& arg,
       ans = is_valid_function (fcn_name, warn_for, warn);
     }
   else if (warn)
-    error ("%s: expecting function name as argument", warn_for.c_str ());
+    error ("%s: argument must be a string containing function name", warn_for.c_str ());
 
   return ans;
 }
@@ -147,8 +147,8 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
-      std::string s = arg.xstring_value ("%s: expecting first argument to be a string",
-                                        warn_for.c_str ());
+      std::string s = arg.xstring_value ("%s: first argument must be a string",
+                                         warn_for.c_str ());
 
       std::string cmd = header;
       cmd.append (s);
@@ -738,7 +738,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
         }
       else
         {
-          error_with_cfn ("expecting second argument to be \"local\"");
+          error_with_cfn ("second argument must be \"local\"");
           nargin = 0;
         }
     }
@@ -779,7 +779,7 @@ set_internal_variable (bool& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      bool bval = args(0).xbool_value ("%s: expecting arg to be a logical value", nm);
+      bool bval = args(0).xbool_value ("%s: argument must be a logical value", nm);
 
       var = bval;
     }
@@ -851,12 +851,12 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      int ival = args(0).xint_value ("%s: expecting arg to be an integer value", nm);
+      int ival = args(0).xint_value ("%s: argument must be an integer value", nm);
 
       if (ival < minval)
-        error ("%s: expecting arg to be greater than %d", nm, minval);
+        error ("%s: arg must be greater than %d", nm, minval);
       else if (ival > maxval)
-        error ("%s: expecting arg to be less than or equal to %d",
+        error ("%s: arg must be less than or equal to %d",
                nm, maxval);
       else
         var = ival;
@@ -887,12 +887,12 @@ set_internal_variable (double& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      double dval = args(0).xscalar_value ("%s: expecting arg to be a scalar value", nm);
+      double dval = args(0).xscalar_value ("%s: argument must be a scalar value", nm);
 
       if (dval < minval)
-        error ("%s: expecting arg to be greater than %g", minval);
+        error ("%s: argument must be greater than %g", minval);
       else if (dval > maxval)
-        error ("%s: expecting arg to be less than or equal to %g", maxval);
+        error ("%s: argument must be less than or equal to %g", maxval);
       else
         var = dval;
     }
@@ -2661,7 +2661,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).xstring_value ("__varval__: expecting argument to be variable name");
+      std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
 
       retval = symbol_table::varval (args(0).string_value ());
     }

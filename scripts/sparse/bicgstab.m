@@ -81,8 +81,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     elseif (isa (A, "function_handle"))
       Ax  = @(x) feval (A, x);
     else
-      error (["bicgstab: first argument is expected " ...
-              "to be a function or a square matrix"]);
+      error ("bicgstab: A must be a square matrix or function");
     endif
 
     if (nargin < 3 || isempty (tol))
@@ -102,8 +101,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     elseif (isa (M1, "function_handle"))
       M1m1x = @(x) feval (M1, x);
     else
-      error (["bicgstab: preconditioner is " ...
-              "expected to be a function or matrix"]);
+      error ("bicgstab: preconditioner must be a function or matrix");
     endif
 
     if (nargin < 6 || isempty (M2))
@@ -115,8 +113,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     elseif (isa (M2, "function_handle"))
       M2m1x = @(x) feval (M2, x);
     else
-      error (["bicgstab: preconditioner is "...
-              "expected to be a function or matrix"]);
+      error ("bicgstab: preconditioner must be a function or matrix");
     endif
 
     precon = @(x) M2m1x (M1m1x (x));

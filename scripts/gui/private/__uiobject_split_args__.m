@@ -41,7 +41,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   endif
 
   if (rem (length (args), 2))
-    error ("%s: expecting PROPERTY/VALUE pairs", who);
+    error ("%s: PROPERTY/VALUE arguments must occur in pairs", who);
   endif
 
   if (! isempty (args))

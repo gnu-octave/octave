@@ -938,7 +938,8 @@ Return the native floating point format as a string.\n\
 
 DEFUN (tilde_expand, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} tilde_expand (@var{string})\n\
+@deftypefn  {Built-in Function} {} tilde_expand (@var{string})\n\
+@deftypefnx {Built-in Function} {} tilde_expand (@var{cellstr})\n\
 Perform tilde expansion on @var{string}.\n\
 \n\
 If @var{string} begins with a tilde character, (@samp{~}), all of the\n\
@@ -948,7 +949,10 @@ characters up to the slash are replaced by the home directory of the named\n\
 user.  If the tilde is followed immediately by a slash, the tilde is\n\
 replaced by the home directory of the user running Octave.\n\
 \n\
-For example:\n\
+If the input is a cell array of strings @var{cellstr} then tilde expansion\n\
+is performed on each string element.\n\
+\n\
+Examples:\n\
 \n\
 @example\n\
 @group\n\
@@ -968,7 +972,7 @@ tilde_expand (\"~/bin\")\n\
     {
       octave_value arg = args(0);
 
-      string_vector sv = arg.all_strings ("tilde_expand: expecting argument to be char or cellstr object");
+      string_vector sv = arg.all_strings ("tilde_expand: argument must be char or cellstr object");
 
       sv = file_ops::tilde_expand (sv);
 

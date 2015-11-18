@@ -3245,7 +3245,7 @@ min (const FloatMatrix& a, const FloatMatrix& b)
   if (nr != b.rows () || nc != b.columns ())
     {
       (*current_liboctave_error_handler)
-        ("two-arg min expecting args of same size");
+        ("two-arg min requires same size arguments");
       return FloatMatrix ();
     }
 
@@ -3312,7 +3312,7 @@ max (const FloatMatrix& a, const FloatMatrix& b)
   if (nr != b.rows () || nc != b.columns ())
     {
       (*current_liboctave_error_handler)
-        ("two-arg max expecting args of same size");
+        ("two-arg max requires same size arguments");
       return FloatMatrix ();
     }
 

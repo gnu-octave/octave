@@ -162,16 +162,16 @@ sparse matrices.\n\
   int n = 1;
   while (n < nargin)
     {
-      std::string tmp = args(n++).xstring_value ("chol: expecting trailing string arguments");
+      std::string tmp = args(n++).xstring_value ("chol: optional arguments must be strings");
 
-      if (tmp.compare ("vector") == 0)
+      if (tmp == "vector")
         vecout = true;
-      else if (tmp.compare ("lower") == 0)
+      else if (tmp == "lower")
         LLt = true;
-      else if (tmp.compare ("upper") == 0)
+      else if (tmp == "upper")
         LLt = false;
       else
-        error ("chol: unexpected second or third input");
+        error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");
     }
 
   octave_value arg = args(0);
@@ -339,8 +339,8 @@ sparse matrices.\n\
 %!error chol ()
 %!error <matrix must be positive definite> chol ([1, 2; 3, 4])
 %!error <requires square matrix> chol ([1, 2; 3, 4; 5, 6])
-%!error <expecting trailing string arguments> chol (1, 2)
-%!error <unexpected second or third input> chol (1, "foobar")
+%!error <optional arguments must be strings> chol (1, 2)
+%!error <optional argument must be one of "vector", "lower"> chol (1, "foobar")
 */
 
 DEFUN_DLD (cholinv, args, ,

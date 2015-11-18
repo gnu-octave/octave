@@ -320,7 +320,7 @@ octave_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
 
       retval = mat.diag (m, n);
     }
-  else
+  else  // FIXME: Is this ever reachable?
     error ("diag: expecting vector argument");
 
   return retval;

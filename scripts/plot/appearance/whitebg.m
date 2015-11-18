@@ -65,7 +65,7 @@ function whitebg (varargin)
     isroot = false;
     fig = h;
   else
-    error ("expecting a figure handle");
+    error ("whitebg: HFIF must be a valid figure handle");
   endif
 
   axes = findall (fig, "type", "axes");

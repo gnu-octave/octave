@@ -287,12 +287,12 @@ function limits = __axis__ (ca, ax, varargin)
     len = length (ax);
 
     if (len != 2 && len != 4 && len != 6)
-      error ("axis: expecting vector with 2, 4, or 6 elements");
+      error ("axis: LIMITS vector must have 2, 4, or 6 elements");
     endif
 
     for i = 1:2:len
       if (ax(i) >= ax(i+1))
-        error ("axis: limits(%d) must be less than limits(%d)", i, i+1);
+        error ("axis: LIMITS(%d) must be less than LIMITS(%d)", i, i+1);
       endif
     endfor
 

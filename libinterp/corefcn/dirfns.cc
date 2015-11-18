@@ -337,7 +337,7 @@ identifier.\n\
                 status = octave_recursive_rmdir (fulldir, msg);
             }
           else
-            error ("rmdir: expecting second argument to be \"s\"");
+            error ("rmdir: second argument must be \"s\" for recursive removal");
         }
       else
         status = octave_rmdir (fulldir, msg);

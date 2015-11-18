@@ -52,7 +52,7 @@ function st = cstrcat (varargin)
   elseif (iscellstr (varargin))
     st = [varargin{:}];
   else
-    error ("cstrcat: expecting arguments to character strings");
+    error ("cstrcat: arguments must be character strings");
   endif
 
 endfunction

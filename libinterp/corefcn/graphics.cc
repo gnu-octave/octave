@@ -1668,7 +1668,7 @@ property::create (const std::string& name, const graphics_handle& h,
         error ("addproperty: missing possible values for radio property");
       else
         {
-          std::string sv = args(0).xstring_value ("addproperty: invalid argument for radio property, expected a string value");
+          std::string sv = args(0).xstring_value ("addproperty: argument for radio property must be a string");
 
           retval = property (new radio_property (name, h, sv));
 
@@ -2146,7 +2146,7 @@ graphics_object::set (const octave_value_list& args)
     {
       for (int i = 0; i < nargin; i += 2)
         {
-          caseless_str pname = args(i).xstring_value ("set: expecting argument %d to be a property name", i);
+          caseless_str pname = args(i).xstring_value ("set: argument %d must be a property name", i);
 
           octave_value val = args(i+1);
 
@@ -2552,7 +2552,7 @@ reparent (const octave_value& ov, const std::string& who,
 {
   graphics_handle h = octave_NaN;
 
-  double hv = ov.xdouble_value ("%s: expecting %s to be a graphics handle",
+  double hv = ov.xdouble_value ("%s: %s must be a graphics handle",
                                who.c_str (), pname.c_str ());
 
   h = gh_manager::lookup (hv);
@@ -2965,7 +2965,7 @@ base_properties::get_property_dynamic (const caseless_str& pname)
 void
 base_properties::set_parent (const octave_value& val)
 {
-  double hp = val.xdouble_value ("set: expecting parent to be a graphics handle");
+  double hp = val.xdouble_value ("set: parent must be a graphics handle");
 
   graphics_handle new_parent = octave_NaN;
 
@@ -9624,7 +9624,7 @@ each individual object will be reset.\n\
   else
     {
       // get vector of graphics handles
-      ColumnVector hcv = args(0).xvector_value ("reset: expecting graphics handle as first argument");
+      ColumnVector hcv = args(0).xvector_value ("reset: H must be a graphics handle");
 
       // loop over graphics objects
       for (octave_idx_type n = 0; n < hcv.numel (); n++)
@@ -9833,7 +9833,7 @@ being @qcode{\"portrait\"}.\n\
   if (nargin > 0)
     {
       // get vector of graphics handles
-      ColumnVector hcv = args(0).xvector_value ("set: expecting graphics handle as first argument");
+      ColumnVector hcv = args(0).xvector_value ("set: H must be a graphics handle");
 
       bool request_drawnow = false;
 
@@ -9980,7 +9980,7 @@ lists respectively.\n\
           return retval;
         }
 
-      ColumnVector hcv = args(0).xvector_value ("get: expecting graphics handle as first argument");
+      ColumnVector hcv = args(0).xvector_value ("get: H must be a graphics handle");
 
       octave_idx_type len = hcv.numel ();
 
@@ -9994,7 +9994,7 @@ lists respectively.\n\
 
               if (typ != typ0)
                 {
-                  error ("get: vector of handles must all have same type");
+                  error ("get: vector of handles must all have the same type");
                   break;
                 }
             }
@@ -10002,7 +10002,7 @@ lists respectively.\n\
 
       if (nargin > 1 && args(1).is_cellstr ())
         {
-          Array<std::string> plist = args(1).xcellstr_value ("get: expecting property name or cell array of property names as second argument");
+          Array<std::string> plist = args(1).cellstr_value ();
 
           octave_idx_type plen = plist.numel ();
 
@@ -10035,7 +10035,7 @@ lists respectively.\n\
           caseless_str property;
 
           if (nargin > 1)
-            property = args(1).xstring_value ("get: expecting property name or cell array of property names as second argument");
+            property = args(1).xstring_value ("get: second argument must be property name or cell array of property names");
 
           vals.resize (dim_vector (len, 1));
 
@@ -10111,7 +10111,7 @@ Undocumented internal function.\n\
 
   if (nargin == 1)
     {
-      ColumnVector hcv = args(0).xvector_value ("get: expecting graphics handle as first argument");
+      ColumnVector hcv = args(0).xvector_value ("get: H must be a graphics handle");
 
       octave_idx_type len = hcv.numel ();
 
@@ -10219,7 +10219,7 @@ Undocumented internal function.\n\
 
   if (args.length () > 0)
     {
-      double val = args(0).xdouble_value ("__go_figure__: expecting figure number to be double value");
+      double val = args(0).xdouble_value ("__go_figure__: figure number must be a double value");
 
       if (is_figure (val))
         {
@@ -10360,7 +10360,7 @@ Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 
   if (nargin == 1)
     {
-      double h = args(0).xdouble_value ("__calc_dimensions__: expecting graphics handle as only argument");
+      double h = args(0).xdouble_value ("__calc_dimensions__: first argument must be a graphics handle");
 
       retval = calc_dimensions (gh_manager::get_object (h));
     }
@@ -10881,13 +10881,13 @@ undocumented.\n\
 
           if (args.length () == 1)
             {
-              caseless_str val (args(0).xstring_value ("drawnow: expecting argument to be a string"));
+              caseless_str val (args(0).xstring_value ("drawnow: first argument must be a string"));
 
               if (val.compare ("expose"))
                 do_events = false;
               else
                 {
-                  error ("drawnow: invalid argument, expected 'expose' as argument");
+                  error ("drawnow: invalid argument, 'expose' is only valid option");
 
                   gh_manager::unlock ();
 
@@ -10909,9 +10909,9 @@ undocumented.\n\
           std::string term, file, debug_file;
           bool mono;
 
-          term = args(0).xstring_value ("drawnow: invalid terminal TERM, expected a string value");
+          term = args(0).xstring_value ("drawnow: TERM must be a string");
 
-          file = args(1).xstring_value ("drawnow: invalid FILE, expected a string value");
+          file = args(1).xstring_value ("drawnow: FILE must be a string");
 
           size_t pos_p = file.find_first_of ("|");
           size_t pos_c = file.find_first_not_of ("| ");
@@ -10960,9 +10960,9 @@ undocumented.\n\
                 }
             }
 
-          mono = (args.length () >= 3 ? args(2).xbool_value ("drawnow: invalid colormode MONO, expected a boolean value") : false);
+          mono = (args.length () >= 3 ? args(2).xbool_value ("drawnow: MONO colormode must be a boolean value") : false);
 
-          debug_file = (args.length () > 3 ? args(3).xstring_value ("drawnow: invalid DEBUG_FILE, expected a string value") : "");
+          debug_file = (args.length () > 3 ? args(3).xstring_value ("drawnow: DEBUG_FILE must be a string") : "");
 
           graphics_handle h = gcf ();
 
@@ -11030,9 +11030,9 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
   if (args.length () >= 3 && args.length () <= 4)
     {
-      double h = args(0).xdouble_value ("addlistener: invalid handle");
+      double h = args(0).xdouble_value ("addlistener: invalid handle H");
 
-      std::string pname = args(1).xstring_value ("addlistener: invalid property name, expected a string value");
+      std::string pname = args(1).xstring_value ("addlistener: PROP must be a string");
 
       graphics_handle gh = gh_manager::lookup (h);
 
@@ -11094,7 +11094,7 @@ dellistener (gcf, \"position\", c);\n\
     {
       double h = args(0).xdouble_value ("dellistener: invalid handle");
 
-      std::string pname = args(1).xstring_value ("dellistener: invalid property name, expected a string value");
+      std::string pname = args(1).xstring_value ("dellistener: PROP must be a string");
 
       graphics_handle gh = gh_manager::lookup (h);
 
@@ -11205,9 +11205,9 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 
   if (args.length () >= 3)
     {
-      std::string name = args(0).xstring_value ("addproperty: invalid property NAME, expected a string value");
+      std::string name = args(0).xstring_value ("addproperty: NAME must be a string");
 
-      double h = args(1).xdouble_value ("addproperty: invalid handle value");
+      double h = args(1).xdouble_value ("addproperty: invalid handle H");
 
       graphics_handle gh = gh_manager::lookup (h);
 
@@ -11215,7 +11215,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
         {
           graphics_object go = gh_manager::get_object (gh);
 
-          std::string type = args(2).xstring_value ("addproperty: invalid property TYPE, expected a string value");
+          std::string type = args(2).xstring_value ("addproperty: TYPE must be a string");
 
           if (! go.get_properties ().has_property (name))
             {
@@ -11543,7 +11543,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                 }
             }
           else if (error_state || pname.empty ())
-            error ("waitfor: invalid property name, expected a non-empty string value");
+            error ("waitfor: PROP must be a non-empty string");
         }
 
       if (timeout_index < 0 && args.length () > (max_arg_index + 1))
@@ -11566,16 +11566,16 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
           if (args.length () > (timeout_index + 1))
             {
               timeout = static_cast<int>
-                (args(timeout_index + 1).xscalar_value ("waitfor: invalid timeout value, expected a value >= 1"));
+                (args(timeout_index + 1).xscalar_value ("waitfor: TIMEOUT must be a scalar >= 1"));
 
               if (timeout < 1)
                 {
-                  warning ("waitfor: the timeout value must be >= 1, using 1 instead");
+                  warning ("waitfor: TIMEOUT value must be >= 1, using 1 instead");
                   timeout = 1;
                 }
             }
           else
-            error ("waitfor: missing timeout value");
+            error ("waitfor: missing TIMEOUT value");
         }
 
       // FIXME: There is still a "hole" in the following loop. The code

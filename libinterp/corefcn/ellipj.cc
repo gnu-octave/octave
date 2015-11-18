@@ -83,14 +83,14 @@ and 16.15), Dover, 1965.\n\
 
   if (m_arg.is_scalar_type ())
     {
-      double m = args(1).xdouble_value ("ellipj: expecting scalar or matrix as second argument");
+      double m = args(1).xdouble_value ("ellipj: M must be a scalar or matrix");
 
       if (u_arg.is_scalar_type ())
         {
           if (u_arg.is_real_type ())
             {
               // u real, m scalar
-              double u = args(0).xdouble_value ("ellipj: expecting scalar or matrix as first argument");
+              double u = args(0).xdouble_value ("ellipj: U must be a scalar or matrix");
 
               double sn, cn, dn;
               double err = 0;
@@ -106,7 +106,7 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u complex, m scalar
-              Complex u = u_arg.xcomplex_value ("ellipj: expecting scalar or matrix as first argument");
+              Complex u = u_arg.xcomplex_value ("ellipj: U must be a scalar or matrix");
 
               Complex sn, cn, dn;
               double err = 0;
@@ -123,7 +123,7 @@ and 16.15), Dover, 1965.\n\
       else
         {
           // u is matrix, m is scalar
-          ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: expecting scalar or matrix as first argument");
+          ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: U must be a scalar or matrix");
 
           dim_vector sz_u = u.dims ();
 
@@ -149,7 +149,7 @@ and 16.15), Dover, 1965.\n\
     }
   else
     {
-      NDArray m = args(1).xarray_value ("ellipj: expecting scalar or matrix as second argument");
+      NDArray m = args(1).xarray_value ("ellipj: M must be a scalar or matrix");
 
       dim_vector sz_m = m.dims ();
 
@@ -159,7 +159,7 @@ and 16.15), Dover, 1965.\n\
           if (u_arg.is_real_type ())
             {
               // u is real scalar, m is array
-              double u = u_arg.xdouble_value ("ellipj: expecting scalar or matrix as first argument");
+              double u = u_arg.xdouble_value ("ellipj: U must be a scalar or matrix");
 
               NDArray sn (sz_m), cn (sz_m), dn (sz_m);
               NDArray err (sz_m);
@@ -183,7 +183,7 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u is complex scalar, m is array
-              Complex u = u_arg.xcomplex_value ("ellipj: expecting scalar or matrix as first argument");
+              Complex u = u_arg.xcomplex_value ("ellipj: U must be a scalar or matrix");
 
               ComplexNDArray sn (sz_m), cn (sz_m), dn (sz_m);
               NDArray err (sz_m);
@@ -211,7 +211,7 @@ and 16.15), Dover, 1965.\n\
           if (u_arg.is_real_type ())
             {
               // u is real array, m is array
-              NDArray u = u_arg.xarray_value ("ellipj: expecting scalar or matrix as first argument");
+              NDArray u = u_arg.xarray_value ("ellipj: U must be a scalar or matrix");
 
               dim_vector sz_u = u.dims ();
 
@@ -268,7 +268,7 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u is complex array, m is array
-              ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: expecting scalar or matrix as second argument");
+              ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: U must be a scalar or matrix");
 
               dim_vector sz_u = u.dims ();
 
@@ -871,18 +871,18 @@ and 16.15), Dover, 1965.\n\
 %!error ellipj ()
 %!error ellipj (1)
 %!error ellipj (1,2,3,4)
-%!warning <expecting 0 <= M <= 1> ellipj (1,2);
+%!warning <required value 0 <= M <= 1> ellipj (1,2);
 ## FIXME: errors commented out untill lasterr() truly returns the last error.
-%!#error <expecting scalar or matrix as second argument> ellipj (1, "1")
-%!#error <expecting scalar or matrix as first argument> ellipj ("1", 1)
-%!#error <expecting scalar or matrix as first argument> ellipj ({1}, 1)
-%!#error <expecting scalar or matrix as first argument> ellipj ({1, 2}, 1)
-%!#error <expecting scalar or matrix as second argument> ellipj (1, {1, 2})
-%!#error <expecting scalar or matrix as first argument> ellipj ("1", [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ({1}, [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ({1}, [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ("1,2", [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ({1, 2}, [1, 2])
+%!#error <M must be a scalar or matrix> ellipj (1, "1")
+%!#error <U must be a scalar or matrix> ellipj ("1", 1)
+%!#error <U must be a scalar or matrix> ellipj ({1}, 1)
+%!#error <U must be a scalar or matrix> ellipj ({1, 2}, 1)
+%!#error <M must be a scalar or matrix> ellipj (1, {1, 2})
+%!#error <U must be a scalar or matrix> ellipj ("1", [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ({1}, [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ({1}, [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ("1,2", [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ({1, 2}, [1, 2])
 %!error <Invalid size combination for U and M> ellipj ([1:4], [1:3])
 %!error <Invalid size combination for U and M> ellipj (complex (1:4,1:4), [1:3])
 

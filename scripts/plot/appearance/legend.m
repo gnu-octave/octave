@@ -297,7 +297,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       varargin = arg;
       nargs = numel (varargin);
     else
-      error ("legend: expecting argument to be a character string");
+      error ("legend: single argument must be a string or cellstr");
     endif
   elseif (nargs > 1 && iscellstr (varargin{1}))
     ## Cell array of labels followed by property/value pairs
@@ -451,7 +451,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
             break;  # k = 0, no further handles to process
           endif
         else
-          error ("legend: expecting argument to be a character string");
+          error ("legend: expecting argument to be a string");
         endif
       endfor
       if (have_labels && i < nargs)

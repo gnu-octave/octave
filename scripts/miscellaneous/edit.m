@@ -150,7 +150,7 @@ function ret = edit (varargin)
       ## of length 1 (by copying the input cell array)
       editfilelist = varargin(1);
     else
-      error ("edit: expected file to be a string or cell array of strings");
+      error ("edit: file NAME must be a string or cell array of strings");
     endif
   elseif (nargin == 2)
     ## User has supplied two arguments, these could be two file names,
@@ -182,7 +182,7 @@ function ret = edit (varargin)
         if (strcmp (stateval, "sync") || strcmp (stateval, "async"))
           FUNCTION.MODE = stateval;
         else
-          error ('edit: expected "edit MODE sync|async"');
+          error ("edit: MODE must be sync or async");
         endif
         return;
       case "EDITINPLACE"

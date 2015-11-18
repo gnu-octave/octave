@@ -263,7 +263,7 @@ octave_value_list::make_argv (const std::string& fcn_name) const
         }
     }
   else
-    error ("%s: expecting all arguments to be strings", fcn_name.c_str ());
+    error ("%s: all arguments must be strings", fcn_name.c_str ());
 
   return argv;
 }

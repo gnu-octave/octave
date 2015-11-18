@@ -323,13 +323,13 @@ If no files are found, return an empty cell array.\n\
               octave_env::make_absolute (load_path::find_first_of (names));
           else if (nargin == 2)
             {
-              std::string opt = args(1).xstring_value ("file_in_loadpath: expecting option to be a string");
+              std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
               if (opt == "all")
                 retval = Cell (make_absolute
                                (load_path::find_all_first_of (names)));
               else
-                error ("file_in_loadpath: invalid option `%s'", opt.c_str ());
+                error ("file_in_loadpath: \"all\" is only valid second argument");
             }
         }
       else
@@ -403,13 +403,13 @@ If no files are found, return an empty cell array.\n\
             retval = search_path_for_file (path, names);
           else if (nargin == 3)
             {
-              std::string opt = args(2).xstring_value ("file_in_path: expecting option to be a string");
+              std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
 
               if (opt == "all")
                 retval = Cell (make_absolute
                                (search_path_for_all_files (path, names)));
               else
-                error ("file_in_path: invalid option `%s'", opt.c_str ());
+                error ("file_in_path: \"all\" is only valid third argument");
             }
         }
       else
@@ -1242,8 +1242,10 @@ void
 get_dimensions (const octave_value& a, const octave_value& b,
                 const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
-  nr = a.is_empty () ? 0 : a.int_value ("%s: expecting two scalar arguments", warn_for);
-  nc = b.is_empty () ? 0 : b.int_value ("%s: expecting two scalar arguments", warn_for);
+  nr = a.is_empty ()
+       ? 0 : a.int_value ("%s: row dimension must be a scalar", warn_for);
+  nc = b.is_empty ()
+       ? 0 : b.int_value ("%s: column dimension must be a scalar", warn_for);
 
   check_dimensions (nr, nc, warn_for);
 }

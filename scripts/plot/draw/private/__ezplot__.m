@@ -140,7 +140,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       yarg = args{2};
     endif
   else
-    error ("%s: expecting string, inline function, or function handle", ezfunc);
+    error ("%s: F must be string, inline function, or function handle", ezfunc);
   endif
 
   if (nargin > 2 || (nargin == 2 && isplot))
@@ -222,7 +222,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
           error ("%s: expecting a function of %d arguments", ezfunc, nargs);
         endif
       else
-        error ("%s: parametric plots expect 3 functions", ezfunc);
+        error ("%s: parametric plots require 3 functions", ezfunc);
       endif
     endif
   endif
@@ -257,7 +257,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     elseif (numel (arg) == 4)
       domain = arg(:).';
     else
-      error ("%s: expecting scalar, 2-, or 4-element vector", ezfunc);
+      error ("%s: expecting scalar N or 2-, 4-element vector DOM", ezfunc);
     endif
   endwhile
 

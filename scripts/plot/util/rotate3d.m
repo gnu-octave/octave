@@ -54,7 +54,7 @@ function rotate3d (varargin)
       varargin(1) = [];
       nargs--;
     else
-      error ("rotate3d: expecting figure handle as first argument");
+      error ("rotate3d: invalid figure handle HFIG");
     endif
   endif
 

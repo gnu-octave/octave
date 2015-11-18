@@ -238,8 +238,8 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xtolower, std::tolower, char);
     STRING_MAPPER (xtoupper, std::toupper, char);
 
-      // For Matlab compatibility, these should work on ASCII values
-      // without error or warning.
+    // For Matlab compatibility, these should work on ASCII values
+    // without error or warning.
     case umap_abs:
     case umap_ceil:
     case umap_fix:
@@ -255,7 +255,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
       }
 
     default:
-      error ("%s: expecting numeric argument", get_umap_name (umap));
+      error ("%s: argument must be numeric", get_umap_name (umap));
       break;
     }
 

@@ -148,7 +148,7 @@ function h = subplot (varargin)
       varargin(1) = [];
       initial_args_decoded = true;
     else
-      error ("subplot: expecting axes handle or RCN argument");
+      error ("subplot: invalid axes handle or RCN argument");
     endif
   endif
 

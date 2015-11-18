@@ -45,7 +45,7 @@ function output = open (file)
   endif
 
   if (! ischar (file))
-    error ("expecting argument to be a file name");
+    error ("open: FILE must be a string");
   endif
 
   [~, ~, ext] = fileparts (file);

@@ -384,15 +384,15 @@ parameters for @code{lsode}.\n\
       if (! lsode_fcn)
         error ("lsode: FCN argument is not a valid function name or handle");
 
-      ColumnVector state = args(1).xvector_value ("lsode: expecting state vector as second argument");
-      ColumnVector out_times = args(2).xvector_value ("lsode: expecting output time vector as third argument");
+      ColumnVector state = args(1).xvector_value ("lsode: initial state X_0 must be a vector");
+      ColumnVector out_times = args(2).xvector_value ("lsode: output time variable T must be a vector");
 
       ColumnVector crit_times;
 
       int crit_times_set = 0;
       if (nargin > 3)
         {
-          crit_times = args(3).xvector_value ("lsode: expecting critical time vector as fourth argument");
+          crit_times = args(3).xvector_value ("lsode: list of critical times T_CRIT must be a vector");
 
           crit_times_set = 1;
         }

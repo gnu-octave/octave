@@ -223,7 +223,7 @@ opengl_texture::create (const octave_value& data)
       else
         {
           ok = false;
-          warning ("opengl_texture::create: invalid texture data type (expected double or uint8)");
+          warning ("opengl_texture::create: invalid texture data type (double or uint8 required)");
         }
 
       if (ok)

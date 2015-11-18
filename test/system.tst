@@ -225,7 +225,7 @@
 
 %!assert (ischar (file_in_path (path (), "date.m")))
 
-%!error <file_in_path: expecting option to be a string> file_in_path ("foo", "bar", 1)
+%!error <file_in_path: optional third argument must be a string> file_in_path ("foo", "bar", 1)
 %!error <Invalid call to file_in_path> file_in_path ()
 %!error <Invalid call to file_in_path> file_in_path ("foo", "bar", "baz", "ooka")
 

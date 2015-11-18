@@ -87,14 +87,14 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
     {
       if (nargin == 0)
         {
-          error ("%s: expecting at least one argument", fcn);
+          error ("%s: at least one argument is required", fcn);
           goto done;
         }
       else if (args(0).is_string ())
         additional_arg = false;
       else
         {
-          a = args(0).xarray_value ("%s: expecting scalar or matrix arguments", fcn);
+          a = args(0).xarray_value ("%s: dimension must be a scalar integer", fcn);
 
           idx++;
           nargin--;
@@ -194,8 +194,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                 for (octave_idx_type i = 0; i < n; i++)
                   {
-                    //Negative dimensions are treated as zero for Matlab
-                    //compatibility
+                    // Negative dimensions are treated as zero for Matlab
+                    // compatibility
                     dims(i) = base >= 0 ? base : 0;
                     base += incr;
                   }
@@ -204,8 +204,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
               }
             else
-              error ("%s: all elements of range must be integers",
-                     fcn);
+              error ("%s: all elements of range must be integers", fcn);
           }
         else if (tmp.is_matrix_type ())
           {
@@ -219,8 +218,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                 for (octave_idx_type i = 0; i < len; i++)
                   {
-                    //Negative dimensions are treated as zero for Matlab
-                    //compatibility
+                    // Negative dimensions are treated as zero for Matlab
+                    // compatibility
                     octave_idx_type elt = iv(i);
                     dims(i) = elt >=0 ? elt : 0;
                   }
@@ -228,7 +227,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                 goto gen_matrix;
               }
             else
-              error ("%s: expecting integer vector", fcn);
+              error ("%s: dimensions must be a scalar or array of integers", fcn);
           }
         else
           {
@@ -282,9 +281,9 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                octave_idx_type elt = args(idx+i).xint_value ("%s: expecting integer arguments", fcn);
+                octave_idx_type elt = args(idx+i).xint_value ("%s: dimension must be a scalar or array of integers", fcn);
 
-                //Negative is zero for Matlab compatibility
+                // Negative is zero for Matlab compatibility
                 dims(i) = elt >= 0 ? elt : 0;
               }
 
@@ -1193,8 +1192,8 @@ using std::unordered_map;
               octave_idx_type k = i +
                 gnulib::floor (rvec[i] * (n - i));
 
-              //For shuffling first m entries, no need to use extra
-              //storage
+              // For shuffling first m entries, no need to use extra
+              // storage
               if (k < m)
                 {
                   std::swap (ivec[i], ivec[k]);

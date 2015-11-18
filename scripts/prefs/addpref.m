@@ -41,7 +41,7 @@ function addpref (group, pref, val)
       prefs = loadprefs ();
       if (ischar (pref))
         if (isfield (group, pref))
-          error ("preference %s already exists in group %s", pref, group);
+          error ("addpref: preference %s already exists in group %s", pref, group);
         else
           prefs.(group).(pref) = val;
         endif
@@ -49,21 +49,21 @@ function addpref (group, pref, val)
         if (size_equal (pref, val))
           for i = 1:numel (pref)
             if (isfield (group, pref{i}))
-              error ("preference %s already exists in group %s",
+              error ("addpref: preference %s already exists in group %s",
                      pref{i}, group);
             else
               prefs.(group).(pref{i}) = val;
             endif
           endfor
         else
-          error ("size mismatch for pref and val");
+          error ("addpref: size mismatch for PREF and VAL");
         endif
       else
-        error ("expecting pref to be a character string or cellstr");
+        error ("addpref: PREF must be a character string or cellstr");
       endif
       saveprefs (prefs);
     else
-      error ("expecting group to be a character string");
+      error ("addpref: GROUP must be a string");
     endif
   else
     print_usage ();

@@ -229,8 +229,8 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
       if (args(1).is_single_type () || args(2).is_single_type ())
         {
-          float a = args(1).xfloat_value ("quad: expecting second argument to be a scalar");
-          float b = args(2).xfloat_value ("quad: expecting third argument to be a scalar");
+          float a = args(1).xfloat_value ("quad: lower limit of integration A must be a scalar");
+          float b = args(2).xfloat_value ("quad: upper limit of integration B must be a scalar");
 
           int indefinite = 0;
           FloatIndefQuad::IntegralType indef_type
@@ -270,10 +270,10 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
               have_sing = true;
 
-              sing = args(4).xfloat_vector_value ("quad: expecting vector of singularities as fourth argument");
+              sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector vector of singularities");
 
             case 4:
-              tol = args(3).xfloat_vector_value ("quad: expecting vector of tolerances as fifth argument");
+              tol = args(3).xfloat_vector_value ("quad: TOL must be a 1 or 2-element vector");
 
               switch (tol.numel ())
                 {
@@ -285,7 +285,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
                   break;
 
                 default:
-                  error ("quad: expecting tol to contain no more than two values");
+                  error ("quad: TOL must be a 1 or 2-element vector");
                 }
 
             case 3:
@@ -326,8 +326,8 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
         }
       else
         {
-          double a = args(1).xdouble_value ("quad: expecting second argument to be a scalar");
-          double b = args(2).xdouble_value ("quad: expecting third argument to be a scalar");
+          double a = args(1).xdouble_value ("quad: lower limit of integration A must be a scalar");
+          double b = args(2).xdouble_value ("quad: upper limit of integration B must be a scalar");
 
           int indefinite = 0;
           IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
@@ -366,10 +366,10 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
               have_sing = true;
 
-              sing = args(4).vector_value ("quad: expecting vector of singularities as fourth argument");
+              sing = args(4).vector_value ("quad: fifth argument SING must be a vector vector of singularities");
 
             case 4:
-              tol = args(3).xvector_value ("quad: expecting vector of tolerances as fifth argument");
+              tol = args(3).xvector_value ("quad: TOL must be a 1 or 2-element vector");
 
               switch (tol.numel ())
                 {
@@ -381,7 +381,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
                   break;
 
                 default:
-                  error ("quad: expecting tol to contain no more than two values");
+                  error ("quad: TOL must be a 1 or 2-element vector");
                 }
 
             case 3:

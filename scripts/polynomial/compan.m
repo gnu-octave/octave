@@ -65,7 +65,7 @@ function A = compan (c)
   endif
 
   if (! isvector (c))
-    error ("compan: expecting a vector argument");
+    error ("compan: C must be a vector");
   endif
 
   n = length (c);

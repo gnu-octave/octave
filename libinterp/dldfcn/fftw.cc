@@ -150,13 +150,11 @@ used per default.\n\
       if (nargin == 2)  //planner setter
         {
           // Use STL function to convert to lower case
-          std::transform (arg0.begin (), arg0.end (), arg0.begin (),
-                          tolower);
+          std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
 
-          std::string arg1 = args(1).xstring_value ("fftw: planner expects a string value as METHOD");
+          std::string arg1 = args(1).xstring_value ("fftw: METHOD must be a string");
 
-          std::transform (arg1.begin (), arg1.end (),
-                          arg1.begin (), tolower);
+          std::transform (arg1.begin (), arg1.end (), arg1.begin (), tolower);
           octave_fftw_planner::FftwMethod meth
             = octave_fftw_planner::UNKNOWN;
           octave_float_fftw_planner::FftwMethod methf

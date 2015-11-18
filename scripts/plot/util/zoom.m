@@ -75,7 +75,7 @@ function zoom (varargin)
       varargin(1) = [];
       nargs--;
     else
-      error ("zoom: expecting figure handle as first argument");
+      error ("zoom: invalid figure handle HFIG");
     endif
   endif
 

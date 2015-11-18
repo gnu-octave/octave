@@ -35,7 +35,7 @@
 ## Author: Soren Hauberg <soren@hauberg.org>
 ## Adapted-by: jwe
 
-function retval = doc (fname)
+function retval = doc (function_name)
 
   if (nargin == 0 || nargin == 1)
 
@@ -45,22 +45,22 @@ function retval = doc (fname)
       ## Get the directory where the function lives.
       ## FIXME: Maybe we should have a better way of doing this?
 
-      if (ischar (fname))
-        ftype = exist (fname);
+      if (ischar (function_name))
+        ftype = exist (function_name);
       else
-        error ("doc: expecting argument to be a character string");
+        error ("doc: FUNCTION_NAME must be a string");
       endif
     else
-      fname = "";
+      function_name = "";
     endif
 
     ## if GUI is running, let it display the function
     if (isguirunning ())
-      __octave_link_show_doc__ (fname);
+      __octave_link_show_doc__ (function_name);
     else
 
       if (ftype == 2 || ftype == 3)
-        ffile = which (fname);
+        ffile = which (function_name);
       else
         ffile = "";
       endif
@@ -95,10 +95,10 @@ function retval = doc (fname)
       cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
                      info_program (), info_file_name, info_dir);
 
-      have_fname = ! isempty (fname);
+      have_fname = ! isempty (function_name);
 
       if (have_fname)
-        status = system (sprintf ("%s --index-search \"%s\"", cmd, fname));
+        status = system (sprintf ("%s --index-search \"%s\"", cmd, function_name));
       endif
 
 

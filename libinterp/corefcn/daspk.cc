@@ -384,23 +384,23 @@ parameters for @code{daspk}.\n\
       if (! daspk_fcn)
         DASPK_ABORT ();
 
-      ColumnVector state = args(1).xvector_value ("expecting state vector as second argument");
+      ColumnVector state = args(1).xvector_value ("daspk: initial state X_0 must be a vector");
 
-      ColumnVector deriv = args(2).xvector_value ("expecting derivative vector as third argument");
+      ColumnVector deriv = args(2).xvector_value ("daspk: initial derivatives XDOT_0 must be a vector");
 
-      ColumnVector out_times = args(3).xvector_value ("expecting output time vector as fourth argument");
+      ColumnVector out_times = args(3).xvector_value ("daspk: output time variable T must be a vector");
 
       ColumnVector crit_times;
       int crit_times_set = 0;
       if (nargin > 4)
         {
-          crit_times = args(4).xvector_value ("expecting critical time vector as fifth argument");
+          crit_times = args(4).xvector_value ("daspk: list of critical times T_CRIT must be a vector");
 
           crit_times_set = 1;
         }
 
       if (state.numel () != deriv.numel ())
-        DASPK_ABORT1 ("x and xdot must have the same size");
+        DASPK_ABORT1 ("X_0 and XDOT_0 must have the same size");
 
       double tzero = out_times (0);
 

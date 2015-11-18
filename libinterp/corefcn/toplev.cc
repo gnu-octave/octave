@@ -1068,7 +1068,7 @@ command shell that is started to run the command.\n\
           return retval;
         }
 
-      std::string cmd_str = args(0).xstring_value ("system: expecting string as first argument");
+      std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
       // Work around weird double-quote handling on Windows systems.

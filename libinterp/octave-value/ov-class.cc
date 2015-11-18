@@ -586,11 +586,11 @@ octave_class::subsasgn_common (const octave_value& obj,
           else
             tmp = feval (meth.function_value (), args);
 
-          // FIXME: should the subsasgn method be able to return
-          // more than one value?
+          // FIXME: Should the subsasgn method be able to return
+          //        more than one value?
 
           if (tmp.length () > 1)
-            error ("expecting single return value from @%s/subsasgn",
+            error ("@%s/subsasgn returned more than one value",
                    class_name ().c_str ());
 
           else
@@ -1856,7 +1856,7 @@ is derived.\n\
                            id.c_str ());
                 }
               else
-                error ("class: expecting structure S as first argument");
+                error ("class: S must be a valid structure");
             }
           else
             error ("class: '%s' is invalid as a class name in this context",
@@ -2033,9 +2033,10 @@ Return true if @var{x} is a class object.\n\
 
 DEFUN (ismethod, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ismethod (@var{obj}, @var{method})\n\
-Return true if @var{obj} is a class object and the string @var{method}\n\
-is a method of this class.\n\
+@deftypefn  {Built-in Function} {} ismethod (@var{obj}, @var{method})\n\
+@deftypefnx {Built-in Function} {} ismethod (@var{clsname}, @var{method})\n\
+Return true if the string @var{method} is a valid method of the object\n\
+@var{obj} or of the class @var{clsname}.\n\
 @seealso{isprop, isobject}\n\
 @end deftypefn")
 {
@@ -2052,7 +2053,7 @@ is a method of this class.\n\
       else if (arg.is_string ())
         class_name = arg.string_value ();
       else
-        error ("ismethod: expecting object or class name as first argument");
+        error ("ismethod: first argument must be object or class name");
 
       std::string method = args(1).string_value ();
 
@@ -2144,7 +2145,7 @@ This function may only be called from a class constructor.\n\
 
   for (int i = 0; i < args.length (); i++)
     {
-      std::string inf_class = args(i).xstring_value ("superiorto: expecting argument to be class name");
+      std::string inf_class = args(i).xstring_value ("superiorto: CLASS_NAME must be a string");
 
       // User defined classes always have higher precedence
       // than built-in classes
@@ -2185,7 +2186,7 @@ This function may only be called from a class constructor.\n\
 
   for (int i = 0; i < args.length (); i++)
     {
-      std::string sup_class = args(i).xstring_value ("inferiorto: expecting argument to be class name");
+      std::string sup_class = args(i).xstring_value ("inferiorto: CLASS_NAME must be a string");
 
       if (is_built_in_class (sup_class))
         {

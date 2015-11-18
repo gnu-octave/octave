@@ -1688,7 +1688,7 @@ determine whether functions defined in function files need to recompiled.\n\
 
   if (nargin == 1)
     {
-      std::string sval = args(0).xstring_value ("ignore_function_time_stamp: expecting argument to be a string");
+      std::string sval = args(0).xstring_value ("ignore_function_time_stamp: first argument must be a string");
 
       if (sval == "all")
         Vignore_function_time_stamp = 2;
@@ -1697,7 +1697,7 @@ determine whether functions defined in function files need to recompiled.\n\
       else if (sval == "none")
         Vignore_function_time_stamp = 0;
       else
-        error ("ignore_function_time_stamp: argument must be \"all\", \"system\", or \"none\"");
+        error ("ignore_function_time_stamp: argument must be one of \"all\", \"system\", or \"none\"");
     }
   else if (nargin > 1)
     print_usage ();
@@ -1791,11 +1791,11 @@ Undocumented internal function.\n\
               symbol_table::dump_functions (octave_stdout);
             }
           else
-            error ("__dump_symtab_info__: expecting \"functions\" or \"scopes\"");
+            error ("__dump_symtab_info__: string argument must be \"functions\" or \"scopes\"");
         }
       else
         {
-          int s = arg.xint_value ("__dump_symtab_info__: expecting string or scope id");
+          int s = arg.xint_value ("__dump_symtab_info__: first argument must be string or scope id");
 
           symbol_table::dump (octave_stdout, s);
         }
@@ -1816,7 +1816,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).xstring_value ("__get_cmd_line_function_text__: expecting function name");
+      std::string name = args(0).xstring_value ("__get_cmd_line_function_text__: first argument must be function name");
 
       octave_value ov = symbol_table::find_cmdline_function (name);
 
@@ -1849,7 +1849,7 @@ DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 
   if (args.length () == 2)
     {
-      std::string name = args(0).xstring_value ("set_variable: expecting variable name as first argument");
+      std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
 
       symbol_table::assign (name, args(1));
     }
@@ -1865,7 +1865,7 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
 
   if (args.length () == 1)
     {
-      std::string name = args(0).xstring_value ("variable_value: expecting variable name as first argument");
+      std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
 
       retval = symbol_table::varval (name);
 

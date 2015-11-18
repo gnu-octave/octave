@@ -49,14 +49,14 @@ function setpref (group, pref, val)
             prefs.(group).(pref{i}) = val;
           endfor
         else
-          error ("size mismatch for pref and val");
+          error ("setpref: size mismatch for PREF and VAL");
         endif
       else
-        error ("expecting pref to be a character string or cellstr");
+        error ("setpref: PREF must be a character string or cellstr");
       endif
       saveprefs (prefs);
     else
-      error ("expecting group to be a character string");
+      error ("setpref: GROUP must be a string");
     endif
   else
     print_usage ();

@@ -96,7 +96,7 @@ index_error (const char *fmt, const std::string& idx, const std::string& msg)
  \
   if (nargin == 1 || nargin == 2) \
     { \
-      int dim = (nargin == 1 ? -1 : args(1).int_value (#FCN ": expecting dimension argument to be an integer") - 1); \
+      int dim = (nargin == 1 ? -1 : args(1).int_value (#FCN ": DIM must be an integer") - 1); \
  \
       if (dim >= -1) \
         retval = args(0).FCN (dim); \
@@ -3939,7 +3939,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
+                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
     }
@@ -4049,7 +4049,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
+                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
     }
@@ -4113,7 +4113,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
+                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
     }
@@ -4178,7 +4178,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
+                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
     }
@@ -4233,7 +4233,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xidx_type_value ("%s: expecting scalar integer arguments", fcn));
+                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
       }
       break;
     }
@@ -6873,7 +6873,7 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
   // FIXME: shouldn't these modes be scoped inside a class?
   sortmode smode = UNSORTED;
 
-  std::string mode = arg.xstring_value ("issorted: expecting %s argument to be a string", argn);
+  std::string mode = arg.xstring_value ("issorted: MODE must be a string");
 
   if (mode == "ascending")
     smode = ASCENDING;

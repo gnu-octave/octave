@@ -81,7 +81,7 @@ enum bessel_type
 static void
 gripe_bessel_arg (const char *fn, const char *arg)
 {
-  error ("%s: expecting scalar or matrix as %s argument", fn, arg);
+  error ("%s: %s argument must be a scalar or matrix", fn, arg);
 }
 
 octave_value_list
@@ -126,11 +126,11 @@ do_bessel (enum bessel_type type, const char *fn,
         {
           if (alpha_arg.is_scalar_type ())
             {
-              float alpha = args(0).xfloat_value ("%s: expecting scalar or matrix as first argument", fn);
+              float alpha = args(0).xfloat_value ("%s: ALPHA must be a scalar or matrix", fn);
 
               if (x_arg.is_scalar_type ())
                 {
-                  FloatComplex x = x_arg.xfloat_complex_value ("%s: expecting scalar or matrix as second argument", fn);
+                  FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
 
                   octave_idx_type ierr;
                   octave_value result;
@@ -145,7 +145,7 @@ do_bessel (enum bessel_type type, const char *fn,
               else
                 {
                   FloatComplexNDArray x
-                    = x_arg.xfloat_complex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+                    = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
 
                   Array<octave_idx_type> ierr;
                   octave_value result;
@@ -168,10 +168,10 @@ do_bessel (enum bessel_type type, const char *fn,
 
               if (args0_is_row_vector && args1_is_col_vector)
                 {
-                  FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: expecting scalar or matrix as first argument", fn);
+                  FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
                   FloatComplexColumnVector cx =
-                    x_arg.xfloat_complex_column_vector_value ("%s: expecting scalar or matrix as second argument", fn);
+                    x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
                   Array<octave_idx_type> ierr;
                   octave_value result;
@@ -185,11 +185,11 @@ do_bessel (enum bessel_type type, const char *fn,
                 }
               else
                 {
-                  FloatNDArray alpha = args(0).xfloat_array_value ("%s: expecting scalar or matrix as first argument", fn);
+                  FloatNDArray alpha = args(0).xfloat_array_value ("%s: ALPHA must be a scalar or matrix", fn);
 
                   if (x_arg.is_scalar_type ())
                     {
-                      FloatComplex x = x_arg.xfloat_complex_value ("%s: expecting scalar or matrix as second argument", fn);
+                      FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
 
                       Array<octave_idx_type> ierr;
                       octave_value result;
@@ -204,7 +204,7 @@ do_bessel (enum bessel_type type, const char *fn,
                   else
                     {
                       FloatComplexNDArray x
-                        = x_arg.xfloat_complex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+                        = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
 
                       Array<octave_idx_type> ierr;
                       octave_value result;
@@ -223,11 +223,11 @@ do_bessel (enum bessel_type type, const char *fn,
         {
           if (alpha_arg.is_scalar_type ())
             {
-              double alpha = args(0).xdouble_value ("%s: expecting scalar or matrix as first argument", fn);
+              double alpha = args(0).xdouble_value ("%s: ALPHA must be a scalar or matrix", fn);
 
               if (x_arg.is_scalar_type ())
                 {
-                  Complex x = x_arg.xcomplex_value ("%s: expecting scalar or matrix as second argument", fn);
+                  Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
 
                   octave_idx_type ierr;
                   octave_value result;
@@ -241,7 +241,7 @@ do_bessel (enum bessel_type type, const char *fn,
                 }
               else
                 {
-                  ComplexNDArray x = x_arg.xcomplex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+                  ComplexNDArray x = x_arg.xcomplex_array_value ("%s: X must be a scalar or matrix", fn);
 
                   Array<octave_idx_type> ierr;
                   octave_value result;
@@ -264,10 +264,10 @@ do_bessel (enum bessel_type type, const char *fn,
 
               if (args0_is_row_vector && args1_is_col_vector)
                 {
-                  RowVector ralpha = args(0).xrow_vector_value ("%s: expecting scalar or matrix as first argument", fn);
+                  RowVector ralpha = args(0).xrow_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
                   ComplexColumnVector cx =
-                    x_arg.xcomplex_column_vector_value ("%s: expecting scalar or matrix as second argument", fn);
+                    x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
                   Array<octave_idx_type> ierr;
                   octave_value result;
@@ -281,11 +281,11 @@ do_bessel (enum bessel_type type, const char *fn,
                 }
               else
                 {
-                  NDArray alpha = args(0).xarray_value ("%s: expecting scalar or matrix as first argument", fn);
+                  NDArray alpha = args(0).xarray_value ("%s: ALPHA must be a scalar or matrix", fn);
 
                   if (x_arg.is_scalar_type ())
                     {
-                      Complex x = x_arg.xcomplex_value ("%s: expecting scalar or matrix as second argument", fn);
+                      Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
 
                       Array<octave_idx_type> ierr;
                       octave_value result;
@@ -299,7 +299,7 @@ do_bessel (enum bessel_type type, const char *fn,
                     }
                   else
                     {
-                      ComplexNDArray x = x_arg.xcomplex_array_value ("%s: expecting scalar or matrix as second argument", fn);
+                      ComplexNDArray x = x_arg.xcomplex_array_value ("%s: X must be a scalar or matrix", fn);
 
                       Array<octave_idx_type> ierr;
                       octave_value result;
@@ -453,7 +453,7 @@ See besselj.\n\
       else if (kind == 2)
         retval = do_bessel (BESSEL_H2, "besselh", tmp_args, nargout);
       else
-        error ("besselh: expecting K = 1 or 2");
+        error ("besselh: K must be 1 or 2");
     }
   else
     print_usage ();
@@ -523,7 +523,7 @@ return @code{NaN}.\n\
           kind = args(0).xint_value ("airy: K must be an integer value");
 
           if (kind < 0 || kind > 3)
-            error ("airy: expecting K = 0, 1, 2, or 3");
+            error ("airy: K must be 0, 1, 2, or 3");
         }
 
       int idx = nargin == 1 ? 0 : 1;

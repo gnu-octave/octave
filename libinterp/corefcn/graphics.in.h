@@ -1705,7 +1705,7 @@ protected:
       }
     catch (const octave_execution_exception&)
       {
-        error ("set: expecting children to be array of graphics handles");
+        error ("set: children must be an array of graphics handles");
       }
 
     octave_idx_type nel = new_kids.numel ();

@@ -77,7 +77,7 @@ function retval = divergence (varargin)
     if (! size_equal (varargin{fidx},varargin{fidx + 1}))
       error ("divergence: size of X and Y must match");
     elseif (ndims (varargin{fidx}) != 2)
-      error ("divergence: expected two-dimensional matrices X and Y");
+      error ("divergence: X and Y must be 2-D matrices");
     elseif (length (dx) != columns (varargin{fidx})
             || length (dy) != rows (varargin{fidx}))
       error ("divergence: size of dx and dy must match the respective dimension of X and Y");
@@ -90,7 +90,7 @@ function retval = divergence (varargin)
     if (! size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))
       error ("divergence: size of X, Y, and Z must match");
     elseif (ndims (varargin{fidx}) != 3)
-      error ("divergence: expected two-dimensional matrices X, Y, and Z");
+      error ("divergence: X, Y, and Z must be 2-D matrices");
     elseif ((length (dx) != size (varargin{fidx}, 2))
          || (length (dy) != size (varargin{fidx}, 1))
          || (length (dz) != size (varargin{fidx}, 3)))

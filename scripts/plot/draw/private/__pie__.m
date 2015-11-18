@@ -29,7 +29,7 @@ function hlist = __pie__ (caller, varargin)
   iarg = 3;
 
   if (! isvector (x))
-    error ("%s: expecting vector argument", caller);
+    error ("%s: X must be a vector", caller);
   endif
 
   len = length (x);

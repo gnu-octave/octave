@@ -150,7 +150,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
 
     ## check for even number of remaining arguments, prop/value pair(s)
     if (rem (nargin - stridx + 1, 2))
-      error ("uigetfile: expecting property/value pairs");
+      error ("uigetfile: PROPERTY/VALUE arguments must occur in pairs");
     endif
 
     for i = stridx : 2 : nargin
@@ -160,13 +160,13 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
         if (ismatrix (val) && length (val) == 2)
           outargs{4} = val;
         else
-          error ("uigetfile: expecting 2-element vector for position argument");
+          error ('uigetfile: "Position" must be a 2-element vector');
         endif
       elseif (strcmpi (prop, "multiselect"))
         if (ischar (val))
           outargs{5} = tolower (val);
         else
-          error ("uigetfile: expecting string argument (on/off) for multiselect");
+          error ('uigetfile: MultiSelect value must be a string ("on"/"off")');
         endif
       else
         error ("uigetfile: unknown argument");

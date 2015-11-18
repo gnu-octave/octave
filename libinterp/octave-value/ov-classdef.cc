@@ -522,7 +522,7 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 
   if (args.length () == 1)
     {
-      std::string name = args(0).xstring_value ("fromName: invalid class name, expected a string value");
+      std::string name = args(0).xstring_value ("fromName: CLASS_NAME must be a string");
 
       retval(0) = to_ov (lookup_class (name));
     }
@@ -543,7 +543,7 @@ class_fevalStatic (const octave_value_list& args, int nargout)
 
       if (! error_state)
         {
-          std::string meth_name = args(1).xstring_value ("fevalStatic: invalid method name, expected a string value");
+          std::string meth_name = args(1).xstring_value ("fevalStatic: method name must be a string");
 
           cdef_method meth = cls.find_method (meth_name);
 
@@ -560,7 +560,7 @@ class_fevalStatic (const octave_value_list& args, int nargout)
             error ("fevalStatic: method not found: %s", meth_name.c_str ());
         }
       else
-        error ("fevalStatic: invalid object, expected a meta.class object");
+        error ("fevalStatic: first argument must be a meta.class object");
     }
   else
     error ("fevalStatic: invalid arguments");
@@ -580,7 +580,7 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
 
       if (! error_state)
         {
-          std::string prop_name = args(1).xstring_value ("getConstant: invalid property name, expected a string value");
+          std::string prop_name = args(1).xstring_value ("getConstant: property name must be a string");
 
           cdef_property prop = cls.find_property (prop_name);
 
@@ -597,7 +597,7 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
                    prop_name.c_str ());
         }
       else
-        error ("getConstant: invalid object, expected a meta.class object");
+        error ("getConstant: first argument must be a meta.class object");
     }
   else
     error ("getConstant: invalid arguments");
@@ -624,7 +624,7 @@ class_ ## OP (const octave_value_list& args, int /* nargout */) \
       if (! error_state) \
         retval(0) = FUN (CLSA, CLSB); \
       else \
-        error (#OP ": invalid objects, expected meta.class objects"); \
+        error (#OP ": arguments must be meta.class objects"); \
     } \
   else \
     error (#OP ": invalid arguments"); \
@@ -3281,7 +3281,7 @@ package_fromName (const octave_value_list& args, int /* nargout */)
 
   if (args.length () == 1)
     {
-      std::string name = args(0).xstring_value ("fromName: invalid package name, expected a string value");
+      std::string name = args(0).xstring_value ("fromName: PACKAGE_NAME must be a string");
 
       retval(0) = to_ov (lookup_package (name));
     }
@@ -3823,7 +3823,7 @@ DEFUN (__meta_get_package__, args, , "")
 
   if (args.length () == 1)
     {
-      std::string cname = args(0).xstring_value ("invalid package name, expected a string value");
+      std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
 
       retval = to_ov (lookup_package (cname));
     }
@@ -3858,7 +3858,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string cls = args(0).xstring_value ("invalid class name, expected a string value");
+      std::string cls = args(0).xstring_value ("CLASS_NAME must be a string");
 
       retval = to_ov (lookup_class (cls));
     }

@@ -2189,7 +2189,7 @@ public:
         else if (go.isa ("figure") || go.isa ("uicontextmenu"))
           ;
         else
-          error ("unexpected parent object\n");
+          error ("invalid parent object\n");
 
         uimenup.set_fltk_label (fltk_label);
       }

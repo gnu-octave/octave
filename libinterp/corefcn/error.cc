@@ -1668,7 +1668,7 @@ disable escape sequence expansion use a second backslash before the sequence\n\
                 }
             }
           else
-            error ("warning: expecting structure with fields 'identifier' and 'state'");
+            error ("warning: STATE structure must have fields 'identifier' and 'state'");
 
           done = true;
 

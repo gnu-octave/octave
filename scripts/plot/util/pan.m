@@ -59,7 +59,7 @@ function pan (varargin)
       varargin(1) = [];
       nargs--;
     else
-      error ("pan: expecting figure handle as first argument");
+      error ("pan: invalid figure handle HFIG");
     endif
   endif
 

@@ -37,7 +37,7 @@ function ang = subspace (A, B)
   if (nargin != 2)
     print_usage ();
   elseif (ndims (A) != 2 || ndims (B) != 2)
-    error ("subspace: expecting A and B to be 2-dimensional arrays");
+    error ("subspace: A and B must be 2-dimensional arrays");
   elseif (rows (A) != rows (B))
     error ("subspace: column dimensions of A and B must match");
   endif

@@ -168,7 +168,7 @@ function arg_st = __print_parse_opts__ (varargin)
     elseif (isfigure (arg))
       arg_st.figure = arg;
     else
-      error ("print: expecting inputs to be character string options or a figure handle");
+      error ("print: first argument must be string or figure handle");
     endif
   endfor
 

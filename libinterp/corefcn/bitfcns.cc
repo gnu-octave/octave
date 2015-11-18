@@ -502,7 +502,7 @@ bitshift (float a, int n, int64_t mask)
         error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
     } \
   else \
-    error ("bitshift: expecting integer as second argument"); \
+    error ("bitshift: K must be a scalar or array of integers"); \
 
 #define DO_UBITSHIFT(T, N) \
   do \
@@ -574,7 +574,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
     {
       int nbits = 64;
 
-      NDArray n = args(1).xarray_value ("bitshift: expecting integer as second argument");
+      NDArray n = args(1).xarray_value ("bitshift: K must be a scalar or array of integers");
 
       if (nargin == 3)
         {
@@ -657,7 +657,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 %!assert (bitshift (uint64 (16), 4), uint64 (256))
 %!assert (bitshift (uint8 (255), 1), uint8 (254))
 
-%!error <expecting integer as second argument> bitshift (16, 1.5)
+%!error <K must be a scalar or array of integers> bitshift (16, 1.5)
 %!error bitshift (16, {1})
 %!error <N must be a scalar integer> bitshift (10, [-2 -1 0 1 2], [1 1 1 1 1])
 %!error <N must be positive> bitshift (10, [-2 -1 0 1 2], -1)

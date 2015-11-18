@@ -995,7 +995,7 @@ No check is done for the existence of @var{file}.\n\
 
   if (args.length () == 1)
     {
-      std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a file name");
+      std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a filename");
 
       retval = octave_env::make_absolute (nm);
     }

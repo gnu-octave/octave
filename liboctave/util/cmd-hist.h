@@ -205,7 +205,7 @@ protected:
 
   void error (const std::string&) const;
 
-  // TRUE means we have initialized the history file name and number of
+  // TRUE means we have initialized the history filename and number of
   // lines to save.
   bool initialized;
 

@@ -195,7 +195,7 @@ Undocumented internal function.\n\
 
   if (args.length () == 1)
     {
-      std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a file name");
+      std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
       HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,

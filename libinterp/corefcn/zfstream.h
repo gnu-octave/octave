@@ -83,7 +83,7 @@ public:
 
   /**
    *  @brief  Open gzipped file.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags.
    *  @return  @c this on success, NULL on failure.
   */
@@ -286,7 +286,7 @@ public:
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
@@ -318,7 +318,7 @@ public:
 
   /**
    *  @brief  Open gzipped file.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::in).
    *
    *  Stream will be in state good() if file opens successfully;
@@ -375,7 +375,7 @@ public:
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
@@ -407,7 +407,7 @@ public:
 
   /**
    *  @brief  Open gzipped file.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::out).
    *
    *  Stream will be in state good() if file opens successfully;

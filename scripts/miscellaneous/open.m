@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{output} =} open @var{file}
 ## @deftypefnx {Function File} {@var{output} =} open (@var{file})
 ## Open the file @var{file} in Octave or in an external application based on
-## the file type as determined by the file name extension.
+## the file type as determined by the filename extension.
 ##
 ## Recognized file types are
 ##

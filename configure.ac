@@ -2693,7 +2693,7 @@ do
     ;;
   esac
 
-  ## Determine which library file name to search for.
+  ## Determine which library filename to search for.
   case $host_os in
     darwin*)
       jvmlib=libjvm.dylib

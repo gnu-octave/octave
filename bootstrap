@@ -32,7 +32,7 @@ scriptversion=2014-12-08.12; # UTC
 nl='
 '
 
-# Ensure file names are sorted consistently across platforms.
+# Ensure filenames are sorted consistently across platforms.
 LC_ALL=C
 export LC_ALL
 

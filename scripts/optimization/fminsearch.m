@@ -150,7 +150,7 @@ function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x 
   ## Use function to minimize, not maximize
   stopit(6) = dirn = -1;
 
-  ## File name for snapshots.
+  ## Filename for snapshots.
   savit = [];  # FIXME: expose this parameter to the outside
 
 endfunction

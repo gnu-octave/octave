@@ -96,7 +96,7 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
       endif
     endif
 
-    ## try extension from file name
+    ## try extension from filename
     if (isempty (foo))
       [~, ~, ext] = fileparts (fn);
       if (! isempty (ext))

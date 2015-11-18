@@ -436,7 +436,7 @@ main (int argc, char **argv)
 #if defined (HAVE_OCTAVE_GUI)
   // The Octave version number is already embedded in the
   // octave_archlibdir directory name so we don't need to append it to
-  // the octave-gui file name.
+  // the octave-gui filename.
 
   std::string file = octave_archlibdir + dir_sep_char + "octave-gui";
 #else

@@ -103,7 +103,7 @@ function configure_make (desc, packdir, verbose)
     instdir = fullfile (packdir, "inst");
     archdir = fullfile (packdir, "inst", getarch ());
 
-    ## Get file names.
+    ## Get filenames.
     if (exist (files, "file"))
       [fid, msg] = fopen (files, "r");
       if (fid < 0)

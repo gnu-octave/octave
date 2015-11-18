@@ -189,7 +189,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
     fprintf (__fid, "# %s test was skipped\n", __signal_skip);
     fprintf (__fid, "# %s code for the test\n\n", __signal_block);
     fprintf (__fid, "# Search for the unexpected results in the file\n");
-    fprintf (__fid, "# then page back to find the file name which caused it.\n");
+    fprintf (__fid, "# then page back to find the filename which caused it.\n");
     fprintf (__fid, "# The result may be an unexpected failure (in which\n");
     fprintf (__fid, "# case an error will be reported) or an unexpected\n");
     fprintf (__fid, "# success (in which case no error will be reported).\n");

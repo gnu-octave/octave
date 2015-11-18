@@ -223,7 +223,7 @@ remove-version-links:
 
 .PHONY: make-version-links remove-version-links
 
-## We need these file names in the build tree because the wrapper
+## We need these filenames in the build tree because the wrapper
 ## program (main.cc) will try to invoke the versioned binaries.
 
 src/octave-cli-$(version)$(EXEEXT): src/octave-cli$(EXEEXT)

@@ -530,7 +530,7 @@ The return code @var{c} is one of\n\
 @var{name} is a variable.\n\
 \n\
 @item 2\n\
-@var{name} is an absolute file name, an ordinary file in Octave's\n\
+@var{name} is an absolute filename, an ordinary file in Octave's\n\
 @code{path}, or (after appending @samp{.m}) a function file in Octave's\n\
 @code{path}.\n\
 \n\
@@ -637,13 +637,13 @@ not on the search path you should use some combination of the functions\n\
 %!assert (exist ("print_usage", "file"), 2)
 %!assert (exist ("print_usage", "dir"), 0)
 
-## Don't search path for rooted relative file names
+## Don't search path for rooted relative filenames
 %!assert (exist ("plot.m", "file"), 2);
 %!assert (exist ("./plot.m", "file"), 0);
 %!assert (exist ("./%nonexistentfile%", "file"), 0);
 %!assert (exist ("%nonexistentfile%", "file"), 0);
 
-## Don't search path for absolute file names
+## Don't search path for absolute filenames
 %!test
 %! tname = tempname (pwd ());
 %! unwind_protect
@@ -1629,7 +1629,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
           // implement this option there so that the variables are never
           // stored at all.
           if (i == argc - 1)
-            error ("whos: -file argument must be followed by a file name");
+            error ("whos: -file argument must be followed by a filename");
           else
             {
               std::string nm = argv[i + 1];

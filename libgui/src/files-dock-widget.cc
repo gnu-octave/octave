@@ -793,7 +793,7 @@ files_dock_widget::notice_settings (const QSettings *settings)
 
   _navigation_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
-  // file names are always shown, other columns can be hidden by settings
+  // filenames are always shown, other columns can be hidden by settings
   for (int i = 0; i < 3; i++)
      _file_tree_view->setColumnHidden (i + 1, ! settings->value (
                                   _columns_shown_keys.at (i),false).toBool ());

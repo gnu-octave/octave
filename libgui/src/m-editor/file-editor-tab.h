@@ -70,7 +70,7 @@ public slots:
   // Change to a different editor tab by identifier tag.
   void change_editor_state (const QWidget *ID);
 
-  // Simply transmit file name.
+  // Simply transmit filename.
   void file_name_query (const QWidget *ID);
 
   void set_focus (const QWidget *ID);

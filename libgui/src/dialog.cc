@@ -522,7 +522,7 @@ void FileDialog::acceptSelection (void)
       path = directory ().absolutePath ();
     }
 
-  // Matlab expects just the file name, whereas the file dialog gave us
+  // Matlab expects just the filename, whereas the file dialog gave us
   // full path names, so fix it.
 
   for (int i = 0; i < string_result.size (); i++)

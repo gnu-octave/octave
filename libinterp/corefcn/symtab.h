@@ -2345,8 +2345,8 @@ private:
   // The scope of this symbol table.
   scope_id my_scope;
 
-  // Name for this table (usually the file name of the function
-  // corresponding to the scope);
+  // Name for this table
+  // (usually the filename of the function corresponding to the scope);
   std::string table_name;
 
   // Map from symbol names to symbol info.

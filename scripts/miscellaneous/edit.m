@@ -139,7 +139,7 @@ function ret = edit (varargin)
   FUNCTION.EDITOR = [EDITOR() " %s"];
 
   if (nargin == 1)
-    ## User has supplied one arg, this can be a single file name
+    ## User has supplied one arg, this can be a single filename
     ## or a cell array of strings containing multiple files to be opened
     if (iscellstr (varargin{1}))
       ## If first arg is a cell array of strings,
@@ -153,7 +153,7 @@ function ret = edit (varargin)
       error ("edit: file NAME must be a string or cell array of strings");
     endif
   elseif (nargin == 2)
-    ## User has supplied two arguments, these could be two file names,
+    ## User has supplied two arguments, these could be two filenames,
     ## or a combination of editor state name and new value for that state,
     ## so first check for the various states
     statevar = varargin{1};
@@ -206,7 +206,7 @@ function ret = edit (varargin)
         return;
       otherwise
         ## If none of the states match, assume both inputs are actually
-        ## file names to be opened.
+        ## filenames to be opened.
         editfilelist = varargin;
     endswitch
   elseif (nargin > 2)
@@ -242,7 +242,7 @@ function ret = edit (varargin)
 
   else
 
-    ## Only one file name was supplied, get it from the cell array
+    ## Only one filename was supplied, get it from the cell array
     file = tilde_expand (editfilelist{1});
 
     ## Check whether the user is trying to edit a builtin or compiled function.
@@ -269,7 +269,7 @@ function ret = edit (varargin)
     ## The code below includes a portion that serves as a place-holder for
     ## the changes suggested above.
 
-    ## Create list of explicit and implicit file names.
+    ## Create list of explicit and implicit filenames.
     filelist = {file};
     ## If file has no extension, add file.m and file.cc to the list.
     idx = rindex (file, ".");

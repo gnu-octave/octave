@@ -3129,7 +3129,7 @@ octave_base_parser::frob_function (const std::string& fname,
   {
     // FIXME -- should lexer.fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
-    // problem with relative file names.
+    // problem with relative filenames.
 
     std::string nm = lexer.fcn_file_name;
 
@@ -3142,7 +3142,7 @@ octave_base_parser::frob_function (const std::string& fname,
       {
         warning_with_id
           ("Octave:function-name-clash",
-           "function name '%s' does not agree with function file name '%s'",
+           "function name '%s' does not agree with function filename '%s'",
            id_name.c_str (), lexer.fcn_file_full_name.c_str ());
 
         id_name = nm;
@@ -3355,7 +3355,7 @@ octave_base_parser::make_classdef (token *tok_val,
     nm = lexer.fcn_file_name.substr (pos+1);
 
   if (nm != cls_name)
-    bison_error ("invalid classdef definition, the class name must match the file name");
+    bison_error ("invalid classdef definition, the class name must match the filename");
   else if (end_token_ok (end_tok, token::classdef_end))
     {
       octave_comment_list *tc = lexer.comment_buf.get_comment ();
@@ -4304,7 +4304,7 @@ DEFUN (autoload, args, ,
 @deftypefnx {Built-in Function} {} autoload (@dots{}, \"remove\")\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
-The second argument, @var{file}, should be an absolute file name or a file\n\
+The second argument, @var{file}, should be an absolute filename or a file\n\
 name in the same directory as the function or script from which the autoload\n\
 command was run.  @var{file} @emph{should not} depend on the Octave load\n\
 path.\n\
@@ -4395,7 +4395,7 @@ not loaded anymore during the current Octave session.\n\
             }
           if (! found)
             warning_with_id ("Octave:autoload-relative-file-name",
-                             "autoload: '%s' is not an absolute file name",
+                             "autoload: '%s' is not an absolute filename",
                              nm.c_str ());
         }
       if (nargin == 2)
@@ -4529,10 +4529,10 @@ Return the name of the currently executing file.\n\
 When called from outside an m-file return the empty string.\n\
 \n\
 Given the argument @qcode{\"fullpath\"}, include the directory part of the\n\
-file name, but not the extension.\n\
+filename, but not the extension.\n\
 \n\
 Given the argument @qcode{\"fullpathext\"}, include the directory part of\n\
-the file name and the extension.\n\
+the filename and the extension.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4599,7 +4599,7 @@ requiring the file to be named @file{@var{file}.m}.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string file_name = args(0).xstring_value ("source: expecting file name as argument");
+      std::string file_name = args(0).xstring_value ("source: expecting filename as argument");
 
       std::string context;
 
@@ -5192,7 +5192,7 @@ Undocumented internal function.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string file = args(0).xstring_value ("__parse_file__: expecting file name as argument");
+      std::string file = args(0).xstring_value ("__parse_file__: expecting filename as argument");
 
       std::string full_file = octave_env::make_absolute (file);
 

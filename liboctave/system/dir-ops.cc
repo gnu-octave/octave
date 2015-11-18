@@ -61,7 +61,7 @@ dir_entry::open (const std::string& n)
         errmsg = gnulib::strerror (errno);
     }
   else
-    errmsg = "dir_entry::open: empty file name";
+    errmsg = "dir_entry::open: empty filename";
 
   return ! fail;
 }

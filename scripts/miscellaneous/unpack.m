@@ -296,7 +296,7 @@ function files = __parse_bzip2__ (output)
   ## Parse the output from bzip2 and bunzip2 returning the files
   ## commpressed (or decompressed).
 
-  ## Strip leading blanks and .bz2 extension from file name
+  ## Strip leading blanks and .bz2 extension from filename
   files = regexprep (output, '^\s+(.*)\.bz2: .*', '$1');
 endfunction
 

@@ -159,7 +159,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
            this,          SLOT (close ()));
 
   // name options
-  QGroupBox * name_group = new QGroupBox (tr ("File name/location"));
+  QGroupBox * name_group = new QGroupBox (tr ("Filename/location"));
   QGridLayout * name_layout = new QGridLayout;
   name_group->setLayout (name_layout);
 

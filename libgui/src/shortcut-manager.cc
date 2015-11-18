@@ -673,7 +673,7 @@ shortcut_manager::do_import_export (int action)
         return false;
     }
 
-  // get the file name to read or write the shortcuts,
+  // get the filename to read or write the shortcuts,
   // the default extension is .osc (octave shortcuts)
   if (action != OSC_DEFAULT)
     {

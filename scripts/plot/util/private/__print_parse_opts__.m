@@ -329,14 +329,14 @@ function arg_st = __print_parse_opts__ (varargin)
       ## Pipe the ghostscript output
       arg_st.name = "-";
     else
-      error ("print: a file name may not specified when spooling to a printer")
+      error ("print: a filename may not specified when spooling to a printer")
     endif
     if (! any (strcmp (arg_st.devopt, gs_device_list)))
       ## Only supported ghostscript devices
       error ("print: format must be a valid Ghostscript format for spooling to a printer")
     endif
   elseif (isempty (arg_st.name))
-    error ("print: an output file name must be specified")
+    error ("print: an output filename must be specified")
   endif
 
   if (isempty (arg_st.canvas_size))

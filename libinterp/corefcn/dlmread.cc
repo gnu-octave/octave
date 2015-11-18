@@ -180,7 +180,7 @@ range such as @qcode{\"A2..Q15\"} or @qcode{\"T1:AA5\"} can be used.  The\n\
 lowest alphabetical index @qcode{'A'} refers to the first column.  The\n\
 lowest row index is 1.\n\
 \n\
-@var{file} should be a file name or file id given by @code{fopen}.  In the\n\
+@var{file} should be a filename or file id given by @code{fopen}.  In the\n\
 latter case, the file is read until end of file is reached.\n\
 \n\
 The @qcode{\"emptyvalue\"} option may be used to specify the value used to\n\
@@ -213,7 +213,7 @@ fill empty fields.  The default is zero.\n\
 
   if (args(0).is_string ())
     {
-      // File name.
+      // Filename.
       std::string fname (args(0).string_value ());
 
       std::string tname = file_ops::tilde_expand (fname);

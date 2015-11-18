@@ -92,7 +92,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
   endif
 
   ## Check file format
-  ## Get the extension from the file name.
+  ## Get the extension from the filename.
   [~, ~, ext, ~] = fileparts (fname);
   ext = lower (ext);
 

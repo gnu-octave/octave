@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{fname} =} tmpnam ()
 ## @deftypefnx {Function File} {@var{fname} =} tmpnam (@var{dir})
 ## @deftypefnx {Function File} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})
-## Return a unique temporary file name as a string.
+## Return a unique temporary filename as a string.
 ##
 ## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
 ##

@@ -328,7 +328,7 @@ get_input_from_stdin (void)
   return command_editor::get_input_stream ();
 }
 
-// FIXME: make this generate file names when appropriate.
+// FIXME: make this generate filenames when appropriate.
 
 static string_vector
 generate_possible_completions (const std::string& text, std::string& prefix,

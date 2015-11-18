@@ -24,9 +24,9 @@
 ## Move the source files or directories @var{f1} to the destination @var{f2}.
 ##
 ## The name @var{f1} may contain globbing patterns.  If @var{f1} expands to
-## multiple file names, @var{f2} must be a directory.  If no destination
+## multiple filenames, @var{f2} must be a directory.  If no destination
 ## @var{f2} is specified then the destination is the present working directory.
-## If @var{f2} is a file name then @var{f1} is renamed to @var{f2}.
+## If @var{f2} is a filename then @var{f1} is renamed to @var{f2}.
 ##
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
@@ -86,7 +86,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     error ("movefile: when moving multiple files, F2 must be a directory");
   endif
 
-  ## Protect the file name(s).
+  ## Protect the filename(s).
   f1 = glob (f1);
   if (isempty (f1))
     error ("movefile: no files to move");

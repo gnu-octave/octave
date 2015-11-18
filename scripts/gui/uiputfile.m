@@ -65,7 +65,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
   ## Preset default values
   outargs = {cell(0, 2),     # File Filter
              "Save File",    # Dialog Title
-             "",             # Default file name
+             "",             # Default filename
              [240, 120],     # Dialog Position (pixel x/y)
              "create",
              pwd};           # Default directory

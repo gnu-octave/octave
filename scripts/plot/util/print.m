@@ -26,9 +26,9 @@
 ## Both output formatted for printing (PDF and PostScript), and many bitmapped
 ## and vector image formats are supported.
 ##
-## @var{filename} defines the name of the output file.  If the file name has
+## @var{filename} defines the name of the output file.  If the filename has
 ## no suffix, one is inferred from the specified device and appended to the
-## file name.  If no filename is specified, the output is sent to the
+## filename.  If no filename is specified, the output is sent to the
 ## printer.
 ##
 ## @var{h} specifies the handle of the figure to print.  If no handle is

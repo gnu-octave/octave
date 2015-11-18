@@ -31,7 +31,7 @@
 ## the exit status in the @var{status} variable.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
-## except for the file name of the code you wish to compile:
+## except for the filename of the code you wish to compile:
 ##
 ## @table @samp
 ## @item -I DIR
@@ -69,7 +69,7 @@
 ##
 ## @item  -o FILE
 ## @itemx --output FILE
-## Output file name.  Default extension is .oct (or .mex if @samp{--mex} is
+## Output filename.  Default extension is .oct (or .mex if @samp{--mex} is
 ## specified) unless linking a stand-alone executable.
 ##
 ## @item  -p VAR

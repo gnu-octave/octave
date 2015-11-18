@@ -719,7 +719,7 @@ file_editor_tab::run_file (const QWidget *ID)
     {
       save_file (_file_name);  // save file dialog
       if (! valid_file_name ())
-        return;   // still invalid file name: "save as" was cancelled
+        return;   // still invalid filename: "save as" was cancelled
     }
 
   QFileInfo info (_file_name);
@@ -1521,10 +1521,10 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   file_info = QFileInfo (file);
   file_to_save = file_info.canonicalFilePath ();
 
-  // save file name after closing file as set_file_name starts watching again
+  // save filename after closing file as set_file_name starts watching again
   set_file_name (file_to_save);   // make absolute
 
-  // set the window title to actual file name (not modified)
+  // set the window title to actual filename (not modified)
   update_window_title (false);
 
   // files is save -> not modified
@@ -1678,7 +1678,7 @@ file_editor_tab::check_valid_identifier (QString file_name)
       int ans = QMessageBox::question (0, tr ("Octave Editor"),
          tr ("\"%1\"\n"
              "is not a valid identifier.\n\n"
-             "If you keep this file name, you will not be able to\n"
+             "If you keep this filename, you will not be able to\n"
              "call your script using its name as an Octave command.\n\n"
              "Do you want to choose another name?").arg (base_name),
           QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -1722,7 +1722,7 @@ file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
     }
 
   // saveFileName == _file_name can not happen, because we only can get here
-  // when we close a tab and _file_name is not a valid file name yet
+  // when we close a tab and _file_name is not a valid filename yet
 
   // Have editor check for conflict, delete tab after save.
   if (check_valid_identifier (saveFileName))

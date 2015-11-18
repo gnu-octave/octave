@@ -446,10 +446,10 @@ private:
   // private files (those found in the special "private" subdirectory)
   // in each directory.
   //
-  // Second, a map from file names (the union of all "public" files for all
+  // Second, a map from filenames (the union of all "public" files for all
   // directories, but without filename extensions) to a list of
   // corresponding information (directory name and file types).  This
-  // way, we can quickly find shadowed file names and look up all
+  // way, we can quickly find shadowed filenames and look up all
   // overloaded functions (in the "@" directories used to implement
   // classes).
 

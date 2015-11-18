@@ -82,7 +82,7 @@ public:
 
   static std::string concat (const std::string&, const std::string&);
 
-  // Return the tail member of a file name.
+  // Return the tail member of a filename.
   static std::string tail (const std::string& path)
   {
     size_t ipos = path.find_last_of (dir_sep_chars ());

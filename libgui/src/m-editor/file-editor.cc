@@ -73,11 +73,11 @@ file_editor::check_closing (void)
   // Save open files for restoring in next session; this only is possible
   QSettings *settings = resource_manager::get_settings ();
 
-  // Have all file editor tabs signal what their file names are.
+  // Have all file editor tabs signal what their filenames are.
   editor_tab_map.clear ();
   emit fetab_file_name_query (0);
 
-  // save file names (even if last session will not be restored next time)
+  // save filenames (even if last session will not be restored next time)
   QStringList fetFileNames;
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
@@ -344,7 +344,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
     }
   else
     {
-      // Have all file editor tabs signal what their file names are.
+      // Have all file editor tabs signal what their filenames are.
       editor_tab_map.clear ();
       emit fetab_file_name_query (0);
 
@@ -498,7 +498,7 @@ void
 file_editor::check_conflict_save (const QString& saveFileName,
                                   bool remove_on_success)
 {
-  // Have all file editor tabs signal what their file names are.
+  // Have all file editor tabs signal what their filenames are.
   editor_tab_map.clear ();
   emit fetab_file_name_query (0);
 
@@ -572,7 +572,7 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file,
 {
   if (! file.isEmpty ())
     {
-      // Have all file editor tabs signal what their file names are.
+      // Have all file editor tabs signal what their filenames are.
       editor_tab_map.clear ();
       emit fetab_file_name_query (0);
 
@@ -888,7 +888,7 @@ void
 file_editor::handle_mru_add_file (const QString& file_name)
 {
   if (_mru_files.count () && _mru_files.at (0) == file_name)
-    return;  // the first entry is already the actual file name
+    return;  // the first entry is already the actual filename
 
   _mru_files.removeAll (file_name);
   _mru_files.prepend (file_name);

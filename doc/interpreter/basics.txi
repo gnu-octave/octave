@@ -984,7 +984,7 @@ The line beginning with @samp{#!} lists the full path and filename of an
 interpreter to be run, and an optional initial command line argument to
 pass to that interpreter.  The operating system then runs the
 interpreter with the given argument and the full argument list of the
-executed program.  The first argument in the list is the full file name
+executed program.  The first argument in the list is the full filename
 of the Octave executable.  The rest of the argument list will either be
 options to Octave, or data files, or both.  The @samp{-qf} options are
 usually specified in stand-alone Octave programs to prevent them from

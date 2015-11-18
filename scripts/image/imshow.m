@@ -35,7 +35,7 @@
 ## If @var{map} is a valid color map, the image will be shown as an indexed
 ## image using the supplied color map.
 ##
-## If a file name is given instead of an image, the file will be read and shown.
+## If a filename is given instead of an image, the file will be read and shown.
 ##
 ## If given, the parameter @var{string_param1} has value @var{value1}.
 ## @var{string_param1} can be any of the following:

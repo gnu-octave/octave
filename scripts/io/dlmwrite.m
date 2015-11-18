@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} dlmwrite (@var{fid}, @dots{})
 ## Write the matrix @var{M} to the named file using delimiters.
 ##
-## @var{file} should be a file name or writable file ID given by @code{fopen}.
+## @var{file} should be a filename or writable file ID given by @code{fopen}.
 ##
 ## The parameter @var{delim} specifies the delimiter to use to separate values
 ## on a row.

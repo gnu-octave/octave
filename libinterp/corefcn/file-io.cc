@@ -538,7 +538,7 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
   fid = -1;
 
-  std::string name = tc_name.xstring_value ("%s: file name must be a string", fcn);
+  std::string name = tc_name.xstring_value ("%s: filename must be a string", fcn);
   std::string mode = tc_mode.xstring_value ("%s: file mode must be a string", fcn);
   std::string arch = tc_arch.xstring_value ("%s: architecture type must be a string", fcn);
 
@@ -1846,7 +1846,7 @@ DEFUN (tempname, args, ,
 @deftypefn  {Built-in Function} {@var{fname} =} tempname ()\n\
 @deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir})\n\
 @deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir}, @var{prefix})\n\
-Return a unique temporary file name as a string.\n\
+Return a unique temporary filename as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
 \n\

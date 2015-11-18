@@ -75,7 +75,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   ## Preset default values
   outargs = {cell(0, 2),         # File Filter
              "Open File",        # Dialog Title
-             "",                 # Default file name
+             "",                 # Default filename
              [240, 120],         # Dialog Position (pixel x/y)
              "off",              # MultiSelect on/off
              pwd};               # Default directory

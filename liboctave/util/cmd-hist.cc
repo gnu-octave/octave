@@ -317,7 +317,7 @@ gnu_history::do_read (const std::string& f, bool must_exist)
         }
     }
   else
-    error ("gnu_history::read: missing file name");
+    error ("gnu_history::read: missing filename");
 }
 
 void
@@ -347,7 +347,7 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
         }
     }
   else
-    error ("gnu_history::read_range: missing file name");
+    error ("gnu_history::read_range: missing filename");
 }
 
 void
@@ -372,7 +372,7 @@ gnu_history::do_write (const std::string& f_arg) const
             }
         }
       else
-        error ("gnu_history::write: missing file name");
+        error ("gnu_history::write: missing filename");
     }
 }
 
@@ -419,7 +419,7 @@ gnu_history::do_append (const std::string& f_arg)
                   lines_this_session = 0;
                 }
               else
-                error ("gnu_history::append: missing file name");
+                error ("gnu_history::append: missing filename");
             }
         }
     }
@@ -438,7 +438,7 @@ gnu_history::do_truncate_file (const std::string& f_arg, int n) const
       if (! f.empty ())
         ::octave_history_truncate_file (f.c_str (), n);
       else
-        error ("gnu_history::truncate_file: missing file name");
+        error ("gnu_history::truncate_file: missing filename");
     }
 }
 
@@ -492,7 +492,7 @@ gnu_history::do_clean_up_and_save (const std::string& f_arg, int n)
           do_write (f.c_str ());
         }
       else
-        error ("gnu_history::clean_up_and_save: missing file name");
+        error ("gnu_history::clean_up_and_save: missing filename");
     }
 }
 
@@ -920,14 +920,14 @@ void
 command_history::do_read (const std::string& f, bool)
 {
   if (f.empty ())
-    error ("command_history::read: missing file name");
+    error ("command_history::read: missing filename");
 }
 
 void
 command_history::do_read_range (const std::string& f, int, int, bool)
 {
   if (f.empty ())
-    error ("command_history::read_range: missing file name");
+    error ("command_history::read_range: missing filename");
 }
 
 void
@@ -941,7 +941,7 @@ command_history::do_write (const std::string& f_arg) const
         f = xfile;
 
       if (f.empty ())
-        error ("command_history::write: missing file name");
+        error ("command_history::write: missing filename");
     }
 }
 
@@ -962,7 +962,7 @@ command_history::do_append (const std::string& f_arg)
                 f = xfile;
 
               if (f.empty ())
-                error ("command_history::append: missing file name");
+                error ("command_history::append: missing filename");
             }
         }
     }
@@ -979,7 +979,7 @@ command_history::do_truncate_file (const std::string& f_arg, int) const
         f = xfile;
 
       if (f.empty ())
-        error ("command_history::truncate_file: missing file name");
+        error ("command_history::truncate_file: missing filename");
     }
 }
 
@@ -1011,7 +1011,7 @@ command_history::do_clean_up_and_save (const std::string& f_arg, int)
         f = xfile;
 
       if (f.empty ())
-        error ("command_history::clean_up_and_save: missing file name");
+        error ("command_history::clean_up_and_save: missing filename");
     }
 }
 

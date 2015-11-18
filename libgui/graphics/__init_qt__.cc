@@ -190,7 +190,7 @@ DEFUN (__uigetfile_qt__, args, , "")
   // Expected arguments:
   //   args(0) : File filter as a cell array {ext1, name1; ext2, name2; ...}
   //   args(1) : Dialog title
-  //   args(2) : Default file name
+  //   args(2) : Default filename
   //   args(3) : Dialog position [ignored]
   //   args(4) : Multiselection "on"/"off"
   //   args(5) : Default directory
@@ -272,7 +272,7 @@ DEFUN (__uiputfile_qt__, args, , "")
   // Expected arguments:
   //   args(0) : File filter as a cell array {ext1, name1; ext2, name2; ...}
   //   args(1) : Dialog title
-  //   args(2) : Default file name
+  //   args(2) : Default filename
   //   args(3) : Dialog position [ignored]
   //   args(4) : Tag [ignored]
   //   args(5) : Default directory

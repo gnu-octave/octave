@@ -50,7 +50,7 @@ preferences.
 
 Simple dialog menus are available for choosing directories or files.  They
 return a string variable which can then be used with any command requiring
-a file name.
+a filename.
 
 @DOCSTRING(uigetdir)
 

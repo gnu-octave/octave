@@ -511,7 +511,7 @@ DEFUN (glob, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
 Given an array of pattern strings (as a char array or a cell array) in\n\
-@var{pattern}, return a cell array of file names that match any of\n\
+@var{pattern}, return a cell array of filenames that match any of\n\
 them, or an empty cell array if no patterns match.\n\
 \n\
 The pattern strings are interpreted as filename globbing patterns (as they\n\
@@ -531,7 +531,7 @@ matches any of the enclosed characters.\n\
 @end table\n\
 \n\
 Tilde expansion is performed on each of the patterns before looking for\n\
-matching file names.  For example:\n\
+matching filenames.  For example:\n\
 \n\
 @example\n\
 ls\n\

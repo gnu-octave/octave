@@ -256,7 +256,7 @@ static std::string help_msg =
 "\n"
 "  -c, --compile           Compile, but do not link.\n"
 "\n"
-"  -o FILE, --output FILE  Output file name.  Default extension is .oct\n"
+"  -o FILE, --output FILE  Output filename.  Default extension is .oct\n"
 "                          (or .mex if --mex is specified) unless linking\n"
 "                          a stand-alone executable.\n"
 "\n"
@@ -503,7 +503,7 @@ main (int argc, char **argv)
               outputfile = arg;
             }
           else
-            std::cerr << "mkoctfile: output file name missing" << std::endl;
+            std::cerr << "mkoctfile: output filename missing" << std::endl;
         }
       else if (arg == "-p" || arg == "-print" || arg == "--print")
         {

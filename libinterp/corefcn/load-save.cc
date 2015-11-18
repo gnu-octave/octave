@@ -1375,7 +1375,7 @@ dump_octave_core (void)
 {
   if (Vcrash_dumps_octave_core)
     {
-      // FIXME: should choose better file name?
+      // FIXME: should choose better filename?
 
       const char *fname = Voctave_core_file_name.c_str ();
 

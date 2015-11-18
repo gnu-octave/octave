@@ -24,7 +24,7 @@
 ## @code{octave_tmp_file_name} is deprecated and will be removed in Octave
 ## version 4.4.  Use @code{tempname} for equivalent functionality.
 ##
-## Return a unique temporary file name as a string.
+## Return a unique temporary filename as a string.
 ##
 ## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
 ## If @var{dir} is also omitted, the default directory for temporary files

@@ -22,7 +22,7 @@
 ## Copy the source files or directories @var{f1} to the destination @var{f2}.
 ##
 ## The name @var{f1} may contain globbing patterns.  If @var{f1} expands to
-## multiple file names, @var{f2} must be a directory.
+## multiple filenames, @var{f2} must be a directory.
 ##
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
@@ -79,7 +79,7 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     error ("copyfile: when copying multiple files, F2 must be a directory");
   endif
 
-  ## Protect the file name(s).
+  ## Protect the filename(s).
   f1 = glob (f1);
   if (isempty (f1))
     error ("copyfile: no files to move");

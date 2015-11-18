@@ -269,7 +269,7 @@ functionality of the C programming language's standard I/O library.  The
 argument lists for some of the input functions are slightly different,
 however, because Octave has no way of passing arguments by reference.
 
-In the following, @var{file} refers to a file name and @code{fid} refers
+In the following, @var{file} refers to a filename and @code{fid} refers
 to an integer file number, as returned by @code{fopen}.
 
 There are three files that are always available.  Although these files

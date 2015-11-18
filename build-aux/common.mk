@@ -143,6 +143,7 @@ BUILD_CXXFLAGS = @BUILD_CXXFLAGS@
 LD_CXX = @LD_CXX@
 LD_STATIC_FLAG = @LD_STATIC_FLAG@
 LIBFLAGS = -L$(top_builddir)
+WARN_LDFLAGS = @WARN_LDFLAGS@
 #ALL_LDFLAGS = $(LIBFLAGS) $(LD_STATIC_FLAG) $(CPICFLAG) $(LDFLAGS)
 
 BUILD_LDFLAGS = @BUILD_LDFLAGS@
@@ -317,6 +318,10 @@ Z_LIBS = @Z_LIBS@
 
 USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
 OCTAVE_IDX_TYPE = @OCTAVE_IDX_TYPE@
+
+if AMCOND_ADDRESS_SANITIZER_ENABLED
+  ADDRESS_SANITIZER_OPTIONS="symbolize=1"
+endif
 
 # The arguments passed to configure.
 config_opts = @config_opts@
@@ -884,6 +889,7 @@ define do_subst_script_vals
     -e "s|%AWK%|${AWK}|g" \
     -e "s|%FIND%|${FIND}|g" \
     -e "s|%SED%|${SED}|g" \
+    -e "s|%ADDRESS_SANITIZER_OPTIONS%|${ADDRESS_SANITIZER_OPTIONS}|g" \
     -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
     -e "s|%builddir%|$(shell pwd)|" > $@-t && \
   $(simple_move_if_change_rule)

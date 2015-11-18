@@ -187,7 +187,8 @@ libinterp_liboctinterp_la_LDFLAGS = \
   -version-info $(libinterp_liboctinterp_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
-  $(LIBOCTINTERP_LINK_OPTS)
+  $(LIBOCTINTERP_LINK_OPTS) \
+  $(WARN_LDFLAGS)
 
 ## Section for defining and creating DEF_FILES
 

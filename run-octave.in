@@ -23,6 +23,7 @@
 : ${AWK=%AWK%}
 : ${FIND=%FIND%}
 : ${SED=%SED%}
+: ${ADDRESS_SANITIZER_OPTIONS="%ADRESS_SANITIZER_OPTIONS%"}
 
 # FIXME -- is there a better way to handle the possibility of spaces
 # in these names?
@@ -96,6 +97,10 @@ OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
 OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/site-rcfile"; export OCTAVE_SITE_INITFILE
 OCTAVE_VERSION_INITFILE="$top_srcdir/scripts/startup/version-rcfile"; export OCTAVE_VERSION_INITFILE
+
+if [ "$ADDRESS_SANITIZER_ENABLED" = yes ]; then
+  ASAN_OPTIONS=symbolize=1; export ASAN_OPTIONS
+fi
 
 exec $builddir/libtool --mode=execute $driver \
   "$octave_executable" --no-init-path --path="$LOADPATH" \

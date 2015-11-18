@@ -84,7 +84,8 @@ liboctave_liboctave_la_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir) \
-  $(LIBOCTAVE_LINK_OPTS)
+  $(LIBOCTAVE_LINK_OPTS) \
+  $(WARN_LDFLAGS)
 
 ## Rules to build test files
 

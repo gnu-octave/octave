@@ -2464,7 +2464,6 @@ AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 ### done feature testing.
 
 GCC_EXTRA_FLAGS="-Wall -W -Wshadow -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
-
 GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
 
 try_extra_warning_flags=yes
@@ -2491,7 +2490,6 @@ if test $try_extra_warning_flags = yes; then
 fi
 
 GCC_STRICT_FLAGS="-Wconversion"
-
 GXX_STRICT_FLAGS="-Wconversion -Weffc++"
 
 try_strict_warning_flags=no
@@ -2517,8 +2515,45 @@ if test $try_strict_warning_flags = yes; then
   done
 fi
 
+GCC_ADDRESS_SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
+GXX_ADDRESS_SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
+LD_ADDRESS_SANITIZER_FLAGS="-fsanitize=address"
+
+try_address_sanitizer_flags=no
+
+AC_ARG_ENABLE([address-sanitizer-flags],
+  [AS_HELP_STRING([--enable-address-sanitizer-flags],
+    [add extra -fsanitize=address and -fno-omit-frame-pointer options to CFLAGS, CXXFLAGS, and LDFLAGS])],
+  [if test "$enableval" = yes; then
+     try_address_sanitizer_flags=yes
+   fi],
+  [])
+
+AM_CONDITIONAL([AMCOND_ADDRESS_SANITIZER_ENABLED],
+  [test $try_address_sanitizer_flags = yes])
+
+if test $try_address_sanitizer_flags = yes; then
+  for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
+    OCTAVE_CC_FLAG([$flag], [
+      WARN_CFLAGS="$WARN_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+  done
+  for flag in $GXX_ADDRESS_SANITIZER_FLAGS; do
+    OCTAVE_CXX_FLAG([$flag], [
+      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+  done
+  dnl FIXME: do we really need an LD-specific test, or is this good enough?
+  for flag in $LD_ADDRESS_SANITIZER_FLAGS; do
+    OCTAVE_CC_FLAG([$flag], [
+      WARN_LDFLAGS="$WARN_LDFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
+  done
+fi
+
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
+AC_SUBST(WARN_LDFLAGS)
 
 ### Check for Java.
 
@@ -3022,6 +3057,7 @@ Octave is now configured for $canonical_host_type
   Fortran libraries:           $FLIBS
   Lex libraries:               $LEXLIB
   LIBS:                        $LIBS
+  Extra LDFLAGS:               $WARN_LDFLAGS
 
   AMD CPPFLAGS:                $AMD_CPPFLAGS
   AMD LDFLAGS:                 $AMD_LDFLAGS

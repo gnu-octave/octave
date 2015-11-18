@@ -63,7 +63,8 @@ libgui_liboctgui_la_LDFLAGS = \
   -version-info $(libgui_liboctgui_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
-  $(LIBOCTGUI_LINK_OPTS)
+  $(LIBOCTGUI_LINK_OPTS) \
+  $(WARN_LDFLAGS)
 
 octetc_DATA += libgui/default-qt-settings
 

@@ -65,7 +65,8 @@ src_octave_LDADD = \
 
 src_octave_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
-  $(OCTAVE_LINK_OPTS)
+  $(OCTAVE_LINK_OPTS) \
+  $(WARN_LDFLAGS)
 
 if AMCOND_BUILD_GUI
   OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_GUI
@@ -87,7 +88,8 @@ src_octave_cli_LDADD = \
 
 src_octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
-  $(OCTAVE_LINK_OPTS)
+  $(OCTAVE_LINK_OPTS) \
+  $(WARN_LDFLAGS)
 
 src_octave_cli_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
@@ -114,7 +116,8 @@ src_octave_gui_LDADD = \
 
 src_octave_gui_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
-  $(OCTAVE_GUI_LINK_OPTS)
+  $(OCTAVE_GUI_LINK_OPTS) \
+  $(WARN_LDFLAGS)
 
 src_octave_gui_CXXFLAGS = \
   $(AM_CXXFLAGS) \

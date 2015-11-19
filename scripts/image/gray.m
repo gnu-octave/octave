@@ -56,8 +56,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'gray' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (gray (64));
-
+%! ## Show the 'gray' colormap profile and as an image
+%! cmap = gray (16);
+%! subplot (2, 1, 1);
+%! rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%! rgbplot (cmap);

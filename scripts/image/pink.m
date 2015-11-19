@@ -73,8 +73,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'pink' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (pink (64));
-
+%! ## Show the 'pink' colormap profile and as an image
+%! cmap = pink (256);
+%! subplot (2, 1, 1);
+%! rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%! rgbplot (cmap);

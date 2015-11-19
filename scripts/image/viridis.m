@@ -309,8 +309,11 @@ function c = viridis (n = rows (colormap ()))
 
 endfunction
 
+## A better demo of this colormap would be to plot the CIECAM02 values.
 %!demo
-%! ## Show the 'viridis' colormap as an image
-%! image (1:256, linspace (0, 1, 256), repmat ((1:256)', 1, 256));
-%! axis ([1, 256, 0, 1], "ticy", "xy");
-%! colormap (viridis (256));
+%! ## Show the 'viridis' colormap profile and as an image
+%! cmap = viridis (256);
+%! subplot (2, 1, 1);
+%! rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%! rgbplot (cmap);

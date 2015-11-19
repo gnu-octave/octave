@@ -58,8 +58,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'copper' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (copper (64));
-
+%! ## Show the 'copper' colormap profile and as an image
+%! cmap = copper (256);
+%! subplot (2, 1, 1);
+%! rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%! rgbplot (cmap);

@@ -53,8 +53,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'prism' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (prism (64));
-
+%! ## Show the 'prism' colormap profile and as an image
+%! cmap = prism (18); # 6 colours, therefore cycle 3 times
+%! subplot (2, 1, 1);
+%! rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%! rgbplot (cmap);

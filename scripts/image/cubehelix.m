@@ -79,9 +79,12 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
 endfunction
 
 
+## A better demo of this colormap would be a 3d plot in ntsc instead of
+## rgb values.  That would really show what this colormap is about.
 %!demo
-%! subplot (1, 2, 1)
-%! rgbplot (cubehelix (256), "composite")
-%! subplot (1, 2, 2)
-%! rgbplot (cubehelix (256))
-
+%! ## Show the 'cubehelix' colormap profile and as an image
+%! cmap = cubehelix (256);
+%! subplot (2, 1, 1);
+%! rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%! rgbplot (cmap);

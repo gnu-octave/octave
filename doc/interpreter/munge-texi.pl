@@ -97,12 +97,12 @@ sub extract_docstring
   while (defined ($_ = <DOCFH>) and ! /$doc_delim/o)
   {
     # expand any @seealso references
-    if (m'^@seealso{')
+    if (m'^@seealso\{')
     {
       # Join multiple lines until full macro body found
       while (! /}/m) { $_ .= <DOCFH>; }
 
-      ($arg_list, $rest_of_line) = m'^@seealso{(.*)}(.*)?'s;
+      ($arg_list, $rest_of_line) = m'^@seealso\{(.*)\}(.*)?'s;
 
       $func_list = $arg_list;
       $func_list =~ s/\s+//gs;

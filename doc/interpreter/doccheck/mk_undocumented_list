@@ -4,7 +4,8 @@
 # Get a list from Octave of all visible functions
 @octave_output = <<`_END_OCT_SCRIPT_`;
 ../../run-octave --norc --silent --no-history --eval '\
- funclist  = vertcat (__list_functions__ , __builtins__) \
+ funclist = vertcat (__list_functions__ , __builtins__); \
+ funclist = funclist(! strncmp (funclist, \"meta.\", 5)) \
  disp("#!-separator-!#") \
  where = cellfun (\@which, funclist, \"UniformOutput\", 0)'
 _END_OCT_SCRIPT_
@@ -89,6 +90,7 @@ F_GETFD
 F_GETFL
 fact
 finite
+flipdim
 fmod
 F_SETFD
 F_SETFL
@@ -102,9 +104,11 @@ isbool
 isfinite
 j
 J
+java2mat
 lower
 lstat
 nan
+nargchk
 octave_tmp_file_name
 O_APPEND
 O_ASYNC
@@ -117,10 +121,12 @@ O_SYNC
 O_TRUNC
 O_WRONLY
 paren
+putenv
 SEEK_CUR
 SEEK_END
 semicolon
 setenv
+tmpnam
 toc
 triu
 unimplemented

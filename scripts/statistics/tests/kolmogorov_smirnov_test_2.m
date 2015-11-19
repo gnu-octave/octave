@@ -76,7 +76,7 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   ds = diff (s);
   if (any (ds == 0))
     ## There are some ties, so keep only those changes.
-    warning ("cannot compute correct p-values with ties");
+    warning ("kolmogorov_smirnov_test_2: cannot compute correct p-values with ties");
     elems = [find(ds); n_x+n_y];
     z = z(elems);
   endif

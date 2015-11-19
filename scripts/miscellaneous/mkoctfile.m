@@ -168,7 +168,7 @@ function [output, status] = mkoctfile (varargin)
   endif
 
   if (sys != 0)
-    warning ("mkoctfile exited with failure status");
+    warning ("mkoctfile: building exited with failure status");
   endif
 
 endfunction

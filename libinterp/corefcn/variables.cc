@@ -1375,7 +1375,7 @@ public:
 
   // Parse the string whos_line_format, and return a parameter list,
   // containing all information needed to print the given
-  // attributtes of the symbols.
+  // attributes of the symbols.
   std::list<whos_parameter> parse_whos_line_format (void)
   {
     int idx;

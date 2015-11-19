@@ -285,11 +285,12 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargi
     flag = 1;
     if (nargout < 2)
       warning ("pcr: maximum number of iterations (%d) reached\n", iter);
-      warning ("the initial residual norm was reduced %g times.\n", 1.0/relres);
+      warning ("pcr: the initial residual norm was reduced %g times\n",
+               1.0/relres);
     endif
   elseif (nargout < 2 && ! breakdown)
     fprintf (stderr, "pcr: converged in %d iterations. \n", iter);
-    fprintf (stderr, "the initial residual norm was reduced %g times.\n",
+    fprintf (stderr, "pcr: the initial residual norm was reduced %g times\n",
              1.0 / relres);
   endif
 

@@ -279,7 +279,7 @@ function limits = __axis__ (ca, ax, varargin)
       endif
 
     else
-      warning ("unknown axis option '%s'", ax);
+      warning ("axis: unknown option '%s'", ax);
     endif
 
   elseif (isvector (ax))

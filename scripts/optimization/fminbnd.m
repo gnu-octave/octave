@@ -231,7 +231,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     case "off"
       "skip";
     otherwise
-      warning ("unknown option for Display: '%s'", displ);
+      warning ("fminbnd: unknown option for Display: '%s'", displ);
   endswitch
 
   output.iterations = niter;

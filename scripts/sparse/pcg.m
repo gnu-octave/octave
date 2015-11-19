@@ -370,12 +370,12 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
     flag = 1;
     if (nargout < 2)
       warning ("pcg: maximum number of iterations (%d) reached\n", iter);
-      warning ("the initial residual norm was reduced %g times.\n", ...
+      warning ("pcg: the initial residual norm was reduced %g times.\n",
                1.0 / relres);
     endif
   elseif (nargout < 2)
     fprintf (stderr, "pcg: converged in %d iterations. ", iter);
-    fprintf (stderr, "the initial residual norm was reduced %g times.\n",...
+    fprintf (stderr, "pcg: the initial residual norm was reduced %g times.\n",
              1.0/relres);
   endif
 

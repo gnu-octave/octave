@@ -1565,7 +1565,7 @@ early_read_error:
   return std::string ();
 
 skip_ahead:
-  warning ("skipping over '%s'", retval.c_str ());
+  warning ("load: skipping over '%s'", retval.c_str ());
   is.seekg (pos + static_cast<std::streamoff> (element_length));
   return read_mat5_binary_element (is, filename, swap, global, tc);
 }

@@ -29,7 +29,7 @@ function b = loadobj (a)
     b = rmfield (b, "dir");
   elseif (isfield (b, "remotePwd"))
     ## FIXME: Can we read matlab java stringBuffer objects?
-    warning ("can not change remote directory in loaded FTP object");
+    warning ("@ftp/loadobj: can not change remote directory in loaded FTP object");
     b = rmfield (b, "remotePwd");
   endif
 endfunction

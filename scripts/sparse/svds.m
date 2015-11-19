@@ -219,9 +219,9 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     s = s(ind);
 
     if (length (s) < k)
-      warning ("returning fewer singular values than requested");
+      warning ("svds: returning fewer singular values than requested");
       if (! ischar (sigma))
-        warning ("try increasing the value of sigma");
+        warning ("svds: try increasing the value of sigma");
       endif
     endif
 

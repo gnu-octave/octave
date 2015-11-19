@@ -445,7 +445,7 @@ function [local_packages, global_packages] = pkg (varargin)
           if (status == 0)
             error ("pkg: cannot create prefix %s: %s", prefix, msg);
           endif
-          warning ("creating the directory %s\n", prefix);
+          warning ("pkg: creating the directory %s\n", prefix);
         endif
         local_packages = prefix = canonicalize_file_name (prefix);
         user_prefix = true;
@@ -456,7 +456,7 @@ function [local_packages, global_packages] = pkg (varargin)
             if (status == 0)
               error ("pkg: cannot create archprefix %s: %s", archprefix, msg);
             endif
-            warning ("creating the directory %s\n", archprefix);
+            warning ("pkg: creating the directory %s\n", archprefix);
             global_packages = archprefix = canonicalize_file_name (archprefix);
           endif
         endif
@@ -549,7 +549,7 @@ function [local_packages, global_packages] = pkg (varargin)
          for i = 1:numel (files)
            idx = find (strcmp (files{i}, installed_names), 1);
            if (isempty (idx))
-             warning ("Package %s is not installed - not updating this package", files{i});
+             warning ("pkg: package %s is not installed - skipping update", files{i});
            else
              update_lst = { update_lst, installed_pkgs_lst{idx} };
            endif

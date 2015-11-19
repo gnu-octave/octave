@@ -1421,7 +1421,8 @@ dump_octave_core (void)
               file.close ();
             }
           else
-            warning ("unable to open '%s' for writing...", fname);
+            warning ("dump_octave_core: unable to open '%s' for writing...",
+                     fname);
         }
       else
 #endif /* HAVE_HDF5 */
@@ -1440,7 +1441,8 @@ dump_octave_core (void)
                   file.close ();
                 }
               else
-                warning ("unable to open '%s' for writing...", fname);
+                warning ("dump_octave_core: unable to open '%s' for writing...",
+                         fname);
             }
           else
 #endif
@@ -1454,7 +1456,8 @@ dump_octave_core (void)
                   file.close ();
                 }
               else
-                warning ("unable to open '%s' for writing...", fname);
+                warning ("dump_octave_core: unable to open '%s' for writing...",
+                         fname);
             }
         }
     }

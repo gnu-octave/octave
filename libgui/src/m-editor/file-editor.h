@@ -269,7 +269,7 @@ private:
 
   void toggle_preference (const QString& preference, bool def);
 
-  void switch_tab (int direction, bool move = false);
+  void switch_tab (int direction, bool movetab = false);
 
   bool editor_tab_has_focus ();
 

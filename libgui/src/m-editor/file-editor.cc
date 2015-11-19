@@ -2053,7 +2053,7 @@ file_editor::move_tab_right ()
 #endif
 }
 void
-file_editor::switch_tab (int direction, bool move)
+file_editor::switch_tab (int direction, bool movetab)
 {
   int tabs = _tab_widget->count ();
 
@@ -2066,10 +2066,10 @@ file_editor::switch_tab (int direction, bool move)
   if (new_pos < 0 || new_pos >= tabs)
     new_pos = new_pos - direction*tabs;
 
-  if (move)
+  if (movetab)
     {
 #ifdef HAVE_QTABWIDGET_SETMOVABLE
-      _tab_widget->tabBar ()->moveTab (old_pos,new_pos);
+      _tab_widget->tabBar ()->moveTab (old_pos, new_pos);
       _tab_widget->setCurrentIndex (old_pos);
       _tab_widget->setCurrentIndex (new_pos);
       focus ();

@@ -6866,7 +6866,7 @@ Undocumented internal function.\n\
 }
 
 static sortmode
-get_sort_mode_option (const octave_value& arg, const char *argn)
+get_sort_mode_option (const octave_value& arg)
 {
   // FIXME: we initialize to UNSORTED here to avoid a GCC warning
   // about possibly using sortmode uninitialized.
@@ -6926,13 +6926,13 @@ This function does not support sparse matrices.\n\
       octave_value mode_arg;
 
       if (nargin == 3)
-        smode = get_sort_mode_option (args(2), "third");
+        smode = get_sort_mode_option (args(2));
 
       std::string tmp = args(1).xstring_value ("issorted: second argument must be a string");
       if (tmp == "rows")
         by_rows = true;
       else
-        smode = get_sort_mode_option (args(1), "second");
+        smode = get_sort_mode_option (args(1));
     }
 
   octave_value arg = args(0);

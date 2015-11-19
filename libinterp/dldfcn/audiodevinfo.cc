@@ -381,7 +381,7 @@ recording using those parameters.\n\
 
       if (! device_info)
         {
-          error ("invalid audio device ID = %d", id);
+          error ("audiodevinfo: invalid audio device ID = %d", id);
           return retval;
         }
 

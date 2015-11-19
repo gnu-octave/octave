@@ -84,19 +84,19 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
   elseif (nargout == 0 && nargin == 2)
 
     if (! isnumeric (minargs) || ! isscalar (minargs))
-      error ("minargs must be a numeric scalar");
+      error ("nargoutchk: minargs must be a numeric scalar");
     elseif (! isnumeric (maxargs) || ! isscalar (maxargs))
-      error ("maxargs must be a numeric scalar");
+      error ("nargoutchk: maxargs must be a numeric scalar");
     elseif (minargs > maxargs)
-      error ("minargs cannot be larger than maxargs");
+      error ("nargoutchk: minargs cannot be larger than maxargs");
     endif
 
     args = evalin ("caller", "nargout;");
 
     if (args < minargs)
-      error ("Not enough output arguments.");
+      error ("nargoutchk: Not enough output arguments.");
     elseif (args > maxargs)
-      error ("Too many output arguments.");
+      error ("nargoutchk: Too many output arguments.");
     endif
 
   else

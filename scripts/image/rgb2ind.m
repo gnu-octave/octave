@@ -82,7 +82,7 @@ function [x, map] = rgb2ind (R, G, B)
     case "int16"
       map = (double (im) + 32768) / 65535;
     otherwise
-      error ("unsupported image class %s", im_class);
+      error ("rgb2ind: unsupported image class %s", im_class);
   endswitch
 
   ## we convert to the smallest class necessary to encode the image. Matlab

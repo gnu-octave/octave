@@ -6,9 +6,9 @@ function out = subsasgn (f, index, val)
         out = f;
         out.polynomial = val;
       else
-        error ("@FIRfilter/subsref: invalid property \"%s\"", fld);
+        error ("@FIRfilter/subsasgn: invalid property \"%s\"", fld);
       endif
     otherwise
-      error ("FIRfilter/subsagn: Invalid index type")
+      error ("@FIRfilter/subsasgn: Invalid index type")
   endswitch
 endfunction

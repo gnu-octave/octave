@@ -11,7 +11,7 @@ function f = FIRfilter (p)
     p = @polynomial ([1]);
   elseif (nargin == 1)
     if (!isa (p, "polynomial"))
-      error ("FIRfilter: expecting polynomial as input argument");
+      error ("@FIRfilter: expecting polynomial as input argument");
     endif
   else
     print_usage ();

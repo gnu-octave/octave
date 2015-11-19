@@ -39,19 +39,19 @@ function narginchk (minargs, maxargs)
   if (nargin != 2)
     print_usage;
   elseif (! isnumeric (minargs) || ! isscalar (minargs))
-    error ("minargs must be a numeric scalar");
+    error ("narginchk: minargs must be a numeric scalar");
   elseif (! isnumeric (maxargs) || ! isscalar (maxargs))
-    error ("maxargs must be a numeric scalar");
+    error ("narginchk: maxargs must be a numeric scalar");
   elseif (minargs > maxargs)
-    error ("minargs cannot be larger than maxargs");
+    error ("narginchk: minargs cannot be larger than maxargs");
   endif
 
   args = evalin ("caller", "nargin;");
 
   if (args < minargs)
-    error ("not enough input arguments");
+    error ("narginchk: not enough input arguments");
   elseif (args > maxargs)
-    error ("too many input arguments");
+    error ("narginchk: too many input arguments");
   endif
 
 endfunction

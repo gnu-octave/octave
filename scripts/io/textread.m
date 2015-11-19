@@ -144,7 +144,7 @@ function varargout = textread (filename, format = "%f", varargin)
     ## Beware of missing or wrong headerline value
     if (headerlines  == numel (varargin)
        || ! isnumeric (varargin{headerlines + 1}))
-      error ("missing or illegal value for 'headerlines'" );
+      error ("textread: missing or invalid value for 'headerlines'" );
     endif
     ## Avoid conveying floats to fskipl
     varargin{headerlines + 1} = round (varargin{headerlines + 1});
@@ -172,10 +172,10 @@ function varargout = textread (filename, format = "%f", varargin)
     if (ischar (varargin{endofline + 1}))
       eol_char = varargin{endofline + 1};
       if (! any (strcmp (eol_char, {"", "\n", "\r", "\r\n"})))
-        error ("textscan: illegal EndOfLine character value specified");
+        error ("textread: invalid EndOfLine character value specified");
       endif
     else
-      error ("character value required for EndOfLine");
+      error ("textread: character value required for EndOfLine");
     endif
   else
     ## Determine EOL from file.
@@ -491,7 +491,7 @@ endfunction
 %!error textread (1)
 %!error <arguments must be strings> textread (1, "%f")
 %!error <arguments must be strings> textread ("fname", 1)
-%!error <missing or illegal value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
-%!error <missing or illegal value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
+%!error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
+%!error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
 %!error <character value required for> textread (file_in_loadpath ("textread.m"), "%s", "endofline", true)
 

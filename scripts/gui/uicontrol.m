@@ -102,7 +102,7 @@ function hui = uicontrol (varargin)
 
   if (nargin == 1 && ishandle (varargin{1})
       && strcmpi (get (varargin{1}, "type"), "uicontrol"))
-    error ("uicontrol focusing not implemented yet.");
+    error ("uicontrol: focusing not implemented yet");
   endif
 
   [h, args] = __uiobject_split_args__ ("uicontrol", varargin,

@@ -1136,7 +1136,7 @@ public:
   Matrix rgb (void) const
   {
     if (current_type != color_t)
-      error ("color has no rgb value");
+      error ("color has no RGB value");
 
     return color_val.rgb ();
   }

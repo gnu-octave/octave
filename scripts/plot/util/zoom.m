@@ -65,7 +65,7 @@ function zoom (varargin)
   endif
 
   if (nargs == 1 && nargout > 0 && isfigure (varargin{1}))
-    error ("zoom_object_handle = zoom (hfig): not implemented");
+    error ("zoom: syntax 'handle = zoom (hfig)' not implemented");
   endif
 
   hfig = NaN;

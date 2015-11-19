@@ -47,7 +47,7 @@ function mingwpath = __w2mpth__ (winpath)
 
   ## Check for platform
   if (! ispc)
-    error ("__w2mpth__ should only be called on Windows platforms\n");
+    error ("__w2mpth__: function must only be called on Windows platforms\n");
   endif
 
   ## Replace backslash file separators by forward slashes

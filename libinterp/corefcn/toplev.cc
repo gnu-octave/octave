@@ -965,7 +965,7 @@ run_command_and_return_output (const std::string& cmd_str)
       retval(0) = cmd_status;
     }
   else
-    error ("unable to start subprocess for '%s'", cmd_str.c_str ());
+    error ("system: unable to start subprocess for '%s'", cmd_str.c_str ());
 
   return retval;
 }
@@ -1113,7 +1113,7 @@ command shell that is started to run the command.\n\
               CloseHandle (pi.hThread);
             }
 #else
-          error ("asynchronous system calls are not supported");
+          error ("system: asynchronous system calls are not supported");
 #endif
         }
       else if (return_output)

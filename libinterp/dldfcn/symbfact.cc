@@ -221,16 +221,16 @@ factorization as determined by @var{typ}.\n\
   CHOLMOD_NAME(etree) (Aup, Parent, cm);
 
   if (cm->status < CHOLMOD_OK)
-    error ("matrix corrupted");
+    error ("symbfact: matrix corrupted");
 
   if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
-    error ("postorder failed");
+    error ("symbfact: postorder failed");
 
   CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0,
                               ColCount, First, Level, cm);
 
   if (cm->status < CHOLMOD_OK)
-    error ("matrix corrupted");
+    error ("symbfact: matrix corrupted");
 
   if (nargout > 4)
     {

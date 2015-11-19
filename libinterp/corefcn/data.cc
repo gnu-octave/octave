@@ -1851,8 +1851,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
   if (fcn.is_defined ())
     {
-      // Have method for dominant type, so call it and let it handle
-      // conversions.
+      // Have method for dominant type.  Call it and let it handle conversions.
 
       octave_value_list tmp2 = fcn.do_multi_index_op (1, ovl);
 
@@ -5277,8 +5276,8 @@ if fewer than two values are requested.\n\
 %!error <must be scalars or vectors> linspace (1, [], 3)
 */
 
-// FIXME: should accept dimensions as separate args for N-d
-// arrays as well as 1-d and 2-d arrays.
+// FIXME: should accept dimensions as separate args for N-D
+// arrays as well as 1-D and 2-D arrays.
 
 DEFUN (resize, args, ,
        "-*- texinfo -*-\n\
@@ -7717,16 +7716,16 @@ an empty matrix is returned.\n\
       if (args(1).is_scalar_type ())
         order = args(1).idx_type_value (true, false);
       else if (! args(1).is_zero_by_zero ())
-        error ("order K must be a scalar or []");
+        error ("diff: order K must be a scalar or []");
       if (order < 0)
-        error ("order K must be non-negative");
+        error ("diff: order K must be non-negative");
     }
 
   if (nargin > 2)
     {
       dim = args(2).int_value (true, false);
       if (dim < 1 || dim > args(0).ndims ())
-        error ("DIM must be a valid dimension");
+        error ("diff: DIM must be a valid dimension");
       else
         dim -= 1;
     }

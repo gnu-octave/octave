@@ -50,7 +50,7 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
     try
       fid = fopen (logfile, "wt");
       if (fid < 0)
-        error ("could not open %s for writing", logfile);
+        error ("__run_test_suite__: could not open %s for writing", logfile);
       endif
       test ("", "explain", fid);
       dp = dn = dxf = dsk = 0;
@@ -160,7 +160,7 @@ function retval = has_functions (f)
       retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
                                       'lineanchors', 'once'));
     else
-      error ("fopen failed: %s", f);
+      error ("__run_test_suite__: fopen failed: %s", f);
     endif
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;
@@ -178,7 +178,7 @@ function retval = has_tests (f)
                                 '^%!(assert|error|fail|test|xtest|warning)',
                                 'lineanchors', 'once'));
   else
-    error ("fopen failed: %s", f);
+    error ("__run_test_suite__: fopen failed: %s", f);
   endif
 endfunction
 

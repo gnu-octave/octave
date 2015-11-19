@@ -1,7 +1,7 @@
 function s = set (p, varargin)
   s = p;
   if (length (varargin) < 2 || rem (length (varargin), 2) != 0)
-    error ("set: expecting property/value pairs");
+    error ("@polynomial/set: expecting property/value pairs");
   endif
   while (length (varargin) > 1)
     prop = varargin{1};
@@ -11,10 +11,10 @@ function s = set (p, varargin)
       if (isvector (val) && isreal (val))
         s.poly = val(:).';
       else
-        error ("set: expecting the value to be a real vector");
+        error ("@polynomial/set: expecting the value to be a real vector");
       endif
     else
-      error ("set: invalid property of polynomial class");
+      error ("@polynomial/set: invalid property of polynomial class");
     endif
   endwhile
 endfunction

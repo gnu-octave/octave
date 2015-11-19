@@ -595,7 +595,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
             __success = false;
           endif
           if (isempty (lasterr ()))
-            error ("empty error text, probably Ctrl-C --- aborting");
+            error ("test: empty error text, probably Ctrl-C --- aborting");
           endif
         end_try_catch
         clear __test__;

@@ -192,7 +192,7 @@ private:
     if (obj.is_valid ())
       handle_map[h] = obj;
     else
-      error ("support for url transfers was disabled when Octave was built");
+      error ("support for URL transfers was disabled when Octave was built");
 
     return h;
   }
@@ -421,7 +421,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
         error ("urlwrite: %s", curl.lasterror ().c_str ());
     }
   else
-    error ("support for url transfers was disabled when Octave was built");
+    error ("support for URL transfers was disabled when Octave was built");
 
   return retval;
 }
@@ -526,7 +526,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
         error ("urlread: %s", curl.lasterror().c_str());
     }
   else
-    error ("support for url transfers was disabled when Octave was built");
+    error ("support for URL transfers was disabled when Octave was built");
 
   return retval;
 }

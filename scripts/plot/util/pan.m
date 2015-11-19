@@ -50,7 +50,7 @@ function pan (varargin)
   endif
 
   if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
-    error ("pan_object_handle = pan (hfig): not implemented");
+    error ("pan: syntax 'handle = pan (hfig)' not implemented");
   endif
 
   if (nargs == 2)

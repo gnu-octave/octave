@@ -59,12 +59,12 @@ function output = open (file)
       evalin ("base", sprintf ("load ('%s');", file));
     endif
   elseif (any (strcmpi (ext, {".fig", ".mdl", ".slx", ".prj"})))
-    error ("opening file type '%s' is not supported", ext);
+    error ("open: opening file type '%s' is not supported", ext);
   elseif (strcmpi (ext, ".exe"))
     if (ispc ())
       dos (file);
     else
-      error ("executing .exe files is only supported on Windows systems");
+      error ("open: executing .exe files is only supported on Windows systems");
     endif
   else
     __open_with_system_app__ (file);
@@ -72,7 +72,9 @@ function output = open (file)
 
 endfunction
 
+
 ## Test input validation
-%!error open
-%!error open (1)
-%!error output = open (1)
+%!error open ()
+%!error open ("abc", "def")
+%!error <FILE must be a string> open (1)
+

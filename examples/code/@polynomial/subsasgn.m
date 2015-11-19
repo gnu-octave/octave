@@ -1,12 +1,12 @@
 function p = subsasgn (p, s, val)
   if (length (s) < 1)
-    error ("polynomial: needs index");
+    error ("@polynomial/subsasgn: needs index");
   endif
   switch (s(1).type)
     case "{}"
       ind = s(1).subs;
       if (numel (ind) != 1)
-        error ("polynomial: need exactly one index");
+        error ("@polynomial/subsasgn: need exactly one index");
       else
         if (length (s) == 1)
           if (isnumeric (ind{1}))
@@ -15,7 +15,7 @@ function p = subsasgn (p, s, val)
             p.poly(ind{1}) = val;
           endif
         else
-          error ("polynomial: chained subscripts not allowed for {}");
+          error ("@polynomial/subsasgn: chained subscripts not allowed for {}");
         endif
       endif
     case "."
@@ -27,9 +27,9 @@ function p = subsasgn (p, s, val)
           p.poly = subsasgn (p.poly, s(2:end), val);
         endif
       else
-        error ("@polynomial/subsref: invalid property \"%s\"", fld);
+        error ("@polynomial/subsasgn: invalid property \"%s\"", fld);
       endif
     otherwise
-      error ("invalid subscript type");
+      error ("@polynomial/subsasgn: invalid subscript type");
   endswitch
 endfunction

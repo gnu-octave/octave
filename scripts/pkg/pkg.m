@@ -352,7 +352,7 @@ function [local_packages, global_packages] = pkg (varargin)
         endif
       case available_actions
         if (! strcmp (action, "none"))
-          error ("more than one action specified");
+          error ("pkg: more than one action specified");
         endif
         action = varargin{i};
       otherwise
@@ -361,7 +361,7 @@ function [local_packages, global_packages] = pkg (varargin)
   endfor
 
   if (octave_forge && ! any (strcmp (action, {"install", "list"})))
-    error ("-forge can only be used with install or list");
+    error ("pkg: '-forge' can only be used with install or list");
   endif
 
   ## Take action
@@ -387,7 +387,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "install"
       if (isempty (files))
-        error ("you must specify at least one filename when calling 'pkg install'");
+        error ("pkg: install action requires at least one filename");
       endif
 
       local_files = {};
@@ -401,7 +401,7 @@ function [local_packages, global_packages] = pkg (varargin)
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);
-            error ("could not download file %s from url %s",
+            error ("pkg: could not download file %s from url %s",
                    local_files{i}, urls{i});
           endif
         endif
@@ -415,19 +415,19 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "uninstall"
       if (isempty (files))
-        error ("you must specify at least one package when calling 'pkg uninstall'");
+        error ("pkg: uninstall action requires at least one package name");
       endif
       uninstall (files, deps, verbose, local_list, global_list, global_install);
 
     case "load"
       if (isempty (files))
-        error ("you must specify at least one package, 'all', or 'auto' when calling 'pkg load'");
+        error ("pkg: load action requires at least one package, 'all', or 'auto'");
       endif
       load_packages (files, deps, local_list, global_list);
 
     case "unload"
       if (isempty (files))
-        error ("you must specify at least one package or 'all' when calling 'pkg unload'");
+        error ("pkg: unload action requires at least one package or 'all'");
       endif
       unload_packages (files, deps, local_list, global_list);
 
@@ -443,7 +443,7 @@ function [local_packages, global_packages] = pkg (varargin)
         if (! exist (prefix, "dir"))
           [status, msg] = mkdir (prefix);
           if (status == 0)
-            error ("cannot create prefix %s: %s", prefix, msg);
+            error ("pkg: cannot create prefix %s: %s", prefix, msg);
           endif
           warning ("creating the directory %s\n", prefix);
         endif
@@ -454,14 +454,14 @@ function [local_packages, global_packages] = pkg (varargin)
           if (! exist (archprefix, "dir"))
             [status, msg] = mkdir (archprefix);
             if (status == 0)
-              error ("cannot create archprefix %s: %s", archprefix, msg);
+              error ("pkg: cannot create archprefix %s: %s", archprefix, msg);
             endif
             warning ("creating the directory %s\n", archprefix);
             global_packages = archprefix = canonicalize_file_name (archprefix);
           endif
         endif
       else
-        error ("you must specify a prefix directory, or request an output argument");
+        error ("pkg: prefix action requires a directory input, or an output argument");
       endif
 
     case "local_list"
@@ -476,12 +476,12 @@ function [local_packages, global_packages] = pkg (varargin)
             ## Force file to be created
             fclose (fopen (local_list, "wt"));
           catch
-            error ("cannot create file %s", local_list);
+            error ("pkg: cannot create file %s", local_list);
           end_try_catch
         endif
         local_list = canonicalize_file_name (local_list);
       else
-        error ("you must specify a local_list file, or request an output argument");
+        error ("pkg: specify a local_list file, or request an output argument");
       endif
 
     case "global_list"
@@ -496,12 +496,12 @@ function [local_packages, global_packages] = pkg (varargin)
             ## Force file to be created
             fclose (fopen (files{1}, "wt"));
           catch
-            error ("cannot create file %s", global_list);
+            error ("pkg: cannot create file %s", global_list);
           end_try_catch
         endif
         global_list = canonicalize_file_name (global_list);
       else
-        error ("you must specify a global_list file, or request an output argument");
+        error ("pkg: specify a global_list file, or request an output argument");
       endif
 
     case "rebuild"
@@ -525,13 +525,13 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "build"
       if (numel (files) < 2)
-        error ("you must specify at least the build directory and one filename\nwhen calling 'pkg build'");
+        error ("pkg: build action requires build directory and at least one filename");
       endif
       build (files, deps, auto, verbose);
 
     case "describe"
       if (isempty (files))
-        error ("you must specify at least one package or 'all' when calling 'pkg describe'");
+        error ("pkg: describe action requires at least one package or 'all'");
       endif
       ## FIXME: name of the output variables is inconsistent with their content
       if (nargout)
@@ -566,7 +566,7 @@ function [local_packages, global_packages] = pkg (varargin)
       endfor
 
     otherwise
-      error ("you must specify a valid action for 'pkg'.  See 'help pkg' for details");
+      error ("pkg: invalid action.  See 'help pkg' for available actions");
   endswitch
 
 endfunction

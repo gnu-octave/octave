@@ -114,7 +114,7 @@ function str = validatestring (str, strarray, varargin)
   matches = strncmpi (str, strarray(:), length (str));
   nmatches = sum (matches);
   if (nmatches == 0)
-    error ("%sdoes not match any of\n%s", errstr,
+    error ("validatestring: %sdoes not match any of\n%s", errstr,
            sprintf ("%s, ", strarray{:})(1:end-2));
   elseif (nmatches == 1)
     str = strarray{matches};
@@ -129,7 +129,7 @@ function str = validatestring (str, strarray, varargin)
     if (all (submatch))
       str = short_str;
     else
-      error ("%sallows multiple unique matches:\n%s",
+      error ("validatestring: %sallows multiple unique matches:\n%s",
              errstr, sprintf ("%s, ", strarray{match_idx})(1:end-2));
     endif
   endif

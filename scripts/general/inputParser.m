@@ -328,7 +328,7 @@ classdef inputParser < handle
         if (this.FunctionName)
           print_usage (this.FunctionName);
         else
-          this.error ("not enough input arguments");
+          this.error ("inputParser.parse: not enough input arguments");
         endif
       endif
       pnargin = numel (varargin);

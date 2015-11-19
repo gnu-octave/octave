@@ -111,7 +111,7 @@ function retval = has_functions (f)
       retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
                                       'lineanchors', 'once'));
     else
-      error ("fopen failed: %s", f);
+      error ("runtests: fopen failed: %s", f);
     endif
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;

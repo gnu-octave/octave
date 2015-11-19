@@ -22,7 +22,7 @@ function p = polynomial (a)
       p.poly = a(:).';
       p = class (p, "polynomial");
     else
-      error ("polynomial: expecting real vector");
+      error ("@polynomial: expecting real vector");
     endif
   else
     print_usage ();

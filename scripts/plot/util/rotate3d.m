@@ -45,7 +45,7 @@ function rotate3d (varargin)
   endif
 
   if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
-    error ("rotate_object_handle = rotate3d (hfig): not implemented");
+    error ("rotate3d: syntax 'handle = rotate3d (hfig)' not implemented");
   endif
 
   if (nargs == 2)

@@ -305,7 +305,7 @@ Cell::column (octave_idx_type i) const
         }
     }
   else
-    error ("Cell::column: requires 2-d cell array");
+    error ("Cell::column: requires 2-D cell array");
 
   return retval;
 }

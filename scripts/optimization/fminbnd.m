@@ -278,7 +278,7 @@ function print_exit_msg (info, opt=struct())
     case -1
       "FIXME"; # FIXME: what's the message MATLAB prints for this case?
     otherwise
-      error ("internal error - fminbnd() is bug, sorry!");
+      error ("fminbnd: internal error, info return code was %d", info);
   endswitch
   printf ("\n");
 endfunction

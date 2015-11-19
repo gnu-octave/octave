@@ -375,7 +375,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 void
 CollocWt::error (const char* msg)
 {
-  (*current_liboctave_error_handler) ("fatal CollocWt error: %s", msg);
+  (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
 }
 
 CollocWt&
@@ -383,7 +383,7 @@ CollocWt::set_left (double val)
 {
   if (val >= rb)
     {
-      error ("left bound greater than right bound");
+      error ("CollocWt: left bound greater than right bound");
       return *this;
     }
 
@@ -397,7 +397,7 @@ CollocWt::set_right (double val)
 {
   if (val <= lb)
     {
-      error ("right bound less than left bound");
+      error ("CollocWt: right bound less than left bound");
       return *this;
     }
 
@@ -414,7 +414,7 @@ CollocWt::init (void)
   double wid = rb - lb;
   if (wid <= 0.0)
     {
-      error ("width less than or equal to zero");
+      error ("CollocWt: width less than or equal to zero");
       return;
     }
 
@@ -422,7 +422,7 @@ CollocWt::init (void)
 
   if (nt < 0)
     {
-      error ("total number of collocation points less than zero");
+      error ("CollocWt: total number of collocation points less than zero");
       return;
     }
   else if (nt == 0)

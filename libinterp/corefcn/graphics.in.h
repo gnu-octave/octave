@@ -1056,10 +1056,7 @@ public:
     for (int i = 0; i < 3; i++)
       {
         if (xrgb(i) < 0 ||  xrgb(i) > 1)
-          {
-            error ("invalid RGB color specification");
-            break;
-          }
+          error ("invalid RGB color specification");
       }
   }
 

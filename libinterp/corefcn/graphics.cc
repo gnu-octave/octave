@@ -1253,10 +1253,10 @@ color_property::do_set (const octave_value& val)
             }
           else
             {
-              color_values col (s);
-
-              if (! error_state)
+              try
                 {
+                  color_values col (s);
+
                   if (current_type != color_t || col != color_val)
                     {
                       color_val = col;
@@ -1264,9 +1264,11 @@ color_property::do_set (const octave_value& val)
                       return true;
                     }
                 }
-              else
-                error ("invalid value for color property \"%s\" (value = %s)",
-                       get_name ().c_str (), s.c_str ());
+              catch (const octave_execution_exception&)
+                {
+                  error ("invalid value for color property \"%s\" (value = %s)",
+                         get_name ().c_str (), s.c_str ());
+                }
             }
         }
       else

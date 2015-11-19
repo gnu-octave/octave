@@ -66,7 +66,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     format_for_printer = true;
   endif
 
-  gs_opts = ["-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=" opts.device];
+  gs_opts = ["-dQUIET -dNOPAUSE -dBATCH -dSAFER -dAutoRotatePages=/None -sDEVICE=" opts.device];
 
   if (! isempty (opts.level) && ismember (opts.level, [1, 2, 3]))
     gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, opts.level);

@@ -430,117 +430,15 @@ octave_struct::subsasgn (const std::string& type,
         }
     }
 
-  if (! error_state)
+  switch (type[0])
     {
-      switch (type[0])
-        {
-        case '(':
+    case '(':
+      {
+        if (n > 1 && type[1] == '.')
           {
-            if (n > 1 && type[1] == '.')
-              {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
-                octave_value_list key_idx = *++p;
-                octave_value_list idxf = idx.front ();
-
-                assert (key_idx.length () == 1);
-
-                std::string key = key_idx(0).string_value ();
-
-                maybe_warn_invalid_field_name (key, "subsasgn");
-
-                if (! error_state)
-                  {
-                    if (t_rhs.is_cs_list ())
-                      {
-                        Cell tmp_cell = Cell (t_rhs.list_value ());
-
-                        // Inquire the proper shape of the RHS.
-
-                        dim_vector didx = dims ().redim (idxf.length ());
-                        for (octave_idx_type k = 0; k < idxf.length (); k++)
-                          if (! idxf(k).is_magic_colon ())
-                            didx(k) = idxf(k).numel ();
-
-                        if (didx.numel () == tmp_cell.numel ())
-                          tmp_cell = tmp_cell.reshape (didx);
-
-
-                        map.assign (idxf, key, tmp_cell);
-
-                        if (! error_state)
-                          {
-                            count++;
-                            retval = octave_value (this);
-                          }
-                        else
-                          gripe_failed_assignment ();
-                      }
-                    else
-                      {
-                        const octave_map& cmap =
-                          const_cast<const octave_map &> (map);
-                        // cast to const reference, avoid forced key insertion.
-                        if (idxf.all_scalars ()
-                            || cmap.contents (key).index (idxf, true).numel ()
-                               <= 1)
-                          {
-                            map.assign (idxf,
-                                        key, Cell (t_rhs.storable_value ()));
-                            if (! error_state)
-                              {
-                                count++;
-                                retval = octave_value (this);
-                              }
-                            else
-                              gripe_failed_assignment ();
-                          }
-                        else if (! error_state)
-                          gripe_nonbraced_cs_list_assignment ();
-                      }
-                  }
-                else
-                  gripe_failed_assignment ();
-              }
-            else
-              {
-                if (t_rhs.is_map () || t_rhs.is_object ())
-                  {
-                    octave_map rhs_map = t_rhs.xmap_value ("invalid structure assignment");
-
-                    map.assign (idx.front (), rhs_map);
-
-                    if (! error_state)
-                      {
-                        count++;
-                        retval = octave_value (this);
-                      }
-                    else
-                      gripe_failed_assignment ();
-                  }
-                else
-                  {
-                    if (t_rhs.is_null_value ())
-                      {
-                        map.delete_elements (idx.front ());
-
-                        if (! error_state)
-                          {
-                            count++;
-                            retval = octave_value (this);
-                          }
-                        else
-                          gripe_failed_assignment ();
-                      }
-                    else
-                      error ("invalid structure assignment");
-                  }
-              }
-          }
-          break;
-
-        case '.':
-          {
-            octave_value_list key_idx = idx.front ();
+            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            octave_value_list key_idx = *++p;
+            octave_value_list idxf = idx.front ();
 
             assert (key_idx.length () == 1);
 
@@ -552,42 +450,110 @@ octave_struct::subsasgn (const std::string& type,
               {
                 Cell tmp_cell = Cell (t_rhs.list_value ());
 
-                // The shape of the RHS is irrelevant, we just want
-                // the number of elements to agree and to preserve the
-                // shape of the left hand side of the assignment.
+                // Inquire the proper shape of the RHS.
 
-                if (numel () == tmp_cell.numel ())
-                  tmp_cell = tmp_cell.reshape (dims ());
+                dim_vector didx = dims ().redim (idxf.length ());
+                for (octave_idx_type k = 0; k < idxf.length (); k++)
+                  if (! idxf(k).is_magic_colon ())
+                    didx(k) = idxf(k).numel ();
 
-                map.setfield (key, tmp_cell);
-              }
-            else
-              {
-                Cell tmp_cell(1, 1);
-                tmp_cell(0) = t_rhs.storable_value ();
-                map.setfield (key, tmp_cell);
-              }
+                if (didx.numel () == tmp_cell.numel ())
+                  tmp_cell = tmp_cell.reshape (didx);
 
-            if (! error_state)
-              {
+
+                map.assign (idxf, key, tmp_cell);
+
                 count++;
                 retval = octave_value (this);
               }
             else
-              gripe_failed_assignment ();
+              {
+                const octave_map& cmap =
+                  const_cast<const octave_map &> (map);
+                // cast to const reference, avoid forced key insertion.
+                if (idxf.all_scalars ()
+                    || cmap.contents (key).index (idxf, true).numel ()
+                    <= 1)
+                  {
+                    map.assign (idxf,
+                                key, Cell (t_rhs.storable_value ()));
+
+                    count++;
+                    retval = octave_value (this);
+                  }
+                else
+                  gripe_nonbraced_cs_list_assignment ();
+              }
           }
-          break;
+        else
+          {
+            if (t_rhs.is_map () || t_rhs.is_object ())
+              {
+                octave_map rhs_map = t_rhs.xmap_value ("invalid structure assignment");
 
-        case '{':
-          gripe_invalid_index_type (type_name (), type[0]);
-          break;
+                map.assign (idx.front (), rhs_map);
 
-        default:
-          panic_impossible ();
-        }
+                count++;
+                retval = octave_value (this);
+              }
+            else
+              {
+                if (t_rhs.is_null_value ())
+                  {
+                    map.delete_elements (idx.front ());
+
+                    count++;
+                    retval = octave_value (this);
+                  }
+                else
+                  error ("invalid structure assignment");
+              }
+          }
+      }
+      break;
+
+    case '.':
+      {
+        octave_value_list key_idx = idx.front ();
+
+        assert (key_idx.length () == 1);
+
+        std::string key = key_idx(0).string_value ();
+
+        maybe_warn_invalid_field_name (key, "subsasgn");
+
+        if (t_rhs.is_cs_list ())
+          {
+            Cell tmp_cell = Cell (t_rhs.list_value ());
+
+            // The shape of the RHS is irrelevant, we just want
+            // the number of elements to agree and to preserve the
+            // shape of the left hand side of the assignment.
+
+            if (numel () == tmp_cell.numel ())
+              tmp_cell = tmp_cell.reshape (dims ());
+
+            map.setfield (key, tmp_cell);
+          }
+        else
+          {
+            Cell tmp_cell(1, 1);
+            tmp_cell(0) = t_rhs.storable_value ();
+            map.setfield (key, tmp_cell);
+          }
+
+        count++;
+        retval = octave_value (this);
+      }
+      break;
+
+    case '{':
+      gripe_invalid_index_type (type_name (), type[0]);
+      break;
+
+    default:
+      panic_impossible ();
     }
-  else
-    gripe_failed_assignment ();
 
   retval.maybe_mutate ();
 
@@ -1267,10 +1233,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
                    : tmp.subsasgn (next_type, next_idx, rhs));
         }
 
-      if (! error_state)
-        map.setfield (key, t_rhs.storable_value ());
-      else
-        gripe_failed_assignment ();
+      map.setfield (key, t_rhs.storable_value ());
 
       count++;
       retval = this;
@@ -1454,12 +1417,6 @@ octave_scalar_struct::load_ascii (std::istream& is)
               if (!is)
                 break;
 
-              if (error_state)
-                {
-                  error ("load: internal error loading struct elements");
-                  return false;
-                }
-
               m.setfield (nm, t2);
             }
 
@@ -1543,12 +1500,6 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
 
           if (!is)
             break;
-
-          if (error_state)
-            {
-              error ("load: internal error loading struct elements");
-              return false;
-            }
 
           m.setfield (nm, t2);
         }
@@ -1645,12 +1596,6 @@ octave_scalar_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                                    hdf5_read_next_data, &dsub)) > 0)
     {
       octave_value t2 = dsub.tc;
-
-      if (error_state)
-        {
-          error ("load: internal error loading struct elements");
-          return false;
-        }
 
       m.setfield (dsub.name, t2);
 

@@ -551,19 +551,20 @@ endif
 
 doc/interpreter/undocumented_list:
 	rm -f $@-t $@
-	-$(PERL) $(srcdir)/doccheck/mk_undocumented_list > $@-t
+	-cd $(srcdir)/doc/interpreter; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
 	mv $@-t $@
 .PHONY: doc/interpreter/undocumented_list
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 
 %.scheck: %.texi | doc/interpreter/$(octave_dirstamp)
-	$(srcdir)/doc/interpreter/doccheck/spellcheck $< > $@-t
+	cd $(srcdir)/doc/interpreter; ./doccheck/spellcheck $(<F) > $(@F)-t
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@
 
 spellcheck: $(SPELLCHECK_FILES)
-	@if ls *.scheck >/dev/null 2>&1 ; then \
+	@cd $(srcdir)/doc/interpreter ; \
+	if ls *.scheck >/dev/null 2>&1 ; then \
 		echo "Spellcheck failed"; \
 		echo "Review the following files:"; \
 		ls *.scheck ; \

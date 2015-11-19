@@ -32,7 +32,7 @@
 ## The optional message @var{msg} is centered and displayed above the waitbar.
 ##
 ## A cancel button can be added to the bottom of the waitbar using the
-## "createcancelbtn" property of waitbar figures. The action to be
+## @qcode{"createcancelbtn"} property of waitbar figures.  The action to be
 ## executed when the user presses the button is specified using a string or
 ## function handle @var{fcn}.
 ##

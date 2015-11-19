@@ -1808,7 +1808,7 @@ Undocumented internal function.\n\
 
 DEFUN (__get_cmdline_fcn_txt__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __get_cmdline_fcn_txt__ (@var{name})\n\
+@deftypefn {Built-in Function} {} __get_cmdline_fcn_txt__ (@var{name})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

@@ -27,9 +27,9 @@
 ## If called with two input arguments and the first input argument @var{ode_opt}
 ## is an ODE option structure and the second input argument @var{field} is a
 ## string specifying an option name, then return the option value @var{val}
-## corresponding to to @var{field} from @var{ode_opt}.
+## corresponding to @var{field} from @var{ode_opt}.
 ##
-## If called called with an optional third input argument, and @var{field} is
+## If called with an optional third input argument, and @var{field} is
 ## not set in the structure @var{ode_opt}, then return the default value
 ## @var{default} instead.
 ## @seealso{odeset}

@@ -619,7 +619,8 @@ bits of the native floating point format representation of @code{10}.
 
 As the maximum value that can be represented by a number is important
 for bit manipulation, particularly when forming masks, Octave supplies
-two functions 'flintmax' for floating point integers, and 'intmax'.
+two utility functions: @code{flintmax} for floating point integers, and
+@code{intmax} for integer objects (@code{uint8}, @code{int64}, etc.).
 
 Octave also includes the basic bitwise 'and', 'or', and 'exclusive or'
 operators.

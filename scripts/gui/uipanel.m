@@ -25,12 +25,12 @@
 ## uipanels are used as containers to group other uicontrol objects.
 ##
 ## If @var{parent} is omitted then a uipanel for the current figure is
-## created. If no figure is available, a new figure is created first.
+## created.  If no figure is available, a new figure is created first.
 ##
 ## If @var{parent} is given then a uipanel relative to @var{parent} is created.
 ##
-## Any provided property value pairs will override the default values of the created
-## uipanel object.
+## Any provided property value pairs will override the default values of the
+## created uipanel object.
 ##
 ## Uipanel propertes are documented at @ref{Uipanel Properties}.
 ##

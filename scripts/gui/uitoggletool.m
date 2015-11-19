@@ -22,17 +22,20 @@
 ##
 ## Create a uitoggletool object and return a handle to it.
 ##
-## uitoggletool are togglebuttons that appear on a figure toolbar. The button is created with a border that
-## is shown when the user hovers over the button. An image can be set using the cdata property.
+## uitoggletool are togglebuttons that appear on a figure toolbar.  The
+## button is created with a border that is shown when the user hovers over
+## the button.  An image can be set using the cdata property.
 ##
 ## If @var{parent} is omitted then a uitoggletool for the current figure is
-## created. If no figure is available, a new figure is created first.  If a figure is
-## available, but does not contain a uitoolbar, a uitoolbar will be created.
+## created.  If no figure is available, a new figure is created first.  If a
+## figure is available, but does not contain a uitoolbar, a uitoolbar will be
+## created.
 ##
-## If @var{parent} is given then a uitoggletool is created on the @var{parent} uitoolbar.
+## If @var{parent} is given then a uitoggletool is created on the
+## @var{parent} uitoolbar.
 ##
-## Any provided property value pairs will override the default values of the created
-## uitoggletool object.
+## Any provided property value pairs will override the default values of the
+## created uitoggletool object.
 ##
 ## Uitoggletool propertes are documented at @ref{Uitoggletool Properties}.
 ##

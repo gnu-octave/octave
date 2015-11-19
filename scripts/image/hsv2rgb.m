@@ -34,6 +34,7 @@
 ## @code{mod (h, 1)} is used.
 ##
 ## @example
+## @group
 ## >> hsv2rgb ([0.5 1 1])
 ## @result{} ans = 0 1 1
 ##
@@ -42,6 +43,7 @@
 ##
 ## >> hsv2rgb ([3.5 1 1])
 ## @result{} ans = 0 1 1
+## @end group
 ## @end example
 ##
 ## Output class and size will be the same as input.

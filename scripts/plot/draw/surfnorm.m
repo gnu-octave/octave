@@ -45,8 +45,10 @@
 ## use
 ##
 ## @example
+## @group
 ## mag = sqrt (nx.^2 + ny.^2 + nz.^2);
 ## nx ./= len;  ny ./= len;  nz ./= len;
+## @end group
 ## @end example
 ##
 ## An example of the use of @code{surfnorm} is

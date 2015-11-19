@@ -29,7 +29,7 @@
 ## files or directories on the remote server that match will be downloaded.
 ##
 ## If a third string argument @var{target} is given, then it must indicate
-## the path to the local destination directory. @var{target} may be a
+## the path to the local destination directory.  @var{target} may be a
 ## relative or absolute path.
 ## @end deftypefn
 

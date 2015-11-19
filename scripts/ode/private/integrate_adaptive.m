@@ -51,7 +51,7 @@
 ## @end ifnothtml
 ##
 ## The fourth input argument is the time vector which defines the integration
-## interval, i.e, @var{[tspan(1), tspan(end)]} and all intermediate elements
+## interval, i.e., @var{[tspan(1), tspan(end)]} and all intermediate elements
 ## are taken as times at which the solution is required.
 ##
 ## The fifth argument represents the initial conditions for the ODEs and the

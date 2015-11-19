@@ -1006,7 +1006,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_mget__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern})\n\
+@deftypefn  {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern})\n\
 @deftypefnx {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})\n\
 Undocumented internal function\n\
 @end deftypefn")

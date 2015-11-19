@@ -73,7 +73,17 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
   if (daspk_fcn)
     {
-      octave_value_list tmp = daspk_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = daspk_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("daspk");
+          throw;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
@@ -116,7 +126,17 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
   if (daspk_jac)
     {
-      octave_value_list tmp = daspk_jac->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = daspk_jac->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("daspk");
+          throw;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())

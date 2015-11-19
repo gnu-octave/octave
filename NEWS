@@ -96,6 +96,10 @@ Summary of important user-visible changes for version 4.2:
     makes the error and print_usage functions in C++ work more like the
     corresponding functions in the scripting language.
 
+ ** New configure option, --enable-address-sanitizer-flags, to build
+    Octave with memory allocator checks (similar to those provided by
+    valgrind) built in.
+
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 

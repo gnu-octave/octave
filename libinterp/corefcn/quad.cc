@@ -67,13 +67,16 @@ quad_user_function (double x)
 
   if (quad_fcn)
     {
-      octave_value_list tmp = quad_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
 
-      if (error_state)
+      try
         {
-          quad_integration_error = 1;  // FIXME
+          tmp = quad_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
           gripe_user_supplied_eval ("quad");
-          return retval;
+          throw;
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -84,19 +87,10 @@ quad_user_function (double x)
               warned_imaginary = true;
             }
 
-          retval = tmp(0).double_value ();
-
-          if (error_state)
-            {
-              quad_integration_error = 1;  // FIXME
-              gripe_user_supplied_eval ("quad");
-            }
+          retval = tmp(0).xdouble_value ("quad: expecting user supplied function to return numeric value");
         }
       else
-        {
-          quad_integration_error = 1;  // FIXME
-          gripe_user_supplied_eval ("quad");
-        }
+        gripe_user_supplied_eval ("quad");
     }
 
   return retval;
@@ -112,13 +106,16 @@ quad_float_user_function (float x)
 
   if (quad_fcn)
     {
-      octave_value_list tmp = quad_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
 
-      if (error_state)
+      try
         {
-          quad_integration_error = 1;  // FIXME
+          tmp = quad_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
           gripe_user_supplied_eval ("quad");
-          return retval;
+          throw;
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -129,19 +126,11 @@ quad_float_user_function (float x)
               warned_imaginary = true;
             }
 
-          retval = tmp(0).float_value ();
+          retval = tmp(0).xfloat_value ("quad: expecting user supplied function to return numeric value");
 
-          if (error_state)
-            {
-              quad_integration_error = 1;  // FIXME
-              gripe_user_supplied_eval ("quad");
-            }
         }
       else
-        {
-          quad_integration_error = 1;  // FIXME
-          gripe_user_supplied_eval ("quad");
-        }
+        gripe_user_supplied_eval ("quad");
     }
 
   return retval;

@@ -73,7 +73,17 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
   if (dassl_fcn)
     {
-      octave_value_list tmp = dassl_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = dassl_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("dassl");
+          throw;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
@@ -116,7 +126,17 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
   if (dassl_jac)
     {
-      octave_value_list tmp = dassl_jac->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = dassl_jac->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("dassl");
+          throw;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())

@@ -70,12 +70,16 @@ lsode_user_function (const ColumnVector& x, double t)
 
   if (lsode_fcn)
     {
-      octave_value_list tmp = lsode_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
 
-      if (error_state)
+      try
+        {
+          tmp = lsode_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
         {
           gripe_user_supplied_eval ("lsode");
-          return retval;
+          throw;
         }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -86,9 +90,9 @@ lsode_user_function (const ColumnVector& x, double t)
               warned_fcn_imaginary = true;
             }
 
-          retval = ColumnVector (tmp(0).vector_value ());
+          retval = tmp(0).xvector_value ("lsode: expecting user supplied function to return numeric vector");
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("lsode");
         }
       else
@@ -109,12 +113,16 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   if (lsode_jac)
     {
-      octave_value_list tmp = lsode_jac->do_multi_index_op (1, args);
+      octave_value_list tmp;
 
-      if (error_state)
+      try
+        {
+          tmp = lsode_jac->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
         {
           gripe_user_supplied_eval ("lsode");
-          return retval;
+          throw;
         }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -125,9 +133,9 @@ lsode_user_jacobian (const ColumnVector& x, double t)
               warned_jac_imaginary = true;
             }
 
-          retval = tmp(0).matrix_value ();
+          retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
 
-          if (error_state || retval.numel () == 0)
+          if (retval.numel () == 0)
             gripe_user_supplied_eval ("lsode");
         }
       else

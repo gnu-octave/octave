@@ -73,7 +73,17 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 
   if (dasrt_f)
     {
-      octave_value_list tmp = dasrt_f->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = dasrt_f->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("dasrt");
+          throw;
+        }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
         {
@@ -107,7 +117,17 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
   if (dasrt_cf)
     {
-      octave_value_list tmp = dasrt_cf->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = dasrt_cf->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("dasrt");
+          throw;
+        }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
         {
@@ -146,7 +166,17 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
   if (dasrt_j)
     {
-      octave_value_list tmp = dasrt_j->do_multi_index_op (1, args);
+      octave_value_list tmp;
+
+      try
+        {
+          tmp = dasrt_j->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
+          gripe_user_supplied_eval ("dasrt");
+          throw;
+        }
 
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())

@@ -236,7 +236,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         updating = false;
       endif
       fvec = fvec(:);
-      nfev ++;
+      nfev++;
     else
       fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec, typicalx, cdif);
       nfev += (1 + cdif) * length (x);
@@ -311,7 +311,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
       fvec1 = fcn (reshape (x + s, xsiz)) (:);
       fn1 = norm (fvec1);
-      nfev ++;
+      nfev++;
 
       if (fn1 < fn)
         ## Scaled actual reduction.
@@ -333,7 +333,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       ## Update delta.
       if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         nsuc = 0;
-        nfail ++;
+        nfail++;
         delta *= decfac;
         decfac ^= 1.4142;
         if (delta <= 1e1*macheps*xn)
@@ -345,7 +345,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         lastratio = ratio;
         decfac = 0.5;
         nfail = 0;
-        nsuc ++;
+        nsuc++;
         if (abs (1-ratio) <= 0.1)
           delta = 1.4142*sn;
         elseif (ratio >= 0.5 || nsuc > 1)
@@ -359,10 +359,10 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         xn = norm (dg .* x);
         fvec = fvec1;
         fn = fn1;
-        nsuciter ++;
+        nsuciter++;
       endif
 
-      niter ++;
+      niter++;
 
       ## FIXME: should outputfcn be only called after a successful iteration?
       if (! isempty (outfcn))

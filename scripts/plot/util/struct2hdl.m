@@ -607,7 +607,7 @@ function setprops (s, h, p, hilev)
               catch
                 sprintf ("struct2hdl: couldn't set hggroup children #%d props.", ii);
               end_try_catch
-              ii ++;
+              ii++;
             endwhile
 
           else

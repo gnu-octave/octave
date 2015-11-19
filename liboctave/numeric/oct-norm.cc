@@ -459,7 +459,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
 
       z = z.hermitian ();
       x = dual_p (z, q, p);
-      iter ++;
+      iter++;
     }
 
   return gamma;

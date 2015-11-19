@@ -119,10 +119,10 @@ function hg = __rectangle__ (hax, varargin)
         parent = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
       else
-        iarg ++;
+        iarg++;
       endif
     else
-      iarg ++;
+      iarg++;
     endif
   endwhile
 

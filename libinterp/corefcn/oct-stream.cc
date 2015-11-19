@@ -3499,7 +3499,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                       nc = count / nr;
 
                       if (count % nr != 0)
-                        nc ++;
+                        nc++;
                     }
                   else
                     nr = count;

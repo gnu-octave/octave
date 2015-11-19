@@ -161,7 +161,7 @@ function varargout = annotation (varargin)
   if (isfigure (varargin{1}))
     hf = varargin{1};
     varargin = varargin(2:end);
-    nargin --;
+    nargin--;
   endif
 
   ## Annotation type
@@ -170,7 +170,7 @@ function varargout = annotation (varargin)
   if (ischar (varargin{1}))
     objtype = varargin{1};
     varargin(1) = [];
-    nargin --;
+    nargin--;
   else
     print_usage ();
   endif

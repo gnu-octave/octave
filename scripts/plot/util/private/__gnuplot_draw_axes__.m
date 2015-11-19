@@ -964,7 +964,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                  tmpwith{sidx} = sprintf ("with %s %s %s %s",
                                           style, lw, lt,
                                           colorspec);
-                 sidx ++;
+                 sidx++;
                endif
                if (isnumeric (obj.markerfacecolor) && ! mono)
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
@@ -1019,7 +1019,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                             style, lw, lt,
                                             colorspec);
                  endif
-                 sidx ++;
+                 sidx++;
                endif
 
                if (! isempty (pt))
@@ -1879,8 +1879,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
         fputs (plot_stream, ";\n");
         if (! isempty (style{sidx}))
-          sidx ++;
-          idx ++;
+          sidx++;
+          idx++;
         else
           fputs (plot_stream, ";\n");
         endif
@@ -1922,8 +1922,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
         fputs (plot_stream, ";\n");
         if (! isempty (style{sidx}))
-          sidx ++;
-          idx ++;
+          sidx++;
+          idx++;
         else
           fputs (plot_stream, ";\n");
         endif
@@ -2477,7 +2477,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                    str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end)];
           endif
           i += 2;
-          p ++;
+          p++;
         else
           i++;
         endif
@@ -2485,14 +2485,14 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         if (s(i+1) == s(i) + 2)
           ## Shortest already first!
           str = [str(1:s(i)+p-1) "@" str(s(i)+p:end)];
-          p ++;
+          p++;
           i += 2;
         else
-          i ++;
+          i++;
         endif
       endif
     else
-      i ++;
+      i++;
     endif
   endwhile
 

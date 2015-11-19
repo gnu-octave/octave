@@ -276,7 +276,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     ## Calculate new point.
     x = c;
     fval = fc = fun (c);
-    niter ++; nfev ++;
+    niter++; nfev++;
 
     ## Modification 2: skip inverse cubic interpolation if
     ## nonmonotonicity is detected.

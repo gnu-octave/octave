@@ -124,7 +124,7 @@ is_scalar (const dim_vector& dim)
     }
   else
     {
-      for (int i = 0; i < n; i ++)
+      for (int i = 0; i < n; i++)
         {
           if (dim(i) != 1)
             {
@@ -147,7 +147,7 @@ is_vector (const dim_vector& dim)
     m = 2;
   else
     {
-      for (int i = 0; i < n; i ++)
+      for (int i = 0; i < n; i++)
         if (dim(i) > 1)
           m++;
         else if (dim(i) < 1)

@@ -394,7 +394,8 @@ Time, 24-hour (hh:mm:ss).\n\
 Locale's time representation (%H:%M:%S).\n\
 \n\
 @item %z\n\
-Offset from UTC (±hhmm), or nothing if no time zone is determinable.\n\
+Offset from UTC (±@nospell{hhmm}), or nothing if no time zone is\n\
+determinable.\n\
 \n\
 @item %Z\n\
 Time zone (EDT), or nothing if no time zone is determinable.\n\

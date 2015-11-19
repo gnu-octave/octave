@@ -30,7 +30,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uicontextmenu object.
 ##
-## Uicontextmenu propertes are documented at @ref{Uicontextmenu Properties}.
+## Uicontextmenu properties are documented at @ref{Uicontextmenu Properties}.
 ##
 ## Examples:
 ##

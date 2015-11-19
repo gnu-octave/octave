@@ -37,7 +37,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uipushtool object.
 ##
-## Uipushtool propertes are documented at @ref{Uipushtool Properties}.
+## Uipushtool properties are documented at @ref{Uipushtool Properties}.
 ##
 ## Examples:
 ##

@@ -28,7 +28,7 @@
 ##
 ## The optional argument string @var{method} specifies which correlation
 ## coefficient to use for testing.  If @var{method} is @qcode{"pearson"}
-## (default), the (usual) Pearson's produt moment correlation coefficient is
+## (default), the (usual) Pearson's product moment correlation coefficient is
 ## used.  In this case, the data should come from a bivariate normal
 ## distribution.  Otherwise, the other two methods offer nonparametric
 ## alternatives.  If @var{method} is @qcode{"kendall"}, then Kendall's rank

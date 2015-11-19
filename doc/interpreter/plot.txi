@@ -1012,8 +1012,8 @@ select the position at which to place text on the plot with the
 
 @DOCSTRING(gtext)
 
-More sophisticated user interaction mechanisms can be obtained using the ui*
-family of functions, @pxref{UI Elements}.
+More sophisticated user interaction mechanisms can be obtained using the
+@nospell{ui*} family of functions, @pxref{UI Elements}.
 
 @node Test Plotting Functions
 @subsection Test Plotting Functions

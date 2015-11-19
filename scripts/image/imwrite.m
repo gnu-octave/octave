@@ -50,7 +50,7 @@
 ## Compression to use one the image.  Can be one of the following: "none"
 ## (default), "bzip", "fax3", "fax4", "jpeg", "lzw", "rle", or "deflate".
 ## Note that not all compression types are available for all image formats
-## in which it defaults to your Magick library.
+## in which it defaults to your @nospell{Magick} library.
 ##
 ## @item DelayTime
 ## For formats that accept animations (such as GIF), controls for how long a

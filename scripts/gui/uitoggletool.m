@@ -37,7 +37,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uitoggletool object.
 ##
-## Uitoggletool propertes are documented at @ref{Uitoggletool Properties}.
+## Uitoggletool properties are documented at @ref{Uitoggletool Properties}.
 ##
 ## Examples:
 ##

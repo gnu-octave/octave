@@ -35,7 +35,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uicontrol object.
 ##
-## Uicontrol propertes are documented at @ref{Uicontrol Properties}.
+## Uicontrol properties are documented at @ref{Uicontrol Properties}.
 ##
 ## Control of the type of uicontrol created is through the use of the
 ## @var{style} property.  If no style property is provided, a push button will
@@ -53,7 +53,7 @@
 ##
 ## @item @qcode{"listbox"}
 ## Create a listbox control that displays a lit of items and allows user
-## slelection of single or multiple items.
+## selection of single or multiple items.
 ##
 ## @item @qcode{"popupmenu"}
 ## Create a popupmenu control that displays a list of options that can be

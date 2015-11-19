@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {@var{solution} =} ode45 (@dots{})
 ##
 ## Solve a set of non-stiff Ordinary Differential Equations (non-stiff ODEs)
-## with the well known explicit Dormand-Prince method of order 4.
+## with the well known explicit @nospell{Dormand-Prince} method of order 4.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{y' = f(t,y)}.  The function
@@ -72,7 +72,7 @@
 ## contains an index indicating which Event function was triggered in the case
 ## of multiple Event functions.
 ##
-## Example: Solve the Van der Pol equation
+## Example: Solve the @nospell{Van der Pol} equation
 ##
 ## @example
 ## @group

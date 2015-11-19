@@ -120,6 +120,9 @@ changeset
 changesets
 chdir
 Chebyshev
+checkbox
+checkboxes
+checksums
 chisq
 chisquare
 chol
@@ -174,6 +177,7 @@ cosecant
 courseware
 cov
 CPLEX
+createcancelbtn
 CreateFcn
 CRLF
 Crout
@@ -225,9 +229,11 @@ det
 diag
 diagcomp
 diamondsuit
+digamma
 dir
 disp
 DisplayName
+displayname
 DisplayNames
 displayrange
 dMatrix
@@ -309,6 +315,7 @@ FFTs
 fftw
 fieldname
 fieldnames
+FIFOs
 filename
 filenames
 filepaths
@@ -436,6 +443,7 @@ hygepdf
 hygernd
 Hypergeometric
 hypergeometric
+hypervolume
 ichol
 ict
 IEC
@@ -542,6 +550,7 @@ linespoints
 linestyle
 linewidth
 linkprop
+listbox
 listdlg
 ListSize
 ListString
@@ -700,12 +709,14 @@ nzmax
 oct
 octaverc
 ODEPACK
+ODEs
 Ogg
 ogg
 OKString
 OLS
 onCleanup
 online
+OpenBLAS
 OpenGL
 OpenJDK
 oplus
@@ -739,6 +750,7 @@ PCX
 pcx
 pdf
 PDF
+pdflatex
 pearson
 pentadiagonal
 periodogram
@@ -761,7 +773,9 @@ poissrnd
 polyderiv
 polyeig
 polyfit
+polygamma
 polyval
+popupmenu
 pos
 POSDEF
 POSIX
@@ -777,6 +791,7 @@ prepended
 presolver
 printf
 priori
+probit
 Profiler
 profiler
 programmatically
@@ -792,6 +807,7 @@ Pseudospectra
 pseudospectrum
 ptrace
 punct
+pushbutton
 Pxx
 Qhull
 qhull
@@ -813,6 +829,7 @@ Quickhull
 qz
 QZ
 radices
+radiobutton
 randn
 randperm
 rangle
@@ -884,6 +901,7 @@ simplechol
 simplecholperm
 simplematrix
 simplices
+sinc
 sinetone
 slx
 sm
@@ -912,6 +930,7 @@ sprandsym
 sprank
 SPSS
 spstats
+SQP
 sqrt
 sqrtm
 sr
@@ -1012,9 +1031,13 @@ ths
 tif
 TikZ
 Timestamp
+TimeStepNumber
+TimeStepSize
 tinv
 tmp
 Toeplitz
+togglebutton
+togglebuttons
 tokenExtents
 TolF
 TolFun
@@ -1031,6 +1054,7 @@ treatasempty
 treelayout
 treeplot
 tridiagonal
+trigamma
 trimesh
 triplot
 trnd
@@ -1047,10 +1071,25 @@ UB
 uchar
 UHESS
 UI
+uicontextmenu
+Uicontextmenu
+Uicontrol
+uicontrol
+uicontrols
 UID
 uimenu
 uint
+uipanel
+Uipanel
+uipanels
+Uipushtool
+uipushtool
+uipushtools
 uiputfile
+uitoggletool
+Uitoggletool
+uitoolbar
+Uitoolbar
 ulong
 Ultrix
 umfpack
@@ -1090,6 +1129,7 @@ uplus
 userdata
 Username
 ushort
+UTC
 Vandermonde
 variable's
 varphi
@@ -1105,6 +1145,7 @@ vectorizing
 vee
 versa
 vertcat
+VertexNormals
 verticalalignment
 vertices
 Vorbis
@@ -1162,6 +1203,7 @@ xmax
 xmin
 xon
 xPBTRF
+xpos
 xPOTRF
 xPTSV
 xtest
@@ -1182,6 +1224,7 @@ yerrorbars
 ylim
 ymax
 ymin
+ypos
 yy
 YY
 yyyy

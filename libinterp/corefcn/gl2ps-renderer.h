@@ -36,7 +36,7 @@ glps_renderer : public opengl_renderer
 {
 public:
   glps_renderer (FILE *_fp, const std::string& _term)
-    : opengl_renderer () , fp (_fp), term (_term), fontsize (), 
+    : opengl_renderer () , fp (_fp), term (_term), fontsize (),
     fontname () { }
 
   ~glps_renderer (void) { }
@@ -103,10 +103,10 @@ protected:
   }
 
 private:
-  // Use xform to compute the coordinates of the ft_string list 
+  // Use xform to compute the coordinates of the ft_string list
   // that have been parsed by freetype
-  void fix_strlist_position (double x, double y, double z, 
-                             Matrix box, double rotation, 
+  void fix_strlist_position (double x, double y, double z,
+                             Matrix box, double rotation,
                              std::list<ft_render::ft_string>& lst);
 
 private:

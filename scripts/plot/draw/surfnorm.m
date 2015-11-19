@@ -145,7 +145,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
         ## And correct for the aspect ratio of the display
         daratio = daspect (hax);
-        damag = sqrt (sumsq (daratio)); 
+        damag = sqrt (sumsq (daratio));
 
         ## FIXME: May also want to normalize the vectors relative to the size
         ##        of the diagonal.

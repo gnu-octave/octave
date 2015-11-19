@@ -1059,7 +1059,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
     :
   fi
 ])
-dnl 
+dnl
 dnl Check whether sndfile library is modern enough to include things like Ogg
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [

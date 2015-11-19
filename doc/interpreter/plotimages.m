@@ -97,7 +97,7 @@ function plotimages (d, nm, typ)
                            '\int_{0}^{x}e^{-t^2} dt = 0.6175$']);
       ## Be very careful about modifying this.  pdflatex expects to be in
       ## the same directory as the file it is operating on.
-      cd (make_absolute_filename (d)); 
+      cd (make_absolute_filename (d));
       print ([nm ".pdf"], "-dpdflatexstandalone");
       [status, output] = system (["pdflatex " nm]);
       if (status)

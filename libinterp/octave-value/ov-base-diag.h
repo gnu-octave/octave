@@ -86,7 +86,7 @@ public:
   { return to_dense ().reshape (new_dims); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-  { 
+  {
     if (vec.numel () == 2
         && ((vec.xelem (0) == 1 && vec.xelem (1) == 0)
             || (vec.xelem (0) == 0 && vec.xelem (1) == 1)))

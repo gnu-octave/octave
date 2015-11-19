@@ -35,7 +35,7 @@
 ## "createcancelbtn" property of waitbar figures. The action to be
 ## executed when the user presses the button is specified using a string or
 ## function handle @var{fcn}.
-## 
+##
 ## The appearance of the waitbar figure window can be configured by passing
 ## @var{prop}/@var{val} pairs to the function.
 ##
@@ -122,7 +122,7 @@ function h = waitbar (varargin)
                  "integerhandle", "off",
                  "handlevisibility", "callback",
                  "tag", "waitbar");
-    
+
     ax = axes ("parent", hf,
                "xtick", [], "ytick", [],
                "xlim", [0, 1], "ylim", [0, 1],
@@ -135,7 +135,7 @@ function h = waitbar (varargin)
     if (! isempty (varargin))
       set (hf, varargin{:});
     endif
-    
+
     hp = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
     ## Cache the axes and patch handles.
@@ -173,13 +173,13 @@ function updatecancelbutton (hf, dummy, hax)
       fpos = get (hf, "position");
       set (hax, "units", "pixels");
       apos = get (hax, "position");
-      
+
       fpos (2) -= 40;
       fpos (4) += 40;
       apos (2) += 40;
       set (hf, "position", fpos);
       set (hax, "position", apos, "units", units);
-      
+
       hbtn = uicontrol ("style", "pushbutton", "string", "Cancel", ...
                         "position", [fpos(3)-100 10 60 25],...
                         "callback", cb, "parent", hf);
@@ -192,7 +192,7 @@ function updatecancelbutton (hf, dummy, hax)
     fpos = get (hf, "position");
     set (hax, "units", "pixels");
     apos = get (hax, "position");
-    
+
     fpos (2) += 40;
     fpos (4) -= 40;
     apos (2) -= 40;
@@ -246,7 +246,7 @@ endfunction
 %! pause (0.5);
 %! close (h1);
 %! close (h2);
- 
+
 %!demo
 %! clf ();
 %! niter = 9;
@@ -254,7 +254,7 @@ endfunction
 %! xx = [0 l];
 %! yy = [0 0];
 %! hli = plot (xx, yy);
-%! 
+%!
 %! disp ("Push the cancel to stop the process.")
 %! hf = waitbar(0,"0","Name","Building Koch curve ...",...
 %!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
@@ -268,18 +268,18 @@ endfunction
 %!   else
 %!     waitbar (ii/niter, hf, sprintf ("Step %d/%d", ii, niter));
 %!   endif
-%! 
+%!
 %!   ## Increasingly lengthy computation
 %!   l /= 3;
 %!   theta = angle (complex (diff (xx), diff (yy)));
-%!   
+%!
 %!   xy = @(th, x0, y0) [cos(th) -sin(th) x0
-%!                       sin(th) cos(th) y0] * [0 l l*3/2      2*l; 
+%!                       sin(th) cos(th) y0] * [0 l l*3/2      2*l;
 %!                                              0 0 l*(3)^.5/2 0;
 %!                                              1 1 1          1];
 %!   tmp = arrayfun (xy, theta, xx(1:end-1), yy(1:end-1),
 %!                  "uniformoutput", false);
-%! 
+%!
 %!   tmp = cell2mat (tmp);
 %!   xx = [tmp(1,:) xx(end)];
 %!   yy = [tmp(2,:) yy(end)];
@@ -287,7 +287,7 @@ endfunction
 %!   drawnow ();
 %!   pause (0.5)
 %! endfor
-%! 
+%!
 %! if (ishandle (hf))
 %!   delete (hf)
 %! endif

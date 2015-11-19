@@ -23,12 +23,12 @@
 ## Create a uitoolbar object and return a handle to it. A uitoolbar displays uitoggletool and uipushtool buttons.
 ##
 ## If @var{parent} is omitted then a uitoolbar for the current figure is
-## created. If no figure is available, a new figure is created first. 
+## created. If no figure is available, a new figure is created first.
 ##
-## If @var{parent} is given then a uitoolbar relative to @var{parent} is created. 
-## 
-## Any provided property value pairs will override the default values of the created 
-## uitoolbar object. 
+## If @var{parent} is given then a uitoolbar relative to @var{parent} is created.
+##
+## Any provided property value pairs will override the default values of the created
+## uitoolbar object.
 ##
 ## Uitoolbar propertes are documented at @ref{Uitoolbar Properties}.
 ##
@@ -36,7 +36,7 @@
 ##
 ## @example
 ## @group
-## % create figure without a default toolbar 
+## % create figure without a default toolbar
 ## f = figure ("toolbar", "none");
 ## % create empty toolbar
 ## t = uitoolbar (f);

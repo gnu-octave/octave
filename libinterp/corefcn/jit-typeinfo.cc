@@ -221,7 +221,7 @@ octave_jit_gripe_nan_to_logical_conversion (void)
 extern "C" void
 octave_jit_ginvalid_index (void)
 {
-  // FIXME: 0-argument form of gripe_invalid_index removed in cset dd6345fd8a97 
+  // FIXME: 0-argument form of gripe_invalid_index removed in cset dd6345fd8a97
   //        Report -1 as the bad index for all occurrences.
   gripe_invalid_index (-1);
 }

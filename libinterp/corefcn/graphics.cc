@@ -6928,7 +6928,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
           significand = values(i) * std::pow (10., -exponent);
 
           os.str (std::string ());
-          if ((std::abs (significand) - 1) > 
+          if ((std::abs (significand) - 1) >
               std::numeric_limits<double>::epsilon())
             os << significand << ".";
           else if (significand < 0)
@@ -6982,7 +6982,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           label.erase (0, label.find_first_not_of (" "));
           label = label.substr (0, label.find_last_not_of (" ")+1);
 #ifdef HAVE_FREETYPE
-          ext = text_renderer.get_extent (label, 0.0, 
+          ext = text_renderer.get_extent (label, 0.0,
                                           get_ticklabelinterpreter ());
           wmax = std::max (wmax, ext(0));
           hmax = std::max (hmax, ext(1));

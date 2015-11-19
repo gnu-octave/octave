@@ -70,7 +70,7 @@
 ## Consider this when writing user-defined functions and use @code{.*},
 ## @code{./}, etc.  See the function @code{vectorize} for potentially
 ## converting inline or anonymous functions to vectorized versions.
-##  
+##
 ## @seealso{ezplot, plot, vectorize}
 ## @end deftypefn
 

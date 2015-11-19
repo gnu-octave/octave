@@ -195,12 +195,12 @@ glps_renderer::alignment_to_mode (int ha, int va) const
   return gl2psa;
 }
 
-void 
-glps_renderer::fix_strlist_position (double x, double y, double z, 
+void
+glps_renderer::fix_strlist_position (double x, double y, double z,
                                      Matrix box, double rotation,
                                      std::list<ft_render::ft_string>& lst)
 {
-  for (std::list<ft_render::ft_string>::iterator p = lst.begin (); 
+  for (std::list<ft_render::ft_string>::iterator p = lst.begin ();
        p != lst.end (); p++)
     {
       // Get pixel coordinates
@@ -212,10 +212,10 @@ glps_renderer::fix_strlist_position (double x, double y, double z,
                       - ((*p).get_y () + box(1))*sin (rot);
       coord_pix(1) -= ((*p).get_y () + box(1))*cos (rot)
                       + ((*p).get_x () + box(0))*sin (rot);;
-      
+
       // Turn coordinates back into current gl coordinates
-      ColumnVector coord = 
-        get_transform ().untransform (coord_pix(0), coord_pix(1), 
+      ColumnVector coord =
+        get_transform ().untransform (coord_pix(0), coord_pix(1),
                                       coord_pix(2), false);
       (*p).set_x (coord(0));
       (*p).set_y (coord(1));
@@ -223,7 +223,7 @@ glps_renderer::fix_strlist_position (double x, double y, double z,
     }
 }
 
-static std::string 
+static std::string
 code_to_symbol (uint32_t code)
 {
   std::string retval;
@@ -378,7 +378,7 @@ code_to_symbol (uint32_t code)
 }
 
 
-static std::string 
+static std::string
 select_font (caseless_str fn, bool isbold, bool isitalic)
 {
   std::transform (fn.begin (), fn.end (), fn.begin (), ::tolower);
@@ -395,7 +395,7 @@ select_font (caseless_str fn, bool isbold, bool isitalic)
         fontname = "Times-Roman";
     }
   else if (fn == "courier")
-    { 
+    {
       if (isitalic && isbold)
         fontname = "Courier-BoldOblique";
       else if (isitalic)
@@ -423,7 +423,7 @@ select_font (caseless_str fn, bool isbold, bool isitalic)
   return fontname;
 }
 
-static void 
+static void
 escape_character (const std::string chr, std::string& str)
 {
   std::size_t idx = str.find (chr);
@@ -443,8 +443,8 @@ glps_renderer::render_text (const std::string& txt,
 
   if (txt.empty ())
     return Matrix (1, 4, 0.0);
-  
-  // We have no way to get a bounding box from gl2ps, so we parse the raw 
+
+  // We have no way to get a bounding box from gl2ps, so we parse the raw
   // string using freetype
   Matrix bbox;
   std::string str = txt;
@@ -452,9 +452,9 @@ glps_renderer::render_text (const std::string& txt,
 
   text_to_strlist (str, lst, bbox, ha, va, rotation);
 
-  // When using "tex" or when the string has only one line and no 
+  // When using "tex" or when the string has only one line and no
   // special characters, use gl2ps for alignment
-  if (lst.empty () || term.find ("tex") != std::string::npos 
+  if (lst.empty () || term.find ("tex") != std::string::npos
       || (lst.size () == 1  && ! lst.front ().get_code ()))
     {
       std::string name = fontname;
@@ -472,7 +472,7 @@ glps_renderer::render_text (const std::string& txt,
       glRasterPos3d (x, y, z);
 
       // Escape parenthesis until gl2ps does it (see bug ##45301).
-      if (term.find ("svg") == std::string::npos 
+      if (term.find ("svg") == std::string::npos
           && term.find ("tex") == std::string::npos)
         {
           escape_character ("(", str);
@@ -487,16 +487,16 @@ glps_renderer::render_text (const std::string& txt,
   // Translate and rotate coordinates in order to use bottom-left alignment
   fix_strlist_position (x, y, z, bbox, rotation, lst);
 
-  for (std::list<ft_render::ft_string>::iterator p = lst.begin (); 
+  for (std::list<ft_render::ft_string>::iterator p = lst.begin ();
        p != lst.end (); p++)
     {
-      fontname = select_font ((*p).get_name (), 
+      fontname = select_font ((*p).get_name (),
                               (*p).get_weight () == "bold",
                               (*p).get_angle () == "italic");
       if ((*p).get_code ())
         {
-          // This is only one character represented by a uint32 (utf8) code. 
-          // We replace it by the corresponding character in the 
+          // This is only one character represented by a uint32 (utf8) code.
+          // We replace it by the corresponding character in the
           // "Symbol" font except for svg which has built-in utf8 support.
           if (term.find ("svg") == std::string::npos)
             {
@@ -520,13 +520,13 @@ glps_renderer::render_text (const std::string& txt,
               escape_character (")", str);
             }
         }
- 
+
       set_color ((*p).get_color ());
       glRasterPos3d ((*p).get_x (), (*p).get_y (), (*p).get_z ());
       gl2psTextOpt (str.c_str (), fontname.c_str (), (*p).get_size (),
                     GL2PS_TEXT_BL, rotation);
     }
-  
+
   fontname = saved_font;
   return bbox;
 }
@@ -536,7 +536,7 @@ glps_renderer::set_font (const base_properties& props)
 {
   opengl_renderer::set_font (props);
 
-  // Set the interpreter so that text_to_pixels can parse strings properly 
+  // Set the interpreter so that text_to_pixels can parse strings properly
   if (props.has_property ("interpreter"))
     set_interpreter (props.get ("interpreter").string_value ());
 
@@ -585,8 +585,8 @@ glps_renderer::draw_text (const text::properties& props)
     return;
 
   // First set font properties: freetype will use them to compute
-  // coordinates and gl2ps will retrieve the color directly from the 
-  // feedback buffer 
+  // coordinates and gl2ps will retrieve the color directly from the
+  // feedback buffer
   set_font (props);
   set_color (props.get_color_rgb ());
 

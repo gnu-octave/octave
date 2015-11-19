@@ -1131,7 +1131,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
       // Calculate the norm of the matrix, for later use.
       double anorm;
-      //if (calc_cond)   // Must always calculate anorm for bug #45577 
+      //if (calc_cond)   // Must always calculate anorm for bug #45577
       anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
       // Work around bug #45577, LAPACK crashes Octave if norm is NaN
@@ -1701,7 +1701,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
           // Calculate the norm of the matrix, for later use.
           double anorm = 0;
-          //if (calc_cond)   // Must always calculate anorm for bug #45577 
+          //if (calc_cond)   // Must always calculate anorm for bug #45577
           anorm = xnorm (*this, 1);
 
           // Work around bug #45577, LAPACK crashes Octave if norm is NaN

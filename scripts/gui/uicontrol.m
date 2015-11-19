@@ -26,12 +26,12 @@
 ## uicontrols are used to create simple interactive controls such as push buttons, checkboxes, edit and list controls.
 ##
 ## If @var{parent} is omitted then a uicontrol for the current figure is
-## created. If no figure is available, a new figure is created first. 
+## created. If no figure is available, a new figure is created first.
 ##
-## If @var{parent} is given then a uicontrol relative to @var{parent} is created. 
-## 
-## Any provided property value pairs will override the default values of the created 
-## uicontrol object. 
+## If @var{parent} is given then a uicontrol relative to @var{parent} is created.
+##
+## Any provided property value pairs will override the default values of the created
+## uicontrol object.
 ##
 ## Uicontrol propertes are documented at @ref{Uicontrol Properties}.
 ##
@@ -48,11 +48,11 @@
 ## Create a edit control that allows user input of single or multiple lines of text.
 ##
 ## @item @qcode{"listbox"}
-## Create a listbox control that displays a lit of items and allows user slelection of 
+## Create a listbox control that displays a lit of items and allows user slelection of
 ## single or multiple items.
 ##
 ## @item @qcode{"popupmenu"}
-## Create a popupmenu control that displays a list of options that can be selected 
+## Create a popupmenu control that displays a list of options that can be selected
 ## when the user clicks on the control.
 ##
 ## @item @qcode{"pushbutton"}
@@ -63,14 +63,14 @@
 ## of radiobutton controls.
 ##
 ## @item @qcode{"slider"}
-## Create a slider control that allows user selection from a range of values by sliding 
+## Create a slider control that allows user selection from a range of values by sliding
 ## knob on the control.
 ##
 ## @item @qcode{"text"}
 ## Create a static text control to display single or multiple lines of text.
 ##
 ## @item @qcode{"togglebutton"}
-## Create a toggle button control that appears like a push button but allows the user to 
+## Create a toggle button control that appears like a push button but allows the user to
 ## select between two states.
 ##
 ## @end table

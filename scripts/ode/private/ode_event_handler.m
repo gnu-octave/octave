@@ -96,7 +96,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     evtold = evtold(:)'; term = term(:)'; dir = dir(:)';
     told = t; yold = y; evtcnt = 1; retcell = cell (1,4);
 
-  ## Process the event, i.e., 
+  ## Process the event, i.e.,
   ## find the zero crossings for either a rising or falling edge
   elseif (isempty (flag))
 

@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "ov-base-scalar.h"
 #include "pr-output.h"
- 
+
 template <class MT>
 octave_value
 octave_base_matrix<MT>::subsref (const std::string& type,

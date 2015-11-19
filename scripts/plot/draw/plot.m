@@ -99,8 +99,8 @@
 ## in pairs.  These arguments are applied to the line objects drawn by
 ## @code{plot}.  Useful properties to modify are @qcode{"linestyle"},
 ## @qcode{"linewidth"}, @qcode{"color"}, @qcode{"marker"},
-## @qcode{"markersize"}, @qcode{"markeredgecolor"}, @qcode{"markerfacecolor"}.  
-## @xref{Line Properties}.  
+## @qcode{"markersize"}, @qcode{"markeredgecolor"}, @qcode{"markerfacecolor"}.
+## @xref{Line Properties}.
 ##
 ## The @var{fmt} format argument can also be used to control the plot style.
 ## It is a string composed of four optional parts:

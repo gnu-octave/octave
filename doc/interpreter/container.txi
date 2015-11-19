@@ -891,8 +891,9 @@ The following string functions support cell arrays of strings:
 Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
 @code{strncmpi} (@pxref{Comparing Strings}), @code{str2double},
 @code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
-@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating 
-Strings}) and @code{str2double} (@pxref{String Conversions}).
+@code{strmatch}, , @code{regexp}, @code{regexpi}
+(@pxref{Manipulating Strings}) and @code{str2double}
+(@pxref{String Conversions}).
 
 The function @code{iscellstr} can be used to test if an object is a
 cell array of strings.

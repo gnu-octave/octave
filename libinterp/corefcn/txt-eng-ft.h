@@ -55,7 +55,7 @@ public:
   };
 
 public:
-  
+
   ft_render (void);
 
   ~ft_render (void);
@@ -168,7 +168,7 @@ private:
   FT_UInt process_character (FT_ULong code, FT_UInt previous = 0);
 
 public:
-  // A class to store informations on substrings after parsing. 
+  // A class to store informations on substrings after parsing.
   class ft_string : public ft_font
   {
   public:
@@ -178,7 +178,7 @@ public:
       : ft_font (nm, fontwgt, fontang, fontsz),
         string(s), x(x0), y(y0), z(0.0), code(0),
         color(Matrix (1,3,0.0)){ }
-  
+
     void set_string (const std::string str) { string = str; }
 
     std::string get_string (void) const { return string; }
@@ -199,15 +199,15 @@ public:
 
     uint32_t get_code (void) const { return code; }
 
-    void set_color (const uint8NDArray c) 
-    { 
-      color(0) = static_cast<double> (c(0)) / 255; 
+    void set_color (const uint8NDArray c)
+    {
+      color(0) = static_cast<double> (c(0)) / 255;
       color(1) = static_cast<double> (c(1)) / 255;
       color(2) = static_cast<double> (c(2)) / 255;
     }
 
     Matrix get_color (void) const { return color; }
-  
+
   private:
     std::string  string;
     double x, y, z;
@@ -218,12 +218,12 @@ public:
  void text_to_strlist (const std::string& txt,
                         std::list<ft_string>& lst, Matrix& box,
                         int ha, int va, double rot,
-                        const caseless_str& interp = "tex")  
+                        const caseless_str& interp = "tex")
   {
     uint8NDArray pixels_;
-    // First run text_to_pixels which will also build the string list 
+    // First run text_to_pixels which will also build the string list
     text_to_pixels (txt, pixels_, box, ha, va, rot, interp, false);
-    
+
     lst = strlist;
   }
 

@@ -642,7 +642,7 @@ ft_render::visit (text_element_string& e)
       memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;
 
-      ft_string fs (str, font.get_angle (), font.get_weight (), 
+      ft_string fs (str, font.get_angle (), font.get_weight (),
                     font.get_name (), font.get_size (), xoffset, yoffset);
 
       while (n > 0)
@@ -658,7 +658,7 @@ ft_render::visit (text_element_string& e)
 
               if (wc == L'\n')
                 {
-                  // Finish previous string in srtlist before processing 
+                  // Finish previous string in srtlist before processing
                   // the newline character
                   fs.set_y (line_yoffset + yoffset);
                   fs.set_color (color);
@@ -677,10 +677,10 @@ ft_render::visit (text_element_string& e)
                   previous = 0;
                   // Start a new string in strlist
                   idx = curr;
-                  fs = ft_string (str.substr (idx), font.get_angle (), 
-                                  font.get_weight (), font.get_name (), 
+                  fs = ft_string (str.substr (idx), font.get_angle (),
+                                  font.get_weight (), font.get_name (),
                                   font.get_size (), line_xoffset, yoffset);
-                  
+
                 }
               else
                 previous = glyph_index;
@@ -837,8 +837,8 @@ void
 ft_render::visit (text_element_symbol& e)
 {
   uint32_t code = e.get_symbol_code ();
- 
-  ft_string fs (std::string ("-"), font.get_angle (), font.get_weight (), 
+
+  ft_string fs (std::string ("-"), font.get_angle (), font.get_weight (),
                 font.get_name (), font.get_size (), xoffset, yoffset);
 
   if (code != text_element_symbol::invalid_code && font.is_valid ())
@@ -1024,7 +1024,7 @@ void
 ft_render::text_to_pixels (const std::string& txt,
                            uint8NDArray& pixels_, Matrix& box,
                            int _halign, int valign, double rotation,
-                           const caseless_str& interpreter, 
+                           const caseless_str& interpreter,
                            bool handle_rotation)
 {
   int rot_mode = rotation_to_mode (rotation);

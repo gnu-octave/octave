@@ -6,7 +6,7 @@ syntax: regexp
 # gnulib makes these silly backup files
 .~$
 
-# This directory gets created by gnulib during the build. 
+# This directory gets created by gnulib during the build.
 # It contains no Octave files.
 ^libgnu/*
 

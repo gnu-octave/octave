@@ -1004,7 +1004,7 @@ commands can be used to save and re-create a graphics object.
 
 The user can select points on a plot with the @code{ginput} function or
 select the position at which to place text on the plot with the
-@code{gtext} function using the mouse.  
+@code{gtext} function using the mouse.
 
 @DOCSTRING(ginput)
 

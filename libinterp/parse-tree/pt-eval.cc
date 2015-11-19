@@ -859,7 +859,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
   tree_statement_list *try_code = cmd.body ();
 
   bool execution_error = false;
-  
+
   if (try_code)
     {
       try

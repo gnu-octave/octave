@@ -201,7 +201,7 @@ moving from one column to next, filling up all rows in each column.\n\
 
           if (nargout > dv.length ())
             dv = dv.redim (nargout);
-          
+
           retval = Array<octave_value> (ind2sub (dv, idx));
         }
       catch (const index_exception& e)

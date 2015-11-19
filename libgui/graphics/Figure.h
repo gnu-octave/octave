@@ -113,7 +113,7 @@ private:
   void save_figure_callback (const std::string& file);
   void copy_figure_callback (const std::string& format);
 
-  void enableMouseTracking (void);  
+  void enableMouseTracking (void);
 
 private slots:
   void setMouseMode (MouseMode mode);

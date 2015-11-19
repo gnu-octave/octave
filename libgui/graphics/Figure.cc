@@ -163,10 +163,10 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
 
   win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
 
-  // Enable mouse tracking unconditionally  
+  // Enable mouse tracking unconditionally
   enableMouseTracking ();
 
-  // When this constructor gets called all properties are already 
+  // When this constructor gets called all properties are already
   // set, even non default. We force "update" here to get things right.
 
   // Figure title
@@ -179,7 +179,7 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
 
   // Visibility
   update (figure::properties::ID_VISIBLE);
-  
+
 
   connect (this, SIGNAL (asyncUpdate (void)),
            this, SLOT (updateContainer (void)));

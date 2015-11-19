@@ -140,7 +140,7 @@ function h = imshow (im, varargin)
           warning ("imshow: zoom argument ignored -- use GUI features");
           narg++;
         case "parent"
-          prop_val_args(end+(1:2)) = {"parent", varargin{narg++}}; 
+          prop_val_args(end+(1:2)) = {"parent", varargin{narg++}};
           if (! isaxes (prop_val_args{end}))
             error ("imshow: parent must be an axes handle");
           endif

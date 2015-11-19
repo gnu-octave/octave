@@ -45,7 +45,7 @@ This page shows the tasks to be completed before the GUI release is finalized.
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Run Octave test suite under [http://valgrind.org Valgrind] to check for memory leaks
-#* Results posted to bug report: 
+#* Results posted to bug report:
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Review documentation

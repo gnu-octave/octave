@@ -257,23 +257,23 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
     ## Find location of FFF in ds.
     ## Might not match idx because of things like yyyy -> %y.
     [~, nc] = strptime (ds, f(1:idx-1));
-    
+
     msec = ds(nc:min (nc+2,end)); # pull 3-digit fractional seconds.
     msec_idx = find (! isdigit (msec), 1);
-    
+
     if (! isempty (msec_idx))  # non-digits in msec
       msec = msec(1:msec_idx-1);
       msec(end+1:3) = "0";     # pad msec with trailing zeros
       ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
     elseif (numel (msec) < 3)  # less than three digits in msec
-      m_len = numel (msec); 
+      m_len = numel (msec);
       msec(end+1:3) = "0";     # pad msec with trailing zeros
       ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
     endif
-    
+
     ## replace FFF with digits to guarantee match in strptime.
     f(idx:idx+2) = msec;
-  
+
     if (nc > 0)
       [tm, nc] = strptime (ds, f);
       tm.usec = 1000 * str2double (msec);

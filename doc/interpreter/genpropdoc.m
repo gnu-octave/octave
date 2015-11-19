@@ -172,7 +172,7 @@ always @qcode{\"__objname__\"}";
         s.doc = "Graphics handle of the uicontextmenu object that is \
 currently associated to this __objname__ object.";
         s.valid = valid_handle;
-        
+
       case "userdata"
         s.doc = "User-defined data to associate with the graphics object.";
         s.valid = "Any Octave data";
@@ -363,7 +363,7 @@ key.\n\
 
       case "menubar"
         s.doc = "Control the display of the figure menu bar in the upper \
-left of the figure.";  
+left of the figure.";
 
       case "name"
         s.doc = "Name to be displayed in the figure title bar.  The name is \
@@ -593,7 +593,7 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
         s.doc = doc_unused;
 
       case "gridlinestyle"
-           
+
       case "labelfontsizemultiplier"
         s.doc = doc_unused;
 
@@ -623,7 +623,7 @@ objects (ticks, labels, etc. covered by plotted objects) or above.";
 
       case "minorgridlinestyle"
       case "mousewheelzoom"
-        s.doc = "Fraction of axes limits to zoom for each wheel movement."; 
+        s.doc = "Fraction of axes limits to zoom for each wheel movement.";
         s.valid = "scalar in the range (0, 1)";
 
       case "nextplot"
@@ -669,7 +669,7 @@ box or \"out\".";
       case "ticklabelinterpreter"
         s.doc = "Control the way x/y/zticklabel properties are interpreted.\n\
 @xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
-        
+
       case "ticklength"
         s.doc = "Two-element vector @code{[2Dlen 3Dlen]} specifying the \
 length of the tickmarks relative to the longest visible axis.";
@@ -836,7 +836,7 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.doc = doc_unused;
 
       case "interpreter"
-        
+
       case "linestyle"
         s.doc = "@xref{Line Styles}.";
 
@@ -942,7 +942,7 @@ z data.";
         s.doc = "Control the way the @qcode{\"string\"} property is \
 interpreted.\n\
 @xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
-        
+
       case "linestyle"
         s.doc = sprintf (doc_notimpl, "Background area");
 
@@ -1237,7 +1237,7 @@ it defines the color at each vertex.";
         s.valid = valid_vecmat;
 
     endswitch
-      
+
   ## uimenu properties
   elseif (strcmp (objname, "uimenu"))
     switch (field)
@@ -1253,8 +1253,8 @@ it defines the color at each vertex.";
       case "foregroundcolor"
       case "label"
       case "position"
-      case "separator"  
-        
+      case "separator"
+
     endswitch
 
   ## uicontextmenu properties
@@ -1266,8 +1266,8 @@ it defines the color at each vertex.";
 
       ## Specific properties
       case "callback"
-      case "position" 
-        
+      case "position"
+
     endswitch
 
   ## uipanel properties

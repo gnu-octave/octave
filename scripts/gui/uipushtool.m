@@ -29,9 +29,9 @@
 ## created. If no figure is available, a new figure is created first.  If a figure is
 ## available, but does not contain a uitoolbar, a uitoolbar will be created.
 ##
-## If @var{parent} is given then a uipushtools is created on the @var{parent} uitoolbar. 
-## 
-## Any provided property value pairs will override the default values of the created 
+## If @var{parent} is given then a uipushtools is created on the @var{parent} uitoolbar.
+##
+## Any provided property value pairs will override the default values of the created
 ## uipushtool object.
 ##
 ## Uipushtool propertes are documented at @ref{Uipushtool Properties}.

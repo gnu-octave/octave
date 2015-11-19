@@ -23,11 +23,11 @@
 ## Create a uicontextmenu object and return a handle to it.
 ##
 ## If @var{h} is omitted then a uicontextmenu for the current figure is
-## created. If no figure is available, a new figure is created first. 
+## created. If no figure is available, a new figure is created first.
 ##
-## If @var{h} is given then a uicontextmenu relative to @var{h} is created. 
-## 
-## Any provided property value pairs will override the default values of the created 
+## If @var{h} is given then a uicontextmenu relative to @var{h} is created.
+##
+## Any provided property value pairs will override the default values of the created
 ## uicontextmenu object.
 ##
 ## Uicontextmenu propertes are documented at @ref{Uicontextmenu Properties}.

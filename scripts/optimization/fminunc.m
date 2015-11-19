@@ -342,14 +342,14 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
   ## When info != 1, recalculate the gradient and Hessian using the final x.
   if (nargout > 4 && (info == -1 || info == 2 || info == 3))
-    grad0 = grad;  
+    grad0 = grad;
     if (has_grad)
       [fval, grad] = fcn (reshape (x, xsz));
       grad = grad(:);
     else
       grad = __fdjac__ (fcn, reshape (x, xsz), fval, typicalx, cdif)(:);
     endif
-    
+
     if (nargout > 5)
       ## Use the damped BFGS formula.
       y = grad - grad0;

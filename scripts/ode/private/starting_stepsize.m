@@ -43,6 +43,9 @@ function h = starting_stepsize (order, func, t0, x0,
 
   ## compute norm of the function evaluated at initial conditions
   y = func (t0, x0);
+  if (iscell (y))
+    y = y{1};
+  endif
   d1 = AbsRel_Norm (y, y, AbsTol, RelTol, normcontrol);
 
   if (d0 < 1e-5 || d1 < 1e-5)
@@ -55,9 +58,12 @@ function h = starting_stepsize (order, func, t0, x0,
   x1 = x0 + h0 * y;
 
   ## approximate the derivative norm
+  yh = func (t0+h0, x1);
+  if (iscell (yh))
+    yh = yh{1};
+  endif
   d2 = (1 / h0) * ...
-       AbsRel_Norm (func (t0+h0, x1) - y,
-                    func (t0+h0, x1) - y, AbsTol, RelTol, normcontrol);
+       AbsRel_Norm (yh - y, yh - y, AbsTol, RelTol, normcontrol);
 
   if (max (d1, d2) <= 1e-15)
     h1 = max (1e-6, h0*1e-3);

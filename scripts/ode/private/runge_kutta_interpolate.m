@@ -17,14 +17,15 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, args)
+function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, args)
 
   switch (order)
 
     ## FIXME: Can interpolations for orders 1-4 simply be deleted? 2015-10-14.
-    #{
+
     case 1
-      u_interp = linear_interpolation (z, u, t);
+      u_interp = interp1 (z, u', t, 'linear');
+
     case 2
       if (! isempty (k_vals))
         der = k_vals(:,1);
@@ -32,6 +33,8 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, args)
         der = feval (func, z(1) , u(:,1), args);
       endif
       u_interp = quadratic_interpolation (z, u, der, t);
+
+    #{
     case 3
       u_interp = ...
       hermite_cubic_interpolation (z, u, k_vals, t);
@@ -42,7 +45,6 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, args)
                                        [u(:,i-1) u(:,i)],
                                        k_vals, tspan(counter));
     #}
-
     case 5
       ## ode45 with Dormand-Prince scheme:
       u_interp = hermite_quartic_interpolation (z, u, k_vals, t);
@@ -69,6 +71,19 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, args)
 
 endfunction
 
+## The function below can be used in an ODE solver to interpolate the solution
+## at the time t_out using 2th order hermite interpolation.
+function x_out = quadratic_interpolation (t, x, der, t_out)
+
+  # coefficients of the parabola
+  a = -(x(:,1) - x(:,2) - der(:).*(t(1)-t(2))) / (t(1) - t(2))^2;
+  b = der(:) - 2*t(1).*a;
+  c = x(:,1) - a*t(1)^2 - b*t(1);
+
+  # evauate in t_out
+  x_out = a*t_out.^2 + b*t_out + c;
+
+endfunction
 
 ## The function below can be used in an ODE solver to interpolate the solution
 ## at the time t_out using 4th order hermite interpolation.

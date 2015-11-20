@@ -713,7 +713,26 @@ maybe_initialize_magick (void)
       // Restore locale from before GraphicsMagick initialisation
       setlocale (LC_ALL, locale.c_str ());
 
-      if (QuantumDepth < 32)
+      // Why should we give a warning?
+      // Magick does not tell us the real bitdepth of the image in file.
+      // The best we can have is the minimum between the bitdepth of the
+      // file and the quantum depth.  So we never know if the file will
+      // actually be read correctly so we warn the user that it might
+      // be limited.
+      //
+      // Why we warn if < 16 instead of < 32 ?
+      // The reasons for < 32 is simply that it's the maximum quantum
+      // depth they support.  However, very few people would actually
+      // need such support while being a major inconvenience to anyone
+      // else (8 bit images suddenly taking 4x more space will be
+      // critical for multi page images).  It would also suggests that
+      // it covers all images which does not (it still does not support
+      // float point and signed integer images).
+      // On the other hand, 16bit images are much more common. If quantum
+      // depth is 8, there's a good chance that we will be limited.  It
+      // is also the GraphicsMagick recommended setting and the default
+      // for ImageMagick.
+      if (QuantumDepth < 16)
         warning_with_id ("Octave:GraphicsMagic-Quantum-Depth",
                          "your version of %s limits images to %d bits per pixel\n",
                          MagickPackageName, QuantumDepth);

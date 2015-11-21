@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QVector>
 #include <QHash>
+#include <QTextCodec>
 
 #ifdef HAVE_QSCINTILLA
 #include "octave-qscintilla.h"
@@ -365,13 +366,17 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->pb_octave_dir, SIGNAL (pressed ()),
            this, SLOT (get_octave_dir ()));
 
+  //
   // editor
+  //
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",
                                                         false).toBool ());
   ui->customFileEditor->setText (
     settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (
     settings->value ("editor/showLineNumbers",true).toBool ());
+
+  init_combo_encoding (settings);
 
   default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
@@ -798,6 +803,10 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode",
                       ui->combo_eol_mode->currentIndex ());
+  QString encoding = ui->editor_combo_encoding->currentText ();
+  if (encoding == tr ("System default"))
+    encoding = "SYSTEM";
+  settings->setValue ("editor/default_encoding", encoding);
   settings->setValue ("editor/auto_indent",
                       ui->editor_auto_ind_checkbox->isChecked ());
   settings->setValue ("editor/tab_indents_line",
@@ -1013,6 +1022,48 @@ settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
       ui->le_file_browser_dir->setDisabled (disable);
       ui->pb_file_browser_dir->setDisabled (disable);
     }
+}
+
+// initialize the combo box with possible text encodings
+void
+settings_dialog::init_combo_encoding (QSettings *settings)
+{
+  // get the codec name for each mib
+  QList<int> all_mibs = QTextCodec::availableMibs ();
+  QStringList all_codecs;
+  foreach (int mib, all_mibs)
+    {
+      QTextCodec *c = QTextCodec::codecForMib (mib);
+      all_codecs << c->name ().toUpper ();
+    }
+  all_codecs.removeDuplicates ();
+
+  // remove the "system" entry
+  int idx = all_codecs.indexOf ("SYSTEM");
+  if (idx >= 0)
+    all_codecs.removeAt (idx);
+
+  // sort and prepend meaningfull text for system's default codec
+  qSort (all_codecs);
+  all_codecs.prepend (tr ("System default"));
+
+  // get the value from the settings file (system is default)
+  QString encoding = settings->value ("editor/default_encoding","SYSTEM")
+                               .toString ();
+  if (encoding == "SYSTEM")
+    encoding = tr ("System default");
+
+  // fill the combo box and select the current item or system if
+  // current item from the settings file can not be found
+  foreach (QString c, all_codecs)
+    ui->editor_combo_encoding->addItem (c);
+  idx = ui->editor_combo_encoding->findText (encoding);
+  if (idx >= 0)
+    ui->editor_combo_encoding->setCurrentIndex (idx);
+  else
+    ui->editor_combo_encoding->setCurrentIndex (0);
+
+  ui->editor_combo_encoding->setMaxVisibleItems (12);
 }
 
 // slots for import/export of shortcut sets

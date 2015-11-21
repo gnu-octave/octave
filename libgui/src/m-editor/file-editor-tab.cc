@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QInputDialog>
 #include <QPrintDialog>
 #include <QDateTime>
+#include <QTextCodec>
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
@@ -1354,8 +1355,15 @@ file_editor_tab::load_file (const QString& fileName)
   if (!file.open (QFile::ReadOnly))
     return file.errorString ();
 
+  // read the file
   QTextStream in (&file);
-  in.setCodec("UTF-8");
+  // set the desired codec
+  QSettings *settings = resource_manager::get_settings ();
+  QString encoding = settings->value ("editor/default_encoding","SYSTEM")
+                               .toString ();
+  QTextCodec *codec = QTextCodec::codecForName (encoding.toAscii ());
+  in.setCodec(codec);
+
   QApplication::setOverrideCursor (Qt::WaitCursor);
   _edit_area->setText (in.readAll ());
   _edit_area->setEolMode (detect_eol_mode ());
@@ -1509,7 +1517,14 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
 
   // save the contents into the file
   QTextStream out (&file);
-  out.setCodec("UTF-8");
+
+  // set the desired codec
+  QSettings *settings = resource_manager::get_settings ();
+  QString encoding = settings->value ("editor/default_encoding","SYSTEM")
+                               .toString ();
+  QTextCodec *codec = QTextCodec::codecForName (encoding.toAscii ());
+  out.setCodec(codec);
+
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
   out.flush ();

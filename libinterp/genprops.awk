@@ -45,8 +45,7 @@
 ##   void
 ##   set_NAME (const TYPE& val)
 ##   {
-##     if (! error_state)
-##       NAME = val;
+##     NAME = val;
 ##   }
 ##
 ##   void
@@ -374,7 +373,7 @@ function emit_declarations ()
         else
           has_builtin_listeners = 0;
 
-        printf ("\n  {\n    if (! error_state)\n      {\n        if (%s.set (val, %s))\n          {\n",
+        printf ("\n  {\n      {\n        if (%s.set (val, %s))\n          {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
         if (mode[i])
           printf ("            set_%smode (\"manual\");\n", name[i]);
@@ -470,7 +469,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n  else if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
+        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
 
     first = 1;
 
@@ -524,7 +523,7 @@ function emit_source ()
     printf ("  octave_value retval;\n\n");
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n");
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n");
 
     for (i = 1; i<= idx; i++)
     {
@@ -549,7 +548,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n");
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n");
 
     for (i = 1; i<= idx; i++)
     {

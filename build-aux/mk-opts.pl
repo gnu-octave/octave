@@ -752,44 +752,37 @@ set_$CLASS_NAME (const std::string& keyword, const octave_value& val)
       if ($TYPE[$i] eq "double")
         {
           print "      double tmp = val.double_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "float")
         {
           print "      float tmp = val.float_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "int" or $TYPE[$i] eq "octave_idx_type")
         {
           print "      int tmp = val.int_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "std::string")
         {
           print "      std::string tmp = val.string_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "Array<int>" or $TYPE[$i] eq "Array<octave_idx_type>")
         {
           print "      Array<int> tmp = val.int_vector_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "Array<double>")
         {
           print "      Array<double> tmp = val.vector_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "Array<float>")
         {
           print "      Array<float> tmp = val.float_vector_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       else
         {
@@ -945,17 +938,12 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
     }
   else if (nargin == 1 || nargin == 2)
     {
-      std::string keyword = args(0).string_value ();
+      std::string keyword = args(0).xstring_value ("$OPT_FCN_NAME: expecting keyword as first argument");
 
-      if (! error_state)
-        {
-          if (nargin == 1)
-            retval = show_$CLASS_NAME (keyword);
-          else
-            set_$CLASS_NAME (keyword, args(1));
-        }
+      if (nargin == 1)
+        retval = show_$CLASS_NAME (keyword);
       else
-        error ("$OPT_FCN_NAME: expecting keyword as first argument");
+        set_$CLASS_NAME (keyword, args(1));
     }
   else
     print_usage ();

@@ -719,7 +719,7 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 void
 tree_print_code::visit_no_op_command (tree_no_op_command& cmd)
 {
-  if (cmd.is_end_of_fcn_or_script ())
+  if (cmd.is_end_of_fcn_or_script () && curr_print_indent_level > 1)
     decrement_indent_level ();
 
   indent ();

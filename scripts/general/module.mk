@@ -26,6 +26,7 @@ scripts_general_FCN_FILES = \
   scripts/general/curl.m \
   scripts/general/dblquad.m \
   scripts/general/deal.m \
+  scripts/general/deg2rad.m \
   scripts/general/del2.m \
   scripts/general/display.m \
   scripts/general/divergence.m \
@@ -65,6 +66,7 @@ scripts_general_FCN_FILES = \
   scripts/general/quadgk.m \
   scripts/general/quadl.m \
   scripts/general/quadv.m \
+  scripts/general/rad2deg.m \
   scripts/general/randi.m \
   scripts/general/rat.m \
   scripts/general/repmat.m \

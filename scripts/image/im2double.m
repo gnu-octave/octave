@@ -1,0 +1,121 @@
+## Copyright (C) 2007-2015 Søren Hauberg
+## Copyright (C) 2012-2015 Carnë Draug
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn  {Function File} {} im2double (@var{img})
+## @deftypefnx {Function File} {} im2double (@var{img}, "indexed")
+## Convert image to double precision.
+##
+## The conversion of @var{img} to double precision, is dependent
+## on the type of input image.  The following input classes are
+## supported:
+##
+## @table @samp
+## @item uint8, uint16, and int16
+## The range of values from the class is scaled to the interval [0 1].
+##
+## @item logical
+## True and false values are assigned a value of 0 and 1 respectively.
+##
+## @item single
+## Values are cast to double.
+##
+## @item double
+## Returns the same image.
+##
+## @end table
+##
+## If the second argument is the string @qcode{"indexed"}, then values are
+## cast to double precision, and a +1 offset is applied if input is
+## an integer class.
+##
+## @seealso{double}
+## @end deftypefn
+
+## Author: Søren Hauberg <soren@hauberg.org>
+## Author: Carnë Draug <carandraug@octave.org>
+
+function img = im2double (img, im_type)
+  ## "normal" (non-indexed) images
+  if (nargin () == 1)
+    switch (class (img))
+      case "uint8",   img = double (img) / 255;
+      case "uint16",  img = double (img) / 65535;
+      case "int16",   img = (double (img) + 32768) / 65535;
+      case "single",  img = double (img);
+      case "logical", img = double (img);
+      case "double",  # do nothing
+      otherwise, error ("im2double: IMG is of unsupported class \"%s\"", class (img));
+    endswitch
+
+  ## indexed images
+  elseif (nargin () == 2)
+    if (! strcmpi (im_type, "indexed"))
+      error ("im2double: second input argument must be the string \"indexed\"");
+    elseif (any (isa (img, {"uint8", "uint16"})))
+      img = double (img) + 1;
+    elseif (isfloat (img) && isindex (img))
+      img = double (img);
+    else
+      error (["im2double: if IMG is indexed, then it must be positive " ...
+              "integer floating points or unsigned integer class"]);
+    endif
+
+  else
+    print_usage ();
+  endif
+endfunction
+
+%!assert (im2double ([1 2 3]), [1 2 3])
+%!assert (im2double (single ([1 2 3])), [1 2 3])
+%!assert (im2double (uint8 ([0 127 128 255])), [0 127/255 128/255 1])
+%!assert (im2double (uint16 ([0 127 128 65535])), [0 127/65535 128/65535 1])
+%!assert (im2double (int16 ([-32768 -32767 -32766 32767])),
+%!                   [0 1/65535 2/65535 1])
+
+%!assert (im2double (uint8 ([0 1 255]), "indexed"), [1 2 256])
+%!assert (im2double (uint16 ([0 1 2557]), "indexed"), [1 2 2558])
+%!assert (im2double ([3 25], "indexed"), [3 25])
+%!assert (im2double (single ([3 25]), "indexed"), [3 25])
+
+## Test for ND input
+%!function test_im2double_nd (cls, low, high)
+%!  in = rand (2, 4, 2, 3, 2);
+%!  in *= high - low;
+%!  in += low;
+%!  in = cast (in, cls);
+%!  out = zeros (size (in));
+%!  for n = 1:12
+%!    out(:,:,n) = im2double (in(:,:,n));
+%!  endfor
+%!  assert (im2double (in), out)
+%!endfunction
+
+%!test
+%! test_im2double_nd ("double", 0, 1);
+%! test_im2double_nd ("single", 0, 1);
+%! test_im2double_nd ("uint8", 0, 255);
+%! test_im2double_nd ("uint16", 0, 6535);
+%! test_im2double_nd ("int16", -32768, 32767);
+
+%!error <positive integer floating> im2double (single ([0 1 2]), "indexed");
+%!error <unsigned integer class> im2double (int16 ([17 8]), "indexed");
+%!error <unsigned integer class> im2double (int16 ([-7 8]), "indexed");
+%!error <unsigned integer class> im2double ([false true], "indexed");
+%!error <must be the string "indexed"> im2double ([1 2 3], "non-indexed");

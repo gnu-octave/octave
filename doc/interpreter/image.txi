@@ -140,6 +140,8 @@ index in the color map, and each row in the color map corresponds to
 an RGB color.  The color map must be of class @code{double} with values
 between 0 and 1.
 
+@DOCSTRING(im2double)
+
 @DOCSTRING(iscolormap)
 
 @DOCSTRING(gray2ind)

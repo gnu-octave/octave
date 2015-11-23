@@ -31,6 +31,7 @@ scripts_image_FCN_FILES = \
   scripts/image/hsv.m \
   scripts/image/hsv2rgb.m \
   scripts/image/iscolormap.m \
+  scripts/image/im2double.m \
   scripts/image/image.m \
   scripts/image/imagesc.m \
   scripts/image/imfinfo.m \

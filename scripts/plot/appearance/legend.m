@@ -195,7 +195,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       if (pos >= -1 && pos <= 4)
         location = [{"northeastoutside", "best", "northeast",
                      "northwest", "southwest", "southeast"}] {pos + 2};
-        nargs--;
+        nargs -= 1;
       else
         error ("legend: invalid location specified");
       endif
@@ -255,7 +255,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
             delete_leg = true;
           case "hide"
             show = "off";
-            nargs--;
+            nargs -= 1;
           case "show"
             if (! isempty (hlegend))
               show = "on";
@@ -263,7 +263,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               show = "create";
               textpos = "right";
             endif
-            nargs--;
+            nargs -= 1;
           case "toggle"
             if (isempty (hlegend))
               show = "create";
@@ -273,19 +273,19 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
             else
               show = "off";
             endif
-            nargs--;
+            nargs -= 1;
           case "boxon"
             box = "on";
-            nargs--;
+            nargs -= 1;
           case "boxoff"
             box = "off";
-            nargs--;
+            nargs -= 1;
           case "left"
             textpos = "left";
-            nargs--;
+            nargs -= 1;
           case "right"
             textpos = "right";
-            nargs--;
+            nargs -= 1;
         endswitch
       else
         ## Character matrix of labels
@@ -931,16 +931,16 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                               [(txoffset + xk * xstep) / lpos(3), ...
                                (lpos(4) - yoffset - yk * ystep) / lpos(4)]);
           if (strcmp (orientation, "vertical"))
-            yk++;
+            yk += 1;
             if (yk > num1)
               yk = 0;
-              xk++;
+              xk += 1;
             endif
           else
-            xk++;
+            xk += 1;
             if (xk > num1)
               xk = 0;
-              yk++;
+              yk += 1;
             endif
           endif
         endfor

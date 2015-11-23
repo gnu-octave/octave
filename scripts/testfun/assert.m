@@ -77,7 +77,7 @@ function assert (cond, varargin)
 
   unwind_protect
 
-    call_depth++;
+    call_depth += 1;
 
     if (call_depth == 0)
       errmsg = "";
@@ -399,7 +399,7 @@ function assert (cond, varargin)
     endif
 
   unwind_protect_cleanup
-    call_depth--;
+    call_depth -= 1;
   end_unwind_protect
 
   if (call_depth == -1)

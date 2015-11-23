@@ -134,7 +134,7 @@ function r = pick_rand_diag (n, k)
   ## order to avoid overflow (underflow is fine, just means effectively
   ## zero probabilities).
   [~, midx] = max (cumsum (log (q))) ;
-  midx++;
+  midx += 1;
   lc = fliplr (cumprod (1./q(midx-1:-1:1)));
   rc = cumprod (q(midx:end));
 

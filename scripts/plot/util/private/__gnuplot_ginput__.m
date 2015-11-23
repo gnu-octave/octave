@@ -74,7 +74,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
 
     k = 0;
     while (true)
-      k++;
+      k += 1;
 
       ## Notes: MOUSE_* can be undefined if user closes gnuplot by "q"
       ## or Alt-F4. Further, this abrupt close also requires the leading

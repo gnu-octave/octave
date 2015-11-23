@@ -117,7 +117,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
   ## LH3: test for completion.
   while (iter < max_iter)
     while (iter < max_iter)
-      iter++;
+      iter += 1;
 
       ## LH6: compute the positive matrix and find the min norm solution
       ## of the positive problem.

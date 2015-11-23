@@ -59,7 +59,7 @@ function varargout = __imread__ (filename, varargin)
       error ("imread: IDX must be a numeric vector");
     endif
     options.index = varargin{offset};
-    offset++;
+    offset += 1;
   endif
 
   if (rem (numel (varargin) - offset + 1, 2) != 0)

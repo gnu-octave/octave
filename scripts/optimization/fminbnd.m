@@ -106,7 +106,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   w = x = v;
   e = 0;
   fv = fw = fval = fun (x);
-  nfev++;
+  nfev += 1;
 
   ## Only for display purposes.
   iter(1).funccount = nfev;
@@ -169,7 +169,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     u = x + max (abs (d), tol) * (sign (d) + (d == 0));
     fu = fun (u);
 
-    niter++;
+    niter += 1;
 
     iter(niter).funccount = nfev++;
     iter(niter).x = u;

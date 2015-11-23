@@ -69,18 +69,18 @@ function varargout = __bar__ (vertical, func, varargin)
   while (idx <= nargin)
     if (ischar (varargin{idx}) && strcmpi (varargin{idx}, "grouped"))
       group = true;
-      idx++;
+      idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "stacked"))
       group = false;
-      idx++;
+      idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "histc"))
       group = true;
       histc = true;
-      idx++;
+      idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "hist"))
       group = true;
       histc = false;
-      idx++;
+      idx += 1;
     else
       if ((ischar (varargin{idx}) || iscellstr (varargin{idx}))
           && ! have_line_spec)
@@ -90,7 +90,7 @@ function varargout = __bar__ (vertical, func, varargin)
           ## FIXME: strange parse error requires semicolon to be spaced
           ##        away from closing ']' on next line.
           newargs = [{"facecolor", linespec.color}, newargs] ;
-          idx++;
+          idx += 1;
           continue;
         endif
       endif

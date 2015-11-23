@@ -59,10 +59,10 @@ function s = hdl2struct (h)
   while (nkids)
     if (! any (kids (nkids) == lg) && ! any (kids (nkids) == cb)
           && ! any (kids (nkids) == ui) && ! strcmp (main.type, "hggroup"))
-      ii++;
+      ii += 1;
       s.children(ii) = hdl2struct (kids(nkids));
     endif
-    nkids--;
+    nkids -= 1;
   endwhile
 
   ## add non "children" children objects (title, xlabel, ...) and
@@ -74,10 +74,10 @@ function s = hdl2struct (h)
   special = [special getspecial(h)];
   nsp = length (special);
   while (nsp)
-    ii++;
+    ii += 1;
     s.children(ii) = hdl2struct (special(nsp));
     s.special(nsp) = ii;
-    nsp--;
+    nsp -= 1;
   endwhile
 
   ## look for legends and colorbars among "main"'s brothers and add them
@@ -91,7 +91,7 @@ function s = hdl2struct (h)
     endif
     nlg = length (lg);
     if (nlg == 1)
-      ii++;
+      ii += 1;
       s.children(ii) = hdl2struct (lg);
     elseif (nlg > 1)
       error ("hdl2struct: more than one legend found");
@@ -105,7 +105,7 @@ function s = hdl2struct (h)
 
     ncb = length (cb);
     if (ncb == 1)
-      ii++;
+      ii += 1;
       s.children(ii) = hdl2struct (cb);
     elseif (nlg > 1)
       error ("hdl2struct: more than one colorbar found");
@@ -152,11 +152,11 @@ function prpstr = getprops (h)
   while (nflds)
     prop = fields{nflds};
     val = obj.(fields{nflds});
-    ii++;
+    ii += 1;
     if (! any (strcmp (prop, forbid)))
       prpstr.(prop) = val;
     endif
-    nflds--;
+    nflds -= 1;
   endwhile
 
   ## hidden properties

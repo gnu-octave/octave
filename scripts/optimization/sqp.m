@@ -540,7 +540,7 @@ function [merit, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, ...
 
   if (isempty (obj))
     obj = feval (obj_fun, x);
-    globals.nfun++;
+    globals.nfun += 1;
   endif
 
   merit = obj;

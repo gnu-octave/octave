@@ -99,7 +99,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx = 0;
       s_fn_x = sort (fn_x);
       while (t && idx < l_v)
-        idx++;
+        idx += 1;
         ## We'll allow the fieldnames to be in a different order.
         t = all (strcmp (s_fn_x, sort (fn_v{idx})));
       endwhile
@@ -107,7 +107,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx = 0;
       while (t && idx < l_fn_x)
         ## Test that all field values are equal.
-        idx++;
+        idx += 1;
         args = cell (1, 2+l_v);
         args(1:2) = {nans_compare_equal, {x.(fn_x{idx})}};
         for argn = 1:l_v
@@ -122,7 +122,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       l_x = numel (x);
       idx = 0;
       while (t && idx < l_x)
-        idx++;
+        idx += 1;
         args = cell (1, 2+l_v);
         args(1:2) = {nans_compare_equal, x{idx}};
         args(3:end) = [cellindexmat(varargin, idx){:}];

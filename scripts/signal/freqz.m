@@ -165,7 +165,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     else
       N = 2*n;
       if (plot_output)
-        n++;
+        n += 1;
       endif
       f = Fs * (0:n-1).' / N;
     endif

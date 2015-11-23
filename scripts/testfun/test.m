@@ -537,7 +537,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
           __istest = true;
           __code = __code(__e + 1 : end);
         else
-          __xskip++;
+          __xskip += 1;
           __istest = false;
           __code = ""; # Skip the code.
           __msg = [__signal_skip "skipped test\n"];
@@ -588,7 +588,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
         catch
           if (strcmp (__type, "xtest"))
             __msg = [__signal_fail "known failure\n" lasterr()];
-            __xfail++;
+            __xfail += 1;
             __success = false;
           else
             __msg = [__signal_fail "test failed\n" lasterr()];
@@ -702,7 +702,7 @@ function pos = function_name (def)
   if (isempty (left))
     return;
   endif
-  left++;
+  left += 1;
 
   ## Return the end points of the name.
   pos = [left, right];

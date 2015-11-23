@@ -86,7 +86,7 @@ function retval = __plt__ (caller, h, varargin)
         error ("%s: plot arrays must have less than 2 dimensions", caller)
       endif
 
-      nargs--;
+      nargs -= 1;
 
       if (ischar (next_arg) || iscellstr (next_arg))
         if (x_set)
@@ -96,7 +96,7 @@ function retval = __plt__ (caller, h, varargin)
               error ("%s: properties must appear followed by a value", caller);
             endif
             properties = [properties, [next_cell, varargin(k++)]];
-            nargs--;
+            nargs -= 1;
             continue;
           else
             while (nargs > 0 && ischar (varargin{k}))

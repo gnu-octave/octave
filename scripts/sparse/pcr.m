@@ -275,7 +275,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargi
     b_bot_old = b_bot;
 
     resvec(iter) = abs (norm (r));
-    iter++;
+    iter += 1;
   endwhile
 
   flag = 0;

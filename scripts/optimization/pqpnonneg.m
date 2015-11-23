@@ -111,7 +111,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
   ## LH3: test for completion.
   while (iter < max_iter)
     while (iter < max_iter)
-      iter++;
+      iter += 1;
 
       ## LH6: compute the positive matrix and find the min norm solution
       ## of the positive problem.

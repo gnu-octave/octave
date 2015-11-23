@@ -144,14 +144,14 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
       ## We are in top level separator when we have one child and the
       ## flag is 1
       if (columns (idx) == 1 && top_level == 1)
-        s++;
+        s += 1;
       else
         ## We aren't in top level separator now.
         top_level = 0;
       endif
       ## If there is not any descendant of "parent node":
       if (stk(end,2) != par_number)
-       left_most++;
+       left_most += 1;
        x_coordinate_r(par_number) = left_most;
        max_ht = min (max_ht, level);
        if (length (stk) > 1 && find ((shift (stk,1) - stk) == 0) > 1
@@ -189,7 +189,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
 
         ## There were descendants of "parent nod" choose the last of
         ## them and go on through it.
-        level--;
+        level -= 1;
         par_number = stk(end,1);
         y_coordinate(par_number) = level;
         x_coordinate_l(par_number) = left_most + 1;

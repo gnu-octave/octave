@@ -49,7 +49,7 @@ function map = jet (n = rows (colormap ()))
     nel = ceil (n/4);           # number of elements
     idx1 = ceil (3/8 * n) + 1;  # ~3/8*n for large n
     if (mod (n, 8) == 2)
-      idx1++;
+      idx1 += 1;
     endif
     idx2 = idx1 + nel - 1;      # ~5/8*n for large n
     idx3 = min (idx2 + nel, n); # ~7/8*n for large n

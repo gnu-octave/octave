@@ -146,7 +146,7 @@ function __imwrite__ (img, varargin)
         if (isinf (options.loopcount))
           options.loopcount = 0;
         elseif (options.loopcount == 0 || options.loopcount == 1)
-          options.loopcount++;
+          options.loopcount += 1;
         endif
         options.loopcount = floor (options.loopcount);
 

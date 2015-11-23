@@ -126,7 +126,7 @@ function h = imshow (im, varargin)
       switch (tolower (arg))
         case "border"
           warning ("imshow: border argument is not implemented");
-          narg++;
+          narg += 1;
         case "colormap"
           map = varargin{narg++};
           if (iscolormap (map) && min (map) >= 0 || max (map) <= 1)
@@ -138,7 +138,7 @@ function h = imshow (im, varargin)
           display_range = varargin{narg++};
         case {"initialmagnification"}
           warning ("imshow: zoom argument ignored -- use GUI features");
-          narg++;
+          narg += 1;
         case "parent"
           prop_val_args(end+(1:2)) = {"parent", varargin{narg++}};
           if (! isaxes (prop_val_args{end}))
@@ -146,7 +146,7 @@ function h = imshow (im, varargin)
           endif
         case "reduce"
           warning ("imshow: reduce argument is not implemented");
-          narg++;
+          narg += 1;
         case "xdata"
           xdata = varargin{narg++};
           if (! isvector (xdata))
@@ -161,7 +161,7 @@ function h = imshow (im, varargin)
           ydata = [ydata(1) ydata(end)];
         otherwise
           warning ("imshow: unrecognized property %s", arg);
-          narg++;
+          narg += 1;
       endswitch
     else
       error ("imshow: argument number %d is invalid", narg);

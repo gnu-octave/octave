@@ -91,7 +91,7 @@ function vi = interpn (varargin)
     nargs -= 2;
   elseif (ischar (varargin{end}))
     method = varargin{end};
-    nargs--;
+    nargs -= 1;
   endif
 
   if (method(1) == "*")

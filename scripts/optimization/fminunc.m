@@ -296,7 +296,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         x += s;
         xn = norm (dg .* x);
         fval = fval1;
-        nsuciter++;
+        nsuciter += 1;
         suc = true;
       endif
 

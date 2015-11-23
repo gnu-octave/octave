@@ -64,7 +64,7 @@ function [c, hg] = __contour__ (varargin)
       endif
 
     else  # skip numeric arguments
-      i++;
+      i += 1;
     endif
   endwhile
 
@@ -233,7 +233,7 @@ function add_patch_children (hg)
     i = 1;
     ncont = 0;
     while (i < columns (c))
-      ncont++;
+      ncont += 1;
       cont_lev(ncont) = c(1, i);
       cont_len(ncont) = c(2, i);
       cont_idx(ncont) = i+1;
@@ -264,7 +264,7 @@ function add_patch_children (hg)
           in = inpolygon (next_ct_pt_vec(1,:), next_ct_pt_vec(2,:),
                           curr_ct(1, :), curr_ct(2, :));
           mark(b_vec(in)) = ! mark(b_vec(in));
-          a++;
+          a += 1;
         endwhile
         if (numel (mark) > 0)
           ## All marked contours describe a hole in a larger contour of

@@ -105,7 +105,7 @@ function fmt = get_fmt (x, sep)
       tfw = floor (log10 (double (abs (t)))) + 1 + sep;
       fw = max (tfw);
       if (any (t(tfw == fw) < 0))
-        fw++;
+        fw += 1;
       endif
       fmt = sprintf ("%%%dd", max (fw, min_fw));
     endif

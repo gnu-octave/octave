@@ -68,7 +68,7 @@ function h = hadamard (n)
   ## Find k if n = 2^k*p.
   k = 0;
   while (n > 1 && fix (n/2) == n/2)
-    k++;
+    k += 1;
     n /= 2;
   endwhile
 

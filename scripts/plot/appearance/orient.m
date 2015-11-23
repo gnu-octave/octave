@@ -54,7 +54,7 @@ function retval = orient (varargin)
   if (nargs > 0 && numel (varargin{1}) == 1 && isfigure (varargin{1}))
     cf = varargin{1};
     varargin(1) = [];
-    nargs--;
+    nargs -= 1;
   else
     cf = gcf ();
   endif

@@ -42,7 +42,7 @@ function hg = __scatter__ (varargin)
       s = 6;
     endif
     if (! ischar (varargin{istart}))
-      istart++;
+      istart += 1;
     endif
   else
     s = 6;
@@ -79,7 +79,7 @@ function hg = __scatter__ (varargin)
           && ! (   strcmpi (varargin{istart}, "filled")
                 || strcmpi (varargin{istart}, "fill")))
     c = varargin{istart};
-    firstnonnumeric++;
+    firstnonnumeric += 1;
   else
     c = [];
   endif

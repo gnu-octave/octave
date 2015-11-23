@@ -65,7 +65,7 @@ function retval = hilb (n)
   tmp = 1:n;
   for i = 1:n
     retval(i, :) = 1.0 ./ tmp;
-    tmp++;
+    tmp += 1;
   endfor
 
 endfunction

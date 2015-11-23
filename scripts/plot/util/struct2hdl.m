@@ -162,11 +162,11 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   nkids = length (kids);
   ii = 0;
   while (nkids)
-    ii++;
+    ii += 1;
     if (! any (ii == s.special))
       [h2, p] = struct2hdl (s.children(ii), [p [s.handle; h]], hilev);
     endif
-    nkids--;
+    nkids -= 1;
   endwhile
 
   ## paste properties
@@ -587,7 +587,7 @@ function setprops (s, h, p, hilev)
            h2 = get (h , field);
            set (h2, spec.properties);
         endif
-        nf--;
+        nf -= 1;
       endwhile
 
       ## If hggroup children  were created by high level functions,
@@ -607,7 +607,7 @@ function setprops (s, h, p, hilev)
               catch
                 sprintf ("struct2hdl: couldn't set hggroup children #%d props.", ii);
               end_try_catch
-              ii++;
+              ii += 1;
             endwhile
 
           else

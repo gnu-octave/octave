@@ -160,7 +160,7 @@ function varname = genvarname (str, exclusions = {})
     varname(i) = str(i);
     idx = 0;
     while (excluded)
-      idx++;
+      idx += 1;
       varname{i} = sprintf ("%s%d", str{i}, idx);
       excluded = any (strcmp (varname{i}, exclusions));
     endwhile

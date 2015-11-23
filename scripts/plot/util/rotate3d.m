@@ -52,7 +52,7 @@ function rotate3d (varargin)
     hfig = varargin{1};
     if (isfigure (hfig))
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
       error ("rotate3d: invalid figure handle HFIG");
     endif

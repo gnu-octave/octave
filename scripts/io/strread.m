@@ -389,7 +389,7 @@ function varargout = strread (str, format = "%f", varargin)
     c2len = length (comment_end);
     if (cstop + c2len == len)
       ## Ignore last char of to-the-end-of-line comments
-      c2len++;
+      c2len += 1;
     end
     str = cellslices (str, [1, cstop + c2len], [cstart - 1, len]);
     str = [str{:}];
@@ -727,7 +727,7 @@ function varargout = strread (str, format = "%f", varargin)
             data(end+1:num_lines) = {""};
           endif
           varargout{k} = data';
-          k++;
+          k += 1;
         case {"%d", "%u", "%f", "%n"}
           n = cellfun ("isempty", data);
           ### FIXME: Erroneously formatted data lead to NaN, not an error
@@ -742,7 +742,7 @@ function varargout = strread (str, format = "%f", varargin)
             data(end+1:num_lines) = numeric_fill_value;
           endif
           varargout{k} = data.';
-          k++;
+          k += 1;
         case {"%0", "%1", "%2", "%3", "%4", "%5", "%6", "%7", "%8", "%9"}
           sw = regexp (fmt_words{m}, '\d', "once");
           ew = regexp (fmt_words{m}, '[nfudsq]') - 1;
@@ -767,13 +767,13 @@ function varargout = strread (str, format = "%f", varargin)
                 data = int32 (data);
               endif
               varargout{k} = data.';
-              k++;
+              k += 1;
             case "s"
               if (pad_out)
                 data(end+1:num_lines) = {""};
               endif
               varargout{k} = strtrunc (data, swidth)';
-              k++;
+              k += 1;
             otherwise
           endswitch
         case {"%*", "%*s"}

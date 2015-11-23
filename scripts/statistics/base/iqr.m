@@ -73,7 +73,7 @@ function y = iqr (x, dim)
     offset2 = 0;
     while (offset > stride)
       offset -= stride;
-      offset2++;
+      offset2 += 1;
     endwhile
     offset += offset2 * stride * n;
     rng = [0 : n-1] * stride + offset;

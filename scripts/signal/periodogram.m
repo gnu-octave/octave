@@ -98,7 +98,7 @@ function [pxx, f] = periodogram (x, varargin)
         case 4
           fs     = varargin{k};
       endswitch
-      j++;
+      j += 1;
     endif
   endfor
 

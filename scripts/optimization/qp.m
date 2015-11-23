@@ -124,7 +124,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   nargs = nargin;
   if (nargs > 2 && isstruct (varargin{end}))
     options = varargin{end};
-    nargs--;
+    nargs -= 1;
   else
     options = struct ();
   endif

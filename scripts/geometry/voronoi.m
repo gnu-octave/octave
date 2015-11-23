@@ -83,7 +83,7 @@ function [vx, vy] = voronoi (varargin)
     if (! isaxes (hax))
       error ("voronoi: HAX argument must be an axes object");
     endif
-    narg++;
+    narg += 1;
   endif
 
   if (nargin < 1 + narg || nargin > 3 + narg)
@@ -99,7 +99,7 @@ function [vx, vy] = voronoi (varargin)
       opts = varargin(narg++);
     elseif (isnumeric (varargin{narg}))
       ## Accept, but ignore, the triangulation
-      narg++;
+      narg += 1;
     endif
   endif
 

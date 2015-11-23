@@ -57,12 +57,12 @@ function h = figure (varargin)
       f = arg;
       init_new_figure = false;
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     elseif (isscalar (arg) && isnumeric (arg) && arg > 0 && arg == fix (arg))
       f = arg;
       init_new_figure = true;
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
       error ("figure: N must be figure handle or figure number");
     endif

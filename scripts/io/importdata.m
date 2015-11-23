@@ -191,7 +191,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     endif
     row_data = str2double (row_entries);
     if (all (isnan (row_data)) || header_rows < num_header_rows)
-      header_rows++;
+      header_rows += 1;
       output.textdata{end+1, 1} = row;
     else
       if (! isempty (output.textdata))

@@ -107,7 +107,7 @@ function dlmwrite (file, M, varargin)
   ## process the input arguments
   i = 0;
   while (i < length (varargin))
-    i++;
+    i += 1;
     if (strcmpi (varargin{i}, "delimiter"))
       delim = varargin{++i};
     elseif (strcmpi (varargin{i}, "newline"))
@@ -131,7 +131,7 @@ function dlmwrite (file, M, varargin)
     elseif (strcmpi (varargin{i}, "-append"))
       opentype = "at";
     elseif (strcmpi (varargin{i}, "append"))
-      i++;
+      i += 1;
       if (strcmpi (varargin{i}, "on"))
         opentype = "at";
       elseif (strcmpi (varargin{i}, "off"))

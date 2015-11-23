@@ -179,8 +179,8 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
       break;
     endif
 
-    restart_it++ ;
-    iter++;
+    restart_it += 1;
+    iter += 1;
   endwhile
 
   if (nargout > 1)

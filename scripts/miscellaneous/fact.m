@@ -278,10 +278,10 @@ function out = wordwrap (w)
     while (i < numwords
            && length (newline = [line " " wc{i+1}]) < ncol)
       line = newline;
-      i++;
+      i += 1;
     endwhile
     out = [out, line, "\n"];
-    i++;
+    i += 1;
   endwhile
   out = [out, "\n"];
 endfunction

@@ -319,7 +319,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
       ## fprintf (stderr,"PCG condest: %g (iteration: %d)\n", max (EVS)/min (EVS),iter);
     endif
     resvec(iter,1) = norm (r);
-    iter++;
+    iter += 1;
   endwhile
 
   if (nargout > 5)

@@ -118,7 +118,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
 
     ## If there is not any descendant of "parent node":
     if (stk(end,2) != par_number)
-      left_most++;
+      left_most += 1;
       x_coordinate_r(par_number) = left_most;
       max_ht = min (max_ht, level);
       if (length (stk) > 1 && find ((shift (stk,1) - stk) == 0) > 1
@@ -150,7 +150,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
     else
       ## There were descendants of "parent nod" choose the last of
       ## them and go on through it.
-      level--;
+      level -= 1;
       par_number = stk(end,1);
       y_coordinate(par_number) = level;
       x_coordinate_l(par_number) = left_most + 1;

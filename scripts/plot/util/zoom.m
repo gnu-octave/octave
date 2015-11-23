@@ -73,7 +73,7 @@ function zoom (varargin)
     hfig = varargin{1};
     if (isfigure (hfig))
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
       error ("zoom: invalid figure handle HFIG");
     endif

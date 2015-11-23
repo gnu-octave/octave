@@ -93,7 +93,7 @@ function h = surfc (varargin)
     if (isempty (stop_idx))
       stop_idx = nargin;
     else
-      stop_idx--;
+      stop_idx -= 1;
     endif
 
     if (stop_idx - 1 == 1 || stop_idx - 1 == 3)

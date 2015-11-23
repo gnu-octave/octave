@@ -357,8 +357,8 @@ classdef inputParser < handle
           ##    2) it's a ParamValue or Switch name and we should use the
           ##       the default for the rest.
           if (ischar (in))
-            idx--;
-            vidx--;
+            idx -= 1;
+            vidx -= 1;
             break
           else
             this.error (sprintf ("failed validation of %s",

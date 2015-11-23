@@ -115,7 +115,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   alpha = [];
   nh = 0;
   while (length (alpha) < na) && (columns (V) > 0) && (iter < k)
-    iter++;
+    iter += 1;
 
     ## Get orthogonal basis of V.
     jj = 1;
@@ -137,7 +137,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         endif
         V = V(:,1:(nv-1));
         ## One less reflection.
-        nu--;
+        nu -= 1;
       else
         ## New householder reflection.
         if (pflg)
@@ -171,7 +171,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         endif
 
         ## Advance to next column of V.
-        jj++;
+        jj += 1;
       endif
     endwhile
 

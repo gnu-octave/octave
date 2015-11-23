@@ -494,7 +494,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
         elseif (strcmpi (obj.cdatamapping, "direct"))
           cdatadirect = true;
         endif
-        data_idx++;
+        data_idx += 1;
         is_image_data(data_idx) = true;
         parametric(data_idx) = false;
         have_cdata(data_idx) = false;
@@ -564,7 +564,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                     && strcmp (obj.marker, "none"))))
           continue;
         endif
-        data_idx++;
+        data_idx += 1;
         is_image_data(data_idx) = false;
         parametric(data_idx) = true;
         have_cdata(data_idx) = false;
@@ -608,7 +608,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                         style{1}, data_idx);
 
         if (length (style) > 1)
-          data_idx++;
+          data_idx += 1;
           is_image_data(data_idx) = is_image_data(data_idx - 1);
           parametric(data_idx) = parametric(data_idx - 1);
           have_cdata(data_idx) = have_cdata(data_idx - 1);
@@ -620,7 +620,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                           style{2}, data_idx);
         endif
         if (length (style) > 2)
-          data_idx++;
+          data_idx += 1;
           is_image_data(data_idx) = is_image_data(data_idx - 1);
           parametric(data_idx) = parametric(data_idx - 1);
           have_cdata(data_idx) = have_cdata(data_idx - 1);
@@ -671,7 +671,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                  error ("__gnuplot_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
                else
                  if (isnan (data_3d_idx))
-                   data_idx++;
+                   data_idx += 1;
                    data_3d_idx = data_idx;
                    is_image_data(data_idx) = false;
                    parametric(data_idx) = false;
@@ -685,7 +685,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                  ccdat = NaN;
                endif
              else
-               data_idx++;
+               data_idx += 1;
                local_idx = data_idx;
                is_image_data(data_idx) = false;
                parametric(data_idx) = false;
@@ -807,7 +807,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                     || (strcmp (obj.markeredgecolor, "none")
                         && strcmp (obj.markerfacecolor, "none")))))
 
-           data_idx++;
+           data_idx += 1;
            is_image_data(data_idx) = false;
            parametric(data_idx) = false;
            have_cdata(data_idx) = false;
@@ -964,7 +964,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                  tmpwith{sidx} = sprintf ("with %s %s %s %s",
                                           style, lw, lt,
                                           colorspec);
-                 sidx++;
+                 sidx += 1;
                endif
                if (isnumeric (obj.markerfacecolor) && ! mono)
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
@@ -1019,7 +1019,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                             style, lw, lt,
                                             colorspec);
                  endif
-                 sidx++;
+                 sidx += 1;
                endif
 
                if (! isempty (pt))
@@ -1095,7 +1095,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
            endif
 
            if (length (tmpwith) > 1)
-             data_idx++;
+             data_idx += 1;
              is_image_data(data_idx) = is_image_data(data_idx - 1);
              parametric(data_idx) = parametric(data_idx - 1);
              have_cdata(data_idx) = have_cdata(data_idx - 1);
@@ -1106,7 +1106,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
              withclause{data_idx} = tmpwith{2};
            endif
            if (length (tmpwith) > 2)
-             data_idx++;
+             data_idx += 1;
              is_image_data(data_idx) = is_image_data(data_idx - 1);
              parametric(data_idx) = parametric(data_idx - 1);
              have_cdata(data_idx) = have_cdata(data_idx - 1);
@@ -1123,7 +1123,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
         view_map = true;
         if (! (strcmp (obj.edgecolor, "none")
                && strcmp (obj.facecolor, "none")))
-          data_idx++;
+          data_idx += 1;
           is_image_data(data_idx) = false;
           parametric(data_idx) = false;
           have_cdata(data_idx) = true;
@@ -1183,7 +1183,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
               zz(:,kk+1) = ydat(:,k);
               zz(:,kk+2) = zdat(:,k);
               zz(:,kk+3) = cdat(:,k);
-              k++;
+              k += 1;
             endfor
             data{data_idx} = zz.';
           endif
@@ -1270,11 +1270,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
               zz(:,kk)   = xdat(:,k);
               zz(:,kk+1) = ydat(:,k);
               zz(:,kk+2) = zdat(:,k);
-              k++;
+              k += 1;
             endfor
             zz = zz.';
 
-            data_idx++;
+            data_idx += 1;
             is_image_data(data_idx) = is_image_data(data_idx - 1);
             parametric(data_idx) = parametric(data_idx - 1);
             have_cdata(data_idx) = false;
@@ -1287,7 +1287,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
 
           endif
           if (length (style) > 2)
-            data_idx++;
+            data_idx += 1;
             is_image_data(data_idx) = is_image_data(data_idx - 1);
             parametric(data_idx) = parametric(data_idx - 1);
             have_cdata(data_idx) = false;
@@ -1307,11 +1307,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                 zz(:,kk)   = xdat(:,k);
                 zz(:,kk+1) = ydat(:,k);
                 zz(:,kk+2) = zdat(:,k);
-                k++;
+                k += 1;
               endfor
               zz = zz.';
             endif
-            data_idx++;
+            data_idx += 1;
             is_image_data(data_idx) = is_image_data(data_idx - 1);
             parametric(data_idx) = parametric(data_idx - 1);
             have_cdata(data_idx) = false;
@@ -1879,8 +1879,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
         fputs (plot_stream, ";\n");
         if (! isempty (style{sidx}))
-          sidx++;
-          idx++;
+          sidx += 1;
+          idx += 1;
         else
           fputs (plot_stream, ";\n");
         endif
@@ -1922,8 +1922,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
         fputs (plot_stream, ";\n");
         if (! isempty (style{sidx}))
-          sidx++;
-          idx++;
+          sidx += 1;
+          idx += 1;
         else
           fputs (plot_stream, ";\n");
         endif
@@ -2439,9 +2439,9 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
             if (li == si)
               break;
             endif
-            li++;
+            li += 1;
           else
-            si++;
+            si += 1;
           endif
         endwhile
         l1 = l1(min (length (l1), si));
@@ -2456,9 +2456,9 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                 if (li == si)
                   break;
                 endif
-                li++;
+                li += 1;
               else
-                si++;
+                si += 1;
               endif
             endwhile
             l2 = l2(min (length (l2), si));
@@ -2477,22 +2477,22 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                    str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end)];
           endif
           i += 2;
-          p++;
+          p += 1;
         else
-          i++;
+          i += 1;
         endif
       else
         if (s(i+1) == s(i) + 2)
           ## Shortest already first!
           str = [str(1:s(i)+p-1) "@" str(s(i)+p:end)];
-          p++;
+          p += 1;
           i += 2;
         else
-          i++;
+          i += 1;
         endif
       endif
     else
-      i++;
+      i += 1;
     endif
   endwhile
 

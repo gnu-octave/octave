@@ -211,7 +211,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
   alpha = 1;  beta = 1/2;  gamma = 2;
 
   while (1)   # Outer (and only) loop.
-    k++;
+    k += 1;
 
     if (k > maxiter)
       msg = "Exceeded maximum iterations...quitting\n";

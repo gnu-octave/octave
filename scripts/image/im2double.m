@@ -41,9 +41,10 @@
 ##
 ## @end table
 ##
-## If the second argument is the string @qcode{"indexed"}, then values are
-## cast to double precision, and a +1 offset is applied if input is
-## an integer class.
+## If @var{img} is an indexed image, then the second argument should be
+## the string @qcode{"indexed"}.  If so, then @var{img} must either be
+## of floating point class, or unsigned integer class  and it will simply
+## be cast to double.  If it is an integer class, a +1 offset is applied.
 ##
 ## @seealso{double}
 ## @end deftypefn
@@ -70,11 +71,14 @@ function img = im2double (img, im_type)
       error ("im2double: second input argument must be the string \"indexed\"");
     elseif (any (isa (img, {"uint8", "uint16"})))
       img = double (img) + 1;
-    elseif (isfloat (img) && isindex (img))
+    elseif (isfloat (img) || isbool (img))
       img = double (img);
     else
+      ## Technically, it could also be of logical class and we do not
+      ## enforce positive integers for floating for Matlab compatibility.
+      ## Still, no need to tell that to the user.
       error (["im2double: if IMG is indexed, then it must be positive " ...
-              "integer floating points or unsigned integer class"]);
+              "integer floating points, or unsigned integer class"]);
     endif
 
   else
@@ -114,8 +118,13 @@ endfunction
 %! test_im2double_nd ("uint16", 0, 6535);
 %! test_im2double_nd ("int16", -32768, 32767);
 
-%!error <positive integer floating> im2double (single ([0 1 2]), "indexed");
+## Test lack of input check for Matlab compatibility
+%!assert (im2double ([0 1 2], "indexed"), [0 1 2])
+%!assert (im2double ([0 -1 -2], "indexed"), [0 -1 -2])
+%!assert (im2double ([0 -1.5 -2], "indexed"), [0 -1.5 -2])
+%!assert (im2double ([0 -1.5 -2i], "indexed"), [0 -1.5 -2i])
+%!assert (im2double ([false true], "indexed"), [0 1])
+
 %!error <unsigned integer class> im2double (int16 ([17 8]), "indexed");
 %!error <unsigned integer class> im2double (int16 ([-7 8]), "indexed");
-%!error <unsigned integer class> im2double ([false true], "indexed");
 %!error <must be the string "indexed"> im2double ([1 2 3], "non-indexed");

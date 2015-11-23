@@ -623,8 +623,15 @@ get_debug_input (const std::string& prompt)
               octave_quit ();
             }
         }
-      catch (const octave_execution_exception&)
+      catch (const octave_execution_exception& e)
         {
+          std::string stack_trace = e.info ();
+
+          if (! stack_trace.empty ())
+            std::cerr << stack_trace;
+
+          recover_from_exception ();
+
           // Ignore errors when in debugging mode;
         }
     }

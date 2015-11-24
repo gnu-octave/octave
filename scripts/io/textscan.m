@@ -224,6 +224,9 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   if (! isempty (endofline))
     if (ischar (args{endofline + 1}))
       eol_char = args{endofline + 1};
+      if (strcmp (typeinfo (eol_char), "sq_string"))
+        eol_char = do_string_escapes (eol_char);
+      endif
       if (! any (strcmp (eol_char, {"", "\n", "\r", "\r\n"})))
         error ("textscan: illegal EndOfLine character value specified");
       endif
@@ -696,3 +699,10 @@ endfunction
 ## Illegal format specifiers
 %!test
 %!error <no valid format conversion specifiers> textscan ("1.0", "%z");
+
+## Properly process single-quoted EOL args (bug #46477)
+%!test
+%! C = textscan ("hello, world!", "%s%s", "endofline", '\n');
+%! assert (C{1}{1}, "hello,");
+%! assert (C{2}{1}, "world!");
+

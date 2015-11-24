@@ -10972,10 +10972,18 @@ undocumented.\n\
             {
               graphics_object go = gh_manager::get_object (h);
 
+              // FIXME: when using qt toolkit the print_figure method
+              // returns immediately and Canvas::print doesn't have
+              // enough time to lock the mutex before we lock it here
+              // again.  We thus wait 50 ms (which may not be enough) to
+              // give it a chance: see http://octave.1599824.n4.nabble.com/Printing-issues-with-Qt-toolkit-tp4673270.html
+
               gh_manager::unlock ();
 
-              go.get_toolkit ().print_figure (go, term, file,
-                                              mono, debug_file);
+              go.get_toolkit ().print_figure (go, term, file, mono,
+                                              debug_file);
+
+              Fsleep (octave_value (0.05));
 
               gh_manager::lock ();
             }

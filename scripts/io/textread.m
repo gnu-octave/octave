@@ -171,6 +171,9 @@ function varargout = textread (filename, format = "%f", varargin)
     ## 'endofline' option set by user.
     if (ischar (varargin{endofline + 1}))
       eol_char = varargin{endofline + 1};
+      if (strcmp (typeinfo (eol_char), "sq_string"))
+        eol_char = do_string_escapes (eol_char);
+      endif
       if (! any (strcmp (eol_char, {"", "\n", "\r", "\r\n"})))
         error ("textread: invalid EndOfLine character value specified");
       endif
@@ -485,6 +488,16 @@ endfunction
 %! d = textread (f, "%s", "endofline", "\r");
 %! assert (d, {"a"; "b"; "c"});
 %! unlink (f);
+
+## Properly process single-quoted EOL args (bug #46477)
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w");
+%! fprintf (fid, "hello, world!");
+%! fclose (fid);
+%! [a, b] = textread (f, "%s%s", "endofline", '\n');
+%! assert (a{1}, "hello,");
+%! assert (b{1}, "world!");
 
 ## Test input validation
 %!error textread ()

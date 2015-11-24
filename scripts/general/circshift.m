@@ -17,14 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} circshift (@var{x}, @var{n})
+## @deftypefn  {Function File} {@var{y} =} circshift (@var{x}, @var{n})
+## @deftypefnx {Function File} {@var{y} =} circshift (@var{x}, @var{n}, @var{dim})
 ## Circularly shift the values of the array @var{x}.
 ##
-## @var{n} must be a vector of integers no longer than the number of
-## dimensions in @var{x}.  The values of @var{n} can be either positive or
-## negative, which determines the direction in which the values or @var{x}
-## are shifted.  If an element of @var{n} is zero, then the corresponding
-## dimension of @var{x} will not be shifted.  For example:
+## @var{n} must be a vector of integers no longer than the number of dimensions
+## in @var{x}.  The values of @var{n} can be either positive or negative, which
+## determines the direction in which the values of @var{x} are shifted.  If an
+## element of @var{n} is zero, then the corresponding dimension of @var{x} will
+## not be shifted.
+##
+## If a scalar @var{dim} is given then operate along the specified dimension.
+## In this case @var{n} must be a scalar as well.
+##
+## Examples:
 ##
 ## @example
 ## @group
@@ -46,9 +52,9 @@
 ## @seealso{permute, ipermute, shiftdim}
 ## @end deftypefn
 
-function y = circshift (x, n)
+function y = circshift (x, n, dim)
 
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -57,11 +63,18 @@ function y = circshift (x, n)
     return;
   endif
 
+  if (nargin == 3)
+    if (! isscalar (n))
+      error ("circshift: N must be a scalar when DIM is also specified");
+    endif
+    n = [zeros(1, dim-1), n];
+  endif
+
   nd = ndims (x);
   sz = size (x);
 
   if (! isvector (n) || length (n) > nd)
-    error ("circshift: N must be a vector, no longer than the number of dimension in X");
+    error ("circshift: N must be a vector, no longer than the number of dimensions in X");
   elseif (any (n != fix (n)))
     error ("circshift: all values of N must be integers");
   endif
@@ -95,11 +108,15 @@ endfunction
 %!assert (circshift (eye (3), 1), circshift (eye (3), 1))
 %!assert (circshift (eye (3), 1), [0,0,1;1,0,0;0,1,0])
 
+%!assert (circshift (x, -2, 1), [7, 8, 9; 1, 2, 3; 4, 5, 6])
+%!assert (circshift (x, 1, 2), [3, 1, 2; 6, 4, 5; 9, 7, 8])
+
 ## Test input validation
 %!error circshift ()
 %!error circshift (1)
 %!error circshift (1,2,3)
-%!error circshift (1, ones (2,2))
-%!error circshift (1, [1 2 3])
-%!error circshift (1, 1.5)
+%!error <N must be a scalar> circshift (1, [2 3], 4)
+%!error <N must be a vector> circshift (1, ones (2,2))
+%!error <no longer than the number of dimensions in X> circshift (1, [1 2 3])
+%!error <all values of N must be integers> circshift (1, 1.5)
 

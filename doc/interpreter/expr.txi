@@ -1014,6 +1014,8 @@ though the use of the @samp{&} and @samp{|} operators in this way is
 strongly discouraged.  Instead, you should use the @samp{&&} and @samp{||}
 operators that always have short-circuit behavior.
 
+@DOCSTRING(do_braindead_shortcircuit_evaluation)
+
 Finally, the ternary operator (?:) is not supported in Octave.  If
 short-circuiting is not important, it can be replaced by the @code{ifelse}
 function.

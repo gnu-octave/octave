@@ -107,6 +107,7 @@ J
 java2mat
 lower
 lstat
+metaclass
 nan
 nargchk
 octave_tmp_file_name

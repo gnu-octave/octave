@@ -1155,6 +1155,15 @@ public:
 
   Array<FloatComplex> xfloat_complex_vector_value (const char *fmt, ...) const;
 
+  octave_function *xfunction_value (const char *fmt, ...) const;
+  octave_user_function *xuser_function_value (const char *fmt, ...) const;
+  octave_user_script *xuser_script_value (const char *fmt, ...) const;
+  octave_user_code *xuser_code_value (const char *fmt, ...) const;
+  octave_fcn_handle *xfcn_handle_value (const char *fmt, ...) const;
+  octave_fcn_inline *xfcn_inline_value (const char *fmt, ...) const;
+
+  octave_value_list xlist_value (const char *fmt, ...) const;
+  
   // Possibly economize a lazy-indexed value.
 
   void maybe_economize (void)

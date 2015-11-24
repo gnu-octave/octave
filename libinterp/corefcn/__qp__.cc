@@ -136,12 +136,15 @@ qp (const Matrix& H, const ColumnVector& q,
 
   // Computing the ???
 
-  EIG eigH (H);
+  EIG eigH;
 
-  if (error_state)
+  try
+    {
+      eigH = EIG (H);
+    }
+  catch (const octave_execution_exception&)
     {
       error ("qp: failed to compute eigenvalues of H");
-      return -1;
     }
 
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
@@ -281,12 +284,15 @@ qp (const Matrix& H, const ColumnVector& q,
 
               // Searching for the most negative curvature.
 
-              EIG eigrH (rH);
+              EIG eigrH;
 
-              if (error_state)
+              try
+                {
+                  eigrH = EIG (rH);
+                }
+              catch (const octave_execution_exception&)
                 {
                   error ("qp: failed to compute eigenvalues of rH");
-                  return -1;
                 }
 
               ColumnVector eigenvalrH = real (eigrH.eigenvalues ());

@@ -65,24 +65,28 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 
   conv_err = 0;
 
-  double dval = tc.double_value ();
+  double dval;
 
-  if (! error_state)
+  try
     {
-      if (! lo_ieee_isnan (dval))
-        {
-          int ival = NINT (dval);
+      dval = tc.double_value ();
+    }
+  catch (const octave_execution_exception&)
+    {
+      conv_err = 1;
+    }
 
-          if (ival == dval)
-            retval = ival;
-          else
-            conv_err = 3;
-        }
+  if (! lo_ieee_isnan (dval))
+    {
+      int ival = NINT (dval);
+
+      if (ival == dval)
+        retval = ival;
       else
-        conv_err = 2;
+        conv_err = 3;
     }
   else
-    conv_err = 1;
+    conv_err = 2;
 
   return retval;
 }
@@ -2246,19 +2250,9 @@ printf_value_cache::get_next_value (char type)
         {
           curr_val = values (val_idx);
 
-          // Force string conversion here for compatibility.
-
-          if (! error_state)
-            {
-              elt_idx = 0;
-              n_elts = curr_val.numel ();
-              have_data = true;
-            }
-          else
-            {
-              curr_state = conversion_error;
-              break;
-            }
+          elt_idx = 0;
+          n_elts = curr_val.numel ();
+          have_data = true;
         }
 
       if (elt_idx < n_elts)
@@ -3369,165 +3363,167 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
       count = 0;
 
-      get_size (size, nr, nc, one_elt_size_spec, "fread");
-
-      if (! error_state)
+      try
         {
-          octave_idx_type elts_to_read;
+          get_size (size, nr, nc, one_elt_size_spec, "fread");
+        }
+      catch (const octave_execution_exception&)
+        {
+          invalid_operation ("fread", "reading");
+        }
 
-          if (one_elt_size_spec)
-            {
-              // If NR == 0, Matlab returns [](0x0).
+      octave_idx_type elts_to_read;
 
-              // If NR > 0, the result will be a column vector with the given
-              // number of rows.
+      if (one_elt_size_spec)
+        {
+          // If NR == 0, Matlab returns [](0x0).
 
-              // If NR < 0, then we have Inf and the result will be a column
-              // vector but we have to wait to see how big NR will be.
+          // If NR > 0, the result will be a column vector with the given
+          // number of rows.
 
-              if (nr == 0)
-                nr = nc = 0;
-              else
-                nc = 1;
-            }
+          // If NR < 0, then we have Inf and the result will be a column
+          // vector but we have to wait to see how big NR will be.
+
+          if (nr == 0)
+            nr = nc = 0;
           else
-            {
-              // Matlab returns [] even if there are two elements in the size
-              // specification and one is nonzero.
-
-              // If NC < 0 we have [NR, Inf] and we'll wait to decide how big NC
-              // should be.
-
-              if (nr == 0 || nc == 0)
-                nr = nc = 0;
-            }
-
-          // FIXME: Ensure that this does not overflow.
-          //        Maybe try comparing nr * nc computed in double with
-          //        std::numeric_limits<octave_idx_type>::max ();
-
-          elts_to_read = nr * nc;
-
-          bool read_to_eof = elts_to_read < 0;
-
-          octave_idx_type input_buf_elts = -1;
-
-          if (skip == 0)
-            {
-              if (read_to_eof)
-                input_buf_elts = 1024 * 1024;
-              else
-                input_buf_elts = elts_to_read;
-            }
-          else
-            input_buf_elts = block_size;
-
-          octave_idx_type input_elt_size
-            = oct_data_conv::data_type_size (input_type);
-
-          octave_idx_type input_buf_size = input_buf_elts * input_elt_size;
-
-          assert (input_buf_size >= 0);
-
-          // Must also work and return correct type object
-          // for 0 elements to read.
-
-          std::istream *isp = input_stream ();
-
-          if (isp)
-            {
-              std::istream& is = *isp;
-
-              std::list <void *> input_buf_list;
-
-              while (is && ! is.eof ()
-                     && (read_to_eof || count < elts_to_read))
-                {
-                  if (! read_to_eof)
-                    {
-                      octave_idx_type remaining_elts = elts_to_read - count;
-
-                      if (remaining_elts < input_buf_elts)
-                        input_buf_size = remaining_elts * input_elt_size;
-                    }
-
-                  char *input_buf = new char [input_buf_size];
-
-                  is.read (input_buf, input_buf_size);
-
-                  size_t gcount = is.gcount ();
-
-                  char_count += gcount;
-
-                  octave_idx_type nel = gcount / input_elt_size;
-
-                  count += nel;
-
-                  input_buf_list.push_back (input_buf);
-
-                  if (is && skip != 0 && nel == block_size)
-                    {
-                      // Seek to skip.  If skip would move past EOF,
-                      // position at EOF.
-
-                      off_t orig_pos = tell ();
-
-                      seek (0, SEEK_END);
-
-                      off_t eof_pos = tell ();
-
-                      // Is it possible for this to fail to return us to
-                      // the original position?
-                      seek (orig_pos, SEEK_SET);
-
-                      off_t remaining = eof_pos - orig_pos;
-
-                      if (remaining < skip)
-                        seek (0, SEEK_END);
-                      else
-                        seek (skip, SEEK_CUR);
-
-                      if (! is)
-                        break;
-                    }
-                }
-
-              if (read_to_eof)
-                {
-                  if (nc < 0)
-                    {
-                      nc = count / nr;
-
-                      if (count % nr != 0)
-                        nc++;
-                    }
-                  else
-                    nr = count;
-                }
-              else if (count == 0)
-                {
-                  nr = 0;
-                  nc = 0;
-                }
-              else if (count != nr * nc)
-                {
-                  if (count % nr != 0)
-                    nc = count / nr + 1;
-                  else
-                    nc = count / nr;
-
-                  if (count < nr)
-                    nr = count;
-                }
-
-              retval = finalize_read (input_buf_list, input_buf_elts, count,
-                                      nr, nc, input_type, output_type, ffmt);
-            }
-          else
-            error ("fread: invalid input stream");
+            nc = 1;
         }
       else
-        invalid_operation ("fread", "reading");
+        {
+          // Matlab returns [] even if there are two elements in the size
+          // specification and one is nonzero.
+
+          // If NC < 0 we have [NR, Inf] and we'll wait to decide how big NC
+          // should be.
+
+          if (nr == 0 || nc == 0)
+            nr = nc = 0;
+        }
+
+      // FIXME: Ensure that this does not overflow.
+      //        Maybe try comparing nr * nc computed in double with
+      //        std::numeric_limits<octave_idx_type>::max ();
+
+      elts_to_read = nr * nc;
+
+      bool read_to_eof = elts_to_read < 0;
+
+      octave_idx_type input_buf_elts = -1;
+
+      if (skip == 0)
+        {
+          if (read_to_eof)
+            input_buf_elts = 1024 * 1024;
+          else
+            input_buf_elts = elts_to_read;
+        }
+      else
+        input_buf_elts = block_size;
+
+      octave_idx_type input_elt_size
+                                        = oct_data_conv::data_type_size (input_type);
+
+      octave_idx_type input_buf_size = input_buf_elts * input_elt_size;
+
+      assert (input_buf_size >= 0);
+
+      // Must also work and return correct type object
+      // for 0 elements to read.
+
+      std::istream *isp = input_stream ();
+
+      if (isp)
+        {
+          std::istream& is = *isp;
+
+          std::list <void *> input_buf_list;
+
+          while (is && ! is.eof ()
+                 && (read_to_eof || count < elts_to_read))
+            {
+              if (! read_to_eof)
+                {
+                  octave_idx_type remaining_elts = elts_to_read - count;
+
+                  if (remaining_elts < input_buf_elts)
+                    input_buf_size = remaining_elts * input_elt_size;
+                }
+
+              char *input_buf = new char [input_buf_size];
+
+              is.read (input_buf, input_buf_size);
+
+              size_t gcount = is.gcount ();
+
+              char_count += gcount;
+
+              octave_idx_type nel = gcount / input_elt_size;
+
+              count += nel;
+
+              input_buf_list.push_back (input_buf);
+
+              if (is && skip != 0 && nel == block_size)
+                {
+                  // Seek to skip.  If skip would move past EOF,
+                  // position at EOF.
+
+                  off_t orig_pos = tell ();
+
+                  seek (0, SEEK_END);
+
+                  off_t eof_pos = tell ();
+
+                  // Is it possible for this to fail to return us to
+                  // the original position?
+                  seek (orig_pos, SEEK_SET);
+
+                  off_t remaining = eof_pos - orig_pos;
+
+                  if (remaining < skip)
+                    seek (0, SEEK_END);
+                  else
+                    seek (skip, SEEK_CUR);
+
+                  if (! is)
+                    break;
+                }
+            }
+
+          if (read_to_eof)
+            {
+              if (nc < 0)
+                {
+                  nc = count / nr;
+
+                  if (count % nr != 0)
+                    nc++;
+                }
+              else
+                nr = count;
+            }
+          else if (count == 0)
+            {
+              nr = 0;
+              nc = 0;
+            }
+          else if (count != nr * nc)
+            {
+              if (count % nr != 0)
+                nc = count / nr + 1;
+              else
+                nc = count / nr;
+
+              if (count < nr)
+                nr = count;
+            }
+
+          retval = finalize_read (input_buf_list, input_buf_elts, count,
+                                  nr, nc, input_type, output_type, ffmt);
+        }
+      else
+        error ("fread: invalid input stream");
     }
 
   return retval;
@@ -3542,22 +3538,19 @@ octave_stream::write (const octave_value& data, octave_idx_type block_size,
 
   if (stream_ok ())
     {
-      if (! error_state)
-        {
-          if (flt_fmt == oct_mach_info::flt_fmt_unknown)
-            flt_fmt = float_format ();
+      if (flt_fmt == oct_mach_info::flt_fmt_unknown)
+        flt_fmt = float_format ();
 
-          octave_idx_type status = data.write (*this, block_size, output_type,
-                                               skip, flt_fmt);
+      octave_idx_type status = data.write (*this, block_size, output_type,
+                                           skip, flt_fmt);
 
-          if (status < 0)
-            error ("fwrite: write error");
-          else
-            retval = status;
-        }
+      if (status < 0)
+        error ("fwrite: write error");
       else
-        invalid_operation ("fwrite", "writing");
+        retval = status;
     }
+  else
+    invalid_operation ("fwrite", "writing");
 
   return retval;
 }

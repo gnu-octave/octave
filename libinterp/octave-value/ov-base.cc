@@ -458,22 +458,25 @@ octave_base_value::print_info (std::ostream& os,
   { \
     T retval = 0; \
  \
-    double d = double_value (frc_str_conv); \
+    double d; \
  \
-    if (! error_state) \
+    try \
       { \
-        if (require_int && D_NINT (d) != d) \
-          error_with_cfn ("conversion of %g to " #T " value failed", d); \
-        else if (d < std::numeric_limits<T>::min ()) \
-          retval = std::numeric_limits<T>::min (); \
-        else if (d > std::numeric_limits<T>::max ()) \
-          retval = std::numeric_limits<T>::max (); \
-        else \
-          retval = static_cast<T> (::fix (d));  \
+        d = double_value (frc_str_conv); \
       } \
+    catch (const octave_execution_exception&) \
+      { \
+        gripe_wrong_type_arg ("octave_base_value::" #F "_value ()", type_name ()); \
+      } \
+ \
+    if (require_int && D_NINT (d) != d) \
+      error_with_cfn ("conversion of %g to " #T " value failed", d); \
+    else if (d < std::numeric_limits<T>::min ()) \
+      retval = std::numeric_limits<T>::min (); \
+    else if (d > std::numeric_limits<T>::max ()) \
+      retval = std::numeric_limits<T>::max (); \
     else \
-      gripe_wrong_type_arg ("octave_base_value::" #F "_value ()", \
-                            type_name ()); \
+      retval = static_cast<T> (::fix (d)); \
  \
     return retval; \
   }
@@ -493,24 +496,21 @@ INT_CONV_METHOD (uint64_t, uint64)
 int
 octave_base_value::nint_value (bool frc_str_conv) const
 {
-  int retval = 0;
+  double d;
 
-  double d = double_value (frc_str_conv);
-
-  if (! error_state)
+  try
     {
-      if (xisnan (d))
-        {
-          error ("conversion of NaN to integer value failed");
-          return retval;
-        }
-
-      retval = static_cast<int> (::fix (d));
+      d = double_value (frc_str_conv);
     }
-  else
-    gripe_wrong_type_arg ("octave_base_value::nint_value ()", type_name ());
+  catch (const octave_execution_exception&)
+    {
+      gripe_wrong_type_arg ("octave_base_value::nint_value ()", type_name ());
+    }
 
-  return retval;
+  if (xisnan (d))
+    error ("conversion of NaN to integer value failed");
+
+  return static_cast<int> (::fix (d));
 }
 
 double

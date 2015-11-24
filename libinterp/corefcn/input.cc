@@ -1261,17 +1261,12 @@ list of input hook functions.\n\
 
       hook_function hook_fcn (args(0), user_data);
 
-      if (! error_state)
-        {
-          if (input_event_hook_functions.empty ())
-            command_editor::add_event_hook (internal_input_event_hook_fcn);
+      if (input_event_hook_functions.empty ())
+        command_editor::add_event_hook (internal_input_event_hook_fcn);
 
-          input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
+      input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
-          retval = hook_fcn.id ();
-        }
-      else
-        error ("add_input_event_hook: FCN must be a function handle or string");
+      retval = hook_fcn.id ();
     }
   else
     print_usage ();

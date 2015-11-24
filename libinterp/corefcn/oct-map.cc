@@ -639,19 +639,20 @@ permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
 
   Array<octave_idx_type> perm (dim_vector (1, nf));
 
-  for (octave_idx_type i = 0; i < n; i++)
+  try
     {
-      if (i == idx)
-        continue;
-
-      permute_to_correct_order1 (map_list[idx], map_list[i], new_map_list[i],
-                                 perm);
-
-      if (error_state)
+      for (octave_idx_type i = 0; i < n; i++)
         {
-          error ("cat: field names mismatch in concatenating structs");
-          break;
+          if (i == idx)
+            continue;
+
+          permute_to_correct_order1 (map_list[idx], map_list[i],
+                                     new_map_list[i], perm);
         }
+    }
+  catch (const octave_execution_exception&)
+    {
+      error ("cat: field names mismatch in concatenating structs");
     }
 }
 
@@ -994,14 +995,19 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
   else
     {
       Array<octave_idx_type> perm;
-      octave_map rhs1 = rhs.orderfields (*this, perm);
-      if (! error_state)
+      octave_map rhs1;
+
+      try
         {
-          assert (rhs1.xkeys.is_same (xkeys));
-          assign (i, rhs1);
+          rhs1 = rhs.orderfields (*this, perm);
         }
-      else
-        error ("incompatible fields in struct assignment");
+      catch (const octave_execution_exception&)
+        {
+          error ("incompatible fields in struct assignment");
+        }
+
+      assert (rhs1.xkeys.is_same (xkeys));
+      assign (i, rhs1);
     }
 }
 
@@ -1037,14 +1043,19 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
   else
     {
       Array<octave_idx_type> perm;
-      octave_map rhs1 = rhs.orderfields (*this, perm);
-      if (! error_state)
+      octave_map rhs1;
+
+      try
         {
-          assert (rhs1.xkeys.is_same (xkeys));
-          assign (i, j, rhs1);
+          rhs1 = rhs.orderfields (*this, perm);
         }
-      else
-        error ("incompatible fields in struct assignment");
+      catch (const octave_execution_exception&)
+        {
+          error ("incompatible fields in struct assignment");
+        }
+
+      assert (rhs1.xkeys.is_same (xkeys));
+      assign (i, j, rhs1);
     }
 }
 
@@ -1080,14 +1091,19 @@ octave_map::assign (const Array<idx_vector>& ia,
   else
     {
       Array<octave_idx_type> perm;
-      octave_map rhs1 = rhs.orderfields (*this, perm);
-      if (! error_state)
+      octave_map rhs1;
+
+      try
         {
-          assert (rhs1.xkeys.is_same (xkeys));
-          assign (ia, rhs1);
+          rhs1 = rhs.orderfields (*this, perm);
         }
-      else
-        error ("incompatible fields in struct assignment");
+      catch (const octave_execution_exception&)
+        {
+          error ("incompatible fields in struct assignment");
+        }
+
+      assert (rhs1.xkeys.is_same (xkeys));
+      assign (ia, rhs1);
     }
 }
 

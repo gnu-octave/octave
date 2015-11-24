@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
 #include "oct-obj.h"
 #include "utils.h"
 
@@ -77,12 +76,6 @@ enum bessel_type
         } \
     } \
   while (0)
-
-static void
-gripe_bessel_arg (const char *fn, const char *arg)
-{
-  error ("%s: %s argument must be a scalar or matrix", fn, arg);
-}
 
 octave_value_list
 do_bessel (enum bessel_type type, const char *fn,

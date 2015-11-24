@@ -1391,25 +1391,6 @@ octave_value::do_multi_index_op (int nargout, const octave_value_list& idx,
   return rep->do_multi_index_op (nargout, idx, lvalue_list);
 }
 
-#if 0
-static void
-gripe_assign_failed (const std::string& on, const std::string& tn1,
-                     const std::string& tn2)
-{
-  error ("assignment failed for '%s %s %s'",
-         tn1.c_str (), on.c_str (), tn2.c_str ());
-}
-#endif
-
-static void
-gripe_assign_failed_or_no_method (const std::string& on,
-                                  const std::string& tn1,
-                                  const std::string& tn2)
-{
-  error ("assignment failed, or no method for '%s %s %s'",
-         tn1.c_str (), on.c_str (), tn2.c_str ());
-}
-
 octave_value
 octave_value::subsasgn (const std::string& type,
                         const std::list<octave_value_list>& idx,
@@ -1451,13 +1432,7 @@ octave_value::assign (assign_op op, const std::string& type,
         error ("in computed assignment A(index) OP= X, A must be defined first");
     }
 
-  octave_value tmp = subsasgn (type, idx, t_rhs);
-
-  if (error_state)
-    gripe_assign_failed_or_no_method (assign_op_as_string (op_asn_eq),
-                                      type_name (), rhs.type_name ());
-  else
-    *this = tmp;
+  *this = subsasgn (type, idx, t_rhs);
 
   return *this;
 }
@@ -2025,6 +2000,15 @@ XVALUE_EXTRACTOR (Array<Complex>, xcomplex_vector_value, complex_vector_value)
 XVALUE_EXTRACTOR (Array<float>, xfloat_vector_value, float_vector_value)
 XVALUE_EXTRACTOR (Array<FloatComplex>, xfloat_complex_vector_value, float_complex_vector_value)
 
+XVALUE_EXTRACTOR (octave_function *, xfunction_value, function_value)
+XVALUE_EXTRACTOR (octave_user_function *, xuser_function_value, user_function_value)
+XVALUE_EXTRACTOR (octave_user_script *, xuser_script_value, user_script_value)
+XVALUE_EXTRACTOR (octave_user_code *, xuser_code_value, user_code_value)
+XVALUE_EXTRACTOR (octave_fcn_handle *, xfcn_handle_value, fcn_handle_value)
+XVALUE_EXTRACTOR (octave_fcn_inline *, xfcn_inline_value, fcn_inline_value)
+
+XVALUE_EXTRACTOR (octave_value_list, xlist_value, list_value)
+
 #undef XVALUE_EXTRACTOR
 
 octave_value
@@ -2484,30 +2468,35 @@ do_colon_op (const octave_value& base, const octave_value& increment,
       bool result_is_str = (base.is_string () && limit.is_string ());
       bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
 
-      Matrix m_base = base.matrix_value (true);
+      Matrix m_base, m_limit, m_increment;
 
-      if (error_state)
+      try
+        {
+          m_base = base.matrix_value (true);
+        }
+      catch (const octave_execution_exception&)
         {
           error ("invalid base value in colon expression");
-          return retval;
         }
 
-      Matrix m_limit = limit.matrix_value (true);
-
-      if (error_state)
+      try
+        {
+          m_limit = limit.matrix_value (true);
+        }
+      catch (const octave_execution_exception&)
         {
           error ("invalid limit value in colon expression");
-          return retval;
         }
 
-      Matrix m_increment = (increment.is_defined ()
-                            ? increment.matrix_value (true)
-                            : Matrix (1, 1, 1.0));
-
-      if (error_state)
+      try
+        {
+          m_increment = (increment.is_defined ()
+                         ? increment.matrix_value (true)
+                         : Matrix (1, 1, 1.0));
+        }
+      catch (const octave_execution_exception&)
         {
           error ("invalid increment value in colon expression");
-          return retval;
         }
 
       bool base_empty = m_base.is_empty ();

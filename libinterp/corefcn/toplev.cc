@@ -630,22 +630,10 @@ main_loop (void)
                         break;
                     }
 
-                  if (error_state)
-                    {
-                      if (! interactive)
-                        {
-                          // We should exit with a nonzero status.
-                          retval = 1;
-                          break;
-                        }
-                    }
+                  if (octave_completion_matches_called)
+                    octave_completion_matches_called = false;
                   else
-                    {
-                      if (octave_completion_matches_called)
-                        octave_completion_matches_called = false;
-                      else
-                        command_editor::increment_current_command_number ();
-                    }
+                    command_editor::increment_current_command_number ();
                 }
               else if (parser.lexer.end_of_input)
                 break;
@@ -672,7 +660,14 @@ main_loop (void)
           if (! stack_trace.empty ())
             std::cerr << stack_trace;
 
-          recover_from_exception ();
+          if (interactive)
+            recover_from_exception ();
+          else
+            {
+              // We should exit with a nonzero status.
+              retval = 1;
+              break;
+            }
         }
       catch (const std::bad_alloc&)
         {
@@ -1053,12 +1048,13 @@ command shell that is started to run the command.\n\
 
       if (nargin > 1)
         {
-          return_output = args(1).is_true ();
-
-          if (error_state)
+          try
+            {
+              return_output = args(1).is_true ();
+            }
+          catch (const octave_execution_exception&)
             {
               error ("system: RETURN_OUTPUT must be boolean value true or false");
-              return retval;
             }
         }
 

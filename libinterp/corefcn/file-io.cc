@@ -1317,8 +1317,6 @@ do_fread (octave_stream& os, const octave_value& size_arg,
           const octave_value& prec_arg, const octave_value& skip_arg,
           const octave_value& arch_arg, octave_idx_type& count)
 {
-  octave_value retval;
-
   count = -1;
 
   Array<double> size = size_arg.xvector_value ("fread: invalid SIZE specified");
@@ -1329,30 +1327,34 @@ do_fread (octave_stream& os, const octave_value& size_arg,
   oct_data_conv::data_type input_type;
   oct_data_conv::data_type output_type;
 
-  oct_data_conv::string_to_data_type (prec, block_size,
-                                      input_type, output_type);
-
-  if (! error_state)
+  try
     {
-      int skip = skip_arg.int_value (true);
-
-      if (! error_state)
-        {
-          std::string arch = arch_arg.xstring_value ("fread: ARCH architecture type must be a string");
-
-          oct_mach_info::float_format flt_fmt
-            = oct_mach_info::string_to_float_format (arch);
-
-          retval = os.read (size, block_size, input_type,
-                            output_type, skip, flt_fmt, count);
-        }
-      else
-        error ("fread: SKIP must be an integer");
+      oct_data_conv::string_to_data_type (prec, block_size,
+                                          input_type, output_type);
     }
-  else
-    error ("fread: invalid PRECISION specified");
+  catch (const octave_execution_exception&)
+    {
+      error ("fread: invalid PRECISION specified");
+    }
 
-  return retval;
+  int skip;
+
+  try
+    {
+      skip = skip_arg.int_value (true);
+    }
+  catch (const octave_execution_exception&)
+    {
+      error ("fread: SKIP must be an integer");
+    }
+
+  std::string arch = arch_arg.xstring_value ("fread: ARCH architecture type must be a string");
+
+  oct_mach_info::float_format flt_fmt
+    = oct_mach_info::string_to_float_format (arch);
+
+  return os.read (size, block_size, input_type, output_type, skip,
+                  flt_fmt, count);
 }
 
 DEFUN (fread, args, ,
@@ -1579,36 +1581,37 @@ do_fwrite (octave_stream& os, const octave_value& data,
            const octave_value& prec_arg, const octave_value& skip_arg,
            const octave_value& arch_arg)
 {
-  int retval = -1;
-
   std::string prec = prec_arg.xstring_value ("fwrite: PRECISION must be a string");
 
   int block_size = 1;
   oct_data_conv::data_type output_type;
 
-  oct_data_conv::string_to_data_type (prec, block_size, output_type);
-
-  if (! error_state)
+  try
     {
-      int skip = skip_arg.int_value (true);
-
-      if (! error_state)
-        {
-          std::string arch = arch_arg.xstring_value ("fwrite: ARCH architecture type must be a string");
-
-          oct_mach_info::float_format flt_fmt
-            = oct_mach_info::string_to_float_format (arch);
-
-          retval = os.write (data, block_size, output_type,
-                             skip, flt_fmt);
-        }
-      else
-        error ("fwrite: SKIP must be an integer");
+      oct_data_conv::string_to_data_type (prec, block_size, output_type);
     }
-  else
-    error ("fwrite: invalid PRECISION specified");
+  catch (const octave_execution_exception&)
+    {
+      error ("fwrite: invalid PRECISION specified");
+    }
 
-  return retval;
+  int skip;
+
+  try
+    {
+      skip = skip_arg.int_value (true);
+    }
+  catch (const octave_execution_exception&)
+    {
+      error ("fwrite: SKIP must be an integer");
+    }
+
+  std::string arch = arch_arg.xstring_value ("fwrite: ARCH architecture type must be a string");
+
+  oct_mach_info::float_format flt_fmt
+    = oct_mach_info::string_to_float_format (arch);
+
+  return os.write (data, block_size, output_type, skip, flt_fmt);
 }
 
 DEFUN (fwrite, args, ,

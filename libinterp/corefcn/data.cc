@@ -1804,10 +1804,19 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   if (fcn.is_defined ())
     {
-      octave_value_list result
-        = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+      octave_value_list result;
 
-      if (! error_state && result.length () > 0)
+      try
+        {
+          result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+        }
+      catch (const octave_execution_exception&)
+        {
+          error ("conversion from %s to %s failed", dtype.c_str (),
+                 cname.c_str ());
+        }
+
+      if (result.length () > 0)
         retval = result(0);
       else
         error ("conversion from %s to %s failed", dtype.c_str (),
@@ -1822,10 +1831,19 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       if (fcn.is_defined ())
         {
-          octave_value_list result
-            = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+          octave_value_list result;
 
-          if (! error_state && result.length () > 0)
+          try
+            {
+              result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+            }
+          catch (const octave_execution_exception&)
+            {
+              error ("%s constructor failed for %s argument", dtype.c_str (),
+                     cname.c_str ());
+            }
+
+          if (result.length () > 0)
             retval = result(0);
           else
             error ("%s constructor failed for %s argument", dtype.c_str (),
@@ -1853,16 +1871,22 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
     {
       // Have method for dominant type.  Call it and let it handle conversions.
 
-      octave_value_list tmp2 = fcn.do_multi_index_op (1, ovl);
+      octave_value_list tmp2;
+
+      try
+        {
+          tmp2 = fcn.do_multi_index_op (1, ovl);
+        }
+      catch (const octave_execution_exception&)
+        {
+          error ("%s/%s method failed", dtype.c_str (), cattype.c_str ());
+        }
 
       if (tmp2.length () > 0)
         retval = tmp2(0);
       else
-        {
-          error ("%s/%s method did not return a value",
-                 dtype.c_str (), cattype.c_str ());
-          goto done;
-        }
+        error ("%s/%s method did not return a value", dtype.c_str (),
+               cattype.c_str ());
     }
   else
     {
@@ -1895,7 +1919,6 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
       retval = octave_value (new octave_class (m, cname, parents));
     }
 
-done:
   return retval;
 }
 

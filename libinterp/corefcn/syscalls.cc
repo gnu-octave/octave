@@ -132,26 +132,21 @@ error message.\n\
       octave_stream old_stream
         = octave_stream_list::lookup (args(0), "dup2");
 
-      if (! error_state)
+      octave_stream new_stream
+        = octave_stream_list::lookup (args(1), "dup2");
+
+      int i_old = old_stream.file_number ();
+      int i_new = new_stream.file_number ();
+
+      if (i_old >= 0 && i_new >= 0)
         {
-          octave_stream new_stream
-            = octave_stream_list::lookup (args(1), "dup2");
+          std::string msg;
 
-          int i_old = old_stream.file_number ();
-          int i_new = new_stream.file_number ();
+          int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-          if (i_old >= 0 && i_new >= 0)
-            {
-              std::string msg;
-
-              int status = octave_syscalls::dup2 (i_old, i_new, msg);
-
-              retval(1) = msg;
-              retval(0) = status;
-            }
+          retval(1) = msg;
+          retval(0) = status;
         }
-      else
-        error ("dup2: invalid stream");
     }
   else
     print_usage ();
@@ -486,28 +481,23 @@ message.\n\
     {
       octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
 
-      if (! error_state)
-        {
-          int fid = strm.file_number ();
+      int fid = strm.file_number ();
 
-          int req = args(1).int_value (true);
-          int arg = args(2).int_value (true);
+      int req = args(1).int_value (true);
+      int arg = args(2).int_value (true);
 
-          // FIXME: Need better checking here?
-          if (fid < 0)
-            error ("fcntl: invalid file id");
-          else
-            {
-              std::string msg;
-
-              int status = octave_fcntl (fid, req, arg, msg);
-
-              retval(1) = msg;
-              retval(0) = status;
-            }
-        }
+      // FIXME: Need better checking here?
+      if (fid < 0)
+        error ("fcntl: invalid file id");
       else
-        error ("fcntl: FID, REQUEST, and ARG must be integers");
+        {
+          std::string msg;
+
+          int status = octave_fcntl (fid, req, arg, msg);
+
+          retval(1) = msg;
+          retval(0) = status;
+        }
     }
   else
     print_usage ();

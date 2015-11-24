@@ -251,11 +251,8 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
 
   if (! (name == ".nargin." || name == ".nargout."
          || name == CELL_ELT_TAG || valid_identifier (name)))
-    {
-      error ("load: bogus identifier '%s' found in file '%s'",
-             name.c_str (), filename.c_str ());
-      return std::string ();
-    }
+    error ("load: bogus identifier '%s' found in file '%s'",
+           name.c_str (), filename.c_str ());
 
   // Look for type keyword.
 
@@ -286,12 +283,6 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     }
   else
     error ("load: failed to extract keyword specifying value type");
-
-  if (error_state)
-    {
-      error ("load: reading file %s", filename.c_str ());
-      return std::string ();
-    }
 
   return name;
 }

@@ -398,7 +398,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
           break;
         }
 
-      if (error_state || stream.eof () || name.empty ())
+      if (stream.eof () || name.empty ())
         break;
       else
         {

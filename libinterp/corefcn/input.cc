@@ -199,16 +199,33 @@ interactive_input (const std::string& s, bool& eof)
 
   if (Vdrawnow_requested && interactive)
     {
-      feval ("drawnow");
+      bool eval_error = false;
+
+      try
+        {
+          feval ("drawnow");
+        }
+      catch (const octave_execution_exception& e)
+        {
+          eval_error = true;
+
+          std::string stack_trace = e.info ();
+
+          if (! stack_trace.empty ())
+            std::cerr << stack_trace;
+
+          if (interactive)
+            recover_from_exception ();
+        }
 
       flush_octave_stdout ();
 
-      // We set Vdrawnow_requested to false even if there is an error
-      // in drawnow so that the error doesn't reappear at every prompt.
+      // We set Vdrawnow_requested to false even if there is an error in
+      // drawnow so that the error doesn't reappear at every prompt.
 
       Vdrawnow_requested = false;
 
-      if (error_state)
+      if (eval_error)
         return "\n";
     }
 

@@ -857,13 +857,22 @@ octave_execute_interpreter (void)
   // Execute any code specified with --eval 'CODE'
   if (! code_to_eval.empty ())
     {
-      int parse_status = execute_eval_option_code (code_to_eval);
+      int parse_status = 0;
+
+      try
+        {
+          parse_status = execute_eval_option_code (code_to_eval);
+        }
+      catch (const octave_execution_exception&)
+        {
+          parse_status = 1;
+        }
 
       if (! persist)
         {
           quitting_gracefully = true;
 
-          clean_up_and_exit (parse_status || error_state ? 1 : 0);
+          clean_up_and_exit (parse_status);
         }
     }
 
@@ -878,15 +887,24 @@ octave_execute_interpreter (void)
       // If we are running an executable script (#! /bin/octave) then
       // we should only see the args passed to the script.
 
-      intern_argv (remaining_args, octave_cmdline_argv+last_arg_idx);
+      int exit_status = 0;
 
-      execute_command_line_file (octave_cmdline_argv[last_arg_idx]);
+      try
+        {
+          intern_argv (remaining_args, octave_cmdline_argv+last_arg_idx);
+
+          execute_command_line_file (octave_cmdline_argv[last_arg_idx]);
+        }
+      catch (const octave_execution_exception&)
+        {
+          exit_status = 1;
+        }
 
       if (! persist)
         {
           quitting_gracefully = true;
 
-          clean_up_and_exit (error_state ? 1 : 0);
+          clean_up_and_exit (exit_status);
         }
     }
 

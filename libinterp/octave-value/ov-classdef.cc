@@ -541,29 +541,24 @@ class_fevalStatic (const octave_value_list& args, int nargout)
     {
       cdef_class cls (to_cdef (args(0)));
 
-      if (! error_state)
+      std::string meth_name = args(1).xstring_value ("fevalStatic: method name must be a string");
+
+      cdef_method meth = cls.find_method (meth_name);
+
+      if (meth.ok ())
         {
-          std::string meth_name = args(1).xstring_value ("fevalStatic: method name must be a string");
-
-          cdef_method meth = cls.find_method (meth_name);
-
-          if (meth.ok ())
-            {
-              if (meth.is_static ())
-                retval = meth.execute (args.splice (0, 2), nargout,
-                                       true, "fevalStatic");
-              else
-                error ("fevalStatic: method `%s' is not static",
-                       meth_name.c_str ());
-            }
+          if (meth.is_static ())
+            retval = meth.execute (args.splice (0, 2), nargout,
+                                   true, "fevalStatic");
           else
-            error ("fevalStatic: method not found: %s", meth_name.c_str ());
+            error ("fevalStatic: method `%s' is not static",
+                   meth_name.c_str ());
         }
       else
-        error ("fevalStatic: first argument must be a meta.class object");
+        error ("fevalStatic: method not found: %s", meth_name.c_str ());
     }
   else
-    error ("fevalStatic: invalid arguments");
+    error ("fevalStatic: first argument must be a meta.class object");
 
   return retval;
 }
@@ -578,29 +573,24 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
     {
       cdef_class cls = to_cdef (args(0));
 
-      if (! error_state)
+      std::string prop_name = args(1).xstring_value ("getConstant: property name must be a string");
+
+      cdef_property prop = cls.find_property (prop_name);
+
+      if (prop.ok ())
         {
-          std::string prop_name = args(1).xstring_value ("getConstant: property name must be a string");
-
-          cdef_property prop = cls.find_property (prop_name);
-
-          if (prop.ok ())
-            {
-              if (prop.is_constant ())
-                retval(0) = prop.get_value (true, "getConstant");
-              else
-                error ("getConstant: property `%s' is not constant",
-                       prop_name.c_str ());
-            }
+          if (prop.is_constant ())
+            retval(0) = prop.get_value (true, "getConstant");
           else
-            error ("getConstant: property not found: %s",
+            error ("getConstant: property `%s' is not constant",
                    prop_name.c_str ());
         }
       else
-        error ("getConstant: first argument must be a meta.class object");
+        error ("getConstant: property not found: %s",
+               prop_name.c_str ());
     }
   else
-    error ("getConstant: invalid arguments");
+    error ("getConstant: first argument must be a meta.class object");
 
   return retval;
 }
@@ -621,10 +611,7 @@ class_ ## OP (const octave_value_list& args, int /* nargout */) \
 \
       cdef_class clsb = to_cdef (args(1)); \
 \
-      if (! error_state) \
-        retval(0) = FUN (CLSA, CLSB); \
-      else \
-        error (#OP ": arguments must be meta.class objects"); \
+      retval(0) = FUN (CLSA, CLSB); \
     } \
   else \
     error (#OP ": invalid arguments"); \

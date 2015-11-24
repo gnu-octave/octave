@@ -56,13 +56,15 @@ eigs_func (const ColumnVector &x, int &eigs_error)
 
   if (eigs_fcn)
     {
-      octave_value_list tmp = eigs_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
 
-      if (error_state)
+      try
         {
-          eigs_error = 1;
+          tmp = eigs_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
           gripe_user_supplied_eval ("eigs");
-          return retval;
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -73,13 +75,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
               warned_imaginary = true;
             }
 
-          retval = ColumnVector (tmp(0).vector_value ());
-
-          if (error_state)
-            {
-              eigs_error = 1;
-              gripe_user_supplied_eval ("eigs");
-            }
+          retval = tmp(0).xvector_value ("eigs: evaluation of user-supplied function failed");
         }
       else
         {
@@ -100,24 +96,20 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
   if (eigs_fcn)
     {
-      octave_value_list tmp = eigs_fcn->do_multi_index_op (1, args);
+      octave_value_list tmp;
 
-      if (error_state)
+      try
         {
-          eigs_error = 1;
+          tmp = eigs_fcn->do_multi_index_op (1, args);
+        }
+      catch (const octave_execution_exception&)
+        {
           gripe_user_supplied_eval ("eigs");
-          return retval;
         }
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          retval = ComplexColumnVector (tmp(0).complex_vector_value ());
-
-          if (error_state)
-            {
-              eigs_error = 1;
-              gripe_user_supplied_eval ("eigs");
-            }
+          retval = tmp(0).complex_vector_value ("eigs: evaluation of user-supplied function failed");
         }
       else
         {

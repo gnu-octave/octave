@@ -208,26 +208,30 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else if (tmp.is_matrix_type ())
           {
-            Array<int> iv = tmp.int_vector_value (true);
+            Array<int> iv;
 
-            if (! error_state)
+            try
               {
-                octave_idx_type len = iv.numel ();
-
-                dims.resize (len);
-
-                for (octave_idx_type i = 0; i < len; i++)
-                  {
-                    // Negative dimensions are treated as zero for Matlab
-                    // compatibility
-                    octave_idx_type elt = iv(i);
-                    dims(i) = elt >=0 ? elt : 0;
-                  }
-
-                goto gen_matrix;
+                iv = tmp.int_vector_value (true);
               }
-            else
-              error ("%s: dimensions must be a scalar or array of integers", fcn);
+            catch (const octave_execution_exception&)
+              {
+                error ("%s: dimensions must be a scalar or array of integers", fcn);
+              }
+
+            octave_idx_type len = iv.numel ();
+
+            dims.resize (len);
+
+            for (octave_idx_type i = 0; i < len; i++)
+              {
+                // Negative dimensions are treated as zero for Matlab
+                // compatibility
+                octave_idx_type elt = iv(i);
+                dims(i) = elt >=0 ? elt : 0;
+              }
+
+            goto gen_matrix;
           }
         else
           {

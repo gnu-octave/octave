@@ -613,13 +613,8 @@ octave_class::subsasgn_common (const octave_value& obj,
         {
           obvp->subsasgn (type, idx, rhs);
 
-          if (! error_state)
-            {
-              count++;
-              retval = octave_value (this);
-            }
-          else
-            gripe_failed_assignment ();
+          count++;
+          retval = octave_value (this);
         }
       else
         error ("malformed class");
@@ -734,121 +729,91 @@ octave_class::subsasgn_common (const octave_value& obj,
         }
     }
 
-  if (! error_state)
+  switch (type[0])
     {
-      switch (type[0])
-        {
-        case '(':
+    case '(':
+      {
+        if (n > 1 && type[1] == '.')
           {
-            if (n > 1 && type[1] == '.')
-              {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
-                octave_value_list key_idx = *++p;
-
-                assert (key_idx.length () == 1);
-
-                std::string key = key_idx(0).xstring_value ("assignment to class element failed");
-
-                map.assign (idx.front (), key, t_rhs);
-
-                if (! error_state)
-                  {
-                    count++;
-                    retval = octave_value (this);
-                  }
-                else
-                  gripe_failed_assignment ();
-              }
-            else
-              {
-                if (t_rhs.is_object () || t_rhs.is_map ())
-                  {
-                    octave_map rhs_map = t_rhs.map_value ();
-
-                    if (! error_state)
-                      {
-                        map.assign (idx.front (), rhs_map);
-
-                        if (! error_state)
-                          {
-                            count++;
-                            retval = octave_value (this);
-                          }
-                        else
-                          gripe_failed_assignment ();
-                      }
-                    else
-                      error ("invalid class assignment");
-                  }
-                else
-                  {
-                    if (t_rhs.is_empty ())
-                      {
-                        map.delete_elements (idx.front ());
-
-                        if (! error_state)
-                          {
-                            count++;
-                            retval = octave_value (this);
-                          }
-                        else
-                          gripe_failed_assignment ();
-                      }
-                    else
-                      error ("invalid class assignment");
-                  }
-              }
-          }
-          break;
-
-        case '.':
-          {
-            octave_value_list key_idx = idx.front ();
+            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            octave_value_list key_idx = *++p;
 
             assert (key_idx.length () == 1);
 
-            std::string key = key_idx(0).string_value ();
+            std::string key = key_idx(0).xstring_value ("assignment to class element failed");
 
-            if (t_rhs.is_cs_list ())
+            map.assign (idx.front (), key, t_rhs);
+
+            count++;
+            retval = octave_value (this);
+          }
+        else
+          {
+            if (t_rhs.is_object () || t_rhs.is_map ())
               {
-                Cell tmp_cell = Cell (t_rhs.list_value ());
+                octave_map rhs_map = t_rhs.xmap_value ("invalid class assignment");
 
-                // The shape of the RHS is irrelevant, we just want
-                // the number of elements to agree and to preserve the
-                // shape of the left hand side of the assignment.
+                map.assign (idx.front (), rhs_map);
 
-                if (numel () == tmp_cell.numel ())
-                  tmp_cell = tmp_cell.reshape (dims ());
-
-                map.setfield (key, tmp_cell);
-              }
-            else
-              {
-                Cell tmp_cell(1, 1);
-                tmp_cell(0) = t_rhs.storable_value ();
-                map.setfield (key, tmp_cell);
-              }
-
-            if (! error_state)
-              {
                 count++;
                 retval = octave_value (this);
               }
             else
-              gripe_failed_assignment ();
+              {
+                if (t_rhs.is_empty ())
+                  {
+                    map.delete_elements (idx.front ());
+
+                    count++;
+                    retval = octave_value (this);
+                  }
+                else
+                  error ("invalid class assignment");
+              }
           }
-          break;
+      }
+      break;
 
-        case '{':
-          gripe_invalid_index_type (type_name (), type[0]);
-          break;
+    case '.':
+      {
+        octave_value_list key_idx = idx.front ();
 
-        default:
-          panic_impossible ();
-        }
+        assert (key_idx.length () == 1);
+
+        std::string key = key_idx(0).string_value ();
+
+        if (t_rhs.is_cs_list ())
+          {
+            Cell tmp_cell = Cell (t_rhs.list_value ());
+
+            // The shape of the RHS is irrelevant, we just want
+            // the number of elements to agree and to preserve the
+            // shape of the left hand side of the assignment.
+
+            if (numel () == tmp_cell.numel ())
+              tmp_cell = tmp_cell.reshape (dims ());
+
+            map.setfield (key, tmp_cell);
+          }
+        else
+          {
+            Cell tmp_cell(1, 1);
+            tmp_cell(0) = t_rhs.storable_value ();
+            map.setfield (key, tmp_cell);
+          }
+
+        count++;
+        retval = octave_value (this);
+      }
+      break;
+
+    case '{':
+      gripe_invalid_index_type (type_name (), type[0]);
+      break;
+
+    default:
+      panic_impossible ();
     }
-  else
-    gripe_failed_assignment ();
 
   return retval;
 }
@@ -1829,34 +1794,29 @@ is derived.\n\
         {
           if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
             {
-              octave_map m = args(0).map_value ();
+              octave_map m = args(0).xmap_value ("class: S must be a valid structure");
 
-              if (! error_state)
-                {
-                  if (nargin == 2)
-                    retval
-                      = octave_value (new octave_class
-                                      (m, id, std::list<std::string> ()));
-                  else
-                    {
-                      octave_value_list parents = args.slice (2, nargin-2);
-
-                      retval
-                        = octave_value (new octave_class (m, id, parents));
-                    }
-
-                  octave_class::exemplar_const_iterator it
-                    = octave_class::exemplar_map.find (id);
-
-                  if (it == octave_class::exemplar_map.end ())
-                    octave_class::exemplar_map[id]
-                      = octave_class::exemplar_info (retval);
-                  else if (! it->second.compare (retval))
-                    error ("class: object of class '%s' does not match previously constructed objects",
-                           id.c_str ());
-                }
+              if (nargin == 2)
+                retval
+                  = octave_value (new octave_class
+                                  (m, id, std::list<std::string> ()));
               else
-                error ("class: S must be a valid structure");
+                {
+                  octave_value_list parents = args.slice (2, nargin-2);
+
+                  retval
+                    = octave_value (new octave_class (m, id, parents));
+                }
+
+              octave_class::exemplar_const_iterator it
+                = octave_class::exemplar_map.find (id);
+
+              if (it == octave_class::exemplar_map.end ())
+                octave_class::exemplar_map[id]
+                  = octave_class::exemplar_info (retval);
+              else if (! it->second.compare (retval))
+                error ("class: object of class '%s' does not match previously constructed objects",
+                       id.c_str ());
             }
           else
             error ("class: '%s' is invalid as a class name in this context",

@@ -2859,12 +2859,13 @@ base_properties::set_from_list (base_graphics_object& bgo,
         {
           std::string pname = q->first;
 
-          bgo.set (pname, q->second);
-
-          if (error_state)
+          try
+            {
+              bgo.set (pname, q->second);
+            }
+          catch (const octave_execution_exception&)
             {
               error ("error setting default property %s", pname.c_str ());
-              break;
             }
         }
     }
@@ -10182,26 +10183,29 @@ make_graphics_object (const std::string& go_name,
 
   if (parent.ok ())
     {
-      graphics_handle h
-        = gh_manager::make_graphics_handle (go_name, parent,
-                                            integer_figure_handle,
-                                            false, false);
+      graphics_handle h;
 
-      if (! error_state)
+      try
         {
-          adopt (parent, h);
-
-          xset (h, xargs);
-          xcreatefcn (h);
-          xinitialize (h);
-
-          retval = h.value ();
-
-          Vdrawnow_requested = true;
+          h = gh_manager::make_graphics_handle (go_name, parent,
+                                                integer_figure_handle,
+                                                false, false);
         }
-      else
-        error ("__go%s__: unable to create graphics handle",
-               go_name.c_str ());
+      catch (const octave_execution_exception&)
+        {
+          error ("__go%s__: unable to create graphics handle",
+                 go_name.c_str ());
+        }
+
+      adopt (parent, h);
+
+      xset (h, xargs);
+      xcreatefcn (h);
+      xinitialize (h);
+
+      retval = h.value ();
+
+      Vdrawnow_requested = true;
     }
   else
     error ("__go_%s__: invalid parent", go_name.c_str ());
@@ -10278,7 +10282,7 @@ Undocumented internal function.\n\
           else if (val > 0 && D_NINT (val) == val)
             h = gh_manager::make_figure_handle (val, false);
 
-          if (! error_state && h.ok ())
+          if (h.ok ())
             {
               adopt (0, h);
 
@@ -10714,7 +10718,7 @@ gtk_manager::do_get_toolkit (void) const
 
               pl = loaded_toolkits.find (dtk);
 
-              if (error_state || pl == loaded_toolkits.end ())
+              if (pl == loaded_toolkits.end ())
                 error ("failed to load %s graphics toolkit", dtk.c_str ());
               else
                 retval = pl->second;
@@ -11455,10 +11459,9 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
       if (args.length () > 1)
         {
-          pname = args(1).string_value ();
+          pname = args(1).xstring_value ("waitfor: PROP must be a string");
 
-          if (! error_state
-              && ! pname.empty () && ! pname.compare ("timeout"))
+          if (! pname.empty () && ! pname.compare ("timeout"))
             {
               if (pname.compare ("\\timeout"))
                 pname = "timeout";
@@ -11552,23 +11555,18 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                     }
                 }
             }
-          else if (error_state || pname.empty ())
+          else if (pname.empty ())
             error ("waitfor: PROP must be a non-empty string");
         }
 
       if (timeout_index < 0 && args.length () > (max_arg_index + 1))
         {
-          caseless_str s = args(max_arg_index + 1).string_value ();
+          caseless_str s = args(max_arg_index + 1).xstring_value ("waitfor: invalid parameter, expected 'timeout'");
 
-          if (! error_state)
-            {
-              if (s.compare ("timeout"))
-                timeout_index = max_arg_index + 1;
-              else
-                error ("waitfor: invalid parameter '%s'", s.c_str ());
-            }
+          if (s.compare ("timeout"))
+            timeout_index = max_arg_index + 1;
           else
-            error ("waitfor: invalid parameter, expected 'timeout'");
+            error ("waitfor: invalid parameter '%s'", s.c_str ());
         }
 
       if (timeout_index >= 0)

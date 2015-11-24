@@ -1668,7 +1668,7 @@ convert_to_int_array (const Array<octave_int<T> >& A)
 }
 
 Array<int>
-octave_value::int_vector_value (bool force_string_conv, bool require_int,
+octave_value::int_vector_value (bool require_int, bool force_string_conv,
                                 bool force_vector_conversion) const
 {
   Array<int> retval;

@@ -86,7 +86,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     file = cellstr (file);
   endif
   if (numel (file) == 1)
-    if (isempty (strfind (file, "://")))
+    if (isempty (strfind (file{1}, "://")))
       ## FIXME: The above code is not a perfect test for a URL
       gfile = glob (file);
       if (isempty (gfile))

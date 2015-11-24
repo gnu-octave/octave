@@ -61,11 +61,11 @@ along with Octave; see the file COPYING.  If not, see
 static int
 convert_to_valid_int (const octave_value& tc, int& conv_err)
 {
-  int retval = 0;
-
   conv_err = 0;
 
-  double dval;
+  int retval = 0;
+
+  double dval = 0.0;
 
   try
     {
@@ -76,17 +76,20 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
       conv_err = 1;
     }
 
-  if (! lo_ieee_isnan (dval))
+  if (! conv_err)
     {
-      int ival = NINT (dval);
+      if (! lo_ieee_isnan (dval))
+        {
+          int ival = NINT (dval);
 
-      if (ival == dval)
-        retval = ival;
+          if (ival == dval)
+            retval = ival;
+          else
+            conv_err = 3;
+        }
       else
-        conv_err = 3;
+        conv_err = 2;
     }
-  else
-    conv_err = 2;
 
   return retval;
 }

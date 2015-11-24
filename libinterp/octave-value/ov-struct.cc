@@ -91,14 +91,6 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   return retval;
 }
 
-#if 0
-static void
-gripe_invalid_index1 (void)
-{
-  error ("invalid index for structure array");
-}
-#endif
-
 static void
 gripe_invalid_index_for_assignment (void)
 {
@@ -109,12 +101,6 @@ static void
 gripe_invalid_index_type (const std::string& nm, char t)
 {
   error ("%s cannot be indexed with %c", nm.c_str (), t);
-}
-
-static void
-gripe_failed_assignment (void)
-{
-  error ("assignment to structure element failed");
 }
 
 static void

@@ -887,7 +887,7 @@ octave_execute_interpreter (void)
       // If we are running an executable script (#! /bin/octave) then
       // we should only see the args passed to the script.
 
-      int exit_status = 0;
+      exit_status = 0;
 
       try
         {

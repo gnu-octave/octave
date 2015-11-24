@@ -1337,7 +1337,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
       error ("fread: invalid PRECISION specified");
     }
 
-  int skip;
+  int skip = 0;
 
   try
     {
@@ -1595,7 +1595,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
       error ("fwrite: invalid PRECISION specified");
     }
 
-  int skip;
+  int skip = 0;
 
   try
     {

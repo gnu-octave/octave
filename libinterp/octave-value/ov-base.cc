@@ -458,7 +458,7 @@ octave_base_value::print_info (std::ostream& os,
   { \
     T retval = 0; \
  \
-    double d; \
+    double d = 0.0; \
  \
     try \
       { \
@@ -496,7 +496,7 @@ INT_CONV_METHOD (uint64_t, uint64)
 int
 octave_base_value::nint_value (bool frc_str_conv) const
 {
-  double d;
+  double d = 0.0;
 
   try
     {

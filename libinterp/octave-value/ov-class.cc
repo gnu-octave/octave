@@ -261,12 +261,6 @@ gripe_invalid_index_type (const std::string& nm, char t)
   error ("%s cannot be indexed with %c", nm.c_str (), t);
 }
 
-static void
-gripe_failed_assignment (void)
-{
-  error ("assignment to class element failed");
-}
-
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {

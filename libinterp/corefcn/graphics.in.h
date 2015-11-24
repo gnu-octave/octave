@@ -4411,7 +4411,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (line)
-      color_property color , color_values (0, 0, 0)
+      color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
       // FIXME: interpreter is not a property of Matlab line objects.

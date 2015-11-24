@@ -1518,7 +1518,7 @@ opengl_renderer::draw_line (const line::properties& props)
         clip[i] = (clip_code (x(i), y(i), z_mid) & clip_mask);
     }
 
-  if (! props.linestyle_is ("none"))
+  if (! props.linestyle_is ("none") && ! props.color_is ("none"))
     {
       set_color (props.get_color_rgb ());
       set_linestyle (props.get_linestyle (), false);

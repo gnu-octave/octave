@@ -86,11 +86,14 @@ function filelist = unpack (file, dir = ".", filetype = "")
     file = cellstr (file);
   endif
   if (numel (file) == 1)
-    gfile = glob (file);
-    if (isempty (gfile))
-      error ('unpack: file "%s" not found', file{1});
-    else
-      file = gfile;
+    if (isempty (strfind (file, "://")))
+      ## FIXME: The above code is not a perfect test for a URL
+      gfile = glob (file);
+      if (isempty (gfile))
+        error ('unpack: file "%s" not found', file{1});
+      else
+        file = gfile;
+      endif
     endif
   endif
 

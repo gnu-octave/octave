@@ -562,7 +562,7 @@ glob (\"file[12]\")\n\
 
   if (args.length () == 1)
     {
-      string_vector pat = args(0).all_strings ("glob: PATTERN must be a string");
+      string_vector pat = args(0).xall_strings ("glob: PATTERN must be a string");
 
       glob_match pattern (file_ops::tilde_expand (pat));
 

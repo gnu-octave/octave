@@ -35,7 +35,13 @@ function s = inputname (n)
     print_usage ();
   endif
 
-  s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", fix (n)));
+  s = "";
+  try
+    s = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", fix (n)));
+  catch
+    return;
+  end_try_catch
+
   ## For compatibility with Matlab,
   ## return empty string if argument name is not a valid identifier.
   if (! isvarname (s))
@@ -46,20 +52,27 @@ endfunction
 
 
 ## Warning: heap big magic in the following tests!!!
-## The test function builds a private context for each
-## test, with only the specified values shared between
-## them.  It does this using the following template:
+## The test function builds a private context for each test, with only the
+## specified values shared between them.  It does this using the following
+## template:
 ##
-##     function [<shared>] = testfn(<shared>)
+##     function [<shared>] = testfn (<shared>)
 ##        <test>
+##     endfunction
 ##
-## To test inputname, I need a function context invoked
-## with known parameter names.  So define a couple of
-## shared parameters, et voila!, the test is trivial.
+## To test inputname, I need a function context invoked with known parameter
+## names.  So define a couple of shared parameters, et voila!, the test is
+## trivial.
 
 %!shared hello, worldly
 %!assert (inputname (1), "hello")
 %!assert (inputname (2), "worldly")
+%!assert (inputname (3), "")
+
+## Clear parameter list so that testfn is created with zero inputs/outputs
+%!shared  
+%!assert (inputname (-1), "")
+%!assert (inputname (1), "")
 
 %!function r = __foo__ (x, y)
 %!  r = inputname (2);

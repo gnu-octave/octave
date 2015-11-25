@@ -1198,7 +1198,7 @@ file_editor::insert_new_open_actions (QAction *new_action,
   _fileMenu->insertAction (_mru_file_menu->menuAction (), open_action);
   _fileMenu->insertAction (open_action, new_fcn_action);
   _fileMenu->insertAction (new_fcn_action, new_action);
-  _tool_bar->insertAction (_save_action, open_action);
+  _tool_bar->insertAction (_popdown_mru_action, open_action);
   _tool_bar->insertAction (open_action, new_action);
 }
 
@@ -1539,7 +1539,15 @@ file_editor::construct (void)
 
   // toolbar
 
+  // popdown menu with mru files
+  QToolButton *popdown_button = new QToolButton ();
+  popdown_button->setToolTip (tr ("Recent Files"));
+  popdown_button->setMenu (_mru_file_menu);
+  popdown_button->setPopupMode (QToolButton::InstantPopup);
+  popdown_button->setToolButtonStyle (Qt::ToolButtonTextOnly);
+
   // new and open actions are inserted later from main window
+  _popdown_mru_action = _tool_bar->addWidget (popdown_button);
   _tool_bar->addAction (_save_action);
   _tool_bar->addAction (_save_as_action);
   _tool_bar->addSeparator ();

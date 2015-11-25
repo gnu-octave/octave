@@ -344,6 +344,7 @@ private:
   QAction *_run_selection_action;
 
   QAction *_edit_function_action;
+  QAction *_popdown_mru_action;
   QAction *_save_action;
   QAction *_save_as_action;
   QAction *_close_action;

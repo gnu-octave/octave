@@ -1359,8 +1359,13 @@ file_editor_tab::load_file (const QString& fileName)
   QTextStream in (&file);
   // set the desired codec
   QSettings *settings = resource_manager::get_settings ();
+#if defined (Q_OS_WIN32)
   QString encoding = settings->value ("editor/default_encoding","SYSTEM")
                                .toString ();
+#else
+  QString encoding = settings->value ("editor/default_encoding","UTF-8")
+                               .toString ();
+#endif
   QTextCodec *codec = QTextCodec::codecForName (encoding.toAscii ());
   in.setCodec(codec);
 
@@ -1520,8 +1525,13 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
 
   // set the desired codec
   QSettings *settings = resource_manager::get_settings ();
+#if defined (Q_OS_WIN32)
   QString encoding = settings->value ("editor/default_encoding","SYSTEM")
                                .toString ();
+#else
+  QString encoding = settings->value ("editor/default_encoding","UTF-8")
+                               .toString ();
+#endif
   QTextCodec *codec = QTextCodec::codecForName (encoding.toAscii ());
   out.setCodec(codec);
 

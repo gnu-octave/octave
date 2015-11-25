@@ -803,10 +803,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode",
                       ui->combo_eol_mode->currentIndex ());
-  QString encoding = ui->editor_combo_encoding->currentText ();
-  if (encoding == tr ("System default"))
-    encoding = "SYSTEM";
-  settings->setValue ("editor/default_encoding", encoding);
+  settings->setValue ("editor/default_encoding",
+                      ui->editor_combo_encoding->currentText ());
   settings->setValue ("editor/auto_indent",
                       ui->editor_auto_ind_checkbox->isChecked ());
   settings->setValue ("editor/tab_indents_line",
@@ -1038,26 +1036,25 @@ settings_dialog::init_combo_encoding (QSettings *settings)
     }
   all_codecs.removeDuplicates ();
 
-  // remove the "system" entry
-  int idx = all_codecs.indexOf ("SYSTEM");
-  if (idx >= 0)
-    all_codecs.removeAt (idx);
-
   // sort and prepend meaningfull text for system's default codec
+#if defined (Q_OS_WIN32)
+  QString def_enc = "SYSTEM";
+#else
+  QString def_enc = "UTF-8";
+#endif
   qSort (all_codecs);
-  all_codecs.prepend (tr ("System default"));
+  ui->editor_combo_encoding->insertSeparator (0);
+  ui->editor_combo_encoding->insertItem (0, def_enc);
 
   // get the value from the settings file (system is default)
-  QString encoding = settings->value ("editor/default_encoding","SYSTEM")
+  QString encoding = settings->value ("editor/default_encoding",def_enc)
                                .toString ();
-  if (encoding == "SYSTEM")
-    encoding = tr ("System default");
 
   // fill the combo box and select the current item or system if
   // current item from the settings file can not be found
   foreach (QString c, all_codecs)
     ui->editor_combo_encoding->addItem (c);
-  idx = ui->editor_combo_encoding->findText (encoding);
+  int idx = ui->editor_combo_encoding->findText (encoding);
   if (idx >= 0)
     ui->editor_combo_encoding->setCurrentIndex (idx);
   else

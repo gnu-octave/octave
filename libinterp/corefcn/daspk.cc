@@ -79,10 +79,9 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = daspk_fcn->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception&)
+      catch (const octave_execution_exception& e)
         {
-          gripe_user_supplied_eval ("daspk");
-          throw;
+          gripe_user_supplied_eval (e, "daspk");
         }
 
       int tlen = tmp.length ();
@@ -132,10 +131,9 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = daspk_jac->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception&)
+      catch (const octave_execution_exception& e)
         {
-          gripe_user_supplied_eval ("daspk");
-          throw;
+          gripe_user_supplied_eval (e, "daspk");
         }
 
       int tlen = tmp.length ();

@@ -41,25 +41,26 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "parse.h"
 #include "variables.h"
-#include "ov-colon.h"
 #include "unwind-prot.h"
 #include "gripes.h"
+#include "toplev.h"
 #include "utils.h"
 
-#include "ov-class.h"
-#include "ov-scalar.h"
-#include "ov-float.h"
-#include "ov-complex.h"
-#include "ov-flt-complex.h"
 #include "ov-bool.h"
-#include "ov-int8.h"
+#include "ov-class.h"
+#include "ov-colon.h"
+#include "ov-complex.h"
+#include "ov-float.h"
+#include "ov-flt-complex.h"
 #include "ov-int16.h"
 #include "ov-int32.h"
 #include "ov-int64.h"
-#include "ov-uint8.h"
+#include "ov-int8.h"
+#include "ov-scalar.h"
 #include "ov-uint16.h"
 #include "ov-uint32.h"
 #include "ov-uint64.h"
+#include "ov-uint8.h"
 
 #include "ov-fcn-handle.h"
 
@@ -77,12 +78,16 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     {
       tmp = func.do_multi_index_op (nargout, inputlist);
     }
-  catch (const octave_execution_exception&)
+  catch (const octave_execution_exception& e)
     {
       if (error_handler.is_defined ())
-        execution_error = true;
+        {
+          recover_from_exception ();
+
+          execution_error = true;
+        }
       else
-        octave_throw_execution_exception ();
+        throw e;
     }
 
   if (execution_error)

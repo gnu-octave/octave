@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "oct-obj.h"
+#include "toplev.h"
 #include "utils.h"
 
 // Possible values for conv_err:
@@ -73,6 +74,8 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
     }
   catch (const octave_execution_exception&)
     {
+      recover_from_exception ();
+
       conv_err = 1;
     }
 

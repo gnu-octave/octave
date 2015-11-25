@@ -93,8 +93,10 @@ load_path::dir_info::update (void)
             }
           catch (const octave_execution_exception&)
             {
-              // Skip updating if we don't know where we are, but
+              // Skip updating if we don't know where we are but
               // don't treat it as an error.
+
+              recover_from_exception ();
             }
         }
       else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
@@ -159,7 +161,10 @@ load_path::dir_info::initialize (void)
         }
       catch (const octave_execution_exception&)
         {
-          // Skip updating if we don't know where we are.
+          // Skip updating if we don't know where we are but don't treat
+          // it as an error.
+
+          recover_from_exception ();
         }
     }
   else

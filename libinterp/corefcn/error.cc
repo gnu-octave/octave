@@ -283,7 +283,8 @@ pr_where (std::ostream& os, const char *who)
 }
 
 static void
-debug_or_throw_exception (bool show_stack_trace = false)
+debug_or_throw_exception (const octave_execution_exception& e,
+                          bool show_stack_trace = false)
 {
   if ((interactive || forced_interactive)
       && Vdebug_on_error && octave_call_stack::caller_user_code ())
@@ -302,21 +303,23 @@ debug_or_throw_exception (bool show_stack_trace = false)
       do_keyboard (octave_value_list ());
     }
   else
+    throw e;
+}
+
+static void
+debug_or_throw_exception (bool show_stack_trace = false)
+{
+  octave_execution_exception e;
+
+  if (show_stack_trace && octave_exception_state != octave_exec_exception)
     {
-      octave_execution_exception e;
+      std::ostringstream buf;
+      pr_where (buf, "error");
 
-      if (show_stack_trace
-          && octave_exception_state != octave_exec_exception)
-        {
-          std::ostringstream buf;
-          pr_where (buf, "error");
-          e.set_stack_trace (buf.str ());
-        }
-
-      octave_exception_state = octave_exec_exception;
-
-      throw e;
+      e.set_stack_trace (buf.str ());
     }
+
+  debug_or_throw_exception (e, show_stack_trace);
 }
 
 // Warning messages are never buffered.
@@ -387,7 +390,16 @@ message_with_id (const char *name, const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-void
+static void
+usage_1 (const octave_execution_exception& e, const char *id,
+         const char *fmt, va_list args)
+{
+  verror (true, std::cerr, "usage", id, fmt, args);
+
+  debug_or_throw_exception (e);
+}
+
+static void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
   verror (true, std::cerr, "usage", id, fmt, args);
@@ -426,8 +438,9 @@ usage_with_id (const char *id, const char *fmt, ...)
 }
 
 static void
-error_1 (std::ostream& os, const char *name, const char *id,
-         const char *fmt, va_list args, bool with_cfn = false)
+error_1 (const octave_execution_exception& e, std::ostream& os,
+         const char *name, const char *id, const char *fmt,
+         va_list args, bool with_cfn = false)
 {
   bool show_stack_trace = false;
 
@@ -464,7 +477,16 @@ error_1 (std::ostream& os, const char *name, const char *id,
   else
     panic ("error_1: invalid format");
 
-  debug_or_throw_exception (show_stack_trace);
+  debug_or_throw_exception (e, show_stack_trace);
+}
+
+static void
+error_1 (std::ostream& os, const char *name, const char *id,
+         const char *fmt, va_list args, bool with_cfn = false)
+{
+  octave_execution_exception e;
+
+  error_1 (e, os, name, id, fmt, args, with_cfn);
 }
 
 void
@@ -479,6 +501,21 @@ error (const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   verror (fmt, args);
+  va_end (args);
+}
+
+void
+verror (const octave_execution_exception& e, const char *fmt, va_list args)
+{
+  error_1 (e, std::cerr, "error", "", fmt, args);
+}
+
+void
+error (const octave_execution_exception& e, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror (e, fmt, args);
   va_end (args);
 }
 

@@ -73,10 +73,9 @@ quad_user_function (double x)
         {
           tmp = quad_fcn->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception&)
+      catch (const octave_execution_exception& e)
         {
-          gripe_user_supplied_eval ("quad");
-          throw;
+          gripe_user_supplied_eval (e, "quad");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -112,10 +111,9 @@ quad_float_user_function (float x)
         {
           tmp = quad_fcn->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception&)
+      catch (const octave_execution_exception& e)
         {
-          gripe_user_supplied_eval ("quad");
-          throw;
+          gripe_user_supplied_eval (e, "quad");
         }
 
       if (tmp.length () && tmp(0).is_defined ())

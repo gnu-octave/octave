@@ -647,9 +647,8 @@ get_debug_input (const std::string& prompt)
           if (! stack_trace.empty ())
             std::cerr << stack_trace;
 
-          recover_from_exception ();
-
           // Ignore errors when in debugging mode;
+          recover_from_exception ();
         }
     }
 }

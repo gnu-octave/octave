@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-array-gripes.h"
 
 class octave_value;
+class octave_execution_exception;
 
 extern OCTINTERP_API void
 gripe_not_supported (const char *);
@@ -58,6 +59,10 @@ extern OCTINTERP_API void
 gripe_user_supplied_eval (const char *name);
 
 extern OCTINTERP_API void
+gripe_user_supplied_eval (const octave_execution_exception& e,
+                          const char *name);
+
+extern OCTINTERP_API void
 gripe_user_returned_invalid (const char *name);
 
 extern OCTINTERP_API void
@@ -83,7 +88,17 @@ gripe_wrong_type_arg (const char *name, const char *s,
                       bool is_error = true);
 
 extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *name, const char *s,
+                      bool is_error = true);
+
+extern OCTINTERP_API void
 gripe_wrong_type_arg (const char *name, const std::string& s,
+                      bool is_error = true);
+
+extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *name, const std::string& s,
                       bool is_error = true);
 
 extern OCTINTERP_API void
@@ -91,17 +106,39 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
                       bool is_error = true);
 
 extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *name, const octave_value& tc,
+                      bool is_error = true);
+
+extern OCTINTERP_API void
 gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
+                      bool is_error = true);
+
+extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const std::string& name, const octave_value& tc,
                       bool is_error = true);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg (const char *s, bool is_error = true);
 
 extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *s, bool is_error = true);
+
+extern OCTINTERP_API void
 gripe_wrong_type_arg (const std::string& s, bool is_error = true);
 
 extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const std::string& s, bool is_error = true);
+
+extern OCTINTERP_API void
 gripe_wrong_type_arg (const octave_value& tc, bool is_error = true);
+
+extern OCTINTERP_API void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const octave_value& tc, bool is_error = true);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op);

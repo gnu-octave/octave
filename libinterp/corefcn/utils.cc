@@ -1282,6 +1282,7 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx_arg)
                 {
                   std::string idx = e.idx ();
                   std::string msg = e.details ();
+
                   error ("dims_to_numel: Invalid IDX %s. %s",
                          idx.c_str (), msg.c_str ());
                 }
@@ -1449,6 +1450,8 @@ character @nospell{\"@xbackslashchar{}0\"}, it will always be a valid index.\n\
     }
   catch (const octave_execution_exception&)
     {
+      recover_from_exception ();
+
       retval = false;
     }
 

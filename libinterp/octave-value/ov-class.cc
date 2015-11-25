@@ -1106,6 +1106,8 @@ octave_class::reconstruct_exemplar (void)
             }
           catch (const octave_execution_exception&)
             {
+              recover_from_exception ();
+
               execution_error = true;
             }
 

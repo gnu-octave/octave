@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -375,8 +376,10 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     {
       m = val.matrix_value (true);
     }
-  catch (const octave_execution_exception&)
+  catch (const octave_execution_exception& e)
     {
+      recover_from_exception ();
+
       success = false;
     }
 

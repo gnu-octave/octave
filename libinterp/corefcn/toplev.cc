@@ -642,13 +642,16 @@ main_loop (void)
       catch (const octave_interrupt_exception&)
         {
           recover_from_exception ();
+
           octave_stdout << "\n";
+
           if (quitting_gracefully)
             return exit_status;
         }
       catch (const index_exception& e)
         {
           recover_from_exception ();
+
           std::cerr << "error: unhandled index exception: "
                     << e.message () << " -- trying to return to prompt"
                     << std::endl;
@@ -672,6 +675,7 @@ main_loop (void)
       catch (const std::bad_alloc&)
         {
           recover_from_exception ();
+
           std::cerr << "error: out of memory -- trying to return to prompt"
                     << std::endl;
         }
@@ -1052,9 +1056,9 @@ command shell that is started to run the command.\n\
             {
               return_output = args(1).is_true ();
             }
-          catch (const octave_execution_exception&)
+          catch (const octave_execution_exception& e)
             {
-              error ("system: RETURN_OUTPUT must be boolean value true or false");
+              error (e, "system: RETURN_OUTPUT must be boolean value true or false");
             }
         }
 

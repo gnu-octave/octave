@@ -282,13 +282,16 @@ safe_source_file (const std::string& file_name,
   catch (const octave_interrupt_exception&)
     {
       recover_from_exception ();
+
       octave_stdout << "\n";
+
       if (quitting_gracefully)
         clean_up_and_exit (exit_status);
     }
   catch (const octave_execution_exception&)
     {
       recover_from_exception ();
+
       gripe_safe_source_exception (file_name, "unhandled execution exception");
     }
 }
@@ -397,13 +400,16 @@ execute_eval_option_code (const std::string& code)
   catch (const octave_interrupt_exception&)
     {
       recover_from_exception ();
+
       octave_stdout << "\n";
+
       if (quitting_gracefully)
         clean_up_and_exit (exit_status);
     }
   catch (const octave_execution_exception&)
     {
       recover_from_exception ();
+
       std::cerr << "error: unhandled execution exception -- eval failed"
                 << std::endl;
     }
@@ -865,6 +871,8 @@ octave_execute_interpreter (void)
         }
       catch (const octave_execution_exception&)
         {
+          recover_from_exception ();
+
           parse_status = 1;
         }
 
@@ -897,6 +905,8 @@ octave_execute_interpreter (void)
         }
       catch (const octave_execution_exception&)
         {
+          recover_from_exception ();
+
           exit_status = 1;
         }
 

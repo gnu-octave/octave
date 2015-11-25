@@ -46,9 +46,9 @@ public:
           {
             val = a.double_value ();
           }
-        catch (const octave_execution_exception&)
+        catch (const octave_execution_exception& e)
           {
-            error ("invalid handle");
+            error (e, "invalid handle");
           }
       }
   }

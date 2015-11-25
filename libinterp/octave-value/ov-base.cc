@@ -464,9 +464,9 @@ octave_base_value::print_info (std::ostream& os,
       { \
         d = double_value (frc_str_conv); \
       } \
-    catch (const octave_execution_exception&) \
+    catch (const octave_execution_exception& e) \
       { \
-        gripe_wrong_type_arg ("octave_base_value::" #F "_value ()", type_name ()); \
+        gripe_wrong_type_arg (e, "octave_base_value::" #F "_value ()", type_name ()); \
       } \
  \
     if (require_int && D_NINT (d) != d) \
@@ -502,9 +502,9 @@ octave_base_value::nint_value (bool frc_str_conv) const
     {
       d = double_value (frc_str_conv);
     }
-  catch (const octave_execution_exception&)
+  catch (const octave_execution_exception& e)
     {
-      gripe_wrong_type_arg ("octave_base_value::nint_value ()", type_name ());
+      gripe_wrong_type_arg (e, "octave_base_value::nint_value ()", type_name ());
     }
 
   if (xisnan (d))

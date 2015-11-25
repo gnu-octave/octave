@@ -374,7 +374,7 @@ safe_symbol_lookup (const std::string& symbol_name)
     }
   catch (const octave_execution_exception&)
     {
-      // Ignore errors.
+      recover_from_exception ();
     }
 
   return retval;

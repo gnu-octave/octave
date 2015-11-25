@@ -3112,6 +3112,8 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
     }
   catch (const octave_execution_exception&)
     {
+      recover_from_exception ();
+
       execution_error = true;
     }
 
@@ -3173,6 +3175,8 @@ mexEvalString (const char *s)
     }
   catch (const octave_execution_exception&)
     {
+      recover_from_exception ();
+
       execution_error = true;
     }
 

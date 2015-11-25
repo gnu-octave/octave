@@ -86,7 +86,16 @@ gripe_square_matrix_required (const char *name)
 void
 gripe_user_supplied_eval (const char *name)
 {
-  error ("%s: evaluation of user-supplied function failed", name);
+  octave_execution_exception e;
+
+  gripe_user_supplied_eval (e, name);
+}
+
+void
+gripe_user_supplied_eval (const octave_execution_exception& e,
+                          const char *name)
+{
+  error (e, "%s: evaluation of user-supplied function failed", name);
 }
 
 void
@@ -134,8 +143,17 @@ gripe_data_conversion (const char *from, const char *to)
 void
 gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 {
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, name, s, is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *name, const char *s, bool is_error)
+{
   if (is_error)
-    error ("%s: wrong type argument '%s'", name, s);
+    error (e, "%s: wrong type argument '%s'", name, s);
   else
     warning ("%s: wrong type argument '%s'", name, s);
 }
@@ -143,30 +161,68 @@ gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 void
 gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 {
-  gripe_wrong_type_arg (name, s.c_str (), is_error);
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, name, s.c_str (), is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *name, const std::string& s, bool is_error)
+{
+  gripe_wrong_type_arg (e, name, s.c_str (), is_error);
 }
 
 void
 gripe_wrong_type_arg (const char *name, const octave_value& tc,
                       bool is_error)
 {
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, name, tc, is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *name, const octave_value& tc,
+                      bool is_error)
+{
   std::string type = tc.type_name ();
 
-  gripe_wrong_type_arg (name, type, is_error);
+  gripe_wrong_type_arg (e, name, type, is_error);
 }
 
 void
 gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
                       bool is_error)
 {
-  gripe_wrong_type_arg (name.c_str (), tc, is_error);
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, name, tc, is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const std::string& name, const octave_value& tc,
+                      bool is_error)
+{
+  gripe_wrong_type_arg (e, name.c_str (), tc, is_error);
 }
 
 void
 gripe_wrong_type_arg (const char *s, bool is_error)
 {
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, s, is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const char *s, bool is_error)
+{
   if (is_error)
-    error ("wrong type argument '%s'", s);
+    error (e, "wrong type argument '%s'", s);
   else
     warning ("wrong type argument '%s'", s);
 }
@@ -174,15 +230,33 @@ gripe_wrong_type_arg (const char *s, bool is_error)
 void
 gripe_wrong_type_arg (const std::string& s, bool is_error)
 {
-  gripe_wrong_type_arg (s.c_str (), is_error);
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, s, is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const std::string& s, bool is_error)
+{
+  gripe_wrong_type_arg (e, s.c_str (), is_error);
 }
 
 void
 gripe_wrong_type_arg (const octave_value& tc, bool is_error)
 {
+  octave_execution_exception e;
+
+  gripe_wrong_type_arg (e, tc, is_error);
+}
+
+void
+gripe_wrong_type_arg (const octave_execution_exception& e,
+                      const octave_value& tc, bool is_error)
+{
   std::string type = tc.type_name ();
 
-  gripe_wrong_type_arg (type, is_error);
+  gripe_wrong_type_arg (e, type, is_error);
 }
 
 void

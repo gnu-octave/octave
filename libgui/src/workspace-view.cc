@@ -249,7 +249,7 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
       if (! wm->is_top_level ())
         {
           rename->setDisabled (true);
-          rename->setToolTip (tr ("Only top-level symbols may be renamed."));
+          rename->setToolTip (tr ("Only top-level symbols may be renamed"));
         }
 
       menu.addSeparator ();

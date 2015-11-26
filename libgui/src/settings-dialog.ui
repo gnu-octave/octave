@@ -1948,7 +1948,7 @@
                 </sizepolicy>
                </property>
                <property name="title">
-                <string>Colors for variable attributes </string>
+                <string>Colors for variable attributes</string>
                </property>
               </widget>
              </item>

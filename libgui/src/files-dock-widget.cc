@@ -67,7 +67,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("File Browser"));
-  setToolTip (tr ("Browse your files."));
+  setToolTip (tr ("Browse your files"));
 
   QWidget *container = new QWidget (this);
 

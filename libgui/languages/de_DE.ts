@@ -39,7 +39,7 @@
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation>Beständig</translation>
+        <translation>Persistent</translation>
     </message>
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+65"/>
@@ -727,9 +727,9 @@ konnte nicht zum Schreiben geöffnet werden:
 
 is about to be closed but has been modified.  %2</source>
         <translation>Die Datei
- 
+
    %1
- 
+
 soll geschlossen werden, wurde aber modifiziert.  %2</translation>
     </message>
     <message>
@@ -818,7 +818,7 @@ Einen anderen Namen wählen?</translation>
     <message>
         <location line="+1"/>
         <source>Browse your files.</source>
-        <translation>Dateien durchsuchen.</translation>
+        <translation>Dateien durchsuchen</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1684,7 +1684,8 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
     <message>
         <location line="+9"/>
         <source>Current Directory: </source>
-        <translation>Aktuelles Verzeichnis:</translation>
+        <translatorcomment>Armin: Leerzeichen Bestandteil des Layouts</translatorcomment>
+        <translation>Aktuelles Verzeichnis: </translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2027,9 +2028,9 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <location line="+135"/>
         <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
-        <translation>Funktioniert gut mit Schriftarten fester Breite. 
+        <translation>Funktioniert gut mit Schriftarten fester Breite.
 Die Position der angezeigten Linie basiert auf der Breite eines Leerzeichens der Standardschriftart.
-Dies funktioniert möglicherweise nicht mit Stilen, die eine Schriftart variabler Breite verwenden 
+Dies funktioniert möglicherweise nicht mit Stilen, die eine Schriftart variabler Breite verwenden
 oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verwendet werden.</translation>
     </message>
     <message>
@@ -3163,11 +3164,13 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="-125"/>
         <source>Step</source>
+        <translatorcomment>Armin: Vorher "Überspringen" im Kontrast zu "Hineinspringen"</translatorcomment>
         <translation>Einzelschritt</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Reset Default Window Layout</source>
+        <translatorcomment>Armin: Bisschen lang, Menü wird groß</translatorcomment>
         <translation>Fensterlayout auf Grundeinstellung zurücksetzen</translation>
     </message>
     <message>
@@ -3259,7 +3262,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+5"/>
         <source>Toggle Breakpoint</source>
-        <translation>Lesezeichen umschalten</translation>
+        <translation>Haltepunkt umschalten</translation>
     </message>
     <message>
         <location line="+2"/>

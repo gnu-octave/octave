@@ -3434,7 +3434,7 @@ public:
       callback_property buttondownfcn , Matrix ()
       callback_property closerequestfcn , "closereq"
       color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
-      array_property colormap , jet_colormap ()
+      array_property colormap , viridis_colormap ()
       handle_property currentaxes S , graphics_handle ()
       string_property currentcharacter r , ""
       handle_property currentobject r , graphics_handle ()

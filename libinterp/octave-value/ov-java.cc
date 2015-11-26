@@ -135,8 +135,7 @@ public:
         while (! js.eof () && ! js.fail ())
           {
             std::getline (js, line);
-            if (line.length () > 2
-                && (line.find ("-D") == 0 || line.find ("-X") == 0))
+            if (line.find ("-") == 0)
               java_opts.push_back (line);
             else if (line.length () > 0 && Vdebug_java)
               std::cerr << "invalid JVM option, skipping: " << line << std::endl;

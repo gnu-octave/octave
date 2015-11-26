@@ -322,10 +322,12 @@ exit status, it will linger until Octave exits.\n\
 
           std::string nm;
 
-          octave_stream is = octave_stdiostream::create (nm, ifile,
+          octave_stream is = octave_stdiostream::create (exec_file + "-in",
+                                                         ifile,
                                                          std::ios::in);
 
-          octave_stream os = octave_stdiostream::create (nm, ofile,
+          octave_stream os = octave_stdiostream::create (exec_file + "-out",
+                                                         ofile,
                                                          std::ios::out);
 
           Cell file_ids (1, 2);
@@ -893,12 +895,10 @@ error message.\n\
           FILE *ifile = fdopen (fid[0], "r");
           FILE *ofile = fdopen (fid[1], "w");
 
-          std::string nm;
-
-          octave_stream is = octave_stdiostream::create (nm, ifile,
+          octave_stream is = octave_stdiostream::create ("pipe-in", ifile,
                                                          std::ios::in);
 
-          octave_stream os = octave_stdiostream::create (nm, ofile,
+          octave_stream os = octave_stdiostream::create ("pipe-out", ofile,
                                                          std::ios::out);
 
           retval(2) = status;

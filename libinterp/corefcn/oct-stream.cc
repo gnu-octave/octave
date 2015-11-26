@@ -4295,9 +4295,7 @@ octave_stream_list::do_remove (int fid, const std::string& who)
 {
   int retval = -1;
 
-  // Can't remove stdin (std::cin), stdout (std::cout), or stderr
-  // (std::cerr).
-
+  // Can't remove stdin (std::cin), stdout (std::cout), or stderr (std::cerr).
   if (fid > 2)
     {
       ostrl_map::iterator iter = list.find (fid);
@@ -4352,25 +4350,40 @@ octave_stream_list::do_clear (bool flush)
 {
   if (flush)
     {
-      // Do flush stdout and stderr.
-
-      list[0].flush ();
+      // Flush stdout and stderr.
       list[1].flush ();
+      list[2].flush ();
     }
 
-  octave_stream saved_os[3];
-  // But don't delete them or stdin.
-  for (ostrl_map::iterator iter = list.begin (); iter != list.end (); iter++)
+  for (ostrl_map::iterator iter = list.begin (); iter != list.end (); )
     {
       int fid = iter->first;
+      if (fid < 3)  // Don't delete stdin, stdout, stderr
+        {
+          iter++;
+          continue;
+        }
+
       octave_stream os = iter->second;
-      if (fid < 3)
-        saved_os[fid] = os;
-      else if (os.is_valid ())
+     
+      std::string name = os.name (); 
+      std::transform (name.begin (), name.end (), name.begin (), tolower);
+
+      // FIXME: This test for gnuplot is hardly foolproof.
+      if (name.find ("gnuplot") != std::string::npos)
+        {
+          // Don't close down pipes to gnuplot
+          iter++;
+          continue;
+        }
+
+      // Normal file handle.  Close and delete from list.
+      if (os.is_valid ())
         os.close ();
+
+      list.erase (iter++);
     }
-  list.clear ();
-  for (int fid = 0; fid < 3; fid++) list[fid] = saved_os[fid];
+
   lookup_cache = list.end ();
 }
 

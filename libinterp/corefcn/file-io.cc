@@ -239,11 +239,8 @@ Close the file specified by the file descriptor @var{fid}.\n\
 \n\
 If successful, @code{fclose} returns 0, otherwise, it returns -1.  The\n\
 second form of the @code{fclose} call closes all open files except\n\
-@code{stdout}, @code{stderr}, and @code{stdin}.\n\
-\n\
-Programming Note: When using @qcode{\"all\"} the file descriptors associated\n\
-with gnuplot will also be closed.  This will prevent further plotting with\n\
-gnuplot until Octave is closed and restarted.\n\
+@code{stdin}, @code{stdout}, @code{stderr}, and any FIDs associated\n\
+with gnuplot.\n\
 @seealso{fopen, fflush, freport}\n\
 @end deftypefn")
 {

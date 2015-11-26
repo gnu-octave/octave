@@ -2654,19 +2654,17 @@ void maybe_missing_function_hook (const std::string& name)
 DEFUN (__varval__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __varval__ (@var{name})\n\
-Undocumented internal function.\n\
+Return the value of the variable @var{name} directly from the symbol table.\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
-
-      retval = symbol_table::varval (args(0).string_value ());
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
+
+  retval = symbol_table::varval (args(0).string_value ());
 
   return retval;
 }

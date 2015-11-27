@@ -514,14 +514,14 @@ private:
       return *this;
     }
 
-    void add (const dir_info& di, bool at_end)
+    void add (const dir_info& di, bool at_end, bool updating)
     {
       if (at_end)
         dir_list.push_back (di.dir_name);
       else
         dir_list.push_front (di.dir_name);
 
-      add_to_fcn_map (di, at_end);
+      add_to_fcn_map (di, at_end, updating);
 
       add_to_private_fcn_map (di);
 
@@ -565,7 +565,7 @@ private:
     string_vector fcn_names (void) const;
 
   private:
-    void add_to_fcn_map (const dir_info& di, bool at_end);
+    void add_to_fcn_map (const dir_info& di, bool at_end, bool updating);
 
     void add_to_private_fcn_map (const dir_info& di);
 
@@ -722,7 +722,8 @@ private:
   { return command_line_path; }
 
   void add (const dir_info& di, bool at_end,
-            const std::string& pname = std::string ()) const;
+            const std::string& pname = std::string (),
+            bool updating = false) const;
 
   friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
 };

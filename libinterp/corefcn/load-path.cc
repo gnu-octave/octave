@@ -985,7 +985,7 @@ load_path::do_update (void) const
 
       di.update ();
 
-      add (di, true);
+      add (di, true, "", true);
     }
 }
 
@@ -1866,11 +1866,11 @@ in_path_list (const std::string& path_list, const std::string& path)
 
 void
 load_path::add (const dir_info& di, bool at_end,
-                const std::string& pname) const
+                const std::string& pname, bool updating) const
 {
   loader& l = get_loader (pname);
 
-  l.add (di, at_end);
+  l.add (di, at_end, updating);
 
   dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
 
@@ -1887,7 +1887,8 @@ load_path::add (const dir_info& di, bool at_end,
 }
 
 void
-load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
+load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end,
+                                   bool updating)
 {
   std::string dir_name = di.dir_name;
 
@@ -1932,15 +1933,23 @@ load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
 
       if (p == file_info_list.end ())
         {
-          file_info fi (dir_name, t);
+          // Warn if a built-in or library function is being shadowed,
+          // but not if we are just updating (rehashing) the list.
 
-          if (at_end)
-            file_info_list.push_back (fi);
-          else
+          if (! updating)
             {
-              // Warn if a built-in or library function is being shadowed.
+              if (file_info_list.empty ())
+                {
+                  if (symbol_table::is_built_in_function_name (base))
+                    {
+                      std::string fcn_path = file_ops::concat (dir_name, fname);
 
-              if (! file_info_list.empty ())
+                      warning_with_id ("Octave:shadowed-function",
+                                       "function %s shadows a built-in function",
+                                       fcn_path.c_str ());
+                    }
+                }
+              else if (! at_end)
                 {
                   file_info& old = file_info_list.front ();
 
@@ -1962,16 +1971,14 @@ load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
                                        fcn_path.c_str ());
                     }
                 }
-              else if (symbol_table::is_built_in_function_name (base))
-                {
-                  std::string fcn_path = file_ops::concat (dir_name, fname);
-                  warning_with_id ("Octave:shadowed-function",
-                                   "function %s shadows a built-in function",
-                                   fcn_path.c_str ());
-                }
-
-              file_info_list.push_front (fi);
             }
+
+          file_info fi (dir_name, t);
+
+          if (at_end)
+            file_info_list.push_back (fi);
+          else
+            file_info_list.push_front (fi);
         }
       else
         {

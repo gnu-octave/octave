@@ -2016,7 +2016,23 @@ public:
 
   ~mex (void)
   {
-    if (! memlist.empty ())
+    // We can't use mex::free here because it modifies memlist.
+    while (! memlist.empty ())
+      {
+        std::set<void *>::iterator p = memlist.begin ();
+        xfree (*p);
+        memlist.erase (p);
+      }
+
+    // We can't use mex::free_value here because it modifies arraylist.
+    while (! arraylist.empty ())
+      {
+        std::set<mxArray *>::iterator p = arraylist.begin ();
+        delete *p;
+        arraylist.erase (p);
+      }
+
+    if (! (memlist.empty () && arraylist.empty ()))
       error ("mex: %s: cleanup failed", function_name ());
 
     mxFree (fname);
@@ -2040,26 +2056,6 @@ public:
     return fname;
   }
 
-  // Free all unmarked pointers obtained from malloc and calloc.
-  static void cleanup (void *ptr)
-  {
-    mex *context = static_cast<mex *> (ptr);
-
-    // We can't use mex::free here because it modifies memlist.
-    for (std::set<void *>::iterator p = context->memlist.begin ();
-         p != context->memlist.end (); p++)
-      xfree (*p);
-
-    context->memlist.clear ();
-
-    // We can't use mex::free_value here because it modifies arraylist.
-    for (std::set<mxArray *>::iterator p = context->arraylist.begin ();
-         p != context->arraylist.end (); p++)
-      delete *p;
-
-    context->arraylist.clear ();
-  }
-
   // Allocate memory.
   void *malloc_unmarked (size_t n)
   {
@@ -2071,8 +2067,6 @@ public:
 
         error ("%s: failed to allocate %d bytes of memory",
                function_name (), n);
-
-        abort ();
       }
 
     global_mark (ptr);
@@ -2271,12 +2265,6 @@ public:
 
   // 1 if error should be returned to MEX file, 0 if abort.
   int trap_feval_error;
-
-  // longjmp return point if mexErrMsgTxt or error.
-  jmp_buf jump;
-
-  // Trigger a long jump back to the mex calling function.
-  void abort (void) { longjmp (jump, 1); }
 
 private:
 
@@ -3008,6 +2996,8 @@ octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
           int nargout_arg, octave_mex_function *curr_mex_fcn)
 {
+  octave_quit ();
+
   // Use at least 1 for nargout since even for zero specified args,
   // still want to be able to return an ans.
 
@@ -3030,30 +3020,25 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
 
   mex context (curr_mex_fcn);
 
-  frame.add_fcn (mex::cleanup, static_cast<void *> (&context));
-
   for (int i = 0; i < nargin; i++)
     argin[i] = context.make_value (args(i));
 
-  if (setjmp (context.jump) == 0)
+  mex_context = &context;
+
+  if (have_fmex)
     {
-      mex_context = &context;
+      fmex_fptr fcn = FCN_PTR_CAST (fmex_fptr, f);
 
-      if (have_fmex)
-        {
-          fmex_fptr fcn = FCN_PTR_CAST (fmex_fptr, f);
+      int tmp_nargout = nargout;
+      int tmp_nargin = nargin;
 
-          int tmp_nargout = nargout;
-          int tmp_nargin = nargin;
+      fcn (tmp_nargout, argout, tmp_nargin, argin);
+    }
+  else
+    {
+      cmex_fptr fcn = FCN_PTR_CAST (cmex_fptr, f);
 
-          fcn (tmp_nargout, argout, tmp_nargin, argin);
-        }
-      else
-        {
-          cmex_fptr fcn = FCN_PTR_CAST (cmex_fptr, f);
-
-          fcn (nargout, argout, nargin, argin);
-        }
+      fcn (nargout, argout, nargin, argin);
     }
 
   // Convert returned array entries back into octave values.
@@ -3070,9 +3055,6 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
 
   for (int i = 0; i < nargout; i++)
     retval(i) = mxArray::as_octave_value (argout[i]);
-
-  // Clean up mex resources.
-  frame.run ();
 
   return retval;
 }
@@ -3094,8 +3076,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   // FIXME: do we need unwind protect to clean up args?  Off hand, I
   // would say that this problem is endemic to Octave and we will
   // continue to have memory leaks after Ctrl-C until proper exception
-  // handling is implemented.  longjmp() only clears the stack, so any
-  // class which allocates data on the heap is going to leak.
+  // handling is implemented.
 
   args.resize (nargin);
 
@@ -3112,23 +3093,15 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
     }
   catch (const octave_execution_exception&)
     {
-      recover_from_exception ();
+      if (mex_context->trap_feval_error)
+        recover_from_exception ();
+      else
+        {
+          args.resize (0);
+          retval.resize (0);
 
-      execution_error = true;
-    }
-
-  if (execution_error && mex_context->trap_feval_error == 0)
-    {
-      // FIXME: is this the correct way to clean up?  abort() is
-      // going to trigger a long jump, so the normal class destructors
-      // will not be called.  Hopefully this will reduce things to a
-      // tiny leak.  Maybe create a new octave memory tracer type
-      // which prints a friendly message every time it is
-      // created/copied/deleted to check this.
-
-      args.resize (0);
-      retval.resize (0);
-      mex_context->abort ();
+          throw;
+        }
     }
 
   int num_to_copy = retval.length ();
@@ -3197,8 +3170,6 @@ mexErrMsgTxt (const char *s)
       // Octave's error routine requires a non-null input so use a SPACE.
       error (" ");
     }
-
-  mex_context->abort ();
 }
 
 void
@@ -3221,8 +3192,6 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
       // Octave's error routine requires a non-null input so use a SPACE.
       error (" ");
     }
-
-  mex_context->abort ();
 }
 
 void

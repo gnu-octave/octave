@@ -2263,22 +2263,29 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
           if (base->is_constant () && limit->is_constant ()
               && (! incr || (incr && incr->is_constant ())))
             {
-              octave_value tmp = e->rvalue1 ();
+              try
+                {
+                  octave_value tmp = e->rvalue1 ();
 
-              tree_constant *tc_retval
-                = new tree_constant (tmp, base->line (), base->column ());
+                  tree_constant *tc_retval
+                    = new tree_constant (tmp, base->line (), base->column ());
 
-              std::ostringstream buf;
+                  std::ostringstream buf;
 
-              tree_print_code tpc (buf);
+                  tree_print_code tpc (buf);
 
-              e->accept (tpc);
+                  e->accept (tpc);
 
-              tc_retval->stash_original_text (buf.str ());
+                  tc_retval->stash_original_text (buf.str ());
 
-              delete e;
+                  delete e;
 
-              retval = tc_retval;
+                  retval = tc_retval;
+                }
+              catch (const octave_execution_exception&)
+                {
+                  recover_from_exception ();
+                }
             }
         }
       else
@@ -3801,23 +3808,30 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
 
   if (array_list->all_elements_are_constant ())
     {
-      octave_value tmp = array_list->rvalue1 ();
+      try
+        {
+          octave_value tmp = array_list->rvalue1 ();
 
-      tree_constant *tc_retval
-        = new tree_constant (tmp, array_list->line (),
-                             array_list->column ());
+          tree_constant *tc_retval
+            = new tree_constant (tmp, array_list->line (),
+                                 array_list->column ());
 
-      std::ostringstream buf;
+          std::ostringstream buf;
 
-      tree_print_code tpc (buf);
+          tree_print_code tpc (buf);
 
-      array_list->accept (tpc);
+          array_list->accept (tpc);
 
-      tc_retval->stash_original_text (buf.str ());
+          tc_retval->stash_original_text (buf.str ());
 
-      delete array_list;
+          delete array_list;
 
-      retval = tc_retval;
+          retval = tc_retval;
+        }
+      catch (const octave_execution_exception&)
+        {
+          recover_from_exception ();
+        }
     }
 
   return retval;

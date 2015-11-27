@@ -268,13 +268,20 @@ generate_struct_completions (const std::string& text,
           discard_error_messages = true;
           discard_warning_messages = true;
 
-          octave_value tmp = eval_string (prefix, true, parse_status);
+          try
+            {
+              octave_value tmp = eval_string (prefix, true, parse_status);
 
-          frame.run ();
+              frame.run ();
 
-          if (tmp.is_defined ()
-              && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
-            names = tmp.map_keys ();
+              if (tmp.is_defined ()
+                  && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
+                names = tmp.map_keys ();
+            }
+          catch (const octave_execution_exception&)
+            {
+              recover_from_exception ();
+            }
         }
     }
 

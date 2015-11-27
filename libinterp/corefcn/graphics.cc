@@ -3228,10 +3228,17 @@ base_graphics_object::remove_all_listeners (void)
       Vdebug_on_error = false;
       Vdebug_on_warning = false;
 
-      property p = get_properties ().get_property (pa->first);
+      try
+        {
+          property p = get_properties ().get_property (pa->first);
 
-      if (p.ok ())
-        p.delete_listener ();
+          if (p.ok ())
+            p.delete_listener ();
+        }
+      catch (const octave_execution_exception&)
+        {
+          recover_from_exception ();
+        }
     }
 }
 

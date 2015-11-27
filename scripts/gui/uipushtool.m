@@ -23,7 +23,7 @@
 ## Create a uipushtool object and return a handle to it.
 ##
 ## uipushtools are buttons that appear on a figure toolbar.  The button is
-## created with a border that is shown when the user hovers over the button. 
+## created with a border that is shown when the user hovers over the button.
 ## An image can be set using the cdata property.
 ##
 ## If @var{parent} is omitted then a uipushtool for the current figure is

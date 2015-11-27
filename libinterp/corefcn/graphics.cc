@@ -209,7 +209,7 @@ viridis_colormap (void)
     1.00469958095238e-01, 1.17876387142857e-01, 1.43936200000000e-01};
 
   // It would be nice if Matrix had a ctor allowing to do the
-  // following without a copy 
+  // following without a copy
   Matrix cmap (64, 3, 0.0);
   std::copy (cmapv, cmapv + (64*3), cmap.fortran_vec ());
   return cmap;

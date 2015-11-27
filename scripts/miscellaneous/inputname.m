@@ -70,7 +70,7 @@ endfunction
 %!assert (inputname (3), "")
 
 ## Clear parameter list so that testfn is created with zero inputs/outputs
-%!shared  
+%!shared
 %!assert (inputname (-1), "")
 %!assert (inputname (1), "")
 

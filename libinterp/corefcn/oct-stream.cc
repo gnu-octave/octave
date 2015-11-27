@@ -4365,8 +4365,8 @@ octave_stream_list::do_clear (bool flush)
         }
 
       octave_stream os = iter->second;
-     
-      std::string name = os.name (); 
+
+      std::string name = os.name ();
       std::transform (name.begin (), name.end (), name.begin (), tolower);
 
       // FIXME: This test for gnuplot is hardly foolproof.

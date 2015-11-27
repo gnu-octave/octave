@@ -21,12 +21,12 @@ PDFTEX = pdftex
 AM_V_TEX = $(am__v_TEX_$(V))
 am__v_TEX_ = $(am__v_TEX_$(AM_DEFAULT_VERBOSITY))
 am__v_TEX_0 = @echo "  TEX     " $@;
-am__v_TEX_1 = 
+am__v_TEX_1 =
 
 AM_V_PDFTEX = $(am__v_PDFTEX_$(V))
 am__v_PDFTEX_ = $(am__v_PDFTEX_$(AM_DEFAULT_VERBOSITY))
 am__v_PDFTEX_0 = @echo "  PDFTEX  " $@;
-am__v_PDFTEX_1 = 
+am__v_PDFTEX_1 =
 
 if AMCOND_BUILD_DOCS
 

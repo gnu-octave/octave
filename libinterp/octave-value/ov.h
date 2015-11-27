@@ -1163,7 +1163,7 @@ public:
   octave_fcn_inline *xfcn_inline_value (const char *fmt, ...) const;
 
   octave_value_list xlist_value (const char *fmt, ...) const;
-  
+
   // Possibly economize a lazy-indexed value.
 
   void maybe_economize (void)

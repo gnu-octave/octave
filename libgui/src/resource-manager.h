@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDesktopServices>
 #include <QIcon>
+#include <QComboBox>
 #include <QMap>
 #include <QSettings>
 #include <QTranslator>
@@ -74,6 +75,12 @@ public:
   {
     if (instance_ok ())
       instance->do_set_settings (file);
+  }
+
+  static void combo_encoding (QComboBox *combo, QString current = QString ())
+  {
+    if (instance_ok ())
+      instance->do_combo_encoding (combo, current);
   }
 
   static QString get_gui_translation_dir (void);
@@ -139,6 +146,7 @@ private:
 
   QIcon do_icon (const QString& icon, bool fallback);
 
+  void do_combo_encoding (QComboBox *combo, QString current);
 };
 
 #endif // RESOURCEMANAGER_H

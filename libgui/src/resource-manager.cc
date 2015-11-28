@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QNetworkProxy>
 #include <QLibraryInfo>
 #include <QMessageBox>
+#include <QTextCodec>
 
 #include "error.h"
 #include "file-ops.h"
@@ -324,4 +325,53 @@ resource_manager::do_icon (const QString& icon_name, bool fallback)
                              QIcon (":/actions/icons/" + icon_name + ".png"));
   else
     return QIcon::fromTheme (icon_name);
+}
+
+// initialize a given combo box with available text encodings
+void
+resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+{
+  // get the codec name for each mib
+  QList<int> all_mibs = QTextCodec::availableMibs ();
+  QStringList all_codecs;
+  foreach (int mib, all_mibs)
+    {
+      QTextCodec *c = QTextCodec::codecForMib (mib);
+      all_codecs << c->name ().toUpper ();
+    }
+  all_codecs.removeDuplicates ();
+  qSort (all_codecs);
+
+  // the default encoding
+#if defined (Q_OS_WIN32)
+  QString def_enc = "SYSTEM";
+#else
+  QString def_enc = "UTF-8";
+#endif
+
+  // get the value from the settings file if no current encoding is given
+  QString enc = current;
+  if (enc.isEmpty ())
+    {
+      enc = settings->value ("editor/default_encoding",def_enc).toString ();
+      if (enc.isEmpty ())  // still empty?
+        enc = def_enc;     // take default
+    }
+
+  // fill the combo box
+  foreach (QString c, all_codecs)
+    combo->addItem (c);
+
+  // prepend the default item
+  combo->insertSeparator (0);
+  combo->insertItem (0, def_enc);
+
+  // select the current/default item
+  int idx = combo->findText (enc);
+  if (idx >= 0)
+    combo->setCurrentIndex (idx);
+  else
+    combo->setCurrentIndex (0);
+
+  combo->setMaxVisibleItems (12);
 }

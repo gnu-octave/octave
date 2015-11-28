@@ -64,8 +64,6 @@ private:
 
   void write_changed_settings (bool closing);
 
-  void init_combo_encoding (QSettings *settings);
-
   void read_workspace_colors (QSettings *settings);
   void write_workspace_colors (QSettings *settings);
 

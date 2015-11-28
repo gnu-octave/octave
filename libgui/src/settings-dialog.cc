@@ -376,7 +376,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_showLineNumbers->setChecked (
     settings->value ("editor/showLineNumbers",true).toBool ());
 
-  init_combo_encoding (settings);
+  resource_manager::combo_encoding (ui->editor_combo_encoding);
 
   default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
@@ -1020,47 +1020,6 @@ settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
       ui->le_file_browser_dir->setDisabled (disable);
       ui->pb_file_browser_dir->setDisabled (disable);
     }
-}
-
-// initialize the combo box with possible text encodings
-void
-settings_dialog::init_combo_encoding (QSettings *settings)
-{
-  // get the codec name for each mib
-  QList<int> all_mibs = QTextCodec::availableMibs ();
-  QStringList all_codecs;
-  foreach (int mib, all_mibs)
-    {
-      QTextCodec *c = QTextCodec::codecForMib (mib);
-      all_codecs << c->name ().toUpper ();
-    }
-  all_codecs.removeDuplicates ();
-
-  // sort and prepend meaningfull text for system's default codec
-#if defined (Q_OS_WIN32)
-  QString def_enc = "SYSTEM";
-#else
-  QString def_enc = "UTF-8";
-#endif
-  qSort (all_codecs);
-  ui->editor_combo_encoding->insertSeparator (0);
-  ui->editor_combo_encoding->insertItem (0, def_enc);
-
-  // get the value from the settings file (system is default)
-  QString encoding = settings->value ("editor/default_encoding",def_enc)
-                               .toString ();
-
-  // fill the combo box and select the current item or system if
-  // current item from the settings file can not be found
-  foreach (QString c, all_codecs)
-    ui->editor_combo_encoding->addItem (c);
-  int idx = ui->editor_combo_encoding->findText (encoding);
-  if (idx >= 0)
-    ui->editor_combo_encoding->setCurrentIndex (idx);
-  else
-    ui->editor_combo_encoding->setCurrentIndex (0);
-
-  ui->editor_combo_encoding->setMaxVisibleItems (12);
 }
 
 // slots for import/export of shortcut sets

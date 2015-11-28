@@ -165,6 +165,7 @@ private slots:
   void handle_save_file_as_answer_cancel ();
   void handle_save_as_filter_selected (const QString& filter);
   void handle_combo_eol_current_index (int index);
+  void handle_combo_enc_current_index (QString text);
 
   // When apis preparation has finished and is ready to save
   void save_apis_info ();
@@ -228,12 +229,15 @@ private:
   QLabel *_row_indicator;
   QLabel *_col_indicator;
   QLabel *_eol_indicator;
+  QLabel *_enc_indicator;
 
   QsciScintilla::EolMode _save_as_desired_eol;
 
   QString _file_name;
   QString _file_name_short;
   QString _ced;
+  QString _encoding;
+  QString _new_encoding;
 
   bool _long_title;
   bool _copy_available;

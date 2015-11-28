@@ -95,25 +95,32 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   // create statusbar for row/col indicator and eol mode
   _status_bar = new QStatusBar (this);
 
-  // eol mode
-  QLabel *eol_label = new QLabel (tr ("eol:"), this);
-  _eol_indicator = new QLabel ("",this);
-  QFontMetrics fm = eol_label->fontMetrics ();
-  _eol_indicator->setMinimumSize (5*fm.averageCharWidth (),0);
-  _status_bar->addPermanentWidget (eol_label, 0);
-  _status_bar->addPermanentWidget (_eol_indicator, 0);
-
   // row- and col-indicator
   _row_indicator = new QLabel ("", this);
-  _row_indicator->setMinimumSize (5*fm.averageCharWidth (),0);
+  QFontMetrics fm = _row_indicator->fontMetrics ();
+  _row_indicator->setMinimumSize (4.5*fm.averageCharWidth (),0);
   QLabel *row_label = new QLabel (tr ("line:"), this);
   _col_indicator = new QLabel ("", this);
   _col_indicator->setMinimumSize (4*fm.averageCharWidth (),0);
   QLabel *col_label = new QLabel (tr ("col:"), this);
-  _status_bar->addPermanentWidget (row_label, 0);
-  _status_bar->addPermanentWidget (_row_indicator, 0);
-  _status_bar->addPermanentWidget (col_label, 0);
-  _status_bar->addPermanentWidget (_col_indicator, 0);
+  _status_bar->addWidget (row_label, 0);
+  _status_bar->addWidget (_row_indicator, 0);
+  _status_bar->addWidget (col_label, 0);
+  _status_bar->addWidget (_col_indicator, 0);
+
+  // status bar: encoding
+  QLabel *enc_label = new QLabel (tr ("encoding:"), this);
+  _enc_indicator = new QLabel ("",this);
+  _status_bar->addWidget (enc_label, 0);
+  _status_bar->addWidget (_enc_indicator, 0);
+  _status_bar->addWidget (new QLabel (" ", this), 0);
+
+  // status bar: eol mode
+  QLabel *eol_label = new QLabel (tr ("eol:"), this);
+  _eol_indicator = new QLabel ("",this);
+  _status_bar->addWidget (eol_label, 0);
+  _status_bar->addWidget (_eol_indicator, 0);
+  _status_bar->addWidget (new QLabel (" ", this), 0);
 
   // Leave the find dialog box out of memory until requested.
   _find_dialog = 0;
@@ -171,6 +178,18 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
     notice_settings (settings, true);
 
   setFocusProxy (_edit_area);
+
+  // encoding, not updated with the settings
+#if defined (Q_OS_WIN32)
+  _encoding = settings->value ("editor/default_encoding","SYSTEM")
+                               .toString ();
+#else
+  _encoding = settings->value ("editor/default_encoding","UTF-8")
+                               .toString ();
+#endif
+  _enc_indicator->setText (_encoding);
+  // no changes in encoding yet
+  _new_encoding = _encoding;
 }
 
 file_editor_tab::~file_editor_tab (void)
@@ -1358,15 +1377,7 @@ file_editor_tab::load_file (const QString& fileName)
   // read the file
   QTextStream in (&file);
   // set the desired codec
-  QSettings *settings = resource_manager::get_settings ();
-#if defined (Q_OS_WIN32)
-  QString encoding = settings->value ("editor/default_encoding","SYSTEM")
-                               .toString ();
-#else
-  QString encoding = settings->value ("editor/default_encoding","UTF-8")
-                               .toString ();
-#endif
-  QTextCodec *codec = QTextCodec::codecForName (encoding.toAscii ());
+  QTextCodec *codec = QTextCodec::codecForName (_encoding.toAscii ());
   in.setCodec(codec);
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
@@ -1523,16 +1534,10 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   // save the contents into the file
   QTextStream out (&file);
 
+  // consider a possible new encoding (from the save-file-as dialog)
+  _encoding = _new_encoding;
   // set the desired codec
-  QSettings *settings = resource_manager::get_settings ();
-#if defined (Q_OS_WIN32)
-  QString encoding = settings->value ("editor/default_encoding","SYSTEM")
-                               .toString ();
-#else
-  QString encoding = settings->value ("editor/default_encoding","UTF-8")
-                               .toString ();
-#endif
-  QTextCodec *codec = QTextCodec::codecForName (encoding.toAscii ());
+  QTextCodec *codec = QTextCodec::codecForName (_encoding.toAscii ());
   out.setCodec(codec);
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
@@ -1552,8 +1557,9 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   // set the window title to actual filename (not modified)
   update_window_title (false);
 
-  // files is save -> not modified
+  // files is save -> not modified, update encoding in statusbar
   _edit_area->setModified (false);
+  _enc_indicator->setText (_encoding);
 
   if (remove_on_success)
     {
@@ -1567,6 +1573,9 @@ file_editor_tab::save_file_as (bool remove_on_success)
 {
   // Simply put up the file chooser dialog box with a slot connection
   // then return control to the system waiting for a file selection.
+
+  // reset _new_encoding
+  _new_encoding = _encoding;
 
   // If the tab is removed in response to a QFileDialog signal, the tab
   // can't be a parent.
@@ -1586,14 +1595,8 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // it had/has no effect on Windows, though)
   fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
 
-  // get the dialog's layout for adding extra elements
-  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
-  int rows = dialog_layout->rowCount ();
-
   // define a new grid layout with the extra elements
   QGridLayout *extra = new QGridLayout (fileDialog);
-  QSpacerItem *spacer = new QSpacerItem (1,1,QSizePolicy::Expanding,
-                                             QSizePolicy::Fixed);
   QFrame *separator = new QFrame (fileDialog);
   separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
   separator->setFrameStyle (QFrame::Sunken);
@@ -1607,18 +1610,32 @@ file_editor_tab::save_file_as (bool remove_on_success)
   _save_as_desired_eol = _edit_area->eolMode ();      // init with current eol
   combo_eol->setCurrentIndex (_save_as_desired_eol);
 
-  // track changes in the combo box
+  // combo box for encoding
+  QLabel *label_enc = new QLabel (tr ("File Encoding:"));
+  QComboBox *combo_enc = new QComboBox ();
+  resource_manager::combo_encoding (combo_enc, _encoding);
+
+  // track changes in the combo boxes
   connect (combo_eol, SIGNAL (currentIndexChanged (int)),
            this, SLOT (handle_combo_eol_current_index (int)));
+  connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
+           this, SLOT (handle_combo_enc_current_index (QString)));
 
   // build the extra grid layout
-  extra->addWidget (separator,0,0,1,3);
+  extra->addWidget (separator,0,0,1,6);
   extra->addWidget (label_eol,1,0);
   extra->addWidget (combo_eol,1,1);
-  extra->addItem   (spacer,   1,2);
+  extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Fixed,
+                                          QSizePolicy::Fixed), 1,2);
+  extra->addWidget (label_enc,1,3);
+  extra->addWidget (combo_enc,1,4);
+  extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
+                                          QSizePolicy::Fixed), 1,5);
 
   // and add the extra grid layout to the dialog's layout
-  dialog_layout->addLayout (extra,rows,0,1,dialog_layout->columnCount ());
+  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
+  dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
+                                  1,dialog_layout->columnCount ());
 
   // add the possible filters and the default suffix
   QStringList filters;
@@ -1675,6 +1692,12 @@ void
 file_editor_tab::handle_combo_eol_current_index (int index)
 {
   _save_as_desired_eol = static_cast<QsciScintilla::EolMode> (index);
+}
+
+void
+file_editor_tab::handle_combo_enc_current_index (QString text)
+{
+  _new_encoding = text;
 }
 
 void

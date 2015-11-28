@@ -87,6 +87,7 @@ octave_value_list
 find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
                        octave_idx_type n_to_find, int direction)
 {
+  nargout = std::min (nargout, 5);
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
   octave_idx_type nr = v.rows ();
@@ -217,11 +218,6 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
     case 2:
       retval(1) = j_idx;
       retval(0) = i_idx;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
     }
 
   return retval;
@@ -232,6 +228,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
                        octave_idx_type n_to_find, int direction)
 {
   // There are far fewer special cases to handle for a PermMatrix.
+  nargout = std::min (nargout, 5);
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
   octave_idx_type nr = v.rows ();
@@ -315,11 +312,6 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
     case 2:
       retval(1) = j_idx;
       retval(0) = i_idx;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
     }
 
   return retval;

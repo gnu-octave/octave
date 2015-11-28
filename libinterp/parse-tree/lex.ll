@@ -2024,6 +2024,7 @@ lexical_feedback::reset (void)
   maybe_classdef_get_set_method = false;
   parsing_classdef_get_method = false;
   parsing_classdef_set_method = false;
+  quote_is_transpose = false;
   force_script = false;
   reading_fcn_file = false;
   reading_script_file = false;
@@ -2036,6 +2037,7 @@ lexical_feedback::reset (void)
   defining_func = 0;
   looking_at_function_handle = 0;
   block_comment_nesting_level = 0;
+  command_arg_paren_count = 0;
   token_count = 0;
   current_input_line = "";
   comment_text = "";
@@ -2047,13 +2049,13 @@ lexical_feedback::reset (void)
   fcn_file_full_name = "";
   looking_at_object_index.clear ();
   looking_at_object_index.push_front (false);
-  command_arg_paren_count = 0;
 
   while (! parsed_function_name.empty ())
     parsed_function_name.pop ();
 
+  pending_local_variables.clear ();
+  symtab_context.clear ();
   nesting_level.reset ();
-
   tokens.clear ();
 }
 

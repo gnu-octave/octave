@@ -316,3 +316,7 @@
 %! a = {1, @sin, 2, @cos};
 %! b = {1 @sin 2 @cos};
 %! assert (a, b)
+
+## Maybe unnecessary, but check that further changes to parser don't 
+## invalidate error handling (bug #46534).
+#!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]

@@ -33,7 +33,7 @@ function geometryimages (d, nm, typ)
   if (! __have_feature__ ("QHULL")
       && any (strcmp (nm, {"voronoi", "griddata", "convhull", "delaunay", ...
                            "triplot"})))
-    sombreroimage (nm, typ, d_typ);
+    sombreroimage (outfile, typ, d_typ);
   elseif (strcmp (typ, "txt"))
     image_as_txt (d, nm);
   elseif (strcmp (nm, "voronoi"))
@@ -113,9 +113,9 @@ function [r, c] = tri2circ (tri, xx, yy)
   r = sqrt ((xc - x(1)).^2 + (yc - y(1)).^2);
 endfunction
 
-function sombreroimage (nm, typ, d_typ)
+function sombreroimage (outfile, typ, d_typ)
   if (strcmp (typ, "txt"))
-    fid = fopen ([nm ".txt"], "wt");
+    fid = fopen (outfile, "wt");
     fputs (fid, "+-----------------------------+\n");
     fputs (fid, "| Image unavailable because   |\n");
     fputs (fid, "| of a missing QHULL library. |\n");

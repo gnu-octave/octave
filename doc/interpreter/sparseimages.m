@@ -262,6 +262,7 @@ function sombreroimage (d, nm, typ)
     fclose (fid);
     return;
   else
+    outfile = fullfile (d, strcat (nm, ".", typ));
     hide_output ();
     if (strcmp (typ, "eps"))
       d_typ = "-depsc2";

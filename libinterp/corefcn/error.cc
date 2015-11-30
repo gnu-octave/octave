@@ -306,22 +306,6 @@ debug_or_throw_exception (const octave_execution_exception& e,
     throw e;
 }
 
-static void
-debug_or_throw_exception (bool show_stack_trace = false)
-{
-  octave_execution_exception e;
-
-  if (show_stack_trace && octave_exception_state != octave_exec_exception)
-    {
-      std::ostringstream buf;
-      pr_where (buf, "error");
-
-      e.set_stack_trace (buf.str ());
-    }
-
-  debug_or_throw_exception (e, show_stack_trace);
-}
-
 // Warning messages are never buffered.
 
 static void
@@ -402,9 +386,9 @@ usage_1 (const octave_execution_exception& e, const char *id,
 static void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
-  verror (true, std::cerr, "usage", id, fmt, args);
+  octave_execution_exception e;
 
-  debug_or_throw_exception ();
+  usage_1 (e, id, fmt, args);
 }
 
 void

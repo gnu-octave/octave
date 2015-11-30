@@ -51,10 +51,10 @@ function [retval, defname, defdir] = __file_filter__ (file_filter, name)
   elseif (ischar (file_filter))
     [defdir, fname, fext] = fileparts (file_filter);
     if (! strcmp (fname, "*"))
-      defname = strcat (fname, fext);
+      defname = [fname, fext];
     endif
-    if ((length (fext) > 0) && (! strcmp(fext, '.*')))
-      fext = strcat ("*", fext);
+    if ((length (fext) > 0) && (! strcmp (fext, ".*")))
+      fext = ["*" fext];
       retval = {fext, __default_filtername__(fext)};
     endif
   endif

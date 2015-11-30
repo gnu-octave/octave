@@ -943,7 +943,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                  || ! isnumeric (obj.markerfacecolor)
                  || (isnumeric (obj.markerfacecolor)
                      && isequal (color, obj.markerfacecolor)))
-               style = strcat (style, "points");
+               style = [style "points"];
                if (isfield (obj, "markersize"))
                  if (length (mdat) == nc)
                    m = mdat(i);
@@ -997,7 +997,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                if (sidx == 1 && ((length (style) == 5
                         && strncmp (style, "lines", 5))
                        || isempty (style)))
-                 style = strcat (style, "points");
+                 style = [style, "points"];
                  if (isfield (obj, "markersize"))
                    if (length (mdat) == nc)
                      m = mdat(i);
@@ -1867,7 +1867,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
               && isequal (color, obj.markerfacecolor)))
         if (! isempty (pt2))
           fprintf (plot_stream, " pointtype %s", pt2);
-          style{sidx} = strcat (style{sidx}, "points");
+          style{sidx} = [style{sidx} "points"];
         endif
         if (isfield (obj, "markersize"))
           fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
@@ -1909,7 +1909,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         if (sidx == 1 && ((length (style{sidx}) == 5
             && strncmp (style{sidx}, "lines", 5)) || isempty (style{sidx})))
           if (! isempty (pt))
-            style{sidx} = strcat (style{sidx}, "points");
+            style{sidx} = [style{sidx} "points"];
             fprintf (plot_stream, " pointtype %s", pt);
           endif
           if (isfield (obj, "markersize"))
@@ -2173,7 +2173,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       fmt = "10^{%T}";
     endif
     if (sgn < 0)
-      fmt = strcat ("-", fmt);
+      fmt = ["-" fmt];
     endif
   else
     fmt = "%g";

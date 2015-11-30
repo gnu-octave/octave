@@ -503,7 +503,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
   else
     pipein = false;
-    filein = strcat ("'", strtrim (filein), "'");
+    filein = ["'" strtrim(filein) "'"];
   endif
   if (strcmp (fileout, "-"))
     pipeout = true;
@@ -515,7 +515,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
   else
     pipeout = false;
-    fileout = strcat ("'", strtrim (fileout), "'");
+    fileout = ["'" strtrim(fileout) "'"];
   endif
 
   if (! isempty (opts.preview) && opts.tight_flag)
@@ -648,17 +648,17 @@ function latex_standalone (opts)
   if (! isempty (n))
     opts.name = opts.name(1:n-1);
   endif
-  latexfile = strcat (opts.name, ".tex");
+  latexfile = [opts.name ".tex"];
   switch (opts.devopt)
     case {"pdflatexstandalone"}
       packages = "\\usepackage{graphicx,color}";
-      graphicsfile = strcat (opts.name, "-inc.pdf");
+      graphicsfile = [opts.name "-inc.pdf"];
     case {"pslatexstandalone"}
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = strcat (opts.name, "-inc.ps");
+      graphicsfile = [opts.name "-inc.ps"];
     otherwise
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = strcat (opts.name, "-inc.eps");
+      graphicsfile = [opts.name "-inc.eps"];
   endswitch
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
                        fix (opts.canvas_size), fix (opts.canvas_size));

@@ -322,19 +322,19 @@ function lims = __get_tight_lims__ (ca, ax)
 
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
-  kids = findobj (ca, "-property", strcat (ax, "data"));
+  kids = findobj (ca, "-property", [ax "data"]);
   ## The data properties for hggroups mirror their children.
   ## Exclude the redundant hgroup values.
   hg_kids = findobj (kids, "type", "hggroup");
   kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
-    lims = get (ca, strcat (ax, "lim"));
+    lims = get (ca, [ax "lim"]);
   else
-    data = get (kids, strcat (ax, "data"));
+    data = get (kids, [ax "data"]);
     types = get (kids, "type");
 
-    scale = get (ca, strcat (ax, "scale"));
+    scale = get (ca, [ax "scale"]);
     if (! iscell (data))
       data = {data};
     endif

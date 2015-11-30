@@ -116,9 +116,9 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
     for k = 1:length (def_idx)
       endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        buffer = strcat (buffer, help_text (def_idx(k):end), "\n");
+        buffer = [buffer, help_text(def_idx(k):end), "\n"];
       else
-        buffer = strcat (buffer, help_text (def_idx(k):endl));
+        buffer = [buffer, help_text(def_idx(k):endl)];
       endif
     endfor
   else

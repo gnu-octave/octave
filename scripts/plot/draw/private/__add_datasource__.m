@@ -28,7 +28,7 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
   endif
 
   for i = 1 : numel (data)
-    addproperty (strcat (data{i}, "datasource"), h, "string", "");
+    addproperty ([data{i} "datasource"], h, "string", "");
   endfor
 
   i = 0;

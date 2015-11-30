@@ -263,7 +263,7 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   if (dot == 0 && ! isempty (arg_st.name))
-    arg_st.name = strcat (arg_st.name, ".", default_suffix);
+    arg_st.name = [arg_st.name "." default_suffix];
   endif
 
   if (arg_st.append_to_file)
@@ -460,7 +460,7 @@ function cmd = __quote_path__ (cmd)
         cmd = strrep (cmd, "/", "\\");
       endif
       if (any (cmd == " "))
-        cmd = strcat ('"', strrep (cmd, '"', '""') ,'"');
+        cmd = ['"' strrep(cmd, '"', '""') '"'];
       endif
     endif
   endif
@@ -599,7 +599,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
       case {"b", "tabloid"}
         papersize = "11x17";
       case {"c", "d", "e"}
-        papersize = strcat ("arch", papersize);
+        papersize = ["arch" papersize];
     endswitch
     if (strncmp (papersize, "arch", 4))
       papersize(end) = upper (papersize(end));

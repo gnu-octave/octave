@@ -95,16 +95,16 @@ function html_compare_plot_demos (toolkits, varargin)
       ## set default
       column_header = upper (toolkits{t});
       if (isfield (in, toolkits{t}))
-        column_header = strcat (column_header, in.(toolkits{t}));
+        column_header = [column_header, in.(toolkits{t})];
       endif
       fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', ...
                     column_header, toolkits{t});
     endfor
     fprintf (fid, "</tr>\n");
 
-    for m = 1:numel(in.figfiles)
+    for m = 1:numel (in.figfiles)
       [~, file] = fileparts (in.figfiles{m});
-      fn = strcat (file, ".", in.fmt);
+      fn = [file "." in.fmt];
       fprintf (fid, "<tr>\n");
       for k = toolkits
         ffn = fullfile (k{:}, fn);

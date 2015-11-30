@@ -138,7 +138,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
         outargs{6} = fdir;
       endif
       if (length (fname) > 0 || length (fext) > 0)
-        outargs{3} = strcat (fname, fext);
+        outargs{3} = [fname fext];
       endif
     elseif (! isempty (args{3}))
       print_usage ();

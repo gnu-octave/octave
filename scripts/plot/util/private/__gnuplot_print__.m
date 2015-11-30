@@ -101,7 +101,7 @@ function opts = __gnuplot_print__ (opts)
         suffix = "eps";
       endif
       local_drawnow ([term " " gp_opts],
-                     strcat (name, ".", suffix), opts);
+                     [name "." suffix], opts);
     case "tikz"
       if (__gnuplot_has_terminal__ ("tikz"))
         local_drawnow (["lua tikz " gp_opts], opts.name, opts);

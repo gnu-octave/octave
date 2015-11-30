@@ -100,7 +100,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
         outargs{6} = fdir;
       endif
       if (! isempty (fname) || ! isempty (fext))
-        outargs{3} = strcat (fname, fext);
+        outargs{3} = [fname fext];
       endif
     elseif (! isempty (varargin{3}))
       print_usage ();

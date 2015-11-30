@@ -77,11 +77,9 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   ##       can only be removed when that function has been updated.
   if (nargin < 3)
     if (strcmpi (output_type, "plain text"))
-      fsee_also = @(T) strcat ...
-          ("\nSee also:", sprintf (" %s,", T{:})(1:end-1), "\n");
+      fsee_also = @(T) ["\nSee also:", sprintf(" %s,", T{:})(1:end-1), "\n"];
     else
-      fsee_also = @(T) strcat ...
-          ("\nSee also:", sprintf (" @ref{%s},", T{:})(1:end-1), "\n");
+      fsee_also = @(T) ["\nSee also:", sprintf(" @ref{%s},", T{:})(1:end-1), "\n"];
     endif
   endif
 

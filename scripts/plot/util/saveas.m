@@ -96,11 +96,11 @@ function saveas (h, filename, fmt = "pdf")
     [~, ~, ext] = fileparts (filename);
 
     if (isempty (ext))
-      filename = strcat (filename, ".", fmt);
+      filename = [filename "." fmt];
     endif
   endif
 
-  prt_opt = strcat ("-d", tolower (fmt));
+  prt_opt = ["-d" tolower(fmt)];
 
   print (fig, filename, prt_opt);
 

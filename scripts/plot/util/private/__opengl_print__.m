@@ -90,7 +90,7 @@ function opts = __opengl_print__ (opts)
         if (any (strcmpi (ext, {".ps", ".tex", "."})))
           opts.name = opts.name(1:end-numel(ext));
         endif
-        opts.name = strcat (opts.name, ".ps");
+        opts.name = [opts.name ".ps"];
         cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
         gl2ps_device = {"eps"};
         pipeline = {cmd};

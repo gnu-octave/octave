@@ -29,7 +29,7 @@ function out = fix_version (v)
   if (regexp (v, '^\d+(\.\d+){1,2}$') == 1)
     parts = ostrsplit (v, '.', true);
     if (numel (parts) == 2)
-      out = strcat (v, ".0");
+      out = [v ".0"];
     else
       out = v;
     endif

@@ -123,7 +123,6 @@ function sombreroimage (outfile, typ, d_typ)
     fclose (fid);
     return;
   else
-    hide_output ();
     [x, y, z] = sombrero ();
     unwind_protect
       mesh (x, y, z);

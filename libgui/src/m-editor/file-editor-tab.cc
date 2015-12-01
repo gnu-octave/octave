@@ -1532,13 +1532,21 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
     }
 
   // save the contents into the file
-  QTextStream out (&file);
 
-  // consider a possible new encoding (from the save-file-as dialog)
-  _encoding = _new_encoding;
-  // set the desired codec
+  _encoding = _new_encoding;    // consider a possible new encoding
+
+  // set the desired codec (if suitable for contents)
   QTextCodec *codec = QTextCodec::codecForName (_encoding.toAscii ());
-  out.setCodec(codec);
+
+  if (check_valid_codec (codec))
+    {
+      save_file_as (remove_on_success);
+      return;
+    }
+
+  // write the file
+  QTextStream out (&file);
+  out.setCodec (codec);
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
@@ -1738,6 +1746,26 @@ file_editor_tab::check_valid_identifier (QString file_name)
   return false;
 }
 
+bool
+file_editor_tab::check_valid_codec (QTextCodec *codec)
+{
+  if (! codec->canEncode (_edit_area->text ()))
+    {
+      int ans = QMessageBox::warning (0,
+            tr ("Octave Editor"),
+            tr ("The current editor contents can not be encoded\n"
+                "with the selected codec %1.\n"
+                "Using it will result in data loss!\n\n"
+                "Do you want to chose another codec?").arg (_encoding),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+      if (ans == QMessageBox::Yes)
+        return true;
+    }
+
+  return false;
+}
+
 void
 file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 {
@@ -1746,7 +1774,6 @@ file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 
   if (saveFileName == _file_name)
     {
-      // same name as actual file, save it as "save" would do
       save_file (saveFileName);
     }
   else

@@ -1093,7 +1093,7 @@ function updatelegend (h, ~)
           set (hax, "position", position);
           set (hax, "outerposition", outerposition);
       endswitch
-      set (hax, {"units"}, units);
+      set (hax, "units", units);
 
       h = legend (hax(1), hplots, get (h, "string"));
     unwind_protect_cleanup

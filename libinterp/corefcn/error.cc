@@ -282,6 +282,20 @@ pr_where (std::ostream& os, const char *who)
     }
 }
 
+static octave_execution_exception
+make_execution_exception (const char *who)
+{
+  std::ostringstream buf;
+
+  pr_where (buf, who);
+
+  octave_execution_exception retval;
+
+  retval.set_stack_trace (buf.str ());
+
+  return retval;
+}
+
 static void
 debug_or_throw_exception (const octave_execution_exception& e,
                           bool show_stack_trace = false)
@@ -386,9 +400,7 @@ usage_1 (const octave_execution_exception& e, const char *id,
 static void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
-  octave_execution_exception e;
-
-  usage_1 (e, id, fmt, args);
+  usage_1 (make_execution_exception ("usage"), id, fmt, args);
 }
 
 void
@@ -468,9 +480,8 @@ static void
 error_1 (std::ostream& os, const char *name, const char *id,
          const char *fmt, va_list args, bool with_cfn = false)
 {
-  octave_execution_exception e;
-
-  error_1 (e, os, name, id, fmt, args, with_cfn);
+  error_1 (make_execution_exception ("error"), os, name, id, fmt,
+           args, with_cfn);
 }
 
 void

@@ -9360,8 +9360,6 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           xset_gcbo (h);
         }
 
-      BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
       // Copy CB because "function_value" method is non-const.
 
       octave_value cb = cb_arg;
@@ -9396,8 +9394,6 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
       if (fcn)
         feval (fcn, args);
-
-      END_INTERRUPT_WITH_EXCEPTIONS;
     }
 }
 

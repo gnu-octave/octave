@@ -307,96 +307,92 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (rhs.is_undefined ())
     return;
 
-  {
-    tree_expression *lhs = cmd.left_hand_side ();
+  tree_expression *lhs = cmd.left_hand_side ();
 
-    octave_lvalue ult = lhs->lvalue ();
+  octave_lvalue ult = lhs->lvalue ();
 
-    tree_statement_list *loop_body = cmd.body ();
+  tree_statement_list *loop_body = cmd.body ();
 
-    if (rhs.is_range ())
-      {
-        Range rng = rhs.range_value ();
+  if (rhs.is_range ())
+    {
+      Range rng = rhs.range_value ();
 
-        octave_idx_type steps = rng.numel ();
+      octave_idx_type steps = rng.numel ();
 
-        for (octave_idx_type i = 0; i < steps; i++)
-          {
-            octave_value val (rng.elem (i));
+      for (octave_idx_type i = 0; i < steps; i++)
+        {
+          octave_value val (rng.elem (i));
 
-            ult.assign (octave_value::op_asn_eq, val);
+          ult.assign (octave_value::op_asn_eq, val);
 
-            if (loop_body)
-              loop_body->accept (*this);
+          if (loop_body)
+            loop_body->accept (*this);
 
-            if (quit_loop_now ())
-              break;
-          }
-      }
-    else if (rhs.is_scalar_type ())
-      {
-        ult.assign (octave_value::op_asn_eq, rhs);
+          if (quit_loop_now ())
+            break;
+        }
+    }
+  else if (rhs.is_scalar_type ())
+    {
+      ult.assign (octave_value::op_asn_eq, rhs);
 
-        if (loop_body)
-          loop_body->accept (*this);
+      if (loop_body)
+        loop_body->accept (*this);
 
-        // Maybe decrement break and continue states.
-        quit_loop_now ();
-      }
-    else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
-             || rhs.is_map ())
-      {
-        // A matrix or cell is reshaped to 2 dimensions and iterated by
-        // columns.
+      // Maybe decrement break and continue states.
+      quit_loop_now ();
+    }
+  else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
+           || rhs.is_map ())
+    {
+      // A matrix or cell is reshaped to 2 dimensions and iterated by
+      // columns.
 
-        dim_vector dv = rhs.dims ().redim (2);
+      dim_vector dv = rhs.dims ().redim (2);
 
-        octave_idx_type nrows = dv(0);
-        octave_idx_type steps = dv(1);
+      octave_idx_type nrows = dv(0);
+      octave_idx_type steps = dv(1);
 
-        if (steps > 0)
-          {
-            octave_value arg = rhs;
-            if (rhs.ndims () > 2)
-              arg = arg.reshape (dv);
+      if (steps > 0)
+        {
+          octave_value arg = rhs;
+          if (rhs.ndims () > 2)
+            arg = arg.reshape (dv);
 
-            // for row vectors, use single index to speed things up.
-            octave_value_list idx;
-            octave_idx_type iidx;
-            if (nrows == 1)
-              {
-                idx.resize (1);
-                iidx = 0;
-              }
-            else
-              {
-                idx.resize (2);
-                idx(0) = octave_value::magic_colon_t;
-                iidx = 1;
-              }
+          // for row vectors, use single index to speed things up.
+          octave_value_list idx;
+          octave_idx_type iidx;
+          if (nrows == 1)
+            {
+              idx.resize (1);
+              iidx = 0;
+            }
+          else
+            {
+              idx.resize (2);
+              idx(0) = octave_value::magic_colon_t;
+              iidx = 1;
+            }
 
-            for (octave_idx_type i = 1; i <= steps; i++)
-              {
-                // do_index_op expects one-based indices.
-                idx(iidx) = i;
-                octave_value val = arg.do_index_op (idx);
+          for (octave_idx_type i = 1; i <= steps; i++)
+            {
+              // do_index_op expects one-based indices.
+              idx(iidx) = i;
+              octave_value val = arg.do_index_op (idx);
 
-                ult.assign (octave_value::op_asn_eq, val);
+              ult.assign (octave_value::op_asn_eq, val);
 
-                if (loop_body)
-                  loop_body->accept (*this);
+              if (loop_body)
+                loop_body->accept (*this);
 
-                if (quit_loop_now ())
-                  break;
-              }
-          }
-      }
-    else
-      {
-        error ("invalid type in for loop expression near line %d, column %d",
-               cmd.line (), cmd.column ());
-      }
-  }
+              if (quit_loop_now ())
+                break;
+            }
+        }
+    }
+  else
+    error ("invalid type in for loop expression near line %d, column %d",
+           cmd.line (), cmd.column ());
 }
 
 void

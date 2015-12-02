@@ -513,8 +513,15 @@ octave_pclose (FILE *f)
 int
 octave_kbhit (bool wait)
 {
-#ifdef HAVE__KBHIT
-  int c = (! wait && ! _kbhit ()) ? 0 : std::cin.get ();
+#ifdef HAVE__KBHIT && HAVE__GETCH
+  // This essentially means we are on a Windows system.
+  int c;
+
+  if (wait)
+    c = _getch ();
+  else
+    c = (! _kbhit ()) ? 0 : _getch ();
+
 #else
   raw_mode (true, wait);
 

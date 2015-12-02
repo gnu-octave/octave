@@ -2282,7 +2282,7 @@ AC_CHECK_FUNCS([realpath resolvepath roundl])
 AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
 AC_CHECK_FUNCS([tcgetattr tcsetattr tgammaf toascii])
 AC_CHECK_FUNCS([umask waitpid])
-AC_CHECK_FUNCS([_kbhit])
+AC_CHECK_FUNCS([_getch _kbhit])
 
 dnl There are no workarounds in the code for missing these functions.
 AC_CHECK_FUNCS([modf pow sqrt sqrtf], [],

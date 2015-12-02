@@ -52,9 +52,9 @@ extern OCTINTERP_API void warning (const char *fmt, ...);
 extern OCTINTERP_API void verror (const char *fmt, va_list args);
 extern OCTINTERP_API void error (const char *fmt, ...);
 
-extern OCTINTERP_API void verror (const octave_execution_exception&,
+extern OCTINTERP_API void verror (octave_execution_exception&,
                                   const char *fmt, va_list args);
-extern OCTINTERP_API void error (const octave_execution_exception&,
+extern OCTINTERP_API void error (octave_execution_exception&,
                                  const char *fmt, ...);
 
 extern OCTINTERP_API void verror_with_cfn (const char *fmt, va_list args);

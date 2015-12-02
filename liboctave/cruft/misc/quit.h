@@ -98,12 +98,18 @@ public:
     m_stack_trace = st;
   }
 
+  virtual void set_stack_trace (void)
+  {
+    m_stack_trace = "";
+  }
+
   virtual std::string info (void) const
   {
     return m_stack_trace;
   }
 
 private:
+
   std::string m_stack_trace;
 };
 

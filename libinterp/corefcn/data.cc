@@ -1810,7 +1810,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
         {
           result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "conversion from %s to %s failed", dtype.c_str (),
                  cname.c_str ());
@@ -1837,7 +1837,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
             {
               result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
             }
-          catch (const octave_execution_exception& e)
+          catch (octave_execution_exception& e)
             {
               error (e, "%s constructor failed for %s argument", dtype.c_str (),
                      cname.c_str ());
@@ -1877,7 +1877,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
         {
           tmp2 = fcn.do_multi_index_op (1, ovl);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
         }

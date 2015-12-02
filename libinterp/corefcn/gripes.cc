@@ -92,7 +92,7 @@ gripe_user_supplied_eval (const char *name)
 }
 
 void
-gripe_user_supplied_eval (const octave_execution_exception& e,
+gripe_user_supplied_eval (octave_execution_exception& e,
                           const char *name)
 {
   error (e, "%s: evaluation of user-supplied function failed", name);
@@ -149,7 +149,7 @@ gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const char *name, const char *s, bool is_error)
 {
   if (is_error)
@@ -167,7 +167,7 @@ gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const char *name, const std::string& s, bool is_error)
 {
   gripe_wrong_type_arg (e, name, s.c_str (), is_error);
@@ -183,7 +183,7 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const char *name, const octave_value& tc,
                       bool is_error)
 {
@@ -202,7 +202,7 @@ gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const std::string& name, const octave_value& tc,
                       bool is_error)
 {
@@ -218,7 +218,7 @@ gripe_wrong_type_arg (const char *s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const char *s, bool is_error)
 {
   if (is_error)
@@ -236,7 +236,7 @@ gripe_wrong_type_arg (const std::string& s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const std::string& s, bool is_error)
 {
   gripe_wrong_type_arg (e, s.c_str (), is_error);
@@ -251,7 +251,7 @@ gripe_wrong_type_arg (const octave_value& tc, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (const octave_execution_exception& e,
+gripe_wrong_type_arg (octave_execution_exception& e,
                       const octave_value& tc, bool is_error)
 {
   std::string type = tc.type_name ();

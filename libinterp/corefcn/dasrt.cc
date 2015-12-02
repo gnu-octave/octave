@@ -79,7 +79,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = dasrt_f->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           gripe_user_supplied_eval (e, "dasrt");
         }
@@ -122,7 +122,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
         {
           tmp = dasrt_cf->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           gripe_user_supplied_eval (e, "dasrt");
         }
@@ -170,7 +170,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = dasrt_j->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           gripe_user_supplied_eval (e, "dasrt");
         }

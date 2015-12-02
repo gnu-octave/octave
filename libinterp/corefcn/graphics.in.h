@@ -806,7 +806,7 @@ protected:
           {
             nda = val.array_value ();
           }
-        catch (const octave_execution_exception& e)
+        catch (octave_execution_exception& e)
           {
             error (e, "set: invalid string property value for \"%s\"",
                    get_name ().c_str ());
@@ -1700,7 +1700,7 @@ protected:
       {
         new_kids = val.matrix_value ();
       }
-    catch (const octave_execution_exception& e)
+    catch (octave_execution_exception& e)
       {
         error (e, "set: children must be an array of graphics handles");
       }

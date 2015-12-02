@@ -4508,7 +4508,7 @@ source_file (const std::string& file_name, const std::string& context,
       fcn = parse_fcn_file (file_full_name, file_name, "", "",
                             require_file, true, false, false, warn_for);
     }
-  catch (const octave_execution_exception& e)
+  catch (octave_execution_exception& e)
     {
       error (e, "source: error sourcing file '%s'", file_full_name.c_str ());
     }
@@ -4648,7 +4648,7 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
         {
           maybe_missing_function_hook (name);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "feval: function '%s' not found", name.c_str ());
         }

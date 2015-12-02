@@ -1304,7 +1304,7 @@ color_property::do_set (const octave_value& val)
                       return true;
                     }
                 }
-              catch (const octave_execution_exception& e)
+              catch (octave_execution_exception& e)
                 {
                   error (e, "invalid value for color property \"%s\" (value = %s)",
                          get_name ().c_str (), s.c_str ());
@@ -2903,7 +2903,7 @@ base_properties::set_from_list (base_graphics_object& bgo,
             {
               bgo.set (pname, q->second);
             }
-          catch (const octave_execution_exception& e)
+          catch (octave_execution_exception& e)
             {
               error (e, "error setting default property %s", pname.c_str ());
             }
@@ -10234,7 +10234,7 @@ make_graphics_object (const std::string& go_name,
                                                 integer_figure_handle,
                                                 false, false);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "__go%s__: unable to create graphics handle",
                  go_name.c_str ());

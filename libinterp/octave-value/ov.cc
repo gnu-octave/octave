@@ -1873,7 +1873,7 @@ octave_value::float_complex_vector_value (bool force_string_conv,
       { \
         retval = FCN (); \
       } \
-    catch (const octave_execution_exception& e) \
+    catch (octave_execution_exception& e) \
       { \
         if (fmt) \
           { \
@@ -2474,7 +2474,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
         {
           m_base = base.matrix_value (true);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "invalid base value in colon expression");
         }
@@ -2483,7 +2483,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
         {
           m_limit = limit.matrix_value (true);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "invalid limit value in colon expression");
         }
@@ -2494,7 +2494,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
                          ? increment.matrix_value (true)
                          : Matrix (1, 1, 1.0));
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           error (e, "invalid increment value in colon expression");
         }

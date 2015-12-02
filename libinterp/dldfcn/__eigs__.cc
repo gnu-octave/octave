@@ -62,7 +62,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
         {
           tmp = eigs_fcn->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           gripe_user_supplied_eval (e, "eigs");
         }
@@ -102,7 +102,7 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
         {
           tmp = eigs_fcn->do_multi_index_op (1, args);
         }
-      catch (const octave_execution_exception& e)
+      catch (octave_execution_exception& e)
         {
           gripe_user_supplied_eval (e, "eigs");
         }

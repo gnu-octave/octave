@@ -214,7 +214,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
               {
                 iv = tmp.int_vector_value (true);
               }
-            catch (const octave_execution_exception& e)
+            catch (octave_execution_exception& e)
               {
                 error (e, "%s: dimensions must be a scalar or array of integers", fcn);
               }

@@ -513,7 +513,7 @@ octave_pclose (FILE *f)
 int
 octave_kbhit (bool wait)
 {
-#ifdef HAVE__KBHIT && HAVE__GETCH
+#if defined (HAVE__KBHIT) && defined (HAVE__GETCH)
   // This essentially means we are on a Windows system.
   int c;
 

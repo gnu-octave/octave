@@ -204,10 +204,7 @@ x = @var{R} \\ @var{C}\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > (args(0).is_sparse_type () ? 3 : 2))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 
@@ -763,10 +760,7 @@ economized (R is square).\n\
   octave_value_list retval;
 
   if (nargin != 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argq = args(0);
   octave_value argr = args(1);
@@ -951,10 +945,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
   octave_value_list retval;
 
   if (nargin < 4 || nargin > 5)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argq = args(0);
   octave_value argr = args(1);
@@ -1170,10 +1161,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
   octave_value_list retval;
 
   if (nargin < 3 || nargin > 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argq = args(0);
   octave_value argr = args(1);
@@ -1422,10 +1410,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
   octave_value_list retval;
 
   if (nargin != 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argq = args(0);
   octave_value argr = args(1);

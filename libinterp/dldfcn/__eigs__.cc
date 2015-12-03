@@ -196,8 +196,9 @@ Undocumented internal function.\n\
 
   if (nargin == 0)
     print_usage ();
-  else if (args(0).is_function_handle () || args(0).is_inline_function ()
-           || args(0).is_string ())
+
+  if (args(0).is_function_handle () || args(0).is_inline_function ()
+      || args(0).is_string ())
     {
       if (args(0).is_string ())
         {

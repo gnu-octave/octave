@@ -100,10 +100,7 @@ factorization as determined by @var{typ}.\n\
   int nargin = args.length ();
 
   if (nargin < 1  || nargin > 3 || nargout > 5)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
 #ifdef HAVE_CHOLMOD
 

@@ -77,10 +77,7 @@ is stored in the audio file.\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::string filename = args(0).string_value ();
 
@@ -285,10 +282,7 @@ Comment.\n\
   int nargin = args.length ();
 
   if (nargin < 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::string filename = args(0).string_value ();
 
@@ -473,10 +467,7 @@ Return information about an audio file specified by @var{filename}.\n\
 #ifdef HAVE_SNDFILE
 
   if (args.length () != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::string filename = args(0).string_value ();
 

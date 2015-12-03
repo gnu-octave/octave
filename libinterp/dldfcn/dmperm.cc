@@ -157,10 +157,7 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
   octave_value_list retval;
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
 #if HAVE_CXSPARSE
   retval = dmperm_internal (false, args(0), nargout);
@@ -206,10 +203,7 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
   octave_value_list retval;
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
 #if HAVE_CXSPARSE
   retval = dmperm_internal (true, args(0), nargout);

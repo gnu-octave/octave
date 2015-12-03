@@ -762,10 +762,7 @@ Use @code{imread} instead.\n\
   maybe_initialize_magick ();
 
   if (args.length () != 2 || ! args(0).is_string ())
-    {
-      print_usage ();
-      return output;
-    }
+    print_usage ();
 
   const octave_scalar_map options = args(1).xscalar_map_value ("__magick_read__: OPTIONS must be a struct");
 
@@ -1414,10 +1411,8 @@ Use @code{imwrite} instead.\n\
   maybe_initialize_magick ();
 
   if (args.length () != 5 || ! args(0).is_string () || ! args(1).is_string ())
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
+
   const std::string filename = args(0).string_value ();
   const std::string ext = args(1).string_value ();
 
@@ -1595,10 +1590,8 @@ This is a private internal function not intended for direct use.\n\
   maybe_initialize_magick ();
 
   if (args.length () < 1 || ! args(0).is_string ())
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
+
   const std::string filename = args(0).string_value ();
   int idx;
   if (args.length () > 1)
@@ -1818,10 +1811,8 @@ Use @code{imfinfo} instead.\n\
   maybe_initialize_magick ();
 
   if (args.length () < 1 || ! args(0).is_string ())
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
+
   const std::string filename = args(0).string_value ();
 
   std::vector<Magick::Image> imvec;
@@ -2267,10 +2258,8 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
   gripe_disabled_feature ("imformats", "Image IO");
 #else
   if (args.length () != 1 || ! args(0).is_map ())
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
+
   octave_map formats = args(0).map_value ();
 
   maybe_initialize_magick ();

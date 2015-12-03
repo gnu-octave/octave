@@ -96,10 +96,7 @@ instead.\n\
   int nargin = args.length ();
 
   if (! (nargin == 1 || nargin == 3))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (nargin == 3)
     {

@@ -91,102 +91,100 @@ The author of the code itself is Timothy A. Davis\n\
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  else
-    {
-      octave_idx_type n_row, n_col;
-      const octave_idx_type *ridx, *cidx;
-      SparseMatrix sm;
-      SparseComplexMatrix scm;
 
-      if (args(0).is_sparse_type ())
+  octave_idx_type n_row, n_col;
+  const octave_idx_type *ridx, *cidx;
+  SparseMatrix sm;
+  SparseComplexMatrix scm;
+
+  if (args(0).is_sparse_type ())
+    {
+      if (args(0).is_complex_type ())
         {
-          if (args(0).is_complex_type ())
-            {
-              scm = args(0).sparse_complex_matrix_value ();
-              n_row = scm.rows ();
-              n_col = scm.cols ();
-              ridx = scm.xridx ();
-              cidx = scm.xcidx ();
-            }
-          else
-            {
-              sm = args(0).sparse_matrix_value ();
-              n_row = sm.rows ();
-              n_col = sm.cols ();
-              ridx = sm.xridx ();
-              cidx = sm.xcidx ();
-            }
+          scm = args(0).sparse_complex_matrix_value ();
+          n_row = scm.rows ();
+          n_col = scm.cols ();
+          ridx = scm.xridx ();
+          cidx = scm.xcidx ();
         }
       else
         {
-          if (args(0).is_complex_type ())
-            sm = SparseMatrix (real (args(0).complex_matrix_value ()));
-          else
-            sm = SparseMatrix (args(0).matrix_value ());
-
+          sm = args(0).sparse_matrix_value ();
           n_row = sm.rows ();
           n_col = sm.cols ();
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }
+    }
+  else
+    {
+      if (args(0).is_complex_type ())
+        sm = SparseMatrix (real (args(0).complex_matrix_value ()));
+      else
+        sm = SparseMatrix (args(0).matrix_value ());
 
-      if (n_row != n_col)
-        error ("amd: matrix S must be square");
+      n_row = sm.rows ();
+      n_col = sm.cols ();
+      ridx = sm.xridx ();
+      cidx = sm.xcidx ();
+    }
 
-      OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
-      AMD_NAME (_defaults) (Control) ;
-      if (nargin > 1)
-        {
-          octave_scalar_map arg1 = args(1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
+  if (n_row != n_col)
+    error ("amd: matrix S must be square");
 
-          octave_value tmp;
+  OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
+  AMD_NAME (_defaults) (Control) ;
+  if (nargin > 1)
+    {
+      octave_scalar_map arg1 = args(1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
 
-          tmp = arg1.getfield ("dense");
-          if (tmp.is_defined ())
-            Control[AMD_DENSE] = tmp.double_value ();
+      octave_value tmp;
 
-          tmp = arg1.getfield ("aggressive");
-          if (tmp.is_defined ())
-            Control[AMD_AGGRESSIVE] = tmp.double_value ();
-        }
+      tmp = arg1.getfield ("dense");
+      if (tmp.is_defined ())
+        Control[AMD_DENSE] = tmp.double_value ();
 
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
-      Matrix xinfo (AMD_INFO, 1);
-      double *Info = xinfo.fortran_vec ();
+      tmp = arg1.getfield ("aggressive");
+      if (tmp.is_defined ())
+        Control[AMD_AGGRESSIVE] = tmp.double_value ();
+    }
 
-      // FIXME: how can we manage the memory allocation of amd
-      //        in a cleaner manner?
-      SUITESPARSE_ASSIGN_FPTR (malloc_func, amd_malloc, malloc);
-      SUITESPARSE_ASSIGN_FPTR (free_func, amd_free, free);
-      SUITESPARSE_ASSIGN_FPTR (calloc_func, amd_calloc, calloc);
-      SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
-      SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
+  Matrix xinfo (AMD_INFO, 1);
+  double *Info = xinfo.fortran_vec ();
 
-      octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
-                                                  Control, Info);
+  // FIXME: how can we manage the memory allocation of amd
+  //        in a cleaner manner?
+  SUITESPARSE_ASSIGN_FPTR (malloc_func, amd_malloc, malloc);
+  SUITESPARSE_ASSIGN_FPTR (free_func, amd_free, free);
+  SUITESPARSE_ASSIGN_FPTR (calloc_func, amd_calloc, calloc);
+  SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
+  SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
-      switch (result)
-        {
-        case AMD_OUT_OF_MEMORY:
-          error ("amd: out of memory");
-          break;
+  octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
+                                              Control, Info);
 
-        case AMD_INVALID:
-          error ("amd: matrix S is corrupted");
-          break;
+  switch (result)
+    {
+    case AMD_OUT_OF_MEMORY:
+      error ("amd: out of memory");
+      break;
 
-        default:
-          {
-            if (nargout > 1)
-              retval(1) = xinfo;
+    case AMD_INVALID:
+      error ("amd: matrix S is corrupted");
+      break;
 
-            Matrix Pout (1, n_col);
-            for (octave_idx_type i = 0; i < n_col; i++)
-              Pout.xelem (i) = P[i] + 1;
+    default:
+      {
+        if (nargout > 1)
+          retval(1) = xinfo;
 
-            retval(0) = Pout;
-          }
-        }
+        Matrix Pout (1, n_col);
+        for (octave_idx_type i = 0; i < n_col; i++)
+          Pout.xelem (i) = P[i] + 1;
+
+        retval(0) = Pout;
+      }
     }
 #else
 

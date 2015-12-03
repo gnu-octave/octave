@@ -2007,10 +2007,7 @@ Undocumented internal function.\n\
   audiorecorder *recorder = get_recorder (args(0));
 
   if (! recorder)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   retval = recorder->getaudiodata ();
 
@@ -2038,10 +2035,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_channels ();
     }
@@ -2070,10 +2064,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_fs ();
     }
@@ -2102,10 +2093,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_id ();
     }
@@ -2134,10 +2122,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_nbits ();
     }
@@ -2166,10 +2151,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_sample_number ();
     }
@@ -2198,10 +2180,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_tag ();
     }
@@ -2230,10 +2209,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_total_samples ();
     }
@@ -2262,10 +2238,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->get_userdata ();
     }
@@ -2294,10 +2267,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = recorder->isrecording () ? true : false;
     }
@@ -2326,10 +2296,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       recorder->pause ();
     }
@@ -2356,10 +2323,7 @@ Undocumented internal function.\n\
   audiorecorder *recorder = get_recorder (args(0));
 
   if (! recorder)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   recorder->recordblocking (args(1).float_value ());
 
@@ -2386,10 +2350,7 @@ Undocumented internal function.\n\
   audiorecorder *recorder = get_recorder (args(0));
 
   if (! recorder)
-    {
       print_usage ();
-      return retval;
-    }
 
   if (args.length () == 1)
     recorder->record ();
@@ -2425,10 +2386,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       recorder->resume ();
     }
@@ -2457,10 +2415,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       recorder->set_fs (args(1).int_value ());
     }
@@ -2489,10 +2444,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       recorder->set_tag (args(1).char_matrix_value ());
     }
@@ -2521,10 +2473,7 @@ Undocumented internal function.\n\
       audiorecorder *recorder = get_recorder (args(0));
 
       if (! recorder)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       recorder->set_userdata (args(1));
     }
@@ -2551,10 +2500,7 @@ Undocumented internal function.\n\
   audiorecorder *recorder = get_recorder (args(0));
 
   if (! recorder)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   recorder->stop ();
 
@@ -2582,18 +2528,12 @@ Undocumented internal function.\n\
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   audioplayer* recorder = new audioplayer ();
 
   if (! recorder)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   bool is_function = (args(0).is_string () || args(0).is_function_handle ()
                       || args(0).is_inline_function ());
@@ -2667,10 +2607,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_channels ();
     }
@@ -2699,10 +2636,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_fs ();
     }
@@ -2731,10 +2665,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_id ();
     }
@@ -2763,10 +2694,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_nbits ();
     }
@@ -2795,10 +2723,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_sample_number ();
     }
@@ -2827,10 +2752,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_tag ();
     }
@@ -2859,10 +2781,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_total_samples ();
     }
@@ -2891,10 +2810,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->get_userdata ();
     }
@@ -2923,10 +2839,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       retval = player->isplaying () ? true : false;
     }
@@ -2955,10 +2868,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->pause ();
     }
@@ -2987,10 +2897,7 @@ Undocumented internal function.\n\
   audioplayer *player = get_player (args(0));
 
   if (! player)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (args.length () == 1)
     player->playblocking ();
@@ -3055,10 +2962,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->play ();
     }
@@ -3123,10 +3027,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->resume ();
     }
@@ -3155,10 +3056,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->set_fs (args(1).int_value ());
     }
@@ -3187,10 +3085,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->set_tag (args(1).char_matrix_value ());
     }
@@ -3219,10 +3114,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->set_userdata (args(1));
     }
@@ -3251,10 +3143,7 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args (0));
 
       if (! player)
-        {
-          print_usage ();
-          return retval;
-        }
+        print_usage ();
 
       player->stop ();
     }

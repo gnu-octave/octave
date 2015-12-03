@@ -441,10 +441,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 

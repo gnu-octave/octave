@@ -349,10 +349,7 @@ Undocumented internal function.\n\
   int nrhs = args.length ();
 
   if (nrhs != 9)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   //-- 1nd Input. A column array containing the objective function
   //--            coefficients.

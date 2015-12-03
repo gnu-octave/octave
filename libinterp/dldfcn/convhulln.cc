@@ -113,10 +113,7 @@ convex hull is calculated.\n\n\
 
   int nargin = args.length ();
   if (nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   Matrix points (args(0).matrix_value ());
   const octave_idx_type dim = points.columns ();

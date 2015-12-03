@@ -154,10 +154,7 @@ sparse matrices.\n\
 
   if (nargin < 1 || nargin > 3 || nargout > 3
       || (! args(0).is_sparse_type () && nargout > 2))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   int n = 1;
   while (n < nargin)
@@ -355,104 +352,102 @@ the Cholesky@tie{}factorization.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin != 1)
+    print_usage ();
+
+  octave_value arg = args(0);
+
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
+
+  if (nr == 0 || nc == 0)
+    retval = Matrix ();
+  else
     {
-      octave_value arg = args(0);
-
-      octave_idx_type nr = arg.rows ();
-      octave_idx_type nc = arg.columns ();
-
-      if (nr == 0 || nc == 0)
-        retval = Matrix ();
-      else
+      if (arg.is_sparse_type ())
         {
-          if (arg.is_sparse_type ())
+          octave_idx_type info;
+
+          if (arg.is_real_type ())
             {
-              octave_idx_type info;
+              SparseMatrix m = arg.sparse_matrix_value ();
 
-              if (arg.is_real_type ())
-                {
-                  SparseMatrix m = arg.sparse_matrix_value ();
+              SparseCHOL chol (m, info);
 
-                  SparseCHOL chol (m, info);
-
-                  if (info == 0)
-                    retval = chol.inverse ();
-                  else
-                    error ("cholinv: A must be positive definite");
-                }
-              else if (arg.is_complex_type ())
-                {
-                  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-
-                  SparseComplexCHOL chol (m, info);
-
-                  if (info == 0)
-                    retval = chol.inverse ();
-                  else
-                    error ("cholinv: A must be positive definite");
-                }
+              if (info == 0)
+                retval = chol.inverse ();
               else
-                gripe_wrong_type_arg ("cholinv", arg);
+                error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_single_type ())
+          else if (arg.is_complex_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  FloatMatrix m = arg.float_matrix_value ();
+              SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-                  octave_idx_type info;
-                  FloatCHOL chol (m, info);
-                  if (info == 0)
-                    retval = chol.inverse ();
-                  else
-                    error ("cholinv: A must be positive definite");
-                }
-              else if (arg.is_complex_type ())
-                {
-                  FloatComplexMatrix m = arg.float_complex_matrix_value ();
+              SparseComplexCHOL chol (m, info);
 
-                  octave_idx_type info;
-                  FloatComplexCHOL chol (m, info);
-                  if (info == 0)
-                    retval = chol.inverse ();
-                  else
-                    error ("cholinv: A must be positive definite");
-                }
+              if (info == 0)
+                retval = chol.inverse ();
               else
-                gripe_wrong_type_arg ("chol", arg);
+                error ("cholinv: A must be positive definite");
             }
           else
+            gripe_wrong_type_arg ("cholinv", arg);
+        }
+      else if (arg.is_single_type ())
+        {
+          if (arg.is_real_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  Matrix m = arg.matrix_value ();
+              FloatMatrix m = arg.float_matrix_value ();
 
-                  octave_idx_type info;
-                  CHOL chol (m, info);
-                  if (info == 0)
-                    retval = chol.inverse ();
-                  else
-                    error ("cholinv: A must be positive definite");
-                }
-              else if (arg.is_complex_type ())
-                {
-                  ComplexMatrix m = arg.complex_matrix_value ();
-
-                  octave_idx_type info;
-                  ComplexCHOL chol (m, info);
-                  if (info == 0)
-                    retval = chol.inverse ();
-                  else
-                    error ("cholinv: A must be positive definite");
-                }
+              octave_idx_type info;
+              FloatCHOL chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
               else
-                gripe_wrong_type_arg ("chol", arg);
+                error ("cholinv: A must be positive definite");
             }
+          else if (arg.is_complex_type ())
+            {
+              FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+              octave_idx_type info;
+              FloatComplexCHOL chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
+              else
+                error ("cholinv: A must be positive definite");
+            }
+          else
+            gripe_wrong_type_arg ("chol", arg);
+        }
+      else
+        {
+          if (arg.is_real_type ())
+            {
+              Matrix m = arg.matrix_value ();
+
+              octave_idx_type info;
+              CHOL chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
+              else
+                error ("cholinv: A must be positive definite");
+            }
+          else if (arg.is_complex_type ())
+            {
+              ComplexMatrix m = arg.complex_matrix_value ();
+
+              octave_idx_type info;
+              ComplexCHOL chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
+              else
+                error ("cholinv: A must be positive definite");
+            }
+          else
+            gripe_wrong_type_arg ("chol", arg);
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -488,73 +483,71 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin != 1)
+    print_usage ();
+
+  octave_value arg = args(0);
+
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
+
+  if (nr == 0 || nc == 0)
+    retval = Matrix ();
+  else
     {
-      octave_value arg = args(0);
-
-      octave_idx_type nr = arg.rows ();
-      octave_idx_type nc = arg.columns ();
-
-      if (nr == 0 || nc == 0)
-        retval = Matrix ();
-      else
+      if (arg.is_sparse_type ())
         {
-          if (arg.is_sparse_type ())
+          if (arg.is_real_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  SparseMatrix r = arg.sparse_matrix_value ();
+              SparseMatrix r = arg.sparse_matrix_value ();
 
-                  retval = chol2inv (r);
-                }
-              else if (arg.is_complex_type ())
-                {
-                  SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
-
-                  retval = chol2inv (r);
-                }
-              else
-                gripe_wrong_type_arg ("chol2inv", arg);
+              retval = chol2inv (r);
             }
-          else if (arg.is_single_type ())
+          else if (arg.is_complex_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  FloatMatrix r = arg.float_matrix_value ();
+              SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
 
-                  retval = chol2inv (r);
-                }
-              else if (arg.is_complex_type ())
-                {
-                  FloatComplexMatrix r = arg.float_complex_matrix_value ();
-
-                  retval = chol2inv (r);
-                }
-              else
-                gripe_wrong_type_arg ("chol2inv", arg);
-
+              retval = chol2inv (r);
             }
           else
+            gripe_wrong_type_arg ("chol2inv", arg);
+        }
+      else if (arg.is_single_type ())
+        {
+          if (arg.is_real_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  Matrix r = arg.matrix_value ();
+              FloatMatrix r = arg.float_matrix_value ();
 
-                  retval = chol2inv (r);
-                }
-              else if (arg.is_complex_type ())
-                {
-                  ComplexMatrix r = arg.complex_matrix_value ();
-
-                  retval = chol2inv (r);
-                }
-              else
-                gripe_wrong_type_arg ("chol2inv", arg);
+              retval = chol2inv (r);
             }
+          else if (arg.is_complex_type ())
+            {
+              FloatComplexMatrix r = arg.float_complex_matrix_value ();
+
+              retval = chol2inv (r);
+            }
+          else
+            gripe_wrong_type_arg ("chol2inv", arg);
+
+        }
+      else
+        {
+          if (arg.is_real_type ())
+            {
+              Matrix r = arg.matrix_value ();
+
+              retval = chol2inv (r);
+            }
+          else if (arg.is_complex_type ())
+            {
+              ComplexMatrix r = arg.complex_matrix_value ();
+
+              retval = chol2inv (r);
+            }
+          else
+            gripe_wrong_type_arg ("chol2inv", arg);
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -596,10 +589,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
   octave_value_list retval;
 
   if (nargin > 3 || nargin < 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argu = args(1);
@@ -798,10 +788,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
   octave_value_list retval;
 
   if (nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argj = args(1);
@@ -1048,10 +1035,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
   octave_value_list retval;
 
   if (nargin != 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argj = args(1);
@@ -1185,10 +1169,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
   octave_value_list retval;
 
   if (nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argi = args(1);

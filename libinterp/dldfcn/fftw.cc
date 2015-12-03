@@ -137,10 +137,7 @@ used per default.\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
 #if defined (HAVE_FFTW)
   std::string arg0 = args(0).xstring_value ("fftw: first argument must be a string");

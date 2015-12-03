@@ -95,10 +95,7 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
   if (nargin < 2 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   Matrix points = args(1).matrix_value ();
   const octave_idx_type dim = points.columns ();

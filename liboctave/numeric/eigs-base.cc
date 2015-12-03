@@ -166,7 +166,7 @@ extern "C"
 }
 
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_idx_type
 lusolve (const SparseMatrix&, const SparseMatrix&, Matrix&);
 
@@ -3656,7 +3656,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   return ip(4);
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern octave_idx_type
 EigsRealSymmetricMatrix (const Matrix& m, const std::string typ,
                          octave_idx_type k, octave_idx_type p,

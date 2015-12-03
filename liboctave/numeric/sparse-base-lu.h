@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 
-#if !defined (octave_sparse_base_lu_h)
+#if ! defined (octave_sparse_base_lu_h)
 #define octave_sparse_base_lu_h 1
 
 #include "MArray.h"

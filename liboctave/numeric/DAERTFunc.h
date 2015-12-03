@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DAERTFunc_h)
+#if ! defined (octave_DAERTFunc_h)
 #define octave_DAERTFunc_h 1
 
 #include "dMatrix.h"

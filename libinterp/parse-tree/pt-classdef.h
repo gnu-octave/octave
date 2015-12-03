@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_classdef_h)
+#if ! defined (octave_tree_classdef_h)
 #define octave_tree_classdef_h 1
 
 class octave_value;

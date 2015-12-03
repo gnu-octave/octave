@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_cmplx_h)
+#if ! defined (octave_oct_cmplx_h)
 #define octave_oct_cmplx_h 1
 
 #include <complex>

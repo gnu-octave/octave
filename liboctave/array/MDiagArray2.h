@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_MDiagArray2_h)
+#if ! defined (octave_MDiagArray2_h)
 #define octave_MDiagArray2_h 1
 
 #include "DiagArray2.h"

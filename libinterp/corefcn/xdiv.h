@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_xdiv_h)
+#if ! defined (octave_xdiv_h)
 #define octave_xdiv_h 1
 
 #include "mx-defs.h"

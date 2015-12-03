@@ -1503,7 +1503,7 @@ specified option.\n\
 
 #if defined (WIN32)
       windows_system = true;
-#if !defined (__CYGWIN__)
+#if ! defined (__CYGWIN__)
       unix_system = false;
 #endif
 #endif

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_h)
+#if ! defined (octave_oct_h)
 #define octave_oct_h 1
 
 // Things that are often included to create .oct files.

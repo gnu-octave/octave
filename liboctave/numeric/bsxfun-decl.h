@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_bsxfun_decl_h)
+#if ! defined (octave_bsxfun_decl_h)
 #define octave_bsxfun_decl_h 1
 
 #define BSXFUN_OP_DECL(OP, ARRAY, API) \

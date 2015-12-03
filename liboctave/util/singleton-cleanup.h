@@ -1,4 +1,4 @@
-#if !defined (octave_singleton_cleanup_h)
+#if ! defined (octave_singleton_cleanup_h)
 #define octave_singleton_cleanup_h 1
 
 #include <set>

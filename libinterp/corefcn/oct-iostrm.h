@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_iostrm_h)
+#if ! defined (octave_oct_iostrm_h)
 #define octave_oct_iostrm_h 1
 
 #include <iosfwd>

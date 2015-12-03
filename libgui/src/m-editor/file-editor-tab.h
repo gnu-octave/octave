@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_file_editor_tab_h)
+#if ! defined (octave_file_editor_tab_h)
 #define octave_file_editor_tab_h 1
 
 #include <QWidget>

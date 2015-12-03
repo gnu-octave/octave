@@ -372,7 +372,7 @@ sub emit_opt_class_header
 // DO NOT EDIT!
 // Generated automatically from $DEFN_FILE.
 
-#if !defined (octave_${CLASS_NAME}_h)
+#if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
 
 #include <cfloat>

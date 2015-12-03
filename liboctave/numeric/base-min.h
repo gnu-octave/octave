@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_min_h)
+#if ! defined (octave_base_min_h)
 #define octave_base_min_h 1
 
 #include "dColVector.h"

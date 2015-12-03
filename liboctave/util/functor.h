@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_functor_h)
+#if ! defined (octave_functor_h)
 #define octave_functor_h 1
 
 template <typename RT, typename PT>

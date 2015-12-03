@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_floatGEPBAL_h)
+#if ! defined (octave_floatGEPBAL_h)
 #define octave_floatGEPBAL_h 1
 
 #include <iosfwd>

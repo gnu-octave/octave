@@ -139,7 +139,7 @@ xlog2 (const Complex& x, int& exp)
 
 // double -> bool mappers.
 
-#if ! defined(HAVE_CMATH_ISNAN)
+#if ! defined (HAVE_CMATH_ISNAN)
 bool
 xisnan (double x)
 {
@@ -147,7 +147,7 @@ xisnan (double x)
 }
 #endif
 
-#if ! defined(HAVE_CMATH_ISFINITE)
+#if ! defined (HAVE_CMATH_ISFINITE)
 bool
 xfinite (double x)
 {
@@ -155,7 +155,7 @@ xfinite (double x)
 }
 #endif
 
-#if ! defined(HAVE_CMATH_ISINF)
+#if ! defined (HAVE_CMATH_ISINF)
 bool
 xisinf (double x)
 {
@@ -376,7 +376,7 @@ xlog2 (const FloatComplex& x, int& exp)
 
 // float -> bool mappers.
 
-#if ! defined(HAVE_CMATH_ISNANF)
+#if ! defined (HAVE_CMATH_ISNANF)
 bool
 xisnan (float x)
 {
@@ -384,7 +384,7 @@ xisnan (float x)
 }
 #endif
 
-#if ! defined(HAVE_CMATH_ISFINITEF)
+#if ! defined (HAVE_CMATH_ISFINITEF)
 bool
 xfinite (float x)
 {
@@ -392,7 +392,7 @@ xfinite (float x)
 }
 #endif
 
-#if ! defined(HAVE_CMATH_ISINFF)
+#if ! defined (HAVE_CMATH_ISINFF)
 bool
 xisinf (float x)
 {

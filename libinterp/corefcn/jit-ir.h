@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Max Brister <max@2bass.com>
 
-#if !defined (octave_jit_ir_h)
+#if ! defined (octave_jit_ir_h)
 #define octave_jit_ir_h 1
 
 #ifdef HAVE_LLVM

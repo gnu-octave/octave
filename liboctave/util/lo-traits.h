@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_traits_h)
+#if ! defined (octave_lo_traits_h)
 #define octave_lo_traits_h 1
 
 // Ideas for these classes taken from C++ Templates, The Complete

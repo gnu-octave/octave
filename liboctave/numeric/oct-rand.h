@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_rand_h)
+#if ! defined (octave_oct_rand_h)
 #define octave_oct_rand_h 1
 
 #include <map>

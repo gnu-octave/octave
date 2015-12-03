@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_util_h)
+#if ! defined (octave_sparse_util_h)
 #define octave_sparse_util_h 1
 
 // The next two functions don't do anything unless CHOLMOD is

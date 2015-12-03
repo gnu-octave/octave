@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_hdf5_h)
+#if ! defined (octave_ls_hdf5_h)
 #define octave_ls_hdf5_h 1
 
 #if defined (HAVE_HDF5)

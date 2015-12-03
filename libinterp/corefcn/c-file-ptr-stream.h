@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_c_file_ptr_stream_h)
+#if ! defined (octave_c_file_ptr_stream_h)
 #define octave_c_file_ptr_stream_h 1
 
 #include <cstdio>
@@ -32,7 +32,7 @@ c_file_ptr_buf : public std::streambuf
 {
 public:
 
-#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
+#if ! defined (CXX_ISO_COMPLIANT_LIBRARY)
   typedef int int_type;
 #else
   typedef std::streambuf::int_type int_type;
@@ -152,7 +152,7 @@ c_zfile_ptr_buf : public std::streambuf
 {
 public:
 
-#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
+#if ! defined (CXX_ISO_COMPLIANT_LIBRARY)
   typedef int int_type;
 #else
   typedef std::streambuf::int_type int_type;

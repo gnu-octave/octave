@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_specfun_h)
+#if ! defined (octave_lo_specfun_h)
 #define octave_lo_specfun_h 1
 
 #include "oct-cmplx.h"
@@ -41,75 +41,75 @@ class FloatRowVector;
 class FloatComplexColumnVector;
 class Range;
 
-#if !defined (HAVE_ACOSH)
+#if ! defined (HAVE_ACOSH)
 extern OCTAVE_API double acosh (double);
 #endif
 
-#if !defined (HAVE_ASINH)
+#if ! defined (HAVE_ASINH)
 extern OCTAVE_API double asinh (double);
 #endif
 
-#if !defined (HAVE_ATANH)
+#if ! defined (HAVE_ATANH)
 extern OCTAVE_API double atanh (double);
 #endif
 
-#if !defined (HAVE_ERF)
+#if ! defined (HAVE_ERF)
 extern OCTAVE_API double erf (double);
 #endif
 extern OCTAVE_API Complex erf (const Complex& x);
 extern OCTAVE_API FloatComplex erf (const FloatComplex& x);
 
-#if !defined (HAVE_ERFC)
+#if ! defined (HAVE_ERFC)
 extern OCTAVE_API double erfc (double);
 #endif
 extern OCTAVE_API Complex erfc (const Complex& x);
 extern OCTAVE_API FloatComplex erfc (const FloatComplex& x);
 
-#if !defined (HAVE_ACOSHF)
+#if ! defined (HAVE_ACOSHF)
 extern OCTAVE_API float acoshf (float);
 #endif
 
-#if !defined (HAVE_ASINHF)
+#if ! defined (HAVE_ASINHF)
 extern OCTAVE_API float asinhf (float);
 #endif
 
-#if !defined (HAVE_ATANHF)
+#if ! defined (HAVE_ATANHF)
 extern OCTAVE_API float atanhf (float);
 #endif
 
-#if !defined (HAVE_ERFF)
+#if ! defined (HAVE_ERFF)
 extern OCTAVE_API float erff (float);
 #endif
 
-#if !defined (HAVE_ERFCF)
+#if ! defined (HAVE_ERFCF)
 extern OCTAVE_API float erfcf (float);
 #endif
 
-#if !defined (HAVE_EXPM1)
+#if ! defined (HAVE_EXPM1)
 extern OCTAVE_API double expm1 (double x);
 #endif
 extern OCTAVE_API Complex expm1 (const Complex& x);
 
-#if !defined (HAVE_EXPM1F)
+#if ! defined (HAVE_EXPM1F)
 extern OCTAVE_API float expm1f (float x);
 #endif
 extern OCTAVE_API FloatComplex expm1 (const FloatComplex& x);
 
-#if !defined (HAVE_LOG1P)
+#if ! defined (HAVE_LOG1P)
 extern OCTAVE_API double log1p (double x);
 #endif
 extern OCTAVE_API Complex log1p (const Complex& x);
 
-#if !defined (HAVE_LOG1PF)
+#if ! defined (HAVE_LOG1PF)
 extern OCTAVE_API float log1pf (float x);
 #endif
 extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
 
-#if !defined (HAVE_CBRT)
+#if ! defined (HAVE_CBRT)
 extern OCTAVE_API double cbrt (double x);
 #endif
 
-#if !defined (HAVE_CBRTF)
+#if ! defined (HAVE_CBRTF)
 extern OCTAVE_API float cbrtf (float x);
 #endif
 

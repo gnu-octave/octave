@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sysdep_h)
+#if ! defined (octave_sysdep_h)
 #define octave_sysdep_h 1
 
 #include <cstdio>

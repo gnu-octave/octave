@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mx_op_defs_h)
+#if ! defined (octave_mx_op_defs_h)
 #define octave_mx_op_defs_h 1
 
 #include "lo-array-gripes.h"

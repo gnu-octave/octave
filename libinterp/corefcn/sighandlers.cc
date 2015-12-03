@@ -255,7 +255,7 @@ void w32_raise_sigint (void)
     } \
   while (0)
 
-#if !defined (SIGCHLD) && defined (SIGCLD)
+#if ! defined (SIGCHLD) && defined (SIGCLD)
 #define SIGCHLD SIGCLD
 #endif
 

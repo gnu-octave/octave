@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_chNDArray_h)
+#if ! defined (octave_chNDArray_h)
 #define octave_chNDArray_h 1
 
 #include <string>

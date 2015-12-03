@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_version_h)
+#if ! defined (octave_version_h)
 #define octave_version_h 1
 
 #define OCTAVE_VERSION %OCTAVE_VERSION%

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_debug_h)
+#if ! defined (octave_debug_h)
 #define octave_debug_h 1
 
 #include <map>

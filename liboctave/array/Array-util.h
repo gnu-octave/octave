@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Array_util_h)
+#if ! defined (octave_Array_util_h)
 #define octave_Array_util_h 1
 
 #include "Array.h"

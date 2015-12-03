@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_thread_manager_h)
+#if ! defined (octave_thread_manager_h)
 #define octave_thread_manager_h 1
 
 class octave_base_thread_manager

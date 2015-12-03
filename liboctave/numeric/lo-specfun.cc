@@ -198,7 +198,7 @@ extern "C"
                              double*, octave_idx_type*, octave_idx_type*);
 }
 
-#if !defined (HAVE_ACOSH)
+#if ! defined (HAVE_ACOSH)
 double
 acosh (double x)
 {
@@ -208,7 +208,7 @@ acosh (double x)
 }
 #endif
 
-#if !defined (HAVE_ACOSHF)
+#if ! defined (HAVE_ACOSHF)
 float
 acoshf (float x)
 {
@@ -218,7 +218,7 @@ acoshf (float x)
 }
 #endif
 
-#if !defined (HAVE_ASINH)
+#if ! defined (HAVE_ASINH)
 double
 asinh (double x)
 {
@@ -228,7 +228,7 @@ asinh (double x)
 }
 #endif
 
-#if !defined (HAVE_ASINHF)
+#if ! defined (HAVE_ASINHF)
 float
 asinhf (float x)
 {
@@ -238,7 +238,7 @@ asinhf (float x)
 }
 #endif
 
-#if !defined (HAVE_ATANH)
+#if ! defined (HAVE_ATANH)
 double
 atanh (double x)
 {
@@ -248,7 +248,7 @@ atanh (double x)
 }
 #endif
 
-#if !defined (HAVE_ATANHF)
+#if ! defined (HAVE_ATANHF)
 float
 atanhf (float x)
 {
@@ -258,7 +258,7 @@ atanhf (float x)
 }
 #endif
 
-#if !defined (HAVE_ERF)
+#if ! defined (HAVE_ERF)
 double
 erf (double x)
 {
@@ -268,7 +268,7 @@ erf (double x)
 }
 #endif
 
-#if !defined (HAVE_ERFF)
+#if ! defined (HAVE_ERFF)
 float
 erff (float x)
 {
@@ -278,7 +278,7 @@ erff (float x)
 }
 #endif
 
-#if !defined (HAVE_ERFC)
+#if ! defined (HAVE_ERFC)
 double
 erfc (double x)
 {
@@ -288,7 +288,7 @@ erfc (double x)
 }
 #endif
 
-#if !defined (HAVE_ERFCF)
+#if ! defined (HAVE_ERFCF)
 float
 erfcf (float x)
 {
@@ -518,7 +518,7 @@ rc_lgamma (float x)
     return result;
 }
 
-#if !defined (HAVE_EXPM1)
+#if ! defined (HAVE_EXPM1)
 double
 expm1 (double x)
 {
@@ -573,7 +573,7 @@ expm1 (const Complex& x)
   return retval;
 }
 
-#if !defined (HAVE_EXPM1F)
+#if ! defined (HAVE_EXPM1F)
 float
 expm1f (float x)
 {
@@ -628,7 +628,7 @@ expm1 (const FloatComplex& x)
   return retval;
 }
 
-#if !defined (HAVE_LOG1P)
+#if ! defined (HAVE_LOG1P)
 double
 log1p (double x)
 {
@@ -671,7 +671,7 @@ log1p (const Complex& x)
   return retval;
 }
 
-#if !defined (HAVE_CBRT)
+#if ! defined (HAVE_CBRT)
 double cbrt (double x)
 {
   static const double one_third = 0.3333333333333333333;
@@ -687,7 +687,7 @@ double cbrt (double x)
 }
 #endif
 
-#if !defined (HAVE_LOG1PF)
+#if ! defined (HAVE_LOG1PF)
 float
 log1pf (float x)
 {
@@ -730,7 +730,7 @@ log1p (const FloatComplex& x)
   return retval;
 }
 
-#if !defined (HAVE_CBRTF)
+#if ! defined (HAVE_CBRTF)
 float cbrtf (float x)
 {
   static const float one_third = 0.3333333333333333333f;

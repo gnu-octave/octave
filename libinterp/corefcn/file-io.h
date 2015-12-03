@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Written by John C. Campbell <jcc@bevo.che.wisc.edu>
 
-#if !defined (octave_file_io_h)
+#if ! defined (octave_file_io_h)
 #define octave_file_io_h 1
 
 extern OCTINTERP_API void initialize_file_io (void);

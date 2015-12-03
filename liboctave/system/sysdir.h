@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sysdir_h)
+#if ! defined (octave_sysdir_h)
 #define octave_sysdir_h 1
 
 // This mess suggested by the autoconf manual.

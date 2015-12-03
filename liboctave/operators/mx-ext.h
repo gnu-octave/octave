@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mx_ext_h)
+#if ! defined (octave_mx_ext_h)
 #define octave_mx_ext_h 1
 
 // Result of a AEP Balance operation.

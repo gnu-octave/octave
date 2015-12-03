@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_hdf5_types_h)
+#if ! defined (octave_oct_hdf5_types_h)
 #define octave_oct_hdf5_types_h 1
 
 typedef int octave_hdf5_id;

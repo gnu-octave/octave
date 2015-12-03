@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_variables_h)
+#if ! defined (octave_variables_h)
 #define octave_variables_h 1
 
 class octave_function;

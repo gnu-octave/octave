@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pathlen_h)
+#if ! defined (octave_pathlen_h)
 #define octave_pathlen_h 1
 
 #ifdef HAVE_SYS_PARAM_H

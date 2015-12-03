@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_defaults_h)
+#if ! defined (octave_defaults_h)
 #define octave_defaults_h 1
 
 #include <string>

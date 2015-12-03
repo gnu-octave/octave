@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_refcount_h)
+#if ! defined (octave_oct_refcount_h)
 #define octave_oct_refcount_h 1
 
 #ifndef OCTAVE_CONFIG_INCLUDED

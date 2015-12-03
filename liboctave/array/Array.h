@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Array_h)
+#if ! defined (octave_Array_h)
 #define octave_Array_h 1
 
 #include <cassert>

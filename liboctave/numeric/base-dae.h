@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_dae_h)
+#if ! defined (octave_base_dae_h)
 #define octave_base_dae_h 1
 
 #include "base-de.h"

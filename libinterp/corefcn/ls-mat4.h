@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_mat4_h)
+#if ! defined (octave_ls_mat4_h)
 #define octave_ls_mat4_h 1
 
 extern oct_mach_info::float_format

@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArray<double>
 filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
 
@@ -235,7 +235,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   return y;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArray<double>
 filter (MArray<double>&, MArray<double>&, MArray<double>&,
         MArray<double>&, int dim);

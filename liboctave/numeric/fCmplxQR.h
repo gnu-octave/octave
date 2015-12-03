@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // updating/downdating by Jaroslav Hajek 2008
 
-#if !defined (octave_fCmplxQR_h)
+#if ! defined (octave_fCmplxQR_h)
 #define octave_fCmplxQR_h 1
 
 #include <iosfwd>

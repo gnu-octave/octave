@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_MSparse_h)
+#if ! defined (octave_MSparse_h)
 #define octave_MSparse_h 1
 
 #ifdef HAVE_CONFIG_H

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_str_vec_h)
+#if ! defined (octave_str_vec_h)
 #define octave_str_vec_h 1
 
 #include <iosfwd>

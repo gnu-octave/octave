@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <functional>
 
-#if !defined (HAVE_CXX_BITWISE_OP_TEMPLATES)
+#if ! defined (HAVE_CXX_BITWISE_OP_TEMPLATES)
 namespace std
 {
   template <typename T>

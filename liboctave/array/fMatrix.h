@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fMatrix_h)
+#if ! defined (octave_fMatrix_h)
 #define octave_fMatrix_h 1
 
 #include "fNDArray.h"

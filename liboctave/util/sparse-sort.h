@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_sort_h)
+#if ! defined (octave_sparse_sort_h)
 #define octave_sparse_sort_h
 
 #include "oct-sort.h"

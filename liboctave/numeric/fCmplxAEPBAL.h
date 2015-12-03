@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fCmplxAEPBAL_h)
+#if ! defined (octave_fCmplxAEPBAL_h)
 #define octave_fCmplxAEPBAL_h 1
 
 #include <iosfwd>

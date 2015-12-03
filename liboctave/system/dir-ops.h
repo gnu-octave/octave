@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dir_ops_h)
+#if ! defined (octave_dir_ops_h)
 #define octave_dir_ops_h 1
 
 #include <string>

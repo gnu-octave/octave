@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_defun_h)
+#if ! defined (octave_defun_h)
 #define octave_defun_h 1
 
 #if defined (octave_defun_dld_h)

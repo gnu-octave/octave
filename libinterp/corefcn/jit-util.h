@@ -24,14 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 
 // Some utility classes and functions used throughout jit
 
-#if !defined (octave_jit_util_h)
+#if ! defined (octave_jit_util_h)
 #define octave_jit_util_h 1
 
 #ifdef HAVE_LLVM
 
 #include <stdexcept>
 
-#if defined(HAVE_LLVM_IR_DATALAYOUT_H) || defined(HAVE_LLVM_DATALAYOUT_H)
+#if defined (HAVE_LLVM_IR_DATALAYOUT_H) || defined (HAVE_LLVM_DATALAYOUT_H)
 #define HAVE_LLVM_DATALAYOUT
 #endif
 

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_utils_h)
+#if ! defined (octave_lo_utils_h)
 #define octave_lo_utils_h 1
 
 #include <cstdio>

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dirfns_h)
+#if ! defined (octave_dirfns_h)
 #define octave_dirfns_h 1
 
 #include <ctime>

@@ -136,7 +136,7 @@ octave_base_tm::zone (const std::string& s)
   return *this;
 }
 
-#if !defined STRFTIME_BUF_INITIAL_SIZE
+#if ! defined STRFTIME_BUF_INITIAL_SIZE
 #define STRFTIME_BUF_INITIAL_SIZE 128
 #endif
 

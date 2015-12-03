@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#if !defined (octave_cmd_h)
+#if ! defined (octave_cmd_h)
 #define octave_cmd_h 1
 
 #include <QString>

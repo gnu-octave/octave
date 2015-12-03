@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Quad_h)
+#if ! defined (octave_Quad_h)
 #define octave_Quad_h 1
 
 #include <cfloat>

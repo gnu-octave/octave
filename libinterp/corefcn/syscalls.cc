@@ -1607,7 +1607,7 @@ const_value (const octave_value_list& args, int val)
   return retval;
 }
 
-#if !defined (O_NONBLOCK) && defined (O_NDELAY)
+#if ! defined (O_NONBLOCK) && defined (O_NDELAY)
 #define O_NONBLOCK O_NDELAY
 #endif
 
@@ -1856,7 +1856,7 @@ returned by @code{fcntl} to indicate that a file is open for writing only.\n\
 #endif
 }
 
-#if !defined (WNOHANG)
+#if ! defined (WNOHANG)
 #define WNOHANG 0
 #endif
 
@@ -1872,7 +1872,7 @@ immediately instead of waiting for a process to exit.\n\
   return const_value (args, WNOHANG);
 }
 
-#if !defined (WUNTRACED)
+#if ! defined (WUNTRACED)
 #define WUNTRACED 0
 #endif
 
@@ -1888,7 +1888,7 @@ process has stopped but is not traced via the @code{ptrace} system call\n\
   return const_value (args, WUNTRACED);
 }
 
-#if !defined (WCONTINUE)
+#if ! defined (WCONTINUE)
 #define WCONTINUE 0
 #endif
 

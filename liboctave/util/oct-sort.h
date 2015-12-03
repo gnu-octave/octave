@@ -80,7 +80,7 @@ The Python license is
   Agreement.
 */
 
-#if !defined (octave_oct_sort_h)
+#if ! defined (octave_oct_sort_h)
 #define octave_oct_sort_h 1
 
 #include "lo-traits.h"

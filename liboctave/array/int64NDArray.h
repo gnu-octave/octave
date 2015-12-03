@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_int64NDArray_h)
+#if ! defined (octave_int64NDArray_h)
 #define octave_int64NDArray_h 1
 
 #include "intNDArray.h"

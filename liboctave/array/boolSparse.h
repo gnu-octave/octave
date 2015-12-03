@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_boolSparse_h)
+#if ! defined (octave_boolSparse_h)
 #define octave_boolSparse_h 1
 
 #include "Sparse.h"

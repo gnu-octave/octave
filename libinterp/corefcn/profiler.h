@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_profiler_h)
+#if ! defined (octave_profiler_h)
 #define octave_profiler_h 1
 
 #include <cstddef>

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DET_h)
+#if ! defined (octave_DET_h)
 #define octave_DET_h 1
 
 #include <cmath>

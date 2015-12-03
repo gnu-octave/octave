@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_quit_h)
+#if ! defined (octave_quit_h)
 #define octave_quit_h 1
 
 #include <stdio.h>

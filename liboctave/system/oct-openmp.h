@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_openmp_h)
+#if ! defined (octave_oct_openmp_h)
 #define octave_oct_openmp_h 1
 
 /* A macro to make using OpenMP easier, and easier to disable */

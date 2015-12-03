@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_conf_h)
+#if ! defined (octave_conf_h)
 #define octave_conf_h 1
 
 #ifndef OCTAVE_CONF_ALL_CFLAGS

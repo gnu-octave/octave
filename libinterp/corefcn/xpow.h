@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_xpow_h)
+#if ! defined (octave_xpow_h)
 #define octave_xpow_h 1
 
 #include "oct-cmplx.h"

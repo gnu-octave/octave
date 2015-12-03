@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_event_queue_h)
+#if ! defined (octave_event_queue_h)
 #define octave_event_queue_h 1
 
 #include <queue>

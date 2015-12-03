@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_SparseCmplxLU_h)
+#if ! defined (octave_SparseCmplxLU_h)
 #define octave_SparseCmplxLU_h 1
 
 #include "sparse-base-lu.h"

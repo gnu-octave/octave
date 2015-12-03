@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_f77_fcn_h)
+#if ! defined (octave_f77_fcn_h)
 #define octave_f77_fcn_h 1
 
 #include "quit.h"
@@ -76,7 +76,7 @@ extern "C" {
 /* So we can check to see if an exception has occurred. */
 CRUFT_API extern int f77_exception_encountered;
 
-#if !defined (F77_FCN)
+#if ! defined (F77_FCN)
 #define F77_FCN(f, F) F77_FUNC (f, F)
 #endif
 

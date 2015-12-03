@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_alloc_h)
+#if ! defined (octave_oct_alloc_h)
 #define octave_oct_alloc_h 1
 
 #warning "the octave_allocator class has been deprecated and will be removed in a future release of Octave"

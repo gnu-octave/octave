@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_flt_cx_diag_h)
+#if ! defined (octave_ov_flt_cx_diag_h)
 #define octave_ov_flt_cx_diag_h 1
 
 #include "ov-base.h"

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_siglist_h)
+#if ! defined (octave_siglist_h)
 #define octave_siglist_h 1
 
 #ifdef __cplusplus

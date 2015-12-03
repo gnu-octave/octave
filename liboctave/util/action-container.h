@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_action_container_h)
+#if ! defined (octave_action_container_h)
 #define octave_action_container_h 1
 
 // This class allows registering actions in a list for later

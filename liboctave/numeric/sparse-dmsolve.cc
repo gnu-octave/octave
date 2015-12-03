@@ -109,7 +109,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
   return B;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static MSparse<double>
 dmsolve_extract (const MSparse<double> &A, const octave_idx_type *Pinv,
                  const octave_idx_type *Q, octave_idx_type rst,
@@ -149,7 +149,7 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
   return result;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static MArray<double>
 dmsolve_extract (const MArray<double> &m, const octave_idx_type *,
                  const octave_idx_type *, octave_idx_type r1,
@@ -185,7 +185,7 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
     }
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
 dmsolve_insert (MArray<double> &a, const MArray<double> &b,
                 const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
@@ -272,7 +272,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
     }
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
 dmsolve_insert (MSparse<double> &a, const SparseMatrix &b,
                 const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
@@ -302,7 +302,7 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
     }
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
 dmsolve_permute (MArray<double> &a, const MArray<double>& b,
                  const octave_idx_type *p);
@@ -348,7 +348,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
     }
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
 dmsolve_permute (MSparse<double> &a, const MSparse<double>& b,
                  const octave_idx_type *p);
@@ -489,7 +489,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 #endif
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern Matrix
 dmsolve (const SparseMatrix &a, const Matrix &b,
          octave_idx_type &info);

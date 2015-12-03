@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-#if !defined (HZ)
+#if ! defined (HZ)
 #if defined (CLK_TCK)
 #define HZ CLK_TCK
 #elif defined (USG)

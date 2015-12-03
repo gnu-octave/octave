@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_base_chol_h)
+#if ! defined (octave_sparse_base_chol_h)
 #define octave_sparse_base_chol_h 1
 
 #include "oct-sparse.h"

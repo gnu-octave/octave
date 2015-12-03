@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DASPK_h)
+#if ! defined (octave_DASPK_h)
 #define octave_DASPK_h 1
 
 #include <cfloat>

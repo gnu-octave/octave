@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_gl2ps_renderer_h)
+#if ! defined (octave_gl2ps_renderer_h)
 #define octave_gl2ps_renderer_h 1
 
 #include "graphics.h"

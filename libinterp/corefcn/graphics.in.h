@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_graphics_h)
+#if ! defined (octave_graphics_h)
 #define octave_graphics_h 1
 
 #ifdef HAVE_CONFIG_H
@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: maybe this should be a configure option?
 // Matlab defaults to "Helvetica", but that causes problems for many
 // gnuplot users.
-#if !defined (OCTAVE_DEFAULT_FONTNAME)
+#if ! defined (OCTAVE_DEFAULT_FONTNAME)
 #define OCTAVE_DEFAULT_FONTNAME "*"
 #endif
 

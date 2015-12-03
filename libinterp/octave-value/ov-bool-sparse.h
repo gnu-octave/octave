@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_bool_sparse_h)
+#if ! defined (octave_ov_bool_sparse_h)
 #define octave_ov_bool_sparse_h 1
 
 #include <cstdlib>

@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_fcn_handle_h)
+#if ! defined (octave_ov_fcn_handle_h)
 #define octave_ov_fcn_handle_h 1
 
 #include <iosfwd>

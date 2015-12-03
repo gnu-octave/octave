@@ -30,7 +30,7 @@ Free Software Foundation, Inc.
 
 // This file should always be included after config.h!
 
-#if !defined (octave_sighandlers_h)
+#if ! defined (octave_sighandlers_h)
 #define octave_sighandlers_h 1
 
 // Include signal.h, not csignal since the latter might only define

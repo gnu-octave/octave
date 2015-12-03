@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_floatSVD_h)
+#if ! defined (octave_floatSVD_h)
 #define octave_floatSVD_h 1
 
 #include <iosfwd>

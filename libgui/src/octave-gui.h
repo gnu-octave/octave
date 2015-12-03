@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_gui_h)
+#if ! defined (octave_octave_gui_h)
 #define octave_octave_gui_h 1
 
 extern OCTGUI_API int octave_start_gui (int argc, char **argv,

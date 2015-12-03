@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_defun_int_h)
+#if ! defined (octave_defun_int_h)
 #define octave_defun_int_h 1
 
 #include <string>

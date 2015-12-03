@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // Should probably say something here about why these classes are not
 // represented by some sort of inheritance tree...
 
-#if !defined (octave_Matrix_h)
+#if ! defined (octave_Matrix_h)
 #define octave_Matrix_h 1
 
 #include "mx-base.h"

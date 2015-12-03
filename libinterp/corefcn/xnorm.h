@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // author: Jaroslav Hajek <highegg@gmail.com>
 
-#if !defined (octave_xnorm_h)
+#if ! defined (octave_xnorm_h)
 #define octave_xnorm_h 1
 
 #include "oct-norm.h"

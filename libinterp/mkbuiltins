@@ -47,7 +47,7 @@ if $make_header; then
   cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
 
-#if !defined (octave_builtin_defun_decls_h)
+#if ! defined (octave_builtin_defun_decls_h)
 #define octave_builtin_defun_decls_h 1
 
 #include "oct-obj.h"

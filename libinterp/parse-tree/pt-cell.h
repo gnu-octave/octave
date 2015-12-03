@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_cell_h)
+#if ! defined (octave_pt_cell_h)
 #define octave_pt_cell_h 1
 
 #include <iosfwd>

@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_MArray_defs_h)
+#if ! defined (octave_MArray_defs_h)
 #define octave_MArray_defs_h 1
 
 #include "mx-inlines.cc"

@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mx_op_decl_h)
+#if ! defined (octave_mx_op_decl_h)
 #define octave_mx_op_decl_h 1
 
 #define BIN_OP_DECL(R, OP, X, Y, API) \

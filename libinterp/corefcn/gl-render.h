@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_gl_render_h)
+#if ! defined (octave_gl_render_h)
 #define octave_gl_render_h 1
 
 #ifdef HAVE_WINDOWS_H

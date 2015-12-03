@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparseCmplxQR.h"
 #include "oct-locbuf.h"
 
-#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER < 2)) || (CS_VER < 2))
+#if defined (CS_VER) && (((CS_VER == 2) && (CS_SUBVER < 2)) || (CS_VER < 2))
 typedef double _Complex cs_complex_t;
 
 // Why did g++ 4.x stl_vector.h make

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_h)
+#if ! defined (octave_octave_h)
 #define octave_octave_h 1
 
 #ifdef  __cplusplus

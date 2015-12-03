@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fCmplxLU_h)
+#if ! defined (octave_fCmplxLU_h)
 #define octave_fCmplxLU_h 1
 
 #include "base-lu.h"

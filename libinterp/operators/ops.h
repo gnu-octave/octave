@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ops_h)
+#if ! defined (octave_ops_h)
 #define octave_ops_h 1
 
 #include "Array-util.h"

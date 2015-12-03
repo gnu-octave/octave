@@ -234,7 +234,7 @@ extern "C" {
 static unsigned int kpathsea_debug = 0;
 #endif
 
-#if defined (WIN32) && !defined (__MINGW32__)
+#if defined (WIN32) && ! defined (__MINGW32__)
 
 /* System description file for Windows NT.  */
 

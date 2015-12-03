@@ -57,8 +57,9 @@ file_editor::file_editor (QWidget *p)
   construct ();
 
   setVisible (false);
-
   setAcceptDrops(true);
+
+  _file_encoding = QString ();  // for selecting an encoding in open dialog
 }
 
 file_editor::~file_editor (void)
@@ -230,6 +231,33 @@ file_editor::request_open_file (void)
   // it had/has no effect on Windows, though)
   fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
 
+  // define a new grid layout with the extra elements
+  QGridLayout *extra = new QGridLayout (fileDialog);
+  QFrame *separator = new QFrame (fileDialog);
+  separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
+  separator->setFrameStyle (QFrame::Sunken);
+
+  // combo box for encoding
+  QLabel *label_enc = new QLabel (tr ("File Encoding:"));
+  QComboBox *combo_enc = new QComboBox ();
+  resource_manager::combo_encoding (combo_enc);
+
+  // track changes in the combo boxes
+  connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
+           this, SLOT (handle_combo_enc_current_index (QString)));
+
+  // build the extra grid layout
+  extra->addWidget (separator,0,0,1,3);
+  extra->addWidget (label_enc,1,0);
+  extra->addWidget (combo_enc,1,1);
+  extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
+                                          QSizePolicy::Fixed), 1,2);
+
+  // and add the extra grid layout to the dialog's layout
+  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
+  dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
+                                  1,dialog_layout->columnCount ());
+
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setFileMode (QFileDialog::ExistingFiles);
@@ -241,6 +269,12 @@ file_editor::request_open_file (void)
   fileDialog->setWindowModality (Qt::NonModal);
   fileDialog->setAttribute (Qt::WA_DeleteOnClose);
   fileDialog->show ();
+}
+
+void
+file_editor::handle_combo_enc_current_index (QString new_encoding)
+{
+  _file_encoding = new_encoding;
 }
 
 // Check whether this file is already open in the editor.
@@ -321,11 +355,15 @@ file_editor::is_editor_console_tabbed ()
   return false;
 }
 
+// The following slot is called after files have been selected in the
+// open file dialog, possibly with a new selected encoding. After loading
+// all files, _file_encoding is reset.
 void
 file_editor::request_open_files (const QStringList& open_file_names)
 {
   for (int i = 0; i < open_file_names.count (); i++)
     request_open_file (open_file_names.at (i));
+  _file_encoding = QString ();  // reset: no special encoding
 }
 
 void
@@ -377,6 +415,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
           file_editor_tab *fileEditorTab = new file_editor_tab ();
           if (fileEditorTab)
             {
+              fileEditorTab->set_encoding (_file_encoding);
               QString result = fileEditorTab->load_file (openFileName);
               if (result == "")
                 {

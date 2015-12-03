@@ -212,6 +212,18 @@ file_editor_tab::~file_editor_tab (void)
 }
 
 void
+file_editor_tab::set_encoding (const QString& new_encoding)
+{
+  if (new_encoding.isEmpty ())
+    return;
+
+  _encoding = new_encoding;
+  _enc_indicator->setText (_encoding);
+  if (! _edit_area->text ().isEmpty ())
+    set_modified (true);
+}
+
+void
 file_editor_tab::closeEvent (QCloseEvent *e)
 {
   _cancelled = false;  // prevent unwanted interaction of previous

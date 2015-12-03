@@ -236,6 +236,8 @@ private slots:
   void request_styles_preferences (bool);
   void restore_create_file_setting ();
 
+  void handle_combo_enc_current_index (QString new_encoding);
+
   void show_line_numbers (bool);
   void show_white_space (bool);
   void show_eol_chars (bool);
@@ -376,6 +378,8 @@ private:
   tab_widget *_tab_widget;
 
   int _marker_breakpoint;
+
+  QString _file_encoding;
 
   enum { MaxMRUFiles = 10 };
   QMenu *_mru_file_menu;

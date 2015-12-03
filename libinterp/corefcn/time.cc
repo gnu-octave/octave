@@ -114,14 +114,10 @@ returned by @code{time} was 856163706.\n\
 @seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 0)
-    retval = octave_time ();
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_time ());
 }
 
 /*
@@ -160,18 +156,12 @@ gmtime (time ())\n\
 @seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      double tmp = args(0).double_value ();
-
-      retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  double tmp = args(0).double_value ();
+
+  return octave_value (mk_tm_map (octave_gmtime (tmp)));
 }
 
 /*
@@ -221,18 +211,12 @@ localtime (time ())\n\
 @seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      double tmp = args(0).double_value ();
-
-      retval = octave_value (mk_tm_map (octave_localtime (tmp)));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  double tmp = args(0).double_value ();
+
+  return octave_value (mk_tm_map (octave_localtime (tmp)));
 }
 
 /*
@@ -271,20 +255,14 @@ mktime (localtime (time ()))\n\
 @seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
-
-      octave_base_tm tm = extract_tm (map, "mktime");
-
-      retval = octave_time (tm);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
+
+  octave_base_tm tm = extract_tm (map, "mktime");
+
+  return octave_value (octave_time (tm));
 }
 
 /*
@@ -464,20 +442,16 @@ Year (1970-).\n\
 {
   octave_value retval;
 
-  if (args.length () == 2)
-    {
-      std::string fmt = args(0).xstring_value ("strftime: FMT must be a string");
-
-      octave_scalar_map map = args(1).xscalar_map_value ("strftime: TM_STRUCT must be a structure");
-
-      octave_base_tm tm = extract_tm (map, "strftime");
-
-      retval = tm.strftime (fmt);
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  std::string fmt = args(0).xstring_value ("strftime: FMT must be a string");
+
+  octave_scalar_map map = args(1).xscalar_map_value ("strftime: TM_STRUCT must be a structure");
+
+  octave_base_tm tm = extract_tm (map, "strftime");
+
+  return octave_value (tm.strftime (fmt));
 }
 
 /*
@@ -507,19 +481,17 @@ you're absolutely sure the date string will be parsed correctly.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 2)
-    {
-      std::string str = args(0).xstring_value ("strptime: argument STR must be a string");
-
-      std::string fmt = args(1).xstring_value ("strptime: FMT must be a string");
-
-      octave_strptime t (str, fmt);
-
-      retval(1) = t.characters_converted ();
-      retval(0) = octave_value (mk_tm_map (t));
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
+
+  std::string str = args(0).xstring_value ("strptime: argument STR must be a string");
+
+  std::string fmt = args(1).xstring_value ("strptime: FMT must be a string");
+
+  octave_strptime t (str, fmt);
+
+  retval(1) = t.characters_converted ();
+  retval(0) = octave_value (mk_tm_map (t));
 
   return retval;
 }

@@ -105,9 +105,11 @@ Return true if @var{name} is a valid variable name.\n\
 
   if (nargin != 1)
     print_usage ();
-  else if (args(0).is_string ())
+
+  if (args(0).is_string ())
     {
       std::string varname = args(0).string_value ();
+
       retval = valid_identifier (varname) && ! is_keyword (varname);
     }
 
@@ -312,31 +314,29 @@ If no files are found, return an empty cell array.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  string_vector names = args(0).xall_strings ("file_in_loadpath: FILE argument must be a string");
+
+  if (names.numel () > 0)
     {
-      string_vector names = args(0).xall_strings ("file_in_loadpath: FILE argument must be a string");
-
-      if (names.numel () > 0)
+      if (nargin == 1)
+        retval =
+          octave_env::make_absolute (load_path::find_first_of (names));
+      else if (nargin == 2)
         {
-          if (nargin == 1)
-            retval =
-              octave_env::make_absolute (load_path::find_first_of (names));
-          else if (nargin == 2)
-            {
-              std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
+          std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
-              if (opt == "all")
-                retval = Cell (make_absolute
-                               (load_path::find_all_first_of (names)));
-              else
-                error ("file_in_loadpath: \"all\" is only valid second argument");
-            }
+          if (opt == "all")
+            retval = Cell (make_absolute
+                           (load_path::find_all_first_of (names)));
+          else
+            error ("file_in_loadpath: \"all\" is only valid second argument");
         }
-      else
-        error ("file_in_loadpath: FILE argument must not be empty");
     }
   else
-    print_usage ();
+    error ("file_in_loadpath: FILE argument must not be empty");
 
   return retval;
 }
@@ -391,32 +391,30 @@ If no files are found, return an empty cell array.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  std::string path = args(0).xstring_value ("file_in_path: PATH must be a string");
+
+  string_vector names = args(1).xall_strings ("file_in_path: FILE argument must be a string");
+
+  if (names.numel () > 0)
     {
-      std::string path = args(0).xstring_value ("file_in_path: PATH must be a string");
-
-      string_vector names = args(1).xall_strings ("file_in_path: FILE argument must be a string");
-
-      if (names.numel () > 0)
+      if (nargin == 2)
+        retval = search_path_for_file (path, names);
+      else if (nargin == 3)
         {
-          if (nargin == 2)
-            retval = search_path_for_file (path, names);
-          else if (nargin == 3)
-            {
-              std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
+          std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
 
-              if (opt == "all")
-                retval = Cell (make_absolute
-                               (search_path_for_all_files (path, names)));
-              else
-                error ("file_in_path: \"all\" is only valid third argument");
-            }
+          if (opt == "all")
+            retval = Cell (make_absolute
+                           (search_path_for_all_files (path, names)));
+          else
+            error ("file_in_path: \"all\" is only valid third argument");
         }
-      else
-        error ("file_in_path: FILE argument must not be empty");
     }
   else
-    print_usage ();
+    error ("file_in_path: FILE argument must not be empty");
 
   return retval;
 }
@@ -750,20 +748,14 @@ Escape sequences begin with a leading backslash\n\
 @seealso{undo_string_escapes}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
-
-      retval = do_string_escapes (str);
-    }
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
+
+  return octave_value (do_string_escapes (str));
 }
 
 /*
@@ -893,20 +885,14 @@ replaces the unprintable alert character with its printable representation.\n\
 @seealso{do_string_escapes}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");
-
-      retval = undo_string_escapes (str);
-    }
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");
+
+  return octave_value (undo_string_escapes (str));
 }
 
 /*
@@ -940,11 +926,11 @@ Return true if @var{file} is an absolute filename.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    retval = (args(0).is_string ()
-              && octave_env::absolute_pathname (args(0).string_value ()));
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  retval = (args(0).is_string ()
+            && octave_env::absolute_pathname (args(0).string_value ()));
 
   return retval;
 }
@@ -965,11 +951,11 @@ Return true if @var{file} is a rooted-relative filename.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    retval = (args(0).is_string ()
-              && octave_env::rooted_relative_pathname (args(0).string_value ()));
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  retval = (args(0).is_string ()
+            && octave_env::rooted_relative_pathname (args(0).string_value ()));
 
   return retval;
 }
@@ -991,18 +977,12 @@ No check is done for the existence of @var{file}.\n\
 @seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isdir}\n\
 @end deftypefn")
 {
-  octave_value retval = std::string ();
-
-  if (args.length () == 1)
-    {
-      std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a filename");
-
-      retval = octave_env::make_absolute (nm);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a filename");
+
+  return octave_value (octave_env::make_absolute (nm));
 }
 
 /*
@@ -1035,17 +1015,15 @@ all name matches rather than just the first.\n\
 
   std::string dir;
 
-  if (nargin == 1 || nargin == 2)
-    {
-      dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
-
-      if (nargin == 1)
-        retval = load_path::find_dir (dir);
-      else if (nargin == 2)
-        retval = Cell (load_path::find_matching_dirs (dir));
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
+
+  if (nargin == 1)
+    retval = load_path::find_dir (dir);
+  else if (nargin == 2)
+    retval = Cell (load_path::find_matching_dirs (dir));
 
   return retval;
 }
@@ -1084,6 +1062,9 @@ if @var{name} is not found.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       if (args(0).is_string ())
@@ -1099,10 +1080,8 @@ if @var{name} is not found.\n\
           retval = octave_errno::set (val);
         }
     }
-  else if (nargin == 0)
-    retval = octave_errno::get ();
   else
-    print_usage ();
+    retval = octave_errno::get ();
 
   return retval;
 }
@@ -1129,14 +1108,10 @@ Return a structure containing the system-dependent errno values.\n\
 @seealso{errno}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 0)
-    retval = octave_errno::list ();
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_errno::list ());
 }
 
 /*
@@ -1426,13 +1401,16 @@ character @nospell{\"@xbackslashchar{}0\"}, it will always be a valid index.\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length ();
+
   octave_idx_type n = 0;
+
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
 
   if (nargin == 2)
     n = args(1).idx_type_value ();
-  else if (nargin != 1)
-    print_usage ();
 
   unwind_protect frame;
 

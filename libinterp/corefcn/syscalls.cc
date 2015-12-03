@@ -127,29 +127,27 @@ error message.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    {
-      octave_stream old_stream
-        = octave_stream_list::lookup (args(0), "dup2");
-
-      octave_stream new_stream
-        = octave_stream_list::lookup (args(1), "dup2");
-
-      int i_old = old_stream.file_number ();
-      int i_new = new_stream.file_number ();
-
-      if (i_old >= 0 && i_new >= 0)
-        {
-          std::string msg;
-
-          int status = octave_syscalls::dup2 (i_old, i_new, msg);
-
-          retval(1) = msg;
-          retval(0) = status;
-        }
-    }
-  else
+  if (nargin != 2)
     print_usage ();
+
+  octave_stream old_stream
+    = octave_stream_list::lookup (args(0), "dup2");
+
+  octave_stream new_stream
+    = octave_stream_list::lookup (args(1), "dup2");
+
+  int i_old = old_stream.file_number ();
+  int i_new = new_stream.file_number ();
+
+  if (i_old >= 0 && i_new >= 0)
+    {
+      std::string msg;
+
+      int status = octave_syscalls::dup2 (i_old, i_new, msg);
+
+      retval(1) = msg;
+      retval(0) = status;
+    }
 
   return retval;
 }
@@ -182,46 +180,44 @@ error message.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string exec_file = args(0).xstring_value ("exec: FILE must be a string");
+
+  string_vector exec_args;
+
+  if (nargin == 2)
     {
-      std::string exec_file = args(0).xstring_value ("exec: FILE must be a string");
+      string_vector tmp = args(1).xall_strings ("exec: all arguments must be strings");
 
-      string_vector exec_args;
+      int len = tmp.numel ();
 
-      if (nargin == 2)
-        {
-          string_vector tmp = args(1).xall_strings ("exec: all arguments must be strings");
+      exec_args.resize (len + 1);
 
-          int len = tmp.numel ();
+      exec_args[0] = exec_file;
 
-          exec_args.resize (len + 1);
-
-          exec_args[0] = exec_file;
-
-          for (int i = 0; i < len; i++)
-            exec_args[i+1] = tmp[i];
-        }
-      else
-        {
-          exec_args.resize (1);
-
-          exec_args[0] = exec_file;
-        }
-
-      octave_history_write_timestamp ();
-
-      if (! command_history::ignoring_entries ())
-        command_history::clean_up_and_save ();
-
-      std::string msg;
-
-      int status = octave_syscalls::execvp (exec_file, exec_args, msg);
-
-      retval(1) = msg;
-      retval(0) = status;
+      for (int i = 0; i < len; i++)
+        exec_args[i+1] = tmp[i];
     }
   else
-    print_usage ();
+    {
+      exec_args.resize (1);
+
+      exec_args[0] = exec_file;
+    }
+
+  octave_history_write_timestamp ();
+
+  if (! command_history::ignoring_entries ())
+    command_history::clean_up_and_save ();
+
+  std::string msg;
+
+  int status = octave_syscalls::execvp (exec_file, exec_args, msg);
+
+  retval(1) = msg;
+  retval(0) = status;
 
   return retval;
 }
@@ -281,66 +277,64 @@ exit status, it will linger until Octave exits.\n\
 
   int nargin = args.length ();
 
-  if (nargin >= 1 && nargin <= 3)
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+
+  std::string exec_file = args(0).xstring_value ("popen2: COMMAND argument must be a string");
+
+  string_vector arg_list;
+
+  if (nargin >= 2)
     {
-      std::string exec_file = args(0).xstring_value ("popen2: COMMAND argument must be a string");
+      string_vector tmp = args(1).xall_strings ("popen2: all arguments must be strings");
 
-      string_vector arg_list;
+      int len = tmp.numel ();
 
-      if (nargin >= 2)
-        {
-          string_vector tmp = args(1).xall_strings ("popen2: all arguments must be strings");
+      arg_list.resize (len + 1);
 
-          int len = tmp.numel ();
+      arg_list[0] = exec_file;
 
-          arg_list.resize (len + 1);
-
-          arg_list[0] = exec_file;
-
-          for (int i = 0; i < len; i++)
-            arg_list[i+1] = tmp[i];
-        }
-      else
-        {
-          arg_list.resize (1);
-
-          arg_list[0] = exec_file;
-        }
-
-      bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
-
-      int fildes[2];
-      std::string msg;
-      pid_t pid;
-
-      pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
-                                     fildes, msg, interactive);
-      if (pid >= 0)
-        {
-          FILE *ifile = fdopen (fildes[1], "r");
-          FILE *ofile = fdopen (fildes[0], "w");
-
-          std::string nm;
-
-          octave_stream is = octave_stdiostream::create (exec_file + "-in",
-                                                         ifile,
-                                                         std::ios::in);
-
-          octave_stream os = octave_stdiostream::create (exec_file + "-out",
-                                                         ofile,
-                                                         std::ios::out);
-
-          Cell file_ids (1, 2);
-
-          retval(2) = pid;
-          retval(1) = octave_stream_list::insert (is);
-          retval(0) = octave_stream_list::insert (os);
-        }
-      else
-        error (msg.c_str ());
+      for (int i = 0; i < len; i++)
+        arg_list[i+1] = tmp[i];
     }
   else
-    print_usage ();
+    {
+      arg_list.resize (1);
+
+      arg_list[0] = exec_file;
+    }
+
+  bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
+
+  int fildes[2];
+  std::string msg;
+  pid_t pid;
+
+  pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
+                                 fildes, msg, interactive);
+  if (pid >= 0)
+    {
+      FILE *ifile = fdopen (fildes[1], "r");
+      FILE *ofile = fdopen (fildes[0], "w");
+
+      std::string nm;
+
+      octave_stream is = octave_stdiostream::create (exec_file + "-in",
+                                                     ifile,
+                                                     std::ios::in);
+
+      octave_stream os = octave_stdiostream::create (exec_file + "-out",
+                                                     ofile,
+                                                     std::ios::out);
+
+      Cell file_ids (1, 2);
+
+      retval(2) = pid;
+      retval(1) = octave_stream_list::insert (is);
+      retval(0) = octave_stream_list::insert (os);
+    }
+  else
+    error (msg.c_str ());
 
   return retval;
 }
@@ -479,30 +473,28 @@ message.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 3)
-    {
-      octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
-
-      int fid = strm.file_number ();
-
-      int req = args(1).int_value (true);
-      int arg = args(2).int_value (true);
-
-      // FIXME: Need better checking here?
-      if (fid < 0)
-        error ("fcntl: invalid file id");
-      else
-        {
-          std::string msg;
-
-          int status = octave_fcntl (fid, req, arg, msg);
-
-          retval(1) = msg;
-          retval(0) = status;
-        }
-    }
-  else
+  if (nargin != 3)
     print_usage ();
+
+  octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
+
+  int fid = strm.file_number ();
+
+  int req = args(1).int_value (true);
+  int arg = args(2).int_value (true);
+
+  // FIXME: Need better checking here?
+  if (fid < 0)
+    error ("fcntl: invalid file id");
+  else
+    {
+      std::string msg;
+
+      int status = octave_fcntl (fid, req, arg, msg);
+
+      retval(1) = msg;
+      retval(0) = status;
+    }
 
   return retval;
 }
@@ -537,17 +529,15 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      pid_t pid = octave_syscalls::fork (msg);
-
-      retval(1) = msg;
-      retval(0) = pid;
-    }
-  else
+  if (nargin != 0)
     print_usage ();
+
+  std::string msg;
+
+  pid_t pid = octave_syscalls::fork (msg);
+
+  retval(1) = msg;
+  retval(0) = pid;
 
   return retval;
 }
@@ -565,15 +555,13 @@ Return the process group id of the current process.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = octave_syscalls::getpgrp (msg);
-    }
-  else
+  if (nargin != 0)
     print_usage ();
+
+  std::string msg;
+
+  retval(1) = msg;
+  retval(0) = octave_syscalls::getpgrp (msg);
 
   return retval;
 }
@@ -585,16 +573,12 @@ Return the process id of the current process.\n\
 @seealso{getppid}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = octave_syscalls::getpid ();
-  else
+  if (nargin != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_syscalls::getpid ());
 }
 
 DEFUNX ("getppid", Fgetppid, args, ,
@@ -604,16 +588,12 @@ Return the process id of the parent process.\n\
 @seealso{getpid}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = octave_syscalls::getppid ();
-  else
+  if (nargin != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_syscalls::getppid ());
 }
 
 DEFUNX ("getegid", Fgetegid, args, ,
@@ -623,16 +603,12 @@ Return the effective group id of the current process.\n\
 @seealso{getgid}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = octave_syscalls::getegid ();
-  else
+  if (nargin != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_syscalls::getegid ());
 }
 
 DEFUNX ("getgid", Fgetgid, args, ,
@@ -642,16 +618,12 @@ Return the real group id of the current process.\n\
 @seealso{getegid}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = octave_syscalls::getgid ();
-  else
+  if (nargin != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_syscalls::getgid ());
 }
 
 DEFUNX ("geteuid", Fgeteuid, args, ,

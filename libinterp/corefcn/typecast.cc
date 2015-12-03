@@ -145,119 +145,117 @@ typecast (@var{x}, \"uint8\")\n\
 {
   octave_value retval;
 
-  if (args.length () == 2)
-    {
-      unwind_protect frame;
-      const void *data = 0;
-      octave_idx_type byte_size = 0;
-      dim_vector old_dims;
-
-      octave_value array = args(0);
-
-      if (array.is_bool_type ())
-        get_data_and_bytesize (array.bool_array_value (), data, byte_size,
-                               old_dims, frame);
-      else if (array.is_string ())
-        get_data_and_bytesize (array.char_array_value (), data, byte_size,
-                               old_dims, frame);
-      else if (array.is_integer_type ())
-        {
-          if (array.is_int8_type ())
-            get_data_and_bytesize (array.int8_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_int16_type ())
-            get_data_and_bytesize (array.int16_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_int32_type ())
-            get_data_and_bytesize (array.int32_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_int64_type ())
-            get_data_and_bytesize (array.int64_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_uint8_type ())
-            get_data_and_bytesize (array.uint8_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_uint16_type ())
-            get_data_and_bytesize (array.uint16_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_uint32_type ())
-            get_data_and_bytesize (array.uint32_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else if (array.is_uint64_type ())
-            get_data_and_bytesize (array.uint64_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else
-            assert (0);
-        }
-      else if (array.is_complex_type ())
-        {
-          if (array.is_single_type ())
-            get_data_and_bytesize (array.float_complex_array_value (), data,
-                                   byte_size, old_dims, frame);
-          else
-            get_data_and_bytesize (array.complex_array_value (), data,
-                                   byte_size, old_dims, frame);
-        }
-      else if (array.is_real_type ())
-        {
-          if (array.is_single_type ())
-            get_data_and_bytesize (array.float_array_value (), data, byte_size,
-                                   old_dims, frame);
-          else
-            get_data_and_bytesize (array.array_value (), data, byte_size,
-                                   old_dims, frame); }
-      else
-        error ("typecast: invalid input class: %s",
-                                                array.class_name ().c_str ());
-
-      std::string numclass = args(1).string_value ();
-
-      if (numclass.size () == 0)
-        ;
-      else if (numclass == "char")
-        retval = octave_value (reinterpret_copy<charNDArray>
-                   (data, byte_size, old_dims), array.is_dq_string () ? '"'
-                                                                      : '\'');
-      else if (numclass[0] == 'i')
-        {
-          if (numclass == "int8")
-            retval = reinterpret_copy<int8NDArray> (data, byte_size, old_dims);
-          else if (numclass == "int16")
-            retval = reinterpret_copy<int16NDArray> (data, byte_size, old_dims);
-          else if (numclass == "int32")
-            retval = reinterpret_copy<int32NDArray> (data, byte_size, old_dims);
-          else if (numclass == "int64")
-            retval = reinterpret_copy<int64NDArray> (data, byte_size, old_dims);
-        }
-      else if (numclass[0] == 'u')
-        {
-          if (numclass == "uint8")
-            retval = reinterpret_copy<uint8NDArray> (data, byte_size, old_dims);
-          else if (numclass == "uint16")
-            retval = reinterpret_copy<uint16NDArray> (data, byte_size,
-                                                      old_dims);
-          else if (numclass == "uint32")
-            retval = reinterpret_copy<uint32NDArray> (data, byte_size,
-                                                      old_dims);
-          else if (numclass == "uint64")
-            retval = reinterpret_copy<uint64NDArray> (data, byte_size,
-                                                      old_dims);
-        }
-      else if (numclass == "single")
-        retval = reinterpret_copy<FloatNDArray> (data, byte_size, old_dims);
-      else if (numclass == "double")
-        retval = reinterpret_copy<NDArray> (data, byte_size, old_dims);
-      else if (numclass == "single complex")
-        retval = reinterpret_copy<FloatComplexNDArray> (data, byte_size,
-                                                        old_dims);
-      else if (numclass == "double complex")
-        retval = reinterpret_copy<ComplexNDArray> (data, byte_size, old_dims);
-
-      if (retval.is_undefined ())
-        error ("typecast: cannot convert to %s class", numclass.c_str ());
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
+
+  unwind_protect frame;
+  const void *data = 0;
+  octave_idx_type byte_size = 0;
+  dim_vector old_dims;
+
+  octave_value array = args(0);
+
+  if (array.is_bool_type ())
+    get_data_and_bytesize (array.bool_array_value (), data, byte_size,
+                           old_dims, frame);
+  else if (array.is_string ())
+    get_data_and_bytesize (array.char_array_value (), data, byte_size,
+                           old_dims, frame);
+  else if (array.is_integer_type ())
+    {
+      if (array.is_int8_type ())
+        get_data_and_bytesize (array.int8_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_int16_type ())
+        get_data_and_bytesize (array.int16_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_int32_type ())
+        get_data_and_bytesize (array.int32_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_int64_type ())
+        get_data_and_bytesize (array.int64_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_uint8_type ())
+        get_data_and_bytesize (array.uint8_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_uint16_type ())
+        get_data_and_bytesize (array.uint16_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_uint32_type ())
+        get_data_and_bytesize (array.uint32_array_value (), data, byte_size,
+                               old_dims, frame);
+      else if (array.is_uint64_type ())
+        get_data_and_bytesize (array.uint64_array_value (), data, byte_size,
+                               old_dims, frame);
+      else
+        assert (0);
+    }
+  else if (array.is_complex_type ())
+    {
+      if (array.is_single_type ())
+        get_data_and_bytesize (array.float_complex_array_value (), data,
+                               byte_size, old_dims, frame);
+      else
+        get_data_and_bytesize (array.complex_array_value (), data,
+                               byte_size, old_dims, frame);
+    }
+  else if (array.is_real_type ())
+    {
+      if (array.is_single_type ())
+        get_data_and_bytesize (array.float_array_value (), data, byte_size,
+                               old_dims, frame);
+      else
+        get_data_and_bytesize (array.array_value (), data, byte_size,
+                               old_dims, frame); }
+  else
+    error ("typecast: invalid input class: %s",
+           array.class_name ().c_str ());
+
+  std::string numclass = args(1).string_value ();
+
+  if (numclass.size () == 0)
+    ;
+  else if (numclass == "char")
+    retval = octave_value (reinterpret_copy<charNDArray>
+                           (data, byte_size, old_dims), array.is_dq_string () ? '"'
+                           : '\'');
+  else if (numclass[0] == 'i')
+    {
+      if (numclass == "int8")
+        retval = reinterpret_copy<int8NDArray> (data, byte_size, old_dims);
+      else if (numclass == "int16")
+        retval = reinterpret_copy<int16NDArray> (data, byte_size, old_dims);
+      else if (numclass == "int32")
+        retval = reinterpret_copy<int32NDArray> (data, byte_size, old_dims);
+      else if (numclass == "int64")
+        retval = reinterpret_copy<int64NDArray> (data, byte_size, old_dims);
+    }
+  else if (numclass[0] == 'u')
+    {
+      if (numclass == "uint8")
+        retval = reinterpret_copy<uint8NDArray> (data, byte_size, old_dims);
+      else if (numclass == "uint16")
+        retval = reinterpret_copy<uint16NDArray> (data, byte_size,
+                                                  old_dims);
+      else if (numclass == "uint32")
+        retval = reinterpret_copy<uint32NDArray> (data, byte_size,
+                                                  old_dims);
+      else if (numclass == "uint64")
+        retval = reinterpret_copy<uint64NDArray> (data, byte_size,
+                                                  old_dims);
+    }
+  else if (numclass == "single")
+    retval = reinterpret_copy<FloatNDArray> (data, byte_size, old_dims);
+  else if (numclass == "double")
+    retval = reinterpret_copy<NDArray> (data, byte_size, old_dims);
+  else if (numclass == "single complex")
+    retval = reinterpret_copy<FloatComplexNDArray> (data, byte_size,
+                                                    old_dims);
+  else if (numclass == "double complex")
+    retval = reinterpret_copy<ComplexNDArray> (data, byte_size, old_dims);
+
+  if (retval.is_undefined ())
+    error ("typecast: cannot convert to %s class", numclass.c_str ());
 
   return retval;
 }
@@ -339,52 +337,51 @@ column vector.\n\
 
   if (args.length () != 2)
     print_usage ();
-  else if (! args(0).is_bool_type ())
+
+  if (! args(0).is_bool_type ())
     error ("bitpack: X must be a logical array");
-  else
+
+  boolNDArray bitp = args(0).bool_array_value ();
+
+  std::string numclass = args(1).string_value ();
+
+  if (numclass.size () == 0)
+    ;
+  else if (numclass == "char")
+    retval = octave_value (do_bitpack<charNDArray> (bitp), '\'');
+  else if (numclass[0] == 'i')
     {
-      boolNDArray bitp = args(0).bool_array_value ();
-
-      std::string numclass = args(1).string_value ();
-
-      if (numclass.size () == 0)
-        ;
-      else if (numclass == "char")
-        retval = octave_value (do_bitpack<charNDArray> (bitp), '\'');
-      else if (numclass[0] == 'i')
-        {
-          if (numclass == "int8")
-            retval = do_bitpack<int8NDArray> (bitp);
-          else if (numclass == "int16")
-            retval = do_bitpack<int16NDArray> (bitp);
-          else if (numclass == "int32")
-            retval = do_bitpack<int32NDArray> (bitp);
-          else if (numclass == "int64")
-            retval = do_bitpack<int64NDArray> (bitp);
-        }
-      else if (numclass[0] == 'u')
-        {
-          if (numclass == "uint8")
-            retval = do_bitpack<uint8NDArray> (bitp);
-          else if (numclass == "uint16")
-            retval = do_bitpack<uint16NDArray> (bitp);
-          else if (numclass == "uint32")
-            retval = do_bitpack<uint32NDArray> (bitp);
-          else if (numclass == "uint64")
-            retval = do_bitpack<uint64NDArray> (bitp);
-        }
-      else if (numclass == "single")
-        retval = do_bitpack<FloatNDArray> (bitp);
-      else if (numclass == "double")
-        retval = do_bitpack<NDArray> (bitp);
-      else if (numclass == "single complex")
-        retval = do_bitpack<FloatComplexNDArray> (bitp);
-      else if (numclass == "double complex")
-        retval = do_bitpack<ComplexNDArray> (bitp);
-
-      if (retval.is_undefined ())
-        error ("bitpack: cannot pack to %s class", numclass.c_str ());
+      if (numclass == "int8")
+        retval = do_bitpack<int8NDArray> (bitp);
+      else if (numclass == "int16")
+        retval = do_bitpack<int16NDArray> (bitp);
+      else if (numclass == "int32")
+        retval = do_bitpack<int32NDArray> (bitp);
+      else if (numclass == "int64")
+        retval = do_bitpack<int64NDArray> (bitp);
     }
+  else if (numclass[0] == 'u')
+    {
+      if (numclass == "uint8")
+        retval = do_bitpack<uint8NDArray> (bitp);
+      else if (numclass == "uint16")
+        retval = do_bitpack<uint16NDArray> (bitp);
+      else if (numclass == "uint32")
+        retval = do_bitpack<uint32NDArray> (bitp);
+      else if (numclass == "uint64")
+        retval = do_bitpack<uint64NDArray> (bitp);
+    }
+  else if (numclass == "single")
+    retval = do_bitpack<FloatNDArray> (bitp);
+  else if (numclass == "double")
+    retval = do_bitpack<NDArray> (bitp);
+  else if (numclass == "single complex")
+    retval = do_bitpack<FloatComplexNDArray> (bitp);
+  else if (numclass == "double complex")
+    retval = do_bitpack<ComplexNDArray> (bitp);
+
+  if (retval.is_undefined ())
+    error ("bitpack: cannot pack to %s class", numclass.c_str ());
 
   return retval;
 }
@@ -447,54 +444,54 @@ column vector.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1
-      && (args(0).is_numeric_type () || args(0).is_string ()))
-    {
-      octave_value array = args(0);
+  if (args.length () != 1)
+    print_usage ();
+  
+  if (! (args(0).is_numeric_type () || args(0).is_string ()))
+    error ("bitunpack: argument must be a number or a string");
 
-      if (array.is_string ())
-        retval = do_bitunpack (array.char_array_value ());
-      else if (array.is_integer_type ())
-        {
-          if (array.is_int8_type ())
-            retval = do_bitunpack (array.int8_array_value ());
-          else if (array.is_int16_type ())
-            retval = do_bitunpack (array.int16_array_value ());
-          else if (array.is_int32_type ())
-            retval = do_bitunpack (array.int32_array_value ());
-          else if (array.is_int64_type ())
-            retval = do_bitunpack (array.int64_array_value ());
-          else if (array.is_uint8_type ())
-            retval = do_bitunpack (array.uint8_array_value ());
-          else if (array.is_uint16_type ())
-            retval = do_bitunpack (array.uint16_array_value ());
-          else if (array.is_uint32_type ())
-            retval = do_bitunpack (array.uint32_array_value ());
-          else if (array.is_uint64_type ())
-            retval = do_bitunpack (array.uint64_array_value ());
-          else
-            assert (0);
-        }
-      else if (array.is_complex_type ())
-        {
-          if (array.is_single_type ())
-            retval = do_bitunpack (array.float_complex_array_value ());
-          else
-            retval = do_bitunpack (array.complex_array_value ());
-        }
-      else if (array.is_real_type ())
-        {
-          if (array.is_single_type ())
-            retval = do_bitunpack (array.float_array_value ());
-          else
-            retval = do_bitunpack (array.array_value ());
-        }
+  octave_value array = args(0);
+
+  if (array.is_string ())
+    retval = do_bitunpack (array.char_array_value ());
+  else if (array.is_integer_type ())
+    {
+      if (array.is_int8_type ())
+        retval = do_bitunpack (array.int8_array_value ());
+      else if (array.is_int16_type ())
+        retval = do_bitunpack (array.int16_array_value ());
+      else if (array.is_int32_type ())
+        retval = do_bitunpack (array.int32_array_value ());
+      else if (array.is_int64_type ())
+        retval = do_bitunpack (array.int64_array_value ());
+      else if (array.is_uint8_type ())
+        retval = do_bitunpack (array.uint8_array_value ());
+      else if (array.is_uint16_type ())
+        retval = do_bitunpack (array.uint16_array_value ());
+      else if (array.is_uint32_type ())
+        retval = do_bitunpack (array.uint32_array_value ());
+      else if (array.is_uint64_type ())
+        retval = do_bitunpack (array.uint64_array_value ());
       else
-        error ("bitunpack: invalid input class: %s",
-                                                 array.class_name ().c_str ());
+        assert (0);
+    }
+  else if (array.is_complex_type ())
+    {
+      if (array.is_single_type ())
+        retval = do_bitunpack (array.float_complex_array_value ());
+      else
+        retval = do_bitunpack (array.complex_array_value ());
+    }
+  else if (array.is_real_type ())
+    {
+      if (array.is_single_type ())
+        retval = do_bitunpack (array.float_array_value ());
+      else
+        retval = do_bitunpack (array.array_value ());
     }
   else
-    print_usage ();
+    error ("bitunpack: invalid input class: %s",
+           array.class_name ().c_str ());
 
   return retval;
 }

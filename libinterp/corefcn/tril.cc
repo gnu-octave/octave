@@ -206,128 +206,132 @@ do_trilu (const std::string& name,
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_value arg = args(0);
+
+  dim_vector dims = arg.dims ();
+  if (dims.length () != 2)
+    error ("%s: need a 2-D matrix", name.c_str ());
+  else if (k < -dims(0) || k > dims(1))
+    error ("%s: requested diagonal out of range", name.c_str ());
   else
     {
-      octave_value arg = args(0);
-
-      dim_vector dims = arg.dims ();
-      if (dims.length () != 2)
-        error ("%s: need a 2-D matrix", name.c_str ());
-      else if (k < -dims(0) || k > dims(1))
-        error ("%s: requested diagonal out of range", name.c_str ());
-      else
+      switch (arg.builtin_type ())
         {
-          switch (arg.builtin_type ())
-            {
-            case btyp_double:
-              if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_matrix_value (), k, lower, pack);
-              else
-                retval = do_trilu (arg.array_value (), k, lower, pack);
-              break;
-            case btyp_complex:
-              if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
-                                   pack);
-              else
-                retval = do_trilu (arg.complex_array_value (), k, lower, pack);
-              break;
-            case btyp_bool:
-              if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
-                                   pack);
-              else
-                retval = do_trilu (arg.bool_array_value (), k, lower, pack);
-              break;
-#define ARRAYCASE(TYP) \
-            case btyp_ ## TYP: \
-              retval = do_trilu (arg.TYP ## _array_value (), k, lower, pack); \
-              break
-            ARRAYCASE (float);
-            ARRAYCASE (float_complex);
-            ARRAYCASE (int8);
-            ARRAYCASE (int16);
-            ARRAYCASE (int32);
-            ARRAYCASE (int64);
-            ARRAYCASE (uint8);
-            ARRAYCASE (uint16);
-            ARRAYCASE (uint32);
-            ARRAYCASE (uint64);
-            ARRAYCASE (char);
+        case btyp_double:
+          if (arg.is_sparse_type ())
+            retval = do_trilu (arg.sparse_matrix_value (), k, lower, pack);
+          else
+            retval = do_trilu (arg.array_value (), k, lower, pack);
+          break;
+
+        case btyp_complex:
+          if (arg.is_sparse_type ())
+            retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
+                               pack);
+          else
+            retval = do_trilu (arg.complex_array_value (), k, lower, pack);
+          break;
+
+        case btyp_bool:
+          if (arg.is_sparse_type ())
+            retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
+                               pack);
+          else
+            retval = do_trilu (arg.bool_array_value (), k, lower, pack);
+          break;
+
+#define ARRAYCASE(TYP)       \
+          case btyp_ ## TYP: \
+            retval = do_trilu (arg.TYP ## _array_value (), k, lower, pack); \
+            break
+
+          ARRAYCASE (float);
+          ARRAYCASE (float_complex);
+          ARRAYCASE (int8);
+          ARRAYCASE (int16);
+          ARRAYCASE (int32);
+          ARRAYCASE (int64);
+          ARRAYCASE (uint8);
+          ARRAYCASE (uint16);
+          ARRAYCASE (uint32);
+          ARRAYCASE (uint64);
+          ARRAYCASE (char);
+
 #undef ARRAYCASE
-            default:
+
+        default:
+          {
+            // Generic code that works on octave-values, that is slow
+            // but will also work on arbitrary user types
+
+            if (pack) // FIXME
               {
-                // Generic code that works on octave-values, that is slow
-                // but will also work on arbitrary user types
-
-                if (pack) // FIXME
-                  {
-                    error ("%s: \"pack\" not implemented for class %s",
-                           name.c_str (), arg.class_name ().c_str ());
-                    return octave_value ();
-                  }
-
-                octave_value tmp = arg;
-                if (arg.numel () == 0)
-                  return arg;
-
-                octave_idx_type nr = dims(0);
-                octave_idx_type nc = dims(1);
-
-                // The sole purpose of the below is to force the correct
-                // matrix size. This would not be necessary if the
-                // octave_value resize function allowed a fill_value.
-                // It also allows odd attributes in some user types
-                // to be handled. With a fill_value ot should be replaced
-                // with
-                //
-                // octave_value_list ov_idx;
-                // tmp = tmp.resize(dim_vector (0,0)).resize (dims, fill_value);
-
-                octave_value_list ov_idx;
-                std::list<octave_value_list> idx_tmp;
-                ov_idx(1) = static_cast<double> (nc+1);
-                ov_idx(0) = Range (1, nr);
-                idx_tmp.push_back (ov_idx);
-                ov_idx(1) = static_cast<double> (nc);
-                tmp = tmp.resize (dim_vector (0,0));
-                tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
-                tmp = tmp.resize (dims);
-
-                if (lower)
-                  {
-                    octave_idx_type st = nc < nr + k ? nc : nr + k;
-
-                    for (octave_idx_type j = 1; j <= st; j++)
-                      {
-                        octave_idx_type nr_limit = 1 > j - k ? 1 : j - k;
-                        ov_idx(1) = static_cast<double> (j);
-                        ov_idx(0) = Range (nr_limit, nr);
-                        std::list<octave_value_list> idx;
-                        idx.push_back (ov_idx);
-
-                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
-                      }
-                  }
-                else
-                  {
-                    octave_idx_type st = k + 1 > 1 ? k + 1 : 1;
-
-                    for (octave_idx_type j = st; j <= nc; j++)
-                      {
-                        octave_idx_type nr_limit = nr < j - k ? nr : j - k;
-                        ov_idx(1) = static_cast<double> (j);
-                        ov_idx(0) = Range (1, nr_limit);
-                        std::list<octave_value_list> idx;
-                        idx.push_back (ov_idx);
-
-                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
-                      }
-                  }
-
-                retval = tmp;
+                error ("%s: \"pack\" not implemented for class %s",
+                       name.c_str (), arg.class_name ().c_str ());
+                return octave_value ();
               }
-            }
+
+            octave_value tmp = arg;
+            if (arg.numel () == 0)
+              return arg;
+
+            octave_idx_type nr = dims(0);
+            octave_idx_type nc = dims(1);
+
+            // The sole purpose of the below is to force the correct
+            // matrix size. This would not be necessary if the
+            // octave_value resize function allowed a fill_value.
+            // It also allows odd attributes in some user types
+            // to be handled. With a fill_value ot should be replaced
+            // with
+            //
+            // octave_value_list ov_idx;
+            // tmp = tmp.resize(dim_vector (0,0)).resize (dims, fill_value);
+
+            octave_value_list ov_idx;
+            std::list<octave_value_list> idx_tmp;
+            ov_idx(1) = static_cast<double> (nc+1);
+            ov_idx(0) = Range (1, nr);
+            idx_tmp.push_back (ov_idx);
+            ov_idx(1) = static_cast<double> (nc);
+            tmp = tmp.resize (dim_vector (0,0));
+            tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
+            tmp = tmp.resize (dims);
+
+            if (lower)
+              {
+                octave_idx_type st = nc < nr + k ? nc : nr + k;
+
+                for (octave_idx_type j = 1; j <= st; j++)
+                  {
+                    octave_idx_type nr_limit = 1 > j - k ? 1 : j - k;
+                    ov_idx(1) = static_cast<double> (j);
+                    ov_idx(0) = Range (nr_limit, nr);
+                    std::list<octave_value_list> idx;
+                    idx.push_back (ov_idx);
+
+                    tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
+                  }
+              }
+            else
+              {
+                octave_idx_type st = k + 1 > 1 ? k + 1 : 1;
+
+                for (octave_idx_type j = st; j <= nc; j++)
+                  {
+                    octave_idx_type nr_limit = nr < j - k ? nr : j - k;
+                    ov_idx(1) = static_cast<double> (j);
+                    ov_idx(0) = Range (1, nr_limit);
+                    std::list<octave_value_list> idx;
+                    idx.push_back (ov_idx);
+
+                    tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
+                  }
+              }
+
+            retval = tmp;
+          }
         }
     }
 

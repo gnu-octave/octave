@@ -1916,6 +1916,9 @@ If @var{name} is omitted, return a list of keywords.\n\
 
   string_vector argv = args.make_argv ("iskeyword");
 
+  if (argc < 1 || argc > 2)
+    print_usage ();
+
   if (argc == 1)
     {
       // Neither set and get are keywords.  See the note in the
@@ -1941,8 +1944,6 @@ If @var{name} is omitted, return a list of keywords.\n\
     {
       retval = is_keyword (argv[1]);
     }
-  else
-    print_usage ();
 
   return retval;
 }

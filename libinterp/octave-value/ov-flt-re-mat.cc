@@ -864,38 +864,36 @@ Convert @var{x} to single precision type.\n\
   // inside their own scopes, and we don't declare retval here to
   // avoid a shadowed declaration warning.
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+
+  if (args(0).is_diag_matrix ())
     {
-      if (args(0).is_diag_matrix ())
+      if (args(0).is_complex_type ())
         {
-          if (args(0).is_complex_type ())
-            {
-              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_diag_matrix,
-                                      octave_float_complex);
-            }
-          else
-            {
-              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_diag_matrix,
-                                      octave_float_scalar);
-            }
-        }
-      else if (args(0).is_sparse_type ())
-        {
-          error ("single: sparse type does not support single precision");
-        }
-      else if (args(0).is_complex_type ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_matrix,
+          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_diag_matrix,
                                   octave_float_complex);
         }
       else
         {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_matrix,
+          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_diag_matrix,
                                   octave_float_scalar);
         }
     }
+  else if (args(0).is_sparse_type ())
+    {
+      error ("single: sparse type does not support single precision");
+    }
+  else if (args(0).is_complex_type ())
+    {
+      OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_matrix,
+                              octave_float_complex);
+    }
   else
-    print_usage ();
+    {
+      OCTAVE_TYPE_CONV_BODY3 (single, octave_float_matrix,
+                              octave_float_scalar);
+    }
 
   return octave_value ();
 }

@@ -625,12 +625,13 @@ currently installed data types.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 0)
     retval = Cell (octave_value_typeinfo::installed_type_names ());
-  else if (nargin == 1)
-    retval = args(0).type_name ();
   else
-    print_usage ();
+    retval = args(0).type_name ();
 
   return retval;
 }

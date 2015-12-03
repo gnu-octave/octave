@@ -1716,86 +1716,84 @@ particular output.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
+
+  octave_function *fcn = fh ? fh->function_value () : 0;
+
+  if (fcn)
     {
-      octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
+      octave_scalar_map m;
 
-      octave_function *fcn = fh ? fh->function_value () : 0;
+      std::string fh_nm = fh->fcn_name ();
 
-      if (fcn)
+      if (fh_nm == octave_fcn_handle::anonymous)
         {
-          octave_scalar_map m;
+          std::ostringstream buf;
+          fh->print_raw (buf);
+          m.setfield ("function", buf.str ());
 
-          std::string fh_nm = fh->fcn_name ();
-
-          if (fh_nm == octave_fcn_handle::anonymous)
-            {
-              std::ostringstream buf;
-              fh->print_raw (buf);
-              m.setfield ("function", buf.str ());
-
-              m.setfield ("type", "anonymous");
-            }
-          else
-            {
-              m.setfield ("function", fh_nm);
-
-              if (fcn->is_subfunction ())
-                {
-                  m.setfield ("type", "subfunction");
-                  Cell parentage (dim_vector (1, 2));
-                  parentage.elem (0) = fh_nm;
-                  parentage.elem (1) = fcn->parent_fcn_name ();
-                  m.setfield ("parentage", octave_value (parentage));
-                }
-              else if (fcn->is_private_function ())
-                m.setfield ("type", "private");
-              else if (fh->is_overloaded ())
-                m.setfield ("type", "overloaded");
-              else
-                m.setfield ("type", "simple");
-            }
-
-          std::string nm = fcn->fcn_file_name ();
-
-          if (fh_nm == octave_fcn_handle::anonymous)
-            {
-              m.setfield ("file", nm);
-
-              octave_user_function *fu = fh->user_function_value ();
-
-              std::list<symbol_table::symbol_record> vars
-                = symbol_table::all_variables (fu->scope (), 0);
-
-              size_t varlen = vars.size ();
-
-              if (varlen > 0)
-                {
-                  octave_scalar_map ws;
-                  for (std::list<symbol_table::symbol_record>::const_iterator
-                         p = vars.begin (); p != vars.end (); p++)
-                    {
-                      ws.assign (p->name (), p->varval (0));
-                    }
-
-                  m.setfield ("workspace", ws);
-                }
-            }
-          else if (fcn->is_user_function () || fcn->is_user_script ())
-            {
-              octave_function *fu = fh->function_value ();
-              m.setfield ("file", fu->fcn_file_name ());
-            }
-          else
-            m.setfield ("file", "");
-
-          retval = m;
+          m.setfield ("type", "anonymous");
         }
       else
-        error ("functions: FCN_HANDLE is not a valid function handle object");
+        {
+          m.setfield ("function", fh_nm);
+
+          if (fcn->is_subfunction ())
+            {
+              m.setfield ("type", "subfunction");
+              Cell parentage (dim_vector (1, 2));
+              parentage.elem (0) = fh_nm;
+              parentage.elem (1) = fcn->parent_fcn_name ();
+              m.setfield ("parentage", octave_value (parentage));
+            }
+          else if (fcn->is_private_function ())
+            m.setfield ("type", "private");
+          else if (fh->is_overloaded ())
+            m.setfield ("type", "overloaded");
+          else
+            m.setfield ("type", "simple");
+        }
+
+      std::string nm = fcn->fcn_file_name ();
+
+      if (fh_nm == octave_fcn_handle::anonymous)
+        {
+          m.setfield ("file", nm);
+
+          octave_user_function *fu = fh->user_function_value ();
+
+          std::list<symbol_table::symbol_record> vars
+            = symbol_table::all_variables (fu->scope (), 0);
+
+          size_t varlen = vars.size ();
+
+          if (varlen > 0)
+            {
+              octave_scalar_map ws;
+              for (std::list<symbol_table::symbol_record>::const_iterator
+                     p = vars.begin (); p != vars.end (); p++)
+                {
+                  ws.assign (p->name (), p->varval (0));
+                }
+
+              m.setfield ("workspace", ws);
+            }
+        }
+      else if (fcn->is_user_function () || fcn->is_user_script ())
+        {
+          octave_function *fu = fh->function_value ();
+          m.setfield ("file", fu->fcn_file_name ());
+        }
+      else
+        m.setfield ("file", "");
+
+      retval = m;
     }
   else
-    print_usage ();
+    error ("functions: FCN_HANDLE is not a valid function handle object");
 
   return retval;
 }
@@ -1810,30 +1808,28 @@ function handle @var{fcn_handle}.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_fcn_handle *fh = args(0).fcn_handle_value ("func2str: FCN_HANDLE argument must be a function handle object");
+
+  if (fh)
     {
-      octave_fcn_handle *fh = args(0).fcn_handle_value ("func2str: FCN_HANDLE argument must be a function handle object");
+      std::string fh_nm = fh->fcn_name ();
 
-      if (fh)
+      if (fh_nm == octave_fcn_handle::anonymous)
         {
-          std::string fh_nm = fh->fcn_name ();
+          std::ostringstream buf;
 
-          if (fh_nm == octave_fcn_handle::anonymous)
-            {
-              std::ostringstream buf;
+          fh->print_raw (buf);
 
-              fh->print_raw (buf);
-
-              retval = buf.str ();
-            }
-          else
-            retval = fh_nm;
+          retval = buf.str ();
         }
       else
-        error ("func2str: FCN_HANDLE must be a valid function handle");
+        retval = fh_nm;
     }
   else
-    print_usage ();
+    error ("func2str: FCN_HANDLE must be a valid function handle");
 
   return retval;
 }
@@ -1852,24 +1848,22 @@ functions are ignored in the lookup.\n\
   octave_value retval;
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string nm = args(0).xstring_value ("str2func: FCN_NAME must be a string");
+
+  if (nm[0] == '@')
     {
-      std::string nm = args(0).xstring_value ("str2func: FCN_NAME must be a string");
+      int parse_status;
+      octave_value anon_fcn_handle =
+        eval_string (nm, true, parse_status);
 
-      if (nm[0] == '@')
-        {
-          int parse_status;
-          octave_value anon_fcn_handle =
-            eval_string (nm, true, parse_status);
-
-          if (parse_status == 0)
-            retval = anon_fcn_handle;
-        }
-      else
-        retval = make_fcn_handle (nm, nargin != 2);
+      if (parse_status == 0)
+        retval = anon_fcn_handle;
     }
   else
-    print_usage ();
+    retval = make_fcn_handle (nm, nargin != 2);
 
   return retval;
 }
@@ -1913,16 +1907,12 @@ Return true if @var{x} is a function handle.\n\
 @seealso{isa, typeinfo, class, functions}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1)
-    retval = args(0).is_function_handle ();
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_function_handle ());
 }
 
 /*

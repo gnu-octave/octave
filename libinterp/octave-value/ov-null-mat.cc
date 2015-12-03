@@ -114,16 +114,12 @@ This should give an error if @code{I} is nonempty.\n\
 @seealso{isempty, isindex}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).is_null_value ();
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_null_value ());
 }
 
 /*

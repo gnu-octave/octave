@@ -2131,35 +2131,36 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 @seealso{javaMethod, javaArray}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
   octave_value retval;
+
+#ifdef HAVE_JAVA
 
   initialize_java ();
 
   JNIEnv *current_env = octave_java::thread_jni_env ();
 
-  if (args.length () > 0)
-    {
-      if (args(0).is_string ())
-        {
-          std::string classname = args(0).string_value ();
-
-          octave_value_list tmp;
-          for (int i=1; i<args.length (); i++)
-            tmp(i-1) = args(i);
-          retval = octave_java::do_javaObject (current_env, classname, tmp);
-        }
-      else
-        error ("javaObject: CLASSNAME must be a string");
-    }
-  else
+  if (args.length () == 0)
     print_usage ();
 
-  return retval;
+  if (args(0).is_string ())
+    {
+      std::string classname = args(0).string_value ();
+
+      octave_value_list tmp;
+      for (int i=1; i<args.length (); i++)
+        tmp(i-1) = args(i);
+      retval = octave_java::do_javaObject (current_env, classname, tmp);
+    }
+  else
+    error ("javaObject: CLASSNAME must be a string");
+
 #else
+
   error ("javaObject: Octave was not compiled with Java interface");
-  return octave_value ();
+
 #endif
+
+  return retval;
 }
 
 /*
@@ -2196,47 +2197,48 @@ equivalent\n\
 @seealso{methods, javaObject}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
   octave_value retval;
+
+#ifdef HAVE_JAVA
 
   initialize_java ();
 
   JNIEnv *current_env = octave_java::thread_jni_env ();
 
-  if (args.length () > 1)
-    {
-      if (args(0).is_string ())
-        {
-          std::string methodname = args(0).string_value ();
-
-          octave_value_list tmp;
-          for (int i=2; i<args.length (); i++)
-            tmp(i-2) = args(i);
-
-          if (args(1).is_java ())
-            {
-              octave_java *jobj = TO_JAVA (args(1));
-              retval = jobj->do_javaMethod (current_env, methodname, tmp);
-            }
-          else if (args(1).is_string ())
-            {
-              std::string cls = args(1).string_value ();
-              retval = octave_java::do_javaMethod (current_env, cls, methodname, tmp);
-            }
-          else
-            error ("javaMethod: OBJ must be a Java object or a string");
-        }
-      else
-        error ("javaMethod: METHODNAME must be a string");
-    }
-  else
+  if (args.length () < 2)
     print_usage ();
 
-  return retval;
+  if (args(0).is_string ())
+    {
+      std::string methodname = args(0).string_value ();
+
+      octave_value_list tmp;
+      for (int i=2; i<args.length (); i++)
+        tmp(i-2) = args(i);
+
+      if (args(1).is_java ())
+        {
+          octave_java *jobj = TO_JAVA (args(1));
+          retval = jobj->do_javaMethod (current_env, methodname, tmp);
+        }
+      else if (args(1).is_string ())
+        {
+          std::string cls = args(1).string_value ();
+          retval = octave_java::do_javaMethod (current_env, cls, methodname, tmp);
+        }
+      else
+        error ("javaMethod: OBJ must be a Java object or a string");
+    }
+  else
+    error ("javaMethod: METHODNAME must be a string");
+
 #else
+
   error ("javaMethod: Octave was not compiled with Java interface");
-  return octave_value ();
+
 #endif
+
+  return retval;
 }
 
 /*
@@ -2268,43 +2270,44 @@ equivalent\n\
 @seealso{__java_set__, javaMethod, javaObject}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
   octave_value retval;
+
+#ifdef HAVE_JAVA
 
   initialize_java ();
 
   JNIEnv *current_env = octave_java::thread_jni_env ();
 
-  if (args.length () == 2)
-    {
-      if (args(1).is_string ())
-        {
-          std::string name = args(1).string_value ();
-
-          if (args(0).is_java ())
-            {
-              octave_java *jobj = TO_JAVA (args(0));
-              retval = jobj->do_java_get (current_env, name);
-            }
-          else if (args(0).is_string ())
-            {
-              std::string cls = args(0).string_value ();
-              retval = octave_java::do_java_get (current_env, cls, name);
-            }
-          else
-            error ("__java_get__: OBJ must be a Java object or a string");
-        }
-      else
-        error ("__java_get__: NAME must be a string");
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  if (args(1).is_string ())
+    {
+      std::string name = args(1).string_value ();
+
+      if (args(0).is_java ())
+        {
+          octave_java *jobj = TO_JAVA (args(0));
+          retval = jobj->do_java_get (current_env, name);
+        }
+      else if (args(0).is_string ())
+        {
+          std::string cls = args(0).string_value ();
+          retval = octave_java::do_java_get (current_env, cls, name);
+        }
+      else
+        error ("__java_get__: OBJ must be a Java object or a string");
+    }
+  else
+    error ("__java_get__: NAME must be a string");
+
 #else
+
   error ("__java_get__: Octave was not compiled with Java interface");
-  return octave_value ();
+
 #endif
+
+  return retval;
 }
 
 DEFUN (__java_set__, args, ,
@@ -2330,43 +2333,44 @@ equivalent\n\
 @seealso{__java_get__, javaMethod, javaObject}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
   octave_value retval;
+
+#ifdef HAVE_JAVA
 
   initialize_java ();
 
   JNIEnv *current_env = octave_java::thread_jni_env ();
 
-  if (args.length () == 3)
-    {
-      if (args(1).is_string ())
-        {
-          std::string name = args(1).string_value ();
-
-          if (args(0).is_java ())
-            {
-              octave_java *jobj = TO_JAVA (args(0));
-              retval = jobj->do_java_set (current_env, name, args(2));
-            }
-          else if (args(0).is_string ())
-            {
-              std::string cls = args(0).string_value ();
-              retval = octave_java::do_java_set (current_env, cls, name, args(2));
-            }
-          else
-            error ("__java_set__: OBJ must be a Java object or a string");
-        }
-      else
-        error ("__java_set__: NAME must be a string");
-    }
-  else
+  if (args.length () != 3)
     print_usage ();
 
-  return retval;
+  if (args(1).is_string ())
+    {
+      std::string name = args(1).string_value ();
+
+      if (args(0).is_java ())
+        {
+          octave_java *jobj = TO_JAVA (args(0));
+          retval = jobj->do_java_set (current_env, name, args(2));
+        }
+      else if (args(0).is_string ())
+        {
+          std::string cls = args(0).string_value ();
+          retval = octave_java::do_java_set (current_env, cls, name, args(2));
+        }
+      else
+        error ("__java_set__: OBJ must be a Java object or a string");
+    }
+  else
+    error ("__java_set__: NAME must be a string");
+
 #else
+
   error ("__java_set__: Octave was not compiled with Java interface");
-  return octave_value ();
+
 #endif
+
+  return retval;
 }
 
 DEFUN (java2mat, args, ,
@@ -2375,31 +2379,32 @@ DEFUN (java2mat, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
   octave_value_list retval;
+
+#ifdef HAVE_JAVA
 
   initialize_java ();
 
   JNIEnv *current_env = octave_java::thread_jni_env ();
 
-  if (args.length () == 1)
-    {
-      if (args(0).is_java ())
-        {
-          octave_java *jobj = TO_JAVA (args(0));
-          retval(0) = box_more (current_env, jobj->to_java (), 0);
-        }
-      else
-        retval(0) = args(0);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  if (args(0).is_java ())
+    {
+      octave_java *jobj = TO_JAVA (args(0));
+      retval(0) = box_more (current_env, jobj->to_java (), 0);
+    }
+  else
+    retval(0) = args(0);
+
 #else
+
   error ("java2mat: Octave was not compiled with Java interface");
-  return octave_value ();
+
 #endif
+
+  return retval;
 }
 
 DEFUN (java_matrix_autoconversion, args, nargout,
@@ -2418,12 +2423,18 @@ The original variable value is restored when exiting the function.\n\
 @seealso{java_unsigned_autoconversion, debug_java}\n\
 @end deftypefn")
 {
+  octave_value retval;
+
 #ifdef HAVE_JAVA
-  return SET_INTERNAL_VARIABLE (java_matrix_autoconversion);
+
+  retval = SET_INTERNAL_VARIABLE (java_matrix_autoconversion);
 #else
+
   error ("java_matrix_autoconversion: Octave was not compiled with Java interface");
-  return octave_value ();
+
 #endif
+
+  return retval;
 }
 
 DEFUN (java_unsigned_autoconversion, args, nargout,
@@ -2483,14 +2494,10 @@ Return true if @var{x} is a Java object.\n\
 @seealso{class, typeinfo, isa, javaObject}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
-  else
-    retval = args(0).is_java ();
 
-  return retval;
+  return octave_value (args(0).is_java ());
 }
 
 /*

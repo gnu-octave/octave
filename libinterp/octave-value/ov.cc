@@ -2927,14 +2927,10 @@ Return the size of @var{val} in bytes.\n\
 @seealso{whos}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).byte_size ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).byte_size ());
 }
 
 /*
@@ -3048,22 +3044,20 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 2)
-    {
-      std::string type;
-      std::list<octave_value_list> idx;
-
-      decode_subscripts ("subsref", args(1), type, idx);
-
-      octave_value arg0 = args(0);
-
-      if (type.empty ())
-        retval = arg0;
-      else
-        retval = arg0.subsref (type, idx, nargout);
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
+
+  std::string type;
+  std::list<octave_value_list> idx;
+
+  decode_subscripts ("subsref", args(1), type, idx);
+
+  octave_value arg0 = args(0);
+
+  if (type.empty ())
+    retval = arg0;
+  else
+    retval = arg0.subsref (type, idx, nargout);
 
   return retval;
 }
@@ -3103,30 +3097,28 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 {
   octave_value retval;
 
-  if (args.length () == 3)
+  if (args.length () != 3)
+    print_usage ();
+
+  std::string type;
+  std::list<octave_value_list> idx;
+
+  decode_subscripts ("subsasgn", args(1), type, idx);
+
+  if (type.empty ())
     {
-      std::string type;
-      std::list<octave_value_list> idx;
+      // Regularize a null matrix if stored into a variable.
 
-      decode_subscripts ("subsasgn", args(1), type, idx);
-
-      if (type.empty ())
-        {
-          // Regularize a null matrix if stored into a variable.
-
-          retval = args(2).storable_value ();
-        }
-      else
-        {
-          octave_value arg0 = args(0);
-
-          arg0.make_unique ();
-
-          retval= arg0.subsasgn (type, idx, args(2));
-        }
+      retval = args(2).storable_value ();
     }
   else
-    print_usage ();
+    {
+      octave_value arg0 = args(0);
+
+      arg0.make_unique ();
+
+      retval= arg0.subsasgn (type, idx, args(2));
+    }
 
   return retval;
 }
@@ -3205,14 +3197,10 @@ Return true if @var{x} is a single-quoted character string.\n\
 @seealso{is_dq_string, ischar}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_sq_string ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_sq_string ());
 }
 
 /*
@@ -3232,14 +3220,10 @@ Return true if @var{x} is a double-quoted character string.\n\
 @seealso{is_sq_string, ischar}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_dq_string ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_dq_string ());
 }
 
 /*

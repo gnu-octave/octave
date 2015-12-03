@@ -679,149 +679,145 @@ functions from strings is through the use of anonymous functions\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0)
+  if (nargin == 0)
+    print_usage ();
+
+  std::string fun = args(0).xstring_value ("inline: STR argument must be a string");
+
+  string_vector fargs;
+
+  if (nargin == 1)
     {
-      std::string fun = args(0).xstring_value ("inline: STR argument must be a string");
+      bool is_arg = false;
+      bool in_string = false;
+      std::string tmp_arg;
+      size_t i = 0;
+      size_t fun_length = fun.length ();
 
-      string_vector fargs;
-
-      if (nargin == 1)
+      while (i < fun_length)
         {
-          bool is_arg = false;
-          bool in_string = false;
-          std::string tmp_arg;
-          size_t i = 0;
-          size_t fun_length = fun.length ();
+          bool terminate_arg = false;
+          char c = fun[i++];
 
-          while (i < fun_length)
+          if (in_string)
             {
-              bool terminate_arg = false;
-              char c = fun[i++];
+              if (c == '\'' || c == '\"')
+                in_string = false;
+            }
+          else if (c == '\'' || c == '\"')
+            {
+              in_string = true;
+              if (is_arg)
+                terminate_arg = true;
+            }
+          else if (! isalpha (c) && c != '_')
+            if (! is_arg)
+              continue;
+            else if (isdigit (c))
+              tmp_arg.append (1, c);
+            else
+              {
+                // Before we do anything remove trailing whitespaces.
+                while (i < fun_length && isspace (c))
+                  c = fun[i++];
 
-              if (in_string)
-                {
-                  if (c == '\'' || c == '\"')
-                    in_string = false;
-                }
-              else if (c == '\'' || c == '\"')
-                {
-                  in_string = true;
-                  if (is_arg)
-                    terminate_arg = true;
-                }
-              else if (! isalpha (c) && c != '_')
-                if (! is_arg)
-                  continue;
-                else if (isdigit (c))
-                  tmp_arg.append (1, c);
+                // Do we have a variable or a function?
+                if (c != '(')
+                  terminate_arg = true;
                 else
                   {
-                    // Before we do anything remove trailing whitespaces.
-                    while (i < fun_length && isspace (c))
-                      c = fun[i++];
-
-                    // Do we have a variable or a function?
-                    if (c != '(')
-                      terminate_arg = true;
-                    else
-                      {
-                        tmp_arg = std::string ();
-                        is_arg = false;
-                      }
+                    tmp_arg = std::string ();
+                    is_arg = false;
                   }
-              else if (! is_arg)
-                {
-                  if (c == 'e' || c == 'E')
-                    {
-                      // possible number in exponent form, not arg
-                      if (isdigit (fun[i])
-                          || fun[i] == '-' || fun[i] == '+')
-                        continue;
-                    }
-                  is_arg = true;
-                  tmp_arg.append (1, c);
-                }
-              else
-                {
-                  tmp_arg.append (1, c);
-                }
-
-              if (terminate_arg || (i == fun_length && is_arg))
-                {
-                  bool have_arg = false;
-
-                  for (int j = 0; j < fargs.numel (); j++)
-                    if (tmp_arg == fargs (j))
-                      {
-                        have_arg = true;
-                        break;
-                      }
-
-                  if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
-                      && tmp_arg != "NaN" && tmp_arg != "nan"
-                      && tmp_arg != "Inf" && tmp_arg != "inf"
-                      && tmp_arg != "NA" && tmp_arg != "pi"
-                      && tmp_arg != "e" && tmp_arg != "eps")
-                    fargs.append (tmp_arg);
-
-                  tmp_arg = std::string ();
-                  is_arg = false;
-                }
-            }
-
-          // Sort the arguments into ascii order.
-          fargs.sort ();
-
-          if (fargs.numel () == 0)
-            fargs.append (std::string ("x"));
-
-        }
-      else if (nargin == 2 && args(1).is_numeric_type ())
-        {
-          if (! args(1).is_scalar_type ())
+              }
+          else if (! is_arg)
             {
-              error ("inline: N must be an integer");
-              return retval;
-            }
-
-          int n = args(1).int_value ("inline: N must be an integer");
-
-          if (n >= 0)
-            {
-              fargs.resize (n+1);
-
-              fargs(0) = "x";
-
-              for (int i = 1; i < n+1; i++)
+              if (c == 'e' || c == 'E')
                 {
-                  std::ostringstream buf;
-                  buf << "P" << i;
-                  fargs(i) = buf.str ();
+                  // possible number in exponent form, not arg
+                  if (isdigit (fun[i])
+                      || fun[i] == '-' || fun[i] == '+')
+                    continue;
                 }
+              is_arg = true;
+              tmp_arg.append (1, c);
             }
           else
             {
-              error ("inline: N must be a positive integer or zero");
-              return retval;
+              tmp_arg.append (1, c);
+            }
+
+          if (terminate_arg || (i == fun_length && is_arg))
+            {
+              bool have_arg = false;
+
+              for (int j = 0; j < fargs.numel (); j++)
+                if (tmp_arg == fargs (j))
+                  {
+                    have_arg = true;
+                    break;
+                  }
+
+              if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
+                  && tmp_arg != "NaN" && tmp_arg != "nan"
+                  && tmp_arg != "Inf" && tmp_arg != "inf"
+                  && tmp_arg != "NA" && tmp_arg != "pi"
+                  && tmp_arg != "e" && tmp_arg != "eps")
+                fargs.append (tmp_arg);
+
+              tmp_arg = std::string ();
+              is_arg = false;
+            }
+        }
+
+      // Sort the arguments into ascii order.
+      fargs.sort ();
+
+      if (fargs.numel () == 0)
+        fargs.append (std::string ("x"));
+
+    }
+  else if (nargin == 2 && args(1).is_numeric_type ())
+    {
+      if (! args(1).is_scalar_type ())
+        {
+          error ("inline: N must be an integer");
+          return retval;
+        }
+
+      int n = args(1).int_value ("inline: N must be an integer");
+
+      if (n >= 0)
+        {
+          fargs.resize (n+1);
+
+          fargs(0) = "x";
+
+          for (int i = 1; i < n+1; i++)
+            {
+              std::ostringstream buf;
+              buf << "P" << i;
+              fargs(i) = buf.str ();
             }
         }
       else
         {
-          fargs.resize (nargin - 1);
-
-          for (int i = 1; i < nargin; i++)
-            {
-              std::string s = args(i).xstring_value ("inline: additional arguments must be strings");
-              fargs(i-1) = s;
-            }
+          error ("inline: N must be a positive integer or zero");
+          return retval;
         }
-
-      retval = octave_value (new octave_fcn_inline (fun, fargs));
     }
   else
-    print_usage ();
+    {
+      fargs.resize (nargin - 1);
 
-  return retval;
+      for (int i = 1; i < nargin; i++)
+        {
+          std::string s = args(i).xstring_value ("inline: additional arguments must be strings");
+          fargs(i-1) = s;
+        }
+    }
+
+  return octave_value (new octave_fcn_inline (fun, fargs));
 }
 
 /*
@@ -855,17 +851,15 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      octave_fcn_inline* fn = args(0).fcn_inline_value (true);
-
-      if (fn)
-        retval = octave_value (fn->fcn_text ());
-      else
-        error ("formula: FUN must be an inline function");
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  octave_fcn_inline* fn = args(0).fcn_inline_value (true);
+
+  if (fn)
+    retval = octave_value (fn->fcn_text ());
+  else
+    error ("formula: FUN must be an inline function");
 
   return retval;
 }
@@ -892,26 +886,24 @@ arguments of the inline function @var{fun}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin != 1)
+    print_usage ();
+
+  octave_fcn_inline *fn = args(0).fcn_inline_value (true);
+
+  if (fn)
     {
-      octave_fcn_inline *fn = args(0).fcn_inline_value (true);
+      string_vector t1 = fn->fcn_arg_names ();
 
-      if (fn)
-        {
-          string_vector t1 = fn->fcn_arg_names ();
+      Cell t2 (dim_vector (t1.numel (), 1));
 
-          Cell t2 (dim_vector (t1.numel (), 1));
+      for (int i = 0; i < t1.numel (); i++)
+        t2(i) = t1(i);
 
-          for (int i = 0; i < t1.numel (); i++)
-            t2(i) = t1(i);
-
-          retval = t2;
-        }
-      else
-        error ("argnames: FUN must be an inline function");
+      retval = t2;
     }
   else
-    print_usage ();
+    error ("argnames: FUN must be an inline function");
 
   return retval;
 }
@@ -951,57 +943,55 @@ quadv (fcn, 0, 3)\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      std::string old_func;
-      octave_fcn_inline* old = 0;
-      bool func_is_string = true;
-
-      if (args(0).is_string ())
-        old_func = args(0).string_value ();
-      else
-        {
-          old = args(0).fcn_inline_value (true);
-          func_is_string = false;
-
-          if (old)
-            old_func = old->fcn_text ();
-          else
-            error ("vectorize: FUN must be a string or inline function");
-        }
-
-      std::string new_func;
-      size_t i = 0;
-
-      while (i < old_func.length ())
-        {
-          std::string t1 = old_func.substr (i, 1);
-
-          if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
-            {
-              if (i && old_func.substr (i-1, 1) != ".")
-                new_func.append (".");
-
-              // Special case for ** operator.
-              if (t1 == "*" && i < (old_func.length () - 1)
-                  && old_func.substr (i+1, 1) == "*")
-                {
-                  new_func.append ("*");
-                  i++;
-                }
-            }
-          new_func.append (t1);
-          i++;
-        }
-
-      if (func_is_string)
-        retval = octave_value (new_func);
-      else
-        retval = octave_value (new octave_fcn_inline
-                               (new_func, old->fcn_arg_names ()));
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  std::string old_func;
+  octave_fcn_inline* old = 0;
+  bool func_is_string = true;
+
+  if (args(0).is_string ())
+    old_func = args(0).string_value ();
+  else
+    {
+      old = args(0).fcn_inline_value (true);
+      func_is_string = false;
+
+      if (old)
+        old_func = old->fcn_text ();
+      else
+        error ("vectorize: FUN must be a string or inline function");
+    }
+
+  std::string new_func;
+  size_t i = 0;
+
+  while (i < old_func.length ())
+    {
+      std::string t1 = old_func.substr (i, 1);
+
+      if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
+        {
+          if (i && old_func.substr (i-1, 1) != ".")
+            new_func.append (".");
+
+          // Special case for ** operator.
+          if (t1 == "*" && i < (old_func.length () - 1)
+              && old_func.substr (i+1, 1) == "*")
+            {
+              new_func.append ("*");
+              i++;
+            }
+        }
+      new_func.append (t1);
+      i++;
+    }
+
+  if (func_is_string)
+    retval = octave_value (new_func);
+  else
+    retval = octave_value (new octave_fcn_inline
+                           (new_func, old->fcn_arg_names ()));
 
   return retval;
 }

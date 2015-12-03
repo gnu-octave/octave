@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Cell.h"
+#include "builtin-defun-decls.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -1851,14 +1852,10 @@ Return true if @var{x} is a structure or a structure array.\n\
 @seealso{ismatrix, iscell, isa}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_map ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_map ());
 }
 
 DEFUN (__fieldnames__, args, ,
@@ -1904,47 +1901,45 @@ dimension is returned.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2)
+  if (nargin != 2)
+    print_usage ();
+
+  retval = false;
+
+  if (args(0).is_map ())
     {
-      retval = false;
+      octave_map m = args(0).map_value ();
 
-      if (args(0).is_map ())
+      // FIXME: should this work for all types that can do
+      // structure reference operations?
+
+      if (args(1).is_string ())
         {
-          octave_map m = args(0).map_value ();
+          std::string key = args(1).string_value ();
 
-          // FIXME: should this work for all types that can do
-          // structure reference operations?
+          retval = m.isfield (key);
+        }
+      else if (args(1).is_cell ())
+        {
+          Cell c = args(1).cell_value ();
+          boolNDArray bm (c.dims ());
+          octave_idx_type n = bm.numel ();
 
-          if (args(1).is_string ())
+          for (octave_idx_type i = 0; i < n; i++)
             {
-              std::string key = args(1).string_value ();
-
-              retval = m.isfield (key);
-            }
-          else if (args(1).is_cell ())
-            {
-              Cell c = args(1).cell_value ();
-              boolNDArray bm (c.dims ());
-              octave_idx_type n = bm.numel ();
-
-              for (octave_idx_type i = 0; i < n; i++)
+              if (c(i).is_string ())
                 {
-                  if (c(i).is_string ())
-                    {
-                      std::string key = c(i).string_value ();
+                  std::string key = c(i).string_value ();
 
-                      bm(i) = m.isfield (key);
-                    }
-                  else
-                    bm(i) = false;
+                  bm(i) = m.isfield (key);
                 }
-
-              retval = bm;
+              else
+                bm(i) = false;
             }
+
+          retval = bm;
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -1960,12 +1955,13 @@ Return the number of fields of the structure @var{s}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_map ())
-    {
-      retval = static_cast<double> (args(0).nfields ());
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  if (args(0).is_map ())
+    retval = static_cast<double> (args(0).nfields ());
+  else
+    error ("numfields: argument must be a struct");
 
   return retval;
 }
@@ -2014,83 +2010,81 @@ A(1)\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  if (! args(0).is_cell ())
     {
-      if (! args(0).is_cell ())
-        {
-          error ("cell2struct: argument CELL must be of type cell");
-          return retval;
-        }
+      error ("cell2struct: argument CELL must be of type cell");
+      return retval;
+    }
 
-      if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
-        {
-          error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
-          return retval;
-        }
+  if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
+    {
+      error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
+      return retval;
+    }
 
-      const Cell vals = args(0).cell_value ();
-      const Array<std::string> fields = args(1).cellstr_value ();
+  const Cell vals = args(0).cell_value ();
+  const Array<std::string> fields = args(1).cellstr_value ();
 
-      octave_idx_type ext = 0;
+  octave_idx_type ext = 0;
 
-      int dim = 0;
+  int dim = 0;
 
-      if (nargin == 3)
-        {
-          if (args(2).is_real_scalar ())
-            dim = nargin == 2 ? 0 : args(2).int_value () - 1;
-          else
-            {
-              error ("cell2struct: DIM must be a real scalar");
-              return retval;
-            }
-        }
-
-      if (dim < 0)
-        {
-          error ("cell2struct: DIM must be a valid dimension");
-          return retval;
-        }
-
-      ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
-
-      if (ext != fields.numel ())
-        {
-          error ("cell2struct: number of FIELDS does not match dimension");
-          return retval;
-        }
-
-      int nd = std::max (dim+1, vals.ndims ());
-      // result dimensions.
-      dim_vector rdv = vals.dims ().redim (nd);
-
-      assert (ext == rdv(dim));
-      if (nd == 2)
-        {
-          rdv(0) = rdv(1-dim);
-          rdv(1) = 1;
-        }
+  if (nargin == 3)
+    {
+      if (args(2).is_real_scalar ())
+        dim = nargin == 2 ? 0 : args(2).int_value () - 1;
       else
         {
-          for (int i =  dim + 1; i < nd; i++)
-            rdv(i-1) = rdv(i);
-
-          rdv.resize (nd-1);
+          error ("cell2struct: DIM must be a real scalar");
+          return retval;
         }
+    }
 
-      octave_map map (rdv);
-      Array<idx_vector> ia (dim_vector (nd, 1), idx_vector::colon);
+  if (dim < 0)
+    {
+      error ("cell2struct: DIM must be a valid dimension");
+      return retval;
+    }
 
-      for (octave_idx_type i = 0; i < ext; i++)
-        {
-          ia(dim) = i;
-          map.setfield (fields(i), vals.index (ia).reshape (rdv));
-        }
+  ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
 
-      retval = map;
+  if (ext != fields.numel ())
+    {
+      error ("cell2struct: number of FIELDS does not match dimension");
+      return retval;
+    }
+
+  int nd = std::max (dim+1, vals.ndims ());
+  // result dimensions.
+  dim_vector rdv = vals.dims ().redim (nd);
+
+  assert (ext == rdv(dim));
+  if (nd == 2)
+    {
+      rdv(0) = rdv(1-dim);
+      rdv(1) = 1;
     }
   else
-    print_usage ();
+    {
+      for (int i =  dim + 1; i < nd; i++)
+        rdv(i-1) = rdv(i);
+
+      rdv.resize (nd-1);
+    }
+
+  octave_map map (rdv);
+  Array<idx_vector> ia (dim_vector (nd, 1), idx_vector::colon);
+
+  for (octave_idx_type i = 0; i < ext; i++)
+    {
+      ia(dim) = i;
+      map.setfield (fields(i), vals.index (ia).reshape (rdv));
+    }
+
+  retval = map;
 
   return retval;
 }
@@ -2112,9 +2106,6 @@ A(1)\n\
 */
 
 
-// So we can call Fcellstr directly.
-extern octave_value_list Fcellstr (const octave_value_list& args, int);
-
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
@@ -2131,33 +2122,26 @@ the named fields.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    {
-      octave_map m = args(0).map_value ();
-
-      octave_value_list fval = Fcellstr (args(1), 1);
-
-      Cell fcell = fval(0).cell_value ();
-
-      for (int i = 0; i < fcell.numel (); i++)
-        {
-          std::string key = fcell(i).string_value ();
-
-          if (m.isfield (key))
-            m.rmfield (key);
-          else
-            {
-              error ("rmfield: structure does not contain field %s",
-                     key.c_str ());
-
-              break;
-            }
-        }
-
-      retval = m;
-    }
-  else
+  if (nargin != 2)
     print_usage ();
+
+  octave_map m = args(0).xmap_value ("rmfield: first argument must be a struct");
+
+  octave_value_list fval = Fcellstr (args(1), 1);
+
+  Cell fcell = fval(0).cell_value ();
+
+  for (int i = 0; i < fcell.numel (); i++)
+    {
+      std::string key = fcell(i).string_value ();
+
+      if (m.isfield (key))
+        m.rmfield (key);
+      else
+        error ("rmfield: structure does not contain field %s", key.c_str ());
+    }
+
+  retval = m;
 
   return retval;
 }

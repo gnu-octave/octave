@@ -186,14 +186,10 @@ variables are created, the order in which they are called is unspecified.\n\
 For similar functionality @xref{The unwind_protect Statement}.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = octave_value (new octave_oncleanup (args(0)));
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (new octave_oncleanup (args(0)));
 }
 
 /*

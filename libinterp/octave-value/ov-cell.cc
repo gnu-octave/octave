@@ -1237,14 +1237,10 @@ Return true if @var{x} is a cell array object.\n\
 @seealso{ismatrix, isstruct, iscellstr, isa}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_cell ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_cell ());
 }
 
 DEFUN (cell, args, ,
@@ -1306,14 +1302,10 @@ string.\n\
 @seealso{ischar}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_cellstr ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_cellstr ());
 }
 
 // Note that since Fcellstr calls Fiscellstr, we need to have
@@ -1336,23 +1328,21 @@ To convert back from a cellstr to a character array use @code{char}.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      octave_value_list tmp = Fiscellstr (args, 1);
-
-      if (tmp(0).is_true ())
-        retval = args(0);
-      else
-        {
-          string_vector s = args(0).xall_strings ("cellstr: argument STRING must be a 2-D character array");
-
-          retval = (s.is_empty ()
-                    ? Cell (octave_value (std::string ()))
-                    : Cell (s, true));
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  octave_value_list tmp = Fiscellstr (args, 1);
+
+  if (tmp(0).is_true ())
+    retval = args(0);
+  else
+    {
+      string_vector s = args(0).xall_strings ("cellstr: argument STRING must be a 2-D character array");
+
+      retval = (s.is_empty ()
+                ? Cell (octave_value (std::string ()))
+                : Cell (s, true));
+    }
 
   return retval;
 }
@@ -1392,49 +1382,43 @@ c(2,1,:)(:)\n\
 @seealso{cell2struct, fieldnames}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      const octave_map m = args(0).xmap_value ("struct2cell: argument S must be a structure");
-
-      const dim_vector m_dv = m.dims ();
-
-      octave_idx_type num_fields = m.nfields ();
-
-      // The resulting dim_vector should have dimensions:
-      // [numel(fields) size(struct)]
-      // except if the struct is a column vector.
-
-      dim_vector result_dv;
-      if (m_dv(m_dv.length () - 1) == 1)
-        result_dv.resize (m_dv.length ());
-      else
-        result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
-
-      result_dv(0) = num_fields;
-
-      for (int i = 1; i < result_dv.length (); i++)
-        result_dv(i) = m_dv(i-1);
-
-      NoAlias<Cell> c (result_dv);
-
-      octave_idx_type n_elts = m.numel ();
-
-      // Fill c in one sweep. Note that thanks to octave_map structure,
-      // we don't need a key lookup at all.
-      for (octave_idx_type j = 0; j < n_elts; j++)
-        for (octave_idx_type i = 0; i < num_fields; i++)
-          c(i,j) = m.contents(i)(j);
-
-      retval = c;
-    }
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  const octave_map m = args(0).xmap_value ("struct2cell: argument S must be a structure");
+
+  const dim_vector m_dv = m.dims ();
+
+  octave_idx_type num_fields = m.nfields ();
+
+  // The resulting dim_vector should have dimensions:
+  // [numel(fields) size(struct)]
+  // except if the struct is a column vector.
+
+  dim_vector result_dv;
+  if (m_dv(m_dv.length () - 1) == 1)
+    result_dv.resize (m_dv.length ());
+  else
+    result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
+
+  result_dv(0) = num_fields;
+
+  for (int i = 1; i < result_dv.length (); i++)
+    result_dv(i) = m_dv(i-1);
+
+  NoAlias<Cell> c (result_dv);
+
+  octave_idx_type n_elts = m.numel ();
+
+  // Fill c in one sweep. Note that thanks to octave_map structure,
+  // we don't need a key lookup at all.
+  for (octave_idx_type j = 0; j < n_elts; j++)
+    for (octave_idx_type i = 0; i < num_fields; i++)
+      c(i,j) = m.contents(i)(j);
+
+  return octave_value (c);
 }
 
 /*

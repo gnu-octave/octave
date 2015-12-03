@@ -987,50 +987,48 @@ Convert @var{x} to double precision type.\n\
   // inside their own scopes, and we don't declare retval here to
   // avoid a shadowed declaration warning.
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+
+  if (args(0).is_perm_matrix ())
     {
-      if (args(0).is_perm_matrix ())
+      OCTAVE_TYPE_CONV_BODY3 (double, octave_perm_matrix, octave_scalar);
+    }
+  else if (args(0).is_diag_matrix ())
+    {
+      if (args(0).is_complex_type ())
         {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_perm_matrix, octave_scalar);
-        }
-      else if (args(0).is_diag_matrix ())
-        {
-          if (args(0).is_complex_type ())
-            {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix,
-                                      octave_complex);
-            }
-          else
-            {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix,
-                                      octave_scalar);
-            }
-        }
-      else if (args(0).is_sparse_type ())
-        {
-          if (args(0).is_complex_type ())
-            {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix,
-                                      octave_complex);
-            }
-          else
-            {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix,
-                                      octave_scalar);
-            }
-        }
-      else if (args(0).is_complex_type ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix,
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix,
                                   octave_complex);
         }
       else
         {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix,
+                                  octave_scalar);
         }
     }
+  else if (args(0).is_sparse_type ())
+    {
+      if (args(0).is_complex_type ())
+        {
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix,
+                                  octave_complex);
+        }
+      else
+        {
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix,
+                                  octave_scalar);
+        }
+    }
+  else if (args(0).is_complex_type ())
+    {
+      OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix,
+                              octave_complex);
+    }
   else
-    print_usage ();
+    {
+      OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
+    }
 
   return octave_value ();
 }

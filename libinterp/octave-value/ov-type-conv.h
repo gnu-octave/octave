@@ -80,26 +80,24 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
  \
   int nargin = args.length (); \
  \
-  if (nargin == 1) \
-    { \
-      const octave_value arg = args(0); \
- \
-      int t_result = MATRIX_RESULT_T::static_type_id (); \
- \
-      retval = octave_type_conv_body (arg, #NAME, t_result); \
-      if (retval.is_undefined ()) \
-        { \
-          std::string arg_tname = arg.type_name (); \
- \
-          std::string result_tname = arg.numel () == 1 \
-            ? SCALAR_RESULT_T::static_type_name () \
-            : MATRIX_RESULT_T::static_type_name (); \
- \
-          gripe_invalid_conversion (arg_tname, result_tname); \
-        } \
-    } \
-  else \
+  if (nargin != 1) \
     print_usage (); \
+ \
+  const octave_value arg = args(0); \
+ \
+  int t_result = MATRIX_RESULT_T::static_type_id (); \
+ \
+  retval = octave_type_conv_body (arg, #NAME, t_result); \
+  if (retval.is_undefined ()) \
+    { \
+      std::string arg_tname = arg.type_name (); \
+ \
+      std::string result_tname = arg.numel () == 1 \
+        ? SCALAR_RESULT_T::static_type_name () \
+        : MATRIX_RESULT_T::static_type_name (); \
+ \
+      gripe_invalid_conversion (arg_tname, result_tname); \
+    } \
  \
   return retval
 

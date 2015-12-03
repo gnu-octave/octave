@@ -1776,7 +1776,8 @@ is derived.\n\
 
   if (nargin == 0)
     print_usage ();
-  else if (nargin == 1)
+
+  if (nargin == 1)
     // Called for class of object
     retval = args(0).class_name ();
   else
@@ -1866,10 +1867,7 @@ belongs to.\n\
   octave_value retval;
 
   if (args.length () != 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value obj = args(0);  // not const because of find_parent_class ()
   std::string obj_cls = obj.class_name ();
@@ -1957,15 +1955,13 @@ Undocumented internal function.\n\
 {
   octave_value retval = Cell ();
 
-  if (args.length () == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_object ())
-        retval = Cell (arg.parent_class_names ());
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  octave_value arg = args(0);
+
+  if (arg.is_object ())
+    retval = Cell (arg.parent_class_names ());
 
   return retval;
 }
@@ -1977,14 +1973,10 @@ Return true if @var{x} is a class object.\n\
 @seealso{class, typeinfo, isa, ismethod, isprop}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_object ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_object ());
 }
 
 DEFUN (ismethod, args, ,
@@ -1998,28 +1990,26 @@ Return true if the string @var{method} is a valid method of the object\n\
 {
   octave_value retval;
 
-  if (args.length () == 2)
-    {
-      octave_value arg = args(0);
-
-      std::string class_name;
-
-      if (arg.is_object ())
-        class_name = arg.class_name ();
-      else if (arg.is_string ())
-        class_name = arg.string_value ();
-      else
-        error ("ismethod: first argument must be object or class name");
-
-      std::string method = args(1).string_value ();
-
-      if (load_path::find_method (class_name, method) != std::string ())
-        retval = true;
-      else
-        retval = false;
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
+
+  octave_value arg = args(0);
+
+  std::string class_name;
+
+  if (arg.is_object ())
+    class_name = arg.class_name ();
+  else if (arg.is_string ())
+    class_name = arg.string_value ();
+  else
+    error ("ismethod: first argument must be object or class name");
+
+  std::string method = args(1).string_value ();
+
+  if (load_path::find_method (class_name, method) != std::string ())
+    retval = true;
+  else
+    retval = false;
 
   return retval;
 }

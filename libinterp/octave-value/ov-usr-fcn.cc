@@ -831,6 +831,9 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       octave_value func = args(0);
@@ -869,15 +872,13 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
       else
         error ("nargin: FCN must be a string or function handle");
     }
-  else if (nargin == 0)
+  else
     {
       retval = symbol_table::varval (".nargin.");
 
       if (retval.is_undefined ())
         retval = 0;
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -941,6 +942,9 @@ returns -1 for all anonymous functions.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       octave_value func = args(0);
@@ -1000,7 +1004,7 @@ returns -1 for all anonymous functions.\n\
       else
         error ("nargout: FCN must be a string or function handle");
     }
-  else if (nargin == 0)
+  else
     {
       if (! symbol_table::at_top_level ())
         {
@@ -1012,8 +1016,6 @@ returns -1 for all anonymous functions.\n\
       else
         error ("nargout: invalid call at top level");
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -1078,41 +1080,39 @@ element-by-element and a logical array is returned.  At the top level,\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin != 1)
+    print_usage ();
+
+  if (! symbol_table::at_top_level ())
     {
-      if (! symbol_table::at_top_level ())
+      int nargout1 = symbol_table::varval (".nargout.").int_value ();
+
+      Matrix ignored;
+      octave_value tmp = symbol_table::varval (".ignored.");
+      if (tmp.is_defined ())
+        ignored = tmp.matrix_value ();
+
+      if (args(0).is_scalar_type ())
         {
-          int nargout1 = symbol_table::varval (".nargout.").int_value ();
+          double k = args(0).double_value ();
 
-          Matrix ignored;
-          octave_value tmp = symbol_table::varval (".ignored.");
-          if (tmp.is_defined ())
-            ignored = tmp.matrix_value ();
+          retval = isargout1 (nargout1, ignored, k);
+        }
+      else if (args(0).is_numeric_type ())
+        {
+          const NDArray ka = args(0).array_value ();
 
-          if (args(0).is_scalar_type ())
-            {
-              double k = args(0).double_value ();
+          boolNDArray r (ka.dims ());
+          for (octave_idx_type i = 0; i < ka.numel (); i++)
+            r(i) = isargout1 (nargout1, ignored, ka(i));
 
-              retval = isargout1 (nargout1, ignored, k);
-            }
-          else if (args(0).is_numeric_type ())
-            {
-              const NDArray ka = args(0).array_value ();
-
-              boolNDArray r (ka.dims ());
-              for (octave_idx_type i = 0; i < ka.numel (); i++)
-                r(i) = isargout1 (nargout1, ignored, ka(i));
-
-              retval = r;
-            }
-          else
-            gripe_wrong_type_arg ("isargout", args(0));
+          retval = r;
         }
       else
-        error ("isargout: invalid call at top level");
+        gripe_wrong_type_arg ("isargout", args(0));
     }
   else
-    print_usage ();
+    error ("isargout: invalid call at top level");
 
   return retval;
 }

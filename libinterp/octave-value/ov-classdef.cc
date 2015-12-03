@@ -3808,16 +3808,12 @@ DEFUN (__meta_get_package__, args, , "")
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
-
-      retval = to_ov (lookup_package (cname));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
+
+  return to_ov (lookup_package (cname));
 }
 
 DEFUN (__superclass_reference__, args, /* nargout */,
@@ -3843,16 +3839,12 @@ Undocumented internal function.\n\
             << std::endl;
 #endif
 
-  if (args.length () == 1)
-    {
-      std::string cls = args(0).xstring_value ("CLASS_NAME must be a string");
-
-      retval = to_ov (lookup_class (cls));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string cls = args(0).xstring_value ("CLASS_NAME must be a string");
+
+  return to_ov (lookup_class (cls));
 }
 
 DEFUN (metaclass, args, /* nargout */,
@@ -3863,16 +3855,12 @@ Returns the meta.class object corresponding to the class of @var{obj}.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      cdef_object obj = to_cdef (args(0));
-
-      retval = to_ov (obj.get_class ());
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  cdef_object obj = to_cdef (args(0));
+
+  return to_ov (obj.get_class ());
 }
 
 /*

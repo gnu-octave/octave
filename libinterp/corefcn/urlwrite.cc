@@ -340,10 +340,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   // verify arguments
   if (nargin != 2 && nargin != 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::string url = args(0).xstring_value ("urlwrite: URL must be a string");
 
@@ -477,10 +474,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   // verify arguments
   if (nargin != 1 && nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::string url = args(0).xstring_value ("urlread: URL must be a string");
 
@@ -538,35 +532,25 @@ DEFUN (__ftp__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
-  std::string host;
-  std::string user = "anonymous";
-  std::string passwd = "";
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
-  else
-    {
-      host = args(0).xstring_value ("__ftp__: HOST must be a string");
+    print_usage ();
 
-      if (nargin > 1)
-        user = args(1).xstring_value ("__ftp__: USER must be a string");
+  std::string host = args(0).xstring_value ("__ftp__: HOST must be a string");
 
-      if (nargin > 2)
-        passwd = args(2).xstring_value ("__ftp__: PASSWD must be a string");
+  std::string user = (nargin > 1)
+    ? args(1).xstring_value ("__ftp__: USER must be a string")
+    : std::string ("anonymous");
 
-      curl_handle ch
-        = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
+  std::string passwd = (nargin > 2)
+    ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
+    : std::string ();
 
-      retval = ch.value ();
-    }
+  curl_handle ch
+    = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
 
-  return retval;
+  return octave_value (ch.value ());
 }
 
 DEFUN (__ftp_pwd__, args, ,

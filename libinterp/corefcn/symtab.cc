@@ -1668,6 +1668,9 @@ determine whether functions defined in function files need to recompiled.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargout > 0 || nargin == 0)
     {
       switch (Vignore_function_time_stamp)
@@ -1699,8 +1702,6 @@ determine whether functions defined in function files need to recompiled.\n\
       else
         error ("ignore_function_time_stamp: argument must be one of \"all\", \"system\", or \"none\"");
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -1752,6 +1753,9 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 0)
     {
       symbol_table::dump_functions (octave_stdout);
@@ -1764,7 +1768,7 @@ Undocumented internal function.\n\
            p != lst.end (); p++)
         symbol_table::dump (octave_stdout, *p);
     }
-  else if (nargin == 1)
+  else
     {
       octave_value arg = args(0);
 
@@ -1800,8 +1804,6 @@ Undocumented internal function.\n\
           symbol_table::dump (octave_stdout, s);
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -1814,27 +1816,25 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string name = args(0).xstring_value ("__get_cmd_line_function_text__: first argument must be function name");
-
-      octave_value ov = symbol_table::find_cmdline_function (name);
-
-      octave_user_function *f = ov.user_function_value ();
-
-      if (f)
-        {
-          std::ostringstream buf;
-
-          tree_print_code tpc (buf);
-
-          f->accept (tpc);
-
-          retval = buf.str ();
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("__get_cmd_line_function_text__: first argument must be function name");
+
+  octave_value ov = symbol_table::find_cmdline_function (name);
+
+  octave_user_function *f = ov.user_function_value ();
+
+  if (f)
+    {
+      std::ostringstream buf;
+
+      tree_print_code tpc (buf);
+
+      f->accept (tpc);
+
+      retval = buf.str ();
+    }
 
   return retval;
 }
@@ -1847,14 +1847,12 @@ DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 {
   octave_value retval;
 
-  if (args.length () == 2)
-    {
-      std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
-
-      symbol_table::assign (name, args(1));
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
+
+  symbol_table::assign (name, args(1));
 
   return retval;
 }
@@ -1863,18 +1861,16 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
-
-      retval = symbol_table::varval (name);
-
-      if (retval.is_undefined ())
-        error ("variable_value: '%s' is not a variable in the current scope",
-               name.c_str ());
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
+
+  retval = symbol_table::varval (name);
+
+  if (retval.is_undefined ())
+    error ("variable_value: '%s' is not a variable in the current scope",
+           name.c_str ());
 
   return retval;
 }

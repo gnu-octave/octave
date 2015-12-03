@@ -1029,112 +1029,110 @@ command shell that is started to run the command.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0 && nargin < 4)
+  if (nargin == 0 || nargin > 3)
+    print_usage ();
+
+  bool return_output = (nargin == 1 && nargout > 1);
+
+  system_exec_type type = et_sync;
+
+  if (nargin == 3)
     {
-      bool return_output = (nargin == 1 && nargout > 1);
+      std::string type_str = args(2).xstring_value ("system: TYPE must be a string");
 
-      system_exec_type type = et_sync;
-
-      if (nargin == 3)
-        {
-          std::string type_str = args(2).xstring_value ("system: TYPE must be a string");
-
-          if (type_str == "sync")
-            type = et_sync;
-          else if (type_str == "async")
-            type = et_async;
-          else
-            {
-              error ("system: TYPE must be \"sync\" or \"async\"");
-              return retval;
-            }
-        }
-
-      if (nargin > 1)
-        {
-          try
-            {
-              return_output = args(1).is_true ();
-            }
-          catch (octave_execution_exception& e)
-            {
-              error (e, "system: RETURN_OUTPUT must be boolean value true or false");
-            }
-        }
-
-      if (return_output && type == et_async)
-        {
-          error ("system: can't return output from commands run asynchronously");
-          return retval;
-        }
-
-      std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
-
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-      // Work around weird double-quote handling on Windows systems.
-      if (type == et_sync)
-        cmd_str = "\"" + cmd_str + "\"";
-#endif
-
-      if (type == et_async)
-        {
-          // FIXME: maybe this should go in sysdep.cc?
-#ifdef HAVE_FORK
-          pid_t pid = fork ();
-
-          if (pid < 0)
-            error ("system: fork failed -- can't create child process");
-          else if (pid == 0)
-            {
-              // FIXME: should probably replace this
-              // call with something portable.
-
-              execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
-                     static_cast<void *> (0));
-
-              panic_impossible ();
-            }
-          else
-            retval(0) = pid;
-#elif defined (__WIN32__)
-          STARTUPINFO si;
-          PROCESS_INFORMATION pi;
-          ZeroMemory (&si, sizeof (si));
-          ZeroMemory (&pi, sizeof (pi));
-          OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length ()+1);
-          strcpy (xcmd_str, cmd_str.c_str ());
-
-          if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
-            error ("system: CreateProcess failed -- can't create child process");
-          else
-            {
-              retval(0) = pi.dwProcessId;
-              CloseHandle (pi.hProcess);
-              CloseHandle (pi.hThread);
-            }
-#else
-          error ("system: asynchronous system calls are not supported");
-#endif
-        }
-      else if (return_output)
-        retval = run_command_and_return_output (cmd_str);
+      if (type_str == "sync")
+        type = et_sync;
+      else if (type_str == "async")
+        type = et_async;
       else
         {
-          int status = system (cmd_str.c_str ());
-
-          // The value in status is as returned by waitpid.  If
-          // the process exited normally, extract the actual exit
-          // status of the command.  Otherwise, return 127 as a
-          // failure code.
-
-          if (octave_wait::ifexited (status))
-            status = octave_wait::exitstatus (status);
-
-          retval(0) = status;
+          error ("system: TYPE must be \"sync\" or \"async\"");
+          return retval;
         }
     }
+
+  if (nargin > 1)
+    {
+      try
+        {
+          return_output = args(1).is_true ();
+        }
+      catch (octave_execution_exception& e)
+        {
+          error (e, "system: RETURN_OUTPUT must be boolean value true or false");
+        }
+    }
+
+  if (return_output && type == et_async)
+    {
+      error ("system: can't return output from commands run asynchronously");
+      return retval;
+    }
+
+  std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  // Work around weird double-quote handling on Windows systems.
+  if (type == et_sync)
+    cmd_str = "\"" + cmd_str + "\"";
+#endif
+
+  if (type == et_async)
+    {
+      // FIXME: maybe this should go in sysdep.cc?
+#ifdef HAVE_FORK
+      pid_t pid = fork ();
+
+      if (pid < 0)
+        error ("system: fork failed -- can't create child process");
+      else if (pid == 0)
+        {
+          // FIXME: should probably replace this
+          // call with something portable.
+
+          execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
+                 static_cast<void *> (0));
+
+          panic_impossible ();
+        }
+      else
+        retval(0) = pid;
+#elif defined (__WIN32__)
+      STARTUPINFO si;
+      PROCESS_INFORMATION pi;
+      ZeroMemory (&si, sizeof (si));
+      ZeroMemory (&pi, sizeof (pi));
+      OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length ()+1);
+      strcpy (xcmd_str, cmd_str.c_str ());
+
+      if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
+        error ("system: CreateProcess failed -- can't create child process");
+      else
+        {
+          retval(0) = pi.dwProcessId;
+          CloseHandle (pi.hProcess);
+          CloseHandle (pi.hThread);
+        }
+#else
+      error ("system: asynchronous system calls are not supported");
+#endif
+    }
+  else if (return_output)
+    retval = run_command_and_return_output (cmd_str);
   else
-    print_usage ();
+    {
+      int status = system (cmd_str.c_str ());
+
+      // The value in status is as returned by waitpid.  If
+      // the process exited normally, extract the actual exit
+      // status of the command.  Otherwise, return 127 as a
+      // failure code.
+
+      if (octave_wait::ifexited (status))
+        status = octave_wait::exitstatus (status);
+
+      retval(0) = status;
+    }
 
   return retval;
 }
@@ -1221,27 +1219,24 @@ from the list, so if a function was placed in the list multiple times with\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      std::string arg = args(0).xstring_value ("atexit: FCN argument must be a string");
-
-      bool add_mode = true;
-
-      if (nargin == 2)
-        add_mode = args(1).xbool_value ("atexit: FLAG argument must be a logical value");
-
-      if (add_mode)
-        octave_add_atexit_function (arg);
-      else
-        {
-          bool found = octave_remove_atexit_function (arg);
-
-          if (nargout > 0)
-            retval(0) = found;
-        }
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  std::string arg = args(0).xstring_value ("atexit: FCN argument must be a string");
+
+  bool add_mode = (nargin == 2)
+    ? args(1).xbool_value ("atexit: FLAG argument must be a logical value")
+    : true;
+
+  if (add_mode)
+    octave_add_atexit_function (arg);
+  else
+    {
+      bool found = octave_remove_atexit_function (arg);
+
+      if (nargout > 0)
+        retval(0) = found;
+    }
 
   return retval;
 }
@@ -1521,6 +1516,9 @@ specified option.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       std::string arg = args(0).string_value ();
@@ -1537,10 +1535,8 @@ specified option.\n\
       else
         error ("octave_config_info: invalid parameter '%s'", arg.c_str ());
     }
-  else if (nargin == 0)
-    retval = m;
   else
-    print_usage ();
+    retval = m;
 
   return retval;
 }

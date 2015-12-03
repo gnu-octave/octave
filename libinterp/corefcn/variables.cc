@@ -331,10 +331,7 @@ do_isglobal (const octave_value_list& args)
   int nargin = args.length ();
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (! args(0).is_string ())
     {
@@ -595,24 +592,22 @@ not on the search path you should use some combination of the functions\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string name = args(0).xstring_value ("exist: NAME must be a string");
+
+  if (nargin == 2)
     {
-      std::string name = args(0).xstring_value ("exist: NAME must be a string");
+      std::string type = args(1).xstring_value ("exist: TYPE must be a string");
 
-      if (nargin == 2)
-        {
-          std::string type = args(1).xstring_value ("exist: TYPE must be a string");
+      if (type == "class")
+        warning ("exist: \"class\" type argument is not implemented");
 
-          if (type == "class")
-            warning ("exist: \"class\" type argument is not implemented");
-
-          retval = symbol_exist (name, type);
-        }
-      else
-        retval = symbol_exist (name);
+      retval = symbol_exist (name, type);
     }
   else
-    print_usage ();
+    retval = symbol_exist (name);
 
   return retval;
 }
@@ -951,6 +946,7 @@ set_internal_variable (int& var, const octave_value_list& args,
     nchoices++;
 
   int nargin = args.length ();
+
   assert (var < nchoices);
 
   if (nargout > 0 || nargin == 0)
@@ -1846,18 +1842,14 @@ matching the given patterns.\n\
 {
   octave_value retval;
 
-  if (nargout < 2)
-    {
-      int argc = args.length () + 1;
-
-      string_vector argv = args.make_argv ("who");
-
-      retval = do_who (argc, argv, nargout == 1);
-    }
-  else
+  if (nargout > 1)
     print_usage ();
 
-  return retval;
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("who");
+
+  return do_who (argc, argv, nargout == 1);
 }
 
 DEFUN (whos, args, nargout,
@@ -1926,18 +1918,14 @@ complex, nesting, persistent.\n\
 {
   octave_value retval;
 
-  if (nargout < 2)
-    {
-      int argc = args.length () + 1;
-
-      string_vector argv = args.make_argv ("whos");
-
-      retval = do_who (argc, argv, nargout == 1, true);
-    }
-  else
+  if (nargout > 1)
     print_usage ();
 
-  return retval;
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("whos");
+
+  return do_who (argc, argv, nargout == 1, true);
 }
 
 // Defining variables.
@@ -2028,17 +2016,15 @@ Lock the current function into memory so that it can't be cleared.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 0)
-    {
-      octave_function *fcn = octave_call_stack::caller ();
-
-      if (fcn)
-        fcn->lock ();
-      else
-        error ("mlock: invalid use outside a function");
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  octave_function *fcn = octave_call_stack::caller ();
+
+  if (fcn)
+    fcn->lock ();
+  else
+    error ("mlock: invalid use outside a function");
 
   return retval;
 }
@@ -2055,13 +2041,18 @@ If no function is named then unlock the current function.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  if (nargin == 1)
     {
       std::string name = args(0).xstring_value ("munlock: FCN must be a string");
 
       munlock (name);
     }
-  else if (args.length () == 0)
+  else
     {
       octave_function *fcn = octave_call_stack::caller ();
 
@@ -2070,8 +2061,6 @@ If no function is named then unlock the current function.\n\
       else
         error ("munlock: invalid use outside a function");
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2089,13 +2078,18 @@ If no function is named then return true if the current function is locked.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  if (nargin == 1)
     {
       std::string name = args(0).xstring_value ("mislocked: FCN must be a string");
 
       retval = mislocked (name);
     }
-  else if (args.length () == 0)
+  else
     {
       octave_function *fcn = octave_call_stack::caller ();
 
@@ -2104,8 +2098,6 @@ If no function is named then return true if the current function is locked.\n\
       else
         error ("mislocked: invalid use outside a function");
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2326,10 +2318,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
   do \
     { \
       if (cond) \
-        { \
-          print_usage (); \
-          return retval; \
-        } \
+        print_usage (); \
     } \
   while (0)
 
@@ -2664,16 +2653,12 @@ DEFUN (__varval__, args, ,
 Return the value of the variable @var{name} directly from the symbol table.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
   std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
 
-  retval = symbol_table::varval (args(0).string_value ());
-
-  return retval;
+  return symbol_table::varval (args(0).string_value ());
 }
 
 static std::string Vmissing_component_hook;

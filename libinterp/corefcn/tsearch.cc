@@ -70,15 +70,14 @@ convex hull, @var{idx} is NaN.\n\
 @seealso{delaunay, delaunayn}\n\
 @end deftypefn")
 {
-  const double eps=1.0e-12;
-
   octave_value_list retval;
+
+  const double eps = 1.0e-12;
+
   const int nargin = args.length ();
+
   if (nargin != 5)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   const ColumnVector x (args(0).vector_value ());
   const ColumnVector y (args(1).vector_value ());

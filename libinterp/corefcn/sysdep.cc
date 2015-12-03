@@ -193,27 +193,25 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
+  if (args.length () != 1)
+    print_usage ();
+
+  std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-      HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
-                                       SW_SHOWNORMAL);
+  HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
+                                   SW_SHOWNORMAL);
 
-      // ShellExecute returns a value greater than 32 if successful.
-      retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+  // ShellExecute returns a value greater than 32 if successful.
+  retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
 #else
-      octave_value_list tmp
-        = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
-                        false, "async"),
-                   1);
+  octave_value_list tmp
+    = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
+                    false, "async"),
+               1);
 
-      retval = (tmp(0).double_value () == 0);
+  retval = (tmp(0).double_value () == 0);
 #endif
-    }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -614,20 +612,14 @@ returns a string containing the value of your path.\n\
 @seealso{setenv, unsetenv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      std::string name = args(0).string_value ();
-
-      retval = octave_env::getenv (name);
-    }
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  std::string name = args(0).string_value ();
+
+  return octave_value (octave_env::getenv (name));
 }
 
 /*
@@ -650,18 +642,16 @@ string.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 1)
-    {
-      std::string var = args(0).xstring_value ("setenv: VAR must be a string");
-
-      std::string val = (nargin == 2
-                         ? args(1).xstring_value ("setenv: VALUE must be a string")
-                         : std::string ());
-
-      octave_env::putenv (var, val);
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  std::string var = args(0).xstring_value ("setenv: VAR must be a string");
+
+  std::string val = (nargin == 2
+                     ? args(1).xstring_value ("setenv: VALUE must be a string")
+                     : std::string ());
+
+  octave_env::putenv (var, val);
 
   return retval;
 }
@@ -686,20 +676,14 @@ occurred.\n\
 @seealso{setenv, getenv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      std::string tmp = args(0).string_value ();
-
-      retval = gnulib::unsetenv (tmp.c_str ());
-    }
-  else
+  if (nargin != 1)
     print_usage ();
 
-  return retval;
+  std::string tmp = args(0).string_value ();
+
+  return octave_value (gnulib::unsetenv (tmp.c_str ()));
 }
 
 /*
@@ -785,11 +769,8 @@ clc;\n\
 
   int nargin = args.length ();
 
-  if (! (nargin == 0 || nargin == 1))
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin > 1)
+    print_usage ();
 
   if (nargin == 1)
     {
@@ -836,20 +817,18 @@ Suspend the execution of the program for the given number of seconds.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      double dval = args(0).double_value ();
-
-      if (xisnan (dval))
-        warning ("sleep: NaN is an invalid delay");
-      else
-        {
-          Fdrawnow ();
-          octave_sleep (dval);
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double dval = args(0).double_value ();
+
+  if (xisnan (dval))
+    warning ("sleep: NaN is an invalid delay");
+  else
+    {
+      Fdrawnow ();
+      octave_sleep (dval);
+    }
 
   return retval;
 }
@@ -876,24 +855,22 @@ one second, @code{usleep} will pause the execution for @code{round\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      double dval = args(0).double_value ();
-
-      if (xisnan (dval))
-        warning ("usleep: NaN is an invalid delay");
-      else
-        {
-          Fdrawnow ();
-
-          int delay = NINT (dval);
-
-          if (delay > 0)
-            octave_usleep (delay);
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double dval = args(0).double_value ();
+
+  if (xisnan (dval))
+    warning ("usleep: NaN is an invalid delay");
+  else
+    {
+      Fdrawnow ();
+
+      int delay = NINT (dval);
+
+      if (delay > 0)
+        octave_usleep (delay);
+    }
 
   return retval;
 }
@@ -975,21 +952,19 @@ tilde_expand (\"~/bin\")\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      string_vector sv = arg.xall_strings ("tilde_expand: argument must be char or cellstr object");
-
-      sv = file_ops::tilde_expand (sv);
-
-      if (arg.is_cellstr ())
-        retval = Cell (arg.dims (), sv);
-      else
-        retval = sv;
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  octave_value arg = args(0);
+
+  string_vector sv = arg.xall_strings ("tilde_expand: argument must be char or cellstr object");
+
+  sv = file_ops::tilde_expand (sv);
+
+  if (arg.is_cellstr ())
+    retval = Cell (arg.dims (), sv);
+  else
+    retval = sv;
 
   return retval;
 }

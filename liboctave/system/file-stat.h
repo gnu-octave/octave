@@ -235,7 +235,7 @@ public:
 
   void get_stats (const std::string& n, bool force = false)
   {
-    if (n != file_name || ! initialized  || force)
+    if (n != file_name || ! initialized || force)
       {
         initialized = false;
 
@@ -293,7 +293,7 @@ public:
 
   void get_stats (int n, bool force = false)
   {
-    if (n != fid || ! initialized  || force)
+    if (n != fid || ! initialized || force)
       {
         initialized = false;
 

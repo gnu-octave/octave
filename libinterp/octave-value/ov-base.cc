@@ -441,7 +441,7 @@ octave_base_value::print_with_name (std::ostream& output_buf,
 
   print (output_buf);
 
-  if (print_padding  && pad_after && ! Vcompact_format)
+  if (print_padding && pad_after && ! Vcompact_format)
     newline (output_buf);
 }
 

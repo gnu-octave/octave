@@ -99,7 +99,7 @@ factorization as determined by @var{typ}.\n\
   octave_value_list retval;
   int nargin = args.length ();
 
-  if (nargin < 1  || nargin > 3 || nargout > 5)
+  if (nargin < 1 || nargin > 3 || nargout > 5)
     print_usage ();
 
 #ifdef HAVE_CHOLMOD

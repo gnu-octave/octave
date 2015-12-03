@@ -455,7 +455,7 @@ glps_renderer::render_text (const std::string& txt,
   // When using "tex" or when the string has only one line and no
   // special characters, use gl2ps for alignment
   if (lst.empty () || term.find ("tex") != std::string::npos
-      || (lst.size () == 1  && ! lst.front ().get_code ()))
+      || (lst.size () == 1 && ! lst.front ().get_code ()))
     {
       std::string name = fontname;
       int sz = fontsize;

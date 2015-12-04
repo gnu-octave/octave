@@ -69,7 +69,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
   int nargin = args.length ();
   std::string shape = "full";   // default
   bool separable = false;
-  convn_type ct;
+  convn_type ct = convn_full;
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
@@ -309,7 +309,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
   octave_value tmp;
   int nargin = args.length ();
   std::string shape = "full";   // default
-  convn_type ct;
+  convn_type ct = convn_full;
 
   if (nargin < 2 || nargin > 3)
     print_usage ();

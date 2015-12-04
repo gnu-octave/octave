@@ -72,10 +72,7 @@ On exit, @var{y} is a unit vector such that:\n\
   int nargin = args.length ();
 
   if (nargin != 2 || nargout > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg_x = args(0);
   octave_value arg_v = args(1);

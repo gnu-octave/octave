@@ -69,10 +69,7 @@ For that, use any of the condition number functions: @code{cond},\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 

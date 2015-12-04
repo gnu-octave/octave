@@ -59,10 +59,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 

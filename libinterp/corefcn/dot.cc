@@ -126,10 +126,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argx = args(0);
   octave_value argy = args(1);
@@ -300,10 +297,7 @@ endfor\n\
   int nargin = args.length ();
 
   if (nargin != 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argx = args(0);
   octave_value argy = args(1);

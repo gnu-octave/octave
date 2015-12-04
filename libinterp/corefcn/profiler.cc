@@ -401,23 +401,15 @@ DEFUN (__profiler_enable__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  int nargin = args.length ();
 
-  const int nargin = args.length ();
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin > 0)
-    {
-      if (nargin > 1)
-        {
-          print_usage ();
-          return retval;
-        }
+    profiler.set_active (args(0).bool_value ());
 
-      profiler.set_active (args(0).bool_value ());
-    }
-
-  retval(0) = profiler.is_active ();
-
-  return retval;
+  return octave_value (profiler.is_active ());
 }
 
 // Clear all collected profiling data.

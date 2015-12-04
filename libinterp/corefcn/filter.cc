@@ -397,10 +397,7 @@ H(z) = ---------------------\n\
   int nargin  = args.length ();
 
   if (nargin < 3 || nargin > 5)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   const char *a_b_errmsg = "filter: A and B must be vectors";
   const char *x_si_errmsg = "filter: X and SI must be arrays";

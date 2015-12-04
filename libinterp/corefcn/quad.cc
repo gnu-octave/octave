@@ -196,221 +196,219 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 2 && nargin < 6 && nargout < 5)
+  if (nargin < 3 || nargin > 5 || nargout > 4)
+    print_usage ();
+
+  if (args(0).is_function_handle () || args(0).is_inline_function ())
+    quad_fcn = args(0).function_value ();
+  else
     {
-      if (args(0).is_function_handle () || args(0).is_inline_function ())
-        quad_fcn = args(0).function_value ();
-      else
+      fcn_name = unique_symbol_name ("__quad_fcn__");
+      std::string fname = "function y = ";
+      fname.append (fcn_name);
+      fname.append ("(x) y = ");
+      quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
+                                   "; endfunction");
+      frame.add_fcn (clear_function, fcn_name);
+    }
+
+  if (! quad_fcn)
+    error ("quad: FCN argument is not a valid function name or handle");
+
+  if (args(1).is_single_type () || args(2).is_single_type ())
+    {
+      float a = args(1).xfloat_value ("quad: lower limit of integration A must be a scalar");
+      float b = args(2).xfloat_value ("quad: upper limit of integration B must be a scalar");
+
+      int indefinite = 0;
+      FloatIndefQuad::IntegralType indef_type
+        = FloatIndefQuad::doubly_infinite;
+      float bound = 0.0;
+      if (xisinf (a) && xisinf (b))
         {
-          fcn_name = unique_symbol_name ("__quad_fcn__");
-          std::string fname = "function y = ";
-          fname.append (fcn_name);
-          fname.append ("(x) y = ");
-          quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
-                                       "; endfunction");
-          frame.add_fcn (clear_function, fcn_name);
+          indefinite = 1;
+          indef_type = FloatIndefQuad::doubly_infinite;
+        }
+      else if (xisinf (a))
+        {
+          indefinite = 1;
+          bound = b;
+          indef_type = FloatIndefQuad::neg_inf_to_bound;
+        }
+      else if (xisinf (b))
+        {
+          indefinite = 1;
+          bound = a;
+          indef_type = FloatIndefQuad::bound_to_inf;
         }
 
-      if (! quad_fcn)
-        error ("quad: FCN argument is not a valid function name or handle");
+      octave_idx_type ier = 0;
+      octave_idx_type nfun = 0;
+      float abserr = 0.0;
+      float val = 0.0;
+      bool have_sing = false;
+      FloatColumnVector sing;
+      FloatColumnVector tol;
 
-      if (args(1).is_single_type () || args(2).is_single_type ())
+      switch (nargin)
         {
-          float a = args(1).xfloat_value ("quad: lower limit of integration A must be a scalar");
-          float b = args(2).xfloat_value ("quad: upper limit of integration B must be a scalar");
+        case 5:
+          if (indefinite)
+            error ("quad: singularities not allowed on infinite intervals");
 
-          int indefinite = 0;
-          FloatIndefQuad::IntegralType indef_type
-            = FloatIndefQuad::doubly_infinite;
-          float bound = 0.0;
-          if (xisinf (a) && xisinf (b))
+          have_sing = true;
+
+          sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector vector of singularities");
+
+        case 4:
+          tol = args(3).xfloat_vector_value ("quad: TOL must be a 1 or 2-element vector");
+
+          switch (tol.numel ())
             {
-              indefinite = 1;
-              indef_type = FloatIndefQuad::doubly_infinite;
-            }
-          else if (xisinf (a))
-            {
-              indefinite = 1;
-              bound = b;
-              indef_type = FloatIndefQuad::neg_inf_to_bound;
-            }
-          else if (xisinf (b))
-            {
-              indefinite = 1;
-              bound = a;
-              indef_type = FloatIndefQuad::bound_to_inf;
-            }
+            case 2:
+              quad_opts.set_single_precision_relative_tolerance (tol (1));
 
-          octave_idx_type ier = 0;
-          octave_idx_type nfun = 0;
-          float abserr = 0.0;
-          float val = 0.0;
-          bool have_sing = false;
-          FloatColumnVector sing;
-          FloatColumnVector tol;
-
-          switch (nargin)
-            {
-            case 5:
-              if (indefinite)
-                error ("quad: singularities not allowed on infinite intervals");
-
-              have_sing = true;
-
-              sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector vector of singularities");
-
-            case 4:
-              tol = args(3).xfloat_vector_value ("quad: TOL must be a 1 or 2-element vector");
-
-              switch (tol.numel ())
-                {
-                case 2:
-                  quad_opts.set_single_precision_relative_tolerance (tol (1));
-
-                case 1:
-                  quad_opts.set_single_precision_absolute_tolerance (tol (0));
-                  break;
-
-                default:
-                  error ("quad: TOL must be a 1 or 2-element vector");
-                }
-
-            case 3:
-              if (indefinite)
-                {
-                  FloatIndefQuad iq (quad_float_user_function, bound,
-                                     indef_type);
-                  iq.set_options (quad_opts);
-                  val = iq.float_integrate (ier, nfun, abserr);
-                }
-              else
-                {
-                  if (have_sing)
-                    {
-                      FloatDefQuad dq (quad_float_user_function, a, b, sing);
-                      dq.set_options (quad_opts);
-                      val = dq.float_integrate (ier, nfun, abserr);
-                    }
-                  else
-                    {
-                      FloatDefQuad dq (quad_float_user_function, a, b);
-                      dq.set_options (quad_opts);
-                      val = dq.float_integrate (ier, nfun, abserr);
-                    }
-                }
+            case 1:
+              quad_opts.set_single_precision_absolute_tolerance (tol (0));
               break;
 
             default:
-              panic_impossible ();
-              break;
+              error ("quad: TOL must be a 1 or 2-element vector");
             }
 
-          retval(3) = abserr;
-          retval(2) = nfun;
-          retval(1) = ier;
-          retval(0) = val;
-
-        }
-      else
-        {
-          double a = args(1).xdouble_value ("quad: lower limit of integration A must be a scalar");
-          double b = args(2).xdouble_value ("quad: upper limit of integration B must be a scalar");
-
-          int indefinite = 0;
-          IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
-          double bound = 0.0;
-          if (xisinf (a) && xisinf (b))
+        case 3:
+          if (indefinite)
             {
-              indefinite = 1;
-              indef_type = IndefQuad::doubly_infinite;
+              FloatIndefQuad iq (quad_float_user_function, bound,
+                                 indef_type);
+              iq.set_options (quad_opts);
+              val = iq.float_integrate (ier, nfun, abserr);
             }
-          else if (xisinf (a))
+          else
             {
-              indefinite = 1;
-              bound = b;
-              indef_type = IndefQuad::neg_inf_to_bound;
-            }
-          else if (xisinf (b))
-            {
-              indefinite = 1;
-              bound = a;
-              indef_type = IndefQuad::bound_to_inf;
-            }
-
-          octave_idx_type ier = 0;
-          octave_idx_type nfun = 0;
-          double abserr = 0.0;
-          double val = 0.0;
-          bool have_sing = false;
-          ColumnVector sing;
-          ColumnVector tol;
-
-          switch (nargin)
-            {
-            case 5:
-              if (indefinite)
-                error ("quad: singularities not allowed on infinite intervals");
-
-              have_sing = true;
-
-              sing = args(4).vector_value ("quad: fifth argument SING must be a vector vector of singularities");
-
-            case 4:
-              tol = args(3).xvector_value ("quad: TOL must be a 1 or 2-element vector");
-
-              switch (tol.numel ())
+              if (have_sing)
                 {
-                case 2:
-                  quad_opts.set_relative_tolerance (tol (1));
-
-                case 1:
-                  quad_opts.set_absolute_tolerance (tol (0));
-                  break;
-
-                default:
-                  error ("quad: TOL must be a 1 or 2-element vector");
-                }
-
-            case 3:
-              if (indefinite)
-                {
-                  IndefQuad iq (quad_user_function, bound, indef_type);
-                  iq.set_options (quad_opts);
-                  val = iq.integrate (ier, nfun, abserr);
+                  FloatDefQuad dq (quad_float_user_function, a, b, sing);
+                  dq.set_options (quad_opts);
+                  val = dq.float_integrate (ier, nfun, abserr);
                 }
               else
                 {
-                  if (have_sing)
-                    {
-                      DefQuad dq (quad_user_function, a, b, sing);
-                      dq.set_options (quad_opts);
-                      val = dq.integrate (ier, nfun, abserr);
-                    }
-                  else
-                    {
-                      DefQuad dq (quad_user_function, a, b);
-                      dq.set_options (quad_opts);
-                      val = dq.integrate (ier, nfun, abserr);
-                    }
+                  FloatDefQuad dq (quad_float_user_function, a, b);
+                  dq.set_options (quad_opts);
+                  val = dq.float_integrate (ier, nfun, abserr);
                 }
-              break;
-
-            default:
-              panic_impossible ();
-              break;
             }
+          break;
 
-          retval(3) = abserr;
-          retval(2) = nfun;
-          retval(1) = ier;
-          retval(0) = val;
+        default:
+          panic_impossible ();
+          break;
         }
 
-      if (fcn_name.length ())
-        clear_function (fcn_name);
+      retval(3) = abserr;
+      retval(2) = nfun;
+      retval(1) = ier;
+      retval(0) = val;
+
     }
   else
-    print_usage ();
+    {
+      double a = args(1).xdouble_value ("quad: lower limit of integration A must be a scalar");
+      double b = args(2).xdouble_value ("quad: upper limit of integration B must be a scalar");
+
+      int indefinite = 0;
+      IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
+      double bound = 0.0;
+      if (xisinf (a) && xisinf (b))
+        {
+          indefinite = 1;
+          indef_type = IndefQuad::doubly_infinite;
+        }
+      else if (xisinf (a))
+        {
+          indefinite = 1;
+          bound = b;
+          indef_type = IndefQuad::neg_inf_to_bound;
+        }
+      else if (xisinf (b))
+        {
+          indefinite = 1;
+          bound = a;
+          indef_type = IndefQuad::bound_to_inf;
+        }
+
+      octave_idx_type ier = 0;
+      octave_idx_type nfun = 0;
+      double abserr = 0.0;
+      double val = 0.0;
+      bool have_sing = false;
+      ColumnVector sing;
+      ColumnVector tol;
+
+      switch (nargin)
+        {
+        case 5:
+          if (indefinite)
+            error ("quad: singularities not allowed on infinite intervals");
+
+          have_sing = true;
+
+          sing = args(4).vector_value ("quad: fifth argument SING must be a vector vector of singularities");
+
+        case 4:
+          tol = args(3).xvector_value ("quad: TOL must be a 1 or 2-element vector");
+
+          switch (tol.numel ())
+            {
+            case 2:
+              quad_opts.set_relative_tolerance (tol (1));
+
+            case 1:
+              quad_opts.set_absolute_tolerance (tol (0));
+              break;
+
+            default:
+              error ("quad: TOL must be a 1 or 2-element vector");
+            }
+
+        case 3:
+          if (indefinite)
+            {
+              IndefQuad iq (quad_user_function, bound, indef_type);
+              iq.set_options (quad_opts);
+              val = iq.integrate (ier, nfun, abserr);
+            }
+          else
+            {
+              if (have_sing)
+                {
+                  DefQuad dq (quad_user_function, a, b, sing);
+                  dq.set_options (quad_opts);
+                  val = dq.integrate (ier, nfun, abserr);
+                }
+              else
+                {
+                  DefQuad dq (quad_user_function, a, b);
+                  dq.set_options (quad_opts);
+                  val = dq.integrate (ier, nfun, abserr);
+                }
+            }
+          break;
+
+        default:
+          panic_impossible ();
+          break;
+        }
+
+      retval(3) = abserr;
+      retval(2) = nfun;
+      retval(1) = ier;
+      retval(0) = val;
+    }
+
+  if (fcn_name.length ())
+    clear_function (fcn_name);
 
   return retval;
 }

@@ -69,179 +69,177 @@ compatible dimensions.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 3)
+  if (nargin != 3)
+    print_usage ();
+
+  octave_value x_arg = args(0);
+  octave_value a_arg = args(1);
+  octave_value b_arg = args(2);
+
+  // FIXME: Can we make a template version of the duplicated code below
+  if (x_arg.is_single_type () || a_arg.is_single_type ()
+      || b_arg.is_single_type ())
     {
-      octave_value x_arg = args(0);
-      octave_value a_arg = args(1);
-      octave_value b_arg = args(2);
-
-      // FIXME: Can we make a template version of the duplicated code below
-      if (x_arg.is_single_type () || a_arg.is_single_type ()
-          || b_arg.is_single_type ())
+      if (x_arg.is_scalar_type ())
         {
-          if (x_arg.is_scalar_type ())
+          float x = x_arg.float_value ();
+
+          if (a_arg.is_scalar_type ())
             {
-              float x = x_arg.float_value ();
+              float a = a_arg.float_value ();
 
-              if (a_arg.is_scalar_type ())
+              if (b_arg.is_scalar_type ())
                 {
-                  float a = a_arg.float_value ();
+                  float b = b_arg.float_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      float b = b_arg.float_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<float> b = b_arg.float_array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
               else
                 {
-                  Array<float> a = a_arg.float_array_value ();
+                  Array<float> b = b_arg.float_array_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      float b = b_arg.float_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<float> b = b_arg.float_array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
             }
           else
             {
-              Array<float> x = x_arg.float_array_value ();
+              Array<float> a = a_arg.float_array_value ();
 
-              if (a_arg.is_scalar_type ())
+              if (b_arg.is_scalar_type ())
                 {
-                  float a = a_arg.float_value ();
+                  float b = b_arg.float_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      float b = b_arg.float_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<float> b = b_arg.float_array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
               else
                 {
-                  Array<float> a = a_arg.float_array_value ();
+                  Array<float> b = b_arg.float_array_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      float b = b_arg.float_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<float> b = b_arg.float_array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
             }
         }
       else
         {
-          if (x_arg.is_scalar_type ())
+          Array<float> x = x_arg.float_array_value ();
+
+          if (a_arg.is_scalar_type ())
             {
-              double x = x_arg.double_value ();
+              float a = a_arg.float_value ();
 
-              if (a_arg.is_scalar_type ())
+              if (b_arg.is_scalar_type ())
                 {
-                  double a = a_arg.double_value ();
+                  float b = b_arg.float_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
               else
                 {
-                  Array<double> a = a_arg.array_value ();
+                  Array<float> b = b_arg.float_array_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
             }
           else
             {
-              Array<double> x = x_arg.array_value ();
+              Array<float> a = a_arg.float_array_value ();
 
-              if (a_arg.is_scalar_type ())
+              if (b_arg.is_scalar_type ())
                 {
-                  double a = a_arg.double_value ();
+                  float b = b_arg.float_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
               else
                 {
-                  Array<double> a = a_arg.array_value ();
+                  Array<float> b = b_arg.float_array_value ();
 
-                  if (b_arg.is_scalar_type ())
-                    {
-                      double b = b_arg.double_value ();
-
-                      retval = betainc (x, a, b);
-                    }
-                  else
-                    {
-                      Array<double> b = b_arg.array_value ();
-
-                      retval = betainc (x, a, b);
-                    }
+                  retval = betainc (x, a, b);
                 }
             }
         }
     }
   else
-    print_usage ();
+    {
+      if (x_arg.is_scalar_type ())
+        {
+          double x = x_arg.double_value ();
+
+          if (a_arg.is_scalar_type ())
+            {
+              double a = a_arg.double_value ();
+
+              if (b_arg.is_scalar_type ())
+                {
+                  double b = b_arg.double_value ();
+
+                  retval = betainc (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
+
+                  retval = betainc (x, a, b);
+                }
+            }
+          else
+            {
+              Array<double> a = a_arg.array_value ();
+
+              if (b_arg.is_scalar_type ())
+                {
+                  double b = b_arg.double_value ();
+
+                  retval = betainc (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
+
+                  retval = betainc (x, a, b);
+                }
+            }
+        }
+      else
+        {
+          Array<double> x = x_arg.array_value ();
+
+          if (a_arg.is_scalar_type ())
+            {
+              double a = a_arg.double_value ();
+
+              if (b_arg.is_scalar_type ())
+                {
+                  double b = b_arg.double_value ();
+
+                  retval = betainc (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
+
+                  retval = betainc (x, a, b);
+                }
+            }
+          else
+            {
+              Array<double> a = a_arg.array_value ();
+
+              if (b_arg.is_scalar_type ())
+                {
+                  double b = b_arg.double_value ();
+
+                  retval = betainc (x, a, b);
+                }
+              else
+                {
+                  Array<double> b = b_arg.array_value ();
+
+                  retval = betainc (x, a, b);
+                }
+            }
+        }
+    }
 
   return retval;
 }
@@ -306,103 +304,102 @@ The inverse is the value @var{x} such that\n\
 
   int nargin = args.length ();
 
-  if (nargin == 3)
+  if (nargin != 3)
+    print_usage ();
+
+  octave_value x_arg = args(0);
+  octave_value a_arg = args(1);
+  octave_value b_arg = args(2);
+
+  if (x_arg.is_scalar_type ())
     {
-      octave_value x_arg = args(0);
-      octave_value a_arg = args(1);
-      octave_value b_arg = args(2);
+      double x = x_arg.double_value ();
 
-      if (x_arg.is_scalar_type ())
+      if (a_arg.is_scalar_type ())
         {
-          double x = x_arg.double_value ();
+          double a = a_arg.double_value ();
 
-          if (a_arg.is_scalar_type ())
+          if (b_arg.is_scalar_type ())
             {
-              double a = a_arg.double_value ();
+              double b = b_arg.double_value ();
 
-              if (b_arg.is_scalar_type ())
-                {
-                  double b = b_arg.double_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
-              else
-                {
-                  Array<double> b = b_arg.array_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
+              retval = betaincinv (x, a, b);
             }
           else
             {
-              Array<double> a = a_arg.array_value ();
+              Array<double> b = b_arg.array_value ();
 
-              if (b_arg.is_scalar_type ())
-                {
-                  double b = b_arg.double_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
-              else
-                {
-                  Array<double> b = b_arg.array_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
+              retval = betaincinv (x, a, b);
             }
         }
       else
         {
-          Array<double> x = x_arg.array_value ();
+          Array<double> a = a_arg.array_value ();
 
-          if (a_arg.is_scalar_type ())
+          if (b_arg.is_scalar_type ())
             {
-              double a = a_arg.double_value ();
+              double b = b_arg.double_value ();
 
-              if (b_arg.is_scalar_type ())
-                {
-                  double b = b_arg.double_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
-              else
-                {
-                  Array<double> b = b_arg.array_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
+              retval = betaincinv (x, a, b);
             }
           else
             {
-              Array<double> a = a_arg.array_value ();
+              Array<double> b = b_arg.array_value ();
 
-              if (b_arg.is_scalar_type ())
-                {
-                  double b = b_arg.double_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
-              else
-                {
-                  Array<double> b = b_arg.array_value ();
-
-                  retval = betaincinv (x, a, b);
-                }
+              retval = betaincinv (x, a, b);
             }
-        }
-
-      // FIXME: It would be better to have an algorithm for betaincinv which
-      // accepted float inputs and returned float outputs.  As it is, we do
-      // extra work to calculate betaincinv to double precision and then throw
-      // that precision away.
-      if (x_arg.is_single_type () || a_arg.is_single_type ()
-          || b_arg.is_single_type ())
-        {
-          retval = Array<float> (retval.array_value ());
         }
     }
   else
-    print_usage ();
+    {
+      Array<double> x = x_arg.array_value ();
+
+      if (a_arg.is_scalar_type ())
+        {
+          double a = a_arg.double_value ();
+
+          if (b_arg.is_scalar_type ())
+            {
+              double b = b_arg.double_value ();
+
+              retval = betaincinv (x, a, b);
+            }
+          else
+            {
+              Array<double> b = b_arg.array_value ();
+
+              retval = betaincinv (x, a, b);
+            }
+        }
+      else
+        {
+          Array<double> a = a_arg.array_value ();
+
+          if (b_arg.is_scalar_type ())
+            {
+              double b = b_arg.double_value ();
+
+              retval = betaincinv (x, a, b);
+            }
+          else
+            {
+              Array<double> b = b_arg.array_value ();
+
+              retval = betaincinv (x, a, b);
+            }
+        }
+    }
+
+  // FIXME: It would be better to have an algorithm for betaincinv which
+  // accepted float inputs and returned float outputs.  As it is, we do
+  // extra work to calculate betaincinv to double precision and then throw
+  // that precision away.
+  if (x_arg.is_single_type () || a_arg.is_single_type ()
+      || b_arg.is_single_type ())
+    {
+      retval = Array<float> (retval.array_value ());
+    }
+
 
   return retval;
 }

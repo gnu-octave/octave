@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 
+// FIXME: this looks like trouble...
 static Matrix this_contour;
 static Matrix contourc;
 static int elem;
@@ -303,28 +304,22 @@ DEFUN (__contourc__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 4)
-    {
-      RowVector X = args(0).row_vector_value ();
-      RowVector Y = args(1).row_vector_value ();
-      Matrix Z = args(2).matrix_value ();
-      RowVector L = args(3).row_vector_value ();
-
-      contourc.resize (2, 0);
-
-      for (int i = 0; i < L.numel (); i++)
-        cntr (X, Y, Z, L (i));
-
-      end_contour ();
-
-      retval = contourc;
-    }
-  else
+  if (args.length () != 4)
     print_usage ();
 
-  return retval;
+  RowVector X = args(0).row_vector_value ();
+  RowVector Y = args(1).row_vector_value ();
+  Matrix Z = args(2).matrix_value ();
+  RowVector L = args(3).row_vector_value ();
+
+  contourc.resize (2, 0);
+
+  for (int i = 0; i < L.numel (); i++)
+    cntr (X, Y, Z, L (i));
+
+  end_contour ();
+
+  return octave_value (contourc);
 }
 
 /*

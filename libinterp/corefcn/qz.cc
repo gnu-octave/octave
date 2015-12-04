@@ -383,15 +383,10 @@ compatibility with @sc{matlab}.\n\
 #endif
 
   if (nargin < 2 || nargin > 3 || nargout > 7)
-    {
-      print_usage ();
-      return retval;
-    }
-  else if (nargin == 3 && (nargout < 3 || nargout > 4))
-    {
-      error ("qz: invalid number of output arguments for form [3] call");
-      return retval;
-    }
+    print_usage ();
+
+  if (nargin == 3 && (nargout < 3 || nargout > 4))
+    error ("qz: invalid number of output arguments for form [3] call");
 
 #ifdef DEBUG
   std::cout << "qz: determine ordering option" << std::endl;

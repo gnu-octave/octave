@@ -375,10 +375,7 @@ parameters for @code{dasrt}.\n\
   int nargin = args.length ();
 
   if (nargin < 4 || nargin > 6)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::string fcn_name, fname, jac_name, jname;
   dasrt_f = 0;

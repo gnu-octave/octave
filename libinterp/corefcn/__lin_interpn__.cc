@@ -278,10 +278,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
 
   if (nargin < 2 ||  nargin % 2 == 0)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // dimension of the problem
   int n = (nargin-1)/2;

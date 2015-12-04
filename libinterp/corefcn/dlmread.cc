@@ -203,10 +203,7 @@ fill empty fields.  The default is zero.\n\
     }
 
   if (nargin < 1 || nargin > 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   std::istream *input = 0;
   std::ifstream input_file;

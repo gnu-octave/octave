@@ -46,61 +46,59 @@ DEFUN (__dispatch__, args, nargout,
 
   int nargin = args.length ();
 
-  if (nargin > 0 && nargin < 4)
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+
+  std::string f, r, t;
+
+  f = args(0).xstring_value ("__dispatch__: first argument must be a function name");
+
+  if (nargin > 1)
+    r = args(1).xstring_value ("__dispatch__: second argument must be a function name");
+
+  if (nargin > 2)
+    t = args(2).xstring_value ("__dispatch__: third argument must be a type name");
+
+  if (nargin == 1)
     {
-      std::string f, r, t;
-
-      f = args(0).xstring_value ("__dispatch__: first argument must be a function name");
-
-      if (nargin > 1)
-        r = args(1).xstring_value ("__dispatch__: second argument must be a function name");
-
-      if (nargin > 2)
-        t = args(2).xstring_value ("__dispatch__: third argument must be a type name");
-
-      if (nargin == 1)
+      if (nargout > 0)
         {
-          if (nargout > 0)
+          symbol_table::fcn_info::dispatch_map_type dm
+            = symbol_table::get_dispatch (f);
+
+          size_t len = dm.size ();
+
+          Cell type_field (len, 1);
+          Cell name_field (len, 1);
+
+          symbol_table::fcn_info::dispatch_map_type::const_iterator p
+            = dm.begin ();
+
+          for (size_t i = 0; i < len; i++)
             {
-              symbol_table::fcn_info::dispatch_map_type dm
-                = symbol_table::get_dispatch (f);
+              type_field(i) = p->first;
+              name_field(i) = p->second;
 
-              size_t len = dm.size ();
-
-              Cell type_field (len, 1);
-              Cell name_field (len, 1);
-
-              symbol_table::fcn_info::dispatch_map_type::const_iterator p
-                = dm.begin ();
-
-              for (size_t i = 0; i < len; i++)
-                {
-                  type_field(i) = p->first;
-                  name_field(i) = p->second;
-
-                  p++;
-                }
-
-              octave_scalar_map m;
-
-              m.assign ("type", type_field);
-              m.assign ("name", name_field);
-
-              retval = m;
+              p++;
             }
-          else
-            symbol_table::print_dispatch (octave_stdout, f);
-        }
-      else if (nargin == 2)
-        {
-          t = r;
-          symbol_table::clear_dispatch (f, t);
+
+          octave_scalar_map m;
+
+          m.assign ("type", type_field);
+          m.assign ("name", name_field);
+
+          retval = m;
         }
       else
-        symbol_table::add_dispatch (f, t, r);
+        symbol_table::print_dispatch (octave_stdout, f);
+    }
+  else if (nargin == 2)
+    {
+      t = r;
+      symbol_table::clear_dispatch (f, t);
     }
   else
-    print_usage ();
+    symbol_table::add_dispatch (f, t, r);
 
   return retval;
 }

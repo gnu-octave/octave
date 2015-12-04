@@ -96,10 +96,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3 || nargout < 0 || nargout > 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // determine if it's AEP or GEP
   bool AEPcase = nargin == 1 || args(1).is_string ();

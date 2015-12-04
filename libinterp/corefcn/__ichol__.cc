@@ -202,10 +202,7 @@ Undocumented internal function.\n\
   std::string michol = "off";
 
   if (nargout > 1 || nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (nargin == 2)
     michol = args(1).string_value ();
@@ -456,10 +453,7 @@ Undocumented internal function.\n\
   double droptol = 0;
 
   if (nargout > 1 || nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // Don't repeat input validation of arguments done in ichol.m
 

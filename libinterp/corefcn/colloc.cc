@@ -48,31 +48,19 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (! args(0).is_scalar_type ())
-    {
-      error ("colloc: N must be a scalar");
-      return retval;
-    }
+    error ("colloc: N must be a scalar");
 
   double tmp = args(0).double_value ();
 
   if (xisnan (tmp))
-    {
-      error ("colloc: N cannot be NaN");
-      return retval;
-    }
+    error ("colloc: N cannot be NaN");
 
   octave_idx_type ncol = NINTbig (tmp);
   if (ncol < 0)
-    {
-      error ("colloc: N must be positive");
-      return retval;
-    }
+    error ("colloc: N must be positive");
 
   octave_idx_type ntot = ncol;
   octave_idx_type left = 0;

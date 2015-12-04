@@ -133,10 +133,7 @@ in control (see @code{are} and @code{dare}).\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2 || nargout > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 
@@ -297,41 +294,39 @@ Note also that @var{U} and @var{T} are not unique.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 2 && nargout <= 2)
+  if (args.length () != 2 || nargout > 2)
+    print_usage ();
+
+  if (! args(0).is_numeric_type ())
+    gripe_wrong_type_arg ("rsf2csf", args(0));
+  else if (! args(1).is_numeric_type ())
+    gripe_wrong_type_arg ("rsf2csf", args(1));
+  else if (args(0).is_complex_type () || args(1).is_complex_type ())
+    error ("rsf2csf: UR and TR must be real matrices");
+  else
     {
-      if (! args(0).is_numeric_type ())
-        gripe_wrong_type_arg ("rsf2csf", args(0));
-      else if (! args(1).is_numeric_type ())
-        gripe_wrong_type_arg ("rsf2csf", args(1));
-      else if (args(0).is_complex_type () || args(1).is_complex_type ())
-        error ("rsf2csf: UR and TR must be real matrices");
+
+      if (args(0).is_single_type () || args(1).is_single_type ())
+        {
+          FloatMatrix u = args(0).float_matrix_value ();
+          FloatMatrix t = args(1).float_matrix_value ();
+
+          FloatComplexSCHUR cs (FloatSCHUR (t, u));
+
+          retval(1) = cs.schur_matrix ();
+          retval(0) = cs.unitary_matrix ();
+        }
       else
         {
+          Matrix u = args(0).matrix_value ();
+          Matrix t = args(1).matrix_value ();
 
-          if (args(0).is_single_type () || args(1).is_single_type ())
-            {
-              FloatMatrix u = args(0).float_matrix_value ();
-              FloatMatrix t = args(1).float_matrix_value ();
+          ComplexSCHUR cs (SCHUR (t, u));
 
-              FloatComplexSCHUR cs (FloatSCHUR (t, u));
-
-              retval(1) = cs.schur_matrix ();
-              retval(0) = cs.unitary_matrix ();
-            }
-          else
-            {
-              Matrix u = args(0).matrix_value ();
-              Matrix t = args(1).matrix_value ();
-
-              ComplexSCHUR cs (SCHUR (t, u));
-
-              retval(1) = cs.schur_matrix ();
-              retval(0) = cs.unitary_matrix ();
-            }
+          retval(1) = cs.schur_matrix ();
+          retval(0) = cs.unitary_matrix ();
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }

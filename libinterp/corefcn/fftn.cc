@@ -48,10 +48,7 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();

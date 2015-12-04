@@ -233,6 +233,9 @@ do_minmax_body (const octave_value_list& args,
 
   int nargin = args.length ();
 
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  
   if (nargin == 3 || nargin == 1)
     {
       octave_value arg = args(0);
@@ -284,8 +287,10 @@ do_minmax_body (const octave_value_list& args,
                                                        ismin);
             else
               retval = do_minmax_red_op<NDArray> (arg, nargout, dim, ismin);
-            break;
+
           }
+          break;
+
         case btyp_complex:
           {
             if (arg.is_sparse_type ())
@@ -294,22 +299,27 @@ do_minmax_body (const octave_value_list& args,
             else
               retval = do_minmax_red_op<ComplexNDArray> (arg, nargout, dim,
                                                          ismin);
-            break;
           }
+          break;
+
         case btyp_float:
           retval = do_minmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
           break;
+
         case btyp_float_complex:
           retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
                                                           ismin);
           break;
+
         case btyp_char:
           retval = do_minmax_red_op<charNDArray> (arg, nargout, dim, ismin);
           break;
-#define MAKE_INT_BRANCH(X) \
+
+#define MAKE_INT_BRANCH(X)                      \
         case btyp_ ## X: \
           retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
           break;
+
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
         MAKE_INT_BRANCH (int32);
@@ -318,15 +328,18 @@ do_minmax_body (const octave_value_list& args,
         MAKE_INT_BRANCH (uint16);
         MAKE_INT_BRANCH (uint32);
         MAKE_INT_BRANCH (uint64);
+
 #undef MAKE_INT_BRANCH
+
         case btyp_bool:
           retval = do_minmax_red_op<boolNDArray> (arg, nargout, dim, ismin);
           break;
+
         default:
           gripe_wrong_type_arg (func, arg);
         }
     }
-  else if (nargin == 2)
+  else
     {
       octave_value argx = args(0);
       octave_value argy = args(1);
@@ -353,8 +366,9 @@ do_minmax_body (const octave_value_list& args,
               retval = do_minmax_bin_op<SparseMatrix> (argx, argy, ismin);
             else
               retval = do_minmax_bin_op<NDArray> (argx, argy, ismin);
-            break;
           }
+          break;
+
         case btyp_complex:
           {
             if ((argx.is_sparse_type ()
@@ -364,21 +378,26 @@ do_minmax_body (const octave_value_list& args,
                                                               ismin);
             else
               retval = do_minmax_bin_op<ComplexNDArray> (argx, argy, ismin);
-            break;
           }
+          break;
+
         case btyp_float:
           retval = do_minmax_bin_op<FloatNDArray> (argx, argy, ismin);
           break;
+
         case btyp_float_complex:
           retval = do_minmax_bin_op<FloatComplexNDArray> (argx, argy, ismin);
           break;
+
         case btyp_char:
           retval = do_minmax_bin_op<charNDArray> (argx, argy, ismin);
           break;
+
 #define MAKE_INT_BRANCH(X) \
         case btyp_ ## X: \
           retval = do_minmax_bin_op<X ## NDArray> (argx, argy, ismin); \
           break;
+
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
         MAKE_INT_BRANCH (int32);
@@ -387,7 +406,9 @@ do_minmax_body (const octave_value_list& args,
         MAKE_INT_BRANCH (uint16);
         MAKE_INT_BRANCH (uint32);
         MAKE_INT_BRANCH (uint64);
+
 #undef MAKE_INT_BRANCH
+
         /*
         FIXME: This is what should happen when boolNDArray has max()
         case btyp_bool:
@@ -404,8 +425,6 @@ do_minmax_body (const octave_value_list& args,
         retval(0) = retval(0).bool_array_value ();
 
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -895,65 +914,71 @@ do_cumminmax_body (const octave_value_list& args,
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  octave_value arg = args(0);
+  int dim = -1;
+  if (nargin == 2)
     {
-      octave_value arg = args(0);
-      int dim = -1;
-      if (nargin == 2)
-        {
-          dim = args(1).int_value (true) - 1;
+      dim = args(1).int_value (true) - 1;
 
-          if (dim < 0)
-            {
-              error ("%s: DIM must be a valid dimension", func);
-              return retval;
-            }
-        }
-
-      switch (arg.builtin_type ())
+      if (dim < 0)
         {
-        case btyp_double:
-          retval = do_cumminmax_red_op<NDArray> (arg, nargout, dim, ismin);
-          break;
-        case btyp_complex:
-          retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
-                                                        ismin);
-          break;
-        case btyp_float:
-          retval = do_cumminmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
-          break;
-        case btyp_float_complex:
-          retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
-                                                             ismin);
-          break;
-#define MAKE_INT_BRANCH(X) \
-        case btyp_ ## X: \
-          retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, \
-                                                      ismin); \
-          break;
-        MAKE_INT_BRANCH (int8);
-        MAKE_INT_BRANCH (int16);
-        MAKE_INT_BRANCH (int32);
-        MAKE_INT_BRANCH (int64);
-        MAKE_INT_BRANCH (uint8);
-        MAKE_INT_BRANCH (uint16);
-        MAKE_INT_BRANCH (uint32);
-        MAKE_INT_BRANCH (uint64);
-#undef MAKE_INT_BRANCH
-        case btyp_bool:
-          {
-            retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
-                                                       ismin);
-            if (retval.length () > 0)
-              retval(0) = retval(0).bool_array_value ();
-            break;
-          }
-        default:
-          gripe_wrong_type_arg (func, arg);
+          error ("%s: DIM must be a valid dimension", func);
+          return retval;
         }
     }
-  else
-    print_usage ();
+
+  switch (arg.builtin_type ())
+    {
+    case btyp_double:
+      retval = do_cumminmax_red_op<NDArray> (arg, nargout, dim, ismin);
+      break;
+
+    case btyp_complex:
+      retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
+                                                    ismin);
+      break;
+
+    case btyp_float:
+      retval = do_cumminmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
+      break;
+
+    case btyp_float_complex:
+      retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
+                                                         ismin);
+      break;
+
+#define MAKE_INT_BRANCH(X) \
+      case btyp_ ## X: \
+        retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, \
+                                                    ismin); \
+        break;
+
+      MAKE_INT_BRANCH (int8);
+      MAKE_INT_BRANCH (int16);
+      MAKE_INT_BRANCH (int32);
+      MAKE_INT_BRANCH (int64);
+      MAKE_INT_BRANCH (uint8);
+      MAKE_INT_BRANCH (uint16);
+      MAKE_INT_BRANCH (uint32);
+      MAKE_INT_BRANCH (uint64);
+
+#undef MAKE_INT_BRANCH
+
+    case btyp_bool:
+      {
+        retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
+                                                   ismin);
+        if (retval.length () > 0)
+          retval(0) = retval(0).bool_array_value ();
+      }
+      break;
+
+    default:
+      gripe_wrong_type_arg (func, arg);
+    }
 
   return retval;
 }

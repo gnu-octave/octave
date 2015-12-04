@@ -345,7 +345,8 @@ risk of using @code{eval} on unknown data.\n\
 
   if (args.length () != 1)
     print_usage ();
-  else if (args(0).is_string ())
+
+  if (args(0).is_string ())
     {
       if (args(0).rows () == 0 || args(0).columns () == 0)
         {
@@ -376,7 +377,6 @@ risk of using @code{eval} on unknown data.\n\
     }
   else
     retval = Matrix (1, 1, octave_NaN);
-
 
   return retval;
 }

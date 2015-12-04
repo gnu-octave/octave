@@ -79,96 +79,91 @@ givens (1, 1)\n\
   int nargin = args.length ();
 
   if (nargin != 2 || nargout > 2)
+    print_usage ();
+
+  if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      print_usage ();
-      return retval;
-    }
-  else
-    {
-      if (args(0).is_single_type () || args(1).is_single_type ())
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          FloatComplex cx = args(0).float_complex_value ();
+          FloatComplex cy = args(1).float_complex_value ();
+
+          FloatComplexMatrix result = Givens (cx, cy);
+
+          switch (nargout)
             {
-              FloatComplex cx = args(0).float_complex_value ();
-              FloatComplex cy = args(1).float_complex_value ();
+            case 0:
+            case 1:
+              retval(0) = result;
+              break;
 
-              FloatComplexMatrix result = Givens (cx, cy);
-
-              switch (nargout)
-                {
-                case 0:
-                case 1:
-                  retval(0) = result;
-                  break;
-
-                case 2:
-                  retval(1) = result (0, 1);
-                  retval(0) = result (0, 0);
-                  break;
-                }
-            }
-          else
-            {
-              float x = args(0).float_value ();
-              float y = args(1).float_value ();
-
-              FloatMatrix result = Givens (x, y);
-
-              switch (nargout)
-                {
-                case 0:
-                case 1:
-                  retval(0) = result;
-                  break;
-
-                case 2:
-                  retval(1) = result (0, 1);
-                  retval(0) = result (0, 0);
-                  break;
-                }
+            case 2:
+              retval(1) = result (0, 1);
+              retval(0) = result (0, 0);
+              break;
             }
         }
       else
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          float x = args(0).float_value ();
+          float y = args(1).float_value ();
+
+          FloatMatrix result = Givens (x, y);
+
+          switch (nargout)
             {
-              Complex cx = args(0).complex_value ();
-              Complex cy = args(1).complex_value ();
+            case 0:
+            case 1:
+              retval(0) = result;
+              break;
 
-              ComplexMatrix result = Givens (cx, cy);
-
-              switch (nargout)
-                {
-                case 0:
-                case 1:
-                  retval(0) = result;
-                  break;
-
-                case 2:
-                  retval(1) = result (0, 1);
-                  retval(0) = result (0, 0);
-                  break;
-                }
+            case 2:
+              retval(1) = result (0, 1);
+              retval(0) = result (0, 0);
+              break;
             }
-          else
+        }
+    }
+  else
+    {
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
+        {
+          Complex cx = args(0).complex_value ();
+          Complex cy = args(1).complex_value ();
+
+          ComplexMatrix result = Givens (cx, cy);
+
+          switch (nargout)
             {
-              double x = args(0).double_value ();
-              double y = args(1).double_value ();
+            case 0:
+            case 1:
+              retval(0) = result;
+              break;
 
-              Matrix result = Givens (x, y);
+            case 2:
+              retval(1) = result (0, 1);
+              retval(0) = result (0, 0);
+              break;
+            }
+        }
+      else
+        {
+          double x = args(0).double_value ();
+          double y = args(1).double_value ();
 
-              switch (nargout)
-                {
-                case 0:
-                case 1:
-                  retval(0) = result;
-                  break;
+          Matrix result = Givens (x, y);
 
-                case 2:
-                  retval(1) = result (0, 1);
-                  retval(0) = result (0, 0);
-                  break;
-                }
+          switch (nargout)
+            {
+            case 0:
+            case 1:
+              retval(0) = result;
+              break;
+
+            case 2:
+              retval(1) = result (0, 1);
+              retval(0) = result (0, 0);
+              break;
             }
         }
     }

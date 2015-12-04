@@ -388,10 +388,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
   int nargin = args.length ();
 
   if (nargin > 3 || nargin < 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // Setup the default options.
   octave_idx_type n_to_find = -1;

@@ -73,10 +73,7 @@ and 16.15), Dover, 1965.\n\
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value u_arg = args(0);
   octave_value m_arg = args(1);

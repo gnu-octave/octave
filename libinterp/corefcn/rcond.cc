@@ -51,7 +51,8 @@ instead.\n\
 
   if (nargin != 1)
     print_usage ();
-  else if (args(0).is_sparse_type ())
+
+  if (args(0).is_sparse_type ())
     error ("rcond: for sparse matrices use 'rcond (full (a))' or 'condest (a)' instead");
   else if (args(0).is_single_type ())
     {

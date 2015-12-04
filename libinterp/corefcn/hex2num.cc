@@ -70,7 +70,8 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  else if (nargin == 2 && ! args(1).is_string ())
+
+  if (nargin == 2 && ! args(1).is_string ())
     error ("hex2num: CLASS must be a string");
   else
     {
@@ -223,7 +224,8 @@ num2hex (single ([-1, 1, e, Inf]))\n\
 
   if (nargin != 1)
     print_usage ();
-  else if (args(0).is_single_type ())
+
+  if (args(0).is_single_type ())
     {
       const FloatColumnVector v (args(0).float_vector_value ());
 

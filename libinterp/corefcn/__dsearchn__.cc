@@ -44,10 +44,7 @@ Undocumented internal function.\n\
   octave_value_list retval;
 
   if (nargin != 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   Matrix x = args(0).matrix_value ().transpose ();
   Matrix xi = args(1).matrix_value ().transpose ();

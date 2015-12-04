@@ -584,14 +584,10 @@ Return the name of the top-level Octave installation directory.\n\
 @seealso{EXEC_PATH, IMAGE_PATH}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 0)
-    retval = Voctave_home;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (Voctave_home);
 }
 
 /*
@@ -606,16 +602,10 @@ Return the version number of Octave as a string.\n\
 @seealso{ver, version}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    retval = OCTAVE_VERSION;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (OCTAVE_VERSION);
 }
 
 /*

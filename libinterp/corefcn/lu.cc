@@ -149,10 +149,7 @@ information.\n\
 
   if (nargin < 1 || (issparse && (nargin > 3 || nargout > 5))
       || (!issparse && (nargin > 2 || nargout > 3)))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   bool vecout = false;
   Matrix thres;
@@ -635,10 +632,7 @@ factorization from scratch.\n\
   bool pivoted = nargin == 5;
 
   if (nargin != 4 && nargin != 5)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value argl = args(0);
   octave_value argu = args(1);

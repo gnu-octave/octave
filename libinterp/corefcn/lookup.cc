@@ -243,10 +243,7 @@ at most n-1).\n\
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3 || (nargin == 3 && ! args(2).is_string ()))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value table = args(0);
   octave_value y = args(1);
@@ -285,7 +282,6 @@ at most n-1).\n\
 
   if (num_case)
     {
-
       // In the case of a complex array, absolute values will be used for
       // compatibility (though it's not too meaningful).
 
@@ -321,7 +317,6 @@ at most n-1).\n\
                                     y.array_value (),
                                     left_inf, right_inf,
                                     match_idx, match_bool);
-
     }
   else if (str_case)
     {

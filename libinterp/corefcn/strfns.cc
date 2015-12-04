@@ -289,16 +289,10 @@ Return true if @var{x} is a character array.\n\
 @seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).is_string ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).is_string ());
 }
 
 /*
@@ -561,17 +555,11 @@ This is just the opposite of the corresponding C library function.\n\
 @seealso{strcmpi, strncmp, strncmpi}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 2)
-    {
-      retval = do_strcmp_fun (args(0), args(1), 0,
-                              "strcmp", strcmp_array_op, strcmp_str_op);
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  return octave_value (do_strcmp_fun (args(0), args(1), 0, "strcmp",
+                                      strcmp_array_op, strcmp_str_op));
 }
 
 /*
@@ -679,20 +667,16 @@ This is just the opposite of the corresponding C library function.\n\
 {
   octave_value retval;
 
-  if (args.length () == 3)
-    {
-      octave_idx_type n = args(2).idx_type_value ();
-
-      if (n > 0)
-        {
-          retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
-                                  strncmp_array_op, strncmp_str_op);
-        }
-      else
-        error ("strncmp: N must be greater than 0");
-    }
-  else
+  if (args.length () != 3)
     print_usage ();
+
+  octave_idx_type n = args(2).idx_type_value ();
+
+  if (n > 0)
+    retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
+                            strncmp_array_op, strncmp_str_op);
+  else
+    error ("strncmp: N must be greater than 0");
 
   return retval;
 }
@@ -714,7 +698,9 @@ This is just the opposite of the corresponding C library function.\n\
 struct icmp_char_eq : public std::binary_function<char, char, bool>
 {
   bool operator () (char x, char y) const
-  { return std::toupper (x) == std::toupper (y); }
+  {
+    return std::toupper (x) == std::toupper (y);
+  }
 };
 
 // strcmpi is equivalent to strcmp in that it checks all dims.
@@ -758,15 +744,11 @@ This is just the opposite of the corresponding C library function.\n\
 {
   octave_value retval;
 
-  if (args.length () == 2)
-    {
-      retval = do_strcmp_fun (args(0), args(1), 0,
-                              "strcmpi", strcmpi_array_op, strcmpi_str_op);
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  return octave_value (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
+                                      strcmpi_array_op, strcmpi_str_op));
 }
 
 /*
@@ -819,20 +801,16 @@ This is just the opposite of the corresponding C library function.\n\
 {
   octave_value retval;
 
-  if (args.length () == 3)
-    {
-      octave_idx_type n = args(2).idx_type_value ();
-
-      if (n > 0)
-        {
-          retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                                  strncmpi_array_op, strncmpi_str_op);
-        }
-      else
-        error ("strncmpi: N must be greater than 0");
-    }
-  else
+  if (args.length () != 3)
     print_usage ();
+
+  octave_idx_type n = args(2).idx_type_value ();
+
+  if (n > 0)
+    retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
+                            strncmpi_array_op, strncmpi_str_op);
+  else
+    error ("strncmpi: N must be greater than 0");
 
   return retval;
 }
@@ -882,10 +860,7 @@ whos ans\n\
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   string_vector s = args(0).xall_strings ("list_in_columns: ARG must be a cellstr or char array");
 

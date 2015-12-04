@@ -1149,6 +1149,9 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   // dbstack accepts up to 2 arguments.
 
+  if (len > 2)
+    print_usage ();
+
   if (len == 1 || len == 2)
     {
       int n = 0;
@@ -1178,8 +1181,6 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
       if (n > 0)
         nskip = n;
     }
-  else if (len)
-    print_usage ();
 
   if (nargout == 0)
     {
@@ -1387,7 +1388,8 @@ function returns.\n\
 
       if (nargin > 1)
         print_usage ();
-      else if (nargin == 1)
+
+      if (nargin == 1)
         {
           std::string arg = args(0).xstring_value ("dbstep: input argument must be a string");
 
@@ -1441,14 +1443,12 @@ Leave command-line debugging mode and continue code execution normally.\n\
 {
   if (Vdebugging)
     {
-      if (args.length () == 0)
-        {
-          Vdebugging = false;
-
-          tree_evaluator::reset_debug_state ();
-        }
-      else
+      if (args.length () != 0)
         print_usage ();
+
+      Vdebugging = false;
+
+      tree_evaluator::reset_debug_state ();
     }
   else
     error ("dbcont: can only be called in debug mode");
@@ -1466,16 +1466,14 @@ the Octave prompt.\n\
 {
   if (Vdebugging)
     {
-      if (args.length () == 0)
-        {
-          Vdebugging = false;
-
-          tree_evaluator::reset_debug_state ();
-
-          octave_throw_interrupt_exception ();
-        }
-      else
+      if (args.length () != 0)
         print_usage ();
+
+      Vdebugging = false;
+
+      tree_evaluator::reset_debug_state ();
+
+      octave_throw_interrupt_exception ();
     }
   else
     error ("dbquit: can only be called in debug mode");
@@ -1490,14 +1488,10 @@ Return true if in debugging mode, otherwise false.\n\
 @seealso{dbwhere, dbstack, dbstatus}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 0)
-    retval = Vdebugging;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (Vdebugging);
 }
 
 DEFUN (__db_next_breakpoint_quiet__, args, ,
@@ -1513,17 +1507,15 @@ With a logical argument @var{flag}, set the state on or off.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0 || nargin == 1)
-    {
-      bool state = true;
-
-      if (nargin == 1)
-        state = args(0).bool_value ();
-
-      tree_evaluator::quiet_breakpoint_flag = state;
-    }
-  else
+  if (nargin > 1)
     print_usage ();
+
+  bool state = true;
+
+  if (nargin == 1)
+    state = args(0).bool_value ();
+
+  tree_evaluator::quiet_breakpoint_flag = state;
 
   return retval;
 }

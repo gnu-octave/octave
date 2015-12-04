@@ -416,20 +416,12 @@ v = cellfun (@@det, a); # faster\n\
   int nargout1 = (nargout < 1 ? 1 : nargout);
 
   if (nargin < 2)
-    {
-      error ("cellfun: function requires at least 2 arguments");
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value func = args(0);
 
   if (! args(1).is_cell ())
-    {
-      error ("cellfun: C must be a cell array");
-
-      return retval;
-    }
+    error ("cellfun: C must be a cell array");
 
   if (func.is_string ())
     {
@@ -1167,12 +1159,7 @@ arrayfun (@@str2num, [1234],\n\
   int nargout1 = (nargout < 1 ? 1 : nargout);
 
   if (nargin < 2)
-    {
-      error_with_id ("Octave:invalid-fun-call",
-                     "arrayfun: function requires at least 2 arguments");
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value func = args(0);
   bool symbol_table_lookup = false;
@@ -1855,67 +1842,68 @@ num2cell ([1,2;3,4],1)\n\
 @seealso{mat2cell}\n\
 @end deftypefn")
 {
-  int nargin =  args.length ();
   octave_value retval;
+
+  int nargin =  args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  else
-    {
-      octave_value array = args(0);
-      Array<int> dimv;
-      if (nargin > 1)
-        dimv = args(1).int_vector_value (true);
 
-      if (array.is_bool_type ())
-        retval = do_num2cell (array.bool_array_value (), dimv);
-      else if (array.is_char_matrix ())
-        retval = do_num2cell (array.char_array_value (), dimv);
-      else if (array.is_numeric_type ())
+  octave_value array = args(0);
+
+  Array<int> dimv;
+
+  if (nargin > 1)
+    dimv = args(1).int_vector_value (true);
+
+  if (array.is_bool_type ())
+    retval = do_num2cell (array.bool_array_value (), dimv);
+  else if (array.is_char_matrix ())
+    retval = do_num2cell (array.char_array_value (), dimv);
+  else if (array.is_numeric_type ())
+    {
+      if (array.is_integer_type ())
         {
-          if (array.is_integer_type ())
-            {
-              if (array.is_int8_type ())
-                retval = do_num2cell (array.int8_array_value (), dimv);
-              else if (array.is_int16_type ())
-                retval = do_num2cell (array.int16_array_value (), dimv);
-              else if (array.is_int32_type ())
-                retval = do_num2cell (array.int32_array_value (), dimv);
-              else if (array.is_int64_type ())
-                retval = do_num2cell (array.int64_array_value (), dimv);
-              else if (array.is_uint8_type ())
-                retval = do_num2cell (array.uint8_array_value (), dimv);
-              else if (array.is_uint16_type ())
-                retval = do_num2cell (array.uint16_array_value (), dimv);
-              else if (array.is_uint32_type ())
-                retval = do_num2cell (array.uint32_array_value (), dimv);
-              else if (array.is_uint64_type ())
-                retval = do_num2cell (array.uint64_array_value (), dimv);
-            }
-          else if (array.is_complex_type ())
-            {
-              if (array.is_single_type ())
-                retval = do_num2cell (array.float_complex_array_value (), dimv);
-              else
-                retval = do_num2cell (array.complex_array_value (), dimv);
-            }
-          else
-            {
-              if (array.is_single_type ())
-                retval = do_num2cell (array.float_array_value (), dimv);
-              else
-                retval = do_num2cell (array.array_value (), dimv);
-            }
+          if (array.is_int8_type ())
+            retval = do_num2cell (array.int8_array_value (), dimv);
+          else if (array.is_int16_type ())
+            retval = do_num2cell (array.int16_array_value (), dimv);
+          else if (array.is_int32_type ())
+            retval = do_num2cell (array.int32_array_value (), dimv);
+          else if (array.is_int64_type ())
+            retval = do_num2cell (array.int64_array_value (), dimv);
+          else if (array.is_uint8_type ())
+            retval = do_num2cell (array.uint8_array_value (), dimv);
+          else if (array.is_uint16_type ())
+            retval = do_num2cell (array.uint16_array_value (), dimv);
+          else if (array.is_uint32_type ())
+            retval = do_num2cell (array.uint32_array_value (), dimv);
+          else if (array.is_uint64_type ())
+            retval = do_num2cell (array.uint64_array_value (), dimv);
         }
-      else if (array.is_object ())
-        retval = do_object2cell (array, dimv);
-      else if (array.is_map ())
-        retval = do_num2cell (array.map_value (), dimv);
-      else if (array.is_cell ())
-        retval = do_num2cell (array.cell_value (), dimv);
+      else if (array.is_complex_type ())
+        {
+          if (array.is_single_type ())
+            retval = do_num2cell (array.float_complex_array_value (), dimv);
+          else
+            retval = do_num2cell (array.complex_array_value (), dimv);
+        }
       else
-        gripe_wrong_type_arg ("num2cell", array);
+        {
+          if (array.is_single_type ())
+            retval = do_num2cell (array.float_array_value (), dimv);
+          else
+            retval = do_num2cell (array.array_value (), dimv);
+        }
     }
+  else if (array.is_object ())
+    retval = do_object2cell (array, dimv);
+  else if (array.is_map ())
+    retval = do_num2cell (array.map_value (), dimv);
+  else if (array.is_cell ())
+    retval = do_num2cell (array.cell_value (), dimv);
+  else
+    gripe_wrong_type_arg ("num2cell", array);
 
   return retval;
 }
@@ -2189,75 +2177,79 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
 @seealso{num2cell, cell2mat}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value retval;
+
+  int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ();
-  else
+
+  // Prepare indices.
+  OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, d, nargin-1);
+
+  for (int i = 1; i < nargin; i++)
+    d[i-1] = args(i).octave_idx_type_vector_value (true);
+
+  octave_value a = args(0);
+  bool sparse = a.is_sparse_type ();
+  if (sparse && nargin > 3)
     {
-      // Prepare indices.
-      OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, d, nargin-1);
+      error ("mat2cell: sparse arguments only support 2-D indexing");
+      return retval;
+    }
 
-      for (int i = 1; i < nargin; i++)
-        d[i-1] = args(i).octave_idx_type_vector_value (true);
+  switch (a.builtin_type ())
+    {
+    case btyp_double:
+      {
+        if (sparse)
+          retval = do_mat2cell_2d (a.sparse_matrix_value (), d, nargin-1);
+        else
+          retval = do_mat2cell (a.array_value (), d, nargin - 1);
+      }
+      break;
 
-      octave_value a = args(0);
-      bool sparse = a.is_sparse_type ();
-      if (sparse && nargin > 3)
-        {
-          error ("mat2cell: sparse arguments only support 2-D indexing");
-          return retval;
-        }
+    case btyp_complex:
+      {
+        if (sparse)
+          retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d,
+                                   nargin-1);
+        else
+          retval = do_mat2cell (a.complex_array_value (), d, nargin - 1);
+      }
+      break;
 
-      switch (a.builtin_type ())
-        {
-        case btyp_double:
-          {
-            if (sparse)
-              retval = do_mat2cell_2d (a.sparse_matrix_value (), d, nargin-1);
-            else
-              retval = do_mat2cell (a.array_value (), d, nargin - 1);
-            break;
-          }
-        case btyp_complex:
-          {
-            if (sparse)
-              retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d,
-                                       nargin-1);
-            else
-              retval = do_mat2cell (a.complex_array_value (), d, nargin - 1);
-            break;
-          }
-#define BTYP_BRANCH(X,Y) \
-        case btyp_ ## X: \
-            retval = do_mat2cell (a.Y ## _value (), d, nargin - 1); \
-          break
+#define BTYP_BRANCH(X, Y) \
+  case btyp_ ## X: \
+    retval = do_mat2cell (a.Y ## _value (), d, nargin - 1); \
+    break
 
-        BTYP_BRANCH (float, float_array);
-        BTYP_BRANCH (float_complex, float_complex_array);
-        BTYP_BRANCH (bool, bool_array);
-        BTYP_BRANCH (char, char_array);
+      BTYP_BRANCH (float, float_array);
+      BTYP_BRANCH (float_complex, float_complex_array);
+      BTYP_BRANCH (bool, bool_array);
+      BTYP_BRANCH (char, char_array);
 
-        BTYP_BRANCH (int8,  int8_array);
-        BTYP_BRANCH (int16, int16_array);
-        BTYP_BRANCH (int32, int32_array);
-        BTYP_BRANCH (int64, int64_array);
-        BTYP_BRANCH (uint8,  uint8_array);
-        BTYP_BRANCH (uint16, uint16_array);
-        BTYP_BRANCH (uint32, uint32_array);
-        BTYP_BRANCH (uint64, uint64_array);
+      BTYP_BRANCH (int8,  int8_array);
+      BTYP_BRANCH (int16, int16_array);
+      BTYP_BRANCH (int32, int32_array);
+      BTYP_BRANCH (int64, int64_array);
+      BTYP_BRANCH (uint8,  uint8_array);
+      BTYP_BRANCH (uint16, uint16_array);
+      BTYP_BRANCH (uint32, uint32_array);
+      BTYP_BRANCH (uint64, uint64_array);
 
-        BTYP_BRANCH (cell, cell);
-        BTYP_BRANCH (struct, map);
+      BTYP_BRANCH (cell, cell);
+      BTYP_BRANCH (struct, map);
+
 #undef BTYP_BRANCH
 
-        case btyp_func_handle:
-          gripe_wrong_type_arg ("mat2cell", a);
-          break;
-        default:
-          retval = do_mat2cell (a, d, nargin-1);
-        }
+    case btyp_func_handle:
+      gripe_wrong_type_arg ("mat2cell", a);
+      break;
+
+    default:
+      retval = do_mat2cell (a, d, nargin-1);
+      break;
     }
 
   return retval;
@@ -2338,103 +2330,103 @@ slicing is done along the first non-singleton dimension.\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length ();
-  if (nargin == 3 || nargin == 4)
-    {
-      octave_value x = args(0);
-      Array<octave_idx_type> lb = args(1).octave_idx_type_vector_value ();
-      Array<octave_idx_type> ub = args(2).octave_idx_type_vector_value ();
-      int dim = -1;
-      if (nargin == 4)
-        {
-          dim = args(3).int_value () - 1;
-          if (dim < 0)
-            error ("cellslices: DIM must be a valid dimension");
-        }
 
-      if (lb.numel () != ub.numel ())
-        error ("cellslices: the lengths of LB and UB must match");
-      else
+  int nargin = args.length ();
+
+  if (nargin < 3 || nargin > 4)
+    print_usage ();
+
+  octave_value x = args(0);
+  Array<octave_idx_type> lb = args(1).octave_idx_type_vector_value ();
+  Array<octave_idx_type> ub = args(2).octave_idx_type_vector_value ();
+  int dim = -1;
+  if (nargin == 4)
+    {
+      dim = args(3).int_value () - 1;
+      if (dim < 0)
+        error ("cellslices: DIM must be a valid dimension");
+    }
+
+  if (lb.numel () != ub.numel ())
+    error ("cellslices: the lengths of LB and UB must match");
+  else
+    {
+      Cell retcell;
+      if (! x.is_sparse_type () && x.is_matrix_type ())
         {
-          Cell retcell;
-          if (! x.is_sparse_type () && x.is_matrix_type ())
+          // specialize for some dense arrays.
+          if (x.is_bool_type ())
+            retcell = do_cellslices_nda (x.bool_array_value (),
+                                         lb, ub, dim);
+          else if (x.is_char_matrix ())
+            retcell = do_cellslices_nda (x.char_array_value (),
+                                         lb, ub, dim);
+          else if (x.is_integer_type ())
             {
-              // specialize for some dense arrays.
-              if (x.is_bool_type ())
-                retcell = do_cellslices_nda (x.bool_array_value (),
+              if (x.is_int8_type ())
+                retcell = do_cellslices_nda (x.int8_array_value (),
                                              lb, ub, dim);
-              else if (x.is_char_matrix ())
-                retcell = do_cellslices_nda (x.char_array_value (),
+              else if (x.is_int16_type ())
+                retcell = do_cellslices_nda (x.int16_array_value (),
                                              lb, ub, dim);
-              else if (x.is_integer_type ())
-                {
-                  if (x.is_int8_type ())
-                    retcell = do_cellslices_nda (x.int8_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_int16_type ())
-                    retcell = do_cellslices_nda (x.int16_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_int32_type ())
-                    retcell = do_cellslices_nda (x.int32_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_int64_type ())
-                    retcell = do_cellslices_nda (x.int64_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_uint8_type ())
-                    retcell = do_cellslices_nda (x.uint8_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_uint16_type ())
-                    retcell = do_cellslices_nda (x.uint16_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_uint32_type ())
-                    retcell = do_cellslices_nda (x.uint32_array_value (),
-                                                 lb, ub, dim);
-                  else if (x.is_uint64_type ())
-                    retcell = do_cellslices_nda (x.uint64_array_value (),
-                                                 lb, ub, dim);
-                }
-              else if (x.is_complex_type ())
-                {
-                  if (x.is_single_type ())
-                    retcell = do_cellslices_nda (x.float_complex_array_value (),
-                                                 lb, ub, dim);
-                  else
-                    retcell = do_cellslices_nda (x.complex_array_value (),
-                                                 lb, ub, dim);
-                }
+              else if (x.is_int32_type ())
+                retcell = do_cellslices_nda (x.int32_array_value (),
+                                             lb, ub, dim);
+              else if (x.is_int64_type ())
+                retcell = do_cellslices_nda (x.int64_array_value (),
+                                             lb, ub, dim);
+              else if (x.is_uint8_type ())
+                retcell = do_cellslices_nda (x.uint8_array_value (),
+                                             lb, ub, dim);
+              else if (x.is_uint16_type ())
+                retcell = do_cellslices_nda (x.uint16_array_value (),
+                                             lb, ub, dim);
+              else if (x.is_uint32_type ())
+                retcell = do_cellslices_nda (x.uint32_array_value (),
+                                             lb, ub, dim);
+              else if (x.is_uint64_type ())
+                retcell = do_cellslices_nda (x.uint64_array_value (),
+                                             lb, ub, dim);
+            }
+          else if (x.is_complex_type ())
+            {
+              if (x.is_single_type ())
+                retcell = do_cellslices_nda (x.float_complex_array_value (),
+                                             lb, ub, dim);
               else
-                {
-                  if (x.is_single_type ())
-                    retcell = do_cellslices_nda (x.float_array_value (),
-                                                 lb, ub, dim);
-                  else
-                    retcell = do_cellslices_nda (x.array_value (),
-                                                 lb, ub, dim);
-                }
+                retcell = do_cellslices_nda (x.complex_array_value (),
+                                             lb, ub, dim);
             }
           else
             {
-              // generic code.
-              octave_idx_type n = lb.numel ();
-              retcell = Cell (1, n);
-              const dim_vector dv = x.dims ();
-              int ndims = dv.length ();
-              if (dim < 0)
-                dim = dv.first_non_singleton ();
-              ndims = std::max (ndims, dim + 1);
-              octave_value_list idx (ndims, octave_value::magic_colon_t);
-              for (octave_idx_type i = 0; i < n; i++)
-                {
-                  idx(dim) = Range (lb(i), ub(i));
-                  retcell(i) = x.do_index_op (idx);
-                }
+              if (x.is_single_type ())
+                retcell = do_cellslices_nda (x.float_array_value (),
+                                             lb, ub, dim);
+              else
+                retcell = do_cellslices_nda (x.array_value (),
+                                             lb, ub, dim);
             }
-
-          retval = retcell;
         }
+      else
+        {
+          // generic code.
+          octave_idx_type n = lb.numel ();
+          retcell = Cell (1, n);
+          const dim_vector dv = x.dims ();
+          int ndims = dv.length ();
+          if (dim < 0)
+            dim = dv.first_non_singleton ();
+          ndims = std::max (ndims, dim + 1);
+          octave_value_list idx (ndims, octave_value::magic_colon_t);
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              idx(dim) = Range (lb(i), ub(i));
+              retcell(i) = x.do_index_op (idx);
+            }
+        }
+
+      retval = retcell;
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2464,28 +2456,22 @@ endfor\n\
 @seealso{cellslices, cellfun}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () >= 1)
-    {
-      const Cell x = args(0).xcell_value ("cellindexmat: X must be a cell");
-      NoAlias<Cell> y(x.dims ());
-      octave_idx_type nel = x.numel ();
-      octave_value_list idx = args.slice (1, args.length () - 1);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          octave_quit ();
-
-          octave_value tmp = x(i);
-
-          y(i) = tmp.do_index_op (idx);
-        }
-
-      retval = y;
-    }
-  else
+  if (args.length () == 0)
     print_usage ();
 
-  return retval;
+  const Cell x = args(0).xcell_value ("cellindexmat: X must be a cell");
+  NoAlias<Cell> y(x.dims ());
+  octave_idx_type nel = x.numel ();
+  octave_value_list idx = args.slice (1, args.length () - 1);
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      octave_quit ();
+
+      octave_value tmp = x(i);
+
+      y(i) = tmp.do_index_op (idx);
+    }
+
+  return octave_value (y);
 }

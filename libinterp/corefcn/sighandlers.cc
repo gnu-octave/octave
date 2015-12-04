@@ -1052,18 +1052,12 @@ DEFUN (SIG, args, ,
 Return a structure containing Unix signal names and their defined values.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () == 0)
-    {
-      static octave_scalar_map m = make_sig_struct ();
-
-      retval = m;
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  static octave_scalar_map m = make_sig_struct ();
+
+  return octave_value (m);
 }
 
 /*

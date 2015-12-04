@@ -3431,55 +3431,53 @@ If the length of the smallest possible rational approximation exceeds\n\
 
   if (nargin < 1 || nargin > 2 || nargout > 1)
     print_usage ();
-  else
+
+  unwind_protect frame;
+
+  frame.protect_var (rat_string_len);
+
+  rat_string_len = 9;
+
+  if (nargin == 2)
+    rat_string_len = args(1).nint_value ();
+
+  octave_value arg = args(0);
+
+  if (arg.is_numeric_type ())
     {
-      unwind_protect frame;
+      frame.protect_var (rat_format);
 
-      frame.protect_var (rat_string_len);
+      rat_format = true;
 
-      rat_string_len = 9;
+      std::ostringstream buf;
+      arg.print (buf);
+      std::string s = buf.str ();
 
-      if (nargin == 2)
-        rat_string_len = args(1).nint_value ();
+      std::list<std::string> lst;
 
-      octave_value arg = args(0);
+      size_t n = 0;
+      size_t s_len = s.length ();
 
-      if (arg.is_numeric_type ())
+      while (n < s_len)
         {
-          frame.protect_var (rat_format);
+          size_t m = s.find ('\n',  n);
 
-          rat_format = true;
-
-          std::ostringstream buf;
-          arg.print (buf);
-          std::string s = buf.str ();
-
-          std::list<std::string> lst;
-
-          size_t n = 0;
-          size_t s_len = s.length ();
-
-          while (n < s_len)
+          if (m == std::string::npos)
             {
-              size_t m = s.find ('\n',  n);
-
-              if (m == std::string::npos)
-                {
-                  lst.push_back (s.substr (n));
-                  break;
-                }
-              else
-                {
-                  lst.push_back (s.substr (n, m - n));
-                  n = m + 1;
-                }
+              lst.push_back (s.substr (n));
+              break;
             }
-
-          retval = string_vector (lst);
+          else
+            {
+              lst.push_back (s.substr (n, m - n));
+              n = m + 1;
+            }
         }
-      else
-        error ("rats: X must be numeric");
+
+      retval = string_vector (lst);
     }
+  else
+    error ("rats: X must be numeric");
 
   return retval;
 }
@@ -3512,21 +3510,19 @@ formatted output in a string.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 && nargout < 2)
-    {
-      octave_value arg = args(0);
-
-      if (nargout == 0)
-        arg.print (octave_stdout);
-      else
-        {
-          std::ostringstream buf;
-          arg.print (buf);
-          retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
-        }
-    }
-  else
+  if (nargin != 1 || nargout > 1)
     print_usage ();
+
+  octave_value arg = args(0);
+
+  if (nargout == 0)
+    arg.print (octave_stdout);
+  else
+    {
+      std::ostringstream buf;
+      arg.print (buf);
+      retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
+    }
 
   return retval;
 }
@@ -3556,23 +3552,21 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    {
-      int fid = octave_stream_list::get_file_number (args(0));
-
-      octave_stream os = octave_stream_list::lookup (fid, "fdisp");
-
-      std::ostream *osp = os.output_stream ();
-
-      octave_value arg = args(1);
-
-      if (osp)
-        arg.print (*osp);
-      else
-        error ("fdisp: stream FID not open for writing");
-    }
-  else
+  if (nargin != 2)
     print_usage ();
+
+  int fid = octave_stream_list::get_file_number (args(0));
+
+  octave_stream os = octave_stream_list::lookup (fid, "fdisp");
+
+  std::ostream *osp = os.output_stream ();
+
+  octave_value arg = args(1);
+
+  if (osp)
+    arg.print (*osp);
+  else
+    error ("fdisp: stream FID not open for writing");
 
   return retval;
 }

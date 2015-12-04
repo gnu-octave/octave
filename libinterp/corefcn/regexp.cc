@@ -861,7 +861,8 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 
   if (nargin < 2)
     print_usage ();
-  else if (args(0).is_cell () || args(1).is_cell ())
+
+  if (args(0).is_cell () || args(1).is_cell ())
     retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp");
   else
     retval = octregexp (args, nargout, "regexp");
@@ -1156,7 +1157,8 @@ for details on the syntax of the search pattern.\n\
 
   if (nargin < 2)
     print_usage ();
-  else if (args(0).is_cell () || args(1).is_cell ())
+
+  if (args(0).is_cell () || args(1).is_cell ())
     retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
   else
     retval = octregexp (args, nargout, "regexpi", true);
@@ -1388,10 +1390,7 @@ function.\n\
   int nargin = args.length ();
 
   if (nargin < 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (args(0).is_cell () || args(1).is_cell () || args(2).is_cell ())
     {

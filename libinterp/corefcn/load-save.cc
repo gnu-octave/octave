@@ -715,12 +715,9 @@ Force Octave to assume the file is in Octave's text format.\n\
   if (orig_fname == "")
     {
       if (i == argc)
-        {
-          print_usage ();
-          return retval;
-        }
-      else
-        orig_fname = argv[i];
+        print_usage ();
+
+      orig_fname = argv[i];
     }
   else
     i--;
@@ -1620,10 +1617,7 @@ the file @file{data} in Octave's binary format.\n\
   int i = 0;
 
   if (i == argc)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (save_as_floats && format == LS_TEXT)
     {
@@ -1660,10 +1654,7 @@ the file @file{data} in Octave's binary format.\n\
   // Guard against things like 'save a*', which are probably mistakes...
 
   else if (i == argc - 1 && glob_pattern_p (argv[i]))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
   else
     {
       std::string fname = file_ops::tilde_expand (argv[i]);

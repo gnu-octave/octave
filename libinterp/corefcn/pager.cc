@@ -543,44 +543,39 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
   int argc = args.length () + 1;
 
+  if (argc < 1 || argc > 2)
+    print_usage ();
+
   string_vector argv = args.make_argv ("diary");
 
   if (diary_file.empty ())
     diary_file = "diary";
 
-  switch (argc)
+  if (argc == 1)
     {
-    case 1:
       write_to_diary_file = ! write_to_diary_file;
       open_diary_file ();
-      break;
+    }
+  else
+    {
+      std::string arg = argv[1];
 
-    case 2:
-      {
-        std::string arg = argv[1];
-
-        if (arg == "on")
-          {
-            write_to_diary_file = true;
-            open_diary_file ();
-          }
-        else if (arg == "off")
-          {
-            close_diary_file ();
-            write_to_diary_file = false;
-          }
-        else
-          {
-            diary_file = arg;
-            write_to_diary_file = true;
-            open_diary_file ();
-          }
-      }
-      break;
-
-    default:
-      print_usage ();
-      break;
+      if (arg == "on")
+        {
+          write_to_diary_file = true;
+          open_diary_file ();
+        }
+      else if (arg == "off")
+        {
+          close_diary_file ();
+          write_to_diary_file = false;
+        }
+      else
+        {
+          diary_file = arg;
+          write_to_diary_file = true;
+          open_diary_file ();
+        }
     }
 
   return retval;
@@ -621,6 +616,9 @@ The current state can be determined via @code{page_screen_output}.\n\
 
   int argc = args.length () + 1;
 
+  if (argc < 1 || argc > 2)
+    print_usage ();
+
   string_vector argv = args.make_argv ("more");
 
   if (argc == 2)
@@ -634,10 +632,8 @@ The current state can be determined via @code{page_screen_output}.\n\
       else
         error ("more: unrecognized argument '%s'", arg.c_str ());
     }
-  else if (argc == 1)
-    Vpage_screen_output = ! Vpage_screen_output;
   else
-    print_usage ();
+    Vpage_screen_output = ! Vpage_screen_output;
 
   return retval;
 }

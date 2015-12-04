@@ -804,16 +804,12 @@ your prompt.\n\
 @seealso{yes_or_no, kbhit, pause, menu, listdlg}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    retval = get_user_input (args, std::max (nargout, 1));
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  return retval;
+  return get_user_input (args, std::max (nargout, 1));
 }
 
 bool
@@ -850,23 +846,17 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
 @seealso{input}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 0 || nargin == 1)
-    {
-      std::string prompt;
-
-      if (nargin == 1)
-        prompt = args(0).xstring_value ("yes_or_no: PROMPT must be a string");
-
-      retval = octave_yes_or_no (prompt);
-    }
-  else
+  if (nargin > 1)
     print_usage ();
 
-  return retval;
+  std::string prompt;
+
+  if (nargin == 1)
+    prompt = args(0).xstring_value ("yes_or_no: PROMPT must be a string");
+
+  return octave_value (octave_yes_or_no (prompt));
 }
 
 octave_value
@@ -929,25 +919,23 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0 || nargin == 1)
-    {
-      unwind_protect frame;
-
-      frame.add_fcn (octave_call_stack::restore_frame,
-                     octave_call_stack::current_frame ());
-
-      // Skip the frame assigned to the keyboard function.
-      octave_call_stack::goto_frame_relative (0);
-
-      tree_evaluator::debug_mode = true;
-      tree_evaluator::quiet_breakpoint_flag = false;
-
-      tree_evaluator::current_frame = octave_call_stack::current_frame ();
-
-      do_keyboard (args);
-    }
-  else
+  if (nargin > 1)
     print_usage ();
+
+  unwind_protect frame;
+
+  frame.add_fcn (octave_call_stack::restore_frame,
+                 octave_call_stack::current_frame ());
+
+  // Skip the frame assigned to the keyboard function.
+  octave_call_stack::goto_frame_relative (0);
+
+  tree_evaluator::debug_mode = true;
+  tree_evaluator::quiet_breakpoint_flag = false;
+
+  tree_evaluator::current_frame = octave_call_stack::current_frame ();
+
+  do_keyboard (args);
 
   return retval;
 }
@@ -1109,60 +1097,58 @@ a feature, not a bug.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin != 1)
+    print_usage ();
+
+  std::string hint = args(0).string_value ();
+
+  int n = 32;
+
+  string_vector list (n);
+
+  int k = 0;
+
+  for (;;)
     {
-      std::string hint = args(0).string_value ();
+      std::string cmd = generate_completion (hint, k);
 
-      int n = 32;
-
-      string_vector list (n);
-
-      int k = 0;
-
-      for (;;)
+      if (! cmd.empty ())
         {
-          std::string cmd = generate_completion (hint, k);
-
-          if (! cmd.empty ())
+          if (k == n)
             {
-              if (k == n)
-                {
-                  n *= 2;
-                  list.resize (n);
-                }
-
-              list[k++] = cmd;
+              n *= 2;
+              list.resize (n);
             }
-          else
-            {
-              list.resize (k);
-              break;
-            }
-        }
 
-      if (nargout > 0)
-        {
-          if (! list.empty ())
-            retval = list;
-          else
-            retval = "";
+          list[k++] = cmd;
         }
       else
         {
-          // We don't use string_vector::list_in_columns here
-          // because it will be easier for Emacs if the names
-          // appear in a single column.
-
-          int len = list.numel ();
-
-          for (int i = 0; i < len; i++)
-            octave_stdout << list[i] << "\n";
+          list.resize (k);
+          break;
         }
+    }
 
-      octave_completion_matches_called = true;
+  if (nargout > 0)
+    {
+      if (! list.empty ())
+        retval = list;
+      else
+        retval = "";
     }
   else
-    print_usage ();
+    {
+      // We don't use string_vector::list_in_columns here
+      // because it will be easier for Emacs if the names
+      // appear in a single column.
+
+      int len = list.numel ();
+
+      for (int i = 0; i < len; i++)
+        octave_stdout << list[i] << "\n";
+    }
+
+  octave_completion_matches_called = true;
 
   return retval;
 }
@@ -1199,16 +1185,17 @@ for details.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 0)
     command_editor::read_init_file ();
-  else if (nargin == 1)
+  else
     {
       std::string file = args(0).string_value ();
 
       command_editor::read_init_file (file);
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -1225,10 +1212,10 @@ for details.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 0)
-    command_editor::re_read_init_file ();
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  command_editor::re_read_init_file ();
 
   return retval;
 }
@@ -1264,30 +1251,24 @@ list of input hook functions.\n\
 @seealso{remove_input_event_hook}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      octave_value user_data;
-
-      if (nargin == 2)
-        user_data = args(1);
-
-      hook_function hook_fcn (args(0), user_data);
-
-      if (input_event_hook_functions.empty ())
-        command_editor::add_event_hook (internal_input_event_hook_fcn);
-
-      input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
-
-      retval = hook_fcn.id ();
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  return retval;
+  octave_value user_data;
+
+  if (nargin == 2)
+    user_data = args(1);
+
+  hook_function hook_fcn (args(0), user_data);
+
+  if (input_event_hook_functions.empty ())
+    command_editor::add_event_hook (internal_input_event_hook_fcn);
+
+  input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
+
+  return octave_value (hook_fcn.id ());
 }
 
 DEFUN (remove_input_event_hook, args, ,
@@ -1304,26 +1285,24 @@ for input.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      std::string hook_fcn_id = args(0).string_value ("remove_input_event_hook: argument not valid as a hook function name or id");
-
-      bool warn = (nargin < 2);
-
-      hook_function_list::iterator p
-        = input_event_hook_functions.find (hook_fcn_id);
-
-      if (p != input_event_hook_functions.end ())
-        input_event_hook_functions.erase (p);
-      else if (warn)
-        warning ("remove_input_event_hook: %s not found in list",
-                 hook_fcn_id.c_str ());
-
-      if (input_event_hook_functions.empty ())
-        command_editor::remove_event_hook (internal_input_event_hook_fcn);
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  std::string hook_fcn_id = args(0).string_value ("remove_input_event_hook: argument not valid as a hook function name or id");
+
+  bool warn = (nargin < 2);
+
+  hook_function_list::iterator p
+    = input_event_hook_functions.find (hook_fcn_id);
+
+  if (p != input_event_hook_functions.end ())
+    input_event_hook_functions.erase (p);
+  else if (warn)
+    warning ("remove_input_event_hook: %s not found in list",
+             hook_fcn_id.c_str ());
+
+  if (input_event_hook_functions.empty ())
+    command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
   return retval;
 }
@@ -1475,12 +1454,13 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 0)
     Vdrawnow_requested = true;
-  else if (nargin == 1)
-    Vdrawnow_requested = args(0).bool_value ();
   else
-    print_usage ();
+    Vdrawnow_requested = args(0).bool_value ();
 
   return retval;
 }
@@ -1495,12 +1475,13 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 0)
     retval = Vgud_mode;
-  else if (nargin == 1)
-    Vgud_mode = args(0).bool_value ();
   else
-    print_usage ();
+    Vgud_mode = args(0).bool_value ();
 
   return retval;
 }

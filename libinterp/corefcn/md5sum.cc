@@ -51,24 +51,22 @@ sum of the string @var{str}.\n\
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
+
+  bool have_str = false;
+  std::string str = args(0).string_value ();
+
+  if (nargin == 2)
+    have_str = args(1).bool_value ();
+
+  if (have_str)
+    retval = oct_md5 (str);
   else
     {
-      bool have_str = false;
-      std::string str = args(0).string_value ();
+      std::string fname = file_ops::tilde_expand (str);
 
-      if (nargin == 2)
-        have_str = args(1).bool_value ();
+      fname = find_data_file_in_load_path ("md5sum", fname);
 
-      if (have_str)
-        retval = oct_md5 (str);
-      else
-        {
-          std::string fname = file_ops::tilde_expand (str);
-
-          fname = find_data_file_in_load_path ("md5sum", fname);
-
-          retval = oct_md5_file (fname);
-        }
+      retval = oct_md5_file (fname);
     }
 
   return retval;

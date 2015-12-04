@@ -1588,10 +1588,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
   /* Parse the input arguments. */
   if (nargin < 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (args(0).is_function_handle () || args(0).is_inline_function ())
     fcn = args(0).function_value ();

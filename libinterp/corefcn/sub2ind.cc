@@ -83,43 +83,38 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 @end deftypefn")
 {
   int nargin = args.length ();
-  octave_value retval;
 
   if (nargin < 2)
     print_usage ();
-  else
+
+  dim_vector dv = get_dim_vector (args(0), "sub2ind");
+  Array<idx_vector> idxa (dim_vector (nargin-1, 1));
+
+  dv = dv.redim (nargin - 1);
+  for (int j = 0; j < nargin - 1; j++)
     {
-      dim_vector dv = get_dim_vector (args(0), "sub2ind");
-      Array<idx_vector> idxa (dim_vector (nargin-1, 1));
-
-      dv = dv.redim (nargin - 1);
-      for (int j = 0; j < nargin - 1; j++)
+      if (args(j+1).is_numeric_type ())
         {
-          if (args(j+1).is_numeric_type ())
+          try
             {
-              try
-                {
-                  idxa(j) = args(j+1).index_vector ();
+              idxa(j) = args(j+1).index_vector ();
 
-                  if (j > 0 && args(j+1).dims () != args(1).dims ())
-                    error ("sub2ind: all subscripts must be of the same size");
-                }
-              catch (index_exception& e)
-                {
-                  e.set_pos_if_unset (nargin-1, j+1);
-                  e.set_var ();
-                  std::string msg = e.message ();
-                  error_with_id (e.err_id (), msg.c_str ());
-                }
+              if (j > 0 && args(j+1).dims () != args(1).dims ())
+                error ("sub2ind: all subscripts must be of the same size");
             }
-          else
-            error ("sub2ind: subscripts must be numeric");
+          catch (index_exception& e)
+            {
+              e.set_pos_if_unset (nargin-1, j+1);
+              e.set_var ();
+              std::string msg = e.message ();
+              error_with_id (e.err_id (), msg.c_str ());
+            }
         }
-
-      retval = sub2ind (dv, idxa);
+      else
+        error ("sub2ind: subscripts must be numeric");
     }
 
-  return retval;
+  return octave_value (sub2ind (dv, idxa));
 }
 
 /*
@@ -186,30 +181,29 @@ moving from one column to next, filling up all rows in each column.\n\
 @seealso{sub2ind}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value_list retval;
+
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ();
-  else
+
+  dim_vector dv = get_dim_vector (args(0), "ind2sub");
+
+  try
     {
-      dim_vector dv = get_dim_vector (args(0), "ind2sub");
+      idx_vector idx = args(1).index_vector ();
 
-      try
-        {
-          idx_vector idx = args(1).index_vector ();
+      if (nargout > dv.length ())
+        dv = dv.redim (nargout);
 
-          if (nargout > dv.length ())
-            dv = dv.redim (nargout);
-
-          retval = Array<octave_value> (ind2sub (dv, idx));
-        }
-      catch (const index_exception& e)
-        {
-          std::string idx = e.idx ();
-          std::string msg = e.details ();
-          error ("ind2sub: Invalid index %s. %s", idx.c_str (), msg.c_str ());
-        }
+      retval = Array<octave_value> (ind2sub (dv, idx));
+    }
+  catch (const index_exception& e)
+    {
+      std::string idx = e.idx ();
+      std::string msg = e.details ();
+      error ("ind2sub: Invalid index %s. %s", idx.c_str (), msg.c_str ());
     }
 
   return retval;

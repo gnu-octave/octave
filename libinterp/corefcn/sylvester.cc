@@ -65,10 +65,7 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   int nargin = args.length ();
 
   if (nargin != 3 || nargout > 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg_a = args(0);
   octave_value arg_b = args(1);

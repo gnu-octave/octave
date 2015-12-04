@@ -217,10 +217,7 @@ Mathematics, Manchester, England, January 1999.\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 
@@ -228,10 +225,7 @@ Mathematics, Manchester, England, January 1999.\n\
   octave_idx_type nc = arg.columns ();
 
   if (n != nc || arg.ndims () > 2)
-    {
-      gripe_square_matrix_required ("sqrtm");
-      return retval;
-    }
+    gripe_square_matrix_required ("sqrtm");
 
   if (nargout > 1)
     {

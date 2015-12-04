@@ -268,16 +268,16 @@ Since the Kronecker product is associative, this is well-defined.\n\
 
   int nargin = args.length ();
 
-  if (nargin >= 2)
-    {
-      octave_value a = args(0);
-      octave_value b = args(1);
-      retval = dispatch_kron (a, b);
-      for (octave_idx_type i = 2; i < nargin; i++)
-        retval = dispatch_kron (retval, args(i));
-    }
-  else
+  if (nargin < 2)
     print_usage ();
+
+  octave_value a = args(0);
+  octave_value b = args(1);
+
+  retval = dispatch_kron (a, b);
+
+  for (octave_idx_type i = 2; i < nargin; i++)
+    retval = dispatch_kron (retval, args(i));
 
   return retval;
 }

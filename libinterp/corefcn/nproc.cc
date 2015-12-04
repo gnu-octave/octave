@@ -54,10 +54,7 @@ environment variable.\n\
   int nargin = args.length ();
 
   if ((nargin != 0 && nargin != 1) || (nargout != 0 && nargout != 1))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   nproc_query query = NPROC_CURRENT;
   if (nargin == 1)

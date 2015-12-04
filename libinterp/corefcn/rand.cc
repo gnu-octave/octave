@@ -1130,6 +1130,7 @@ likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
+  octave_value retval;
 
 #ifdef USE_UNORDERED_MAP_WITH_TR1
 using std::tr1::unordered_map;
@@ -1138,105 +1139,94 @@ using std::unordered_map;
 #endif
 
   int nargin = args.length ();
-  octave_value retval;
 
-  if (nargin == 1 || nargin == 2)
-    {
-      octave_idx_type n, m;
-
-      n = args(0).idx_type_value (true);
-
-      if (nargin == 2)
-        m = args(1).idx_type_value (true);
-      else
-        m = n;
-
-      if (m < 0 || n < 0)
-        error ("randperm: M and N must be non-negative");
-
-      if (m > n)
-        error ("randperm: M must be less than or equal to N");
-
-      // Quick and dirty heuristic to decide if we allocate or not the
-      // whole vector for tracking the truncated shuffle.
-      bool short_shuffle = m < n/5;
-
-      // Generate random numbers.
-      NDArray r = octave_rand::nd_array (dim_vector (1, m));
-      double *rvec = r.fortran_vec ();
-
-      octave_idx_type idx_len = short_shuffle ? m : n;
-      Array<octave_idx_type> idx;
-      try
-        {
-          idx = Array<octave_idx_type> (dim_vector (1, idx_len));
-        }
-      catch (const std::bad_alloc&)
-        {
-          // Looks like n is too big and short_shuffle is false.
-          // Let's try again, but this time with the alternative.
-          idx_len = m;
-          short_shuffle = true;
-          idx = Array<octave_idx_type> (dim_vector (1, idx_len));
-        }
-
-      octave_idx_type *ivec = idx.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < idx_len; i++)
-        ivec[i] = i;
-
-      if (short_shuffle)
-        {
-          unordered_map<octave_idx_type, octave_idx_type> map (m);
-
-          // Perform the Knuth shuffle only keeping track of moved
-          // entries in the map
-          for (octave_idx_type i = 0; i < m; i++)
-            {
-              octave_idx_type k = i +
-                gnulib::floor (rvec[i] * (n - i));
-
-              // For shuffling first m entries, no need to use extra
-              // storage
-              if (k < m)
-                {
-                  std::swap (ivec[i], ivec[k]);
-                }
-              else
-                {
-                  if (map.find (k) == map.end ())
-                    map[k] = k;
-
-                  std::swap (ivec[i], map[k]);
-                }
-            }
-        }
-      else
-        {
-
-          // Perform the Knuth shuffle of the first m entries
-          for (octave_idx_type i = 0; i < m; i++)
-            {
-              octave_idx_type k = i +
-                gnulib::floor (rvec[i] * (n - i));
-              std::swap (ivec[i], ivec[k]);
-            }
-        }
-
-      // Convert to doubles, reusing r.
-      for (octave_idx_type i = 0; i < m; i++)
-        rvec[i] = ivec[i] + 1;
-
-      if (m < n)
-        idx.resize (dim_vector (1, m));
-
-      // Now create an array object with a cached idx_vector.
-      retval = new octave_matrix (r, idx_vector (idx));
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  return retval;
+  octave_idx_type n = args(0).idx_type_value (true);
+  octave_idx_type m = (nargin == 2) ? args(1).idx_type_value (true) : n;
+
+  if (m < 0 || n < 0)
+    error ("randperm: M and N must be non-negative");
+
+  if (m > n)
+    error ("randperm: M must be less than or equal to N");
+
+  // Quick and dirty heuristic to decide if we allocate or not the
+  // whole vector for tracking the truncated shuffle.
+  bool short_shuffle = m < n/5;
+
+  // Generate random numbers.
+  NDArray r = octave_rand::nd_array (dim_vector (1, m));
+  double *rvec = r.fortran_vec ();
+
+  octave_idx_type idx_len = short_shuffle ? m : n;
+  Array<octave_idx_type> idx;
+  try
+    {
+      idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+    }
+  catch (const std::bad_alloc&)
+    {
+      // Looks like n is too big and short_shuffle is false.
+      // Let's try again, but this time with the alternative.
+      idx_len = m;
+      short_shuffle = true;
+      idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+    }
+
+  octave_idx_type *ivec = idx.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < idx_len; i++)
+    ivec[i] = i;
+
+  if (short_shuffle)
+    {
+      unordered_map<octave_idx_type, octave_idx_type> map (m);
+
+      // Perform the Knuth shuffle only keeping track of moved
+      // entries in the map
+      for (octave_idx_type i = 0; i < m; i++)
+        {
+          octave_idx_type k = i +
+            gnulib::floor (rvec[i] * (n - i));
+
+          // For shuffling first m entries, no need to use extra
+          // storage
+          if (k < m)
+            {
+              std::swap (ivec[i], ivec[k]);
+            }
+          else
+            {
+              if (map.find (k) == map.end ())
+                map[k] = k;
+
+              std::swap (ivec[i], map[k]);
+            }
+        }
+    }
+  else
+    {
+
+      // Perform the Knuth shuffle of the first m entries
+      for (octave_idx_type i = 0; i < m; i++)
+        {
+          octave_idx_type k = i +
+            gnulib::floor (rvec[i] * (n - i));
+          std::swap (ivec[i], ivec[k]);
+        }
+    }
+
+  // Convert to doubles, reusing r.
+  for (octave_idx_type i = 0; i < m; i++)
+    rvec[i] = ivec[i] + 1;
+
+  if (m < n)
+    idx.resize (dim_vector (1, m));
+
+  // Now create an array object with a cached idx_vector.
+  return octave_value (new octave_matrix (r, idx_vector (idx)));
 }
 
 /*

@@ -69,10 +69,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
   int nargin = args.length ();
 
   if (nargin != 1 || nargout > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 

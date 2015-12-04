@@ -276,171 +276,169 @@ parameters for @code{lsode}.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 2 && nargin < 5 && nargout < 4)
+  if (nargin < 3 || nargin > 4 || nargout > 3)
+    print_usage ();
+
+  std::string fcn_name, fname, jac_name, jname;
+  lsode_fcn = 0;
+  lsode_jac = 0;
+
+  octave_value f_arg = args(0);
+
+  if (f_arg.is_cell ())
     {
-      std::string fcn_name, fname, jac_name, jname;
-      lsode_fcn = 0;
-      lsode_jac = 0;
-
-      octave_value f_arg = args(0);
-
-      if (f_arg.is_cell ())
+      Cell c = f_arg.cell_value ();
+      if (c.numel () == 1)
+        f_arg = c(0);
+      else if (c.numel () == 2)
         {
-          Cell c = f_arg.cell_value ();
-          if (c.numel () == 1)
-            f_arg = c(0);
-          else if (c.numel () == 2)
+          if (c(0).is_function_handle () || c(0).is_inline_function ())
+            lsode_fcn = c(0).function_value ();
+          else
             {
-              if (c(0).is_function_handle () || c(0).is_inline_function ())
-                lsode_fcn = c(0).function_value ();
+              fcn_name = unique_symbol_name ("__lsode_fcn__");
+              fname = "function y = ";
+              fname.append (fcn_name);
+              fname.append (" (x, t) y = ");
+              lsode_fcn = extract_function (c(0), "lsode", fcn_name, fname,
+                                            "; endfunction");
+            }
+
+          if (lsode_fcn)
+            {
+              if (c(1).is_function_handle () || c(1).is_inline_function ())
+                lsode_jac = c(1).function_value ();
               else
+                {
+                  jac_name = unique_symbol_name ("__lsode_jac__");
+                  jname = "function jac = ";
+                  jname.append (jac_name);
+                  jname.append (" (x, t) jac = ");
+                  lsode_jac = extract_function (c(1), "lsode", jac_name,
+                                                jname, "; endfunction");
+
+                  if (!lsode_jac)
+                    {
+                      if (fcn_name.length ())
+                        clear_function (fcn_name);
+                      lsode_fcn = 0;
+                    }
+                }
+            }
+        }
+      else
+        error ("lsode: incorrect number of elements in cell array");
+    }
+
+  if (!lsode_fcn && ! f_arg.is_cell ())
+    {
+      if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+        lsode_fcn = f_arg.function_value ();
+      else
+        {
+          switch (f_arg.rows ())
+            {
+            case 1:
+              do
                 {
                   fcn_name = unique_symbol_name ("__lsode_fcn__");
                   fname = "function y = ";
                   fname.append (fcn_name);
                   fname.append (" (x, t) y = ");
-                  lsode_fcn = extract_function (c(0), "lsode", fcn_name, fname,
-                                                "; endfunction");
+                  lsode_fcn = extract_function (f_arg, "lsode", fcn_name,
+                                                fname, "; endfunction");
                 }
+              while (0);
+              break;
 
-              if (lsode_fcn)
-                {
-                  if (c(1).is_function_handle () || c(1).is_inline_function ())
-                    lsode_jac = c(1).function_value ();
-                  else
-                    {
-                      jac_name = unique_symbol_name ("__lsode_jac__");
-                      jname = "function jac = ";
-                      jname.append (jac_name);
-                      jname.append (" (x, t) jac = ");
-                      lsode_jac = extract_function (c(1), "lsode", jac_name,
-                                                    jname, "; endfunction");
+            case 2:
+              {
+                string_vector tmp = f_arg.all_strings ();
 
-                      if (!lsode_jac)
-                        {
-                          if (fcn_name.length ())
-                            clear_function (fcn_name);
-                          lsode_fcn = 0;
-                        }
-                    }
-                }
-            }
-          else
-            error ("lsode: incorrect number of elements in cell array");
-        }
+                fcn_name = unique_symbol_name ("__lsode_fcn__");
+                fname = "function y = ";
+                fname.append (fcn_name);
+                fname.append (" (x, t) y = ");
+                lsode_fcn = extract_function (tmp(0), "lsode", fcn_name,
+                                              fname, "; endfunction");
 
-      if (!lsode_fcn && ! f_arg.is_cell ())
-        {
-          if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-            lsode_fcn = f_arg.function_value ();
-          else
-            {
-              switch (f_arg.rows ())
-                {
-                case 1:
-                  do
-                    {
-                      fcn_name = unique_symbol_name ("__lsode_fcn__");
-                      fname = "function y = ";
-                      fname.append (fcn_name);
-                      fname.append (" (x, t) y = ");
-                      lsode_fcn = extract_function (f_arg, "lsode", fcn_name,
-                                                    fname, "; endfunction");
-                    }
-                  while (0);
-                  break;
-
-                case 2:
+                if (lsode_fcn)
                   {
-                    string_vector tmp = f_arg.all_strings ();
+                    jac_name = unique_symbol_name ("__lsode_jac__");
+                    jname = "function jac = ";
+                    jname.append (jac_name);
+                    jname.append (" (x, t) jac = ");
+                    lsode_jac = extract_function (tmp(1), "lsode",
+                                                  jac_name, jname,
+                                                  "; endfunction");
 
-                    fcn_name = unique_symbol_name ("__lsode_fcn__");
-                    fname = "function y = ";
-                    fname.append (fcn_name);
-                    fname.append (" (x, t) y = ");
-                    lsode_fcn = extract_function (tmp(0), "lsode", fcn_name,
-                                                  fname, "; endfunction");
-
-                    if (lsode_fcn)
+                    if (!lsode_jac)
                       {
-                        jac_name = unique_symbol_name ("__lsode_jac__");
-                        jname = "function jac = ";
-                        jname.append (jac_name);
-                        jname.append (" (x, t) jac = ");
-                        lsode_jac = extract_function (tmp(1), "lsode",
-                                                      jac_name, jname,
-                                                      "; endfunction");
-
-                        if (!lsode_jac)
-                          {
-                            if (fcn_name.length ())
-                              clear_function (fcn_name);
-                            lsode_fcn = 0;
-                          }
+                        if (fcn_name.length ())
+                          clear_function (fcn_name);
+                        lsode_fcn = 0;
                       }
                   }
-                  break;
+              }
+              break;
 
-                default:
-                  error ("lsode: first arg should be a string or 2-element string array");
-                }
+            default:
+              error ("lsode: first arg should be a string or 2-element string array");
             }
         }
-
-      if (! lsode_fcn)
-        error ("lsode: FCN argument is not a valid function name or handle");
-
-      ColumnVector state = args(1).xvector_value ("lsode: initial state X_0 must be a vector");
-      ColumnVector out_times = args(2).xvector_value ("lsode: output time variable T must be a vector");
-
-      ColumnVector crit_times;
-
-      int crit_times_set = 0;
-      if (nargin > 3)
-        {
-          crit_times = args(3).xvector_value ("lsode: list of critical times T_CRIT must be a vector");
-
-          crit_times_set = 1;
-        }
-
-      double tzero = out_times (0);
-
-      ODEFunc func (lsode_user_function);
-      if (lsode_jac)
-        func.set_jacobian_function (lsode_user_jacobian);
-
-      LSODE ode (state, tzero, func);
-
-      ode.set_options (lsode_opts);
-
-      Matrix output;
-      if (crit_times_set)
-        output = ode.integrate (out_times, crit_times);
-      else
-        output = ode.integrate (out_times);
-
-      if (fcn_name.length ())
-        clear_function (fcn_name);
-      if (jac_name.length ())
-        clear_function (jac_name);
-
-      std::string msg = ode.error_message ();
-
-      retval(2) = msg;
-      retval(1) = static_cast<double> (ode.integration_state ());
-
-      if (ode.integration_ok ())
-        retval(0) = output;
-      else
-        {
-          retval(0) = Matrix ();
-
-          if (nargout < 2)
-            error ("lsode: %s", msg.c_str ());
-        }
     }
+
+  if (! lsode_fcn)
+    error ("lsode: FCN argument is not a valid function name or handle");
+
+  ColumnVector state = args(1).xvector_value ("lsode: initial state X_0 must be a vector");
+  ColumnVector out_times = args(2).xvector_value ("lsode: output time variable T must be a vector");
+
+  ColumnVector crit_times;
+
+  int crit_times_set = 0;
+  if (nargin > 3)
+    {
+      crit_times = args(3).xvector_value ("lsode: list of critical times T_CRIT must be a vector");
+
+      crit_times_set = 1;
+    }
+
+  double tzero = out_times (0);
+
+  ODEFunc func (lsode_user_function);
+  if (lsode_jac)
+    func.set_jacobian_function (lsode_user_jacobian);
+
+  LSODE ode (state, tzero, func);
+
+  ode.set_options (lsode_opts);
+
+  Matrix output;
+  if (crit_times_set)
+    output = ode.integrate (out_times, crit_times);
   else
-    print_usage ();
+    output = ode.integrate (out_times);
+
+  if (fcn_name.length ())
+    clear_function (fcn_name);
+  if (jac_name.length ())
+    clear_function (jac_name);
+
+  std::string msg = ode.error_message ();
+
+  retval(2) = msg;
+  retval(1) = static_cast<double> (ode.integration_state ());
+
+  if (ode.integration_ok ())
+    retval(0) = output;
+  else
+    {
+      retval(0) = Matrix ();
+
+      if (nargout < 2)
+        error ("lsode: %s", msg.c_str ());
+    }
 
   return retval;
 }

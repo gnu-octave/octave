@@ -330,6 +330,11 @@ octave_dock_widget::set_style (bool active)
   else
     dock_icon = "widget-undock";
 
+#if defined (Q_OS_MAC)
+  QString alignment = "center";
+#else
+  QString alignment = "center left";
+#endif
   if (_custom_style)
     {
 
@@ -371,7 +376,7 @@ octave_dock_widget::set_style (bool active)
       css = background + QString (" color: %1 ;").arg (fg_col.name ());
 #else
       css = QString ("QDockWidget::title { " + background +
-                     "                     text-align: center left;"
+                     "                     text-align: " + alignment + ";"
                      "                     padding: 0px 0px 0px 4px;}\n"
                      "QDockWidget { color: %1 ; "
                      "  titlebar-close-icon: url(:/actions/icons/widget-close%2.png);"
@@ -387,7 +392,7 @@ octave_dock_widget::set_style (bool active)
 #if defined (Q_OS_WIN32)
       css = QString ("");
 #else
-      css = QString ("QDockWidget::title { text-align: center left;"
+      css = QString ("QDockWidget::title { text-align: " + alignment + ";"
                      "                     padding: 0px 0px 0px 4px;}"
                      "QDockWidget {"
                      "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"

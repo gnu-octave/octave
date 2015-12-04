@@ -79,16 +79,29 @@ file_editor::check_closing (void)
   emit fetab_file_name_query (0);
 
   // save filenames (even if last session will not be restored next time)
+  // together with encoding and the tab index
   QStringList fetFileNames;
+  QStringList fet_encodings;
+  QStringList fet_index;
+
+  // over all open tabs
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
     {
-      QString file_name = p->first;
-      if (!file_name.isEmpty ())
-        fetFileNames.append (p->first);  // do not append unnamed files
+      QString file_name = p->first;   // get file name of tab
+      if (!file_name.isEmpty ())      // do not append unnamed files
+        {
+          fetFileNames.append (file_name);
+          fet_encodings.append (editor_tab_map[file_name].encoding);
+          QString index;
+          fet_index.append (index.setNum
+             (_tab_widget->indexOf (editor_tab_map[file_name].fet_ID)));
+        }
     }
 
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
+  settings->setValue ("editor/saved_session_encodings", fet_encodings);
+  settings->setValue ("editor/saved_session_tab_index", fet_index);
   settings->sync ();
 
   // Save all tabs with confirmation.
@@ -241,6 +254,7 @@ file_editor::request_open_file (void)
   QLabel *label_enc = new QLabel (tr ("File Encoding:"));
   QComboBox *combo_enc = new QComboBox ();
   resource_manager::combo_encoding (combo_enc);
+  _file_encoding = QString ();  // default, no special encoding
 
   // track changes in the combo boxes
   connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
@@ -290,7 +304,7 @@ file_editor::find_tab_widget (const QString& file) const
 
       if (same_file (file.toStdString (), tab_file.toStdString ()))
         {
-          retval = p->second;
+          retval = p->second.fet_ID;
           break;
         }
     }
@@ -356,19 +370,19 @@ file_editor::is_editor_console_tabbed ()
 }
 
 // The following slot is called after files have been selected in the
-// open file dialog, possibly with a new selected encoding. After loading
-// all files, _file_encoding is reset.
+// open file dialog, possibly with a new selected encoding stored in
+// _file_encoding
 void
 file_editor::request_open_files (const QStringList& open_file_names)
 {
   for (int i = 0; i < open_file_names.count (); i++)
-    request_open_file (open_file_names.at (i));
-  _file_encoding = QString ();  // reset: no special encoding
+    request_open_file (open_file_names.at (i), _file_encoding);
 }
 
 void
-file_editor::request_open_file (const QString& openFileName, int line,
-                                bool debug_pointer,
+file_editor::request_open_file (const QString& openFileName,
+                                const QString& encoding,
+                                int line, bool debug_pointer,
                                 bool breakpoint_marker, bool insert)
 {
   if (call_custom_editor (openFileName, line))
@@ -415,7 +429,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
           file_editor_tab *fileEditorTab = new file_editor_tab ();
           if (fileEditorTab)
             {
-              fileEditorTab->set_encoding (_file_encoding);
+              fileEditorTab->set_encoding (encoding);
               QString result = fileEditorTab->load_file (openFileName);
               if (result == "")
                 {
@@ -602,7 +616,7 @@ void
 file_editor::handle_insert_debugger_pointer_request (const QString& file,
                                                      int line)
 {
-  request_open_file (file, line, true);
+  request_open_file (file, QString (), line, true); // default encoding
 }
 
 void
@@ -635,7 +649,7 @@ file_editor::handle_update_breakpoint_marker_request (bool insert,
                                                       const QString& file,
                                                       int line)
 {
-  request_open_file (file, line, false, true, insert);
+  request_open_file (file, QString (), line, false, true, insert);
 }
 
 void
@@ -1054,11 +1068,12 @@ file_editor::handle_tab_remove_request (void)
 }
 
 void
-file_editor::handle_add_filename_to_list (const QString& fileName, QWidget *ID)
+file_editor::handle_add_filename_to_list (const QString& fileName,
+                                          const QString& encoding, QWidget *ID)
 {
   // Should we allow multiple tabs for a single file?
-
-  editor_tab_map[fileName] = ID;
+  editor_tab_map[fileName].fet_ID = ID;
+  editor_tab_map[fileName].encoding = encoding;
 }
 
 // context menu of edit area
@@ -1644,22 +1659,52 @@ file_editor::construct (void)
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("Editor"));
 
-  //restore previous session
-  if (settings->value ("editor/restoreSession", true).toBool ())
-    {
-      QStringList sessionFileNames
-        = settings->value ("editor/savedSessionTabs",
-                           QStringList ()).toStringList ();
-
-      for (int n = 0; n < sessionFileNames.count (); ++n)
-        {
-          QFileInfo file = QFileInfo (sessionFileNames.at (n));
-          if (file.exists ())
-            request_open_file (sessionFileNames.at (n));
-        }
-    }
+  restore_session (settings);
 
   check_actions ();
+}
+
+void
+file_editor::restore_session (QSettings *settings)
+{
+  //restore previous session
+  if (! settings->value ("editor/restoreSession", true).toBool ())
+    return;
+
+  // get the data from the settings file
+  QStringList sessionFileNames = settings->value ("editor/savedSessionTabs",
+                                          QStringList ()).toStringList ();
+  QStringList session_encodings = settings->value ("editor/saved_session_encodings",
+                                          QStringList ()).toStringList ();
+  QStringList session_index = settings->value ("editor/saved_session_tab_index",
+                                          QStringList ()).toStringList ();
+
+  // fill a list of the struct and sort it (depending on index)
+  QList<session_data> s_data;
+
+  bool do_encoding = (session_encodings.count () == sessionFileNames.count ());
+  bool do_index    = (session_index.count () == sessionFileNames.count ());
+
+  for (int n = 0; n < sessionFileNames.count (); ++n)
+    {
+      QFileInfo file = QFileInfo (sessionFileNames.at (n));
+      if (! file.exists ())
+        continue;
+
+      session_data item = { QString (), sessionFileNames.at (n), QString ()};
+      if (do_index)
+        item.index = session_index.at (n);
+      if (do_encoding)
+        item.encoding = session_encodings.at (n);
+
+     s_data << item;
+    }
+
+  qSort (s_data);
+
+  // finally open the file with the desired encoding in the desired order
+  for (int n = 0; n < s_data.count (); ++n)
+    request_open_file (s_data.at (n).file_name, s_data.at (n).encoding);
 }
 
 void
@@ -1691,8 +1736,10 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (tab_remove_request ()),
            this, SLOT (handle_tab_remove_request ()));
 
-  connect (f, SIGNAL (add_filename_to_list (const QString&, QWidget*)),
-           this, SLOT (handle_add_filename_to_list (const QString&, QWidget*)));
+  connect (f, SIGNAL (add_filename_to_list (const QString&,
+                                            const QString&, QWidget*)),
+           this, SLOT (handle_add_filename_to_list (const QString&,
+                                                    const QString&, QWidget*)));
 
   connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
            this, SLOT (check_conflict_save (const QString&, bool)));

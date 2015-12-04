@@ -71,7 +71,9 @@ public slots:
   virtual void request_new_script (const QString& command = QString ()) = 0;
   virtual void request_new_function (bool) = 0;
   virtual void request_open_file () = 0;
-  virtual void request_open_file (const QString& openFileName, int line = -1,
+  virtual void request_open_file (const QString& openFileName,
+                                  const QString& encoding = QString (),
+                                  int line = -1,
                                   bool debug_pointer = false,
                                   bool breakpoint_marker = false,
                                   bool insert = true) = 0;

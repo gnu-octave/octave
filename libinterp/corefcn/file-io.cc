@@ -244,16 +244,10 @@ with gnuplot.\n\
 @seealso{fopen, fflush, freport}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    retval = octave_stream_list::remove (args(0), "fclose");
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_stream_list::remove (args(0), "fclose"));
 }
 
 DEFUN (fclear, args, ,
@@ -266,18 +260,14 @@ Clear the stream state for the file specified by the file descriptor\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      int fid = octave_stream_list::get_file_number (args(0));
-
-      octave_stream os = octave_stream_list::lookup (fid, "fclear");
-
-      os.clearerr ();
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int fid = octave_stream_list::get_file_number (args(0));
+
+  octave_stream os = octave_stream_list::lookup (fid, "fclear");
+
+  os.clearerr ();
 
   return retval;
 }
@@ -299,29 +289,25 @@ always a good idea to flush the standard output stream before calling\n\
 {
   octave_value retval = -1;
 
-  int nargin = args.length ();
+  if (args.length () != 1)
+    print_usage ();
 
-  if (nargin == 1)
+  // FIXME: any way to avoid special case for stdout?
+
+  int fid = octave_stream_list::get_file_number (args(0));
+
+  if (fid == 1)
     {
-      // FIXME: any way to avoid special case for stdout?
+      flush_octave_stdout ();
 
-      int fid = octave_stream_list::get_file_number (args(0));
-
-      if (fid == 1)
-        {
-          flush_octave_stdout ();
-
-          retval = 0;
-        }
-      else
-        {
-          octave_stream os = octave_stream_list::lookup (fid, "fflush");
-
-          retval = os.flush ();
-        }
+      retval = 0;
     }
   else
-    print_usage ();
+    {
+      octave_stream os = octave_stream_list::lookup (fid, "fflush");
+
+      retval = os.flush ();
+    }
 
   return retval;
 }
@@ -348,29 +334,27 @@ To read a line and return the terminating newline see @code{fgets}.\n\
 
   octave_value_list retval;
 
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
   retval(1) = 0;
   retval(0) = -1;
 
-  int nargin = args.length ();
+  octave_stream os = octave_stream_list::lookup (args(0), who);
 
-  if (nargin == 1 || nargin == 2)
+  octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
+
+  bool err = false;
+
+  std::string tmp = os.getl (len_arg, err, who);
+
+  if (! err)
     {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
-
-      bool err = false;
-
-      std::string tmp = os.getl (len_arg, err, who);
-
-      if (! err)
-        {
-          retval(1) = tmp.length ();
-          retval(0) = tmp;
-        }
+      retval(1) = tmp.length ();
+      retval(0) = tmp;
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -397,29 +381,27 @@ To read a line and discard the terminating newline see @code{fgetl}.\n\
 
   octave_value_list retval;
 
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
   retval(1) = 0.0;
   retval(0) = -1.0;
 
-  int nargin = args.length ();
+  octave_stream os = octave_stream_list::lookup (args(0), who);
 
-  if (nargin == 1 || nargin == 2)
+  octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
+
+  bool err = false;
+
+  std::string tmp = os.gets (len_arg, err, who);
+
+  if (! err)
     {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
-
-      bool err = false;
-
-      std::string tmp = os.gets (len_arg, err, who);
-
-      if (! err)
-        {
-          retval(1) = tmp.length ();
-          retval(0) = tmp;
-        }
+      retval(1) = tmp.length ();
+      retval(0) = tmp;
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -449,21 +431,19 @@ Returns the number of lines skipped (end-of-line sequences encountered).\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
-
-      bool err = false;
-
-      off_t tmp = os.skipl (count_arg, err, who);
-
-      if (! err)
-        retval = tmp;
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), who);
+
+  octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
+
+  bool err = false;
+
+  off_t tmp = os.skipl (count_arg, err, who);
+
+  if (! err)
+    retval = tmp;
 
   return retval;
 }
@@ -757,16 +737,12 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
 
   int result = -1;
 
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), "frewind");
-
-      result = os.rewind ();
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), "frewind");
+
+  result = os.rewind ();
 
   if (nargout > 0)
     retval = result;
@@ -797,17 +773,15 @@ be positive, negative, or zero but not all combinations of @var{origin} and\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), "fseek");
-
-      octave_value origin_arg = (nargin == 3)
-        ? args(2) : octave_value (-1.0);
-
-      retval = os.seek (args(1), origin_arg);
-    }
-  else
+  if (nargin < 2 || nargin > 3)
     print_usage ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), "fseek");
+
+  octave_value origin_arg = (nargin == 3)
+    ? args(2) : octave_value (-1.0);
+
+  retval = os.seek (args(1), origin_arg);
 
   return retval;
 }
@@ -822,16 +796,12 @@ beginning of the file specified by file descriptor @var{fid}.\n\
 {
   octave_value retval = -1;
 
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), "ftell");
-
-      retval = os.tell ();
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), "ftell");
+
+  retval = os.tell ();
 
   return retval;
 }
@@ -863,40 +833,38 @@ expanded even when the template string is defined with single quotes.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 1 || (nargin > 0 && args(0).is_string ()))
+  if (! (nargin > 1 || (nargin > 0 && args(0).is_string ())))
+    print_usage ();
+
+  octave_stream os;
+  int fmt_n = 0;
+
+  if (args(0).is_string ())
     {
-      octave_stream os;
-      int fmt_n = 0;
-
-      if (args(0).is_string ())
-        {
-          os = octave_stream_list::lookup (1, who);
-        }
-      else
-        {
-          fmt_n = 1;
-          os = octave_stream_list::lookup (args(0), who);
-        }
-
-      if (args(fmt_n).is_string ())
-        {
-          octave_value_list tmp_args;
-
-          if (nargin > 1 + fmt_n)
-            {
-              tmp_args.resize (nargin-fmt_n-1, octave_value ());
-
-              for (int i = fmt_n + 1; i < nargin; i++)
-                tmp_args(i-fmt_n-1) = args(i);
-            }
-
-          result = os.printf (args(fmt_n), tmp_args, who);
-        }
-      else
-        error ("%s: format TEMPLATE must be a string", who.c_str ());
+      os = octave_stream_list::lookup (1, who);
     }
   else
-    print_usage ();
+    {
+      fmt_n = 1;
+      os = octave_stream_list::lookup (args(0), who);
+    }
+
+  if (args(fmt_n).is_string ())
+    {
+      octave_value_list tmp_args;
+
+      if (nargin > 1 + fmt_n)
+        {
+          tmp_args.resize (nargin-fmt_n-1, octave_value ());
+
+          for (int i = fmt_n + 1; i < nargin; i++)
+            tmp_args(i-fmt_n-1) = args(i);
+        }
+
+      result = os.printf (args(fmt_n), tmp_args, who);
+    }
+  else
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
 
   if (nargout > 0)
     retval = result;
@@ -930,27 +898,25 @@ expanded even when the template string is defined with single quotes.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0)
+  if (nargin == 0)
+    print_usage ();
+
+  if (args(0).is_string ())
     {
-      if (args(0).is_string ())
+      octave_value_list tmp_args;
+
+      if (nargin > 1)
         {
-          octave_value_list tmp_args;
+          tmp_args.resize (nargin-1, octave_value ());
 
-          if (nargin > 1)
-            {
-              tmp_args.resize (nargin-1, octave_value ());
-
-              for (int i = 1; i < nargin; i++)
-                tmp_args(i-1) = args(i);
-            }
-
-          result = stdout_stream.printf (args(0), tmp_args, who);
+          for (int i = 1; i < nargin; i++)
+            tmp_args(i-1) = args(i);
         }
-      else
-        error ("%s: format TEMPLATE must be a string", who.c_str ());
+
+      result = stdout_stream.printf (args(0), tmp_args, who);
     }
   else
-    print_usage ();
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
 
   if (nargout > 0)
     retval = result;
@@ -974,20 +940,12 @@ Return a non-negative number on success or EOF on error.\n\
 {
   static std::string who = "fputs";
 
-  octave_value retval = -1;
-
-  int nargin = args.length ();
-
-  if (nargin == 2)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      retval = os.puts (args(1), who);
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  octave_stream os = octave_stream_list::lookup (args(0), who);
+
+  return octave_value (os.puts (args(1), who));
 }
 
 DEFUN (puts, args, ,
@@ -1005,14 +963,10 @@ Return a non-negative number on success and EOF on error.\n\
 {
   static std::string who = "puts";
 
-  octave_value retval = -1;
-
-  if (args.length () == 1)
-    retval = stdout_stream.puts (args(0), who);
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (stdout_stream.puts (args(0), who));
 }
 
 DEFUN (sprintf, args, ,
@@ -1037,50 +991,48 @@ expanded even when the template string is defined with single quotes.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0)
+  if (nargin == 0)
+    print_usage ();
+
+  retval(2) = -1.0;
+  retval(1) = "unknown error";
+  retval(0) = "";
+
+  octave_ostrstream *ostr = new octave_ostrstream ();
+
+  octave_stream os (ostr);
+
+  if (os.is_valid ())
     {
-      retval(2) = -1.0;
-      retval(1) = "unknown error";
-      retval(0) = "";
+      octave_value fmt_arg = args(0);
 
-      octave_ostrstream *ostr = new octave_ostrstream ();
-
-      octave_stream os (ostr);
-
-      if (os.is_valid ())
+      if (fmt_arg.is_string ())
         {
-          octave_value fmt_arg = args(0);
+          octave_value_list tmp_args;
 
-          if (fmt_arg.is_string ())
+          if (nargin > 1)
             {
-              octave_value_list tmp_args;
+              tmp_args.resize (nargin-1, octave_value ());
 
-              if (nargin > 1)
-                {
-                  tmp_args.resize (nargin-1, octave_value ());
-
-                  for (int i = 1; i < nargin; i++)
-                    tmp_args(i-1) = args(i);
-                }
-
-              retval(2) = os.printf (fmt_arg, tmp_args, who);
-              retval(1) = os.error ();
-
-              std::string result = ostr->str ();
-              char type = fmt_arg.is_sq_string () ? '\'' : '"';
-
-              retval(0) = (result.empty ()
-                           ? octave_value (charMatrix (1, 0), type)
-                           : octave_value (result, type));
+              for (int i = 1; i < nargin; i++)
+                tmp_args(i-1) = args(i);
             }
-          else
-            error ("%s: format TEMPLATE must be a string", who.c_str ());
+
+          retval(2) = os.printf (fmt_arg, tmp_args, who);
+          retval(1) = os.error ();
+
+          std::string result = ostr->str ();
+          char type = fmt_arg.is_sq_string () ? '\'' : '"';
+
+          retval(0) = (result.empty ()
+                       ? octave_value (charMatrix (1, 0), type)
+                       : octave_value (result, type));
         }
       else
-        error ("%s: unable to create output buffer", who.c_str ());
+        error ("%s: format TEMPLATE must be a string", who.c_str ());
     }
   else
-    print_usage ();
+    error ("%s: unable to create output buffer", who.c_str ());
 
   return retval;
 }
@@ -1141,6 +1093,9 @@ complete description of the syntax of the template string.\n\
 
   int nargin = args.length ();
 
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
   if (nargin == 3 && args(2).is_string ())
     {
       octave_stream os = octave_stream_list::lookup (args(0), who);
@@ -1156,30 +1111,25 @@ complete description of the syntax of the template string.\n\
       retval(1) = 0.0;
       retval(0) = Matrix ();
 
-      if (nargin == 2 || nargin == 3)
+      octave_stream os = octave_stream_list::lookup (args(0), who);
+
+      if (args(1).is_string ())
         {
-          octave_stream os = octave_stream_list::lookup (args(0), who);
+          octave_idx_type count = 0;
 
-          if (args(1).is_string ())
-            {
-              octave_idx_type count = 0;
+          Array<double> size = (nargin == 3)
+            ? args(2).vector_value ()
+            : Array<double> (dim_vector (1, 1),
+                             lo_ieee_inf_value ());
 
-              Array<double> size = (nargin == 3)
-                ? args(2).vector_value ()
-                : Array<double> (dim_vector (1, 1),
-                                 lo_ieee_inf_value ());
+          octave_value tmp = os.scanf (args(1), size, count, who);
 
-              octave_value tmp = os.scanf (args(1), size, count, who);
-
-              retval(2) = os.error ();
-              retval(1) = count;
-              retval(0) = tmp;
-            }
-          else
-            error ("%s: format must be a string", who.c_str ());
+          retval(2) = os.error ();
+          retval(1) = count;
+          retval(0) = tmp;
         }
       else
-        print_usage ();
+        error ("%s: format must be a string", who.c_str ());
     }
 
   return retval;
@@ -1221,6 +1171,9 @@ character to be read is returned in @var{pos}.\n\
 
   int nargin = args.length ();
 
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
   if (nargin == 3 && args(2).is_string ())
     {
       std::string data = get_sscanf_data (args(0));
@@ -1239,50 +1192,45 @@ character to be read is returned in @var{pos}.\n\
     }
   else
     {
-      if (nargin == 2 || nargin == 3)
+      retval(3) = -1.0;
+      retval(2) = "unknown error";
+      retval(1) = 0.0;
+      retval(0) = Matrix ();
+
+      std::string data = get_sscanf_data (args(0));
+
+      octave_stream os = octave_istrstream::create (data);
+
+      if (os.is_valid ())
         {
-          retval(3) = -1.0;
-          retval(2) = "unknown error";
-          retval(1) = 0.0;
-          retval(0) = Matrix ();
-
-          std::string data = get_sscanf_data (args(0));
-
-          octave_stream os = octave_istrstream::create (data);
-
-          if (os.is_valid ())
+          if (args(1).is_string ())
             {
-              if (args(1).is_string ())
-                {
-                  octave_idx_type count = 0;
+              octave_idx_type count = 0;
 
-                  Array<double> size = (nargin == 3)
-                    ? args(2).vector_value ()
-                    : Array<double> (dim_vector (1, 1),
-                                     lo_ieee_inf_value ());
+              Array<double> size = (nargin == 3)
+                ? args(2).vector_value ()
+                : Array<double> (dim_vector (1, 1),
+                                 lo_ieee_inf_value ());
 
-                  octave_value tmp = os.scanf (args(1), size, count, who);
+              octave_value tmp = os.scanf (args(1), size, count, who);
 
-                  // FIXME: is this the right thing to do?
-                  // Extract error message first, because getting
-                  // position will clear it.
-                  std::string errmsg = os.error ();
+              // FIXME: is this the right thing to do?
+              // Extract error message first, because getting
+              // position will clear it.
+              std::string errmsg = os.error ();
 
-                  retval(3) = (os.eof () ? data.length () : os.tell ()) + 1;
-                  retval(2) = errmsg;
-                  retval(1) = count;
-                  retval(0) = tmp;
-                }
-              else
-                error ("%s: format TEMPLATE must be a string",
-                       who.c_str ());
+              retval(3) = (os.eof () ? data.length () : os.tell ()) + 1;
+              retval(2) = errmsg;
+              retval(1) = count;
+              retval(0) = tmp;
             }
           else
-            error ("%s: unable to create temporary input buffer",
-                   who.c_str  ());
+            error ("%s: format TEMPLATE must be a string",
+                   who.c_str ());
         }
       else
-        print_usage ();
+        error ("%s: unable to create temporary input buffer",
+               who.c_str  ());
     }
 
   return retval;
@@ -1529,46 +1477,44 @@ The optional return value @var{count} contains the number of elements read.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0 && nargin < 6)
-    {
-      retval(1) = -1.0;
-      retval(0) = Matrix ();
-
-      octave_stream os = octave_stream_list::lookup (args(0), "fread");
-
-      octave_value size = lo_ieee_inf_value ();
-      octave_value prec = "uchar";
-      octave_value skip = 0;
-      octave_value arch = "unknown";
-
-      int idx = 1;
-
-      if (nargin > idx && ! args(idx).is_string ())
-        size = args(idx++);
-
-      if (nargin > idx)
-        prec = args(idx++);
-
-      if (nargin > idx)
-        skip = args(idx++);
-
-      if (nargin > idx)
-        arch = args(idx++);
-      else if (skip.is_string ())
-        {
-          arch = skip;
-          skip = 0;
-        }
-
-      octave_idx_type count = -1;
-
-      octave_value tmp = do_fread (os, size, prec, skip, arch, count);
-
-      retval(1) = count;
-      retval(0) = tmp;
-    }
-  else
+  if (nargin < 1 || nargin > 5)
     print_usage ();
+
+  retval(1) = -1.0;
+  retval(0) = Matrix ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), "fread");
+
+  octave_value size = lo_ieee_inf_value ();
+  octave_value prec = "uchar";
+  octave_value skip = 0;
+  octave_value arch = "unknown";
+
+  int idx = 1;
+
+  if (nargin > idx && ! args(idx).is_string ())
+    size = args(idx++);
+
+  if (nargin > idx)
+    prec = args(idx++);
+
+  if (nargin > idx)
+    skip = args(idx++);
+
+  if (nargin > idx)
+    arch = args(idx++);
+  else if (skip.is_string ())
+    {
+      arch = skip;
+      skip = 0;
+    }
+
+  octave_idx_type count = -1;
+
+  octave_value tmp = do_fread (os, size, prec, skip, arch, count);
+
+  retval(1) = count;
+  retval(0) = tmp;
 
   return retval;
 }
@@ -1633,44 +1579,36 @@ are too large to fit in the specified precision.\n\
 @seealso{fread, fputs, fprintf, fopen}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
   int nargin = args.length ();
 
-  if (nargin > 1 && nargin < 6)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), "fwrite");
-
-      octave_value prec = "uchar";
-      octave_value skip = 0;
-      octave_value arch = "unknown";
-
-      int idx = 1;
-
-      octave_value data = args(idx++);
-
-      if (nargin > idx)
-        prec = args(idx++);
-
-      if (nargin > idx)
-        skip = args(idx++);
-
-      if (nargin > idx)
-        arch = args(idx++);
-      else if (skip.is_string ())
-        {
-          arch = skip;
-          skip = 0;
-        }
-
-      double status = do_fwrite (os, data, prec, skip, arch);
-
-      retval = status;
-    }
-  else
+  if (nargin < 2 || nargin > 5)
     print_usage ();
 
-  return retval;
+  octave_stream os = octave_stream_list::lookup (args(0), "fwrite");
+
+  octave_value prec = "uchar";
+  octave_value skip = 0;
+  octave_value arch = "unknown";
+
+  int idx = 1;
+
+  octave_value data = args(idx++);
+
+  if (nargin > idx)
+    prec = args(idx++);
+
+  if (nargin > idx)
+    skip = args(idx++);
+
+  if (nargin > idx)
+    arch = args(idx++);
+  else if (skip.is_string ())
+    {
+      arch = skip;
+      skip = 0;
+    }
+
+  return octave_value (do_fwrite (os, data, prec, skip, arch));
 }
 
 DEFUNX ("feof", Ffeof, args, ,
@@ -1685,20 +1623,12 @@ end-of-file condition.\n\
 @seealso{fread, frewind, fseek, fclear, fopen}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), "feof");
-
-      retval = os.eof () ? 1.0 : 0.0;
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_stream os = octave_stream_list::lookup (args(0), "feof");
+
+  return octave_value (os.eof () ? 1.0 : 0.0);
 }
 
 DEFUNX ("ferror", Fferror, args, ,
@@ -1726,28 +1656,26 @@ whether the next operation will result in an error condition.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), "ferror");
-
-      bool clear = false;
-
-      if (nargin == 2)
-        {
-          std::string opt = args(1).string_value ();
-
-          clear = (opt == "clear");
-        }
-
-      int error_number = 0;
-
-      std::string error_message = os.error (clear, error_number);
-
-      retval(1) = error_number;
-      retval(0) = error_message;
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), "ferror");
+
+  bool clear = false;
+
+  if (nargin == 2)
+    {
+      std::string opt = args(1).string_value ();
+
+      clear = (opt == "clear");
+    }
+
+  int error_number = 0;
+
+  std::string error_message = os.error (clear, error_number);
+
+  retval(1) = error_number;
+  retval(0) = error_message;
 
   return retval;
 }
@@ -1792,30 +1720,26 @@ endwhile\n\
 {
   octave_value retval = -1;
 
-  int nargin = args.length ();
+  if (args.length () != 2)
+    print_usage ();
 
-  if (nargin == 2)
+  std::string name = args(0).xstring_value ("popen: COMMAND must be a string");
+  std::string mode = args(1).xstring_value ("popen: MODE must be a string");
+
+  if (mode == "r")
     {
-      std::string name = args(0).xstring_value ("popen: COMMAND must be a string");
-      std::string mode = args(1).xstring_value ("popen: MODE must be a string");
+      octave_stream ips = octave_iprocstream::create (name);
 
-      if (mode == "r")
-        {
-          octave_stream ips = octave_iprocstream::create (name);
+      retval = octave_stream_list::insert (ips);
+    }
+  else if (mode == "w")
+    {
+      octave_stream ops = octave_oprocstream::create (name);
 
-          retval = octave_stream_list::insert (ips);
-        }
-      else if (mode == "w")
-        {
-          octave_stream ops = octave_oprocstream::create (name);
-
-          retval = octave_stream_list::insert (ops);
-        }
-      else
-        error ("popen: invalid MODE specified");
+      retval = octave_stream_list::insert (ops);
     }
   else
-    print_usage ();
+    error ("popen: invalid MODE specified");
 
   return retval;
 }
@@ -1829,16 +1753,10 @@ The function @code{fclose} may also be used for the same purpose.\n\
 @seealso{fclose, popen}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    retval = octave_stream_list::remove (args(0), "pclose");
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (octave_stream_list::remove (args(0), "pclose"));
 }
 
 DEFUN (tempname, args, ,
@@ -1865,24 +1783,20 @@ see @code{tmpfile}.\n\
 
   int len = args.length ();
 
-  if (len < 3)
-    {
-      std::string dir;
-
-      if (len > 0)
-        dir = args(0).xstring_value ("tempname: DIR must be a string");
-
-      std::string pfx ("oct-");
-
-      if (len > 1)
-        pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
-
-      retval = octave_tempnam (dir, pfx);
-    }
-  else
+  if (len > 2)
     print_usage ();
 
-  return retval;
+  std::string dir;
+
+  if (len > 0)
+    dir = args(0).xstring_value ("tempname: DIR must be a string");
+
+  std::string pfx ("oct-");
+
+  if (len > 1)
+    pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
+
+  return octave_value (octave_tempnam (dir, pfx));
 }
 
 /*
@@ -1950,37 +1864,33 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
+  if (args.length () != 0)
+    print_usage ();
+
   retval(1) = std::string ();
   retval(0) = -1;
 
-  int nargin = args.length ();
+  FILE *fid = gnulib::tmpfile ();
 
-  if (nargin == 0)
+  if (fid)
     {
-      FILE *fid = gnulib::tmpfile ();
+      std::string nm;
 
-      if (fid)
-        {
-          std::string nm;
+      std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-          std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
+      octave_stream s = octave_stdiostream::create (nm, fid, md);
 
-          octave_stream s = octave_stdiostream::create (nm, fid, md);
-
-          if (s)
-            retval(0) = octave_stream_list::insert (s);
-          else
-            error ("tmpfile: failed to create octave_stdiostream object");
-
-        }
+      if (s)
+        retval(0) = octave_stream_list::insert (s);
       else
-        {
-          retval(1) = gnulib::strerror (errno);
-          retval(0) = -1;
-        }
+        error ("tmpfile: failed to create octave_stdiostream object");
+
     }
   else
-    print_usage ();
+    {
+      retval(1) = gnulib::strerror (errno);
+      retval(0) = -1;
+    }
 
   return retval;
 }
@@ -2010,60 +1920,58 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 {
   octave_value_list retval;
 
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
   retval(2) = std::string ();
   retval(1) = std::string ();
   retval(0) = -1;
 
-  int nargin = args.length ();
+  std::string tmpl8 = args(0).xstring_value ("mkstemp: TEMPLATE argument must be a string");
 
-  if (nargin == 1 || nargin == 2)
+  OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
+  strcpy (tmp, tmpl8.c_str ());
+
+  int fd = gnulib::mkostemp (tmp, O_BINARY);
+
+  if (fd < 0)
     {
-      std::string tmpl8 = args(0).xstring_value ("mkstemp: TEMPLATE argument must be a string");
+      retval(2) = gnulib::strerror (errno);
+      retval(0) = fd;
+    }
+  else
+    {
+      const char *fopen_mode = "w+b";
 
-      OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
-      strcpy (tmp, tmpl8.c_str ());
+      FILE *fid = fdopen (fd, fopen_mode);
 
-      int fd = gnulib::mkostemp (tmp, O_BINARY);
-
-      if (fd < 0)
+      if (fid)
         {
-          retval(2) = gnulib::strerror (errno);
-          retval(0) = fd;
+          std::string nm = tmp;
+
+          std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
+
+          octave_stream s = octave_stdiostream::create (nm, fid, md);
+
+          if (s)
+            {
+              retval(1) = nm;
+              retval(0) = octave_stream_list::insert (s);
+
+              if (nargin == 2 && args(1).is_true ())
+                mark_for_deletion (nm);
+            }
+          else
+            error ("mkstemp: failed to create octave_stdiostream object");
         }
       else
         {
-          const char *fopen_mode = "w+b";
-
-          FILE *fid = fdopen (fd, fopen_mode);
-
-          if (fid)
-            {
-              std::string nm = tmp;
-
-              std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
-
-              octave_stream s = octave_stdiostream::create (nm, fid, md);
-
-              if (s)
-                {
-                  retval(1) = nm;
-                  retval(0) = octave_stream_list::insert (s);
-
-                  if (nargin == 2 && args(1).is_true ())
-                    mark_for_deletion (nm);
-                }
-              else
-                error ("mkstemp: failed to create octave_stdiostream object");
-            }
-          else
-            {
-              retval(2) = gnulib::strerror (errno);
-              retval(0) = -1;
-            }
+          retval(2) = gnulib::strerror (errno);
+          retval(0) = -1;
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2121,24 +2029,22 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
 
   int status = 0;
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+
+  int mask = args(0).xint_value ("umask: MASK must be an integer");
+
+  if (mask < 0)
     {
-      int mask = args(0).xint_value ("umask: MASK must be an integer");
-
-      if (mask < 0)
-        {
-          status = -1;
-          error ("umask: MASK must be a positive integer value");
-        }
-      else
-        {
-          int oct_mask = convert (mask, 8, 10);
-
-          status = convert (octave_umask (oct_mask), 10, 8);
-        }
+      status = -1;
+      error ("umask: MASK must be a positive integer value");
     }
   else
-    print_usage ();
+    {
+      int oct_mask = convert (mask, 8, 10);
+
+      status = convert (octave_umask (oct_mask), 10, 8);
+    }
 
   if (status >= 0)
     retval(0) = status;
@@ -2149,16 +2055,10 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
 static octave_value
 const_value (const char *, const octave_value_list& args, int val)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    retval = val;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (val);
 }
 
 DEFUNX ("P_tmpdir", FP_tmpdir, args, ,
@@ -2174,16 +2074,10 @@ environment variable.\n\
 @seealso{tempdir, tempname, mkstemp, tmpfile}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    retval = get_P_tmpdir ();
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (get_P_tmpdir ());
 }
 
 // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
@@ -2239,16 +2133,10 @@ static octave_value
 const_value (const char *, const octave_value_list& args,
              const octave_value& val)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    retval = val;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return octave_value (val);
 }
 
 DEFUNX ("stdin", Fstdin, args, ,

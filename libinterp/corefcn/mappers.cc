@@ -60,13 +60,10 @@ abs (3 + 4i)\n\
 @seealso{arg}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).abs ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return octave_value (args(0).abs ());
 }
 
 /*
@@ -93,13 +90,10 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 @seealso{cos, acosd}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).acos ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).acos ());
 }
 
 /*
@@ -142,13 +136,10 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 @seealso{cosh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).acosh ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).acosh ());
 }
 
 /*
@@ -184,13 +175,10 @@ See @code{arg}.\n\
 @seealso{arg}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).arg ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).arg ());
 }
 
 DEFUN (arg, args, ,
@@ -219,13 +207,10 @@ arg (3 + 4i)\n\
 @seealso{abs}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).arg ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).arg ());
 }
 
 /*
@@ -258,13 +243,10 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 @seealso{sin, asind}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).asin ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).asin ());
 }
 
 /*
@@ -306,13 +288,10 @@ Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 @seealso{sinh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).asinh ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).asinh ());
 }
 
 /*
@@ -337,13 +316,10 @@ Compute the inverse tangent in radians for each element of @var{x}.\n\
 @seealso{tan, atand}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).atan ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).atan ());
 }
 
 /*
@@ -372,13 +348,10 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 @seealso{tanh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).atanh ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).atanh ());
 }
 
 /*
@@ -406,13 +379,10 @@ negative.\n\
 @seealso{nthroot}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).cbrt ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).cbrt ());
 }
 
 /*
@@ -448,13 +418,10 @@ ceil ([-2.7, 2.7])\n\
 @seealso{floor, round, fix}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).ceil ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).ceil ());
 }
 
 /*
@@ -489,13 +456,10 @@ $\\bar{z} = x - iy$.\n\
 @seealso{real, imag}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).conj ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).conj ());
 }
 
 /*
@@ -522,13 +486,10 @@ Compute the cosine for each element of @var{x} in radians.\n\
 @seealso{acos, cosd, cosh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).cos ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).cos ());
 }
 
 /*
@@ -559,13 +520,10 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 @seealso{acosh, sinh, tanh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).cosh ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).cosh ());
 }
 
 /*
@@ -610,13 +568,10 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 @seealso{erfc, erfcx, erfi, dawson, erfinv, erfcinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).erf ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).erf ());
 }
 
 /*
@@ -668,13 +623,10 @@ erf (@var{y}) == @var{x}\n\
 @seealso{erf, erfc, erfcx, erfi, dawson, erfcinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).erfinv ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).erfinv ());
 }
 
 /*
@@ -708,13 +660,10 @@ erfc (@var{y}) == @var{x}\n\
 @seealso{erfc, erf, erfcx, erfi, dawson, erfinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).erfcinv ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).erfcinv ());
 }
 
 /*
@@ -750,13 +699,10 @@ $1 - {\\rm erf} (z)$.\n\
 @seealso{erfcinv, erfcx, erfi, dawson, erf, erfinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).erfc ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).erfc ());
 }
 
 /*
@@ -789,13 +735,10 @@ exp (z^2) * erfc (z)\n\
 @seealso{erfc, erf, erfi, dawson, erfinv, erfcinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).erfcx ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).erfcx ());
 }
 
 /*
@@ -834,13 +777,10 @@ $$\n\
 @seealso{erfc, erf, erfcx, dawson, erfinv, erfcinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).erfi ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).erfi ());
 }
 
 /*
@@ -874,13 +814,10 @@ $$\n\
 @seealso{erfc, erf, erfcx, erfi, erfinv, erfcinv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).dawson ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).dawson ());
 }
 
 /*
@@ -911,13 +848,10 @@ To compute the matrix exponential, see @ref{Linear Algebra}.\n\
 @seealso{log}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).exp ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).exp ());
 }
 
 /*
@@ -947,13 +881,10 @@ accurately in the neighborhood of zero.\n\
 @seealso{exp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).expm1 ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).expm1 ());
 }
 
 /*
@@ -983,13 +914,10 @@ isfinite ([13, Inf, NA, NaN])\n\
 @seealso{isinf, isnan, isna}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).finite ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).finite ());
 }
 
 /*
@@ -1022,13 +950,10 @@ fix ([-2.7, 2.7])\n\
 @seealso{ceil, floor, round}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).fix ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).fix ());
 }
 
 /*
@@ -1058,13 +983,10 @@ floor ([-2.7, 2.7])\n\
 @seealso{ceil, round, fix}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).floor ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).floor ());
 }
 
 /*
@@ -1110,13 +1032,10 @@ loss of precision.  The final result is then\n\
 @seealso{gammainc, gammaln, factorial}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).gamma ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).gamma ());
 }
 
 /*
@@ -1156,13 +1075,10 @@ Return the imaginary part of @var{z} as a real number.\n\
 @seealso{real, conj}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).imag ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).imag ());
 }
 
 /*
@@ -1190,13 +1106,10 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).\n\
 @seealso{isalpha, isdigit, ispunct, isspace, iscntrl}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisalnum ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisalnum ());
 }
 
 /*
@@ -1222,13 +1135,10 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).\n\
 @seealso{isdigit, ispunct, isspace, iscntrl, isalnum, islower, isupper}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisalpha ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisalpha ());
 }
 
 /*
@@ -1251,13 +1161,10 @@ ASCII characters (in the range 0 to 127 decimal) and false where they are\n\
 not.\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisascii ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisascii ());
 }
 
 /*
@@ -1278,13 +1185,10 @@ control characters and false where they are not.\n\
 @seealso{ispunct, isspace, isalpha, isdigit}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xiscntrl ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xiscntrl ());
 }
 
 /*
@@ -1307,13 +1211,10 @@ decimal digits (0-9) and false where they are not.\n\
 @seealso{isxdigit, isalpha, isletter, ispunct, isspace, iscntrl}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisdigit ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisdigit ());
 }
 
 /*
@@ -1344,13 +1245,10 @@ isinf ([13, Inf, NA, NaN])\n\
 @seealso{isfinite, isnan, isna}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).isinf ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).isinf ());
 }
 
 /*
@@ -1379,13 +1277,10 @@ not.\n\
 @seealso{isprint}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisgraph ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisgraph ());
 }
 
 /*
@@ -1407,13 +1302,10 @@ lowercase letters and false where they are not.\n\
 @seealso{isupper, isalpha, isletter, isalnum}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xislower ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xislower ());
 }
 
 /*
@@ -1444,13 +1336,10 @@ isna ([13, Inf, NA, NaN])\n\
 @seealso{isnan, isinf, isfinite}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).isna ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).isna ());
 }
 
 /*
@@ -1487,13 +1376,10 @@ isnan ([13, Inf, NA, NaN])\n\
 @seealso{isna, isinf, isfinite}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).isnan ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).isnan ());
 }
 
 /*
@@ -1522,13 +1408,10 @@ are not.\n\
 @seealso{isgraph}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisprint ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisprint ());
 }
 
 /*
@@ -1550,13 +1433,10 @@ punctuation characters and false where they are not.\n\
 @seealso{isalpha, isdigit, isspace, iscntrl}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xispunct ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xispunct ());
 }
 
 /*
@@ -1582,13 +1462,10 @@ vertical tab) and false where they are not.\n\
 @seealso{iscntrl, ispunct, isalpha, isdigit}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisspace ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisspace ());
 }
 
 /*
@@ -1610,13 +1487,10 @@ uppercase letters and false where they are not.\n\
 @seealso{islower, isalpha, isletter, isalnum}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisupper ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisupper ());
 }
 
 /*
@@ -1638,13 +1512,10 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 @seealso{isdigit}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xisxdigit ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xisxdigit ());
 }
 
 /*
@@ -1668,13 +1539,10 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 @seealso{gamma, gammainc}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).lgamma ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).lgamma ());
 }
 
 /*
@@ -1722,13 +1590,10 @@ To compute the matrix logarithm, see @ref{Linear Algebra}.\n\
 @seealso{exp, log1p, log2, log10, logspace}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).log ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).log ());
 }
 
 /*
@@ -1749,13 +1614,10 @@ Compute the base-10 logarithm of each element of @var{x}.\n\
 @seealso{log, log2, logspace, exp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).log10 ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).log10 ());
 }
 
 /*
@@ -1780,13 +1642,10 @@ accurately in the neighborhood of zero.\n\
 @seealso{log, exp, expm1}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).log1p ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).log1p ());
 }
 
 /*
@@ -1804,13 +1663,10 @@ Return the real part of @var{z}.\n\
 @seealso{imag, conj}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).real ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).real ());
 }
 
 /*
@@ -1846,13 +1702,10 @@ round ([-2.7, 2.7])\n\
 @seealso{ceil, floor, fix, roundb}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).round ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).round ());
 }
 
 /*
@@ -1887,13 +1740,10 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 @seealso{round}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).roundb ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).roundb ());
 }
 
 /*
@@ -1950,13 +1800,10 @@ whether zero is signed, use the @code{signbit} function.\n\
 @seealso{signbit}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).signum ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).signum ());
 }
 
 /*
@@ -1990,16 +1837,12 @@ but @code{signbit (-0.0)} will return a nonzero value.\n\
 @seealso{sign}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    {
-      retval = args(0).xsignbit ();
-      retval = (retval != 0);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_value tmp = args(0).xsignbit ();
+
+  return octave_value (tmp != 0);
 }
 
 /*
@@ -2024,13 +1867,10 @@ Compute the sine for each element of @var{x} in radians.\n\
 @seealso{asin, sind, sinh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).sin ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).sin ());
 }
 
 /*
@@ -2059,13 +1899,10 @@ Compute the hyperbolic sine for each element of @var{x}.\n\
 @seealso{asinh, cosh, tanh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).sinh ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).sinh ());
 }
 
 /*
@@ -2094,13 +1931,10 @@ To compute the matrix square root, see @ref{Linear Algebra}.\n\
 @seealso{realsqrt, nthroot}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).sqrt ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).sqrt ());
 }
 
 /*
@@ -2125,13 +1959,10 @@ Compute the tangent for each element of @var{x} in radians.\n\
 @seealso{atan, tand, tanh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).tan ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).tan ());
 }
 
 /*
@@ -2160,13 +1991,10 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 @seealso{atanh, sinh, cosh}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).tanh ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).tanh ());
 }
 
 /*
@@ -2201,13 +2029,10 @@ toascii (\"ASCII\")\n\
 @seealso{char}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xtoascii ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xtoascii ());
 }
 
 /*
@@ -2241,13 +2066,10 @@ tolower (\"MiXeD cAsE 123\")\n\
 @seealso{toupper}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xtolower ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xtolower ());
 }
 
 DEFALIAS (lower, tolower);
@@ -2303,13 +2125,10 @@ toupper (\"MiXeD cAsE 123\")\n\
 @seealso{tolower}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  if (args.length () == 1)
-    retval = args(0).xtoupper ();
-  else
+  if (args.length () != 1)
     print_usage ();
-
-  return retval;
+  
+  return octave_value (args(0).xtoupper ());
 }
 
 DEFALIAS (upper, toupper);

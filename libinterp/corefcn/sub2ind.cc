@@ -139,17 +139,17 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 
 # Test high index
 %!assert (sub2ind ([10 10 10], 10, 10, 10), 1000)
-%!error <index \(11,_,_\); out of bound 10> sub2ind ([10 10 10], 11, 10, 10)
-%!error <index \(_,11,_\); out of bound 10> sub2ind ([10 10 10], 10, 11, 10)
-%!error <index \(_,_,11\); out of bound 10> sub2ind ([10 10 10], 10, 10, 11)
+%!error <index \(11,_,_\): out of bound 10> sub2ind ([10 10 10], 11, 10, 10)
+%!error <index \(_,11,_\): out of bound 10> sub2ind ([10 10 10], 10, 11, 10)
+%!error <index \(_,_,11\): out of bound 10> sub2ind ([10 10 10], 10, 10, 11)
 
 # Test high index in the trailing dimensions
 %!assert (sub2ind ([10, 1], 2, 1, 1), 2)
-%!error <index \(_,2,_\); out of bound 1> sub2ind ([10, 1], 1, 2, 1)
-%!error <index \(_,_,2\); out of bound 1> sub2ind ([10, 1], 1, 1, 2)
+%!error <index \(_,2,_\): out of bound 1> sub2ind ([10, 1], 1, 2, 1)
+%!error <index \(_,_,2\): out of bound 1> sub2ind ([10, 1], 1, 1, 2)
 %!assert (sub2ind ([10 10], 2, 2, 1), 12)
-%!error <index \(_,_,2\); out of bound 1> sub2ind ([10 10], 2, 1, 2)
-%!error <index \(_,_,2\); out of bound 1> sub2ind ([10 10], 1, 2, 2)
+%!error <index \(_,_,2\): out of bound 1> sub2ind ([10 10], 2, 1, 2)
+%!error <index \(_,_,2\): out of bound 1> sub2ind ([10 10], 1, 2, 2)
 
 # Test handling of empty arguments
 %!assert (sub2ind ([10 10], zeros (0,0), zeros (0,0)), zeros (0,0))

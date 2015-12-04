@@ -498,81 +498,81 @@
 
 
   ##  Test indexing of unnamed constants
-%!error <index \(0\); subscripts must be>     1(0)
-%!error <index \(-1\); subscripts must be>    1(-1)
-%!error <index \(_,0.5\); subscripts>                 {}(1,0.5)
-%!error <index \(nan,_\); subscripts>                 1(NaN,1)
-%!error <index \(_,_,<cell....\[x8\]...\); subscripts> [](1,1,{},1,1,1,1,1,1,1,1)
-%!error <index \(...\[x9\]...-1,_\); subscript>      1(1,1,1,1,1,1,1,1,1,-1,1)
-%!error <index \(2\); out of bound 1>                1(2)
-%!error <index \(1\); out of bound 0>                [](1)
-%!error <index \(_,1\); but object has size 5x0>     zeros(5,0)(3,1)
-%!error <index \(3,_\); but object has size 0x5>     zeros(0,5)(3,1)
-%!error <index \(-1\); subscripts>                   1(1)(-1)(1)
+%!error <index \(0\): subscripts must be>     1(0)
+%!error <index \(-1\): subscripts must be>    1(-1)
+%!error <index \(_,0.5\): subscripts>                 {}(1,0.5)
+%!error <index \(nan,_\): subscripts>                 1(NaN,1)
+%!error <index \(_,_,<cell....\[x8\]...\): subscripts> [](1,1,{},1,1,1,1,1,1,1,1)
+%!error <index \(...\[x9\]...-1,_\): subscript>      1(1,1,1,1,1,1,1,1,1,-1,1)
+%!error <index \(2\): out of bound 1>                1(2)
+%!error <index \(1\): out of bound 0>                [](1)
+%!error <index \(_,1\): but object has size 5x0>     zeros(5,0)(3,1)
+%!error <index \(3,_\): but object has size 0x5>     zeros(0,5)(3,1)
+%!error <index \(-1\): subscripts>                   1(1)(-1)(1)
 %!
 %!shared abc
 %! abc = [1, 2];
 %! ##  Test full matrices in variables
-%!error <abc\(3\); out of bound 2>      abc([false, true, true])
-%!error <abc\(-1\); subscripts>         abc(-1)(1)(1)
-%! ## xerror <index \(-1\); subscripts> abc(1)(-1)(1)   ## why no 'xerror' test?
+%!error <abc\(3\): out of bound 2>      abc([false, true, true])
+%!error <abc\(-1\): subscripts>         abc(-1)(1)(1)
+%! ## xerror <index \(-1\): subscripts> abc(1)(-1)(1)   ## why no 'xerror' test?
 
 %!shared abc
 %! abc = [1 2; 3 4];
-%!error <abc\(5\); out of bound 4>         abc(5)
-%!error <abc\(_,3\); but abc has size 2x2> abc(2,3)
-%!error <abc\(_,_,0.5\); subscripts>       exp (abc(2,3,0.5))
+%!error <abc\(5\): out of bound 4>         abc(5)
+%!error <abc\(_,3\): but abc has size 2x2> abc(2,3)
+%!error <abc\(_,_,0.5\): subscripts>       exp (abc(2,3,0.5))
 
 %!shared abc
 %! abc = [1 2; 3 4]; abc(1,1,2) = 1;
-%!error <abc\(_,5\); out of bound 4>                            abc(2,5)
-%!error <abc\(_,3,_\); but abc has size 2x2x2>                  abc(2,3,2)
+%!error <abc\(_,5\): out of bound 4>                            abc(2,5)
+%!error <abc\(_,3,_\): but abc has size 2x2x2>                  abc(2,3,2)
 %!error <A\(..,I,..\) = \[\]: .* value 3 out of bound 2>        abc(3,:) = []
 %!error <A\(I\) = \[\]: .* value 50 out of bound 8>             abc(3:50) = []
 %!error <a null assignment can only have one non-colon index>   abc(3,5) = []
 %!error <=: nonconformant arguments \(op1 is 1x1, op2 is 1x5\)> abc(3,5) = 1:5
 
 %! ##  Test diagonal matrices, and access of function results
-%!error <index \(_,_,5\); but object has size 3x3> eye(3)(2,3,5)
-%!error <index \(-2,_\); subscripts>               eye(4)(-2,3)
+%!error <index \(_,_,5\): but object has size 3x3> eye(3)(2,3,5)
+%!error <index \(-2,_\): subscripts>               eye(4)(-2,3)
 
 %! ##  Test cells
 %!shared abc
 %! abc = {1, 2; 3, 4};
-%!error <abc\(_,0.3,_\); subscripts>  abc(2,0.3,5)
-%!error <abc\(_,0.3,_\); subscripts>  abc{2,0.3,5}
-%!error <abc\(-2,_,_,_\); subscripts> abc{-2,1,1,1}
-%!error <abc\(0,_,_,_\); subscripts>  abc(0,1,1,1) = 1
+%!error <abc\(_,0.3,_\): subscripts>  abc(2,0.3,5)
+%!error <abc\(_,0.3,_\): subscripts>  abc{2,0.3,5}
+%!error <abc\(-2,_,_,_\): subscripts> abc{-2,1,1,1}
+%!error <abc\(0,_,_,_\): subscripts>  abc(0,1,1,1) = 1
 
 %! ##  Test permutation matrices
 %!shared abc
 %! abc = eye(3)([3 1 2],:);
-%!error <abc\(nan\); subscripts>         abc(NA)
-%!error <abc\(_,_,_,inf,_\); subscripts> abc(1,1,1,Inf,1)
+%!error <abc\(nan\): subscripts>         abc(NA)
+%!error <abc\(_,_,_,inf,_\): subscripts> abc(1,1,1,Inf,1)
 
 %! ##  Test sparse matrices
 %!shared abc
 %! abc = sparse(3,3);
-%!error <abc\(-1\); subscripts>                abc(-1)
-%!error <abc\(-1\); subscripts>                abc(-1) = 1
-%!error <abc\(-1,_\); subscripts>              abc(-1,1)
-%!error <abc\(-1,_\); subscripts>              abc(-1,1) = 1
+%!error <abc\(-1\): subscripts>                abc(-1)
+%!error <abc\(-1\): subscripts>                abc(-1) = 1
+%!error <abc\(-1,_\): subscripts>              abc(-1,1)
+%!error <abc\(-1,_\): subscripts>              abc(-1,1) = 1
 %!error <sparse indexing needs 1 or 2 indices> abc(0,0,0,0)
-%!error <abc\(4,_\); but abc has size 3x3>     abc(4,1)
+%!error <abc\(4,_\): but abc has size 3x3>     abc(4,1)
 
 %! ##  Test ranges
 %!shared abc
 %! abc = 1:10;
-%!error <abc\(-1\); subscripts>             abc(-1)
-%!error <abc\(-1,_\); subscripts>           abc(-1,1)
-%!error <abc\(4,_\); but abc has size 1x10> abc(4,1)
+%!error <abc\(-1\): subscripts>             abc(-1)
+%!error <abc\(-1,_\): subscripts>           abc(-1,1)
+%!error <abc\(4,_\): but abc has size 1x10> abc(4,1)
 
 %! ##  Test complex
 %!shared abc, z
 %! abc = [1 2];
-%!error <abc\(0\+1i\); subscripts must be real>     abc(i)
+%!error <abc\(0\+1i\): subscripts must be real>     abc(i)
 %! abc = [1 2; 3 4];
-%!error <abc\(1\+0i\); subscripts must be real>     abc(complex(1))
-%!error <abc\(1\+0.5i,_\); subscripts must be real> abc(1+0.5*i,3)
-%!error <abc\(_,0-2i\); subscripts must be real>   abc(2,0-2*i)
+%!error <abc\(1\+0i\): subscripts must be real>     abc(complex(1))
+%!error <abc\(1\+0.5i,_\): subscripts must be real> abc(1+0.5*i,3)
+%!error <abc\(_,0-2i\): subscripts must be real>   abc(2,0-2*i)
 

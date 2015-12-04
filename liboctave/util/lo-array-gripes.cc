@@ -98,7 +98,7 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
   const char *err_id = error_id_index_out_of_bounds;
 
   (*current_liboctave_error_with_id_handler)
-    (err_id, "A(%s) = []: index out of bounds; value %d out of bound %d",
+    (err_id, "A(%s) = []: index out of bounds: value %d out of bound %d",
      is1d ? "I" : "..,I,..", idx, ext);
 }
 
@@ -111,7 +111,7 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
 std::string
 index_exception::message (void) const
 {
-  std::string msg = expression () + "; " + details ();
+  std::string msg = expression () + ": " + details ();
   return msg.c_str ();
 }
 

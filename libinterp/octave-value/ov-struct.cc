@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Cell.h"
-#include "builtin-defun-decls.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -2105,6 +2104,10 @@ A(1)\n\
 %!assert (cell2struct ({}, {"f"}, 3), struct ("f", {}));
 */
 
+// FIXME: we should be including builtin-defun-decls.h but doing that
+// currently exposes a problem with dependencies in the the build system.
+extern OCTINTERP_API octave_value_list
+Fcellstr (const octave_value_list& = octave_value_list (), int = 0);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\

@@ -111,11 +111,12 @@ endfunction
 %! assert (c, {[1;2;3;4;5];[2];[2;3];[2];[1;2;3;4;5]});
 %!test
 %! a = sprandn (32, 32, 0.05);
+%! sp0 = sparse (0);
 %! [m, f, c] = mode (a);
 %! [m2, f2, c2] = mode (full (a));
 %! assert (m, sparse (m2));
 %! assert (f, sparse (f2));
-%! c_exp(1:length (a)) = { sparse (0) };
+%! c_exp(1:length (a)) = { sp0 };
 %! assert (c ,c_exp);
 %! assert (c2,c_exp );
 

@@ -892,133 +892,133 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
 @end deftypefn")
 {
   octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();
-  else
+
+  const octave_scalar_map err = args(0).scalar_map_value ();
+
+  if (err.contains ("message") && err.contains ("identifier"))
     {
-      const octave_scalar_map err = args(0).scalar_map_value ();
+      std::string msg = err.contents ("message").string_value ();
+      std::string id = err.contents ("identifier").string_value ();
+      int len = msg.length ();
 
-      if (err.contains ("message") && err.contains ("identifier"))
+      std::string file;
+      std::string nm;
+      int l = -1;
+      int c = -1;
+
+      octave_map err_stack = initialize_last_error_stack ();
+
+      if (err.contains ("stack"))
         {
-          std::string msg = err.contents ("message").string_value ();
-          std::string id = err.contents ("identifier").string_value ();
-          int len = msg.length ();
+          err_stack = err.contents ("stack").map_value ();
 
-          std::string file;
-          std::string nm;
-          int l = -1;
-          int c = -1;
-
-          octave_map err_stack = initialize_last_error_stack ();
-
-          if (err.contains ("stack"))
+          if (err_stack.numel () > 0)
             {
-              err_stack = err.contents ("stack").map_value ();
+              if (err_stack.contains ("file"))
+                file = err_stack.contents ("file")(0).string_value ();
 
-              if (err_stack.numel () > 0)
-                {
-                  if (err_stack.contains ("file"))
-                    file = err_stack.contents ("file")(0).string_value ();
+              if (err_stack.contains ("name"))
+                nm = err_stack.contents ("name")(0).string_value ();
 
-                  if (err_stack.contains ("name"))
-                    nm = err_stack.contents ("name")(0).string_value ();
+              if (err_stack.contains ("line"))
+                l = err_stack.contents ("line")(0).nint_value ();
 
-                  if (err_stack.contains ("line"))
-                    l = err_stack.contents ("line")(0).nint_value ();
-
-                  if (err_stack.contains ("column"))
-                    c = err_stack.contents ("column")(0).nint_value ();
-                }
+              if (err_stack.contains ("column"))
+                c = err_stack.contents ("column")(0).nint_value ();
             }
+        }
 
-          // Ugh.
-          char *tmp_msg = strsave (msg.c_str ());
-          if (tmp_msg[len-1] == '\n')
+      // Ugh.
+      char *tmp_msg = strsave (msg.c_str ());
+      if (tmp_msg[len-1] == '\n')
+        {
+          if (len > 1)
             {
-              if (len > 1)
-                {
-                  tmp_msg[len - 1] = '\0';
-                  rethrow_error (id.c_str (), "%s\n", tmp_msg);
-                }
+              tmp_msg[len - 1] = '\0';
+              rethrow_error (id.c_str (), "%s\n", tmp_msg);
             }
-          else
-            rethrow_error (id.c_str (), "%s", tmp_msg);
-          delete [] tmp_msg;
+        }
+      else
+        rethrow_error (id.c_str (), "%s", tmp_msg);
+      delete [] tmp_msg;
 
-          // FIXME: is this the right thing to do for Vlast_error_stack?
-          //        Should it be saved and restored with unwind_protect?
+      // FIXME: is this the right thing to do for Vlast_error_stack?
+      //        Should it be saved and restored with unwind_protect?
 
-          Vlast_error_stack = err_stack;
+      Vlast_error_stack = err_stack;
 
-          if (err.contains ("stack"))
+      if (err.contains ("stack"))
+        {
+          if (file.empty ())
             {
-              if (file.empty ())
+              if (nm.empty ())
                 {
-                  if (nm.empty ())
+                  if (l > 0)
                     {
-                      if (l > 0)
-                        {
-                          if (c > 0)
-                            pr_where_1 (std::cerr,
-                                        "error: near line %d, column %d",
-                                        l, c);
-                          else
-                            pr_where_1 (std::cerr, "error: near line %d", l);
-                        }
-                    }
-                  else
-                    {
-                      if (l > 0)
-                        {
-                          if (c > 0)
-                            pr_where_1 (std::cerr,
-                                        "error: called from '%s' near line %d, column %d",
-                                        nm.c_str (), l, c);
-                          else
-                            pr_where_1 (std::cerr,
-                                        "error: called from '%d' near line %d",
-                                        nm.c_str (), l);
-                        }
+                      if (c > 0)
+                        pr_where_1 (std::cerr,
+                                    "error: near line %d, column %d",
+                                    l, c);
+                      else
+                        pr_where_1 (std::cerr, "error: near line %d", l);
                     }
                 }
               else
                 {
-                  if (nm.empty ())
+                  if (l > 0)
                     {
-                      if (l > 0)
-                        {
-                          if (c > 0)
-                            pr_where_1 (std::cerr,
-                                        "error: in file %s near line %d, column %d",
-                                        file.c_str (), l, c);
-                          else
-                            pr_where_1 (std::cerr,
-                                        "error: in file %s near line %d",
-                                        file.c_str (), l);
-                        }
+                      if (c > 0)
+                        pr_where_1 (std::cerr,
+                                    "error: called from '%s' near line %d, column %d",
+                                    nm.c_str (), l, c);
+                      else
+                        pr_where_1 (std::cerr,
+                                    "error: called from '%d' near line %d",
+                                    nm.c_str (), l);
                     }
-                  else
+                }
+            }
+          else
+            {
+              if (nm.empty ())
+                {
+                  if (l > 0)
                     {
-                      if (l > 0)
-                        {
-                          if (c > 0)
-                            pr_where_1 (std::cerr,
-                                        "error: called from '%s' in file %s near line %d, column %d",
-                                        nm.c_str (), file.c_str (), l, c);
-                          else
-                            pr_where_1 (std::cerr,
-                                        "error: called from '%d' in file %s near line %d",
-                                        nm.c_str (), file.c_str (), l);
-                        }
+                      if (c > 0)
+                        pr_where_1 (std::cerr,
+                                    "error: in file %s near line %d, column %d",
+                                    file.c_str (), l, c);
+                      else
+                        pr_where_1 (std::cerr,
+                                    "error: in file %s near line %d",
+                                    file.c_str (), l);
+                    }
+                }
+              else
+                {
+                  if (l > 0)
+                    {
+                      if (c > 0)
+                        pr_where_1 (std::cerr,
+                                    "error: called from '%s' in file %s near line %d, column %d",
+                                    nm.c_str (), file.c_str (), l, c);
+                      else
+                        pr_where_1 (std::cerr,
+                                    "error: called from '%d' in file %s near line %d",
+                                    nm.c_str (), file.c_str (), l);
                     }
                 }
             }
         }
-      else
-        error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
     }
+  else
+    error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
+
   return retval;
 }
 
@@ -1169,50 +1169,48 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 
   if (nargin == 0)
     print_usage ();
-  else
+
+  bool have_fmt = false;
+
+  if (nargin == 1 && args(0).is_map ())
     {
-      bool have_fmt = false;
+      // empty struct is not an error.  return and resume calling function.
+      if (args(0).is_empty ())
+        return retval;
 
-      if (nargin == 1 && args(0).is_map ())
+      octave_value_list tmp;
+
+      octave_scalar_map m = args(0).scalar_map_value ();
+
+      // empty struct is not an error.  return and resume calling function.
+      if (m.nfields () == 0)
+        return retval;
+
+      if (m.contains ("message"))
         {
-          // empty struct is not an error.  return and resume calling function.
-          if (args(0).is_empty ())
-            return retval;
+          octave_value c = m.getfield ("message");
 
-          octave_value_list tmp;
-
-          octave_scalar_map m = args(0).scalar_map_value ();
-
-          // empty struct is not an error.  return and resume calling function.
-          if (m.nfields () == 0)
-            return retval;
-
-          if (m.contains ("message"))
-            {
-              octave_value c = m.getfield ("message");
-
-              if (c.is_string ())
-                nargs(0) = c.string_value ();
-            }
-
-          if (m.contains ("identifier"))
-            {
-              octave_value c = m.getfield ("identifier");
-
-              if (c.is_string ())
-                id = c.string_value ();
-            }
-
-          // FIXME: also need to handle "stack" field in error structure,
-          //        but that will require some more significant surgery on
-          //        handle_message, error_with_id, etc.
+          if (c.is_string ())
+            nargs(0) = c.string_value ();
         }
-      else
-        have_fmt = maybe_extract_message_id ("error", args, nargs, id);
 
-      handle_message (error_with_id, id.c_str (), "unspecified error",
-                      nargs, have_fmt);
+      if (m.contains ("identifier"))
+        {
+          octave_value c = m.getfield ("identifier");
+
+          if (c.is_string ())
+            id = c.string_value ();
+        }
+
+      // FIXME: also need to handle "stack" field in error structure,
+      //        but that will require some more significant surgery on
+      //        handle_message, error_with_id, etc.
     }
+  else
+    have_fmt = maybe_extract_message_id ("error", args, nargs, id);
+
+  handle_message (error_with_id, id.c_str (), "unspecified error",
+                  nargs, have_fmt);
 
   return retval;
 }
@@ -1835,121 +1833,116 @@ fields are set to their default values.\n\
 @seealso{lasterr, error, lastwarn}\n\
 @end deftypefn")
 {
-  octave_value retval;
   int nargin = args.length ();
 
-  if (nargin < 2)
-    {
-      octave_scalar_map err;
-
-      err.assign ("message", Vlast_error_message);
-      err.assign ("identifier", Vlast_error_id);
-
-      err.assign ("stack", octave_value (Vlast_error_stack));
-
-      if (nargin == 1)
-        {
-          if (args(0).is_string ())
-            {
-              if (args(0).string_value () == "reset")
-                {
-                  Vlast_error_message = std::string ();
-                  Vlast_error_id = std::string ();
-
-                  Vlast_error_stack = initialize_last_error_stack ();
-                }
-              else
-                error ("lasterror: unrecognized string argument");
-            }
-          else if (args(0).is_map ())
-            {
-              octave_scalar_map new_err = args(0).scalar_map_value ();
-              octave_scalar_map new_err_stack;
-              std::string new_error_message;
-              std::string new_error_id;
-              std::string new_error_file;
-              std::string new_error_name;
-              int new_error_line = -1;
-              int new_error_column = -1;
-
-              if (new_err.contains ("message"))
-                {
-                  const std::string tmp =
-                    new_err.getfield ("message").string_value ();
-                  new_error_message = tmp;
-                }
-
-              if (new_err.contains ("identifier"))
-                {
-                  const std::string tmp =
-                    new_err.getfield ("identifier").string_value ();
-                  new_error_id = tmp;
-                }
-
-              if (new_err.contains ("stack"))
-                {
-                  new_err_stack =
-                    new_err.getfield ("stack").scalar_map_value ();
-
-                  if (new_err_stack.contains ("file"))
-                    {
-                      const std::string tmp =
-                        new_err_stack.getfield ("file").string_value ();
-                      new_error_file = tmp;
-                    }
-
-                  if (new_err_stack.contains ("name"))
-                    {
-                      const std::string tmp =
-                        new_err_stack.getfield ("name").string_value ();
-                      new_error_name = tmp;
-                    }
-
-                  if (new_err_stack.contains ("line"))
-                    {
-                      const int tmp =
-                        new_err_stack.getfield ("line").nint_value ();
-                      new_error_line = tmp;
-                    }
-
-                  if (new_err_stack.contains ("column"))
-                    {
-                      const int tmp =
-                        new_err_stack.getfield ("column").nint_value ();
-                      new_error_column = tmp;
-                    }
-                }
-
-              Vlast_error_message = new_error_message;
-              Vlast_error_id = new_error_id;
-
-              if (new_err.contains ("stack"))
-                {
-                  new_err_stack.setfield ("file", new_error_file);
-                  new_err_stack.setfield ("name", new_error_name);
-                  new_err_stack.setfield ("line", new_error_line);
-                  new_err_stack.setfield ("column", new_error_column);
-                  Vlast_error_stack = new_err_stack;
-                }
-              else
-                {
-                  // No stack field.  Fill it in with backtrace info.
-                  octave_idx_type curr_frame = -1;
-
-                  Vlast_error_stack
-                    = octave_call_stack::backtrace (0, curr_frame);
-                }
-            }
-          else
-            error ("lasterror: argument must be a structure or a string");
-        }
-
-      retval = err;
-    }
-  else
+  if (nargin > 1)
     print_usage ();
 
-  return retval;
+  octave_scalar_map err;
+
+  err.assign ("message", Vlast_error_message);
+  err.assign ("identifier", Vlast_error_id);
+
+  err.assign ("stack", octave_value (Vlast_error_stack));
+
+  if (nargin == 1)
+    {
+      if (args(0).is_string ())
+        {
+          if (args(0).string_value () == "reset")
+            {
+              Vlast_error_message = std::string ();
+              Vlast_error_id = std::string ();
+
+              Vlast_error_stack = initialize_last_error_stack ();
+            }
+          else
+            error ("lasterror: unrecognized string argument");
+        }
+      else if (args(0).is_map ())
+        {
+          octave_scalar_map new_err = args(0).scalar_map_value ();
+          octave_scalar_map new_err_stack;
+          std::string new_error_message;
+          std::string new_error_id;
+          std::string new_error_file;
+          std::string new_error_name;
+          int new_error_line = -1;
+          int new_error_column = -1;
+
+          if (new_err.contains ("message"))
+            {
+              const std::string tmp =
+                new_err.getfield ("message").string_value ();
+              new_error_message = tmp;
+            }
+
+          if (new_err.contains ("identifier"))
+            {
+              const std::string tmp =
+                new_err.getfield ("identifier").string_value ();
+              new_error_id = tmp;
+            }
+
+          if (new_err.contains ("stack"))
+            {
+              new_err_stack =
+                new_err.getfield ("stack").scalar_map_value ();
+
+              if (new_err_stack.contains ("file"))
+                {
+                  const std::string tmp =
+                    new_err_stack.getfield ("file").string_value ();
+                  new_error_file = tmp;
+                }
+
+              if (new_err_stack.contains ("name"))
+                {
+                  const std::string tmp =
+                    new_err_stack.getfield ("name").string_value ();
+                  new_error_name = tmp;
+                }
+
+              if (new_err_stack.contains ("line"))
+                {
+                  const int tmp =
+                    new_err_stack.getfield ("line").nint_value ();
+                  new_error_line = tmp;
+                }
+
+              if (new_err_stack.contains ("column"))
+                {
+                  const int tmp =
+                    new_err_stack.getfield ("column").nint_value ();
+                  new_error_column = tmp;
+                }
+            }
+
+          Vlast_error_message = new_error_message;
+          Vlast_error_id = new_error_id;
+
+          if (new_err.contains ("stack"))
+            {
+              new_err_stack.setfield ("file", new_error_file);
+              new_err_stack.setfield ("name", new_error_name);
+              new_err_stack.setfield ("line", new_error_line);
+              new_err_stack.setfield ("column", new_error_column);
+              Vlast_error_stack = new_err_stack;
+            }
+          else
+            {
+              // No stack field.  Fill it in with backtrace info.
+              octave_idx_type curr_frame = -1;
+
+              Vlast_error_stack
+                = octave_call_stack::backtrace (0, curr_frame);
+            }
+        }
+      else
+        error ("lasterror: argument must be a structure or a string");
+    }
+
+  return octave_value (err);
 }
 
 DEFUN (lasterr, args, nargout,
@@ -1972,27 +1965,25 @@ With two arguments, also set the last message identifier.\n\
 
   int argc = args.length () + 1;
 
-  if (argc < 4)
-    {
-      string_vector argv = args.make_argv ("lasterr");
-
-      std::string prev_error_id = Vlast_error_id;
-      std::string prev_error_message = Vlast_error_message;
-
-      if (argc > 2)
-        Vlast_error_id = argv(2);
-
-      if (argc > 1)
-        Vlast_error_message = argv(1);
-
-      if (argc == 1 || nargout > 0)
-        {
-          retval(1) = prev_error_id;
-          retval(0) = prev_error_message;
-        }
-    }
-  else
+  if (argc > 3)
     print_usage ();
+
+  string_vector argv = args.make_argv ("lasterr");
+
+  std::string prev_error_id = Vlast_error_id;
+  std::string prev_error_message = Vlast_error_message;
+
+  if (argc > 2)
+    Vlast_error_id = argv(2);
+
+  if (argc > 1)
+    Vlast_error_message = argv(1);
+
+  if (argc == 1 || nargout > 0)
+    {
+      retval(1) = prev_error_id;
+      retval(0) = prev_error_message;
+    }
 
   return retval;
 }
@@ -2017,27 +2008,25 @@ With two arguments, also set the last message identifier.\n\
 
   int argc = args.length () + 1;
 
-  if (argc < 4)
-    {
-      string_vector argv = args.make_argv ("lastwarn");
-
-      std::string prev_warning_id = Vlast_warning_id;
-      std::string prev_warning_message = Vlast_warning_message;
-
-      if (argc > 2)
-        Vlast_warning_id = argv(2);
-
-      if (argc > 1)
-        Vlast_warning_message = argv(1);
-
-      if (argc == 1 || nargout > 0)
-        {
-          retval(1) = prev_warning_id;
-          retval(0) = prev_warning_message;
-        }
-    }
-  else
+  if (argc > 3)
     print_usage ();
+
+  string_vector argv = args.make_argv ("lastwarn");
+
+  std::string prev_warning_id = Vlast_warning_id;
+  std::string prev_warning_message = Vlast_warning_message;
+
+  if (argc > 2)
+    Vlast_warning_id = argv(2);
+
+  if (argc > 1)
+    Vlast_warning_message = argv(1);
+
+  if (argc == 1 || nargout > 0)
+    {
+      retval(1) = prev_warning_id;
+      retval(0) = prev_warning_message;
+    }
 
   return retval;
 }

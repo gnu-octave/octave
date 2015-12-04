@@ -77,20 +77,16 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = 0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = mk_pw_map (octave_passwd::getpwent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  std::string msg;
+
+  // octave_passwd::getpwent may set msg.
+  octave_value val = mk_pw_map (octave_passwd::getpwent (msg));
+
+  retval(1) = msg;
+  retval(0) = val;
 
   return retval;
 }
@@ -107,29 +103,25 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = 0;
+  if (args.length () != 1)
+    print_usage ();
 
-  int nargin = args.length ();
+  double dval = args(0).double_value ();
 
-  if (nargin == 1)
+  if (D_NINT (dval) == dval)
     {
-      double dval = args(0).double_value ();
+      uid_t uid = static_cast<uid_t> (dval);
 
-      if (D_NINT (dval) == dval)
-        {
-          uid_t uid = static_cast<uid_t> (dval);
+      std::string msg;
 
-          std::string msg;
+      // octave_passwd::getpwuid may set msg.
+      octave_value val = mk_pw_map (octave_passwd::getpwuid (uid, msg));
 
-          retval(1) = msg;
-          retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
-        }
-      else
-        error ("getpwuid: UID must be an integer");
+      retval(1) = msg;
+      retval(0) = val;
     }
   else
-    print_usage ();
+    error ("getpwuid: UID must be an integer");
 
   return retval;
 }
@@ -146,22 +138,18 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = 0.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string s = args(0).string_value ();
-
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  std::string s = args(0).string_value ();
+
+  std::string msg;
+
+  // octave_passwd::getpwnam may set msg.
+  octave_value val = mk_pw_map (octave_passwd::getpwnam (s, msg));
+
+  retval(1) = msg;
+  retval(0) = val;
 
   return retval;
 }
@@ -175,20 +163,16 @@ Return the internal pointer to the beginning of the password database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = static_cast<double> (octave_passwd::setpwent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  std::string msg;
+
+  // octave_passwd::setpwent may set msg.
+  int status = octave_passwd::setpwent (msg);
+
+  retval(1) = msg;
+  retval(0) = static_cast<double> (status);
 
   return retval;
 }
@@ -202,20 +186,16 @@ Close the password database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = static_cast<double> (octave_passwd::endpwent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  std::string msg;
+
+  // octave_passwd::endpwent may set msg.
+  int status = octave_passwd::endpwent (msg);
+
+  retval(1) = msg;
+  retval(0) = static_cast<double> (status);
 
   return retval;
 }

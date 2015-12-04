@@ -85,53 +85,113 @@ do_bessel (enum bessel_type type, const char *fn,
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  bool scaled = false;
+  if (nargin == 3)
     {
-      bool scaled = false;
-      if (nargin == 3)
+      octave_value opt_arg = args(2);
+      bool rpt_error = false;
+
+      if (! opt_arg.is_scalar_type ())
+        rpt_error = true;
+      else if (opt_arg.is_numeric_type ())
         {
-          octave_value opt_arg = args(2);
-          bool rpt_error = false;
-
-          if (! opt_arg.is_scalar_type ())
+          double opt_val = opt_arg.double_value ();
+          if (opt_val != 0.0 && opt_val != 1.0)
             rpt_error = true;
-          else if (opt_arg.is_numeric_type ())
-            {
-              double opt_val = opt_arg.double_value ();
-              if (opt_val != 0.0 && opt_val != 1.0)
-                rpt_error = true;
-              scaled = (opt_val == 1.0);
-            }
-          else if (opt_arg.is_bool_type ())
-            scaled = opt_arg.bool_value ();
+          scaled = (opt_val == 1.0);
+        }
+      else if (opt_arg.is_bool_type ())
+        scaled = opt_arg.bool_value ();
 
-          if (rpt_error)
+      if (rpt_error)
+        {
+          error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
+          return retval;
+        }
+    }
+
+  octave_value alpha_arg = args(0);
+  octave_value x_arg = args(1);
+
+  if (alpha_arg.is_single_type () || x_arg.is_single_type ())
+    {
+      if (alpha_arg.is_scalar_type ())
+        {
+          float alpha = args(0).xfloat_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+          if (x_arg.is_scalar_type ())
             {
-              error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
-              return retval;
+              FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
+
+              octave_idx_type ierr;
+              octave_value result;
+
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+              if (nargout > 1)
+                retval(1) = static_cast<float> (ierr);
+
+              retval(0) = result;
+            }
+          else
+            {
+              FloatComplexNDArray x
+                = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
+
+              Array<octave_idx_type> ierr;
+              octave_value result;
+
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+
+              retval(0) = result;
             }
         }
-
-      octave_value alpha_arg = args(0);
-      octave_value x_arg = args(1);
-
-      if (alpha_arg.is_single_type () || x_arg.is_single_type ())
+      else
         {
-          if (alpha_arg.is_scalar_type ())
+          dim_vector dv0 = args(0).dims ();
+          dim_vector dv1 = args(1).dims ();
+
+          bool args0_is_row_vector = (dv0(1) == dv0.numel ());
+          bool args1_is_col_vector = (dv1(0) == dv1.numel ());
+
+          if (args0_is_row_vector && args1_is_col_vector)
             {
-              float alpha = args(0).xfloat_value ("%s: ALPHA must be a scalar or matrix", fn);
+              FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+              FloatComplexColumnVector cx =
+                x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+
+              Array<octave_idx_type> ierr;
+              octave_value result;
+
+              DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+
+              retval(0) = result;
+            }
+          else
+            {
+              FloatNDArray alpha = args(0).xfloat_array_value ("%s: ALPHA must be a scalar or matrix", fn);
 
               if (x_arg.is_scalar_type ())
                 {
                   FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
 
-                  octave_idx_type ierr;
+                  Array<octave_idx_type> ierr;
                   octave_value result;
 
                   DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
                   if (nargout > 1)
-                    retval(1) = static_cast<float> (ierr);
+                    retval(1) = NDArray (ierr);
 
                   retval(0) = result;
                 }
@@ -151,84 +211,83 @@ do_bessel (enum bessel_type type, const char *fn,
                   retval(0) = result;
                 }
             }
+        }
+    }
+  else
+    {
+      if (alpha_arg.is_scalar_type ())
+        {
+          double alpha = args(0).xdouble_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+          if (x_arg.is_scalar_type ())
+            {
+              Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
+
+              octave_idx_type ierr;
+              octave_value result;
+
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+              if (nargout > 1)
+                retval(1) = static_cast<double> (ierr);
+
+              retval(0) = result;
+            }
           else
             {
-              dim_vector dv0 = args(0).dims ();
-              dim_vector dv1 = args(1).dims ();
+              ComplexNDArray x = x_arg.xcomplex_array_value ("%s: X must be a scalar or matrix", fn);
 
-              bool args0_is_row_vector = (dv0(1) == dv0.numel ());
-              bool args1_is_col_vector = (dv1(0) == dv1.numel ());
+              Array<octave_idx_type> ierr;
+              octave_value result;
 
-              if (args0_is_row_vector && args1_is_col_vector)
-                {
-                  FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                  FloatComplexColumnVector cx =
-                    x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
 
-                  Array<octave_idx_type> ierr;
-                  octave_value result;
-
-                  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
-
-                  if (nargout > 1)
-                    retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
-                }
-              else
-                {
-                  FloatNDArray alpha = args(0).xfloat_array_value ("%s: ALPHA must be a scalar or matrix", fn);
-
-                  if (x_arg.is_scalar_type ())
-                    {
-                      FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
-
-                      Array<octave_idx_type> ierr;
-                      octave_value result;
-
-                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                      if (nargout > 1)
-                        retval(1) = NDArray (ierr);
-
-                      retval(0) = result;
-                    }
-                  else
-                    {
-                      FloatComplexNDArray x
-                        = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
-
-                      Array<octave_idx_type> ierr;
-                      octave_value result;
-
-                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                      if (nargout > 1)
-                        retval(1) = NDArray (ierr);
-
-                      retval(0) = result;
-                    }
-                }
+              retval(0) = result;
             }
         }
       else
         {
-          if (alpha_arg.is_scalar_type ())
+          dim_vector dv0 = args(0).dims ();
+          dim_vector dv1 = args(1).dims ();
+
+          bool args0_is_row_vector = (dv0(1) == dv0.numel ());
+          bool args1_is_col_vector = (dv1(0) == dv1.numel ());
+
+          if (args0_is_row_vector && args1_is_col_vector)
             {
-              double alpha = args(0).xdouble_value ("%s: ALPHA must be a scalar or matrix", fn);
+              RowVector ralpha = args(0).xrow_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+              ComplexColumnVector cx =
+                x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+
+              Array<octave_idx_type> ierr;
+              octave_value result;
+
+              DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+
+              retval(0) = result;
+            }
+          else
+            {
+              NDArray alpha = args(0).xarray_value ("%s: ALPHA must be a scalar or matrix", fn);
 
               if (x_arg.is_scalar_type ())
                 {
                   Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
 
-                  octave_idx_type ierr;
+                  Array<octave_idx_type> ierr;
                   octave_value result;
 
                   DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
                   if (nargout > 1)
-                    retval(1) = static_cast<double> (ierr);
+                    retval(1) = NDArray (ierr);
 
                   retval(0) = result;
                 }
@@ -247,69 +306,8 @@ do_bessel (enum bessel_type type, const char *fn,
                   retval(0) = result;
                 }
             }
-          else
-            {
-              dim_vector dv0 = args(0).dims ();
-              dim_vector dv1 = args(1).dims ();
-
-              bool args0_is_row_vector = (dv0(1) == dv0.numel ());
-              bool args1_is_col_vector = (dv1(0) == dv1.numel ());
-
-              if (args0_is_row_vector && args1_is_col_vector)
-                {
-                  RowVector ralpha = args(0).xrow_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
-
-                  ComplexColumnVector cx =
-                    x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
-
-                  Array<octave_idx_type> ierr;
-                  octave_value result;
-
-                  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
-
-                  if (nargout > 1)
-                    retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
-                }
-              else
-                {
-                  NDArray alpha = args(0).xarray_value ("%s: ALPHA must be a scalar or matrix", fn);
-
-                  if (x_arg.is_scalar_type ())
-                    {
-                      Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
-
-                      Array<octave_idx_type> ierr;
-                      octave_value result;
-
-                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                      if (nargout > 1)
-                        retval(1) = NDArray (ierr);
-
-                      retval(0) = result;
-                    }
-                  else
-                    {
-                      ComplexNDArray x = x_arg.xcomplex_array_value ("%s: X must be a scalar or matrix", fn);
-
-                      Array<octave_idx_type> ierr;
-                      octave_value result;
-
-                      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                      if (nargout > 1)
-                        retval(1) = NDArray (ierr);
-
-                      retval(0) = result;
-                    }
-                }
-            }
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -425,11 +423,14 @@ See besselj.\n\
 
   int nargin = args.length ();
 
+  if (nargin < 2 || nargin > 4)
+    print_usage ();
+
   if (nargin == 2)
     {
       retval = do_bessel (BESSEL_H1, "besselh", args, nargout);
     }
-  else if (nargin == 3 || nargin == 4)
+  else
     {
       octave_idx_type kind = args(1).xint_value ("besselh: invalid value of K");
 
@@ -448,8 +449,6 @@ See besselj.\n\
       else
         error ("besselh: K must be 1 or 2");
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -505,59 +504,57 @@ return @code{NaN}.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0 && nargin < 4)
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+
+  bool scale = (nargin == 3);
+
+  int kind = 0;
+
+  if (nargin > 1)
     {
-      bool scale = (nargin == 3);
+      kind = args(0).xint_value ("airy: K must be an integer value");
 
-      int kind = 0;
+      if (kind < 0 || kind > 3)
+        error ("airy: K must be 0, 1, 2, or 3");
+    }
 
-      if (nargin > 1)
-        {
-          kind = args(0).xint_value ("airy: K must be an integer value");
+  int idx = nargin == 1 ? 0 : 1;
 
-          if (kind < 0 || kind > 3)
-            error ("airy: K must be 0, 1, 2, or 3");
-        }
+  if (args(idx).is_single_type ())
+    {
+      FloatComplexNDArray z = args(idx).xfloat_complex_array_value ("airy: Z must be a complex matrix");
 
-      int idx = nargin == 1 ? 0 : 1;
+      Array<octave_idx_type> ierr;
+      octave_value result;
 
-      if (args(idx).is_single_type ())
-        {
-          FloatComplexNDArray z = args(idx).xfloat_complex_array_value ("airy: Z must be a complex matrix");
-
-          Array<octave_idx_type> ierr;
-          octave_value result;
-
-          if (kind > 1)
-            result = biry (z, kind == 3, scale, ierr);
-          else
-            result = airy (z, kind == 1, scale, ierr);
-
-          if (nargout > 1)
-            retval(1) = NDArray (ierr);
-
-          retval(0) = result;
-        }
+      if (kind > 1)
+        result = biry (z, kind == 3, scale, ierr);
       else
-        {
-          ComplexNDArray z = args(idx).xcomplex_array_value ("airy: Z must be a complex matrix");
+        result = airy (z, kind == 1, scale, ierr);
 
-          Array<octave_idx_type> ierr;
-          octave_value result;
+      if (nargout > 1)
+        retval(1) = NDArray (ierr);
 
-          if (kind > 1)
-            result = biry (z, kind == 3, scale, ierr);
-          else
-            result = airy (z, kind == 1, scale, ierr);
-
-          if (nargout > 1)
-            retval(1) = NDArray (ierr);
-
-          retval(0) = result;
-        }
+      retval(0) = result;
     }
   else
-    print_usage ();
+    {
+      ComplexNDArray z = args(idx).xcomplex_array_value ("airy: Z must be a complex matrix");
+
+      Array<octave_idx_type> ierr;
+      octave_value result;
+
+      if (kind > 1)
+        result = biry (z, kind == 3, scale, ierr);
+      else
+        result = airy (z, kind == 1, scale, ierr);
+
+      if (nargout > 1)
+        retval(1) = NDArray (ierr);
+
+      retval(0) = result;
+    }
 
   return retval;
 }

@@ -71,29 +71,24 @@ When the third argument is a matrix, return the convolution of the matrix\n\
   bool separable = false;
   convn_type ct;
 
-  if (nargin < 2)
-    {
-      print_usage ();
-      return retval;
-    }
-  else if (nargin == 3)
+  if (nargin < 2 || nargin > 4)
+    print_usage ();
+
+  if (nargin == 3)
     {
       if (args(2).is_string ())
         shape = args(2).string_value ();
       else
         separable = true;
     }
-  else if (nargin >= 4)
+  else if (nargin == 4)
     {
       separable = true;
       shape = args(3).string_value ();
     }
 
   if (args(0).ndims () > 2 || args(1).ndims () > 2)
-    {
-      error ("conv2: A and B must be 1-D vectors or 2-D matrices");
-      return retval;
-    }
+    error ("conv2: A and B must be 1-D vectors or 2-D matrices");
 
   if (shape == "full")
     ct = convn_full;
@@ -102,11 +97,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
   else if (shape == "valid")
     ct = convn_valid;
   else
-    {
-      error ("conv2: SHAPE type not valid");
-      print_usage ();
-      return retval;
-    }
+    error ("conv2: SHAPE type not valid");
 
   if (separable)
     {
@@ -114,10 +105,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 
       if (! (1 == args(0).rows () || 1 == args(0).columns ())
           || ! (1 == args(1).rows () || 1 == args(1).columns ()))
-        {
-          print_usage ();
-          return retval;
-        }
+        error ("conv2: arguments must be vectors for separable option");
 
       if (args(0).is_single_type () || args(1).is_single_type ()
           || args(2).is_single_type ())
@@ -324,11 +312,9 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
   convn_type ct;
 
   if (nargin < 2 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
-  else if (nargin == 3)
+    print_usage ();
+
+  if (nargin == 3)
     shape = args(2).xstring_value ("convn: SHAPE must be a string");
 
   if (shape == "full")
@@ -338,11 +324,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
   else if (shape == "valid")
     ct = convn_valid;
   else
-    {
-      error ("convn: SHAPE type not valid");
-      print_usage ();
-      return retval;
-    }
+    error ("convn: SHAPE type not valid");
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {

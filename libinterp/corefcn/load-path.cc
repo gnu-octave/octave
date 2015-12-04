@@ -2249,13 +2249,16 @@ directories with those names.\n\
 
   octave_idx_type nargin = args.length ();
 
+  if (nargin == 0)
+    print_usage ();
+
   if (nargin == 1)
     {
       std::string dirname = args(0).xstring_value ("genpath: DIR must be a string");
 
       retval = genpath (dirname);
     }
-  else if (nargin > 1)
+  else
     {
       std::string dirname = args(0).xstring_value ("genpath: all arguments must be strings");
 
@@ -2266,8 +2269,6 @@ directories with those names.\n\
 
       retval = genpath (dirname, skip);
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2419,76 +2420,74 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0)
-    {
-      bool append = false;
-
-      octave_value option_arg = args(nargin-1);
-
-      if (option_arg.is_string ())
-        {
-          std::string option = option_arg.string_value ();
-
-          if (option == "-end")
-            {
-              append = true;
-              nargin--;
-            }
-          else if (option == "-begin")
-            nargin--;
-        }
-      else if (option_arg.is_numeric_type ())
-        {
-          int val = option_arg.xint_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
-
-          if (val == 0)
-            nargin--;
-          else if (val == 1)
-            {
-              append = true;
-              nargin--;
-            }
-          else
-            {
-              error ("addpath: OPTION must be '-begin'/0 or '-end'/1");
-              return retval;
-            }
-        }
-
-      bool need_to_update = false;
-
-      for (int i = 0; i < nargin; i++)
-        {
-          std::string arg = args(i).xstring_value ("addpath: all arguments must be strings");
-
-          std::list<std::string> dir_elts = split_path (arg);
-
-          if (! append)
-            std::reverse (dir_elts.begin (), dir_elts.end ());
-
-          for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-               p != dir_elts.end ();
-               p++)
-            {
-              std::string dir = *p;
-
-              //dir = regexprep (dir_elts{j}, '//+', "/");
-              //dir = regexprep (dir, '/$', "");
-
-              if (append)
-                load_path::append (dir, true);
-              else
-                load_path::prepend (dir, true);
-
-              need_to_update = true;
-            }
-        }
-
-      if (need_to_update)
-        rehash_internal ();
-    }
-  else
+  if (nargin == 0)
     print_usage ();
+
+  bool append = false;
+
+  octave_value option_arg = args(nargin-1);
+
+  if (option_arg.is_string ())
+    {
+      std::string option = option_arg.string_value ();
+
+      if (option == "-end")
+        {
+          append = true;
+          nargin--;
+        }
+      else if (option == "-begin")
+        nargin--;
+    }
+  else if (option_arg.is_numeric_type ())
+    {
+      int val = option_arg.xint_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
+
+      if (val == 0)
+        nargin--;
+      else if (val == 1)
+        {
+          append = true;
+          nargin--;
+        }
+      else
+        {
+          error ("addpath: OPTION must be '-begin'/0 or '-end'/1");
+          return retval;
+        }
+    }
+
+  bool need_to_update = false;
+
+  for (int i = 0; i < nargin; i++)
+    {
+      std::string arg = args(i).xstring_value ("addpath: all arguments must be strings");
+
+      std::list<std::string> dir_elts = split_path (arg);
+
+      if (! append)
+        std::reverse (dir_elts.begin (), dir_elts.end ());
+
+      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+           p != dir_elts.end ();
+           p++)
+        {
+          std::string dir = *p;
+
+          //dir = regexprep (dir_elts{j}, '//+', "/");
+          //dir = regexprep (dir, '/$', "");
+
+          if (append)
+            load_path::append (dir, true);
+          else
+            load_path::prepend (dir, true);
+
+          need_to_update = true;
+        }
+    }
+
+  if (need_to_update)
+    rehash_internal ();
 
   return retval;
 }
@@ -2517,36 +2516,34 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
 
   int nargin = args.length ();
 
-  if (nargin > 0)
-    {
-      bool need_to_update = false;
-
-      for (int i = 0; i < nargin; i++)
-        {
-          std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
-          std::list<std::string> dir_elts = split_path (arg);
-
-          for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-               p != dir_elts.end ();
-               p++)
-            {
-              std::string dir = *p;
-
-              //dir = regexprep (dir_elts{j}, '//+', "/");
-              //dir = regexprep (dir, '/$', "");
-
-              if (! load_path::remove (dir))
-                warning ("rmpath: %s: not found", dir.c_str ());
-              else
-                need_to_update = true;
-            }
-        }
-
-      if (need_to_update)
-        rehash_internal ();
-    }
-  else
+  if (nargin == 0)
     print_usage ();
+
+  bool need_to_update = false;
+
+  for (int i = 0; i < nargin; i++)
+    {
+      std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
+      std::list<std::string> dir_elts = split_path (arg);
+
+      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+           p != dir_elts.end ();
+           p++)
+        {
+          std::string dir = *p;
+
+          //dir = regexprep (dir_elts{j}, '//+', "/");
+          //dir = regexprep (dir, '/$', "");
+
+          if (! load_path::remove (dir))
+            warning ("rmpath: %s: not found", dir.c_str ());
+          else
+            need_to_update = true;
+        }
+    }
+
+  if (need_to_update)
+    rehash_internal ();
 
   return retval;
 }

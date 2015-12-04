@@ -1091,20 +1091,18 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      const std::string name = args(0).xstring_value ("get_help_text: NAME must be a string");
-
-      std::string text;
-      std::string format;
-
-      do_get_help_text (name, text, format);
-
-      retval(1) = format;
-      retval(0) = text;
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  const std::string name = args(0).xstring_value ("get_help_text: NAME must be a string");
+
+  std::string text;
+  std::string format;
+
+  do_get_help_text (name, text, format);
+
+  retval(1) = format;
+  retval(0) = text;
 
   return retval;
 }
@@ -1156,20 +1154,18 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      const std::string fname = args(0).xstring_value ("get_help_text_from_file: NAME must be a string");
-
-      std::string text;
-      std::string format;
-
-      do_get_help_text_from_file (fname, text, format);
-
-      retval(1) = format;
-      retval(0) = text;
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  const std::string fname = args(0).xstring_value ("get_help_text_from_file: NAME must be a string");
+
+  std::string text;
+  std::string format;
+
+  do_get_help_text_from_file (fname, text, format);
+
+  retval(1) = format;
+  retval(0) = text;
 
   return retval;
 }
@@ -1288,43 +1284,37 @@ DEFUN (__which__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   string_vector argv = args.make_argv ("which");
 
   int argc = argv.numel ();
 
-  if (argc > 1)
-    {
-      octave_map m (dim_vector (1, argc-1));
-
-      Cell names (1, argc-1);
-      Cell files (1, argc-1);
-      Cell types (1, argc-1);
-
-      for (int i = 1; i < argc; i++)
-        {
-          std::string name = argv[i];
-
-          std::string type;
-
-          std::string file = do_which (name, type);
-
-          names(i-1) = name;
-          files(i-1) = file;
-          types(i-1) = type;
-        }
-
-      m.assign ("name", names);
-      m.assign ("file", files);
-      m.assign ("type", types);
-
-      retval = m;
-    }
-  else
+  if (argc < 2)
     print_usage ();
 
-  return retval;
+  octave_map m (dim_vector (1, argc-1));
+
+  Cell names (1, argc-1);
+  Cell files (1, argc-1);
+  Cell types (1, argc-1);
+
+  for (int i = 1; i < argc; i++)
+    {
+      std::string name = argv[i];
+
+      std::string type;
+
+      std::string file = do_which (name, type);
+
+      names(i-1) = name;
+      files(i-1) = file;
+      types(i-1) = type;
+    }
+
+  m.assign ("name", names);
+  m.assign ("file", files);
+  m.assign ("type", types);
+
+  return octave_value (m);
 }
 
 // FIXME: Are we sure this function always does the right thing?

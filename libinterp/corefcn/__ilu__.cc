@@ -140,10 +140,7 @@ Undocumented internal function.\n\
   std::string milu;
 
   if (nargout > 2 || nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // In ILU0 algorithm the zero-pattern of the input matrix is preserved so
   // it's structure does not change during the algorithm.  The same input
@@ -480,10 +477,7 @@ Undocumented internal function.\n\
   double droptol = 0;
 
   if (nargout != 2 || nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // Don't repeat input validation of arguments done in ilu.m
   if (nargin >= 2)
@@ -958,10 +952,7 @@ Undocumented internal function.\n\
   double udiag = 0;
 
   if (nargout < 2 || nargout > 3 || nargin < 1 || nargin > 5)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   // Don't repeat input validation of arguments done in ilu.m
   if (nargin >= 2)

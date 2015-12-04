@@ -73,20 +73,16 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = 0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = mk_gr_map (octave_group::getgrent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  std::string msg;
+
+  // octave_group::getgrent may set msg.
+  octave_value val = mk_gr_map (octave_group::getgrent (msg));
+
+  retval(1) = msg;
+  retval(0) = val;
 
   return retval;
 }
@@ -103,29 +99,26 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = 0;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      double dval = args(0).double_value ();
-
-      if (D_NINT (dval) == dval)
-        {
-          gid_t gid = static_cast<gid_t> (dval);
-
-          std::string msg;
-
-          retval(1) = msg;
-          retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
-        }
-      else
-        error ("getgrgid: GID must be an integer");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double dval = args(0).double_value ();
+
+  if (D_NINT (dval) == dval)
+    {
+      gid_t gid = static_cast<gid_t> (dval);
+
+      std::string msg;
+
+      // octave_group::getgrgid may set msg.
+      octave_value val = mk_gr_map (octave_group::getgrgid (gid, msg));
+
+      retval(1) = msg;
+      retval(0) = val;
+    }
+
+  else
+    error ("getgrgid: GID must be an integer");
 
   return retval;
 }
@@ -142,22 +135,18 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = 0;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string s = args(0).string_value ();
-
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  std::string s = args(0).string_value ();
+
+  std::string msg;
+
+  // octave_group::getgrnam may set msg.
+  octave_value val = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
+
+  retval(1) = msg;
+  retval(0) = val;
 
   return retval;
 }
@@ -171,20 +160,16 @@ Return the internal pointer to the beginning of the group database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = static_cast<double> (octave_group::setgrent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  std::string msg;
+
+  // octave_group::setgrent may set msg.
+  int status = octave_group::setgrent (msg);
+
+  retval(1) = msg;
+  retval(0) = static_cast<double> (status);
 
   return retval;
 }
@@ -198,20 +183,16 @@ Close the group database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = static_cast<double> (octave_group::endgrent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  std::string msg;
+
+  // octave_group::endgrent may set msg.
+  int status = octave_group::endgrent (msg);
+
+  retval(1) = msg;
+  retval(0) = static_cast<double> (status);
 
   return retval;
 }

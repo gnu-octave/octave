@@ -2903,6 +2903,33 @@ Return the number of rows of @var{a}.\n\
   return octave_value (args(0).rows ());
 }
 
+/*
+%!assert (rows (ones (2,5)), 2)
+%!assert (rows (ones (5,2)), 5)
+%!assert (rows (ones (5,4,3,2)), 2)
+%!assert (rows (ones (3,4,5,2)), 3)
+
+%!assert (rows (cell (2,5)), 2)
+%!assert (rows (cell (5,2)), 5)
+%!assert (rows (cell (5,4,3,2)), 2)
+%!assert (rows (cell (3,4,5,2)), 3)
+
+%!test
+%! x(2,5,3).a = 1;
+%! assert (rows (x), 2);
+%! y(5,4,3).b = 2;
+%! assert (rows (y), 5);
+
+%!assert (rows ("Hello World"), 1)
+
+%!assert (rows ([]), 0)
+%!assert (rows (zeros (2,0), 2)
+
+## Test input validation
+%!error rows ()
+%!error rows (1,2)
+*/
+
 DEFUN (columns, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} columns (@var{a})\n\

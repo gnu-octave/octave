@@ -6838,32 +6838,44 @@ This function does not support sparse matrices.\n\
 %! um = [3, 1; 2, 4];
 %! sv = [1, 2, 3, 4];
 %! uv = [2, 1, 4, 3];
+
 %!assert (issorted (sm, "rows"))
-%!assert (!issorted (um, "rows"))
+%!assert (! issorted (um, "rows"))
 %!assert (issorted (sv))
-%!assert (!issorted (uv))
+%!assert (! issorted (uv))
 %!assert (issorted (sv'))
-%!assert (!issorted (uv'))
+%!assert (! issorted (uv'))
 %!assert (issorted (sm, "rows", "ascending"))
-%!assert (!issorted (um, "rows", "ascending"))
+%!assert (! issorted (um, "rows", "ascending"))
 %!assert (issorted (sv, "ascending"))
-%!assert (!issorted (uv, "ascending"))
+%!assert (! issorted (uv, "ascending"))
 %!assert (issorted (sv', "ascending"))
-%!assert (!issorted (uv', "ascending"))
-%!assert (!issorted (sm, "rows", "descending"))
+%!assert (! issorted (uv', "ascending"))
+%!assert (! issorted (sm, "rows", "descending"))
 %!assert (issorted (flipud (sm), "rows", "descending"))
-%!assert (!issorted (sv, "descending"))
+%!assert (! issorted (sv, "descending"))
 %!assert (issorted (fliplr (sv), "descending"))
-%!assert (!issorted (sv', "descending"))
+%!assert (! issorted (sv', "descending"))
 %!assert (issorted (fliplr (sv)', "descending"))
-%!assert (!issorted (um, "rows", "either"))
-%!assert (!issorted (uv, "either"))
+%!assert (! issorted (um, "rows", "either"))
+%!assert (! issorted (uv, "either"))
 %!assert (issorted (sm, "rows", "either"))
 %!assert (issorted (flipud (sm), "rows", "either"))
 %!assert (issorted (sv, "either"))
 %!assert (issorted (fliplr (sv), "either"))
 %!assert (issorted (sv', "either"))
 %!assert (issorted (fliplr (sv)', "either"))
+
+%!error <needs a vector> issorted ([])
+
+## Test input validation
+%!error issorted () 
+%!error issorted (1,2,3,4) 
+%!error <second argument must be a string> issorted (1, 2)
+%!error <second argument must be a string> issorted (1, {"rows"})
+%!error <sparse matrices not yet supported> issorted (sparse ([1 2 3]), "rows")
+%!error <A must be a 2-dimensional object> issorted (rand (2,2,2), "rows")
+%!error <needs a vector> issorted (ones (2,2))
 */
 
 DEFUN (nth_element, args, ,

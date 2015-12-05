@@ -2350,7 +2350,7 @@ Undocumented internal function.\n\
   audiorecorder *recorder = get_recorder (args(0));
 
   if (! recorder)
-      print_usage ();
+    print_usage ();
 
   if (args.length () == 1)
     recorder->record ();

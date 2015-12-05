@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 We are using the pure parser interface and the reentrant lexer
 interface but the Octave parser and lexer are NOT properly
 reentrant because both still use many global variables.  It should be
-safe to create a parser object and call it while anotehr parser
+safe to create a parser object and call it while another parser
 object is active (to parse a callback function while the main
 interactive parser is waiting for input, for example) if you take
 care to properly save and restore (typically with an unwind_protect
@@ -1912,16 +1912,14 @@ If @var{name} is omitted, return a list of keywords.\n\
 {
   octave_value retval;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
-  string_vector argv = args.make_argv ("iskeyword");
-
-  if (argc < 1 || argc > 2)
+  if (nargin > 1)
     print_usage ();
 
-  if (argc == 1)
+  if (nargin == 0)
     {
-      // Neither set and get are keywords.  See the note in the
+      // Neither set nor get are keywords.  See the note in the
       // is_keyword function for additional details.
 
       string_vector lst (TOTAL_KEYWORDS);
@@ -1930,19 +1928,20 @@ If @var{name} is omitted, return a list of keywords.\n\
 
       for (int i = 0; i < TOTAL_KEYWORDS; i++)
         {
-          std::string tmp = wordlist[i].name;
+          std::string kword = wordlist[i].name;
 
-          if (! (tmp == "set" || tmp == "get"))
-            lst[j++] = tmp;
+          if (kword != "set" && kword != "get")
+            lst[j++] = kword;
         }
 
       lst.resize (j);
 
       retval = Cell (lst.sort ());
     }
-  else if (argc == 2)
+  else
     {
-      retval = is_keyword (argv[1]);
+      std::string name = args(0).xstring_value ("iskeyword: NAME must be a string");
+      retval = is_keyword (name);
     }
 
   return retval;
@@ -1953,6 +1952,11 @@ If @var{name} is omitted, return a list of keywords.\n\
 %!assert (iskeyword ("for"))
 %!assert (iskeyword ("fort"), false)
 %!assert (iskeyword ("fft"), false)
+%!assert (iskeyword ("get"), false)
+%!assert (iskeyword ("set"), false)
+
+%!error iskeyword ("A", "B")
+%!error <NAME must be a string> iskeyword (1)
 
 */
 

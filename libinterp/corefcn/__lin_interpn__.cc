@@ -277,7 +277,7 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
-  if (nargin < 2 ||  nargin % 2 == 0)
+  if (nargin < 2 || nargin % 2 == 0)
     print_usage ();
 
   // dimension of the problem

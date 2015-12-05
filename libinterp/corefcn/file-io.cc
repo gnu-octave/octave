@@ -735,10 +735,10 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
 {
   octave_value retval;
 
-  int result = -1;
-
   if (args.length () != 1)
     print_usage ();
+
+  int result = -1;
 
   octave_stream os = octave_stream_list::lookup (args(0), "frewind");
 
@@ -1781,19 +1781,19 @@ see @code{tmpfile}.\n\
 {
   octave_value retval;
 
-  int len = args.length ();
+  int nargin = args.length ();
 
-  if (len > 2)
+  if (nargin > 2)
     print_usage ();
 
   std::string dir;
 
-  if (len > 0)
+  if (nargin > 0)
     dir = args(0).xstring_value ("tempname: DIR must be a string");
 
   std::string pfx ("oct-");
 
-  if (len > 1)
+  if (nargin > 1)
     pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
 
   return octave_value (octave_tempnam (dir, pfx));

@@ -189,23 +189,24 @@ static octave_value
 do_trilu (const std::string& name,
           const octave_value_list& args)
 {
-  bool lower = name == "tril";
+  bool lower = (name == "tril");
 
   octave_value retval;
   int nargin = args.length ();
   octave_idx_type k = 0;
   bool pack = false;
+
   if (nargin >= 2 && args(nargin-1).is_string ())
     {
       pack = args(nargin-1).string_value () == "pack";
       nargin--;
     }
 
-  if (nargin == 2)
-    k = args(1).int_value (true);
-
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  if (nargin == 2)
+    k = args(1).int_value (true);
 
   octave_value arg = args(0);
 

@@ -1584,6 +1584,7 @@ This is a private internal function not intended for direct use.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifndef HAVE_MAGICK
   gripe_disabled_feature ("imfinfo", "Image IO");
 #else
@@ -2254,6 +2255,7 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifndef HAVE_MAGICK
   gripe_disabled_feature ("imformats", "Image IO");
 #else

@@ -65,8 +65,8 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 @seealso{num2hex, hex2dec, dec2hex}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value retval;
+  int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -219,8 +219,8 @@ num2hex (single ([-1, 1, e, Inf]))\n\
 @seealso{hex2num, hex2dec, dec2hex}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value retval;
+  int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();

@@ -153,8 +153,8 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
 @seealso{colamd, ccolamd}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value_list retval;
+  int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();
@@ -199,8 +199,8 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
 @seealso{dmperm}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value_list retval;
+  int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();

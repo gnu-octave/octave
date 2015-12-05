@@ -932,11 +932,14 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
 
   int nargin = args.length ();
 
+  if (nargin > 2)
+    print_usage ();
+
   if (nargin == 0)
     {
       print_$CLASS_NAME (octave_stdout);
     }
-  else if (nargin == 1 || nargin == 2)
+  else
     {
       std::string keyword = args(0).xstring_value ("$OPT_FCN_NAME: expecting keyword as first argument");
 
@@ -945,8 +948,6 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
       else
         set_$CLASS_NAME (keyword, args(1));
     }
-  else
-    print_usage ();
 
   return retval;
 }

@@ -341,14 +341,14 @@ DEFUN_DLD (__glpk__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  // The list of values to return.  See the declaration in oct-obj.h
   octave_value_list retval;
 
 #if defined (HAVE_GLPK)
 
-  int nrhs = args.length ();
+  int nargin = args.length ();
 
-  if (nrhs != 9)
+  // FIXME: Should we even need checking for an internal function?
+  if (nargin != 9)
     print_usage ();
 
   //-- 1nd Input. A column array containing the objective function

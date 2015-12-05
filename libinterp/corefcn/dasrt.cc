@@ -370,13 +370,12 @@ parameters for @code{dasrt}.\n\
   if (call_depth > 1)
     DASRT_ABORT1 ("invalid recursive call");
 
-  int argp = 0;
-
   int nargin = args.length ();
 
   if (nargin < 4 || nargin > 6)
     print_usage ();
 
+  int argp = 0;
   std::string fcn_name, fname, jac_name, jname;
   dasrt_f = 0;
   dasrt_j = 0;

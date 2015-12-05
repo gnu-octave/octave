@@ -119,8 +119,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 @code{matrix_type} will return the correct classification of the matrix.\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value retval;
+  int nargin = args.length ();
 
   if (nargin == 0 || nargin > 4)
     print_usage ();

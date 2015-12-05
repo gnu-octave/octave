@@ -2506,7 +2506,7 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
 @seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
-  // Originally by Etienne Grossmann. Heavily modified and translated
+  // Originally written by Etienne Grossmann.  Heavily modified and translated
   // to C++ by jwe.
 
   octave_value retval;

@@ -1013,10 +1013,10 @@ all name matches rather than just the first.\n\
 
   int nargin = args.length ();
 
-  std::string dir;
-
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  std::string dir;
 
   dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
 

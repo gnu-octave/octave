@@ -1914,9 +1914,9 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
 {
   octave_value retval;
 
-  // We may need to convert elements of the list to cells, so make a
-  // copy.  This should be efficient, it is done mostly by incrementing
-  // reference counts.
+  // We may need to convert elements of the list to cells, so make a copy.
+  // This should be efficient, it is done mostly by incrementing reference
+  // counts.
   octave_value_list args = xargs;
 
   int n_args = args.length ();
@@ -2906,12 +2906,12 @@ Return the number of rows of @var{a}.\n\
 /*
 %!assert (rows (ones (2,5)), 2)
 %!assert (rows (ones (5,2)), 5)
-%!assert (rows (ones (5,4,3,2)), 2)
+%!assert (rows (ones (5,4,3,2)), 5)
 %!assert (rows (ones (3,4,5,2)), 3)
 
 %!assert (rows (cell (2,5)), 2)
 %!assert (rows (cell (5,2)), 5)
-%!assert (rows (cell (5,4,3,2)), 2)
+%!assert (rows (cell (5,4,3,2)), 5)
 %!assert (rows (cell (3,4,5,2)), 3)
 
 %!test
@@ -2923,7 +2923,7 @@ Return the number of rows of @var{a}.\n\
 %!assert (rows ("Hello World"), 1)
 
 %!assert (rows ([]), 0)
-%!assert (rows (zeros (2,0), 2)
+%!assert (rows (zeros (2,0), 2))
 
 ## Test input validation
 %!error rows ()
@@ -7122,7 +7122,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
     print_usage ();
 
   if (! args(0).is_numeric_type ())
-    error ("addumarray: first agument must be numeric");
+    error ("accumarray: first argument must be numeric");
 
   try
     {

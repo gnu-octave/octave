@@ -376,7 +376,7 @@ file_editor_tab::set_file_name (const QString& fileName)
   emit editor_state_changed (_copy_available, _is_octave_file);
 
   // add the new file to the mru list
-  emit mru_add_file (_file_name);
+  emit mru_add_file (_file_name, _encoding);
 }
 
 // valid_file_name (file): checks whether "file" names a file

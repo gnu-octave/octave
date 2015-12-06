@@ -344,7 +344,8 @@ file_editor::call_custom_editor (const QString& file_name, int line)
         }
 
       if (line < 0 && ! file_name.isEmpty ())
-        handle_mru_add_file (QFileInfo (file_name).canonicalFilePath ());
+        handle_mru_add_file (QFileInfo (file_name).canonicalFilePath (),
+                             QString ());
 
       return true;
     }
@@ -439,7 +440,8 @@ file_editor::request_open_file (const QString& openFileName,
                   fileEditorTab->update_window_title (false);
                   // file already loaded, add file to mru list here
                   QFileInfo file_info = QFileInfo (openFileName);
-                  handle_mru_add_file (file_info.canonicalFilePath ());
+                  handle_mru_add_file (file_info.canonicalFilePath (),
+                                       encoding);
 
                   if (line > 0)
                     {
@@ -542,7 +544,8 @@ file_editor::request_mru_open_file (QAction *action)
 {
   if (action)
     {
-      request_open_file (action->data ().toString ());
+      request_open_file (action->data ().toStringList ().at (0),
+                         action->data ().toStringList ().at (1));
     }
 }
 
@@ -938,13 +941,18 @@ file_editor::request_completion (bool)
 }
 
 void
-file_editor::handle_mru_add_file (const QString& file_name)
+file_editor::handle_mru_add_file (const QString& file_name,
+                                  const QString& encoding)
 {
-  if (_mru_files.count () && _mru_files.at (0) == file_name)
-    return;  // the first entry is already the actual filename
+  int index;
+  while ((index = _mru_files.indexOf (file_name)) >= 0)
+    {
+      _mru_files.removeAt (index);
+      _mru_files_encodings.removeAt (index);
+    }
 
-  _mru_files.removeAll (file_name);
   _mru_files.prepend (file_name);
+  _mru_files_encodings.prepend (encoding);
 
   mru_menu_update ();
 }
@@ -960,7 +968,11 @@ file_editor::mru_menu_update (void)
       QString text = tr ("&%1 %2").
                      arg ((i+1) % int (MaxMRUFiles)).arg (_mru_files.at (i));
       _mru_file_actions[i]->setText (text);
-      _mru_file_actions[i]->setData (_mru_files.at (i));
+
+      QStringList action_data;
+      action_data << _mru_files.at (i) << _mru_files_encodings.at (i);
+      _mru_file_actions[i]->setData (action_data);
+
       _mru_file_actions[i]->setVisible (true);
     }
 
@@ -970,13 +982,16 @@ file_editor::mru_menu_update (void)
 
   // delete entries in string-list beyond MaxMRUFiles
   while (_mru_files.size () > MaxMRUFiles)
-    _mru_files.removeLast ();
+    {
+      _mru_files.removeLast ();
+      _mru_files_encodings.removeLast ();
+    }
 
   // save actual mru-list in settings
   QSettings *settings = resource_manager::get_settings ();
 
-  // FIXME: what should happen if settings is 0?
   settings->setValue ("editor/mru_file_list", _mru_files);
+  settings->setValue ("editor/mru_file_encodings", _mru_files_encodings);
   settings->sync ();
 }
 
@@ -1330,6 +1345,16 @@ file_editor::construct (void)
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
   _mru_files = settings->value ("editor/mru_file_list").toStringList ();
+  _mru_files_encodings = settings->value ("editor/mru_file_encodings")
+                                   .toStringList ();
+
+  if (_mru_files_encodings.count () != _mru_files.count ())
+    { // encodings don't have the same count -> do not use them!
+      _mru_files_encodings = QStringList ();
+      for (int i = 0; i < _mru_files.count (); i++)
+        _mru_files_encodings << QString ();
+    }
+
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
       _mru_file_actions[i] = new QAction (this);
@@ -1744,8 +1769,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
            this, SLOT (check_conflict_save (const QString&, bool)));
 
-  connect (f, SIGNAL (mru_add_file (const QString&)),
-           this, SLOT (handle_mru_add_file (const QString&)));
+  connect (f, SIGNAL (mru_add_file (const QString&, const QString&)),
+           this, SLOT (handle_mru_add_file (const QString&, const QString&)));
 
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
            main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));

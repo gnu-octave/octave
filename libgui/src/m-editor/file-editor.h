@@ -220,7 +220,7 @@ public slots:
                                     const QString& encoding, QWidget *ID);
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
-  void handle_mru_add_file (const QString& file_name);
+  void handle_mru_add_file (const QString& file_name, const QString& encoding);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
   void handle_insert_debugger_pointer_request (const QString& file, int line);
@@ -407,6 +407,7 @@ private:
   QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
+  QStringList _mru_files_encodings;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

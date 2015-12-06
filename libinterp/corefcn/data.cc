@@ -2923,7 +2923,7 @@ Return the number of rows of @var{a}.\n\
 %!assert (rows ("Hello World"), 1)
 
 %!assert (rows ([]), 0)
-%!assert (rows (zeros (2,0), 2))
+%!assert (rows (zeros (2,0)), 2)
 
 ## Test input validation
 %!error rows ()

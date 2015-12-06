@@ -2063,7 +2063,7 @@ file_editor_tab::file_name_query (const QWidget *ID)
 
   // Unnamed files shouldn't be transmitted.
   if (!_file_name.isEmpty ())
-    emit add_filename_to_list (_file_name, this);
+    emit add_filename_to_list (_file_name, _encoding, this);
 }
 
 void

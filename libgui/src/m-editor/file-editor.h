@@ -56,8 +56,26 @@ class file_editor : public file_editor_interface
 
 public:
 
-  typedef std::map<QString, QWidget *>::iterator editor_tab_map_iterator;
-  typedef std::map<QString, QWidget *>::const_iterator editor_tab_map_const_iterator;
+  struct tab_info
+    {
+      QWidget *fet_ID;
+      QString  encoding;
+    };
+
+  typedef std::map<QString, tab_info>::iterator editor_tab_map_iterator;
+  typedef std::map<QString, tab_info>::const_iterator editor_tab_map_const_iterator;
+
+  // struct that allows to sort with respect to the tab index
+  struct session_data
+    {
+      QString index;
+      QString file_name;
+      QString encoding;
+      bool operator<(const session_data &other) const
+        {
+          return index < other.index;
+        }
+    };
 
   file_editor (QWidget *p);
   ~file_editor (void);
@@ -198,7 +216,8 @@ public slots:
                                  const QString& toolTip);
   void handle_tab_close_request (int index);
   void handle_tab_remove_request (void);
-  void handle_add_filename_to_list (const QString& fileName, QWidget *ID);
+  void handle_add_filename_to_list (const QString& fileName,
+                                    const QString& encoding, QWidget *ID);
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
   void handle_mru_add_file (const QString& file_name);
@@ -229,8 +248,9 @@ protected slots:
 private slots:
 
   void request_open_files (const QStringList&);
-  void request_open_file (const QString& fileName, int line = -1,
-                          bool debug_pointer = false,
+  void request_open_file (const QString& fileName,
+                          const QString& encoding = QString (),
+                          int line = -1, bool debug_pointer = false,
                           bool breakpoint_marker = false, bool insert = true);
   void request_preferences (bool);
   void request_styles_preferences (bool);
@@ -273,6 +293,8 @@ private:
 
   void switch_tab (int direction, bool movetab = false);
 
+  void restore_session (QSettings *settings);
+
   bool editor_tab_has_focus ();
 
   QWidget *find_tab_widget (const QString& openFileName) const;
@@ -281,7 +303,7 @@ private:
 
   QMenu* m_add_menu (QMenuBar *p, QString text);
 
-  std::map<QString, QWidget *> editor_tab_map;
+  std::map<QString, tab_info> editor_tab_map;
   QHash<QMenu*, QStringList> _hash_menu_text;
 
   QString ced;

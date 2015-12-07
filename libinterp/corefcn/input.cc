@@ -973,13 +973,13 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 {
   octave_value_list retval;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
   string_vector argv = args.make_argv ("echo");
 
-  switch (argc)
+  switch (nargin)
     {
-    case 1:
+    case 0:
       {
         if ((Vecho_executing_commands & ECHO_SCRIPTS)
             || (Vecho_executing_commands & ECHO_FUNCTIONS))
@@ -989,7 +989,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
       }
       break;
 
-    case 2:
+    case 1:
       {
         std::string arg = argv[1];
 
@@ -1002,7 +1002,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
       }
       break;
 
-    case 3:
+    case 2:
       {
         std::string arg = argv[1];
 

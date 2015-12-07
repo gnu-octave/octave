@@ -394,7 +394,7 @@ H(z) = ---------------------\n\
 {
   octave_value_list retval;
 
-  int nargin  = args.length ();
+  int nargin = args.length ();
 
   if (nargin < 3 || nargin > 5)
     print_usage ();

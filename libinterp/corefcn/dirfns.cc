@@ -122,20 +122,21 @@ present working directory rather than changing to the user's home directory.\n\
 @seealso{pwd, mkdir, rmdir, dir, ls}\n\
 @end deftypefn")
 {
+  int nargin = args.length ();
+ 
+  if (nargin > 1)
+    print_usage ();
+
   octave_value_list retval;
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("cd");
 
   if (nargout > 0)
     retval = octave_value (octave_env::get_current_directory ());
 
-  if (argc > 1)
+  if (nargin == 1)
     {
-      std::string dirname = argv[1];
+      std::string dirname = args(0).xstring_value ("cd: DIR must be a string");
 
-      if (dirname.length () > 0)
+      if (! dirname.empty ())
         octave_change_to_directory (dirname);
     }
   else

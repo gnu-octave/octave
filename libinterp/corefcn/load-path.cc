@@ -2338,7 +2338,9 @@ Undocumented internal function.\n\
 
 DEFUN (path, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} path (@dots{})\n\
+@deftypefn  {Built-in Function} {} path ()\n\
+@deftypefnx {Built-in Function} {@var{str} =} path ()\n\
+@deftypefnx {Built-in Function} {@var{str} =} path (@var{path1}, @dots{})\n\
 Modify or display Octave's load path.\n\
 \n\
 If @var{nargin} and @var{nargout} are zero, display the elements of\n\
@@ -2355,17 +2357,15 @@ No checks are made for duplicate elements.\n\
 @seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
   string_vector argv = args.make_argv ("path");
 
-  if (argc > 1)
+  if (nargin > 0)
     {
       std::string path = argv[1];
 
-      for (int i = 2; i < argc; i++)
+      for (int i = 2; i <= nargin; i++)
         path += dir_path::path_sep_str () + argv[i];
 
       load_path::set (path, true);
@@ -2374,8 +2374,8 @@ No checks are made for duplicate elements.\n\
     }
 
   if (nargout > 0)
-    retval = load_path::path ();
-  else if (argc == 1 && nargout == 0)
+    return octave_value (load_path::path ());
+  else if (nargin == 0 && nargout == 0)
     {
       octave_stdout <<
         "\nOctave's search path contains the following directories:\n\n";
@@ -2386,8 +2386,6 @@ No checks are made for duplicate elements.\n\
 
       octave_stdout << "\n";
     }
-
-  return retval;
 }
 
 DEFUN (addpath, args, nargout,

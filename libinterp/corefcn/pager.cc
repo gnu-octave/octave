@@ -539,26 +539,22 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 @seealso{history}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  int nargin = args.length ();
 
-  int argc = args.length () + 1;
-
-  if (argc < 1 || argc > 2)
+  if (nargin > 1)
     print_usage ();
-
-  string_vector argv = args.make_argv ("diary");
 
   if (diary_file.empty ())
     diary_file = "diary";
 
-  if (argc == 1)
+  if (nargin == 0)
     {
       write_to_diary_file = ! write_to_diary_file;
       open_diary_file ();
     }
   else
     {
-      std::string arg = argv[1];
+      std::string arg = args(0).xstring_value ("diary: argument must be a string");
 
       if (arg == "on")
         {
@@ -577,8 +573,6 @@ With no arguments, @code{diary} toggles the current diary state.\n\
           open_diary_file ();
         }
     }
-
-  return retval;
 }
 
 DEFUN (__diaryfile__, , ,

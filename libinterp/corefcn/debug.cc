@@ -1145,18 +1145,18 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   size_t nskip = 0;
 
-  octave_idx_type len = args.length ();
+  int nargin = args.length ();
 
   // dbstack accepts up to 2 arguments.
 
-  if (len > 2)
+  if (nargin > 2)
     print_usage ();
 
-  if (len == 1 || len == 2)
+  if (nargin == 1 || nargin == 2)
     {
       int n = 0;
 
-      for (octave_idx_type i = 0; i < len; i++)
+      for (octave_idx_type i = 0; i < nargin; i++)
         {
           octave_value arg = args(i);
 

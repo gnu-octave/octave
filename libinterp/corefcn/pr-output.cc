@@ -3508,9 +3508,7 @@ formatted output in a string.\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1 || nargout > 1)
+  if (args.length () != 1 || nargout > 1)
     print_usage ();
 
   octave_value arg = args(0);
@@ -3550,9 +3548,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   int fid = octave_stream_list::get_file_number (args(0));

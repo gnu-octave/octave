@@ -709,11 +709,9 @@ get_user_input (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
   int read_as_string = 0;
 
-  if (nargin == 2)
+  if (args.length () == 2)
     read_as_string++;
 
   std::string prompt = args(0).xstring_value ("input: unrecognized argument");
@@ -917,9 +915,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin > 1)
+  if (args.length () > 1)
     print_usage ();
 
   unwind_protect frame;
@@ -973,11 +969,9 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
   string_vector argv = args.make_argv ("echo");
 
-  switch (nargin)
+  switch (args.length ())
     {
     case 0:
       {
@@ -1095,9 +1089,7 @@ a feature, not a bug.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string hint = args(0).string_value ();

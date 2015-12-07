@@ -9655,9 +9655,7 @@ each individual object will be reset.\n\
 @seealso{cla, clf, newplot}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   // get vector of graphics handles
@@ -10139,9 +10137,7 @@ Undocumented internal function.\n\
 
   Cell vals;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   ColumnVector hcv = args(0).xvector_value ("get: H must be a graphics handle");
@@ -10381,9 +10377,7 @@ Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 {
   gh_manager::auto_lock guard;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   double h = args(0).xdouble_value ("__calc_dimensions__: first argument must be a graphics handle");
@@ -10668,9 +10662,7 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   double h = args(0).xdouble_value ("__image_pixel_size__: argument is not a handle");

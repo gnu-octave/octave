@@ -66,6 +66,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 @end deftypefn")
 {
   octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -220,9 +221,8 @@ num2hex (single ([-1, 1, e, Inf]))\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length ();
 
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   if (args(0).is_single_type ())

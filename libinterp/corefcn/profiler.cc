@@ -420,9 +420,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  const int nargin = args.length ();
 
-  if (nargin > 0)
+  if (args.length () > 0)
     warning ("profiler_reset: ignoring extra arguments");
 
   profiler.reset ();
@@ -438,9 +437,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  const int nargin = args.length ();
 
-  if (nargin > 0)
+  if (args.length () > 0)
     warning ("profiler_data: ignoring extra arguments");
 
   if (nargout > 1)

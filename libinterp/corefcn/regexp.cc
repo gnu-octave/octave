@@ -280,11 +280,9 @@ static void
 parse_options (regexp::opts& options, const octave_value_list& args,
                const std::string& who, int skip, bool& extra_args)
 {
-  int nargin = args.length ();
-
   extra_args = false;
 
-  for (int i = skip; i < nargin; i++)
+  for (int i = skip; i < args.length (); i++)
     {
       std::string str;
 

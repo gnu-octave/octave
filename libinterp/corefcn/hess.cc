@@ -66,9 +66,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1 || nargout > 2)
+  if (args.length () != 1 || nargout > 2)
     print_usage ();
 
   octave_value arg = args(0);

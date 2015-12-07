@@ -107,10 +107,9 @@ is in the upper left corner, by doing:\n\
 @seealso{schur}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value_list retval;
 
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   const Array<octave_idx_type> sel = args(2).octave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");

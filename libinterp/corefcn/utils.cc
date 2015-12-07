@@ -101,9 +101,7 @@ Return true if @var{name} is a valid variable name.\n\
 {
   octave_value retval = false;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   if (args(0).is_string ())
@@ -748,9 +746,7 @@ Escape sequences begin with a leading backslash\n\
 @seealso{undo_string_escapes}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
@@ -885,9 +881,7 @@ replaces the unprintable alert character with its printable representation.\n\
 @seealso{do_string_escapes}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");

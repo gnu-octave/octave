@@ -40,10 +40,9 @@ DEFUN (__dsearchn__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value_list retval;
 
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   Matrix x = args(0).matrix_value ().transpose ();

@@ -823,9 +823,7 @@ handle_message (error_fun f, const char *id, const char *msg,
 
   std::string tstr;
 
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     {
       octave_value arg;
 
@@ -893,9 +891,7 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   const octave_scalar_map err = args(0).scalar_map_value ();
@@ -1459,8 +1455,7 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-  int argc = nargin + 1;
+  int argc = args.length () + 1;
 
   bool done = false;
 

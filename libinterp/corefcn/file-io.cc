@@ -711,9 +711,7 @@ freport ()\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     warning ("freport: ignoring extra arguments");
 
   octave_stdout << octave_stream_list::list_open_files ();

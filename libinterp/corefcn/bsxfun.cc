@@ -335,10 +335,9 @@ dimensionality as the other array.\n\
 @seealso{arrayfun, cellfun}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value_list retval;
 
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   octave_value func = args(0);

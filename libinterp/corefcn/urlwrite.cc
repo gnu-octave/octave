@@ -561,9 +561,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_pwd__: incorrect number of arguments");
   else
     {
@@ -618,9 +616,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_dir__: incorrect number of arguments");
   else
     {
@@ -696,9 +692,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_ascii__: incorrect number of arguments");
   else
     {
@@ -721,9 +715,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_binary__: incorrect number of arguments");
   else
     {
@@ -746,9 +738,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_close__: incorrect number of arguments");
   else
     {
@@ -771,9 +761,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_mode__: incorrect number of arguments");
   else
     {
@@ -796,9 +784,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_delete__: incorrect number of arguments");
   else
     {
@@ -825,9 +811,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_rmdir__: incorrect number of arguments");
   else
     {
@@ -854,9 +838,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_mkdir__: incorrect number of arguments");
   else
     {
@@ -883,9 +865,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     error ("__ftp_rename__: incorrect number of arguments");
   else
     {
@@ -913,9 +893,7 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_mput__: incorrect number of arguments");
   else
     {

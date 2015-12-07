@@ -196,7 +196,6 @@ static void
 parse_dbfunction_params (const char *who, const octave_value_list& args,
                          std::string& symbol_name, bp_table::intmap& lines)
 {
-  int nargin = args.length ();
   int idx = 0;
   int list_idx = 0;
   symbol_name = std::string ();
@@ -241,7 +240,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
   else
     error ("%s: invalid parameter specified", who);
 
-  for (int i = idx; i < nargin; i++)
+  for (int i = idx; i < args.length (); i++)
     {
       if (args(i).is_string ())
         {
@@ -683,11 +682,9 @@ files.\n\
   std::string symbol_name = "";
   bp_table::intmap lines;
 
-  int nargin = args.length ();
-
   parse_dbfunction_params ("dbclear", args, symbol_name, lines);
 
-  if (nargin == 1 && symbol_name == "all")
+  if (args.length () == 1 && symbol_name == "all")
     bp_table::remove_all_breakpoints ();
   else
     bp_table::remove_breakpoint (symbol_name, lines);
@@ -926,10 +923,9 @@ numbers.\n\
   octave_value retval;
   octave_user_code *dbg_fcn;
 
-  int nargin = args.length ();
   string_vector argv = args.make_argv ("dbtype");
 
-  switch (nargin)
+  switch (args.length ())
     {
     case 0: // dbtype
       dbg_fcn = get_user_code ();

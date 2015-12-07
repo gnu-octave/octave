@@ -67,9 +67,7 @@ compatible dimensions.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   octave_value x_arg = args(0);
@@ -302,9 +300,7 @@ The inverse is the value @var{x} such that\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   octave_value x_arg = args(0);

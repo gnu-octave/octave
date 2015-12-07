@@ -183,9 +183,7 @@ moving from one column to next, filling up all rows in each column.\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   dim_vector dv = get_dim_vector (args(0), "ind2sub");

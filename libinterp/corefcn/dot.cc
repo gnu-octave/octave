@@ -294,9 +294,8 @@ endfor\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length ();
 
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   octave_value argx = args(0);

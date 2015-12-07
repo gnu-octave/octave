@@ -74,9 +74,7 @@ convex hull, @var{idx} is NaN.\n\
 
   const double eps = 1.0e-12;
 
-  const int nargin = args.length ();
-
-  if (nargin != 5)
+  if (args.length () != 5)
     print_usage ();
 
   const ColumnVector x (args(0).vector_value ());

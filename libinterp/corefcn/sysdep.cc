@@ -612,9 +612,7 @@ returns a string containing the value of your path.\n\
 @seealso{setenv, unsetenv}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string name = args(0).string_value ();
@@ -676,9 +674,7 @@ occurred.\n\
 @seealso{setenv, getenv}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string tmp = args(0).string_value ();
@@ -950,9 +946,7 @@ tilde_expand (\"~/bin\")\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_value arg = args(0);

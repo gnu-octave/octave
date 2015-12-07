@@ -125,9 +125,7 @@ error message.\n\
   retval(1) = std::string ();
   retval(0) = -1;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   octave_stream old_stream

@@ -328,9 +328,7 @@ do_isglobal (const octave_value_list& args)
 {
   octave_value retval = false;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   if (! args(0).is_string ())

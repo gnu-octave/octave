@@ -4507,10 +4507,9 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmax, realmin, intmax, flintmax}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
   octave_value retval;
 
-  if (nargin == 1 && ! args(0).is_string ())
+  if (args.length () == 1 && ! args(0).is_string ())
     {
       if (args(0).is_single_type ())
         {
@@ -6250,9 +6249,7 @@ doing nothing at all.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     warning ("tic: ignoring extra arguments");
 
   octave_time now;
@@ -6349,11 +6346,10 @@ CPU time used is nonzero.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  int nargin = args.length ();
   double usr = 0.0;
   double sys = 0.0;
 
-  if (nargin != 0)
+  if (args.length () != 0)
     warning ("tic: ignoring extra arguments");
 
 #if defined (HAVE_GETRUSAGE)
@@ -7817,9 +7813,8 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  int nargin = args.length ();
 
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
   else
     {

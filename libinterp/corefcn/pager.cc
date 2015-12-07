@@ -573,6 +573,8 @@ With no arguments, @code{diary} toggles the current diary state.\n\
           open_diary_file ();
         }
     }
+
+  return octave_value ();
 }
 
 DEFUN (__diaryfile__, , ,

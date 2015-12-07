@@ -2386,6 +2386,8 @@ No checks are made for duplicate elements.\n\
 
       octave_stdout << "\n";
     }
+
+  return octave_value ();
 }
 
 DEFUN (addpath, args, nargout,

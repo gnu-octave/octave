@@ -350,9 +350,7 @@ the Cholesky@tie{}factorization.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_value arg = args(0);
@@ -481,9 +479,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_value arg = args(0);
@@ -785,9 +781,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   octave_value argr = args(0);
@@ -1032,9 +1026,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   octave_value argr = args(0);
@@ -1166,9 +1158,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   octave_value argr = args(0);

@@ -1382,9 +1382,7 @@ c(2,1,:)(:)\n\
 @seealso{cell2struct, fieldnames}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   const octave_map m = args(0).xmap_value ("struct2cell: argument S must be a structure");

@@ -78,9 +78,7 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
  \
   octave_value retval; \
  \
-  int nargin = args.length (); \
- \
-  if (nargin != 1) \
+  if (args.length () != 1) \
     print_usage (); \
  \
   const octave_value arg = args(0); \

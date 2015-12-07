@@ -499,8 +499,6 @@ octave_user_function::do_multi_index_op (int nargout,
     return retval;
 #endif
 
-  int nargin = args.length ();
-
   unwind_protect frame;
 
   frame.protect_var (call_depth);
@@ -576,8 +574,8 @@ octave_user_function::do_multi_index_op (int nargout,
       frame.add_fcn (symbol_table::clear_variables);
     }
 
-  bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args),
-                       lvalue_list);
+  bind_automatic_vars (arg_names, args.length (), nargout,
+                       all_va_args (args), lvalue_list);
 
   frame.add_method (this, &octave_user_function::restore_warning_states);
 
@@ -1078,9 +1076,7 @@ element-by-element and a logical array is returned.  At the top level,\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   if (! symbol_table::at_top_level ())

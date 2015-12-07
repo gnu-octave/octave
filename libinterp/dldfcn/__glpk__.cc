@@ -345,10 +345,8 @@ Undocumented internal function.\n\
 
 #if defined (HAVE_GLPK)
 
-  int nargin = args.length ();
-
   // FIXME: Should we even need checking for an internal function?
-  if (nargin != 9)
+  if (args.length () != 9)
     print_usage ();
 
   //-- 1nd Input. A column array containing the objective function

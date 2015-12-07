@@ -114,9 +114,7 @@ This should give an error if @code{I} is nonempty.\n\
 @seealso{isempty, isindex}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   return octave_value (args(0).is_null_value ());

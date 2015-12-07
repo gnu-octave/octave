@@ -1898,9 +1898,7 @@ dimension is returned.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   retval = false;
@@ -1952,9 +1950,7 @@ Return the number of fields of the structure @var{s}.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   if (args(0).is_map ())
@@ -2123,9 +2119,7 @@ the named fields.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   octave_map m = args(0).xmap_value ("rmfield: first argument must be a struct");

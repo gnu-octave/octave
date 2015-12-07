@@ -849,9 +849,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_fcn_inline* fn = args(0).fcn_inline_value (true);
@@ -884,9 +882,7 @@ arguments of the inline function @var{fun}.\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_fcn_inline *fn = args(0).fcn_inline_value (true);
@@ -941,9 +937,7 @@ quadv (fcn, 0, 3)\n\
 {
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string old_func;

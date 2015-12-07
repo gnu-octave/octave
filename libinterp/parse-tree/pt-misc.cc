@@ -179,8 +179,6 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
 void
 tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 {
-  int nargin = args.length ();
-
   int expected_nargin = length ();
 
   iterator p = begin ();
@@ -191,7 +189,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 
       octave_lvalue ref = elt->lvalue ();
 
-      if (i < nargin)
+      if (i < args.length ())
         {
           if (args(i).is_defined () && args(i).is_magic_colon ())
             {

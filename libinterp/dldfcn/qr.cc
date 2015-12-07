@@ -758,9 +758,7 @@ economized (R is square).\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 4)
+  if (args.length () != 4)
     print_usage ();
 
   octave_value argq = args(0);
@@ -1409,9 +1407,8 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  int nargin = args.length ();
 
-  if (nargin != 4)
+  if (args.length () != 4)
     print_usage ();
 
   octave_value argq = args(0);

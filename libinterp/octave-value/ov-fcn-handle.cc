@@ -1846,6 +1846,7 @@ functions are ignored in the lookup.\n\
 @end deftypefn")
 {
   octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -1907,9 +1908,7 @@ Return true if @var{x} is a function handle.\n\
 @seealso{isa, typeinfo, class, functions}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   return octave_value (args(0).is_function_handle ());

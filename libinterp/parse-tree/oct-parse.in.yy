@@ -4682,9 +4682,7 @@ feval (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     {
       octave_value f_arg = args(0);
 
@@ -4751,9 +4749,7 @@ function name in a string, or inline function then @code{feval} can be used\n\
 instead.\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin == 0)
+  if (args.length () == 0)
     print_usage ();
 
   return feval (args, nargout);
@@ -4787,9 +4783,7 @@ builtin (\"sin\", 0)\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin == 0)
+  if (args.length () == 0)
     print_usage ();
 
   const std::string name (args(0).xstring_value ("builtin: function name (F) must be a string"));
@@ -5049,9 +5043,7 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   std::string context = args(0).xstring_value ("assignin: CONTEXT must be a string");

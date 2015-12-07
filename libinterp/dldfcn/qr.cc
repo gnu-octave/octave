@@ -758,7 +758,7 @@ economized (R is square).\n\
 {
   octave_value_list retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 4)
     print_usage ();
@@ -944,7 +944,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 {
   octave_value_list retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin < 4 || nargin > 5)
     print_usage ();
@@ -1160,7 +1160,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
@@ -1409,7 +1409,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 4)
     print_usage ();

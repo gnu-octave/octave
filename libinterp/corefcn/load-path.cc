@@ -2247,7 +2247,7 @@ directories with those names.\n\
 {
   octave_value retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();

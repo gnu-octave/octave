@@ -584,7 +584,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 @seealso{chol, cholinsert, choldelete, cholshift}\n\
 @end deftypefn")
 {
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   octave_value_list retval;
 
@@ -785,7 +785,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 {
   octave_value_list retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 3)
     print_usage ();
@@ -1032,7 +1032,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 {
   octave_value_list retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ();
@@ -1166,7 +1166,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
 {
   octave_value_list retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 3)
     print_usage ();

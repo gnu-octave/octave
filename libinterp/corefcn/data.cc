@@ -2723,7 +2723,7 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @end deftypefn")
 {
   octave_value retval;
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin == 1)
     retval = args(0).numel ();
@@ -5119,7 +5119,7 @@ if fewer than two values are requested.\n\
 {
   octave_value retval;
 
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   octave_idx_type npoints = 100;
 

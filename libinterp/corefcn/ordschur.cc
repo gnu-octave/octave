@@ -107,7 +107,7 @@ is in the upper left corner, by doing:\n\
 @seealso{schur}\n\
 @end deftypefn")
 {
-  const octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
   octave_value_list retval;
 
   if (nargin != 3)

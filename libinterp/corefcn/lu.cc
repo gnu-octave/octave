@@ -627,7 +627,7 @@ factorization from scratch.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 4 && nargin != 5)
     print_usage ();

@@ -1975,25 +1975,26 @@ With two arguments, also set the last message identifier.\n\
   if (nargin > 2)
     print_usage ();
 
-  octave_value_list retval;
   string_vector argv = args.make_argv ("lasterr");
 
   std::string prev_error_id = Vlast_error_id;
   std::string prev_error_message = Vlast_error_message;
 
   if (nargin == 2)
-    Vlast_error_id = argv(2);
-
-  if (nargin > 0)
-    Vlast_error_message = argv(1);
-
-  if (nargin == 0 || nargout > 0)
     {
-      retval(1) = prev_error_id;
-      retval(0) = prev_error_message;
+      Vlast_error_id = argv(2);
+      Vlast_error_message = argv(1);
+    }
+  else if (nargin == 1)
+    {
+      Vlast_error_id = "";
+      Vlast_error_message = argv(1);
     }
 
-  return retval;
+  if (nargin == 0 || nargout > 0)
+    return ovl (prev_error_message, prev_error_id);
+  else
+    return octave_value_list ();
 }
 
 DEFUN (lastwarn, args, nargout,
@@ -2012,31 +2013,31 @@ With two arguments, also set the last message identifier.\n\
 @seealso{warning, lasterror, lasterr}\n\
 @end deftypefn")
 {
-
   int nargin = args.length ();
 
   if (nargin > 2)
     print_usage ();
 
-  octave_value_list retval;
   string_vector argv = args.make_argv ("lastwarn");
 
   std::string prev_warning_id = Vlast_warning_id;
   std::string prev_warning_message = Vlast_warning_message;
 
   if (nargin == 2)
-    Vlast_warning_id = argv(2);
-
-  if (nargin > 0)
-    Vlast_warning_message = argv(1);
-
-  if (nargin == 0 || nargout > 0)
     {
-      retval(1) = prev_warning_id;
-      retval(0) = prev_warning_message;
+      Vlast_warning_id = argv(2);
+      Vlast_warning_message = argv(1);
+    }
+  else if (nargin == 1)
+    {
+      Vlast_warning_id = "";
+      Vlast_warning_message = argv(1);
     }
 
-  return retval;
+  if (nargin == 0 || nargout > 0)
+    return ovl (prev_warning_message, prev_warning_id);
+  else
+    return octave_value_list ();
 }
 
 /* FIXME: Deprecated in 4.0 and scheduled for removal in 4.4 */

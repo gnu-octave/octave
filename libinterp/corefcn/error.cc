@@ -468,6 +468,9 @@ error_1 (octave_execution_exception& e, std::ostream& os,
                       verror (true, os, name, id, tmp_fmt, args, with_cfn);
                       delete [] tmp_fmt;
                     }
+
+                  // If format ends with newline, suppress stack trace.
+                  e.set_stack_trace ();
                 }
               else
                 {

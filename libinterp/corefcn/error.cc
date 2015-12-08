@@ -229,10 +229,8 @@ pr_where_2 (std::ostream& os, const char *fmt, va_list args)
                 {
                   if (len > 1)
                     {
-                      char *tmp_fmt = strsave (fmt);
-                      tmp_fmt[len - 1] = '\0';
-                      verror (false, os, 0, "", tmp_fmt, args);
-                      delete [] tmp_fmt;
+                      std::string tmp_fmt (fmt, len - 1);
+                      verror (false, os, 0, "", tmp_fmt.c_str (), args);
                     }
                 }
               else
@@ -475,11 +473,9 @@ error_1 (octave_execution_exception& e, std::ostream& os,
                 {
                   if (len > 1)
                     {
-                      // FIXME: This is a memory leak.
-                      char *tmp_fmt = strsave (fmt);
-                      tmp_fmt[len - 1] = '\0';
-                      verror (true, os, name, id, tmp_fmt, args, with_cfn);
-                      delete [] tmp_fmt;
+                      std::string tmp_fmt (fmt, len - 1);
+                      verror (true, os, name, id, tmp_fmt.c_str (),
+                              args, with_cfn);
                     }
 
                   // If format ends with newline, suppress stack trace.
@@ -881,11 +877,9 @@ handle_message (error_fun f, const char *id, const char *msg,
         {
           if (len > 1)
             {
-              char *tmp_msg = strsave (msg);
-              tmp_msg[len - 1] = '\0';
-              f (id, "%s\n", tmp_msg);
+              std::string tmp_msg (msg, len - 1);
+              f (id, "%s\n", tmp_msg.c_str ());
               retval = tmp_msg;
-              delete [] tmp_msg;
             }
         }
       else
@@ -951,18 +945,17 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
         }
 
       // Ugh.
-      char *tmp_msg = strsave (msg.c_str ());
+      std::string tmp_msg (msg);
       if (tmp_msg[len-1] == '\n')
         {
           if (len > 1)
             {
-              tmp_msg[len - 1] = '\0';
+              tmp_msg.erase (len - 1);
               rethrow_error (id.c_str (), "%s\n", tmp_msg);
             }
         }
       else
         rethrow_error (id.c_str (), "%s", tmp_msg);
-      delete [] tmp_msg;
 
       // FIXME: is this the right thing to do for Vlast_error_stack?
       //        Should it be saved and restored with unwind_protect?

@@ -43,25 +43,25 @@ vmessage (const char *name, const char *fmt, va_list args);
 
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
-extern OCTINTERP_API void vusage (const char *fmt, va_list args);
-extern OCTINTERP_API void usage (const char *fmt, ...);
+extern OCTINTERP_API void vusage (const char *fmt, va_list args) GCC_ATTR_NORETURN;
+extern OCTINTERP_API void usage (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
 extern OCTINTERP_API void warning (const char *fmt, ...);
 
-extern OCTINTERP_API void verror (const char *fmt, va_list args);
-extern OCTINTERP_API void error (const char *fmt, ...);
+extern OCTINTERP_API void verror (const char *fmt, va_list args) GCC_ATTR_NORETURN;
+extern OCTINTERP_API void error (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void verror (octave_execution_exception&,
-                                  const char *fmt, va_list args);
+                                  const char *fmt, va_list args) GCC_ATTR_NORETURN;
 extern OCTINTERP_API void error (octave_execution_exception&,
-                                 const char *fmt, ...);
+                                 const char *fmt, ...) GCC_ATTR_NORETURN;
 
-extern OCTINTERP_API void verror_with_cfn (const char *fmt, va_list args);
-extern OCTINTERP_API void error_with_cfn (const char *fmt, ...);
+extern OCTINTERP_API void verror_with_cfn (const char *fmt, va_list args) GCC_ATTR_NORETURN;
+extern OCTINTERP_API void error_with_cfn (const char *fmt, ...) GCC_ATTR_NORETURN;
 
-extern OCTINTERP_API void vparse_error (const char *fmt, va_list args);
-extern OCTINTERP_API void parse_error (const char *fmt, ...);
+extern OCTINTERP_API void vparse_error (const char *fmt, va_list args) GCC_ATTR_NORETURN;
+extern OCTINTERP_API void parse_error (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
 vmessage_with_id (const char *id, const char *name,
@@ -71,10 +71,10 @@ extern OCTINTERP_API void
 message_with_id (const char *id, const char *name, const char *fmt, ...);
 
 extern OCTINTERP_API void
-vusage_with_id (const char *id, const char *fmt, va_list args);
+vusage_with_id (const char *id, const char *fmt, va_list args) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
-usage_with_id (const char *id, const char *fmt, ...);
+usage_with_id (const char *id, const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
 vwarning_with_id (const char *id, const char *fmt, va_list args);
@@ -83,22 +83,22 @@ extern OCTINTERP_API void
 warning_with_id (const char *id, const char *fmt, ...);
 
 extern OCTINTERP_API void
-verror_with_id (const char *id, const char *fmt, va_list args);
+verror_with_id (const char *id, const char *fmt, va_list args) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
-error_with_id (const char *id, const char *fmt, ...);
+error_with_id (const char *id, const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
-verror_with_id_cfn (const char *id, const char *fmt, va_list args);
+verror_with_id_cfn (const char *id, const char *fmt, va_list args) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
-error_with_id_cfn (const char *id, const char *fmt, ...);
+error_with_id_cfn (const char *id, const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
-vparse_error_with_id (const char *id, const char *fmt, va_list args);
+vparse_error_with_id (const char *id, const char *fmt, va_list args) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void
-parse_error_with_id (const char *id, const char *fmt, ...);
+parse_error_with_id (const char *id, const char *fmt, ...) GCC_ATTR_NORETURN;
 
 extern OCTINTERP_API void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 

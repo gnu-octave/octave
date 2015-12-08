@@ -397,6 +397,10 @@ message_with_id (const char *name, const char *id, const char *fmt, ...)
 
 static void
 usage_1 (octave_execution_exception& e, const char *id,
+         const char *fmt, va_list args) GCC_ATTR_NORETURN;
+
+static void
+usage_1 (octave_execution_exception& e, const char *id,
          const char *fmt, va_list args)
 {
   verror (true, std::cerr, "usage", id, fmt, args);
@@ -405,6 +409,9 @@ usage_1 (octave_execution_exception& e, const char *id,
 
   throw e;
 }
+
+static void
+usage_1 (const char *id, const char *fmt, va_list args) GCC_ATTR_NORETURN;
 
 static void
 usage_1 (const char *id, const char *fmt, va_list args)
@@ -447,7 +454,12 @@ usage_with_id (const char *id, const char *fmt, ...)
 static void
 error_1 (octave_execution_exception& e, std::ostream& os,
          const char *name, const char *id, const char *fmt,
-         va_list args, bool with_cfn = false)
+         va_list args, bool with_cfn = false) GCC_ATTR_NORETURN;
+
+static void
+error_1 (octave_execution_exception& e, std::ostream& os,
+         const char *name, const char *id, const char *fmt,
+         va_list args, bool with_cfn)
 {
   bool show_stack_trace = false;
 
@@ -463,6 +475,7 @@ error_1 (octave_execution_exception& e, std::ostream& os,
                 {
                   if (len > 1)
                     {
+                      // FIXME: This is a memory leak.
                       char *tmp_fmt = strsave (fmt);
                       tmp_fmt[len - 1] = '\0';
                       verror (true, os, name, id, tmp_fmt, args, with_cfn);
@@ -494,7 +507,12 @@ error_1 (octave_execution_exception& e, std::ostream& os,
 
 static void
 error_1 (std::ostream& os, const char *name, const char *id,
-         const char *fmt, va_list args, bool with_cfn = false)
+         const char *fmt, va_list args,
+         bool with_cfn = false) GCC_ATTR_NORETURN;
+
+static void
+error_1 (std::ostream& os, const char *name, const char *id,
+         const char *fmt, va_list args, bool with_cfn)
 {
   octave_execution_exception e = make_execution_exception ("error");
 

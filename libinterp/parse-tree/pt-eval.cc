@@ -60,8 +60,6 @@ bool tree_evaluator::debug_mode = false;
 
 bool tree_evaluator::quiet_breakpoint_flag = false;
 
-bool tree_evaluator::unwind_protect_exception = false;
-
 tree_evaluator::stmt_list_type tree_evaluator::statement_context
   = tree_evaluator::other;
 
@@ -927,8 +925,6 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   frame.protect_var (tree_break_command::breaking);
   tree_break_command::breaking = 0;
 
-  bool execution_error_in_cleanup = false;
-
   try
     {
       if (list)
@@ -938,7 +934,14 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
     {
       recover_from_exception ();
 
-      execution_error_in_cleanup = true;
+      if (tree_break_command::breaking || tree_return_command::returning)
+        frame.discard (2);
+      else
+        frame.run (2);
+
+      frame.discard (2);
+
+      throw;
     }
 
   // The unwind_protects are popped off the stack in the reverse of
@@ -952,13 +955,13 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   //
   //   function foo ()
   //     unwind_protect
-  //       stderr << "1: this should always be executed\n";
+  //       fprintf (stderr, "1: this should always be executed\n");
   //       break;
-  //       stderr << "1: this should never be executed\n";
+  //       fprintf (stderr, "1: this should never be executed\n");
   //     unwind_protect_cleanup
-  //       stderr << "2: this should always be executed\n";
+  //       fprintf (stderr, "2: this should always be executed\n");
   //       return;
-  //       stderr << "2: this should never be executed\n";
+  //       fprintf (stderr, "2: this should never be executed\n");
   //     end_unwind_protect
   //   endfunction
   //
@@ -972,27 +975,6 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
     frame.discard (2);
   else
     frame.run (2);
-
-  // We don't want to ignore errors that occur in the cleanup code,
-  // so if an error is encountered there, rethrow the exception.
-  // Otherwise, rethrow any exception that might have occurred in the
-  // unwind_protect block.
-
-  if (execution_error_in_cleanup)
-    frame.discard (2);
-  else
-    frame.run (2);
-
-  frame.run ();
-
-  // FIXME: we should really be rethrowing whatever exception occurred,
-  // not just throwing an execution exception.
-  if (unwind_protect_exception || execution_error_in_cleanup)
-    {
-      unwind_protect_exception = false;
-
-      octave_throw_execution_exception ();
-    }
 }
 
 void
@@ -1004,26 +986,29 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 
   if (unwind_protect_code)
     {
-      unwind_protect_exception = false;
-
       try
         {
           unwind_protect_code->accept (*this);
         }
       catch (const octave_execution_exception&)
         {
+          // FIXME: Maybe we should be able to temporarily set the
+          // interpreter's exception handling state to something "safe"
+          // while the cleanup block runs instead of just resetting it
+          // here?
           recover_from_exception ();
 
-          unwind_protect_exception = true;
-
-          // Run the cleanup code on exceptions, so that it is run even in case
-          // of interrupt or out-of-memory.
+          // Run the cleanup code on exceptions, so that it is run even
+          // in case of interrupt or out-of-memory.
           do_unwind_protect_cleanup_code (cleanup_code);
 
-          // We want to rethrow the exception so that interrupts continue.
+          // If an error occurs inside the cleanup code, a new
+          // exception will be thrown instead of the original.
           throw;
         }
 
+      // Also execute the unwind_protect_cleanump code if the
+      // unwind_protect block runs without error.
       do_unwind_protect_cleanup_code (cleanup_code);
     }
 }

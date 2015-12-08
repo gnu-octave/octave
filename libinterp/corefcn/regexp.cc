@@ -853,12 +853,10 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 @seealso{regexpi, strfind, regexprep}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 2)
+  if (args.length () < 2)
     print_usage ();
+
+  octave_value_list retval;
 
   if (args(0).is_cell () || args(1).is_cell ())
     retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp");
@@ -1149,12 +1147,10 @@ for details on the syntax of the search pattern.\n\
 @seealso{regexp}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 2)
+  if (args.length () < 2)
     print_usage ();
+
+  octave_value_list retval;
 
   if (args(0).is_cell () || args(1).is_cell ())
     retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
@@ -1384,17 +1380,14 @@ function.\n\
 @seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-  int nargin = args.length ();
-
-  if (nargin < 3)
+  if (args.length () < 3)
     print_usage ();
+
+  octave_value_list retval;
 
   if (args(0).is_cell () || args(1).is_cell () || args(2).is_cell ())
     {
-      Cell str;
-      Cell pat;
-      Cell rep;
+      Cell str, pat, rep;
       dim_vector dv0;
       dim_vector dv1 (1, 1);
 
@@ -1447,7 +1440,7 @@ function.\n\
         }
 
       retval = args(0).is_cell () ? octave_value (ret)
-        : octave_value (ret(0));
+                                  : octave_value (ret(0));
     }
   else
     retval = octregexprep (args, "regexprep");

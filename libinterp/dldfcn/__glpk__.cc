@@ -309,10 +309,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
           if (! tmp.is_empty ()) \
             VAL = tmp.xscalar_value ("glpk: invalid value in PARAM" NAME); \
           else \
-            { \
-              error ("glpk: invalid value in PARAM" NAME); \
-              return retval; \
-            } \
+            error ("glpk: invalid value in PARAM" NAME); \
         } \
     } \
   while (0)
@@ -327,10 +324,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
           if (! tmp.is_empty ()) \
             VAL = tmp.xint_value ("glpk: invalid value in PARAM" NAME); \
           else \
-            { \
-              error ("glpk: invalid value in PARAM" NAME); \
-              return retval; \
-            } \
+            error ("glpk: invalid value in PARAM" NAME); \
         } \
     } \
   while (0)
@@ -376,10 +370,7 @@ Undocumented internal function.\n\
       a.resize (Anz+1, 0.0);
 
       if (Anc != mrowsc)
-        {
-          error ("__glpk__: invalid value of A");
-          return retval;
-        }
+        error ("__glpk__: invalid value of A");
 
       for (octave_idx_type j = 0; j < Anc; j++)
         for (octave_idx_type i = A.cidx (j); i < A.cidx (j+1); i++)
@@ -426,10 +417,7 @@ Undocumented internal function.\n\
   Matrix LB = args(3).xmatrix_value ("__glpk__: invalid value of LB");
 
   if (LB.numel () < mrowsc)
-    {
-      error ("__glpk__: invalid dimensions for LB");
-      return retval;
-    }
+    error ("__glpk__: invalid dimensions for LB");
 
   double *lb = LB.fortran_vec ();
 
@@ -451,10 +439,7 @@ Undocumented internal function.\n\
   Matrix UB = args(4).xmatrix_value ("__glpk__: invalid value of UB");
 
   if (UB.numel () < mrowsc)
-    {
-      error ("__glpk__: invalid dimensions for UB");
-      return retval;
-    }
+    error ("__glpk__: invalid dimensions for UB");
 
   double *ub = UB.fortran_vec ();
 
@@ -514,37 +499,25 @@ Undocumented internal function.\n\
   par.msglev = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("msglev", par.msglev);
   if (par.msglev < 0 || par.msglev > 3)
-    {
-      error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
 
   //-- scaling option
   volatile int scale = 16;
   OCTAVE_GLPK_GET_INT_PARAM ("scale", scale);
   if (scale < 0 || scale > 128)
-    {
-      error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
-      return retval;
-    }
+    error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
 
   //-- Dual simplex option
   par.dual = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("dual", par.dual);
   if (par.dual < 1 || par.dual > 3)
-    {
-      error ("__glpk__: PARAM.dual must be 1 (use two-phase primal simplex [default]) or 2 (use two-phase dual simplex) or 3 (use two-phase dual simplex, and if it fails, switch to the primal simplex)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.dual must be 1 (use two-phase primal simplex [default]) or 2 (use two-phase dual simplex) or 3 (use two-phase dual simplex, and if it fails, switch to the primal simplex)");
 
   //-- Pricing option
   par.price = 34;
   OCTAVE_GLPK_GET_INT_PARAM ("price", par.price);
   if (par.price != 17 && par.price != 34)
-    {
-      error ("__glpk__: PARAM.price must be 17 (textbook pricing) or 34 (steepest edge pricing [default])");
-      return retval;
-    }
+    error ("__glpk__: PARAM.price must be 17 (textbook pricing) or 34 (steepest edge pricing [default])");
 
   //-- Simplex iterations limit
   par.itlim = std::numeric_limits<int>::max ();
@@ -558,46 +531,31 @@ Undocumented internal function.\n\
   par.branch = 4;
   OCTAVE_GLPK_GET_INT_PARAM ("branch", par.branch);
   if (par.branch < 1 || par.branch > 5)
-    {
-      error ("__glpk__: PARAM.branch must be 1 (first fractional variable) or 2 (last fractional variable) or 3 (most fractional variable) or 4 (heuristic by Driebeck and Tomlin [default]) or 5 (hybrid pseudocost heuristic)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.branch must be 1 (first fractional variable) or 2 (last fractional variable) or 3 (most fractional variable) or 4 (heuristic by Driebeck and Tomlin [default]) or 5 (hybrid pseudocost heuristic)");
 
   //-- Backtracking heuristic option
   par.btrack = 4;
   OCTAVE_GLPK_GET_INT_PARAM ("btrack", par.btrack);
   if (par.btrack < 1 || par.btrack > 4)
-    {
-      error ("__glpk__: PARAM.btrack must be 1 (depth first search) or 2 (breadth first search) or 3 (best local bound) or 4 (best projection heuristic [default]");
-      return retval;
-    }
+    error ("__glpk__: PARAM.btrack must be 1 (depth first search) or 2 (breadth first search) or 3 (best local bound) or 4 (best projection heuristic [default]");
 
   //-- Presolver option
   par.presol = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("presol", par.presol);
   if (par.presol < 0 || par.presol > 1)
-    {
-      error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
-      return retval;
-    }
+    error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
 
   //-- LPsolver option
   volatile int lpsolver = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("lpsolver", lpsolver);
   if (lpsolver < 1 || lpsolver > 2)
-    {
-      error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
 
   //-- Ratio test option
   par.rtest = 34;
   OCTAVE_GLPK_GET_INT_PARAM ("rtest", par.rtest);
   if (par.rtest != 17 && par.rtest != 34)
-    {
-      error ("__glpk__: PARAM.rtest must be 17 (standard ratio test) or 34 (Harris' two-pass ratio test [default])");
-      return retval;
-    }
+    error ("__glpk__: PARAM.rtest must be 17 (standard ratio test) or 34 (Harris' two-pass ratio test [default])");
 
   par.tmlim = std::numeric_limits<int>::max ();
   OCTAVE_GLPK_GET_INT_PARAM ("tmlim", par.tmlim);

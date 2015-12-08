@@ -101,24 +101,17 @@ instead.\n\
   if (nargin == 3)
     {
       if (! (args(1).is_string () && args(2).is_string ()))
-        {
-          error ("__osmesa_print__: FILE and TERM must be strings");
-          return retval;
-        }
+        error ("__osmesa_print__: FILE and TERM must be strings");
 
 #ifndef HAVE_GL2PS_H
       error ("__osmesa_print__: Octave has been compiled without gl2ps");
-      return retval;
 #endif
     }
 
   int h = args(0).double_value ();
   graphics_object fobj = gh_manager::get_object (h);
   if (! (fobj && fobj.isa ("figure")))
-    {
-      error ("__osmesa_print__: H must be a valid figure handle");
-      return retval;
-    }
+    error ("__osmesa_print__: H must be a valid figure handle");
 
   figure::properties& fp =
     dynamic_cast<figure::properties&> (fobj.get_properties ());
@@ -132,20 +125,14 @@ instead.\n\
   // Create an RGBA-mode context, specify Z=16, stencil=0, accum=0 sizes
   OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);
   if (! ctx)
-    {
-      error ("__osmesa_print__: OSMesaCreateContext failed!\n");
-      return retval;
-    }
+    error ("__osmesa_print__: OSMesaCreateContext failed!\n");
 
   // Allocate the image buffer
   OCTAVE_LOCAL_BUFFER (GLubyte, buffer, 4 * Width * Height);
 
   // Bind the buffer to the context and make it current
   if (! OSMesaMakeCurrent (ctx, buffer, GL_UNSIGNED_BYTE, Width, Height))
-    {
-      error ("__osmesa_print__: OSMesaMakeCurrent failed!\n");
-      return retval;
-    }
+    error ("__osmesa_print__: OSMesaMakeCurrent failed!\n");
 
   // Test for a bug in OSMesa with version < 9.0
   //

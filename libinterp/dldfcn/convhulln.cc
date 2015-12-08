@@ -63,10 +63,7 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
       int maxval = std::numeric_limits<int>::max ();
 
       if (dim > maxval || n > maxval)
-        {
-          error ("%s: dimension too large for Qhull", who);
-          return false;
-        }
+        error ("%s: dimension too large for Qhull", who);
     }
 
   return true;
@@ -147,10 +144,7 @@ convex hull is calculated.\n\n\
             options += " " + tmp(i);
         }
       else
-        {
-          error ("convhulln: OPTIONS must be a string, cell array of strings, or empty");
-          return retval;
-        }
+        error ("convhulln: OPTIONS must be a string, cell array of strings, or empty");
     }
 
   boolT ismalloc = false;
@@ -168,10 +162,7 @@ convex hull is calculated.\n\n\
   if (outfile)
     frame.add_fcn (close_fcn, outfile);
   else
-    {
-      error ("convhulln: unable to create temporary file for output");
-      return retval;
-    }
+    error ("convhulln: unable to create temporary file for output");
 
   // qh_new_qhull command and points arguments are not const...
 
@@ -204,11 +195,8 @@ convex hull is calculated.\n\n\
               nonsimp_seen = true;
 
               if (cmd.find ("QJ") != std::string::npos)
-                {
-                  // Should never happen with QJ.
-                  error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
-                  return retval;
-                }
+                // Should never happen with QJ.
+                error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
             }
 
           if (dim == 3)

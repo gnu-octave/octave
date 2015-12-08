@@ -393,8 +393,8 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
       COLAMD_NAME (_report) (stats) ;
+
       error ("colamd: internal error!");
-      return retval;
     }
 
   // column elimination tree post-ordering (reuse variables)
@@ -582,10 +582,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
     }
 
   if (n_row != n_col)
-    {
-      error ("symamd: matrix S must be square");
-      return retval;
-    }
+    error ("symamd: matrix S must be square");
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
@@ -594,8 +591,8 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
                        knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report) (stats) ;
+
       error ("symamd: internal error!") ;
-      return retval;
     }
 
   // column elimination tree post-ordering
@@ -666,17 +663,15 @@ permutations on the tree.\n\
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave_idx_type n_row, n_col;
-  octave_idx_type *ridx, *cidx;
-  bool is_sym = true;
-  SparseMatrix sm;
-  SparseComplexMatrix scm;
+  octave_idx_type n_row = 0, n_col = 0;
+  octave_idx_type *ridx = 0, *cidx = 0;
 
   if (args(0).is_sparse_type ())
     {
       if (args(0).is_complex_type ())
         {
-          scm = args(0).sparse_complex_matrix_value ();
+          SparseComplexMatrix scm = args(0).sparse_complex_matrix_value ();
+
           n_row = scm.rows ();
           n_col = scm.cols ();
           ridx = scm.xridx ();
@@ -684,7 +679,8 @@ permutations on the tree.\n\
         }
       else
         {
-          sm = args(0).sparse_matrix_value ();
+          SparseMatrix sm = args(0).sparse_matrix_value ();
+
           n_row = sm.rows ();
           n_col = sm.cols ();
           ridx = sm.xridx ();
@@ -693,10 +689,9 @@ permutations on the tree.\n\
 
     }
   else
-    {
-      error ("etree: S must be a sparse matrix");
-      return retval;
-    }
+    error ("etree: S must be a sparse matrix");
+
+  bool is_sym = true;
 
   if (nargin == 2)
     {
@@ -711,10 +706,7 @@ permutations on the tree.\n\
   if (is_sym)
     {
       if (n_row != n_col)
-        {
-          error ("etree: S is marked as symmetric, but is not square");
-          return retval;
-        }
+        error ("etree: S is marked as symmetric, but is not square");
 
       symetree (ridx, cidx, etree, 0, n_col);
     }

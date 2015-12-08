@@ -68,10 +68,7 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
       int maxval = std::numeric_limits<int>::max ();
 
       if (dim > maxval || n > maxval)
-        {
-          error ("%s: dimension too large for Qhull", who);
-          return false;
-        }
+        error ("%s: dimension too large for Qhull", who);
     }
 
   return true;
@@ -131,11 +128,8 @@ Undocumented internal function.\n\
             options += " " + tmp(i);
         }
       else
-        {
-          error ("%s: OPTIONS must be a string, cell array of strings, or empty",
-                 caller.c_str ());
-          return retval;
-        }
+        error ("%s: OPTIONS must be a string, cell array of strings, or empty",
+               caller.c_str ());
     }
 
   boolT ismalloc = false;
@@ -153,10 +147,7 @@ Undocumented internal function.\n\
   if (outfile)
     frame.add_fcn (close_fcn, outfile);
   else
-    {
-      error ("__voronoi__: unable to create temporary file for output");
-      return retval;
-    }
+    error ("__voronoi__: unable to create temporary file for output");
 
   // qh_new_qhull command and points arguments are not const...
 

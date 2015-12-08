@@ -130,10 +130,7 @@ Undocumented internal function.\n\
             options += tmp(i) + " ";
         }
       else
-        {
-          error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");
-          return retval;
-        }
+        error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");
     }
 
   if (n > dim + 1)
@@ -160,10 +157,7 @@ Undocumented internal function.\n\
       if (outfile)
         frame.add_fcn (close_fcn, outfile);
       else
-        {
-          error ("__delaunayn__: unable to create temporary file for output");
-          return retval;
-        }
+        error ("__delaunayn__: unable to create temporary file for output");
 
       int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);
@@ -184,11 +178,7 @@ Undocumented internal function.\n\
 
               // Double check.  Non-simplicial facets will cause segfault below
               if (! facet->simplicial)
-                {
-                  error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
-                  exitcode = 1;
-                  break;
-                }
+                error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
             }
 
           if (! exitcode)
@@ -237,7 +227,9 @@ Undocumented internal function.\n\
     }
 
 #else
+
   error ("__delaunayn__: not available in this version of Octave");
+
 #endif
 
   return retval;

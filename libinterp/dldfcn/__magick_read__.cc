@@ -669,7 +669,6 @@ read_images (std::vector<Magick::Image>& imvec,
 
     default:
       error ("__magick_read__: unknown Magick++ image type");
-      return retval;
     }
 
   retval(0) = img;
@@ -795,7 +794,6 @@ Use @code{imread} instead.\n\
               // need to be ordered (this is a feature and even allows for
               // some frames to be read multiple times).
               error ("imread: index/frames specified are outside the number of images");
-              return output;
             }
         }
     }
@@ -815,7 +813,6 @@ Use @code{imread} instead.\n\
           {
             error ("imread: all frames must have the same size but frame %i is different",
                    frameidx(frame) +1);
-            return output;
           }
       }
   }
@@ -833,10 +830,7 @@ Use @code{imread} instead.\n\
         output = read_indexed_images<uint16NDArray> (imvec, frameidx,
                                                      nargout, options);
       else
-        {
-          error ("imread: indexed images with depths greater than 16-bit are not supported");
-          return output;
-        }
+        error ("imread: indexed images with depths greater than 16-bit are not supported");
     }
 
   else
@@ -850,10 +844,8 @@ Use @code{imread} instead.\n\
       else if (depth <= 32)
         output = read_images<FloatNDArray>  (imvec, frameidx, nargout, options);
       else
-        {
-          error ("imread: reading of images with %i-bit depth is not supported",
-                 depth);
-        }
+        error ("imread: reading of images with %i-bit depth is not supported",
+               depth);
     }
 
 #endif
@@ -1082,11 +1074,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       break;
 
     default:
-      {
-        // __imwrite should have already filtered this cases
-        error ("__magick_write__: wrong size on 3rd dimension");
-        return;
-      }
+      // __imwrite should have already filtered this cases
+      error ("__magick_write__: wrong size on 3rd dimension");
     }
 
   // We will be passing the values as integers with depth as specified
@@ -1315,11 +1304,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       }
 
     default:
-      {
-        error ("__magick_write__: unrecognized Magick::ImageType");
-        return;
-      }
+      error ("__magick_write__: unrecognized Magick::ImageType");
     }
+
   return;
 }
 
@@ -1461,10 +1448,7 @@ Use @code{imwrite} instead.\n\
           encode_uint_image<uint32NDArray> (imvec, clip_img, clip_alpha);
         }
       else
-        {
-          error ("__magick_write__: image type not supported");
-          return retval;
-        }
+        error ("__magick_write__: image type not supported");
     }
   else
     {
@@ -1478,10 +1462,7 @@ Use @code{imwrite} instead.\n\
         encode_indexed_images<uint16NDArray> (imvec, img.uint16_array_value (),
                                               cmap);
       else
-        {
-          error ("__magick_write__: indexed image must be uint8, uint16 or float.");
-          return retval;
-        }
+        error ("__magick_write__: indexed image must be uint8, uint16 or float.");
     }
   static std::map<std::string, octave_idx_type> disposal_methods
     = init_reverse_disposal_methods ();
@@ -1614,7 +1595,6 @@ This is a private internal function not intended for direct use.\n\
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
-      return retval;
     }
 
   static const char *fields[] = {"rows", "columns", "format", 0};
@@ -1913,11 +1893,8 @@ Use @code{imfinfo} instead.\n\
       template_info.setfield ("FileSize",    octave_value (fs.size ()));
     }
   else
-    {
-      error ("imfinfo: error reading '%s': %s",
-             filename.c_str (), fs.error ().c_str ());
-      return retval;
-    }
+    error ("imfinfo: error reading '%s': %s", filename.c_str (),
+           fs.error ().c_str ());
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {

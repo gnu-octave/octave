@@ -86,10 +86,7 @@ is stored in the audio file.\n\
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    {
-      error ("audioread: failed to open input file %s", filename.c_str ());
-      return retval;
-    }
+    error ("audioread: failed to open input file %s", filename.c_str ());
 
   unwind_protect frame;
 
@@ -107,20 +104,14 @@ is stored in the audio file.\n\
       RowVector range = args(1).row_vector_value ();
 
       if (range.numel () != 2)
-        {
-          error ("audioread: invalid specification for range of frames");
-          return retval;
-        }
+        error ("audioread: invalid specification for range of frames");
 
       double dstart = xisinf (range(0)) ? info.frames : range(0);
       double dend = xisinf (range(1)) ? info.frames : range(1);
 
       if (dstart < 1 || dstart > dend || dend > info.frames
           || D_NINT (dstart) != dstart || D_NINT (dend) != dend)
-        {
-          error ("audioread: invalid specification for range of frames");
-          return retval;
-        }
+        error ("audioread: invalid specification for range of frames");
 
       start = dstart - 1;
       end = dend;
@@ -378,10 +369,7 @@ Comment.\n\
           else if (bits == 32)
             info.format |= SF_FORMAT_PCM_32;
           else
-            {
-              error ("audiowrite: wrong number of bits specified");
-              return retval;
-            }
+            error ("audiowrite: wrong number of bits specified");
         }
       else if (args(i).string_value () == "BitRate")
         ;
@@ -396,19 +384,13 @@ Comment.\n\
       else if (args(i).string_value () == "Comment")
         comment = args(i + 1).string_value ();
       else
-        {
-          error ("audiowrite: wrong argument name");
-          return retval;
-        }
+        error ("audiowrite: wrong argument name");
     }
 
   SNDFILE *file = sf_open (filename.c_str (), SFM_WRITE, &info);
 
   if (! file)
-    {
-      error ("audiowrite: failed to open output file %s", filename.c_str ());
-      return retval;
-    }
+    error ("audiowrite: failed to open output file %s", filename.c_str ());
 
   unwind_protect frame;
 
@@ -437,11 +419,8 @@ Comment.\n\
       sf_count_t items_written = sf_write_float (file, data+offset, chunk_size);
 
       if (items_written != chunk_size)
-        {
-          error ("audiowrite: write failed, wrote %ld of %ld items\n",
-                 items_written, chunk_size);
-          return retval;
-        }
+        error ("audiowrite: write failed, wrote %ld of %ld items\n",
+               items_written, chunk_size);
 
       total_items_written += items_written;
       offset += chunk_size;
@@ -476,10 +455,7 @@ Return information about an audio file specified by @var{filename}.\n\
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    {
-      error ("audioinfo: failed to open file %s", filename.c_str ());
-      return retval;
-    }
+    error ("audioinfo: failed to open file %s", filename.c_str ());
 
   unwind_protect frame;
 

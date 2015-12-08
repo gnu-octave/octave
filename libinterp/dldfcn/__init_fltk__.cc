@@ -1776,11 +1776,7 @@ public:
       instance = new figure_manager ();
 
     if (! instance)
-      {
-        error ("unable to create figure_manager object!");
-
-        retval = false;
-      }
+      error ("unable to create figure_manager object!");
 
     return retval;
   }
@@ -2083,7 +2079,9 @@ private:
         if (istr >> ind)
           return ind;
       }
+
     error ("figure_manager: could not recognize fltk index");
+
     return -1;
   }
 
@@ -2104,7 +2102,9 @@ private:
         else
           return 0;
       }
+
     error ("figure_manager: figure is not fltk");
+
     return -1;
   }
 
@@ -2117,7 +2117,9 @@ private:
           dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
+
     error ("figure_manager: H (= %g) is not a figure", h);
+
     return -1;
   }
 

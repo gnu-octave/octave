@@ -214,16 +214,10 @@ Undocumented internal function.\n\
         eigs_fcn = args(0).function_value ();
 
       if (!eigs_fcn)
-        {
-          error ("eigs: unknown function");
-          return retval;
-        }
+        error ("eigs: unknown function");
 
       if (nargin < 2)
-        {
-          error ("eigs: incorrect number of arguments");
-          return retval;
-        }
+        error ("eigs: incorrect number of arguments");
       else
         {
           n = args(1).nint_value ();
@@ -365,10 +359,7 @@ Undocumented internal function.\n\
     }
 
   if (nargin > (4+arg_offset))
-    {
-      error ("eigs: incorrect number of arguments");
-      return retval;
-    }
+    error ("eigs: incorrect number of arguments");
 
   // Test undeclared (no issym) matrix inputs for symmetry
   if (!sym_tested && !have_a_fun)
@@ -588,6 +579,7 @@ Undocumented internal function.\n\
 
   if (! fcn_name.empty ())
     clear_function (fcn_name);
+
 #else
   error ("eigs: not available in this version of Octave");
 #endif

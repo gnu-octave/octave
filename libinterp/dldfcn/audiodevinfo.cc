@@ -114,18 +114,12 @@ recording using those parameters.\n\
   PaError err = Pa_Initialize ();
 
   if (err != paNoError)
-    {
-      error ("audiodevinfo: PortAudio initialization failed");
-      return retval;
-    }
+    error ("audiodevinfo: PortAudio initialization failed");
 
   int num_devices = Pa_GetDeviceCount ();
 
   if (num_devices < 0)
-    {
-      error ("audiodevinfo: no audio device found");
-      return retval;
-    }
+    error ("audiodevinfo: no audio device found");
 
   octave_idx_type numinput = 0, numoutput = 0;
   for (int i = 0; i < num_devices; i++)
@@ -211,10 +205,7 @@ recording using those parameters.\n\
       else if (args(0).int_value () == 1)
         retval = numinput;
       else
-        {
-          error ("audiodevinfo: please specify 0 for output and 1 for input devices");
-          return retval;
-        }
+        error ("audiodevinfo: please specify 0 for output and 1 for input devices");
     }
   // Return device name when given id or id when given device name.
   else if (nargin == 2)
@@ -248,10 +239,7 @@ recording using those parameters.\n\
                 }
             }
           else
-            {
-              error ("audiodevinfo: please specify 0 for output and 1 for input devices");
-              return retval;
-            }
+            error ("audiodevinfo: please specify 0 for output and 1 for input devices");
         }
       else
         {
@@ -280,11 +268,9 @@ recording using those parameters.\n\
                 }
             }
           else
-            {
-              error ("audiodevinfo: please specify 0 for output and 1 for input devices");
-              return retval;
-            }
+            error ("audiodevinfo: please specify 0 for output and 1 for input devices");
         }
+
       if (! found)
         error ("audiodevinfo: no device meeting the specified criteria found");
     }
@@ -310,10 +296,7 @@ recording using those parameters.\n\
           if (format != 0)
             stream_parameters.sampleFormat = format;
           else
-            {
-              error ("audiodevinfo: no such bits per sample format");
-              return retval;
-            }
+            error ("audiodevinfo: no such bits per sample format");
 
           const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
 
@@ -372,18 +355,12 @@ recording using those parameters.\n\
       if (format != 0)
         stream_parameters.sampleFormat = format;
       else
-        {
-          error ("audiodevinfo: no such bits per sample format");
-          return retval;
-        }
+        error ("audiodevinfo: no such bits per sample format");
 
       const PaDeviceInfo *device_info = Pa_GetDeviceInfo (id);
 
       if (! device_info)
-        {
-          error ("audiodevinfo: invalid audio device ID = %d", id);
-          return retval;
-        }
+        error ("audiodevinfo: invalid audio device ID = %d", id);
 
       stream_parameters.suggestedLatency
         = device_info->defaultLowInputLatency;
@@ -418,17 +395,13 @@ recording using those parameters.\n\
             }
         }
       else
-        {
-          error ("audiodevinfo: please specify 0 for output and 1 for input devices");
-          return retval;
-        }
+        error ("audiodevinfo: please specify 0 for output and 1 for input devices");
+
       retval = 0;
     }
   else
-    {
-      error ("audiodevinfo: wrong number of arguments");
-      return retval;
-    }
+    error ("audiodevinfo: wrong number of arguments");
+
 #else
 
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -562,29 +535,20 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   audioplayer *player = static_cast<audioplayer *> (data);
 
   if (! player)
-    {
-      error ("audio player callback function called without player");
-      return paAbort;
-    }
+    error ("audio player callback function called without player");
 
   octave_value_list retval = feval (player->octave_callback_function,
                                     ovl (static_cast<double> (frames)), 1);
 
   if (retval.length () < 2)
-    {
-      error ("audio player callback function failed");
-      return paAbort;
-    }
+    error ("audio player callback function failed");
 
   const Matrix sound = retval(0).matrix_value ();
   int return_status = retval(1).int_value ();
 
   if (frames - sound.rows () != 0 || sound.columns () < 1
       || sound.columns () > 2)
-    {
-      error ("audio player callback function failed");
-      return paAbort;
-    }
+    error ("audio player callback function failed");
 
   // Don't multiply the audio data by scale_factor here.  Although it
   // does move the operation outside of the loops below, it also causes
@@ -662,7 +626,6 @@ octave_play_callback (const void *, void *output, unsigned long frames,
 
     default:
       error ("invalid player bit depth in callback function");
-      break;
     }
 
   return return_status;
@@ -676,10 +639,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   audioplayer *player = static_cast<audioplayer *> (data);
 
   if (! player)
-    {
-      error ("audio player callback function called without player");
-      return paAbort;
-    }
+    error ("audio player callback function called without player");
 
   // Don't multiply the audio data by scale_factor here.  Although it
   // would move the operation outside of the loops below, it also causes
@@ -785,7 +745,6 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
         default:
           error ("invalid player bit depth in callback function");
-          break;
         }
     }
   else if (player->get_type () == TYPE_INT8)
@@ -889,16 +848,10 @@ void
 audioplayer::init_fn (void)
 {
   if (Pa_Initialize () != paNoError)
-    {
-      error ("audioplayer: initialization error!");
-      return;
-    }
+    error ("audioplayer: initialization error!");
 
   if (Pa_GetDeviceCount () < 1)
-    {
-      error ("audioplayer: no audio devices found or available!");
-      return;
-    }
+    error ("audioplayer: no audio devices found or available!");
 
   int device = get_id ();
 
@@ -931,16 +884,10 @@ audioplayer::init (void)
   // RowVector *sound_l = get_left ();
 
   if (Pa_Initialize () != paNoError)
-    {
-      error ("audioplayer: initialization error!");
-      return;
-    }
+    error ("audioplayer: initialization error!");
 
   if (Pa_GetDeviceCount () < 1)
-    {
-      error ("audioplayer: no audio devices found or available!");
-      return;
-    }
+    error ("audioplayer: no audio devices found or available!");
 
   int device = get_id ();
 
@@ -1144,17 +1091,11 @@ audioplayer::playblocking (void)
   err = Pa_OpenStream (&stream, 0, &(output_parameters), get_fs (),
                        buffer_size, paClipOff, 0, 0);
   if (err != paNoError)
-    {
-      error ("audioplayer: unable to open audio playback stream");
-      return;
-    }
+    error ("audioplayer: unable to open audio playback stream");
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    {
-      error ("audioplayer: unable to start start audio playback stream");
-      return;
-    }
+    error ("audioplayer: unable to start start audio playback stream");
 
   unsigned int start, end;
   start = get_sample_number ();
@@ -1195,17 +1136,11 @@ audioplayer::play (void)
                          portaudio_play_callback, this);
 
   if (err != paNoError)
-    {
-      error ("audioplayer: failed to open audio playback stream");
-      return;
-    }
+    error ("audioplayer: failed to open audio playback stream");
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    {
-      error ("audioplayer: failed to start audio playback stream");
-      return;
-    }
+    error ("audioplayer: failed to start audio playback stream");
 }
 
 void
@@ -1217,10 +1152,7 @@ audioplayer::pause (void)
   PaError err;
   err = Pa_StopStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: failed to stop audio recording stream");
-      return;
-    }
+    error ("audiorecorder: failed to stop audio recording stream");
 }
 
 void
@@ -1232,10 +1164,7 @@ audioplayer::resume (void)
   PaError err;
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: failed to start audio recording stream");
-      return;
-    }
+    error ("audiorecorder: failed to start audio recording stream");
 }
 
 PaStream *
@@ -1257,18 +1186,12 @@ audioplayer::stop (void)
     {
       err = Pa_AbortStream (get_stream ());
       if (err != paNoError)
-        {
-          error ("audioplayer: failed to stop audio playback stream");
-          return;
-        }
+        error ("audioplayer: failed to stop audio playback stream");
     }
 
   err = Pa_CloseStream (get_stream ());
   if (err != paNoError)
-    {
-      error ("audioplayer: failed to close audio playback stream");
-      return;
-    }
+    error ("audioplayer: failed to close audio playback stream");
 
   stream = 0;
 }
@@ -1282,10 +1205,7 @@ audioplayer::isplaying (void)
   PaError err;
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
-    {
-      error ("audiorecorder: checking stream activity status failed");
-      return false;
-    }
+    error ("audiorecorder: checking stream activity status failed");
 
   return (err == 1);
 }
@@ -1372,10 +1292,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
 
   if (! recorder)
-    {
-      error ("audio recorder callback function called without player");
-      return paAbort;
-    }
+    error ("audio recorder callback function called without player");
 
   int channels = recorder->get_channels ();
 
@@ -1457,10 +1374,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
 
   if (! recorder)
-    {
-      error ("audio recorder callback function called without player");
-      return paAbort;
-    }
+    error ("audio recorder callback function called without player");
 
   int channels = recorder->get_channels ();
 
@@ -1569,16 +1483,10 @@ void
 audiorecorder::init (void)
 {
   if (Pa_Initialize () != paNoError)
-    {
-      error ("audiorecorder: initialization error!");
-      return;
-    }
+    error ("audiorecorder: initialization error!");
 
   if (Pa_GetDeviceCount () < 1)
-    {
-      error ("audiorecorder: no audio devices found or available!");
-      return;
-    }
+    error ("audiorecorder: no audio devices found or available!");
 
   int device = get_id ();
 
@@ -1752,10 +1660,7 @@ audiorecorder::isrecording (void)
   PaError err;
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
-    {
-      error ("audiorecorder: checking stream activity status failed");
-      return false;
-    }
+    error ("audiorecorder: checking stream activity status failed");
 
   return (err == 1);
 }
@@ -1785,16 +1690,11 @@ audiorecorder::record (void)
                            portaudio_record_callback, this);
     }
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to open audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to open audio recording stream");
+
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to start audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to start audio recording stream");
 }
 
 void
@@ -1813,17 +1713,11 @@ audiorecorder::recordblocking (float seconds)
   err = Pa_OpenStream (&stream, &(input_parameters), 0,
                        get_fs (), buffer_size, paClipOff, 0, this);
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to open audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to open audio recording stream");
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to start audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to start audio recording stream");
 
   unsigned int frames = seconds * get_fs ();
 
@@ -1852,10 +1746,7 @@ audiorecorder::pause (void)
   PaError err;
   err = Pa_StopStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to stop audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to stop audio recording stream");
 }
 
 void
@@ -1867,10 +1758,7 @@ audiorecorder::resume (void)
   PaError err;
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to start audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to start audio recording stream");
 }
 
 void
@@ -1884,18 +1772,12 @@ audiorecorder::stop (void)
     {
       err = Pa_AbortStream (get_stream ());
       if (err != paNoError)
-        {
-          error ("audioplayer: unable to stop audio playback stream");
-          return;
-        }
+        error ("audioplayer: unable to stop audio playback stream");
     }
 
   err = Pa_CloseStream (stream);
   if (err != paNoError)
-    {
-      error ("audiorecorder: unable to close audio recording stream");
-      return;
-    }
+    error ("audiorecorder: unable to close audio recording stream");
 
   set_sample_number (0);
   reset_end_sample ();
@@ -1942,13 +1824,7 @@ Undocumented internal function.\n\
                           || args(0).is_inline_function ());
 
       if (is_function)
-        {
-          error ("audioplayer: callbacks not yet implemented");
-          return retval;
-
-          // recorder->octave_callback_function = args(0).function_value ();
-          // offset = 1;
-        }
+        error ("audioplayer: callbacks not yet implemented");
     }
 
   switch (nargin - offset)
@@ -2539,12 +2415,7 @@ Undocumented internal function.\n\
                       || args(0).is_inline_function ());
 
   if (is_function)
-    {
-      error ("audioplayer: callbacks not yet implemented");
-      return retval;
-
-      // recorder->set_y (args(0).function_value ());
-    }
+    error ("audioplayer: callbacks not yet implemented");
   else
     recorder->set_y (args(0));
 
@@ -2912,10 +2783,7 @@ Undocumented internal function.\n\
 
           if (start > player->get_total_samples ()
               || start > end || end > player->get_total_samples ())
-            {
-              error ("audioplayer: invalid range specified for playback");
-              return retval;
-            }
+            error ("audioplayer: invalid range specified for playback");
 
           player->set_sample_number (start);
           player->set_end_sample (end);
@@ -2925,10 +2793,7 @@ Undocumented internal function.\n\
           unsigned int start = args(1).int_value () - 1;
 
           if (start > player->get_total_samples ())
-            {
-              error ("audioplayer: invalid range specified for playback");
-              return retval;
-            }
+            error ("audioplayer: invalid range specified for playback");
 
           player->set_sample_number (start);
         }
@@ -2979,10 +2844,7 @@ Undocumented internal function.\n\
 
           if (start > player->get_total_samples ()
               || start > end || end > player->get_total_samples ())
-            {
-              error ("audioplayer: invalid range specified for playback");
-              return retval;
-            }
+            error ("audioplayer: invalid range specified for playback");
 
           player->set_sample_number (start);
           player->set_end_sample (end);
@@ -2992,10 +2854,7 @@ Undocumented internal function.\n\
           unsigned int start = args(1).int_value () - 1;
 
           if (start > player->get_total_samples ())
-            {
-              error ("audioplayer: invalid range specified for playback");
-              return retval;
-            }
+            error ("audioplayer: invalid range specified for playback");
 
           player->set_sample_number (start);
         }

@@ -136,10 +136,15 @@ Undocumented internal function.\n\
   Fl::flush ();
 
   return retval;
+
 #else
+
   error ("__fltk_uigetfile__: not available without OpenGL and FLTK libraries");
-  return octave_value ();
+
+  return octave_value_list ();
+
 #endif
+
 }
 
 /*

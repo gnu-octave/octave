@@ -287,8 +287,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
                                    knobs, stats, cmember))
               {
                 CCOLAMD_NAME (_report) (stats) ;
+
                 error ("ccolamd: internal error!");
-                return retval;
               }
         }
       else
@@ -297,8 +297,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
           if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
             {
               CCOLAMD_NAME (_report) (stats) ;
+
               error ("ccolamd: internal error!");
-              return retval;
             }
         }
 
@@ -499,10 +499,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
         }
 
       if (n_row != n_col)
-        {
-          error ("csymamd: matrix S must be square");
-          return retval;
-        }
+        error ("csymamd: matrix S must be square");
 
       // Allocate workspace for symamd
       OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
@@ -523,8 +520,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
                                      &calloc, &free, cmember, -1))
             {
               CSYMAMD_NAME (_report) (stats) ;
+
               error ("csymamd: internal error!") ;
-              return retval;
             }
         }
       else
@@ -533,8 +530,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
                                 &calloc, &free, 0, -1))
             {
               CSYMAMD_NAME (_report) (stats) ;
+
               error ("csymamd: internal error!") ;
-              return retval;
             }
         }
 

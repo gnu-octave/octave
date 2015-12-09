@@ -951,11 +951,11 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
           if (len > 1)
             {
               tmp_msg.erase (len - 1);
-              rethrow_error (id.c_str (), "%s\n", tmp_msg);
+              rethrow_error (id.c_str (), "%s\n", tmp_msg.c_str ());
             }
         }
       else
-        rethrow_error (id.c_str (), "%s", tmp_msg);
+        rethrow_error (id.c_str (), "%s", tmp_msg.c_str ());
 
       // FIXME: is this the right thing to do for Vlast_error_stack?
       //        Should it be saved and restored with unwind_protect?

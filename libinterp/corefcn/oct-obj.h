@@ -177,7 +177,7 @@ private:
 inline octave_value_list
 ovl (const octave_value& a0)
 {
-  octave_value_list retval;
+  octave_value_list retval (1);
   retval(0) = a0;
   return retval;
 }
@@ -185,7 +185,7 @@ ovl (const octave_value& a0)
 inline octave_value_list
 ovl (const octave_value& a0, const octave_value& a1)
 {
-  octave_value_list retval;
+  octave_value_list retval (2);
   retval(1) = a1;
   retval(0) = a0;
   return retval;
@@ -195,7 +195,7 @@ inline octave_value_list
 ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a2)
 {
-  octave_value_list retval;
+  octave_value_list retval (3);
   retval(2) = a2;
   retval(1) = a1;
   retval(0) = a0;
@@ -206,7 +206,7 @@ inline octave_value_list
 ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a2, const octave_value& a3)
 {
-  octave_value_list retval;
+  octave_value_list retval (4);
   retval(3) = a3;
   retval(2) = a2;
   retval(1) = a1;
@@ -219,7 +219,7 @@ ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a2, const octave_value& a3,
      const octave_value& a4)
 {
-  octave_value_list retval;
+  octave_value_list retval (5);
   retval(4) = a4;
   retval(3) = a3;
   retval(2) = a2;
@@ -233,7 +233,7 @@ ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a2, const octave_value& a3,
      const octave_value& a4, const octave_value& a5)
 {
-  octave_value_list retval;
+  octave_value_list retval (6);
   retval(5) = a5;
   retval(4) = a4;
   retval(3) = a3;
@@ -249,7 +249,7 @@ ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a4, const octave_value& a5,
      const octave_value& a6)
 {
-  octave_value_list retval;
+  octave_value_list retval (7);
   retval(6) = a6;
   retval(5) = a5;
   retval(4) = a4;
@@ -266,7 +266,7 @@ ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a4, const octave_value& a5,
      const octave_value& a6, const octave_value& a7)
 {
-  octave_value_list retval;
+  octave_value_list retval (8);
   retval(7) = a7;
   retval(6) = a6;
   retval(5) = a5;
@@ -285,7 +285,7 @@ ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a6, const octave_value& a7,
      const octave_value& a8)
 {
-  octave_value_list retval;
+  octave_value_list retval (9);
   retval(8) = a8;
   retval(7) = a7;
   retval(6) = a6;
@@ -305,7 +305,7 @@ ovl (const octave_value& a0, const octave_value& a1,
      const octave_value& a6, const octave_value& a7,
      const octave_value& a8, const octave_value& a9)
 {
-  octave_value_list retval;
+  octave_value_list retval (10);
   retval(9) = a9;
   retval(8) = a8;
   retval(7) = a7;

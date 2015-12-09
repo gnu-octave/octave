@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} prefsfile ()
-## Undocumented internal function.
+## Return the full path and name of the file containing Octave preferences.
 ## @end deftypefn
 
 ## Author: jwe
@@ -28,9 +28,4 @@ function retval = prefsfile ()
   retval = [prefdir() filesep() ".octave_prefs"];
 
 endfunction
-
-
-## Testing these functions will require some care to avoid wiping out
-## existing (or creating unwanted) preferences for the user running the
-## tests.
 

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} prefdir
 ## @deftypefnx {Command} {@var{dir} =} prefdir
-## Return the directory that contains the preferences for Octave.
+## Return the directory that holds the preferences for Octave.
 ##
 ## Examples:
 ##
@@ -38,11 +38,10 @@
 ## @end deftypefn
 
 ## Author: John Donoghue
-## Version: 0.01
 
-function folder = prefdir ()
+function dir = prefdir ()
 
-  folder = get_home_directory ();
+  dir = get_home_directory ();
 
 endfunction
 

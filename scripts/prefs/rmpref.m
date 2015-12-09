@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rmpref (@var{group}, @var{pref})
-## @deftypefnx {Function File} {} rmpref (@var{group})
+## @deftypefn  {Function File} {} rmpref ("@var{group}", "@var{pref}")
+## @deftypefnx {Function File} {} rmpref ("@var{group}", @{"@var{pref1}", "@var{pref2}", @dots{}@})
+## @deftypefnx {Function File} {} rmpref ("@var{group}")
 ## Remove the named preference @var{pref} from the preference group @var{group}.
 ##
-## The named preference group must be a character string.
+## The named preference group must be a string.
 ##
-## The preference @var{pref} may be a character string or cell array of strings.
+## The preference @var{pref} may be a string or cell array of strings.
 ##
 ## If @var{pref} is not specified, remove the preference group @var{group}.
 ##
@@ -33,7 +34,7 @@
 
 ## Author: jwe
 
-function retval = rmpref (group, pref)
+function rmpref (group, pref)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -44,13 +45,12 @@ function retval = rmpref (group, pref)
   endif
 
   if (nargin == 1)
-    if (ispref (group))
-      prefs = loadprefs ();
-      prefs = rmfield (prefs, group);
-      saveprefs (prefs);
-    else
-      error ("rmpref: group <%s> does not exist", group);
+    if (! ispref (group))
+      error ("rmpref: group %s does not exist", group);
     endif
+    prefs = loadprefs ();
+    prefs = rmfield (prefs, group);
+    saveprefs (prefs);
   else
     valid = ispref (group, pref);
     if (all (valid))
@@ -59,10 +59,12 @@ function retval = rmpref (group, pref)
       saveprefs (prefs);
     else
       if (! ispref (group))
-        error ("rmpref: group <%s> does not exist", group);
+        error ("rmpref: group %s does not exist", group);
+      elseif (ischar (pref))
+        error ("rmpref: preference %s does not exist", pref);
       else
         idx = find (! valid, 1);
-        error ("rmpref: pref <%s> does not exist", (cellstr (pref)){idx} );
+        error ("rmpref: preference %s does not exist", pref{idx});
       endif
     endif
   endif
@@ -70,13 +72,42 @@ function retval = rmpref (group, pref)
 endfunction
 
 
-## Testing these functions will require some care to avoid wiping out
-## existing (or creating unwanted) preferences for the user running the
-## tests.
+%!test
+%! HOME = getenv ("HOME");
+%! unwind_protect
+%!   setenv ("HOME", P_tmpdir ());
+%!   addpref ("group1", "pref1", [1 2 3]);
+%!   addpref ("group2", {"prefA", "prefB", "prefC"}, {"strA", "strB", "strC"});
+%!
+%!   assert (ispref ("group1"));
+%!   rmpref ("group1");
+%!   assert (! ispref ("group1"));
+%!
+%!   assert (ispref ("group2", "prefB"));
+%!   rmpref ("group2", "prefB");
+%!   assert (! ispref ("group2", "prefB"));
+%!
+%!   fail ('rmpref ("group3")', ...
+%!         "group group3 does not exist");
+%!   fail ('rmpref ("group3", "prefA")', ...
+%!         "group group3 does not exist");
+%!   fail ('rmpref ("group2", "prefB")',
+%!         "preference prefB does not exist");
+%!   fail ('rmpref ("group2", {"prefA", "prefB"})',
+%!         "preference prefB does not exist");
+%!
+%! unwind_protect_cleanup
+%!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));
+%!   if (isempty (HOME))
+%!     unsetenv ("HOME");
+%!   else
+%!     setenv ("HOME", HOME);
+%!   endif
+%! end_unwind_protect
 
 ## Test input validation
 %!error rmpref ()
 %!error rmpref (1,2,3)
-%!error rmpref ({"__group1__"})
-%!error rmpref ("__group1__", 1)
+%!error <GROUP must be a string> rmpref (1)
+%!error <PREF must be a string> rmpref ("group1", 1)
 

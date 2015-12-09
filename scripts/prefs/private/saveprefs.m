@@ -17,22 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} saveprefs ()
-## Undocumented internal function.
+## @deftypefn {Function File} {} saveprefs (@var{s})
+## Save user preferences in the structure @var{s} to Octave's preference file.
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = saveprefs (s)
+function saveprefs (s)
 
   prefs = s;
 
   save (prefsfile (), "prefs");
 
 endfunction
-
-
-## Testing these functions will require some care to avoid wiping out
-## existing (or creating unwanted) preferences for the user running the
-## tests.
 

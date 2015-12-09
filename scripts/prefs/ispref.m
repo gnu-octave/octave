@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ispref (@var{group}, @var{pref})
-## @deftypefnx {Function File} {} ispref (@var{group})
+## @deftypefn  {Function File} {} ispref ("@var{group}", "@var{pref}")
+## @deftypefnx {Function File} {} ispref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
+## @deftypefnx {Function File} {} ispref ("@var{group}")
 ## Return true if the named preference @var{pref} exists in the preference
 ## group @var{group}.
 ##
-## The named preference group must be a character string.
+## The named preference group must be a string.
 ##
-## The preference @var{pref} may be a character string or a cell array of
-## character strings.
+## The preference @var{pref} may be a string or a cell array of strings.
 ##
 ## If @var{pref} is not specified, return true if the preference group
 ## @var{group} exists.
@@ -34,30 +34,66 @@
 
 ## Author: jwe
 
-function retval = ispref (group, pref)
+function retval = ispref (group, pref = "")
+
+  if (nargin == 0 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (! ischar (group))
+    error ("ispref: GROUP must be a string");
+  endif
+  if (! (ischar (pref) || iscellstr (pref)))
+    error ("ispref: PREF must be a string or cellstr");
+  endif
 
   if (nargin == 1)
     retval = isfield (loadprefs (), group);
-  elseif (nargin == 2)
+  else
     prefs = loadprefs ();
     if (isfield (prefs, group))
-      grp = prefs.(group);
-      if (ischar (pref) || iscellstr (pref))
-        retval = isfield (grp, pref);
-      else
-        retval = false;
-      endif
+      retval = isfield (prefs.(group), pref);
     else
-      retval = false;
+      if (ischar (pref))
+        retval = false;
+      else
+        retval = false (size (pref));
+      endif
     endif
-  else
-    print_usage ();
   endif
 
 endfunction
 
 
-## Testing these functions will require some care to avoid wiping out
-## existing (or creating unwanted) preferences for the user running the
-## tests.
+%!test
+%! HOME = getenv ("HOME");
+%! unwind_protect
+%!   setenv ("HOME", P_tmpdir ());
+%!   addpref ("group1", "pref1", [1 2 3]);
+%!   addpref ("group2", {"prefA", "prefB"}, {"StringA", {"StringB"}});
+%!
+%!   assert (ispref ("group1"));
+%!   assert (! ispref ("group3"));
+%!
+%!   assert (ispref ("group2", "prefB"));
+%!   assert (! ispref ("group2", "prefC"));
+%!
+%!   assert (ispref ("group2", {"prefB", "prefC"}), [true, false]);
+%!
+%!   assert (ispref ("group3", "prefB"), false);
+%!   assert (ispref ("group3", {"prefB", "prefC"}), [false, false]);
+%!
+%! unwind_protect_cleanup
+%!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));
+%!   if (isempty (HOME))
+%!     unsetenv ("HOME");
+%!   else
+%!     setenv ("HOME", HOME);
+%!   endif
+%! end_unwind_protect
+
+%!error ispref ()
+%!error ispref (1,2,3)
+%!error <GROUP must be a string> ispref (1, "pref1")
+%!error <PREF must be a string> ispref ("group1", 1)
 

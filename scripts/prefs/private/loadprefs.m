@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} loadprefs ()
-## Undocumented internal function.
+## @deftypefn {Function File} {@var{prefs} =} loadprefs ()
+## Return a structure containing all user configured preferences.
 ## @end deftypefn
 
 ## Author: jwe
@@ -31,15 +31,10 @@ function retval = loadprefs ()
 
   if (isstruct (s) && S_ISREG (s.mode))
     tmp = load (file);
-    retval= tmp.prefs;
+    retval = tmp.prefs;
   else
     retval = [];
   endif
 
 endfunction
-
-
-## Testing these functions will require some care to avoid wiping out
-## existing (or creating unwanted) preferences for the user running the
-## tests.
 

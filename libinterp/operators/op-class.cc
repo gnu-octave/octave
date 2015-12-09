@@ -48,20 +48,18 @@ along with Octave; see the file COPYING.  If not, see
  \
     octave_value meth = symbol_table::find_method (#name, class_name); \
  \
-    if (meth.is_defined ()) \
-      { \
-        octave_value_list args; \
+    if (meth.is_undefined ()) \
+      error ("%s method not defined for %s class", #name, \
+             class_name.c_str ()); \
  \
-        args(0) = a; \
+    octave_value_list args; \
  \
-        octave_value_list tmp = feval (meth.function_value (), args, 1); \
+    args(0) = a; \
  \
-        if (tmp.length () > 0) \
-          retval = tmp(0); \
-      } \
-    else \
-      error ("%s method not defined for %s class", \
-             #name, class_name.c_str ()); \
+    octave_value_list tmp = feval (meth.function_value (), args, 1); \
+ \
+    if (tmp.length () > 0) \
+      retval = tmp(0); \
  \
     return retval; \
   }
@@ -85,21 +83,19 @@ DEF_CLASS_UNOP (ctranspose)
  \
     octave_value meth = symbol_table::find_method (#name, dispatch_type); \
  \
-    if (meth.is_defined ()) \
-      { \
-        octave_value_list args; \
+    if (meth.is_undefined ()) \
+      error ("%s method not defined for %s class", #name, \
+             dispatch_type.c_str ()); \
  \
-        args(1) = a2; \
-        args(0) = a1; \
+    octave_value_list args; \
  \
-        octave_value_list tmp = feval (meth.function_value (), args, 1); \
+    args(1) = a2; \
+    args(0) = a1; \
  \
-        if (tmp.length () > 0) \
-          retval = tmp(0); \
-      } \
-    else \
-      error ("%s method not defined for %s class", \
-             #name, dispatch_type.c_str ()); \
+    octave_value_list tmp = feval (meth.function_value (), args, 1); \
+ \
+    if (tmp.length () > 0) \
+      retval = tmp(0); \
  \
     return retval; \
   }

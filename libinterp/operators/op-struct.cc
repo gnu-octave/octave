@@ -39,12 +39,9 @@ DEFUNOP (transpose, struct)
   CAST_UNOP_ARG (const octave_struct&);
 
   if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.map_value ().transpose ());
+    error ("transpose not defined for N-d objects");
+
+  return octave_value (v.map_value ().transpose ());
 }
 
 DEFUNOP (scalar_transpose, scalar_struct)
@@ -63,30 +60,30 @@ static octave_value
 oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
-  octave_value retval;
   CAST_BINOP_ARGS (const octave_struct&, const octave_matrix&);
+
   NDArray tmp = v2.array_value ();
   dim_vector dv = tmp.dims ();
-  if (dv.all_zero ())
-    retval = octave_value (v1.map_value ());
-  else
+
+  if (! dv.all_zero ())
     error ("invalid concatenation of structure with matrix");
-  return retval;
+
+  return octave_value (v1.map_value ());
 }
 
 static octave_value
 oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
-  octave_value retval;
   CAST_BINOP_ARGS (const octave_matrix&, const octave_struct&);
+
   NDArray tmp = v1.array_value ();
   dim_vector dv = tmp.dims ();
-  if (dv.all_zero ())
-    retval = octave_value (v2.map_value ());
-  else
+
+  if (! dv.all_zero ())
     error ("invalid concatenation of structure with matrix");
-  return retval;
+
+  return octave_value (v2.map_value ());
 }
 
 void

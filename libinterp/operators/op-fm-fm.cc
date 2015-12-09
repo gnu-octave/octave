@@ -46,12 +46,9 @@ DEFUNOP (transpose, float_matrix)
   CAST_UNOP_ARG (const octave_float_matrix&);
 
   if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.float_matrix_value ().transpose ());
+    error ("transpose not defined for N-d objects");
+
+  return octave_value (v.float_matrix_value ().transpose ());
 }
 
 DEFNCUNOP_METHOD (incr, float_matrix, increment)

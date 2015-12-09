@@ -46,12 +46,9 @@ DEFUNOP (transpose, complex_matrix)
   CAST_UNOP_ARG (const octave_complex_matrix&);
 
   if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.complex_matrix_value ().transpose ());
+    error ("transpose not defined for N-d objects");
+
+  return octave_value (v.complex_matrix_value ().transpose ());
 }
 
 DEFUNOP (hermitian, complex_matrix)
@@ -59,12 +56,9 @@ DEFUNOP (hermitian, complex_matrix)
   CAST_UNOP_ARG (const octave_complex_matrix&);
 
   if (v.ndims () > 2)
-    {
-      error ("complex-conjugate transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.complex_matrix_value ().hermitian ());
+    error ("complex-conjugate transpose not defined for N-d objects");
+
+  return octave_value (v.complex_matrix_value ().hermitian ());
 }
 
 DEFNCUNOP_METHOD (incr, complex_matrix, increment)

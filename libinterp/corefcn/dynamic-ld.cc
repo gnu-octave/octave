@@ -159,11 +159,7 @@ octave_shlib_list::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create shared library list object!");
-
-      retval = false;
-    }
+    error ("unable to create shared library list object!");
 
   return retval;
 }
@@ -215,11 +211,8 @@ octave_dynamic_loader::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create dynamic loader object!");
+    error ("unable to create dynamic loader object!");
 
-      retval = false;
-    }
 
   return retval;
 }

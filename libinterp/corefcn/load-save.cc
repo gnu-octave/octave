@@ -189,6 +189,7 @@ read_binary_file_header (std::istream& is, bool& swap,
     {
       if (! quiet)
         error ("load: unable to read read binary file");
+
       return -1;
     }
 
@@ -697,7 +698,6 @@ Force Octave to assume the file is in Octave's text format.\n\
           format = LS_HDF5;
 #else /* ! HAVE_HDF5 */
           error ("load: octave executable was not linked with HDF5 library");
-          return retval;
 #endif /* ! HAVE_HDF5 */
         }
       else if (argv[i] == "-import" || argv[i] == "-i")
@@ -1274,27 +1274,18 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
   else if (argv[argv_idx] == "-struct")
     {
       if (++argv_idx >= argc)
-        {
-          error ("save: missing struct name");
-          return;
-        }
+        error ("save: missing struct name");
 
       std::string struct_name = argv[argv_idx];
 
       if (! symbol_table::is_variable (struct_name))
-        {
-          error ("save: no such variable: '%s'", struct_name.c_str ());
-          return;
-        }
+        error ("save: no such variable: '%s'", struct_name.c_str ());
 
       octave_value struct_var = symbol_table::varval (struct_name);
 
       if (! struct_var.is_map () || struct_var.numel () != 1)
-        {
-          error ("save: '%s' is not a scalar structure",
-                 struct_name.c_str ());
-          return;
-        }
+        error ("save: '%s' is not a scalar structure", struct_name.c_str ());
+
       octave_scalar_map struct_var_map = struct_var.scalar_map_value ();
 
       ++argv_idx;
@@ -1620,10 +1611,7 @@ the file @file{data} in Octave's binary format.\n\
     print_usage ();
 
   if (save_as_floats && format == LS_TEXT)
-    {
-      error ("save: cannot specify both -text and -float-binary");
-      return retval;
-    }
+    error ("save: cannot specify both -text and -float-binary");
 
   if (argv[i] == "-")
     {
@@ -1682,10 +1670,7 @@ the file @file{data} in Octave's binary format.\n\
         {
           // FIXME: It should be possible to append to HDF5 files.
           if (append)
-            {
-              error ("save: appending to HDF5 files is not implemented");
-              return retval;
-            }
+            error ("save: appending to HDF5 files is not implemented");
 
           bool write_header_info
             = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);

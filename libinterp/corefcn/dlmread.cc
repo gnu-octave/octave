@@ -218,12 +218,9 @@ fill empty fields.  The default is zero.\n\
       input_file.open (tname.c_str (), std::ios::in);
 
       if (! input_file)
-        {
-          error ("dlmread: unable to open file '%s'", fname.c_str ());
-          return retval;
-        }
-      else
-        input = &input_file;
+        error ("dlmread: unable to open file '%s'", fname.c_str ());
+
+      input = &input_file;
     }
   else if (args(0).is_scalar_type ())
     {
@@ -232,16 +229,10 @@ fill empty fields.  The default is zero.\n\
       input = is.input_stream ();
 
       if (! input)
-        {
-          error ("dlmread: stream FILE not open for input");
-          return retval;
-        }
+        error ("dlmread: stream FILE not open for input");
     }
   else
-    {
-      error ("dlmread: FILE argument must be a string or file id");
-      return retval;
-    }
+    error ("dlmread: FILE argument must be a string or file id");
 
   // Set default separator.
   std::string sep;

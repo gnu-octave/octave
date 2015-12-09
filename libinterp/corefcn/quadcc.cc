@@ -1603,28 +1603,19 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 
   if (! args(1).is_real_scalar ())
-    {
-      error ("quadcc: lower limit of integration (A) must be a single real scalar");
-      return retval;
-    }
+    error ("quadcc: lower limit of integration (A) must be a single real scalar");
   else
     a = args(1).double_value ();
 
   if (! args(2).is_real_scalar ())
-    {
-      error ("quadcc: upper limit of integration (B) must be a single real scalar");
-      return retval;
-    }
+    error ("quadcc: upper limit of integration (B) must be a single real scalar");
   else
     b = args(2).double_value ();
 
   if (nargin < 4 || args(3).is_empty ())
     tol = 1.0e-6;
   else if (! args(3).is_real_scalar () || args(3).double_value () <= 0)
-    {
-      error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
-      return retval;
-    }
+    error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
   else
     tol = args(3).double_value ();
 
@@ -1633,10 +1624,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       nivals = 1;
     }
   else if (!(args(4).is_real_scalar () || args(4).is_real_matrix ()))
-    {
-      error ("quadcc: list of singularities (SING) must be a vector of real values");
-      return retval;
-    }
+    error ("quadcc: list of singularities (SING) must be a vector of real values");
   else
     {
       nivals = 1 + args(4).numel ();
@@ -1705,16 +1693,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       fargs(0) = ex;
       fvals = feval (fcn, fargs, 1);
       if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-        {
-          error ("quadcc: integrand F must return a single, real-valued vector");
-          return retval;
-        }
+        error ("quadcc: integrand F must return a single, real-valued vector");
+
       Matrix effex = fvals(0).matrix_value ();
       if (effex.numel () != ex.numel ())
-        {
-          error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-          return retval;
-        }
+        error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
       for (i = 0; i <= n[3]; i++)
         {
           iv->fx[i] = effex(i);
@@ -1824,16 +1808,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector");
+
             Matrix effex = fvals(0).matrix_value ();
             if (effex.numel () != ex.numel ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
             neval += effex.numel ();
             for (i = 0; i < n[d] / 2; i++)
               {
@@ -1972,16 +1952,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector");
+
             Matrix effex = fvals(0).matrix_value ();
             if (effex.numel () != ex.numel ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
             neval += effex.numel ();
             for (i = 0; i < n[0] - 1; i++)
               {
@@ -2068,16 +2044,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector");
+
             Matrix effex = fvals(0).matrix_value ();
             if (effex.numel () != ex.numel ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
             neval += effex.numel ();
             for (i = 0; i < n[0] - 1; i++)
               {

@@ -376,10 +376,7 @@ read_mat5_integer_data (std::istream& is, int *m,
         std::streampos tmp_pos; \
   \
         if (read_mat5_tag (is, swap, type, len, is_small_data_element)) \
-          { \
-            error ("load: reading matrix data for '%s'", retval.c_str ()); \
-            goto data_read_error; \
-          } \
+          error ("load: reading matrix data for '%s'", retval.c_str ()); \
   \
         octave_idx_type n = re.numel (); \
         tmp_pos = is.tellg (); \
@@ -387,10 +384,7 @@ read_mat5_integer_data (std::istream& is, int *m,
                                 static_cast<enum mat5_data_type> (type)); \
   \
         if (! is) \
-          { \
-            error ("load: reading matrix data for '%s'", retval.c_str ()); \
-            goto data_read_error; \
-          } \
+          error ("load: reading matrix data for '%s'", retval.c_str ()); \
   \
         is.seekg (tmp_pos + static_cast<std::streamoff>\
                   (READ_PAD (is_small_data_element, len))); \
@@ -401,22 +395,16 @@ read_mat5_integer_data (std::istream& is, int *m,
             NDArray im (dims); \
   \
             if (read_mat5_tag (is, swap, type, len, is_small_data_element)) \
-              { \
-                error ("load: reading matrix data for '%s'", \
-                       retval.c_str ()); \
-                goto data_read_error; \
-              } \
+              error ("load: reading matrix data for '%s'", \
+                     retval.c_str ()); \
   \
             n = im.numel (); \
             read_mat5_binary_data (is, im.fortran_vec (), n, swap, \
                                    static_cast<enum mat5_data_type> (type), flt_fmt); \
   \
             if (! is) \
-              { \
-                error ("load: reading imaginary matrix data for '%s'", \
-                       retval.c_str ()); \
-                goto data_read_error; \
-              } \
+              error ("load: reading imaginary matrix data for '%s'", \
+                     retval.c_str ()); \
   \
             ComplexNDArray ctmp (dims); \
   \
@@ -619,7 +607,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     {
       pos = is.tellg ();
       error ("load: invalid element type = %d", type);
-      goto early_read_error;
     }
 
   if (element_length == 0)
@@ -634,10 +621,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   int32_t len;
   if (read_mat5_tag (is, swap, type, len, is_small_data_element)
       || type != miUINT32 || len != 8 || is_small_data_element)
-    {
-      error ("load: invalid array flags subelement");
-      goto early_read_error;
-    }
+    error ("load: invalid array flags subelement");
 
   int32_t flags;
   read_int (is, swap, flags);
@@ -661,10 +645,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
       if (read_mat5_tag (is, swap, type, dim_len, is_small_data_element)
           || type != miINT32)
-        {
-          error ("load: invalid dimensions array subelement");
-          goto early_read_error;
-        }
+        error ("load: invalid dimensions array subelement");
 
       int ndims = dim_len / 4;
       if (ndims == 1)
@@ -697,10 +678,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   if (read_mat5_tag (is, swap, type, len, is_small_data_element)
       || ! INT8(type))
-    {
-      error ("load: invalid array name subelement");
-      goto early_read_error;
-    }
+    error ("load: invalid array name subelement");
 
   {
     OCTAVE_LOCAL_BUFFER (char, name, len+1);
@@ -738,10 +716,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               = read_mat5_binary_element (is, filename, swap, global, tc2);
 
             if (! is)
-              {
-                error ("load: reading cell data for '%s'", nm.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading cell data for '%s'", nm.c_str ());
 
             cell_array(i) = tc2;
           }
@@ -780,10 +755,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::streampos tmp_pos;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading sparse row data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse row data for '%s'", retval.c_str ());
 
         tmp_pos = is.tellg ();
 
@@ -791,21 +763,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                 static_cast<enum mat5_data_type> (type));
 
         if (! is)
-          {
-            error ("load: reading sparse row data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse row data for '%s'", retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
 
         // col indices
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading sparse column data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse column data for '%s'",
+                 retval.c_str ());
 
         tmp_pos = is.tellg ();
 
@@ -813,22 +779,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                 static_cast<enum mat5_data_type> (type));
 
         if (! is)
-          {
-            error ("load: reading sparse column data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse column data for '%s'",
+                 retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
 
         // real data subelement
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading sparse matrix data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse matrix data for '%s'",
+                 retval.c_str ());
 
         octave_idx_type nnz = cidx[nc];
         NDArray re;
@@ -844,11 +804,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                flt_fmt);
 
         if (! is)
-          {
-            error ("load: reading sparse matrix data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse matrix data for '%s'",
+                 retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
@@ -859,22 +816,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             NDArray im (dim_vector (static_cast<int> (nnz), 1));
 
             if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-              {
-                error ("load: reading sparse matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading sparse matrix data for '%s'",
+                     retval.c_str ());
 
             read_mat5_binary_data (is, im.fortran_vec (), nnz, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
             if (! is)
-              {
-                error ("load: reading imaginary sparse matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading imaginary sparse matrix data for '%s'",
+                     retval.c_str ());
 
             for (octave_idx_type i = 0; i < nnz; i++)
               scm.xdata (i) = Complex (re (i), im (i));
@@ -1066,24 +1017,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 if (fh)
                   tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
                 else
-                  {
-                    error ("load: failed to load anonymous function handle");
-                    goto skip_ahead;
-                  }
+                  error ("load: failed to load anonymous function handle");
               }
             else
-              {
-                error ("load: failed to load anonymous function handle");
-                goto skip_ahead;
-              }
+              error ("load: failed to load anonymous function handle");
 
             frame.run ();
           }
         else
-          {
-            error ("load: invalid function handle type");
-            goto skip_ahead;
-          }
+          error ("load: invalid function handle type");
       }
       break;
 
@@ -1099,10 +1041,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             int32_t fn_len;
             if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
                 || ! INT8(fn_type))
-              {
-                error ("load: invalid field name subelement");
-                goto data_read_error;
-              }
+              error ("load: invalid field name subelement");
 
             OCTAVE_LOCAL_BUFFER (char, elname, fn_len + 1);
 
@@ -1161,10 +1100,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element)
             || ! INT8(type))
-          {
-            error ("load: invalid class name");
-            goto skip_ahead;
-          }
+          error ("load: invalid class name");
 
         {
           OCTAVE_LOCAL_BUFFER (char, name, len+1);
@@ -1198,10 +1134,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // that eventually someone will recognize that's a waste of space.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
             || fn_type != miINT32)
-          {
-            error ("load: invalid field name length subelement");
-            goto data_read_error;
-          }
+          error ("load: invalid field name length subelement");
 
         if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len))
           goto data_read_error;
@@ -1213,10 +1146,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // us how many fields there are.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
             || ! INT8(fn_type))
-          {
-            error ("load: invalid field name subelement");
-            goto data_read_error;
-          }
+          error ("load: invalid field name subelement");
 
         octave_idx_type n_fields = fn_len/field_name_length;
 
@@ -1366,10 +1296,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::streampos tmp_pos;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         octave_idx_type n = re.numel ();
         tmp_pos = is.tellg ();
@@ -1378,10 +1305,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                flt_fmt);
 
         if (! is)
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
@@ -1393,10 +1317,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             FloatNDArray im (dims);
 
             if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-              {
-                error ("load: reading matrix data for '%s'", retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading matrix data for '%s'", retval.c_str ());
 
             n = im.numel ();
             read_mat5_binary_data (is, im.fortran_vec (), n, swap,
@@ -1404,11 +1325,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                    flt_fmt);
 
             if (! is)
-              {
-                error ("load: reading imaginary matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading imaginary matrix data for '%s'",
+                     retval.c_str ());
 
             FloatComplexNDArray ctmp (dims);
 
@@ -1435,10 +1353,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::streampos tmp_pos;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         octave_idx_type n = re.numel ();
         tmp_pos = is.tellg ();
@@ -1447,10 +1362,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                flt_fmt);
 
         if (! is)
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
@@ -1475,10 +1387,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             NDArray im (dims);
 
             if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-              {
-                error ("load: reading matrix data for '%s'", retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading matrix data for '%s'", retval.c_str ());
 
             n = im.numel ();
             read_mat5_binary_data (is, im.fortran_vec (), n, swap,
@@ -1486,11 +1395,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                    flt_fmt);
 
             if (! is)
-              {
-                error ("load: reading imaginary matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading imaginary matrix data for '%s'",
+                     retval.c_str ());
 
             ComplexNDArray ctmp (dims);
 
@@ -1560,7 +1466,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   return retval;
 
 data_read_error:
-early_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
   return std::string ();
 
@@ -2421,10 +2326,7 @@ save_mat5_binary_element (std::ostream& os,
               os.write (out_buf, destLen);
             }
           else
-            {
-              error ("save: error compressing data element");
-              ret = false;
-            }
+            error ("save: error compressing data element");
         }
 
       return ret;

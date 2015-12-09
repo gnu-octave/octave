@@ -1045,10 +1045,7 @@ command shell that is started to run the command.\n\
       else if (type_str == "async")
         type = et_async;
       else
-        {
-          error ("system: TYPE must be \"sync\" or \"async\"");
-          return retval;
-        }
+        error ("system: TYPE must be \"sync\" or \"async\"");
     }
 
   if (nargin > 1)
@@ -1064,10 +1061,7 @@ command shell that is started to run the command.\n\
     }
 
   if (return_output && type == et_async)
-    {
-      error ("system: can't return output from commands run asynchronously");
-      return retval;
-    }
+    error ("system: can't return output from commands run asynchronously");
 
   std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
 

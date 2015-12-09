@@ -166,6 +166,7 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
     {
       if (! quiet)
         error ("load: can't read binary file");
+
       return -1;
     }
 
@@ -277,16 +278,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   flt_fmt = mopt_digit_to_float_format (mach);
 
   if (flt_fmt == oct_mach_info::flt_fmt_unknown)
-    {
-      error ("load: unrecognized binary format!");
-      return retval;
-    }
+    error ("load: unrecognized binary format!");
 
   if (imag && type == 1)
-    {
-      error ("load: encountered complex matrix with string flag set!");
-      return retval;
-    }
+    error ("load: encountered complex matrix with string flag set!");
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it, but apparently not all files do.  Either
@@ -374,10 +369,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
         read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
 
         if (! is)
-          {
-            error ("load: reading matrix data for '%s'", name);
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", name);
 
         if (imag)
           {
@@ -387,10 +379,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
                                   flt_fmt);
 
             if (! is)
-              {
-                error ("load: reading imaginary matrix data for '%s'", name);
-                goto data_read_error;
-              }
+              error ("load: reading imaginary matrix data for '%s'", name);
 
             ComplexMatrix ctmp (nr, nc);
 

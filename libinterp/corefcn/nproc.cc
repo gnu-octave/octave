@@ -70,10 +70,7 @@ environment variable.\n\
       else if (arg == "overridable")
         query = NPROC_CURRENT_OVERRIDABLE;
       else
-        {
-          error ("nproc: invalid value for QUERY");
-          return retval;
-        }
+        error ("nproc: invalid value for QUERY");
     }
 
   retval = num_processors (query);

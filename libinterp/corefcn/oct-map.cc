@@ -782,10 +782,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
               for (octave_idx_type i = 1; i < n; i++)
                 {
                   if (! dv.concat (map_list[i].dimensions, dim))
-                    {
-                      error ("dimension mismatch in struct concatenation");
-                      return retval;
-                    }
+                    error ("dimension mismatch in struct concatenation");
                 }
 
               retval.dimensions = dv;
@@ -1300,10 +1297,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
           const_iterator pb = rb.seek (key(pa));
 
           if (pb == rb.end ())
-            {
-              error ("field name mismatch in structure concatenation");
-              break;
-            }
+            error ("field name mismatch in structure concatenation");
 
           contents(pa).insert (rb.contents (pb), ra_idx);
         }
@@ -1329,10 +1323,7 @@ octave_map::optimize_dimensions (void)
   for (octave_idx_type i = 0; i < nf; i++)
     {
       if (! xvals[i].optimize_dimensions (dimensions))
-        {
-          error ("internal error: dimension mismatch across fields in struct");
-          break;
-        }
+        error ("internal error: dimension mismatch across fields in struct");
     }
 
 }

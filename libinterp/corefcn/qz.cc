@@ -409,10 +409,7 @@ compatibility with @sc{matlab}.\n\
              || ord_job == 'S' || ord_job == 's'
              || ord_job == 'B' || ord_job == 'b'
              || ord_job == '+' || ord_job == '-'))
-        {
-          error ("qz: invalid order option");
-          return retval;
-        }
+        error ("qz: invalid order option");
 
       // overflow constant required by dlag2
       F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("S", 1),
@@ -512,10 +509,7 @@ compatibility with @sc{matlab}.\n\
     = (args(0).is_complex_type () || args(1).is_complex_type ());
 
   if (nargin == 3 && complex_case)
-    {
-      error ("qz: cannot re-order complex qz decomposition");
-      return retval;
-    }
+    error ("qz: cannot re-order complex qz decomposition");
 
   // First, declare variables used in both the real and complex case.
   Matrix QQ(nn,nn), ZZ(nn,nn), VR(nn,nn), VL(nn,nn);
@@ -794,216 +788,211 @@ compatibility with @sc{matlab}.\n\
   if (! (ord_job == 'N' || ord_job == 'n'))
     {
       if (complex_case)
+        // Probably not needed, but better be safe.
+        error ("qz: cannot re-order complex qz decomposition");
+
+#ifdef DEBUG_SORT
+      std::cout << "qz: ordering eigenvalues: ord_job = "
+                << ord_job << std::endl;
+#endif
+
+      // Declared static to avoid vfork/long jump compiler complaints.
+      static sort_function sort_test;
+      sort_test = 0;
+
+      switch (ord_job)
         {
-          // Probably not needed, but better be safe.
-          error ("qz: cannot re-order complex qz decomposition");
-          return retval;
+        case 'S':
+        case 's':
+          sort_test = &fin;
+          break;
+
+        case 'B':
+        case 'b':
+          sort_test = &fout;
+          break;
+
+        case '+':
+          sort_test = &fcrhp;
+          break;
+
+        case '-':
+          sort_test = &folhp;
+          break;
+
+        default:
+          // Invalid order option (should never happen, since we
+          // checked the options at the top).
+          panic_impossible ();
+          break;
         }
-      else
+
+      octave_idx_type ndim, fail;
+      double inf_norm;
+
+      F77_XFCN (xdlange, XDLANGE,
+                (F77_CONST_CHAR_ARG2 ("I", 1),
+                 nn, nn, aa.data (), nn, work.fortran_vec (), inf_norm
+                 F77_CHAR_ARG_LEN (1)));
+
+      double eps = std::numeric_limits<double>::epsilon () * inf_norm * nn;
+
+#ifdef DEBUG_SORT
+      std::cout << "qz: calling dsubsp: aa=" << std::endl;
+      octave_print_internal (std::cout, aa, 0);
+      std::cout << std::endl << "bb="  << std::endl;
+      octave_print_internal (std::cout, bb, 0);
+      if (compz == 'V')
         {
-#ifdef DEBUG_SORT
-          std::cout << "qz: ordering eigenvalues: ord_job = "
-                    << ord_job << std::endl;
+          std::cout << std::endl << "ZZ="  << std::endl;
+          octave_print_internal (std::cout, ZZ, 0);
+        }
+      std::cout << std::endl;
+      std::cout << "alphar = " << std::endl;
+      octave_print_internal (std::cout, (Matrix) alphar, 0);
+      std::cout << std::endl << "alphai = " << std::endl;
+      octave_print_internal (std::cout, (Matrix) alphai, 0);
+      std::cout << std::endl << "beta = " << std::endl;
+      octave_print_internal (std::cout, (Matrix) betar, 0);
+      std::cout << std::endl;
 #endif
 
-          // Declared static to avoid vfork/long jump compiler complaints.
-          static sort_function sort_test;
-          sort_test = 0;
+      Array<octave_idx_type> ind (dim_vector (nn, 1));
 
-          switch (ord_job)
-            {
-            case 'S':
-            case 's':
-              sort_test = &fin;
-              break;
-
-            case 'B':
-            case 'b':
-              sort_test = &fout;
-              break;
-
-            case '+':
-              sort_test = &fcrhp;
-              break;
-
-            case '-':
-              sort_test = &folhp;
-              break;
-
-            default:
-              // Invalid order option (should never happen, since we
-              // checked the options at the top).
-              panic_impossible ();
-              break;
-            }
-
-          octave_idx_type ndim, fail;
-          double inf_norm;
-
-          F77_XFCN (xdlange, XDLANGE,
-                    (F77_CONST_CHAR_ARG2 ("I", 1),
-                     nn, nn, aa.data (), nn, work.fortran_vec (), inf_norm
-                     F77_CHAR_ARG_LEN (1)));
-
-          double eps = std::numeric_limits<double>::epsilon () * inf_norm * nn;
-
-#ifdef DEBUG_SORT
-          std::cout << "qz: calling dsubsp: aa=" << std::endl;
-          octave_print_internal (std::cout, aa, 0);
-          std::cout << std::endl << "bb="  << std::endl;
-          octave_print_internal (std::cout, bb, 0);
-          if (compz == 'V')
-            {
-              std::cout << std::endl << "ZZ="  << std::endl;
-              octave_print_internal (std::cout, ZZ, 0);
-            }
-          std::cout << std::endl;
-          std::cout << "alphar = " << std::endl;
-          octave_print_internal (std::cout, (Matrix) alphar, 0);
-          std::cout << std::endl << "alphai = " << std::endl;
-          octave_print_internal (std::cout, (Matrix) alphai, 0);
-          std::cout << std::endl << "beta = " << std::endl;
-          octave_print_internal (std::cout, (Matrix) betar, 0);
-          std::cout << std::endl;
-#endif
-
-          Array<octave_idx_type> ind (dim_vector (nn, 1));
-
-          F77_XFCN (dsubsp, DSUBSP,
-                    (nn, nn, aa.fortran_vec (), bb.fortran_vec (),
-                     ZZ.fortran_vec (), sort_test, eps, ndim, fail,
-                     ind.fortran_vec ()));
+      F77_XFCN (dsubsp, DSUBSP,
+                (nn, nn, aa.fortran_vec (), bb.fortran_vec (),
+                 ZZ.fortran_vec (), sort_test, eps, ndim, fail,
+                 ind.fortran_vec ()));
 
 #ifdef DEBUG
-          std::cout << "qz: back from dsubsp: aa=" << std::endl;
-          octave_print_internal (std::cout, aa, 0);
-          std::cout << std::endl << "bb="  << std::endl;
-          octave_print_internal (std::cout, bb, 0);
-          if (compz == 'V')
+      std::cout << "qz: back from dsubsp: aa=" << std::endl;
+      octave_print_internal (std::cout, aa, 0);
+      std::cout << std::endl << "bb="  << std::endl;
+      octave_print_internal (std::cout, bb, 0);
+      if (compz == 'V')
+        {
+          std::cout << std::endl << "ZZ="  << std::endl;
+          octave_print_internal (std::cout, ZZ, 0);
+        }
+      std::cout << std::endl;
+#endif
+
+      // Manually update alphar, alphai, betar.
+      static int jj;
+
+      jj = 0;
+      while (jj < nn)
+        {
+#ifdef DEBUG_EIG
+          std::cout << "computing gen eig #" << jj << std::endl;
+#endif
+
+          // Number of zeros in this block.
+          static int zcnt;
+
+          if (jj == (nn-1))
+            zcnt = 1;
+          else if (aa(jj+1,jj) == 0)
+            zcnt = 1;
+          else zcnt = 2;
+
+          if (zcnt == 1)
             {
-              std::cout << std::endl << "ZZ="  << std::endl;
-              octave_print_internal (std::cout, ZZ, 0);
+              // Real zero.
+#ifdef DEBUG_EIG
+              std::cout << "  single gen eig:" << std::endl;
+              std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
+                        << std::endl;
+              std::cout << "  betar(" << jj << ") = " << bb(jj,jj)
+                        << std::endl;
+              std::cout << "  alphai(" << jj << ") = 0" << std::endl;
+#endif
+
+              alphar(jj) = aa(jj,jj);
+              alphai(jj) = 0;
+              betar(jj) = bb(jj,jj);
             }
-          std::cout << std::endl;
-#endif
-
-          // Manually update alphar, alphai, betar.
-          static int jj;
-
-          jj = 0;
-          while (jj < nn)
+          else
             {
+              // Complex conjugate pair.
 #ifdef DEBUG_EIG
-              std::cout << "computing gen eig #" << jj << std::endl;
-#endif
+              std::cout << "qz: calling dlag2:" << std::endl;
+              std::cout << "safmin="
+                        << setiosflags (std::ios::scientific)
+                        << safmin << std::endl;
 
-              // Number of zeros in this block.
-              static int zcnt;
-
-              if (jj == (nn-1))
-                zcnt = 1;
-              else if (aa(jj+1,jj) == 0)
-                zcnt = 1;
-              else zcnt = 2;
-
-              if (zcnt == 1)
+              for (int idr = jj; idr <= jj+1; idr++)
                 {
-                  // Real zero.
-#ifdef DEBUG_EIG
-                  std::cout << "  single gen eig:" << std::endl;
-                  std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
-                            << std::endl;
-                  std::cout << "  betar(" << jj << ") = " << bb(jj,jj)
-                            << std::endl;
-                  std::cout << "  alphai(" << jj << ") = 0" << std::endl;
+                  for (int idc = jj; idc <= jj+1; idc++)
+                    {
+                      std::cout << "aa(" << idr << "," << idc << ")="
+                                << aa(idr,idc) << std::endl;
+                      std::cout << "bb(" << idr << "," << idc << ")="
+                                << bb(idr,idc) << std::endl;
+                    }
+                }
 #endif
 
-                  alphar(jj) = aa(jj,jj);
+              // FIXME: probably should be using
+              // fortran_vec instead of &aa(jj,jj) here.
+
+              double scale1, scale2, wr1, wr2, wi;
+              const double *aa_ptr = aa.data () + jj * nn + jj;
+              const double *bb_ptr = bb.data () + jj * nn + jj;
+              F77_XFCN (dlag2, DLAG2,
+                        (aa_ptr, nn, bb_ptr, nn, safmin,
+                         scale1, scale2, wr1, wr2, wi));
+
+#ifdef DEBUG_EIG
+              std::cout << "dlag2 returns: scale1=" << scale1
+                        << "\tscale2=" << scale2 << std::endl
+                        << "\twr1=" << wr1 << "\twr2=" << wr2
+                        << "\twi=" << wi << std::endl;
+#endif
+
+              // Just to be safe, check if it's a real pair.
+              if (wi == 0)
+                {
+                  alphar(jj) = wr1;
                   alphai(jj) = 0;
-                  betar(jj) = bb(jj,jj);
+                  betar(jj) = scale1;
+                  alphar(jj+1) = wr2;
+                  alphai(jj+1) = 0;
+                  betar(jj+1) = scale2;
                 }
               else
                 {
-                  // Complex conjugate pair.
-#ifdef DEBUG_EIG
-                  std::cout << "qz: calling dlag2:" << std::endl;
-                  std::cout << "safmin="
-                            << setiosflags (std::ios::scientific)
-                            << safmin << std::endl;
-
-                  for (int idr = jj; idr <= jj+1; idr++)
-                    {
-                      for (int idc = jj; idc <= jj+1; idc++)
-                        {
-                          std::cout << "aa(" << idr << "," << idc << ")="
-                                    << aa(idr,idc) << std::endl;
-                          std::cout << "bb(" << idr << "," << idc << ")="
-                                    << bb(idr,idc) << std::endl;
-                        }
-                    }
-#endif
-
-                  // FIXME: probably should be using
-                  // fortran_vec instead of &aa(jj,jj) here.
-
-                  double scale1, scale2, wr1, wr2, wi;
-                  const double *aa_ptr = aa.data () + jj * nn + jj;
-                  const double *bb_ptr = bb.data () + jj * nn + jj;
-                  F77_XFCN (dlag2, DLAG2,
-                            (aa_ptr, nn, bb_ptr, nn, safmin,
-                             scale1, scale2, wr1, wr2, wi));
-
-#ifdef DEBUG_EIG
-                  std::cout << "dlag2 returns: scale1=" << scale1
-                            << "\tscale2=" << scale2 << std::endl
-                            << "\twr1=" << wr1 << "\twr2=" << wr2
-                            << "\twi=" << wi << std::endl;
-#endif
-
-                  // Just to be safe, check if it's a real pair.
-                  if (wi == 0)
-                    {
-                      alphar(jj) = wr1;
-                      alphai(jj) = 0;
-                      betar(jj) = scale1;
-                      alphar(jj+1) = wr2;
-                      alphai(jj+1) = 0;
-                      betar(jj+1) = scale2;
-                    }
-                  else
-                    {
-                      alphar(jj) = alphar(jj+1) = wr1;
-                      alphai(jj) = -(alphai(jj+1) = wi);
-                      betar(jj)  = betar(jj+1) = scale1;
-                    }
+                  alphar(jj) = alphar(jj+1) = wr1;
+                  alphai(jj) = -(alphai(jj+1) = wi);
+                  betar(jj)  = betar(jj+1) = scale1;
                 }
-
-              // Advance past this block.
-              jj += zcnt;
             }
+
+          // Advance past this block.
+          jj += zcnt;
+        }
 
 #ifdef DEBUG_SORT
-          std::cout << "qz: back from dsubsp: aa=" << std::endl;
-          octave_print_internal (std::cout, aa, 0);
-          std::cout << std::endl << "bb="  << std::endl;
-          octave_print_internal (std::cout, bb, 0);
+      std::cout << "qz: back from dsubsp: aa=" << std::endl;
+      octave_print_internal (std::cout, aa, 0);
+      std::cout << std::endl << "bb="  << std::endl;
+      octave_print_internal (std::cout, bb, 0);
 
-          if (compz == 'V')
-            {
-              std::cout << std::endl << "ZZ="  << std::endl;
-              octave_print_internal (std::cout, ZZ, 0);
-            }
-          std::cout << std::endl << "qz: ndim=" << ndim << std::endl
-                    << "fail=" << fail << std::endl;
-          std::cout << "alphar = " << std::endl;
-          octave_print_internal (std::cout, (Matrix) alphar, 0);
-          std::cout << std::endl << "alphai = " << std::endl;
-          octave_print_internal (std::cout, (Matrix) alphai, 0);
-          std::cout << std::endl << "beta = " << std::endl;
-          octave_print_internal (std::cout, (Matrix) betar, 0);
-          std::cout << std::endl;
-#endif
+      if (compz == 'V')
+        {
+          std::cout << std::endl << "ZZ="  << std::endl;
+          octave_print_internal (std::cout, ZZ, 0);
         }
+      std::cout << std::endl << "qz: ndim=" << ndim << std::endl
+                << "fail=" << fail << std::endl;
+      std::cout << "alphar = " << std::endl;
+      octave_print_internal (std::cout, (Matrix) alphar, 0);
+      std::cout << std::endl << "alphai = " << std::endl;
+      octave_print_internal (std::cout, (Matrix) alphai, 0);
+      std::cout << std::endl << "beta = " << std::endl;
+      octave_print_internal (std::cout, (Matrix) betar, 0);
+      std::cout << std::endl;
+#endif
     }
 
   // Compute generalized eigenvalues?

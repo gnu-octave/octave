@@ -222,31 +222,23 @@ lin_interpn (int n, M *X, const M V, M *Y)
       for (int i = 0; i < n; i++)
         {
           if (X[i].dims () != V.dims ())
-            {
-              error ("interpn: incompatible size of argument number %d", i+1);
-              return retval;
-            }
-          else
-            {
-              M tmp = M (dim_vector (size[i], 1));
+            error ("interpn: incompatible size of argument number %d", i+1);
 
-              for (octave_idx_type j = 0; j < size[i]; j++)
-                tmp(j) =  X[i](scale[i]*j);
+          M tmp = M (dim_vector (size[i], 1));
 
-              X[i] = tmp;
-            }
+          for (octave_idx_type j = 0; j < size[i]; j++)
+            tmp(j) =  X[i](scale[i]*j);
+
+          X[i] = tmp;
         }
     }
 
   for (int i = 0; i < n; i++)
     {
       if (! isvector (X[i]) && X[i].numel () != size[i])
-        {
-          error ("interpn: incompatible size of argument number %d", i+1);
-          return retval;
-        }
-      else
-        x[i] = X[i].data ();
+        error ("interpn: incompatible size of argument number %d", i+1);
+
+      x[i] = X[i].data ();
     }
 
   lin_interpn (n, size, scale, Ni, extrapval, x, v, y, vi);
@@ -296,10 +288,7 @@ Undocumented internal function.\n\
           Y[i] = args(n+i+1).float_array_value ();
 
           if (Y[0].dims () != Y[i].dims ())
-            {
-              error ("interpn: incompatible size of argument number %d", n+i+2);
-              return retval;
-            }
+            error ("interpn: incompatible size of argument number %d", n+i+2);
         }
 
       retval = lin_interpn<float, FloatNDArray> (n, X, V, Y);
@@ -317,10 +306,7 @@ Undocumented internal function.\n\
           Y[i] = args(n+i+1).array_value ();
 
           if (Y[0].dims () != Y[i].dims ())
-            {
-              error ("interpn: incompatible size of argument number %d", n+i+2);
-              return retval;
-            }
+            error ("interpn: incompatible size of argument number %d", n+i+2);
         }
 
       retval = lin_interpn<double, NDArray> (n, X, V, Y);

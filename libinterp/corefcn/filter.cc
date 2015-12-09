@@ -76,17 +76,11 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   T norm = a (0);
 
   if (norm == static_cast<T> (0.0))
-    {
-      error ("filter: the first element of A must be nonzero");
-      return y;
-    }
+    error ("filter: the first element of A must be nonzero");
 
   dim_vector x_dims = x.dims ();
   if (dim < 0 || dim > x_dims.length ())
-    {
-      error ("filter: DIM must be a valid dimension");
-      return y;
-    }
+    error ("filter: DIM must be a valid dimension");
 
   octave_idx_type x_len = x_dims(dim);
 
@@ -94,32 +88,20 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   octave_idx_type si_len = si_dims(0);
 
   if (si_len != ab_len - 1)
-    {
-      error ("filter: first dimension of SI must be of length max (length (a), length (b)) - 1");
-      return y;
-    }
+    error ("filter: first dimension of SI must be of length max (length (a), length (b)) - 1");
 
   if (si_dims.length () != x_dims.length ())
-    {
-      error ("filter: dimensionality of SI and X must agree");
-      return y;
-    }
+    error ("filter: dimensionality of SI and X must agree");
 
   for (octave_idx_type i = 1; i < dim; i++)
     {
       if (si_dims(i) != x_dims(i-1))
-        {
-          error ("filter: dimensionality of SI and X must agree");
-          return y;
-        }
+        error ("filter: dimensionality of SI and X must agree");
     }
   for (octave_idx_type i = dim+1; i < x_dims.length (); i++)
     {
       if (si_dims(i) != x_dims(i))
-        {
-          error ("filter: dimensionality of SI and X must agree");
-          return y;
-        }
+        error ("filter: dimensionality of SI and X must agree");
     }
 
   if (x_len == 0)
@@ -270,10 +252,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
         dim = 0;
     }
   else if (dim < 0 || dim > x_dims.length ())
-    {
-      error ("filter: DIM must be a valid dimension");
-      return MArray<T> ();
-    }
+    error ("filter: DIM must be a valid dimension");
 
   octave_idx_type a_len = a.numel ();
   octave_idx_type b_len = b.numel ();
@@ -409,10 +388,7 @@ H(z) = ---------------------\n\
     {
       dim = args(4).nint_value () - 1;
       if (dim < 0 || dim >= x_dims.length ())
-        {
-          error ("filter: DIM must be a valid dimension");
-          return retval;
-        }
+        error ("filter: DIM must be a valid dimension");
     }
   else
     {

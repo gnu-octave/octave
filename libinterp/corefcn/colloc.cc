@@ -81,18 +81,12 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
           left = 1;
         }
       else
-        {
-          error ("colloc: string argument must be \"left\" or \"right\"");
-          return retval;
-        }
+        error ("colloc: string argument must be \"left\" or \"right\"");
     }
 
   ntot += left + right;
   if (ntot < 1)
-    {
-      error ("colloc: the total number of roots must be positive");
-      return retval;
-    }
+    error ("colloc: the total number of roots must be positive");
 
   CollocWt wts (ncol, left, right);
 

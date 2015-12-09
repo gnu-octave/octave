@@ -245,10 +245,7 @@ do_minmax_body (const octave_value_list& args,
           dim = args(2).int_value (true) - 1;
 
           if (dim < 0)
-            {
-              error ("%s: DIM must be a valid dimension", func);
-              return retval;
-            }
+            error ("%s: DIM must be a valid dimension", func);
 
           if (! args(1).is_empty ())
             warning ("%s: second argument is ignored", func);
@@ -924,10 +921,7 @@ do_cumminmax_body (const octave_value_list& args,
       dim = args(1).int_value (true) - 1;
 
       if (dim < 0)
-        {
-          error ("%s: DIM must be a valid dimension", func);
-          return retval;
-        }
+        error ("%s: DIM must be a valid dimension", func);
     }
 
   switch (arg.builtin_type ())

@@ -338,7 +338,6 @@ raw_mode (bool on, bool wait)
     {
       if (interactive && ! forced_interactive)
         error ("stdin is not a tty!");
-      return;
     }
 
   if (on == curr_on)

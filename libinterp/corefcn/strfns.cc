@@ -486,10 +486,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
       else
         {
           if (size1 != size2)
-            {
-              error ("%s: nonconformant cell arrays", fcn_name);
-              return retval;
-            }
+            error ("%s: nonconformant cell arrays", fcn_name);
 
           if (cell1.is_cellstr () && cell2.is_cellstr ())
             {

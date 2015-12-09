@@ -74,10 +74,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
   const octave_value oct_z = (nargin == 1) ? args(0) : args(1);
   const octave_idx_type k = (nargin == 1) ? 0 : args(0).idx_type_value ("psi: K must be an integer");
   if (k < 0)
-    {
-      error ("psi: K must be non-negative");
-      return retval;
-    }
+    error ("psi: K must be non-negative");
   else if (k == 0)
     {
 #define FLOAT_BRANCH(T, A, M, E) \
@@ -85,13 +82,13 @@ can have any value real or complex value.  However, for polygamma functions\n\
         { \
           const A ## NDArray z = oct_z.M ## array_value (); \
           A ## NDArray psi_z (z.dims ()); \
-\
+ \
           const E* zv = z.data (); \
           E* psi_zv = psi_z.fortran_vec (); \
           const octave_idx_type n = z.numel (); \
           for (octave_idx_type i = 0; i < n; i++) \
             *psi_zv++ = psi (*zv++); \
-\
+ \
           retval = psi_z; \
         }
 
@@ -100,18 +97,14 @@ can have any value real or complex value.  However, for polygamma functions\n\
           FLOAT_BRANCH(double, Complex, complex_, Complex)
           else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)
           else
-            {
-              error ("psi: Z must be a floating point");
-            }
+            error ("psi: Z must be a floating point");
         }
       else
         {
           FLOAT_BRANCH(double, , , double)
           else FLOAT_BRANCH(single, Float, float_, float)
           else
-            {
-              error ("psi: Z must be a floating point");
-            }
+            error ("psi: Z must be a floating point");
         }
 
 #undef FLOAT_BRANCH
@@ -119,27 +112,22 @@ can have any value real or complex value.  However, for polygamma functions\n\
   else
     {
       if (! oct_z.is_real_type ())
-        {
-          error ("psi: Z must be real value for polygamma (K > 0)");
-          return retval;
-        }
+        error ("psi: Z must be real value for polygamma (K > 0)");
 
 #define FLOAT_BRANCH(T, A, M, E) \
       if (oct_z.is_ ## T ##_type ()) \
         { \
           const A ## NDArray z = oct_z.M ## array_value (); \
           A ## NDArray psi_z (z.dims ()); \
-\
+ \
           const E* zv = z.data (); \
           E* psi_zv = psi_z.fortran_vec (); \
           const octave_idx_type n = z.numel (); \
           for (octave_idx_type i = 0; i < n; i++) \
             { \
               if (*zv < 0) \
-                { \
-                  error ("psi: Z must be non-negative for polygamma (K > 0)"); \
-                  return retval; \
-                } \
+                error ("psi: Z must be non-negative for polygamma (K > 0)"); \
+ \
               *psi_zv++ = psi (k, *zv++); \
             } \
           retval = psi_z; \
@@ -148,9 +136,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
       FLOAT_BRANCH(double, , , double)
       else FLOAT_BRANCH(single, Float, float_, float)
       else
-        {
-          error ("psi: Z must be a floating point for polygamma (K > 0)");
-        }
+        error ("psi: Z must be a floating point for polygamma (K > 0)");
 
 #undef FLOAT_BRANCH
     }

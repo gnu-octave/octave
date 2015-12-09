@@ -420,10 +420,7 @@ mk_tmp_hist_file (const octave_value_list& args,
     }
 
   if (hist_beg > hist_count || hist_end > hist_count)
-    {
-      error ("%s: history specification out of range", warn_for);
-      return retval;
-    }
+    error ("%s: history specification out of range", warn_for);
 
   if (hist_end < hist_beg)
     {
@@ -436,11 +433,8 @@ mk_tmp_hist_file (const octave_value_list& args,
   std::fstream file (name.c_str (), std::ios::out);
 
   if (! file)
-    {
-      error ("%s: couldn't open temporary file '%s'", warn_for,
-             name.c_str ());
-      return retval;
-    }
+    error ("%s: couldn't open temporary file '%s'", warn_for,
+           name.c_str ());
 
   if (reverse)
     {
@@ -490,10 +484,7 @@ do_edit_history (const octave_value_list& args)
   // Check if text edition was successfull.  Abort the operation
   // in case of failure.
   if (status != EXIT_SUCCESS)
-    {
-      error ("edit_history: text editor command failed");
-      return;
-    }
+    error ("edit_history: text editor command failed");
 
   // Write the commands to the history file since source_file
   // disables command line history while it executes.

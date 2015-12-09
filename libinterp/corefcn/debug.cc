@@ -225,9 +225,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
               idx = 0;
             }
           else
-            {
-              error ("%s: no function specified", who);
-            }
+            error ("%s: no function specified", who);
         }
     }
   else if (args(0).is_map ())
@@ -235,7 +233,6 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
       // This is a problem because parse_dbfunction_params()
       // can only pass out a single function.
       error ("%s: struct input not implemented", who);
-      return;
     }
   else
     error ("%s: invalid parameter specified", who);
@@ -278,10 +275,7 @@ bp_table::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create breakpoint table!");
-      retval = false;
-    }
+    error ("unable to create breakpoint table!");
 
   return retval;
 }
@@ -733,10 +727,7 @@ current function.\n\
   std::string symbol_name;
 
   if (nargin != 0 && nargin != 1)
-    {
-      error ("dbstatus: only zero or one arguments accepted\n");
-      return octave_value ();
-    }
+    error ("dbstatus: only zero or one arguments accepted\n");
 
   if (nargin == 1)
     {
@@ -961,10 +952,7 @@ numbers.\n\
                   end = atoi (end_str.c_str ());
 
                 if (std::min (start, end) <= 0)
-                  {
-                    error ("dbtype: start and end lines must be >= 1\n");
-                    break;
-                  }
+                  error ("dbtype: start and end lines must be >= 1\n");
 
                 if (start <= end)
                   do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
@@ -990,10 +978,7 @@ numbers.\n\
             else  // (dbtype lineno)
               {
                 if (line <= 0)
-                  {
-                    error ("dbtype: start and end lines must be >= 1\n");
-                    break;
-                  }
+                  error ("dbtype: start and end lines must be >= 1\n");
 
                 dbg_fcn = get_user_code ();
 
@@ -1032,10 +1017,7 @@ numbers.\n\
             }
 
           if (std::min (start, end) <= 0)
-            {
-              error ("dbtype: start and end lines must be >= 1\n");
-              break;
-            }
+            error ("dbtype: start and end lines must be >= 1\n");
 
           if (start <= end)
             do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),

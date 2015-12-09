@@ -254,10 +254,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
                                             true, true);
                 }
               else
-                {
-                  error ("strfind: each element of CELLSTR must be a string");
-                  break;
-                }
+                error ("strfind: each element of CELLSTR must be a string");
             }
 
           retval = retc;
@@ -437,10 +434,7 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
                 retc(i) = qs_replace (argse.char_array_value (), pat, rep,
                                       table, overlaps);
               else
-                {
-                  error ("strrep: each element of S must be a string");
-                  break;
-                }
+                error ("strrep: each element of S must be a string");
             }
 
           retval = retc;

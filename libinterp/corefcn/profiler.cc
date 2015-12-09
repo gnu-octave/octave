@@ -265,10 +265,7 @@ void
 profile_data_accumulator::reset (void)
 {
   if (is_active ())
-    {
-      error ("Can't reset active profiler.");
-      return;
-    }
+    error ("Can't reset active profiler.");
 
   known_functions.clear ();
   fcn_index.clear ();

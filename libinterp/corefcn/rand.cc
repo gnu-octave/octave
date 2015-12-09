@@ -86,10 +86,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   if (additional_arg)
     {
       if (nargin == 0)
-        {
-          error ("%s: at least one argument is required", fcn);
-          goto done;
-        }
+        error ("%s: at least one argument is required", fcn);
       else if (args(0).is_string ())
         additional_arg = false;
       else
@@ -166,9 +163,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             double dval = tmp.double_value ();
 
             if (xisnan (dval))
-              {
-                error ("%s: NaN is invalid matrix dimension", fcn);
-              }
+              error ("%s: NaN is invalid matrix dimension", fcn);
             else
               {
                 dims.resize (2);
@@ -314,10 +309,8 @@ gen_matrix:
           else
             {
               if (a.dims () != dims)
-                {
-                  error ("%s: mismatch in argument size", fcn);
-                  return retval;
-                }
+                error ("%s: mismatch in argument size", fcn);
+
               octave_idx_type len = a.numel ();
               FloatNDArray m (dims);
               float *v = m.fortran_vec ();
@@ -338,10 +331,8 @@ gen_matrix:
           else
             {
               if (a.dims () != dims)
-                {
-                  error ("%s: mismatch in argument size", fcn);
-                  return retval;
-                }
+                error ("%s: mismatch in argument size", fcn);
+
               octave_idx_type len = a.numel ();
               NDArray m (dims);
               double *v = m.fortran_vec ();

@@ -71,19 +71,13 @@ Undocumented internal function.\n\
           octave_idx_type nx = xvec.numel ();
 
           if (nx < 2)
-            {
-              error ("__pchip_deriv__: X must be at least of length 2");
-              return retval;
-            }
+            error ("__pchip_deriv__: X must be at least of length 2");
 
           octave_idx_type nyr = ymat.rows ();
           octave_idx_type nyc = ymat.columns ();
 
           if (nx != (rows ? nyc : nyr))
-            {
-              error ("__pchip_deriv__: X and Y dimension mismatch");
-              return retval;
-            }
+            error ("__pchip_deriv__: X and Y dimension mismatch");
 
           FloatMatrix dmat (nyr, nyc);
 
@@ -102,10 +96,7 @@ Undocumented internal function.\n\
               k++;
 
               if (ierr < 0)
-                {
-                  error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
-                  return retval;
-                }
+                error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
             }
 
           retval = dmat;
@@ -118,19 +109,13 @@ Undocumented internal function.\n\
           octave_idx_type nx = xvec.numel ();
 
           if (nx < 2)
-            {
-              error ("__pchip_deriv__: X must be at least of length 2");
-              return retval;
-            }
+            error ("__pchip_deriv__: X must be at least of length 2");
 
           octave_idx_type nyr = ymat.rows ();
           octave_idx_type nyc = ymat.columns ();
 
           if (nx != (rows ? nyc : nyr))
-            {
-              error ("__pchip_deriv__: X and Y dimension mismatch");
-              return retval;
-            }
+            error ("__pchip_deriv__: X and Y dimension mismatch");
 
           Matrix dmat (nyr, nyc);
 
@@ -148,10 +133,7 @@ Undocumented internal function.\n\
               k++;
 
               if (ierr < 0)
-                {
-                  error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
-                  return retval;
-                }
+                error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
             }
 
           retval = dmat;

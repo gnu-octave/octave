@@ -1475,10 +1475,7 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
               dims = ccells[i].dims ();
             }
           else if (dims != ccells[i].dims ())
-            {
-              error ("%s: cell arguments must have matching sizes", fun_name);
-              break;
-            }
+            error ("%s: cell arguments must have matching sizes", fun_name);
         }
     }
 
@@ -1496,15 +1493,10 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
       const octave_value_list tmp = fun (new_args, nargout);
 
       if (tmp.length () < nargout)
-        {
-          error ("%s: do_simple_cellfun: internal error", fun_name);
-          break;
-        }
-      else
-        {
-          for (int i = 0; i < nargout; i++)
-            rcells[i](j) = tmp(i);
-        }
+        error ("%s: do_simple_cellfun: internal error", fun_name);
+
+      for (int i = 0; i < nargout; i++)
+        rcells[i](j) = tmp(i);
     }
 
   retval.resize (nargout);

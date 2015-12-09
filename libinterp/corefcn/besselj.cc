@@ -107,10 +107,7 @@ do_bessel (enum bessel_type type, const char *fn,
         scaled = opt_arg.bool_value ();
 
       if (rpt_error)
-        {
-          error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
-          return retval;
-        }
+        error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
     }
 
   octave_value alpha_arg = args(0);

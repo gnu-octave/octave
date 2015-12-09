@@ -397,10 +397,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
       os.precision (old_precision);
     }
   else
-    {
-      error ("for now, I can only save real matrices in 3-D format");
-      fail = true;
-    }
+    error ("for now, I can only save real matrices in 3-D format");
 
   return (os && ! fail);
 }

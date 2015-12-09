@@ -163,11 +163,8 @@ extract_function (const octave_value& arg, const std::string& warn_for,
           retval = is_valid_function (fname, warn_for, 0);
 
           if (! retval)
-            {
-              error ("%s: '%s' is not valid as a function",
-                     warn_for.c_str (), fname.c_str ());
-              return retval;
-            }
+            error ("%s: '%s' is not valid as a function",
+                   warn_for.c_str (), fname.c_str ());
 
           warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
                    warn_for.c_str ());
@@ -332,10 +329,7 @@ do_isglobal (const octave_value_list& args)
     print_usage ();
 
   if (! args(0).is_string ())
-    {
-      error ("isglobal: NAME must be a string");
-      return retval;
-    }
+    error ("isglobal: NAME must be a string");
 
   std::string name = args(0).string_value ();
 
@@ -397,10 +391,7 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (! (search_any || search_var || search_dir || search_file ||
          search_builtin || search_class))
-    {
-      error ("exist: unrecognized type argument \"%s\"", type.c_str ());
-      return 0;
-    }
+    error ("exist: unrecognized type argument \"%s\"", type.c_str ());
 
   if (search_any || search_var)
     {
@@ -1490,10 +1481,7 @@ public:
                               &a, &b, &balance) - 1;
 
             if (items < 2)
-              {
-                error ("whos_line_format: parameter structure without command in whos_line_format");
-                error_encountered = true;
-              }
+              error ("whos_line_format: parameter structure without command in whos_line_format");
 
             // Insert data into parameter
             param.first_parameter_length = 0;
@@ -1510,11 +1498,8 @@ public:
                   param.first_parameter_length = b;
               }
             else
-              {
-                error ("whos_line_format: '%c' is not a command",
-                       param.command);
-                error_encountered = true;
-              }
+              error ("whos_line_format: '%c' is not a command",
+                     param.command);
 
             if (param.command == 's')
               {
@@ -1559,11 +1544,8 @@ public:
                   }
               }
             else if (param.modifier == 'c')
-              {
-                error ("whos_line_format: modifier 'c' not available for command '%c'",
-                       param.command);
-                error_encountered = true;
-              }
+              error ("whos_line_format: modifier 'c' not available for command '%c'",
+                     param.command);
 
             // What happens if whos_line_format contains negative numbers
             // at param_length positions?

@@ -81,10 +81,9 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
       return retval;
     }
   else
-    {
-      error ("typecast: incorrect number of input values to make output value");
-      return ArrayType ();
-    }
+    error ("typecast: incorrect number of input values to make output value");
+
+  return ArrayType ();
 }
 
 
@@ -291,10 +290,9 @@ do_bitpack (const boolNDArray& bitp)
       return retval;
     }
   else
-    {
-      error ("bitpack: incorrect number of bits to make up output value");
-      return ArrayType ();
-    }
+    error ("bitpack: incorrect number of bits to make up output value");
+
+  return ArrayType ();
 }
 
 DEFUN (bitpack, args, ,

@@ -81,10 +81,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
             tol = args(1).float_value ();
 
           if (tol < 0.0)
-            {
-              error ("pinv: TOL must be greater than zero");
-              return retval;
-            }
+            error ("pinv: TOL must be greater than zero");
 
           if (arg.is_real_type ())
             retval = arg.float_diag_matrix_value ().pseudo_inverse (tol);
@@ -98,10 +95,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
             tol = args(1).double_value ();
 
           if (tol < 0.0)
-            {
-              error ("pinv: TOL must be greater than zero");
-              return retval;
-            }
+            error ("pinv: TOL must be greater than zero");
 
           if (arg.is_real_type ())
             retval = arg.diag_matrix_value ().pseudo_inverse (tol);
@@ -120,10 +114,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
         tol = args(1).float_value ();
 
       if (tol < 0.0)
-        {
-          error ("pinv: TOL must be greater than zero");
-          return retval;
-        }
+        error ("pinv: TOL must be greater than zero");
 
       if (arg.is_real_type ())
         {
@@ -147,10 +138,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
         tol = args(1).double_value ();
 
       if (tol < 0.0)
-        {
-          error ("pinv: TOL must be greater than zero");
-          return retval;
-        }
+        error ("pinv: TOL must be greater than zero");
 
       if (arg.is_real_type ())
         {

@@ -67,10 +67,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       else if (term.find ("tex") != std::string::npos)
         gl2ps_term = GL2PS_TEX;
       else
-        {
-          error ("gl2ps-renderer::draw: Unknown terminal %s", term.c_str ());
-          return;
-        }
+        error ("gl2ps-renderer::draw: Unknown terminal %s", term.c_str ());
 
       GLint gl2ps_text = 0;
       if (term.find ("notxt") != std::string::npos)
@@ -131,7 +128,6 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
             {
               old_print_cmd.clear ();
               error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
-              return;
             }
 
           old_print_cmd = print_cmd;
@@ -148,7 +144,6 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
             {
               old_print_cmd.clear ();
               error ("gl2ps-renderer::draw: gl2psEndPage returned GL2PS_ERROR");
-              return;
             }
 
           // Don't check state for GL2PS_UNINITIALIZED (should never happen)

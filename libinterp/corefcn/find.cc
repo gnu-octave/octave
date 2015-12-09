@@ -416,10 +416,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         direction = -1;
 
       if (direction == 0)
-        {
-          error ("find: DIRECTION must be \"first\" or \"last\"");
-          return retval;
-        }
+        error ("find: DIRECTION must be \"first\" or \"last\"");
     }
 
   octave_value arg = args(0);

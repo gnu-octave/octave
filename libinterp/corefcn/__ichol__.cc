@@ -52,25 +52,18 @@ double ichol_mult_real (double a, double b)
 bool ichol_checkpivot_complex (Complex pivot)
 {
   if (pivot.imag () != 0)
-    {
-      error ("ichol: non-real pivot encountered.  The matrix must be hermitian.");
-      return false;
-    }
+    error ("ichol: non-real pivot encountered.  The matrix must be hermitian.");
   else if (pivot.real () < 0)
-    {
-      error ("ichol: negative pivot encountered");
-      return false;
-    }
+    error ("ichol: negative pivot encountered");
+
   return true;
 }
 
 bool ichol_checkpivot_real (double pivot)
 {
   if (pivot < 0)
-    {
-      error ("ichol: negative pivot encountered");
-      return false;
-    }
+    error ("ichol: negative pivot encountered");
+
   return true;
 }
 
@@ -156,10 +149,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
         data[j1] += dropsums[k];
 
       if (ridx[j1] != k)
-        {
-          error ("ichol: encountered a pivot equal to 0");
-          break;
-        }
+        error ("ichol: encountered a pivot equal to 0");
 
       if (! ichol_checkpivot (data[j1]))
         break;
@@ -389,11 +379,9 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
         data_l[total_len] += col_drops[k];
 
       if (data_l[total_len] == zero)
-        {
-          error ("ichol: encountered a pivot equal to 0");
-          break;
-        }
-      else if (! ichol_checkpivot (data_l[total_len]))
+        error ("ichol: encountered a pivot equal to 0");
+
+      if (! ichol_checkpivot (data_l[total_len]))
         break;
 
       // Once elements are dropped and compensation of column sums are done,
@@ -405,10 +393,8 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
       // Check if there are too many elements to be indexed with
       // octave_idx_type type due to fill-in during the process.
       if (total_len < 0)
-        {
-          error ("ichol: integer overflow.  Too many fill-in elements in L");
-          break;
-        }
+        error ("ichol: integer overflow.  Too many fill-in elements in L");
+
       cidx_l[k+1] = cidx_l[k] - cidx_l[0] + w_len;
 
       // Update Llist and Lfirst with the k-column information.

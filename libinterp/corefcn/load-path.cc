@@ -335,11 +335,7 @@ load_path::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create load path object!");
-
-      retval = false;
-    }
+    error ("unable to create load path object!");
 
   return retval;
 }
@@ -2451,10 +2447,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
           nargin--;
         }
       else
-        {
-          error ("addpath: OPTION must be '-begin'/0 or '-end'/1");
-          return retval;
-        }
+        error ("addpath: OPTION must be '-begin'/0 or '-end'/1");
     }
 
   bool need_to_update = false;

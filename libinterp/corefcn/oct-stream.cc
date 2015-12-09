@@ -939,12 +939,8 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
   std::string retval;
 
   if (interactive && file_number () == 0)
-    {
-      ::error ("%s: unable to read from stdin while running interactively",
-               who.c_str ());
-
-      return retval;
-    }
+    ::error ("%s: unable to read from stdin while running interactively",
+             who.c_str ());
 
   err = false;
 
@@ -2406,10 +2402,7 @@ do_printf_string (std::ostream& os, const printf_format_elt *elt,
   size_t retval = 0;
 
   if (nsa > 2)
-    {
-      ::error ("%s: internal error handling format", who.c_str ());
-      return retval;
-    }
+    ::error ("%s: internal error handling format", who.c_str ());
 
   std::string flags = elt->flags;
 
@@ -2615,8 +2608,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
           break;
 
         default:
-          error ("%s: invalid format specifier",
-                 who.c_str ());
+          error ("%s: invalid format specifier", who.c_str ());
           return -1;
           break;
         }
@@ -4128,11 +4120,7 @@ octave_stream_list::instance_ok (void)
     }
 
   if (! instance)
-    {
-      ::error ("unable to create stream list object!");
-
-      retval = false;
-    }
+    ::error ("unable to create stream list object!");
 
   return retval;
 }

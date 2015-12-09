@@ -133,17 +133,11 @@ octave_value_list::splice (octave_idx_type offset, octave_idx_type rep_length,
   if (offset < 0 || offset >= len)
     {
       if (! (rep_length == 0 && offset == len))
-        {
-          error ("octave_value_list::splice: invalid OFFSET");
-          return retval;
-        }
+        error ("octave_value_list::splice: invalid OFFSET");
     }
 
   if (rep_length < 0 || rep_length + offset > len)
-    {
-      error ("octave_value_list::splice: invalid LENGTH");
-      return retval;
-    }
+    error ("octave_value_list::splice: invalid LENGTH");
 
   octave_idx_type lst_len = lst.length ();
 

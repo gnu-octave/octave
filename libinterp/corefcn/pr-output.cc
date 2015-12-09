@@ -3665,11 +3665,7 @@ set_format_style (int argc, const string_vector& argv)
                   print_eng = true;
                 }
               else
-                {
-                  error ("format: unrecognized option 'short %s'",
-                         arg.c_str ());
-                  return;
-                }
+                error ("format: unrecognized option 'short %s'", arg.c_str ());
             }
           else
             init_format_state ();
@@ -3743,11 +3739,7 @@ set_format_style (int argc, const string_vector& argv)
                   print_eng = true;
                 }
               else
-                {
-                  error ("format: unrecognized option 'long %s'",
-                         arg.c_str ());
-                  return;
-                }
+                error ("format: unrecognized option 'long %s'", arg.c_str ());
             }
           else
             init_format_state ();
@@ -3816,10 +3808,7 @@ set_format_style (int argc, const string_vector& argv)
               if (arg.length () == 3)
                 plus_format_chars = arg;
               else
-                {
-                  error ("format: invalid option for plus format");
-                  return;
-                }
+                error ("format: invalid option for plus format");
             }
           else
             plus_format_chars = "+- ";
@@ -3858,10 +3847,7 @@ set_format_style (int argc, const string_vector& argv)
           return;
         }
       else
-        {
-          error ("format: unrecognized format state '%s'", arg.c_str ());
-          return;
-        }
+        error ("format: unrecognized format state '%s'", arg.c_str ());
     }
   else
     {

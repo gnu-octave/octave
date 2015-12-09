@@ -294,15 +294,13 @@ Cell::column (octave_idx_type i) const
     {
       if (i < 0 || i >= cols ())
         error ("invalid column selection");
-      else
-        {
-          octave_idx_type nr = rows ();
 
-          retval.resize (dim_vector (nr, 1));
+      octave_idx_type nr = rows ();
 
-          for (octave_idx_type j = 0; j < nr; j++)
-            retval.xelem (j) = elem (j, i);
-        }
+      retval.resize (dim_vector (nr, 1));
+
+      for (octave_idx_type j = 0; j < nr; j++)
+        retval.xelem (j) = elem (j, i);
     }
   else
     error ("Cell::column: requires 2-D cell array");

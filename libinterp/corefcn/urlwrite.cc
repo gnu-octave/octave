@@ -80,11 +80,7 @@ public:
       create_instance ();
 
     if (! instance)
-      {
-        error ("unable to create ch_manager!");
-
-        retval = false;
-      }
+      error ("unable to create ch_manager!");
 
     return retval;
   }
@@ -355,18 +351,12 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       method = args(2).xstring_value ("urlwrite: METHOD must be a string");
 
       if (method != "get" && method != "post")
-        {
-          error ("urlwrite: METHOD must be \"get\" or \"post\"");
-          return retval;
-        }
+        error ("urlwrite: METHOD must be \"get\" or \"post\"");
 
       param = args(3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
-        {
-          error ("urlwrite: number of elements in PARAM must be even");
-          return retval;
-        }
+        error ("urlwrite: number of elements in PARAM must be even");
     }
 
   // The file should only be deleted if it doesn't initially exist, we
@@ -378,10 +368,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   std::ofstream ofile (filename.c_str (), std::ios::out | std::ios::binary);
 
   if (! ofile.is_open ())
-    {
-      error ("urlwrite: unable to open file");
-      return retval;
-    }
+    error ("urlwrite: unable to open file");
 
   unwind_protect_safe frame;
 
@@ -486,18 +473,12 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
       method = args(1).xstring_value ("urlread: METHOD must be a string");
 
       if (method != "get" && method != "post")
-        {
-          error ("urlread: METHOD must be \"get\" or \"post\"");
-          return retval;
-        }
+        error ("urlread: METHOD must be \"get\" or \"post\"");
 
       param = args(2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
-        {
-          error ("urlread: number of elements in PARAM must be even");
-          return retval;
-        }
+        error ("urlread: number of elements in PARAM must be even");
     }
 
   std::ostringstream buf;
@@ -915,20 +896,14 @@ Undocumented internal function\n\
               file_stat fs (file);
 
               if (! fs.exists ())
-                {
-                  error ("__ftp__mput: file does not exist");
-                  break;
-                }
+                error ("__ftp__mput: file does not exist");
 
               if (fs.is_dir ())
                 {
                   file_list.append (curl.mput_directory ("", file));
 
                   if (! curl.good ())
-                    {
-                      error ("__ftp_mput__: %s", curl.lasterror().c_str());
-                      break;
-                    }
+                    error ("__ftp_mput__: %s", curl.lasterror().c_str());
                 }
               else
                 {
@@ -937,20 +912,14 @@ Undocumented internal function\n\
                                        std::ios::binary);
 
                   if (! ifile.is_open ())
-                    {
-                      error ("__ftp_mput__: unable to open file");
-                      break;
-                    }
+                    error ("__ftp_mput__: unable to open file");
 
                   curl.put (file, ifile);
 
                   ifile.close ();
 
                   if (! curl.good ())
-                    {
-                      error ("__ftp_mput__: %s", curl.lasterror().c_str());
-                      break;
-                    }
+                    error ("__ftp_mput__: %s", curl.lasterror().c_str());
 
                   file_list.append (file);
                 }
@@ -1017,10 +986,7 @@ Undocumented internal function\n\
                                            std::ios::binary);
 
                       if (! ofile.is_open ())
-                        {
-                          error ("__ftp_mget__: unable to open file");
-                          break;
-                        }
+                        error ("__ftp_mget__: unable to open file");
 
                       unwind_protect_safe frame;
 
@@ -1035,10 +1001,7 @@ Undocumented internal function\n\
                     }
 
                   if (! curl.good ())
-                    {
-                      error ("__ftp_mget__: %s", curl.lasterror().c_str());
-                      break;
-                    }
+                    error ("__ftp_mget__: %s", curl.lasterror().c_str());
                 }
             }
 

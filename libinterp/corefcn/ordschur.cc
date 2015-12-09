@@ -119,15 +119,9 @@ is in the upper left corner, by doing:\n\
   const dim_vector dimU = args(0).dims ();
   const dim_vector dimS = args(1).dims ();
   if (n != dimU(0))
-    {
-      error ("ordschur: SELECT must have same length as the sides of U and S");
-      return retval;
-    }
+    error ("ordschur: SELECT must have same length as the sides of U and S");
   else if (n != dimU(0) || n != dimS(0) || n != dimU(1) || n != dimS(1))
-    {
-      error ("ordschur: U and S must be square and of equal sizes");
-      return retval;
-    }
+    error ("ordschur: U and S must be square and of equal sizes");
 
   const bool double_type  = args(0).is_double_type ()
                             || args(1).is_double_type ();
@@ -145,10 +139,8 @@ is in the upper left corner, by doing:\n\
 
 #define PREPARE_OUTPUT()\
           if (info != 0) \
-            { \
-              error ("ordschur: trsen failed"); \
-              return retval; \
-            } \
+            error ("ordschur: trsen failed"); \
+ \
           retval(0) = U; \
           retval(1) = S;
 

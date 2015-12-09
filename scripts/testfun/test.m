@@ -800,14 +800,14 @@ endfunction
 ## Test 'fail' keyword
 %!fail ("test", "Invalid call to test")  # no args, generates usage()
 %!fail ("test (1,2,3,4)", "usage.*test") # too many args, generates usage()
-%!fail ('test ("test", "bogus")', "unknown flag")  # incorrect args
+%!fail ('test ("test", "invalid")', "unknown flag")  # incorrect args
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 
 ## Test 'error' keyword
 %!error test              # no args, generates usage()
 %!error test (1,2,3,4)    # too many args, generates usage()
-%!error <unknown flag> test ("test", "bogus"); # incorrect args
-%!error test ("test", "bogus");  # test without pattern
+%!error <unknown flag> test ("test", "invalid"); # incorrect args
+%!error test ("test", "invalid");  # test without pattern
 %!error <'garbage' undefined> garbage; # usage on nonexistent function is error
 
 ## Test 'warning' keyword
@@ -873,7 +873,7 @@ endfunction
 %!         " a=3                  # single line demo blocks work too");
 
 ## Test 'testif' keyword
-%!testif HAVE_BOGUS_FEATURE
+%!testif HAVE_INVALID_FEATURE
 %! error ("testif executed code despite not having feature");
 
 ## Test 'xtest' keyword
@@ -898,7 +898,7 @@ endfunction
 ## like to be presented with expected failures.  I use '% !' to disable.
 % !test   error("---------Failure tests.  Use test('test','verbose',1)");
 % !test   assert([a,b,c],[1,3,6]);   # variables have wrong values
-% !bogus                     # unknown block type
+% !invalid                   # unknown block type
 % !error  toeplitz([1,2,3]); # correct usage
 % !test   syntax errors)     # syntax errors fail properly
 % !shared garbage in         # variables must be comma separated

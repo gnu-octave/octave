@@ -189,8 +189,7 @@ author of the library.
 This line should contain a single name/address as in the Author line, or
 an address only, or the string @samp{jwe}.  If there is no maintainer
 line, the person(s) in the Author field are presumed to be the
-maintainers.  The example above is mildly bogus because the maintainer
-line is redundant.
+maintainers.
 
 The idea behind the @samp{Author} and @samp{Maintainer} lines is to make
 possible a function to ``send mail to the maintainer'' without

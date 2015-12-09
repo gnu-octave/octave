@@ -340,7 +340,7 @@ ANY_INCLUDING_NL (.|{NL})
 %%
 
 %{
-// Make script and function files start with a bogus token. This makes
+// Make script and function files start with an invalid token. This makes
 // the parser go down a special path.
 %}
 

@@ -250,7 +250,7 @@ public class TeXtranslator
                 // 26 08 2010 MH
                 // advance i to avoid deadlock in case of incorrect escape
                 // sequences like \\\\alpha (double backslash) or
-                // \\bogus (unknown escape sequence)
+                // \\invalid (unknown escape sequence)
                 i++;
               }
           }

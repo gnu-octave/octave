@@ -184,7 +184,7 @@ cat <<EOF
 
 %% error handling in constructor
 %!error sparse (1,[2,3],[1,2,3])
-%!error sparse ([1,1],[1,1],[1,2],3,3,"bogus")
+%!error sparse ([1,1],[1,1],[1,2],3,3,"invalid")
 %!error sparse ([1,3],[1,-4],[3,5],2,2)
 %!error sparse ([1,3],[1,-4],[3,5i],2,2)
 %!error sparse (-1,-1,1)

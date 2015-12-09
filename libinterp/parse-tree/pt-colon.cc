@@ -45,16 +45,14 @@ tree_colon_expression::append (tree_expression *t)
         {
           if (op_increment)
             error ("invalid colon expression");
-          else
-            {
-              // Stupid syntax:
-              //
-              // base : limit
-              // base : increment : limit
 
-              op_increment = op_limit;
-              op_limit = t;
-            }
+          // Stupid syntax:
+          //
+          // base : limit
+          // base : increment : limit
+
+          op_increment = op_limit;
+          op_limit = t;
         }
       else
         op_limit = t;
@@ -70,14 +68,10 @@ tree_colon_expression::append (tree_expression *t)
 octave_value_list
 tree_colon_expression::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for colon expression");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 octave_value

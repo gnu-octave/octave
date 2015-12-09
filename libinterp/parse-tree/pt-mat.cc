@@ -274,6 +274,10 @@ get_concat_class (const std::string& c1, const std::string& c2)
 }
 
 static void
+eval_error (const char *msg, const dim_vector& x,
+            const dim_vector& y) GCC_ATTR_NORETURN;
+
+static void
 eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 {
   error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
@@ -406,10 +410,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
               dv = this_elt_dv;
             }
           else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
-            {
-              eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
-              break;
-            }
+            eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
         }
     }
 
@@ -453,11 +454,7 @@ tm_row_const::tm_row_const_rep::cellify (void)
                   dv = this_elt_dv;
                 }
               else if (! dv.hvcat (this_elt_dv, 1))
-                {
-                  eval_error ("horizontal dimensions mismatch",
-                              dv, this_elt_dv);
-                  break;
-                }
+                eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
             }
         }
     }
@@ -647,10 +644,7 @@ tm_const::init (const tree_matrix& tm)
           dv(0) += this_elt_nr;
         }
       else if ((!any_class) && (!dv.hvcat (this_elt_dv, 0)))
-        {
-          eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
-          return;
-        }
+        eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
     }
 
   ok = true;
@@ -659,14 +653,10 @@ tm_const::init (const tree_matrix& tm)
 octave_value_list
 tree_matrix::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for matrix list");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 void

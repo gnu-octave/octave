@@ -81,12 +81,8 @@ tree_parameter_list::validate (in_or_out type)
                 error ("invalid use of ~ in output list");
             }
           else if (dict.find (name) != dict.end ())
-            {
-              retval = false;
-              error ("'%s' appears more than once in parameter list",
-                     name.c_str ());
-              break;
-            }
+            error ("'%s' appears more than once in parameter list",
+                   name.c_str ());
           else
             dict.insert (name);
         }
@@ -194,10 +190,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
           if (args(i).is_defined () && args(i).is_magic_colon ())
             {
               if (! elt->eval ())
-                {
-                  error ("no default value for argument %d", i+1);
-                  return;
-                }
+                error ("no default value for argument %d", i+1);
             }
           else
             ref.define (args(i));

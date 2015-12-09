@@ -62,14 +62,10 @@ tree_simple_assignment::~tree_simple_assignment (void)
 octave_value_list
 tree_simple_assignment::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for expression X = RHS");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 octave_value
@@ -82,62 +78,54 @@ tree_simple_assignment::rvalue1 (int)
       octave_value rhs_val = rhs->rvalue1 ();
 
       if (rhs_val.is_undefined ())
+        error ("value on right hand side of assignment is undefined");
+
+      if (rhs_val.is_cs_list ())
         {
-          error ("value on right hand side of assignment is undefined");
-          return retval;
+          const octave_value_list lst = rhs_val.list_value ();
+
+          if (! lst.empty ())
+            rhs_val = lst(0);
+          else
+            error ("invalid number of elements on RHS of assignment");
         }
-      else
+
+      try
         {
-          if (rhs_val.is_cs_list ())
+          octave_lvalue ult = lhs->lvalue ();
+
+          if (ult.numel () != 1)
+            gripe_nonbraced_cs_list_assignment ();
+
+          ult.assign (etype, rhs_val);
+
+          if (etype == octave_value::op_asn_eq)
+            retval = rhs_val;
+          else
+            retval = ult.value ();
+
+          if (print_result ()
+              && tree_evaluator::statement_printing_enabled ())
             {
-              const octave_value_list lst = rhs_val.list_value ();
+              // We clear any index here so that we can
+              // get the new value of the referenced
+              // object below, instead of the indexed
+              // value (which should be the same as the
+              // right hand side value).
 
-              if (! lst.empty ())
-                rhs_val = lst(0);
-              else
-                {
-                  error ("invalid number of elements on RHS of assignment");
-                  return retval;
-                }
+              ult.clear_index ();
+
+              octave_value lhs_val = ult.value ();
+
+              lhs_val.print_with_name (octave_stdout,
+                                       lhs->name ());
             }
-
-          try
-            {
-              octave_lvalue ult = lhs->lvalue ();
-
-              if (ult.numel () != 1)
-                gripe_nonbraced_cs_list_assignment ();
-
-              ult.assign (etype, rhs_val);
-
-              if (etype == octave_value::op_asn_eq)
-                retval = rhs_val;
-              else
-                retval = ult.value ();
-
-              if (print_result ()
-                  && tree_evaluator::statement_printing_enabled ())
-                {
-                  // We clear any index here so that we can
-                  // get the new value of the referenced
-                  // object below, instead of the indexed
-                  // value (which should be the same as the
-                  // right hand side value).
-
-                  ult.clear_index ();
-
-                  octave_value lhs_val = ult.value ();
-
-                  lhs_val.print_with_name (octave_stdout,
-                                           lhs->name ());
-                }
-            }
-          catch (index_exception& e)
-            {
-              e.set_var (lhs->name ());
-              std::string msg = e.message ();
-              error_with_id (e.err_id (), msg.c_str ());
-            }
+        }
+      catch (index_exception& e)
+        {
+          e.set_var (lhs->name ());
+          std::string msg = e.message ();
+          error_with_id (e.err_id (), msg.c_str ());
         }
     }
 

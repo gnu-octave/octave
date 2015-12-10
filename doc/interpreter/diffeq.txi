@@ -153,6 +153,7 @@ Currently implemented solvers are:
 
 @DOCSTRING(odeget)
 
+@DOCSTRING(odeplot)
 
 @node Differential-Algebraic Equations
 @section Differential-Algebraic Equations

@@ -113,7 +113,7 @@ along with Octave; see the file COPYING.  If not, see
 // to create an octave_value of the correct type. The specific load/save
 // function is then called.
 //
-// For backward compatiablity "data type" can also be a value between 1
+// For backward compatibility "data type" can also be a value between 1
 // and 7, where this defines a hardcoded octave_value of the type
 //
 //   data type                  octave_value

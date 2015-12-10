@@ -272,7 +272,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       else
         typ = tag;
 
-      // Special case for backward compatiablity. A small bit of cruft
+      // Special case for backward compatibility.  A small bit of cruft
       if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
         tc = charMatrix ();
       else

@@ -48,13 +48,13 @@ $$\n\
 A = PHP^T\n\
 $$\n\
 where $P$ is a square unitary matrix ($P^TP = I$), and $H$\n\
-is upper Hessenberg ($H_{i,j} = 0, \\forall i \\ge j+1$).\n\
+is upper Hessenberg ($H_{i,j} = 0, \\forall i > j+1$).\n\
 @end tex\n\
 @ifnottex\n\
 @code{@var{P} * @var{H} * @var{P}' = @var{A}} where @var{P} is a square\n\
 unitary matrix (@code{@var{P}' * @var{P} = I}, using complex-conjugate\n\
 transposition) and @var{H} is upper Hessenberg\n\
-(@code{@var{H}(i, j) = 0 forall i >= j+1)}.\n\
+(@code{@var{H}(i, j) = 0 forall i > j+1)}.\n\
 @end ifnottex\n\
 \n\
 The Hessenberg decomposition is usually used as the first step in an\n\

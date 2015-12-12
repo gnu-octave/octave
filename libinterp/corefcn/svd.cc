@@ -154,15 +154,15 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
           switch (type)
             {
             case SVD::std:
-              retval(2) = FloatDiagMatrix (nc, nc, 1.0f);
-              retval(1) = FloatMatrix (nr, nc);
-              retval(0) = FloatDiagMatrix (nr, nr, 1.0f);
+              retval = ovl (FloatDiagMatrix (nr, nr, 1.0f),
+                            FloatMatrix (nr, nc),
+                            FloatDiagMatrix (nc, nc, 1.0f));
               break;
 
             case SVD::economy:
-              retval(2) = FloatDiagMatrix (0, nc, 1.0f);
-              retval(1) = FloatMatrix (0, 0);
-              retval(0) = FloatDiagMatrix (nr, 0, 1.0f);
+              retval = ovl (FloatDiagMatrix (nr, 0, 1.0f),
+                            FloatMatrix (0, 0),
+                            FloatDiagMatrix (0, nc, 1.0f));
               break;
 
             case SVD::sigma_only: default:
@@ -175,15 +175,15 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
           switch (type)
             {
             case SVD::std:
-              retval(2) = DiagMatrix (nc, nc, 1.0);
-              retval(1) = Matrix (nr, nc);
-              retval(0) = DiagMatrix (nr, nr, 1.0);
+              retval = ovl (DiagMatrix (nr, nr, 1.0),
+                            Matrix (nr, nc),
+                            DiagMatrix (nc, nc, 1.0));
               break;
 
             case SVD::economy:
-              retval(2) = DiagMatrix (0, nc, 1.0);
-              retval(1) = Matrix (0, 0);
-              retval(0) = DiagMatrix (nr, 0, 1.0);
+              retval = ovl (DiagMatrix (nr, 0, 1.0),
+                            Matrix (0, 0),
+                            DiagMatrix (0, nc, 1.0));
               break;
 
             case SVD::sigma_only: default:
@@ -210,11 +210,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
               if (nargout == 0 || nargout == 1)
                 retval(0) = sigma.extract_diag ();
               else
-                {
-                  retval(2) = result.right_singular_matrix ();
-                  retval(1) = sigma;
-                  retval(0) = result.left_singular_matrix ();
-                }
+                retval = ovl (result.left_singular_matrix (),
+                              sigma,
+                              result.right_singular_matrix ());
             }
           else if (arg.is_complex_type ())
             {
@@ -230,11 +228,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
               if (nargout == 0 || nargout == 1)
                 retval(0) = sigma.extract_diag ();
               else
-                {
-                  retval(2) = result.right_singular_matrix ();
-                  retval(1) = sigma;
-                  retval(0) = result.left_singular_matrix ();
-                }
+                retval = ovl (result.left_singular_matrix (),
+                              sigma,
+                              result.right_singular_matrix ());
             }
         }
       else
@@ -253,11 +249,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
               if (nargout == 0 || nargout == 1)
                 retval(0) = sigma.extract_diag ();
               else
-                {
-                  retval(2) = result.right_singular_matrix ();
-                  retval(1) = sigma;
-                  retval(0) = result.left_singular_matrix ();
-                }
+                retval = ovl (result.left_singular_matrix (),
+                              sigma,
+                              result.right_singular_matrix ());
             }
           else if (arg.is_complex_type ())
             {
@@ -273,11 +267,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
               if (nargout == 0 || nargout == 1)
                 retval(0) = sigma.extract_diag ();
               else
-                {
-                  retval(2) = result.right_singular_matrix ();
-                  retval(1) = sigma;
-                  retval(0) = result.left_singular_matrix ();
-                }
+                retval = ovl (result.left_singular_matrix (),
+                              sigma,
+                              result.right_singular_matrix ());
             }
           else
             gripe_wrong_type_arg ("svd", arg);

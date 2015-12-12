@@ -371,6 +371,10 @@ Return the bitwise AND of non-negative integers.\n\
   return bitop ("bitand", args);
 }
 
+/*
+%!# Function bitand is tested as part of bitxor BIST tests
+*/
+
 DEFUN (bitor, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} bitor (@var{x}, @var{y})\n\
@@ -381,6 +385,10 @@ Return the bitwise OR of non-negative integers @var{x} and @var{y}.\n\
 {
   return bitop ("bitor", args);
 }
+
+/*
+%!# Function bitor is tested as part of bitxor BIST tests
+*/
 
 DEFUN (bitxor, args, ,
        "-*- texinfo -*-\n\
@@ -693,6 +701,17 @@ for @qcode{\"double\"} and @w{@math{2^{24}}} for @qcode{\"single\"}.\n\
   return retval;
 }
 
+/*
+%!assert (flintmax (), 2^53)
+%!assert (flintmax ("double"), 2^53)
+%!assert (flintmax ("single"), single (2^24))
+
+%!error flintmax (0)
+%!error flintmax ("double", 0)
+%!error flintmax ("int32")
+%!error flintmax ("char")
+*/
+
 DEFUN (intmax, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} intmax (@var{type})\n\
@@ -763,6 +782,23 @@ The default for @var{type} is @code{int32}.\n\
 
   return retval;
 }
+
+/*
+%!assert (intmax (),          int32 (2^31 - 1))
+%!assert (intmax ("int8"),     int8 (2^7 - 1))
+%!assert (intmax ("uint8"),   uint8 (2^8 - 1))
+%!assert (intmax ("int16"),   int16 (2^15 - 1))
+%!assert (intmax ("uint16"), uint16 (2^16 - 1))
+%!assert (intmax ("int32"),   int32 (2^31 - 1))
+%!assert (intmax ("uint32"), uint32 (2^32 - 1))
+%!assert (intmax ("int64"),   int64 (2^63 - 1))
+%!assert (intmax ("uint64"), uint64 (2^64 - 1))
+
+%!error intmax (0)
+%!error intmax ("int32", 0)
+%!error intmax ("double")
+%!error intmax ("char")
+*/
 
 DEFUN (intmin, args, ,
        "-*- texinfo -*-\n\
@@ -835,6 +871,23 @@ The default for @var{type} is @code{int32}.\n\
   return retval;
 }
 
+/*
+%!assert (intmin (),          int32 (-2^31))
+%!assert (intmin ("int8"),     int8 (-2^7))
+%!assert (intmin ("uint8"),   uint8 (-2^8))
+%!assert (intmin ("int16"),   int16 (-2^15))
+%!assert (intmin ("uint16"), uint16 (-2^16))
+%!assert (intmin ("int32"),   int32 (-2^31))
+%!assert (intmin ("uint32"), uint32 (-2^32))
+%!assert (intmin ("int64"),   int64 (-2^63))
+%!assert (intmin ("uint64"), uint64 (-2^64))
+
+%!error intmin (0)
+%!error intmin ("int32", 0)
+%!error intmin ("double")
+%!error intmin ("char")
+*/
+
 DEFUN (sizemax, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} sizemax ()\n\
@@ -852,3 +905,9 @@ by @code{intmax}.\n\
 
   return octave_value (octave_int<octave_idx_type> (dim_vector::dim_max ()));
 }
+
+/*
+%!assert (sizemax () >= (intmax ("int32") - 1))
+
+%!error sizemax (0)
+*/

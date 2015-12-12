@@ -211,6 +211,9 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
+  if (nargin != 0 && nargin != 4)
+    print_usage ();
+
   if (nargin == 4)
     {
       if (vinfo.nfields () == 0)
@@ -236,8 +239,6 @@ Undocumented internal function.\n\
     }
   else if (nargin == 0)
     retval = vinfo;
-  else
-    print_usage ();
 
   return retval;
 }
@@ -1016,10 +1017,10 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = start_gui;
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  retval = start_gui;
 
   return retval;
 }
@@ -1051,10 +1052,10 @@ an example of how to create an executable Octave script.\n\
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = Cell (octave_argv);
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  retval = Cell (octave_argv);
 
   return retval;
 }
@@ -1078,10 +1079,10 @@ how to create an executable Octave script.\n\
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = octave_program_invocation_name;
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  retval = octave_program_invocation_name;
 
   return retval;
 }
@@ -1101,10 +1102,10 @@ Return the last component of the value returned by\n\
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = octave_program_name;
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  retval = octave_program_name;
 
   return retval;
 }

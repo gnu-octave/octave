@@ -288,6 +288,8 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
 
+  retval.resize (nargout == 2 ? 2 : 1);
+
   // Get knobs
   OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
   COLAMD_NAME (_set_defaults) (knobs);
@@ -523,6 +525,8 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
 
+  retval.resize (nargin == 2 ? 2 : 1);
+
   // Get knobs
   OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
   COLAMD_NAME (_set_defaults) (knobs);
@@ -662,6 +666,8 @@ permutations on the tree.\n\
 
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
+
+  retval.resize (nargout == 2 ? 2 : 1);
 
   octave_idx_type n_row = 0, n_col = 0;
   octave_idx_type *ridx = 0, *cidx = 0;

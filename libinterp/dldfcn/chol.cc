@@ -254,10 +254,7 @@ sparse matrices.\n\
           fact = FloatCHOL (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
-            {
-              retval(1) = info;
-              retval(0) = get_chol (fact);
-            }
+            retval = ovl (get_chol (fact), info);
           else
             error ("chol: input matrix must be positive definite");
         }
@@ -271,10 +268,7 @@ sparse matrices.\n\
           fact = FloatComplexCHOL (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
-            {
-              retval(1) = info;
-              retval(0) = get_chol (fact);
-            }
+            retval = ovl (get_chol (fact), info);
           else
             error ("chol: input matrix must be positive definite");
         }
@@ -293,10 +287,7 @@ sparse matrices.\n\
           fact = CHOL (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
-            {
-              retval(1) = info;
-              retval(0) = get_chol (fact);
-            }
+            retval = ovl (get_chol (fact), info);
           else
             error ("chol: input matrix must be positive definite");
         }
@@ -310,10 +301,7 @@ sparse matrices.\n\
           fact = ComplexCHOL (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
-            {
-              retval(1) = info;
-              retval(0) = get_chol (fact);
-            }
+            retval = ovl (get_chol (fact), info);
           else
             error ("chol: input matrix must be positive definite");
         }
@@ -582,8 +570,6 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 {
   int nargin = args.length ();
 
-  octave_value_list retval;
-
   if (nargin > 3 || nargin < 2)
     print_usage ();
 
@@ -594,99 +580,99 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
       || (nargin > 2 && ! args(2).is_string ()))
     print_usage ();
 
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+
   octave_idx_type n = argr.rows ();
 
   std::string op = (nargin < 3) ? "+" : args(2).string_value ();
 
-  bool down = op == "-";
+  bool down = (op == "-");
 
-  if (down || op == "+")
-    if (argr.columns () == n && argu.rows () == n && argu.columns () == 1)
-      {
-        int err = 0;
-        if (argr.is_single_type () || argu.is_single_type ())
-          {
-            if (argr.is_real_type () && argu.is_real_type ())
-              {
-                // real case
-                FloatMatrix R = argr.float_matrix_value ();
-                FloatColumnVector u = argu.float_column_vector_value ();
-
-                FloatCHOL fact;
-                fact.set (R);
-
-                if (down)
-                  err = fact.downdate (u);
-                else
-                  fact.update (u);
-
-                retval(0) = get_chol_r (fact);
-              }
-            else
-              {
-                // complex case
-                FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                FloatComplexColumnVector u =
-                  argu.float_complex_column_vector_value ();
-
-                FloatComplexCHOL fact;
-                fact.set (R);
-
-                if (down)
-                  err = fact.downdate (u);
-                else
-                  fact.update (u);
-
-                retval(0) = get_chol_r (fact);
-              }
-          }
-        else
-          {
-            if (argr.is_real_type () && argu.is_real_type ())
-              {
-                // real case
-                Matrix R = argr.matrix_value ();
-                ColumnVector u = argu.column_vector_value ();
-
-                CHOL fact;
-                fact.set (R);
-
-                if (down)
-                  err = fact.downdate (u);
-                else
-                  fact.update (u);
-
-                retval(0) = get_chol_r (fact);
-              }
-            else
-              {
-                // complex case
-                ComplexMatrix R = argr.complex_matrix_value ();
-                ComplexColumnVector u = argu.complex_column_vector_value ();
-
-                ComplexCHOL fact;
-                fact.set (R);
-
-                if (down)
-                  err = fact.downdate (u);
-                else
-                  fact.update (u);
-
-                retval(0) = get_chol_r (fact);
-              }
-          }
-
-        if (nargout > 1)
-          retval(1) = err;
-        else if (err == 1)
-          error ("cholupdate: downdate violates positiveness");
-        else if (err == 2)
-          error ("cholupdate: singular matrix");
-      }
-    else
-      error ("cholupdate: dimension mismatch between R and U");
-  else
+  if (! down && op != "+")
     error ("cholupdate: OP must be \"+\" or \"-\"");
+
+  if (argr.columns () != n || argu.rows () != n || argu.columns () != 1)
+    error ("cholupdate: dimension mismatch between R and U");
+
+  int err = 0;
+  if (argr.is_single_type () || argu.is_single_type ())
+    {
+      if (argr.is_real_type () && argu.is_real_type ())
+        {
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
+          FloatColumnVector u = argu.float_column_vector_value ();
+
+          FloatCHOL fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval(0) = get_chol_r (fact);
+        }
+      else
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+          FloatComplexColumnVector u =
+            argu.float_complex_column_vector_value ();
+
+          FloatComplexCHOL fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval(0) = get_chol_r (fact);
+        }
+    }
+  else
+    {
+      if (argr.is_real_type () && argu.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+          ColumnVector u = argu.column_vector_value ();
+
+          CHOL fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval(0) = get_chol_r (fact);
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+          ComplexColumnVector u = argu.complex_column_vector_value ();
+
+          ComplexCHOL fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval(0) = get_chol_r (fact);
+        }
+    }
+
+  if (nargout > 1)
+    retval(1) = err;
+  else if (err == 1)
+    error ("cholupdate: downdate violates positiveness");
+  else if (err == 2)
+    error ("cholupdate: singular matrix");
 
   return retval;
 }
@@ -777,8 +763,6 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 @seealso{chol, cholupdate, choldelete, cholshift}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 3)
     print_usage ();
 
@@ -790,85 +774,83 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
       || ! argj.is_real_scalar ())
     print_usage ();
 
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+
   octave_idx_type n = argr.rows ();
   octave_idx_type j = argj.scalar_value ();
 
-  if (argr.columns () == n && argu.rows () == n+1 && argu.columns () == 1)
+  if (argr.columns () != n || argu.rows () != n+1 || argu.columns () != 1)
+    error ("cholinsert: dimension mismatch between R and U");
+
+  if (j < 1 || j > n+1)
+    error ("cholinsert: index J out of range");
+
+  int err = 0;
+  if (argr.is_single_type () || argu.is_single_type ())
     {
-      if (j > 0 && j <= n+1)
+      if (argr.is_real_type () && argu.is_real_type ())
         {
-          int err = 0;
-          if (argr.is_single_type () || argu.is_single_type ())
-            {
-              if (argr.is_real_type () && argu.is_real_type ())
-                {
-                  // real case
-                  FloatMatrix R = argr.float_matrix_value ();
-                  FloatColumnVector u = argu.float_column_vector_value ();
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
+          FloatColumnVector u = argu.float_column_vector_value ();
 
-                  FloatCHOL fact;
-                  fact.set (R);
-                  err = fact.insert_sym (u, j-1);
+          FloatCHOL fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
 
-                  retval(0) = get_chol_r (fact);
-                }
-              else
-                {
-                  // complex case
-                  FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                  FloatComplexColumnVector u =
-                    argu.float_complex_column_vector_value ();
-
-                  FloatComplexCHOL fact;
-                  fact.set (R);
-                  err = fact.insert_sym (u, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-            }
-          else
-            {
-              if (argr.is_real_type () && argu.is_real_type ())
-                {
-                  // real case
-                  Matrix R = argr.matrix_value ();
-                  ColumnVector u = argu.column_vector_value ();
-
-                  CHOL fact;
-                  fact.set (R);
-                  err = fact.insert_sym (u, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-              else
-                {
-                  // complex case
-                  ComplexMatrix R = argr.complex_matrix_value ();
-                  ComplexColumnVector u =
-                    argu.complex_column_vector_value ();
-
-                  ComplexCHOL fact;
-                  fact.set (R);
-                  err = fact.insert_sym (u, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-            }
-
-          if (nargout > 1)
-            retval(1) = err;
-          else if (err == 1)
-            error ("cholinsert: insertion violates positiveness");
-          else if (err == 2)
-            error ("cholinsert: singular matrix");
-          else if (err == 3)
-            error ("cholinsert: diagonal element must be real");
+          retval(0) = get_chol_r (fact);
         }
       else
-        error ("cholinsert: index J out of range");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+          FloatComplexColumnVector u =
+            argu.float_complex_column_vector_value ();
+
+          FloatComplexCHOL fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
+
+          retval(0) = get_chol_r (fact);
+        }
     }
   else
-    error ("cholinsert: dimension mismatch between R and U");
+    {
+      if (argr.is_real_type () && argu.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+          ColumnVector u = argu.column_vector_value ();
+
+          CHOL fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
+
+          retval(0) = get_chol_r (fact);
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+          ComplexColumnVector u =
+            argu.complex_column_vector_value ();
+
+          ComplexCHOL fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
+
+          retval(0) = get_chol_r (fact);
+        }
+    }
+
+  if (nargout > 1)
+    retval(1) = err;
+  else if (err == 1)
+    error ("cholinsert: insertion violates positiveness");
+  else if (err == 2)
+    error ("cholinsert: singular matrix");
+  else if (err == 3)
+    error ("cholinsert: diagonal element must be real");
 
   return retval;
 }

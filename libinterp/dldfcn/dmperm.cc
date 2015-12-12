@@ -112,15 +112,11 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
       //retval(5) = put_int (dm->rr, 5);
       //retval(4) = put_int (dm->cc, 5);
 #if defined (CS_VER) && (CS_VER >= 2)
-      retval(3) = put_int (dm->s, dm->nb+1);
-      retval(2) = put_int (dm->r, dm->nb+1);
-      retval(1) = put_int (dm->q, nc);
-      retval(0) = put_int (dm->p, nr);
+      retval = ovl (put_int (dm->p, nr), put_int (dm->q, nc),
+                    put_int (dm->r, dm->nb+1), put_int (dm->s, dm->nb+1));
 #else
-      retval(3) = put_int (dm->S, dm->nb+1);
-      retval(2) = put_int (dm->R, dm->nb+1);
-      retval(1) = put_int (dm->Q, nc);
-      retval(0) = put_int (dm->P, nr);
+      retval = ovl (put_int (dm->P, nr), put_int (dm->Q, nc),
+                    put_int (dm->R, dm->nb+1), put_int (dm->S, dm->nb+1));
 #endif
       CXSPARSE_NAME (_dfree) (dm);
     }

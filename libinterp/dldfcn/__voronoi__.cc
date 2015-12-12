@@ -159,166 +159,162 @@ Undocumented internal function.\n\
 
   int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
                                ismalloc, cmd_str, outfile, errfile);
-  if (! exitcode)
+  if (exitcode)
+    error ("%s: qhull failed", caller.c_str ());
+
+  // Calling findgood_all provides the number of Voronoi vertices
+  // (sets qh num_good).
+
+  qh_findgood_all (qh facet_list);
+
+  octave_idx_type num_voronoi_regions
+    = qh num_vertices - qh_setsize (qh del_vertices);
+
+  octave_idx_type num_voronoi_vertices = qh num_good;
+
+  // Find the voronoi centers for all facets.
+
+  qh_setvoronoi_all ();
+
+  facetT *facet;
+  vertexT *vertex;
+  octave_idx_type k;
+
+  // Find the number of Voronoi vertices for each Voronoi cell and
+  // store them in NI so we can use them later to set the dimensions
+  // of the RowVector objects used to collect them.
+
+  FORALLfacets
     {
-      // Calling findgood_all provides the number of Voronoi vertices
-      // (sets qh num_good).
+      facet->seen = false;
+    }
 
-      qh_findgood_all (qh facet_list);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, num_voronoi_regions);
+  for (octave_idx_type i = 0; i < num_voronoi_regions; i++)
+    ni[i] = 0;
 
-      octave_idx_type num_voronoi_regions
-        = qh num_vertices - qh_setsize (qh del_vertices);
+  k = 0;
 
-      octave_idx_type num_voronoi_vertices = qh num_good;
+  FORALLvertices
+    {
+      if (qh hull_dim == 3)
+        qh_order_vertexneighbors (vertex);
 
-      // Find the voronoi centers for all facets.
+      bool infinity_seen = false;
 
-      qh_setvoronoi_all ();
+      facetT *neighbor, **neighborp;
 
-      facetT *facet;
-      vertexT *vertex;
-      octave_idx_type k;
-
-      // Find the number of Voronoi vertices for each Voronoi cell and
-      // store them in NI so we can use them later to set the dimensions
-      // of the RowVector objects used to collect them.
-
-      FORALLfacets
+      FOREACHneighbor_ (vertex)
         {
-          facet->seen = false;
-        }
-
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, num_voronoi_regions);
-      for (octave_idx_type i = 0; i < num_voronoi_regions; i++)
-        ni[i] = 0;
-
-      k = 0;
-
-      FORALLvertices
-        {
-          if (qh hull_dim == 3)
-            qh_order_vertexneighbors (vertex);
-
-          bool infinity_seen = false;
-
-          facetT *neighbor, **neighborp;
-
-          FOREACHneighbor_ (vertex)
+          if (neighbor->upperdelaunay)
             {
-              if (neighbor->upperdelaunay)
+              if (! infinity_seen)
                 {
-                  if (! infinity_seen)
-                    {
-                      infinity_seen = true;
-                      ni[k]++;
-                    }
-                }
-              else
-                {
-                  neighbor->seen = true;
+                  infinity_seen = true;
                   ni[k]++;
                 }
             }
-
-          k++;
-        }
-
-      // If Qhull finds fewer regions than points, we will pad the end
-      // of the at_inf and C arrays so that they always contain at least
-      // as many elements as the given points array.
-
-      // FIXME: is it possible (or does it make sense) for
-      // num_voronoi_regions to ever be larger than num_points?
-
-      octave_idx_type nr = (num_points > num_voronoi_regions
-                            ? num_points : num_voronoi_regions);
-
-      boolMatrix at_inf (nr, 1, false);
-
-      // The list of Voronoi vertices.  The first element is always
-      // Inf.
-      Matrix F (num_voronoi_vertices+1, dim);
-
-      for (octave_idx_type d = 0; d < dim; d++)
-        F(0,d) = octave_Inf;
-
-      // The cell array of vectors of indices into F that represent the
-      // vertices of the Voronoi regions (cells).
-
-      Cell C (nr, 1);
-
-      // Now loop through the list of vertices again and store the
-      // coordinates of the Voronoi vertices and the lists of indices
-      // for the cells.
-
-      FORALLfacets
-        {
-          facet->seen = false;
-        }
-
-      octave_idx_type i = 0;
-      k = 0;
-
-      FORALLvertices
-        {
-          if (qh hull_dim == 3)
-            qh_order_vertexneighbors (vertex);
-
-          bool infinity_seen = false;
-
-          octave_idx_type idx = qh_pointid (vertex->point);
-
-          octave_idx_type num_vertices = ni[k++];
-
-          // Qhull seems to sometimes produces regions with a single
-          // vertex.  Is that a bug?  How can a region have just one
-          // vertex?  Let's skip it.
-
-          if (num_vertices == 1)
-            continue;
-
-          RowVector facet_list (num_vertices);
-
-          octave_idx_type m = 0;
-
-          facetT *neighbor, **neighborp;
-
-          FOREACHneighbor_(vertex)
+          else
             {
-              if (neighbor->upperdelaunay)
-                {
-                  if (! infinity_seen)
-                    {
-                      infinity_seen = true;
-                      facet_list(m++) = 1;
-                      at_inf(idx) = true;
-                    }
-                }
-              else
-                {
-                  if (! neighbor->seen)
-                    {
-                      i++;
-                      for (octave_idx_type d = 0; d < dim; d++)
-                        F(i,d) = neighbor->center[d];
+              neighbor->seen = true;
+              ni[k]++;
+            }
+        }
 
-                      neighbor->seen = true;
-                      neighbor->visitid = i;
-                    }
+      k++;
+    }
 
-                  facet_list(m++) = neighbor->visitid + 1;
+  // If Qhull finds fewer regions than points, we will pad the end
+  // of the at_inf and C arrays so that they always contain at least
+  // as many elements as the given points array.
+
+  // FIXME: is it possible (or does it make sense) for
+  // num_voronoi_regions to ever be larger than num_points?
+
+  octave_idx_type nr = (num_points > num_voronoi_regions
+                        ? num_points : num_voronoi_regions);
+
+  boolMatrix at_inf (nr, 1, false);
+
+  // The list of Voronoi vertices.  The first element is always
+  // Inf.
+  Matrix F (num_voronoi_vertices+1, dim);
+
+  for (octave_idx_type d = 0; d < dim; d++)
+    F(0,d) = octave_Inf;
+
+  // The cell array of vectors of indices into F that represent the
+  // vertices of the Voronoi regions (cells).
+
+  Cell C (nr, 1);
+
+  // Now loop through the list of vertices again and store the
+  // coordinates of the Voronoi vertices and the lists of indices
+  // for the cells.
+
+  FORALLfacets
+    {
+      facet->seen = false;
+    }
+
+  octave_idx_type i = 0;
+  k = 0;
+
+  FORALLvertices
+    {
+      if (qh hull_dim == 3)
+        qh_order_vertexneighbors (vertex);
+
+      bool infinity_seen = false;
+
+      octave_idx_type idx = qh_pointid (vertex->point);
+
+      octave_idx_type num_vertices = ni[k++];
+
+      // Qhull seems to sometimes produces regions with a single
+      // vertex.  Is that a bug?  How can a region have just one
+      // vertex?  Let's skip it.
+
+      if (num_vertices == 1)
+        continue;
+
+      RowVector facet_list (num_vertices);
+
+      octave_idx_type m = 0;
+
+      facetT *neighbor, **neighborp;
+
+      FOREACHneighbor_(vertex)
+        {
+          if (neighbor->upperdelaunay)
+            {
+              if (! infinity_seen)
+                {
+                  infinity_seen = true;
+                  facet_list(m++) = 1;
+                  at_inf(idx) = true;
                 }
             }
+          else
+            {
+              if (! neighbor->seen)
+                {
+                  i++;
+                  for (octave_idx_type d = 0; d < dim; d++)
+                    F(i,d) = neighbor->center[d];
 
-          C(idx) = facet_list;
+                  neighbor->seen = true;
+                  neighbor->visitid = i;
+                }
+
+              facet_list(m++) = neighbor->visitid + 1;
+            }
         }
 
-      retval(2) = at_inf;
-      retval(1) = C;
-      retval(0) = F;
+      C(idx) = facet_list;
     }
-  else
-    error ("%s: qhull failed", caller.c_str ());
+
+  retval = ovl (F, C, at_inf);
 
   // Free memory from Qhull
   qh_freeqhull (! qh_ALL);

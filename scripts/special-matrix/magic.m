@@ -35,6 +35,7 @@ function A = magic (n)
     print_usage ();
   endif
 
+  n = fix (n);
   if (n < 1)
 
     A = [];
@@ -84,13 +85,11 @@ endfunction
 %!   assert (norm(diff([sum(diag(A)),sum(diag(flipud(A))),sum(A),sum(A')])),0);
 %! endfor
 
+%!assert (isempty (magic (-1)))
 %!assert (isempty (magic (0)))
 %!assert (magic (1), 1)
+%!assert (magic (1.5), 1)
 
 ## Test input validation
 %!error magic ()
 %!error magic (1, 2)
-%!error <N must be a positive integer not equal to 2> magic (1.5)
-%!error <N must be a positive integer not equal to 2> magic (-1)
-%!error <N must be a positive integer not equal to 2> magic (2)
-

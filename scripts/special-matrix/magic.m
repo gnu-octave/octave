@@ -24,7 +24,9 @@
 ## A magic square is an arrangement of the integers @code{1:n^2} such that the
 ## row sums, column sums, and diagonal sums are all equal to the same value.
 ##
-## Note: @var{n} must be greater than 2 for the magic square to exist.
+## Note: @var{n} must be a scalar greater than or equal to 3. If you supply
+## @var{n} less than 3, magic returns either a nonmagic square, or else the
+## degenerate magic squares 1 and [].
 ## @end deftypefn
 
 function A = magic (n)
@@ -33,11 +35,7 @@ function A = magic (n)
     print_usage ();
   endif
 
-  if (n != fix (n) || n < 0 || n == 2)
-    error ("magic: N must be a positive integer not equal to 2");
-  endif
-
-  if (n == 0)
+  if (n < 1)
 
     A = [];
 

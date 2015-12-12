@@ -435,11 +435,7 @@ Undocumented internal function.\n\
       if (nargout < 2)
         retval(0) = eig_val;
       else
-        {
-          retval(2) = double (info);
-          retval(1) = ComplexDiagMatrix (eig_val);
-          retval(0) = eig_vec;
-        }
+        retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
     }
   else if (sigmai != 0.)
     {
@@ -469,11 +465,7 @@ Undocumented internal function.\n\
       if (nargout < 2)
         retval(0) = eig_val;
       else
-        {
-          retval(2) = double (info);
-          retval(1) = ComplexDiagMatrix (eig_val);
-          retval(0) = eig_vec;
-        }
+        retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
     }
   else
     {
@@ -517,11 +509,7 @@ Undocumented internal function.\n\
           if (nargout < 2)
             retval(0) = eig_val;
           else
-            {
-              retval(2) = double (info);
-              retval(1) = DiagMatrix (eig_val);
-              retval(0) = eig_vec;
-            }
+            retval = ovl (eig_vec, DiagMatrix (eig_val), double (info));
         }
       else
         {
@@ -563,11 +551,7 @@ Undocumented internal function.\n\
           if (nargout < 2)
             retval(0) = eig_val;
           else
-            {
-              retval(2) = double (info);
-              retval(1) = ComplexDiagMatrix (eig_val);
-              retval(0) = eig_vec;
-            }
+            retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
         }
     }
 

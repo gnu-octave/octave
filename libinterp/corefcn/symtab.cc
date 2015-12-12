@@ -1731,12 +1731,7 @@ Return the current scope and context as integers.\n\
 @seealso{__dump_symtab_info__}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = symbol_table::current_context ();
-  retval(0) = symbol_table::current_scope ();
-
-  return retval;
+  return ovl (symbol_table::current_scope (), symbol_table::current_context ());
 }
 
 DEFUN (__dump_symtab_info__, args, ,

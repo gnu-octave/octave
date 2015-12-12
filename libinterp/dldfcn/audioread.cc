@@ -171,8 +171,7 @@ is stored in the audio file.\n\
   else
     ret_audio = audio;
 
-  retval(1) = info.samplerate;
-  retval(0) = ret_audio;
+  retval = ovl (ret_audio, info.samplerate);
 
 #else
 

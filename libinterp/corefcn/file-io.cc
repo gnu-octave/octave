@@ -631,6 +631,9 @@ When opening a new file that does not yet exist, permissions will be set to\n\
 
   int nargin = args.length ();
 
+  if (nargin < 1 || nargin > 4)
+    print_usage ();
+
   if (nargin == 1)
     {
       if (args(0).is_string ())
@@ -655,33 +658,28 @@ When opening a new file that does not yet exist, permissions will be set to\n\
         }
     }
 
-  if (nargin > 0 && nargin < 4)
+  octave_value mode = (nargin == 2 || nargin == 3)
+                      ? args(1) : octave_value ("r");
+
+  octave_value arch = (nargin == 3)
+                      ? args(2) : octave_value ("native");
+
+  int fid = -1;
+
+  octave_stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
+
+  if (os)
     {
-      octave_value mode = (nargin == 2 || nargin == 3)
-                          ? args(1) : octave_value ("r");
-
-      octave_value arch = (nargin == 3)
-                          ? args(2) : octave_value ("native");
-
-      int fid = -1;
-
-      octave_stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
-
-      if (os)
-        {
-          retval(1) = "";
-          retval(0) = octave_stream_list::insert (os);
-        }
-      else
-        {
-          int error_number = 0;
-
-          retval(1) = os.error (false, error_number);
-          retval(0) = -1.0;
-        }
+      retval(1) = "";
+      retval(0) = octave_stream_list::insert (os);
     }
   else
-    print_usage ();
+    {
+      int error_number = 0;
+
+      retval(1) = os.error (false, error_number);
+      retval(0) = -1.0;
+    }
 
   return retval;
 }

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{img} =} gray2ind (@var{I})
-## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{I}, @var{n})
-## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{BW})
-## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{BW}, @var{n})
-## @deftypefnx {Function File} {[@var{img}, @var{map}] =} gray2ind (@dots{})
+## @deftypefn  {} {@var{img} =} gray2ind (@var{I})
+## @deftypefnx {} {@var{img} =} gray2ind (@var{I}, @var{n})
+## @deftypefnx {} {@var{img} =} gray2ind (@var{BW})
+## @deftypefnx {} {@var{img} =} gray2ind (@var{BW}, @var{n})
+## @deftypefnx {} {[@var{img}, @var{map}] =} gray2ind (@dots{})
 ## Convert a grayscale or binary intensity image to an indexed image.
 ##
 ## The indexed image will consist of @var{n} different intensity values.

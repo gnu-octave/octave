@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{style} =} __next_line_style__ (@var{reset})
+## @deftypefn {} {@var{style} =} __next_line_style__ (@var{reset})
 ## Undocumented internal function.
 ## @end deftypefn
 

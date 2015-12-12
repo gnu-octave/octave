@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} setdiff (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}] =} setdiff (@dots{})
+## @deftypefn  {} {@var{c} =} setdiff (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}] =} setdiff (@dots{})
 ## Return the unique elements in @var{a} that are not in @var{b} sorted in
 ## ascending order.
 ##

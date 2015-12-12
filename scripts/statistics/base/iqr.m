@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} iqr (@var{x})
-## @deftypefnx {Function File} {} iqr (@var{x}, @var{dim})
+## @deftypefn  {} {} iqr (@var{x})
+## @deftypefnx {} {} iqr (@var{x}, @var{dim})
 ## Return the interquartile range, i.e., the difference between the upper
 ## and lower quartile of the input data.
 ##

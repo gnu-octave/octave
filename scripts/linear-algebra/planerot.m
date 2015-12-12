@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{G}, @var{y}] =} planerot (@var{x})
+## @deftypefn {} {[@var{G}, @var{y}] =} planerot (@var{x})
 ## Given a two-element column vector, return the
 ## @tex
 ## $2 \times 2$ orthogonal matrix

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt__ (@var{caller}, @var{h}, @var{varargin})
+## @deftypefn {} {} __plt__ (@var{caller}, @var{h}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 

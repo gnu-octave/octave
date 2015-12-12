@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} swapbytes (@var{x})
+## @deftypefn {} {} swapbytes (@var{x})
 ## Swap the byte order on values, converting from little endian to big endian
 ## and vice versa.
 ##

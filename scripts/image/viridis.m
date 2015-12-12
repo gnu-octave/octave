@@ -20,8 +20,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} viridis ()
-## @deftypefnx {Function File} {@var{map} =} viridis (@var{n})
+## @deftypefn  {} {@var{map} =} viridis ()
+## @deftypefnx {} {@var{map} =} viridis (@var{n})
 ## Create color colormap.  The colors begin with dark purplish-blue and
 ## blue, range through green and end with yellow.
 ##

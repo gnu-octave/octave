@@ -19,7 +19,7 @@
 ## Author: Martin Helm <martin@mhelm.de>
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{vxyz}, @var{idx}, @var{frac}] =} __interp_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
+## @deftypefn {} {[@var{vxyz}, @var{idx}, @var{frac}] =} __interp_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
 ## Undocumented internal function.
 ## @end deftypefn
 

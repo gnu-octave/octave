@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ylabel (@var{string})
-## @deftypefnx {Function File} {} ylabel (@var{string}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} ylabel (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ylabel (@dots{})
+## @deftypefn  {} {} ylabel (@var{string})
+## @deftypefnx {} {} ylabel (@var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {} {} ylabel (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ylabel (@dots{})
 ## Specify the string used to label the y-axis of the current axis.
 ##
 ## If @var{hax} is specified then label the axis defined by @var{hax}.

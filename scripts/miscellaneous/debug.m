@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} debug ()
+## @deftypefn {} {} debug ()
 ## Summary of debugging commands.
 ##
 ## For more information on each command and available options use

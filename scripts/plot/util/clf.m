@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} clf
-## @deftypefnx {Command} {} clf reset
-## @deftypefnx {Function File} {} clf (@var{hfig})
-## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
-## @deftypefnx {Function File} {@var{h} =} clf (@dots{})
+## @deftypefn  {} {} clf
+## @deftypefnx {} {} clf reset
+## @deftypefnx {} {} clf (@var{hfig})
+## @deftypefnx {} {} clf (@var{hfig}, "reset")
+## @deftypefnx {} {@var{h} =} clf (@dots{})
 ## Clear the current figure window.
 ##
 ## @code{clf} operates by deleting child graphics objects with visible

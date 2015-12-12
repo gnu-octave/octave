@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}, @var{fail}] =} __patch__ (@var{p}, @dots{})
+## @deftypefn {} {[@var{h}, @var{fail}] =} __patch__ (@var{p}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} compass (@var{u}, @var{v})
-## @deftypefnx {Function File} {} compass (@var{z})
-## @deftypefnx {Function File} {} compass (@dots{}, @var{style})
-## @deftypefnx {Function File} {} compass (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
+## @deftypefn  {} {} compass (@var{u}, @var{v})
+## @deftypefnx {} {} compass (@var{z})
+## @deftypefnx {} {} compass (@dots{}, @var{style})
+## @deftypefnx {} {} compass (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} compass (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
 ## from the origin of a polar plot.

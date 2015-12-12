@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ctime (@var{t})
+## @deftypefn {} {} ctime (@var{t})
 ## Convert a value returned from @code{time} (or any other non-negative
 ## integer), to the local time and return a string of the same form as
 ## @code{asctime}.

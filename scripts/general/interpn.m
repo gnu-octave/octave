@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{vi} =} interpn (@var{x1}, @var{x2}, @dots{}, @var{v}, @var{y1}, @var{y2}, @dots{})
-## @deftypefnx {Function File} {@var{vi} =} interpn (@var{v}, @var{y1}, @var{y2}, @dots{})
-## @deftypefnx {Function File} {@var{vi} =} interpn (@var{v}, @var{m})
-## @deftypefnx {Function File} {@var{vi} =} interpn (@var{v})
-## @deftypefnx {Function File} {@var{vi} =} interpn (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{vi} =} interpn (@dots{}, @var{method}, @var{extrapval})
+## @deftypefn  {} {@var{vi} =} interpn (@var{x1}, @var{x2}, @dots{}, @var{v}, @var{y1}, @var{y2}, @dots{})
+## @deftypefnx {} {@var{vi} =} interpn (@var{v}, @var{y1}, @var{y2}, @dots{})
+## @deftypefnx {} {@var{vi} =} interpn (@var{v}, @var{m})
+## @deftypefnx {} {@var{vi} =} interpn (@var{v})
+## @deftypefnx {} {@var{vi} =} interpn (@dots{}, @var{method})
+## @deftypefnx {} {@var{vi} =} interpn (@dots{}, @var{method}, @var{extrapval})
 ##
 ## Perform @var{n}-dimensional interpolation, where @var{n} is at least two.
 ##

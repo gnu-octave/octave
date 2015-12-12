@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} findstr (@var{s}, @var{t})
-## @deftypefnx {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
+## @deftypefn  {} {} findstr (@var{s}, @var{t})
+## @deftypefnx {} {} findstr (@var{s}, @var{t}, @var{overlap})
 ## Return the vector of all positions in the longer of the two strings @var{s}
 ## and @var{t} where an occurrence of the shorter of the two starts.
 ##

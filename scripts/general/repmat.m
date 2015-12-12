@@ -19,11 +19,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} repmat (@var{A}, @var{m})
-## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n})
-## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
-## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
-## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
+## @deftypefn  {} {} repmat (@var{A}, @var{m})
+## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n})
+## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
+## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n}])
+## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.
 ##

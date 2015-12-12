@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{dir}, @var{name}, @var{ext}] =} fileparts (@var{filename})
+## @deftypefn {} {[@var{dir}, @var{name}, @var{ext}] =} fileparts (@var{filename})
 ## Return the directory, name, and extension components of @var{filename}.
 ##
 ## The input @var{filename} is a string which is parsed.  There is no attempt

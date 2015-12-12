@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unidrnd (@var{n})
-## @deftypefnx {Function File} {} unidrnd (@var{n}, @var{r})
-## @deftypefnx {Function File} {} unidrnd (@var{n}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} unidrnd (@var{n}, [@var{sz}])
+## @deftypefn  {} {} unidrnd (@var{n})
+## @deftypefnx {} {} unidrnd (@var{n}, @var{r})
+## @deftypefnx {} {} unidrnd (@var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} unidrnd (@var{n}, [@var{sz}])
 ## Return a matrix of random samples from the discrete uniform distribution
 ## which assumes the integer values 1--@var{n} with equal probability.
 ##

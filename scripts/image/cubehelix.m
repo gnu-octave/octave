@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} cubehelix ()
-## @deftypefnx {Function File} {@var{map} =} cubehelix (@var{n})
+## @deftypefn  {} {@var{map} =} cubehelix ()
+## @deftypefnx {} {@var{map} =} cubehelix (@var{n})
 ## Create cubehelix colormap.
 ##
 ## This colormap varies from black to white going though blue, green, and red

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} acotd (@var{x})
+## @deftypefn {} {} acotd (@var{x})
 ## Compute the inverse cotangent in degrees for each element of @var{x}.
 ## @seealso{cotd, acot}
 ## @end deftypefn

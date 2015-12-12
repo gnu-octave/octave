@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uitoolbar (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uitoolbar (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uitoolbar (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uitoolbar (@var{parent}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uitoolbar object and return a handle to it.  A uitoolbar displays
 ## uitoggletool and uipushtool buttons.

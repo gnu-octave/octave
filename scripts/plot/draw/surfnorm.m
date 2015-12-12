@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surfnorm (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surfnorm (@var{z})
-## @deftypefnx {Function File} {} surfnorm (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} surfnorm (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{nx}, @var{ny}, @var{nz}] =} surfnorm (@dots{})
+## @deftypefn  {} {} surfnorm (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} surfnorm (@var{z})
+## @deftypefnx {} {} surfnorm (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} surfnorm (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{nx}, @var{ny}, @var{nz}] =} surfnorm (@dots{})
 ## Find the vectors normal to a meshgridded surface.
 ##
 ## If @var{x} and @var{y} are vectors, then a typical vertex is

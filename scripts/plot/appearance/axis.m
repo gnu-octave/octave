@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} axis ()
-## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi])
-## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi])
-## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi @var{z}_lo @var{z}_hi])
-## @deftypefnx {Function File} {} axis (@var{option})
-## @deftypefnx {Function File} {} axis (@dots{}, @var{option})
-## @deftypefnx {Function File} {} axis (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{limits} =} axis ()
+## @deftypefn  {} {} axis ()
+## @deftypefnx {} {} axis ([@var{x}_lo @var{x}_hi])
+## @deftypefnx {} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi])
+## @deftypefnx {} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi @var{z}_lo @var{z}_hi])
+## @deftypefnx {} {} axis (@var{option})
+## @deftypefnx {} {} axis (@dots{}, @var{option})
+## @deftypefnx {} {} axis (@var{hax}, @dots{})
+## @deftypefnx {} {@var{limits} =} axis ()
 ## Set axis limits and appearance.
 ##
 ## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The

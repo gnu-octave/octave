@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b})
-## @deftypefnx {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol})
-## @deftypefnx {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
-## @deftypefnx {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {[@var{q}, @var{err}] =} quadgk (@dots{})
+## @deftypefn  {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b})
+## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol})
+## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
+## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {[@var{q}, @var{err}] =} quadgk (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
 ## using adaptive Gauss-Konrod quadrature.

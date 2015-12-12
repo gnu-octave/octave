@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} fminsearch (@var{fun}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
+## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
+## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
 ##
 ## Find a value of @var{x} which minimizes the function @var{fun}.
 ##

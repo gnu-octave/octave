@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{msgstr} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs})
-## @deftypefnx {Function File} {@var{msgstr} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
-## @deftypefnx {Function File} {@var{msgstruct} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
+## @deftypefn  {} {@var{msgstr} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs})
+## @deftypefnx {} {@var{msgstr} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
+## @deftypefnx {} {@var{msgstruct} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
 ## Return an appropriate error message string (or structure) if the number of
 ## inputs requested is invalid.
 ##

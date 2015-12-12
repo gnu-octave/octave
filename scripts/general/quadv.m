@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b})
-## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol})
-## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
-## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {Function File} {[@var{q}, @var{nfun}] =} quadv (@dots{})
+## @deftypefn  {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b})
+## @deftypefnx {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol})
+## @deftypefnx {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
+## @deftypefnx {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {[@var{q}, @var{nfun}] =} quadv (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
 ## using an adaptive Simpson's rule.

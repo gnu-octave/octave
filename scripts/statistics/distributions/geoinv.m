@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} geoinv (@var{x}, @var{p})
+## @deftypefn {} {} geoinv (@var{x}, @var{p})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the geometric distribution with parameter @var{p}.
 ##

@@ -19,8 +19,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} pkg @var{command} @var{pkg_name}
-## @deftypefnx {Command} {} pkg @var{command} @var{option} @var{pkg_name}
+## @deftypefn  {} {} pkg @var{command} @var{pkg_name}
+## @deftypefnx {} {} pkg @var{command} @var{option} @var{pkg_name}
 ## Manage packages (groups of add-on functions) for Octave.
 ##
 ## Different actions are available depending on the value of @var{command}.

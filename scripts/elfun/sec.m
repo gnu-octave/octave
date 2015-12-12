@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} sec (@var{x})
+## @deftypefn {} {} sec (@var{x})
 ## Compute the secant for each element of @var{x} in radians.
 ## @seealso{asec, secd, sech}
 ## @end deftypefn

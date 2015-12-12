@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} area (@var{y})
-## @deftypefnx {Function File} {} area (@var{x}, @var{y})
-## @deftypefnx {Function File} {} area (@dots{}, @var{lvl})
-## @deftypefnx {Function File} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} area (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} area (@dots{})
+## @deftypefn  {} {} area (@var{y})
+## @deftypefnx {} {} area (@var{x}, @var{y})
+## @deftypefnx {} {} area (@dots{}, @var{lvl})
+## @deftypefnx {} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} area (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} area (@dots{})
 ## Area plot of the columns of @var{y}.
 ##
 ## This plot shows the contributions of each column value to the row sum.

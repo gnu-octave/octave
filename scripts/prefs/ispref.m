@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ispref ("@var{group}", "@var{pref}")
-## @deftypefnx {Function File} {} ispref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
-## @deftypefnx {Function File} {} ispref ("@var{group}")
+## @deftypefn  {} {} ispref ("@var{group}", "@var{pref}")
+## @deftypefnx {} {} ispref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
+## @deftypefnx {} {} ispref ("@var{group}")
 ## Return true if the named preference @var{pref} exists in the preference
 ## group @var{group}.
 ##

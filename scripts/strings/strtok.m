@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str})
-## @deftypefnx {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str}, @var{delim})
+## @deftypefn  {} {[@var{tok}, @var{rem}] =} strtok (@var{str})
+## @deftypefnx {} {[@var{tok}, @var{rem}] =} strtok (@var{str}, @var{delim})
 ##
 ## Find all characters in the string @var{str} up to, but not including, the
 ## first character which is in the string @var{delim}.

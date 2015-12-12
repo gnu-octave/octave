@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} quiver (@var{u}, @var{v})
-## @deftypefnx {Function File} {} quiver (@var{x}, @var{y}, @var{u}, @var{v})
-## @deftypefnx {Function File} {} quiver (@dots{}, @var{s})
-## @deftypefnx {Function File} {} quiver (@dots{}, @var{style})
-## @deftypefnx {Function File} {} quiver (@dots{}, "filled")
-## @deftypefnx {Function File} {} quiver (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
+## @deftypefn  {} {} quiver (@var{u}, @var{v})
+## @deftypefnx {} {} quiver (@var{x}, @var{y}, @var{u}, @var{v})
+## @deftypefnx {} {} quiver (@dots{}, @var{s})
+## @deftypefnx {} {} quiver (@dots{}, @var{style})
+## @deftypefnx {} {} quiver (@dots{}, "filled")
+## @deftypefnx {} {} quiver (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} quiver (@dots{})
 ##
 ## Plot a 2-D vector field with arrows.
 ##

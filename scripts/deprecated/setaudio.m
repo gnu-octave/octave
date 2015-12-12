@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} setaudio ()
-## @deftypefnx {Function File} {} setaudio (@var{w_type})
-## @deftypefnx {Function File} {} setaudio (@var{w_type}, @var{value})
+## @deftypefn  {} {} setaudio ()
+## @deftypefnx {} {} setaudio (@var{w_type})
+## @deftypefnx {} {} setaudio (@var{w_type}, @var{value})
 ##
 ## @code{setaudio} is deprecated and will be removed in Octave version 4.4.
 ## Please scale the audio signal in all new code or use the operating system's

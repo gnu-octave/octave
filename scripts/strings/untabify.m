@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} untabify (@var{t})
-## @deftypefnx {Function File} {} untabify (@var{t}, @var{tw})
-## @deftypefnx {Function File} {} untabify (@var{t}, @var{tw}, @var{deblank})
+## @deftypefn  {} {} untabify (@var{t})
+## @deftypefnx {} {} untabify (@var{t}, @var{tw})
+## @deftypefnx {} {} untabify (@var{t}, @var{tw}, @var{deblank})
 ## Replace TAB characters in @var{t} with spaces.
 ##
 ## The input, @var{t}, may be either a 2-D character array, or a cell array of

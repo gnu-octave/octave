@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} helpdlg (@var{msg})
-## @deftypefnx {Function File} {@var{h} =} helpdlg (@var{msg}, @var{title})
+## @deftypefn  {} {@var{h} =} helpdlg (@var{msg})
+## @deftypefnx {} {@var{h} =} helpdlg (@var{msg}, @var{title})
 ## Display @var{msg} in a help dialog box.
 ##
 ## The message may have multiple lines separated by newline characters

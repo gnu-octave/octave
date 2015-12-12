@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} optimset ()
-## @deftypefnx {Function File} {@var{options} =} optimset ()
-## @deftypefnx {Function File} {@var{options} =} optimset (@var{par}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{options} =} optimset (@var{old}, @var{par}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{options} =} optimset (@var{old}, @var{new})
+## @deftypefn  {} {} optimset ()
+## @deftypefnx {} {@var{options} =} optimset ()
+## @deftypefnx {} {@var{options} =} optimset (@var{par}, @var{val}, @dots{})
+## @deftypefnx {} {@var{options} =} optimset (@var{old}, @var{par}, @var{val}, @dots{})
+## @deftypefnx {} {@var{options} =} optimset (@var{old}, @var{new})
 ## Create options structure for optimization functions.
 ##
 ## When called without any input or output arguments, @code{optimset} prints

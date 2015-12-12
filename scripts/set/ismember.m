@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tf} =} ismember (@var{a}, @var{s})
-## @deftypefnx {Function File} {@var{tf} =} ismember (@var{a}, @var{s}, "rows")
-## @deftypefnx {Function File} {[@var{tf}, @var{s_idx}] =} ismember (@dots{})
+## @deftypefn  {} {@var{tf} =} ismember (@var{a}, @var{s})
+## @deftypefnx {} {@var{tf} =} ismember (@var{a}, @var{s}, "rows")
+## @deftypefnx {} {[@var{tf}, @var{s_idx}] =} ismember (@dots{})
 ##
 ## Return a logical matrix @var{tf} with the same shape as @var{a} which is
 ## true (1) if the element in @var{a} is found in @var{s} and false (0) if it

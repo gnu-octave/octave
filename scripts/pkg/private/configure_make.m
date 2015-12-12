@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} configure_make (@var{desc}, @var{packdir}, @var{verbose})
+## @deftypefn {} {} configure_make (@var{desc}, @var{packdir}, @var{verbose})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} date ()
+## @deftypefn {} {} date ()
 ## Return the current date as a character string in the form DD-MMM-YYYY@.
 ##
 ## For example:

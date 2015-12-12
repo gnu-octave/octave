@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cor_test (@var{x}, @var{y}, @var{alt}, @var{method})
+## @deftypefn {} {} cor_test (@var{x}, @var{y}, @var{alt}, @var{method})
 ## Test whether two samples @var{x} and @var{y} come from uncorrelated
 ## populations.
 ##

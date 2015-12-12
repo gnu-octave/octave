@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} voronoi (@var{x}, @var{y})
-## @deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, @var{options})
-## @deftypefnx {Function File} {} voronoi (@dots{}, "linespec")
-## @deftypefnx {Function File} {} voronoi (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} voronoi (@dots{})
-## @deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
+## @deftypefn  {} {} voronoi (@var{x}, @var{y})
+## @deftypefnx {} {} voronoi (@var{x}, @var{y}, @var{options})
+## @deftypefnx {} {} voronoi (@dots{}, "linespec")
+## @deftypefnx {} {} voronoi (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} voronoi (@dots{})
+## @deftypefnx {} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
 ## Plot the Voronoi diagram of points @code{(@var{x}, @var{y})}.
 ##
 ## The Voronoi facets with points at infinity are not drawn.

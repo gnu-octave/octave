@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{r} =} bitmax (@var{precision})
+## @deftypefn {} {@var{r} =} bitmax (@var{precision})
 ##
 ## @code{bitmax} is deprecated and will be removed in Octave version 4.6.
 ## Use @code{flintmax (precision) - 1} for the equivalent functionality.

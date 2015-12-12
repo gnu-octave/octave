@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{z}] =} prop_test_2 (@var{x1}, @var{n1}, @var{x2}, @var{n2}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{z}] =} prop_test_2 (@var{x1}, @var{n1}, @var{x2}, @var{n2}, @var{alt})
 ## If @var{x1} and @var{n1} are the counts of successes and trials in one
 ## sample, and @var{x2} and @var{n2} those in a second one, test the null
 ## hypothesis that the success probabilities @var{p1} and @var{p2} are the

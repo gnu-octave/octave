@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{out} =} fix_version (@var{v})
+## @deftypefn {} {@var{out} =} fix_version (@var{v})
 ## Undocumented internal function.
 ## @end deftypefn
 

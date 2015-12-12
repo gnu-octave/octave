@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rot90 (@var{A})
-## @deftypefnx {Function File} {} rot90 (@var{A}, @var{k})
+## @deftypefn  {} {} rot90 (@var{A})
+## @deftypefnx {} {} rot90 (@var{A}, @var{k})
 ## Rotate array by 90 degree increments.
 ##
 ## Return a copy of @var{A} with the elements rotated counterclockwise in

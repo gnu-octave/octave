@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {Function File} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
-## @deftypefnx {Function File} {} slice (@var{v}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {Function File} {} slice (@var{v}, @var{xi}, @var{yi}, @var{zi})
-## @deftypefnx {Function File} {} slice (@dots{}, @var{method})
-## @deftypefnx {Function File} {} slice (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} slice (@dots{})
+## @deftypefn  {} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{sx}, @var{sy}, @var{sz})
+## @deftypefnx {} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {} {} slice (@var{v}, @var{sx}, @var{sy}, @var{sz})
+## @deftypefnx {} {} slice (@var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {} {} slice (@dots{}, @var{method})
+## @deftypefnx {} {} slice (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} slice (@dots{})
 ## Plot slices of 3-D data/scalar fields.
 ##
 ## Each element of the 3-dimensional array @var{v} represents a scalar value at

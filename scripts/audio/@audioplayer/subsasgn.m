@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} subsasgn (@var{player}, @var{idx}, @var{rhs})
+## @deftypefn {} {@var{value} =} subsasgn (@var{player}, @var{idx}, @var{rhs})
 ## Perform subscripted assignment on the audio player object @var{player}.
 ##
 ## Assign the value of @var{rhs} to the player property named by @var{idx}.

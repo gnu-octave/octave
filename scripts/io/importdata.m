@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{A} =} importdata (@var{fname})
-## @deftypefnx {Function File} {@var{A} =} importdata (@var{fname}, @var{delimiter})
-## @deftypefnx {Function File} {@var{A} =} importdata (@var{fname}, @var{delimiter}, @var{header_rows})
-## @deftypefnx {Function File} {[@var{A}, @var{delimiter}] =} importdata (@dots{})
-## @deftypefnx {Function File} {[@var{A}, @var{delimiter}, @var{header_rows}] =} importdata (@dots{})
+## @deftypefn  {} {@var{A} =} importdata (@var{fname})
+## @deftypefnx {} {@var{A} =} importdata (@var{fname}, @var{delimiter})
+## @deftypefnx {} {@var{A} =} importdata (@var{fname}, @var{delimiter}, @var{header_rows})
+## @deftypefnx {} {[@var{A}, @var{delimiter}] =} importdata (@dots{})
+## @deftypefnx {} {[@var{A}, @var{delimiter}, @var{header_rows}] =} importdata (@dots{})
 ## Import data from the file @var{fname}.
 ##
 ## Input parameters:

@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nbininv (@var{x}, @var{n}, @var{p})
+## @deftypefn {} {} nbininv (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the negative binomial distribution with parameters
 ## @var{n} and @var{p}.

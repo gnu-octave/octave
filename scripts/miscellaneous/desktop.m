@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{used} =} desktop ("-inuse")
+## @deftypefn {} {@var{used} =} desktop ("-inuse")
 ## Return true if the desktop (GUI) is currently in use.
 ## @seealso{isguirunning}
 ## @end deftypefn

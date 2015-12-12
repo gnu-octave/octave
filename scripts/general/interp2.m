@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z}, @var{n})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrap})
+## @deftypefn  {} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefnx {} {@var{zi} =} interp2 (@var{z}, @var{xi}, @var{yi})
+## @deftypefnx {} {@var{zi} =} interp2 (@var{z}, @var{n})
+## @deftypefnx {} {@var{zi} =} interp2 (@var{z})
+## @deftypefnx {} {@var{zi} =} interp2 (@dots{}, @var{method})
+## @deftypefnx {} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrap})
 ##
 ## Two-dimensional interpolation.
 ##

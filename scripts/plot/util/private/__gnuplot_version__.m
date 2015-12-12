@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{version} =} __gnuplot_version__ ()
+## @deftypefn {} {@var{version} =} __gnuplot_version__ ()
 ## Undocumented internal function.
 ## @end deftypefn
 

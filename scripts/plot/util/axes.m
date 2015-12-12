@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} axes ()
-## @deftypefnx {Function File} {} axes (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} axes (@var{hax})
-## @deftypefnx {Function File} {@var{h} =} axes (@dots{})
+## @deftypefn  {} {} axes ()
+## @deftypefnx {} {} axes (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} axes (@var{hax})
+## @deftypefnx {} {@var{h} =} axes (@dots{})
 ## Create an axes object and return a handle to it, or set the current axes
 ## to @var{hax}.
 ##

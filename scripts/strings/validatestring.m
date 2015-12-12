@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@dots{}, @var{position})
+## @deftypefn  {} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
+## @deftypefnx {} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
+## @deftypefnx {} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
+## @deftypefnx {} {@var{validstr} =} validatestring (@dots{}, @var{position})
 ## Verify that @var{str} is an element, or substring of an element, in
 ## @var{strarray}.
 ##

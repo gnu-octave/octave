@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} odeset ()
-## @deftypefnx {Function File} {@var{odestruct} =} odeset (@var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
-## @deftypefnx {Function File} {@var{odestruct} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
-## @deftypefnx {Function File} {@var{odestruct} =} odeset (@var{oldstruct}, @var{newstruct})
+## @deftypefn  {} {} odeset ()
+## @deftypefnx {} {@var{odestruct} =} odeset (@var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
+## @deftypefnx {} {@var{odestruct} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
+## @deftypefnx {} {@var{odestruct} =} odeset (@var{oldstruct}, @var{newstruct})
 ##
 ## Create or modify an ODE options structure.
 ##

@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} discrete_rnd (@var{v}, @var{p})
-## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{r})
-## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, [@var{sz}])
+## @deftypefn  {} {} discrete_rnd (@var{v}, @var{p})
+## @deftypefnx {} {} discrete_rnd (@var{v}, @var{p}, @var{r})
+## @deftypefnx {} {} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} discrete_rnd (@var{v}, @var{p}, [@var{sz}])
 ## Return a matrix of random samples from the univariate distribution which
 ## assumes the values in @var{v} with probabilities @var{p}.
 ##

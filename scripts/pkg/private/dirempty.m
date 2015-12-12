@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{emp} =} dirempty (@var{nm}, @var{ign})
+## @deftypefn {} {@var{emp} =} dirempty (@var{nm}, @var{ign})
 ## Undocumented internal function.
 ## @end deftypefn
 

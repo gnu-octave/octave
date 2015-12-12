@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} title (@var{string})
-## @deftypefnx {Function File} {} title (@var{string}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} title (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} title (@dots{})
+## @deftypefn  {} {} title (@var{string})
+## @deftypefnx {} {} title (@var{string}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} title (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} title (@dots{})
 ## Specify the string used as a title for the current axis.
 ##
 ## An optional list of @var{property}/@var{value} pairs can be used to change

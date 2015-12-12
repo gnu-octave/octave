@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} nargoutchk (@var{minargs}, @var{maxargs})
-## @deftypefnx {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs})
-## @deftypefnx {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
-## @deftypefnx {Function File} {@var{msgstruct} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
+## @deftypefn  {} {} nargoutchk (@var{minargs}, @var{maxargs})
+## @deftypefnx {} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs})
+## @deftypefnx {} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
+## @deftypefnx {} {@var{msgstruct} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
 ## Check for correct number of output arguments.
 ##
 ## In the first form, return an error if the number of arguments is not between

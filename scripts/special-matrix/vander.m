@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} vander (@var{c})
-## @deftypefnx {Function File} {} vander (@var{c}, @var{n})
+## @deftypefn  {} {} vander (@var{c})
+## @deftypefnx {} {} vander (@var{c}, @var{n})
 ## Return the Vandermonde matrix whose next to last column is @var{c}.
 ##
 ## If @var{n} is specified, it determines the number of columns; otherwise,

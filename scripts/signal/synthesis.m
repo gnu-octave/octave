@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} synthesis (@var{y}, @var{c})
+## @deftypefn {} {@var{x} =} synthesis (@var{y}, @var{c})
 ## Compute a signal from its short-time Fourier transform @var{y} and a
 ## 3-element vector @var{c} specifying window size, increment, and window type.
 ##

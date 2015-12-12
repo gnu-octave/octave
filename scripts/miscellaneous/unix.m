@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unix ("@var{command}")
-## @deftypefnx {Function File} {@var{status} =} unix ("@var{command}")
-## @deftypefnx {Function File} {[@var{status}, @var{text}] =} unix ("@var{command}")
-## @deftypefnx {Function File} {[@dots{}] =} unix ("@var{command}", "-echo")
+## @deftypefn  {} {} unix ("@var{command}")
+## @deftypefnx {} {@var{status} =} unix ("@var{command}")
+## @deftypefnx {} {[@var{status}, @var{text}] =} unix ("@var{command}")
+## @deftypefnx {} {[@dots{}] =} unix ("@var{command}", "-echo")
 ## Execute a system command if running under a Unix-like operating system,
 ## otherwise do nothing.
 ##

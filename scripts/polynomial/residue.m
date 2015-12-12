@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
-## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
+## @deftypefn  {} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
+## @deftypefnx {} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
+## @deftypefnx {} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
 ## The first calling form computes the partial fraction expansion for the
 ## quotient of the polynomials, @var{b} and @var{a}.
 ##

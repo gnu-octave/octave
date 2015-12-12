@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fv}] =} isosurface (@var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{fv}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{fv}] =} isosurface (@dots{}, "noshare", "verbose")
-## @deftypefnx {Function File} {[@var{fvc}] =} isosurface (@dots{}, @var{col})
-## @deftypefnx {Function File} {[@var{f}, @var{v}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{f}, @var{v}, @var{c}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
-## @deftypefnx {Function File} {} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col}, @var{opt})
+## @deftypefn  {} {[@var{fv}] =} isosurface (@var{val}, @var{iso})
+## @deftypefnx {} {[@var{fv}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{fv}] =} isosurface (@dots{}, "noshare", "verbose")
+## @deftypefnx {} {[@var{fvc}] =} isosurface (@dots{}, @var{col})
+## @deftypefnx {} {[@var{f}, @var{v}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{f}, @var{v}, @var{c}] =} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## @deftypefnx {} {} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col}, @var{opt})
 ##
 ## Calculate isosurface of 3-D data.
 ##

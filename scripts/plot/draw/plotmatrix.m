@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} plotmatrix (@var{x}, @var{y})
-## @deftypefnx {Function File} {} plotmatrix (@var{x})
-## @deftypefnx {Function File} {} plotmatrix (@dots{}, @var{style})
-## @deftypefnx {Function File} {} plotmatrix (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
+## @deftypefn  {} {} plotmatrix (@var{x}, @var{y})
+## @deftypefnx {} {} plotmatrix (@var{x})
+## @deftypefnx {} {} plotmatrix (@dots{}, @var{style})
+## @deftypefnx {} {} plotmatrix (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
 ## Scatter plot of the columns of one matrix against another.
 ##
 ## Given the arguments @var{x} and @var{y} that have a matching number of

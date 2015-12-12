@@ -20,7 +20,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} inputname (@var{n})
+## @deftypefn {} {} inputname (@var{n})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##
 ## If the argument is not a simple variable name, return an empty string.

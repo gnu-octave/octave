@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} rainbow ()
-## @deftypefnx {Function File} {@var{map} =} rainbow (@var{n})
+## @deftypefn  {} {@var{map} =} rainbow ()
+## @deftypefnx {} {@var{map} =} rainbow (@var{n})
 ## Create color colormap.  This colormap ranges from red through orange,
 ## yellow, green, blue, to violet.
 ##

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} randi (@var{imax})
-## @deftypefnx {Function File} {} randi (@var{imax}, @var{n})
-## @deftypefnx {Function File} {} randi (@var{imax}, @var{m}, @var{n}, @dots{})
-## @deftypefnx {Function File} {} randi ([@var{imin} @var{imax}], @dots{})
-## @deftypefnx {Function File} {} randi (@dots{}, "@var{class}")
+## @deftypefn  {} {} randi (@var{imax})
+## @deftypefnx {} {} randi (@var{imax}, @var{n})
+## @deftypefnx {} {} randi (@var{imax}, @var{m}, @var{n}, @dots{})
+## @deftypefnx {} {} randi ([@var{imin} @var{imax}], @dots{})
+## @deftypefnx {} {} randi (@dots{}, "@var{class}")
 ## Return random integers in the range 1:@var{imax}.
 ##
 ## Additional arguments determine the shape of the return matrix.  When no

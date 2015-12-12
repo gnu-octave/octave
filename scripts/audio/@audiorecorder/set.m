@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} set (@var{recorder}, @var{name}, @var{value})
-## @deftypefnx {Function File} {} set (@var{recorder}, @var{properties})
-## @deftypefnx {Function File} {@var{properties} =} set (@var{recorder})
+## @deftypefn  {} {} set (@var{recorder}, @var{name}, @var{value})
+## @deftypefnx {} {} set (@var{recorder}, @var{properties})
+## @deftypefnx {} {@var{properties} =} set (@var{recorder})
 ## Set the value of property specified by @var{name} to a given @var{value}.
 ##
 ## If @var{name} and @var{value} are cell arrays of the same size, set each

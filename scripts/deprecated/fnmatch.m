@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})
+## @deftypefn {} {} fnmatch (@var{pattern}, @var{string})
 ##
 ## @code{fnmatch} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{glob} or @code{regexp} in all new code.

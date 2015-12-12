@@ -19,8 +19,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} strmatch (@var{s}, @var{A})
-## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
+## @deftypefn  {} {} strmatch (@var{s}, @var{A})
+## @deftypefnx {} {} strmatch (@var{s}, @var{A}, "exact")
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ##
 ## The second argument @var{A} must be a string, character matrix, or a cell

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} acscd (@var{x})
+## @deftypefn {} {} acscd (@var{x})
 ## Compute the inverse cosecant in degrees for each element of @var{x}.
 ## @seealso{cscd, acsc}
 ## @end deftypefn

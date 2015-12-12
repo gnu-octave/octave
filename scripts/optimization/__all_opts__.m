@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{names} =} __all_opts__ (@dots{})
+## @deftypefn {} {@var{names} =} __all_opts__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

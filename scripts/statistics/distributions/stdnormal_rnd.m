@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stdnormal_rnd (@var{r})
-## @deftypefnx {Function File} {} stdnormal_rnd (@var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} stdnormal_rnd ([@var{sz}])
+## @deftypefn  {} {} stdnormal_rnd (@var{r})
+## @deftypefnx {} {} stdnormal_rnd (@var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} stdnormal_rnd ([@var{sz}])
 ## Return a matrix of random samples from the standard normal distribution
 ## (mean = 0, standard deviation = 1).
 ##

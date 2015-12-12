@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __have_feature__ (feature)
+## @deftypefn {} {} __have_feature__ (feature)
 ## Undocumented internal function.
 ## @end deftypefn
 

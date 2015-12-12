@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{angle} =} subspace (@var{A}, @var{B})
+## @deftypefn {} {@var{angle} =} subspace (@var{A}, @var{B})
 ## Determine the largest principal angle between two subspaces
 ## spanned by the columns of matrices @var{A} and @var{B}.
 ## @end deftypefn

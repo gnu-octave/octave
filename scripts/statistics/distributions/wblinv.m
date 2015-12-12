@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} wblinv (@var{x})
-## @deftypefnx {Function File} {} wblinv (@var{x}, @var{scale})
-## @deftypefnx {Function File} {} wblinv (@var{x}, @var{scale}, @var{shape})
+## @deftypefn  {} {} wblinv (@var{x})
+## @deftypefnx {} {} wblinv (@var{x}, @var{scale})
+## @deftypefnx {} {} wblinv (@var{x}, @var{scale}, @var{shape})
 ## Compute the quantile (the inverse of the CDF) at @var{x} of the
 ## Weibull distribution with scale parameter @var{scale} and
 ## shape parameter @var{shape}.

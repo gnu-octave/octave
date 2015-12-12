@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} vech (@var{x})
+## @deftypefn {} {} vech (@var{x})
 ## Return the vector obtained by eliminating all superdiagonal elements of
 ## the square matrix @var{x} and stacking the result one column above the
 ## other.

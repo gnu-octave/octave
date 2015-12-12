@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} realpow (@var{x}, @var{y})
+## @deftypefn {} {} realpow (@var{x}, @var{y})
 ## Compute the real-valued, element-by-element power operator.
 ##
 ## This is equivalent to @w{@code{@var{x} .^ @var{y}}}, except that

@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} build (@var{files}, @var{handle_deps}, @var{autoload}, @var{verbose})
+## @deftypefn {} {} build (@var{files}, @var{handle_deps}, @var{autoload}, @var{verbose})
 ## Undocumented internal function.
 ## @end deftypefn
 

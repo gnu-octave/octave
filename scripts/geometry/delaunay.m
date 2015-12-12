@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tri} =} delaunay (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{tetr} =} delaunay (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{tri} =} delaunay (@var{x})
-## @deftypefnx {Function File} {@var{tri} =} delaunay (@dots{}, @var{options})
+## @deftypefn  {} {@var{tri} =} delaunay (@var{x}, @var{y})
+## @deftypefnx {} {@var{tetr} =} delaunay (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {@var{tri} =} delaunay (@var{x})
+## @deftypefnx {} {@var{tri} =} delaunay (@dots{}, @var{options})
 ## Compute the Delaunay triangulation for a 2-D or 3-D set of points.
 ##
 ## For 2-D sets, the return value @var{tri} is a set of triangles which

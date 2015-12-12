@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map_out} =} brighten (@var{beta})
-## @deftypefnx {Function File} {@var{map_out} =} brighten (@var{map}, @var{beta})
-## @deftypefnx {Function File} {@var{map_out} =} brighten (@var{h}, @var{beta})
-## @deftypefnx {Function File} {} brighten (@dots{})
+## @deftypefn  {} {@var{map_out} =} brighten (@var{beta})
+## @deftypefnx {} {@var{map_out} =} brighten (@var{map}, @var{beta})
+## @deftypefnx {} {@var{map_out} =} brighten (@var{h}, @var{beta})
+## @deftypefnx {} {} brighten (@dots{})
 ## Brighten or darken a colormap.
 ##
 ## The argument @var{beta} must be a scalar between -1 and 1, where a negative

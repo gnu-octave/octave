@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uipanel (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uipanel (@var{parent}, "@var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uipanel (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipanel (@var{parent}, "@var{property}, @var{value}, @dots{})
 ##
 ## Create a uipanel object and return a handle to it.
 ##

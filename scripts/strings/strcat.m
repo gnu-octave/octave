@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
+## @deftypefn {} {} strcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated
 ## horizontally.
 ##

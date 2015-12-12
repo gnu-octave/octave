@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ribbon (@var{y})
-## @deftypefnx {Function File} {} ribbon (@var{x}, @var{y})
-## @deftypefnx {Function File} {} ribbon (@var{x}, @var{y}, @var{width})
-## @deftypefnx {Function File} {} ribbon (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ribbon (@dots{})
+## @deftypefn  {} {} ribbon (@var{y})
+## @deftypefnx {} {} ribbon (@var{x}, @var{y})
+## @deftypefnx {} {} ribbon (@var{x}, @var{y}, @var{width})
+## @deftypefnx {} {} ribbon (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ribbon (@dots{})
 ## Draw a ribbon plot for the columns of @var{y} vs. @var{x}.
 ##
 ## The optional parameter @var{width} specifies the width of a single ribbon

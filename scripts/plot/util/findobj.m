@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} findobj ()
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
-## @deftypefnx {Function File} {@var{h} =} findobj ("-property", @var{prop_name})
-## @deftypefnx {Function File} {@var{h} =} findobj ("-regexp", @var{prop_name}, @var{pattern})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{hlist}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{hlist}, "flat", @dots{})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{hlist}, "-depth", @var{d}, @dots{})
+## @deftypefn  {} {@var{h} =} findobj ()
+## @deftypefnx {} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, @dots{})
+## @deftypefnx {} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
+## @deftypefnx {} {@var{h} =} findobj ("-property", @var{prop_name})
+## @deftypefnx {} {@var{h} =} findobj ("-regexp", @var{prop_name}, @var{pattern})
+## @deftypefnx {} {@var{h} =} findobj (@var{hlist}, @dots{})
+## @deftypefnx {} {@var{h} =} findobj (@var{hlist}, "flat", @dots{})
+## @deftypefnx {} {@var{h} =} findobj (@var{hlist}, "-depth", @var{d}, @dots{})
 ## Find graphics object with specified property values.
 ##
 ## The simplest form is

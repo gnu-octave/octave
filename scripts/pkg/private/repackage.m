@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} repackage (@var{builddir}, @var{buildlist})
+## @deftypefn {} {} repackage (@var{builddir}, @var{buildlist})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} mcnemar_test (@var{x})
+## @deftypefn {} {[@var{pval}, @var{chisq}, @var{df}] =} mcnemar_test (@var{x})
 ## For a square contingency table @var{x} of data cross-classified on the row
 ## and column variables, @nospell{McNemar's} test can be used for testing the
 ## null hypothesis of symmetry of the classification probabilities.

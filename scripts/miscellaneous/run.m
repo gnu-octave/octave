@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} run @var{script}
-## @deftypefnx {Function File} {} run ("@var{script}")
+## @deftypefn  {} {} run @var{script}
+## @deftypefnx {} {} run ("@var{script}")
 ## Run @var{script} in the current workspace.
 ##
 ## Scripts which reside in directories specified in Octave's load path, and

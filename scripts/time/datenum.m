@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{days} =} datenum (@var{datevec})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
-## @deftypefnx {Function File} {@var{days} =} datenum ("datestr")
-## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{f})
-## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{p})
-## @deftypefnx {Function File} {[@var{days}, @var{secs}] =} datenum (@dots{})
+## @deftypefn  {} {@var{days} =} datenum (@var{datevec})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
+## @deftypefnx {} {@var{days} =} datenum ("datestr")
+## @deftypefnx {} {@var{days} =} datenum ("datestr", @var{f})
+## @deftypefnx {} {@var{days} =} datenum ("datestr", @var{p})
+## @deftypefnx {} {[@var{days}, @var{secs}] =} datenum (@dots{})
 ## Return the date/time input as a serial day number, with Jan 1, 0000
 ## defined as day 1.
 ##

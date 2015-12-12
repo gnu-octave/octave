@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addpref ("@var{group}", "@var{pref}", @var{val})
-## @deftypefnx {Function File} {} addpref ("@var{group}", @{"@var{pref1}", "@var{pref2}", @dots{}@}, @{@var{val1}, @var{val2}, @dots{}@})
+## @deftypefn  {} {} addpref ("@var{group}", "@var{pref}", @var{val})
+## @deftypefnx {} {} addpref ("@var{group}", @{"@var{pref1}", "@var{pref2}", @dots{}@}, @{@var{val1}, @var{val2}, @dots{}@})
 ## Add the preference @var{pref} and associated value @var{val} to the named
 ## preference group @var{group}.
 ##

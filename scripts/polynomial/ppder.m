@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {ppd =} ppder (pp)
-## @deftypefnx {Function File} {ppd =} ppder (pp, m)
+## @deftypefn  {} {ppd =} ppder (pp)
+## @deftypefnx {} {ppd =} ppder (pp, m)
 ## Compute the piecewise @var{m}-th derivative of a piecewise polynomial
 ## struct @var{pp}.
 ##

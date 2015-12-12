@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{area} =} rectint (@var{a}, @var{b})
+## @deftypefn {} {@var{area} =} rectint (@var{a}, @var{b})
 ## Compute area or volume of intersection of rectangles or N-D boxes.
 ##
 ## Compute the area of intersection of rectangles in @var{a} and rectangles in

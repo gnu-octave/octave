@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {t =} now ()
+## @deftypefn {} {t =} now ()
 ## Return the current local date/time as a serial day number
 ## (see @code{datenum}).
 ##

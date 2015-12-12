@@ -19,13 +19,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@var{y}, @var{xi})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, "left")
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, "right")
-## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, "pp")
+## @deftypefn  {} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+## @deftypefnx {} {@var{yi} =} interp1 (@var{y}, @var{xi})
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, @var{method})
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, @var{extrap})
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, "left")
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, "right")
+## @deftypefnx {} {@var{pp} =} interp1 (@dots{}, "pp")
 ##
 ## One-dimensional interpolation.
 ##

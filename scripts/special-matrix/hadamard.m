@@ -20,7 +20,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hadamard (@var{n})
+## @deftypefn {} {} hadamard (@var{n})
 ## Construct a Hadamard matrix (@nospell{Hn}) of size @var{n}-by-@var{n}.
 ##
 ## The size @var{n} must be of the form @math{2^k * p} in which p is one of

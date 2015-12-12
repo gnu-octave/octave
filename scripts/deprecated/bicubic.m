@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{zi} =} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
+## @deftypefn {} {@var{zi} =} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 ##
 ## @code{bicubic} is deprecated and will be removed in Octave version 4.4.
 ## Use @code{interp2 (@dots{}, "spline")} for the equivalent functionality.

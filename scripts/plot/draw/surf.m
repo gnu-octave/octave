@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surf (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surf (@var{z})
-## @deftypefnx {Function File} {} surf (@dots{}, @var{c})
-## @deftypefnx {Function File} {} surf (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} surf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} surf (@dots{})
+## @deftypefn  {} {} surf (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} surf (@var{z})
+## @deftypefnx {} {} surf (@dots{}, @var{c})
+## @deftypefnx {} {} surf (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} surf (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} surf (@dots{})
 ## Plot a 3-D surface mesh.
 ##
 ## The surface mesh is plotted using shaded rectangles.  The vertices of the

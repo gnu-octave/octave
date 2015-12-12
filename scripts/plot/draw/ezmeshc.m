@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezmeshc (@var{f})
-## @deftypefnx {Function File} {} ezmeshc (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {} ezmeshc (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezmeshc (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezmeshc (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezmeshc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezmeshc (@dots{})
+## @deftypefn  {} {} ezmeshc (@var{f})
+## @deftypefnx {} {} ezmeshc (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {} ezmeshc (@dots{}, @var{dom})
+## @deftypefnx {} {} ezmeshc (@dots{}, @var{n})
+## @deftypefnx {} {} ezmeshc (@dots{}, "circ")
+## @deftypefnx {} {} ezmeshc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezmeshc (@dots{})
 ##
 ## Plot the mesh and contour lines defined by a function.
 ##

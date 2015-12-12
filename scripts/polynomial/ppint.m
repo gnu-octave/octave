@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{ppi} =} ppint (@var{pp})
-## @deftypefnx {Function File} {@var{ppi} =} ppint (@var{pp}, @var{c})
+## @deftypefn  {} {@var{ppi} =} ppint (@var{pp})
+## @deftypefnx {} {@var{ppi} =} ppint (@var{pp}, @var{c})
 ## Compute the integral of the piecewise polynomial struct @var{pp}.
 ##
 ## @var{c}, if given, is the constant of integration.

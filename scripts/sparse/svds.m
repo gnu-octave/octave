@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} svds (@var{A})
-## @deftypefnx {Function File} {@var{s} =} svds (@var{A}, @var{k})
-## @deftypefnx {Function File} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma})
-## @deftypefnx {Function File} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}] =} svds (@dots{})
-## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
+## @deftypefn  {} {@var{s} =} svds (@var{A})
+## @deftypefnx {} {@var{s} =} svds (@var{A}, @var{k})
+## @deftypefnx {} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {[@var{u}, @var{s}, @var{v}] =} svds (@dots{})
+## @deftypefnx {} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
 ##
 ## Find a few singular values of the matrix @var{A}.
 ##

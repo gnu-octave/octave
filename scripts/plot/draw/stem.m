@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stem (@var{y})
-## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
-## @deftypefnx {Function File} {} stem (@dots{}, @var{linespec})
-## @deftypefnx {Function File} {} stem (@dots{}, "filled")
-## @deftypefnx {Function File} {} stem (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} stem (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} stem (@dots{})
+## @deftypefn  {} {} stem (@var{y})
+## @deftypefnx {} {} stem (@var{x}, @var{y})
+## @deftypefnx {} {} stem (@dots{}, @var{linespec})
+## @deftypefnx {} {} stem (@dots{}, "filled")
+## @deftypefnx {} {} stem (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} stem (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} stem (@dots{})
 ## Plot a 2-D stem graph.
 ##
 ## If only one argument is given, it is taken as the y-values and the

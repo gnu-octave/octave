@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{l} =} legendre (@var{n}, @var{x})
-## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
+## @deftypefn  {} {@var{l} =} legendre (@var{n}, @var{x})
+## @deftypefnx {} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
 ## Compute the Legendre function of degree @var{n} and order
 ## @var{m} = 0 @dots{} @var{n}.
 ##

@@ -19,7 +19,7 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
+## @deftypefn {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
 ## Find a minimum point of a univariate function.
 ##
 ## @var{fun} should be a function handle or name.  @var{a}, @var{b} specify a

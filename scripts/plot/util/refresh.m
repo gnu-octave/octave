@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} refresh ()
-## @deftypefnx {Function File} {} refresh (@var{h})
+## @deftypefn  {} {} refresh ()
+## @deftypefnx {} {} refresh (@var{h})
 ## Refresh a figure, forcing it to be redrawn.
 ##
 ## When called without an argument the current figure is redrawn.  Otherwise,

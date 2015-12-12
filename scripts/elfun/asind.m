@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} asind (@var{x})
+## @deftypefn {} {} asind (@var{x})
 ## Compute the inverse sine in degrees for each element of @var{x}.
 ## @seealso{sind, asin}
 ## @end deftypefn

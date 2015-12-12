@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} inputParser ()
+## @deftypefn {} {@var{p} =} inputParser ()
 ## Create object @var{p} of the inputParser class.
 ##
 ## This class is designed to allow easy parsing of function arguments.  The
@@ -38,33 +38,33 @@
 ## accessed with the @command{Results} accessor.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.Parameters
+## @deftypefn {} {} inputParser.Parameters
 ## Return list of parameter names already defined.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.Results
+## @deftypefn {} {} inputParser.Results
 ## Return structure with argument names as fieldnames and corresponding values.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.Unmatched
+## @deftypefn {} {} inputParser.Unmatched
 ## Return structure similar to @command{Results}, but for unmatched parameters.
 ## See the @command{KeepUnmatched} property.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.UsingDefaults
+## @deftypefn {} {} inputParser.UsingDefaults
 ## Return cell array with the names of arguments that are using default values.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.CaseSensitive = @var{boolean}
+## @deftypefn {} {} inputParser.CaseSensitive = @var{boolean}
 ## Set whether matching of argument names should be case sensitive.  Defaults
 ## to false.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.FunctionName = @var{name}
+## @deftypefn {} {} inputParser.FunctionName = @var{name}
 ## Set function name to be used in error messages; Defaults to empty string.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.KeepUnmatched = @var{boolean}
+## @deftypefn {} {} inputParser.KeepUnmatched = @var{boolean}
 ## Set whether an error should be given for non-defined arguments.  Defaults to
 ## false.  If set to true, the extra arguments can be accessed through
 ## @code{Unmatched} after the @code{parse} method.  Note that since
@@ -74,7 +74,7 @@
 ## be followed by a value.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.StructExpand = @var{boolean}
+## @deftypefn {} {} inputParser.StructExpand = @var{boolean}
 ## Set whether a structure can be passed to the function instead of
 ## parameter/value pairs.  Defaults to true.  Not implemented yet.
 ##
@@ -142,8 +142,8 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addOptional (@var{argname}, @var{default})
-## @deftypefnx {Function File} {} addOptional (@var{argname}, @var{default}, @var{validator})
+## @deftypefn  {} {} addOptional (@var{argname}, @var{default})
+## @deftypefnx {} {} addOptional (@var{argname}, @var{default}, @var{validator})
 ## Add new optional argument to the object @var{parser} of the class inputParser
 ## to implement an ordered arguments type of API
 ##
@@ -168,8 +168,8 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addParamValue (@var{argname}, @var{default})
-## @deftypefnx {Function File} {} addParamValue (@var{argname}, @var{default}, @var{validator})
+## @deftypefn  {} {} addParamValue (@var{argname}, @var{default})
+## @deftypefnx {} {} addParamValue (@var{argname}, @var{default}, @var{validator})
 ## Add new parameter to the object @var{parser} of the class inputParser to
 ## implement a name/value pair type of API.
 ##
@@ -186,8 +186,8 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addRequired (@var{argname})
-## @deftypefnx {Function File} {} addRequired (@var{argname}, @var{validator})
+## @deftypefn  {} {} addRequired (@var{argname})
+## @deftypefnx {} {} addRequired (@var{argname}, @var{validator})
 ## Add new mandatory argument to the object @var{parser} of inputParser class.
 ##
 ## This method belongs to the inputParser class and implements an ordered
@@ -209,7 +209,7 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} addSwitch (@var{argname})
+## @deftypefn {} {} addSwitch (@var{argname})
 ## Add new switch type of argument to the object @var{parser} of inputParser
 ## class.
 ##
@@ -228,7 +228,7 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} parse (@var{varargin})
+## @deftypefn {} {} parse (@var{varargin})
 ## Parses and validates list of arguments according to object @var{parser} of
 ## the class inputParser.
 ##

@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} help @var{name}
-## @deftypefnx {Command} {} help @code{--list}
-## @deftypefnx {Command} {} help @code{.}
-## @deftypefnx {Command} {} help
+## @deftypefn  {} {} help @var{name}
+## @deftypefnx {} {} help @code{--list}
+## @deftypefnx {} {} help @code{.}
+## @deftypefnx {} {} help
 ## Display the help text for @var{name}.
 ##
 ## For example, the command @kbd{help help} prints a short message describing

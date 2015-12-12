@@ -15,17 +15,17 @@
 ##   <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} annotation (@var{type})
-## @deftypefnx {Function File} {} annotation ("line", @var{x}, @var{y})
-## @deftypefnx {Function File} {} annotation ("arrow", @var{x}, @var{y})
-## @deftypefnx {Function File} {} annotation ("doublearrow", @var{x}, @var{y})
-## @deftypefnx {Function File} {} annotation ("textarrow", @var{x}, @var{y})
-## @deftypefnx {Function File} {} annotation ("textbox", @var{pos})
-## @deftypefnx {Function File} {} annotation ("rectangle", @var{pos})
-## @deftypefnx {Function File} {} annotation ("ellipse", @var{pos})
-## @deftypefnx {Function File} {} annotation (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} annotation (@var{hf}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} annotation (@dots{})
+## @deftypefn  {} {} annotation (@var{type})
+## @deftypefnx {} {} annotation ("line", @var{x}, @var{y})
+## @deftypefnx {} {} annotation ("arrow", @var{x}, @var{y})
+## @deftypefnx {} {} annotation ("doublearrow", @var{x}, @var{y})
+## @deftypefnx {} {} annotation ("textarrow", @var{x}, @var{y})
+## @deftypefnx {} {} annotation ("textbox", @var{pos})
+## @deftypefnx {} {} annotation ("rectangle", @var{pos})
+## @deftypefnx {} {} annotation ("ellipse", @var{pos})
+## @deftypefnx {} {} annotation (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {} {} annotation (@var{hf}, @dots{})
+## @deftypefnx {} {@var{h} =} annotation (@dots{})
 ## Draw annotations to emphasize parts of a figure.
 ##
 ## You may build a default annotation by specifying only the @var{type}

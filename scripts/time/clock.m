@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} clock ()
+## @deftypefn {} {} clock ()
 ## Return the current local date and time as a date vector.
 ##
 ## The date vector contains the following fields: current year, month (1-12),

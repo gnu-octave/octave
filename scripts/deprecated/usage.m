@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {} usage (@var{msg})
+## @deftypefn {} {} usage (@var{msg})
 ##
 ## @code{usage} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{print_usage} in all new code.

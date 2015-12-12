@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{val} =} pathdef ()
+## @deftypefn {} {@var{val} =} pathdef ()
 ## Return the default path for Octave.
 ##
 ## The path information is extracted from one of four sources.

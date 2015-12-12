@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} invhilb (@var{n})
+## @deftypefn {} {} invhilb (@var{n})
 ## Return the inverse of the Hilbert matrix of order @var{n}.
 ##
 ## This can be computed exactly using

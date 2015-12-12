@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
+## @deftypefn {} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 

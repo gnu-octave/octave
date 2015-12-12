@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} tar (@var{tarfile}, @var{files})
-## @deftypefnx {Function File} {@var{filelist} =} tar (@var{tarfile}, @var{files}, @var{rootdir})
+## @deftypefn  {} {@var{filelist} =} tar (@var{tarfile}, @var{files})
+## @deftypefnx {} {@var{filelist} =} tar (@var{tarfile}, @var{files}, @var{rootdir})
 ## Pack the list of files and directories specified in @var{files} into the
 ## TAR archive @var{tarfile}.
 ##

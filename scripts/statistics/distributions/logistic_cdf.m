@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} logistic_cdf (@var{x})
+## @deftypefn {} {} logistic_cdf (@var{x})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the logistic distribution.
 ## @end deftypefn

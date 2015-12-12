@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} verify_directory (@var{dir})
+## @deftypefn {} {} verify_directory (@var{dir})
 ## Undocumented internal function.
 ## @end deftypefn
 

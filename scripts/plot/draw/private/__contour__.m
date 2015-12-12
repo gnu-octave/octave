@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
+## @deftypefn {} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} image (@var{img})
-## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
-## @deftypefnx {Function File} {} image (@dots{}, "@var{prop}", @var{val}, @dots{})
-## @deftypefnx {Function File} {} image ("@var{prop1}", @var{val1}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} image (@dots{})
+## @deftypefn  {} {} image (@var{img})
+## @deftypefnx {} {} image (@var{x}, @var{y}, @var{img})
+## @deftypefnx {} {} image (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {} {} image ("@var{prop1}", @var{val1}, @dots{})
+## @deftypefnx {} {@var{h} =} image (@dots{})
 ## Display a matrix as an indexed color image.
 ##
 ## The elements of @var{img} are indices into the current colormap.

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} type @var{name} @dots{}
-## @deftypefnx {Command} {} type -q @var{name} @dots{}
-## @deftypefnx {Function File} {text =} type ("@var{name}", @dots{})
+## @deftypefn  {} {} type @var{name} @dots{}
+## @deftypefnx {} {} type -q @var{name} @dots{}
+## @deftypefnx {} {text =} type ("@var{name}", @dots{})
 ## Display the contents of @var{name} which may be a file, function (m-file),
 ## variable, operator, or keyword.
 ##

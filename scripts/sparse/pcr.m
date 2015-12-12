@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
+## @deftypefn  {} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ##
 ## Solve the linear system of equations @code{@var{A} * @var{x} = @var{b}} by
 ## means of the Preconditioned Conjugate Residuals iterative method.

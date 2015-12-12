@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javamem ()
-## @deftypefnx {Function File} {@var{jmem} =} javamem ()
+## @deftypefn  {} {} javamem ()
+## @deftypefnx {} {@var{jmem} =} javamem ()
 ## Show the current memory usage of the Java virtual machine (JVM) and run the
 ## garbage collector.
 ##

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} kendall (@var{x})
-## @deftypefnx {Function File} {} kendall (@var{x}, @var{y})
+## @deftypefn  {} {} kendall (@var{x})
+## @deftypefnx {} {} kendall (@var{x}, @var{y})
 ## @cindex Kendall's Tau
 ## Compute Kendall's @var{tau}.
 ##

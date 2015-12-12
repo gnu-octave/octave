@@ -19,8 +19,8 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fsolve (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
+## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
 ## @var{fcn} should accept a vector (array) defining the unknown variables,

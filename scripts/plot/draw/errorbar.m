@@ -17,16 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} errorbar (@var{y}, @var{ey})
-## @deftypefnx {Function File} {} errorbar (@var{y}, @dots{}, @var{fmt})
-## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{ey})
-## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{err}, @var{fmt})
-## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
-## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
-## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
-## @deftypefnx {Function File} {} errorbar (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
-## @deftypefnx {Function File} {} errorbar (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} errorbar (@dots{})
+## @deftypefn  {} {} errorbar (@var{y}, @var{ey})
+## @deftypefnx {} {} errorbar (@var{y}, @dots{}, @var{fmt})
+## @deftypefnx {} {} errorbar (@var{x}, @var{y}, @var{ey})
+## @deftypefnx {} {} errorbar (@var{x}, @var{y}, @var{err}, @var{fmt})
+## @deftypefnx {} {} errorbar (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
+## @deftypefnx {} {} errorbar (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
+## @deftypefnx {} {} errorbar (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
+## @deftypefnx {} {} errorbar (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
+## @deftypefnx {} {} errorbar (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} errorbar (@dots{})
 ## Create a 2-D plot with errorbars.
 ##
 ## Many different combinations of arguments are possible.  The simplest form is

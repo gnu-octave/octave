@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} comet3 (@var{z})
-## @deftypefnx {Function File} {} comet3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} comet3 (@var{x}, @var{y}, @var{z}, @var{p})
-## @deftypefnx {Function File} {} comet3 (@var{hax}, @dots{})
+## @deftypefn  {} {} comet3 (@var{z})
+## @deftypefnx {} {} comet3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} comet3 (@var{x}, @var{y}, @var{z}, @var{p})
+## @deftypefnx {} {} comet3 (@var{hax}, @dots{})
 ## Produce a simple comet style animation along the trajectory provided by
 ## the input coordinate vectors (@var{x}, @var{y}, @var{z}).
 ##

@@ -19,12 +19,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{Pxx}, @var{w}] =} periodogram (@var{x})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win}, @var{nfft})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{f}] =} periodogram (@var{x}, @var{win}, @var{nfft}, @var{Fs})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{f}] =} periodogram (@dots{}, "@var{range}")
-## @deftypefnx {Function File} {} periodogram (@dots{})
+## @deftypefn  {} {[@var{Pxx}, @var{w}] =} periodogram (@var{x})
+## @deftypefnx {} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win})
+## @deftypefnx {} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win}, @var{nfft})
+## @deftypefnx {} {[@var{Pxx}, @var{f}] =} periodogram (@var{x}, @var{win}, @var{nfft}, @var{Fs})
+## @deftypefnx {} {[@var{Pxx}, @var{f}] =} periodogram (@dots{}, "@var{range}")
+## @deftypefnx {} {} periodogram (@dots{})
 ## Return the periodogram (Power Spectral Density) of @var{x}.
 ##
 ## The possible inputs are:

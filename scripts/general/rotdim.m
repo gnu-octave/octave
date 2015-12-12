@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rotdim (@var{x})
-## @deftypefnx {Function File} {} rotdim (@var{x}, @var{n})
-## @deftypefnx {Function File} {} rotdim (@var{x}, @var{n}, @var{plane})
+## @deftypefn  {} {} rotdim (@var{x})
+## @deftypefnx {} {} rotdim (@var{x}, @var{n})
+## @deftypefnx {} {} rotdim (@var{x}, @var{n}, @var{plane})
 ## Return a copy of @var{x} with the elements rotated counterclockwise in
 ## 90-degree increments.
 ##

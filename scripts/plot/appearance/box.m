@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} box
-## @deftypefnx {Command} {} box on
-## @deftypefnx {Command} {} box off
-## @deftypefnx {Function File} {} box (@var{hax}, @dots{})
+## @deftypefn  {} {} box
+## @deftypefnx {} {} box on
+## @deftypefnx {} {} box off
+## @deftypefnx {} {} box (@var{hax}, @dots{})
 ## Control display of the axis border.
 ##
 ## The argument may be either @qcode{"on"} or @qcode{"off"}.  If it is

@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tcdf (@var{x}, @var{n})
+## @deftypefn {} {} tcdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the t (Student) distribution with
 ## @var{n} degrees of freedom.

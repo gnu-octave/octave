@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
-## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
-## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{xi})
-## @deftypefnx {Function File} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
+## @deftypefn  {} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
+## @deftypefnx {} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
+## @deftypefnx {} {@var{idx} =} dsearchn (@var{x}, @var{xi})
+## @deftypefnx {} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
 ## Return the index @var{idx} of the closest point in @var{x} to the elements
 ## @var{xi}.
 ##

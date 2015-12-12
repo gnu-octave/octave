@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} grid
-## @deftypefnx {Command} {} grid on
-## @deftypefnx {Command} {} grid off
-## @deftypefnx {Command} {} grid minor
-## @deftypefnx {Command} {} grid minor on
-## @deftypefnx {Command} {} grid minor off
-## @deftypefnx {Function File} {} grid (@var{hax}, @dots{})
+## @deftypefn  {} {} grid
+## @deftypefnx {} {} grid on
+## @deftypefnx {} {} grid off
+## @deftypefnx {} {} grid minor
+## @deftypefnx {} {} grid minor on
+## @deftypefnx {} {} grid minor off
+## @deftypefnx {} {} grid (@var{hax}, @dots{})
 ## Control the display of plot grid lines.
 ##
 ## The function state input may be either @qcode{"on"} or @qcode{"off"}.

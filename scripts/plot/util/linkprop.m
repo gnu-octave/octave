@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hlink} =} linkprop (@var{h}, "@var{prop}")
-## @deftypefnx {Function File} {@var{hlink} =} linkprop (@var{h}, @{"@var{prop1}", "@var{prop2}", @dots{}@})
+## @deftypefn  {} {@var{hlink} =} linkprop (@var{h}, "@var{prop}")
+## @deftypefnx {} {@var{hlink} =} linkprop (@var{h}, @{"@var{prop1}", "@var{prop2}", @dots{}@})
 ## Link graphic object properties, such that a change in one is propagated to
 ## the others.
 ##

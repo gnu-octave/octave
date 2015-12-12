@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{recorder} =} audiorecorder ()
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
+## @deftypefn  {} {@var{recorder} =} audiorecorder ()
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
 ## sample rate.
 ##
@@ -34,7 +34,7 @@
 ## functions in a separate thread which is likely to cause trouble with
 ## all of Octave's global data...
 ##
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
 ##
 ## Given a function handle, use that function to process the audio.
 

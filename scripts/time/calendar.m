@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} calendar ()
-## @deftypefnx {Function File} {@var{c} =} calendar (@var{d})
-## @deftypefnx {Function File} {@var{c} =} calendar (@var{y}, @var{m})
-## @deftypefnx {Function File} {} calendar (@dots{})
+## @deftypefn  {} {@var{c} =} calendar ()
+## @deftypefnx {} {@var{c} =} calendar (@var{d})
+## @deftypefnx {} {@var{c} =} calendar (@var{y}, @var{m})
+## @deftypefnx {} {} calendar (@dots{})
 ## Return the current monthly calendar in a 6x7 matrix.
 ##
 ## If @var{d} is specified, return the calendar for the month containing the

@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dump_demos ()
-## @deftypefnx {Function File} {} dump_demos (@var{dirs})
-## @deftypefnx {Function File} {} dump_demos (@var{dirs}, @var{mfile})
-## @deftypefnx {Function File} {} dump_demos (@var{dirs}, @var{mfile}, @var{fmt})
+## @deftypefn  {} {} dump_demos ()
+## @deftypefnx {} {} dump_demos (@var{dirs})
+## @deftypefnx {} {} dump_demos (@var{dirs}, @var{mfile})
+## @deftypefnx {} {} dump_demos (@var{dirs}, @var{mfile}, @var{fmt})
 ## Produce a script, with the name specified by @var{mfile}, containing
 ## the demos in the directories, @var{dirs}.  The demos are assumed to produce
 ## graphical output, whose renderings are saved with the specified format,

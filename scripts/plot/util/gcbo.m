@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} gcbo ()
-## @deftypefnx {Function File} {[@var{h}, @var{fig}] =} gcbo ()
+## @deftypefn  {} {@var{h} =} gcbo ()
+## @deftypefnx {} {[@var{h}, @var{fig}] =} gcbo ()
 ## Return a handle to the object whose callback is currently executing.
 ##
 ## If no callback is executing, this function returns the empty matrix.  This

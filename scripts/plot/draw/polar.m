@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polar (@var{theta}, @var{rho})
-## @deftypefnx {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
-## @deftypefnx {Function File} {} polar (@var{cplx})
-## @deftypefnx {Function File} {} polar (@var{cplx}, @var{fmt})
-## @deftypefnx {Function File} {} polar (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} polar (@dots{})
+## @deftypefn  {} {} polar (@var{theta}, @var{rho})
+## @deftypefnx {} {} polar (@var{theta}, @var{rho}, @var{fmt})
+## @deftypefnx {} {} polar (@var{cplx})
+## @deftypefnx {} {} polar (@var{cplx}, @var{fmt})
+## @deftypefnx {} {} polar (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} polar (@dots{})
 ## Create a 2-D plot from polar coordinates @var{theta} and @var{rho}.
 ##
 ## If a single complex input @var{cplx} is given then the real part is used

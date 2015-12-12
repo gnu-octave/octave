@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sinewave (@var{m}, @var{n}, @var{d})
+## @deftypefn {} {} sinewave (@var{m}, @var{n}, @var{d})
 ## Return an @var{m}-element vector with @var{i}-th element given by
 ## @code{sin (2 * pi * (@var{i}+@var{d}-1) / @var{n})}.
 ##

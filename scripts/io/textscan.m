@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{C} =} textscan (@var{fid}, @var{format})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n}, @var{param}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{str}, @dots{})
-## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@var{fid}, @dots{})
+## @deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})
+## @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n})
+## @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})
+## @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n}, @var{param}, @var{value}, @dots{})
+## @deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})
+## @deftypefnx {} {[@var{C}, @var{position}] =} textscan (@var{fid}, @dots{})
 ## Read data from a text file or string.
 ##
 ## The string @var{str} or file associated with @var{fid} is read from and

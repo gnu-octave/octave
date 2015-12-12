@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dump_prefs ()
-## @deftypefnx {Function File} {} dump_prefs (@var{fid})
+## @deftypefn  {} {} dump_prefs ()
+## @deftypefnx {} {} dump_prefs (@var{fid})
 ##
 ## @code{dump_prefs} is deprecated and will be removed in Octave version 4.4.
 ## Please use individual preference get/set routines in all new code.

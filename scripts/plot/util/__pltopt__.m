@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
+## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt})
 ## Undocumented internal function.
 ## @end deftypefn
 
-## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
+## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt})
 ##
 ## Decode plot option strings.
 ##

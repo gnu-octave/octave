@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} autumn ()
-## @deftypefnx {Function File} {@var{map} =} autumn (@var{n})
+## @deftypefn  {} {@var{map} =} autumn ()
+## @deftypefnx {} {@var{map} =} autumn (@var{n})
 ## Create color colormap.
 ## This colormap ranges from red through orange to yellow.
 ##

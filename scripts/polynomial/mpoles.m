@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p})
-## @deftypefnx {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol})
-## @deftypefnx {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
+## @deftypefn  {} {[@var{multp}, @var{idxp}] =} mpoles (@var{p})
+## @deftypefnx {} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol})
+## @deftypefnx {} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
 ## Identify unique poles in @var{p} and their associated multiplicity.
 ##
 ## The output is ordered from largest pole to smallest pole.

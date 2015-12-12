@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} finv (@var{x}, @var{m}, @var{n})
+## @deftypefn {} {} finv (@var{x}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the F distribution with @var{m} and @var{n} degrees of freedom.
 ## @end deftypefn

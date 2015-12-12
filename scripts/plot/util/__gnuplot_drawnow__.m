@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __gnuplot_drawnow__ (@var{h}, @var{term}, @var{file}, @var{mono}, @var{debug_file})
+## @deftypefn {} {} __gnuplot_drawnow__ (@var{h}, @var{term}, @var{file}, @var{mono}, @var{debug_file})
 ## Undocumented internal function.
 ## @end deftypefn
 

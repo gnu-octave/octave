@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dir
-## @deftypefnx {Function File} {} dir (@var{directory})
-## @deftypefnx {Function File} {[@var{list}] =} dir (@var{directory})
+## @deftypefn  {} {} dir
+## @deftypefnx {} {} dir (@var{directory})
+## @deftypefnx {} {[@var{list}] =} dir (@var{directory})
 ## Display file listing for directory @var{directory}.
 ##
 ## If @var{directory} is not specified then list the present working directory.

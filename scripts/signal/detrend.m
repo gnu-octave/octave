@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} detrend (@var{x}, @var{p})
+## @deftypefn {} {} detrend (@var{x}, @var{p})
 ## If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
 ## best fit of a polynomial of order @var{p} from the data @var{x}.
 ##

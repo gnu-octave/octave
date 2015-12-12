@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hnew} =} copyobj (@var{horig})
-## @deftypefnx {Function File} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
+## @deftypefn  {} {@var{hnew} =} copyobj (@var{horig})
+## @deftypefnx {} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
 ## Construct a copy of the graphic object associated with handle @var{horig}
 ## and return a handle @var{hnew} to the new object.
 ##

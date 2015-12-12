@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyaffine (@var{f}, @var{mu})
+## @deftypefn {} {} polyaffine (@var{f}, @var{mu})
 ## Return the coefficients of the polynomial vector @var{f} after an affine
 ## transformation.
 ##

@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} poissrnd (@var{lambda})
-## @deftypefnx {Function File} {} poissrnd (@var{lambda}, @var{r})
-## @deftypefnx {Function File} {} poissrnd (@var{lambda}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} poissrnd (@var{lambda}, [@var{sz}])
+## @deftypefn  {} {} poissrnd (@var{lambda})
+## @deftypefnx {} {} poissrnd (@var{lambda}, @var{r})
+## @deftypefnx {} {} poissrnd (@var{lambda}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} poissrnd (@var{lambda}, [@var{sz}])
 ## Return a matrix of random samples from the Poisson distribution with
 ## parameter @var{lambda}.
 ##

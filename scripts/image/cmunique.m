@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{Y}, @var{newmap}] =} cmunique (@var{X}, @var{map})
-## @deftypefnx {Function File} {[@var{Y}, @var{newmap}] =} cmunique (@var{RGB})
-## @deftypefnx {Function File} {[@var{Y}, @var{newmap}] =} cmunique (@var{I})
+## @deftypefn  {} {[@var{Y}, @var{newmap}] =} cmunique (@var{X}, @var{map})
+## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmunique (@var{RGB})
+## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmunique (@var{I})
 ## Convert an input image @var{X} to an ouput indexed image @var{Y} which uses
 ## the smallest colormap possible @var{newmap}.
 ##

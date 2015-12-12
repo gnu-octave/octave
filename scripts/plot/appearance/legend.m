@@ -17,16 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} legend (@var{str1}, @var{str2}, @dots{})
-## @deftypefnx {Function File} {} legend (@var{matstr})
-## @deftypefnx {Function File} {} legend (@var{cellstr})
-## @deftypefnx {Function File} {} legend (@dots{}, "location", @var{pos})
-## @deftypefnx {Function File} {} legend (@dots{}, "orientation", @var{orient})
-## @deftypefnx {Function File} {} legend (@var{hax}, @dots{})
-## @deftypefnx {Function File} {} legend (@var{hobjs}, @dots{})
-## @deftypefnx {Function File} {} legend (@var{hax}, @var{hobjs}, @dots{})
-## @deftypefnx {Function File} {} legend ("@var{option}")
-## @deftypefnx {Function File} {[@var{hleg}, @var{hleg_obj}, @var{hplot}, @var{labels}] =} legend (@dots{})
+## @deftypefn  {} {} legend (@var{str1}, @var{str2}, @dots{})
+## @deftypefnx {} {} legend (@var{matstr})
+## @deftypefnx {} {} legend (@var{cellstr})
+## @deftypefnx {} {} legend (@dots{}, "location", @var{pos})
+## @deftypefnx {} {} legend (@dots{}, "orientation", @var{orient})
+## @deftypefnx {} {} legend (@var{hax}, @dots{})
+## @deftypefnx {} {} legend (@var{hobjs}, @dots{})
+## @deftypefnx {} {} legend (@var{hax}, @var{hobjs}, @dots{})
+## @deftypefnx {} {} legend ("@var{option}")
+## @deftypefnx {} {[@var{hleg}, @var{hleg_obj}, @var{hplot}, @var{labels}] =} legend (@dots{})
 ##
 ## Display a legend for the current axes using the specified strings as labels.
 ##

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} errordlg (@var{msg})
-## @deftypefnx {Function File} {@var{h} =} errordlg (@var{msg}, @var{title})
-## @deftypefnx {Function File} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
+## @deftypefn  {} {@var{h} =} errordlg (@var{msg})
+## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title})
+## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
 ## Display @var{msg} using an error dialog box.
 ##
 ## The message may have multiple lines separated by newline characters ("\n"),

@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
+## @deftypefn {} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
 ## Determine if all input arguments are either scalar or of common size.
 ##
 ## If true, @var{err} is zero, and @var{yi} is a matrix of the common size

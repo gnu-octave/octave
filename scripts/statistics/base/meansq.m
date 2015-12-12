@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} meansq (@var{x})
-## @deftypefnx {Function File} {} meansq (@var{x}, @var{dim})
+## @deftypefn  {} {} meansq (@var{x})
+## @deftypefnx {} {} meansq (@var{x}, @var{dim})
 ## Compute the mean square of the elements of the vector @var{x}.
 ##
 ## The mean square is defined as

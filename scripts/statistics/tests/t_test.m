@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test (@var{x}, @var{m}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{t}, @var{df}] =} t_test (@var{x}, @var{m}, @var{alt})
 ## For a sample @var{x} from a normal distribution with unknown mean and
 ## variance, perform a t-test of the null hypothesis
 ## @code{mean (@var{x}) == @var{m}}.

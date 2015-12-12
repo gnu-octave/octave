@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hex2dec (@var{s})
+## @deftypefn {} {} hex2dec (@var{s})
 ## Return the integer corresponding to the hexadecimal number represented by
 ## the string @var{s}.
 ##

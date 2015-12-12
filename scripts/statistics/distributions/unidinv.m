@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidinv (@var{x}, @var{n})
+## @deftypefn {} {} unidinv (@var{x}, @var{n})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the discrete uniform distribution which assumes
 ## the integer values 1--@var{n} with equal probability.

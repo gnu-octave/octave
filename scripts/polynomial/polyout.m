@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyout (@var{c})
-## @deftypefnx {Function File} {} polyout (@var{c}, @var{x})
-## @deftypefnx {Function File} {@var{str} =} polyout (@dots{})
+## @deftypefn  {} {} polyout (@var{c})
+## @deftypefnx {} {} polyout (@var{c}, @var{x})
+## @deftypefnx {} {@var{str} =} polyout (@dots{})
 ## Display a formatted version of the polynomial @var{c}.
 ##
 ## The formatted polynomial

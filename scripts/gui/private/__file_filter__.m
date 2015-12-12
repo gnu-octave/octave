@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __file_filter__ (@var{file_filter})
+## @deftypefn {} {} __file_filter__ (@var{file_filter})
 ## Undocumented internal function.
 ## @end deftypefn
 

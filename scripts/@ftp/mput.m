@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mput (@var{f}, @var{file})
+## @deftypefn {} {} mput (@var{f}, @var{file})
 ## Upload the local file @var{file} into the current remote directory on the
 ## FTP connection @var{f}.
 ##

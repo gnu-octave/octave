@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{n} =} histc (@var{x}, @var{edges})
-## @deftypefnx {Function File} {@var{n} =} histc (@var{x}, @var{edges}, @var{dim})
-## @deftypefnx {Function File} {[@var{n}, @var{idx}] =} histc (@dots{})
+## @deftypefn  {} {@var{n} =} histc (@var{x}, @var{edges})
+## @deftypefnx {} {@var{n} =} histc (@var{x}, @var{edges}, @var{dim})
+## @deftypefnx {} {[@var{n}, @var{idx}] =} histc (@dots{})
 ## Compute histogram counts.
 ##
 ## When @var{x} is a vector, the function counts the number of elements of

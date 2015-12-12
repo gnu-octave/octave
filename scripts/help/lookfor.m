@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} lookfor @var{str}
-## @deftypefnx {Command} {} lookfor -all @var{str}
-## @deftypefnx {Function File} {[@var{fcn}, @var{help1str}] =} lookfor (@var{str})
-## @deftypefnx {Function File} {[@var{fcn}, @var{help1str}] =} lookfor ("-all", @var{str})
+## @deftypefn  {} {} lookfor @var{str}
+## @deftypefnx {} {} lookfor -all @var{str}
+## @deftypefnx {} {[@var{fcn}, @var{help1str}] =} lookfor (@var{str})
+## @deftypefnx {} {[@var{fcn}, @var{help1str}] =} lookfor ("-all", @var{str})
 ## Search for the string @var{str} in the documentation of all functions in the
 ## current function search path.
 ##

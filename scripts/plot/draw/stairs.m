@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stairs (@var{y})
-## @deftypefnx {Function File} {} stairs (@var{x}, @var{y})
-## @deftypefnx {Function File} {} stairs (@dots{}, @var{style})
-## @deftypefnx {Function File} {} stairs (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} stairs (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} stairs (@dots{})
-## @deftypefnx {Function File} {[@var{xstep}, @var{ystep}] =} stairs (@dots{})
+## @deftypefn  {} {} stairs (@var{y})
+## @deftypefnx {} {} stairs (@var{x}, @var{y})
+## @deftypefnx {} {} stairs (@dots{}, @var{style})
+## @deftypefnx {} {} stairs (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} stairs (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} stairs (@dots{})
+## @deftypefnx {} {[@var{xstep}, @var{ystep}] =} stairs (@dots{})
 ## Produce a stairstep plot.
 ##
 ## The arguments @var{x} and @var{y} may be vectors or matrices.

@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{val} =} odeget (@var{ode_opt}, @var{field})
-## @deftypefnx {Function File} {@var{val} =} odeget (@var{ode_opt}, @var{field}, @var{default})
+## @deftypefn  {} {@var{val} =} odeget (@var{ode_opt}, @var{field})
+## @deftypefnx {} {@var{val} =} odeget (@var{ode_opt}, @var{field}, @var{default})
 ##
 ## Query the value of the property @var{field} in the ODE options structure
 ## @var{ode_opt}.

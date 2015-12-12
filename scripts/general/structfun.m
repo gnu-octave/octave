@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} structfun (@var{func}, @var{S})
-## @deftypefnx {Function File} {[@var{A}, @dots{}] =} structfun (@dots{})
-## @deftypefnx {Function File} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
-## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
+## @deftypefn  {} {} structfun (@var{func}, @var{S})
+## @deftypefnx {} {[@var{A}, @dots{}] =} structfun (@dots{})
+## @deftypefnx {} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefnx {} {} structfun (@dots{}, "UniformOutput", @var{val})
 ##
 ## Evaluate the function named @var{name} on the fields of the structure
 ## @var{S}.  The fields of @var{S} are passed to the function @var{func}

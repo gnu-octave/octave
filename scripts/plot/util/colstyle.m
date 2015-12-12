@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{style}, @var{color}, @var{marker}, @var{msg}] =} colstyle (@var{linespec})
+## @deftypefn {} {[@var{style}, @var{color}, @var{marker}, @var{msg}] =} colstyle (@var{linespec})
 ## Parse @var{linespec} and return the line style, color, and markers given.
 ##
 ## In the case of an error, the string @var{msg} will return the text of the

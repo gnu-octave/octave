@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} waitbar (@var{frac})
-## @deftypefnx {Function File} {@var{h} =} waitbar (@var{frac}, @var{msg})
-## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, "createcancelbtn", @var{fcn}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} waitbar (@var{frac})
-## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar})
-## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
+## @deftypefn  {} {@var{h} =} waitbar (@var{frac})
+## @deftypefnx {} {@var{h} =} waitbar (@var{frac}, @var{msg})
+## @deftypefnx {} {@var{h} =} waitbar (@dots{}, "createcancelbtn", @var{fcn}, @dots{})
+## @deftypefnx {} {@var{h} =} waitbar (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} waitbar (@var{frac})
+## @deftypefnx {} {} waitbar (@var{frac}, @var{hwbar})
+## @deftypefnx {} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
 ## Return a handle @var{h} to a new waitbar object.
 ##
 ## The waitbar is filled to fraction @var{frac} which must be in the range

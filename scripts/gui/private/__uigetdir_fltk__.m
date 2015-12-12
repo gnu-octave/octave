@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dirname} =} __uigetdir_fltk__ (@var{start_path}, @var{dialog_title})
+## @deftypefn {} {@var{dirname} =} __uigetdir_fltk__ (@var{start_path}, @var{dialog_title})
 ## Undocumented internal function.
 ## @end deftypefn
 

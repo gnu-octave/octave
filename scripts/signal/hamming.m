@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hamming (@var{m})
-## @deftypefnx {Function File} {} hamming (@var{m}, "periodic")
-## @deftypefnx {Function File} {} hamming (@var{m}, "symmetric")
+## @deftypefn  {} {} hamming (@var{m})
+## @deftypefnx {} {} hamming (@var{m}, "periodic")
+## @deftypefnx {} {} hamming (@var{m}, "symmetric")
 ## Return the filter coefficients of a Hamming window of length @var{m}.
 ##
 ## If the optional argument @qcode{"periodic"} is given, the periodic form

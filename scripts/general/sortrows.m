@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{s}, @var{i}] =} sortrows (@var{A})
-## @deftypefnx {Function File} {[@var{s}, @var{i}] =} sortrows (@var{A}, @var{c})
+## @deftypefn  {} {[@var{s}, @var{i}] =} sortrows (@var{A})
+## @deftypefnx {} {[@var{s}, @var{i}] =} sortrows (@var{A}, @var{c})
 ## Sort the rows of the matrix @var{A} according to the order of the columns
 ## specified in @var{c}.
 ##

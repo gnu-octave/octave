@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} laplace_rnd (@var{r})
-## @deftypefnx {Function File} {} laplace_rnd (@var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} laplace_rnd ([@var{sz}])
+## @deftypefn  {} {} laplace_rnd (@var{r})
+## @deftypefnx {} {} laplace_rnd (@var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} laplace_rnd ([@var{sz}])
 ## Return a matrix of random samples from the Laplace distribution.
 ##
 ## When called with a single size argument, return a square matrix with

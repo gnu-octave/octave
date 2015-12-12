@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isprime (@var{x})
+## @deftypefn {} {} isprime (@var{x})
 ## Return a logical array which is true where the elements of @var{x} are prime
 ## numbers and false where they are not.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} asec (@var{x})
+## @deftypefn {} {} asec (@var{x})
 ## Compute the inverse secant in radians for each element of @var{x}.
 ## @seealso{sec, asecd}
 ## @end deftypefn

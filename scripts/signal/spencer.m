@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} spencer (@var{x})
+## @deftypefn {} {} spencer (@var{x})
 ## Return Spencer's 15 point moving average of each column of @var{x}.
 ## @end deftypefn
 

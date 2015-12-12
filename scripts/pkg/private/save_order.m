@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{newdesc} =} save_order (@var{desc})
+## @deftypefn {} {@var{newdesc} =} save_order (@var{desc})
 ## Undocumented internal function.
 ## @end deftypefn
 

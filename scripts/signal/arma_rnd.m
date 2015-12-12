@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} arma_rnd (@var{a}, @var{b}, @var{v}, @var{t}, @var{n})
+## @deftypefn {} {} arma_rnd (@var{a}, @var{b}, @var{v}, @var{t}, @var{n})
 ## Return a simulation of the ARMA model.
 ##
 ## The ARMA model is defined by

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sol} =} ode_event_handler (@var{@@evtfun}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
+## @deftypefn {} {@var{sol} =} ode_event_handler (@var{@@evtfun}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
 ##
 ## Return the solution of the event function that is specified as the first
 ## input argument @var{@@evtfun} in the form of a function handle.

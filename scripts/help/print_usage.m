@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} print_usage ()
-## @deftypefnx {Function File} {} print_usage (@var{name})
+## @deftypefn  {} {} print_usage ()
+## @deftypefnx {} {} print_usage (@var{name})
 ## Print the usage message for the function @var{name}.
 ##
 ## When called with no input arguments the @code{print_usage} function displays

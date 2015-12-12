@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{choice} =} menu (@var{title}, @var{opt1}, @dots{})
-## @deftypefnx {Function File} {@var{choice} =} menu (@var{title}, @{@var{opt1}, @dots{}@})
+## @deftypefn  {} {@var{choice} =} menu (@var{title}, @var{opt1}, @dots{})
+## @deftypefnx {} {@var{choice} =} menu (@var{title}, @{@var{opt1}, @dots{}@})
 ## Display a menu with heading @var{title} and options @var{opt1}, @dots{},
 ## and wait for user input.
 ##

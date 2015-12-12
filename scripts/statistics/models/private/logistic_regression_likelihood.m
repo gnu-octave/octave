@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{g}, @var{g1}, @var{p}, @var{dev}] =} logistic_regression_likelihood (@var{y}, @var{x}, @var{beta}, @var{z}, @var{z1})
+## @deftypefn {} {[@var{g}, @var{g1}, @var{p}, @var{dev}] =} logistic_regression_likelihood (@var{y}, @var{x}, @var{beta}, @var{z}, @var{z1})
 ## Calculate the likelihood for the ordinal logistic regression model.
 ##
 ## Private function called by @code{logistic_regression}.

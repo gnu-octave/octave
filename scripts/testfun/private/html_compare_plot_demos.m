@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} html_compare (@var{toolkits})
-## @deftypefnx {Function File} {} html_compare (@var{toolkits}, @var{name}, @var{value}, @dots{})
+## @deftypefn  {} {} html_compare (@var{toolkits})
+## @deftypefnx {} {} html_compare (@var{toolkits}, @var{name}, @var{value}, @dots{})
 ##
 ## Produces an html document to compare the plot demos produced by
 ## @var{toolkits}.

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} display (@var{a})
+## @deftypefn {} {} display (@var{a})
 ## Display the contents of an object.
 ##
 ## If @var{a} is an object of the class @qcode{"myclass"}, then @code{display}

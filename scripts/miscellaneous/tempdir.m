@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dir} =} tempdir ()
+## @deftypefn {} {@var{dir} =} tempdir ()
 ## Return the name of the host system's directory for temporary files.
 ##
 ## The directory name is taken first from the environment variable

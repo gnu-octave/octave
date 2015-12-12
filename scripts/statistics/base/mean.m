@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} mean (@var{x})
-## @deftypefnx {Function File} {} mean (@var{x}, @var{dim})
-## @deftypefnx {Function File} {} mean (@var{x}, @var{opt})
-## @deftypefnx {Function File} {} mean (@var{x}, @var{dim}, @var{opt})
+## @deftypefn  {} {} mean (@var{x})
+## @deftypefnx {} {} mean (@var{x}, @var{dim})
+## @deftypefnx {} {} mean (@var{x}, @var{opt})
+## @deftypefnx {} {} mean (@var{x}, @var{dim}, @var{opt})
 ## Compute the mean of the elements of the vector @var{x}.
 ##
 ## The mean is defined as

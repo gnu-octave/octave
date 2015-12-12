@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hsv (@var{n})
+## @deftypefn {} {} hsv (@var{n})
 ## Create color colormap.  This colormap begins with red, changes through
 ## yellow, green, cyan, blue, and magenta, before returning to red.
 ##

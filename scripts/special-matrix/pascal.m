@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pascal (@var{n})
-## @deftypefnx {Function File} {} pascal (@var{n}, @var{t})
+## @deftypefn  {} {} pascal (@var{n})
+## @deftypefnx {} {} pascal (@var{n}, @var{t})
 ## Return the Pascal matrix of order @var{n} if @code{@var{t} = 0}.
 ##
 ## The default value of @var{t} is 0.

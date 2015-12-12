@@ -18,15 +18,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{cmap} =} colormap ()
-## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{map})
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("default")
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("@var{map_name}")
-## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{hax}, @dots{})
-## @deftypefnx {Command} {} colormap @var{map_name}
-## @deftypefnx {Function File} {@var{cmaps} =} colormap ("list")
-## @deftypefnx {Function File} {} colormap ("register", "@var{name}")
-## @deftypefnx {Function File} {} colormap ("unregister", "@var{name}")
+## @deftypefn  {} {@var{cmap} =} colormap ()
+## @deftypefnx {} {@var{cmap} =} colormap (@var{map})
+## @deftypefnx {} {@var{cmap} =} colormap ("default")
+## @deftypefnx {} {@var{cmap} =} colormap ("@var{map_name}")
+## @deftypefnx {} {@var{cmap} =} colormap (@var{hax}, @dots{})
+## @deftypefnx {} {} colormap @var{map_name}
+## @deftypefnx {} {@var{cmaps} =} colormap ("list")
+## @deftypefnx {} {} colormap ("register", "@var{name}")
+## @deftypefnx {} {} colormap ("unregister", "@var{name}")
 ## Query or set the current colormap.
 ##
 ## With no input arguments, @code{colormap} returns the current color map.

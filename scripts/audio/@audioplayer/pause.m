@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pause (@var{player})
+## @deftypefn {} {} pause (@var{player})
 ## Pause the audioplayer @var{player}.
 ## @end deftypefn
 

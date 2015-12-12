@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} gplot (@var{A}, @var{xy})
-## @deftypefnx {Function File} {} gplot (@var{A}, @var{xy}, @var{line_style})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} gplot (@var{A}, @var{xy})
+## @deftypefn  {} {} gplot (@var{A}, @var{xy})
+## @deftypefnx {} {} gplot (@var{A}, @var{xy}, @var{line_style})
+## @deftypefnx {} {[@var{x}, @var{y}] =} gplot (@var{A}, @var{xy})
 ## Plot a graph defined by @var{A} and @var{xy} in the graph theory sense.
 ##
 ## @var{A} is the adjacency matrix of the array to be plotted and @var{xy} is

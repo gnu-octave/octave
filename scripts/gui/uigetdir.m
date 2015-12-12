@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{dirname} =} uigetdir ()
-## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path})
-## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path}, @var{dialog_name})
+## @deftypefn  {} {@var{dirname} =} uigetdir ()
+## @deftypefnx {} {@var{dirname} =} uigetdir (@var{init_path})
+## @deftypefnx {} {@var{dirname} =} uigetdir (@var{init_path}, @var{dialog_name})
 ## Open a GUI dialog for selecting a directory.
 ##
 ## If @var{init_path} is not given the current working directory is used.

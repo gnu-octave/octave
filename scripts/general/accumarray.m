@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
-## @deftypefnx {Function File} {} accumarray (@var{subs}, @var{vals}, @dots{})
+## @deftypefn  {} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
+## @deftypefnx {} {} accumarray (@var{subs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.

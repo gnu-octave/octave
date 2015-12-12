@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} gmap40 ()
-## @deftypefnx {Function File} {@var{map} =} gmap40 (@var{n})
+## @deftypefn  {} {@var{map} =} gmap40 ()
+## @deftypefnx {} {@var{map} =} gmap40 (@var{n})
 ##
 ## @code{gmap40} is deprecated and will be removed in Octave version 4.4.
 ##

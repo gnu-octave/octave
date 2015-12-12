@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rundemos ()
-## @deftypefnx {Function File} {} rundemos (@var{directory})
+## @deftypefn  {} {} rundemos ()
+## @deftypefnx {} {} rundemos (@var{directory})
 ## Execute built-in demos for all m-files in the specified @var{directory}.
 ##
 ## Demo blocks in any C++ source files (@file{*.cc}) will also be executed

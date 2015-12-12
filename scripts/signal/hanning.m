@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hanning (@var{m})
-## @deftypefnx {Function File} {} hanning (@var{m}, "periodic")
-## @deftypefnx {Function File} {} hanning (@var{m}, "symmetric")
+## @deftypefn  {} {} hanning (@var{m})
+## @deftypefnx {} {} hanning (@var{m}, "periodic")
+## @deftypefnx {} {} hanning (@var{m}, "symmetric")
 ## Return the filter coefficients of a Hanning window of length @var{m}.
 ##
 ## If the optional argument @qcode{"periodic"} is given, the periodic form

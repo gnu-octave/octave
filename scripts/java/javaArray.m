@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{jary} =} javaArray (@var{classname}, @var{sz})
-## @deftypefnx {Function File} {@var{jary} =} javaArray (@var{classname}, @var{m}, @var{n}, @dots{})
+## @deftypefn  {} {@var{jary} =} javaArray (@var{classname}, @var{sz})
+## @deftypefnx {} {@var{jary} =} javaArray (@var{classname}, @var{m}, @var{n}, @dots{})
 ##
 ## Create a Java array of size @var{sz} with elements of class @var{classname}.
 ##

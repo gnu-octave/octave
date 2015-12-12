@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
+## @deftypefn {} {} bincoeff (@var{n}, @var{k})
 ## Return the binomial coefficient of @var{n} and @var{k}, defined as
 ## @tex
 ## $$

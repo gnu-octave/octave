@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{idx} =} strchr (@var{str}, @var{chars})
-## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n})
-## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n}, @var{direction})
-## @deftypefnx {Function File} {[@var{i}, @var{j}] =} strchr (@dots{})
+## @deftypefn  {} {@var{idx} =} strchr (@var{str}, @var{chars})
+## @deftypefnx {} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n})
+## @deftypefnx {} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n}, @var{direction})
+## @deftypefnx {} {[@var{i}, @var{j}] =} strchr (@dots{})
 ## Search for the string @var{str} for occurrences of characters from
 ## the set @var{chars}.
 ##

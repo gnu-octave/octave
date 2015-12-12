@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bin2dec (@var{s})
+## @deftypefn {} {} bin2dec (@var{s})
 ## Return the decimal number corresponding to the binary number represented
 ## by the string @var{s}.
 ##

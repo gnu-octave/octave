@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acot (@var{x})
+## @deftypefn {} {} acot (@var{x})
 ## Compute the inverse cotangent in radians for each element of @var{x}.
 ## @seealso{cot, acotd}
 ## @end deftypefn

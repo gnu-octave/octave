@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javarmpath (@var{clspath})
-## @deftypefnx {Function File} {} javarmpath (@var{clspath1}, @dots{})
+## @deftypefn  {} {} javarmpath (@var{clspath})
+## @deftypefnx {} {} javarmpath (@var{clspath1}, @dots{})
 ## Remove @var{clspath} from the dynamic class path of the Java virtual
 ## machine.
 ##

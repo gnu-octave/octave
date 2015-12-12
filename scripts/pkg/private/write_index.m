@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} write_index (@var{desc}, @var{dir}, @var{index_file}, @var{global_install})
+## @deftypefn {} {} write_index (@var{desc}, @var{dir}, @var{index_file}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 

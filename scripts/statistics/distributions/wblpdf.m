@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} wblpdf (@var{x})
-## @deftypefnx {Function File} {} wblpdf (@var{x}, @var{scale})
-## @deftypefnx {Function File} {} wblpdf (@var{x}, @var{scale}, @var{shape})
+## @deftypefn  {} {} wblpdf (@var{x})
+## @deftypefnx {} {} wblpdf (@var{x}, @var{scale})
+## @deftypefnx {} {} wblpdf (@var{x}, @var{scale}, @var{shape})
 ## Compute the probability density function (PDF) at @var{x} of the
 ## Weibull distribution with scale parameter @var{scale} and
 ## shape parameter @var{shape}.

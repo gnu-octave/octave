@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} delete (@var{f}, @var{file})
+## @deftypefn {} {} delete (@var{f}, @var{file})
 ## Delete the remote file @var{file} over the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.

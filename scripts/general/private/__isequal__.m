@@ -19,7 +19,7 @@
 ## Undocumented internal function.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
+## @deftypefn {} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

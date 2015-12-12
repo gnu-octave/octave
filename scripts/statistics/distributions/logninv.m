@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} logninv (@var{x})
-## @deftypefnx {Function File} {} logninv (@var{x}, @var{mu}, @var{sigma})
+## @deftypefn  {} {} logninv (@var{x})
+## @deftypefnx {} {} logninv (@var{x}, @var{mu}, @var{sigma})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the lognormal distribution with parameters
 ## @var{mu} and @var{sigma}.

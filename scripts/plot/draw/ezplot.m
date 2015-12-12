@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezplot (@var{f})
-## @deftypefnx {Function File} {} ezplot (@var{f2v})
-## @deftypefnx {Function File} {} ezplot (@var{fx}, @var{fy})
-## @deftypefnx {Function File} {} ezplot (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezplot (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezplot (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezplot (@dots{})
+## @deftypefn  {} {} ezplot (@var{f})
+## @deftypefnx {} {} ezplot (@var{f2v})
+## @deftypefnx {} {} ezplot (@var{fx}, @var{fy})
+## @deftypefnx {} {} ezplot (@dots{}, @var{dom})
+## @deftypefnx {} {} ezplot (@dots{}, @var{n})
+## @deftypefnx {} {} ezplot (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezplot (@dots{})
 ##
 ## Plot the 2-D curve defined by the function @var{f}.
 ##

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} trimesh (@var{tri}, @var{x}, @var{y})
-## @deftypefnx {Function File} {} trimesh (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} trimesh (@dots{})
+## @deftypefn  {} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} trimesh (@var{tri}, @var{x}, @var{y})
+## @deftypefnx {} {} trimesh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} trimesh (@dots{})
 ## Plot a 3-D triangular wireframe mesh.
 ##
 ## In contrast to @code{mesh}, which plots a mesh using rectangles,

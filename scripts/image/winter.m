@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} winter ()
-## @deftypefnx {Function File} {@var{map} =} winter (@var{n})
+## @deftypefn  {} {@var{map} =} winter ()
+## @deftypefnx {} {@var{map} =} winter (@var{n})
 ## Create color colormap.  This colormap varies from blue to green.
 ##
 ## The argument @var{n} must be a scalar.

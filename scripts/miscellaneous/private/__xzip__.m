@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{filelist} =} __xzip__ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
+## @deftypefn {} {@var{filelist} =} __xzip__ (@var{commandname}, @var{extension}, @var{commandtemplate}, @var{files}, @var{outdir})
 ## Undocumented internal function.
 ## @end deftypefn
 

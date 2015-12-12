@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} arch_rnd (@var{a}, @var{b}, @var{t})
+## @deftypefn {} {} arch_rnd (@var{a}, @var{b}, @var{t})
 ## Simulate an ARCH sequence of length @var{t} with AR coefficients @var{b} and
 ## CH coefficients @var{a}.
 ##

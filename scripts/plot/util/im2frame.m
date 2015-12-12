@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} im2frame (@var{rgb})
-## @deftypefnx {Function File} {} im2frame (@var{x}, @var{map})
+## @deftypefn  {} {} im2frame (@var{rgb})
+## @deftypefnx {} {} im2frame (@var{x}, @var{map})
 ## Convert image to movie frame.
 ##
 ## A movie frame is simply a struct with the fields @qcode{"cdata"} and

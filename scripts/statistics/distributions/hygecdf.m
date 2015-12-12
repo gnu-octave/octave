@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygecdf (@var{x}, @var{t}, @var{m}, @var{n})
+## @deftypefn {} {} hygecdf (@var{x}, @var{t}, @var{m}, @var{n})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## hypergeometric distribution with parameters @var{t}, @var{m}, and @var{n}.
 ##

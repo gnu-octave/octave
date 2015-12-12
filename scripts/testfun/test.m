@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} test @var{name}
-## @deftypefnx {Command} {} test @var{name} quiet|normal|verbose
-## @deftypefnx {Function File} {} test ("@var{name}", "quiet|normal|verbose", @var{fid})
-## @deftypefnx {Function File} {} test ("@var{name}", "quiet|normal|verbose", @var{fname})
-## @deftypefnx {Function File} {@var{success} =} test (@dots{})
-## @deftypefnx {Function File} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nskip}] =} test (@dots{})
-## @deftypefnx {Function File} {[@var{code}, @var{idx}] =} test ("@var{name}", "grabdemo")
-## @deftypefnx {Function File} {} test ([], "explain", @var{fid})
-## @deftypefnx {Function File} {} test ([], "explain", @var{fname})
+## @deftypefn  {} {} test @var{name}
+## @deftypefnx {} {} test @var{name} quiet|normal|verbose
+## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fid})
+## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fname})
+## @deftypefnx {} {@var{success} =} test (@dots{})
+## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nskip}] =} test (@dots{})
+## @deftypefnx {} {[@var{code}, @var{idx}] =} test ("@var{name}", "grabdemo")
+## @deftypefnx {} {} test ([], "explain", @var{fid})
+## @deftypefnx {} {} test ([], "explain", @var{fname})
 ##
 ## Perform built-in self-tests from the first file in the loadpath matching
 ## @var{name}.

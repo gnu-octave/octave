@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ishermitian (@var{A})
-## @deftypefnx {Function File} {} ishermitian (@var{A}, @var{tol})
+## @deftypefn  {} {} ishermitian (@var{A})
+## @deftypefnx {} {} ishermitian (@var{A}, @var{tol})
 ## Return true if @var{A} is Hermitian within the tolerance specified by
 ## @var{tol}.
 ##

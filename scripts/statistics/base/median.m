@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} median (@var{x})
-## @deftypefnx {Function File} {} median (@var{x}, @var{dim})
+## @deftypefn  {} {} median (@var{x})
+## @deftypefnx {} {} median (@var{x}, @var{dim})
 ## Compute the median value of the elements of the vector @var{x}.
 ##
 ## When the elements of @var{x} are sorted, the median is defined as

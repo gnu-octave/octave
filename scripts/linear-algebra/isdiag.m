@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isdiag (@var{A})
+## @deftypefn {} {} isdiag (@var{A})
 ## Return true if @var{A} is a diagonal matrix.
 ## @seealso{isbanded, istril, istriu, diag, bandwidth}
 ## @end deftypefn

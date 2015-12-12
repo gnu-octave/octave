@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{in} =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
-## @deftypefnx {Function File} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
+## @deftypefn  {} {@var{in} =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
+## @deftypefnx {} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
 ##
 ## For a polygon defined by vertex points @code{(@var{xv}, @var{yv})}, return
 ## true if the points @code{(@var{x}, @var{y})} are inside (or on the boundary)

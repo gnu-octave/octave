@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} condest (@var{A})
-## @deftypefnx {Function File} {} condest (@var{A}, @var{t})
-## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@dots{})
-## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solve}, @var{solve_t}, @var{t})
-## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
+## @deftypefn  {} {} condest (@var{A})
+## @deftypefnx {} {} condest (@var{A}, @var{t})
+## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@dots{})
+## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solve}, @var{solve_t}, @var{t})
+## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
 ##
 ## Estimate the 1-norm condition number of a matrix @var{A} using @var{t} test
 ## vectors using a randomized 1-norm estimator.

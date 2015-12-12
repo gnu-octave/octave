@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{I} =} ind2gray (@var{x}, @var{map})
+## @deftypefn {} {@var{I} =} ind2gray (@var{x}, @var{map})
 ## Convert a color indexed image to a grayscale intensity image.
 ##
 ## The image @var{x} must be an indexed image which will be converted using the

@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javaclasspath ()
-## @deftypefnx {Function File} {@var{dpath} =} javaclasspath ()
-## @deftypefnx {Function File} {[@var{dpath}, @var{spath}] =} javaclasspath ()
-## @deftypefnx {Function File} {@var{clspath} =} javaclasspath (@var{what})
+## @deftypefn  {} {} javaclasspath ()
+## @deftypefnx {} {@var{dpath} =} javaclasspath ()
+## @deftypefnx {} {[@var{dpath}, @var{spath}] =} javaclasspath ()
+## @deftypefnx {} {@var{clspath} =} javaclasspath (@var{what})
 ## Return the class path of the Java virtual machine in the form of a cell
 ## array of strings.
 ##

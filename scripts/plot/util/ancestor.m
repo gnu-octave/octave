@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{parent} =} ancestor (@var{h}, @var{type})
-## @deftypefnx {Function File} {@var{parent} =} ancestor (@var{h}, @var{type}, "toplevel")
+## @deftypefn  {} {@var{parent} =} ancestor (@var{h}, @var{type})
+## @deftypefnx {} {@var{parent} =} ancestor (@var{h}, @var{type}, "toplevel")
 ## Return the first ancestor of handle object @var{h} whose type matches
 ## @var{type}, where @var{type} is a character string.
 ##

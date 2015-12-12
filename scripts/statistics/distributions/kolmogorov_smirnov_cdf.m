@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
+## @deftypefn {} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
 ## Return the cumulative distribution function (CDF) at @var{x} of the
 ## Kolmogorov-Smirnov distribution.
 ##

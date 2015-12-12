@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{sout} =} setfield (@var{s}, @var{field}, @var{val})
-## @deftypefnx {Function File} {@var{sout} =} setfield (@var{s}, @var{sidx1}, @var{field1}, @var{fidx1}, @var{sidx2}, @var{field2}, @var{fidx2}, @dots{}, @var{val})
+## @deftypefn  {} {@var{sout} =} setfield (@var{s}, @var{field}, @var{val})
+## @deftypefnx {} {@var{sout} =} setfield (@var{s}, @var{sidx1}, @var{field1}, @var{fidx1}, @var{sidx2}, @var{field2}, @var{fidx2}, @dots{}, @var{val})
 ##
 ## Return a @emph{copy} of the structure @var{s} with the field member
 ## @var{field} set to the value @var{val}.

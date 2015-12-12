@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} interpft (@var{x}, @var{n})
-## @deftypefnx {Function File} {} interpft (@var{x}, @var{n}, @var{dim})
+## @deftypefn  {} {} interpft (@var{x}, @var{n})
+## @deftypefnx {} {} interpft (@var{x}, @var{n}, @var{dim})
 ##
 ## Fourier interpolation.
 ##

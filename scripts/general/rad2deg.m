@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{deg} =} rad2deg (@var{rad})
+## @deftypefn {} {@var{deg} =} rad2deg (@var{rad})
 ##
 ## Convert radians to degrees.
 ##

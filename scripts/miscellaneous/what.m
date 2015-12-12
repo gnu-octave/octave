@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} what
-## @deftypefnx {Command} {} what @var{dir}
-## @deftypefnx {Function File} {w =} what (@var{dir})
+## @deftypefn  {} {} what
+## @deftypefnx {} {} what @var{dir}
+## @deftypefnx {} {w =} what (@var{dir})
 ## List the Octave specific files in directory @var{dir}.
 ##
 ## If @var{dir} is not specified then the current directory is used.

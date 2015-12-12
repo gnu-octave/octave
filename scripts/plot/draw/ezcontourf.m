@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezcontourf (@var{f})
-## @deftypefnx {Function File} {} ezcontourf (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezcontourf (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezcontourf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezcontourf (@dots{})
+## @deftypefn  {} {} ezcontourf (@var{f})
+## @deftypefnx {} {} ezcontourf (@dots{}, @var{dom})
+## @deftypefnx {} {} ezcontourf (@dots{}, @var{n})
+## @deftypefnx {} {} ezcontourf (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezcontourf (@dots{})
 ##
 ## Plot the filled contour lines of a function.
 ##

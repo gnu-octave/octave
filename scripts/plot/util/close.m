@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} close
-## @deftypefnx {Command} {} close (@var{h})
-## @deftypefnx {Command} {} close @var{h}
-## @deftypefnx {Command} {} close all
-## @deftypefnx {Command} {} close all hidden
-## @deftypefnx {Command} {} close all force
+## @deftypefn  {} {} close
+## @deftypefnx {} {} close (@var{h})
+## @deftypefnx {} {} close @var{h}
+## @deftypefnx {} {} close all
+## @deftypefnx {} {} close all hidden
+## @deftypefnx {} {} close all force
 ## Close figure window(s).
 ##
 ## When called with no arguments, close the current figure.  This is equivalent

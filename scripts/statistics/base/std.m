@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} std (@var{x})
-## @deftypefnx {Function File} {} std (@var{x}, @var{opt})
-## @deftypefnx {Function File} {} std (@var{x}, @var{opt}, @var{dim})
+## @deftypefn  {} {} std (@var{x})
+## @deftypefnx {} {} std (@var{x}, @var{opt})
+## @deftypefnx {} {} std (@var{x}, @var{opt}, @var{dim})
 ## Compute the standard deviation of the elements of the vector @var{x}.
 ##
 ## The standard deviation is defined as

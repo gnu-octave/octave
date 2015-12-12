@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} wavwrite (@var{y}, @var{filename})
-## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{filename})
-## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{nbits}, @var{filename})
+## @deftypefn  {} {} wavwrite (@var{y}, @var{filename})
+## @deftypefnx {} {} wavwrite (@var{y}, @var{fs}, @var{filename})
+## @deftypefnx {} {} wavwrite (@var{y}, @var{fs}, @var{nbits}, @var{filename})
 ##
 ## @code{wavwrite} is deprecated and will be removed in Octave version 4.6.
 ## Use @code{audiowrite} for the equivalent functionality.

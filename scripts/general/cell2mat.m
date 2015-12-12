@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{m} =} cell2mat (@var{c})
+## @deftypefn {} {@var{m} =} cell2mat (@var{c})
 ## Convert the cell array @var{c} into a matrix by concatenating all
 ## elements of @var{c} into a hyperrectangle.
 ##

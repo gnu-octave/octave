@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} view (@var{azimuth}, @var{elevation})
-## @deftypefnx {Function File} {} view ([@var{azimuth} @var{elevation}])
-## @deftypefnx {Function File} {} view ([@var{x} @var{y} @var{z}])
-## @deftypefnx {Function File} {} view (2)
-## @deftypefnx {Function File} {} view (3)
-## @deftypefnx {Function File} {} view (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
+## @deftypefn  {} {} view (@var{azimuth}, @var{elevation})
+## @deftypefnx {} {} view ([@var{azimuth} @var{elevation}])
+## @deftypefnx {} {} view ([@var{x} @var{y} @var{z}])
+## @deftypefnx {} {} view (2)
+## @deftypefnx {} {} view (3)
+## @deftypefnx {} {} view (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{azimuth}, @var{elevation}] =} view ()
 ## Query or set the viewpoint for the current axes.
 ##
 ## The parameters @var{azimuth} and @var{elevation} can be given as two

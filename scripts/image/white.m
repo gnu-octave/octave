@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} white ()
-## @deftypefnx {Function File} {@var{map} =} white (@var{n})
+## @deftypefn  {} {@var{map} =} white ()
+## @deftypefnx {} {@var{map} =} white (@var{n})
 ## Create color colormap.  This colormap is completely white.
 ##
 ## The argument @var{n} must be a scalar.

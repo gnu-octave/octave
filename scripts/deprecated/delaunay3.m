@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
+## @deftypefn  {} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
 ##
 ## @code{delaunay3} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{delaunay} in all new code.

@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{fx}, @var{fy})
-## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy})
+## @deftypefn  {} {@var{div} =} divergence (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {@var{div} =} divergence (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {@var{div} =} divergence (@var{x}, @var{y}, @var{fx}, @var{fy})
+## @deftypefnx {} {@var{div} =} divergence (@var{fx}, @var{fy})
 ## Calculate divergence of a vector field given by the arrays @var{fx},
 ## @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively.
 ##

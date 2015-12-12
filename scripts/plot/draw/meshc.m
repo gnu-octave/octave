@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} meshc (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} meshc (@var{z})
-## @deftypefnx {Function File} {} meshc (@dots{}, @var{c})
-## @deftypefnx {Function File} {} meshc (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} meshc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} meshc (@dots{})
+## @deftypefn  {} {} meshc (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} meshc (@var{z})
+## @deftypefnx {} {} meshc (@dots{}, @var{c})
+## @deftypefnx {} {} meshc (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} meshc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} meshc (@dots{})
 ## Plot a 3-D wireframe mesh with underlying contour lines.
 ##
 ## The wireframe mesh is plotted using rectangles.  The vertices of the

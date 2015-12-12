@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} betacdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {} {} betacdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the Beta distribution with parameters @var{a} and
 ## @var{b}.

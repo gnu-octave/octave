@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mahalanobis (@var{x}, @var{y})
+## @deftypefn {} {} mahalanobis (@var{x}, @var{y})
 ##
 ## @code{mahalanobis} is deprecated and will be removed in Octave version 4.6.
 ## See the @code{mahal} function in the statistics package from Octave-Forge

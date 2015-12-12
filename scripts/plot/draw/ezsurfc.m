@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezsurfc (@var{f})
-## @deftypefnx {Function File} {} ezsurfc (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {} ezsurfc (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezsurfc (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezsurfc (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezsurfc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezsurfc (@dots{})
+## @deftypefn  {} {} ezsurfc (@var{f})
+## @deftypefnx {} {} ezsurfc (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {} ezsurfc (@dots{}, @var{dom})
+## @deftypefnx {} {} ezsurfc (@dots{}, @var{n})
+## @deftypefnx {} {} ezsurfc (@dots{}, "circ")
+## @deftypefnx {} {} ezsurfc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezsurfc (@dots{})
 ##
 ## Plot the surface and contour lines defined by a function.
 ##

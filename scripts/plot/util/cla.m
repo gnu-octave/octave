@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} cla
-## @deftypefnx {Command} {} cla reset
-## @deftypefnx {Function File} {} cla (@var{hax})
-## @deftypefnx {Function File} {} cla (@var{hax}, "reset")
+## @deftypefn  {} {} cla
+## @deftypefnx {} {} cla reset
+## @deftypefnx {} {} cla (@var{hax})
+## @deftypefnx {} {} cla (@var{hax}, "reset")
 ## Clear the current axes.
 ##
 ## @code{cla} operates by deleting child graphic objects with visible

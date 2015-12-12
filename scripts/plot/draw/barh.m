@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} barh (@var{y})
-## @deftypefnx {Function File} {} barh (@var{x}, @var{y})
-## @deftypefnx {Function File} {} barh (@dots{}, @var{w})
-## @deftypefnx {Function File} {} barh (@dots{}, @var{style})
-## @deftypefnx {Function File} {} barh (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} barh (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} barh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefn  {} {} barh (@var{y})
+## @deftypefnx {} {} barh (@var{x}, @var{y})
+## @deftypefnx {} {} barh (@dots{}, @var{w})
+## @deftypefnx {} {} barh (@dots{}, @var{style})
+## @deftypefnx {} {} barh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} barh (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} barh (@dots{}, @var{prop}, @var{val}, @dots{})
 ## Produce a horizontal bar graph from two vectors of X-Y data.
 ##
 ## If only one argument is given, it is taken as a vector of Y values

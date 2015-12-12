@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} prism ()
-## @deftypefnx {Function File} {@var{map} =} prism (@var{n})
+## @deftypefn  {} {@var{map} =} prism ()
+## @deftypefnx {} {@var{map} =} prism (@var{n})
 ## Create color colormap.  This colormap cycles through red, orange, yellow,
 ## green, blue and violet with each index change.
 ##

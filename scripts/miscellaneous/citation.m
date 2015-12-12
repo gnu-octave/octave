@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} citation
-## @deftypefnx {Command} {} citation @var{package}
+## @deftypefn  {} {} citation
+## @deftypefnx {} {} citation @var{package}
 ## Display instructions for citing GNU Octave or its packages in publications.
 ##
 ## When called without an argument, display information on how to cite the core

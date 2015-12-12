@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{r} =} spones (@var{S})
+## @deftypefn {} {@var{r} =} spones (@var{S})
 ## Replace the nonzero entries of @var{S} with ones.
 ##
 ## This creates a sparse matrix with the same structure as @var{S}.

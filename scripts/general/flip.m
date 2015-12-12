@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} flip (@var{x})
-## @deftypefnx {Function File} {} flip (@var{x}, @var{dim})
+## @deftypefn  {} {} flip (@var{x})
+## @deftypefnx {} {} flip (@var{x}, @var{dim})
 ## Flip array across dimension @var{dim}.
 ##
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.

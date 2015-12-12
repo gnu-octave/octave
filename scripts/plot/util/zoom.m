@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} zoom
-## @deftypefnx {Command} {} zoom (@var{factor})
-## @deftypefnx {Command} {} zoom on
-## @deftypefnx {Command} {} zoom off
-## @deftypefnx {Command} {} zoom xon
-## @deftypefnx {Command} {} zoom yon
-## @deftypefnx {Command} {} zoom out
-## @deftypefnx {Command} {} zoom reset
-## @deftypefnx {Command} {} zoom (@var{hfig}, @var{option})
+## @deftypefn  {} {} zoom
+## @deftypefnx {} {} zoom (@var{factor})
+## @deftypefnx {} {} zoom on
+## @deftypefnx {} {} zoom off
+## @deftypefnx {} {} zoom xon
+## @deftypefnx {} {} zoom yon
+## @deftypefnx {} {} zoom out
+## @deftypefnx {} {} zoom reset
+## @deftypefnx {} {} zoom (@var{hfig}, @var{option})
 ## Zoom the current axes object or control the interactive zoom mode of a
 ## figure in the GUI.
 ##
@@ -55,7 +55,7 @@
 ## @end deftypefn
 
 ## Eventually we need to also support these features:
-## @deftypefnx {Command} {zoom_object_handle =} zoom (@var{hfig})
+## @deftypefnx {} {zoom_object_handle =} zoom (@var{hfig})
 
 function zoom (varargin)
 

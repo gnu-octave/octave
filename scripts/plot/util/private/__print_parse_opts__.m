@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{args} =} __print_parse_opts__ (@var{propname}, @var{propvalue})
-## @deftypefnx {Function File} {@var{args} =} __print_parse_opts__ (@var{struct})
+## @deftypefn  {} {@var{args} =} __print_parse_opts__ (@var{propname}, @var{propvalue})
+## @deftypefnx {} {@var{args} =} __print_parse_opts__ (@var{struct})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyreduce (@var{c})
+## @deftypefn {} {} polyreduce (@var{c})
 ## Reduce a polynomial coefficient vector to a minimum number of terms by
 ## stripping off any leading zeros.
 ## @seealso{polyout}

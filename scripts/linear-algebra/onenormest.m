@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t})
-## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
+## @deftypefn  {} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t})
+## @deftypefnx {} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
 ## Apply @nospell{Higham and Tisseur's} randomized block 1-norm estimator to
 ## matrix @var{A} using @var{t} test vectors.

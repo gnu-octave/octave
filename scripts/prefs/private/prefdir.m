@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} prefdir
-## @deftypefnx {Command} {@var{dir} =} prefdir
+## @deftypefn  {} {} prefdir
+## @deftypefnx {} {@var{dir} =} prefdir
 ## Return the directory that holds the preferences for Octave.
 ##
 ## Examples:

@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} newplot ()
-## @deftypefnx {Function File} {} newplot (@var{hfig})
-## @deftypefnx {Function File} {} newplot (@var{hax})
-## @deftypefnx {Function File} {@var{hax} =} newplot (@dots{})
+## @deftypefn  {} {} newplot ()
+## @deftypefnx {} {} newplot (@var{hfig})
+## @deftypefnx {} {} newplot (@var{hax})
+## @deftypefnx {} {@var{hax} =} newplot (@dots{})
 ## Prepare graphics engine to produce a new plot.
 ##
 ## This function is called at the beginning of all high-level plotting

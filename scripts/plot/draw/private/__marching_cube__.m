@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ##
 ## Return the triangulation information @var{t} at points @var{p} for
 ## the isosurface values resp. the volume data @var{val} and the iso

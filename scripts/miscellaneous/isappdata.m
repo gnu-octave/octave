@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{valid} =} isappdata (@var{h}, @var{name})
+## @deftypefn {} {@var{valid} =} isappdata (@var{h}, @var{name})
 ## Return true if the named application data, @var{name}, exists for the
 ## graphics object with handle @var{h}.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{prefs} =} loadprefs ()
+## @deftypefn {} {@var{prefs} =} loadprefs ()
 ## Return a structure containing all user configured preferences.
 ## @end deftypefn
 

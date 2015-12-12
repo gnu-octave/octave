@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {Loadable Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {Loadable Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {Loadable Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
-## @deftypefnx {Loadable Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+## @deftypefn  {} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
 ## Compute Bessel or Hankel functions of various kinds:
 ##
 ## @table @code

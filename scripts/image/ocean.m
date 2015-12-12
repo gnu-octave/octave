@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} ocean ()
-## @deftypefnx {Function File} {@var{map} =} ocean (@var{n})
+## @deftypefn  {} {@var{map} =} ocean ()
+## @deftypefnx {} {@var{map} =} ocean (@var{n})
 ## Create color colormap.  This colormap varies from black to white with shades
 ## of blue.
 ##

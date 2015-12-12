@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} moment (@var{x}, @var{p})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{type})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{dim})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
+## @deftypefn  {} {} moment (@var{x}, @var{p})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
 ## Compute the @var{p}-th central moment of the vector @var{x}.
 ##
 ## @tex

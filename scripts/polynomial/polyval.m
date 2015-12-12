@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{y} =} polyval (@var{p}, @var{x})
-## @deftypefnx {Function File} {@var{y} =} polyval (@var{p}, @var{x}, [], @var{mu})
-## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s})
-## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s}, @var{mu})
+## @deftypefn  {} {@var{y} =} polyval (@var{p}, @var{x})
+## @deftypefnx {} {@var{y} =} polyval (@var{p}, @var{x}, [], @var{mu})
+## @deftypefnx {} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s})
+## @deftypefnx {} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s}, @var{mu})
 ##
 ## Evaluate the polynomial @var{p} at the specified values of @var{x}.
 ##

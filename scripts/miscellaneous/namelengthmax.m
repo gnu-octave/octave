@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} namelengthmax ()
+## @deftypefn {} {} namelengthmax ()
 ## Return the @sc{matlab} compatible maximum variable name length.
 ##
 ## Octave is capable of storing strings up to @math{2^{31} - 1} in length.

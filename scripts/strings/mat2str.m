@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
-## @deftypefnx {Function File} {@var{s} =} mat2str (@var{x}, @var{n}, "class")
+## @deftypefn  {} {@var{s} =} mat2str (@var{x}, @var{n})
+## @deftypefnx {} {@var{s} =} mat2str (@var{x}, @var{n}, "class")
 ## Format real, complex, and logical matrices as strings.
 ##
 ## The returned string may be used to reconstruct the original matrix by using

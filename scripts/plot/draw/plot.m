@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} plot (@var{y})
-## @deftypefnx {Function File} {} plot (@var{x}, @var{y})
-## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} plot (@dots{}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} plot (@var{x1}, @var{y1}, @dots{}, @var{xn}, @var{yn})
-## @deftypefnx {Function File} {} plot (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} plot (@dots{})
+## @deftypefn  {} {} plot (@var{y})
+## @deftypefnx {} {} plot (@var{x}, @var{y})
+## @deftypefnx {} {} plot (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {} {} plot (@dots{}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} plot (@var{x1}, @var{y1}, @dots{}, @var{xn}, @var{yn})
+## @deftypefnx {} {} plot (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} plot (@dots{})
 ## Produce 2-D plots.
 ##
 ## Many different combinations of arguments are possible.  The simplest

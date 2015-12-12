@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{ylimits} =} ylim ()
-## @deftypefnx {Function File} {@var{xmode} =} ylim ("mode")
-## @deftypefnx {Function File} {} ylim ([@var{y_lo} @var{y_hi}])
-## @deftypefnx {Function File} {} ylim ("auto")
-## @deftypefnx {Function File} {} ylim ("manual")
-## @deftypefnx {Function File} {} ylim (@var{hax}, @dots{})
+## @deftypefn  {} {@var{ylimits} =} ylim ()
+## @deftypefnx {} {@var{xmode} =} ylim ("mode")
+## @deftypefnx {} {} ylim ([@var{y_lo} @var{y_hi}])
+## @deftypefnx {} {} ylim ("auto")
+## @deftypefnx {} {} ylim ("manual")
+## @deftypefnx {} {} ylim (@var{hax}, @dots{})
 ## Query or set the limits of the y-axis for the current plot.
 ##
 ## Called without arguments @code{ylim} returns the y-axis limits of the

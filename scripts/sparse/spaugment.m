@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} spaugment (@var{A}, @var{c})
+## @deftypefn {} {@var{s} =} spaugment (@var{A}, @var{c})
 ## Create the augmented matrix of @var{A}.
 ##
 ## This is given by

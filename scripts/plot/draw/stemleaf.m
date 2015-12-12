@@ -20,9 +20,9 @@
 
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stemleaf (@var{x}, @var{caption})
-## @deftypefnx {Function File} {} stemleaf (@var{x}, @var{caption}, @var{stem_sz})
-## @deftypefnx {Function File} {@var{plotstr} =} stemleaf (@dots{})
+## @deftypefn  {} {} stemleaf (@var{x}, @var{caption})
+## @deftypefnx {} {} stemleaf (@var{x}, @var{caption}, @var{stem_sz})
+## @deftypefnx {} {@var{plotstr} =} stemleaf (@dots{})
 ## Compute and display a stem and leaf plot of the vector @var{x}.
 ##
 ## The input @var{x} should be a vector of integers.  Any non-integer values

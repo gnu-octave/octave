@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} substr (@var{s}, @var{offset})
-## @deftypefnx {Function File} {} substr (@var{s}, @var{offset}, @var{len})
+## @deftypefn  {} {} substr (@var{s}, @var{offset})
+## @deftypefnx {} {} substr (@var{s}, @var{offset}, @var{len})
 ## Return the substring of @var{s} which starts at character number
 ## @var{offset} and is @var{len} characters long.
 ##

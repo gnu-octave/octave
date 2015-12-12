@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} computer ()
-## @deftypefnx {Function File} {@var{c} =} computer ()
-## @deftypefnx {Function File} {[@var{c}, @var{maxsize}] =} computer ()
-## @deftypefnx {Function File} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
-## @deftypefnx {Function File} {@var{arch} =} computer ("arch")
+## @deftypefn  {} {} computer ()
+## @deftypefnx {} {@var{c} =} computer ()
+## @deftypefnx {} {[@var{c}, @var{maxsize}] =} computer ()
+## @deftypefnx {} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
+## @deftypefnx {} {@var{arch} =} computer ("arch")
 ## Print or return a string of the form @var{cpu}-@var{vendor}-@var{os} that
 ## identifies the type of computer that Octave is running on.
 ##

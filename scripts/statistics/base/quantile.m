@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} quantile (@var{x})
-## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p})
-## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
-## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
+## @deftypefn  {} {@var{q} =} quantile (@var{x})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
 ## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
 ## the cumulative probability values in @var{p}.  All non-numeric values (NaNs)
 ## of @var{x} are ignored.

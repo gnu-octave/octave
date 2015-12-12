@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
+## @deftypefn {} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
 ## Create an array by accumulating the slices of an array into the
 ## positions defined by their subscripts along a specified dimension.
 ##

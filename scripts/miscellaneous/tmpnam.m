@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{fname} =} tmpnam ()
-## @deftypefnx {Function File} {@var{fname} =} tmpnam (@var{dir})
-## @deftypefnx {Function File} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})
+## @deftypefn  {} {@var{fname} =} tmpnam ()
+## @deftypefnx {} {@var{fname} =} tmpnam (@var{dir})
+## @deftypefnx {} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})
 ## Return a unique temporary filename as a string.
 ##
 ## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.

@@ -19,8 +19,8 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} printd (@var{obj}, @var{filename})
-## @deftypefnx {Function File} {@var{out_file} =} printd (@dots{})
+## @deftypefn  {} {} printd (@var{obj}, @var{filename})
+## @deftypefnx {} {@var{out_file} =} printd (@dots{})
 ##
 ## Convert any object acceptable to @code{disp} into the format selected by
 ## the suffix of @var{filename}.

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{v} =} datevec (@var{date})
-## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{f})
-## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{p})
-## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{f}, @var{p})
-## @deftypefnx {Function File} {[@var{y}, @var{m}, @var{d}, @var{h}, @var{mi}, @var{s}] =} datevec (@dots{})
+## @deftypefn  {} {@var{v} =} datevec (@var{date})
+## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{f})
+## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{p})
+## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{f}, @var{p})
+## @deftypefnx {} {[@var{y}, @var{m}, @var{d}, @var{h}, @var{mi}, @var{s}] =} datevec (@dots{})
 ## Convert a serial date number (see @code{datenum}) or date string (see
 ## @code{datestr}) into a date vector.
 ##

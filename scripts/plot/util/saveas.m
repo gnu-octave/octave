@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} saveas (@var{h}, @var{filename})
-## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{fmt})
+## @deftypefn  {} {} saveas (@var{h}, @var{filename})
+## @deftypefnx {} {} saveas (@var{h}, @var{filename}, @var{fmt})
 ## Save graphic object @var{h} to the file @var{filename} in graphic format
 ## @var{fmt}.
 ##

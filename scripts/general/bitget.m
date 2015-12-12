@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{c} =} bitget (@var{A}, @var{n})
+## @deftypefn {} {@var{c} =} bitget (@var{A}, @var{n})
 ## Return the status of bit(s) @var{n} of the unsigned integers in @var{A}.
 ##
 ## The least significant bit is @var{n} = 1.

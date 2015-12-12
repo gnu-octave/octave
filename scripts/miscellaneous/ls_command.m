@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{val} =} ls_command ()
-## @deftypefnx {Function File} {@var{old_val} =} ls_command (@var{new_val})
+## @deftypefn  {} {@var{val} =} ls_command ()
+## @deftypefnx {} {@var{old_val} =} ls_command (@var{new_val})
 ## Query or set the shell command used by Octave's @code{ls} command.
 ## @seealso{ls}
 ## @end deftypefn

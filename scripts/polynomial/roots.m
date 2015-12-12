@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} roots (@var{c})
+## @deftypefn {} {} roots (@var{c})
 ##
 ## Compute the roots of the polynomial @var{c}.
 ##

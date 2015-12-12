@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pause (@var{recorder})
+## @deftypefn {} {} pause (@var{recorder})
 ## Pause recording with audiorecorder object @var{recorder}.
 ## @end deftypefn
 

@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{y} =} stft (@var{x})
-## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size})
-## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc})
-## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef})
-## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{win_type})
-## @deftypefnx {Function File} {[@var{y}, @var{c}] =} stft (@dots{})
+## @deftypefn  {} {@var{y} =} stft (@var{x})
+## @deftypefnx {} {@var{y} =} stft (@var{x}, @var{win_size})
+## @deftypefnx {} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc})
+## @deftypefnx {} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef})
+## @deftypefnx {} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{win_type})
+## @deftypefnx {} {[@var{y}, @var{c}] =} stft (@dots{})
 ## Compute the short-time Fourier transform of the vector @var{x} with
 ## @var{num_coef} coefficients by applying a window of @var{win_size} data
 ## points and an increment of @var{inc} points.

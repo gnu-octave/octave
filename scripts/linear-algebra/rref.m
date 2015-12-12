@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rref (@var{A})
-## @deftypefnx {Function File} {} rref (@var{A}, @var{tol})
-## @deftypefnx {Function File} {[@var{r}, @var{k}] =} rref (@dots{})
+## @deftypefn  {} {} rref (@var{A})
+## @deftypefnx {} {} rref (@var{A}, @var{tol})
+## @deftypefnx {} {[@var{r}, @var{k}] =} rref (@dots{})
 ## Return the reduced row echelon form of @var{A}.
 ##
 ## @var{tol} defaults to

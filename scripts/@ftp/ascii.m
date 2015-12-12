@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ascii (@var{f})
+## @deftypefn {} {} ascii (@var{f})
 ## Set the FTP connection @var{f} to use ASCII mode for transfers.
 ##
 ## ASCII mode is only appropriate for text files as it will convert the

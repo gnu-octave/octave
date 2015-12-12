@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{obj} =} java_set (@var{obj}, @var{name}, @var{val})
+## @deftypefn {} {@var{obj} =} java_set (@var{obj}, @var{name}, @var{val})
 ## Set the value of the field @var{name} of the Java object @var{obj} to
 ## @var{val}.
 ##

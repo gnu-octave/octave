@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cast (@var{val}, "@var{type}")
+## @deftypefn {} {} cast (@var{val}, "@var{type}")
 ## Convert @var{val} to data type @var{type}.
 ##
 ## @var{val} must be one of the numeric classes:

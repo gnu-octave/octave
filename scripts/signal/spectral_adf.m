@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spectral_adf (@var{c})
-## @deftypefnx {Function File} {} spectral_adf (@var{c}, @var{win})
-## @deftypefnx {Function File} {} spectral_adf (@var{c}, @var{win}, @var{b})
+## @deftypefn  {} {} spectral_adf (@var{c})
+## @deftypefnx {} {} spectral_adf (@var{c}, @var{win})
+## @deftypefnx {} {} spectral_adf (@var{c}, @var{win}, @var{b})
 ## Return the spectral density estimator given a vector of autocovariances
 ## @var{c}, window name @var{win}, and bandwidth, @var{b}.
 ##

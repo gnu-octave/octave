@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} colorbar
-## @deftypefnx {Function File} {} colorbar (@var{loc})
-## @deftypefnx {Function File} {} colorbar (@var{delete_option})
-## @deftypefnx {Function File} {} colorbar (@var{hcb}, @dots{})
-## @deftypefnx {Function File} {} colorbar (@var{hax}, @dots{})
-## @deftypefnx {Function File} {} colorbar (@dots{}, "peer", @var{hax}, @dots{})
-## @deftypefnx {Function File} {} colorbar (@dots{}, "location", @var{loc}, @dots{})
-## @deftypefnx {Function File} {} colorbar (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} colorbar (@dots{})
+## @deftypefn  {} {} colorbar
+## @deftypefnx {} {} colorbar (@var{loc})
+## @deftypefnx {} {} colorbar (@var{delete_option})
+## @deftypefnx {} {} colorbar (@var{hcb}, @dots{})
+## @deftypefnx {} {} colorbar (@var{hax}, @dots{})
+## @deftypefnx {} {} colorbar (@dots{}, "peer", @var{hax}, @dots{})
+## @deftypefnx {} {} colorbar (@dots{}, "location", @var{loc}, @dots{})
+## @deftypefnx {} {} colorbar (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} colorbar (@dots{})
 ## Add a colorbar to the current axes.
 ##
 ## A colorbar displays the current colormap along with numerical rulings

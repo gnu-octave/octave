@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
 ## Create a uimenu object and return a handle to it.
 ##
 ## If @var{h} is omitted then a top-level menu for the current figure is

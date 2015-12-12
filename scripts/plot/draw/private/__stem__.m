@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} __stem__ (@var{have_z}, @var{varargin})
+## @deftypefn {} {@var{h} =} __stem__ (@var{have_z}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 

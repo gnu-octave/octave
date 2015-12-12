@@ -17,9 +17,9 @@
 ## along with Octave; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} bicg (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} bicg (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicg (@var{A}, @var{b}, @dots{})
+## @deftypefn  {} {@var{x} =} bicg (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
+## @deftypefnx {} {@var{x} =} bicg (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicg (@var{A}, @var{b}, @dots{})
 ## Solve @code{A x = b} using the Bi-conjugate gradient iterative method.
 ##
 ## @itemize @minus

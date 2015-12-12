@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{p} =} polyfit (@var{x}, @var{y}, @var{n})
-## @deftypefnx {Function File} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
-## @deftypefnx {Function File} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
+## @deftypefn  {} {@var{p} =} polyfit (@var{x}, @var{y}, @var{n})
+## @deftypefnx {} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
+## @deftypefnx {} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes the least-squares-error of the fit to the points
 ## @code{[@var{x}, @var{y}]}.

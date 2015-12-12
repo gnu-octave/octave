@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{fig} =} gcbf ()
+## @deftypefn {} {@var{fig} =} gcbf ()
 ## Return a handle to the figure containing the object whose callback is
 ## currently executing.
 ##

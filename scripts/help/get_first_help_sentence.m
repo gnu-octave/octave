@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{text} =} get_first_help_sentence (@var{name})
-## @deftypefnx {Function File} {@var{text} =} get_first_help_sentence (@var{name}, @var{max_len})
-## @deftypefnx {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@dots{})
+## @deftypefn  {} {@var{text} =} get_first_help_sentence (@var{name})
+## @deftypefnx {} {@var{text} =} get_first_help_sentence (@var{name}, @var{max_len})
+## @deftypefnx {} {[@var{text}, @var{status}] =} get_first_help_sentence (@dots{})
 ## Return the first sentence of a function's help text.
 ##
 ## The first sentence is defined as the text after the function declaration

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} saveprefs (@var{s})
+## @deftypefn {} {} saveprefs (@var{s})
 ## Save user preferences in the structure @var{s} to Octave's preference file.
 ## @end deftypefn
 

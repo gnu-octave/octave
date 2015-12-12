@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{tsq}] =} hotelling_test (@var{x}, @var{m})
+## @deftypefn {} {[@var{pval}, @var{tsq}] =} hotelling_test (@var{x}, @var{m})
 ## For a sample @var{x} from a multivariate normal distribution with unknown
 ## mean and covariance matrix, test the null hypothesis that
 ## @code{mean (@var{x}) == @var{m}}.

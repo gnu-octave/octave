@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} shrinkfaces (@var{p}, @var{sf})
-## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{p}, @var{sf})
-## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{fv}, @var{sf})
-## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{f}, @var{v}, @var{sf})
-## @deftypefnx {Function File} {[@var{nf}, @var{nv}] =} shrinkfaces (@dots{})
+## @deftypefn  {} {} shrinkfaces (@var{p}, @var{sf})
+## @deftypefnx {} {@var{nfv} =} shrinkfaces (@var{p}, @var{sf})
+## @deftypefnx {} {@var{nfv} =} shrinkfaces (@var{fv}, @var{sf})
+## @deftypefnx {} {@var{nfv} =} shrinkfaces (@var{f}, @var{v}, @var{sf})
+## @deftypefnx {} {[@var{nf}, @var{nv}] =} shrinkfaces (@dots{})
 ##
 ## Reduce the size of faces in a patch by the shrink factor @var{sf}.
 ##

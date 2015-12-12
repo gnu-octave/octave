@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{sum} =} kahan (@var{sum}, @var{comp}, @var{term})
-## @deftypefnx {Function File} {[@var{sum}, @var{comp}] =} kahan (@var{sum}, @var{comp}, @var{term})
+## @deftypefn  {} {@var{sum} =} kahan (@var{sum}, @var{comp}, @var{term})
+## @deftypefnx {} {[@var{sum}, @var{comp}] =} kahan (@var{sum}, @var{comp}, @var{term})
 ##
 ## This function implements the Kahan summation algorithm, also known as
 ## compensated summation.

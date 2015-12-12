@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} manova (@var{x}, @var{g})
+## @deftypefn {} {} manova (@var{x}, @var{g})
 ## Perform a one-way multivariate analysis of variance (MANOVA).
 ##
 ## The goal is to test whether the p-dimensional population means of data

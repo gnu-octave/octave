@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{cstr} =} inputdlg (@var{prompt})
-## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title})
-## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols})
-## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
+## @deftypefn  {} {@var{cstr} =} inputdlg (@var{prompt})
+## @deftypefnx {} {@var{cstr} =} inputdlg (@var{prompt}, @var{title})
+## @deftypefnx {} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols})
+## @deftypefnx {} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
 ## Return user input from a multi-textfield dialog box in a cell array of
 ## strings, or an empty cell array if the dialog is closed by the Cancel
 ## button.

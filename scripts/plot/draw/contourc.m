@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{c}, @var{lev}] =} contourc (@var{z})
-## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{z}, @var{vn})
-## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefn  {} {[@var{c}, @var{lev}] =} contourc (@var{z})
+## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@var{z}, @var{vn})
+## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
 ## Compute contour lines (isolines of constant Z value).
 ##
 ## The matrix @var{z} contains height values above the rectangular grid

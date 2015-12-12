@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fplot (@var{fn}, @var{limits})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{tol})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{n})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{fmt})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} fplot (@dots{})
+## @deftypefn  {} {} fplot (@var{fn}, @var{limits})
+## @deftypefnx {} {} fplot (@dots{}, @var{tol})
+## @deftypefnx {} {} fplot (@dots{}, @var{n})
+## @deftypefnx {} {} fplot (@dots{}, @var{fmt})
+## @deftypefnx {} {[@var{x}, @var{y}] =} fplot (@dots{})
 ## Plot a function @var{fn} within the range defined by @var{limits}.
 ##
 ## @var{fn} is a function handle, inline function, or string containing the

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{has_feature} =} __gnuplot_has_feature__ (@var{feature})
+## @deftypefn {} {@var{has_feature} =} __gnuplot_has_feature__ (@var{feature})
 ## Undocumented internal function.
 ## @end deftypefn
 

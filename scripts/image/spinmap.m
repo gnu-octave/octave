@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spinmap ()
-## @deftypefnx {Function File} {} spinmap (@var{t})
-## @deftypefnx {Function File} {} spinmap (@var{t}, @var{inc})
-## @deftypefnx {Function File} {} spinmap ("inf")
+## @deftypefn  {} {} spinmap ()
+## @deftypefnx {} {} spinmap (@var{t})
+## @deftypefnx {} {} spinmap (@var{t}, @var{inc})
+## @deftypefnx {} {} spinmap ("inf")
 ## Cycle the colormap for @var{t} seconds with a color increment of @var{inc}.
 ##
 ## Both parameters are optional.  The default cycle time is 5 seconds and the

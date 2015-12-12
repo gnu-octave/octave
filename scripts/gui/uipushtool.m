@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uipushtool (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uipushtool (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uipushtool object and return a handle to it.
 ##

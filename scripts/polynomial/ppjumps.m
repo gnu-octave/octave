@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{jumps} =} ppjumps (@var{pp})
+## @deftypefn {} {@var{jumps} =} ppjumps (@var{pp})
 ## Evaluate the boundary jumps of a piecewise polynomial.
 ##
 ## If there are @math{n} intervals, and the dimensionality of @var{pp} is

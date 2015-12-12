@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} var (@var{x})
-## @deftypefnx {Function File} {} var (@var{x}, @var{opt})
-## @deftypefnx {Function File} {} var (@var{x}, @var{opt}, @var{dim})
+## @deftypefn  {} {} var (@var{x})
+## @deftypefnx {} {} var (@var{x}, @var{opt})
+## @deftypefnx {} {} var (@var{x}, @var{opt}, @var{dim})
 ## Compute the variance of the elements of the vector @var{x}.
 ##
 ## The variance is defined as

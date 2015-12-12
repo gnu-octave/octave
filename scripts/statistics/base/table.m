@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{l_x}] =} table (@var{x})
-## @deftypefnx {Function File} {[@var{t}, @var{l_x}, @var{l_y}] =} table (@var{x}, @var{y})
+## @deftypefn  {} {[@var{t}, @var{l_x}] =} table (@var{x})
+## @deftypefnx {} {[@var{t}, @var{l_x}, @var{l_y}] =} table (@var{x}, @var{y})
 ## Create a contingency table @var{t} from data vectors.
 ##
 ## The @var{l_x} and @var{l_y} vectors are the corresponding levels.

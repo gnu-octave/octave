@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{x}, @var{y})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{C})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{C})
-## @deftypefnx {Function File} {@var{P} =} cart2pol (@dots{})
+## @deftypefn  {} {[@var{theta}, @var{r}] =} cart2pol (@var{x}, @var{y})
+## @deftypefnx {} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {[@var{theta}, @var{r}] =} cart2pol (@var{C})
+## @deftypefnx {} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{C})
+## @deftypefnx {} {@var{P} =} cart2pol (@dots{})
 ##
 ## Transform Cartesian coordinates to polar or cylindrical coordinates.
 ##

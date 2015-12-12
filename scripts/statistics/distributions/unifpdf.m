@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unifpdf (@var{x})
-## @deftypefnx {Function File} {} unifpdf (@var{x}, @var{a}, @var{b})
+## @deftypefn  {} {} unifpdf (@var{x})
+## @deftypefnx {} {} unifpdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the uniform distribution on the interval [@var{a}, @var{b}].
 ##

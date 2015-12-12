@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} etime (@var{t2}, @var{t1})
+## @deftypefn {} {} etime (@var{t2}, @var{t1})
 ## Return the difference in seconds between two time values returned from
 ## @code{clock} (@math{@var{t2} - @var{t1}}).
 ##

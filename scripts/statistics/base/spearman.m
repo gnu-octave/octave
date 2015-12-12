@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spearman (@var{x})
-## @deftypefnx {Function File} {} spearman (@var{x}, @var{y})
+## @deftypefn  {} {} spearman (@var{x})
+## @deftypefnx {} {} spearman (@var{x}, @var{y})
 ## @cindex Spearman's Rho
 ## Compute Spearman's rank correlation coefficient @var{rho}.
 ##

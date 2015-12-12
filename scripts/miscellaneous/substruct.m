@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} substruct (@var{type}, @var{subs}, @dots{})
+## @deftypefn {} {} substruct (@var{type}, @var{subs}, @dots{})
 ## Create a subscript structure for use with @code{subsref} or @code{subsasgn}.
 ##
 ## For example:

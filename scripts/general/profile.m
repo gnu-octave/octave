@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} profile on
-## @deftypefnx {Command} {} profile off
-## @deftypefnx {Command} {} profile resume
-## @deftypefnx {Command} {} profile clear
-## @deftypefnx {Function File} {@var{S} =} profile ("status")
-## @deftypefnx {Function File} {@var{T} =} profile ("info")
+## @deftypefn  {} {} profile on
+## @deftypefnx {} {} profile off
+## @deftypefnx {} {} profile resume
+## @deftypefnx {} {} profile clear
+## @deftypefnx {} {@var{S} =} profile ("status")
+## @deftypefnx {} {@var{T} =} profile ("info")
 ## Control the built-in profiler.
 ##
 ## @table @code

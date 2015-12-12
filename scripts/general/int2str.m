@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} int2str (@var{n})
+## @deftypefn {} {} int2str (@var{n})
 ## Convert an integer (or array of integers) to a string (or a character
 ## array).
 ##

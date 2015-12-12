@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acoth (@var{x})
+## @deftypefn {} {} acoth (@var{x})
 ## Compute the inverse hyperbolic cotangent of each element of @var{x}.
 ## @seealso{coth}
 ## @end deftypefn

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@dots{})
+## @deftypefn  {} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
+## @deftypefnx {} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{P})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@dots{})
 ## Solve @code{A x = b} using the Preconditioned GMRES iterative method with
 ## restart, a.k.a. PGMRES(m).
 ##

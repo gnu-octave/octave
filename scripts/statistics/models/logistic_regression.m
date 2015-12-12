@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
+## @deftypefn {} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
 ## Perform ordinal logistic regression.
 ##
 ## Suppose @var{y} takes values in @var{k} ordered categories, and let

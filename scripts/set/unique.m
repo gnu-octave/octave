@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unique (@var{x})
-## @deftypefnx {Function File} {} unique (@var{x}, "rows")
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "first")
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "last")
+## @deftypefn  {} {} unique (@var{x})
+## @deftypefnx {} {} unique (@var{x}, "rows")
+## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
+## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "first")
+## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "last")
 ## Return the unique elements of @var{x} sorted in ascending order.
 ##
 ## If the input @var{x} is a column vector then return a column vector;

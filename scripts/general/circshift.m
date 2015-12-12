@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{y} =} circshift (@var{x}, @var{n})
-## @deftypefnx {Function File} {@var{y} =} circshift (@var{x}, @var{n}, @var{dim})
+## @deftypefn  {} {@var{y} =} circshift (@var{x}, @var{n})
+## @deftypefnx {} {@var{y} =} circshift (@var{x}, @var{n}, @var{dim})
 ## Circularly shift the values of the array @var{x}.
 ##
 ## @var{n} must be a vector of integers no longer than the number of dimensions

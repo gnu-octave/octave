@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fileattrib ()
-## @deftypefnx {Function File} {} fileattrib (@var{file})
-## @deftypefnx {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@var{file})
+## @deftypefn  {} {} fileattrib ()
+## @deftypefnx {} {} fileattrib (@var{file})
+## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@var{file})
 ## Return information about @var{file}.
 ##
 ## If successful, @var{status} is 1, with @var{result} containing a structure

@@ -21,7 +21,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nthroot (@var{x}, @var{n})
+## @deftypefn {} {} nthroot (@var{x}, @var{n})
 ##
 ## Compute the real (non-complex) @var{n}-th root of @var{x}.
 ##

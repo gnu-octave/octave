@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} iscolormap (@var{cmap})
+## @deftypefn {} {} iscolormap (@var{cmap})
 ## Return true if @var{cmap} is a colormap.
 ##
 ## A colormap is a real matrix, of class single or double, with 3 columns.

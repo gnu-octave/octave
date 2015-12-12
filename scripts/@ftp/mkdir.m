@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mkdir (@var{f}, @var{path})
+## @deftypefn {} {} mkdir (@var{f}, @var{path})
 ## Create the remote directory @var{path}, over the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.

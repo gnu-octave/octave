@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{txt} =} __unimplemented__ (@var{fcn})
+## @deftypefn {} {@var{txt} =} __unimplemented__ (@var{fcn})
 ## Return specific help text for the unimplemented function @var{fcn}.
 ##
 ## This is usually a suggestion for an existing compatible function to use in

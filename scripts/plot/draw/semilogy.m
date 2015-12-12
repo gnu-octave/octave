@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} semilogy (@var{y})
-## @deftypefnx {Function File} {} semilogy (@var{x}, @var{y})
-## @deftypefnx {Function File} {} semilogy (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} semilogy (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} semilogy (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} semilogy (@dots{})
+## @deftypefn  {} {} semilogy (@var{y})
+## @deftypefnx {} {} semilogy (@var{x}, @var{y})
+## @deftypefnx {} {} semilogy (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} semilogy (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {} {} semilogy (@var{h}, @dots{})
+## @deftypefnx {} {@var{h} =} semilogy (@dots{})
 ## Produce a 2-D plot using a logarithmic scale for the y-axis.
 ##
 ## See the documentation of @code{plot} for a description of the

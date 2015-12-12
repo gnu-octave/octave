@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} print_package_description (@var{pkg_name}, @var{pkg_ver}, @var{pkg_idx_struct}, @var{pkg_desc}, @var{status}, @var{verbose})
+## @deftypefn {} {} print_package_description (@var{pkg_name}, @var{pkg_ver}, @var{pkg_idx_struct}, @var{pkg_desc}, @var{status}, @var{verbose})
 ## Undocumented internal function.
 ## @end deftypefn
 

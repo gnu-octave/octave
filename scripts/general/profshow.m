@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} profshow (@var{data})
-## @deftypefnx {Function File} {} profshow (@var{data}, @var{n})
-## @deftypefnx {Function File} {} profshow ()
-## @deftypefnx {Function File} {} profshow (@var{n})
+## @deftypefn  {} {} profshow (@var{data})
+## @deftypefnx {} {} profshow (@var{data}, @var{n})
+## @deftypefnx {} {} profshow ()
+## @deftypefnx {} {} profshow (@var{n})
 ## Display flat per-function profiler results.
 ##
 ## Print out profiler data (execution time, number of calls) for the most

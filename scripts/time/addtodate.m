@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{d} =} addtodate (@var{d}, @var{q}, @var{f})
+## @deftypefn {} {@var{d} =} addtodate (@var{d}, @var{q}, @var{f})
 ## Add @var{q} amount of time (with units @var{f}) to the serial datenum,
 ## @var{d}.
 ##

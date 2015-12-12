@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{arch} =} getarch ()
+## @deftypefn {} {@var{arch} =} getarch ()
 ## Undocumented internal function.
 ## @end deftypefn
 

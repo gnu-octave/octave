@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{dx} =} gradient (@var{m})
-## @deftypefnx {Function File} {[@var{dx}, @var{dy}, @var{dz}, @dots{}] =} gradient (@var{m})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{x}, @var{y}, @var{z}, @dots{})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
+## @deftypefn  {} {@var{dx} =} gradient (@var{m})
+## @deftypefnx {} {[@var{dx}, @var{dy}, @var{dz}, @dots{}] =} gradient (@var{m})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{m}, @var{s})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{m}, @var{x}, @var{y}, @var{z}, @dots{})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{f}, @var{x0})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
 ##
 ## Calculate the gradient of sampled data or a function.
 ##

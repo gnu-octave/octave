@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} struct2hdl (@var{s})
-## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p})
-## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p}, @var{hilev})
+## @deftypefn  {} {@var{h} =} struct2hdl (@var{s})
+## @deftypefnx {} {@var{h} =} struct2hdl (@var{s}, @var{p})
+## @deftypefnx {} {@var{h} =} struct2hdl (@var{s}, @var{p}, @var{hilev})
 ## Construct a graphics handle object @var{h} from the structure @var{s}.
 ##
 ## The structure must contain the fields @qcode{"handle"}, @qcode{"type"},

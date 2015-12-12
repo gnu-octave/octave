@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{name} =} graphics_toolkit ()
-## @deftypefnx {Function File} {@var{name} =} graphics_toolkit (@var{hlist})
-## @deftypefnx {Function File} {} graphics_toolkit (@var{name})
-## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
+## @deftypefn  {} {@var{name} =} graphics_toolkit ()
+## @deftypefnx {} {@var{name} =} graphics_toolkit (@var{hlist})
+## @deftypefnx {} {} graphics_toolkit (@var{name})
+## @deftypefnx {} {} graphics_toolkit (@var{hlist}, @var{name})
 ## Query or set the default graphics toolkit which is assigned to new figures.
 ##
 ## With no inputs, return the current default graphics toolkit.  If the input

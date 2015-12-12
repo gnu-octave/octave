@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} im2double (@var{img})
-## @deftypefnx {Function File} {} im2double (@var{img}, "indexed")
+## @deftypefn  {} {} im2double (@var{img})
+## @deftypefnx {} {} im2double (@var{img}, "indexed")
 ## Convert image to double precision.
 ##
 ## The conversion of @var{img} to double precision, is dependent

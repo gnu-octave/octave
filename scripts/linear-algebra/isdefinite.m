@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} isdefinite (@var{A})
-## @deftypefnx {Function File} {} isdefinite (@var{A}, @var{tol})
+## @deftypefn  {} {} isdefinite (@var{A})
+## @deftypefnx {} {} isdefinite (@var{A}, @var{tol})
 ## Return 1 if @var{A} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{A} is symmetric
 ## positive semidefinite.  Otherwise, return -1.

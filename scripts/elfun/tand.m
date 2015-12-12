@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tand (@var{x})
+## @deftypefn {} {} tand (@var{x})
 ## Compute the tangent for each element of @var{x} in degrees.
 ##
 ## Returns zero for elements where @code{@var{x}/180} is an integer and

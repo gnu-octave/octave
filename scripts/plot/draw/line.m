@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} line ()
-## @deftypefnx {Function File} {} line (@var{x}, @var{y})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} line (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} line (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} line (@dots{})
+## @deftypefn  {} {} line ()
+## @deftypefnx {} {} line (@var{x}, @var{y})
+## @deftypefnx {} {} line (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} line (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} line (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} line (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} line (@dots{})
 ## Create line object from @var{x} and @var{y} (and possibly @var{z}) and
 ## insert in the current axes.
 ##

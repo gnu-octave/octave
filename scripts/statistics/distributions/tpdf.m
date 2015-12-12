@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tpdf (@var{x}, @var{n})
+## @deftypefn {} {} tpdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the @var{t} (Student) distribution with
 ## @var{n} degrees of freedom.

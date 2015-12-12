@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} print ()
-## @deftypefnx {Function File} {} print (@var{options})
-## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
-## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
+## @deftypefn  {} {} print ()
+## @deftypefnx {} {} print (@var{options})
+## @deftypefnx {} {} print (@var{filename}, @var{options})
+## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
 ## Print a plot, or save it to a file.
 ##
 ## Both output formatted for printing (PDF and PostScript), and many bitmapped

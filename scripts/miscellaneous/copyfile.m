@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2})
-## @deftypefnx {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, 'f')
+## @deftypefn  {} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2})
+## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, 'f')
 ## Copy the source files or directories @var{f1} to the destination @var{f2}.
 ##
 ## The name @var{f1} may contain globbing patterns.  If @var{f1} expands to

@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} trisurf (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} trisurf (@dots{})
+## @deftypefn  {} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} trisurf (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} trisurf (@dots{})
 ## Plot a 3-D triangular surface.
 ##
 ## In contrast to @code{surf}, which plots a surface mesh using rectangles,

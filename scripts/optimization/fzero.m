@@ -19,9 +19,9 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fzero (@var{fun}, @var{x0})
-## @deftypefnx {Function File} {} fzero (@var{fun}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
+## @deftypefn  {} {} fzero (@var{fun}, @var{x0})
+## @deftypefnx {} {} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
 ## Find a zero of a univariate function.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the

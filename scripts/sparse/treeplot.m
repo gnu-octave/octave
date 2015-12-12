@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} treeplot (@var{tree})
-## @deftypefnx {Function File} {} treeplot (@var{tree}, @var{node_style}, @var{edge_style})
+## @deftypefn  {} {} treeplot (@var{tree})
+## @deftypefnx {} {} treeplot (@var{tree}, @var{node_style}, @var{edge_style})
 ## Produce a graph of tree or forest.
 ##
 ## The first argument is vector of predecessors.

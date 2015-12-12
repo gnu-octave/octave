@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __gnuplot_print__ (@var{@dots{}})
+## @deftypefn {} {} __gnuplot_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

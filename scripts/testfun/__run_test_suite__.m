@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
+## @deftypefn {} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
 ## Undocumented internal function.
 ## @end deftypefn
 

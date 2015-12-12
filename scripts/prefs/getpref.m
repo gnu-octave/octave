@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{val} =} getpref ("@var{group}", "@var{pref}")
-## @deftypefnx {Function File} {@var{val} =} getpref ("@var{group}", "@var{pref}", @var{default})
-## @deftypefnx {Function File} {@{@var{val1}, @var{val2}, @dots{}@} =} getpref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
-## @deftypefnx {Function File} {@var{prefstruct} =} getpref ("@var{group}")
-## @deftypefnx {Function File} {@var{prefstruct} =} getpref ()
+## @deftypefn  {} {@var{val} =} getpref ("@var{group}", "@var{pref}")
+## @deftypefnx {} {@var{val} =} getpref ("@var{group}", "@var{pref}", @var{default})
+## @deftypefnx {} {@{@var{val1}, @var{val2}, @dots{}@} =} getpref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
+## @deftypefnx {} {@var{prefstruct} =} getpref ("@var{group}")
+## @deftypefnx {} {@var{prefstruct} =} getpref ()
 ## Return the preference value corresponding to the named preference @var{pref}
 ## in the preference group @var{group}.
 ##

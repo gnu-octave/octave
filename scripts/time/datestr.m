@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{str} =} datestr (@var{date})
-## @deftypefnx {Function File} {@var{str} =} datestr (@var{date}, @var{f})
-## @deftypefnx {Function File} {@var{str} =} datestr (@var{date}, @var{f}, @var{p})
+## @deftypefn  {} {@var{str} =} datestr (@var{date})
+## @deftypefnx {} {@var{str} =} datestr (@var{date}, @var{f})
+## @deftypefnx {} {@var{str} =} datestr (@var{date}, @var{f}, @var{p})
 ## Format the given date/time according to the format @code{f} and return
 ## the result in @var{str}.
 ##

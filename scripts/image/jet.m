@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} jet ()
-## @deftypefnx {Function File} {@var{map} =} jet (@var{n})
+## @deftypefn  {} {@var{map} =} jet ()
+## @deftypefnx {} {@var{map} =} jet (@var{n})
 ## Create color colormap.  This colormap ranges from dark blue through blue,
 ## cyan, green, yellow, red, to dark red.
 ##

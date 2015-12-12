@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} deconv (@var{y}, @var{a})
+## @deftypefn {} {} deconv (@var{y}, @var{a})
 ## Deconvolve two vectors.
 ##
 ## @code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that

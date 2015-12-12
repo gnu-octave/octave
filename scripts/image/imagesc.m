@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imagesc (@var{img})
-## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{img})
-## @deftypefnx {Function File} {} imagesc (@dots{}, @var{climits})
-## @deftypefnx {Function File} {} imagesc (@dots{}, "@var{prop}", @var{val}, @dots{})
-## @deftypefnx {Function File} {} imagesc ("@var{prop1}", @var{val1}, @dots{})
-## @deftypefnx {Function File} {} imagesc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
+## @deftypefn  {} {} imagesc (@var{img})
+## @deftypefnx {} {} imagesc (@var{x}, @var{y}, @var{img})
+## @deftypefnx {} {} imagesc (@dots{}, @var{climits})
+## @deftypefnx {} {} imagesc (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {} {} imagesc ("@var{prop1}", @var{val1}, @dots{})
+## @deftypefnx {} {} imagesc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} imagesc (@dots{})
 ## Display a scaled version of the matrix @var{img} as a color image.
 ##
 ## The colormap is scaled so that the entries of the matrix occupy the entire

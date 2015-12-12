@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} news
-## @deftypefnx {Command} {} news @var{package}
+## @deftypefn  {} {} news
+## @deftypefnx {} {} news @var{package}
 ## Display the current NEWS file for Octave or an installed package.
 ##
 ## When called without an argument, display the NEWS file for Octave.

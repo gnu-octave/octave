@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{bad_deps} =} get_unsatisfied_deps (@var{desc}, @var{installed_pkgs_lst})
+## @deftypefn {} {@var{bad_deps} =} get_unsatisfied_deps (@var{desc}, @var{installed_pkgs_lst})
 ## Undocumented internal function.
 ## @end deftypefn
 

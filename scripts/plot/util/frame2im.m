@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{map}] =} frame2im (@var{f})
+## @deftypefn {} {[@var{x}, @var{map}] =} frame2im (@var{f})
 ## Convert movie frame to indexed image.
 ##
 ## A movie frame is simply a struct with the fields @qcode{"cdata"} and

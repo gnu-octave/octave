@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
+## @deftypefn {} {} beta (@var{a}, @var{b})
 ## Compute the Beta function for real inputs @var{a} and @var{b}.
 ##
 ## The Beta function definition is

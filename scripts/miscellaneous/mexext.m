@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mexext ()
+## @deftypefn {} {} mexext ()
 ## Return the filename extension used for MEX files.
 ## @seealso{mex}
 ## @end deftypefn

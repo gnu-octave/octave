@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hist (@var{y})
-## @deftypefnx {Function File} {} hist (@var{y}, @var{x})
-## @deftypefnx {Function File} {} hist (@var{y}, @var{nbins})
-## @deftypefnx {Function File} {} hist (@var{y}, @var{x}, @var{norm})
-## @deftypefnx {Function File} {} hist (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} hist (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{nn}, @var{xx}] =} hist (@dots{})
+## @deftypefn  {} {} hist (@var{y})
+## @deftypefnx {} {} hist (@var{y}, @var{x})
+## @deftypefnx {} {} hist (@var{y}, @var{nbins})
+## @deftypefnx {} {} hist (@var{y}, @var{x}, @var{norm})
+## @deftypefnx {} {} hist (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} hist (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{nn}, @var{xx}] =} hist (@dots{})
 ## Produce histogram counts or plots.
 ##
 ## With one vector input argument, @var{y}, plot a histogram of the values

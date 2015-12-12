@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
-## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
+## @deftypefn  {} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
+## @deftypefnx {} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
 ## Undocumented internal function.
 ## @end deftypefn
 

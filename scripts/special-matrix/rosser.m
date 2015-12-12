@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rosser ()
+## @deftypefn {} {} rosser ()
 ## Return the Rosser matrix.
 ##
 ## This is a difficult test case used to evaluate eigenvalue algorithms.

@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{d} =} del2 (@var{M})
-## @deftypefnx {Function File} {@var{d} =} del2 (@var{M}, @var{h})
-## @deftypefnx {Function File} {@var{d} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
+## @deftypefn  {} {@var{d} =} del2 (@var{M})
+## @deftypefnx {} {@var{d} =} del2 (@var{M}, @var{h})
+## @deftypefnx {} {@var{d} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
 ##
 ## Calculate the discrete Laplace
 ## @tex

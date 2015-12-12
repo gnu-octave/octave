@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} pink ()
-## @deftypefnx {Function File} {@var{map} =} pink (@var{n})
+## @deftypefn  {} {@var{map} =} pink ()
+## @deftypefnx {} {@var{map} =} pink (@var{n})
 ## Create color colormap.  This colormap varies from black to white with
 ## shades of gray-pink.
 ##

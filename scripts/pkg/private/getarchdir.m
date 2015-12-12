@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{archdir} =} getarchdir (@var{desc})
+## @deftypefn {} {@var{archdir} =} getarchdir (@var{desc})
 ## Undocumented internal function.
 ## @end deftypefn
 

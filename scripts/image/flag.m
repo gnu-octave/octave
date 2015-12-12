@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} flag ()
-## @deftypefnx {Function File} {@var{map} =} flag (@var{n})
+## @deftypefn  {} {@var{map} =} flag ()
+## @deftypefnx {} {@var{map} =} flag (@var{n})
 ## Create color colormap.  This colormap cycles through red, white, blue, and
 ## black with each index change.
 ##

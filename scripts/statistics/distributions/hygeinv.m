@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygeinv (@var{x}, @var{t}, @var{m}, @var{n})
+## @deftypefn {} {} hygeinv (@var{x}, @var{t}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the hypergeometric distribution with parameters
 ## @var{t}, @var{m}, and @var{n}.

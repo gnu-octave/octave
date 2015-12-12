@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} figure
-## @deftypefnx {Command} {} figure @var{n}
-## @deftypefnx {Function File} {} figure (@var{n})
-## @deftypefnx {Function File} {} figure (@dots{}, "@var{property}", @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} figure (@dots{})
+## @deftypefn  {} {} figure
+## @deftypefnx {} {} figure @var{n}
+## @deftypefnx {} {} figure (@var{n})
+## @deftypefnx {} {} figure (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefnx {} {@var{h} =} figure (@dots{})
 ## Create a new figure window for plotting.
 ##
 ## If no arguments are specified, a new figure with the next available number

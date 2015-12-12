@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
-## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@dots{})
+## @deftypefn  {} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefnx {} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+## @deftypefnx {} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@dots{})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
 ##

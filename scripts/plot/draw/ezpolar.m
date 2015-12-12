@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezpolar (@var{f})
-## @deftypefnx {Function File} {} ezpolar (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezpolar (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezpolar (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezpolar (@dots{})
+## @deftypefn  {} {} ezpolar (@var{f})
+## @deftypefnx {} {} ezpolar (@dots{}, @var{dom})
+## @deftypefnx {} {} ezpolar (@dots{}, @var{n})
+## @deftypefnx {} {} ezpolar (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezpolar (@dots{})
 ##
 ## Plot a 2-D function in polar coordinates.
 ##

@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} generate_lookfor_cache (@var{desc})
+## @deftypefn {} {} generate_lookfor_cache (@var{desc})
 ## Undocumented internal function.
 ## @end deftypefn
 

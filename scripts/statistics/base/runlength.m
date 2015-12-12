@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {count =} runlength (@var{x})
-## @deftypefnx {Function File} {[count, value] =} runlength (@var{x})
+## @deftypefn  {} {count =} runlength (@var{x})
+## @deftypefnx {} {[count, value] =} runlength (@var{x})
 ## Find the lengths of all sequences of common values.
 ##
 ## @var{count} is a vector with the lengths of each repeated value.

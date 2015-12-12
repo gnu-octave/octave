@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dec2base (@var{d}, @var{base})
-## @deftypefnx {Function File} {} dec2base (@var{d}, @var{base}, @var{len})
+## @deftypefn  {} {} dec2base (@var{d}, @var{base})
+## @deftypefnx {} {} dec2base (@var{d}, @var{base}, @var{len})
 ## Return a string of symbols in base @var{base} corresponding to the
 ## non-negative integer @var{d}.
 ##

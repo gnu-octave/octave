@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} doc_cache_create (@var{out_file}, @var{directory})
-## @deftypefnx {Function File} {} doc_cache_create (@var{out_file})
-## @deftypefnx {Function File} {} doc_cache_create ()
+## @deftypefn  {} {} doc_cache_create (@var{out_file}, @var{directory})
+## @deftypefnx {} {} doc_cache_create (@var{out_file})
+## @deftypefnx {} {} doc_cache_create ()
 ## Generate documentation cache for all functions in @var{directory}.
 ##
 ## A documentation cache is generated for all functions in @var{directory}

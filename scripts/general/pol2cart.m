@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{P})
-## @deftypefnx {Function File} {@var{C} =} pol2cart (@dots{})
+## @deftypefn  {} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
+## @deftypefnx {} {[@var{x}, @var{y}] =} pol2cart (@var{P})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{P})
+## @deftypefnx {} {@var{C} =} pol2cart (@dots{})
 ## Transform polar or cylindrical coordinates to Cartesian coordinates.
 ##
 ## The inputs @var{theta}, @var{r}, (and @var{z}) must be the same shape, or

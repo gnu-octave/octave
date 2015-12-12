@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
-## @deftypefnx {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
+## @deftypefn  {} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
+## @deftypefnx {} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
 ## Calculate the specular reflection strength of a surface defined by the
 ## normal vector elements @var{sx}, @var{sy}, @var{sz} using Phong's
 ## approximation.

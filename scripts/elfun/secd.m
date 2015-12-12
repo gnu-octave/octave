@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} secd (@var{x})
+## @deftypefn {} {} secd (@var{x})
 ## Compute the secant for each element of @var{x} in degrees.
 ## @seealso{asecd, sec}
 ## @end deftypefn

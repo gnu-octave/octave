@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} lines ()
-## @deftypefnx {Function File} {@var{map} =} lines (@var{n})
+## @deftypefn  {} {@var{map} =} lines ()
+## @deftypefnx {} {@var{map} =} lines (@var{n})
 ## Create color colormap.  This colormap is composed of the list of colors
 ## in the current axes @qcode{"ColorOrder"} property.  The default is blue,
 ## green, red, cyan, pink, yellow, and gray.

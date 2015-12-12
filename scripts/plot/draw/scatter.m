@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} scatter (@var{x}, @var{y})
-## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s})
-## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c})
-## @deftypefnx {Function File} {} scatter (@dots{}, @var{style})
-## @deftypefnx {Function File} {} scatter (@dots{}, "filled")
-## @deftypefnx {Function File} {} scatter (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} scatter (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} scatter (@dots{})
+## @deftypefn  {} {} scatter (@var{x}, @var{y})
+## @deftypefnx {} {} scatter (@var{x}, @var{y}, @var{s})
+## @deftypefnx {} {} scatter (@var{x}, @var{y}, @var{s}, @var{c})
+## @deftypefnx {} {} scatter (@dots{}, @var{style})
+## @deftypefnx {} {} scatter (@dots{}, "filled")
+## @deftypefnx {} {} scatter (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} scatter (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} scatter (@dots{})
 ## Draw a 2-D scatter plot.
 ##
 ## A marker is plotted at each point defined by the coordinates in the vectors

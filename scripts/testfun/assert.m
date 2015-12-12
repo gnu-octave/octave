@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} assert (@var{cond})
-## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg})
-## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
-## @deftypefnx {Function File} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
-## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected})
-## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected}, @var{tol})
+## @deftypefn  {} {} assert (@var{cond})
+## @deftypefnx {} {} assert (@var{cond}, @var{errmsg})
+## @deftypefnx {} {} assert (@var{cond}, @var{errmsg}, @dots{})
+## @deftypefnx {} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
+## @deftypefnx {} {} assert (@var{observed}, @var{expected})
+## @deftypefnx {} {} assert (@var{observed}, @var{expected}, @var{tol})
 ##
 ## Produce an error if the specified condition is not met.
 ##

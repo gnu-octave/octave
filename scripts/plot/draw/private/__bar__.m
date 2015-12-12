@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __bar__ (@var{vertical}, @var{func}, @dots{})
+## @deftypefn {} {} __bar__ (@var{vertical}, @var{func}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

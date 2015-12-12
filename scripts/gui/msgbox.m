@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} msgbox (@var{msg})
-## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title})
-## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title}, @var{icon})
-## @deftypefnx {Function File} {@var{h} =} msgbox (@dots{}, @var{createmode})
+## @deftypefn  {} {@var{h} =} msgbox (@var{msg})
+## @deftypefnx {} {@var{h} =} msgbox (@var{msg}, @var{title})
+## @deftypefnx {} {@var{h} =} msgbox (@var{msg}, @var{title}, @var{icon})
+## @deftypefnx {} {@var{h} =} msgbox (@dots{}, @var{createmode})
 ## Display @var{msg} using a message dialog box.
 ##
 ## The message may have multiple lines separated by newline characters ("\n"),

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} diffuse (@var{sx}, @var{sy}, @var{sz}, @var{lv})
+## @deftypefn {} {} diffuse (@var{sx}, @var{sy}, @var{sz}, @var{lv})
 ## Calculate the diffuse reflection strength of a surface defined by the normal
 ## vector elements @var{sx}, @var{sy}, @var{sz}.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} idivide (@var{x}, @var{y}, @var{op})
+## @deftypefn {} {} idivide (@var{x}, @var{y}, @var{op})
 ## Integer division with different rounding rules.
 ##
 ## The standard behavior of integer division such as @code{@var{a} ./ @var{b}}

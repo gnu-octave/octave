@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} stdnormal_pdf (@var{x})
+## @deftypefn {} {} stdnormal_pdf (@var{x})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the standard normal distribution
 ## (mean = 0, standard deviation = 1).

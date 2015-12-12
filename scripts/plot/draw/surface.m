@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surface (@var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {Function File} {} surface (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surface (@var{z}, @var{c})
-## @deftypefnx {Function File} {} surface (@var{z})
-## @deftypefnx {Function File} {} surface (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} surface (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} surface (@dots{})
+## @deftypefn  {} {} surface (@var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {} {} surface (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} surface (@var{z}, @var{c})
+## @deftypefnx {} {} surface (@var{z})
+## @deftypefnx {} {} surface (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} surface (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} surface (@dots{})
 ## Create a surface graphic object given matrices @var{x} and @var{y} from
 ## @code{meshgrid} and a matrix of values @var{z} corresponding to the
 ## @var{x} and @var{y} coordinates of the surface.

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} refreshdata ()
-## @deftypefnx {Function File} {} refreshdata (@var{h})
-## @deftypefnx {Function File} {} refreshdata (@var{h}, @var{workspace})
+## @deftypefn  {} {} refreshdata ()
+## @deftypefnx {} {} refreshdata (@var{h})
+## @deftypefnx {} {} refreshdata (@var{h}, @var{workspace})
 ## Evaluate any @samp{datasource} properties of the current figure and update
 ## the plot if the corresponding data has changed.
 ##

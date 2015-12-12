@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sound (@var{y})
-## @deftypefnx {Function File} {} sound (@var{y}, @var{fs})
-## @deftypefnx {Function File} {} sound (@var{y}, @var{fs}, @var{nbits})
+## @deftypefn  {} {} sound (@var{y})
+## @deftypefnx {} {} sound (@var{y}, @var{fs})
+## @deftypefnx {} {} sound (@var{y}, @var{fs}, @var{nbits})
 ## Play audio data @var{y} at sample rate @var{fs} to the default audio
 ## device.
 ##

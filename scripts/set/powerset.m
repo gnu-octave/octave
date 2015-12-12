@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} powerset (@var{a})
-## @deftypefnx {Function File} {} powerset (@var{a}, "rows")
+## @deftypefn  {} {} powerset (@var{a})
+## @deftypefnx {} {} powerset (@var{a}, "rows")
 ## Compute the powerset (all subsets) of the set @var{a}.
 ##
 ## The set @var{a} must be a numerical matrix or a cell array of strings.  The

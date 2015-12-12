@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cauchy_rnd (@var{location}, @var{scale})
-## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, @var{r})
-## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, [@var{sz}])
+## @deftypefn  {} {} cauchy_rnd (@var{location}, @var{scale})
+## @deftypefnx {} {} cauchy_rnd (@var{location}, @var{scale}, @var{r})
+## @deftypefnx {} {} cauchy_rnd (@var{location}, @var{scale}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} cauchy_rnd (@var{location}, @var{scale}, [@var{sz}])
 ## Return a matrix of random samples from the Cauchy distribution with
 ## parameters @var{location} and @var{scale}.
 ##

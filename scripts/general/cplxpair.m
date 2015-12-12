@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cplxpair (@var{z})
-## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol})
-## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol}, @var{dim})
+## @deftypefn  {} {} cplxpair (@var{z})
+## @deftypefnx {} {} cplxpair (@var{z}, @var{tol})
+## @deftypefnx {} {} cplxpair (@var{z}, @var{tol}, @var{dim})
 ## Sort the numbers @var{z} into complex conjugate pairs ordered by increasing
 ## real part.
 ##

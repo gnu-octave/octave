@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} nthargout (@var{n}, @var{func}, @dots{})
-## @deftypefnx {Function File} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
+## @deftypefn  {} {} nthargout (@var{n}, @var{func}, @dots{})
+## @deftypefnx {} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
 ## Return the @var{n}th output argument of the function specified by the
 ## function handle or string @var{func}.
 ##

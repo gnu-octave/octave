@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} gunzip (@var{gzfile})
-## @deftypefnx {Function File} {@var{filelist} =} gunzip (@var{gzfile}, @var{dir})
+## @deftypefn  {} {@var{filelist} =} gunzip (@var{gzfile})
+## @deftypefnx {} {@var{filelist} =} gunzip (@var{gzfile}, @var{dir})
 ## Unpack the gzip archive @var{gzfile}.
 ##
 ## If @var{gzfile} is a directory, all gzfiles in the directory will be

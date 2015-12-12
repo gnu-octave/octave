@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} perms (@var{v})
+## @deftypefn {} {} perms (@var{v})
 ## Generate all permutations of @var{v} with one row per permutation.
 ##
 ## The result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __prog_output_assert__ (@var{str})
+## @deftypefn {} {} __prog_output_assert__ (@var{str})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} hot ()
-## @deftypefnx {Function File} {@var{map} =} hot (@var{n})
+## @deftypefn  {} {@var{map} =} hot ()
+## @deftypefnx {} {@var{map} =} hot (@var{n})
 ## Create color colormap.  This colormap ranges from black through dark red,
 ## red, orange, yellow, to white.
 ##

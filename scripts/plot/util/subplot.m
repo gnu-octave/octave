@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
-## @deftypefnx {Function File} {} subplot (@var{rcn})
-## @deftypefnx {Function File} {} subplot (@var{hax})
-## @deftypefnx {Function File} {} subplot (@dots{}, "align")
-## @deftypefnx {Function File} {} subplot (@dots{}, "replace")
-## @deftypefnx {Function File} {} subplot (@dots{}, "position", @var{pos})
-## @deftypefnx {Function File} {} subplot (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
+## @deftypefn  {} {} subplot (@var{rows}, @var{cols}, @var{index})
+## @deftypefnx {} {} subplot (@var{rcn})
+## @deftypefnx {} {} subplot (@var{hax})
+## @deftypefnx {} {} subplot (@dots{}, "align")
+## @deftypefnx {} {} subplot (@dots{}, "replace")
+## @deftypefnx {} {} subplot (@dots{}, "position", @var{pos})
+## @deftypefnx {} {} subplot (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{hax} =} subplot (@dots{})
 ## Set up a plot grid with @var{rows} by @var{cols} subwindows and set the
 ## current axes for plotting (@code{gca}) to the location given by @var{index}.
 ##

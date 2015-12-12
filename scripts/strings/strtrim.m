@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strtrim (@var{s})
+## @deftypefn {} {} strtrim (@var{s})
 ## Remove leading and trailing whitespace from @var{s}.
 ##
 ## If @var{s} is a matrix, @var{strtrim} trims each row to the length of

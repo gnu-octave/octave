@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyarea (@var{x}, @var{y})
-## @deftypefnx {Function File} {} polyarea (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {} {} polyarea (@var{x}, @var{y})
+## @deftypefnx {} {} polyarea (@var{x}, @var{y}, @var{dim})
 ##
 ## Determine area of a polygon by triangle method.
 ##

@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} intersect (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
+## @deftypefn  {} {@var{c} =} intersect (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
 ##
 ## Return the unique elements common to both @var{a} and @var{b} sorted in
 ## ascending order.

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} runtests ()
-## @deftypefnx {Function File} {} runtests (@var{directory})
+## @deftypefn  {} {} runtests ()
+## @deftypefnx {} {} runtests (@var{directory})
 ## Execute built-in tests for all m-files in the specified @var{directory}.
 ##
 ## Test blocks in any C++ source files (@file{*.cc}) will also be executed

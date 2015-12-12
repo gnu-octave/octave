@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fliplr (@var{x})
+## @deftypefn {} {} fliplr (@var{x})
 ## Flip array left to right.
 ##
 ## Return a copy of @var{x} with the order of the columns reversed.  In other

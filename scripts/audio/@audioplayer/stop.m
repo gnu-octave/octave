@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} stop (@var{player})
+## @deftypefn {} {} stop (@var{player})
 ## Stop the playback for the audioplayer @var{player} and reset the
 ## relevant variables to their starting values.
 ## @end deftypefn

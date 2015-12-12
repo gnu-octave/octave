@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{url}, @var{local_file}] =} list_forge_packages ()
+## @deftypefn {} {[@var{url}, @var{local_file}] =} list_forge_packages ()
 ## Undocumented internal function.
 ## @end deftypefn
 

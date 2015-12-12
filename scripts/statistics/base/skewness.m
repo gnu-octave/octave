@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} skewness (@var{x})
-## @deftypefnx {Function File} {} skewness (@var{x}, @var{flag})
-## @deftypefnx {Function File} {} skewness (@var{x}, @var{flag}, @var{dim})
+## @deftypefn  {} {} skewness (@var{x})
+## @deftypefnx {} {} skewness (@var{x}, @var{flag})
+## @deftypefnx {} {} skewness (@var{x}, @var{flag}, @var{dim})
 ## Compute the sample skewness of the elements of @var{x}.
 ##
 ## The sample skewness is defined as

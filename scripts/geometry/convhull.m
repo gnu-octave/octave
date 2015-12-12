@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{H} =} convhull (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{H} =} convhull (@var{x}, @var{y}, @var{options})
+## @deftypefn  {} {@var{H} =} convhull (@var{x}, @var{y})
+## @deftypefnx {} {@var{H} =} convhull (@var{x}, @var{y}, @var{options})
 ## Compute the convex hull of the set of points defined by the
 ## arrays @var{x} and @var{y}.  The hull @var{H} is an index vector into
 ## the set of points and specifies which points form the enclosing hull.

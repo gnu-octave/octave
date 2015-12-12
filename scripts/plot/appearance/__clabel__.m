@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} __clabel__ (@var{c}, @var{v}, @var{hparent}, @var{label_spacing}, @var{z}, @var{varargin})
+## @deftypefn {} {@var{h} =} __clabel__ (@var{c}, @var{v}, @var{hparent}, @var{label_spacing}, @var{z}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 

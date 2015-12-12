@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contourf (@var{z})
-## @deftypefnx {Function File} {} contourf (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {} contourf (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contourf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@dots{})
+## @deftypefn  {} {} contourf (@var{z})
+## @deftypefnx {} {} contourf (@var{z}, @var{vn})
+## @deftypefnx {} {} contourf (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} contourf (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {} contourf (@dots{}, @var{style})
+## @deftypefnx {} {} contourf (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{h}] =} contourf (@dots{})
 ## Create a 2-D contour plot with filled intervals.
 ##
 ## Plot level curves (contour lines) of the matrix @var{z} and fill the region

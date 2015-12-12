@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nfields (@var{s})
+## @deftypefn {} {} nfields (@var{s})
 ## Return the number of fields of the structure @var{s}.
 ##
 ## @strong{Warning:} @code{nfields} is scheduled for removal in version 4.4.

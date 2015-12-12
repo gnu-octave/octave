@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{output} =} python (@var{scriptfile})
-## @deftypefnx {Function File} {@var{output} =} python (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
-## @deftypefnx {Function File} {[@var{output}, @var{status}] =} python (@dots{})
+## @deftypefn  {} {@var{output} =} python (@var{scriptfile})
+## @deftypefnx {} {@var{output} =} python (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
+## @deftypefnx {} {[@var{output}, @var{status}] =} python (@dots{})
 ## Invoke Python script @var{scriptfile}, possibly with a list of command line
 ## arguments.
 ##

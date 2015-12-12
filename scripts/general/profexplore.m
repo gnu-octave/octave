@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} profexplore ()
-## @deftypefnx {Function File} {} profexplore (@var{data})
+## @deftypefn  {} {} profexplore ()
+## @deftypefnx {} {} profexplore (@var{data})
 ## Interactively explore hierarchical profiler output.
 ##
 ## Assuming @var{data} is the structure with profile data returned by

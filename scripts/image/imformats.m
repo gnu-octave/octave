@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imformats ()
-## @deftypefnx {Function File} {@var{formats} =} imformats (@var{ext})
-## @deftypefnx {Function File} {@var{formats} =} imformats (@var{format})
-## @deftypefnx {Function File} {@var{formats} =} imformats ("add", @var{format})
-## @deftypefnx {Function File} {@var{formats} =} imformats ("remove", @var{ext})
-## @deftypefnx {Function File} {@var{formats} =} imformats ("update", @var{ext}, @var{format})
-## @deftypefnx {Function File} {@var{formats} =} imformats ("factory")
+## @deftypefn  {} {} imformats ()
+## @deftypefnx {} {@var{formats} =} imformats (@var{ext})
+## @deftypefnx {} {@var{formats} =} imformats (@var{format})
+## @deftypefnx {} {@var{formats} =} imformats ("add", @var{format})
+## @deftypefnx {} {@var{formats} =} imformats ("remove", @var{ext})
+## @deftypefnx {} {@var{formats} =} imformats ("update", @var{ext}, @var{format})
+## @deftypefnx {} {@var{formats} =} imformats ("factory")
 ## Manage supported image formats.
 ##
 ## @var{formats} is a structure with information about each supported file

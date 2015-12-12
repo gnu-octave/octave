@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} zip (@var{zipfile}, @var{files})
-## @deftypefnx {Function File} {@var{filelist} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
+## @deftypefn  {} {@var{filelist} =} zip (@var{zipfile}, @var{files})
+## @deftypefnx {} {@var{filelist} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
 ## Compress the list of files and directories specified in @var{files} into the
 ## ZIP archive @var{zipfile}.
 ##

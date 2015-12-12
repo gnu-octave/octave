@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} stdnormal_inv (@var{x})
+## @deftypefn {} {} stdnormal_inv (@var{x})
 ## For each element of @var{x}, compute the quantile (the
 ## inverse of the CDF) at @var{x} of the standard normal distribution
 ## (mean = 0, standard deviation = 1).

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} untar (@var{tarfile})
-## @deftypefnx {Function File} {} untar (@var{tarfile}, @var{dir})
+## @deftypefn  {} {} untar (@var{tarfile})
+## @deftypefnx {} {} untar (@var{tarfile}, @var{dir})
 ## Unpack the TAR archive @var{tarfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather

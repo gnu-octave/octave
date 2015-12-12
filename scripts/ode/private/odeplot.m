@@ -19,7 +19,7 @@
 ## Author: Thomas Treichl <treichl@users.sourceforge.net>
 
 %# -*- texinfo -*-
-%# @deftypefn {Function File} {[@var{ret}] =} odeplot (@var{t}, @var{y}, @var{flag})
+%# @deftypefn {} {[@var{ret}] =} odeplot (@var{t}, @var{y}, @var{flag})
 %#
 %# Open a new figure window and plot the results from the variable @var{y} of type column vector over time while solving. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
 %# @table @option

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{text}, @var{status}] =} __strip_html_tags__ (@var{html_text})
+## @deftypefn {} {[@var{text}, @var{status}] =} __strip_html_tags__ (@var{html_text})
 ## Undocumented internal function.
 ## @end deftypefn
 

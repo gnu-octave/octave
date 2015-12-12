@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} treelayout (@var{tree})
-## @deftypefnx {Function File} {} treelayout (@var{tree}, @var{permutation})
+## @deftypefn  {} {} treelayout (@var{tree})
+## @deftypefnx {} {} treelayout (@var{tree}, @var{permutation})
 ## treelayout lays out a tree or a forest.
 ##
 ## The first argument @var{tree} is a vector of predecessors.

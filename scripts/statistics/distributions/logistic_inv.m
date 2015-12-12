@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} logistic_inv (@var{x})
+## @deftypefn {} {} logistic_inv (@var{x})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the logistic distribution.
 ## @end deftypefn

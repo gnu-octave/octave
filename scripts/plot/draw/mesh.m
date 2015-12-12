@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} mesh (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} mesh (@var{z})
-## @deftypefnx {Function File} {} mesh (@dots{}, @var{c})
-## @deftypefnx {Function File} {} mesh (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} mesh (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} mesh (@dots{})
+## @deftypefn  {} {} mesh (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} mesh (@var{z})
+## @deftypefnx {} {} mesh (@dots{}, @var{c})
+## @deftypefnx {} {} mesh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} mesh (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} mesh (@dots{})
 ## Plot a 3-D wireframe mesh.
 ##
 ## The wireframe mesh is plotted using rectangles.  The vertices of the

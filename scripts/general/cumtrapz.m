@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} cumtrapz (@var{y})
-## @deftypefnx {Function File} {@var{q} =} cumtrapz (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{q} =} cumtrapz (@dots{}, @var{dim})
+## @deftypefn  {} {@var{q} =} cumtrapz (@var{y})
+## @deftypefnx {} {@var{q} =} cumtrapz (@var{x}, @var{y})
+## @deftypefnx {} {@var{q} =} cumtrapz (@dots{}, @var{dim})
 ## Cumulative numerical integration of points @var{y} using the trapezoidal
 ## method.
 ##

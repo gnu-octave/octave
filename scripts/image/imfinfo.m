@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{info} =} imfinfo (@var{filename})
-## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{url})
-## @deftypefnx {Function File} {@var{info} =} imfinfo (@dots{}, @var{ext})
+## @deftypefn  {} {@var{info} =} imfinfo (@var{filename})
+## @deftypefnx {} {@var{info} =} imfinfo (@var{url})
+## @deftypefnx {} {@var{info} =} imfinfo (@dots{}, @var{ext})
 ## Read image information from a file.
 ##
 ## @code{imfinfo} returns a structure containing information about the image

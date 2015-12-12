@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rectangle ()
-## @deftypefnx {Function File} {} rectangle (@dots{}, "Position", @var{pos})
-## @deftypefnx {Function File} {} rectangle (@dots{}, "Curvature", @var{curv})
-## @deftypefnx {Function File} {} rectangle (@dots{}, "EdgeColor", @var{ec})
-## @deftypefnx {Function File} {} rectangle (@dots{}, "FaceColor", @var{fc})
-## @deftypefnx {Function File} {} rectangle (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
+## @deftypefn  {} {} rectangle ()
+## @deftypefnx {} {} rectangle (@dots{}, "Position", @var{pos})
+## @deftypefnx {} {} rectangle (@dots{}, "Curvature", @var{curv})
+## @deftypefnx {} {} rectangle (@dots{}, "EdgeColor", @var{ec})
+## @deftypefnx {} {} rectangle (@dots{}, "FaceColor", @var{fc})
+## @deftypefnx {} {} rectangle (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} rectangle (@dots{})
 ## Draw a rectangular patch defined by @var{pos} and @var{curv}.
 ##
 ## The variable @code{@var{pos}(1:2)} defines the lower left-hand corner of

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} conv (@var{a}, @var{b})
-## @deftypefnx {Function File} {} conv (@var{a}, @var{b}, @var{shape})
+## @deftypefn  {} {} conv (@var{a}, @var{b})
+## @deftypefnx {} {} conv (@var{a}, @var{b}, @var{shape})
 ## Convolve two vectors @var{a} and @var{b}.
 ##
 ## The output convolution is a vector with length equal to

@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map})
-## @deftypefnx {Function File} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map}, @var{index})
+## @deftypefn  {} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map})
+## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map}, @var{index})
 ## Reorder colors in a colormap.
 ##
 ## When called with only two arguments, @code{cmpermute} randomly rearranges

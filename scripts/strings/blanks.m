@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} blanks (@var{n})
+## @deftypefn {} {} blanks (@var{n})
 ## Return a string of @var{n} blanks.
 ##
 ## For example:

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} speye (@var{m}, @var{n})
-## @deftypefnx {Function File} {@var{s} =} speye (@var{m})
-## @deftypefnx {Function File} {@var{s} =} speye (@var{sz})
+## @deftypefn  {} {@var{s} =} speye (@var{m}, @var{n})
+## @deftypefnx {} {@var{s} =} speye (@var{m})
+## @deftypefnx {} {@var{s} =} speye (@var{sz})
 ## Return a sparse identity matrix of size @var{m}x@var{n}.
 ##
 ## The implementation is significantly more efficient than

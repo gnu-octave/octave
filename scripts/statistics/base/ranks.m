@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ranks (@var{x}, @var{dim})
+## @deftypefn {} {} ranks (@var{x}, @var{dim})
 ## Return the ranks of @var{x} along the first non-singleton dimension
 ## adjusted for ties.
 ##

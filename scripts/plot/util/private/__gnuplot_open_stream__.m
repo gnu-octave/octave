@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{stream} =} __gnuplot_open_stream__ (@var{npipes}, @var{h})
+## @deftypefn {} {@var{stream} =} __gnuplot_open_stream__ (@var{npipes}, @var{h})
 ## Undocumented internal function.
 ## @end deftypefn
 

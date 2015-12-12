@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cauchy_inv (@var{x})
-## @deftypefnx {Function File} {} cauchy_inv (@var{x}, @var{location}, @var{scale})
+## @deftypefn  {} {} cauchy_inv (@var{x})
+## @deftypefnx {} {} cauchy_inv (@var{x}, @var{location}, @var{scale})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the Cauchy distribution with location parameter
 ## @var{location} and scale parameter @var{scale}.

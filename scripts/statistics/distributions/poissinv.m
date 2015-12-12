@@ -20,7 +20,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poissinv (@var{x}, @var{lambda})
+## @deftypefn {} {} poissinv (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the Poisson distribution with parameter @var{lambda}.
 ## @end deftypefn

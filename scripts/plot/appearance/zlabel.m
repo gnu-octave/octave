@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} zlabel (@var{string})
-## @deftypefnx {Function File} {} zlabel (@var{string}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} zlabel (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} zlabel (@dots{})
+## @deftypefn  {} {} zlabel (@var{string})
+## @deftypefnx {} {} zlabel (@var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {} {} zlabel (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} zlabel (@dots{})
 ## Specify the string used to label the z-axis of the current axis.
 ##
 ## An optional list of @var{property}/@var{value} pairs can be used to change

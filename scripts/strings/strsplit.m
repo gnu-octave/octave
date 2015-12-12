@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{cstr}] =} strsplit (@var{str})
-## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@var{str}, @var{del})
-## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
-## @deftypefnx {Function File} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
+## @deftypefn  {} {[@var{cstr}] =} strsplit (@var{str})
+## @deftypefnx {} {[@var{cstr}] =} strsplit (@var{str}, @var{del})
+## @deftypefnx {} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
+## @deftypefnx {} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
 ## Split the string @var{str} using the delimiters specified by @var{del} and
 ## return a cell string array of substrings.
 ##

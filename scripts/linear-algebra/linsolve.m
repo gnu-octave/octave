@@ -16,9 +16,9 @@
 ## along with Octave; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} linsolve (@var{A}, @var{b})
-## @deftypefnx {Function File} {@var{x} =} linsolve (@var{A}, @var{b}, @var{opts})
-## @deftypefnx {Function File} {[@var{x}, @var{R}] =} linsolve (@dots{})
+## @deftypefn  {} {@var{x} =} linsolve (@var{A}, @var{b})
+## @deftypefnx {} {@var{x} =} linsolve (@var{A}, @var{b}, @var{opts})
+## @deftypefnx {} {[@var{x}, @var{R}] =} linsolve (@dots{})
 ## Solve the linear system @code{A*x = b}.
 ##
 ## With no options, this function is equivalent to the left division operator

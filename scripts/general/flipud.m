@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} flipud (@var{x})
+## @deftypefn {} {} flipud (@var{x})
 ## Flip array upside down.
 ##
 ## Return a copy of @var{x} with the order of the rows reversed.  In other

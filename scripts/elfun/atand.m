@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} atand (@var{x})
+## @deftypefn {} {} atand (@var{x})
 ## Compute the inverse tangent in degrees for each element of @var{x}.
 ## @seealso{tand, atan}
 ## @end deftypefn

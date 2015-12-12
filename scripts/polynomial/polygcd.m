@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} polygcd (@var{b}, @var{a})
-## @deftypefnx {Function File} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
+## @deftypefn  {} {@var{q} =} polygcd (@var{b}, @var{a})
+## @deftypefnx {} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
 ##
 ## Find the greatest common divisor of two polynomials.
 ##

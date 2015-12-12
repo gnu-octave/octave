@@ -18,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} license
-## @deftypefnx {Command} {} license inuse
-## @deftypefnx {Command} {} license inuse @var{feature}
-## @deftypefnx {Function File} {} license ("inuse")
-## @deftypefnx {Function File} {@var{retval} =} license ("inuse")
-## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
-## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
-## @deftypefnx {Function File} {[@var{retval}, @var{errmsg}] =} license ("checkout", @var{feature})
+## @deftypefn  {} {} license
+## @deftypefnx {} {} license inuse
+## @deftypefnx {} {} license inuse @var{feature}
+## @deftypefnx {} {} license ("inuse")
+## @deftypefnx {} {@var{retval} =} license ("inuse")
+## @deftypefnx {} {@var{retval} =} license ("test", @var{feature})
+## @deftypefnx {} {@var{retval} =} license ("checkout", @var{feature})
+## @deftypefnx {} {[@var{retval}, @var{errmsg}] =} license ("checkout", @var{feature})
 ## Get license information for Octave and Octave packages.
 ##
 ## GNU Octave is free software distributed under the GNU General Public

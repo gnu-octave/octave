@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bartlett (@var{m})
+## @deftypefn {} {} bartlett (@var{m})
 ## Return the filter coefficients of a Bartlett (triangular) window of length
 ## @var{m}.
 ##

@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{idx} =} load_package_dirs (@var{lidx}, @var{idx}, @var{handle_deps}, @var{installed_pkgs_lst})
+## @deftypefn {} {@var{idx} =} load_package_dirs (@var{lidx}, @var{idx}, @var{handle_deps}, @var{installed_pkgs_lst})
 ## Undocumented internal function.
 ## @end deftypefn
 

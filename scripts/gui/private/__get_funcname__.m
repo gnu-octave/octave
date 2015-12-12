@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{funcname} =} __get_funcname__ (@var{basename})
+## @deftypefn {} {@var{funcname} =} __get_funcname__ (@var{basename})
 ## Internal function.
 ##
 ## Build function name for the current graphics toolkit according to the schema

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{z}] =} z_test (@var{x}, @var{m}, @var{v}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{z}] =} z_test (@var{x}, @var{m}, @var{v}, @var{alt})
 ## Perform a Z-test of the null hypothesis @code{mean (@var{x}) == @var{m}}
 ## for a sample @var{x} from a normal distribution with unknown mean and known
 ## variance @var{v}.

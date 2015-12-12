@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} expm (@var{A})
+## @deftypefn {} {} expm (@var{A})
 ## Return the exponential of a matrix.
 ##
 ## The matrix exponential is defined as the infinite Taylor series

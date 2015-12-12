@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} create_pkgadddel (@var{desc}, @var{packdir}, @var{nm}, @var{global_install})
+## @deftypefn {} {} create_pkgadddel (@var{desc}, @var{packdir}, @var{nm}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} clabel (@var{c}, @var{h})
-## @deftypefnx {Function File} {} clabel (@var{c}, @var{h}, @var{v})
-## @deftypefnx {Function File} {} clabel (@var{c}, @var{h}, "manual")
-## @deftypefnx {Function File} {} clabel (@var{c})
-## @deftypefnx {Function File} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} clabel (@dots{})
+## @deftypefn  {} {} clabel (@var{c}, @var{h})
+## @deftypefnx {} {} clabel (@var{c}, @var{h}, @var{v})
+## @deftypefnx {} {} clabel (@var{c}, @var{h}, "manual")
+## @deftypefnx {} {} clabel (@var{c})
+## @deftypefnx {} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} clabel (@dots{})
 ## Add labels to the contours of a contour plot.
 ##
 ## The contour levels are specified by the contour matrix @var{c} which is

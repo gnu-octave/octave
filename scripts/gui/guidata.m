@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{data} =} guidata (@var{h})
-## @deftypefnx {Function File} {} guidata (@var{h}, @var{data})
+## @deftypefn  {} {@var{data} =} guidata (@var{h})
+## @deftypefnx {} {} guidata (@var{h}, @var{data})
 ## Query or set user-custom GUI data.
 ##
 ## The GUI data is stored in the figure handle @var{h}.  If @var{h} is not a

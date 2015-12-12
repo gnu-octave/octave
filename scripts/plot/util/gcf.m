@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} gcf ()
+## @deftypefn {} {@var{h} =} gcf ()
 ## Return a handle to the current figure.
 ##
 ## The current figure is the default target for graphics output.  If multiple

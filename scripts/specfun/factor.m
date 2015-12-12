@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pf} =} factor (@var{q})
-## @deftypefnx {Function File} {[@var{pf}, @var{n}] =} factor (@var{q})
+## @deftypefn  {} {@var{pf} =} factor (@var{q})
+## @deftypefnx {} {[@var{pf}, @var{n}] =} factor (@var{q})
 ## Return the prime factorization of @var{q}.
 ##
 ## The prime factorization is defined as @code{prod (@var{pf}) == @var{q}}

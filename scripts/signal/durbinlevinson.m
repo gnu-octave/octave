@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
+## @deftypefn {} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
 ## Perform one step of the @nospell{Durbin-Levinson} algorithm.
 ##
 ## The vector @var{c} specifies the autocovariances

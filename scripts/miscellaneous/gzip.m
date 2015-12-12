@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} gzip (@var{files})
-## @deftypefnx {Function File} {@var{filelist} =} gzip (@var{files}, @var{dir})
+## @deftypefn  {} {@var{filelist} =} gzip (@var{files})
+## @deftypefnx {} {@var{filelist} =} gzip (@var{files}, @var{dir})
 ## Compress the list of files and directories specified in @var{files}.
 ##
 ## @var{files} is a character array or cell array of strings.  Shell wildcards

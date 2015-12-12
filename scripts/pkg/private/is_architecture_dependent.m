@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dep} =} is_architecture_dependent (@var{nm})
+## @deftypefn {} {@var{dep} =} is_architecture_dependent (@var{nm})
 ## Undocumented internal function.
 ## @end deftypefn
 

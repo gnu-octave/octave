@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __opengl_print__ (@var{@dots{}})
+## @deftypefn {} {} __opengl_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

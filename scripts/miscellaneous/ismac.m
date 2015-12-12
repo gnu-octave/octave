@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ismac ()
+## @deftypefn {} {} ismac ()
 ## Return true if Octave is running on a Mac OS X system and false otherwise.
 ## @seealso{isunix, ispc}
 ## @end deftypefn

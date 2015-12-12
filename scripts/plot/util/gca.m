@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} gca ()
+## @deftypefn {} {@var{h} =} gca ()
 ## Return a handle to the current axis object.
 ##
 ## The current axis is the default target for graphics output.  In the case

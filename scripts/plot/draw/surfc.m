@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surfc (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surfc (@var{z})
-## @deftypefnx {Function File} {} surfc (@dots{}, @var{c})
-## @deftypefnx {Function File} {} surfc (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} surfc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} surfc (@dots{})
+## @deftypefn  {} {} surfc (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} surfc (@var{z})
+## @deftypefnx {} {} surfc (@dots{}, @var{c})
+## @deftypefnx {} {} surfc (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} surfc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} surfc (@dots{})
 ## Plot a 3-D surface mesh with underlying contour lines.
 ##
 ## The surface mesh is plotted using shaded rectangles.  The vertices of the

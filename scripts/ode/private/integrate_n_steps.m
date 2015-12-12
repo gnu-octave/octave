@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{solution} =} integrate_n_steps (@var{@@stepper}, @var{@@func}, @var{t0}, @var{x0}, @var{dt}, @var{n}, @var{options})
+## @deftypefn {} {@var{solution} =} integrate_n_steps (@var{@@stepper}, @var{@@func}, @var{t0}, @var{x0}, @var{dt}, @var{n}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
 ## integrate the set of ODEs on the interval @var{[t0,t0 + n*dt]} with a

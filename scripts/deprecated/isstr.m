@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isstr (@var{a})
+## @deftypefn {} {} isstr (@var{a})
 ## This function has been deprecated.  Use ischar instead.
 ## @end deftypefn
 

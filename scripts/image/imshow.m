@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imshow (@var{im})
-## @deftypefnx {Function File} {} imshow (@var{im}, @var{limits})
-## @deftypefnx {Function File} {} imshow (@var{im}, @var{map})
-## @deftypefnx {Function File} {} imshow (@var{rgb}, @dots{})
-## @deftypefnx {Function File} {} imshow (@var{filename})
-## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} imshow (@dots{})
+## @deftypefn  {} {} imshow (@var{im})
+## @deftypefnx {} {} imshow (@var{im}, @var{limits})
+## @deftypefnx {} {} imshow (@var{im}, @var{map})
+## @deftypefnx {} {} imshow (@var{rgb}, @dots{})
+## @deftypefnx {} {} imshow (@var{filename})
+## @deftypefnx {} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
+## @deftypefnx {} {@var{h} =} imshow (@dots{})
 ## Display the image @var{im}, where @var{im} can be a 2-dimensional
 ## (grayscale image) or a 3-dimensional (RGB image) matrix.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sinc (@var{x})
+## @deftypefn {} {} sinc (@var{x})
 ## Compute the sinc function.
 ##
 ## Return

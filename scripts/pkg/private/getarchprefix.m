@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{archprefix} =} getarchprefix (@var{desc}, @var{global_install})
+## @deftypefn {} {[@var{archprefix} =} getarchprefix (@var{desc}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 

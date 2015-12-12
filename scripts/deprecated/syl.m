@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {@var{x} =} syl (@var{A}, @var{B}, @var{C})
+## @deftypefn {} {@var{x} =} syl (@var{A}, @var{B}, @var{C})
 ##
 ## @code{syl} is deprecated and will be removed in Octave version 4.4.
 ## Use @code{sylvester} for the equivalent functionality.

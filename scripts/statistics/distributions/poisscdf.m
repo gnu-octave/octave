@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poisscdf (@var{x}, @var{lambda})
+## @deftypefn {} {} poisscdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the Poisson distribution with parameter @var{lambda}.
 ## @end deftypefn

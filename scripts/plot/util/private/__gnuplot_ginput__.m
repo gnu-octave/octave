@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
+## @deftypefn {} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
 ## Undocumented internal function.
 ## @end deftypefn
 

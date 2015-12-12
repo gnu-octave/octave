@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contour3 (@var{z})
-## @deftypefnx {Function File} {} contour3 (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour3 (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contour3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour3 (@dots{})
+## @deftypefn  {} {} contour3 (@var{z})
+## @deftypefnx {} {} contour3 (@var{z}, @var{vn})
+## @deftypefnx {} {} contour3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {} contour3 (@dots{}, @var{style})
+## @deftypefnx {} {} contour3 (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{h}] =} contour3 (@dots{})
 ## Create a 3-D contour plot.
 ##
 ## @code{contour3} plots level curves (contour lines) of the matrix @var{z}

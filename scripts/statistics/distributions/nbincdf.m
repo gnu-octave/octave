@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nbincdf (@var{x}, @var{n}, @var{p})
+## @deftypefn {} {} nbincdf (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the negative binomial distribution with parameters
 ## @var{n} and @var{p}.

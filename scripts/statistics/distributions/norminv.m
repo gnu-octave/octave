@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} norminv (@var{x})
-## @deftypefnx {Function File} {} norminv (@var{x}, @var{mu}, @var{sigma})
+## @deftypefn  {} {} norminv (@var{x})
+## @deftypefnx {} {} norminv (@var{x}, @var{mu}, @var{sigma})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the normal distribution with mean @var{mu} and
 ## standard deviation @var{sigma}.

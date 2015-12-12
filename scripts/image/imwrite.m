@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{ext})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename})
-## @deftypefnx {Function File} {} imwrite (@dots{}, @var{param1}, @var{val1}, @dots{})
+## @deftypefn  {} {} imwrite (@var{img}, @var{filename})
+## @deftypefnx {} {} imwrite (@var{img}, @var{filename}, @var{ext})
+## @deftypefnx {} {} imwrite (@var{img}, @var{map}, @var{filename})
+## @deftypefnx {} {} imwrite (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Write images in various file formats.
 ##
 ## The image @var{img} can be a binary, grayscale, RGB, or multi-dimensional

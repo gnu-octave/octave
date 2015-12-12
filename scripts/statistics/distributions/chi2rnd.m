@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} chi2rnd (@var{n})
-## @deftypefnx {Function File} {} chi2rnd (@var{n}, @var{r})
-## @deftypefnx {Function File} {} chi2rnd (@var{n}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} chi2rnd (@var{n}, [@var{sz}])
+## @deftypefn  {} {} chi2rnd (@var{n})
+## @deftypefnx {} {} chi2rnd (@var{n}, @var{r})
+## @deftypefnx {} {} chi2rnd (@var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} chi2rnd (@var{n}, [@var{sz}])
 ## Return a matrix of random samples from the chi-square distribution with
 ## @var{n} degrees of freedom.
 ##

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} trapz (@var{y})
-## @deftypefnx {Function File} {@var{q} =} trapz (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{q} =} trapz (@dots{}, @var{dim})
+## @deftypefn  {} {@var{q} =} trapz (@var{y})
+## @deftypefnx {} {@var{q} =} trapz (@var{x}, @var{y})
+## @deftypefnx {} {@var{q} =} trapz (@dots{}, @var{dim})
 ##
 ## Numerically evaluate the integral of points @var{y} using the trapezoidal
 ## method.

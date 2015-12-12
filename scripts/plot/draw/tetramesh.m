@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} tetramesh (@var{T}, @var{X})
-## @deftypefnx {Function File} {} tetramesh (@var{T}, @var{X}, @var{C})
-## @deftypefnx {Function File} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} tetramesh (@dots{})
+## @deftypefn  {} {} tetramesh (@var{T}, @var{X})
+## @deftypefnx {} {} tetramesh (@var{T}, @var{X}, @var{C})
+## @deftypefnx {} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} tetramesh (@dots{})
 ## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D patches.
 ##
 ## @var{T} is typically the output of a Delaunay triangulation of a 3-D set

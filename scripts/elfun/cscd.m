@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cscd (@var{x})
+## @deftypefn {} {} cscd (@var{x})
 ## Compute the cosecant for each element of @var{x} in degrees.
 ## @seealso{acscd, csc}
 ## @end deftypefn

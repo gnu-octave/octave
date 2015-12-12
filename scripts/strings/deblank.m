@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} deblank (@var{s})
+## @deftypefn {} {} deblank (@var{s})
 ## Remove trailing whitespace and nulls from @var{s}.
 ##
 ## If @var{s} is a matrix, @var{deblank} trims each row to the length of

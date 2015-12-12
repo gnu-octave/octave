@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} uninstall (@var{pkgnames}, @var{handle_deps}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
+## @deftypefn {} {} uninstall (@var{pkgnames}, @var{handle_deps}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 

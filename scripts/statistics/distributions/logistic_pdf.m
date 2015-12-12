@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} logistic_pdf (@var{x})
+## @deftypefn {} {} logistic_pdf (@var{x})
 ## For each element of @var{x}, compute the PDF at @var{x} of the
 ## logistic distribution.
 ## @end deftypefn

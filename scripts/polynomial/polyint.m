@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyint (@var{p})
-## @deftypefnx {Function File} {} polyint (@var{p}, @var{k})
+## @deftypefn  {} {} polyint (@var{p})
+## @deftypefnx {} {} polyint (@var{p}, @var{k})
 ## Return the coefficients of the integral of the polynomial whose
 ## coefficients are represented by the vector @var{p}.
 ##

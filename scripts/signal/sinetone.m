@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sinetone (@var{freq}, @var{rate}, @var{sec}, @var{ampl})
+## @deftypefn {} {} sinetone (@var{freq}, @var{rate}, @var{sec}, @var{ampl})
 ## Return a sinetone of frequency @var{freq} with a length of @var{sec}
 ## seconds at sampling rate @var{rate} and with amplitude @var{ampl}.
 ##

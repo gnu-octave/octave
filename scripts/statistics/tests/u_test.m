@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{z}] =} u_test (@var{x}, @var{y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{z}] =} u_test (@var{x}, @var{y}, @var{alt})
 ## For two samples @var{x} and @var{y}, perform a Mann-Whitney U-test of
 ## the null hypothesis
 ## PROB (@var{x} > @var{y}) == 1/2 == PROB (@var{x} < @var{y}).

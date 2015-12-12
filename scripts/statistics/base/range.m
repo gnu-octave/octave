@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} range (@var{x})
-## @deftypefnx {Function File} {} range (@var{x}, @var{dim})
+## @deftypefn  {} {} range (@var{x})
+## @deftypefnx {} {} range (@var{x}, @var{dim})
 ## Return the range, i.e., the difference between the maximum and the minimum
 ## of the input data.
 ##

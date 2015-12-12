@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{player} =} play (@var{recorder})
-## @deftypefnx {Function File} {@var{player} =} play (@var{recorder}, @var{start})
-## @deftypefnx {Function File} {@var{player} =} play (@var{recorder}, [@var{start}, @var{end}])
+## @deftypefn  {} {@var{player} =} play (@var{recorder})
+## @deftypefnx {} {@var{player} =} play (@var{recorder}, @var{start})
+## @deftypefnx {} {@var{player} =} play (@var{recorder}, [@var{start}, @var{end}])
 ## Play the audio recorded in @var{recorder} and return a corresponding
 ## audioplayer object.
 ##

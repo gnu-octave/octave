@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} pchip (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
+## @deftypefn  {} {@var{pp} =} pchip (@var{x}, @var{y})
+## @deftypefnx {} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
 ## Return the Piecewise Cubic Hermite Interpolating Polynomial (pchip) of
 ## points @var{x} and @var{y}.
 ##

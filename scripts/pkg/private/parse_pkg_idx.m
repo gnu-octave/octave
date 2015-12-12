@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pkg_idx_struct} =} parse_pkg_idx (@var{packdir})
+## @deftypefn {} {@var{pkg_idx_struct} =} parse_pkg_idx (@var{packdir})
 ## Undocumented internal function.
 ## @end deftypefn
 

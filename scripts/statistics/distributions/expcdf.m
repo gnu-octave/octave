@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} expcdf (@var{x}, @var{lambda})
+## @deftypefn {} {} expcdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the exponential distribution with mean @var{lambda}.
 ##

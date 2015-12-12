@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} soundsc (@var{y})
-## @deftypefnx {Function File} {} soundsc (@var{y}, @var{fs})
-## @deftypefnx {Function File} {} soundsc (@var{y}, @var{fs}, @var{nbits})
-## @deftypefnx {Function File} {} soundsc (@dots{}, [@var{ymin}, @var{ymax}])
+## @deftypefn  {} {} soundsc (@var{y})
+## @deftypefnx {} {} soundsc (@var{y}, @var{fs})
+## @deftypefnx {} {} soundsc (@var{y}, @var{fs}, @var{nbits})
+## @deftypefnx {} {} soundsc (@dots{}, [@var{ymin}, @var{ymax}])
 ## Scale the audio data @var{y} and play it at sample rate @var{fs} to the
 ## default audio device.
 ##

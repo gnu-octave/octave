@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{arg_idx})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name}, @var{arg_idx})
+## @deftypefn  {} {} validateattributes (@var{A}, @var{classes}, @var{attributes})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{arg_idx})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name}, @var{arg_idx})
 ## Check validity of input argument.
 ##
 ## Confirms that the argument @var{A} is valid by belonging to one of

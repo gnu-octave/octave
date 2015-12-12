@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{A}, @var{B})
+## @deftypefn {} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{A}, @var{B})
 ## Compute the Hessenberg-triangular decomposition of the matrix pencil
 ## @code{(@var{A}, @var{B})}, returning
 ## @code{@var{aa} = @var{q} * @var{A} * @var{z}},

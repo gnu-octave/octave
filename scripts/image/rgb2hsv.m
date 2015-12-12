@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb})
-## @deftypefnx {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb})
+## @deftypefn  {} {@var{hsv_map} =} rgb2hsv (@var{rgb})
+## @deftypefnx {} {@var{hsv_map} =} rgb2hsv (@var{rgb})
 ## Transform a colormap or image from RGB to HSV color space.
 ##
 ## A color in the RGB space consists of red, green, and blue intensities.

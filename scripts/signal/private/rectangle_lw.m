@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rectangle_lw (@var{n}, @var{b})
+## @deftypefn {} {} rectangle_lw (@var{n}, @var{b})
 ## Rectangular lag window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn

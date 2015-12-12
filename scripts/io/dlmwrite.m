@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dlmwrite (@var{file}, @var{M})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
-## @deftypefnx {Function File} {} dlmwrite (@var{fid}, @dots{})
+## @deftypefn  {} {} dlmwrite (@var{file}, @var{M})
+## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, @var{delim}, @var{r}, @var{c})
+## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
+## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
+## @deftypefnx {} {} dlmwrite (@var{fid}, @dots{})
 ## Write the matrix @var{M} to the named file using delimiters.
 ##
 ## @var{file} should be a filename or writable file ID given by @code{fopen}.

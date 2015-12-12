@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{n}, @var{s}] =} weekday (@var{d})
-## @deftypefnx {Function File} {[@var{n}, @var{s}] =} weekday (@var{d}, @var{format})
+## @deftypefn  {} {[@var{n}, @var{s}] =} weekday (@var{d})
+## @deftypefnx {} {[@var{n}, @var{s}] =} weekday (@var{d}, @var{format})
 ## Return the day of the week as a number in @var{n} and as a string in @var{s}.
 ##
 ## The days of the week are numbered 1--7 with the first day being Sunday.

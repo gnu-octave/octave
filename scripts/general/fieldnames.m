@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{names} =} fieldnames (@var{struct})
-## @deftypefnx {Function File} {@var{names} =} fieldnames (@var{obj})
-## @deftypefnx {Function File} {@var{names} =} fieldnames (@var{javaobj})
-## @deftypefnx {Function File} {@var{names} =} fieldnames ("@var{jclassname}")
+## @deftypefn  {} {@var{names} =} fieldnames (@var{struct})
+## @deftypefnx {} {@var{names} =} fieldnames (@var{obj})
+## @deftypefnx {} {@var{names} =} fieldnames (@var{javaobj})
+## @deftypefnx {} {@var{names} =} fieldnames ("@var{jclassname}")
 ## Return a cell array of strings with the names of the fields in the
 ## specified input.
 ##

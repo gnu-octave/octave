@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poisspdf (@var{x}, @var{lambda})
+## @deftypefn {} {} poisspdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the Poisson distribution with parameter @var{lambda}.
 ## @end deftypefn

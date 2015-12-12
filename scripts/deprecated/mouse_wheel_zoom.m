@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{old_val} =} mouse_wheel_zoom (@var{new_val})
+## @deftypefn {} {@var{old_val} =} mouse_wheel_zoom (@var{new_val})
 ## Query or set the mouse wheel zoom factor.
 ##
 ## The zoom factor is a number in the range (0,1) which is the

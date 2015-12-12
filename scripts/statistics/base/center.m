@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} center (@var{x})
-## @deftypefnx {Function File} {} center (@var{x}, @var{dim})
+## @deftypefn  {} {} center (@var{x})
+## @deftypefnx {} {} center (@var{x}, @var{dim})
 ## Center data by subtracting its mean.
 ##
 ## If @var{x} is a vector, subtract its mean.

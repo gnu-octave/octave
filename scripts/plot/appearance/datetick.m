@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} datetick ()
-## @deftypefnx {Function File} {} datetick (@var{form})
-## @deftypefnx {Function File} {} datetick (@var{axis}, @var{form})
-## @deftypefnx {Function File} {} datetick (@dots{}, "keeplimits")
-## @deftypefnx {Function File} {} datetick (@dots{}, "keepticks")
-## @deftypefnx {Function File} {} datetick (@var{hax}, @dots{})
+## @deftypefn  {} {} datetick ()
+## @deftypefnx {} {} datetick (@var{form})
+## @deftypefnx {} {} datetick (@var{axis}, @var{form})
+## @deftypefnx {} {} datetick (@dots{}, "keeplimits")
+## @deftypefnx {} {} datetick (@dots{}, "keepticks")
+## @deftypefnx {} {} datetick (@var{hax}, @dots{})
 ## Add date formatted tick labels to an axis.
 ##
 ## The axis to apply the ticks to is determined by @var{axis} which can take

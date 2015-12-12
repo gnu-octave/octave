@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pareto (@var{y})
-## @deftypefnx {Function File} {} pareto (@var{y}, @var{x})
-## @deftypefnx {Function File} {} pareto (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} pareto (@dots{})
+## @deftypefn  {} {} pareto (@var{y})
+## @deftypefnx {} {} pareto (@var{y}, @var{x})
+## @deftypefnx {} {} pareto (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} pareto (@dots{})
 ## Draw a Pareto chart.
 ##
 ## A Pareto chart is a bar graph that arranges information in such a way

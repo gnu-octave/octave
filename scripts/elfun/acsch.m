@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acsch (@var{x})
+## @deftypefn {} {} acsch (@var{x})
 ## Compute the inverse hyperbolic cosecant of each element of @var{x}.
 ## @seealso{csch}
 ## @end deftypefn

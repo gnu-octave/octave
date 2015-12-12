@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} mget (@var{f}, @var{file})
-## @deftypefnx {Function File} {} mget (@var{f}, @var{dir})
-## @deftypefnx {Function File} {} mget (@var{f}, @var{remote_name}, @var{target})
+## @deftypefn  {} {} mget (@var{f}, @var{file})
+## @deftypefnx {} {} mget (@var{f}, @var{dir})
+## @deftypefnx {} {} mget (@var{f}, @var{remote_name}, @var{target})
 ## Download a remote file @var{file} or directory @var{dir} to the local
 ## directory on the FTP connection @var{f}.
 ##

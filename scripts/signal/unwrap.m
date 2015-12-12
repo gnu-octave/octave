@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{b} =} unwrap (@var{x})
-## @deftypefnx {Function File} {@var{b} =} unwrap (@var{x}, @var{tol})
-## @deftypefnx {Function File} {@var{b} =} unwrap (@var{x}, @var{tol}, @var{dim})
+## @deftypefn  {} {@var{b} =} unwrap (@var{x})
+## @deftypefnx {} {@var{b} =} unwrap (@var{x}, @var{tol})
+## @deftypefnx {} {@var{b} =} unwrap (@var{x}, @var{tol}, @var{dim})
 ##
 ## Unwrap radian phases by adding multiples of 2*pi as appropriate to remove
 ## jumps greater than @var{tol}.

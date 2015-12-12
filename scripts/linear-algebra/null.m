@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} null (@var{A})
-## @deftypefnx {Function File} {} null (@var{A}, @var{tol})
+## @deftypefn  {} {} null (@var{A})
+## @deftypefnx {} {} null (@var{A}, @var{tol})
 ## Return an orthonormal basis of the null space of @var{A}.
 ##
 ## The dimension of the null space is taken as the number of singular values of

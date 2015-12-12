@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} colorcube ()
-## @deftypefnx {Function File} {@var{map} =} colorcube (@var{n})
+## @deftypefn  {} {@var{map} =} colorcube ()
+## @deftypefnx {} {@var{map} =} colorcube (@var{n})
 ## Create color colormap.  This colormap is composed of as many equally
 ## spaced colors (not grays) in the RGB color space as possible.
 ##

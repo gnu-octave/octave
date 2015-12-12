@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hilb (@var{n})
+## @deftypefn {} {} hilb (@var{n})
 ## Return the Hilbert matrix of order @var{n}.
 ##
 ## The @math{i,j} element of a Hilbert matrix is defined as

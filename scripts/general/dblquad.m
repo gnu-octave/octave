@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb})
-## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol})
-## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf})
-## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf}, @dots{})
+## @deftypefn  {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb})
+## @deftypefnx {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol})
+## @deftypefnx {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf})
+## @deftypefnx {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf}, @dots{})
 ## Numerically evaluate the double integral of @var{f}.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name

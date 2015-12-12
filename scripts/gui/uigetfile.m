@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile ()
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
+## @deftypefn  {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile ()
+## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt})
+## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
+## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## @deftypefnx {} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
+## @deftypefnx {} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
 ##
 ## Open a GUI dialog for selecting a file and return the filename @var{fname},
 ## the path to this file @var{fpath}, and the filter index @var{fltidx}.

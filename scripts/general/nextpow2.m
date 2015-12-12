@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nextpow2 (@var{x})
+## @deftypefn {} {} nextpow2 (@var{x})
 ## Compute the exponent for the smallest power of two larger than the input.
 ##
 ## For each element in the input array @var{x}, return the first integer

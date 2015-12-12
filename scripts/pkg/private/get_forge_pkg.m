@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
+## @deftypefn {} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
 ## Try to discover the current version of an OctaveForge package from the web,
 ## using a working internet connection and the urlread function.
 ## If two output arguments are requested, also return an address from which

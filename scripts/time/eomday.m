@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{e} =} eomday (@var{y}, @var{m})
+## @deftypefn {} {@var{e} =} eomday (@var{y}, @var{m})
 ## Return the last day of the month @var{m} for the year @var{y}.
 ## @seealso{weekday, datenum, datevec, is_leap_year, calendar}
 ## @end deftypefn

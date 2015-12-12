@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} waterfall (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} waterfall (@var{z})
-## @deftypefnx {Function File} {} waterfall (@dots{}, @var{c})
-## @deftypefnx {Function File} {} waterfall (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} waterfall (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} waterfall (@dots{})
+## @deftypefn  {} {} waterfall (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} waterfall (@var{z})
+## @deftypefnx {} {} waterfall (@dots{}, @var{c})
+## @deftypefnx {} {} waterfall (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} waterfall (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} waterfall (@dots{})
 ## Plot a 3-D waterfall plot.
 ##
 ## A waterfall plot is similar to a @code{meshz} plot except only

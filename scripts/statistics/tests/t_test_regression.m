@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{rr}, @var{r}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{rr}, @var{r}, @var{alt})
 ## Perform a t test for the null hypothesis
 ## @nospell{@code{@var{rr} * @var{b} = @var{r}}} in a classical normal
 ## regression model @code{@var{y} = @var{x} * @var{b} + @var{e}}.

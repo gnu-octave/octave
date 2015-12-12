@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{idx} =} tsearchn (@var{x}, @var{t}, @var{xi})
-## @deftypefnx {Function File} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
+## @deftypefn  {} {@var{idx} =} tsearchn (@var{x}, @var{t}, @var{xi})
+## @deftypefnx {} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
 ## Search for the enclosing Delaunay convex hull.
 ##
 ## For @code{@var{t} = delaunayn (@var{x})}, finds the index in @var{t}

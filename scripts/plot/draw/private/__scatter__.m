@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hg} =} __scatter__ (@dots{})
+## @deftypefn {} {@var{hg} =} __scatter__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

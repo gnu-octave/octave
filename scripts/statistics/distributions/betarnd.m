@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} betarnd (@var{a}, @var{b})
-## @deftypefnx {Function File} {} betarnd (@var{a}, @var{b}, @var{r})
-## @deftypefnx {Function File} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} betarnd (@var{a}, @var{b}, [@var{sz}])
+## @deftypefn  {} {} betarnd (@var{a}, @var{b})
+## @deftypefnx {} {} betarnd (@var{a}, @var{b}, @var{r})
+## @deftypefnx {} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} betarnd (@var{a}, @var{b}, [@var{sz}])
 ## Return a matrix of random samples from the Beta distribution with parameters
 ## @var{a} and @var{b}.
 ##

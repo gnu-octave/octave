@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javaaddpath (@var{clspath})
-## @deftypefnx {Function File} {} javaaddpath (@var{clspath1}, @dots{})
+## @deftypefn  {} {} javaaddpath (@var{clspath})
+## @deftypefnx {} {} javaaddpath (@var{clspath1}, @dots{})
 ## Add @var{clspath} to the dynamic class path of the Java virtual machine.
 ##
 ## @var{clspath} may either be a directory where @file{.class} files are

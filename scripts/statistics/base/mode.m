@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} mode (@var{x})
-## @deftypefnx {Function File} {} mode (@var{x}, @var{dim})
-## @deftypefnx {Function File} {[@var{m}, @var{f}, @var{c}] =} mode (@dots{})
+## @deftypefn  {} {} mode (@var{x})
+## @deftypefnx {} {} mode (@var{x}, @var{dim})
+## @deftypefnx {} {[@var{m}, @var{f}, @var{c}] =} mode (@dots{})
 ## Compute the most frequently occurring value in a dataset (mode).
 ##
 ## @code{mode} determines the frequency of values along the first non-singleton

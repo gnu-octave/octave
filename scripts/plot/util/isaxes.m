@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isaxes (@var{h})
+## @deftypefn {} {} isaxes (@var{h})
 ## Return true if @var{h} is an axes graphics handle and false otherwise.
 ##
 ## If @var{h} is a matrix then return a logical array which is true where the

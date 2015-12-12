@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cloglog (@var{x})
+## @deftypefn {} {} cloglog (@var{x})
 ## Return the complementary log-log function of @var{x}.
 ##
 ## The complementary log-log function is defined as

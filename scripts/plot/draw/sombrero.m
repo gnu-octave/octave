@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sombrero ()
-## @deftypefnx {Function File} {} sombrero (@var{n})
-## @deftypefnx {Function File} {@var{z} =} sombrero (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} sombrero (@dots{})
+## @deftypefn  {} {} sombrero ()
+## @deftypefnx {} {} sombrero (@var{n})
+## @deftypefnx {} {@var{z} =} sombrero (@dots{})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} sombrero (@dots{})
 ## Plot the familiar 3-D sombrero function.
 ##
 ## The function plotted is

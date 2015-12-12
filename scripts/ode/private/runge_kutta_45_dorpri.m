@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
 ##
 ## This function can be used to integrate a system of ODEs with a given initial
 ## condition @var{x} from @var{t} to @var{t+dt} with the Dormand-Prince method.

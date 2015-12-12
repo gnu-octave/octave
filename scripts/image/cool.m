@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} cool ()
-## @deftypefnx {Function File} {@var{map} =} cool (@var{n})
+## @deftypefn  {} {@var{map} =} cool ()
+## @deftypefnx {} {@var{map} =} cool (@var{n})
 ## Create color colormap.  The colormap varies from cyan to magenta.
 ##
 ## The argument @var{n} must be a scalar.

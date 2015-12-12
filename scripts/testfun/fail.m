@@ -20,10 +20,10 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fail (@var{code})
-## @deftypefnx {Function File} {} fail (@var{code}, @var{pattern})
-## @deftypefnx {Function File} {} fail (@var{code}, "warning")
-## @deftypefnx {Function File} {} fail (@var{code}, "warning", @var{pattern})
+## @deftypefn  {} {} fail (@var{code})
+## @deftypefnx {} {} fail (@var{code}, @var{pattern})
+## @deftypefnx {} {} fail (@var{code}, "warning")
+## @deftypefnx {} {} fail (@var{code}, "warning", @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
 ## @var{pattern}, otherwise produce an error.

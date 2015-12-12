@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{z}] =} wilcoxon_test (@var{x}, @var{y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{z}] =} wilcoxon_test (@var{x}, @var{y}, @var{alt})
 ## For two matched-pair sample vectors @var{x} and @var{y}, perform a
 ## Wilcoxon signed-rank test of the null hypothesis
 ## PROB (@var{x} > @var{y}) == 1/2.

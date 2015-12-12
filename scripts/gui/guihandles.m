@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hdata} =} guihandles (@var{h})
-## @deftypefnx {Function File} {@var{hdata} =} guihandles
+## @deftypefn  {} {@var{hdata} =} guihandles (@var{h})
+## @deftypefnx {} {@var{hdata} =} guihandles
 ## Return a structure of object handles for the figure associated with
 ## handle @var{h}.
 ##

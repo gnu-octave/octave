@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hlist} =} __pie__ (caller, @dots{})
+## @deftypefn {} {@var{hlist} =} __pie__ (caller, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

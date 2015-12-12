@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} mkpp (@var{breaks}, @var{coefs})
-## @deftypefnx {Function File} {@var{pp} =} mkpp (@var{breaks}, @var{coefs}, @var{d})
+## @deftypefn  {} {@var{pp} =} mkpp (@var{breaks}, @var{coefs})
+## @deftypefnx {} {@var{pp} =} mkpp (@var{breaks}, @var{coefs}, @var{d})
 ##
 ## Construct a piecewise polynomial (pp) structure from sample points
 ## @var{breaks} and coefficients @var{coefs}.

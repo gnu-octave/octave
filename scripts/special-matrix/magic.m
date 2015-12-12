@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} magic (@var{n})
+## @deftypefn {} {} magic (@var{n})
 ##
 ## Create an @var{n}-by-@var{n} magic square.
 ##

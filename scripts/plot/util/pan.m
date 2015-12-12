@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} pan
-## @deftypefnx {Command} {} pan on
-## @deftypefnx {Command} {} pan off
-## @deftypefnx {Command} {} pan xon
-## @deftypefnx {Command} {} pan yon
-## @deftypefnx {Function File} {} pan (@var{hfig}, @var{option})
+## @deftypefn  {} {} pan
+## @deftypefnx {} {} pan on
+## @deftypefnx {} {} pan off
+## @deftypefnx {} {} pan xon
+## @deftypefnx {} {} pan yon
+## @deftypefnx {} {} pan (@var{hfig}, @var{option})
 ## Control the interactive panning mode of a figure in the GUI.
 ##
 ## Given the option @qcode{"on"} or @qcode{"off"}, set the interactive

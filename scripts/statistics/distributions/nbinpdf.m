@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nbinpdf (@var{x}, @var{n}, @var{p})
+## @deftypefn {} {} nbinpdf (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the negative binomial distribution with parameters
 ## @var{n} and @var{p}.

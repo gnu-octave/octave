@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
+## @deftypefn {} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
 ## Return user inputs from a list dialog box in a vector of selection indices
 ## @var{sel} and a flag @var{ok} indicating how the user closed the dialog
 ## box.

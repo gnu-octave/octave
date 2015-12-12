@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} display (@var{player})
+## @deftypefn {} {} display (@var{player})
 ## Display the properties of the audioplayer object @var{player}.
 ## @end deftypefn
 

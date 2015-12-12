@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{L} =} ichol (@var{A})
-## @deftypefnx {Function File} {@var{L} =} ichol (@var{A}, @var{opts})
+## @deftypefn  {} {@var{L} =} ichol (@var{A})
+## @deftypefnx {} {@var{L} =} ichol (@var{A}, @var{opts})
 ##
 ## Compute the incomplete Cholesky factorization of the sparse square matrix
 ## @var{A}.

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fftshift (@var{x})
-## @deftypefnx {Function File} {} fftshift (@var{x}, @var{dim})
+## @deftypefn  {} {} fftshift (@var{x})
+## @deftypefnx {} {} fftshift (@var{x}, @var{dim})
 ## Perform a shift of the vector @var{x}, for use with the @code{fft} and
 ## @code{ifft} functions, in order the move the frequency 0 to the center of
 ## the vector or matrix.

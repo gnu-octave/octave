@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} playblocking (@var{player})
-## @deftypefnx {Function File} {} playblocking (@var{player}, @var{start})
-## @deftypefnx {Function File} {} playblocking (@var{player}, @var{limits})
+## @deftypefn  {} {} playblocking (@var{player})
+## @deftypefnx {} {} playblocking (@var{player}, @var{start})
+## @deftypefnx {} {} playblocking (@var{player}, @var{limits})
 ## Play audio stored in the audioplayer object @var{player} with blocking.
 ##
 ## Given optional argument start, begin playing at @var{start} seconds in the

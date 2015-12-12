@@ -22,11 +22,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
-## @deftypefnx {Function File} {[@dots{}] =} imread (@var{url})
-## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{ext})
-## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{idx})
-## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{param1}, @var{val1}, @dots{})
+## @deftypefn  {} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
+## @deftypefnx {} {[@dots{}] =} imread (@var{url})
+## @deftypefnx {} {[@dots{}] =} imread (@dots{}, @var{ext})
+## @deftypefnx {} {[@dots{}] =} imread (@dots{}, @var{idx})
+## @deftypefnx {} {[@dots{}] =} imread (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Read images from various file formats.
 ##
 ## Read an image as a matrix from the file @var{filename}.  If there is no file

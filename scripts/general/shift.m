@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} shift (@var{x}, @var{b})
-## @deftypefnx {Function File} {} shift (@var{x}, @var{b}, @var{dim})
+## @deftypefn  {} {} shift (@var{x}, @var{b})
+## @deftypefnx {} {} shift (@var{x}, @var{b}, @var{dim})
 ## If @var{x} is a vector, perform a circular shift of length @var{b} of
 ## the elements of @var{x}.
 ##

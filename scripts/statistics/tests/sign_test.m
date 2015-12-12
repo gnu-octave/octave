@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{b}, @var{n}] =} sign_test (@var{x}, @var{y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{b}, @var{n}] =} sign_test (@var{x}, @var{y}, @var{alt})
 ## For two matched-pair samples @var{x} and @var{y}, perform a sign test
 ## of the null hypothesis
 ## PROB (@var{x} > @var{y}) == PROB (@var{x} < @var{y}) == 1/2.

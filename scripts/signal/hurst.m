@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hurst (@var{x})
+## @deftypefn {} {} hurst (@var{x})
 ## Estimate the Hurst parameter of sample @var{x} via the rescaled range
 ## statistic.
 ##

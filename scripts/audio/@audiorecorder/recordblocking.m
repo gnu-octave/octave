@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} recordblocking (@var{recorder}, @var{length})
+## @deftypefn {} {} recordblocking (@var{recorder}, @var{length})
 ## Record audio with blocking (synchronous I/O).
 ##
 ## The length of the recording in seconds (@var{length}) must be specified.

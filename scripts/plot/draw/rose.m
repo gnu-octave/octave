@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rose (@var{th})
-## @deftypefnx {Function File} {} rose (@var{th}, @var{nbins})
-## @deftypefnx {Function File} {} rose (@var{th}, @var{bins})
-## @deftypefnx {Function File} {} rose (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
-## @deftypefnx {Function File} {[@var{thout} @var{rout}] =} rose (@dots{})
+## @deftypefn  {} {} rose (@var{th})
+## @deftypefnx {} {} rose (@var{th}, @var{nbins})
+## @deftypefnx {} {} rose (@var{th}, @var{bins})
+## @deftypefnx {} {} rose (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} rose (@dots{})
+## @deftypefnx {} {[@var{thout} @var{rout}] =} rose (@dots{})
 ## Plot an angular histogram.
 ##
 ## With one vector argument, @var{th}, plot the histogram with 20 angular bins.

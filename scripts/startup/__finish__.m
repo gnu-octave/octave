@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} __finish__
+## @deftypefn {} {} __finish__
 ## Check for the existence of the function/script, @file{finish}, in the
 ## path or current working directory and execute it.
 ##

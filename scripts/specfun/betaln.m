@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} betaln (@var{a}, @var{b})
+## @deftypefn {} {} betaln (@var{a}, @var{b})
 ## Compute the natural logarithm of the Beta function for real inputs @var{a}
 ## and @var{b}.
 ##

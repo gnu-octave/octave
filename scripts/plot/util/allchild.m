@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} allchild (@var{handles})
+## @deftypefn {} {@var{h} =} allchild (@var{handles})
 ## Find all children, including hidden children, of a graphics object.
 ##
 ## This function is similar to @code{get (h, "children")}, but also returns

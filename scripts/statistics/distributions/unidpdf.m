@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidpdf (@var{x}, @var{n})
+## @deftypefn {} {} unidpdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of a discrete uniform distribution which assumes
 ## the integer values 1--@var{n} with equal probability.

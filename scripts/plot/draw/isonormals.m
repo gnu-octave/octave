@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{n}] =} isonormals (@var{val}, @var{v})
-## @deftypefnx {Function File} {[@var{n}] =} isonormals (@var{val}, @var{p})
-## @deftypefnx {Function File} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
-## @deftypefnx {Function File} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{p})
-## @deftypefnx {Function File} {[@var{n}] =} isonormals (@dots{}, "negate")
-## @deftypefnx {Function File} {} isonormals (@dots{}, @var{p})
+## @deftypefn  {} {[@var{n}] =} isonormals (@var{val}, @var{v})
+## @deftypefnx {} {[@var{n}] =} isonormals (@var{val}, @var{p})
+## @deftypefnx {} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
+## @deftypefnx {} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{p})
+## @deftypefnx {} {[@var{n}] =} isonormals (@dots{}, "negate")
+## @deftypefnx {} {} isonormals (@dots{}, @var{p})
 ##
 ## Calculate normals to an isosurface.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_homogeneity (@var{x}, @var{y}, @var{c})
+## @deftypefn {} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_homogeneity (@var{x}, @var{y}, @var{c})
 ## Given two samples @var{x} and @var{y}, perform a chisquare test for
 ## homogeneity of the null hypothesis that @var{x} and @var{y} come from
 ## the same distribution, based on the partition induced by the

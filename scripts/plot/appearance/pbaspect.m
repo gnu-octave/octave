@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{plot_box_aspect_ratio} =} pbaspect ( )
-## @deftypefnx {Function File} {} pbaspect (@var{plot_box_aspect_ratio})
-## @deftypefnx {Function File} {} pbaspect (@var{mode})
-## @deftypefnx {Function File} {@var{plot_box_aspect_ratio_mode} =} pbaspect ("mode")
-## @deftypefnx {Function File} {} pbaspect (@var{hax}, @dots{})
+## @deftypefn  {} {@var{plot_box_aspect_ratio} =} pbaspect ( )
+## @deftypefnx {} {} pbaspect (@var{plot_box_aspect_ratio})
+## @deftypefnx {} {} pbaspect (@var{mode})
+## @deftypefnx {} {@var{plot_box_aspect_ratio_mode} =} pbaspect ("mode")
+## @deftypefnx {} {} pbaspect (@var{hax}, @dots{})
 ##
 ## Query or set the plot box aspect ratio of the current axes.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{newargs} =} __add_datasource__ (@var{fcn}, @var{h}, @var{data}, @var{varargin})
+## @deftypefn {} {@var{newargs} =} __add_datasource__ (@var{fcn}, @var{h}, @var{data}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 

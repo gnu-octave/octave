@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} postpad (@var{x}, @var{l})
-## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
+## @deftypefn  {} {} postpad (@var{x}, @var{l})
+## @deftypefnx {} {} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
 ## Append the scalar value @var{c} to the vector @var{x} until it is of length
 ## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##

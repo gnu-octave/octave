@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __add_default_menu__ (@var{fig})
+## @deftypefn {} {} __add_default_menu__ (@var{fig})
 ## Add default menu to figure.
 ##
 ## All uimenu handles have their @qcode{"HandleVisibility"} property set to

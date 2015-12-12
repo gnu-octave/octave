@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} version ()
+## @deftypefn {} {} version ()
 ## Return the version number of Octave as a string.
 ##
 ## This is an alias for the function @w{@env{OCTAVE_VERSION}} provided for

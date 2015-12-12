@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{b} =} saveobj (@var{a})
+## @deftypefn {} {@var{b} =} saveobj (@var{a})
 ## Method of a class to manipulate an object prior to saving it to a file.
 ##
 ## The function @code{saveobj} is called when the object @var{a} is saved

@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
+## @deftypefn  {} {@var{player} =} audioplayer (@var{y}, @var{fs})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{recorder})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{recorder}, @var{id})
 ## Create an audioplayer object that will play back data @var{y} at sample
 ## rate @var{fs}.
 ##
@@ -50,7 +50,7 @@
 ## functions in a separate thread which is likely to cause trouble with
 ## all of Octave's global data...
 ##
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{function}, @dots{})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{function}, @dots{})
 ##
 ## Given a function handle, use that function to process the audio.
 #

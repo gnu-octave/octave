@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} patch ()
-## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
-## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {Function File} {} patch (@var{fv})
-## @deftypefnx {Function File} {} patch ("Faces", @var{faces}, "Vertices", @var{verts}, @dots{})
-## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} patch (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} patch (@dots{})
+## @deftypefn  {} {} patch ()
+## @deftypefnx {} {} patch (@var{x}, @var{y}, @var{c})
+## @deftypefnx {} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {} {} patch (@var{fv})
+## @deftypefnx {} {} patch ("Faces", @var{faces}, "Vertices", @var{verts}, @dots{})
+## @deftypefnx {} {} patch (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} patch (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} patch (@dots{})
 ## Create patch object in the current axes with vertices at locations
 ## (@var{x}, @var{y}) and of color @var{c}.
 ##

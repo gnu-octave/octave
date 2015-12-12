@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} message_dialog (@var{caller}, @var{msg}, @var{title}, @var{icon}, @var{createmode})
+## @deftypefn {} {@var{h} =} message_dialog (@var{caller}, @var{msg}, @var{title}, @var{icon}, @var{createmode})
 ## Undocumented internal function.
 ## @end deftypefn
 

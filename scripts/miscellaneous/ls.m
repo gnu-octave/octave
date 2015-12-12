@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} ls
-## @deftypefnx {Command} {} ls @var{filenames}
-## @deftypefnx {Command} {} ls @var{options}
-## @deftypefnx {Command} {} ls @var{options} @var{filenames}
-## @deftypefnx {Function File} {@var{list} =} ls (@dots{})
+## @deftypefn  {} {} ls
+## @deftypefnx {} {} ls @var{filenames}
+## @deftypefnx {} {} ls @var{options}
+## @deftypefnx {} {} ls @var{options} @var{filenames}
+## @deftypefnx {} {@var{list} =} ls (@dots{})
 ##
 ## List directory contents.
 ##

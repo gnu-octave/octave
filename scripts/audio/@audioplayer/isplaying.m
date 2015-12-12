@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isplaying (@var{player})
+## @deftypefn {} {} isplaying (@var{player})
 ## Return true if the audioplayer object @var{player} is currently playing back
 ## audio and false otherwise.
 ## @end deftypefn

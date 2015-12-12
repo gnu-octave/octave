@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{descriptions} =} rebuild (@var{prefix}, @var{archprefix}, @var{list}, @var{files}, @var{auto}, @var{verbose})
+## @deftypefn {} {@var{descriptions} =} rebuild (@var{prefix}, @var{archprefix}, @var{list}, @var{files}, @var{auto}, @var{verbose})
 ## Undocumented internal function.
 ## @end deftypefn
 

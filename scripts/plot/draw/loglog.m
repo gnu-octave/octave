@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} loglog (@var{y})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{prop}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} loglog (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} loglog (@dots{})
+## @deftypefn  {} {} loglog (@var{y})
+## @deftypefnx {} {} loglog (@var{x}, @var{y})
+## @deftypefnx {} {} loglog (@var{x}, @var{y}, @var{prop}, @var{value}, @dots{})
+## @deftypefnx {} {} loglog (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {} {} loglog (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} loglog (@dots{})
 ## Produce a 2-D plot using logarithmic scales for both axes.
 ##
 ## See the documentation of @code{plot} for a description of the arguments

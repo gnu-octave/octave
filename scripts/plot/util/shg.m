@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} shg
+## @deftypefn {} {} shg
 ## Show the graph window.
 ##
 ## Currently, this is the same as executing @code{drawnow}.

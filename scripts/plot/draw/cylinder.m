@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} cylinder
-## @deftypefnx {Function File} {} cylinder (@var{r})
-## @deftypefnx {Function File} {} cylinder (@var{r}, @var{n})
-## @deftypefnx {Function File} {} cylinder (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} cylinder (@dots{})
+## @deftypefn  {} {} cylinder
+## @deftypefnx {} {} cylinder (@var{r})
+## @deftypefnx {} {} cylinder (@var{r}, @var{n})
+## @deftypefnx {} {} cylinder (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} cylinder (@dots{})
 ## Plot a 3-D unit cylinder.
 ##
 ## The optional input @var{r} is a vector specifying the radius along the

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uicontextmenu (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uicontextmenu (@var{h}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uicontextmenu (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uicontextmenu (@var{h}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uicontextmenu object and return a handle to it.
 ##

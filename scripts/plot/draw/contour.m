@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contour (@var{z})
-## @deftypefnx {Function File} {} contour (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contour (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour (@dots{})
+## @deftypefn  {} {} contour (@var{z})
+## @deftypefnx {} {} contour (@var{z}, @var{vn})
+## @deftypefnx {} {} contour (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {} contour (@dots{}, @var{style})
+## @deftypefnx {} {} contour (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{h}] =} contour (@dots{})
 ## Create a 2-D contour plot.
 ##
 ## Plot level curves (contour lines) of the matrix @var{z}, using the

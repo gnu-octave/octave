@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} asech (@var{x})
+## @deftypefn {} {} asech (@var{x})
 ## Compute the inverse hyperbolic secant of each element of @var{x}.
 ## @seealso{sech}
 ## @end deftypefn

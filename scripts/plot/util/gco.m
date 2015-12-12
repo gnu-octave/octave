@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} gco ()
-## @deftypefnx {Function File} {@var{h} =} gco (@var{fig})
+## @deftypefn  {} {@var{h} =} gco ()
+## @deftypefnx {} {@var{h} =} gco (@var{fig})
 ## Return a handle to the current object of the current figure, or a handle
 ## to the current object of the figure with handle @var{fig}.
 ##

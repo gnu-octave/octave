@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} stop (@var{recorder})
+## @deftypefn {} {} stop (@var{recorder})
 ## Stop the audiorecorder object @var{recorder} and clean up any audio streams.
 ## @end deftypefn
 

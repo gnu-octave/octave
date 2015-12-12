@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} kurtosis (@var{x})
-## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{flag})
-## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{flag}, @var{dim})
+## @deftypefn  {} {} kurtosis (@var{x})
+## @deftypefnx {} {} kurtosis (@var{x}, @var{flag})
+## @deftypefnx {} {} kurtosis (@var{x}, @var{flag}, @var{dim})
 ## Compute the sample kurtosis of the elements of @var{x}.
 ##
 ## The sample kurtosis is defined as

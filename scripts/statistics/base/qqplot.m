@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x})
-## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{y})
-## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist})
-## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{y}, @var{params})
-## @deftypefnx {Function File} {} qqplot (@dots{})
+## @deftypefn  {} {[@var{q}, @var{s}] =} qqplot (@var{x})
+## @deftypefnx {} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{y})
+## @deftypefnx {} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist})
+## @deftypefnx {} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{y}, @var{params})
+## @deftypefnx {} {} qqplot (@dots{})
 ## Perform a QQ-plot (quantile plot).
 ##
 ## If F is the CDF of the distribution @var{dist} with parameters

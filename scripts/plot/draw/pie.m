@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pie (@var{x})
-## @deftypefnx {Function File} {} pie (@dots{}, @var{explode})
-## @deftypefnx {Function File} {} pie (@dots{}, @var{labels})
-## @deftypefnx {Function File} {} pie (@var{hax}, @dots{});
-## @deftypefnx {Function File} {@var{h} =} pie (@dots{});
+## @deftypefn  {} {} pie (@var{x})
+## @deftypefnx {} {} pie (@dots{}, @var{explode})
+## @deftypefnx {} {} pie (@dots{}, @var{labels})
+## @deftypefnx {} {} pie (@var{hax}, @dots{});
+## @deftypefnx {} {@var{h} =} pie (@dots{});
 ## Plot a 2-D pie chart.
 ##
 ## When called with a single vector argument, produce a pie chart of the

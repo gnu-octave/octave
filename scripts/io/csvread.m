@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} csvread (@var{filename})
-## @deftypefnx {Function File} {@var{x} =} csvread (@var{filename}, @var{dlm_opts})
+## @deftypefn  {} {@var{x} =} csvread (@var{filename})
+## @deftypefnx {} {@var{x} =} csvread (@var{filename}, @var{dlm_opts})
 ## Read the comma-separated-value file @var{filename} into the matrix @var{x}.
 ##
 ## This function is equivalent to

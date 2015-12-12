@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} prefsfile ()
+## @deftypefn {} {} prefsfile ()
 ## Return the full path and name of the file containing Octave preferences.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} atan2d (@var{y}, @var{x})
+## @deftypefn {} {} atan2d (@var{y}, @var{x})
 ## Compute atan2 (@var{y} / @var{x}) in degrees for corresponding elements
 ## from @var{y} and @var{x}.
 ## @seealso{tand, atan2}

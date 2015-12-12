@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} load_packages_and_dependencies (@var{idx}, @var{handle_deps}, @var{installed_pkgs_lst}, @var{global_install})
+## @deftypefn {} {} load_packages_and_dependencies (@var{idx}, @var{handle_deps}, @var{installed_pkgs_lst}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 

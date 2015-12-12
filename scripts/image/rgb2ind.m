@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
-## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
+## @deftypefn  {} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
+## @deftypefnx {} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
 ## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ##
 ## The input image @var{rgb} can be specified as a single matrix of size

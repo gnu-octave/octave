@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} laplace_cdf (@var{x})
+## @deftypefn {} {} laplace_cdf (@var{x})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the Laplace distribution.
 ## @end deftypefn

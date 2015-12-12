@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
+## @deftypefn  {} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
+## @deftypefnx {} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
 ##
 ## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
 ## noisy data, @var{x} and @var{y}.

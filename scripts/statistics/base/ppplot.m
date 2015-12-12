@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{p}, @var{y}] =} ppplot (@var{x}, @var{dist}, @var{params})
+## @deftypefn {} {[@var{p}, @var{y}] =} ppplot (@var{x}, @var{dist}, @var{params})
 ## Perform a PP-plot (probability plot).
 ##
 ## If F is the CDF of the distribution @var{dist} with parameters

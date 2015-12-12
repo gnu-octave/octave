@@ -20,9 +20,9 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sprandn (@var{m}, @var{n}, @var{d})
-## @deftypefnx {Function File} {} sprandn (@var{m}, @var{n}, @var{d}, @var{rc})
-## @deftypefnx {Function File} {} sprandn (@var{s})
+## @deftypefn  {} {} sprandn (@var{m}, @var{n}, @var{d})
+## @deftypefnx {} {} sprandn (@var{m}, @var{n}, @var{d}, @var{rc})
+## @deftypefnx {} {} sprandn (@var{s})
 ## Generate a sparse matrix with normally distributed random values.
 ##
 ## The size of the matrix is @var{m}x@var{n} with a density of values @var{d}.

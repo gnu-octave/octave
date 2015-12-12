@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{str} =} strjoin (@var{cstr})
-## @deftypefnx {Function File} {@var{str} =} strjoin (@var{cstr}, @var{delimiter})
+## @deftypefn  {} {@var{str} =} strjoin (@var{cstr})
+## @deftypefnx {} {@var{str} =} strjoin (@var{cstr}, @var{delimiter})
 ## Join the elements of the cell string array, @var{cstr}, into a single
 ## string.
 ##

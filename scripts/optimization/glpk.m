@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{errnum}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
+## @deftypefn {} {[@var{xopt}, @var{fmin}, @var{errnum}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
 ## Solve a linear program using the GNU @sc{glpk} library.
 ##
 ## Given three arguments, @code{glpk} solves the following standard LP:

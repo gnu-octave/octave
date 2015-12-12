@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} feather (@var{u}, @var{v})
-## @deftypefnx {Function File} {} feather (@var{z})
-## @deftypefnx {Function File} {} feather (@dots{}, @var{style})
-## @deftypefnx {Function File} {} feather (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} feather (@dots{})
+## @deftypefn  {} {} feather (@var{u}, @var{v})
+## @deftypefnx {} {} feather (@var{z})
+## @deftypefnx {} {} feather (@dots{}, @var{style})
+## @deftypefnx {} {} feather (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} feather (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
 ## from equidistant points on the x-axis.

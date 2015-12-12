@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chop (@var{x}, @var{ndigits}, @var{base})
+## @deftypefn {} {} chop (@var{x}, @var{ndigits}, @var{base})
 ## Truncate elements of @var{x} to a length of @var{ndigits} such that the
 ## resulting numbers are exactly divisible by @var{base}.
 ##

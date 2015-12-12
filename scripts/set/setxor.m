@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} setxor (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
+## @deftypefn  {} {@var{c} =} setxor (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
 ##
 ## Return the unique elements exclusive to sets @var{a} or @var{b} sorted in
 ## ascending order.

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_independence (@var{x})
+## @deftypefn {} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_independence (@var{x})
 ## Perform a chi-square test for independence based on the contingency table
 ## @var{x}.
 ##

@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ode_struct_value_check (@var{"caller"}, @var{ode_struct})
-## @deftypefnx {Function File} {} ode_struct_value_check (@var{"caller"), @var{ode_struct}, @var{"solver"})
-## @deftypefnx {Function File} {@var{ode_struct} =} ode_struct_value_check (@dots{})
+## @deftypefn  {} {} ode_struct_value_check (@var{"caller"}, @var{ode_struct})
+## @deftypefnx {} {} ode_struct_value_check (@var{"caller"), @var{ode_struct}, @var{"solver"})
+## @deftypefnx {} {@var{ode_struct} =} ode_struct_value_check (@dots{})
 ##
 ## Validate the fields and values in the ODE options structure @var{ode_struct}.
 ##

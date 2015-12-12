@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
+## @deftypefn {} {} commutation_matrix (@var{m}, @var{n})
 ## Return the commutation matrix
 ## @tex
 ##  $K_{m,n}$

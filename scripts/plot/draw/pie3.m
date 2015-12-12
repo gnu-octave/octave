@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pie3 (@var{x})
-## @deftypefnx {Function File} {} pie3 (@dots{}, @var{explode})
-## @deftypefnx {Function File} {} pie3 (@dots{}, @var{labels})
-## @deftypefnx {Function File} {} pie3 (@var{hax}, @dots{});
-## @deftypefnx {Function File} {@var{h} =} pie3 (@dots{});
+## @deftypefn  {} {} pie3 (@var{x})
+## @deftypefnx {} {} pie3 (@dots{}, @var{explode})
+## @deftypefnx {} {} pie3 (@dots{}, @var{labels})
+## @deftypefnx {} {} pie3 (@var{hax}, @dots{});
+## @deftypefnx {} {@var{h} =} pie3 (@dots{});
 ## Plot a 3-D pie chart.
 ##
 ## Called with a single vector argument, produces a 3-D pie chart of the

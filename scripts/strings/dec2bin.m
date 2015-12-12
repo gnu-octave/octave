@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2bin (@var{d}, @var{len})
+## @deftypefn {} {} dec2bin (@var{d}, @var{len})
 ## Return a binary number corresponding to the non-negative integer @var{d},
 ## as a string of ones and zeros.
 ##

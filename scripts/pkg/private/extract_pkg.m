@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pkg} =} extract_pkg (@var{nm}, @var{pat})
+## @deftypefn {} {@var{pkg} =} extract_pkg (@var{nm}, @var{pat})
 ## Undocumented internal function.
 ## @end deftypefn
 

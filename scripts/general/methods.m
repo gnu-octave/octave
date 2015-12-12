@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} methods (@var{obj})
-## @deftypefnx {Function File} {} methods ("@var{classname}")
-## @deftypefnx {Function File} {@var{mtds} =} methods (@dots{})
+## @deftypefn  {} {} methods (@var{obj})
+## @deftypefnx {} {} methods ("@var{classname}")
+## @deftypefnx {} {@var{mtds} =} methods (@dots{})
 ##
 ## Return a cell array containing the names of the methods for the
 ## object @var{obj} or the named class @var{classname}.

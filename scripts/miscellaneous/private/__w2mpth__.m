@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{mingwpath} =} __w2mpth__ (@var{winpath})
+## @deftypefn {} {@var{mingwpath} =} __w2mpth__ (@var{winpath})
 ## Convert a Windows-style relative or full path name to MinGW style.
 ##
 ## @strong{Caution:} __w2mpth__ does not check the validity of the path.

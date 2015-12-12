@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{cd}] =} isocolors (@var{c}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@dots{}, @var{p})
-## @deftypefnx {Function File} {} isocolors (@dots{})
+## @deftypefn  {} {[@var{cd}] =} isocolors (@var{c}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@dots{}, @var{p})
+## @deftypefnx {} {} isocolors (@dots{})
 ##
 ## Compute isosurface colors.
 ##

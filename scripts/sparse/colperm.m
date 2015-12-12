@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} colperm (@var{s})
+## @deftypefn {} {@var{p} =} colperm (@var{s})
 ## Return the column permutations such that the columns of
 ## @code{@var{s} (:, @var{p})} are ordered in terms of increasing number of
 ## nonzero elements.

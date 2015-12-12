@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bug_report ()
+## @deftypefn {} {} bug_report ()
 ## Display information about how to submit bug reports for Octave.
 ## @end deftypefn
 

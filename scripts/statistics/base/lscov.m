@@ -14,10 +14,10 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} lscov (@var{A}, @var{b})
-## @deftypefnx {Function File} {@var{x} =} lscov (@var{A}, @var{b}, @var{V})
-## @deftypefnx {Function File} {@var{x} =} lscov (@var{A}, @var{b}, @var{V}, @var{alg})
-## @deftypefnx {Function File} {[@var{x}, @var{stdx}, @var{mse}, @var{S}] =} lscov (@dots{})
+## @deftypefn  {} {@var{x} =} lscov (@var{A}, @var{b})
+## @deftypefnx {} {@var{x} =} lscov (@var{A}, @var{b}, @var{V})
+## @deftypefnx {} {@var{x} =} lscov (@var{A}, @var{b}, @var{V}, @var{alg})
+## @deftypefnx {} {[@var{x}, @var{stdx}, @var{mse}, @var{S}] =} lscov (@dots{})
 ##
 ## Compute a generalized linear least squares fit.
 ##

@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{a}, @dots{}] =} strread (@var{str})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{format_repeat})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{prop1}, @var{value1}, @dots{})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{format_repeat}, @var{prop1}, @var{value1}, @dots{})
+## @deftypefn  {} {[@var{a}, @dots{}] =} strread (@var{str})
+## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format})
+## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{format_repeat})
+## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{prop1}, @var{value1}, @dots{})
+## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{format_repeat}, @var{prop1}, @var{value1}, @dots{})
 ## Read data from a string.
 ##
 ## The string @var{str} is split into words that are repeatedly matched to the

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fftfilt (@var{b}, @var{x})
-## @deftypefnx {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
+## @deftypefn  {} {} fftfilt (@var{b}, @var{x})
+## @deftypefnx {} {} fftfilt (@var{b}, @var{x}, @var{n})
 ## Filter @var{x} with the FIR filter @var{b} using the FFT.
 ##
 ## If @var{x} is a matrix, filter each column of the matrix.

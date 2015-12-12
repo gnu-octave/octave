@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{n} =} normest (@var{A})
-## @deftypefnx {Function File} {@var{n} =} normest (@var{A}, @var{tol})
-## @deftypefnx {Function File} {[@var{n}, @var{c}] =} normest (@dots{})
+## @deftypefn  {} {@var{n} =} normest (@var{A})
+## @deftypefnx {} {@var{n} =} normest (@var{A}, @var{tol})
+## @deftypefnx {} {[@var{n}, @var{c}] =} normest (@dots{})
 ## Estimate the 2-norm of the matrix @var{A} using a power series analysis.
 ##
 ## This is typically used for large matrices, where the cost of calculating

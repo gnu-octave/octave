@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{btn} =} questdlg (@var{msg})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{default})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{default})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+## @deftypefn  {} {@var{btn} =} questdlg (@var{msg})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{default})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{default})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
 ## Display @var{msg} using a question dialog box and return the caption of
 ## the activated button.
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} factorial (@var{n})
+## @deftypefn {} {} factorial (@var{n})
 ## Return the factorial of @var{n} where @var{n} is a real non-negative integer.
 ##
 ## If @var{n} is a scalar, this is equivalent to @code{prod (1:@var{n})}.  For

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ishghandle (@var{h})
+## @deftypefn {} {} ishghandle (@var{h})
 ## Return true if @var{h} is a graphics handle and false otherwise.
 ##
 ## This function is equivalent to @code{ishandle} and is provided for

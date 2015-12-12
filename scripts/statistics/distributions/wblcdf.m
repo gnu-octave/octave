@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} wblcdf (@var{x})
-## @deftypefnx {Function File} {} wblcdf (@var{x}, @var{scale})
-## @deftypefnx {Function File} {} wblcdf (@var{x}, @var{scale}, @var{shape})
+## @deftypefn  {} {} wblcdf (@var{x})
+## @deftypefnx {} {} wblcdf (@var{x}, @var{scale})
+## @deftypefnx {} {} wblcdf (@var{x}, @var{scale}, @var{shape})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## Weibull distribution with scale parameter @var{scale} and shape
 ## parameter @var{shape}.

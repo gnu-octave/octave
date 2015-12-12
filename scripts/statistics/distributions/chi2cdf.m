@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chi2cdf (@var{x}, @var{n})
+## @deftypefn {} {} chi2cdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the chi-square distribution with @var{n} degrees of
 ## freedom.

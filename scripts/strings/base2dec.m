@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} base2dec (@var{s}, @var{base})
+## @deftypefn {} {} base2dec (@var{s}, @var{base})
 ## Convert @var{s} from a string of digits in base @var{base} to a decimal
 ## integer (base 10).
 ##

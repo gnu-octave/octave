@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{cx}, @var{cy}, @var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {[@var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{fx}, @var{fy})
-## @deftypefnx {Function File} {[@dots{}] =} curl (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {[@dots{}] =} curl (@var{fx}, @var{fy})
-## @deftypefnx {Function File} {@var{v} =} curl (@dots{})
+## @deftypefn  {} {[@var{cx}, @var{cy}, @var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {[@var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{fx}, @var{fy})
+## @deftypefnx {} {[@dots{}] =} curl (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {[@dots{}] =} curl (@var{fx}, @var{fy})
+## @deftypefnx {} {@var{v} =} curl (@dots{})
 ## Calculate curl of vector field given by the arrays @var{fx}, @var{fy}, and
 ## @var{fz} or @var{fx}, @var{fy} respectively.
 ## @tex

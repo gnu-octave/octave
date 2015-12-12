@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hankel (@var{c})
-## @deftypefnx {Function File} {} hankel (@var{c}, @var{r})
+## @deftypefn  {} {} hankel (@var{c})
+## @deftypefnx {} {} hankel (@var{c}, @var{r})
 ## Return the Hankel matrix constructed from the first column @var{c}, and
 ## (optionally) the last row @var{r}.
 ##

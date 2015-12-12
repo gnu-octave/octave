@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unifcdf (@var{x})
-## @deftypefnx {Function File} {} unifcdf (@var{x}, @var{a}, @var{b})
+## @deftypefn  {} {} unifcdf (@var{x})
+## @deftypefnx {} {} unifcdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the uniform distribution on the interval
 ## [@var{a}, @var{b}].

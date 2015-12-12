@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{y1}, @var{y2}, @dots{}, @var{y}n] =} ndgrid (@var{x1}, @var{x2}, @dots{}, @var{x}n)
-## @deftypefnx {Function File} {[@var{y1}, @var{y2}, @dots{}, @var{y}n] =} ndgrid (@var{x})
+## @deftypefn  {} {[@var{y1}, @var{y2}, @dots{}, @var{y}n] =} ndgrid (@var{x1}, @var{x2}, @dots{}, @var{x}n)
+## @deftypefnx {} {[@var{y1}, @var{y2}, @dots{}, @var{y}n] =} ndgrid (@var{x})
 ## Given n vectors @var{x1}, @dots{}, @var{x}n, @code{ndgrid} returns n
 ## arrays of dimension n.
 ##

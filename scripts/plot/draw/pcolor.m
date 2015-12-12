@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pcolor (@var{x}, @var{y}, @var{c})
-## @deftypefnx {Function File} {} pcolor (@var{c})
-## @deftypefnx {Function File} {} pcolor (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} pcolor (@dots{})
+## @deftypefn  {} {} pcolor (@var{x}, @var{y}, @var{c})
+## @deftypefnx {} {} pcolor (@var{c})
+## @deftypefnx {} {} pcolor (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} pcolor (@dots{})
 ## Produce a 2-D density plot.
 ##
 ## A @code{pcolor} plot draws rectangles with colors from the matrix @var{c}

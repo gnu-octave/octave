@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} whitebg ()
-## @deftypefnx {Function File} {} whitebg (@var{color})
-## @deftypefnx {Function File} {} whitebg ("none")
-## @deftypefnx {Function File} {} whitebg (@var{hfig}, @dots{})
+## @deftypefn  {} {} whitebg ()
+## @deftypefnx {} {} whitebg (@var{color})
+## @deftypefnx {} {} whitebg ("none")
+## @deftypefnx {} {} whitebg (@var{hfig}, @dots{})
 ## Invert the colors in the current color scheme.
 ##
 ## The root properties are also inverted such that all subsequent plot use the

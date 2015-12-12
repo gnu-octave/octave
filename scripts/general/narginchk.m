@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} narginchk (@var{minargs}, @var{maxargs})
+## @deftypefn {} {} narginchk (@var{minargs}, @var{maxargs})
 ## Check for correct number of input arguments.
 ##
 ## Generate an error message if the number of arguments in the calling function

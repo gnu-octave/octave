@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
-## @deftypefnx {Function File} {@var{c} =} nchoosek (@var{set}, @var{k})
+## @deftypefn  {} {@var{c} =} nchoosek (@var{n}, @var{k})
+## @deftypefnx {} {@var{c} =} nchoosek (@var{set}, @var{k})
 ##
 ## Compute the binomial coefficient of @var{n} or list all possible
 ## combinations of a @var{set} of items.

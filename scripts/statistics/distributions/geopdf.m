@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} geopdf (@var{x}, @var{p})
+## @deftypefn {} {} geopdf (@var{x}, @var{p})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the geometric distribution with parameter @var{p}.
 ##

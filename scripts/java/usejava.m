@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} usejava (@var{feature})
+## @deftypefn {} {} usejava (@var{feature})
 ## Return true if the Java element @var{feature} is available.
 ##
 ## Possible features are:

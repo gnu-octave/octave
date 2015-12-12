@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Operator} {} ,
+## @deftypefn {} {} ,
 ## Array index, function argument, or command separator.
 ## @seealso{semicolon}
 ## @end deftypefn

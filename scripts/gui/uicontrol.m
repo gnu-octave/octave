@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uicontrol (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uicontrol (@var{parent}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} uicontrol (@var{h})
+## @deftypefn  {} {@var{hui} =} uicontrol (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uicontrol (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} uicontrol (@var{h})
 ##
 ## Create a uicontrol object and return a handle to it.
 ##

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} bone ()
-## @deftypefnx {Function File} {@var{map} =} bone (@var{n})
+## @deftypefn  {} {@var{map} =} bone ()
+## @deftypefnx {} {@var{map} =} bone (@var{n})
 ## Create color colormap.  This colormap varies from black to white with
 ## gray-blue shades.
 ##

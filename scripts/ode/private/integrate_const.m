@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{solution} =} integrate_const (@var{@@stepper}, @var{@@func}, @var{tspan}, @var{x0}, @var{dt}, @var{options})
+## @deftypefn {} {@var{solution} =} integrate_const (@var{@@stepper}, @var{@@func}, @var{tspan}, @var{x0}, @var{dt}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
 ## integrate the set of ODEs on the interval @var{[t0,t1]} with a constant

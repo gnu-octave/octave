@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} asctime (@var{tm_struct})
+## @deftypefn {} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following
 ## format: @qcode{"ddd mmm mm HH:MM:SS yyyy@xbackslashchar{}n"}.
 ##

@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binoinv (@var{x}, @var{n}, @var{p})
+## @deftypefn {} {} binoinv (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the binomial distribution with parameters
 ## @var{n} and @var{p}, where @var{n} is the number of trials and

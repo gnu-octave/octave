@@ -19,9 +19,9 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fminunc (@var{fcn}, @var{x0})
-## @deftypefnx {Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
+## @deftypefn  {} {} fminunc (@var{fcn}, @var{x0})
+## @deftypefnx {} {} fminunc (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ##

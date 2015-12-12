@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} text (@var{x}, @var{y}, @var{string})
-## @deftypefnx {Function File} {} text (@var{x}, @var{y}, @var{z}, @var{string})
-## @deftypefnx {Function File} {} text (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} text (@dots{})
+## @deftypefn  {} {} text (@var{x}, @var{y}, @var{string})
+## @deftypefnx {} {} text (@var{x}, @var{y}, @var{z}, @var{string})
+## @deftypefnx {} {} text (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} text (@dots{})
 ## Create a text object with text @var{string} at position @var{x}, @var{y},
 ## (@var{z}) on the current axes.
 ##

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} savepath ()
-## @deftypefnx {Function File} {} savepath (@var{file})
-## @deftypefnx {Function File} {@var{status} =} savepath (@dots{})
+## @deftypefn  {} {} savepath ()
+## @deftypefnx {} {} savepath (@var{file})
+## @deftypefnx {} {@var{status} =} savepath (@dots{})
 ## Save the unique portion of the current function search path that is
 ## not set during Octave's initialization process to @var{file}.
 ##

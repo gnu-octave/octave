@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} warndlg (@var{msg})
-## @deftypefnx {Function File} {@var{h} =} warndlg (@var{msg}, @var{title})
-## @deftypefnx {Function File} {@var{h} =} warndlg (@var{msg}, @var{title}, @var{createmode})
+## @deftypefn  {} {@var{h} =} warndlg (@var{msg})
+## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title})
+## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title}, @var{createmode})
 ## Display @var{msg} using a warning dialog box.
 ##
 ## The message may have multiple lines separated by newline characters ("\n"),

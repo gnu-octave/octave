@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} etreeplot (@var{A})
-## @deftypefnx {Function File} {} etreeplot (@var{A}, @var{node_style}, @var{edge_style})
+## @deftypefn  {} {} etreeplot (@var{A})
+## @deftypefnx {} {} etreeplot (@var{A}, @var{node_style}, @var{edge_style})
 ## Plot the elimination tree of the matrix @var{A} or
 ## @tcode{@var{A}+@var{A}'} if @var{A} in not symmetric.
 ##

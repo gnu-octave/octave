@@ -19,14 +19,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d})
-## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
+## @deftypefn  {} {@var{x} =} lsqnonneg (@var{c}, @var{d})
+## @deftypefnx {} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
+## @deftypefnx {} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
 ## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
 ## @code{@var{x} >= 0}.
 ##

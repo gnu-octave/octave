@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} rotate3d
-## @deftypefnx {Command} {} rotate3d on
-## @deftypefnx {Command} {} rotate3d off
-## @deftypefnx {Function File} {} rotate3d (@var{hfig}, @var{option})
+## @deftypefn  {} {} rotate3d
+## @deftypefnx {} {} rotate3d on
+## @deftypefnx {} {} rotate3d off
+## @deftypefnx {} {} rotate3d (@var{hfig}, @var{option})
 ## Control the interactive 3-D rotation mode of a figure in the GUI.
 ##
 ## Given the option @qcode{"on"} or @qcode{"off"}, set the interactive

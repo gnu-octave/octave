@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} lognpdf (@var{x})
-## @deftypefnx {Function File} {} lognpdf (@var{x}, @var{mu}, @var{sigma})
+## @deftypefn  {} {} lognpdf (@var{x})
+## @deftypefnx {} {} lognpdf (@var{x}, @var{mu}, @var{sigma})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the lognormal distribution with parameters
 ## @var{mu} and @var{sigma}.

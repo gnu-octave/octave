@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} plot3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{prop}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{fmt})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{cplx})
-## @deftypefnx {Function File} {} plot3 (@var{cplx})
-## @deftypefnx {Function File} {} plot3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} plot3 (@dots{})
+## @deftypefn  {} {} plot3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} plot3 (@var{x}, @var{y}, @var{z}, @var{prop}, @var{value}, @dots{})
+## @deftypefnx {} {} plot3 (@var{x}, @var{y}, @var{z}, @var{fmt})
+## @deftypefnx {} {} plot3 (@var{x}, @var{cplx})
+## @deftypefnx {} {} plot3 (@var{cplx})
+## @deftypefnx {} {} plot3 (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} plot3 (@dots{})
 ## Produce 3-D plots.
 ##
 ## Many different combinations of arguments are possible.  The simplest

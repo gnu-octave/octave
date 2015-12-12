@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} list_primes ()
-## @deftypefnx {Function File} {} list_primes (@var{n})
+## @deftypefn  {} {} list_primes ()
+## @deftypefnx {} {} list_primes (@var{n})
 ## List the first @var{n} primes.
 ##
 ## If @var{n} is unspecified, the first 25 primes are listed.

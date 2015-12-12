@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{B} =} spdiags (@var{A})
-## @deftypefnx {Function File} {[@var{B}, @var{d}] =} spdiags (@var{A})
-## @deftypefnx {Function File} {@var{B} =} spdiags (@var{A}, @var{d})
-## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
-## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
+## @deftypefn  {} {@var{B} =} spdiags (@var{A})
+## @deftypefnx {} {[@var{B}, @var{d}] =} spdiags (@var{A})
+## @deftypefnx {} {@var{B} =} spdiags (@var{A}, @var{d})
+## @deftypefnx {} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
+## @deftypefnx {} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
 ## A generalization of the function @code{diag}.
 ##
 ## Called with a single input argument, the nonzero diagonals @var{d} of

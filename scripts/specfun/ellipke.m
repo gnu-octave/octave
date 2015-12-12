@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{k} =} ellipke (@var{m})
-## @deftypefnx {Function File} {@var{k} =} ellipke (@var{m}, @var{tol})
-## @deftypefnx {Function File} {[@var{k}, @var{e}] =} ellipke (@dots{})
+## @deftypefn  {} {@var{k} =} ellipke (@var{m})
+## @deftypefnx {} {@var{k} =} ellipke (@var{m}, @var{tol})
+## @deftypefnx {} {[@var{k}, @var{e}] =} ellipke (@dots{})
 ## Compute complete elliptic integrals of the first K(@var{m}) and second
 ## E(@var{m}) kind.
 ##

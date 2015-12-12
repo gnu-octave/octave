@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{deps_cell} =} fix_depends (@var{depends})
+## @deftypefn {} {@var{deps_cell} =} fix_depends (@var{depends})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rectangle_sw (@var{n}, @var{b})
+## @deftypefn {} {} rectangle_sw (@var{n}, @var{b})
 ## Rectangular spectral window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn

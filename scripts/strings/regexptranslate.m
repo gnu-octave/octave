@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} regexptranslate (@var{op}, @var{s})
+## @deftypefn {} {} regexptranslate (@var{op}, @var{s})
 ## Translate a string for use in a regular expression.
 ##
 ## This may include either wildcard replacement or special character escaping.

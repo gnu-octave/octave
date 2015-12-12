@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} doc @var{function_name}
-## @deftypefnx {Command} {} doc
+## @deftypefn  {} {} doc @var{function_name}
+## @deftypefnx {} {} doc
 ## Display documentation for the function @var{function_name} directly from an
 ## online version of the printed manual, using the GNU Info browser.
 ##

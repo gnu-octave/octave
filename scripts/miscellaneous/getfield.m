@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{val} =} getfield (@var{s}, @var{field})
-## @deftypefnx {Function File} {@var{val} =} getfield (@var{s}, @var{sidx1}, @var{field1}, @var{fidx1}, @dots{})
+## @deftypefn  {} {@var{val} =} getfield (@var{s}, @var{field})
+## @deftypefnx {} {@var{val} =} getfield (@var{s}, @var{sidx1}, @var{field1}, @var{fidx1}, @dots{})
 ## Get the value of the field named @var{field} from a structure or nested
 ## structure @var{s}.
 ##

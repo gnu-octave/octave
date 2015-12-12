@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## @deftypefn  {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
+## @deftypefnx {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
+## @deftypefnx {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
+## @deftypefnx {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
 ## Open a GUI dialog for selecting a file.
 ##
 ## @var{flt} contains a (list of) file filter string(s) in one of the following

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{dl}, @var{d2l}] =} logistic_regression_derivatives (@var{x}, @var{z}, @var{z1}, @var{g}, @var{g1}, @var{p})
+## @deftypefn {} {[@var{dl}, @var{d2l}] =} logistic_regression_derivatives (@var{x}, @var{z}, @var{z1}, @var{g}, @var{g1}, @var{p})
 ## Calculate derivatives of the log-likelihood for ordinal logistic regression
 ## model.
 ##

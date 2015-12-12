@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} wblrnd (@var{scale}, @var{shape})
-## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{r})
-## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, [@var{sz}])
+## @deftypefn  {} {} wblrnd (@var{scale}, @var{shape})
+## @deftypefnx {} {} wblrnd (@var{scale}, @var{shape}, @var{r})
+## @deftypefnx {} {} wblrnd (@var{scale}, @var{shape}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} wblrnd (@var{scale}, @var{shape}, [@var{sz}])
 ## Return a matrix of random samples from the Weibull distribution with
 ## parameters @var{scale} and @var{shape}.
 ##

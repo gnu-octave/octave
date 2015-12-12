@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Built-in Function} {@var{fname} =} octave_tmp_file_name ()
-## @deftypefnx {Built-in Function} {@var{fname} =} octave_tmp_file_name (@var{dir})
-## @deftypefnx {Built-in Function} {@var{fname} =} octave_tmp_file_name (@var{dir}, @var{prefix})
+## @deftypefn  {} {@var{fname} =} octave_tmp_file_name ()
+## @deftypefnx {} {@var{fname} =} octave_tmp_file_name (@var{dir})
+## @deftypefnx {} {@var{fname} =} octave_tmp_file_name (@var{dir}, @var{prefix})
 ##
 ## @code{octave_tmp_file_name} is deprecated and will be removed in Octave
 ## version 4.4.  Use @code{tempname} for equivalent functionality.

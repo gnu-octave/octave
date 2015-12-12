@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} logm (@var{A})
-## @deftypefnx {Function File} {@var{s} =} logm (@var{A}, @var{opt_iters})
-## @deftypefnx {Function File} {[@var{s}, @var{iters}] =} logm (@dots{})
+## @deftypefn  {} {@var{s} =} logm (@var{A})
+## @deftypefnx {} {@var{s} =} logm (@var{A}, @var{opt_iters})
+## @deftypefnx {} {[@var{s}, @var{iters}] =} logm (@dots{})
 ## Compute the matrix logarithm of the square matrix @var{A}.
 ##
 ## The implementation utilizes a Pad@'e approximant and the identity

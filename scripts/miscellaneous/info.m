@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} info ()
+## @deftypefn {} {} info ()
 ## Display contact information for the GNU Octave community.
 ## @end deftypefn
 

@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{z} =} zscore (@var{x})
-## @deftypefnx {Function File} {@var{z} =} zscore (@var{x}, @var{opt})
-## @deftypefnx {Function File} {@var{z} =} zscore (@var{x}, @var{opt}, @var{dim})
-## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@dots{})
+## @deftypefn  {} {@var{z} =} zscore (@var{x})
+## @deftypefnx {} {@var{z} =} zscore (@var{x}, @var{opt})
+## @deftypefnx {} {@var{z} =} zscore (@var{x}, @var{opt}, @var{dim})
+## @deftypefnx {} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@dots{})
 ## Compute the Z score of @var{x}
 ##
 ## If @var{x} is a vector, subtract its mean and divide by its standard

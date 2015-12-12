@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} triplot (@var{tri}, @var{x}, @var{y})
-## @deftypefnx {Function File} {} triplot (@var{tri}, @var{x}, @var{y}, @var{linespec})
-## @deftypefnx {Function File} {@var{h} =} triplot (@dots{})
+## @deftypefn  {} {} triplot (@var{tri}, @var{x}, @var{y})
+## @deftypefnx {} {} triplot (@var{tri}, @var{x}, @var{y}, @var{linespec})
+## @deftypefnx {} {@var{h} =} triplot (@dots{})
 ## Plot a 2-D triangular mesh.
 ##
 ## @var{tri} is typically the output of a Delaunay triangulation over the

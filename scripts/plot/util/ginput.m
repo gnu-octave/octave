@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput ()
+## @deftypefn  {} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{buttons}] =} ginput ()
 ## Return the position and type of mouse button clicks and/or key strokes
 ## in the current figure window.
 ##

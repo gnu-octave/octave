@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __ghostscript__ (@var{@dots{}})
+## @deftypefn {} {} __ghostscript__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

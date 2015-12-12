@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
+## @deftypefn {} {} rindex (@var{s}, @var{t})
 ## Return the position of the last occurrence of the character string
 ## @var{t} in the character string @var{s}, or 0 if no occurrence is
 ## found.

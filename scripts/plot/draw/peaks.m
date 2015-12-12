@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} peaks ()
-## @deftypefnx {Function File} {} peaks (@var{n})
-## @deftypefnx {Function File} {} peaks (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{z} =} peaks (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} peaks (@dots{})
+## @deftypefn  {} {} peaks ()
+## @deftypefnx {} {} peaks (@var{n})
+## @deftypefnx {} {} peaks (@var{x}, @var{y})
+## @deftypefnx {} {@var{z} =} peaks (@dots{})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} peaks (@dots{})
 ## Plot a function with lots of local maxima and minima.
 ##
 ## The function has the form

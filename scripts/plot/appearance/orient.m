@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} orient (@var{orientation})
-## @deftypefnx {Function File} {} orient (@var{hfig}, @var{orientation})
-## @deftypefnx {Function File} {@var{orientation} =} orient ()
-## @deftypefnx {Function File} {@var{orientation} =} orient (@var{hfig})
+## @deftypefn  {} {} orient (@var{orientation})
+## @deftypefnx {} {} orient (@var{hfig}, @var{orientation})
+## @deftypefnx {} {@var{orientation} =} orient ()
+## @deftypefnx {} {@var{orientation} =} orient (@var{hfig})
 ## Query or set the print orientation for figure @var{hfig}.
 ##
 ## Valid values for @var{orientation} are @qcode{"portrait"},

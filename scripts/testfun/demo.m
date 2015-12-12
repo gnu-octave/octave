@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} demo @var{name}
-## @deftypefnx {Command} {} demo @var{name} @var{n}
-## @deftypefnx {Function File} {} demo ("@var{name}")
-## @deftypefnx {Function File} {} demo ("@var{name}", @var{n})
+## @deftypefn  {} {} demo @var{name}
+## @deftypefnx {} {} demo @var{name} @var{n}
+## @deftypefnx {} {} demo ("@var{name}")
+## @deftypefnx {} {} demo ("@var{name}", @var{n})
 ##
 ## Run example code block @var{n} associated with the function @var{name}.
 ##

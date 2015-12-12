@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{varname} =} genvarname (@var{str})
-## @deftypefnx {Function File} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
+## @deftypefn  {} {@var{varname} =} genvarname (@var{str})
+## @deftypefnx {} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
 ## Create valid unique variable name(s) from @var{str}.
 ##
 ## If @var{str} is a cellstr, then a unique variable is created for each cell

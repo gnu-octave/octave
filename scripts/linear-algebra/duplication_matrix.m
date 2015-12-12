@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} duplication_matrix (@var{n})
+## @deftypefn {} {} duplication_matrix (@var{n})
 ## Return the duplication matrix
 ## @tex
 ##  $D_n$

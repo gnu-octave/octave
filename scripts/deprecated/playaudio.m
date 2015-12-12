@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} playaudio (@var{name}, @var{ext})
-## @deftypefnx {Function File} {} playaudio (@var{x})
+## @deftypefn  {} {} playaudio (@var{name}, @var{ext})
+## @deftypefnx {} {} playaudio (@var{x})
 ##
 ## @code{playaudio} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{audioplayer} in all new code.

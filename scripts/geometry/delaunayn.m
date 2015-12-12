@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{T} =} delaunayn (@var{pts})
-## @deftypefnx {Function File} {@var{T} =} delaunayn (@var{pts}, @var{options})
+## @deftypefn  {} {@var{T} =} delaunayn (@var{pts})
+## @deftypefnx {} {@var{T} =} delaunayn (@var{pts}, @var{options})
 ## Compute the Delaunay triangulation for an N-dimensional set of points.
 ##
 ## The Delaunay triangulation is a tessellation of the convex hull of a set of

@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} strjust (@var{s})
-## @deftypefnx {Function File} {} strjust (@var{s}, @var{pos})
+## @deftypefn  {} {} strjust (@var{s})
+## @deftypefnx {} {} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
 ## be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.
 ##

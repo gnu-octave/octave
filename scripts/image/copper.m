@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} copper ()
-## @deftypefnx {Function File} {@var{map} =} copper (@var{n})
+## @deftypefn  {} {@var{map} =} copper ()
+## @deftypefnx {} {@var{map} =} copper (@var{n})
 ## Create color colormap.  This colormap varies from black to a light copper
 ## tone.
 ##

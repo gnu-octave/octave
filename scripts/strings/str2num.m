@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} str2num (@var{s})
-## @deftypefnx {Function File} {[@var{x}, @var{state}] =} str2num (@var{s})
+## @deftypefn  {} {@var{x} =} str2num (@var{s})
+## @deftypefnx {} {[@var{x}, @var{state}] =} str2num (@var{s})
 ## Convert the string (or character array) @var{s} to a number (or an array).
 ##
 ## Examples:

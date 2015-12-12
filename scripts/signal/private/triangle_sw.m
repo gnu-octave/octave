@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} triangle_sw (@var{n}, @var{b})
+## @deftypefn {} {} triangle_sw (@var{n}, @var{b})
 ## Triangular spectral window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn

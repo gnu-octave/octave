@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yiq_map} =} rgb2ntsc (@var{rgb_map})
-## @deftypefnx {Function File} {@var{yiq_img} =} rgb2ntsc (@var{rgb_img})
+## @deftypefn  {} {@var{yiq_map} =} rgb2ntsc (@var{rgb_map})
+## @deftypefnx {} {@var{yiq_img} =} rgb2ntsc (@var{rgb_img})
 ## Transform a colormap or image from red-green-blue (RGB) color space to
 ## luminance-chrominance (NTSC) space.  The input may be of class uint8,
 ## uint16, single, or double.  The output is of class double.

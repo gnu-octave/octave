@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} sech (@var{x})
+## @deftypefn {} {} sech (@var{x})
 ## Compute the hyperbolic secant of each element of @var{x}.
 ## @seealso{asech}
 ## @end deftypefn

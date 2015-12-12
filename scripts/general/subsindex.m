@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{idx} =} subsindex (@var{a})
+## @deftypefn {} {@var{idx} =} subsindex (@var{a})
 ## Convert an object to an index vector.
 ##
 ## When @var{a} is a class object defined with a class constructor, then

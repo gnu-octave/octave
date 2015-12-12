@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __axis_limits__ (@var{fcn}, @dots{})
+## @deftypefn {} {} __axis_limits__ (@var{fcn}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

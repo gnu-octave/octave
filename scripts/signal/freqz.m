@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b})
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n})
-## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@dots{}, @var{Fs})
-## @deftypefnx {Function File} {} freqz (@dots{})
+## @deftypefn  {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@var{b})
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a})
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n})
+## @deftypefnx {} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@dots{}, @var{Fs})
+## @deftypefnx {} {} freqz (@dots{})
 ##
 ## Return the complex frequency response @var{h} of the rational IIR filter
 ## whose numerator and denominator coefficients are @var{b} and @var{a},

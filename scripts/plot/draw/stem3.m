@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stem3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} stem3 (@dots{}, @var{linespec})
-## @deftypefnx {Function File} {} stem3 (@dots{}, "filled")
-## @deftypefnx {Function File} {} stem3 (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} stem3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} stem3 (@dots{})
+## @deftypefn  {} {} stem3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} stem3 (@dots{}, @var{linespec})
+## @deftypefnx {} {} stem3 (@dots{}, "filled")
+## @deftypefnx {} {} stem3 (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} stem3 (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} stem3 (@dots{})
 ## Plot a 3-D stem graph.
 ##
 ## Stems are drawn from the height @var{z} to the location in the x-y plane

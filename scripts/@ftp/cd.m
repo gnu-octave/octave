@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cd (@var{f})
-## @deftypefnx {Function File} {} cd (@var{f}, @var{path})
+## @deftypefn  {} {} cd (@var{f})
+## @deftypefnx {} {} cd (@var{f}, @var{path})
 ## Get or set the remote directory on the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.

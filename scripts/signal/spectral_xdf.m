@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spectral_xdf (@var{x})
-## @deftypefnx {Function File} {} spectral_xdf (@var{x}, @var{win})
-## @deftypefnx {Function File} {} spectral_xdf (@var{x}, @var{win}, @var{b})
+## @deftypefn  {} {} spectral_xdf (@var{x})
+## @deftypefnx {} {} spectral_xdf (@var{x}, @var{win})
+## @deftypefnx {} {} spectral_xdf (@var{x}, @var{win}, @var{b})
 ## Return the spectral density estimator given a data vector @var{x}, window
 ## name @var{win}, and bandwidth, @var{b}.
 ##

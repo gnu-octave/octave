@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{y} =} wavread (@var{filename})
-## @deftypefnx {Function File} {[@var{y}, @var{fs}, @var{nbits}] =} wavread (@var{filename})
-## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
-## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
-## @deftypefnx {Function File} {[@dots{}] =} wavread (@dots{}, @var{datatype})
-## @deftypefnx {Function File} {@var{sz} =} wavread (@var{filename}, "size")
-## @deftypefnx {Function File} {[@var{n_samp}, @var{n_chan}] =} wavread (@var{filename}, "size")
+## @deftypefn  {} {@var{y} =} wavread (@var{filename})
+## @deftypefnx {} {[@var{y}, @var{fs}, @var{nbits}] =} wavread (@var{filename})
+## @deftypefnx {} {[@dots{}] =} wavread (@var{filename}, @var{n})
+## @deftypefnx {} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
+## @deftypefnx {} {[@dots{}] =} wavread (@dots{}, @var{datatype})
+## @deftypefnx {} {@var{sz} =} wavread (@var{filename}, "size")
+## @deftypefnx {} {[@var{n_samp}, @var{n_chan}] =} wavread (@var{filename}, "size")
 ##
 ## @code{wavread} is deprecated and will be removed in Octave version 4.6.
 ## Use @code{audioread} for the equivalent functionality.

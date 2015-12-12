@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezmesh (@var{f})
-## @deftypefnx {Function File} {} ezmesh (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezmesh (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezmesh (@dots{})
+## @deftypefn  {} {} ezmesh (@var{f})
+## @deftypefnx {} {} ezmesh (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {} ezmesh (@dots{}, @var{dom})
+## @deftypefnx {} {} ezmesh (@dots{}, @var{n})
+## @deftypefnx {} {} ezmesh (@dots{}, "circ")
+## @deftypefnx {} {} ezmesh (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezmesh (@dots{})
 ##
 ## Plot the mesh defined by a function.
 ##

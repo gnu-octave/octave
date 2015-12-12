@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cross (@var{x}, @var{y})
-## @deftypefnx {Function File} {} cross (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {} {} cross (@var{x}, @var{y})
+## @deftypefnx {} {} cross (@var{x}, @var{y}, @var{dim})
 ## Compute the vector cross product of two 3-dimensional vectors @var{x} and
 ## @var{y}.
 ##

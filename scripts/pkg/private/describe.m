@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pkg_desc_list}, @var{flag}] =} describe (@var{pkgnames}, @var{verbose}, @var{local_list}, @var{global_list})
+## @deftypefn {} {[@var{pkg_desc_list}, @var{flag}] =} describe (@var{pkgnames}, @var{verbose}, @var{local_list}, @var{global_list})
 ## Undocumented internal function.
 ## @end deftypefn
 

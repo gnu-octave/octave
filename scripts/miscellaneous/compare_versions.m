@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
+## @deftypefn {} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
 ## Compare two version strings using the given @var{operator}.
 ##
 ## This function assumes that versions @var{v1} and @var{v2} are arbitrarily

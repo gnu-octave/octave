@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{C})
-## @deftypefnx {Function File} {@var{S} =} cart2sph (@dots{})
+## @deftypefn  {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{C})
+## @deftypefnx {} {@var{S} =} cart2sph (@dots{})
 ## Transform Cartesian coordinates to spherical coordinates.
 ##
 ## The inputs @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.

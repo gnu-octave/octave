@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rename (@var{f}, @var{oldname}, @var{newname})
+## @deftypefn {} {} rename (@var{f}, @var{oldname}, @var{newname})
 ## Rename or move the remote file or directory @var{oldname} to @var{newname},
 ## over the FTP connection @var{f}.
 ##

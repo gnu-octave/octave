@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} __actual_axis_position__ (@var{h})
-## @deftypefnx {Function File} {} __actual_axis_position__ (@var{axis_struct})
+## @deftypefn  {} {} __actual_axis_position__ (@var{h})
+## @deftypefnx {} {} __actual_axis_position__ (@var{axis_struct})
 ## Undocumented internal function.
 ## @end deftypefn
 

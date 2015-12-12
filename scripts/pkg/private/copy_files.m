@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} copy_files (@var{desc}, @var{packdir}, @var{global_install})
+## @deftypefn {} {} copy_files (@var{desc}, @var{packdir}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 

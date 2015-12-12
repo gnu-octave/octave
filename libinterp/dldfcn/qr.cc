@@ -245,18 +245,17 @@ x = @var{R} \\ @var{C}\n\
 
           if (have_b > 0)
             {
-              retval(1) = q.R (economy);
-              retval(0) = q.C (args(have_b).complex_matrix_value ());
+              retval = ovl (q.C (args(have_b).complex_matrix_value ()),
+                            q.R (economy));
               if (arg.rows () < arg.columns ())
                 warning ("qr: non minimum norm solution for under-determined problem");
             }
           else if (nargout > 1)
             {
-              retval(1) = q.R (economy);
-              retval(0) = q.Q ();
+              retval = ovl (q.Q (), q.R (economy));
             }
           else
-            retval(0) = q.R (economy);
+            retval = ovl (q.R (economy));
         }
       else
         {
@@ -264,18 +263,16 @@ x = @var{R} \\ @var{C}\n\
 
           if (have_b > 0)
             {
-              retval(1) = q.R (economy);
-              retval(0) = q.C (args(have_b).matrix_value ());
+              retval = ovl (q.C (args(have_b).matrix_value ()), q.R (economy));
               if (args(0).rows () < args(0).columns ())
                 warning ("qr: non minimum norm solution for under-determined problem");
             }
           else if (nargout > 1)
             {
-              retval(1) = q.R (economy);
-              retval(0) = q.Q ();
+              retval = ovl (q.Q (), q.R (economy));
             }
           else
-            retval(0) = q.R (economy);
+            retval = ovl (q.R (economy));
         }
     }
   else
@@ -296,15 +293,14 @@ x = @var{R} \\ @var{C}\n\
                 case 1:
                   {
                     FloatQR fact (m, type);
-                    retval(0) = fact.R ();
+                    retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
                     FloatQR fact (m, type);
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
 
@@ -331,15 +327,14 @@ x = @var{R} \\ @var{C}\n\
                 case 1:
                   {
                     FloatComplexQR fact (m, type);
-                    retval(0) = fact.R ();
+                    retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
                     FloatComplexQR fact (m, type);
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
 
@@ -369,15 +364,14 @@ x = @var{R} \\ @var{C}\n\
                 case 1:
                   {
                     QR fact (m, type);
-                    retval(0) = fact.R ();
+                    retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
                     QR fact (m, type);
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
 
@@ -404,15 +398,14 @@ x = @var{R} \\ @var{C}\n\
                 case 1:
                   {
                     ComplexQR fact (m, type);
-                    retval(0) = fact.R ();
+                    retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
                     ComplexQR fact (m, type);
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
 
@@ -791,8 +784,7 @@ economized (R is square).\n\
               FloatQR fact (Q, R);
               fact.update (u, v);
 
-              retval(1) = get_qr_r (fact);
-              retval(0) = fact.Q ();
+              retval = ovl (fact.Q (), get_qr_r (fact));
             }
           else
             {
@@ -804,8 +796,7 @@ economized (R is square).\n\
               QR fact (Q, R);
               fact.update (u, v);
 
-              retval(1) = get_qr_r (fact);
-              retval(0) = fact.Q ();
+              retval = ovl (fact.Q (), get_qr_r (fact));
             }
         }
       else
@@ -824,8 +815,7 @@ economized (R is square).\n\
               FloatComplexQR fact (Q, R);
               fact.update (u, v);
 
-              retval(1) = get_qr_r (fact);
-              retval(0) = fact.Q ();
+              retval = ovl (fact.Q (), get_qr_r (fact));
             }
           else
             {
@@ -837,8 +827,7 @@ economized (R is square).\n\
               ComplexQR fact (Q, R);
               fact.update (u, v);
 
-              retval(1) = get_qr_r (fact);
-              retval(0) = fact.Q ();
+              retval = ovl (fact.Q (), get_qr_r (fact));
             }
         }
     }
@@ -990,9 +979,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.insert_row (x.row (0), j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
-
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                 else
                   {
@@ -1007,9 +994,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.insert_row (x.row (0), j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
-
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
               }
             else
@@ -1033,8 +1018,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.insert_row (x.row (0), j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                 else
                   {
@@ -1049,8 +1033,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.insert_row (x.row (0), j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
               }
 
@@ -1198,8 +1181,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.delete_row (j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                 else
                   {
@@ -1213,8 +1195,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.delete_row (j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
               }
             else
@@ -1235,8 +1216,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.delete_row (j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                 else
                   {
@@ -1250,8 +1230,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     else
                       fact.delete_row (j(0)-one);
 
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                    retval = ovl (fact.Q (), get_qr_r (fact));
                   }
               }
           }
@@ -1433,8 +1412,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
                   FloatQR fact (Q, R);
                   fact.shift_cols (i-1, j-1);
 
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
+                  retval = ovl (fact.Q (), get_qr_r (fact));
                 }
               else
                 {
@@ -1444,8 +1422,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
                   QR fact (Q, R);
                   fact.shift_cols (i-1, j-1);
 
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
+                  retval = ovl (fact.Q (), get_qr_r (fact));
                 }
             }
           else
@@ -1460,8 +1437,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
                   FloatComplexQR fact (Q, R);
                   fact.shift_cols (i-1, j-1);
 
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
+                  retval = ovl (fact.Q (), get_qr_r (fact));
                 }
               else
                 {
@@ -1471,8 +1447,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
                   ComplexQR fact (Q, R);
                   fact.shift_cols (i-1, j-1);
 
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
+                  retval = ovl (fact.Q (), get_qr_r (fact));
                 }
             }
         }

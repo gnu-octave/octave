@@ -479,8 +479,6 @@ you're absolutely sure the date string will be parsed correctly.\n\
 @seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -490,10 +488,7 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   octave_strptime t (str, fmt);
 
-  retval(1) = t.characters_converted ();
-  retval(0) = octave_value (mk_tm_map (t));
-
-  return retval;
+  return ovl (octave_value (mk_tm_map (t), t.characters_converted ()));
 }
 
 /*

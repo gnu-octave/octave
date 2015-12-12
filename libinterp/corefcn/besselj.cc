@@ -383,6 +383,10 @@ return @code{NaN}.\n\
   return do_bessel (BESSEL_J, "besselj", args, nargout);
 }
 
+/*
+%!# Function besselj is tested along with other bessels at the end of this file
+*/
+
 DEFUN (bessely, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
@@ -391,6 +395,10 @@ See besselj.\n\
 {
   return do_bessel (BESSEL_Y, "bessely", args, nargout);
 }
+
+/*
+%!# Function bessely is tested along with other bessels at the end of this file
+*/
 
 DEFUN (besseli, args, nargout,
        "-*- texinfo -*-\n\
@@ -401,6 +409,10 @@ See besselj.\n\
   return do_bessel (BESSEL_I, "besseli", args, nargout);
 }
 
+/*
+%!# Function besseli is tested along with other bessels at the end of this file
+*/
+
 DEFUN (besselk, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
@@ -409,6 +421,10 @@ See besselj.\n\
 {
   return do_bessel (BESSEL_K, "besselk", args, nargout);
 }
+
+/*
+%!# Function besselk is tested along with other bessels at the end of this file
+*/
 
 DEFUN (besselh, args, nargout,
        "-*- texinfo -*-\n\
@@ -449,6 +465,10 @@ See besselj.\n\
 
   return retval;
 }
+
+/*
+%!# Function besselh is tested along with other bessels at the end of this file
+*/
 
 DEFUN (airy, args, nargout,
        "-*- texinfo -*-\n\
@@ -555,6 +575,10 @@ return @code{NaN}.\n\
 
   return retval;
 }
+
+/*
+%!# FIXME: Function airy does not yet have BIST tests
+*/
 
 /*
 ## Test values computed with GP/PARI version 2.3.3

@@ -128,7 +128,6 @@ octave_base_value::squeeze (void) const
 {
   std::string nm = type_name ();
   error ("squeeze: invalid operation for %s type", nm.c_str ());
-  return octave_value ();
 }
 
 octave_value
@@ -160,7 +159,6 @@ octave_base_value::subsref (const std::string&,
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
-  return octave_value ();
 }
 
 octave_value_list
@@ -169,7 +167,6 @@ octave_base_value::subsref (const std::string&,
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
-  return octave_value ();
 }
 
 octave_value
@@ -196,7 +193,6 @@ octave_base_value::do_index_op (const octave_value_list&, bool)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
-  return octave_value ();
 }
 
 octave_value_list
@@ -204,7 +200,6 @@ octave_base_value::do_multi_index_op (int, const octave_value_list&)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
-  return octave_value ();
 }
 
 octave_value_list
@@ -946,16 +941,12 @@ octave_base_value::map_value (void) const
 octave_scalar_map
 octave_base_value::scalar_map_value (void) const
 {
-  octave_scalar_map retval;
-
   octave_map tmp = map_value ();
 
-  if (tmp.numel () == 1)
-    retval = tmp.checkelem (0);
-  else
+  if (tmp.numel () != 1)
     error ("invalid conversion of multi-dimensional struct to scalar struct");
 
-  return retval;
+  return octave_scalar_map (tmp.checkelem (0));
 }
 
 string_vector
@@ -1286,7 +1277,6 @@ octave_value
 octave_base_value::map (unary_mapper_t umap) const
 {
   error ("%s: not defined for %s", get_umap_name (umap), type_name ().c_str ());
-  return octave_value ();
 }
 
 void
@@ -1342,10 +1332,7 @@ octave_base_value::numeric_assign (const std::string& type,
   octave_value retval;
 
   if (idx.front ().empty ())
-    {
-      error ("missing index in indexed assignment");
-      return retval;
-    }
+    error ("missing index in indexed assignment");
 
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
@@ -1621,16 +1608,10 @@ make_idx_args (const std::string& type,
                     if (val.is_string ())
                       subs_field(i) = val;
                     else
-                      {
-                        error ("string argument required for '.' index");
-                        return retval;
-                      }
+                      error ("string argument required for '.' index");
                   }
                 else
-                  {
-                    error ("only single argument permitted for '.' index");
-                    return retval;
-                  }
+                  error ("only single argument permitted for '.' index");
               }
               break;
 

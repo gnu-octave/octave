@@ -239,10 +239,7 @@ octave_cell::subsasgn (const std::string& type,
   clear_cellstr_cache ();
 
   if (idx.front ().empty ())
-    {
-      error ("missing index in indexed assignment");
-      return retval;
-    }
+    error ("missing index in indexed assignment");
 
   if (n > 1)
     {
@@ -546,7 +543,6 @@ bool
 octave_cell::is_true (void) const
 {
   error ("invalid conversion from cell array to logical value");
-  return false;
 }
 
 octave_value_list
@@ -770,8 +766,6 @@ octave_cell::save_ascii (std::ostream& os)
 bool
 octave_cell::load_ascii (std::istream& is)
 {
-  bool success = true;
-
   clear_cellstr_cache ();
 
   string_vector keywords(2);
@@ -813,26 +807,16 @@ octave_cell::load_ascii (std::istream& is)
                         tmp.elem (i) = t2;
                     }
                   else
-                    {
-                      error ("load: cell array element had unexpected name");
-                      success = false;
-                      break;
-                    }
+                    error ("load: cell array element had unexpected name");
                 }
 
               if (is)
                 matrix = tmp;
               else
-                {
-                  error ("load: failed to load matrix constant");
-                  success = false;
-                }
+                error ("load: failed to load matrix constant");
             }
           else
-            {
-              error ("load: failed to extract number of rows and columns");
-              success = false;
-            }
+            error ("load: failed to extract number of rows and columns");
         }
       else if (kw == "rows")
         {
@@ -862,23 +846,14 @@ octave_cell::load_ascii (std::istream& is)
                                 tmp.elem (i, j) = t2;
                             }
                           else
-                            {
-                              error ("load: cell array element had unexpected name");
-                              success = false;
-                              goto cell_read_error;
-                            }
+                            error ("load: cell array element had unexpected name");
                         }
                     }
-
-                cell_read_error:
 
                   if (is)
                     matrix = tmp;
                   else
-                    {
-                      error ("load: failed to load cell element");
-                      success = false;
-                    }
+                    error ("load: failed to load cell element");
                 }
               else if (nr == 0 || nc == 0)
                 matrix = Cell (nr, nc);
@@ -886,21 +861,15 @@ octave_cell::load_ascii (std::istream& is)
                 panic_impossible ();
             }
           else
-            {
-              error ("load: failed to extract number of rows and columns for cell array");
-              success = false;
-            }
+            error ("load: failed to extract number of rows and columns for cell array");
         }
       else
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    error ("load: failed to extract number of rows and columns");
 
-  return success;
+  return true;
 }
 
 bool
@@ -942,7 +911,6 @@ octave_cell::load_binary (std::istream& is, bool swap,
 {
   clear_cellstr_cache ();
 
-  bool success = true;
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
     return false;
@@ -996,22 +964,15 @@ octave_cell::load_binary (std::istream& is, bool swap,
             tmp.elem (i) = t2;
         }
       else
-        {
-          error ("load: cell array element had unexpected name");
-          success = false;
-          break;
-        }
+        error ("load: cell array element had unexpected name");
     }
 
   if (is)
     matrix = tmp;
   else
-    {
-      error ("load: failed to load matrix constant");
-      success = false;
-    }
+    error ("load: failed to load matrix constant");
 
-  return success;
+  return true;
 }
 
 void *

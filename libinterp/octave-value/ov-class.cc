@@ -276,10 +276,7 @@ octave_class::dotref (const octave_value_list& idx)
   octave_base_value *obvp = find_parent_class (method_class);
 
   if (obvp == 0)
-    {
-      error ("malformed class");
-      return retval;
-    }
+    error ("malformed class");
 
   octave_map my_map = (obvp != this) ? obvp->map_value () : map;
 
@@ -1225,7 +1222,6 @@ octave_class::load_ascii (std::istream& is)
 {
   octave_idx_type len = 0;
   std::string classname;
-  bool success = true;
 
   if (extract_keyword (is, "classname", classname) && classname != "")
     {
@@ -1272,10 +1268,7 @@ octave_class::load_ascii (std::istream& is)
                     }
                 }
               else
-                {
-                  error ("load: failed to load class");
-                  success = false;
-                }
+                error ("load: failed to load class");
             }
           else if (len == 0)
             {
@@ -1286,18 +1279,12 @@ octave_class::load_ascii (std::istream& is)
             panic_impossible ();
         }
       else
-        {
-          error ("load: failed to extract number of elements in class");
-          success = false;
-        }
+        error ("load: failed to extract number of elements in class");
     }
   else
-    {
-      error ("load: failed to extract name of class");
-      success = false;
-    }
+    error ("load: failed to extract name of class");
 
-  return success;
+  return true;
 }
 
 bool
@@ -1697,7 +1684,6 @@ std::map<std::string, octave_class::exemplar_info> octave_class::exemplar_map;
 bool
 octave_class::exemplar_info::compare (const octave_value& obj) const
 {
-  bool retval = true;
 
   if (obj.is_object ())
     {
@@ -1710,11 +1696,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
           for (octave_idx_type i = 0; i < nfields (); i++)
             {
               if (obj_fnames[i] != fnames[i])
-                {
-                  retval = false;
-                  error ("mismatch in field names");
-                  break;
-                }
+                error ("mismatch in field names");
             }
 
           if (nparents () == obj.nparents ())
@@ -1729,32 +1711,19 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
               while (p != obj_parents.end ())
                 {
                   if (*p++ != *q++)
-                    {
-                      retval = false;
-                      error ("mismatch in parent classes");
-                      break;
-                    }
+                    error ("mismatch in parent classes");
                 }
             }
           else
-            {
-              retval = false;
-              error ("mismatch in number of parent classes");
-            }
+            error ("mismatch in number of parent classes");
         }
       else
-        {
-          retval = false;
-          error ("mismatch in number of fields");
-        }
+        error ("mismatch in number of fields");
     }
   else
-    {
-      retval = false;
-      error ("invalid comparison of class exemplar to non-class object");
-    }
+    error ("invalid comparison of class exemplar to non-class object");
 
-  return retval;
+  return true;
 }
 
 DEFUN (class, args, ,
@@ -2080,14 +2049,9 @@ This function may only be called from a class constructor.\n\
 @seealso{inferiorto}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   octave_function *fcn = octave_call_stack::caller ();
   if ((! fcn) || (! fcn->is_class_constructor ()))
-    {
-      error ("superiorto: invalid call from outside class constructor");
-      return retval;
-    }
+    error ("superiorto: invalid call from outside class constructor");
 
   for (int i = 0; i < args.length (); i++)
     {
@@ -2100,14 +2064,11 @@ This function may only be called from a class constructor.\n\
 
       std::string sup_class = fcn->name ();
       if (! symbol_table::set_class_relationship (sup_class, inf_class))
-        {
-          error ("superiorto: opposite precedence already set for %s and %s",
-                 sup_class.c_str (), inf_class.c_str ());
-          break;
-        }
+        error ("superiorto: opposite precedence already set for %s and %s",
+               sup_class.c_str (), inf_class.c_str ());
     }
 
-  return retval;
+  return octave_value ();
 }
 
 DEFUN (inferiorto, args, ,
@@ -2121,34 +2082,23 @@ This function may only be called from a class constructor.\n\
 @seealso{superiorto}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   octave_function *fcn = octave_call_stack::caller ();
   if ((! fcn) || (! fcn->is_class_constructor ()))
-    {
-      error ("inferiorto: invalid call from outside class constructor");
-      return retval;
-    }
+    error ("inferiorto: invalid call from outside class constructor");
 
   for (int i = 0; i < args.length (); i++)
     {
       std::string sup_class = args(i).xstring_value ("inferiorto: CLASS_NAME must be a string");
 
       if (is_built_in_class (sup_class))
-        {
-          error ("inferiorto: cannot give user-defined class lower "
-                 "precedence than built-in class");
-          break;
-        }
+        error ("inferiorto: cannot give user-defined class lower "
+               "precedence than built-in class");
 
       std::string inf_class = fcn->name ();
       if (! symbol_table::set_class_relationship (sup_class, inf_class))
-        {
-          error ("inferiorto: opposite precedence already set for %s and %s",
-                 inf_class.c_str (), sup_class.c_str ());
-          break;
-        }
+        error ("inferiorto: opposite precedence already set for %s and %s",
+               inf_class.c_str (), sup_class.c_str ());
     }
 
-  return retval;
+  return octave_value();
 }

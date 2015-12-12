@@ -631,7 +631,7 @@ When opening a new file that does not yet exist, permissions will be set to\n\
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
 
   if (nargin == 1)

@@ -152,104 +152,91 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   if (nargout > 2 || nargin < 1 || nargin > 3)
     usage ("ccolamd: incorrect number of input and/or output arguments");
-  else
+
+  retval.resize (nargout == 2 ? 2 : 1);
+
+  // Get knobs
+  OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
+  CCOLAMD_NAME (_set_defaults) (knobs);
+
+  // Check for user-passed knobs
+  if (nargin > 1)
     {
-      // Get knobs
-      OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
-      CCOLAMD_NAME (_set_defaults) (knobs);
+      NDArray User_knobs = args(1).array_value ();
+      int nel_User_knobs = User_knobs.numel ();
 
-      // Check for user-passed knobs
-      if (nargin > 1)
+      if (nel_User_knobs > 0)
+        knobs[CCOLAMD_LU] = (User_knobs(0) != 0);
+      if (nel_User_knobs > 1)
+        knobs[CCOLAMD_DENSE_ROW] = User_knobs(1);
+      if (nel_User_knobs > 2)
+        knobs[CCOLAMD_DENSE_COL] = User_knobs(2);
+      if (nel_User_knobs > 3)
+        knobs[CCOLAMD_AGGRESSIVE] = (User_knobs(3) != 0);
+      if (nel_User_knobs > 4)
+        spumoni = (User_knobs(4) != 0);
+
+      // print knob settings if spumoni is set
+      if (spumoni)
         {
-          NDArray User_knobs = args(1).array_value ();
-          int nel_User_knobs = User_knobs.numel ();
-
-          if (nel_User_knobs > 0)
-            knobs[CCOLAMD_LU] = (User_knobs(0) != 0);
-          if (nel_User_knobs > 1)
-            knobs[CCOLAMD_DENSE_ROW] = User_knobs(1);
-          if (nel_User_knobs > 2)
-            knobs[CCOLAMD_DENSE_COL] = User_knobs(2);
-          if (nel_User_knobs > 3)
-            knobs[CCOLAMD_AGGRESSIVE] = (User_knobs(3) != 0);
-          if (nel_User_knobs > 4)
-            spumoni = (User_knobs(4) != 0);
-
-          // print knob settings if spumoni is set
-          if (spumoni)
-            {
-              octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << "."
-                            <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
-                            << ":\nknobs(1): " << User_knobs(0) << ", order for ";
-              if (knobs[CCOLAMD_LU] != 0)
-                octave_stdout << "lu (A)\n";
-              else
-                octave_stdout << "chol (A'*A)\n";
-
-              if (knobs[CCOLAMD_DENSE_ROW] >= 0)
-                octave_stdout << "knobs(2): " << User_knobs(1)
-                              << ", rows with > max (16,"
-                              << knobs[CCOLAMD_DENSE_ROW]
-                              << "*sqrt (size(A,2)))"
-                              << " entries removed\n";
-              else
-                octave_stdout << "knobs(2): " << User_knobs(1)
-                              << ", no dense rows removed\n";
-
-              if (knobs[CCOLAMD_DENSE_COL] >= 0)
-                octave_stdout << "knobs(3): " << User_knobs(2)
-                              << ", cols with > max (16,"
-                              << knobs[CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
-                              << " entries removed\n";
-              else
-                octave_stdout << "knobs(3): " << User_knobs(2)
-                              << ", no dense columns removed\n";
-
-              if (knobs[CCOLAMD_AGGRESSIVE] != 0)
-                octave_stdout << "knobs(4): " << User_knobs(3)
-                              << ", aggressive absorption: yes";
-              else
-                octave_stdout << "knobs(4): " << User_knobs(3)
-                              << ", aggressive absorption: no";
-
-              octave_stdout << "knobs(5): " << User_knobs(4)
-                            << ", statistics and knobs printed\n";
-            }
-        }
-
-      octave_idx_type n_row, n_col, nnz;
-      octave_idx_type *ridx, *cidx;
-      SparseComplexMatrix scm;
-      SparseMatrix sm;
-
-      if (args(0).is_sparse_type ())
-        {
-          if (args(0).is_complex_type ())
-            {
-              scm = args(0). sparse_complex_matrix_value ();
-              n_row = scm.rows ();
-              n_col = scm.cols ();
-              nnz = scm.nnz ();
-              ridx = scm.xridx ();
-              cidx = scm.xcidx ();
-            }
+          octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << "."
+                        <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
+                        << ":\nknobs(1): " << User_knobs(0) << ", order for ";
+          if (knobs[CCOLAMD_LU] != 0)
+            octave_stdout << "lu (A)\n";
           else
-            {
-              sm = args(0).sparse_matrix_value ();
+            octave_stdout << "chol (A'*A)\n";
 
-              n_row = sm.rows ();
-              n_col = sm.cols ();
-              nnz = sm.nnz ();
-              ridx = sm.xridx ();
-              cidx = sm.xcidx ();
-            }
+          if (knobs[CCOLAMD_DENSE_ROW] >= 0)
+            octave_stdout << "knobs(2): " << User_knobs(1)
+                          << ", rows with > max (16,"
+                          << knobs[CCOLAMD_DENSE_ROW]
+                          << "*sqrt (size(A,2)))"
+                          << " entries removed\n";
+          else
+            octave_stdout << "knobs(2): " << User_knobs(1)
+                          << ", no dense rows removed\n";
+
+          if (knobs[CCOLAMD_DENSE_COL] >= 0)
+            octave_stdout << "knobs(3): " << User_knobs(2)
+                          << ", cols with > max (16,"
+                          << knobs[CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
+                          << " entries removed\n";
+          else
+            octave_stdout << "knobs(3): " << User_knobs(2)
+                          << ", no dense columns removed\n";
+
+          if (knobs[CCOLAMD_AGGRESSIVE] != 0)
+            octave_stdout << "knobs(4): " << User_knobs(3)
+                          << ", aggressive absorption: yes";
+          else
+            octave_stdout << "knobs(4): " << User_knobs(3)
+                          << ", aggressive absorption: no";
+
+          octave_stdout << "knobs(5): " << User_knobs(4)
+                        << ", statistics and knobs printed\n";
+        }
+    }
+
+  octave_idx_type n_row, n_col, nnz;
+  octave_idx_type *ridx, *cidx;
+  SparseComplexMatrix scm;
+  SparseMatrix sm;
+
+  if (args(0).is_sparse_type ())
+    {
+      if (args(0).is_complex_type ())
+        {
+          scm = args(0). sparse_complex_matrix_value ();
+          n_row = scm.rows ();
+          n_col = scm.cols ();
+          nnz = scm.nnz ();
+          ridx = scm.xridx ();
+          cidx = scm.xcidx ();
         }
       else
         {
-          if (args(0).is_complex_type ())
-            sm = SparseMatrix (real (args(0).complex_matrix_value ()));
-          else
-            sm = SparseMatrix (args(0).matrix_value ());
+          sm = args(0).sparse_matrix_value ();
 
           n_row = sm.rows ();
           n_col = sm.cols ();
@@ -257,76 +244,89 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }
-
-      // Allocate workspace for ccolamd
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
-      for (octave_idx_type i = 0; i < n_col+1; i++)
-        p[i] = cidx[i];
-
-      octave_idx_type Alen = CCOLAMD_NAME (_recommended) (nnz, n_row, n_col);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
-      for (octave_idx_type i = 0; i < nnz; i++)
-        A[i] = ridx[i];
-
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
-
-      if (nargin > 2)
-        {
-          NDArray in_cmember = args(2).array_value ();
-          octave_idx_type cslen = in_cmember.numel ();
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
-          for (octave_idx_type i = 0; i < cslen; i++)
-            // convert cmember from 1-based to 0-based
-            cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
-
-          if (cslen != n_col)
-            error ("ccolamd: CMEMBER must be of length equal to #cols of A");
-          else
-            // Order the columns (destroys A)
-            if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p,
-                                   knobs, stats, cmember))
-              {
-                CCOLAMD_NAME (_report) (stats) ;
-
-                error ("ccolamd: internal error!");
-              }
-        }
+    }
+  else
+    {
+      if (args(0).is_complex_type ())
+        sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
+        sm = SparseMatrix (args(0).matrix_value ());
+
+      n_row = sm.rows ();
+      n_col = sm.cols ();
+      nnz = sm.nnz ();
+      ridx = sm.xridx ();
+      cidx = sm.xcidx ();
+    }
+
+  // Allocate workspace for ccolamd
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
+  for (octave_idx_type i = 0; i < n_col+1; i++)
+    p[i] = cidx[i];
+
+  octave_idx_type Alen = CCOLAMD_NAME (_recommended) (nnz, n_row, n_col);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
+  for (octave_idx_type i = 0; i < nnz; i++)
+    A[i] = ridx[i];
+
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
+
+  if (nargin > 2)
+    {
+      NDArray in_cmember = args(2).array_value ();
+      octave_idx_type cslen = in_cmember.numel ();
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
+      for (octave_idx_type i = 0; i < cslen; i++)
+        // convert cmember from 1-based to 0-based
+        cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
+
+      if (cslen != n_col)
+        error ("ccolamd: CMEMBER must be of length equal to #cols of A");
+      else
+        // Order the columns (destroys A)
+        if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p,
+                               knobs, stats, cmember))
+          {
+            CCOLAMD_NAME (_report) (stats) ;
+
+            error ("ccolamd: internal error!");
+          }
+    }
+  else
+    {
+      // Order the columns (destroys A)
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
         {
-          // Order the columns (destroys A)
-          if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
-            {
-              CCOLAMD_NAME (_report) (stats) ;
+          CCOLAMD_NAME (_report) (stats) ;
 
-              error ("ccolamd: internal error!");
-            }
+          error ("ccolamd: internal error!");
         }
+    }
 
-      // return the permutation vector
-      NDArray out_perm (dim_vector (1, n_col));
-      for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = p[i] + 1;
+  // return the permutation vector
+  NDArray out_perm (dim_vector (1, n_col));
+  for (octave_idx_type i = 0; i < n_col; i++)
+    out_perm(i) = p[i] + 1;
 
-      retval(0) = out_perm;
+  retval(0) = out_perm;
 
-      // print stats if spumoni > 0
-      if (spumoni > 0)
-        CCOLAMD_NAME (_report) (stats) ;
+  // print stats if spumoni > 0
+  if (spumoni > 0)
+    CCOLAMD_NAME (_report) (stats) ;
 
-      // Return the stats vector
-      if (nargout == 2)
-        {
-          NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
-          for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-            out_stats(i) = stats[i] ;
-          retval(1) = out_stats;
+  // Return the stats vector
+  if (nargout == 2)
+    {
+      NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
+      for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
+        out_stats(i) = stats[i] ;
+      retval(1) = out_stats;
 
-          // fix stats (5) and (6), for 1-based information on
-          // jumbled matrix.  note that this correction doesn't
-          // occur if symamd returns FALSE
-          out_stats (CCOLAMD_INFO1) ++ ;
-          out_stats (CCOLAMD_INFO2) ++ ;
-        }
+      // fix stats (5) and (6), for 1-based information on
+      // jumbled matrix.  note that this correction doesn't
+      // occur if symamd returns FALSE
+      out_stats (CCOLAMD_INFO1) ++ ;
+      out_stats (CCOLAMD_INFO2) ++ ;
     }
 
 #else
@@ -412,169 +412,154 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   if (nargout > 2 || nargin < 1 || nargin > 3)
     usage ("ccolamd: incorrect number of input and/or output arguments");
-  else
+
+  retval.resize (nargout == 2 ? 2 : 1);
+
+  // Get knobs
+  OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
+  CCOLAMD_NAME (_set_defaults) (knobs);
+
+  // Check for user-passed knobs
+  if (nargin > 1)
     {
-      // Get knobs
-      OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
-      CCOLAMD_NAME (_set_defaults) (knobs);
+      NDArray User_knobs = args(1).array_value ();
+      int nel_User_knobs = User_knobs.numel ();
 
-      // Check for user-passed knobs
-      if (nargin > 1)
+      if (nel_User_knobs > 0)
+        knobs[CCOLAMD_DENSE_ROW] = User_knobs(0);
+      if (nel_User_knobs > 0)
+        knobs[CCOLAMD_AGGRESSIVE] = User_knobs(1);
+      if (nel_User_knobs > 1)
+        spumoni = static_cast<int> (User_knobs(2));
+
+      // print knob settings if spumoni is set
+      if (spumoni)
         {
-          NDArray User_knobs = args(1).array_value ();
-          int nel_User_knobs = User_knobs.numel ();
+          octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION
+                        << "." << CCOLAMD_SUB_VERSION
+                        << ", " << CCOLAMD_DATE << "\n";
 
-          if (nel_User_knobs > 0)
-            knobs[CCOLAMD_DENSE_ROW] = User_knobs(0);
-          if (nel_User_knobs > 0)
-            knobs[CCOLAMD_AGGRESSIVE] = User_knobs(1);
-          if (nel_User_knobs > 1)
-            spumoni = static_cast<int> (User_knobs(2));
-
-          // print knob settings if spumoni is set
-          if (spumoni)
-            {
-              octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION
-                            << "." << CCOLAMD_SUB_VERSION
-                            << ", " << CCOLAMD_DATE << "\n";
-
-              if (knobs[CCOLAMD_DENSE_ROW] >= 0)
-                octave_stdout << "knobs(1): " << User_knobs(0)
-                              << ", rows/cols with > max (16,"
-                              << knobs[CCOLAMD_DENSE_ROW]
-                              << "*sqrt (size(A,2)))"
-                              << " entries removed\n";
-              else
-                octave_stdout << "knobs(1): " << User_knobs(0)
-                              << ", no dense rows/cols removed\n";
-
-              if (knobs[CCOLAMD_AGGRESSIVE] != 0)
-                octave_stdout << "knobs(2): " << User_knobs(1)
-                              << ", aggressive absorption: yes";
-              else
-                octave_stdout << "knobs(2): " << User_knobs(1)
-                              << ", aggressive absorption: no";
-
-
-              octave_stdout << "knobs(3): " << User_knobs(2)
-                            << ", statistics and knobs printed\n";
-            }
-        }
-
-      octave_idx_type n_row, n_col;
-      octave_idx_type *ridx, *cidx;
-      SparseMatrix sm;
-      SparseComplexMatrix scm;
-
-      if (args(0).is_sparse_type ())
-        {
-          if (args(0).is_complex_type ())
-            {
-              scm = args(0).sparse_complex_matrix_value ();
-              n_row = scm.rows ();
-              n_col = scm.cols ();
-              ridx = scm.xridx ();
-              cidx = scm.xcidx ();
-            }
+          if (knobs[CCOLAMD_DENSE_ROW] >= 0)
+            octave_stdout << "knobs(1): " << User_knobs(0)
+                          << ", rows/cols with > max (16,"
+                          << knobs[CCOLAMD_DENSE_ROW]
+                          << "*sqrt (size(A,2)))"
+                          << " entries removed\n";
           else
-            {
-              sm = args(0).sparse_matrix_value ();
-              n_row = sm.rows ();
-              n_col = sm.cols ();
-              ridx = sm.xridx ();
-              cidx = sm.xcidx ();
-            }
+            octave_stdout << "knobs(1): " << User_knobs(0)
+                          << ", no dense rows/cols removed\n";
+
+          if (knobs[CCOLAMD_AGGRESSIVE] != 0)
+            octave_stdout << "knobs(2): " << User_knobs(1)
+                          << ", aggressive absorption: yes";
+          else
+            octave_stdout << "knobs(2): " << User_knobs(1)
+                          << ", aggressive absorption: no";
+
+
+          octave_stdout << "knobs(3): " << User_knobs(2)
+                        << ", statistics and knobs printed\n";
+        }
+    }
+
+  octave_idx_type n_row, n_col;
+  octave_idx_type *ridx, *cidx;
+  SparseMatrix sm;
+  SparseComplexMatrix scm;
+
+  if (args(0).is_sparse_type ())
+    {
+      if (args(0).is_complex_type ())
+        {
+          scm = args(0).sparse_complex_matrix_value ();
+          n_row = scm.rows ();
+          n_col = scm.cols ();
+          ridx = scm.xridx ();
+          cidx = scm.xcidx ();
         }
       else
         {
-          if (args(0).is_complex_type ())
-            sm = SparseMatrix (real (args(0).complex_matrix_value ()));
-          else
-            sm = SparseMatrix (args(0).matrix_value ());
-
+          sm = args(0).sparse_matrix_value ();
           n_row = sm.rows ();
           n_col = sm.cols ();
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }
-
-      if (n_row != n_col)
-        error ("csymamd: matrix S must be square");
-
-      // Allocate workspace for symamd
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
-
-      if (nargin > 2)
-        {
-          NDArray in_cmember = args(2).array_value ();
-          octave_idx_type cslen = in_cmember.numel ();
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
-          for (octave_idx_type i = 0; i < cslen; i++)
-            // convert cmember from 1-based to 0-based
-            cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
-
-          if (cslen != n_col)
-            error ("csymamd: CMEMBER must be of length equal to #cols of A");
-          else if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                                     &calloc, &free, cmember, -1))
-            {
-              CSYMAMD_NAME (_report) (stats) ;
-
-              error ("csymamd: internal error!") ;
-            }
-        }
+    }
+  else
+    {
+      if (args(0).is_complex_type ())
+        sm = SparseMatrix (real (args(0).complex_matrix_value ()));
       else
+        sm = SparseMatrix (args(0).matrix_value ());
+
+      n_row = sm.rows ();
+      n_col = sm.cols ();
+      ridx = sm.xridx ();
+      cidx = sm.xcidx ();
+    }
+
+  if (n_row != n_col)
+    error ("csymamd: matrix S must be square");
+
+  // Allocate workspace for symamd
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
+
+  if (nargin > 2)
+    {
+      NDArray in_cmember = args(2).array_value ();
+      octave_idx_type cslen = in_cmember.numel ();
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
+      for (octave_idx_type i = 0; i < cslen; i++)
+        // convert cmember from 1-based to 0-based
+        cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
+
+      if (cslen != n_col)
+        error ("csymamd: CMEMBER must be of length equal to #cols of A");
+      else if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+                                 &calloc, &free, cmember, -1))
         {
-          if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                                &calloc, &free, 0, -1))
-            {
-              CSYMAMD_NAME (_report) (stats) ;
+          CSYMAMD_NAME (_report) (stats) ;
 
-              error ("csymamd: internal error!") ;
-            }
+          error ("csymamd: internal error!") ;
         }
-
-      // return the permutation vector
-      NDArray out_perm (dim_vector (1, n_col));
-      for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = perm[i] + 1;
-
-      retval(0) = out_perm;
-
-      // Return the stats vector
-      if (nargout == 2)
+    }
+  else
+    {
+      if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+                            &calloc, &free, 0, -1))
         {
-          NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
-          for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-            out_stats(i) = stats[i] ;
-          retval(1) = out_stats;
+          CSYMAMD_NAME (_report) (stats) ;
 
-          // fix stats (5) and (6), for 1-based information on
-          // jumbled matrix.  note that this correction doesn't
-          // occur if symamd returns FALSE
-          out_stats (CCOLAMD_INFO1) ++ ;
-          out_stats (CCOLAMD_INFO2) ++ ;
+          error ("csymamd: internal error!") ;
         }
+    }
 
-      // print stats if spumoni > 0
-      if (spumoni > 0)
-        CSYMAMD_NAME (_report) (stats) ;
+  // return the permutation vector
+  NDArray out_perm (dim_vector (1, n_col));
+  for (octave_idx_type i = 0; i < n_col; i++)
+    out_perm(i) = perm[i] + 1;
 
-      // Return the stats vector
-      if (nargout == 2)
-        {
-          NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
-          for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-            out_stats(i) = stats[i] ;
-          retval(1) = out_stats;
+  retval(0) = out_perm;
 
-          // fix stats (5) and (6), for 1-based information on
-          // jumbled matrix.  note that this correction doesn't
-          // occur if symamd returns FALSE
-          out_stats (CCOLAMD_INFO1) ++ ;
-          out_stats (CCOLAMD_INFO2) ++ ;
-        }
+  // print stats if spumoni > 0
+  if (spumoni > 0)
+    CSYMAMD_NAME (_report) (stats) ;
+
+  // Return the stats vector
+  if (nargout == 2)
+    {
+      NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
+      for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
+        out_stats(i) = stats[i] ;
+      retval(1) = out_stats;
+
+      // fix stats (5) and (6), for 1-based information on
+      // jumbled matrix.  note that this correction doesn't
+      // occur if symamd returns FALSE
+      out_stats (CCOLAMD_INFO1) ++ ;
+      out_stats (CCOLAMD_INFO2) ++ ;
     }
 
 #else

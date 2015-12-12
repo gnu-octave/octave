@@ -2399,21 +2399,15 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 @seealso{horzcat, vertcat}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  if (args.length () > 0)
-    {
-      int dim = args(0).xint_value ("cat: DIM must be an integer") - 1;
-
-      if (dim >= 0)
-        retval = do_cat (args.slice (1, args.length () - 1), dim, "cat");
-      else
-        error ("cat: DIM must be a valid dimension");
-    }
-  else
+  if (args.length () == 0)
     print_usage ();
 
-  return retval;
+  int dim = args(0).xint_value ("cat: DIM must be an integer") - 1;
+
+  if (dim < 0)
+    error ("cat: DIM must be a valid dimension");
+
+  return octave_value (do_cat (args.slice (1, args.length () - 1), dim, "cat"));
 }
 
 /*
@@ -2562,28 +2556,20 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 static octave_value
 do_permute (const octave_value_list& args, bool inv)
 {
-  octave_value retval;
-
-  if (args.length () == 2 && args(1).length () >= args(1).ndims ())
-    {
-      Array<int> vec = args(1).int_vector_value ();
-
-      // FIXME: maybe we should create an idx_vector object
-      // here and pass that to permute?
-
-      int n = vec.numel ();
-
-      for (int i = 0; i < n; i++)
-        vec(i)--;
-
-      octave_value ret = args(0).permute (vec, inv);
-
-      retval = ret;
-    }
-  else
+  if (args.length () != 2 || args(1).length () < args(1).ndims ())
     print_usage ();
 
-  return retval;
+  Array<int> vec = args(1).int_vector_value ();
+
+  // FIXME: maybe we should create an idx_vector object here
+  //        and pass that to permute?
+
+  int n = vec.numel ();
+
+  for (int i = 0; i < n; i++)
+    vec(i)--;
+
+  return octave_value (args(0).permute (vec, inv));
 }
 
 DEFUN (permute, args, ,
@@ -2722,8 +2708,12 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @seealso{size}\n\
 @end deftypefn")
 {
-  octave_value retval;
   int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     retval = args(0).numel ();
@@ -2733,8 +2723,6 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
       // an overloaded call, not to builtin!
       retval = dims_to_numel (args(0).dims (), args.slice (1, nargin-1));
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -7736,69 +7724,64 @@ endfor\n\
 @seealso{repmat, cat}\n\
 @end deftypefn")
 {
+  if (args.length () != 2)
+    print_usage ();
+
   octave_value retval;
 
-  if (args.length () == 2)
+  const Matrix rm = args(1).matrix_value ();
+
+  if (rm.rows () != 2 || rm.ndims () != 2)
+    error ("repelems: R must be a matrix with two rows");
+  else
     {
       octave_value x = args(0);
 
-      const Matrix rm = args(1).matrix_value ();
+      NoAlias< Array<octave_idx_type> > r (rm.dims ());
 
-      if (rm.rows () != 2 || rm.ndims () != 2)
+      for (octave_idx_type i = 0; i < rm.numel (); i++)
         {
-          error ("repelems: R must be a matrix with two rows");
-          return retval;
-        }
-      else
-        {
-          NoAlias< Array<octave_idx_type> > r (rm.dims ());
-
-          for (octave_idx_type i = 0; i < rm.numel (); i++)
+          octave_idx_type rx = rm(i);
+          if (static_cast<double> (rx) != rm(i))
             {
-              octave_idx_type rx = rm(i);
-              if (static_cast<double> (rx) != rm(i))
-                {
-                  error ("repelems: R must be a matrix of integers");
-                  return retval;
-                }
-
-              r(i) = rx;
+              error ("repelems: R must be a matrix of integers");
+              return retval;
             }
 
-          switch (x.builtin_type ())
-            {
+          r(i) = rx;
+        }
+
+      switch (x.builtin_type ())
+        {
 #define BTYP_BRANCH(X, EX) \
-            case btyp_ ## X: \
-              retval = do_repelems (x.EX ## _value (), r); \
-              break;
+        case btyp_ ## X: \
+          retval = do_repelems (x.EX ## _value (), r); \
+          break;
 
-              BTYP_BRANCH (double, array);
-              BTYP_BRANCH (float, float_array);
-              BTYP_BRANCH (complex, complex_array);
-              BTYP_BRANCH (float_complex, float_complex_array);
-              BTYP_BRANCH (bool, bool_array);
-              BTYP_BRANCH (char, char_array);
+          BTYP_BRANCH (double, array);
+          BTYP_BRANCH (float, float_array);
+          BTYP_BRANCH (complex, complex_array);
+          BTYP_BRANCH (float_complex, float_complex_array);
+          BTYP_BRANCH (bool, bool_array);
+          BTYP_BRANCH (char, char_array);
 
-              BTYP_BRANCH (int8,  int8_array);
-              BTYP_BRANCH (int16, int16_array);
-              BTYP_BRANCH (int32, int32_array);
-              BTYP_BRANCH (int64, int64_array);
-              BTYP_BRANCH (uint8,  uint8_array);
-              BTYP_BRANCH (uint16, uint16_array);
-              BTYP_BRANCH (uint32, uint32_array);
-              BTYP_BRANCH (uint64, uint64_array);
+          BTYP_BRANCH (int8,  int8_array);
+          BTYP_BRANCH (int16, int16_array);
+          BTYP_BRANCH (int32, int32_array);
+          BTYP_BRANCH (int64, int64_array);
+          BTYP_BRANCH (uint8,  uint8_array);
+          BTYP_BRANCH (uint16, uint16_array);
+          BTYP_BRANCH (uint32, uint32_array);
+          BTYP_BRANCH (uint64, uint64_array);
 
-              BTYP_BRANCH (cell, cell);
-              //BTYP_BRANCH (struct, map);//FIXME
+          BTYP_BRANCH (cell, cell);
+          //BTYP_BRANCH (struct, map);//FIXME
 #undef BTYP_BRANCH
 
-            default:
-              gripe_wrong_type_arg ("repelems", x);
-            }
+        default:
+          gripe_wrong_type_arg ("repelems", x);
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -7816,73 +7799,73 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 
   if (args.length () != 1)
     print_usage ();
-  else
-    {
-      if (! args(0).is_numeric_type ())
-        error ("base64_encode: encoding is supported only for numeric arrays");
-      else if (args(0).is_complex_type ()
-               || args(0).is_sparse_type ())
-        error ("base64_encode: encoding complex or sparse data is not supported");
-      else if (args(0).is_integer_type ())
-        {
-#define MAKE_INT_BRANCH(X) \
-          if (args(0).is_ ## X ## _type ()) \
-            { \
-              const X##NDArray in = args(0).  X## _array_value (); \
-              size_t inlen = \
-                in.numel () * sizeof (X## _t) / sizeof (char); \
-              const char* inc = \
-                reinterpret_cast<const char*> (in.data ()); \
-              char* out; \
-              if (octave_base64_encode (inc, inlen, &out)) \
-                { \
-                  retval(0) = octave_value (out); \
-                  ::free (out); \
-                } \
-            }
 
-          MAKE_INT_BRANCH(int8)
-          else MAKE_INT_BRANCH(int16)
-          else MAKE_INT_BRANCH(int32)
-          else MAKE_INT_BRANCH(int64)
-          else MAKE_INT_BRANCH(uint8)
-          else MAKE_INT_BRANCH(uint16)
-          else MAKE_INT_BRANCH(uint32)
-          else MAKE_INT_BRANCH(uint64)
+  if (! args(0).is_numeric_type ())
+    error ("base64_encode: encoding is supported only for numeric arrays");
+  else if (args(0).is_complex_type ()
+           || args(0).is_sparse_type ())
+    error ("base64_encode: encoding complex or sparse data is not supported");
+
+  if (args(0).is_integer_type ())
+    {
+#define MAKE_INT_BRANCH(X) \
+      if (args(0).is_ ## X ## _type ()) \
+        { \
+          const X##NDArray in = args(0).  X## _array_value (); \
+          size_t inlen = \
+            in.numel () * sizeof (X## _t) / sizeof (char); \
+          const char* inc = \
+            reinterpret_cast<const char*> (in.data ()); \
+          char* out; \
+          if (octave_base64_encode (inc, inlen, &out)) \
+            { \
+              retval(0) = octave_value (out); \
+              ::free (out); \
+            } \
+        }
+
+      MAKE_INT_BRANCH(int8)
+      else MAKE_INT_BRANCH(int16)
+      else MAKE_INT_BRANCH(int32)
+      else MAKE_INT_BRANCH(int64)
+      else MAKE_INT_BRANCH(uint8)
+      else MAKE_INT_BRANCH(uint16)
+      else MAKE_INT_BRANCH(uint32)
+      else MAKE_INT_BRANCH(uint64)
 #undef MAKE_INT_BRANCH
 
-          else
-            panic_impossible ();
-        }
-      else if (args(0).is_single_type ())
-        {
-          const Array<float> in = args(0).float_array_value ();
-          size_t inlen;
-          inlen = in.numel () * sizeof (float) / sizeof (char);
-          const char*  inc;
-          inc = reinterpret_cast<const char*> (in.data ());
-          char* out;
-          if (octave_base64_encode (inc, inlen, &out))
-            {
-              retval(0) = octave_value (out);
-              ::free (out);
-            }
-        }
       else
+        panic_impossible ();
+    }
+  else if (args(0).is_single_type ())
+    {
+      const Array<float> in = args(0).float_array_value ();
+      size_t inlen;
+      inlen = in.numel () * sizeof (float) / sizeof (char);
+      const char*  inc;
+      inc = reinterpret_cast<const char*> (in.data ());
+      char* out;
+      if (octave_base64_encode (inc, inlen, &out))
         {
-          const Array<double> in = args(0).array_value ();
-          size_t inlen;
-          inlen = in.numel () * sizeof (double) / sizeof (char);
-          const char*  inc;
-          inc = reinterpret_cast<const char*> (in.data ());
-          char* out;
-          if (octave_base64_encode (inc, inlen, &out))
-            {
-              retval(0) = octave_value (out);
-              ::free (out);
-            }
+          retval(0) = octave_value (out);
+          ::free (out);
         }
     }
+  else  // double_type
+    {
+      const Array<double> in = args(0).array_value ();
+      size_t inlen;
+      inlen = in.numel () * sizeof (double) / sizeof (char);
+      const char*  inc;
+      inc = reinterpret_cast<const char*> (in.data ());
+      char* out;
+      if (octave_base64_encode (inc, inlen, &out))
+        {
+          retval(0) = octave_value (out);
+          ::free (out);
+        }
+    }
+
   return retval;
 }
 
@@ -7913,37 +7896,30 @@ dimensions of the decoded array.\n\
 @seealso{base64_encode}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  else
+
+  std::string str = args(0).string_value ();
+
+  Array<double> retval = octave_base64_decode (str);
+
+  if (nargin == 2)
     {
       dim_vector dims;
 
-      if (nargin > 1)
-        {
-          const Array<octave_idx_type> size =
-            args(1).octave_idx_type_vector_value ();
+      const Array<octave_idx_type> size =
+        args(1).octave_idx_type_vector_value ();
 
-          dims = dim_vector::alloc (size.numel ());
-          for (octave_idx_type i = 0; i < size.numel (); i++)
-            dims(i) = size(i);
-        }
+      dims = dim_vector::alloc (size.numel ());
+      for (octave_idx_type i = 0; i < size.numel (); i++)
+        dims(i) = size(i);
 
-      const std::string str = args(0).string_value ();
-
-      Array<double> res = octave_base64_decode (str);
-
-      if (nargin > 1)
-        res = res.reshape (dims);
-
-      retval = res;
+      retval = retval.reshape (dims);
     }
 
-  return retval;
+  return octave_value (retval);
 }
 
 /*

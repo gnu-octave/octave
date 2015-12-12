@@ -218,7 +218,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
 {
   typedef typename T::element_type P;
 
-  octave_value_list retval (3, Matrix ());
+  octave_value_list retval (nargout > 1 ? std::min (nargout, 3) : 1);
 
   std::map<std::string, octave_idx_type> region = calculate_region (options);
   const octave_idx_type nFrames = frameidx.numel ();
@@ -672,6 +672,7 @@ read_images (std::vector<Magick::Image>& imvec,
     }
 
   retval(0) = img;
+
   return retval;
 }
 

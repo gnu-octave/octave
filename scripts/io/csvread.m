@@ -19,7 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} csvread (@var{filename})
 ## @deftypefnx {} {@var{x} =} csvread (@var{filename}, @var{dlm_opts})
-## Read the comma-separated-value file @var{filename} into the matrix @var{x}.
+## Read the comma-separated-value (CSV) file @var{filename} into the matrix
+## @var{x}.
+##
+## Note: only CSV files containing numeric data can be read.
 ##
 ## This function is equivalent to
 ##
@@ -27,7 +30,7 @@
 ## @var{x} = dlmread (@var{filename}, "," , @dots{})
 ## @end example
 ##
-## @seealso{csvwrite, dlmread, dlmwrite}
+## @seealso{dlmread, textread, textscan, csvwrite, dlmwrite}
 ## @end deftypefn
 
 function x = csvread (filename, varargin)

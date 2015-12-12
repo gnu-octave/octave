@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} csvwrite (@var{filename}, @var{x})
 ## @deftypefnx {} {} csvwrite (@var{filename}, @var{x}, @var{dlm_opts})
-## Write the matrix @var{x} to the file @var{filename} in
-## @w{comma-separated-value} format.
+## Write the numeric matrix @var{x} to the file @var{filename} in
+## @w{comma-separated-value} (CSV) format.
 ##
 ## This function is equivalent to
 ##

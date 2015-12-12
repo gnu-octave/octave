@@ -22,12 +22,14 @@
 ## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
 ## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
 ## @deftypefnx {} {} dlmwrite (@var{fid}, @dots{})
-## Write the matrix @var{M} to the named file using delimiters.
+## Write the numeric matrix @var{M} to the text file @var{file} using a 
+## delimiter.
 ##
-## @var{file} should be a filename or writable file ID given by @code{fopen}.
+## @var{file} should be a filename or a writable file ID given by @code{fopen}.
 ##
 ## The parameter @var{delim} specifies the delimiter to use to separate values
-## on a row.
+## on a row.  If no delimiter is specified the comma character @samp{,} is
+## used.
 ##
 ## The value of @var{r} specifies the number of delimiter-only lines to add to
 ## the start of the file.
@@ -48,12 +50,11 @@
 ## See @var{delim} above.
 ##
 ## @item @qcode{"newline"}
-## The character(s) to use to separate each row.  Three special cases exist
-## for this option.  @qcode{"unix"} is changed into
-## @qcode{"@xbackslashchar{}n"}, @qcode{"pc"} is changed into
-## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"}, and @qcode{"mac"} is
-## changed into @qcode{"@xbackslashchar{}r"}.  Any other value is used
-## directly as the newline separator.
+## The character(s) to separate each row.  Three special cases exist for this
+## option.  @qcode{"unix"} is changed into @qcode{"@xbackslashchar{}n"},
+## @qcode{"pc"} is changed into @qcode{"@xbackslashchar{}r@xbackslashchar{}n"},
+## and @qcode{"mac"} is changed into @qcode{"@xbackslashchar{}r"}.  Any other
+## value is used directly as the newline separator.
 ##
 ## @item @qcode{"roffset"}
 ## See @var{r} above.

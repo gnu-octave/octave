@@ -163,28 +163,30 @@ DEFUN (dlmread, args, ,
 @deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
 @deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
 @deftypefnx {} {@var{data} =} dlmread (@dots{}, \"emptyvalue\", @var{EMPTYVAL})\n\
-Read the matrix @var{data} from a text file which uses the delimiter\n\
+Read numeric data from the text file @var{file} which uses the delimiter\n\
 @var{sep} between data values.\n\
 \n\
 If @var{sep} is not defined the separator between fields is determined from\n\
 the file itself.\n\
 \n\
-Given two scalar arguments @var{r0} and @var{c0}, these define the starting\n\
-row and column of the data to be read.  These values are indexed from zero,\n\
-such that the first row corresponds to an index of zero.\n\
+The optional scalar arguments @var{r0} and @var{c0} define the starting row\n\
+and column of the data to be read.  These values are indexed from zero,\n\
+i.e., the first data row corresponds to an index of zero.\n\
 \n\
-The @var{range} parameter may be a 4-element vector containing the upper\n\
-left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
-where the lowest index value is zero.  Alternatively, a spreadsheet style\n\
-range such as @qcode{\"A2..Q15\"} or @qcode{\"T1:AA5\"} can be used.  The\n\
+The @var{range} parameter specifies exactly which data elements are read.\n\
+The first form of the parameter is a 4-element vector containing the upper\n\
+left and lower right corners @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
+where the indices are zero-based.  Alternatively, a spreadsheet style\n\
+form such as @qcode{\"A2..Q15\"} or @qcode{\"T1:AA5\"} can be used.  The\n\
 lowest alphabetical index @qcode{'A'} refers to the first column.  The\n\
 lowest row index is 1.\n\
 \n\
-@var{file} should be a filename or file id given by @code{fopen}.  In the\n\
+@var{file} should be a filename or a file id given by @code{fopen}.  In the\n\
 latter case, the file is read until end of file is reached.\n\
 \n\
 The @qcode{\"emptyvalue\"} option may be used to specify the value used to\n\
-fill empty fields.  The default is zero.\n\
+fill empty fields.  The default is zero.  Note that any non-numeric values,\n\
+such as text, are also replaced by the @qcode{\"emptyvalue\"}.\n\
 @seealso{csvread, textscan, textread, dlmwrite}\n\
 @end deftypefn")
 {

@@ -635,11 +635,10 @@ Return the effective user id of the current process.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = octave_syscalls::geteuid ();
-  else
+  if (nargin != 0)
     print_usage ();
 
+  retval = octave_syscalls::geteuid ();
   return retval;
 }
 
@@ -654,11 +653,10 @@ Return the real user id of the current process.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = octave_syscalls::getuid ();
-  else
+  if (nargin != 0)
     print_usage ();
 
+  retval = octave_syscalls::getuid ();
   return retval;
 }
 
@@ -689,21 +687,19 @@ Return 0 if successful, otherwise return -1.\n\
   retval(1) = std::string ();
   retval(0) = -1;
 
-  if (args.length () == 2)
-    {
-      pid_t pid = args(0).int_value (true);
-
-      int sig = args(1).int_value (true);
-
-      std::string msg;
-
-      int status = octave_syscalls::kill (pid, sig, msg);
-
-      retval(1) = msg;
-      retval(0) = status;
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
+
+  pid_t pid = args(0).int_value (true);
+
+  int sig = args(1).int_value (true);
+
+  std::string msg;
+
+  int status = octave_syscalls::kill (pid, sig, msg);
+
+  retval(1) = msg;
+  retval(0) = status;
 
   return retval;
 }
@@ -721,16 +717,14 @@ The function outputs are described in the documentation for @code{stat}.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      std::string fname = args(0).xstring_value ("lstat: NAME must be a string");
-
-      file_stat fs (fname, false);
-
-      retval = mk_stat_result (fs);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+    std::string fname = args(0).xstring_value ("lstat: NAME must be a string");
+
+    file_stat fs (fname, false);
+
+    retval = mk_stat_result (fs);
 
   return retval;
 }
@@ -788,30 +782,29 @@ error message.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    {
-      std::string name = args(0).xstring_value ("mkfifo: FILE must be a string");
-
-      int octal_mode = args(1).xint_value ("mkfifo: MODE must be an integer");
-
-      if (octal_mode < 0)
-        error ("mkfifo: MODE must be a positive integer value");
-      else
-        {
-          int mode = convert (octal_mode, 8, 10);
-
-          std::string msg;
-
-          int status = octave_mkfifo (name, mode, msg);
-
-          retval(0) = status;
-
-          if (status < 0)
-            retval(1) = msg;
-        }
-    }
-  else
+  if (nargin != 2)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("mkfifo: FILE must be a string");
+
+  int octal_mode = args(1).xint_value ("mkfifo: MODE must be an integer");
+
+  if (octal_mode < 0)
+    error ("mkfifo: MODE must be a positive integer value");
+  else
+    {
+      int mode = convert (octal_mode, 8, 10);
+
+      std::string msg;
+
+      int status = octave_mkfifo (name, mode, msg);
+
+      retval(0) = status;
+
+      if (status < 0)
+          retval(1) = msg;
+    }
+
 
   return retval;
 }
@@ -850,34 +843,32 @@ error message.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 0)
-    {
-      int fid[2];
-
-      std::string msg;
-
-      int status = octave_syscalls::pipe (fid, msg);
-
-      if (status < 0)
-        retval(3) = msg;
-      else
-        {
-          FILE *ifile = fdopen (fid[0], "r");
-          FILE *ofile = fdopen (fid[1], "w");
-
-          octave_stream is = octave_stdiostream::create ("pipe-in", ifile,
-                                                         std::ios::in);
-
-          octave_stream os = octave_stdiostream::create ("pipe-out", ofile,
-                                                         std::ios::out);
-
-          retval(2) = status;
-          retval(1) = octave_stream_list::insert (os);
-          retval(0) = octave_stream_list::insert (is);
-        }
-    }
-  else
+  if (nargin != 0)
     print_usage ();
+
+  int fid[2];
+
+  std::string msg;
+
+  int status = octave_syscalls::pipe (fid, msg);
+
+  if (status < 0)
+    retval(3) = msg;
+  else
+    {
+      FILE *ifile = fdopen (fid[0], "r");
+      FILE *ofile = fdopen (fid[1], "w");
+
+      octave_stream is = octave_stdiostream::create ("pipe-in", ifile,
+                                                       std::ios::in);
+
+      octave_stream os = octave_stdiostream::create ("pipe-out", ofile,
+                                                       std::ios::out);
+
+      retval(2) = status;
+      retval(1) = octave_stream_list::insert (os);
+      retval(0) = octave_stream_list::insert (is);
+    }
 
   return retval;
 }
@@ -980,27 +971,25 @@ For example:\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      if (args(0).is_scalar_type ())
-        {
-          int fid = octave_stream_list::get_file_number (args(0));
-
-          file_fstat fs (fid);
-
-          retval = mk_stat_result (fs);
-        }
-      else
-        {
-          std::string fname = args(0).xstring_value ("stat: NAME must be a string");
-
-          file_stat fs (fname);
-
-          retval = mk_stat_result (fs);
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+    if (args(0).is_scalar_type ())
+      {
+        int fid = octave_stream_list::get_file_number (args(0));
+
+        file_fstat fs (fid);
+
+        retval = mk_stat_result (fs);
+      }
+    else
+      {
+        std::string fname = args(0).xstring_value ("stat: NAME must be a string");
+
+        file_stat fs (fname);
+
+        retval = mk_stat_result (fs);
+      }
 
   return retval;
 }
@@ -1016,14 +1005,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISREG: invalid MODE value");
-
-      retval = file_stat::is_reg (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISREG: invalid MODE value");
+
+  retval = file_stat::is_reg (static_cast<mode_t> (mode));
 
   return retval;
 }
@@ -1039,14 +1026,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISDIR: invalid MODE value");
-
-      retval = file_stat::is_dir (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISDIR: invalid MODE value");
+
+  retval = file_stat::is_dir (static_cast<mode_t> (mode));
 
   return retval;
 }
@@ -1062,14 +1047,13 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISCHR: invalid MODE value");
-
-      retval = file_stat::is_chr (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISCHR: invalid MODE value");
+
+  retval = file_stat::is_chr (static_cast<mode_t> (mode));
+
 
   return retval;
 }
@@ -1085,14 +1069,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISBLK: invalid MODE value");
-
-      retval = file_stat::is_blk (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISBLK: invalid MODE value");
+
+  retval = file_stat::is_blk (static_cast<mode_t> (mode));
 
   return retval;
 }
@@ -1108,14 +1090,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISFIFO: invalid MODE value");
-
-      retval = file_stat::is_fifo (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISFIFO: invalid MODE value");
+
+  retval = file_stat::is_fifo (static_cast<mode_t> (mode));
 
   return retval;
 }
@@ -1131,14 +1111,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISLNK: invalid MODE value");
-
-      retval = file_stat::is_lnk (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISLNK: invalid MODE value");
+
+  retval = file_stat::is_lnk (static_cast<mode_t> (mode));
 
   return retval;
 }
@@ -1154,14 +1132,13 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      double mode = args(0).xdouble_value ("S_ISSOCK: invalid MODE value");
-
-      retval = file_stat::is_sock (static_cast<mode_t> (mode));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  double mode = args(0).xdouble_value ("S_ISSOCK: invalid MODE value");
+
+  retval = file_stat::is_sock (static_cast<mode_t> (mode));
+
 
   return retval;
 }
@@ -1174,10 +1151,10 @@ Return the hostname of the system where Octave is running.\n\
 {
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = octave_env::get_host_name ();
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  retval = octave_env::get_host_name ();
 
   return retval;
 }
@@ -1209,24 +1186,23 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 0)
-    {
-      octave_uname sysinfo;
-
-      octave_scalar_map m;
-
-      m.assign ("sysname", sysinfo.sysname ());
-      m.assign ("nodename", sysinfo.nodename ());
-      m.assign ("release", sysinfo.release ());
-      m.assign ("version", sysinfo.version ());
-      m.assign ("machine", sysinfo.machine ());
-
-      retval(2) = sysinfo.message ();
-      retval(1) = sysinfo.error ();
-      retval(0) = m;
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
+
+  octave_uname sysinfo;
+
+  octave_scalar_map m;
+
+  m.assign ("sysname", sysinfo.sysname ());
+  m.assign ("nodename", sysinfo.nodename ());
+  m.assign ("release", sysinfo.release ());
+  m.assign ("version", sysinfo.version ());
+  m.assign ("machine", sysinfo.machine ());
+
+  retval(2) = sysinfo.message ();
+  retval(1) = sysinfo.error ();
+  retval(0) = m;
+
 
   return retval;
 }
@@ -1249,19 +1225,18 @@ error message.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      std::string name = args(0).xstring_value ("unlink: FILE must be a string");
-
-      std::string msg;
-
-      int status = octave_unlink (name, msg);
-
-      retval(1) = msg;
-      retval(0) = status;
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("unlink: FILE must be a string");
+
+  std::string msg;
+
+  int status = octave_unlink (name, msg);
+
+  retval(1) = msg;
+  retval(0) = status;
+
 
   return retval;
 }
@@ -1321,28 +1296,26 @@ about the subprocess that exited.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      pid_t pid = args(0).xint_value ("waitpid: OPTIONS must be an integer");
-
-      int options = 0;
-
-      if (args.length () == 2)
-        options = args(1).xint_value ("waitpid: PID must be an integer value");
-
-      std::string msg;
-
-      int status = 0;
-
-      pid_t result = octave_syscalls::waitpid (pid, &status,
-                                               options, msg);
-
-      retval(2) = msg;
-      retval(1) = status;
-      retval(0) = result;
-    }
-  else
+  if (nargin != 1 && nargin != 2)
     print_usage ();
+
+  pid_t pid = args(0).xint_value ("waitpid: OPTIONS must be an integer");
+
+  int options = 0;
+
+  if (args.length () == 2)
+    options = args(1).xint_value ("waitpid: PID must be an integer value");
+
+  std::string msg;
+
+  int status = 0;
+
+  pid_t result = octave_syscalls::waitpid (pid, &status,
+                                           options, msg);
+
+  retval(2) = msg;
+  retval(1) = status;
+  retval(0) = result;
 
   return retval;
 }
@@ -1357,14 +1330,12 @@ true if the child terminated normally.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WIFEXITED: STATUS must be an integer");
-
-      retval = octave_wait::ifexited (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WIFEXITED: STATUS must be an integer");
+
+  retval = octave_wait::ifexited (status);
 
   return retval;
 }
@@ -1401,14 +1372,13 @@ true if the child process was terminated by a signal.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WIFSIGNALED: STATUS must be an integer");
-
-      retval = octave_wait::ifsignaled (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WIFSIGNALED: STATUS must be an integer");
+
+  retval = octave_wait::ifsignaled (status);
+
 
   return retval;
 }
@@ -1425,14 +1395,13 @@ This function should only be employed if @code{WIFSIGNALED} returned true.\n\
 {
   octave_value retval = 0;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WTERMSIG: STATUS must be an integer");
-
-      retval = octave_wait::termsig (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WTERMSIG: STATUS must be an integer");
+
+  retval = octave_wait::termsig (status);
+
 
   return retval;
 }
@@ -1451,14 +1420,13 @@ and is not available on some Unix implementations (e.g., AIX, SunOS).\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WCOREDUMP: STATUS must be an integer");
-
-      retval = octave_wait::coredump (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WCOREDUMP: STATUS must be an integer");
+
+  retval = octave_wait::coredump (status);
+
 
   return retval;
 }
@@ -1476,14 +1444,13 @@ the child is being traced (see ptrace(2)).\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WIFSTOPPED: STATUS must be an integer");
-
-      retval = octave_wait::ifstopped (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WIFSTOPPED: STATUS must be an integer");
+
+  retval = octave_wait::ifstopped (status);
+
 
   return retval;
 }
@@ -1500,14 +1467,13 @@ This function should only be employed if @code{WIFSTOPPED} returned true.\n\
 {
   octave_value retval = 0;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WSTOPSIG: STATUS must be an integer");
-
-        retval = octave_wait::stopsig (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WSTOPSIG: STATUS must be an integer");
+
+  retval = octave_wait::stopsig (status);
+
 
   return retval;
 }
@@ -1522,14 +1488,13 @@ true if the child process was resumed by delivery of @code{SIGCONT}.\n\
 {
   octave_value retval = false;
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WIFCONTINUED: STATUS must be an integer");
-
-      retval = octave_wait::ifcontinued (status);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  int status = args(0).xint_value ("WIFCONTINUED: STATUS must be an integer");
+
+  retval = octave_wait::ifcontinued (status);
+
 
   return retval;
 }
@@ -1545,19 +1510,18 @@ If the file does not exist the empty string (\"\") is returned.\n\
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      std::string name = args(0).xstring_value ("canonicalize_file_name: NAME must be a string");
-      std::string msg;
-
-      std::string result = octave_canonicalize_file_name (name, msg);
-
-      retval(2) = msg;
-      retval(1) = msg.empty () ? 0 : -1;
-      retval(0) = result;
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
+
+  std::string name = args(0).xstring_value ("canonicalize_file_name: NAME must be a string");
+  std::string msg;
+
+  std::string result = octave_canonicalize_file_name (name, msg);
+
+  retval(2) = msg;
+  retval(1) = msg.empty () ? 0 : -1;
+  retval(0) = result;
+
 
   return retval;
 }
@@ -1569,10 +1533,10 @@ const_value (const octave_value_list& args, int val)
 
   int nargin = args.length ();
 
-  if (nargin == 0)
-    retval = val;
-  else
+  if (nargin != 0)
     print_usage ();
+
+  retval = val;
 
   return retval;
 }
@@ -1873,4 +1837,3 @@ child has been resumed by delivery of a @code{SIGCONT} signal.\n\
 {
   return const_value (args, WCONTINUE);
 }
-

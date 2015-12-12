@@ -766,86 +766,84 @@ economized (R is square).\n\
   octave_value argu = args(2);
   octave_value argv = args(3);
 
-  if (argq.is_numeric_type () && argr.is_numeric_type ()
-      && argu.is_numeric_type () && argv.is_numeric_type ())
+  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
+      || ! argu.is_numeric_type () || ! argv.is_numeric_type ())
+    print_usage ();
+
+  if (check_qr_dims (argq, argr, true))
     {
-      if (check_qr_dims (argq, argr, true))
+      if (argq.is_real_type ()
+          && argr.is_real_type ()
+          && argu.is_real_type ()
+          && argv.is_real_type ())
         {
-          if (argq.is_real_type ()
-              && argr.is_real_type ()
-              && argu.is_real_type ()
-              && argv.is_real_type ())
+          // all real case
+          if (argq.is_single_type ()
+              || argr.is_single_type ()
+              || argu.is_single_type ()
+              || argv.is_single_type ())
             {
-              // all real case
-              if (argq.is_single_type ()
-                  || argr.is_single_type ()
-                  || argu.is_single_type ()
-                  || argv.is_single_type ())
-                {
-                  FloatMatrix Q = argq.float_matrix_value ();
-                  FloatMatrix R = argr.float_matrix_value ();
-                  FloatMatrix u = argu.float_matrix_value ();
-                  FloatMatrix v = argv.float_matrix_value ();
+              FloatMatrix Q = argq.float_matrix_value ();
+              FloatMatrix R = argr.float_matrix_value ();
+              FloatMatrix u = argu.float_matrix_value ();
+              FloatMatrix v = argv.float_matrix_value ();
 
-                  FloatQR fact (Q, R);
-                  fact.update (u, v);
+              FloatQR fact (Q, R);
+              fact.update (u, v);
 
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
-                }
-              else
-                {
-                  Matrix Q = argq.matrix_value ();
-                  Matrix R = argr.matrix_value ();
-                  Matrix u = argu.matrix_value ();
-                  Matrix v = argv.matrix_value ();
-
-                  QR fact (Q, R);
-                  fact.update (u, v);
-
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
-                }
+              retval(1) = get_qr_r (fact);
+              retval(0) = fact.Q ();
             }
           else
             {
-              // complex case
-              if (argq.is_single_type ()
-                  || argr.is_single_type ()
-                  || argu.is_single_type ()
-                  || argv.is_single_type ())
-                {
-                  FloatComplexMatrix Q = argq.float_complex_matrix_value ();
-                  FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                  FloatComplexMatrix u = argu.float_complex_matrix_value ();
-                  FloatComplexMatrix v = argv.float_complex_matrix_value ();
+              Matrix Q = argq.matrix_value ();
+              Matrix R = argr.matrix_value ();
+              Matrix u = argu.matrix_value ();
+              Matrix v = argv.matrix_value ();
 
-                  FloatComplexQR fact (Q, R);
-                  fact.update (u, v);
+              QR fact (Q, R);
+              fact.update (u, v);
 
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
-                }
-              else
-                {
-                  ComplexMatrix Q = argq.complex_matrix_value ();
-                  ComplexMatrix R = argr.complex_matrix_value ();
-                  ComplexMatrix u = argu.complex_matrix_value ();
-                  ComplexMatrix v = argv.complex_matrix_value ();
-
-                  ComplexQR fact (Q, R);
-                  fact.update (u, v);
-
-                  retval(1) = get_qr_r (fact);
-                  retval(0) = fact.Q ();
-                }
+              retval(1) = get_qr_r (fact);
+              retval(0) = fact.Q ();
             }
         }
       else
-        error ("qrupdate: Q and R dimensions don't match");
+        {
+          // complex case
+          if (argq.is_single_type ()
+              || argr.is_single_type ()
+              || argu.is_single_type ()
+              || argv.is_single_type ())
+            {
+              FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+              FloatComplexMatrix R = argr.float_complex_matrix_value ();
+              FloatComplexMatrix u = argu.float_complex_matrix_value ();
+              FloatComplexMatrix v = argv.float_complex_matrix_value ();
+
+              FloatComplexQR fact (Q, R);
+              fact.update (u, v);
+
+              retval(1) = get_qr_r (fact);
+              retval(0) = fact.Q ();
+            }
+          else
+            {
+              ComplexMatrix Q = argq.complex_matrix_value ();
+              ComplexMatrix R = argr.complex_matrix_value ();
+              ComplexMatrix u = argu.complex_matrix_value ();
+              ComplexMatrix v = argv.complex_matrix_value ();
+
+              ComplexQR fact (Q, R);
+              fact.update (u, v);
+
+              retval(1) = get_qr_r (fact);
+              retval(0) = fact.Q ();
+            }
+        }
     }
   else
-    error ("qrupdate: Q, R, U, and V must be numeric");
+    error ("qrupdate: Q and R dimensions don't match");
 
   return retval;
 }
@@ -952,121 +950,119 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
   octave_value argj = args(2);
   octave_value argx = args(3);
 
-  if (argq.is_numeric_type () && argr.is_numeric_type ()
-      && argx.is_numeric_type ()
-      && (nargin < 5 || args(4).is_string ()))
-    {
-      std::string orient = (nargin < 5) ? "col" : args(4).string_value ();
+  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
+      || ! argx.is_numeric_type ()
+      || (nargin > 4 && ! args(4).is_string ()))
+    print_usage ();
 
-      bool col = orient == "col";
+  std::string orient = (nargin < 5) ? "col" : args(4).string_value ();
 
-      if (col || orient == "row")
-        if (check_qr_dims (argq, argr, col)
-            && (col || argx.rows () == 1))
+  bool col = orient == "col";
+
+  if (col || orient == "row")
+    if (check_qr_dims (argq, argr, col)
+        && (col || argx.rows () == 1))
+      {
+        if (check_index (argj, col))
           {
-            if (check_index (argj, col))
+            MArray<octave_idx_type> j
+              = argj.octave_idx_type_vector_value ();
+
+            octave_idx_type one = 1;
+
+            if (argq.is_real_type ()
+                && argr.is_real_type ()
+                && argx.is_real_type ())
               {
-                MArray<octave_idx_type> j
-                  = argj.octave_idx_type_vector_value ();
-
-                octave_idx_type one = 1;
-
-                if (argq.is_real_type ()
-                    && argr.is_real_type ()
-                    && argx.is_real_type ())
+                // real case
+                if (argq.is_single_type ()
+                    || argr.is_single_type ()
+                    || argx.is_single_type ())
                   {
-                    // real case
-                    if (argq.is_single_type ()
-                        || argr.is_single_type ()
-                        || argx.is_single_type ())
-                      {
-                        FloatMatrix Q = argq.float_matrix_value ();
-                        FloatMatrix R = argr.float_matrix_value ();
-                        FloatMatrix x = argx.float_matrix_value ();
+                    FloatMatrix Q = argq.float_matrix_value ();
+                    FloatMatrix R = argr.float_matrix_value ();
+                    FloatMatrix x = argx.float_matrix_value ();
 
-                        FloatQR fact (Q, R);
+                    FloatQR fact (Q, R);
 
-                        if (col)
-                          fact.insert_col (x, j-one);
-                        else
-                          fact.insert_row (x.row (0), j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-
-                      }
+                    if (col)
+                      fact.insert_col (x, j-one);
                     else
-                      {
-                        Matrix Q = argq.matrix_value ();
-                        Matrix R = argr.matrix_value ();
-                        Matrix x = argx.matrix_value ();
+                      fact.insert_row (x.row (0), j(0)-one);
 
-                        QR fact (Q, R);
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
 
-                        if (col)
-                          fact.insert_col (x, j-one);
-                        else
-                          fact.insert_row (x.row (0), j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-
-                      }
                   }
                 else
                   {
-                    // complex case
-                    if (argq.is_single_type ()
-                        || argr.is_single_type ()
-                        || argx.is_single_type ())
-                      {
-                        FloatComplexMatrix Q =
-                          argq.float_complex_matrix_value ();
-                        FloatComplexMatrix R =
-                          argr.float_complex_matrix_value ();
-                        FloatComplexMatrix x =
-                          argx.float_complex_matrix_value ();
+                    Matrix Q = argq.matrix_value ();
+                    Matrix R = argr.matrix_value ();
+                    Matrix x = argx.matrix_value ();
 
-                        FloatComplexQR fact (Q, R);
+                    QR fact (Q, R);
 
-                        if (col)
-                          fact.insert_col (x, j-one);
-                        else
-                          fact.insert_row (x.row (0), j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
+                    if (col)
+                      fact.insert_col (x, j-one);
                     else
-                      {
-                        ComplexMatrix Q = argq.complex_matrix_value ();
-                        ComplexMatrix R = argr.complex_matrix_value ();
-                        ComplexMatrix x = argx.complex_matrix_value ();
+                      fact.insert_row (x.row (0), j(0)-one);
 
-                        ComplexQR fact (Q, R);
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
 
-                        if (col)
-                          fact.insert_col (x, j-one);
-                        else
-                          fact.insert_row (x.row (0), j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
                   }
-
               }
             else
-              error ("qrinsert: invalid index J");
+              {
+                // complex case
+                if (argq.is_single_type ()
+                    || argr.is_single_type ()
+                    || argx.is_single_type ())
+                  {
+                    FloatComplexMatrix Q =
+                      argq.float_complex_matrix_value ();
+                    FloatComplexMatrix R =
+                      argr.float_complex_matrix_value ();
+                    FloatComplexMatrix x =
+                      argx.float_complex_matrix_value ();
+
+                    FloatComplexQR fact (Q, R);
+
+                    if (col)
+                      fact.insert_col (x, j-one);
+                    else
+                      fact.insert_row (x.row (0), j(0)-one);
+
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                else
+                  {
+                    ComplexMatrix Q = argq.complex_matrix_value ();
+                    ComplexMatrix R = argr.complex_matrix_value ();
+                    ComplexMatrix x = argx.complex_matrix_value ();
+
+                    ComplexQR fact (Q, R);
+
+                    if (col)
+                      fact.insert_col (x, j-one);
+                    else
+                      fact.insert_row (x.row (0), j(0)-one);
+
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+              }
+
           }
         else
-          error ("qrinsert: dimension mismatch");
+          error ("qrinsert: invalid index J");
+      }
+    else
+      error ("qrinsert: dimension mismatch");
 
-      else
-        error ("qrinsert: ORIENT must be \"col\" or \"row\"");
-    }
   else
-    print_usage ();
+    error ("qrinsert: ORIENT must be \"col\" or \"row\"");
 
   return retval;
 }
@@ -1167,108 +1163,106 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
   octave_value argr = args(1);
   octave_value argj = args(2);
 
-  if (argq.is_numeric_type () && argr.is_numeric_type ()
-      && (nargin < 4 || args(3).is_string ()))
-    {
-      std::string orient = (nargin < 4) ? "col" : args(3).string_value ();
+  if (! argq.is_numeric_type () || ! argr.is_numeric_type ()
+      || (nargin > 3 && ! args(3).is_string ()))
+    print_usage ();
 
-      bool col = orient == "col";
+  std::string orient = (nargin < 4) ? "col" : args(3).string_value ();
 
-      if (col || orient == "row")
-        if (check_qr_dims (argq, argr, col))
+  bool col = orient == "col";
+
+  if (col || orient == "row")
+    if (check_qr_dims (argq, argr, col))
+      {
+        if (check_index (argj, col))
           {
-            if (check_index (argj, col))
+            MArray<octave_idx_type> j
+              = argj.octave_idx_type_vector_value ();
+
+            octave_idx_type one = 1;
+
+            if (argq.is_real_type ()
+                && argr.is_real_type ())
               {
-                MArray<octave_idx_type> j
-                  = argj.octave_idx_type_vector_value ();
-
-                octave_idx_type one = 1;
-
-                if (argq.is_real_type ()
-                    && argr.is_real_type ())
+                // real case
+                if (argq.is_single_type ()
+                    || argr.is_single_type ())
                   {
-                    // real case
-                    if (argq.is_single_type ()
-                        || argr.is_single_type ())
-                      {
-                        FloatMatrix Q = argq.float_matrix_value ();
-                        FloatMatrix R = argr.float_matrix_value ();
+                    FloatMatrix Q = argq.float_matrix_value ();
+                    FloatMatrix R = argr.float_matrix_value ();
 
-                        FloatQR fact (Q, R);
+                    FloatQR fact (Q, R);
 
-                        if (col)
-                          fact.delete_col (j-one);
-                        else
-                          fact.delete_row (j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
+                    if (col)
+                      fact.delete_col (j-one);
                     else
-                      {
-                        Matrix Q = argq.matrix_value ();
-                        Matrix R = argr.matrix_value ();
+                      fact.delete_row (j(0)-one);
 
-                        QR fact (Q, R);
-
-                        if (col)
-                          fact.delete_col (j-one);
-                        else
-                          fact.delete_row (j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
                   }
                 else
                   {
-                    // complex case
-                    if (argq.is_single_type ()
-                        || argr.is_single_type ())
-                      {
-                        FloatComplexMatrix Q =
-                          argq.float_complex_matrix_value ();
-                        FloatComplexMatrix R =
-                          argr.float_complex_matrix_value ();
+                    Matrix Q = argq.matrix_value ();
+                    Matrix R = argr.matrix_value ();
 
-                        FloatComplexQR fact (Q, R);
+                    QR fact (Q, R);
 
-                        if (col)
-                          fact.delete_col (j-one);
-                        else
-                          fact.delete_row (j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
+                    if (col)
+                      fact.delete_col (j-one);
                     else
-                      {
-                        ComplexMatrix Q = argq.complex_matrix_value ();
-                        ComplexMatrix R = argr.complex_matrix_value ();
+                      fact.delete_row (j(0)-one);
 
-                        ComplexQR fact (Q, R);
-
-                        if (col)
-                          fact.delete_col (j-one);
-                        else
-                          fact.delete_row (j(0)-one);
-
-                        retval(1) = get_qr_r (fact);
-                        retval(0) = fact.Q ();
-                      }
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
                   }
               }
             else
-              error ("qrdelete: invalid index J");
+              {
+                // complex case
+                if (argq.is_single_type ()
+                    || argr.is_single_type ())
+                  {
+                    FloatComplexMatrix Q =
+                      argq.float_complex_matrix_value ();
+                    FloatComplexMatrix R =
+                      argr.float_complex_matrix_value ();
+
+                    FloatComplexQR fact (Q, R);
+
+                    if (col)
+                      fact.delete_col (j-one);
+                    else
+                      fact.delete_row (j(0)-one);
+
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+                else
+                  {
+                    ComplexMatrix Q = argq.complex_matrix_value ();
+                    ComplexMatrix R = argr.complex_matrix_value ();
+
+                    ComplexQR fact (Q, R);
+
+                    if (col)
+                      fact.delete_col (j-one);
+                    else
+                      fact.delete_row (j(0)-one);
+
+                    retval(1) = get_qr_r (fact);
+                    retval(0) = fact.Q ();
+                  }
+              }
           }
         else
-          error ("qrdelete: dimension mismatch");
+          error ("qrdelete: invalid index J");
+      }
+    else
+      error ("qrdelete: dimension mismatch");
 
-      else
-        error ("qrdelete: ORIENT must be \"col\" or \"row\"");
-    }
   else
-    print_usage ();
+    error ("qrdelete: ORIENT must be \"col\" or \"row\"");
 
   return retval;
 }
@@ -1416,79 +1410,77 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
   octave_value argi = args(2);
   octave_value argj = args(3);
 
-  if (argq.is_numeric_type () && argr.is_numeric_type ())
+  if (! argq.is_numeric_type () || ! argr.is_numeric_type ())
+    print_usage ();
+
+  if (check_qr_dims (argq, argr, true))
     {
-      if (check_qr_dims (argq, argr, true))
+      if (check_index (argi) && check_index (argj))
         {
-          if (check_index (argi) && check_index (argj))
+          octave_idx_type i = argi.int_value ();
+          octave_idx_type j = argj.int_value ();
+
+          if (argq.is_real_type ()
+              && argr.is_real_type ())
             {
-              octave_idx_type i = argi.int_value ();
-              octave_idx_type j = argj.int_value ();
-
-              if (argq.is_real_type ()
-                  && argr.is_real_type ())
+              // all real case
+              if (argq.is_single_type ()
+                  && argr.is_single_type ())
                 {
-                  // all real case
-                  if (argq.is_single_type ()
-                      && argr.is_single_type ())
-                    {
-                      FloatMatrix Q = argq.float_matrix_value ();
-                      FloatMatrix R = argr.float_matrix_value ();
+                  FloatMatrix Q = argq.float_matrix_value ();
+                  FloatMatrix R = argr.float_matrix_value ();
 
-                      FloatQR fact (Q, R);
-                      fact.shift_cols (i-1, j-1);
+                  FloatQR fact (Q, R);
+                  fact.shift_cols (i-1, j-1);
 
-                      retval(1) = get_qr_r (fact);
-                      retval(0) = fact.Q ();
-                    }
-                  else
-                    {
-                      Matrix Q = argq.matrix_value ();
-                      Matrix R = argr.matrix_value ();
-
-                      QR fact (Q, R);
-                      fact.shift_cols (i-1, j-1);
-
-                      retval(1) = get_qr_r (fact);
-                      retval(0) = fact.Q ();
-                    }
+                  retval(1) = get_qr_r (fact);
+                  retval(0) = fact.Q ();
                 }
               else
                 {
-                  // complex case
-                  if (argq.is_single_type ()
-                      && argr.is_single_type ())
-                    {
-                      FloatComplexMatrix Q = argq.float_complex_matrix_value ();
-                      FloatComplexMatrix R = argr.float_complex_matrix_value ();
+                  Matrix Q = argq.matrix_value ();
+                  Matrix R = argr.matrix_value ();
 
-                      FloatComplexQR fact (Q, R);
-                      fact.shift_cols (i-1, j-1);
+                  QR fact (Q, R);
+                  fact.shift_cols (i-1, j-1);
 
-                      retval(1) = get_qr_r (fact);
-                      retval(0) = fact.Q ();
-                    }
-                  else
-                    {
-                      ComplexMatrix Q = argq.complex_matrix_value ();
-                      ComplexMatrix R = argr.complex_matrix_value ();
-
-                      ComplexQR fact (Q, R);
-                      fact.shift_cols (i-1, j-1);
-
-                      retval(1) = get_qr_r (fact);
-                      retval(0) = fact.Q ();
-                    }
+                  retval(1) = get_qr_r (fact);
+                  retval(0) = fact.Q ();
                 }
             }
           else
-            error ("qrshift: invalid index I or J");
+            {
+              // complex case
+              if (argq.is_single_type ()
+                  && argr.is_single_type ())
+                {
+                  FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+                  FloatComplexMatrix R = argr.float_complex_matrix_value ();
+
+                  FloatComplexQR fact (Q, R);
+                  fact.shift_cols (i-1, j-1);
+
+                  retval(1) = get_qr_r (fact);
+                  retval(0) = fact.Q ();
+                }
+              else
+                {
+                  ComplexMatrix Q = argq.complex_matrix_value ();
+                  ComplexMatrix R = argr.complex_matrix_value ();
+
+                  ComplexQR fact (Q, R);
+                  fact.shift_cols (i-1, j-1);
+
+                  retval(1) = get_qr_r (fact);
+                  retval(0) = fact.Q ();
+                }
+            }
         }
       else
-        error ("qrshift: dimensions mismatch");
+        error ("qrshift: invalid index I or J");
     }
   else
-    error ("qrshift: Q and R must be numeric");
+    error ("qrshift: dimensions mismatch");
 
   return retval;
 }

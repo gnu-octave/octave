@@ -628,10 +628,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     CAST_UNOP_ARG (const octave_ ## TYPE ## _matrix&); \
  \
     if (v.ndims () > 2) \
-      { \
-        error ("transpose not defined for N-d objects"); \
-        return octave_value (); \
-      } \
+      error ("transpose not defined for N-d objects"); \
     else \
       return octave_value (v.TYPE ## _array_value ().transpose ()); \
   } \
@@ -652,7 +649,6 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   DEFBINOPX (PFX ## _pow, T1 ## matrix, T2 ## matrix) \
   { \
     error ("can't do A ^ B for A and B both matrices"); \
-    return octave_value (); \
   } \
  \
   /* DEFBINOP_FN (PFX ## _ldiv, T1 ## matrix, T2 ## matrix, xleftdiv) */ \

@@ -389,15 +389,13 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
         {
           if (curl.good ())
             {
-              retval(2) = std::string ();
-              retval(1) = true;
-              retval(0) = octave_env::make_absolute (filename);
+              retval = ovl (octave_env::make_absolute (filename),
+                            true,
+                            std::string ());
             }
           else
             {
-              retval(2) = curl.lasterror ();
-              retval(1) = false;
-              retval(0) = std::string ();
+              retval = ovl (std::string (), false, curl.lasterror ());
             }
         }
 
@@ -491,10 +489,9 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
       if (nargout > 0)
         {
-          // Return empty string if no error occured.
-          retval(2) = curl.good () ? "" : curl.lasterror ();
-          retval(1) = curl.good ();
-          retval(0) = buf.str ();
+          // Return empty string if no error occurred.
+          retval = ovl (buf.str (), curl.good (),
+                        curl.good () ? "" : curl.lasterror ());
         }
 
       if (nargout < 2 && ! curl.good ())

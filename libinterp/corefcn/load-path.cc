@@ -2233,8 +2233,8 @@ execute_pkg_del (const std::string& dir)
 
 DEFUN (genpath, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
-@deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
+@deftypefn  {} {} genpath (@var{dir})\n\
+@deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
 \n\
 If additional string parameters are given, the resulting path will exclude\n\
@@ -2283,7 +2283,7 @@ rehash_internal (void)
 
 DEFUN (rehash, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rehash ()\n\
+@deftypefn {} {} rehash ()\n\
 Reinitialize Octave's load path directory cache.\n\
 @end deftypefn")
 {
@@ -2296,7 +2296,7 @@ Reinitialize Octave's load path directory cache.\n\
 
 DEFUN (command_line_path, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} command_line_path (@dots{})\n\
+@deftypefn {} {} command_line_path (@dots{})\n\
 Return the command line path variable.\n\
 \n\
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
@@ -2307,7 +2307,7 @@ Return the command line path variable.\n\
 
 DEFUN (restoredefaultpath, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\
+@deftypefn {} {} restoredefaultpath (@dots{})\n\
 Restore Octave's path to its initial state at startup.\n\
 \n\
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
@@ -2325,7 +2325,7 @@ Restore Octave's path to its initial state at startup.\n\
 
 DEFUN (__pathorig__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} __pathorig__ ()\n\
+@deftypefn {} {@var{val} =} __pathorig__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2334,9 +2334,9 @@ Undocumented internal function.\n\
 
 DEFUN (path, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} path ()\n\
-@deftypefnx {Built-in Function} {@var{str} =} path ()\n\
-@deftypefnx {Built-in Function} {@var{str} =} path (@var{path1}, @dots{})\n\
+@deftypefn  {} {} path ()\n\
+@deftypefnx {} {@var{str} =} path ()\n\
+@deftypefnx {} {@var{str} =} path (@var{path1}, @dots{})\n\
 Modify or display Octave's load path.\n\
 \n\
 If @var{nargin} and @var{nargout} are zero, display the elements of\n\
@@ -2388,8 +2388,8 @@ No checks are made for duplicate elements.\n\
 
 DEFUN (addpath, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
-@deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
+@deftypefn  {} {} addpath (@var{dir1}, @dots{})\n\
+@deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
 Add named directories to the function search path.\n\
 \n\
 If @var{option} is @qcode{\"-begin\"} or 0 (the default), prepend the\n\
@@ -2487,7 +2487,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
 DEFUN (rmpath, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rmpath (@var{dir1}, @dots{})\n\
+@deftypefn {} {} rmpath (@var{dir1}, @dots{})\n\
 Remove @var{dir1}, @dots{} from the current function search path.\n\
 \n\
 In addition to accepting individual directory arguments, lists of\n\

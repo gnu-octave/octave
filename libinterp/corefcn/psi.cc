@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (psi, args, ,
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} psi (@var{z})\n\
-@deftypefnx {Function File} {} psi (@var{k}, @var{z})\n\
+@deftypefn  {} {} psi (@var{z})\n\
+@deftypefnx {} {} psi (@var{k}, @var{z})\n\
 Compute the psi (polygamma) function.\n\
 \n\
 The polygamma functions are the @var{k}th derivative of the logarithm\n\

@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (colloc, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
+@deftypefn {} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
 Compute derivative and integral weight matrices for orthogonal collocation.\n\
 \n\
 Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\

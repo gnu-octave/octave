@@ -2922,7 +2922,7 @@ install_types (void)
 
 DEFUN (sizeof, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sizeof (@var{val})\n\
+@deftypefn {} {} sizeof (@var{val})\n\
 Return the size of @var{val} in bytes.\n\
 @seealso{whos}\n\
 @end deftypefn")
@@ -3008,7 +3008,7 @@ decode_subscripts (const char* name, const octave_value& arg,
 
 DEFUN (subsref, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} subsref (@var{val}, @var{idx})\n\
+@deftypefn {} {} subsref (@var{val}, @var{idx})\n\
 Perform the subscripted element selection operation according to the\n\
 subscript specified by @var{idx}.\n\
 \n\
@@ -3064,7 +3064,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 
 DEFUN (subsasgn, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
+@deftypefn {} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
 Perform the subscripted assignment operation according to the subscript\n\
 specified by @var{idx}.\n\
 \n\
@@ -3192,7 +3192,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 
 DEFUN (is_sq_string, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_sq_string (@var{x})\n\
+@deftypefn {} {} is_sq_string (@var{x})\n\
 Return true if @var{x} is a single-quoted character string.\n\
 @seealso{is_dq_string, ischar}\n\
 @end deftypefn")
@@ -3215,7 +3215,7 @@ Return true if @var{x} is a single-quoted character string.\n\
 
 DEFUN (is_dq_string, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_dq_string (@var{x})\n\
+@deftypefn {} {} is_dq_string (@var{x})\n\
 Return true if @var{x} is a double-quoted character string.\n\
 @seealso{is_sq_string, ischar}\n\
 @end deftypefn")
@@ -3238,9 +3238,9 @@ Return true if @var{x} is a double-quoted character string.\n\
 
 DEFUN (disable_permutation_matrix, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} disable_permutation_matrix ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} disable_permutation_matrix ()\n\
+@deftypefnx {} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
+@deftypefnx {} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether permutation\n\
 matrices are stored in a special space-efficient format.\n\
 \n\
@@ -3268,9 +3268,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (disable_diagonal_matrix, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} disable_diagonal_matrix ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} disable_diagonal_matrix ()\n\
+@deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
+@deftypefnx {} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether diagonal\n\
 matrices are stored in a special space-efficient format.\n\
 \n\
@@ -3312,9 +3312,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (disable_range, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} disable_range ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} disable_range (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} disable_range (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} disable_range ()\n\
+@deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})\n\
+@deftypefnx {} {} disable_range (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether ranges are stored\n\
 in a special space-efficient format.\n\
 \n\

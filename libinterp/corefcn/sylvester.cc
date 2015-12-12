@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (sylvester, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{X} =} syl (@var{A}, @var{B}, @var{C})\n\
+@deftypefn {} {@var{X} =} syl (@var{A}, @var{B}, @var{C})\n\
 Solve the Sylvester equation\n\
 @tex\n\
 $$\n\

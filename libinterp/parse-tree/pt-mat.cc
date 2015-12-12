@@ -1346,9 +1346,9 @@ tree_matrix::accept (tree_walker& tw)
 
 DEFUN (string_fill_char, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} string_fill_char ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} string_fill_char (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} string_fill_char (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} string_fill_char ()\n\
+@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})\n\
+@deftypefnx {} {} string_fill_char (@var{new_val}, \"local\")\n\
 Query or set the internal variable used to pad all rows of a character\n\
 matrix to the same length.\n\
 \n\

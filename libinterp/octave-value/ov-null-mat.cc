@@ -95,7 +95,7 @@ octave_null_sq_str::numeric_conversion_function (void) const
 
 DEFUN (isnull, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isnull (@var{x})\n\
+@deftypefn {} {} isnull (@var{x})\n\
 Return true if @var{x} is a special null matrix, string, or single quoted\n\
 string.\n\
 \n\

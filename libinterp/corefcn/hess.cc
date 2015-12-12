@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (hess, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{H} =} hess (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{P}, @var{H}] =} hess (@var{A})\n\
+@deftypefn  {} {@var{H} =} hess (@var{A})\n\
+@deftypefnx {} {[@var{P}, @var{H}] =} hess (@var{A})\n\
 @cindex Hessenberg decomposition\n\
 Compute the Hessenberg decomposition of the matrix @var{A}.\n\
 \n\

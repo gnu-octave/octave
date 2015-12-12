@@ -1759,9 +1759,9 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 
 DEFUN (class, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{classname} =} class (@var{obj})\n\
-@deftypefnx {Function File} {} class (@var{s}, @var{id})\n\
-@deftypefnx {Function File} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
+@deftypefn  {} {@var{classname} =} class (@var{obj})\n\
+@deftypefnx {} {} class (@var{s}, @var{id})\n\
+@deftypefnx {} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
 Return the class of the object @var{obj}, or create a class with\n\
 fields from structure @var{s} and name (string) @var{id}.\n\
 \n\
@@ -1840,7 +1840,7 @@ is derived.\n\
 
 DEFUN (isa, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} {} isa (@var{obj}, @var{classname})\n\
+@deftypefn {} {} isa (@var{obj}, @var{classname})\n\
 Return true if @var{obj} is an object from the class @var{classname}.\n\
 \n\
 @var{classname} may also be one of the following class categories:\n\
@@ -1949,7 +1949,7 @@ belongs to.\n\
 
 DEFUN (__parent_classes__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __parent_classes__ (@var{x})\n\
+@deftypefn {} {} __parent_classes__ (@var{x})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1968,7 +1968,7 @@ Undocumented internal function.\n\
 
 DEFUN (isobject, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isobject (@var{x})\n\
+@deftypefn {} {} isobject (@var{x})\n\
 Return true if @var{x} is a class object.\n\
 @seealso{class, typeinfo, isa, ismethod, isprop}\n\
 @end deftypefn")
@@ -1981,8 +1981,8 @@ Return true if @var{x} is a class object.\n\
 
 DEFUN (ismethod, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} ismethod (@var{obj}, @var{method})\n\
-@deftypefnx {Built-in Function} {} ismethod (@var{clsname}, @var{method})\n\
+@deftypefn  {} {} ismethod (@var{obj}, @var{method})\n\
+@deftypefnx {} {} ismethod (@var{clsname}, @var{method})\n\
 Return true if the string @var{method} is a valid method of the object\n\
 @var{obj} or of the class @var{clsname}.\n\
 @seealso{isprop, isobject}\n\
@@ -2016,8 +2016,8 @@ Return true if the string @var{method} is a valid method of the object\n\
 
 DEFUN (__methods__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __methods__ (@var{x})\n\
-@deftypefnx {Built-in Function} {} __methods__ (\"classname\")\n\
+@deftypefn  {} {} __methods__ (@var{x})\n\
+@deftypefnx {} {} __methods__ (\"classname\")\n\
 Internal function.\n\
 \n\
 Implements @code{methods} for Octave class objects and classnames.\n\
@@ -2071,7 +2071,7 @@ is_built_in_class (const std::string& cn)
 
 DEFUN (superiorto, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} superiorto (@var{class_name}, @dots{})\n\
+@deftypefn {} {} superiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a higher precedence than @var{class_name}.\n\
 \n\
@@ -2112,7 +2112,7 @@ This function may only be called from a class constructor.\n\
 
 DEFUN (inferiorto, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} inferiorto (@var{class_name}, @dots{})\n\
+@deftypefn {} {} inferiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a lower precedence than @var{class_name}.\n\
 \n\

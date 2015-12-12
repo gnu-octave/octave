@@ -338,7 +338,7 @@ do_isglobal (const octave_value_list& args)
 
 DEFUN (isglobal, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
+@deftypefn {} {} isglobal (@var{name})\n\
 Return true if @var{name} is a globally visible variable.\n\
 \n\
 For example:\n\
@@ -511,8 +511,8 @@ unique_symbol_name (const std::string& basename)
 
 DEFUN (exist, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{c} =} exist (@var{name})\n\
-@deftypefnx {Built-in Function} {@var{c} =} exist (@var{name}, @var{type})\n\
+@deftypefn  {} {@var{c} =} exist (@var{name})\n\
+@deftypefnx {} {@var{c} =} exist (@var{name}, @var{type})\n\
 Check for the existence of @var{name} as a variable, function, file,\n\
 directory, or class.\n\
 \n\
@@ -1787,10 +1787,10 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
 DEFUN (who, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} who\n\
-@deftypefnx {Command} {} who pattern @dots{}\n\
-@deftypefnx {Command} {} who option pattern @dots{}\n\
-@deftypefnx {Command} {C =} who (\"pattern\", @dots{})\n\
+@deftypefn  {} {} who\n\
+@deftypefnx {} {} who pattern @dots{}\n\
+@deftypefnx {} {} who option pattern @dots{}\n\
+@deftypefnx {} {C =} who (\"pattern\", @dots{})\n\
 List currently defined variables matching the given patterns.\n\
 \n\
 Valid pattern syntax is the same as described for the @code{clear} command.\n\
@@ -1834,10 +1834,10 @@ matching the given patterns.\n\
 
 DEFUN (whos, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} whos\n\
-@deftypefnx {Command} {} whos pattern @dots{}\n\
-@deftypefnx {Command} {} whos option pattern @dots{}\n\
-@deftypefnx {Built-in Function} {S =} whos (\"pattern\", @dots{})\n\
+@deftypefn  {} {} whos\n\
+@deftypefnx {} {} whos pattern @dots{}\n\
+@deftypefnx {} {} whos option pattern @dots{}\n\
+@deftypefnx {} {S =} whos (\"pattern\", @dots{})\n\
 Provide detailed information on currently defined variables matching the\n\
 given patterns.\n\
 \n\
@@ -1989,7 +1989,7 @@ mislocked (const std::string& nm)
 
 DEFUN (mlock, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mlock ()\n\
+@deftypefn {} {} mlock ()\n\
 Lock the current function into memory so that it can't be cleared.\n\
 @seealso{munlock, mislocked, persistent}\n\
 @end deftypefn")
@@ -2011,8 +2011,8 @@ Lock the current function into memory so that it can't be cleared.\n\
 
 DEFUN (munlock, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} munlock ()\n\
-@deftypefnx {Built-in Function} {} munlock (@var{fcn})\n\
+@deftypefn  {} {} munlock ()\n\
+@deftypefnx {} {} munlock (@var{fcn})\n\
 Unlock the named function @var{fcn}.\n\
 \n\
 If no function is named then unlock the current function.\n\
@@ -2048,8 +2048,8 @@ If no function is named then unlock the current function.\n\
 
 DEFUN (mislocked, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} mislocked ()\n\
-@deftypefnx {Built-in Function} {} mislocked (@var{fcn})\n\
+@deftypefn  {} {} mislocked ()\n\
+@deftypefnx {} {} mislocked (@var{fcn})\n\
 Return true if the named function @var{fcn} is locked.\n\
 \n\
 If no function is named then return true if the current function is locked.\n\
@@ -2304,7 +2304,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
 
 DEFUN (clear, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Command} {} clear [options] pattern @dots{}\n\
+@deftypefn {} {} clear [options] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.\n\
 \n\
 The pattern may contain the following special characters:\n\
@@ -2510,9 +2510,9 @@ without the dash as well.\n\
 
 DEFUN (whos_line_format, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} whos_line_format ()\n\
+@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})\n\
+@deftypefnx {} {} whos_line_format (@var{new_val}, \"local\")\n\
 Query or set the format string used by the command @code{whos}.\n\
 \n\
 A full format string is:\n\
@@ -2589,9 +2589,9 @@ static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} missing_function_hook ()\n\
+@deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
+@deftypefnx {} {} missing_function_hook (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the function to call when\n\
 an unknown identifier is requested.\n\
 \n\
@@ -2629,7 +2629,7 @@ void maybe_missing_function_hook (const std::string& name)
 
 DEFUN (__varval__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __varval__ (@var{name})\n\
+@deftypefn {} {} __varval__ (@var{name})\n\
 Return the value of the variable @var{name} directly from the symbol table.\n\
 @end deftypefn")
 {
@@ -2645,9 +2645,9 @@ static std::string Vmissing_component_hook;
 
 DEFUN (missing_component_hook, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} missing_component_hook ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} missing_component_hook (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} missing_component_hook ()\n\
+@deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
+@deftypefnx {} {} missing_component_hook (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the function to call when\n\
 a component of Octave is missing.\n\
 \n\

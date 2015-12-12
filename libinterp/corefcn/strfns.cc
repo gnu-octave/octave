@@ -42,10 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (char, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} char (@var{x})\n\
-@deftypefnx {Built-in Function} {} char (@var{x}, @dots{})\n\
-@deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
-@deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
+@deftypefn  {} {} char (@var{x})\n\
+@deftypefnx {} {} char (@var{x}, @dots{})\n\
+@deftypefnx {} {} char (@var{s1}, @var{s2}, @dots{})\n\
+@deftypefnx {} {} char (@var{cell_array})\n\
 Create a string array from one or more numeric matrices, character\n\
 matrices, or cell arrays.\n\
 \n\
@@ -167,10 +167,10 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
 DEFUN (strvcat, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} strvcat (@var{x})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{x}, @dots{})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
+@deftypefn  {} {} strvcat (@var{x})\n\
+@deftypefnx {} {} strvcat (@var{x}, @dots{})\n\
+@deftypefnx {} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
+@deftypefnx {} {} strvcat (@var{cell_array})\n\
 Create a character array from one or more numeric matrices, character\n\
 matrices, or cell arrays.\n\
 \n\
@@ -284,7 +284,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
 DEFUN (ischar, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ischar (@var{x})\n\
+@deftypefn {} {} ischar (@var{x})\n\
 Return true if @var{x} is a character array.\n\
 @seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}\n\
 @end deftypefn")
@@ -536,7 +536,7 @@ strcmp_str_op (const std::string& s1, const std::string& s2,
 
 DEFUN (strcmp, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strcmp (@var{s1}, @var{s2})\n\
+@deftypefn {} {} strcmp (@var{s1}, @var{s2})\n\
 Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 and 0 otherwise.\n\
 \n\
@@ -632,7 +632,7 @@ strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 
 DEFUN (strncmp, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
+@deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
 Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are\n\
 the same, and 0 otherwise.\n\
 \n\
@@ -721,7 +721,7 @@ strcmpi_str_op (const std::string& s1, const std::string& s2,
 
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strcmpi (@var{s1}, @var{s2})\n\
+@deftypefn {} {} strcmpi (@var{s1}, @var{s2})\n\
 Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 disregarding case of alphabetic characters, and 0 otherwise.\n\
 \n\
@@ -778,7 +778,7 @@ strncmpi_str_op (const std::string& s1, const std::string& s2,
 
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
+@deftypefn {} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
 Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
 same, disregarding case of alphabetic characters, and 0 otherwise.\n\
 \n\
@@ -818,7 +818,7 @@ This is just the opposite of the corresponding C library function.\n\
 
 DEFUN (list_in_columns, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
+@deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
 Return a string containing the elements of @var{arg} listed in columns with\n\
 an overall maximum width of @var{width} and optional prefix @var{prefix}.\n\
 \n\

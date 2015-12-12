@@ -59,11 +59,11 @@ mark_upper_triangular (const Matrix& a)
 
 DEFUN (schur, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{S} =} schur (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"real\")\n\
-@deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
-@deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@dots{})\n\
+@deftypefn  {} {@var{S} =} schur (@var{A})\n\
+@deftypefnx {} {@var{S} =} schur (@var{A}, \"real\")\n\
+@deftypefnx {} {@var{S} =} schur (@var{A}, \"complex\")\n\
+@deftypefnx {} {@var{S} =} schur (@var{A}, @var{opt})\n\
+@deftypefnx {} {[@var{U}, @var{S}] =} schur (@dots{})\n\
 @cindex Schur decomposition\n\
 Compute the Schur@tie{}decomposition of @var{A}.\n\
 \n\
@@ -273,7 +273,7 @@ in control (see @code{are} and @code{dare}).\n\
 
 DEFUN (rsf2csf, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
+@deftypefn {} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
 Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
 upper triangular Schur@tie{}form @var{T}.\n\
 \n\

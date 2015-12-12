@@ -348,17 +348,17 @@ gen_matrix:
 
 DEFUN (rand, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} rand (@var{n})\n\
-@deftypefnx {Built-in Function} {} rand (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rand ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} rand (\"state\")\n\
-@deftypefnx {Built-in Function} {} rand (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rand (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} rand (\"seed\")\n\
-@deftypefnx {Built-in Function} {} rand (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rand (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} rand (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} rand (@dots{}, \"double\")\n\
+@deftypefn  {} {} rand (@var{n})\n\
+@deftypefnx {} {} rand (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {} {} rand ([@var{m} @var{n} @dots{}])\n\
+@deftypefnx {} {@var{v} =} rand (\"state\")\n\
+@deftypefnx {} {} rand (\"state\", @var{v})\n\
+@deftypefnx {} {} rand (\"state\", \"reset\")\n\
+@deftypefnx {} {@var{v} =} rand (\"seed\")\n\
+@deftypefnx {} {} rand (\"seed\", @var{v})\n\
+@deftypefnx {} {} rand (\"seed\", \"reset\")\n\
+@deftypefnx {} {} rand (@dots{}, \"single\")\n\
+@deftypefnx {} {} rand (@dots{}, \"double\")\n\
 Return a matrix with random elements uniformly distributed on the\n\
 interval (0, 1).\n\
 \n\
@@ -533,17 +533,17 @@ static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN (randn, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randn (@var{n})\n\
-@deftypefnx {Built-in Function} {} randn (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randn ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} randn (\"state\")\n\
-@deftypefnx {Built-in Function} {} randn (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randn (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} randn (\"seed\")\n\
-@deftypefnx {Built-in Function} {} randn (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randn (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} randn (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} randn (@dots{}, \"double\")\n\
+@deftypefn  {} {} randn (@var{n})\n\
+@deftypefnx {} {} randn (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {} {} randn ([@var{m} @var{n} @dots{}])\n\
+@deftypefnx {} {@var{v} =} randn (\"state\")\n\
+@deftypefnx {} {} randn (\"state\", @var{v})\n\
+@deftypefnx {} {} randn (\"state\", \"reset\")\n\
+@deftypefnx {} {@var{v} =} randn (\"seed\")\n\
+@deftypefnx {} {} randn (\"seed\", @var{v})\n\
+@deftypefnx {} {} randn (\"seed\", \"reset\")\n\
+@deftypefnx {} {} randn (@dots{}, \"single\")\n\
+@deftypefnx {} {} randn (@dots{}, \"double\")\n\
 Return a matrix with normally distributed random elements having zero mean\n\
 and variance one.\n\
 \n\
@@ -606,17 +606,17 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN (rande, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} rande (@var{n})\n\
-@deftypefnx {Built-in Function} {} rande (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rande ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} rande (\"state\")\n\
-@deftypefnx {Built-in Function} {} rande (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rande (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} rande (\"seed\")\n\
-@deftypefnx {Built-in Function} {} rande (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rande (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} rande (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} rande (@dots{}, \"double\")\n\
+@deftypefn  {} {} rande (@var{n})\n\
+@deftypefnx {} {} rande (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {} {} rande ([@var{m} @var{n} @dots{}])\n\
+@deftypefnx {} {@var{v} =} rande (\"state\")\n\
+@deftypefnx {} {} rande (\"state\", @var{v})\n\
+@deftypefnx {} {} rande (\"state\", \"reset\")\n\
+@deftypefnx {} {@var{v} =} rande (\"seed\")\n\
+@deftypefnx {} {} rande (\"seed\", @var{v})\n\
+@deftypefnx {} {} rande (\"seed\", \"reset\")\n\
+@deftypefnx {} {} rande (@dots{}, \"single\")\n\
+@deftypefnx {} {} rande (@dots{}, \"double\")\n\
 Return a matrix with exponentially distributed random elements.\n\
 \n\
 The arguments are handled the same as the arguments for @code{rand}.\n\
@@ -680,17 +680,17 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN (randg, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randg (@var{n})\n\
-@deftypefnx {Built-in Function} {} randg (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randg ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} randg (\"state\")\n\
-@deftypefnx {Built-in Function} {} randg (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randg (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} randg (\"seed\")\n\
-@deftypefnx {Built-in Function} {} randg (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randg (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} randg (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} randg (@dots{}, \"double\")\n\
+@deftypefn  {} {} randg (@var{n})\n\
+@deftypefnx {} {} randg (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {} {} randg ([@var{m} @var{n} @dots{}])\n\
+@deftypefnx {} {@var{v} =} randg (\"state\")\n\
+@deftypefnx {} {} randg (\"state\", @var{v})\n\
+@deftypefnx {} {} randg (\"state\", \"reset\")\n\
+@deftypefnx {} {@var{v} =} randg (\"seed\")\n\
+@deftypefnx {} {} randg (\"seed\", @var{v})\n\
+@deftypefnx {} {} randg (\"seed\", \"reset\")\n\
+@deftypefnx {} {} randg (@dots{}, \"single\")\n\
+@deftypefnx {} {} randg (@dots{}, \"double\")\n\
 Return a matrix with @code{gamma (@var{a},1)} distributed random elements.\n\
 \n\
 The arguments are handled the same as the arguments for @code{rand}, except\n\
@@ -958,17 +958,17 @@ classes.\n\
 
 DEFUN (randp, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randp (@var{l}, @var{n})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, [@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} randp (\"state\")\n\
-@deftypefnx {Built-in Function} {} randp (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randp (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} randp (\"seed\")\n\
-@deftypefnx {Built-in Function} {} randp (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randp (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} randp (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} randp (@dots{}, \"double\")\n\
+@deftypefn  {} {} randp (@var{l}, @var{n})\n\
+@deftypefnx {} {} randp (@var{l}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {} {} randp (@var{l}, [@var{m} @var{n} @dots{}])\n\
+@deftypefnx {} {@var{v} =} randp (\"state\")\n\
+@deftypefnx {} {} randp (\"state\", @var{v})\n\
+@deftypefnx {} {} randp (\"state\", \"reset\")\n\
+@deftypefnx {} {@var{v} =} randp (\"seed\")\n\
+@deftypefnx {} {} randp (\"seed\", @var{v})\n\
+@deftypefnx {} {} randp (\"seed\", \"reset\")\n\
+@deftypefnx {} {} randp (@dots{}, \"single\")\n\
+@deftypefnx {} {} randp (@dots{}, \"double\")\n\
 Return a matrix with Poisson distributed random elements with mean value\n\
 parameter given by the first argument, @var{l}.\n\
 \n\
@@ -1107,8 +1107,8 @@ classes.\n\
 
 DEFUN (randperm, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randperm (@var{n})\n\
-@deftypefnx {Built-in Function} {} randperm (@var{n}, @var{m})\n\
+@deftypefn  {} {} randperm (@var{n})\n\
+@deftypefnx {} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 \n\
 If @var{m} is supplied, return @var{m} unique entries, sampled without\n\

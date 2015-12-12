@@ -611,8 +611,8 @@ octave_value_typeinfo::do_installed_type_names (void)
 
 DEFUN (typeinfo, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} typeinfo ()\n\
-@deftypefnx {Built-in Function} {} typeinfo (@var{expr})\n\
+@deftypefn  {} {} typeinfo ()\n\
+@deftypefnx {} {} typeinfo (@var{expr})\n\
 \n\
 Return the type of the expression @var{expr}, as a string.\n\
 \n\

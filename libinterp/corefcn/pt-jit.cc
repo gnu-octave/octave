@@ -2517,9 +2517,9 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),
        UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_failcnt ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_failcnt (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} jit_failcnt ()\n\
+@deftypefnx {} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
+@deftypefnx {} {} jit_failcnt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that counts the number of JIT fail\n\
 exceptions for Octave's JIT compiler.\n\
 \n\
@@ -2540,9 +2540,9 @@ The original variable value is restored when exiting the function.\n\
 DEFUN (debug_jit, UNUSED_WITHOUT_LLVM (args),
        UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} debug_jit ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_jit (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} debug_jit (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} debug_jit ()\n\
+@deftypefnx {} {@var{old_val} =} debug_jit (@var{new_val})\n\
+@deftypefnx {} {} debug_jit (@var{new_val}, \"local\")\n\
 Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
 \n\
@@ -2563,9 +2563,9 @@ The original variable value is restored when exiting the function.\n\
 DEFUN (jit_enable, UNUSED_WITHOUT_LLVM (args),
        UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_enable ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_enable (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_enable (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} jit_enable ()\n\
+@deftypefnx {} {@var{old_val} =} jit_enable (@var{new_val})\n\
+@deftypefnx {} {} jit_enable (@var{new_val}, \"local\")\n\
 Query or set the internal variable that enables Octave's JIT compiler.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
@@ -2585,9 +2585,9 @@ The original variable value is restored when exiting the function.\n\
 DEFUN (jit_startcnt, UNUSED_WITHOUT_LLVM (args),
        UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_startcnt ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_startcnt (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} jit_startcnt ()\n\
+@deftypefnx {} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
+@deftypefnx {} {} jit_startcnt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that determines whether JIT compilation\n\
 will take place for a specific loop.\n\
 \n\

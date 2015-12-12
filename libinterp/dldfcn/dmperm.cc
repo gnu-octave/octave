@@ -131,8 +131,8 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
 DEFUN_DLD (dmperm, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} dmperm (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})\n\
+@deftypefn  {} {@var{p} =} dmperm (@var{S})\n\
+@deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})\n\
 \n\
 @cindex @nospell{Dulmage-Mendelsohn} decomposition\n\
 Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix\n\
@@ -185,7 +185,7 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
 
 DEFUN_DLD (sprank, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} sprank (@var{S})\n\
+@deftypefn {} {@var{p} =} sprank (@var{S})\n\
 @cindex structural rank\n\
 \n\
 Calculate the structural rank of the sparse matrix @var{S}.\n\

@@ -30,8 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (ellipj, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
-@deftypefnx {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\
+@deftypefn  {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
+@deftypefnx {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\
 Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}\n\
 of complex argument @var{u} and real parameter @var{m}.\n\
 \n\

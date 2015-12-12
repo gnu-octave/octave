@@ -281,10 +281,10 @@ ch_manager *ch_manager::instance = 0;
 
 DEFUN (urlwrite, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {Loadable Function} {@var{f} =} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {Loadable Function} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {Loadable Function} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})\n\
+@deftypefn  {} {} urlwrite (@var{url}, @var{localfile})\n\
+@deftypefnx {} {@var{f} =} urlwrite (@var{url}, @var{localfile})\n\
+@deftypefnx {} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
+@deftypefnx {} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})\n\
 Download a remote file specified by its @var{url} and save it as\n\
 @var{localfile}.\n\
 \n\
@@ -412,10 +412,10 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
 DEFUN (urlread, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{s} =} urlread (@var{url})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
+@deftypefn  {} {@var{s} =} urlread (@var{url})\n\
+@deftypefnx {} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
+@deftypefnx {} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
+@deftypefnx {} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
 Download a remote file specified by its @var{url} and return its content\n\
 in string @var{s}.\n\
 \n\
@@ -508,8 +508,8 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
 DEFUN (__ftp__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{handle} =} __ftp__ (@var{host})\n\
-@deftypefnx {Loadable Function} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})\n\
+@deftypefn  {} {@var{handle} =} __ftp__ (@var{host})\n\
+@deftypefnx {} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -536,7 +536,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_pwd__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_pwd__ (@var{handle})\n\
+@deftypefn {} {} __ftp_pwd__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -559,7 +559,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_cwd__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_cwd__ (@var{handle}, @var{path})\n\
+@deftypefn {} {} __ftp_cwd__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -591,7 +591,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_dir__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_dir__ (@var{handle})\n\
+@deftypefn {} {} __ftp_dir__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -667,7 +667,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_ascii__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_ascii__ (@var{handle})\n\
+@deftypefn {} {} __ftp_ascii__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -690,7 +690,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_binary__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_binary__ (@var{handle})\n\
+@deftypefn {} {} __ftp_binary__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -713,7 +713,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_close__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_close__ (@var{handle})\n\
+@deftypefn {} {} __ftp_close__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -736,7 +736,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_mode__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mode__ (@var{handle})\n\
+@deftypefn {} {} __ftp_mode__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -759,7 +759,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_delete__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_delete__ (@var{handle}, @var{path})\n\
+@deftypefn {} {} __ftp_delete__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -786,7 +786,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_rmdir__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_rmdir__ (@var{handle}, @var{path})\n\
+@deftypefn {} {} __ftp_rmdir__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -813,7 +813,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_mkdir__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mkdir__ (@var{handle}, @var{path})\n\
+@deftypefn {} {} __ftp_mkdir__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -840,7 +840,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_rename__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_rename__ (@var{handle}, @var{path})\n\
+@deftypefn {} {} __ftp_rename__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -868,7 +868,7 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_mput__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mput__ (@var{handle}, @var{files})\n\
+@deftypefn {} {} __ftp_mput__ (@var{handle}, @var{files})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -937,8 +937,8 @@ Undocumented internal function\n\
 
 DEFUN (__ftp_mget__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern})\n\
-@deftypefnx {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})\n\
+@deftypefn  {} {} __ftp_mget__ (@var{handle}, @var{pattern})\n\
+@deftypefnx {} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {

@@ -71,9 +71,9 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 
 DEFUN_DLD (convhulln, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{h} =} convhulln (@var{pts})\n\
-@deftypefnx {Loadable Function} {@var{h} =} convhulln (@var{pts}, @var{options})\n\
-@deftypefnx {Loadable Function} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
+@deftypefn  {} {@var{h} =} convhulln (@var{pts})\n\
+@deftypefnx {} {@var{h} =} convhulln (@var{pts}, @var{options})\n\
+@deftypefnx {} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
 Compute the convex hull of the set of points @var{pts}.\n\
 \n\
 @var{pts} is a matrix of size [n, dim] containing n points in a space of\n\

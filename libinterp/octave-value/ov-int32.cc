@@ -74,7 +74,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int32_scalar,
 
 DEFUN (int32, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} int32 (@var{x})\n\
+@deftypefn {} {} int32 (@var{x})\n\
 Convert @var{x} to 32-bit integer type.\n\
 @seealso{int8, uint8, int16, uint16, uint32, int64, uint64}\n\
 @end deftypefn")

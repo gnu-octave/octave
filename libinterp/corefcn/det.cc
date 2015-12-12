@@ -49,8 +49,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (det, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} det (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{d}, @var{rcond}] =} det (@var{A})\n\
+@deftypefn  {} {} det (@var{A})\n\
+@deftypefnx {} {[@var{d}, @var{rcond}] =} det (@var{A})\n\
 Compute the determinant of @var{A}.\n\
 \n\
 Return an estimate of the reciprocal condition number if requested.\n\

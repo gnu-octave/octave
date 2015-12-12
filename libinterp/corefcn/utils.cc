@@ -94,7 +94,7 @@ valid_identifier (const std::string& s)
 
 DEFUN (isvarname, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isvarname (@var{name})\n\
+@deftypefn {} {} isvarname (@var{name})\n\
 Return true if @var{name} is a valid variable name.\n\
 @seealso{iskeyword, exist, who}\n\
 @end deftypefn")
@@ -290,8 +290,8 @@ make_absolute (const string_vector& sv)
 
 DEFUN (file_in_loadpath, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} file_in_loadpath (@var{file})\n\
-@deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
+@deftypefn  {} {} file_in_loadpath (@var{file})\n\
+@deftypefnx {} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
 Return the absolute name of @var{file} if it can be found in\n\
 the list of directories specified by @code{path}.\n\
@@ -361,8 +361,8 @@ If no files are found, return an empty cell array.\n\
 
 DEFUN (file_in_path, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
-@deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
+@deftypefn  {} {} file_in_path (@var{path}, @var{file})\n\
+@deftypefnx {} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name of @var{file} if it can be found in @var{path}.\n\
 \n\
 The value of @var{path} should be a colon-separated list of directories in\n\
@@ -737,7 +737,7 @@ do_string_escapes (const std::string& s)
 
 DEFUN (do_string_escapes, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} do_string_escapes (@var{string})\n\
+@deftypefn {} {} do_string_escapes (@var{string})\n\
 Convert escape sequences in @var{string} to the characters they represent.\n\
 \n\
 Escape sequences begin with a leading backslash\n\
@@ -852,7 +852,7 @@ undo_string_escapes (const std::string& s)
 
 DEFUN (undo_string_escapes, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})\n\
+@deftypefn {} {} undo_string_escapes (@var{s})\n\
 Convert special characters in strings back to their escaped forms.\n\
 \n\
 For example, the expression\n\
@@ -913,7 +913,7 @@ replaces the unprintable alert character with its printable representation.\n\
 
 DEFUN (is_absolute_filename, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_absolute_filename (@var{file})\n\
+@deftypefn {} {} is_absolute_filename (@var{file})\n\
 Return true if @var{file} is an absolute filename.\n\
 @seealso{is_rooted_relative_filename, make_absolute_filename, isdir}\n\
 @end deftypefn")
@@ -938,7 +938,7 @@ Return true if @var{file} is an absolute filename.\n\
 
 DEFUN (is_rooted_relative_filename, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_rooted_relative_filename (@var{file})\n\
+@deftypefn {} {} is_rooted_relative_filename (@var{file})\n\
 Return true if @var{file} is a rooted-relative filename.\n\
 @seealso{is_absolute_filename, make_absolute_filename, isdir}\n\
 @end deftypefn")
@@ -963,7 +963,7 @@ Return true if @var{file} is a rooted-relative filename.\n\
 
 DEFUN (make_absolute_filename, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} make_absolute_filename (@var{file})\n\
+@deftypefn {} {} make_absolute_filename (@var{file})\n\
 Return the full name of @var{file} beginning from the root of the file\n\
 system.\n\
 \n\
@@ -988,8 +988,8 @@ No check is done for the existence of @var{file}.\n\
 
 DEFUN (dir_in_loadpath, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dir_in_loadpath (@var{dir})\n\
-@deftypefnx {Built-in Function} {} dir_in_loadpath (@var{dir}, \"all\")\n\
+@deftypefn  {} {} dir_in_loadpath (@var{dir})\n\
+@deftypefnx {} {} dir_in_loadpath (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.\n\
 \n\
 The match is performed at the end of each path element.  For example, if\n\
@@ -1042,9 +1042,9 @@ all name matches rather than just the first.\n\
 
 DEFUNX ("errno", Ferrno, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{err} =} errno ()\n\
-@deftypefnx {Built-in Function} {@var{err} =} errno (@var{val})\n\
-@deftypefnx {Built-in Function} {@var{err} =} errno (@var{name})\n\
+@deftypefn  {} {@var{err} =} errno ()\n\
+@deftypefnx {} {@var{err} =} errno (@var{val})\n\
+@deftypefnx {} {@var{err} =} errno (@var{name})\n\
 Return the current value of the system-dependent variable errno,\n\
 set its value to @var{val} and return the previous value, or return\n\
 the named error code given @var{name} as a character string, or -1\n\
@@ -1097,7 +1097,7 @@ if @var{name} is not found.\n\
 
 DEFUN (errno_list, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} errno_list ()\n\
+@deftypefn {} {} errno_list ()\n\
 Return a structure containing the system-dependent errno values.\n\
 @seealso{errno}\n\
 @end deftypefn")
@@ -1378,8 +1378,8 @@ octave_sleep (double seconds)
 
 DEFUN (isindex, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} isindex (@var{ind})\n\
-@deftypefnx {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
+@deftypefn  {} {} isindex (@var{ind})\n\
+@deftypefnx {} {} isindex (@var{ind}, @var{n})\n\
 Return true if @var{ind} is a valid index.\n\
 \n\
 Valid indices are either positive integers (although possibly of real data\n\
@@ -1529,7 +1529,7 @@ octave_preserve_stream_state::~octave_preserve_stream_state (void)
 
 DEFUN (isstudent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isstudent ()\n\
+@deftypefn {} {} isstudent ()\n\
 Return true if running in the student edition of @sc{matlab}.\n\
 \n\
 @code{isstudent} always returns false in Octave.\n\

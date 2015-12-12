@@ -53,10 +53,10 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (ccolamd, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} ccolamd (@var{S})\n\
-@deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{S}, @var{knobs})\n\
-@deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{S}, @var{knobs}, @var{cmember})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} ccolamd (@dots{})\n\
+@deftypefn  {} {@var{p} =} ccolamd (@var{S})\n\
+@deftypefnx {} {@var{p} =} ccolamd (@var{S}, @var{knobs})\n\
+@deftypefnx {} {@var{p} =} ccolamd (@var{S}, @var{knobs}, @var{cmember})\n\
+@deftypefnx {} {[@var{p}, @var{stats}] =} ccolamd (@dots{})\n\
 \n\
 Constrained column approximate minimum degree permutation.\n\
 \n\
@@ -340,10 +340,10 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
 DEFUN_DLD (csymamd, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} csymamd (@var{S})\n\
-@deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs})\n\
-@deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs}, @var{cmember})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} csymamd (@dots{})\n\
+@deftypefn  {} {@var{p} =} csymamd (@var{S})\n\
+@deftypefnx {} {@var{p} =} csymamd (@var{S}, @var{knobs})\n\
+@deftypefnx {} {@var{p} =} csymamd (@var{S}, @var{knobs}, @var{cmember})\n\
+@deftypefnx {} {[@var{p}, @var{stats}] =} csymamd (@dots{})\n\
 \n\
 For a symmetric positive definite matrix @var{S}, return the permutation\n\
 vector @var{p} such that @code{@var{S}(@var{p},@var{p})} tends to have a\n\

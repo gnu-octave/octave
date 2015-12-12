@@ -743,7 +743,7 @@ maybe_initialize_magick (void)
 
 DEFUN_DLD (__magick_read__, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})\n\
+@deftypefn {} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})\n\
 Read image with GraphicsMagick or ImageMagick.\n\
 \n\
 This is a private internal function not intended for direct use.\n\
@@ -1380,7 +1380,7 @@ write_file (const std::string& filename,
 
 DEFUN_DLD (__magick_write__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})\n\
+@deftypefn {} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})\n\
 Write image with GraphicsMagick or ImageMagick.\n\
 \n\
 This is a private internal function not intended for direct use.\n\
@@ -1556,7 +1556,7 @@ Use @code{imwrite} instead.\n\
 // done in Octave language), and then again for the actual reading.
 DEFUN_DLD (__magick_ping__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __magick_ping__ (@var{fname}, @var{idx})\n\
+@deftypefn {} {} __magick_ping__ (@var{fname}, @var{idx})\n\
 Ping image information with GraphicsMagick or ImageMagick.\n\
 \n\
 This is a private internal function not intended for direct use.\n\
@@ -1775,7 +1775,7 @@ fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
 
 DEFUN_DLD (__magick_finfo__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __magick_finfo__ (@var{fname})\n\
+@deftypefn {} {} __magick_finfo__ (@var{fname})\n\
 Read image information with GraphicsMagick or ImageMagick.\n\
 \n\
 This is a private internal function not intended for direct use.\n\
@@ -2225,7 +2225,7 @@ Use @code{imfinfo} instead.\n\
 
 DEFUN_DLD (__magick_formats__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __magick_imformats__ (@var{formats})\n\
+@deftypefn {} {} __magick_imformats__ (@var{formats})\n\
 Fill formats info with GraphicsMagick CoderInfo.\n\
 \n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\

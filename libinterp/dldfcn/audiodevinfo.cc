@@ -68,14 +68,14 @@ bits_to_format (int bits)
 
 DEFUN_DLD (audiodevinfo, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{devinfo} =} audiodevinfo ()\n\
+@deftypefn {} {@var{devinfo} =} audiodevinfo ()\n\
 \n\
-@deftypefnx {Loadable Function} {@var{devs} =} audiodevinfo (@var{io})\n\
-@deftypefnx {Loadable Function} {@var{name} =} audiodevinfo (@var{io}, @var{id})\n\
-@deftypefnx {Loadable Function} {@var{id} =} audiodevinfo (@var{io}, @var{name})\n\
-@deftypefnx {Loadable Function} {@var{id} =} audiodevinfo (@var{io}, @var{rate}, @var{bits}, @var{chans})\n\
+@deftypefnx {} {@var{devs} =} audiodevinfo (@var{io})\n\
+@deftypefnx {} {@var{name} =} audiodevinfo (@var{io}, @var{id})\n\
+@deftypefnx {} {@var{id} =} audiodevinfo (@var{io}, @var{name})\n\
+@deftypefnx {} {@var{id} =} audiodevinfo (@var{io}, @var{rate}, @var{bits}, @var{chans})\n\
 \n\
-@deftypefnx {Loadable Function} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})\n\
+@deftypefnx {} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})\n\
 \n\
 Return a structure describing the available audio input and output devices.\n\
 \n\
@@ -1802,9 +1802,9 @@ audiorecorder::get_stream (void)
 
 DEFUN_DLD (__recorder_audiorecorder__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels})\n\
-@deftypefnx {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels}, @var{id})\n\
-@deftypefnx {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fcn}, @dots{})\n\
+@deftypefn  {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels})\n\
+@deftypefnx {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels}, @var{id})\n\
+@deftypefnx {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fcn}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1872,7 +1872,7 @@ get_recorder (const octave_value& ov)
 
 DEFUN_DLD (__recorder_getaudiodata__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{data}} __recorder_getaudiodata__ (@var{recorder})\n\
+@deftypefn {} {@var{data}} __recorder_getaudiodata__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1898,7 +1898,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_channels__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{n} =} __recorder_get_channels__ (@var{recorder})\n\
+@deftypefn {} {@var{n} =} __recorder_get_channels__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1927,7 +1927,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_fs__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{fs} =} __recorder_get_fs__ (@var{recorder})\n\
+@deftypefn {} {@var{fs} =} __recorder_get_fs__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1956,7 +1956,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_id__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{id} =} __recorder_get_id__ (@var{recorder})\n\
+@deftypefn {} {@var{id} =} __recorder_get_id__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1985,7 +1985,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_nbits__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{nbits} =} __recorder_get_nbits__ (@var{recorder})\n\
+@deftypefn {} {@var{nbits} =} __recorder_get_nbits__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2014,7 +2014,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_sample_number__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{n} =} __recorder_get_sample_number__ (@var{recorder})\n\
+@deftypefn {} {@var{n} =} __recorder_get_sample_number__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2043,7 +2043,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_tag__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{tag} =} __recorder_get_tag__ (@var{recorder})\n\
+@deftypefn {} {@var{tag} =} __recorder_get_tag__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2072,7 +2072,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_total_samples__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{n} =} __recorder_get_total_samples__ (@var{recorder})\n\
+@deftypefn {} {@var{n} =} __recorder_get_total_samples__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2101,7 +2101,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_get_userdata__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{data} =} __recorder_get_userdata__ (@var{recorder})\n\
+@deftypefn {} {@var{data} =} __recorder_get_userdata__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2130,7 +2130,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_isrecording__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_isrecording__ (@var{recorder})\n\
+@deftypefn {} {} __recorder_isrecording__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2159,7 +2159,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_pause__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_pause__ (@var{recorder})\n\
+@deftypefn {} {} __recorder_pause__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2188,7 +2188,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_recordblocking__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_recordblocking__ (@var{recorder}, @var{seconds})\n\
+@deftypefn {} {} __recorder_recordblocking__ (@var{recorder}, @var{seconds})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2214,8 +2214,8 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_record__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __recorder_record__ (@var{recorder})\n\
-@deftypefnx {Loadable Function} {} __recorder_record__ (@var{recorder}, @var{seconds})\n\
+@deftypefn  {} {} __recorder_record__ (@var{recorder})\n\
+@deftypefnx {} {} __recorder_record__ (@var{recorder}, @var{seconds})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2249,7 +2249,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_resume__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_resume__ (@var{recorder})\n\
+@deftypefn {} {} __recorder_resume__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2278,7 +2278,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_set_fs__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_set_fs__ (@var{recorder}, @var{fs})\n\
+@deftypefn {} {} __recorder_set_fs__ (@var{recorder}, @var{fs})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2307,7 +2307,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_set_tag__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_set_tag__ (@var{recorder}, @var{tag})\n\
+@deftypefn {} {} __recorder_set_tag__ (@var{recorder}, @var{tag})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2336,7 +2336,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_set_userdata__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_set_userdata__ (@var{recorder}, @var{data})\n\
+@deftypefn {} {} __recorder_set_userdata__ (@var{recorder}, @var{data})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2365,7 +2365,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__recorder_stop__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __recorder_stop__ (@var{recorder})\n\
+@deftypefn {} {} __recorder_stop__ (@var{recorder})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2391,9 +2391,9 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_audioplayer__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs})\n\
-@deftypefnx {Loadable Function} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits})\n\
-@deftypefnx {Loadable Function} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits}, @var{id})\n\
+@deftypefn  {} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs})\n\
+@deftypefnx {} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits})\n\
+@deftypefnx {} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits}, @var{id})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2465,7 +2465,7 @@ get_player (const octave_value& ov)
 
 DEFUN_DLD (__player_get_channels__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{n} =} __player_get_channels__ (@var{player})\n\
+@deftypefn {} {@var{n} =} __player_get_channels__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2494,7 +2494,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_fs__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{fs} =} __player_get_fs__ (@var{player})\n\
+@deftypefn {} {@var{fs} =} __player_get_fs__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2523,7 +2523,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_id__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{id} =} __player_get_id__ (@var{player})\n\
+@deftypefn {} {@var{id} =} __player_get_id__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2552,7 +2552,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_nbits__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{nbits} =} __player_get_nbits__ (@var{player})\n\
+@deftypefn {} {@var{nbits} =} __player_get_nbits__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2581,7 +2581,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_sample_number__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{n} =} __player_get_sample_number__ (@var{player})\n\
+@deftypefn {} {@var{n} =} __player_get_sample_number__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2610,7 +2610,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_tag__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{tag} =} __player_get_tag__ (@var{player})\n\
+@deftypefn {} {@var{tag} =} __player_get_tag__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2639,7 +2639,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_total_samples__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{n} =} __player_get_total_samples__ (@var{player})\n\
+@deftypefn {} {@var{n} =} __player_get_total_samples__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2668,7 +2668,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_get_userdata__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{data} =} __player_get_userdata__ (@var{player})\n\
+@deftypefn {} {@var{data} =} __player_get_userdata__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2697,7 +2697,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_isplaying__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_isplaying__ (@var{player})\n\
+@deftypefn {} {} __player_isplaying__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2726,7 +2726,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_pause__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_pause__ (@var{player})\n\
+@deftypefn {} {} __player_pause__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2755,9 +2755,9 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_playblocking__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __player_playblocking__ (@var{player})\n\
-@deftypefnx {Loadable Function} {} __player_playblocking__ (@var{player}, @var{start})\n\
-@deftypefnx {Loadable Function} {} __player_playblocking__ (@var{player}, [@var{start}, @var{end}])\n\
+@deftypefn  {} {} __player_playblocking__ (@var{player})\n\
+@deftypefnx {} {} __player_playblocking__ (@var{player}, @var{start})\n\
+@deftypefnx {} {} __player_playblocking__ (@var{player}, [@var{start}, @var{end}])\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2812,9 +2812,9 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_play__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __player_play__ (@var{player})\n\
-@deftypefnx {Loadable Function} {} __player_play__ (@var{player}, @var{start})\n\
-@deftypefnx {Loadable Function} {} __player_play__ (@var{player}, [@var{start}, @var{end}])\n\
+@deftypefn  {} {} __player_play__ (@var{player})\n\
+@deftypefnx {} {} __player_play__ (@var{player}, @var{start})\n\
+@deftypefnx {} {} __player_play__ (@var{player}, [@var{start}, @var{end}])\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2873,7 +2873,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_resume__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_resume__ (@var{player})\n\
+@deftypefn {} {} __player_resume__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2902,7 +2902,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_set_fs__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_set_fs__ (@var{player}, @var{fs})\n\
+@deftypefn {} {} __player_set_fs__ (@var{player}, @var{fs})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2931,7 +2931,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_set_tag__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_set_tag__ (@var{player}, @var{tag})\n\
+@deftypefn {} {} __player_set_tag__ (@var{player}, @var{tag})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2960,7 +2960,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_set_userdata__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_set_userdata__ (@var{player}, @var{data})\n\
+@deftypefn {} {} __player_set_userdata__ (@var{player}, @var{data})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2989,7 +2989,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__player_stop__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __player_stop__ (@var{player})\n\
+@deftypefn {} {} __player_stop__ (@var{player})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

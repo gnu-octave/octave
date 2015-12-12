@@ -270,10 +270,10 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 
 DEFUN (filter, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{y} =} filter (@var{b}, @var{a}, @var{x})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
+@deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})\n\
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
 Apply a 1-D digital filter to the data @var{x}.\n\
 \n\
 @code{filter} returns the solution to the following linear, time-invariant\n\

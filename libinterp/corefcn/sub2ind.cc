@@ -65,8 +65,8 @@ get_dim_vector (const octave_value& val, const char *name)
 
 DEFUN (sub2ind, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
-@deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
+@deftypefn  {} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
+@deftypefnx {} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
 Convert subscripts to a linear index.\n\
 \n\
 The following example shows how to convert the two-dimensional index\n\
@@ -164,7 +164,7 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 
 DEFUN (ind2sub, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})\n\
+@deftypefn {} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})\n\
 Convert a linear index to subscripts.\n\
 \n\
 The following example shows how to convert the linear index @code{8}\n\

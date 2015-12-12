@@ -765,8 +765,8 @@ get_user_input (const octave_value_list& args, int nargout)
 
 DEFUN (input, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{ans} =} input (@var{prompt})\n\
-@deftypefnx {Built-in Function} {@var{ans} =} input (@var{prompt}, \"s\")\n\
+@deftypefn  {} {@var{ans} =} input (@var{prompt})\n\
+@deftypefnx {} {@var{ans} =} input (@var{prompt}, \"s\")\n\
 Print @var{prompt} and wait for user input.\n\
 \n\
 For example,\n\
@@ -832,7 +832,7 @@ octave_yes_or_no (const std::string& prompt)
 
 DEFUN (yes_or_no, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
+@deftypefn {} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
 Ask the user a yes-or-no question.\n\
 \n\
 Return logical true if the answer is yes or false if the answer is no.\n\
@@ -897,8 +897,8 @@ do_keyboard (const octave_value_list& args)
 
 DEFUN (keyboard, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} keyboard ()\n\
-@deftypefnx {Built-in Function} {} keyboard (\"@var{prompt}\")\n\
+@deftypefn  {} {} keyboard ()\n\
+@deftypefnx {} {} keyboard (\"@var{prompt}\")\n\
 Stop m-file execution and enter debug mode.\n\
 \n\
 When the @code{keyboard} function is executed, Octave prints a prompt and\n\
@@ -938,11 +938,11 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
 DEFUN (echo, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} echo\n\
-@deftypefnx {Command} {} echo on\n\
-@deftypefnx {Command} {} echo off\n\
-@deftypefnx {Command} {} echo on all\n\
-@deftypefnx {Command} {} echo off all\n\
+@deftypefn  {} {} echo\n\
+@deftypefnx {} {} echo on\n\
+@deftypefnx {} {} echo off\n\
+@deftypefnx {} {} echo on all\n\
+@deftypefnx {} {} echo off all\n\
 Control whether commands are displayed as they are executed.\n\
 \n\
 Valid options are:\n\
@@ -1069,7 +1069,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 
 DEFUN (__echostate__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{state} =} __echostate__ ()\n\
+@deftypefn {} {@var{state} =} __echostate__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -1078,7 +1078,7 @@ Undocumented internal function\n\
 
 DEFUN (completion_matches, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} completion_matches (@var{hint})\n\
+@deftypefn {} {} completion_matches (@var{hint})\n\
 Generate possible completions given @var{hint}.\n\
 \n\
 This function is provided for the benefit of programs like Emacs which\n\
@@ -1162,7 +1162,7 @@ a feature, not a bug.\n\
 
 DEFUN (readline_read_init_file, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} readline_read_init_file (@var{file})\n\
+@deftypefn {} {} readline_read_init_file (@var{file})\n\
 Read the readline library initialization file @var{file}.\n\
 \n\
 If @var{file} is omitted, read the default initialization file\n\
@@ -1194,7 +1194,7 @@ for details.\n\
 
 DEFUN (readline_re_read_init_file, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} readline_re_read_init_file ()\n\
+@deftypefn {} {} readline_re_read_init_file ()\n\
 Re-read the last readline library initialization file that was read.\n\
 \n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
@@ -1225,8 +1225,8 @@ internal_input_event_hook_fcn (void)
 
 DEFUN (add_input_event_hook, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn})\n\
-@deftypefnx {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
+@deftypefn  {} {@var{id} =} add_input_event_hook (@var{fcn})\n\
+@deftypefnx {} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
 Add the named function or function handle @var{fcn} to the list of functions\n\
 to call periodically when Octave is waiting for input.\n\
 \n\
@@ -1265,8 +1265,8 @@ list of input hook functions.\n\
 
 DEFUN (remove_input_event_hook, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} remove_input_event_hook (@var{name})\n\
-@deftypefnx {Built-in Function} {} remove_input_event_hook (@var{fcn_id})\n\
+@deftypefn  {} {} remove_input_event_hook (@var{name})\n\
+@deftypefnx {} {} remove_input_event_hook (@var{fcn_id})\n\
 Remove the named function or function handle with the given identifier\n\
 from the list of functions to call periodically when Octave is waiting\n\
 for input.\n\
@@ -1301,9 +1301,9 @@ for input.\n\
 
 DEFUN (PS1, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} PS1 ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} PS1 (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} PS1 ()\n\
+@deftypefnx {} {@var{old_val} =} PS1 (@var{new_val})\n\
+@deftypefnx {} {} PS1 (@var{new_val}, \"local\")\n\
 Query or set the primary prompt string.\n\
 \n\
 When executing interactively, Octave displays the primary prompt when it is\n\
@@ -1343,9 +1343,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (PS2, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} PS2 ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} PS2 (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} PS2 ()\n\
+@deftypefnx {} {@var{old_val} =} PS2 (@var{new_val})\n\
+@deftypefnx {} {} PS2 (@var{new_val}, \"local\")\n\
 Query or set the secondary prompt string.\n\
 \n\
 The secondary prompt is printed when Octave is expecting additional input to\n\
@@ -1365,9 +1365,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (PS4, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} PS4 ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} PS4 (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} PS4 ()\n\
+@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})\n\
+@deftypefnx {} {} PS4 (@var{new_val}, \"local\")\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands is enabled.\n\
 \n\
@@ -1385,9 +1385,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (completion_append_char, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} completion_append_char ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} completion_append_char (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} completion_append_char ()\n\
+@deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val})\n\
+@deftypefnx {} {} completion_append_char (@var{new_val}, \"local\")\n\
 Query or set the internal character variable that is appended to\n\
 successful command-line completion attempts.\n\
 \n\
@@ -1403,9 +1403,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (echo_executing_commands, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} echo_executing_commands (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} echo_executing_commands ()\n\
+@deftypefnx {} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
+@deftypefnx {} {} echo_executing_commands (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls the echo state.\n\
 \n\
 It may be the sum of the following values:\n\
@@ -1437,8 +1437,8 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (__request_drawnow__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __request_drawnow__ ()\n\
-@deftypefnx {Built-in Function} {} __request_drawnow__ (@var{flag})\n\
+@deftypefn  {} {} __request_drawnow__ ()\n\
+@deftypefnx {} {} __request_drawnow__ (@var{flag})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1459,7 +1459,7 @@ Undocumented internal function.\n\
 
 DEFUN (__gud_mode__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __gud_mode__ ()\n\
+@deftypefn {} {} __gud_mode__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1480,9 +1480,9 @@ Undocumented internal function.\n\
 
 DEFUN (filemarker, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} filemarker (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} filemarker ()\n\
+@deftypefnx {} {@var{old_val} =} filemarker (@var{new_val})\n\
+@deftypefnx {} {} filemarker (@var{new_val}, \"local\")\n\
 Query or set the character used to separate the filename from the subfunction\n\
 names contained within the file.\n\
 \n\

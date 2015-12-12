@@ -296,7 +296,7 @@ str2double1 (const std::string& str_arg)
 
 DEFUN (str2double, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} str2double (@var{s})\n\
+@deftypefn {} {} str2double (@var{s})\n\
 Convert a string to a real or complex number.\n\
 \n\
 The string must be in one of the following formats where a and b are real\n\

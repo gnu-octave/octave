@@ -978,7 +978,7 @@ octave_matrix::map (unary_mapper_t umap) const
 
 DEFUN (double, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} double (@var{x})\n\
+@deftypefn {} {} double (@var{x})\n\
 Convert @var{x} to double precision type.\n\
 @seealso{single}\n\
 @end deftypefn")

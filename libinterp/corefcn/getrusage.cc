@@ -61,7 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (getrusage, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} getrusage ()\n\
+@deftypefn {} {} getrusage ()\n\
 Return a structure containing a number of statistics about the current\n\
 Octave process.\n\
 \n\

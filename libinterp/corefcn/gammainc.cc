@@ -34,9 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (gammainc, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
-@deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"lower\")\n\
-@deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"upper\")\n\
+@deftypefn  {} {} gammainc (@var{x}, @var{a})\n\
+@deftypefnx {} {} gammainc (@var{x}, @var{a}, \"lower\")\n\
+@deftypefnx {} {} gammainc (@var{x}, @var{a}, \"upper\")\n\
 Compute the normalized incomplete gamma function.\n\
 \n\
 This is defined as\n\

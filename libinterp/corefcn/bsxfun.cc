@@ -318,7 +318,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 
 DEFUN (bsxfun, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
+@deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
 The binary singleton expansion function performs broadcasting,\n\
 that is, it applies a binary function @var{f} element-by-element to two\n\
 array arguments @var{A} and @var{B}, and expands as necessary\n\

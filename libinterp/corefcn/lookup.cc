@@ -189,8 +189,8 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 
 DEFUN (lookup, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
+@deftypefn  {} {@var{idx} =} lookup (@var{table}, @var{y})\n\
+@deftypefnx {} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
 Lookup values in a sorted table.\n\
 \n\
 This function is usually used as a prelude to interpolation.\n\

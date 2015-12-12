@@ -128,9 +128,9 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
 
 DEFUN (__ilu0__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
+@deftypefn  {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -464,10 +464,10 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 
 DEFUN (__iluc__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __iluc__ (@var{A}, @dots{})\n\
+@deftypefn  {} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __iluc__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -935,12 +935,12 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
 DEFUN (__ilutp__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})\n\
+@deftypefn  {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})\n\
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

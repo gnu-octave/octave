@@ -52,7 +52,7 @@ extern "C"
 
 DEFUN (__pchip_deriv__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})\n\
+@deftypefn {} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

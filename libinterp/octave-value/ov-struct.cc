@@ -1656,9 +1656,9 @@ octave_scalar_struct::fast_elem_insert_self (void *where,
 
 DEFUN (struct, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} struct ()\n\
-@deftypefnx {Built-in Function} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
-@deftypefnx {Built-in Function} {@var{s} =} struct (@var{obj})\n\
+@deftypefn  {} {@var{s} =} struct ()\n\
+@deftypefnx {} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
+@deftypefnx {} {@var{s} =} struct (@var{obj})\n\
 \n\
 Create a scalar or array structure and initialize its values.\n\
 \n\
@@ -1846,7 +1846,7 @@ produces a struct @strong{array}.\n\
 
 DEFUN (isstruct, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isstruct (@var{x})\n\
+@deftypefn {} {} isstruct (@var{x})\n\
 Return true if @var{x} is a structure or a structure array.\n\
 @seealso{ismatrix, iscell, isa}\n\
 @end deftypefn")
@@ -1859,8 +1859,8 @@ Return true if @var{x} is a structure or a structure array.\n\
 
 DEFUN (__fieldnames__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __fieldnames__ (@var{struct})\n\
-@deftypefnx {Built-in Function} {} __fieldnames__ (@var{obj})\n\
+@deftypefn  {} {} __fieldnames__ (@var{struct})\n\
+@deftypefnx {} {} __fieldnames__ (@var{obj})\n\
 Internal function.\n\
 \n\
 Implements @code{fieldnames()} for structures and Octave objects.\n\
@@ -1886,8 +1886,8 @@ Implements @code{fieldnames()} for structures and Octave objects.\n\
 
 DEFUN (isfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} isfield (@var{x}, \"@var{name}\")\n\
-@deftypefnx {Built-in Function} {} isfield (@var{x}, @var{name})\n\
+@deftypefn  {} {} isfield (@var{x}, \"@var{name}\")\n\
+@deftypefnx {} {} isfield (@var{x}, @var{name})\n\
 Return true if the @var{x} is a structure and it includes an element named\n\
 @var{name}.\n\
 \n\
@@ -1943,7 +1943,7 @@ dimension is returned.\n\
 
 DEFUN (numfields, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} numfields (@var{s})\n\
+@deftypefn {} {} numfields (@var{s})\n\
 Return the number of fields of the structure @var{s}.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")
@@ -1975,8 +1975,8 @@ Return the number of fields of the structure @var{s}.\n\
 
 DEFUN (cell2struct, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cell2struct (@var{cell}, @var{fields})\n\
-@deftypefnx {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
+@deftypefn  {} {} cell2struct (@var{cell}, @var{fields})\n\
+@deftypefnx {} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
 Convert @var{cell} to a structure.\n\
 \n\
 The number of fields in @var{fields} must match the number of elements in\n\
@@ -2107,8 +2107,8 @@ Fcellstr (const octave_value_list& = octave_value_list (), int = 0);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
-@deftypefnx {Built-in Function} {@var{sout} =} rmfield (@var{s}, @var{f})\n\
+@deftypefn  {} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
+@deftypefnx {} {@var{sout} =} rmfield (@var{s}, @var{f})\n\
 Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}\n\
 removed.\n\
 \n\
@@ -2160,9 +2160,9 @@ the named fields.\n\
 
 DEFUN (struct_levels_to_print, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} struct_levels_to_print (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} struct_levels_to_print ()\n\
+@deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
+@deftypefnx {} {} struct_levels_to_print (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the number of\n\
 structure levels to display.\n\
 \n\
@@ -2178,9 +2178,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (print_struct_array_contents, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} print_struct_array_contents ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} print_struct_array_contents ()\n\
+@deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
+@deftypefnx {} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies whether to print struct\n\
 array contents.\n\
 \n\

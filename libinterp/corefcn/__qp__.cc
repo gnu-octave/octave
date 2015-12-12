@@ -487,7 +487,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
 DEFUN (__qp__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})\n\
+@deftypefn {} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

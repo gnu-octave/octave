@@ -708,9 +708,9 @@ octave_range::fast_elem_extract (octave_idx_type n) const
 
 DEFUN (allow_noninteger_range_as_index, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} allow_noninteger_range_as_index ()\n\
+@deftypefnx {} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
+@deftypefnx {} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether non-integer\n\
 ranges are allowed as indices.\n\
 \n\

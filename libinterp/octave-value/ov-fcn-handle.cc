@@ -1669,7 +1669,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
 DEFUN (functions, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{s} =} functions (@var{fcn_handle})\n\
+@deftypefn {} {@var{s} =} functions (@var{fcn_handle})\n\
 Return a structure containing information about the function handle\n\
 @var{fcn_handle}.\n\
 \n\
@@ -1800,7 +1800,7 @@ particular output.\n\
 
 DEFUN (func2str, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} func2str (@var{fcn_handle})\n\
+@deftypefn {} {} func2str (@var{fcn_handle})\n\
 Return a string containing the name of the function referenced by the\n\
 function handle @var{fcn_handle}.\n\
 @seealso{str2func, functions}\n\
@@ -1836,8 +1836,8 @@ function handle @var{fcn_handle}.\n\
 
 DEFUN (str2func, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} str2func (@var{fcn_name})\n\
-@deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
+@deftypefn  {} {} str2func (@var{fcn_name})\n\
+@deftypefnx {} {} str2func (@var{fcn_name}, \"global\")\n\
 Return a function handle constructed from the string @var{fcn_name}.\n\
 \n\
 If the optional @qcode{\"global\"} argument is passed, locally visible\n\
@@ -1903,7 +1903,7 @@ functions are ignored in the lookup.\n\
 
 DEFUN (is_function_handle, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_function_handle (@var{x})\n\
+@deftypefn {} {} is_function_handle (@var{x})\n\
 Return true if @var{x} is a function handle.\n\
 @seealso{isa, typeinfo, class, functions}\n\
 @end deftypefn")

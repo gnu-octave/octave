@@ -311,11 +311,11 @@ do_bessel (enum bessel_type type, const char *fn,
 
 DEFUN (besselj, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
+@deftypefn  {} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
 Compute Bessel or Hankel functions of various kinds:\n\
 \n\
 @table @code\n\
@@ -385,7 +385,7 @@ return @code{NaN}.\n\
 
 DEFUN (bessely, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefn {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
 See besselj.\n\
 @end deftypefn")
 {
@@ -394,7 +394,7 @@ See besselj.\n\
 
 DEFUN (besseli, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefn {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
 See besselj.\n\
 @end deftypefn")
 {
@@ -403,7 +403,7 @@ See besselj.\n\
 
 DEFUN (besselk, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefn {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
 See besselj.\n\
 @end deftypefn")
 {
@@ -412,7 +412,7 @@ See besselj.\n\
 
 DEFUN (besselh, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
+@deftypefn {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
 See besselj.\n\
 @end deftypefn")
 {
@@ -452,7 +452,7 @@ See besselj.\n\
 
 DEFUN (airy, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})\n\
+@deftypefn {} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})\n\
 Compute Airy functions of the first and second kind, and their derivatives.\n\
 \n\
 @example\n\

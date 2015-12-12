@@ -649,9 +649,9 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 
 DEFUNX ("inline", Finline, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} inline (@var{str})\n\
-@deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\
-@deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
+@deftypefn  {} {} inline (@var{str})\n\
+@deftypefnx {} {} inline (@var{str}, @var{arg1}, @dots{})\n\
+@deftypefnx {} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
 \n\
 If called with a single argument, the arguments of the generated function\n\
@@ -839,7 +839,7 @@ functions from strings is through the use of anonymous functions\n\
 
 DEFUN (formula, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} formula (@var{fun})\n\
+@deftypefn {} {} formula (@var{fun})\n\
 Return a character string representing the inline function @var{fun}.\n\
 \n\
 Note that @code{char (@var{fun})} is equivalent to\n\
@@ -874,7 +874,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 
 DEFUN (argnames, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} argnames (@var{fun})\n\
+@deftypefn {} {} argnames (@var{fun})\n\
 Return a cell array of character strings containing the names of the\n\
 arguments of the inline function @var{fun}.\n\
 @seealso{inline, formula, vectorize}\n\
@@ -917,7 +917,7 @@ arguments of the inline function @var{fun}.\n\
 
 DEFUN (vectorize, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
+@deftypefn {} {} vectorize (@var{fun})\n\
 Create a vectorized version of the inline function @var{fun} by replacing\n\
 all occurrences of @code{*}, @code{/}, etc., with @code{.*}, @code{./}, etc.\n\
 \n\

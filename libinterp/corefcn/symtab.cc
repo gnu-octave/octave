@@ -1647,8 +1647,8 @@ symbol_table::do_update_nest (void)
 
 DEFUN (ignore_function_time_stamp, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
+@deftypefn  {} {@var{val} =} ignore_function_time_stamp ()\n\
+@deftypefnx {} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave checks\n\
 the time stamp on files each time it looks up functions defined in\n\
 function files.\n\
@@ -1726,7 +1726,7 @@ determine whether functions defined in function files need to recompiled.\n\
 
 DEFUN (__current_scope__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{scope}, @var{context}]} __current_scope__ ()\n\
+@deftypefn {} {[@var{scope}, @var{context}]} __current_scope__ ()\n\
 Return the current scope and context as integers.\n\
 @seealso{__dump_symtab_info__}\n\
 @end deftypefn")
@@ -1741,10 +1741,10 @@ Return the current scope and context as integers.\n\
 
 DEFUN (__dump_symtab_info__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __dump_symtab_info__ ()\n\
-@deftypefnx {Built-in Function} {} __dump_symtab_info__ (@var{scope})\n\
-@deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"scopes\")\n\
-@deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"functions\")\n\
+@deftypefn  {} {} __dump_symtab_info__ ()\n\
+@deftypefnx {} {} __dump_symtab_info__ (@var{scope})\n\
+@deftypefnx {} {} __dump_symtab_info__ (\"scopes\")\n\
+@deftypefnx {} {} __dump_symtab_info__ (\"functions\")\n\
 Undocumented internal function.\n\
 @seealso{__current_scope__}\n\
 @end deftypefn")
@@ -1810,7 +1810,7 @@ Undocumented internal function.\n\
 
 DEFUN (__get_cmdline_fcn_txt__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __get_cmdline_fcn_txt__ (@var{name})\n\
+@deftypefn {} {} __get_cmdline_fcn_txt__ (@var{name})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

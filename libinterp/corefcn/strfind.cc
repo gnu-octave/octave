@@ -150,9 +150,9 @@ qs_search (const Array<char>& needle,
 
 DEFUN (strfind, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} strfind (@dots{}, \"overlaps\", @var{val})\n\
+@deftypefn  {} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
+@deftypefnx {} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
+@deftypefnx {} {@var{idx} =} strfind (@dots{}, \"overlaps\", @var{val})\n\
 Search for @var{pattern} in the string @var{str} and return the starting\n\
 index of every such occurrence in the vector @var{idx}.\n\
 \n\
@@ -358,9 +358,9 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 
 DEFUN (strrep, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})\n\
-@deftypefnx {Built-in Function} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})\n\
-@deftypefnx {Built-in Function} {@var{newstr} =} strrep (@dots{}, \"overlaps\", @var{val})\n\
+@deftypefn  {} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})\n\
+@deftypefnx {} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})\n\
+@deftypefnx {} {@var{newstr} =} strrep (@dots{}, \"overlaps\", @var{val})\n\
 Replace all occurrences of the pattern @var{ptn} in the string @var{str}\n\
 with the string @var{rep} and return the result.\n\
 \n\

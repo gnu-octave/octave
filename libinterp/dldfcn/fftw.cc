@@ -36,12 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (fftw, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{method} =} fftw (\"planner\")\n\
-@deftypefnx {Loadable Function} {} fftw (\"planner\", @var{method})\n\
-@deftypefnx {Loadable Function} {@var{wisdom} =} fftw (\"dwisdom\")\n\
-@deftypefnx {Loadable Function} {} fftw (\"dwisdom\", @var{wisdom})\n\
-@deftypefnx {Loadable Function} {} fftw (\"threads\", @var{nthreads})\n\
-@deftypefnx {Loadable Function} {@var{nthreads} =} fftw (\"threads\")\n\
+@deftypefn  {} {@var{method} =} fftw (\"planner\")\n\
+@deftypefnx {} {} fftw (\"planner\", @var{method})\n\
+@deftypefnx {} {@var{wisdom} =} fftw (\"dwisdom\")\n\
+@deftypefnx {} {} fftw (\"dwisdom\", @var{wisdom})\n\
+@deftypefnx {} {} fftw (\"threads\", @var{nthreads})\n\
+@deftypefnx {} {@var{nthreads} =} fftw (\"threads\")\n\
 \n\
 Manage @sc{fftw} wisdom data.\n\
 \n\

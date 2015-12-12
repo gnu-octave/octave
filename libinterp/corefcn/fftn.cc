@@ -133,8 +133,8 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 
 DEFUN (fftn, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} fftn (@var{A})\n\
-@deftypefnx {Built-in Function} {} fftn (@var{A}, @var{size})\n\
+@deftypefn  {} {} fftn (@var{A})\n\
+@deftypefnx {} {} fftn (@var{A}, @var{size})\n\
 Compute the N-dimensional discrete Fourier transform of @var{A} using\n\
 a Fast Fourier Transform (FFT) algorithm.\n\
 \n\
@@ -152,8 +152,8 @@ resized and padded with zeros.\n\
 
 DEFUN (ifftn, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} ifftn (@var{A})\n\
-@deftypefnx {Built-in Function} {} ifftn (@var{A}, @var{size})\n\
+@deftypefn  {} {} ifftn (@var{A})\n\
+@deftypefnx {} {} ifftn (@var{A}, @var{size})\n\
 Compute the inverse N-dimensional discrete Fourier transform of @var{A}\n\
 using a Fast Fourier Transform (FFT) algorithm.\n\
 \n\

@@ -3818,7 +3818,7 @@ DEFUN (__meta_get_package__, args, , "")
 
 DEFUN (__superclass_reference__, args, /* nargout */,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __superclass_reference__ ()\n\
+@deftypefn {} {} __superclass_reference__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -3827,7 +3827,7 @@ Undocumented internal function.\n\
 
 DEFUN (__meta_class_query__, args, /* nargout */,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __meta_class_query__ ()\n\
+@deftypefn {} {} __meta_class_query__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -3849,7 +3849,7 @@ Undocumented internal function.\n\
 
 DEFUN (metaclass, args, /* nargout */,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} metaclass (obj)\n\
+@deftypefn {} {} metaclass (obj)\n\
 Returns the meta.class object corresponding to the class of @var{obj}.\n\
 @end deftypefn")
 {

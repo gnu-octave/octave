@@ -64,7 +64,7 @@ mk_gr_map (const octave_group& gr)
 
 DEFUN (getgrent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{grp_struct} =} getgrent ()\n\
+@deftypefn {} {@var{grp_struct} =} getgrent ()\n\
 Return an entry from the group database, opening it if necessary.\n\
 \n\
 Once the end of data has been reached, @code{getgrent} returns 0.\n\
@@ -89,7 +89,7 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
 
 DEFUN (getgrgid, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{grp_struct} =} getgrgid (@var{gid}).\n\
+@deftypefn {} {@var{grp_struct} =} getgrgid (@var{gid}).\n\
 Return the first entry from the group database with the group ID\n\
 @var{gid}.\n\
 \n\
@@ -125,7 +125,7 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
 
 DEFUN (getgrnam, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{grp_struct} =} getgrnam (@var{name})\n\
+@deftypefn {} {@var{grp_struct} =} getgrnam (@var{name})\n\
 Return the first entry from the group database with the group name\n\
 @var{name}.\n\
 \n\
@@ -153,7 +153,7 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
 
 DEFUN (setgrent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} setgrent ()\n\
+@deftypefn {} {} setgrent ()\n\
 Return the internal pointer to the beginning of the group database.\n\
 @seealso{getgrent, endgrent}\n\
 @end deftypefn")
@@ -176,7 +176,7 @@ Return the internal pointer to the beginning of the group database.\n\
 
 DEFUN (endgrent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} endgrent ()\n\
+@deftypefn {} {} endgrent ()\n\
 Close the group database.\n\
 @seealso{getgrent, setgrent}\n\
 @end deftypefn")

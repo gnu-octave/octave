@@ -558,7 +558,7 @@ octave_bool_matrix::as_mxArray (void) const
 
 DEFUN (logical, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} logical (@var{x})\n\
+@deftypefn {} {} logical (@var{x})\n\
 Convert the numeric object @var{x} to logical type.\n\
 \n\
 Any nonzero values will be converted to true (1) while zero values will be\n\

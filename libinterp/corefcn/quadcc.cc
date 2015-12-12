@@ -1487,10 +1487,10 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 DEFUN (quadcc, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
-@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-@deftypefnx {Function File} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
+@deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
+@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefnx {} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
 using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.\n\
 \n\

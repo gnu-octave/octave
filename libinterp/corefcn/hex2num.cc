@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (hex2num, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{n} =} hex2num (@var{s})\n\
-@deftypefnx {Built-in Function} {@var{n} =} hex2num (@var{s}, @var{class})\n\
+@deftypefn  {} {@var{n} =} hex2num (@var{s})\n\
+@deftypefnx {} {@var{n} =} hex2num (@var{s}, @var{class})\n\
 Typecast the 16 character hexadecimal character string to an IEEE 754\n\
 double precision number.\n\
 \n\
@@ -189,7 +189,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 
 DEFUN (num2hex, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{s} =} num2hex (@var{n})\n\
+@deftypefn {} {@var{s} =} num2hex (@var{n})\n\
 Typecast a double or single precision number or vector to a 8 or 16\n\
 character hexadecimal string of the IEEE 754 representation of the number.\n\
 \n\

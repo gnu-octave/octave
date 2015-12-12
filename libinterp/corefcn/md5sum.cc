@@ -38,8 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (md5sum, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} md5sum (@var{file})\n\
-@deftypefnx {Built-in Function} {} md5sum (@var{str}, @var{opt})\n\
+@deftypefn  {} {} md5sum (@var{file})\n\
+@deftypefnx {} {} md5sum (@var{str}, @var{opt})\n\
 Calculate the MD5 sum of the file @var{file}.\n\
 \n\
 If the second parameter @var{opt} exists and is true, then calculate the MD5\n\

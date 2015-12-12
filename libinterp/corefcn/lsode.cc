@@ -145,8 +145,8 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
 DEFUN (lsode, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})\n\
-@deftypefnx {Built-in Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})\n\
+@deftypefn  {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})\n\
+@deftypefnx {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})\n\
 Ordinary Differential Equation (ODE) solver.\n\
 \n\
 The set of differential equations to solve is\n\

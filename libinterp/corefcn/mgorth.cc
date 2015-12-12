@@ -50,7 +50,7 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 
 DEFUN (mgorth, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
+@deftypefn {} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
 Orthogonalize a given column vector @var{x} with respect to a set of\n\
 orthonormal vectors comprising the columns of @var{v} using the modified\n\
 Gram-Schmidt method.\n\

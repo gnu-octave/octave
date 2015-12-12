@@ -41,9 +41,9 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (symbfact, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{S})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
+@deftypefn  {} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{S})\n\
+@deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ})\n\
+@deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
 \n\
 Perform a symbolic factorization analysis on the sparse matrix @var{S}.\n\
 \n\

@@ -1048,7 +1048,7 @@ OCL_REP::wait (void)
 
 DEFUN (SIG, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} SIG ()\n\
+@deftypefn {} {} SIG ()\n\
 Return a structure containing Unix signal names and their defined values.\n\
 @end deftypefn")
 {
@@ -1069,9 +1069,9 @@ Return a structure containing Unix signal names and their defined values.\n\
 
 DEFUN (debug_on_interrupt, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} debug_on_interrupt (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} debug_on_interrupt ()\n\
+@deftypefnx {} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
+@deftypefnx {} {} debug_on_interrupt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter debugging mode when it receives an interrupt signal (typically\n\
 generated with @kbd{C-c}).\n\
@@ -1102,9 +1102,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} sighup_dumps_octave_core ()\n\
+@deftypefnx {} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
+@deftypefnx {} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file @file{octave-workspace} if it\n\
 receives a hangup signal.\n\
@@ -1131,9 +1131,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} sigterm_dumps_octave_core ()\n\
+@deftypefnx {} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
+@deftypefnx {} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file @file{octave-workspace} if it\n\
 receives a terminate signal.\n\

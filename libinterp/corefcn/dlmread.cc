@@ -158,11 +158,11 @@ parse_range_spec (const octave_value& range_spec,
 
 DEFUN (dlmread, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{data} =} dlmread (@var{file})\n\
-@deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
-@deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
-@deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
-@deftypefnx {Built-in Function} {@var{data} =} dlmread (@dots{}, \"emptyvalue\", @var{EMPTYVAL})\n\
+@deftypefn  {} {@var{data} =} dlmread (@var{file})\n\
+@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
+@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
+@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
+@deftypefnx {} {@var{data} =} dlmread (@dots{}, \"emptyvalue\", @var{EMPTYVAL})\n\
 Read the matrix @var{data} from a text file which uses the delimiter\n\
 @var{sep} between data values.\n\
 \n\

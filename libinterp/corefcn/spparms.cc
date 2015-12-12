@@ -35,14 +35,14 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (spparms, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} { } spparms ()\n\
-@deftypefnx {Built-in Function} {@var{vals} =} spparms ()\n\
-@deftypefnx {Built-in Function} {[@var{keys}, @var{vals}] =} spparms ()\n\
-@deftypefnx {Built-in Function} {@var{val} =} spparms (@var{key})\n\
-@deftypefnx {Built-in Function} { } spparms (@var{vals})\n\
-@deftypefnx {Built-in Function} { } spparms (\"default\")\n\
-@deftypefnx {Built-in Function} { } spparms (\"tight\")\n\
-@deftypefnx {Built-in Function} { } spparms (@var{key}, @var{val})\n\
+@deftypefn  {} { } spparms ()\n\
+@deftypefnx {} {@var{vals} =} spparms ()\n\
+@deftypefnx {} {[@var{keys}, @var{vals}] =} spparms ()\n\
+@deftypefnx {} {@var{val} =} spparms (@var{key})\n\
+@deftypefnx {} { } spparms (@var{vals})\n\
+@deftypefnx {} { } spparms (\"default\")\n\
+@deftypefnx {} { } spparms (\"tight\")\n\
+@deftypefnx {} { } spparms (@var{key}, @var{val})\n\
 Query or set the parameters used by the sparse solvers and factorization\n\
 functions.\n\
 \n\

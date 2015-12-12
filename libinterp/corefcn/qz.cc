@@ -293,8 +293,8 @@ fout (const octave_idx_type& lsize, const double& alpha,
 //       Compatibility problem?
 DEFUN (qz, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{lambda} =} qz (@var{A}, @var{B})\n\
-@deftypefnx {Built-in Function} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
+@deftypefn  {} {@var{lambda} =} qz (@var{A}, @var{B})\n\
+@deftypefnx {} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
 QZ@tie{}decomposition of the generalized eigenvalue problem\n\
 (@math{A x = s B x}).\n\
 \n\

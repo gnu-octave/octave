@@ -35,10 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (eig, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{lambda} =} eig (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{lambda} =} eig (@var{A}, @var{B})\n\
-@deftypefnx {Built-in Function} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})\n\
+@deftypefn  {} {@var{lambda} =} eig (@var{A})\n\
+@deftypefnx {} {@var{lambda} =} eig (@var{A}, @var{B})\n\
+@deftypefnx {} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\
+@deftypefnx {} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})\n\
 Compute the eigenvalues (and optionally the eigenvectors) of a matrix\n\
 or a pair of matrices\n\
 \n\

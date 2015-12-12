@@ -38,8 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (pinv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} pinv (@var{x})\n\
-@deftypefnx {Built-in Function} {} pinv (@var{x}, @var{tol})\n\
+@deftypefn  {} {} pinv (@var{x})\n\
+@deftypefnx {} {} pinv (@var{x}, @var{tol})\n\
 Return the pseudoinverse of @var{x}.\n\
 \n\
 Singular values less than @var{tol} are ignored.\n\

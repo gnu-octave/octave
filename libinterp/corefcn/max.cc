@@ -428,10 +428,10 @@ do_minmax_body (const octave_value_list& args,
 
 DEFUN (min, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} min (@var{x})\n\
-@deftypefnx {Built-in Function} {} min (@var{x}, [], @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
-@deftypefnx {Built-in Function} {} min (@var{x}, @var{y})\n\
+@deftypefn  {} {} min (@var{x})\n\
+@deftypefnx {} {} min (@var{x}, [], @var{dim})\n\
+@deftypefnx {} {[@var{w}, @var{iw}] =} min (@var{x})\n\
+@deftypefnx {} {} min (@var{x}, @var{y})\n\
 Find minimum values in the array @var{x}.\n\
 \n\
 For a vector argument, return the minimum value.  For a matrix argument,\n\
@@ -649,10 +649,10 @@ the first index of the minimum value(s).  Thus,\n\
 
 DEFUN (max, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} max (@var{x})\n\
-@deftypefnx {Built-in Function} {} max (@var{x}, [], @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
-@deftypefnx {Built-in Function} {} max (@var{x}, @var{y})\n\
+@deftypefn  {} {} max (@var{x})\n\
+@deftypefnx {} {} max (@var{x}, [], @var{dim})\n\
+@deftypefnx {} {[@var{w}, @var{iw}] =} max (@var{x})\n\
+@deftypefnx {} {} max (@var{x}, @var{y})\n\
 Find maximum values in the array @var{x}.\n\
 \n\
 For a vector argument, return the maximum value.  For a matrix argument,\n\
@@ -979,9 +979,9 @@ do_cumminmax_body (const octave_value_list& args,
 
 DEFUN (cummin, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cummin (@var{x})\n\
-@deftypefnx {Built-in Function} {} cummin (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
+@deftypefn  {} {} cummin (@var{x})\n\
+@deftypefnx {} {} cummin (@var{x}, @var{dim})\n\
+@deftypefnx {} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
 Return the cumulative minimum values along dimension @var{dim}.\n\
 \n\
 If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
@@ -1035,9 +1035,9 @@ iw = 1  2  2  4  4  6\n\
 
 DEFUN (cummax, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cummax (@var{x})\n\
-@deftypefnx {Built-in Function} {} cummax (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummax (@dots{})\n\
+@deftypefn  {} {} cummax (@var{x})\n\
+@deftypefnx {} {} cummax (@var{x}, @var{dim})\n\
+@deftypefnx {} {[@var{w}, @var{iw}] =} cummax (@dots{})\n\
 Return the cumulative maximum values along dimension @var{dim}.\n\
 \n\
 If @var{dim} is unspecified it defaults to column-wise operation.  For\n\

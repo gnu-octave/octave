@@ -855,7 +855,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
 
 DEFUN (single, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} single (@var{x})\n\
+@deftypefn {} {} single (@var{x})\n\
 Convert @var{x} to single precision type.\n\
 @seealso{double}\n\
 @end deftypefn")

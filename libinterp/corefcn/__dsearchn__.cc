@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (__dsearchn__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})\n\
+@deftypefn {} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

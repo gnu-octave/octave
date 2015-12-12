@@ -319,11 +319,11 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
 DEFUN (find, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{idx} =} find (@var{x})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} find (@var{x}, @var{n})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
-@deftypefnx {Built-in Function} {[i, j] =} find (@dots{})\n\
-@deftypefnx {Built-in Function} {[i, j, v] =} find (@dots{})\n\
+@deftypefn  {} {@var{idx} =} find (@var{x})\n\
+@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n})\n\
+@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
+@deftypefnx {} {[i, j] =} find (@dots{})\n\
+@deftypefnx {} {[i, j, v] =} find (@dots{})\n\
 Return a vector of indices of nonzero elements of a matrix, as a row if\n\
 @var{x} is a row vector or as a column otherwise.\n\
 \n\

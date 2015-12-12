@@ -2070,7 +2070,7 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 
 DEFUN (__java_init__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __java_init__ ()\n\
+@deftypefn {} {} __java_init__ ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
 \n\
 Function will directly call initialize_java() to create an instance of a JVM.\n\
@@ -2095,7 +2095,7 @@ Function will directly call initialize_java() to create an instance of a JVM.\n\
 
 DEFUN (__java_exit__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __java_exit__ ()\n\
+@deftypefn {} {} __java_exit__ ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
 \n\
 Function will directly call terminate_jvm() to destroy the current JVM\n\
@@ -2113,8 +2113,8 @@ instance.\n\
 
 DEFUN (javaObject, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{jobj} =} javaObject (@var{classname})\n\
-@deftypefnx {Built-in Function} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
+@deftypefn  {} {@var{jobj} =} javaObject (@var{classname})\n\
+@deftypefnx {} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
 Create a Java object of class @var{classsname}, by calling the class\n\
 constructor with the arguments @var{arg1}, @dots{}\n\
 \n\
@@ -2173,8 +2173,8 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 
 DEFUN (javaMethod, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
-@deftypefnx {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
+@deftypefn  {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
+@deftypefnx {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
 Invoke the method @var{methodname} on the Java object @var{obj} with the\n\
 arguments @var{arg1}, @dots{}.\n\
 \n\
@@ -2250,7 +2250,7 @@ equivalent\n\
 
 DEFUN (__java_get__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
+@deftypefn {} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
 Get the value of the field @var{name} of the Java object @var{obj}.\n\
 \n\
 For static fields, @var{obj} can be a string representing the fully qualified\n\
@@ -2312,7 +2312,7 @@ equivalent\n\
 
 DEFUN (__java_set__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})\n\
+@deftypefn {} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})\n\
 Set the value of the field @var{name} of the Java object @var{obj} to\n\
 @var{val}.\n\
 \n\
@@ -2375,7 +2375,7 @@ equivalent\n\
 
 DEFUN (java2mat, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java2mat (@var{javaobj})\n\
+@deftypefn {} {} java2mat (@var{javaobj})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2409,9 +2409,9 @@ Undocumented internal function.\n\
 
 DEFUN (java_matrix_autoconversion, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} java_matrix_autoconversion ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} java_matrix_autoconversion (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} java_matrix_autoconversion ()\n\
+@deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})\n\
+@deftypefnx {} {} java_matrix_autoconversion (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Java arrays are\n\
 automatically converted to Octave matrices.\n\
 \n\
@@ -2439,9 +2439,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (java_unsigned_autoconversion, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} java_unsigned_autoconversion ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} java_unsigned_autoconversion ()\n\
+@deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
+@deftypefnx {} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls how integer classes are\n\
 converted when @code{java_matrix_autoconversion} is enabled.\n\
 \n\
@@ -2464,9 +2464,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (debug_java, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} debug_java ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_java (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} debug_java (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} debug_java ()\n\
+@deftypefnx {} {@var{old_val} =} debug_java (@var{new_val})\n\
+@deftypefnx {} {} debug_java (@var{new_val}, \"local\")\n\
 Query or set the internal variable that determines whether extra debugging\n\
 information regarding the initialization of the JVM and any Java exceptions\n\
 is printed.\n\
@@ -2489,7 +2489,7 @@ The original variable value is restored when exiting the function.\n\
 // test for the presence of a Java object without having Java installed.
 DEFUN (isjava, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isjava (@var{x})\n\
+@deftypefn {} {} isjava (@var{x})\n\
 Return true if @var{x} is a Java object.\n\
 @seealso{class, typeinfo, isa, javaObject}\n\
 @end deftypefn")

@@ -74,10 +74,10 @@ get_qr_r (const base_qr<MT>& fact)
 
 DEFUN_DLD (qr, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')\n\
-@deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})\n\
-@deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B}, '0')\n\
+@deftypefn  {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})\n\
+@deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')\n\
+@deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})\n\
+@deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B}, '0')\n\
 @cindex QR factorization\n\
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}\n\
 subroutines.\n\
@@ -740,7 +740,7 @@ bool check_index (const octave_value& i, bool vector_allowed = false)
 
 DEFUN_DLD (qrupdate, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
+@deftypefn {} {[@var{Q1}, @var{R1}] =} qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
@@ -914,7 +914,7 @@ economized (R is square).\n\
 
 DEFUN_DLD (qrinsert, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})\n\
+@deftypefn {} {[@var{Q1}, @var{R1}] =} qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
@@ -1129,7 +1129,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 
 DEFUN_DLD (qrdelete, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})\n\
+@deftypefn {} {[@var{Q1}, @var{R1}] =} qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
@@ -1388,7 +1388,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 
 DEFUN_DLD (qrshift, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})\n\
+@deftypefn {} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\

@@ -211,10 +211,10 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
 
 DEFUN_DLD (colamd, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} colamd (@var{S})\n\
-@deftypefnx {Loadable Function} {@var{p} =} colamd (@var{S}, @var{knobs})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{S}, @var{knobs})\n\
+@deftypefn  {} {@var{p} =} colamd (@var{S})\n\
+@deftypefnx {} {@var{p} =} colamd (@var{S}, @var{knobs})\n\
+@deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S})\n\
+@deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S}, @var{knobs})\n\
 \n\
 Compute the column approximate minimum degree permutation.\n\
 \n\
@@ -450,10 +450,10 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 
 DEFUN_DLD (symamd, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} symamd (@var{S})\n\
-@deftypefnx {Loadable Function} {@var{p} =} symamd (@var{S}, @var{knobs})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{S}, @var{knobs})\n\
+@deftypefn  {} {@var{p} =} symamd (@var{S})\n\
+@deftypefnx {} {@var{p} =} symamd (@var{S}, @var{knobs})\n\
+@deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S})\n\
+@deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S}, @var{knobs})\n\
 \n\
 For a symmetric positive definite matrix @var{S}, returns the permutation\n\
 vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
@@ -640,9 +640,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 
 DEFUN_DLD (etree, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} etree (@var{S})\n\
-@deftypefnx {Loadable Function} {@var{p} =} etree (@var{S}, @var{typ})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\
+@deftypefn  {} {@var{p} =} etree (@var{S})\n\
+@deftypefnx {} {@var{p} =} etree (@var{S}, @var{typ})\n\
+@deftypefnx {} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\
 \n\
 Return the elimination tree for the matrix @var{S}.\n\
 \n\

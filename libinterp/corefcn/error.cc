@@ -894,7 +894,7 @@ handle_message (error_fun f, const char *id, const char *msg,
 
 DEFUN (rethrow, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rethrow (@var{err})\n\
+@deftypefn {} {} rethrow (@var{err})\n\
 Reissue a previous error as defined by @var{err}.\n\
 \n\
 @var{err} is a structure that must contain at least the @qcode{\"message\"}\n\
@@ -1082,8 +1082,8 @@ maybe_extract_message_id (const std::string& caller,
 
 DEFUN (error, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} error (@var{template}, @dots{})\n\
-@deftypefnx {Built-in Function} {} error (@var{id}, @var{template}, @dots{})\n\
+@deftypefn  {} {} error (@var{template}, @dots{})\n\
+@deftypefnx {} {} error (@var{id}, @var{template}, @dots{})\n\
 Display an error message and stop m-file execution.\n\
 \n\
 Format the optional arguments under the control of the template string\n\
@@ -1404,14 +1404,14 @@ set_warning_option (const std::string& state, const std::string& ident)
 
 DEFUN (warning, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
-@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\
-@deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (@var{state}, \"backtrace\")\n\
-@deftypefnx {Built-in Function} {} warning (@var{state}, @var{id}, \"local\")\n\
+@deftypefn  {} {} warning (@var{template}, @dots{})\n\
+@deftypefnx {} {} warning (@var{id}, @var{template}, @dots{})\n\
+@deftypefnx {} {} warning (\"on\", @var{id})\n\
+@deftypefnx {} {} warning (\"off\", @var{id})\n\
+@deftypefnx {} {} warning (\"query\", @var{id})\n\
+@deftypefnx {} {} warning (\"error\", @var{id})\n\
+@deftypefnx {} {} warning (@var{state}, \"backtrace\")\n\
+@deftypefnx {} {} warning (@var{state}, @var{id}, \"local\")\n\
 Display a warning message or control the behavior of Octave's warning system.\n\
 \n\
 Format the optional arguments under the control of the template string\n\
@@ -1797,9 +1797,9 @@ initialize_default_warning_state (void)
 
 DEFUN (lasterror, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
-@deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
-@deftypefnx {Built-in Function} {} lasterror (\"reset\")\n\
+@deftypefn  {} {@var{lasterr} =} lasterror ()\n\
+@deftypefnx {} {} lasterror (@var{err})\n\
+@deftypefnx {} {} lasterror (\"reset\")\n\
 Query or set the last error message structure.\n\
 \n\
 When called without arguments, return a structure containing the last error\n\
@@ -1956,9 +1956,9 @@ fields are set to their default values.\n\
 
 DEFUN (lasterr, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{msg}, @var{msgid}] =} lasterr ()\n\
-@deftypefnx {Built-in Function} {} lasterr (@var{msg})\n\
-@deftypefnx {Built-in Function} {} lasterr (@var{msg}, @var{msgid})\n\
+@deftypefn  {} {[@var{msg}, @var{msgid}] =} lasterr ()\n\
+@deftypefnx {} {} lasterr (@var{msg})\n\
+@deftypefnx {} {} lasterr (@var{msg}, @var{msgid})\n\
 Query or set the last error message.\n\
 \n\
 When called without input arguments, return the last error message and\n\
@@ -1999,9 +1999,9 @@ With two arguments, also set the last message identifier.\n\
 
 DEFUN (lastwarn, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn ()\n\
-@deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
-@deftypefnx {Built-in Function} {} lastwarn (@var{msg}, @var{msgid})\n\
+@deftypefn  {} {[@var{msg}, @var{msgid}] =} lastwarn ()\n\
+@deftypefnx {} {} lastwarn (@var{msg})\n\
+@deftypefnx {} {} lastwarn (@var{msg}, @var{msgid})\n\
 Query or set the last warning message.\n\
 \n\
 When called without input arguments, return the last warning message and\n\
@@ -2043,7 +2043,7 @@ With two arguments, also set the last message identifier.\n\
 /* FIXME: Deprecated in 4.0 and scheduled for removal in 4.4 */
 DEFUN (__usage__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} usage (@var{msg})\n\
+@deftypefn {} {} usage (@var{msg})\n\
 Print the message @var{msg}, prefixed by the string @samp{usage: }, and\n\
 set Octave's internal error state such that control will return to the\n\
 top level without evaluating any more commands.  This is useful for\n\
@@ -2077,9 +2077,9 @@ to check for the proper number of arguments.\n\
 
 DEFUN (beep_on_error, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} beep_on_error ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} beep_on_error (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} beep_on_error ()\n\
+@deftypefnx {} {@var{old_val} =} beep_on_error (@var{new_val})\n\
+@deftypefnx {} {} beep_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to ring the terminal bell before printing an error message.\n\
 \n\
@@ -2093,9 +2093,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (debug_on_error, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} debug_on_error ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} debug_on_error (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} debug_on_error ()\n\
+@deftypefnx {} {@var{old_val} =} debug_on_error (@var{new_val})\n\
+@deftypefnx {} {} debug_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when an error is encountered.\n\
 \n\
@@ -2113,9 +2113,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (debug_on_warning, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} debug_on_warning ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} debug_on_warning (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} debug_on_warning ()\n\
+@deftypefnx {} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
+@deftypefnx {} {} debug_on_warning (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when a warning is encountered.\n\
 \n\

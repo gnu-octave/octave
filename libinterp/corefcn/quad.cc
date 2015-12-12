@@ -136,10 +136,10 @@ quad_float_user_function (float x)
 
 DEFUN (quad, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
-@deftypefnx {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-@deftypefnx {Built-in Function} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
+@deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
+@deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefnx {} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using\n\
 Fortran routines from @w{@sc{quadpack}}.\n\
 \n\

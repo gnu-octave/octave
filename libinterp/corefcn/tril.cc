@@ -333,12 +333,12 @@ do_trilu (const std::string& name,
 
 DEFUN (tril, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} tril (@var{A})\n\
-@deftypefnx {Function File} {} tril (@var{A}, @var{k})\n\
-@deftypefnx {Function File} {} tril (@var{A}, @var{k}, @var{pack})\n\
-@deftypefnx {Function File} {} triu (@var{A})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
+@deftypefn  {} {} tril (@var{A})\n\
+@deftypefnx {} {} tril (@var{A}, @var{k})\n\
+@deftypefnx {} {} tril (@var{A}, @var{k}, @var{pack})\n\
+@deftypefnx {} {} triu (@var{A})\n\
+@deftypefnx {} {} triu (@var{A}, @var{k})\n\
+@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})\n\
 Return a new matrix formed by extracting the lower (@code{tril})\n\
 or upper (@code{triu}) triangular part of the matrix @var{A}, and\n\
 setting all other elements to zero.\n\
@@ -390,9 +390,9 @@ above other.\n\
 
 DEFUN (triu, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} triu (@var{A})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
+@deftypefn  {} {} triu (@var{A})\n\
+@deftypefnx {} {} triu (@var{A}, @var{k})\n\
+@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})\n\
 See the documentation for the @code{tril} function (@pxref{tril}).\n\
 @seealso{tril}\n\
 @end deftypefn")

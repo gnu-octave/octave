@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (issparse, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} issparse (@var{x})\n\
+@deftypefn {} {} issparse (@var{x})\n\
 Return true if @var{x} is a sparse matrix.\n\
 @seealso{ismatrix}\n\
 @end deftypefn")
@@ -56,12 +56,12 @@ Return true if @var{x} is a sparse matrix.\n\
 
 DEFUN (sparse, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} sparse (@var{a})\n\
-@deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n})\n\
-@deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
-@deftypefnx {Built-in Function} {@var{s} =} sparse (@var{m}, @var{n})\n\
-@deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
-@deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
+@deftypefn  {} {@var{s} =} sparse (@var{a})\n\
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n})\n\
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
+@deftypefnx {} {@var{s} =} sparse (@var{m}, @var{n})\n\
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
 Create a sparse matrix from a full matrix, or row, column, value triplets.\n\
 \n\
 If @var{a} is a full matrix, convert it to a sparse matrix representation,\n\
@@ -221,7 +221,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 
 DEFUN (spalloc, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
+@deftypefn {} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
 Create an @var{m}-by-@var{n} sparse matrix with pre-allocated space for at\n\
 most @var{nz} nonzero elements.\n\
 \n\

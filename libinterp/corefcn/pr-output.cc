@@ -3405,7 +3405,7 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
 
 DEFUN (rats, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rats (@var{x}, @var{len})\n\
+@deftypefn {} {} rats (@var{x}, @var{len})\n\
 Convert @var{x} into a rational approximation represented as a string.\n\
 \n\
 The string can be converted back into a matrix as follows:\n\
@@ -3484,7 +3484,7 @@ If the length of the smallest possible rational approximation exceeds\n\
 
 DEFUN (disp, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} disp (@var{x})\n\
+@deftypefn {} {} disp (@var{x})\n\
 Display the value of @var{x}.\n\
 \n\
 For example:\n\
@@ -3527,7 +3527,7 @@ formatted output in a string.\n\
 
 DEFUN (fdisp, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fdisp (@var{fid}, @var{x})\n\
+@deftypefn {} {} fdisp (@var{fid}, @var{x})\n\
 Display the value of @var{x} on the stream @var{fid}.\n\
 \n\
 For example:\n\
@@ -3862,8 +3862,8 @@ set_format_style (int argc, const string_vector& argv)
 
 DEFUN (format, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} format\n\
-@deftypefnx {Command} {} format options\n\
+@deftypefn  {} {} format\n\
+@deftypefnx {} {} format options\n\
 Reset or specify the format of the output produced by @code{disp} and\n\
 Octave's normal echoing mechanism.\n\
 \n\
@@ -4046,8 +4046,8 @@ to produce a more readable output with less data per page.  (default).\n\
 
 DEFUN (__compactformat__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} __compactformat__ ()\n\
-@deftypefnx {Built-in Function} {} __compactformat__ (@var{TRUE|FALSE})\n\
+@deftypefn  {} {@var{val} =} __compactformat__ ()\n\
+@deftypefnx {} {} __compactformat__ (@var{TRUE|FALSE})\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -4056,7 +4056,7 @@ Undocumented internal function\n\
 
 DEFUN (__formatstring__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} __formatstring__ ()\n\
+@deftypefn {} {@var{val} =} __formatstring__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -4065,9 +4065,9 @@ Undocumented internal function\n\
 
 DEFUN (fixed_point_format, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} fixed_point_format ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} fixed_point_format (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} fixed_point_format ()\n\
+@deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
+@deftypefnx {} {} fixed_point_format (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 use a scaled format to print matrix values.\n\
 \n\
@@ -4106,9 +4106,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (print_empty_dimensions, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} print_empty_dimensions ()\n\
+@deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
+@deftypefnx {} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether the dimensions of\n\
 empty matrices are printed along with the empty matrix symbol, @samp{[]}.\n\
 \n\
@@ -4136,9 +4136,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (split_long_rows, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} split_long_rows ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} split_long_rows (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} split_long_rows ()\n\
+@deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val})\n\
+@deftypefnx {} {} split_long_rows (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether rows of a matrix\n\
 may be split when displayed to a terminal window.\n\
 \n\
@@ -4175,9 +4175,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (output_max_field_width, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} output_max_field_width ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} output_max_field_width (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} output_max_field_width ()\n\
+@deftypefnx {} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
+@deftypefnx {} {} output_max_field_width (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the maximum width\n\
 of a numeric output field.\n\
 \n\
@@ -4193,9 +4193,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (output_precision, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} output_precision ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} output_precision (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} output_precision ()\n\
+@deftypefnx {} {@var{old_val} =} output_precision (@var{new_val})\n\
+@deftypefnx {} {} output_precision (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the minimum number of\n\
 significant figures to display for numeric output.\n\
 \n\

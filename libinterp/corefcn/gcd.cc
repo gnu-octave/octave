@@ -435,8 +435,8 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 
 DEFUN (gcd, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
-@deftypefnx {Built-in Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
+@deftypefn  {} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
+@deftypefnx {} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.\n\
 \n\
 If more than one argument is given then all arguments must be the same size\n\

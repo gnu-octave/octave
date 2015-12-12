@@ -812,10 +812,10 @@ clean_up_and_exit (int status, bool safe_to_return)
 
 DEFUN (quit, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} exit\n\
-@deftypefnx {Built-in Function} {} exit (@var{status})\n\
-@deftypefnx {Built-in Function} {} quit\n\
-@deftypefnx {Built-in Function} {} quit (@var{status})\n\
+@deftypefn  {} {} exit\n\
+@deftypefnx {} {} exit (@var{status})\n\
+@deftypefnx {} {} quit\n\
+@deftypefnx {} {} quit (@var{status})\n\
 Exit the current Octave session.\n\
 \n\
 If the optional integer value @var{status} is supplied, pass that value to\n\
@@ -867,7 +867,7 @@ DEFALIAS (exit, quit);
 
 DEFUN (warranty, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} warranty ()\n\
+@deftypefn {} {} warranty ()\n\
 Describe the conditions for copying and distributing Octave.\n\
 @end deftypefn")
 {
@@ -973,10 +973,10 @@ enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} system (\"@var{string}\")\n\
-@deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output})\n\
-@deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} system (@dots{})\n\
+@deftypefn  {} {} system (\"@var{string}\")\n\
+@deftypefnx {} {} system (\"@var{string}\", @var{return_output})\n\
+@deftypefnx {} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
+@deftypefnx {} {[@var{status}, @var{output}] =} system (@dots{})\n\
 Execute a shell command specified by @var{string}.\n\
 \n\
 If the optional argument @var{type} is @qcode{\"async\"}, the process is\n\
@@ -1171,8 +1171,8 @@ octave_remove_atexit_function (const std::string& fname)
 
 DEFUN (atexit, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} atexit (@var{fcn})\n\
-@deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
+@deftypefn  {} {} atexit (@var{fcn})\n\
+@deftypefnx {} {} atexit (@var{fcn}, @var{flag})\n\
 Register a function to be called when Octave exits.\n\
 \n\
 For example,\n\
@@ -1237,8 +1237,8 @@ from the list, so if a function was placed in the list multiple times with\n\
 
 DEFUN (octave_config_info, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} octave_config_info ()\n\
-@deftypefnx {Built-in Function} {} octave_config_info (@var{option})\n\
+@deftypefn  {} {} octave_config_info ()\n\
+@deftypefnx {} {} octave_config_info (@var{option})\n\
 Return a structure containing configuration and installation information for\n\
 Octave.\n\
 \n\

@@ -201,7 +201,7 @@ intern_argv (int argc, char **argv)
 
 DEFUN (__version_info__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
+@deftypefn {} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1010,7 +1010,7 @@ octave_starting_gui (void)
 
 DEFUN (isguirunning, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isguirunning ()\n\
+@deftypefn {} {} isguirunning ()\n\
 Return true if Octave is running in GUI mode and false otherwise.\n\
 @seealso{have_window_system}\n\
 @end deftypefn")
@@ -1032,7 +1032,7 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 
 DEFUN (argv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} argv ()\n\
+@deftypefn {} {} argv ()\n\
 Return the command line arguments passed to Octave.\n\
 \n\
 For example, if you invoked Octave using the command\n\
@@ -1067,7 +1067,7 @@ an example of how to create an executable Octave script.\n\
 
 DEFUN (program_invocation_name, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} program_invocation_name ()\n\
+@deftypefn {} {} program_invocation_name ()\n\
 Return the name that was typed at the shell prompt to run Octave.\n\
 \n\
 If executing a script from the command line (e.g., @code{octave foo.m})\n\
@@ -1094,7 +1094,7 @@ how to create an executable Octave script.\n\
 
 DEFUN (program_name, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} program_name ()\n\
+@deftypefn {} {} program_name ()\n\
 Return the last component of the value returned by\n\
 @code{program_invocation_name}.\n\
 @seealso{program_invocation_name}\n\

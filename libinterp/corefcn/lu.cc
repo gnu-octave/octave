@@ -63,13 +63,13 @@ get_lu_u (const base_lu<MT>& fact)
 
 DEFUN (lu, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} lu (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} lu (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} lu (@var{S})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}, @var{R}] =} lu (@var{S})\n\
-@deftypefnx {Built-in Function} {[@dots{}] =} lu (@var{S}, @var{thres})\n\
-@deftypefnx {Built-in Function} {@var{y} =} lu (@dots{})\n\
-@deftypefnx {Built-in Function} {[@dots{}] =} lu (@dots{}, \"vector\")\n\
+@deftypefn  {} {[@var{L}, @var{U}] =} lu (@var{A})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} lu (@var{A})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} lu (@var{S})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}, @var{R}] =} lu (@var{S})\n\
+@deftypefnx {} {[@dots{}] =} lu (@var{S}, @var{thres})\n\
+@deftypefnx {} {@var{y} =} lu (@dots{})\n\
+@deftypefnx {} {[@dots{}] =} lu (@dots{}, \"vector\")\n\
 @cindex LU decomposition\n\
 Compute the LU@tie{}decomposition of @var{A}.\n\
 \n\
@@ -583,8 +583,8 @@ bool check_lu_dims (const octave_value& l, const octave_value& u,
 
 DEFUN (luupdate, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} luupdate (@var{L}, @var{U}, @var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
+@deftypefn  {} {[@var{L}, @var{U}] =} luupdate (@var{L}, @var{U}, @var{x}, @var{y})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 Given an LU@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{L}*@var{U}}, @var{L}@tie{}lower unit trapezoidal and\n\
 @var{U}@tie{}upper trapezoidal, return the LU@tie{}factorization\n\

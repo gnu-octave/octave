@@ -1232,7 +1232,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
 DEFUN (iscell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} iscell (@var{x})\n\
+@deftypefn {} {} iscell (@var{x})\n\
 Return true if @var{x} is a cell array object.\n\
 @seealso{ismatrix, isstruct, iscellstr, isa}\n\
 @end deftypefn")
@@ -1245,10 +1245,10 @@ Return true if @var{x} is a cell array object.\n\
 
 DEFUN (cell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cell (@var{n})\n\
-@deftypefnx {Built-in Function} {} cell (@var{m}, @var{n})\n\
-@deftypefnx {Built-in Function} {} cell (@var{m}, @var{n}, @var{k}, @dots{})\n\
-@deftypefnx {Built-in Function} {} cell ([@var{m} @var{n} @dots{}])\n\
+@deftypefn  {} {} cell (@var{n})\n\
+@deftypefnx {} {} cell (@var{m}, @var{n})\n\
+@deftypefnx {} {} cell (@var{m}, @var{n}, @var{k}, @dots{})\n\
+@deftypefnx {} {} cell ([@var{m} @var{n} @dots{}])\n\
 Create a new cell array object.\n\
 \n\
 If invoked with a single scalar integer argument, return a square\n\
@@ -1296,7 +1296,7 @@ dimensions.\n\
 
 DEFUN (iscellstr, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} iscellstr (@var{cell})\n\
+@deftypefn {} {} iscellstr (@var{cell})\n\
 Return true if every element of the cell array @var{cell} is a character\n\
 string.\n\
 @seealso{ischar}\n\
@@ -1315,7 +1315,7 @@ string.\n\
 
 DEFUN (cellstr, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{cstr} =} cellstr (@var{strmat})\n\
+@deftypefn {} {@var{cstr} =} cellstr (@var{strmat})\n\
 Create a new cell array object from the elements of the string array\n\
 @var{strmat}.\n\
 \n\
@@ -1349,7 +1349,7 @@ To convert back from a cellstr to a character array use @code{char}.\n\
 
 DEFUN (struct2cell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{c} =} struct2cell (@var{s})\n\
+@deftypefn {} {@var{c} =} struct2cell (@var{s})\n\
 Create a new cell array from the objects stored in the struct object.\n\
 \n\
 If @var{f} is the number of fields in the structure, the resulting cell\n\

@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (rcond, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{c} =} rcond (@var{A})\n\
+@deftypefn {} {@var{c} =} rcond (@var{A})\n\
 Compute the 1-norm estimate of the reciprocal condition number as returned\n\
 by @sc{lapack}.\n\
 \n\

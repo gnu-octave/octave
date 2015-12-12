@@ -216,7 +216,7 @@ DEFUN_DLD (__init_gnuplot__, , , "")
 
 DEFUN_DLD (__have_gnuplot__, , ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{gnuplot_available} =} __have_gnuplot__ ()\n\
+@deftypefn {} {@var{gnuplot_available} =} __have_gnuplot__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

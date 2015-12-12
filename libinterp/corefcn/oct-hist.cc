@@ -572,9 +572,9 @@ octave_history_write_timestamp (void)
 
 DEFUN (edit_history, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} edit_history\n\
-@deftypefnx {Command} {} edit_history @var{cmd_number}\n\
-@deftypefnx {Command} {} edit_history @var{first} @var{last}\n\
+@deftypefn  {} {} edit_history\n\
+@deftypefnx {} {} edit_history @var{cmd_number}\n\
+@deftypefnx {} {} edit_history @var{first} @var{last}\n\
 Edit the history list using the editor named by the variable @env{EDITOR}.\n\
 \n\
 The commands to be edited are first copied to a temporary file.  When you\n\
@@ -614,10 +614,10 @@ buffer to be edited.\n\
 
 DEFUN (history, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} history\n\
-@deftypefnx {Command} {} history @var{opt1} @dots{}\n\
-@deftypefnx {Built-in Function} {@var{h} =} history ()\n\
-@deftypefnx {Built-in Function} {@var{h} =} history (@var{opt1}, @dots{})\n\
+@deftypefn  {} {} history\n\
+@deftypefnx {} {} history @var{opt1} @dots{}\n\
+@deftypefnx {} {@var{h} =} history ()\n\
+@deftypefnx {} {@var{h} =} history (@var{opt1}, @dots{})\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
 that you have executed.\n\
 \n\
@@ -666,9 +666,9 @@ argument as a cell string and will not be output to screen.\n\
 
 DEFUN (run_history, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} run_history\n\
-@deftypefnx {Command} {} run_history @var{cmd_number}\n\
-@deftypefnx {Command} {} run_history @var{first} @var{last}\n\
+@deftypefn  {} {} run_history\n\
+@deftypefnx {} {} run_history @var{cmd_number}\n\
+@deftypefnx {} {} run_history @var{first} @var{last}\n\
 Run commands from the history list.\n\
 \n\
 When invoked with no arguments, run the previously executed command;\n\
@@ -725,8 +725,8 @@ run_history -1 -2\n\
 
 DEFUN (history_control, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} history_control ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} history_control (@var{new_val})\n\
+@deftypefn  {} {@var{val} =} history_control ()\n\
+@deftypefnx {} {@var{old_val} =} history_control (@var{new_val})\n\
 Query or set the internal variable that specifies how commands are saved\n\
 to the history list.\n\
 \n\
@@ -763,8 +763,8 @@ the history list, subject to the value of @code{history_save}.\n\
 
 DEFUN (history_size, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
+@deftypefn  {} {@var{val} =} history_size ()\n\
+@deftypefnx {} {@var{old_val} =} history_size (@var{new_val})\n\
 Query or set the internal variable that specifies how many entries\n\
 to store in the history file.\n\
 \n\
@@ -791,8 +791,8 @@ variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 
 DEFUN (history_file, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} history_file ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} history_file (@var{new_val})\n\
+@deftypefn  {} {@var{val} =} history_file ()\n\
+@deftypefnx {} {@var{old_val} =} history_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 file used to store command history.\n\
 \n\
@@ -817,9 +817,9 @@ environment variable @w{@env{OCTAVE_HISTFILE}}.\n\
 
 DEFUN (history_timestamp_format_string, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} history_timestamp_format_string (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} history_timestamp_format_string ()\n\
+@deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
+@deftypefnx {} {} history_timestamp_format_string (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the format string\n\
 for the comment line that is written to the history file when Octave\n\
 exits.\n\
@@ -841,9 +841,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (history_save, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} history_save ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} history_save (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} history_save (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} history_save ()\n\
+@deftypefnx {} {@var{old_val} =} history_save (@var{new_val})\n\
+@deftypefnx {} {} history_save (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
 \n\

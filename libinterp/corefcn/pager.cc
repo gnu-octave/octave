@@ -514,10 +514,10 @@ open_diary_file (void)
 
 DEFUN (diary, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} diary\n\
-@deftypefnx {Command} {} diary on\n\
-@deftypefnx {Command} {} diary off\n\
-@deftypefnx {Command} {} diary @var{filename}\n\
+@deftypefn  {} {} diary\n\
+@deftypefnx {} {} diary on\n\
+@deftypefnx {} {} diary off\n\
+@deftypefnx {} {} diary @var{filename}\n\
 Record a list of all commands @emph{and} the output they produce, mixed\n\
 together just as they appear on the terminal.\n\
 \n\
@@ -579,7 +579,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
 DEFUN (__diaryfile__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
+@deftypefn {} {@var{fname} =} __diaryfile__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -588,7 +588,7 @@ Undocumented internal function\n\
 
 DEFUN (__diarystate__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{state} =} __diarystate__ ()\n\
+@deftypefn {} {@var{state} =} __diarystate__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -597,9 +597,9 @@ Undocumented internal function\n\
 
 DEFUN (more, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} more\n\
-@deftypefnx {Command} {} more on\n\
-@deftypefnx {Command} {} more off\n\
+@deftypefn  {} {} more\n\
+@deftypefnx {} {} more on\n\
+@deftypefnx {} {} more off\n\
 Turn output pagination on or off.\n\
 \n\
 Without an argument, @code{more} toggles the current state.\n\
@@ -636,7 +636,7 @@ The current state can be determined via @code{page_screen_output}.\n\
 
 DEFUN (terminal_size, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} terminal_size ()\n\
+@deftypefn {} {} terminal_size ()\n\
 Return a two-element row vector containing the current size of the terminal\n\
 window in characters (rows and columns).\n\
 @seealso{list_in_columns}\n\
@@ -652,9 +652,9 @@ window in characters (rows and columns).\n\
 
 DEFUN (page_output_immediately, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} page_output_immediately ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} page_output_immediately (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} page_output_immediately (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} page_output_immediately ()\n\
+@deftypefnx {} {@var{old_val} =} page_output_immediately (@var{new_val})\n\
+@deftypefnx {} {} page_output_immediately (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave sends\n\
 output to the pager as soon as it is available.\n\
 \n\
@@ -672,9 +672,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (page_screen_output, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} page_screen_output ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} page_screen_output (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} page_screen_output (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} page_screen_output ()\n\
+@deftypefnx {} {@var{old_val} =} page_screen_output (@var{new_val})\n\
+@deftypefnx {} {} page_screen_output (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether output intended\n\
 for the terminal window that is longer than one page is sent through a\n\
 pager.\n\
@@ -694,9 +694,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (PAGER, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} PAGER ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} PAGER (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} PAGER (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} PAGER ()\n\
+@deftypefnx {} {@var{old_val} =} PAGER (@var{new_val})\n\
+@deftypefnx {} {} PAGER (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the program to use\n\
 to display terminal output on your system.\n\
 \n\
@@ -715,9 +715,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (PAGER_FLAGS, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} PAGER_FLAGS ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} PAGER_FLAGS (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} PAGER_FLAGS (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} PAGER_FLAGS ()\n\
+@deftypefnx {} {@var{old_val} =} PAGER_FLAGS (@var{new_val})\n\
+@deftypefnx {} {} PAGER_FLAGS (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the options to pass\n\
 to the pager.\n\
 \n\

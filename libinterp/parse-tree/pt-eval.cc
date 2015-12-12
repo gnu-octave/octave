@@ -1193,9 +1193,9 @@ tree_evaluator::do_keyboard (const octave_value_list& args) const
 
 DEFUN (max_recursion_depth, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} max_recursion_depth (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} max_recursion_depth ()\n\
+@deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
+@deftypefnx {} {} max_recursion_depth (@var{new_val}, \"local\")\n\
 Query or set the internal limit on the number of times a function may\n\
 be called recursively.\n\
 \n\
@@ -1224,9 +1224,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (silent_functions, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} silent_functions ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} silent_functions (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} silent_functions ()\n\
+@deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val})\n\
+@deftypefnx {} {} silent_functions (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether internal\n\
 output from a function is suppressed.\n\
 \n\

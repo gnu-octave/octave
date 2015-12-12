@@ -40,9 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: Deprecated in 4.0 and should be removed in 4.4.
 DEFUN (__luinc__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\
-@deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
+@deftypefn  {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
 @cindex LU decomposition\n\
 Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.\n\
 \n\

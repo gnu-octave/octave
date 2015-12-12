@@ -187,7 +187,7 @@ w32_shell_execute (const std::string& file)
 
 DEFUN (__open_with_system_app__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __open_with_system_app__ (@var{file})\n\
+@deftypefn {} {} __open_with_system_app__ (@var{file})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -581,8 +581,8 @@ get_P_tmpdir (void)
 
 DEFUN (clc, , ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} clc ()\n\
-@deftypefnx {Built-in Function} {} home ()\n\
+@deftypefn  {} {} clc ()\n\
+@deftypefnx {} {} home ()\n\
 Clear the terminal screen and move the cursor to the upper left corner.\n\
 @end deftypefn")
 {
@@ -597,7 +597,7 @@ DEFALIAS (home, clc);
 
 DEFUN (getenv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} getenv (@var{var})\n\
+@deftypefn {} {} getenv (@var{var})\n\
 Return the value of the environment variable @var{var}.\n\
 \n\
 For example,\n\
@@ -625,9 +625,9 @@ returns a string containing the value of your path.\n\
 
 DEFUN (setenv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} setenv (@var{var}, @var{value})\n\
-@deftypefnx {Built-in Function} {} setenv (@var{var})\n\
-@deftypefnx {Built-in Function} {} putenv (@dots{})\n\
+@deftypefn  {} {} setenv (@var{var}, @var{value})\n\
+@deftypefnx {} {} setenv (@var{var})\n\
+@deftypefnx {} {} putenv (@dots{})\n\
 Set the value of the environment variable @var{var} to @var{value}.\n\
 \n\
 If no @var{value} is specified then the variable will be assigned the null\n\
@@ -665,7 +665,7 @@ DEFALIAS (putenv, setenv);
 
 DEFUN (unsetenv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{status} =} unsetenv (@var{var})\n\
+@deftypefn {} {@var{status} =} unsetenv (@var{var})\n\
 Delete the environment variable @var{var}.\n\
 \n\
 Return 0 if the variable was deleted, or did not exist, and -1 if an error\n\
@@ -689,8 +689,8 @@ occurred.\n\
 
 DEFUN (kbhit, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} kbhit ()\n\
-@deftypefnx {Built-in Function} {} kbhit (1)\n\
+@deftypefn  {} {} kbhit ()\n\
+@deftypefnx {} {} kbhit (1)\n\
 Read a single keystroke from the keyboard.\n\
 \n\
 If called with an argument, don't wait for a keypress.\n\
@@ -738,8 +738,8 @@ returning the empty string if no key is available.\n\
 
 DEFUN (pause, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} pause ()\n\
-@deftypefnx {Built-in Function} {} pause (@var{n})\n\
+@deftypefn  {} {} pause ()\n\
+@deftypefnx {} {} pause (@var{n})\n\
 Suspend the execution of the program for @var{n} seconds.\n\
 \n\
 @var{n} is a positive real value and may be a fraction of a second.\n\
@@ -805,7 +805,7 @@ clc;\n\
 
 DEFUN (sleep, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
+@deftypefn {} {} sleep (@var{seconds})\n\
 Suspend the execution of the program for the given number of seconds.\n\
 @seealso{usleep, pause}\n\
 @end deftypefn")
@@ -838,7 +838,7 @@ Suspend the execution of the program for the given number of seconds.\n\
 
 DEFUN (usleep, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} usleep (@var{microseconds})\n\
+@deftypefn {} {} usleep (@var{microseconds})\n\
 Suspend the execution of the program for the given number of\n\
 microseconds.\n\
 \n\
@@ -883,7 +883,7 @@ one second, @code{usleep} will pause the execution for @code{round\n\
 
 DEFUN (isieee, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isieee ()\n\
+@deftypefn {} {} isieee ()\n\
 Return true if your computer @emph{claims} to conform to the IEEE standard\n\
 for floating point calculations.\n\
 \n\
@@ -902,7 +902,7 @@ No actual tests are performed.\n\
 
 DEFUN (native_float_format, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} native_float_format ()\n\
+@deftypefn {} {} native_float_format ()\n\
 Return the native floating point format as a string.\n\
 @end deftypefn")
 {
@@ -917,8 +917,8 @@ Return the native floating point format as a string.\n\
 
 DEFUN (tilde_expand, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} tilde_expand (@var{string})\n\
-@deftypefnx {Built-in Function} {} tilde_expand (@var{cellstr})\n\
+@deftypefn  {} {} tilde_expand (@var{string})\n\
+@deftypefnx {} {} tilde_expand (@var{cellstr})\n\
 Perform tilde expansion on @var{string}.\n\
 \n\
 If @var{string} begins with a tilde character, (@samp{~}), all of the\n\
@@ -972,7 +972,7 @@ tilde_expand (\"~/bin\")\n\
 
 DEFUN (get_home_directory, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{homedir} =} get_home_directory ()\n\
+@deftypefn {} {@var{homedir} =} get_home_directory ()\n\
 Return the current home directory.\n\
 \n\
 On most systems, this is equivalent to @code{getenv (\"HOME\")}.  On Windows\n\
@@ -998,7 +998,7 @@ equivalent to\n\
 
 DEFUN (have_window_system, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} have_window_system ()\n\
+@deftypefn {} {} have_window_system ()\n\
 Return true if a window system is available (X11, Windows, or Apple OS X)\n\
 and false otherwise.\n\
 @seealso{isguirunning}\n\

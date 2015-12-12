@@ -9577,7 +9577,7 @@ root_figure::init_factory_properties (void)
 
 DEFUN (ishandle, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ishandle (@var{h})\n\
+@deftypefn {} {} ishandle (@var{h})\n\
 Return true if @var{h} is a graphics handle and false otherwise.\n\
 \n\
 @var{h} may also be a matrix of handles in which case a logical array is\n\
@@ -9630,7 +9630,7 @@ is_handle_visible (const octave_value& val)
 
 DEFUN (__is_handle_visible__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __is_handle_visible__ (@var{h})\n\
+@deftypefn {} {} __is_handle_visible__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -9642,7 +9642,7 @@ Undocumented internal function.\n\
 
 DEFUN (reset, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} reset (@var{h})\n\
+@deftypefn {} {} reset (@var{h})\n\
 Reset the properties of the graphic object @var{h} to their default values.\n\
 \n\
 For figures, the properties @qcode{\"position\"}, @qcode{\"units\"},\n\
@@ -9795,11 +9795,11 @@ each individual object will be reset.\n\
 
 DEFUN (set, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
-@deftypefnx {Built-in Function} {} set (@var{h}, @var{properties}, @var{values})\n\
-@deftypefnx {Built-in Function} {} set (@var{h}, @var{pv})\n\
-@deftypefnx {Built-in Function} {@var{value_list} =} set (@var{h}, @var{property})\n\
-@deftypefnx {Built-in Function} {@var{all_value_list} =} set (@var{h})\n\
+@deftypefn  {} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
+@deftypefnx {} {} set (@var{h}, @var{properties}, @var{values})\n\
+@deftypefnx {} {} set (@var{h}, @var{pv})\n\
+@deftypefnx {} {@var{value_list} =} set (@var{h}, @var{property})\n\
+@deftypefnx {} {@var{all_value_list} =} set (@var{h})\n\
 Set named property values for the graphics handle (or vector of graphics\n\
 handles) @var{h}.\n\
 \n\
@@ -9982,8 +9982,8 @@ get_graphics_object_type (double val)
 
 DEFUN (get, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} get (@var{h})\n\
-@deftypefnx {Built-in Function} {@var{val} =} get (@var{h}, @var{p})\n\
+@deftypefn  {} {@var{val} =} get (@var{h})\n\
+@deftypefnx {} {@var{val} =} get (@var{h}, @var{p})\n\
 Return the value of the named property @var{p} from the graphics handle\n\
 @var{h}.\n\
 \n\
@@ -10127,7 +10127,7 @@ lists respectively.\n\
 
 DEFUN (__get__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __get__ (@var{h})\n\
+@deftypefn {} {} __get__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10238,7 +10238,7 @@ make_graphics_object (const std::string& go_name,
 
 DEFUN (__go_figure__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_figure__ (@var{fignum})\n\
+@deftypefn {} {} __go_figure__ (@var{fignum})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10369,7 +10369,7 @@ calc_dimensions (const graphics_object& go)
 
 DEFUN (__calc_dimensions__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __calc_dimensions__ (@var{axes})\n\
+@deftypefn {} {} __calc_dimensions__ (@var{axes})\n\
 Internal function.\n\
 \n\
 Determine the number of dimensions in a graphics object, either 2 or 3.\n\
@@ -10387,7 +10387,7 @@ Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 
 DEFUN (__go_axes__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_axes__ (@var{parent})\n\
+@deftypefn {} {} __go_axes__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10396,7 +10396,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_line__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_line__ (@var{parent})\n\
+@deftypefn {} {} __go_line__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10405,7 +10405,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_text__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_text__ (@var{parent})\n\
+@deftypefn {} {} __go_text__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10414,7 +10414,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_image__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_image__ (@var{parent})\n\
+@deftypefn {} {} __go_image__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10423,7 +10423,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_surface__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_surface__ (@var{parent})\n\
+@deftypefn {} {} __go_surface__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10432,7 +10432,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_patch__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_patch__ (@var{parent})\n\
+@deftypefn {} {} __go_patch__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10441,7 +10441,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_hggroup__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_hggroup__ (@var{parent})\n\
+@deftypefn {} {} __go_hggroup__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10450,7 +10450,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uimenu__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uimenu__ (@var{parent})\n\
+@deftypefn {} {} __go_uimenu__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10459,7 +10459,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uicontrol__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uicontrol__ (@var{parent})\n\
+@deftypefn {} {} __go_uicontrol__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10468,7 +10468,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uipanel__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uipanel__ (@var{parent})\n\
+@deftypefn {} {} __go_uipanel__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10477,7 +10477,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uicontextmenu__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uicontextmenu__ (@var{parent})\n\
+@deftypefn {} {} __go_uicontextmenu__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10486,7 +10486,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uitoolbar__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uitoolbar__ (@var{parent})\n\
+@deftypefn {} {} __go_uitoolbar__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10495,7 +10495,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uipushtool__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uipushtool__ (@var{parent})\n\
+@deftypefn {} {} __go_uipushtool__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10504,7 +10504,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_uitoggletool__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_uitoggletool__ (@var{parent})\n\
+@deftypefn {} {} __go_uitoggletool__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10513,7 +10513,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_delete__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_delete__ (@var{h})\n\
+@deftypefn {} {} __go_delete__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10548,7 +10548,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_axes_init__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_axes_init__ (@var{h}, @var{mode})\n\
+@deftypefn {} {} __go_axes_init__ (@var{h}, @var{mode})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10591,7 +10591,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_handles__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_handles__ (@var{show_hidden})\n\
+@deftypefn {} {} __go_handles__ (@var{show_hidden})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10607,7 +10607,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_figure_handles__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_figure_handles__ (@var{show_hidden})\n\
+@deftypefn {} {} __go_figure_handles__ (@var{show_hidden})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10623,8 +10623,8 @@ Undocumented internal function.\n\
 
 DEFUN (__go_execute_callback__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name})\n\
-@deftypefnx {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})\n\
+@deftypefn  {} {} __go_execute_callback__ (@var{h}, @var{name})\n\
+@deftypefnx {} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -10656,7 +10656,7 @@ Undocumented internal function.\n\
 
 DEFUN (__image_pixel_size__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})\n\
+@deftypefn {} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})\n\
 Internal function: returns the pixel size of the image in normalized units.\n\
 @end deftypefn")
 {
@@ -10776,7 +10776,7 @@ gtk_manager::do_unregister_toolkit (const std::string& name)
 
 DEFUN (available_graphics_toolkits, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} available_graphics_toolkits ()\n\
+@deftypefn {} {} available_graphics_toolkits ()\n\
 Return a cell array of registered graphics toolkits.\n\
 @seealso{graphics_toolkit, register_graphics_toolkit}\n\
 @end deftypefn")
@@ -10788,7 +10788,7 @@ Return a cell array of registered graphics toolkits.\n\
 
 DEFUN (register_graphics_toolkit, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} register_graphics_toolkit (@var{toolkit})\n\
+@deftypefn {} {} register_graphics_toolkit (@var{toolkit})\n\
 List @var{toolkit} as an available graphics toolkit.\n\
 @seealso{available_graphics_toolkits}\n\
 @end deftypefn")
@@ -10809,7 +10809,7 @@ List @var{toolkit} as an available graphics toolkit.\n\
 
 DEFUN (loaded_graphics_toolkits, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} loaded_graphics_toolkits ()\n\
+@deftypefn {} {} loaded_graphics_toolkits ()\n\
 Return a cell array of the currently loaded graphics toolkits.\n\
 @seealso{available_graphics_toolkits}\n\
 @end deftypefn")
@@ -10821,9 +10821,9 @@ Return a cell array of the currently loaded graphics toolkits.\n\
 
 DEFUN (drawnow, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} drawnow ()\n\
-@deftypefnx {Built-in Function} {} drawnow (\"expose\")\n\
-@deftypefnx {Built-in Function} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
+@deftypefn  {} {} drawnow ()\n\
+@deftypefnx {} {} drawnow (\"expose\")\n\
+@deftypefnx {} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
 Update figure windows and their children.\n\
 \n\
 The event queue is flushed and any callbacks generated are executed.\n\
@@ -11002,7 +11002,7 @@ undocumented.\n\
 
 DEFUN (addlistener, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
+@deftypefn {} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
 Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
 object @var{h}.\n\
 \n\
@@ -11069,7 +11069,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
 DEFUN (dellistener, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
+@deftypefn {} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
 Remove the registration of @var{fcn} as a listener for the property\n\
 @var{prop} of the graphics object @var{h}.\n\
 \n\
@@ -11136,8 +11136,8 @@ dellistener (gcf, \"position\", c);\n\
 
 DEFUN (addproperty, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type})\n\
-@deftypefnx {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})\n\
+@deftypefn  {} {} addproperty (@var{name}, @var{h}, @var{type})\n\
+@deftypefnx {} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})\n\
 Create a new property named @var{name} in graphics object @var{h}.\n\
 \n\
 @var{type} determines the type of the property to create.  @var{args}\n\
@@ -11392,10 +11392,10 @@ waitfor_del_listener (const octave_value_list& args, int)
 
 DEFUN (waitfor, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} waitfor (@var{h})\n\
-@deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop})\n\
-@deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
-@deftypefnx {Built-in Function} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
+@deftypefn  {} {} waitfor (@var{h})\n\
+@deftypefnx {} {} waitfor (@var{h}, @var{prop})\n\
+@deftypefnx {} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
+@deftypefnx {} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
 Suspend the execution of the current program until a condition is\n\
 satisfied on the graphics handle @var{h}.\n\
 \n\
@@ -11633,9 +11633,9 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
 DEFUN (__zoom__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})\n\
-@deftypefnx {Built-in Function} {} __zoom__ (@var{axes}, \"out\")\n\
-@deftypefnx {Built-in Function} {} __zoom__ (@var{axes}, \"reset\")\n\
+@deftypefn  {} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})\n\
+@deftypefnx {} {} __zoom__ (@var{axes}, \"out\")\n\
+@deftypefnx {} {} __zoom__ (@var{axes}, \"reset\")\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

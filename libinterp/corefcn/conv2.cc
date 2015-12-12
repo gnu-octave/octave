@@ -36,9 +36,9 @@ enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN (conv2, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} conv2 (@var{A}, @var{B})\n\
-@deftypefnx {Built-in Function} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
-@deftypefnx {Built-in Function} {} conv2 (@dots{}, @var{shape})\n\
+@deftypefn  {} {} conv2 (@var{A}, @var{B})\n\
+@deftypefnx {} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
+@deftypefnx {} {} conv2 (@dots{}, @var{shape})\n\
 Return the 2-D convolution of @var{A} and @var{B}.\n\
 \n\
 The size of the result is determined by the optional @var{shape} argument\n\
@@ -281,8 +281,8 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 
 DEFUN (convn, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{C} =} convn (@var{A}, @var{B})\n\
-@deftypefnx {Built-in Function} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
+@deftypefn  {} {@var{C} =} convn (@var{A}, @var{B})\n\
+@deftypefnx {} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
 Return the n-D convolution of @var{A} and @var{B}.\n\
 \n\
 The size of the result is determined by the optional @var{shape} argument\n\

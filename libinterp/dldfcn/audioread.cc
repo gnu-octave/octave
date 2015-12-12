@@ -51,11 +51,11 @@ safe_close (SNDFILE *file)
 
 DEFUN_DLD (audioread, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
+@deftypefn  {} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
 \n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
 Read the audio file @var{filename} and return the audio data @var{y} and\n\
 sampling rate @var{fs}.\n\
 \n\
@@ -232,8 +232,8 @@ extension_to_format (const std::string& ext)
 
 DEFUN_DLD (audiowrite, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
-@deftypefnx {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
+@deftypefn  {} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
+@deftypefnx {} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
 \n\
 Write audio data from the matrix @var{y} to @var{filename} at sampling rate\n\
 @var{fs} with the file format determined by the file extension.\n\
@@ -437,7 +437,7 @@ Comment.\n\
 
 DEFUN_DLD (audioinfo, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{info} =} audioinfo (@var{filename})\n\
+@deftypefn {} {@var{info} =} audioinfo (@var{filename})\n\
 Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")
 {

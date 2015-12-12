@@ -48,11 +48,11 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (balance, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{AA} =} balance (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{AA} =} balance (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{D}, @var{P}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{CC}, @var{DD}, @var{AA}, @var{BB}] =} balance (@var{A}, @var{B}, @var{opt})\n\
+@deftypefn  {} {@var{AA} =} balance (@var{A})\n\
+@deftypefnx {} {@var{AA} =} balance (@var{A}, @var{opt})\n\
+@deftypefnx {} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
+@deftypefnx {} {[@var{D}, @var{P}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
+@deftypefnx {} {[@var{CC}, @var{DD}, @var{AA}, @var{BB}] =} balance (@var{A}, @var{B}, @var{opt})\n\
 \n\
 Balance the matrix @var{A} to reduce numerical errors in future\n\
 calculations.\n\

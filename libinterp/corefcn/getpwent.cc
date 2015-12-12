@@ -67,7 +67,7 @@ mk_pw_map (const octave_passwd& pw)
 
 DEFUN (getpwent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{pw_struct} =} getpwent ()\n\
+@deftypefn {} {@var{pw_struct} =} getpwent ()\n\
 Return a structure containing an entry from the password database,\n\
 opening it if necessary.\n\
 \n\
@@ -93,7 +93,7 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
 
 DEFUN (getpwuid, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{pw_struct} =} getpwuid (@var{uid}).\n\
+@deftypefn {} {@var{pw_struct} =} getpwuid (@var{uid}).\n\
 Return a structure containing the first entry from the password database\n\
 with the user ID @var{uid}.\n\
 \n\
@@ -128,7 +128,7 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
 
 DEFUN (getpwnam, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{pw_struct} =} getpwnam (@var{name})\n\
+@deftypefn {} {@var{pw_struct} =} getpwnam (@var{name})\n\
 Return a structure containing the first entry from the password database\n\
 with the user name @var{name}.\n\
 \n\
@@ -156,7 +156,7 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
 
 DEFUN (setpwent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} setpwent ()\n\
+@deftypefn {} {} setpwent ()\n\
 Return the internal pointer to the beginning of the password database.\n\
 @seealso{getpwent, endpwent}\n\
 @end deftypefn")
@@ -179,7 +179,7 @@ Return the internal pointer to the beginning of the password database.\n\
 
 DEFUN (endpwent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} endpwent ()\n\
+@deftypefn {} {} endpwent ()\n\
 Close the password database.\n\
 @seealso{getpwent, setpwent}\n\
 @end deftypefn")

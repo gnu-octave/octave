@@ -361,7 +361,7 @@ bitop (const std::string& fname, const octave_value_list& args)
 
 DEFUN (bitand, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
+@deftypefn {} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of non-negative integers.\n\
 \n\
 @var{x}, @var{y} must be in the range [0,intmax]\n\
@@ -373,7 +373,7 @@ Return the bitwise AND of non-negative integers.\n\
 
 DEFUN (bitor, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
+@deftypefn {} {} bitor (@var{x}, @var{y})\n\
 Return the bitwise OR of non-negative integers @var{x} and @var{y}.\n\
 \n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
@@ -384,7 +384,7 @@ Return the bitwise OR of non-negative integers @var{x} and @var{y}.\n\
 
 DEFUN (bitxor, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
+@deftypefn {} {} bitxor (@var{x}, @var{y})\n\
 Return the bitwise XOR of non-negative integers @var{x} and @var{y}.\n\
 \n\
 @seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
@@ -531,8 +531,8 @@ bitshift (float a, int n, int64_t mask)
 
 DEFUN (bitshift, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
-@deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
+@deftypefn  {} {} bitshift (@var{a}, @var{k})\n\
+@deftypefnx {} {} bitshift (@var{a}, @var{k}, @var{n})\n\
 Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{a}.\n\
 \n\
 A positive @var{k} leads to a left shift; A negative value to a right shift.\n\
@@ -659,9 +659,9 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 
 DEFUN (flintmax, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} flintmax ()\n\
-@deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
-@deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
+@deftypefn  {} {} flintmax ()\n\
+@deftypefnx {} {} flintmax (\"double\")\n\
+@deftypefnx {} {} flintmax (\"single\")\n\
 Return the largest integer that can be represented consecutively in a\n\
 floating point value.\n\
 \n\
@@ -695,7 +695,7 @@ for @qcode{\"double\"} and @w{@math{2^{24}}} for @qcode{\"single\"}.\n\
 
 DEFUN (intmax, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} intmax (@var{type})\n\
+@deftypefn {} {} intmax (@var{type})\n\
 Return the largest integer that can be represented in an integer type.\n\
 \n\
 The variable @var{type} can be\n\
@@ -766,7 +766,7 @@ The default for @var{type} is @code{int32}.\n\
 
 DEFUN (intmin, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} intmin (@var{type})\n\
+@deftypefn {} {} intmin (@var{type})\n\
 Return the smallest integer that can be represented in an integer type.\n\
 \n\
 The variable @var{type} can be\n\
@@ -837,7 +837,7 @@ The default for @var{type} is @code{int32}.\n\
 
 DEFUN (sizemax, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sizemax ()\n\
+@deftypefn {} {} sizemax ()\n\
 Return the largest value allowed for the size of an array.\n\
 \n\
 If Octave is compiled with 64-bit indexing, the result is of class int64,\n\

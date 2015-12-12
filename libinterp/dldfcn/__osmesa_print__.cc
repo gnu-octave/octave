@@ -58,8 +58,8 @@ reset_visibility (figure::properties *fp)
 
 DEFUN_DLD(__osmesa_print__, args, ,
           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __osmesa_print__ (@var{h}, @var{file}, @var{term})\n\
-@deftypefnx {Loadable Function} {@var{img} =} __osmesa_print__ (@var{h})\n\
+@deftypefn  {} {} __osmesa_print__ (@var{h}, @var{file}, @var{term})\n\
+@deftypefnx {} {@var{img} =} __osmesa_print__ (@var{h})\n\
 Print figure @var{h} using OSMesa and gl2ps for vector formats.\n\
 \n\
 This is a private internal function.\n\

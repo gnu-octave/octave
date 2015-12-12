@@ -123,26 +123,26 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
 DEFUN_DLD (__eigs__, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{d} =} __eigs__ (@var{A})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{B})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {[@var{V}, @var{d}] =} __eigs__ (@var{A}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{V}, @var{d}] =} __eigs__ (@var{af}, @var{n}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{A}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{af}, @var{n}, @dots{})\n\
+@deftypefn  {} {@var{d} =} __eigs__ (@var{A})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {} {[@var{V}, @var{d}] =} __eigs__ (@var{A}, @dots{})\n\
+@deftypefnx {} {[@var{V}, @var{d}] =} __eigs__ (@var{af}, @var{n}, @dots{})\n\
+@deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{A}, @dots{})\n\
+@deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{af}, @var{n}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

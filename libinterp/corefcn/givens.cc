@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (givens, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{G} =} givens (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
+@deftypefn  {} {@var{G} =} givens (@var{x}, @var{y})\n\
+@deftypefnx {} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
 Compute the Givens rotation matrix @var{G}.\n\
 \n\
 @tex\n\

@@ -265,14 +265,14 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
 
 DEFUN (cellfun, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cellfun (@var{name}, @var{C})\n\
-@deftypefnx {Built-in Function} {} cellfun (\"size\", @var{C}, @var{k})\n\
-@deftypefnx {Built-in Function} {} cellfun (\"isclass\", @var{C}, @var{class})\n\
-@deftypefnx {Built-in Function} {} cellfun (@var{func}, @var{C})\n\
-@deftypefnx {Built-in Function} {} cellfun (@var{func}, @var{C}, @var{D})\n\
-@deftypefnx {Built-in Function} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
-@deftypefnx {Built-in Function} {} cellfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
-@deftypefnx {Built-in Function} {} cellfun (@dots{}, \"UniformOutput\", @var{val})\n\
+@deftypefn  {} {} cellfun (@var{name}, @var{C})\n\
+@deftypefnx {} {} cellfun (\"size\", @var{C}, @var{k})\n\
+@deftypefnx {} {} cellfun (\"isclass\", @var{C}, @var{class})\n\
+@deftypefnx {} {} cellfun (@var{func}, @var{C})\n\
+@deftypefnx {} {} cellfun (@var{func}, @var{C}, @var{D})\n\
+@deftypefnx {} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
+@deftypefnx {} {} cellfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
+@deftypefnx {} {} cellfun (@dots{}, \"UniformOutput\", @var{val})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
 @var{C}.\n\
@@ -1013,12 +1013,12 @@ v = cellfun (@@det, a); # faster\n\
 
 DEFUN (arrayfun, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} arrayfun (@var{func}, @var{A})\n\
-@deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A})\n\
-@deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})\n\
-@deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})\n\
-@deftypefnx {Function File} {} arrayfun (@dots{}, \"UniformOutput\", @var{val})\n\
-@deftypefnx {Function File} {} arrayfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
+@deftypefn  {} {} arrayfun (@var{func}, @var{A})\n\
+@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})\n\
+@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})\n\
+@deftypefnx {} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})\n\
+@deftypefnx {} {} arrayfun (@dots{}, \"UniformOutput\", @var{val})\n\
+@deftypefnx {} {} arrayfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
 \n\
 Execute a function on each element of an array.\n\
 \n\
@@ -1773,8 +1773,8 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 
 DEFUN (num2cell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{C} =} num2cell (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
+@deftypefn  {} {@var{C} =} num2cell (@var{A})\n\
+@deftypefnx {} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
 Convert the numeric matrix @var{A} to a cell array.\n\
 \n\
 If @var{dim} is defined, the value @var{C} is of dimension 1 in this\n\
@@ -2095,9 +2095,9 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 
 DEFUN (mat2cell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
-@deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
-@deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
+@deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
+@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
+@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
 Convert the matrix @var{A} to a cell array.\n\
 \n\
 If @var{A} is 2-D, then it is required that\n\
@@ -2265,7 +2265,7 @@ do_cellslices_nda (const NDA& array,
 
 DEFUN (cellslices, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
+@deftypefn {} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
 Given an array @var{x}, this function produces a cell array of slices from\n\
 the array determined by the index vectors @var{lb}, @var{ub}, for lower and\n\
 upper bounds, respectively.\n\
@@ -2392,7 +2392,7 @@ slicing is done along the first non-singleton dimension.\n\
 
 DEFUN (cellindexmat, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
+@deftypefn {} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
 Perform indexing of matrices in a cell array.\n\
 \n\
 Given a cell array of matrices @var{x}, this function computes\n\

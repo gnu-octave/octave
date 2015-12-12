@@ -269,9 +269,9 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 
 DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
+@deftypefnx {} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
+@deftypefnx {} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
 conditions of if or while statements.\n\

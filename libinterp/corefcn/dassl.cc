@@ -178,7 +178,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
 DEFUN (dassl, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
+@deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential-algebraic equations\n\
 @tex\n\
 $$ 0 = f (x, \\dot{x}, t) $$\n\

@@ -649,8 +649,8 @@ octcellregexp (const octave_value_list &args, int nargout,
 
 DEFUN (regexp, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexp (@var{str}, @var{pat})\n\
-@deftypefnx {Built-in Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
+@deftypefn  {} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexp (@var{str}, @var{pat})\n\
+@deftypefnx {} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 Regular expression string matching.\n\
 \n\
 Search for @var{pat} in @var{str} and return the positions and substrings of\n\
@@ -1136,8 +1136,8 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 
 DEFUN (regexpi, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexpi (@var{str}, @var{pat})\n\
-@deftypefnx {Built-in Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
+@deftypefn  {} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexpi (@var{str}, @var{pat})\n\
+@deftypefnx {} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 \n\
 Case insensitive regular expression string matching.\n\
 \n\
@@ -1342,8 +1342,8 @@ octregexprep (const octave_value_list &args, const std::string &who)
 
 DEFUN (regexprep, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr})\n\
-@deftypefnx {Built-in Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr}, \"@var{opt1}\", @dots{})\n\
+@deftypefn  {} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr})\n\
+@deftypefnx {} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr}, \"@var{opt1}\", @dots{})\n\
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
 \n\
 The pattern is a regular expression as documented for @code{regexp}.\n\

@@ -588,15 +588,15 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbstop @var{func}\n\
-@deftypefnx {Command} {} dbstop @var{func} @var{line}\n\
-@deftypefnx {Command} {} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
-@deftypefnx {Command} {} dbstop @var{line} @dots{}\n\
-@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
-@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\
-@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
-@deftypefnx {Built-in Function} {} dbstop (\"@var{func}\", [@var{line1}, @dots{}])\n\
-@deftypefnx {Built-in Function} {} dbstop (@var{line}, @dots{})\n\
+@deftypefn  {} {} dbstop @var{func}\n\
+@deftypefnx {} {} dbstop @var{func} @var{line}\n\
+@deftypefnx {} {} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {} {} dbstop @var{line} @dots{}\n\
+@deftypefnx {} {@var{rline} =} dbstop (\"@var{func}\")\n\
+@deftypefnx {} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\
+@deftypefnx {} {@var{rline} =} dbstop (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
+@deftypefnx {} {} dbstop (\"@var{func}\", [@var{line1}, @dots{}])\n\
+@deftypefnx {} {} dbstop (@var{line}, @dots{})\n\
 Set a breakpoint at line number @var{line} in function @var{func}.\n\
 \n\
 Arguments are\n\
@@ -637,17 +637,17 @@ Octave will set the real breakpoint at the next executable line.\n\
 
 DEFUN (dbclear, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbclear @var{func}\n\
-@deftypefnx {Command} {} dbclear @var{func} @var{line}\n\
-@deftypefnx {Command} {} dbclear @var{func} @var{line1} @var{line2} @dots{}\n\
-@deftypefnx {Command} {} dbclear @var{line} @dots{}\n\
-@deftypefnx {Command} {} dbclear all\n\
-@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\")\n\
-@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line})\n\
-@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
-@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", [@var{line1}, @dots{}])\n\
-@deftypefnx {Built-in Function} {} dbclear (@var{line}, @dots{})\n\
-@deftypefnx {Built-in Function} {} dbclear (\"all\")\n\
+@deftypefn  {} {} dbclear @var{func}\n\
+@deftypefnx {} {} dbclear @var{func} @var{line}\n\
+@deftypefnx {} {} dbclear @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {} {} dbclear @var{line} @dots{}\n\
+@deftypefnx {} {} dbclear all\n\
+@deftypefnx {} {} dbclear (\"@var{func}\")\n\
+@deftypefnx {} {} dbclear (\"@var{func}\", @var{line})\n\
+@deftypefnx {} {} dbclear (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
+@deftypefnx {} {} dbclear (\"@var{func}\", [@var{line1}, @dots{}])\n\
+@deftypefnx {} {} dbclear (@var{line}, @dots{})\n\
+@deftypefnx {} {} dbclear (\"all\")\n\
 Delete a breakpoint at line number @var{line} in the function @var{func}.\n\
 \n\
 Arguments are\n\
@@ -688,9 +688,9 @@ files.\n\
 
 DEFUN (dbstatus, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbstatus ()\n\
-@deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus ()\n\
-@deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
+@deftypefn  {} {} dbstatus ()\n\
+@deftypefnx {} {@var{brk_list} =} dbstatus ()\n\
+@deftypefnx {} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
 Report the location of active breakpoints.\n\
 \n\
 When called with no input or output arguments, print the list of all\n\
@@ -808,7 +808,7 @@ current function.\n\
 
 DEFUN (dbwhere, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbwhere\n\
+@deftypefn {} {} dbwhere\n\
 In debugging mode, report the current file and line number where execution\n\
 is stopped.\n\
 @seealso{dbstatus, dbcont, dbstep, dbup}\n\
@@ -889,14 +889,14 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
 DEFUN (dbtype, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbtype\n\
-@deftypefnx {Command} {} dbtype @var{lineno}\n\
-@deftypefnx {Command} {} dbtype @var{startl:endl}\n\
-@deftypefnx {Command} {} dbtype @var{startl:end}\n\
-@deftypefnx {Command} {} dbtype @var{func}\n\
-@deftypefnx {Command} {} dbtype @var{func} @var{lineno}\n\
-@deftypefnx {Command} {} dbtype @var{func} @var{startl:endl}\n\
-@deftypefnx {Command} {} dbtype @var{func} @var{startl:end}\n\
+@deftypefn  {} {} dbtype\n\
+@deftypefnx {} {} dbtype @var{lineno}\n\
+@deftypefnx {} {} dbtype @var{startl:endl}\n\
+@deftypefnx {} {} dbtype @var{startl:end}\n\
+@deftypefnx {} {} dbtype @var{func}\n\
+@deftypefnx {} {} dbtype @var{func} @var{lineno}\n\
+@deftypefnx {} {} dbtype @var{func} @var{startl:endl}\n\
+@deftypefnx {} {} dbtype @var{func} @var{startl:end}\n\
 Display a script file with line numbers.\n\
 \n\
 When called with no arguments in debugging mode, display the script file\n\
@@ -1039,8 +1039,8 @@ numbers.\n\
 
 DEFUN (dblist, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dblist\n\
-@deftypefnx {Command} {} dblist @var{n}\n\
+@deftypefn  {} {} dblist\n\
+@deftypefnx {} {} dblist @var{n}\n\
 In debugging mode, list @var{n} lines of the function being debugged\n\
 centered around the current line to be executed.\n\
 \n\
@@ -1232,10 +1232,10 @@ show_octave_dbstack (void)
 
 DEFUN (dbstack, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbstack\n\
-@deftypefnx {Command} {} dbstack @var{n}\n\
-@deftypefnx {Command} {} dbstack @var{-completenames}\n\
-@deftypefnx {Built-in Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
+@deftypefn  {} {} dbstack\n\
+@deftypefnx {} {} dbstack @var{n}\n\
+@deftypefnx {} {} dbstack @var{-completenames}\n\
+@deftypefnx {} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
 Display or return current debugging function stack information.\n\
 \n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
@@ -1305,8 +1305,8 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 
 DEFUN (dbup, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbup\n\
-@deftypefnx {Command} {} dbup @var{n}\n\
+@deftypefn  {} {} dbup\n\
+@deftypefnx {} {} dbup @var{n}\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
 \n\
 If @var{n} is omitted, move up one frame.\n\
@@ -1322,8 +1322,8 @@ If @var{n} is omitted, move up one frame.\n\
 
 DEFUN (dbdown, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbdown\n\
-@deftypefnx {Command} {} dbdown @var{n}\n\
+@deftypefn  {} {} dbdown\n\
+@deftypefnx {} {} dbdown @var{n}\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
 \n\
 If @var{n} is omitted, move down one frame.\n\
@@ -1339,11 +1339,11 @@ If @var{n} is omitted, move down one frame.\n\
 
 DEFUN (dbstep, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} dbstep\n\
-@deftypefnx {Command} {} dbstep @var{n}\n\
-@deftypefnx {Command} {} dbstep in\n\
-@deftypefnx {Command} {} dbstep out\n\
-@deftypefnx {Command} {} dbnext @dots{}\n\
+@deftypefn  {} {} dbstep\n\
+@deftypefnx {} {} dbstep @var{n}\n\
+@deftypefnx {} {} dbstep in\n\
+@deftypefnx {} {} dbstep out\n\
+@deftypefnx {} {} dbnext @dots{}\n\
 In debugging mode, execute the next @var{n} lines of code.\n\
 \n\
 If @var{n} is omitted, execute the next single line of code.  If the next\n\
@@ -1414,7 +1414,7 @@ DEFALIAS (dbnext, dbstep);
 
 DEFUN (dbcont, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbcont\n\
+@deftypefn {} {} dbcont\n\
 Leave command-line debugging mode and continue code execution normally.\n\
 @seealso{dbstep, dbquit}\n\
 @end deftypefn")
@@ -1436,7 +1436,7 @@ Leave command-line debugging mode and continue code execution normally.\n\
 
 DEFUN (dbquit, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Command} {} dbquit\n\
+@deftypefn {} {} dbquit\n\
 Quit debugging mode immediately without further code execution and return to\n\
 the Octave prompt.\n\
 @seealso{dbcont, dbstep}\n\
@@ -1461,7 +1461,7 @@ the Octave prompt.\n\
 
 DEFUN (isdebugmode, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isdebugmode ()\n\
+@deftypefn {} {} isdebugmode ()\n\
 Return true if in debugging mode, otherwise false.\n\
 @seealso{dbwhere, dbstack, dbstatus}\n\
 @end deftypefn")
@@ -1474,8 +1474,8 @@ Return true if in debugging mode, otherwise false.\n\
 
 DEFUN (__db_next_breakpoint_quiet__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} __db_next_breakpoint_quiet__ ()\n\
-@deftypefnx {Built-in Function} {} __db_next_breakpoint_quiet__ (@var{flag})\n\
+@deftypefn  {} {} __db_next_breakpoint_quiet__ ()\n\
+@deftypefnx {} {} __db_next_breakpoint_quiet__ (@var{flag})\n\
 Disable line info printing at the next breakpoint.\n\
 \n\
 With a logical argument @var{flag}, set the state on or off.\n\

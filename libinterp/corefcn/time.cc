@@ -105,7 +105,7 @@ extract_tm (const octave_scalar_map& m, const char *who)
 
 DEFUN (time, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{seconds} =} time ()\n\
+@deftypefn {} {@var{seconds} =} time ()\n\
 Return the current time as the number of seconds since the epoch.\n\
 \n\
 The epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
@@ -128,7 +128,7 @@ returned by @code{time} was 856163706.\n\
 
 DEFUN (gmtime, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{tm_struct} =} gmtime (@var{t})\n\
+@deftypefn {} {@var{tm_struct} =} gmtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
 return a time structure corresponding to CUT (Coordinated Universal Time).\n\
 \n\
@@ -185,7 +185,7 @@ gmtime (time ())\n\
 
 DEFUN (localtime, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{tm_struct} =} localtime (@var{t})\n\
+@deftypefn {} {@var{tm_struct} =} localtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
 return a time structure corresponding to the local time zone.\n\
 \n\
@@ -240,7 +240,7 @@ localtime (time ())\n\
 
 DEFUN (mktime, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{seconds} =} mktime (@var{tm_struct})\n\
+@deftypefn {} {@var{seconds} =} mktime (@var{tm_struct})\n\
 Convert a time structure corresponding to the local time to the number of\n\
 seconds since the epoch.\n\
 \n\
@@ -284,7 +284,7 @@ mktime (localtime (time ()))\n\
 
 DEFUN (strftime, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strftime (@var{fmt}, @var{tm_struct})\n\
+@deftypefn {} {} strftime (@var{fmt}, @var{tm_struct})\n\
 Format the time structure @var{tm_struct} in a flexible way using the format\n\
 string @var{fmt} that contains @samp{%} substitutions similar to those in\n\
 @code{printf}.\n\
@@ -469,7 +469,7 @@ Year (1970-).\n\
 
 DEFUN (strptime, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})\n\
+@deftypefn {} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})\n\
 Convert the string @var{str} to the time structure @var{tm_struct} under\n\
 the control of the format string @var{fmt}.\n\
 \n\

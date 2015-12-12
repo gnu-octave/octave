@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (betainc, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})\n\
+@deftypefn {} {} betainc (@var{x}, @var{a}, @var{b})\n\
 Compute the regularized incomplete Beta function.\n\
 \n\
 The regularized incomplete Beta function is defined by\n\
@@ -287,7 +287,7 @@ compatible dimensions.\n\
 
 DEFUN (betaincinv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} betaincinv (@var{y}, @var{a}, @var{b})\n\
+@deftypefn {} {} betaincinv (@var{y}, @var{a}, @var{b})\n\
 Compute the inverse of the incomplete Beta function.\n\
 \n\
 The inverse is the value @var{x} such that\n\

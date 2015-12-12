@@ -76,9 +76,9 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 
 DEFUN_DLD (__voronoi__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
-@deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts}, @var{options})\n\
-@deftypefnx {Loadable Function} {@var{C}, @var{F}, @var{Inf_Pts} =} __voronoi__ (@dots{})\n\
+@deftypefn  {} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
+@deftypefnx {} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts}, @var{options})\n\
+@deftypefnx {} {@var{C}, @var{F}, @var{Inf_Pts} =} __voronoi__ (@dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

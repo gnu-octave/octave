@@ -176,7 +176,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
 DEFUN (onCleanup, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{obj} =} onCleanup (@var{function})\n\
+@deftypefn {} {@var{obj} =} onCleanup (@var{function})\n\
 Create a special object that executes a given function upon destruction.\n\
 \n\
 If the object is copied to multiple variables (or cell or struct array\n\

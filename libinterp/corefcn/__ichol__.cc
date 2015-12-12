@@ -180,8 +180,8 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 
 DEFUN (__ichol0__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{L} =} __ichol0__ (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
+@deftypefn  {} {@var{L} =} __ichol0__ (@var{A})\n\
+@deftypefnx {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 
@@ -426,9 +426,9 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
 
 DEFUN (__icholt__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{L} =} __icholt__ (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\
-@deftypefnx {Built-in Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})\n\
+@deftypefn  {} {@var{L} =} __icholt__ (@var{A})\n\
+@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\
+@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

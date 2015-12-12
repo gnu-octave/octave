@@ -41,9 +41,9 @@ static int Vsvd_driver = SVD::GESVD;
 
 DEFUN (svd, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} svd (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})\n\
+@deftypefn  {} {@var{s} =} svd (@var{A})\n\
+@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})\n\
+@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})\n\
 @cindex singular value decomposition\n\
 Compute the singular value decomposition of @var{A}\n\
 @tex\n\
@@ -367,9 +367,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
 DEFUN (svd_driver, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} svd_driver ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} svd_driver (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} svd_driver (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} svd_driver ()\n\
+@deftypefnx {} {@var{old_val} =} svd_driver (@var{new_val})\n\
+@deftypefnx {} {} svd_driver (@var{new_val}, \"local\")\n\
 Query or set the underlying @sc{lapack} driver used by @code{svd}.\n\
 \n\
 Currently recognized values are @qcode{\"gesvd\"} and @qcode{\"gesdd\"}.\n\

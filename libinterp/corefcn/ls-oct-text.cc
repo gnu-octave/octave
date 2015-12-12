@@ -404,9 +404,9 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 
 DEFUN (save_precision, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} save_precision ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} save_precision (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} save_precision (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} save_precision ()\n\
+@deftypefnx {} {@var{old_val} =} save_precision (@var{new_val})\n\
+@deftypefnx {} {} save_precision (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the number of digits to\n\
 keep when saving data in text format.\n\
 \n\

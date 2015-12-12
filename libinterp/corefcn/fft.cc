@@ -178,9 +178,9 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
 DEFUN (fft, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} fft (@var{x})\n\
-@deftypefnx {Built-in Function} {} fft (@var{x}, @var{n})\n\
-@deftypefnx {Built-in Function} {} fft (@var{x}, @var{n}, @var{dim})\n\
+@deftypefn  {} {} fft (@var{x})\n\
+@deftypefnx {} {} fft (@var{x}, @var{n})\n\
+@deftypefnx {} {} fft (@var{x}, @var{n}, @var{dim})\n\
 Compute the discrete Fourier transform of @var{A} using\n\
 a Fast Fourier Transform (FFT) algorithm.\n\
 \n\
@@ -207,9 +207,9 @@ dimension of the matrix along which the FFT is performed\n\
 
 DEFUN (ifft, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} ifft (@var{x})\n\
-@deftypefnx {Built-in Function} {} ifft (@var{x}, @var{n})\n\
-@deftypefnx {Built-in Function} {} ifft (@var{x}, @var{n}, @var{dim})\n\
+@deftypefn  {} {} ifft (@var{x})\n\
+@deftypefnx {} {} ifft (@var{x}, @var{n})\n\
+@deftypefnx {} {} ifft (@var{x}, @var{n}, @var{dim})\n\
 Compute the inverse discrete Fourier transform of @var{A}\n\
 using a Fast Fourier Transform (FFT) algorithm.\n\
 \n\

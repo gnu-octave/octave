@@ -85,8 +85,8 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 
 DEFUN_DLD (__delaunayn__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{T} =} __delaunayn__ (@var{pts})\n\
-@deftypefnx {Loadable Function} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})\n\
+@deftypefn  {} {@var{T} =} __delaunayn__ (@var{pts})\n\
+@deftypefnx {} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 

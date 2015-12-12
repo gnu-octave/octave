@@ -476,9 +476,9 @@ install_defaults (void)
 
 DEFUN (EDITOR, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} EDITOR ()\n\
+@deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val})\n\
+@deftypefnx {} {} EDITOR (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default text editor.\n\
 \n\
 The default value is taken from the environment variable @w{@env{EDITOR}}\n\
@@ -509,9 +509,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (EXEC_PATH, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} EXEC_PATH ()\n\
+@deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
+@deftypefnx {} {} EXEC_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories to append to the shell PATH when executing external\n\
 programs.\n\
@@ -549,9 +549,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (IMAGE_PATH, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} IMAGE_PATH ()\n\
+@deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
+@deftypefnx {} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\
 \n\
@@ -579,7 +579,7 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (OCTAVE_HOME, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
+@deftypefn {} {} OCTAVE_HOME ()\n\
 Return the name of the top-level Octave installation directory.\n\
 @seealso{EXEC_PATH, IMAGE_PATH}\n\
 @end deftypefn")
@@ -597,7 +597,7 @@ Return the name of the top-level Octave installation directory.\n\
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
+@deftypefn {} {} OCTAVE_VERSION ()\n\
 Return the version number of Octave as a string.\n\
 @seealso{ver, version}\n\
 @end deftypefn")

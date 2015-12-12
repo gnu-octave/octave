@@ -52,8 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (amd, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} amd (@var{S})\n\
-@deftypefnx {Loadable Function} {@var{p} =} amd (@var{S}, @var{opts})\n\
+@deftypefn  {} {@var{p} =} amd (@var{S})\n\
+@deftypefnx {} {@var{p} =} amd (@var{S}, @var{opts})\n\
 \n\
 Return the approximate minimum degree permutation of a matrix.\n\
 \n\

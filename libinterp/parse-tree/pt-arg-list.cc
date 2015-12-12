@@ -128,7 +128,7 @@ static int num_indices = 0;
 
 DEFCONSTFUN (end, , ,
              "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} end\n\
+@deftypefn {} {} end\n\
 The magic index @qcode{\"end\"} refers to the last valid entry in an indexing\n\
 operation.\n\
 \n\

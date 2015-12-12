@@ -38,8 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (inv, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{x} =} inv (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inv (@var{A})\n\
+@deftypefn  {} {@var{x} =} inv (@var{A})\n\
+@deftypefnx {} {[@var{x}, @var{rcond}] =} inv (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.\n\
 \n\
 Return an estimate of the reciprocal condition number if requested,\n\
@@ -240,8 +240,8 @@ sparse matrix if possible.\n\
 
 DEFUN (inverse, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{x} =} inverse (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inverse (@var{A})\n\
+@deftypefn  {} {@var{x} =} inverse (@var{A})\n\
+@deftypefnx {} {[@var{x}, @var{rcond}] =} inverse (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.\n\
 \n\
 This is an alias for @code{inv}.\n\

@@ -69,12 +69,12 @@ get_chol_l (const CHOLT& fact)
 
 DEFUN_DLD (chol, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{R} =} chol (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}] =} chol (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, \"vector\")\n\
-@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
-@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
+@deftypefn  {} {@var{R} =} chol (@var{A})\n\
+@deftypefnx {} {[@var{R}, @var{p}] =} chol (@var{A})\n\
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, \"vector\")\n\
+@deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
+@deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
 @cindex Cholesky factorization\n\
 Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive definite\n\
 matrix @var{A}.\n\
@@ -342,7 +342,7 @@ sparse matrices.\n\
 
 DEFUN_DLD (cholinv, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} cholinv (@var{A})\n\
+@deftypefn {} {} cholinv (@var{A})\n\
 Compute the inverse of the symmetric positive definite matrix @var{A} using\n\
 the Cholesky@tie{}factorization.\n\
 @seealso{chol, chol2inv, inv}\n\
@@ -467,7 +467,7 @@ the Cholesky@tie{}factorization.\n\
 
 DEFUN_DLD (chol2inv, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} chol2inv (@var{U})\n\
+@deftypefn {} {} chol2inv (@var{U})\n\
 Invert a symmetric, positive definite square matrix from its Cholesky\n\
 decomposition, @var{U}.\n\
 \n\
@@ -550,7 +550,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
 
 DEFUN_DLD (cholupdate, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
+@deftypefn {} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
 Update or downdate a Cholesky@tie{}factorization.\n\
 \n\
 Given an upper triangular matrix @var{R} and a column vector @var{u},\n\
@@ -755,8 +755,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 
 DEFUN_DLD (cholinsert, args, nargout,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})\n\
-@deftypefnx {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
+@deftypefn  {} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})\n\
+@deftypefnx {} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
 triangular, return the Cholesky@tie{}factorization of\n\
@@ -1012,7 +1012,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 
 DEFUN_DLD (choldelete, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
+@deftypefn {} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
 triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
@@ -1138,7 +1138,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 
 DEFUN_DLD (cholshift, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
+@deftypefn {} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
 triangular, return the Cholesky@tie{}factorization of\n\

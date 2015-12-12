@@ -89,7 +89,7 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
 
 DEFUN (typecast, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{y} =} typecast (@var{x}, \"@var{class}\")\n\
+@deftypefn {} {@var{y} =} typecast (@var{x}, \"@var{class}\")\n\
 Return a new array @var{y} resulting from interpreting the data of @var{x}\n\
 in memory as data of the numeric class @var{class}.\n\
 \n\
@@ -297,7 +297,7 @@ do_bitpack (const boolNDArray& bitp)
 
 DEFUN (bitpack, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{y} =} bitpack (@var{x}, @var{class})\n\
+@deftypefn {} {@var{y} =} bitpack (@var{x}, @var{class})\n\
 Return a new array @var{y} resulting from interpreting the logical array\n\
 @var{x} as raw bit patterns for data of the numeric class @var{class}.\n\
 \n\
@@ -413,7 +413,7 @@ do_bitunpack (const ArrayType& array)
 
 DEFUN (bitunpack, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{y} =} bitunpack (@var{x})\n\
+@deftypefn {} {@var{y} =} bitunpack (@var{x})\n\
 Return a logical array @var{y} corresponding to the raw bit patterns of\n\
 @var{x}.\n\
 \n\

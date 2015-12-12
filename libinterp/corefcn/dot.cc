@@ -105,7 +105,7 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
 
 DEFUN (dot, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
+@deftypefn {} {} dot (@var{x}, @var{y}, @var{dim})\n\
 Compute the dot product of two vectors.\n\
 \n\
 If @var{x} and @var{y} are matrices, calculate the dot products along the\n\
@@ -276,7 +276,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 
 DEFUN (blkmm, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} blkmm (@var{A}, @var{B})\n\
+@deftypefn {} {} blkmm (@var{A}, @var{B})\n\
 Compute products of matrix blocks.\n\
 \n\
 The blocks are given as 2-dimensional subarrays of the arrays @var{A},\n\

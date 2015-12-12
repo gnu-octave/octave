@@ -796,8 +796,8 @@ octave_user_function::restore_warning_states (void)
 
 DEFUN (nargin, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} nargin ()\n\
-@deftypefnx {Built-in Function} {} nargin (@var{fcn})\n\
+@deftypefn  {} {} nargin ()\n\
+@deftypefnx {} {} nargin (@var{fcn})\n\
 Report the number of input arguments to a function.\n\
 \n\
 Called from within a function, return the number of arguments passed to the\n\
@@ -883,8 +883,8 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
 
 DEFUN (nargout, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} nargout ()\n\
-@deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
+@deftypefn  {} {} nargout ()\n\
+@deftypefnx {} {} nargout (@var{fcn})\n\
 Report the number of output arguments from a function.\n\
 \n\
 Called from within a function, return the number of values the caller expects\n\
@@ -1020,9 +1020,9 @@ returns -1 for all anonymous functions.\n\
 
 DEFUN (optimize_subsasgn_calls, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()\n\
+@deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
+@deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
 Query or set the internal flag for subsasgn method call optimizations.\n\
 \n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
@@ -1058,7 +1058,7 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 
 DEFUN (isargout, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isargout (@var{k})\n\
+@deftypefn {} {} isargout (@var{k})\n\
 Within a function, return a logical value indicating whether the argument\n\
 @var{k} will be assigned to a variable on output.\n\
 \n\

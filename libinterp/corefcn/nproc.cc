@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (nproc, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} nproc ()\n\
-@deftypefnx {Built-in Function} {} nproc (@var{query})\n\
+@deftypefn  {} {} nproc ()\n\
+@deftypefnx {} {} nproc (@var{query})\n\
 Return the current number of available processors.\n\
 \n\
 If called with the optional argument @var{query}, modify how processors\n\

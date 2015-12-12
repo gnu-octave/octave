@@ -64,7 +64,7 @@ extern "C"
 
 DEFUN (ordschur, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})\n\
+@deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})\n\
 Reorders the real Schur factorization (@var{U},@var{S}) obtained with the\n\
 @code{schur} function, so that selected eigenvalues appear in the upper left\n\
 diagonal blocks of the quasi triangular Schur matrix.\n\

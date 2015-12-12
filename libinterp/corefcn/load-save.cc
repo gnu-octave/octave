@@ -532,13 +532,13 @@ is_octave_data_file (const std::string& fname)
 
 DEFUN (load, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} load file\n\
-@deftypefnx {Command} {} load options file\n\
-@deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
-@deftypefnx {Command} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
-@deftypefnx {Command} {} load file options\n\
-@deftypefnx {Command} {} load file options v1 v2 @dots{}\n\
-@deftypefnx {Command} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
+@deftypefn  {} {} load file\n\
+@deftypefnx {} {} load options file\n\
+@deftypefnx {} {} load options file v1 v2 @dots{}\n\
+@deftypefnx {} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
+@deftypefnx {} {} load file options\n\
+@deftypefnx {} {} load file options v1 v2 @dots{}\n\
+@deftypefnx {} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
 @var{file}.\n\
 \n\
@@ -1453,12 +1453,12 @@ dump_octave_core (void)
 
 DEFUN (save, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} {} save file\n\
-@deftypefnx {Command} {} save options file\n\
-@deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
-@deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
-@deftypefnx {Command} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
-@deftypefnx {Built-in Function} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
+@deftypefn  {} {} save file\n\
+@deftypefnx {} {} save options file\n\
+@deftypefnx {} {} save options file @var{v1} @var{v2} @dots{}\n\
+@deftypefnx {} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
+@deftypefnx {} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
+@deftypefnx {} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
 @var{file}.\n\
 \n\
@@ -1743,9 +1743,9 @@ the file @file{data} in Octave's binary format.\n\
 
 DEFUN (crash_dumps_octave_core, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} crash_dumps_octave_core ()\n\
+@deftypefnx {} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
+@deftypefnx {} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file @file{octave-workspace} if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
@@ -1761,9 +1761,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (save_default_options, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} save_default_options ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} save_default_options (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} save_default_options ()\n\
+@deftypefnx {} {@var{old_val} =} save_default_options (@var{new_val})\n\
+@deftypefnx {} {} save_default_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
 \n\
@@ -1781,9 +1781,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (octave_core_file_limit, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} octave_core_file_limit (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} octave_core_file_limit ()\n\
+@deftypefnx {} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
+@deftypefnx {} {} octave_core_file_limit (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the maximum amount\n\
 of memory (in kilobytes) of the top-level workspace that Octave will\n\
 attempt to save when writing data to the crash dump file (the name of\n\
@@ -1805,9 +1805,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (octave_core_file_name, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} octave_core_file_name ()\n\
+@deftypefnx {} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
+@deftypefnx {} {} octave_core_file_name (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
 \n\
@@ -1824,9 +1824,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (octave_core_file_options, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} octave_core_file_options (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} octave_core_file_options ()\n\
+@deftypefnx {} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
+@deftypefnx {} {} octave_core_file_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the options used for\n\
 saving the workspace data if Octave aborts.\n\
 \n\
@@ -1845,9 +1845,9 @@ The original variable value is restored when exiting the function.\n\
 
 DEFUN (save_header_format_string, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} save_header_format_string ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} save_header_format_string (@var{new_val}, \"local\")\n\
+@deftypefn  {} {@var{val} =} save_header_format_string ()\n\
+@deftypefnx {} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
+@deftypefnx {} {} save_header_format_string (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the format\n\
 string used for the comment line written at the beginning of\n\
 text-format data files saved by Octave.\n\

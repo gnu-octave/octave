@@ -331,7 +331,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
 DEFUN_DLD (__glpk__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{values}] =} __glpk__ (@var{args})\n\
+@deftypefn {} {[@var{values}] =} __glpk__ (@var{args})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

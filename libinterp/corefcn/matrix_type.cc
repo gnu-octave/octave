@@ -38,12 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (matrix_type, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{type} =} matrix_type (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{type} =} matrix_type (@var{A}, \"nocompute\")\n\
-@deftypefnx {Built-in Function} {@var{A} =} matrix_type (@var{A}, @var{type})\n\
-@deftypefnx {Built-in Function} {@var{A} =} matrix_type (@var{A}, \"upper\", @var{perm})\n\
-@deftypefnx {Built-in Function} {@var{A} =} matrix_type (@var{A}, \"lower\", @var{perm})\n\
-@deftypefnx {Built-in Function} {@var{A} =} matrix_type (@var{A}, \"banded\", @var{nl}, @var{nu})\n\
+@deftypefn  {} {@var{type} =} matrix_type (@var{A})\n\
+@deftypefnx {} {@var{type} =} matrix_type (@var{A}, \"nocompute\")\n\
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, @var{type})\n\
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, \"upper\", @var{perm})\n\
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, \"lower\", @var{perm})\n\
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, \"banded\", @var{nl}, @var{nu})\n\
 Identify the matrix type or mark a matrix as a particular type.\n\
 \n\
 This allows more rapid solutions of linear equations involving @var{A} to be\n\

@@ -629,10 +629,7 @@ Undocumented internal function.\n\
   extra.assign ("time", time);
   extra.assign ("status", status);
 
-  retval(3) = extra;
-  retval(2) = errnum;
-  retval(1) = fmin;
-  retval(0) = xmin;
+  retval = ovl (xmin, fmin, errnum, extra);
 
 #else
 

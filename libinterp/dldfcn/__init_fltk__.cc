@@ -2081,8 +2081,6 @@ private:
       }
 
     error ("figure_manager: could not recognize fltk index");
-
-    return -1;
   }
 
   void idx2figprops (int idx, figure::properties& fp)
@@ -2104,8 +2102,6 @@ private:
       }
 
     error ("figure_manager: figure is not fltk");
-
-    return -1;
   }
 
   static int hnd2idx (double h)
@@ -2119,8 +2115,6 @@ private:
       }
 
     error ("figure_manager: H (= %g) is not a figure", h);
-
-    return -1;
   }
 
   static int hnd2idx (const graphics_handle& fh)
@@ -2346,7 +2340,7 @@ private:
 
 DEFUN_DLD (__fltk_check__, , ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __fltk_check__ ()\n\
+@deftypefn {} {} __fltk_check__ ()\n\
 Undocumented internal function.  Calls Fl::check ()\n\
 @end deftypefn")
 {
@@ -2366,7 +2360,7 @@ Undocumented internal function.  Calls Fl::check ()\n\
 
 DEFUN_DLD (__init_fltk__, , ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __init_fltk__ ()\n\
+@deftypefn {} {} __init_fltk__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2397,7 +2391,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__have_fltk__, , ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
+@deftypefn {} {@var{FLTK_available} =} __have_fltk__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

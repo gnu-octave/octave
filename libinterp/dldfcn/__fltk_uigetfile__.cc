@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __fltk_uigetfile__ (@dots{})\n\
+@deftypefn {} {} __fltk_uigetfile__ (@dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -56,7 +56,7 @@ Undocumented internal function.\n\
   //   args(0) ... FileFilter in fltk format
   //   args(1) ... Title
   //   args(2) ... Default Filename
-  //   args(3) ... PostionValue [x,y]
+  //   args(3) ... PositionValue [x,y]
   //   args(4) ... SelectValue "on"/"off"/"dir"/"create"
 
   octave_value_list retval (3, octave_value (0));
@@ -140,8 +140,6 @@ Undocumented internal function.\n\
 #else
 
   error ("__fltk_uigetfile__: not available without OpenGL and FLTK libraries");
-
-  return octave_value_list ();
 
 #endif
 

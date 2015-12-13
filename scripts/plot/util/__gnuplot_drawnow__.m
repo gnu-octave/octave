@@ -270,7 +270,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     term_str = ["set terminal " term];
     if (__gnuplot_has_feature__ ("needs_color_with_postscript") ...
         && strcmp (term, "postscript"))
-      term_str = [term_str, " color"]
+      term_str = [term_str, " color"];
     endif
     if (! isempty (enh_str))
       term_str = [term_str " " enh_str];

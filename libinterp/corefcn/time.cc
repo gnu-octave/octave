@@ -488,7 +488,7 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   octave_strptime t (str, fmt);
 
-  return ovl (octave_value (mk_tm_map (t)), t.characters_converted ());
+  return ovl (mk_tm_map (t), t.characters_converted ());
 }
 
 /*

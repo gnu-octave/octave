@@ -141,6 +141,13 @@ endfunction
 function set_graphics_toolkit ()
   if (isempty (available_graphics_toolkits ()))
     error ("no graphics toolkit available for plotting");
+  elseif (! strcmp ("gnuplot", graphics_toolkit ()) ...
+     && ! octave_config_info ().features.OSMESA)
+    if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
+      error ("no graphics toolkit available for offscreen plotting");
+    else
+      graphics_toolkit ("gnuplot");
+    endif
   endif
 endfunction
 

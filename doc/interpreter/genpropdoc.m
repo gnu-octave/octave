@@ -385,30 +385,49 @@ value in the figure title bar.";
         s.valid = valid_4elvec;
 
       case "paperorientation"
+        s.doc = "Defines the orientaton of the printed page.  The value for \
+the @code{papersize} property depends upon __prop__.\
+The @code{papersize} values reverse order when __prop__ is switched \
+between @code{\"portrait\"} and either @code{\"landscape\"} or \
+@code{\"rotated\"}.  The value of @code{paperposition} is not dependent upon \
+the value of __prop__, and must be adjusted indepdently when needed."
+
       case "paperposition"
-        s.doc = "Vector @code{[x0 y0 width height]} defining the position of \
-the figure (in @code{paperunits} units) on the printed page.\
-  __modemsg__.";
+        s.doc = "Vector @code{[x0 y0 width height]} defining the position and \
+size of the figure (in @code{paperunits} units) on the printed page.  The \
+position @code{[x0 y0]} defines the lower left corner of the figure on the \
+page, and the size is defined by @code{[width height]}.  For output formats, \
+not implicity rendered on paper, the @code{width} and @code{height} define the \
+size of the image and the position information is ignored.  __modemsg__.";
         s.valid = valid_4elvec;
 
       case "paperpositionmode"
         s.doc = "If __prop__ is set to @qcode{\"auto\"}, the \
 @code{paperposition} property is automatically computed: the printed \
 figure will have the same size as the on-screen figure and will be centered \
-on the output page.";
+on the output page.  Setting the __prop__ to @code{\"auto\"} does not modify \
+the value of the @code{paperposition} property.";
 
       case "papersize"
         s.doc = "Vector @code{[width height]} defining the size of the \
-paper for printing.  Setting this property forces the @code{papertype} \
-property to the value @qcode{\"<custom>\"}.";
+paper for printing.  Setting the __prop__ property to a value, not associated \
+with one of the defined @code{papertypes} and consistent with the setting for \
+@code{paperorientation}, forces the @code{papertype} property to the value \
+@qcode{\"<custom>\"}.  If __prop__ is set to a value associated with a \
+supported @code{papertype} and consistent with the @code{paperorientation}, \
+the @code{papertype} value is modified to the associated value.";
         s.valid = valid_2elvec;
 
       case "papertype"
         s.doc = "Name of the paper used for printed output.  \
-Setting __prop__ also changes @code{papersize} accordingly.";
+Setting __prop__ also changes @code{papersize}, while maintaining consistency \
+with the @code{paperorientation} property.";
 
       case "paperunits"
-        s.doc = "The unit used to compute the @code{paperposition} property.";
+        s.doc = "The unit used to compute the @code{paperposition} property.  \
+For __prop__ set to @code{\"pixels\"}, the conversion between physical \
+units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
+@code{screenpixelsperinch} property of the root object.";
 
       case "pointer"
         s.doc = doc_unused;

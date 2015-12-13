@@ -92,12 +92,11 @@ givens (1, 1)\n\
             {
             case 0:
             case 1:
-              retval(0) = result;
+              retval = ovl (result);
               break;
 
             case 2:
-              retval(1) = result (0, 1);
-              retval(0) = result (0, 0);
+              retval = ovl (result(0, 0), result(0, 1));
               break;
             }
         }
@@ -112,12 +111,11 @@ givens (1, 1)\n\
             {
             case 0:
             case 1:
-              retval(0) = result;
+              retval = ovl (result);
               break;
 
             case 2:
-              retval(1) = result (0, 1);
-              retval(0) = result (0, 0);
+              retval = ovl (result(0, 0), result(0, 1));
               break;
             }
         }
@@ -135,12 +133,11 @@ givens (1, 1)\n\
             {
             case 0:
             case 1:
-              retval(0) = result;
+              retval = ovl (result);
               break;
 
             case 2:
-              retval(1) = result (0, 1);
-              retval(0) = result (0, 0);
+              retval = ovl (result(0, 0), result(0, 1));
               break;
             }
         }
@@ -155,12 +152,11 @@ givens (1, 1)\n\
             {
             case 0:
             case 1:
-              retval(0) = result;
+              retval = ovl (result);
               break;
 
             case 2:
-              retval(1) = result (0, 1);
-              retval(0) = result (0, 0);
+              retval = ovl (result(0, 0), result(0, 1));
               break;
             }
         }

@@ -1212,8 +1212,8 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
                                                      curr_frame,
                                                      false);
 
-      retval(1) = curr_frame < 0 ? 1 : curr_frame + 1;
-      retval(0) = stk;
+      retval = ovl (stk,
+                    curr_frame < 0 ? 1 : curr_frame + 1);
     }
 
   return retval;

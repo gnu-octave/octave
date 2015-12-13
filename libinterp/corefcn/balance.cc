@@ -158,17 +158,17 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               FloatComplexAEPBALANCE result (fcaa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
-                retval(0) = result.balanced_matrix ();
+                retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
                 {
-                  retval(1) = result.balanced_matrix ();
-                  retval(0) = result.balancing_matrix ();
+                  retval = ovl (result.balancing_matrix (),
+                                result.balanced_matrix ());
                 }
               else
                 {
-                  retval(2) = result.balanced_matrix ();
-                  retval(1) = result.permuting_vector ();
-                  retval(0) = result.scaling_vector ();
+                  retval = ovl (result.scaling_vector (),
+                                result.permuting_vector (),
+                                result.balanced_matrix ());
                 }
 
             }
@@ -177,17 +177,17 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               FloatAEPBALANCE result (faa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
-                retval(0) = result.balanced_matrix ();
+                retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
                 {
-                  retval(1) = result.balanced_matrix ();
-                  retval(0) = result.balancing_matrix ();
+                  retval = ovl (result.balancing_matrix (),
+                                result.balanced_matrix ());
                 }
               else
                 {
-                  retval(2) = result.balanced_matrix ();
-                  retval(1) = result.permuting_vector ();
-                  retval(0) = result.scaling_vector ();
+                  retval = ovl (result.scaling_vector (),
+                                result.permuting_vector (),
+                                result.balanced_matrix ());
                 }
             }
         }
@@ -198,17 +198,17 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               ComplexAEPBALANCE result (caa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
-                retval(0) = result.balanced_matrix ();
+                retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
                 {
-                  retval(1) = result.balanced_matrix ();
-                  retval(0) = result.balancing_matrix ();
+                  retval = ovl (result.balancing_matrix (),
+                                result.balanced_matrix ());
                 }
               else
                 {
-                  retval(2) = result.balanced_matrix ();
-                  retval(1) = result.permuting_vector ();
-                  retval(0) = result.scaling_vector ();
+                  retval = ovl (result.scaling_vector (),
+                                result.permuting_vector (),
+                                result.balanced_matrix ());
                 }
             }
           else
@@ -216,17 +216,17 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               AEPBALANCE result (aa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
-                retval(0) = result.balanced_matrix ();
+                retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
                 {
-                  retval(1) = result.balanced_matrix ();
-                  retval(0) = result.balancing_matrix ();
+                  retval = ovl (result.balancing_matrix (),
+                                result.balanced_matrix ());
                 }
               else
                 {
-                  retval(2) = result.balanced_matrix ();
-                  retval(1) = result.permuting_vector ();
-                  retval(0) = result.scaling_vector ();
+                  retval = ovl (result.scaling_vector (),
+                                result.permuting_vector (),
+                                result.balanced_matrix ());
                 }
             }
         }

@@ -123,7 +123,7 @@ present working directory rather than changing to the user's home directory.\n\
 @end deftypefn")
 {
   int nargin = args.length ();
- 
+
   if (nargin > 1)
     print_usage ();
 

@@ -1101,8 +1101,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   do_get_help_text (name, text, format);
 
-  retval(1) = format;
-  retval(0) = text;
+  retval = ovl (text, format);
 
   return retval;
 }
@@ -1164,8 +1163,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   do_get_help_text_from_file (fname, text, format);
 
-  retval(1) = format;
-  retval(0) = text;
+  retval = ovl (text, format);
 
   return retval;
 }

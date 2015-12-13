@@ -339,8 +339,7 @@ To read a line and return the terminating newline see @code{fgets}.\n\
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  retval(1) = 0;
-  retval(0) = -1;
+  retval = ovl (-1, 0);
 
   octave_stream os = octave_stream_list::lookup (args(0), who);
 
@@ -352,8 +351,7 @@ To read a line and return the terminating newline see @code{fgets}.\n\
 
   if (! err)
     {
-      retval(1) = tmp.length ();
-      retval(0) = tmp;
+      retval = ovl (tmp, tmp.length ());
     }
 
   return retval;
@@ -386,8 +384,7 @@ To read a line and discard the terminating newline see @code{fgetl}.\n\
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  retval(1) = 0.0;
-  retval(0) = -1.0;
+  retval = ovl (-1.0, 0.0);
 
   octave_stream os = octave_stream_list::lookup (args(0), who);
 
@@ -399,8 +396,7 @@ To read a line and discard the terminating newline see @code{fgetl}.\n\
 
   if (! err)
     {
-      retval(1) = tmp.length ();
-      retval(0) = tmp;
+      retval = ovl (tmp, tmp.length ());
     }
 
   return retval;
@@ -627,7 +623,7 @@ When opening a new file that does not yet exist, permissions will be set to\n\
 {
   octave_value_list retval;
 
-  retval(0) = -1.0;
+  retval = ovl (-1.0);
 
   int nargin = args.length ();
 
@@ -650,9 +646,7 @@ When opening a new file that does not yet exist, permissions will be set to\n\
         {
           string_vector tmp = octave_stream_list::get_info (args(0));
 
-          retval(2) = tmp(2);
-          retval(1) = tmp(1);
-          retval(0) = tmp(0);
+          retval = ovl (tmp(0), tmp(1), tmp(2));
 
           return retval;
         }
@@ -670,15 +664,13 @@ When opening a new file that does not yet exist, permissions will be set to\n\
 
   if (os)
     {
-      retval(1) = "";
-      retval(0) = octave_stream_list::insert (os);
+      retval = ovl (octave_stream_list::insert (os), "");
     }
   else
     {
       int error_number = 0;
 
-      retval(1) = os.error (false, error_number);
-      retval(0) = -1.0;
+      retval = ovl (-1.0, os.error (false, error_number));
     }
 
   return retval;
@@ -990,9 +982,7 @@ expanded even when the template string is defined with single quotes.\n\
   if (nargin == 0)
     print_usage ();
 
-  retval(2) = -1.0;
-  retval(1) = "unknown error";
-  retval(0) = "";
+  retval = ovl ("", "unknown error", -1.0);
 
   octave_ostrstream *ostr = new octave_ostrstream ();
 
@@ -1097,15 +1087,13 @@ complete description of the syntax of the template string.\n\
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (args(1).is_string ())
-        retval = os.oscanf (args(1), who);
+        retval = ovl (os.oscanf (args(1), who));
       else
         error ("%s: format TEMPLATE must be a string", who.c_str ());
     }
   else
     {
-      retval(2) = "unknown error";
-      retval(1) = 0.0;
-      retval(0) = Matrix ();
+      retval = ovl (Matrix (), 0.0, "unknown error");
 
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
@@ -1120,9 +1108,7 @@ complete description of the syntax of the template string.\n\
 
           octave_value tmp = os.scanf (args(1), size, count, who);
 
-          retval(2) = os.error ();
-          retval(1) = count;
-          retval(0) = tmp;
+          retval = ovl (tmp, count, os.error ());
         }
       else
         error ("%s: format must be a string", who.c_str ());
@@ -1179,7 +1165,7 @@ character to be read is returned in @var{pos}.\n\
       if (os.is_valid ())
         {
           if (args(1).is_string ())
-            retval = os.oscanf (args(1), who);
+            retval = ovl (os.oscanf (args(1), who));
           else
             error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
@@ -1188,10 +1174,7 @@ character to be read is returned in @var{pos}.\n\
     }
   else
     {
-      retval(3) = -1.0;
-      retval(2) = "unknown error";
-      retval(1) = 0.0;
-      retval(0) = Matrix ();
+      retval = ovl (Matrix (), 0.0, "unknown error", -1.0);
 
       std::string data = get_sscanf_data (args(0));
 
@@ -1215,10 +1198,8 @@ character to be read is returned in @var{pos}.\n\
               // position will clear it.
               std::string errmsg = os.error ();
 
-              retval(3) = (os.eof () ? data.length () : os.tell ()) + 1;
-              retval(2) = errmsg;
-              retval(1) = count;
-              retval(0) = tmp;
+              retval = ovl (tmp, count, errmsg,
+                            (os.eof () ? data.length () : os.tell ()) + 1);
             }
           else
             error ("%s: format TEMPLATE must be a string",
@@ -1476,8 +1457,7 @@ The optional return value @var{count} contains the number of elements read.\n\
   if (nargin < 1 || nargin > 5)
     print_usage ();
 
-  retval(1) = -1.0;
-  retval(0) = Matrix ();
+  retval = ovl (Matrix (), -1.0);
 
   octave_stream os = octave_stream_list::lookup (args(0), "fread");
 
@@ -1509,8 +1489,7 @@ The optional return value @var{count} contains the number of elements read.\n\
 
   octave_value tmp = do_fread (os, size, prec, skip, arch, count);
 
-  retval(1) = count;
-  retval(0) = tmp;
+  retval = ovl (tmp, count);
 
   return retval;
 }
@@ -1670,8 +1649,7 @@ whether the next operation will result in an error condition.\n\
 
   std::string error_message = os.error (clear, error_number);
 
-  retval(1) = error_number;
-  retval(0) = error_message;
+  retval = ovl (error_message, error_number);
 
   return retval;
 }
@@ -1863,8 +1841,7 @@ system-dependent error message.\n\
   if (args.length () != 0)
     print_usage ();
 
-  retval(1) = std::string ();
-  retval(0) = -1;
+  retval = ovl (-1, std::string ());
 
   FILE *fid = gnulib::tmpfile ();
 
@@ -1877,15 +1854,14 @@ system-dependent error message.\n\
       octave_stream s = octave_stdiostream::create (nm, fid, md);
 
       if (s)
-        retval(0) = octave_stream_list::insert (s);
+        retval = ovl (octave_stream_list::insert (s));
       else
         error ("tmpfile: failed to create octave_stdiostream object");
 
     }
   else
     {
-      retval(1) = gnulib::strerror (errno);
-      retval(0) = -1;
+      retval = ovl (-1, gnulib::strerror (errno));
     }
 
   return retval;
@@ -1914,18 +1890,14 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 @seealso{tempname, tempdir, P_tmpdir, tmpfile, fopen}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  retval(2) = std::string ();
-  retval(1) = std::string ();
-  retval(0) = -1;
-
   std::string tmpl8 = args(0).xstring_value ("mkstemp: TEMPLATE argument must be a string");
+
+  octave_value_list retval = ovl (-1, "", "");
 
   OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
   strcpy (tmp, tmpl8.c_str ());
@@ -1934,8 +1906,8 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 
   if (fd < 0)
     {
-      retval(2) = gnulib::strerror (errno);
       retval(0) = fd;
+      retval(2) = gnulib::strerror (errno);
     }
   else
     {
@@ -1943,7 +1915,12 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 
       FILE *fid = fdopen (fd, fopen_mode);
 
-      if (fid)
+      if (! fid)
+        {
+          retval(0) = -1;
+          retval(2) = gnulib::strerror (errno);
+        }
+      else
         {
           std::string nm = tmp;
 
@@ -1951,21 +1928,14 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 
           octave_stream s = octave_stdiostream::create (nm, fid, md);
 
-          if (s)
-            {
-              retval(1) = nm;
-              retval(0) = octave_stream_list::insert (s);
-
-              if (nargin == 2 && args(1).is_true ())
-                mark_for_deletion (nm);
-            }
-          else
+          if (! s)
             error ("mkstemp: failed to create octave_stdiostream object");
-        }
-      else
-        {
-          retval(2) = gnulib::strerror (errno);
-          retval(0) = -1;
+
+          retval(0) = octave_stream_list::insert (s);
+          retval(1) = nm;
+
+          if (nargin == 2 && args(1).is_true ())
+            mark_for_deletion (nm);
         }
     }
 
@@ -2043,7 +2013,7 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
     }
 
   if (status >= 0)
-    retval(0) = status;
+    retval = ovl (status);
 
   return retval;
 }

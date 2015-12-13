@@ -153,7 +153,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
       if (nargout == 0 || nargout == 1)
         {
-          retval(0) = result.eigenvalues ();
+          retval = ovl (result.eigenvalues ());
         }
       else
         {
@@ -161,8 +161,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
           FloatComplexDiagMatrix d (result.eigenvalues ());
 
-          retval(1) = d;
-          retval(0) = result.eigenvectors ();
+          retval = ovl (result.eigenvectors (), d);
         }
     }
   else
@@ -204,7 +203,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
       if (nargout == 0 || nargout == 1)
         {
-          retval(0) = result.eigenvalues ();
+          retval = ovl (result.eigenvalues ());
         }
       else
         {
@@ -212,8 +211,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
           ComplexDiagMatrix d (result.eigenvalues ());
 
-          retval(1) = d;
-          retval(0) = result.eigenvectors ();
+          retval = ovl (result.eigenvectors (), d);
         }
     }
 

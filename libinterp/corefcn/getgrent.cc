@@ -54,10 +54,10 @@ mk_gr_map (const octave_group& gr)
       m.assign ("gid", static_cast<double> (gr.gid ()));
       m.assign ("mem", octave_value (gr.mem ()));
 
-      retval = m;
+      retval = ovl (m);
     }
   else
-    retval = 0;
+    retval = ovl (0);
 
   return retval;
 }
@@ -81,8 +81,7 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
   // octave_group::getgrent may set msg.
   octave_value val = mk_gr_map (octave_group::getgrent (msg));
 
-  retval(1) = msg;
-  retval(0) = val;
+  retval = ovl (val, msg);
 
   return retval;
 }
@@ -113,8 +112,7 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
       // octave_group::getgrgid may set msg.
       octave_value val = mk_gr_map (octave_group::getgrgid (gid, msg));
 
-      retval(1) = msg;
-      retval(0) = val;
+      retval = ovl (val, msg);
     }
 
   else
@@ -145,8 +143,7 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
   // octave_group::getgrnam may set msg.
   octave_value val = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
 
-  retval(1) = msg;
-  retval(0) = val;
+  retval = ovl (val, msg);
 
   return retval;
 }
@@ -168,8 +165,7 @@ Return the internal pointer to the beginning of the group database.\n\
   // octave_group::setgrent may set msg.
   int status = octave_group::setgrent (msg);
 
-  retval(1) = msg;
-  retval(0) = static_cast<double> (status);
+  retval = ovl (static_cast<double> (status), msg);
 
   return retval;
 }
@@ -191,8 +187,7 @@ Close the group database.\n\
   // octave_group::endgrent may set msg.
   int status = octave_group::endgrent (msg);
 
-  retval(1) = msg;
-  retval(0) = static_cast<double> (status);
+  retval = ovl (static_cast<double> (status), msg);
 
   return retval;
 }

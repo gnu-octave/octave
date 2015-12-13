@@ -95,8 +95,7 @@ Undocumented internal function.\n\
           pxi += n;
         }
 
-      retval(1) = dist;
-      retval(0) = idx;
+      retval = ovl (idx, dist);
     }
 
   return retval;

@@ -306,10 +306,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
           break;
         }
 
-      retval(3) = abserr;
-      retval(2) = nfun;
-      retval(1) = ier;
-      retval(0) = val;
+      retval = ovl (val, ier, nfun, abserr);
 
     }
   else
@@ -401,10 +398,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
           break;
         }
 
-      retval(3) = abserr;
-      retval(2) = nfun;
-      retval(1) = ier;
-      retval(0) = val;
+      retval = ovl (val, ier, nfun, abserr);
     }
 
   if (fcn_name.length ())

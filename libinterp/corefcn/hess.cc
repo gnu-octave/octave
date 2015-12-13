@@ -96,11 +96,11 @@ IEEE Transactions on Automatic Control, 1979).\n\
           FloatHESS result (tmp);
 
           if (nargout <= 1)
-            retval(0) = result.hess_matrix ();
+            retval = ovl (result.hess_matrix ());
           else
             {
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              retval = ovl (result.unitary_hess_matrix (),
+                            result.hess_matrix ());
             }
         }
       else if (arg.is_complex_type ())
@@ -110,11 +110,11 @@ IEEE Transactions on Automatic Control, 1979).\n\
           FloatComplexHESS result (ctmp);
 
           if (nargout <= 1)
-            retval(0) = result.hess_matrix ();
+            retval = ovl (result.hess_matrix ());
           else
             {
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              retval = ovl (result.unitary_hess_matrix (),
+                            result.hess_matrix ());
             }
         }
     }
@@ -127,11 +127,11 @@ IEEE Transactions on Automatic Control, 1979).\n\
           HESS result (tmp);
 
           if (nargout <= 1)
-            retval(0) = result.hess_matrix ();
+            retval = ovl (result.hess_matrix ());
           else
             {
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              retval = ovl (result.unitary_hess_matrix (),
+                            result.hess_matrix ());
             }
         }
       else if (arg.is_complex_type ())
@@ -141,11 +141,11 @@ IEEE Transactions on Automatic Control, 1979).\n\
           ComplexHESS result (ctmp);
 
           if (nargout <= 1)
-            retval(0) = result.hess_matrix ();
+            retval = ovl (result.hess_matrix ());
           else
             {
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              retval = ovl (result.unitary_hess_matrix (),
+                            result.hess_matrix ());
             }
         }
       else

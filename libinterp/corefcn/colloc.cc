@@ -95,10 +95,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
   Matrix B = wts.second ();
   ColumnVector q = wts.quad_weights ();
 
-  retval(3) = q;
-  retval(2) = B;
-  retval(1) = A;
-  retval(0) = r;
+  retval = ovl (r, A, B, q);
 
   return retval;
 }

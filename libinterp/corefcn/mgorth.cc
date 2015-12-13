@@ -98,8 +98,7 @@ On exit, @var{y} is a unit vector such that:\n\
           FloatComplexMatrix V = arg_v.float_complex_matrix_value ();
           FloatComplexRowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
       else
         {
@@ -107,8 +106,7 @@ On exit, @var{y} is a unit vector such that:\n\
           FloatMatrix V = arg_v.float_matrix_value ();
           FloatRowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
     }
   else
@@ -119,8 +117,7 @@ On exit, @var{y} is a unit vector such that:\n\
           ComplexMatrix V = arg_v.complex_matrix_value ();
           ComplexRowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
       else
         {
@@ -128,8 +125,7 @@ On exit, @var{y} is a unit vector such that:\n\
           Matrix V = arg_v.matrix_value ();
           RowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
     }
 

@@ -57,10 +57,10 @@ mk_pw_map (const octave_passwd& pw)
       m.assign ("dir", pw.dir ());
       m.assign ("shell", pw.shell ());
 
-      retval = m;
+      retval = ovl (m);
     }
   else
-    retval = 0;
+    retval = ovl (0);
 
   return retval;
 }
@@ -85,8 +85,7 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
   // octave_passwd::getpwent may set msg.
   octave_value val = mk_pw_map (octave_passwd::getpwent (msg));
 
-  retval(1) = msg;
-  retval(0) = val;
+  retval = ovl (val, msg);
 
   return retval;
 }
@@ -117,8 +116,7 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
       // octave_passwd::getpwuid may set msg.
       octave_value val = mk_pw_map (octave_passwd::getpwuid (uid, msg));
 
-      retval(1) = msg;
-      retval(0) = val;
+      retval = ovl (val, msg);
     }
   else
     error ("getpwuid: UID must be an integer");
@@ -148,8 +146,7 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
   // octave_passwd::getpwnam may set msg.
   octave_value val = mk_pw_map (octave_passwd::getpwnam (s, msg));
 
-  retval(1) = msg;
-  retval(0) = val;
+  retval = ovl (val, msg);
 
   return retval;
 }
@@ -171,8 +168,7 @@ Return the internal pointer to the beginning of the password database.\n\
   // octave_passwd::setpwent may set msg.
   int status = octave_passwd::setpwent (msg);
 
-  retval(1) = msg;
-  retval(0) = static_cast<double> (status);
+  retval = ovl (static_cast<double> (status), msg);
 
   return retval;
 }
@@ -194,8 +190,7 @@ Close the password database.\n\
   // octave_passwd::endpwent may set msg.
   int status = octave_passwd::endpwent (msg);
 
-  retval(1) = msg;
-  retval(0) = static_cast<double> (status);
+  retval = ovl (static_cast<double> (status), msg);
 
   return retval;
 }

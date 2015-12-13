@@ -500,7 +500,7 @@ $x = 0$, $f = e = 0$.\n\
     print_usage ();
 
   if (nargout < 2)
-    retval(0) = args(0).log2 ();
+    retval = ovl (args(0).log2 ());
   else if (args(0).is_single_type ())
     {
       if (args(0).is_real_type ())
@@ -510,8 +510,7 @@ $x = 0$, $f = e = 0$.\n\
           // FIXME: should E be an int value?
           FloatMatrix e;
           map_2_xlog2 (x, f, e);
-          retval(1) = e;
-          retval(0) = f;
+          retval = ovl (f, e);
         }
       else if (args(0).is_complex_type ())
         {
@@ -520,8 +519,7 @@ $x = 0$, $f = e = 0$.\n\
           // FIXME: should E be an int value?
           FloatNDArray e;
           map_2_xlog2 (x, f, e);
-          retval(1) = e;
-          retval(0) = f;
+          retval = ovl (f, e);
         }
     }
   else if (args(0).is_real_type ())
@@ -531,8 +529,7 @@ $x = 0$, $f = e = 0$.\n\
       // FIXME: should E be an int value?
       Matrix e;
       map_2_xlog2 (x, f, e);
-      retval(1) = e;
-      retval(0) = f;
+      retval = ovl (f, e);
     }
   else if (args(0).is_complex_type ())
     {
@@ -541,8 +538,7 @@ $x = 0$, $f = e = 0$.\n\
       // FIXME: should E be an int value?
       NDArray e;
       map_2_xlog2 (x, f, e);
-      retval(1) = e;
-      retval(0) = f;
+      retval = ovl (f, e);
     }
   else
     gripe_wrong_type_arg ("log2", args(0));
@@ -6378,9 +6374,7 @@ CPU time used is nonzero.\n\
 
 #endif
 
-  retval(2) = sys;
-  retval(1) = usr;
-  retval(0) = sys + usr;
+  retval = ovl (sys + usr, usr, sys);
 
   return retval;
 }
@@ -6455,22 +6449,20 @@ ordered lists.\n\
 @seealso{sortrows, issorted}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
-  sortmode smode = ASCENDING;
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  bool return_idx = nargout > 1;
-
+  sortmode smode = ASCENDING;
+  bool return_idx = (nargout > 1);
+  bool have_sortmode = (nargin > 1 && args(1).is_string ()); 
   octave_value arg = args(0);
 
   int dim = 0;
   if (nargin > 1)
     {
-      if (args(1).is_string ())
+      if (have_sortmode)
         {
           std::string mode = args(1).string_value ();
           if (mode == "ascend")
@@ -6486,7 +6478,7 @@ ordered lists.\n\
 
   if (nargin > 2)
     {
-      if (args(1).is_string ())
+      if (have_sortmode)
         error ("sort: DIM must be a valid dimension");
 
       std::string mode = args(2).xstring_value ("sort: MODE must be a string");
@@ -6500,9 +6492,8 @@ ordered lists.\n\
     }
 
   const dim_vector dv = arg.dims ();
-  if (nargin == 1 || args(1).is_string ())
+  if (nargin == 1 || have_sortmode)
     {
-      // Find first non singleton dimension
       dim = dv.first_non_singleton ();
     }
   else
@@ -6511,17 +6502,19 @@ ordered lists.\n\
         error ("sort: DIM must be a valid dimension");
     }
 
+  octave_value_list retval (return_idx ? 2 : 1);
+
   if (return_idx)
     {
-      retval.resize (2);
-
       Array<octave_idx_type> sidx;
 
+      // NOTE: Can not change this to ovl() call because arg.sort changes sidx
+      //       and objects are declared const in ovl prototype.
       retval(0) = arg.sort (sidx, dim, smode);
-      retval(1) = idx_vector (sidx, dv(dim)); // No checking, extent is known.
+      retval(1) = idx_vector (sidx, dv(dim));  // No checking, extent is known.
     }
   else
-    retval(0) = arg.sort (dim, smode);
+    retval = ovl (arg.sort (dim, smode));
 
   return retval;
 }
@@ -6880,8 +6873,8 @@ This function does not support sparse matrices.\n\
 %!error <needs a vector> issorted ([])
 
 ## Test input validation
-%!error issorted () 
-%!error issorted (1,2,3,4) 
+%!error issorted ()
+%!error issorted (1,2,3,4)
 %!error <second argument must be a string> issorted (1, 2)
 %!error <second argument must be a string> issorted (1, {"rows"})
 %!error <sparse matrices not yet supported> issorted (sparse ([1 2 3]), "rows")

@@ -91,22 +91,10 @@ mk_stat_map (const base_file_stat& fs)
 static octave_value_list
 mk_stat_result (const base_file_stat& fs)
 {
-  octave_value_list retval;
-
   if (fs)
-    {
-      retval(2) = std::string ();
-      retval(1) = 0;
-      retval(0) = octave_value (mk_stat_map (fs));
-    }
+    return ovl (octave_value (mk_stat_map (fs)), 0, "");
   else
-    {
-      retval(2) = fs.error ();
-      retval(1) = -1;
-      retval(0) = Matrix ();
-    }
-
-  return retval;
+    return ovl (Matrix (), -1, fs.error ());
 }
 
 DEFUNX ("dup2", Fdup2, args, ,
@@ -120,19 +108,12 @@ error message.\n\
 @seealso{fopen, fclose, fcntl}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
   if (args.length () != 2)
     print_usage ();
 
-  octave_stream old_stream
-    = octave_stream_list::lookup (args(0), "dup2");
+  octave_stream old_stream = octave_stream_list::lookup (args(0), "dup2");
 
-  octave_stream new_stream
-    = octave_stream_list::lookup (args(1), "dup2");
+  octave_stream new_stream = octave_stream_list::lookup (args(1), "dup2");
 
   int i_old = old_stream.file_number ();
   int i_new = new_stream.file_number ();
@@ -143,11 +124,10 @@ error message.\n\
 
       int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-      retval(1) = msg;
-      retval(0) = status;
+      return ovl (status, msg);
     }
-
-  return retval;
+  else
+    return ovl (-1, "");
 }
 
 DEFUNX ("exec", Fexec, args, ,
@@ -171,11 +151,6 @@ If successful, @code{exec} does not return.  If @code{exec} does return,\n\
 error message.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -214,10 +189,7 @@ error message.\n\
 
   int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
-  retval(1) = msg;
-  retval(0) = status;
-
-  return retval;
+  return ovl (status, msg);
 }
 
 DEFUNX ("popen2", Fpopen2, args, ,
@@ -267,12 +239,6 @@ exit status, it will linger until Octave exits.\n\
 @seealso{popen, waitpid}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(2) = -1;
-  retval(1) = Matrix ();
-  retval(0) = Matrix ();
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
@@ -304,37 +270,29 @@ exit status, it will linger until Octave exits.\n\
 
   bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
 
-  int fildes[2];
+  int filedesc[2];
   std::string msg;
   pid_t pid;
 
   pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
-                                 fildes, msg, interactive);
-  if (pid >= 0)
-    {
-      FILE *ifile = fdopen (fildes[1], "r");
-      FILE *ofile = fdopen (fildes[0], "w");
-
-      std::string nm;
-
-      octave_stream is = octave_stdiostream::create (exec_file + "-in",
-                                                     ifile,
-                                                     std::ios::in);
-
-      octave_stream os = octave_stdiostream::create (exec_file + "-out",
-                                                     ofile,
-                                                     std::ios::out);
-
-      Cell file_ids (1, 2);
-
-      retval(2) = pid;
-      retval(1) = octave_stream_list::insert (is);
-      retval(0) = octave_stream_list::insert (os);
-    }
-  else
+                                 filedesc, msg, interactive);
+  if (pid < 0)
     error (msg.c_str ());
 
-  return retval;
+  FILE *ifile = fdopen (filedesc[1], "r");
+  FILE *ofile = fdopen (filedesc[0], "w");
+
+  octave_stream is = octave_stdiostream::create (exec_file + "-in",
+                                                 ifile,
+                                                 std::ios::in);
+
+  octave_stream os = octave_stdiostream::create (exec_file + "-out",
+                                                 ofile,
+                                                 std::ios::out);
+
+  return ovl (octave_stream_list::insert (os),
+              octave_stream_list::insert (is),
+              pid);
 }
 
 /*
@@ -464,37 +422,27 @@ message.\n\
 @seealso{fopen, dup2}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
 
   int fid = strm.file_number ();
 
+  // FIXME: Do we want to use xint_value and throw a warning message
+  //        if input validation fails?
   int req = args(1).int_value (true);
   int arg = args(2).int_value (true);
 
   // FIXME: Need better checking here?
   if (fid < 0)
     error ("fcntl: invalid file id");
-  else
-    {
-      std::string msg;
 
-      int status = octave_fcntl (fid, req, arg, msg);
+  std::string msg;
 
-      retval(1) = msg;
-      retval(0) = status;
-    }
+  int status = octave_fcntl (fid, req, arg, msg);
 
-  return retval;
+  return ovl (status, msg);
 }
 
 DEFUNX ("fork", Ffork, args, ,
@@ -520,24 +468,14 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   std::string msg;
 
   pid_t pid = octave_syscalls::fork (msg);
 
-  retval(1) = msg;
-  retval(0) = pid;
-
-  return retval;
+  return ovl (pid, msg);
 }
 
 DEFUNX ("getpgrp", Fgetpgrp, args, ,
@@ -546,22 +484,14 @@ DEFUNX ("getpgrp", Fgetpgrp, args, ,
 Return the process group id of the current process.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   std::string msg;
 
-  retval(1) = msg;
-  retval(0) = octave_syscalls::getpgrp (msg);
+  pid_t pid = octave_syscalls::getpgrp (msg);
 
-  return retval;
+  return ovl (pid, msg);
 }
 
 DEFUNX ("getpid", Fgetpid, args, ,
@@ -571,9 +501,7 @@ Return the process id of the current process.\n\
 @seealso{getppid}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   return octave_value (octave_syscalls::getpid ());
@@ -586,9 +514,7 @@ Return the process id of the parent process.\n\
 @seealso{getpid}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   return octave_value (octave_syscalls::getppid ());
@@ -601,9 +527,7 @@ Return the effective group id of the current process.\n\
 @seealso{getgid}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   return octave_value (octave_syscalls::getegid ());
@@ -616,9 +540,7 @@ Return the real group id of the current process.\n\
 @seealso{getegid}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   return octave_value (octave_syscalls::getgid ());
@@ -631,15 +553,10 @@ Return the effective user id of the current process.\n\
 @seealso{getuid}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
-  retval = octave_syscalls::geteuid ();
-  return retval;
+  return octave_value (octave_syscalls::geteuid ());
 }
 
 DEFUNX ("getuid", Fgetuid, args, ,
@@ -649,15 +566,10 @@ Return the real user id of the current process.\n\
 @seealso{geteuid}\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
-  retval = octave_syscalls::getuid ();
-  return retval;
+  return octave_value (octave_syscalls::getuid ());
 }
 
 DEFUNX ("kill", Fkill, args, ,
@@ -682,11 +594,6 @@ performed.\n\
 Return 0 if successful, otherwise return -1.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -698,10 +605,7 @@ Return 0 if successful, otherwise return -1.\n\
 
   int status = octave_syscalls::kill (pid, sig, msg);
 
-  retval(1) = msg;
-  retval(0) = status;
-
-  return retval;
+  return ovl (status, msg);
 }
 
 DEFUNX ("lstat", Flstat, args, ,
@@ -715,18 +619,14 @@ The function outputs are described in the documentation for @code{stat}.\n\
 @seealso{stat, symlink}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
-    std::string fname = args(0).xstring_value ("lstat: NAME must be a string");
+  std::string fname = args(0).xstring_value ("lstat: NAME must be a string");
 
-    file_stat fs (fname, false);
+  file_stat fs (fname, false);
 
-    retval = mk_stat_result (fs);
-
-  return retval;
+  return mk_stat_result (fs);
 }
 
 // FIXME: This routine also exists verbatim in file-io.cc.
@@ -775,14 +675,7 @@ error message.\n\
 @seealso{pipe, umask}\n\
 @end deftypefn")
 {
-  octave_value_list retval (2);
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   std::string name = args(0).xstring_value ("mkfifo: FILE must be a string");
@@ -791,22 +684,19 @@ error message.\n\
 
   if (octal_mode < 0)
     error ("mkfifo: MODE must be a positive integer value");
-  else
-    {
-      int mode = convert (octal_mode, 8, 10);
 
-      std::string msg;
+  octave_value_list retval (2);
 
-      int status = octave_mkfifo (name, mode, msg);
+  retval(1) = std::string ();
+  retval(0) = -1;
 
-      retval(0) = status;
+  int mode = convert (octal_mode, 8, 10);
 
-      if (status < 0)
-          retval(1) = msg;
-    }
+  std::string msg;
 
+  int status = octave_mkfifo (name, mode, msg);
 
-  return retval;
+  return ovl (status, msg);
 }
 
 /*
@@ -834,26 +724,16 @@ error message.\n\
 @seealso{mkfifo}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(3) = std::string ();
-  retval(2) = -1;
-  retval(1) = -1;
-  retval(0) = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
   int fid[2];
-
   std::string msg;
 
   int status = octave_syscalls::pipe (fid, msg);
 
   if (status < 0)
-    retval(3) = msg;
+    return ovl (-1, -1, -1, msg);
   else
     {
       FILE *ifile = fdopen (fid[0], "r");
@@ -865,12 +745,11 @@ error message.\n\
       octave_stream os = octave_stdiostream::create ("pipe-out", ofile,
                                                        std::ios::out);
 
-      retval(2) = status;
-      retval(1) = octave_stream_list::insert (os);
-      retval(0) = octave_stream_list::insert (is);
+      return ovl (octave_stream_list::insert (is),
+                  octave_stream_list::insert (os),
+                  status,
+                  msg);
     }
-
-  return retval;
 }
 
 DEFUNX ("stat", Fstat, args, ,
@@ -969,27 +848,27 @@ For example:\n\
 @seealso{lstat, ls, dir}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
-    if (args(0).is_scalar_type ())
-      {
-        int fid = octave_stream_list::get_file_number (args(0));
+  octave_value_list retval;
 
-        file_fstat fs (fid);
+  if (args(0).is_scalar_type ())
+    {
+      int fid = octave_stream_list::get_file_number (args(0));
 
-        retval = mk_stat_result (fs);
-      }
-    else
-      {
-        std::string fname = args(0).xstring_value ("stat: NAME must be a string");
+      file_fstat fs (fid);
 
-        file_stat fs (fname);
+      retval = mk_stat_result (fs);
+    }
+  else
+    {
+      std::string fname = args(0).xstring_value ("stat: NAME must be a string");
 
-        retval = mk_stat_result (fs);
-      }
+      file_stat fs (fname);
+
+      retval = mk_stat_result (fs);
+    }
 
   return retval;
 }
@@ -1003,16 +882,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISREG: invalid MODE value");
 
-  retval = file_stat::is_reg (static_cast<mode_t> (mode));
-
-  return retval;
+  return octave_value (file_stat::is_reg (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
@@ -1024,16 +899,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISDIR: invalid MODE value");
 
-  retval = file_stat::is_dir (static_cast<mode_t> (mode));
-
-  return retval;
+  return octave_value (file_stat::is_dir (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
@@ -1045,17 +916,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISCHR: invalid MODE value");
 
-  retval = file_stat::is_chr (static_cast<mode_t> (mode));
-
-
-  return retval;
+  return octave_value (file_stat::is_chr (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
@@ -1067,16 +933,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISBLK: invalid MODE value");
 
-  retval = file_stat::is_blk (static_cast<mode_t> (mode));
-
-  return retval;
+  return octave_value (file_stat::is_blk (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
@@ -1088,16 +950,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISFIFO: invalid MODE value");
 
-  retval = file_stat::is_fifo (static_cast<mode_t> (mode));
-
-  return retval;
+  return octave_value (file_stat::is_fifo (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
@@ -1109,16 +967,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISLNK: invalid MODE value");
 
-  retval = file_stat::is_lnk (static_cast<mode_t> (mode));
-
-  return retval;
+  return octave_value (file_stat::is_lnk (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
@@ -1130,17 +984,12 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   double mode = args(0).xdouble_value ("S_ISSOCK: invalid MODE value");
 
-  retval = file_stat::is_sock (static_cast<mode_t> (mode));
-
-
-  return retval;
+  return octave_value (file_stat::is_sock (static_cast<mode_t> (mode)));
 }
 
 DEFUN (gethostname, args, ,
@@ -1149,14 +998,10 @@ DEFUN (gethostname, args, ,
 Return the hostname of the system where Octave is running.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 0)
     print_usage ();
 
-  retval = octave_env::get_host_name ();
-
-  return retval;
+  return octave_value (octave_env::get_host_name ());
 }
 
 DEFUN (uname, args, ,
@@ -1184,8 +1029,6 @@ Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -1199,12 +1042,7 @@ system-dependent error message.\n\
   m.assign ("version", sysinfo.version ());
   m.assign ("machine", sysinfo.machine ());
 
-  retval(2) = sysinfo.message ();
-  retval(1) = sysinfo.error ();
-  retval(0) = m;
-
-
-  return retval;
+  return ovl (m, sysinfo.error (), sysinfo.message ());
 }
 
 DEFUNX ("unlink", Funlink, args, ,
@@ -1218,14 +1056,7 @@ error message.\n\
 @seealso{delete, rmdir}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   std::string name = args(0).xstring_value ("unlink: FILE must be a string");
@@ -1234,11 +1065,7 @@ error message.\n\
 
   int status = octave_unlink (name, msg);
 
-  retval(1) = msg;
-  retval(0) = status;
-
-
-  return retval;
+  return ovl (status, msg);
 }
 
 DEFUNX ("waitpid", Fwaitpid, args, ,
@@ -1288,12 +1115,6 @@ about the subprocess that exited.\n\
 @seealso{WCONTINUE, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED, WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  retval(2) = std::string ();
-  retval(1) = 0;
-  retval(0) = -1;
-
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 2)
@@ -1303,21 +1124,15 @@ about the subprocess that exited.\n\
 
   int options = 0;
 
-  if (args.length () == 2)
+  if (nargin == 2)
     options = args(1).xint_value ("waitpid: PID must be an integer value");
 
   std::string msg;
+  int status;
 
-  int status = 0;
+  pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
 
-  pid_t result = octave_syscalls::waitpid (pid, &status,
-                                           options, msg);
-
-  retval(2) = msg;
-  retval(1) = status;
-  retval(0) = result;
-
-  return retval;
+  return ovl (result, status, msg);
 }
 
 DEFUNX ("WIFEXITED", FWIFEXITED, args, ,
@@ -1328,16 +1143,12 @@ true if the child terminated normally.\n\
 @seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WIFEXITED: STATUS must be an integer");
 
-  retval = octave_wait::ifexited (status);
-
-  return retval;
+  return octave_value (octave_wait::ifexited (status));
 }
 
 DEFUNX ("WEXITSTATUS", FWEXITSTATUS, args, ,
@@ -1350,16 +1161,12 @@ This function should only be employed if @code{WIFEXITED} returned true.\n\
 @seealso{waitpid, WIFEXITED, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0;
+  if (args.length () != 1)
+    print_usage ();
 
-  if (args.length () == 1)
-    {
-      int status = args(0).xint_value ("WEXITSTATUS: STATUS must be an integer");
+  int status = args(0).xint_value ("WEXITSTATUS: STATUS must be an integer");
 
-      retval = octave_wait::exitstatus (status);
-    }
-
-  return retval;
+  return octave_value (octave_wait::exitstatus (status));
 }
 
 DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
@@ -1370,17 +1177,12 @@ true if the child process was terminated by a signal.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WIFSIGNALED: STATUS must be an integer");
 
-  retval = octave_wait::ifsignaled (status);
-
-
-  return retval;
+  return octave_value (octave_wait::ifsignaled (status));
 }
 
 DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
@@ -1393,17 +1195,12 @@ This function should only be employed if @code{WIFSIGNALED} returned true.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WTERMSIG: STATUS must be an integer");
 
-  retval = octave_wait::termsig (status);
-
-
-  return retval;
+  return octave_value (octave_wait::termsig (status));
 }
 
 DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
@@ -1418,17 +1215,12 @@ and is not available on some Unix implementations (e.g., AIX, SunOS).\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WCOREDUMP: STATUS must be an integer");
 
-  retval = octave_wait::coredump (status);
-
-
-  return retval;
+  return octave_value (octave_wait::coredump (status));
 }
 
 DEFUNX ("WIFSTOPPED", FWIFSTOPPED, args, ,
@@ -1442,17 +1234,12 @@ the child is being traced (see ptrace(2)).\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WIFSTOPPED: STATUS must be an integer");
 
-  retval = octave_wait::ifstopped (status);
-
-
-  return retval;
+  return octave_value (octave_wait::ifstopped (status));
 }
 
 DEFUNX ("WSTOPSIG", FWSTOPSIG, args, ,
@@ -1465,17 +1252,12 @@ This function should only be employed if @code{WIFSTOPPED} returned true.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WSTOPSIG: STATUS must be an integer");
 
-  retval = octave_wait::stopsig (status);
-
-
-  return retval;
+  return octave_value (octave_wait::stopsig (status));
 }
 
 DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
@@ -1486,17 +1268,12 @@ true if the child process was resumed by delivery of @code{SIGCONT}.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
   int status = args(0).xint_value ("WIFCONTINUED: STATUS must be an integer");
 
-  retval = octave_wait::ifcontinued (status);
-
-
-  return retval;
+  return octave_value (octave_wait::ifcontinued (status));
 }
 
 DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
@@ -1508,37 +1285,25 @@ If the file does not exist the empty string (\"\") is returned.\n\
 @seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
   std::string name = args(0).xstring_value ("canonicalize_file_name: NAME must be a string");
+
   std::string msg;
 
   std::string result = octave_canonicalize_file_name (name, msg);
 
-  retval(2) = msg;
-  retval(1) = msg.empty () ? 0 : -1;
-  retval(0) = result;
-
-
-  return retval;
+  return ovl (result, msg.empty () ? 0 : -1, msg);
 }
 
-static octave_value
+static inline octave_value
 const_value (const octave_value_list& args, int val)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
+  if (args.length () != 0)
     print_usage ();
 
-  retval = val;
-
-  return retval;
+  return octave_value (val);
 }
 
 #if ! defined (O_NONBLOCK) && defined (O_NDELAY)
@@ -1557,7 +1322,6 @@ a duplicate file descriptor.\n\
   return const_value (args, F_DUPFD);
 #else
   error ("F_DUPFD: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1573,7 +1337,6 @@ the file descriptor flags.\n\
   return const_value (args, F_GETFD);
 #else
   error ("F_GETFD: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1589,7 +1352,6 @@ the file status flags.\n\
   return const_value (args, F_GETFL);
 #else
   error ("F_GETFL: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1605,7 +1367,6 @@ descriptor flags.\n\
   return const_value (args, F_SETFD);
 #else
   error ("F_SETFD: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1621,7 +1382,6 @@ status flags.\n\
   return const_value (args, F_SETFL);
 #else
   error ("F_SETFL: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1638,7 +1398,6 @@ or that may be passed to @code{fcntl} to set the write mode to append.\n\
   return const_value (args, O_APPEND);
 #else
   error ("O_APPEND: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1654,7 +1413,6 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
   return const_value (args, O_ASYNC);
 #else
   error ("O_ASYNC: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1671,7 +1429,6 @@ does not exist.\n\
   return const_value (args, O_CREAT);
 #else
   error ("O_CREAT: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1687,7 +1444,6 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
   return const_value (args, O_EXCL);
 #else
   error ("O_EXCL: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1704,7 +1460,6 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
   return const_value (args, O_NONBLOCK);
 #else
   error ("O_NONBLOCK: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1720,7 +1475,6 @@ returned by @code{fcntl} to indicate that a file is open for reading only.\n\
   return const_value (args, O_RDONLY);
 #else
   error ("O_RDONLY: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1737,7 +1491,6 @@ and writing.\n\
   return const_value (args, O_RDWR);
 #else
   error ("O_RDWR: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1753,7 +1506,6 @@ returned by @code{fcntl} to indicate that a file is open for synchronous I/O.\n\
   return const_value (args, O_SYNC);
 #else
   error ("O_SYNC: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1770,7 +1522,6 @@ truncated when writing.\n\
   return const_value (args, O_TRUNC);
 #else
   error ("O_TRUNC: not available on this system");
-  return octave_value ();
 #endif
 }
 
@@ -1786,7 +1537,6 @@ returned by @code{fcntl} to indicate that a file is open for writing only.\n\
   return const_value (args, O_WRONLY);
 #else
   error ("O_WRONLY: not available on this system");
-  return octave_value ();
 #endif
 }
 

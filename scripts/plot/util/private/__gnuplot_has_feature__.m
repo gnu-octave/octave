@@ -35,7 +35,8 @@ function res = __gnuplot_has_feature__ (feature)
                          "variable_GPVAL_TERMINALS",
                          "key_has_font_properties",
                          "windows_figure_position",
-                         "has_termoption_dashed"};
+                         "has_termoption_dashed",
+                         "needs_color_with_postscript"};
   persistent has_features;
 
   if (isempty (has_features))
@@ -45,8 +46,8 @@ function res = __gnuplot_has_feature__ (feature)
       ## Don't throw an error if gnuplot isn't installed
       gnuplot_version = "0.0.0";
     end_try_catch
-    versions = {"4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4", "4.4", "4.3"};
-    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
+    versions = {"4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4", "4.4", "4.3", "5.0"};
+    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
     have_features = false (size (features));
     for n = 1 : numel (have_features)
       has_features(n) = compare_versions (gnuplot_version, versions{n}, operators{n});

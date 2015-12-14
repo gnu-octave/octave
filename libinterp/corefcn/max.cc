@@ -46,12 +46,18 @@ static octave_value_list
 do_minmax_red_op (const octave_value& arg,
                   int nargout, int dim, bool ismin)
 {
-  octave_value_list retval;
+  octave_value_list retval (nargout > 1 ? 2 : 1);
   ArrayType array = octave_value_extract<ArrayType> (arg);
 
-  if (nargout == 2)
+  if (nargout <= 1)
     {
-      retval.resize (2);
+      if (ismin)
+        retval(0) = array.min (dim);
+      else
+        retval(0) = array.max (dim);
+    }
+  else
+    {
       Array<octave_idx_type> idx;
       if (ismin)
         retval(0) = array.min (idx, dim);
@@ -59,13 +65,6 @@ do_minmax_red_op (const octave_value& arg,
         retval(0) = array.max (idx, dim);
 
       retval(1) = octave_value (idx, true, true);
-    }
-  else
-    {
-      if (ismin)
-        retval(0) = array.min (dim);
-      else
-        retval(0) = array.max (dim);
     }
 
   return retval;
@@ -84,12 +83,18 @@ octave_value_list
 do_minmax_red_op<charNDArray> (const octave_value& arg,
                                int nargout, int dim, bool ismin)
 {
-  octave_value_list retval;
+  octave_value_list retval (nargout > 1 ? 2 : 1);
   charNDArray array = octave_value_extract<charNDArray> (arg);
 
-  if (nargout == 2)
+  if (nargout <= 1)
     {
-      retval.resize (2);
+      if (ismin)
+        retval(0) = NDArray (array.min (dim));
+      else
+        retval(0) = NDArray (array.max (dim));
+    }
+  else
+    {
       Array<octave_idx_type> idx;
       if (ismin)
         retval(0) = NDArray (array.min (idx, dim));
@@ -97,13 +102,6 @@ do_minmax_red_op<charNDArray> (const octave_value& arg,
         retval(0) = NDArray (array.max (idx, dim));
 
       retval(1) = octave_value (idx, true, true);
-    }
-  else
-    {
-      if (ismin)
-        retval(0) = NDArray (array.min (dim));
-      else
-        retval(0) = NDArray (array.max (dim));
     }
 
   return retval;
@@ -227,15 +225,15 @@ static octave_value_list
 do_minmax_body (const octave_value_list& args,
                 int nargout, bool ismin)
 {
-  octave_value_list retval;
-
-  const char *func = ismin ? "min" : "max";
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   
+  octave_value_list retval (nargout > 1 ? 2 : 1);
+
+  const char *func = ismin ? "min" : "max";
+
   if (nargin == 3 || nargin == 1)
     {
       octave_value arg = args(0);
@@ -876,10 +874,17 @@ static octave_value_list
 do_cumminmax_red_op (const octave_value& arg,
                      int nargout, int dim, bool ismin)
 {
-  octave_value_list retval;
+  octave_value_list retval (nargout > 1 ? 2 : 1);
   ArrayType array = octave_value_extract<ArrayType> (arg);
 
-  if (nargout == 2)
+  if (nargout <= 1)
+    {
+      if (ismin)
+        retval(0) = array.cummin (dim);
+      else
+        retval(0) = array.cummax (dim);
+    }
+  else
     {
       retval.resize (2);
       Array<octave_idx_type> idx;
@@ -890,13 +895,6 @@ do_cumminmax_red_op (const octave_value& arg,
 
       retval(1) = octave_value (idx, true, true);
     }
-  else
-    {
-      if (ismin)
-        retval(0) = array.cummin (dim);
-      else
-        retval(0) = array.cummax (dim);
-    }
 
   return retval;
 }
@@ -905,14 +903,12 @@ static octave_value_list
 do_cumminmax_body (const octave_value_list& args,
                    int nargout, bool ismin)
 {
-  octave_value_list retval;
-
-  const char *func = ismin ? "cummin" : "cummax";
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  const char *func = ismin ? "cummin" : "cummax";
 
   octave_value arg = args(0);
   int dim = -1;
@@ -923,6 +919,8 @@ do_cumminmax_body (const octave_value_list& args,
       if (dim < 0)
         error ("%s: DIM must be a valid dimension", func);
     }
+
+  octave_value_list retval;
 
   switch (arg.builtin_type ())
     {

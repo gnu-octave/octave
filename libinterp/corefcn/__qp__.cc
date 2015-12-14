@@ -491,23 +491,21 @@ DEFUN (__qp__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 8)
     print_usage ();
 
-  const ColumnVector x0  (args(0) . vector_value ());
-  const Matrix H         (args(1) . matrix_value ());
-  const ColumnVector q   (args(2) . vector_value ());
-  const Matrix Aeq       (args(3) . matrix_value ());
-  const ColumnVector beq (args(4) . vector_value ());
-  const Matrix Ain       (args(5) . matrix_value ());
-  const ColumnVector bin (args(6) . vector_value ());
-  const int maxit        (args(7) . int_value ());
+  const ColumnVector x0  (args(0).vector_value ());
+  const Matrix H         (args(1).matrix_value ());
+  const ColumnVector q   (args(2).vector_value ());
+  const Matrix Aeq       (args(3).matrix_value ());
+  const ColumnVector beq (args(4).vector_value ());
+  const Matrix Ain       (args(5).matrix_value ());
+  const ColumnVector bin (args(6).vector_value ());
+  const int maxit        (args(7).int_value ());
 
   int iter = 0;
 
-  // Copying the initial guess in the working variable
+  // Copy the initial guess into the working variable
   ColumnVector x = x0;
 
   // Reordering the Lagrange multipliers
@@ -515,12 +513,7 @@ Undocumented internal function.\n\
 
   int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
 
-  retval(3) = iter;
-  retval(2) = info;
-  retval(1) = lambda;
-  retval(0) = x;
-
-  return retval;
+  return ovl (x, lambda, info, iter);
 }
 
 /*

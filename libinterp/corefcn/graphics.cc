@@ -6818,8 +6818,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
 
   retval.resize (1, 2);
 
-  retval(1) = max_val;
   retval(0) = min_val;
+  retval(1) = max_val;
 
   return retval;
 }

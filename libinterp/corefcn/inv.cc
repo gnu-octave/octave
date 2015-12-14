@@ -58,10 +58,10 @@ sparse matrix if possible.\n\
 @seealso{ldivide, rdivide}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value_list retval;
 
   octave_value arg = args(0);
 

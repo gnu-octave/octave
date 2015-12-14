@@ -113,12 +113,10 @@ longer running time.\n\
       if (nargout == 0)
         octave_sparse_params::print_info (octave_stdout, "");
       else if (nargout == 1)
-        retval(0) =  octave_sparse_params::get_vals ();
+        retval = ovl (octave_sparse_params::get_vals ());
       else if (nargout == 2)
-        {
-          retval(1) = octave_sparse_params::get_vals ();
-          retval(0) = octave_sparse_params::get_keys ();
-        }
+        retval = ovl (octave_sparse_params::get_keys (),
+                      octave_sparse_params::get_vals ());
       else
         error ("spparms: too many output arguments");
     }
@@ -150,7 +148,7 @@ longer running time.\n\
               if (xisnan (val))
                 error ("spparms: KEY not recognized");
               else
-                retval(0) = val;
+                retval = ovl (val);
             }
         }
       else

@@ -261,7 +261,7 @@ parameters for @code{lsode}.\n\
 @seealso{daspk, dassl, dasrt}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value_list retval (3);
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
@@ -427,18 +427,15 @@ parameters for @code{lsode}.\n\
 
   std::string msg = ode.error_message ();
 
-  retval(2) = msg;
-  retval(1) = static_cast<double> (ode.integration_state ());
-
   if (ode.integration_ok ())
     retval(0) = output;
+  else if (nargout < 2)
+    error ("lsode: %s", msg.c_str ());
   else
-    {
-      retval(0) = Matrix ();
+    retval(0) = Matrix ();
 
-      if (nargout < 2)
-        error ("lsode: %s", msg.c_str ());
-    }
+  retval(1) = static_cast<double> (ode.integration_state ());
+  retval(2) = msg;
 
   return retval;
 }

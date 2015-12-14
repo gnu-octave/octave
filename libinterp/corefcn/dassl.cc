@@ -278,7 +278,7 @@ parameters for @code{dassl}.\n\
 @seealso{daspk, dasrt, lsode}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value_list retval (4);
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
@@ -447,22 +447,22 @@ parameters for @code{dassl}.\n\
 
   std::string msg = dae.error_message ();
 
-  retval(3) = msg;
-  retval(2) = static_cast<double> (dae.integration_state ());
-
   if (dae.integration_ok ())
     {
-      retval(1) = deriv_output;
       retval(0) = output;
+      retval(1) = deriv_output;
     }
   else
     {
-      retval(1) = Matrix ();
-      retval(0) = Matrix ();
-
       if (nargout < 3)
         error ("dassl: %s", msg.c_str ());
+
+      retval(0) = Matrix ();
+      retval(1) = Matrix ();
     }
+
+  retval(2) = static_cast<double> (dae.integration_state ());
+  retval(3) = msg;
 
   return retval;
 }

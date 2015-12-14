@@ -254,9 +254,7 @@ Undocumented internal function.\n\
               it++;
             }
 
-          retval(0) = items;
-          retval(1) = *it++;
-          retval(2) = atoi (it->c_str ());
+          retval = ovl (items, *it++, atoi (it->c_str ()));
         }
     }
 
@@ -319,8 +317,7 @@ Undocumented internal function.\n\
           items.xelem(i++) = *it;
         }
 
-      retval(1) = result.second;
-      retval(0) = items;
+      retval = ovl (items, result.second);
     }
 
   return retval;

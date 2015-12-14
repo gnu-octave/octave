@@ -374,7 +374,6 @@ compatibility with @sc{matlab}.\n\
 @seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   int nargin = args.length ();
 
 #ifdef DEBUG
@@ -454,6 +453,8 @@ compatibility with @sc{matlab}.\n\
             << nn << "," << args(0).columns () << ")"
             << std::endl;
 #endif
+
+  octave_value_list retval;
 
   int arg_is_empty = empty_arg ("qz", nn, args(0).columns ());
 
@@ -1212,7 +1213,6 @@ compatibility with @sc{matlab}.\n\
           }
       }
       break;
-
 
     case 1:
     case 0:

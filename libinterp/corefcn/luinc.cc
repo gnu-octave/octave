@@ -99,16 +99,18 @@ values of @var{p} @var{q} as vector values.\n\
 @end deftypefn")
 {
   int nargin = args.length ();
-  octave_value_list retval;
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
+
+  if (! args(0).is_sparse_type ())
+    error ("luinc: matrix A must be sparse");
 
   bool zero_level = false;
   bool milu = false;
   bool udiag = false;
   Matrix thresh;
-  double droptol = -1.;
+  double droptol = -1.0;
   bool vecout = false;
 
   if (args(1).is_string ())
@@ -133,7 +135,7 @@ values of @var{p} @var{q} as vector values.\n\
         {
           double val = tmp.double_value ();
 
-          milu = (val == 0. ? false : true);
+          milu = (val == 0.0 ? false : true);
         }
 
       tmp = map.getfield ("udiag");
@@ -141,7 +143,7 @@ values of @var{p} @var{q} as vector values.\n\
         {
           double val = tmp.double_value ();
 
-          udiag = (val == 0. ? false : true);
+          udiag = (val == 0.0 ? false : true);
         }
 
       tmp = map.getfield ("thresh");
@@ -151,7 +153,7 @@ values of @var{p} @var{q} as vector values.\n\
 
           if (thresh.numel () == 1)
             {
-              thresh.resize (1,2);
+              thresh.resize (1, 2);
               thresh(1) = thresh(0);
             }
           else if (thresh.numel () != 2)
@@ -165,7 +167,7 @@ values of @var{p} @var{q} as vector values.\n\
     {
       std::string tmp = args(2).string_value ();
 
-      if (tmp.compare ("vector") == 0)
+      if (tmp == "vector")
         vecout = true;
       else
         error ("luinc: unrecognized string argument");
@@ -175,7 +177,9 @@ values of @var{p} @var{q} as vector values.\n\
   if (zero_level)
     error ("luinc: zero-level factorization not implemented");
 
-  if (args(0).type_name () == "sparse matrix")
+  octave_value_list retval;
+
+  if (args(0).is_real_type ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       octave_idx_type sm_nr = sm.rows ();
@@ -183,7 +187,7 @@ values of @var{p} @var{q} as vector values.\n\
       ColumnVector Qinit (sm_nc);
 
       for (octave_idx_type i = 0; i < sm_nc; i++)
-        Qinit (i) = i;
+        Qinit(i) = i;
 
       switch (nargout)
         {
@@ -250,16 +254,15 @@ values of @var{p} @var{q} as vector values.\n\
           break;
         }
     }
-  else if (args(0).type_name () == "sparse complex matrix")
+  else
     {
-      SparseComplexMatrix sm =
-        args(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
       octave_idx_type sm_nr = sm.rows ();
       octave_idx_type sm_nc = sm.cols ();
       ColumnVector Qinit (sm_nc);
 
       for (octave_idx_type i = 0; i < sm_nc; i++)
-        Qinit (i) = i;
+        Qinit(i) = i;
 
       switch (nargout)
         {
@@ -269,7 +272,6 @@ values of @var{p} @var{q} as vector values.\n\
           {
             SparseComplexLU fact (sm, Qinit, thresh, false, true,
                                   droptol, milu, udiag);
-
 
             SparseMatrix P = fact.Pr ();
             SparseComplexMatrix L = P.transpose () * fact.L ();
@@ -327,8 +329,6 @@ values of @var{p} @var{q} as vector values.\n\
           break;
         }
     }
-  else
-    error ("luinc: matrix A must be sparse");
 
   return retval;
 }

@@ -64,8 +64,6 @@ For that, use any of the condition number functions: @code{cond},\n\
 @seealso{cond, condest, rcond}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -75,28 +73,29 @@ For that, use any of the condition number functions: @code{cond},\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr == 0 && nc == 0)
-    {
-      retval(0) = 1.0;
-      return retval;
-    }
+    return octave_value (1.0);
 
   int arg_is_empty = empty_arg ("det", nr, nc);
   if (arg_is_empty < 0)
-    return retval;
+    return octave_value_list ();
   if (arg_is_empty > 0)
-    return octave_value (Matrix (1, 1, 1.0));
-
+    return octave_value (1.0);
 
   if (nr != nc)
     {
       gripe_square_matrix_required ("det");
-      return retval;
+      return octave_value_list ();
     }
+
+  octave_value_list retval (2);
 
   bool isfloat = arg.is_single_type ();
 
   if (arg.is_diag_matrix ())
     {
+      if (nargout <= 1)
+        retval.resize (1);
+
       if (arg.is_complex_type ())
         {
           if (isfloat)
@@ -133,6 +132,9 @@ For that, use any of the condition number functions: @code{cond},\n\
     }
   else if (arg.is_perm_matrix ())
     {
+      if (nargout <= 1)
+        retval.resize (1);
+
       retval(0) = static_cast<double> (arg.perm_matrix_value ().determinant ());
       if (nargout > 1)
         retval(1) = 1.0;
@@ -150,8 +152,8 @@ For that, use any of the condition number functions: @code{cond},\n\
           MAYBE_CAST (rep, octave_float_matrix);
           MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
           FloatDET det = m.determinant (mtype, info, rcond);
-          retval(1) = rcond;
           retval(0) = info == -1 ? 0.0f : det.value ();
+          retval(1) = rcond;
           if (rep)
             rep->matrix_type (mtype);
         }
@@ -166,8 +168,8 @@ For that, use any of the condition number functions: @code{cond},\n\
           MAYBE_CAST (rep, octave_float_complex_matrix);
           MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
           FloatComplexDET det = m.determinant (mtype, info, rcond);
-          retval(1) = rcond;
           retval(0) = info == -1 ? FloatComplex (0.0) : det.value ();
+          retval(1) = rcond;
           if (rep)
             rep->matrix_type (mtype);
         }
@@ -185,8 +187,8 @@ For that, use any of the condition number functions: @code{cond},\n\
               SparseMatrix m = arg.sparse_matrix_value ();
 
               DET det = m.determinant (info, rcond);
-              retval(1) = rcond;
               retval(0) = info == -1 ? 0.0 : det.value ();
+              retval(1) = rcond;
             }
           else
             {
@@ -196,8 +198,8 @@ For that, use any of the condition number functions: @code{cond},\n\
               MatrixType mtype = rep ? rep -> matrix_type ()
                 : MatrixType ();
               DET det = m.determinant (mtype, info, rcond);
-              retval(1) = rcond;
               retval(0) = info == -1 ? 0.0 : det.value ();
+              retval(1) = rcond;
               if (rep)
                 rep->matrix_type (mtype);
             }
@@ -213,8 +215,8 @@ For that, use any of the condition number functions: @code{cond},\n\
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
               ComplexDET det = m.determinant (info, rcond);
-              retval(1) = rcond;
               retval(0) = info == -1 ? Complex (0.0) : det.value ();
+              retval(1) = rcond;
             }
           else
             {
@@ -224,8 +226,8 @@ For that, use any of the condition number functions: @code{cond},\n\
               MatrixType mtype = rep ? rep -> matrix_type ()
                 : MatrixType ();
               ComplexDET det = m.determinant (mtype, info, rcond);
-              retval(1) = rcond;
               retval(0) = info == -1 ? Complex (0.0) : det.value ();
+              retval(1) = rcond;
               if (rep)
                 rep->matrix_type (mtype);
             }
@@ -233,6 +235,7 @@ For that, use any of the condition number functions: @code{cond},\n\
       else
         gripe_wrong_type_arg ("det", arg);
     }
+
   return retval;
 }
 

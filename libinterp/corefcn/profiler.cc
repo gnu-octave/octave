@@ -433,10 +433,10 @@ DEFUN (__profiler_data__, args, nargout,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () > 0)
     warning ("profiler_data: ignoring extra arguments");
+
+  octave_value_list retval;
 
   if (nargout > 1)
     retval(1) = profiler.get_hierarchical ();

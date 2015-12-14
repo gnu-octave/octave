@@ -81,12 +81,12 @@ octave_value_list
 do_bessel (enum bessel_type type, const char *fn,
            const octave_value_list& args, int nargout)
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
+
+  octave_value_list retval (nargout > 1 ? 2 : 1);
 
   bool scaled = false;
   if (nargin == 3)
@@ -128,10 +128,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
               DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+              retval(0) = result;
               if (nargout > 1)
                 retval(1) = static_cast<float> (ierr);
-
-              retval(0) = result;
             }
           else
             {
@@ -143,10 +142,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
               DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+              retval(0) = result;
               if (nargout > 1)
                 retval(1) = NDArray (ierr);
-
-              retval(0) = result;
             }
         }
       else
@@ -169,10 +167,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
               DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
+              retval(0) = result;
               if (nargout > 1)
                 retval(1) = NDArray (ierr);
-
-              retval(0) = result;
             }
           else
             {
@@ -187,10 +184,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
                   DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+                  retval(0) = result;
                   if (nargout > 1)
                     retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
                 }
               else
                 {
@@ -202,10 +198,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
                   DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+                  retval(0) = result;
                   if (nargout > 1)
                     retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
                 }
             }
         }
@@ -225,10 +220,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
               DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+              retval(0) = result;
               if (nargout > 1)
                 retval(1) = static_cast<double> (ierr);
-
-              retval(0) = result;
             }
           else
             {
@@ -239,10 +233,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
               DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+              retval(0) = result;
               if (nargout > 1)
                 retval(1) = NDArray (ierr);
-
-              retval(0) = result;
             }
         }
       else
@@ -265,10 +258,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
               DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
+              retval(0) = result;
               if (nargout > 1)
                 retval(1) = NDArray (ierr);
-
-              retval(0) = result;
             }
           else
             {
@@ -283,10 +275,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
                   DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+                  retval(0) = result;
                   if (nargout > 1)
                     retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
                 }
               else
                 {
@@ -297,10 +288,9 @@ do_bessel (enum bessel_type type, const char *fn,
 
                   DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
+                  retval(0) = result;
                   if (nargout > 1)
                     retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
                 }
             }
         }
@@ -432,12 +422,12 @@ DEFUN (besselh, args, nargout,
 See besselj.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
+
+  octave_value_list retval;
 
   if (nargin == 2)
     {
@@ -517,17 +507,14 @@ return @code{NaN}.\n\
 @end enumerate\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  bool scale = (nargin == 3);
+  octave_value_list retval (nargout > 1 ? 2 : 1);
 
   int kind = 0;
-
   if (nargin > 1)
     {
       kind = args(0).xint_value ("airy: K must be an integer value");
@@ -536,7 +523,9 @@ return @code{NaN}.\n\
         error ("airy: K must be 0, 1, 2, or 3");
     }
 
-  int idx = nargin == 1 ? 0 : 1;
+  bool scale = (nargin == 3);
+
+  int idx = (nargin == 1 ? 0 : 1);
 
   if (args(idx).is_single_type ())
     {
@@ -550,10 +539,9 @@ return @code{NaN}.\n\
       else
         result = airy (z, kind == 1, scale, ierr);
 
+      retval(0) = result;
       if (nargout > 1)
         retval(1) = NDArray (ierr);
-
-      retval(0) = result;
     }
   else
     {
@@ -567,17 +555,16 @@ return @code{NaN}.\n\
       else
         result = airy (z, kind == 1, scale, ierr);
 
+      retval(0) = result;
       if (nargout > 1)
         retval(1) = NDArray (ierr);
-
-      retval(0) = result;
     }
 
   return retval;
 }
 
 /*
-%!# FIXME: Function airy does not yet have BIST tests
+FIXME: Function airy does not yet have BIST tests
 */
 
 /*

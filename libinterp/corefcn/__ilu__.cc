@@ -134,13 +134,14 @@ DEFUN (__ilu0__, args, nargout,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
-  std::string milu;
 
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_value_list retval (2);
+
+  std::string milu;
 
   // In ILU0 algorithm the zero-pattern of the input matrix is preserved so
   // it's structure does not change during the algorithm.  The same input
@@ -467,17 +468,16 @@ DEFUN (__iluc__, args, nargout,
 @deftypefn  {} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
 @deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})\n\
 @deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __iluc__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   int nargin = args.length ();
-  std::string milu = "off";
-  double droptol = 0;
 
   if (nargout != 2 || nargin < 1 || nargin > 3)
     print_usage ();
+
+  std::string milu = "off";
+  double droptol = 0;
 
   // Don't repeat input validation of arguments done in ilu.m
   if (nargin >= 2)
@@ -499,8 +499,7 @@ Undocumented internal function.\n\
       param_list(1) = "cols";
       cols_norm = feval ("norm", param_list)(0).vector_value ();
       param_list.clear ();
-      SparseMatrix U;
-      SparseMatrix L;
+      SparseMatrix U, L;
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
                                         cols_norm.fortran_vec (),
                                         rows_norm.fortran_vec (),
@@ -508,8 +507,7 @@ Undocumented internal function.\n\
       param_list.append (octave_value (L.cols ()));
       SparseMatrix eye =
         feval ("speye", param_list)(0).sparse_matrix_value ();
-      retval(1) = U;
-      retval(0) = L + eye;
+      return ovl (L + eye, U);
     }
   else
     {
@@ -525,8 +523,7 @@ Undocumented internal function.\n\
       param_list(1) = "cols";
       cols_norm = feval ("norm", param_list)(0).complex_vector_value ();
       param_list.clear ();
-      SparseComplexMatrix U;
-      SparseComplexMatrix L;
+      SparseComplexMatrix U, L;
       ilu_crout < SparseComplexMatrix, Complex >
                 (sm_l, sm_u, L, U, cols_norm.fortran_vec () ,
                  rows_norm.fortran_vec (), Complex (droptol), milu);
@@ -534,11 +531,8 @@ Undocumented internal function.\n\
       param_list.append (octave_value (L.cols ()));
       SparseComplexMatrix eye =
         feval ("speye", param_list)(0).sparse_complex_matrix_value ();
-      retval(1) = U;
-      retval(0) = L + eye;
+      return ovl (L + eye, U);
     }
-
-  return retval;
 }
 
 // That function implements the IKJ and JKI variants of gaussian elimination
@@ -944,16 +938,16 @@ DEFUN (__ilutp__, args, nargout,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
+
+  if (nargout < 2 || nargout > 3 || nargin < 1 || nargin > 5)
+    print_usage ();
+
+  octave_value_list retval;
   std::string milu = "";
   double droptol = 0;
   double thresh = 1;
   double udiag = 0;
-
-  if (nargout < 2 || nargout > 3 || nargin < 1 || nargin > 5)
-    print_usage ();
 
   // Don't repeat input validation of arguments done in ilu.m
   if (nargin >= 2)
@@ -985,8 +979,7 @@ Undocumented internal function.\n\
       rc_norm = feval ("norm", param_list)(0).vector_value ();
       param_list.clear ();
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
-      SparseMatrix U;
-      SparseMatrix L;
+      SparseMatrix U, L;
       ilu_tp <SparseMatrix, double> (sm, L, U, nnz_u, nnz_l,
                                      rc_norm.fortran_vec (),
                                      perm, droptol, thresh, milu, udiag);
@@ -1036,8 +1029,7 @@ Undocumented internal function.\n\
       rc_norm = feval ("norm", param_list)(0).complex_vector_value ();
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
       param_list.clear ();
-      SparseComplexMatrix U;
-      SparseComplexMatrix L;
+      SparseComplexMatrix U, L;
       ilu_tp < SparseComplexMatrix, Complex>
               (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
                Complex (droptol), Complex (thresh), milu, udiag);

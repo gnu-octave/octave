@@ -356,7 +356,7 @@ parameters for @code{dasrt}.\n\
 @seealso{dasrt_options, daspk, dasrt, lsode}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value_list retval (5);
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
@@ -554,24 +554,24 @@ parameters for @code{dasrt}.\n\
 
   std::string msg = dae.error_message ();
 
-  retval(4) = msg;
-  retval(3) = static_cast<double> (dae.integration_state ());
-
   if (dae.integration_ok ())
     {
-      retval(2) = output.times ();
-      retval(1) = output.deriv ();
       retval(0) = output.state ();
+      retval(1) = output.deriv ();
+      retval(2) = output.times ();
     }
   else
     {
-      retval(2) = Matrix ();
-      retval(1) = Matrix ();
-      retval(0) = Matrix ();
-
       if (nargout < 4)
         error ("dasrt: %s", msg.c_str ());
+
+      retval(0) = Matrix ();
+      retval(1) = Matrix ();
+      retval(2) = Matrix ();
     }
+
+  retval(3) = static_cast<double> (dae.integration_state ());
+  retval(4) = msg;
 
   return retval;
 }

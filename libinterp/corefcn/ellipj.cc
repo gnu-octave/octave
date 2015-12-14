@@ -68,12 +68,12 @@ and 16.15), Dover, 1965.\n\
 @seealso{ellipke}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
+
+  octave_value_list retval (nargout > 3 ? 4 : 3);
 
   octave_value u_arg = args(0);
   octave_value m_arg = args(1);
@@ -94,11 +94,10 @@ and 16.15), Dover, 1965.\n\
 
               ellipj (u, m, sn, cn, dn, err);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              if (nargout <= 3)
+                return ovl (sn, cn, dn);
+              else
+                return ovl (sn, cn, dn, err);
             }
           else
             {
@@ -110,11 +109,10 @@ and 16.15), Dover, 1965.\n\
 
               ellipj (u, m, sn, cn, dn, err);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              if (nargout <= 3)
+                return ovl (sn, cn, dn);
+              else
+                return ovl (sn, cn, dn, err);
             }
         }
       else
@@ -137,11 +135,11 @@ and 16.15), Dover, 1965.\n\
           for (octave_idx_type i = 0; i < nel; i++)
             ellipj (pu[i], m, psn[i], pcn[i], pdn[i], perr[i]);
 
-          if (nargout > 3)
-            retval(3) = err;
-          retval(2) = dn;
-          retval(1) = cn;
-          retval(0) = sn;
+
+          if (nargout <= 3)
+            return ovl (sn, cn, dn);
+          else
+            return ovl (sn, cn, dn, err);
         }
     }
   else
@@ -171,11 +169,10 @@ and 16.15), Dover, 1965.\n\
               for (octave_idx_type i = 0; i < nel; i++)
                 ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              if (nargout <= 3)
+                return ovl (sn, cn, dn);
+              else
+                return ovl (sn, cn, dn, err);
             }
           else
             {
@@ -195,11 +192,10 @@ and 16.15), Dover, 1965.\n\
               for (octave_idx_type i = 0; i < nel; i++)
                 ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              if (nargout <= 3)
+                return ovl (sn, cn, dn);
+              else
+                return ovl (sn, cn, dn, err);
             }
         }
       else
@@ -231,11 +227,10 @@ and 16.15), Dover, 1965.\n\
                       ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
                               err(i,j));
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  if (nargout <= 3)
+                    return ovl (sn, cn, dn);
+                  else
+                    return ovl (sn, cn, dn, err);
                 }
               else if (sz_m == sz_u)
                 {
@@ -253,11 +248,10 @@ and 16.15), Dover, 1965.\n\
                   for (octave_idx_type i = 0; i < nel; i++)
                     ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  if (nargout <= 3)
+                    return ovl (sn, cn, dn);
+                  else
+                    return ovl (sn, cn, dn, err);
                 }
               else
                 error ("ellipj: Invalid size combination for U and M");
@@ -288,11 +282,10 @@ and 16.15), Dover, 1965.\n\
                       ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
                               err(i,j));
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  if (nargout <= 3)
+                    return ovl (sn, cn, dn);
+                  else
+                    return ovl (sn, cn, dn, err);
                 }
               else if (sz_m == sz_u)
                 {
@@ -310,11 +303,10 @@ and 16.15), Dover, 1965.\n\
                   for (octave_idx_type i = 0; i < nel; i++)
                     ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  if (nargout <= 3)
+                    return ovl (sn, cn, dn);
+                  else
+                    return ovl (sn, cn, dn, err);
                 }
               else
                 error ("ellipj: Invalid size combination for U and M");

@@ -128,8 +128,6 @@ in control (see @code{are} and @code{dare}).\n\
 @seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2 || nargout > 2)
@@ -138,7 +136,6 @@ in control (see @code{are} and @code{dare}).\n\
   octave_value arg = args(0);
 
   std::string ord;
-
   if (nargin == 2)
     ord = args(1).xstring_value ("schur: second argument must be a string");
 
@@ -162,7 +159,7 @@ in control (see @code{are} and @code{dare}).\n\
         {
           warning ("schur: incorrect ordered schur argument '%s'",
                    ord.c_str ());
-          return retval;
+          return octave_value_list ();
         }
     }
 
@@ -172,8 +169,10 @@ in control (see @code{are} and @code{dare}).\n\
   if (nr != nc)
     {
       gripe_square_matrix_required ("schur");
-      return retval;
+      return octave_value_list ();
     }
+
+  octave_value_list retval (nargout > 1 ? 2 : 1);
 
   if (! arg.is_numeric_type ())
     gripe_wrong_type_arg ("schur", arg);
@@ -183,32 +182,32 @@ in control (see @code{are} and @code{dare}).\n\
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
-          if (nargout == 0 || nargout == 1)
+          if (nargout <= 1)
             {
               FloatSCHUR result (tmp, ord, false);
-              retval(0) = result.schur_matrix ();
+              retval = ovl (result.schur_matrix ());
             }
           else
             {
               FloatSCHUR result (tmp, ord, true);
-              retval(1) = result.schur_matrix ();
-              retval(0) = result.unitary_matrix ();
+              retval = ovl (result.unitary_matrix (),
+                            result.schur_matrix ());
             }
         }
       else
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-          if (nargout == 0 || nargout == 1)
+          if (nargout <= 1)
             {
               FloatComplexSCHUR result (ctmp, ord, false);
-              retval(0) = mark_upper_triangular (result.schur_matrix ());
+              retval = ovl (mark_upper_triangular (result.schur_matrix ()));
             }
           else
             {
               FloatComplexSCHUR result (ctmp, ord, true);
-              retval(1) = mark_upper_triangular (result.schur_matrix ());
-              retval(0) = result.unitary_matrix ();
+              retval = ovl (result.unitary_matrix (),
+                            mark_upper_triangular (result.schur_matrix ()));
             }
         }
     }
@@ -218,32 +217,32 @@ in control (see @code{are} and @code{dare}).\n\
         {
           Matrix tmp = arg.matrix_value ();
 
-          if (nargout == 0 || nargout == 1)
+          if (nargout <= 1)
             {
               SCHUR result (tmp, ord, false);
-              retval(0) = result.schur_matrix ();
+              retval = ovl (result.schur_matrix ());
             }
           else
             {
               SCHUR result (tmp, ord, true);
-              retval(1) = result.schur_matrix ();
-              retval(0) = result.unitary_matrix ();
+              retval = ovl (result.unitary_matrix (),
+                            result.schur_matrix ());
             }
         }
       else
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-          if (nargout == 0 || nargout == 1)
+          if (nargout <= 1)
             {
               ComplexSCHUR result (ctmp, ord, false);
-              retval(0) = mark_upper_triangular (result.schur_matrix ());
+              retval = ovl (mark_upper_triangular (result.schur_matrix ()));
             }
           else
             {
               ComplexSCHUR result (ctmp, ord, true);
-              retval(1) = mark_upper_triangular (result.schur_matrix ());
-              retval(0) = result.unitary_matrix ();
+              retval = ovl (result.unitary_matrix (),
+                            mark_upper_triangular (result.schur_matrix ()));
             }
         }
     }

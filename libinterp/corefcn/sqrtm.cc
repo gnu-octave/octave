@@ -212,8 +212,6 @@ Mathematics, Manchester, England, January 1999.\n\
 @seealso{expm, logm}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -225,9 +223,12 @@ Mathematics, Manchester, England, January 1999.\n\
   if (n != nc || arg.ndims () > 2)
     gripe_square_matrix_required ("sqrtm");
 
+  octave_value_list retval (nargout > 1 ? 3 : 1);
+
   if (nargout > 1)
     {
-      retval.resize (1, 2);
+      // FIXME: Octave does not calculate a condition number with respect to
+      //        sqrtm.  Should this return NaN instead of -1?
       retval(2) = -1.0;
     }
 

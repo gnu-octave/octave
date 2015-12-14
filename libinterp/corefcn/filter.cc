@@ -371,8 +371,6 @@ H(z) = ---------------------\n\
 @seealso{filter2, fftfilt, freqz}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 3 || nargin > 5)
@@ -401,6 +399,8 @@ H(z) = ---------------------\n\
       if (dim == x_dims.length ())
         dim = 0;
     }
+
+  octave_value_list retval (nargout > 1 ? 2 : 1);
 
   bool isfloat = (args(0).is_single_type ()
                   || args(1).is_single_type ()
@@ -444,10 +444,9 @@ H(z) = ---------------------\n\
 
           FloatComplexNDArray y (filter (b, a, x, si, dim));
 
+          retval(0) = y;
           if (nargout == 2)
             retval(1) = si;
-
-          retval(0) = y;
         }
       else
         {
@@ -482,10 +481,9 @@ H(z) = ---------------------\n\
 
           ComplexNDArray y (filter (b, a, x, si, dim));
 
+          retval(0) = y;
           if (nargout == 2)
             retval(1) = si;
-
-          retval(0) = y;
         }
     }
   else
@@ -523,10 +521,9 @@ H(z) = ---------------------\n\
 
           FloatNDArray y (filter (b, a, x, si, dim));
 
+          retval(0) = y;
           if (nargout == 2)
             retval(1) = si;
-
-          retval(0) = y;
         }
       else
         {
@@ -561,10 +558,9 @@ H(z) = ---------------------\n\
 
           NDArray y (filter (b, a, x, si, dim));
 
+          retval(0) = y;
           if (nargout == 2)
             retval(1) = si;
-
-          retval(0) = y;
         }
     }
 

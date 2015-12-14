@@ -141,8 +141,7 @@ is in the upper left corner, by doing:\n\
           if (info != 0) \
             error ("ordschur: trsen failed"); \
  \
-          retval(0) = U; \
-          retval(1) = S;
+          retval = ovl (U, S);
 
   if (double_type)
     {

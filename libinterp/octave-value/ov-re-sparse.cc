@@ -339,10 +339,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   if (tmp != -2)
-    {
-      error ("load: only 2-D sparse matrices are supported");
-      return false;
-    }
+    error ("load: only 2-D sparse matrices are supported");
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
     return false;

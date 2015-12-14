@@ -2061,11 +2061,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           for (int i = 1; i < args.length (); i++)
             {
               if (! (dv.*concat_rule) (args(i).dims (), dim))
-                {
-                  // Dimensions do not match.
-                  error ("cat: dimension mismatch");
-                  return retval;
-                }
+                error ("cat: dimension mismatch");
             }
 
           // The lines below might seem crazy, since we take a copy
@@ -5349,10 +5345,7 @@ the unspecified dimension.\n\
       Array<octave_idx_type> new_size = args(1).octave_idx_type_vector_value ();
 
       if (new_size.numel () < 2)
-        {
-          error ("reshape: SIZE must have 2 or more dimensions");
-          return retval;
-        }
+        error ("reshape: SIZE must have 2 or more dimensions");
 
       new_dims = dim_vector::alloc (new_size.numel ());
 
@@ -6725,10 +6718,7 @@ Undocumented internal function.\n\
       else if (mode == "descend")
         smode = DESCENDING;
       else
-        {
           error ("__sort_rows_idx__: MODE must be either \"ascend\" or \"descend\"");
-          return retval;
-        }
     }
 
   octave_value arg = args(0);
@@ -7671,10 +7661,7 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
     {
       octave_idx_type k = rep(1, i);
       if (k < 0)
-        {
-          error ("repelems: second row must contain non-negative numbers");
-          return retval;
-        }
+        error ("repelems: second row must contain non-negative numbers");
 
       l += k;
     }
@@ -7736,10 +7723,7 @@ endfor\n\
         {
           octave_idx_type rx = rm(i);
           if (static_cast<double> (rx) != rm(i))
-            {
-              error ("repelems: R must be a matrix of integers");
-              return retval;
-            }
+            error ("repelems: R must be a matrix of integers");
 
           r(i) = rx;
         }

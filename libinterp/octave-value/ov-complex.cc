@@ -311,11 +311,8 @@ octave_complex::load_ascii (std::istream& is)
 {
   scalar = octave_read_value<Complex> (is);
 
-  if (!is)
-    {
-      error ("load: failed to load complex scalar constant");
-      return false;
-    }
+  if (! is)
+    error ("load: failed to load complex scalar constant");
 
   return true;
 }

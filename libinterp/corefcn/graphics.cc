@@ -2997,12 +2997,9 @@ base_properties::get_property_dynamic (const caseless_str& pname)
     all_props.find (pname);
 
   if (it == all_props.end ())
-    {
-      error ("get_property: unknown property \"%s\"", pname.c_str ());
-      return property ();
-    }
-  else
-    return it->second;
+    error ("get_property: unknown property \"%s\"", pname.c_str ());
+    
+  return it->second;
 }
 
 void
@@ -11653,10 +11650,7 @@ Undocumented internal function.\n\
   graphics_handle handle = gh_manager::lookup (h);
 
   if (! handle.ok ())
-    {
-      error ("__zoom__: invalid handle");
-      return retval;
-    }
+    error ("__zoom__: invalid handle");
 
   graphics_object ax = gh_manager::get_object (handle);
 

@@ -64,28 +64,24 @@ public:
 
   virtual ~base_scaler (void) { }
 
-  virtual Matrix scale (const Matrix& m) const
+  virtual Matrix scale (const Matrix&) const
   {
     error ("invalid axis scale");
-    return m;
   }
 
-  virtual NDArray scale (const NDArray& m) const
+  virtual NDArray scale (const NDArray&) const
   {
     error ("invalid axis scale");
-    return m;
   }
 
-  virtual double scale (double d) const
+  virtual double scale (double) const
   {
     error ("invalid axis scale");
-    return d;
   }
 
-  virtual double unscale (double d) const
+  virtual double unscale (double) const
   {
     error ("invalid axis scale");
-    return d;
   }
 
   virtual base_scaler* clone () const
@@ -316,20 +312,17 @@ public:
   virtual octave_value get (void) const
   {
     error ("get: invalid property \"%s\"", name.c_str ());
-    return octave_value ();
   }
 
 
   virtual std::string values_as_string (void) const
   {
     error ("values_as_string: invalid property \"%s\"", name.c_str ());
-    return std::string ();
   }
 
   virtual Cell values_as_cell (void) const
   {
     error ("values_as_cell: invalid property \"%s\"", name.c_str ());
-    return Cell ();
   }
 
   base_property& operator = (const octave_value& val)
@@ -404,7 +397,6 @@ protected:
   virtual bool do_set (const octave_value&)
   {
     error ("set: invalid property \"%s\"", name.c_str ());
-    return false;
   }
 
 private:
@@ -2736,7 +2728,6 @@ public:
     else
       {
         error ("base_graphics_object::get: invalid graphics object");
-        return octave_value ();
       }
   }
 
@@ -2747,7 +2738,6 @@ public:
     else
       {
         error ("base_graphics_object::get: invalid graphics object");
-        return octave_value ();
       }
   }
 
@@ -2758,7 +2748,6 @@ public:
   virtual octave_value get_defaults (void) const
   {
     error ("base_graphics_object::get_defaults: invalid graphics object");
-    return octave_value ();
   }
 
   virtual property_list get_defaults_list (void) const
@@ -2771,13 +2760,11 @@ public:
   virtual octave_value get_factory_defaults (void) const
   {
     error ("base_graphics_object::get_factory_defaults: invalid graphics object");
-    return octave_value ();
   }
 
   virtual property_list get_factory_defaults_list (void) const
   {
     error ("base_graphics_object::get_factory_defaults_list: invalid graphics object");
-    return property_list ();
   }
 
   virtual bool has_readonly_property (const caseless_str& pname) const
@@ -2798,7 +2785,6 @@ public:
     else
       {
         error ("base_graphics_object::get_parent: invalid graphics object");
-        return graphics_handle ();
       }
   }
 
@@ -2809,7 +2795,6 @@ public:
     else
       {
         error ("base_graphics_object::get_handle: invalid graphics object");
-        return graphics_handle ();
       }
   }
 
@@ -2852,14 +2837,12 @@ public:
   {
     static base_properties properties;
     error ("base_graphics_object::get_properties: invalid graphics object");
-    return properties;
   }
 
   virtual const base_properties& get_properties (void) const
   {
     static base_properties properties;
     error ("base_graphics_object::get_properties: invalid graphics object");
-    return properties;
   }
 
   virtual void update_axis_limits (const std::string& axis_type);
@@ -2889,7 +2872,6 @@ public:
     else
       {
         error ("base_graphics_object::get_toolkit: invalid graphics object");
-        return graphics_toolkit ();
       }
   }
 

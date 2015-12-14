@@ -472,11 +472,8 @@ octave_range::load_ascii (std::istream& is)
   double base, limit, inc;
   is >> base >> limit >> inc;
 
-  if (!is)
-    {
-      error ("load: failed to load range constant");
-      return false;
-    }
+  if (! is)
+    error ("load: failed to load range constant");
 
   if (inc != 0)
     range = Range (base, limit, inc);

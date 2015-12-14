@@ -2089,7 +2089,6 @@ Function will directly call initialize_java() to create an instance of a JVM.\n\
   return retval;
 #else
   error ("__java_init__: Octave was not compiled with Java interface");
-  return octave_value ();
 #endif
 }
 
@@ -2458,7 +2457,6 @@ The original variable value is restored when exiting the function.\n\
   return SET_INTERNAL_VARIABLE (java_unsigned_autoconversion);
 #else
   error ("java_unsigned_autoconversion: Octave was not compiled with Java interface");
-  return octave_value ();
 #endif
 }
 
@@ -2481,7 +2479,6 @@ The original variable value is restored when exiting the function.\n\
   return SET_INTERNAL_VARIABLE (debug_java);
 #else
   error ("debug_java: Octave was not compiled with Java interface");
-  return octave_value ();
 #endif
 }
 

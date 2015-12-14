@@ -412,13 +412,10 @@ public:
   {
     Cell val = map.contents (pname);
 
-    if (val.numel () > 0)
-      return val(0, 0);
-    else
-      {
+    if (val.numel () < 1)
         error ("get: unknown slot: %s", pname.c_str ());
-        return octave_value ();
-      }
+
+    return val(0, 0);
   }
 
   octave_value_list
@@ -547,7 +544,6 @@ public:
                 int /* nargout */)
   {
     error ("subsref: invalid meta object");
-    return octave_value_list ();
   }
 
   virtual void meta_release (void) { }
@@ -1510,27 +1506,19 @@ to_ov (const octave_value& ov)
 inline cdef_object
 to_cdef (const octave_value& val)
 {
-  if (val.type_name () == "object")
-    return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
-  else
-    {
-      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
-      return cdef_object ();
-    }
+  if (val.type_name () != "object")
+    error ("cannot convert `%s' into `object'", val.type_name().c_str ());
+
+  return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
 }
 
 inline cdef_object&
 to_cdef_ref (const octave_value& val)
 {
-  static cdef_object empty;
+  if (val.type_name () != "object")
+    error ("cannot convert `%s' into `object'", val.type_name().c_str ());
 
-  if (val.type_name () == "object")
-    return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
-  else
-    {
-      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
-      return empty;
-    }
+  return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
 }
 
 inline cdef_object

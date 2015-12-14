@@ -55,14 +55,12 @@ octave_value
 tree_expression::rvalue1 (int)
 {
   error ("invalid rvalue function called in expression");
-  return octave_value ();
 }
 
 octave_value_list
 tree_expression::rvalue (int)
 {
   error ("invalid rvalue function called in expression");
-  return octave_value_list ();
 }
 
 octave_value_list
@@ -75,7 +73,6 @@ octave_lvalue
 tree_expression::lvalue (void)
 {
   error ("invalid lvalue function called in expression");
-  return octave_lvalue ();
 }
 
 std::string

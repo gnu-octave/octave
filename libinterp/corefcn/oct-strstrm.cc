@@ -32,7 +32,6 @@ int
 octave_base_strstream::seek (off_t, int)
 {
   error ("fseek: invalid operation");
-  return -1;
 }
 
 // Return current stream position.
@@ -41,7 +40,6 @@ off_t
 octave_base_strstream::tell (void)
 {
   error ("ftell: invalid operation");
-  return -1;
 }
 
 octave_stream

@@ -2970,10 +2970,7 @@ decode_subscripts (const char* name, const octave_value& arg,
           else if (item == ".")
             type_string[k] = '.';
           else
-            {
-              error ("%s: invalid indexing type '%s'", name, item.c_str ());
-              return;
-            }
+            error ("%s: invalid indexing type '%s'", name, item.c_str ());
 
           octave_value_list idx_item;
 
@@ -2993,10 +2990,7 @@ decode_subscripts (const char* name, const octave_value& arg,
                 }
             }
           else
-            {
-              error ("%s: subs(%d) must be a string or cell array", name, k+1);
-              return;
-            }
+            error ("%s: subs(%d) must be a string or cell array", name, k+1);
 
           idx.push_back (idx_item);
         }

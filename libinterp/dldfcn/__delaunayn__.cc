@@ -74,10 +74,7 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
       int maxval = std::numeric_limits<int>::max ();
 
       if (dim > maxval || n > maxval)
-        {
-          error ("%s: dimension too large for Qhull", who);
-          return false;
-        }
+        error ("%s: dimension too large for Qhull", who);
     }
 
   return true;

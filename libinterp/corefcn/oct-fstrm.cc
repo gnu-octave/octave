@@ -65,7 +65,6 @@ int
 octave_fstream::seek (off_t, int)
 {
   error ("fseek: invalid_operation");
-  return -1;
 }
 
 // Return current stream position.
@@ -74,7 +73,6 @@ off_t
 octave_fstream::tell (void)
 {
   error ("ftell: invalid_operation");
-  return -1;
 }
 
 // Return nonzero if EOF has been reached on this stream.

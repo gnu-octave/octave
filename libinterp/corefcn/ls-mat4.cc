@@ -399,9 +399,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
     return retval;
   }
 
+// FIXME: With short-circuiting error(), no need for goto in code
 data_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
-  return retval;
+
 }
 
 // Save the data from TC along with the corresponding NAME on stream OS

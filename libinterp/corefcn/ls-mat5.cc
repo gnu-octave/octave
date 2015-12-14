@@ -1465,9 +1465,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   return retval;
 
+// FIXME: With short-circuiting error(), no need for goto in code
 data_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
-  return std::string ();
 
 skip_ahead:
   warning ("load: skipping over '%s'", retval.c_str ());
@@ -2682,8 +2682,8 @@ save_mat5_binary_element (std::ostream& os,
 skip_to_next:
   return true;
 
+// FIXME: With short-circuiting error(), no need for goto in code
 error_cleanup:
   error ("save: error while writing '%s' to MAT file", name.c_str ());
 
-  return false;
 }

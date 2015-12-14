@@ -90,7 +90,6 @@ DEFBINOP (div, float_complex_matrix, float_complex_matrix)
 DEFBINOPX (pow, float_complex_matrix, float_complex_matrix)
 {
   error ("can't do A ^ B for A and B both matrices");
-  return octave_value ();
 }
 
 DEFBINOP (ldiv, float_complex_matrix, float_complex_matrix)

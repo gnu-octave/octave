@@ -60,7 +60,6 @@ DEFBINOP (div, sparse_matrix, matrix)
 DEFBINOPX (pow, sparse_matrix, matrix)
 {
   error ("can't do A ^ B for A and B both matrices");
-  return octave_value ();
 }
 
 DEFBINOP (ldiv, sparse_matrix, matrix)

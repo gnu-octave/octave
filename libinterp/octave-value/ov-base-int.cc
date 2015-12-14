@@ -508,11 +508,9 @@ bool
 octave_base_int_scalar<T>::load_ascii (std::istream& is)
 {
   is >> this->scalar;
-  if (!is)
-    {
-      error ("load: failed to load scalar constant");
-      return false;
-    }
+  if (! is)
+    error ("load: failed to load scalar constant");
+
   return true;
 }
 

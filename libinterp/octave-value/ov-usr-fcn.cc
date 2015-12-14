@@ -115,11 +115,7 @@ octave_value_list
 octave_user_script::subsref (const std::string&,
                              const std::list<octave_value_list>&, int)
 {
-  octave_value_list retval;
-
   error ("invalid use of script %s in index expression", file_name.c_str ());
-
-  return retval;
 }
 
 octave_value_list
@@ -505,10 +501,7 @@ octave_user_function::do_multi_index_op (int nargout,
   call_depth++;
 
   if (call_depth >= Vmax_recursion_depth)
-    {
-      error ("max_recursion_depth exceeded");
-      return retval;
-    }
+    error ("max_recursion_depth exceeded");
 
   // Save old and set current symbol table context, for
   // eval_undefined_error().
@@ -841,10 +834,7 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
           std::string name = func.string_value ();
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
-            {
-              error ("nargin: invalid function name: %s", name.c_str ());
-              return retval;
-            }
+            error ("nargin: invalid function name: %s", name.c_str ());
         }
 
       octave_function *fcn_val = func.function_value ();
@@ -952,10 +942,7 @@ returns -1 for all anonymous functions.\n\
           std::string name = func.string_value ();
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
-            {
-              error ("nargout: invalid function name: %s", name.c_str ());
-              return retval;
-            }
+            error ("nargout: invalid function name: %s", name.c_str ());
         }
 
       if (func.is_inline_function ())
@@ -1048,12 +1035,9 @@ static bool val_in_table (const Matrix& table, double val)
 static bool isargout1 (int nargout, const Matrix& ignored, double k)
 {
   if (k != xround (k) || k <= 0)
-    {
-      error ("isargout: K must be a positive integer");
-      return false;
-    }
-  else
-    return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
+    error ("isargout: K must be a positive integer");
+  
+  return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
 }
 
 DEFUN (isargout, args, ,

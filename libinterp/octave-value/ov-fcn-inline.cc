@@ -780,30 +780,22 @@ functions from strings is through the use of anonymous functions\n\
   else if (nargin == 2 && args(1).is_numeric_type ())
     {
       if (! args(1).is_scalar_type ())
-        {
-          error ("inline: N must be an integer");
-          return retval;
-        }
+        error ("inline: N must be an integer");
 
       int n = args(1).int_value ("inline: N must be an integer");
 
-      if (n >= 0)
-        {
-          fargs.resize (n+1);
+      if (n < 0)
+        error ("inline: N must be a positive integer or zero");
 
-          fargs(0) = "x";
+      fargs.resize (n+1);
 
-          for (int i = 1; i < n+1; i++)
-            {
-              std::ostringstream buf;
-              buf << "P" << i;
-              fargs(i) = buf.str ();
-            }
-        }
-      else
+      fargs(0) = "x";
+
+      for (int i = 1; i < n+1; i++)
         {
-          error ("inline: N must be a positive integer or zero");
-          return retval;
+          std::ostringstream buf;
+          buf << "P" << i;
+          fargs(i) = buf.str ();
         }
     }
   else

@@ -280,10 +280,7 @@ octave_struct::subsasgn (const std::string& type,
   octave_value t_rhs = rhs;
 
   if (idx.front ().empty ())
-    {
-      error ("missing index in indexed assignment");
-      return retval;
-    }
+    error ("missing index in indexed assignment");
 
   if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
     {
@@ -1168,10 +1165,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
   octave_value retval;
 
   if (idx.front ().empty ())
-    {
-      error ("missing index in indexed assignment");
-      return retval;
-    }
+    error ("missing index in indexed assignment");
 
   if (type[0] == '.')
     {
@@ -1755,10 +1749,7 @@ produces a struct @strong{array}.\n\
   for (int i = 0; i < nargin; i += 2)
     {
       if (! args(i).is_string () || i + 1 >= nargin)
-        {
-          error ("struct: additional arguments must occur as \"field\", VALUE pairs");
-          return retval;
-        }
+        error ("struct: additional arguments must occur as \"field\", VALUE pairs");
     }
 
   // Check that the dimensions of the values correspond.
@@ -2009,16 +2000,10 @@ A(1)\n\
     print_usage ();
 
   if (! args(0).is_cell ())
-    {
-      error ("cell2struct: argument CELL must be of type cell");
-      return retval;
-    }
+    error ("cell2struct: argument CELL must be of type cell");
 
   if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
-    {
-      error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
-      return retval;
-    }
+    error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
 
   const Cell vals = args(0).cell_value ();
   const Array<std::string> fields = args(1).cellstr_value ();
@@ -2029,28 +2014,19 @@ A(1)\n\
 
   if (nargin == 3)
     {
-      if (args(2).is_real_scalar ())
-        dim = nargin == 2 ? 0 : args(2).int_value () - 1;
-      else
-        {
-          error ("cell2struct: DIM must be a real scalar");
-          return retval;
-        }
+      if (! args(2).is_real_scalar ())
+        error ("cell2struct: DIM must be a real scalar");
+
+      dim = nargin == 2 ? 0 : args(2).int_value () - 1;
     }
 
   if (dim < 0)
-    {
-      error ("cell2struct: DIM must be a valid dimension");
-      return retval;
-    }
+    error ("cell2struct: DIM must be a valid dimension");
 
   ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
 
   if (ext != fields.numel ())
-    {
-      error ("cell2struct: number of FIELDS does not match dimension");
-      return retval;
-    }
+    error ("cell2struct: number of FIELDS does not match dimension");
 
   int nd = std::max (dim+1, vals.ndims ());
   // result dimensions.

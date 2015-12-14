@@ -85,6 +85,15 @@ endfunction
 %!   assert (norm(diff([sum(diag(A)),sum(diag(flipud(A))),sum(A),sum(A')])),0);
 %! endfor
 
+## Not a magic square but we must return something (bug #46672)
+## While one day we may change the actual return of magic (2),
+## this properties still must be true.
+%!test
+%! m = magic (2);
+%! assert (size (m), [2 2])
+%! assert (unique (m), [1; 2; 3; 4])
+
+%!assert (magic (2), [4 3; 1 2])
 %!assert (isempty (magic (-1)))
 %!assert (isempty (magic (0)))
 %!assert (magic (1), 1)

@@ -52,12 +52,12 @@ tree_funcall::print_raw (std::ostream& os, bool pr_as_read_syntax,
 
       os << nm << " (";
 
-      octave_idx_type len = args.length ();
-      for (octave_idx_type i = 0; i < len; i++)
+      octave_idx_type n = args.length ();
+      for (octave_idx_type i = 0; i < n; i++)
         {
           args(i).print_raw (os, pr_as_read_syntax);
 
-          if (i < len - 1)
+          if (i < n - 1)
             os << ", ";
         }
 

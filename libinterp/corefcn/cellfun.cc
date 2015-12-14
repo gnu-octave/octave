@@ -1809,7 +1809,7 @@ num2cell ([1,2;3,4],1)\n\
 {
   octave_value retval;
 
-  int nargin =  args.length ();
+  int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();

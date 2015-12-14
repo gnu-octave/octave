@@ -4033,15 +4033,13 @@ to produce a more readable output with less data per page.  (default).\n\
 @seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("format");
 
   set_format_style (argc, argv);
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (__compactformat__, args, nargout,

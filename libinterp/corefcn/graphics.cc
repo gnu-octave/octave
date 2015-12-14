@@ -1699,8 +1699,8 @@ property::create (const std::string& name, const graphics_handle& h,
     }
   else if (type.compare ("any"))
     {
-      octave_value ov = args.length () > 0 ? args(0)
-                                           : octave_value (Matrix ());
+      octave_value ov = (args.length () > 0 ? args(0)
+                                            : octave_value (Matrix ()));
 
       retval = property (new any_property (name, h, ov));
     }

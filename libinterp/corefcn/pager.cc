@@ -608,30 +608,26 @@ The current state can be determined via @code{page_screen_output}.\n\
 @seealso{page_screen_output, page_output_immediately, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  int nargin = args.length ();
 
-  int argc = args.length () + 1;
-
-  if (argc < 1 || argc > 2)
+  if (nargin > 1)
     print_usage ();
 
-  string_vector argv = args.make_argv ("more");
-
-  if (argc == 2)
+  if (nargin > 0)
     {
-      std::string arg = argv[1];
+      std::string arg = args(0).xstring_value ("more: argument must be string \"on\" or \"off\"");
 
       if (arg == "on")
         Vpage_screen_output = true;
       else if (arg == "off")
         Vpage_screen_output = false;
       else
-        error ("more: unrecognized argument '%s'", arg.c_str ());
+        error ("more: argument must be \"on\" or \"off\"");
     }
   else
     Vpage_screen_output = ! Vpage_screen_output;
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (terminal_size, , ,

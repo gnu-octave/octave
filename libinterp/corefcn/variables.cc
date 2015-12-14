@@ -1820,8 +1820,6 @@ matching the given patterns.\n\
 @seealso{whos, isglobal, isvarname, exist, regexp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (nargout > 1)
     print_usage ();
 
@@ -1896,8 +1894,6 @@ complex, nesting, persistent.\n\
 @seealso{who, whos_line_format}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (nargout > 1)
     print_usage ();
 
@@ -2376,8 +2372,6 @@ without the dash as well.\n\
 @seealso{who, whos, exist}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("clear");
@@ -2458,9 +2452,7 @@ without the dash as well.\n\
       if (idx <= argc)
         {
           if (! have_dash_option)
-            {
-              do_matlab_compatible_clear (argv, argc, idx);
-            }
+            do_matlab_compatible_clear (argv, argc, idx);
           else
             {
               if (clear_all)
@@ -2468,8 +2460,7 @@ without the dash as well.\n\
                   maybe_warn_exclusive (exclusive);
 
                   if (++idx < argc)
-                    warning
-                      ("clear: ignoring extra arguments after -all");
+                    warning ("clear: ignoring extra arguments after -all");
 
                   symbol_table::clear_all ();
                 }
@@ -2505,7 +2496,7 @@ without the dash as well.\n\
         }
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (whos_line_format, args, nargout,

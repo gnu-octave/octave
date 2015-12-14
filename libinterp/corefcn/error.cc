@@ -1469,25 +1469,24 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 {
   octave_value retval;
 
-  int argc = args.length () + 1;
-
+  int nargin = args.length ();
   bool done = false;
 
-  if (argc > 1 && args.all_strings_p ())
+  if (nargin > 0 && args.all_strings_p ())
     {
       string_vector argv = args.make_argv ("warning");
 
       std::string arg1 = argv(1);
       std::string arg2 = "all";
 
-      if (argc >= 3)
+      if (nargin >= 2)
         arg2 = argv(2);
 
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
           octave_map old_warning_options = warning_options;
 
-          if (argc == 4 && argv(3) == "local"
+          if (nargin == 3 && argv(3) == "local"
               && ! symbol_table::at_top_level ())
             {
               symbol_table::scope_id scope
@@ -1557,7 +1556,7 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.
-              argc--;
+              nargin--;
             }
 
           if (arg2 == "all")
@@ -1570,13 +1569,11 @@ disable escape sequence expansion use a second backslash before the sequence\n\
               id(0) = arg2;
               st(0) = arg1;
 
-              // Since internal Octave functions are not
-              // compatible, turning all warnings into errors
-              // should leave the state of
+              // Since internal Octave functions are not compatible,
+              // turning all warnings into errors should leave the state of
               // Octave:language-extension alone.
 
-              if (arg1 == "error"
-                  && warning_options.contains ("identifier"))
+              if (arg1 == "error" && warning_options.contains ("identifier"))
                 {
                   octave_idx_type n = 1;
 
@@ -1684,7 +1681,7 @@ disable escape sequence expansion use a second backslash before the sequence\n\
           done = true;
         }
     }
-  else if (argc == 1)
+  else if (nargin == 0)
     {
       if (nargout > 0)
         retval = warning_options;
@@ -1693,7 +1690,7 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 
       done = true;
     }
-  else if (argc == 2)
+  else if (nargin == 1)
     {
       octave_value arg = args(0);
 
@@ -1703,25 +1700,23 @@ disable escape sequence expansion use a second backslash before the sequence\n\
         {
           octave_map m = arg.map_value ();
 
-          if (m.contains ("identifier") && m.contains ("state"))
-            {
-              // Simply step through the struct elements one at a time.
-
-              Cell ident = m.contents ("identifier");
-              Cell state = m.contents ("state");
-
-              octave_idx_type nel = ident.numel ();
-
-              for (octave_idx_type i = 0; i < nel; i++)
-                {
-                  std::string tst = state(i).string_value ();
-                  std::string tid = ident(i).string_value ();
-
-                  set_warning_option (tst, tid);
-                }
-            }
-          else
+          if (! m.contains ("identifier") || ! m.contains ("state"))
             error ("warning: STATE structure must have fields 'identifier' and 'state'");
+
+          // Simply step through the struct elements one at a time.
+
+          Cell ident = m.contents ("identifier");
+          Cell state = m.contents ("state");
+
+          octave_idx_type nel = ident.numel ();
+
+          for (octave_idx_type i = 0; i < nel; i++)
+            {
+              std::string tst = state(i).string_value ();
+              std::string tid = ident(i).string_value ();
+
+              set_warning_option (tst, tid);
+            }
 
           done = true;
 

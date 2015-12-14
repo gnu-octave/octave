@@ -148,11 +148,15 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
       endif
     endif
 
+    ## Clean up start of @deftypefn expansion which includes extra ':'
+    retval = regexprep (retval, '^ -- : +', ' -- ', "lineanchors");
+
   unwind_protect_cleanup
     if (exist (name, "file"))
       delete (name);
     endif
   end_unwind_protect
+
 endfunction
 
 

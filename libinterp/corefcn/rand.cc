@@ -57,18 +57,9 @@ static octave_value
 do_rand (const octave_value_list& args, int nargin, const char *fcn,
          const std::string& distribution, bool additional_arg = false)
 {
-  octave_value retval;
   NDArray a;
   int idx = 0;
-  dim_vector dims;
   bool is_single = false;
-
-  unwind_protect frame;
-  // Restore current distribution on any exit.
-  frame.add_fcn (octave_rand::distribution,
-                 octave_rand::distribution ());
-
-  octave_rand::distribution (distribution);
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
@@ -98,6 +89,16 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
         }
     }
 
+  octave_value retval;
+  dim_vector dims;
+
+  unwind_protect frame;
+  // Restore current distribution on any exit.
+  frame.add_fcn (octave_rand::distribution,
+                 octave_rand::distribution ());
+
+  octave_rand::distribution (distribution);
+
   switch (nargin)
     {
     case 0:
@@ -111,6 +112,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             dims(0) = 1;
             dims(1) = 1;
           }
+
         goto gen_matrix;
       }
       break;
@@ -124,37 +126,21 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             std::string s_arg = tmp.string_value ();
 
             if (s_arg == "dist")
-              {
-                retval = octave_rand::distribution ();
-              }
+              retval = octave_rand::distribution ();
             else if (s_arg == "seed")
-              {
-                retval = octave_rand::seed ();
-              }
+              retval = octave_rand::seed ();
             else if (s_arg == "state" || s_arg == "twister")
-              {
-                retval = octave_rand::state (fcn);
-              }
+              retval = octave_rand::state (fcn);
             else if (s_arg == "uniform")
-              {
-                octave_rand::uniform_distribution ();
-              }
+              octave_rand::uniform_distribution ();
             else if (s_arg == "normal")
-              {
-                octave_rand::normal_distribution ();
-              }
+              octave_rand::normal_distribution ();
             else if (s_arg == "exponential")
-              {
-                octave_rand::exponential_distribution ();
-              }
+              octave_rand::exponential_distribution ();
             else if (s_arg == "poisson")
-              {
-                octave_rand::poisson_distribution ();
-              }
+              octave_rand::poisson_distribution ();
             else if (s_arg == "gamma")
-              {
-                octave_rand::gamma_distribution ();
-              }
+              octave_rand::gamma_distribution ();
             else
               error ("%s: unrecognized string argument", fcn);
           }
@@ -164,42 +150,36 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             if (xisnan (dval))
               error ("%s: NaN is invalid matrix dimension", fcn);
-            else
-              {
-                dims.resize (2);
 
-                dims(0) = NINTbig (tmp.double_value ());
-                dims(1) = NINTbig (tmp.double_value ());
+            dims.resize (2);
 
-                goto gen_matrix;
-              }
+            dims(0) = NINTbig (tmp.double_value ());
+            dims(1) = NINTbig (tmp.double_value ());
+
+            goto gen_matrix;
           }
         else if (tmp.is_range ())
           {
             Range r = tmp.range_value ();
 
-            if (r.all_elements_are_ints ())
-              {
-                octave_idx_type n = r.numel ();
-
-                dims.resize (n);
-
-                octave_idx_type base = NINTbig (r.base ());
-                octave_idx_type incr = NINTbig (r.inc ());
-
-                for (octave_idx_type i = 0; i < n; i++)
-                  {
-                    // Negative dimensions are treated as zero for Matlab
-                    // compatibility
-                    dims(i) = base >= 0 ? base : 0;
-                    base += incr;
-                  }
-
-                goto gen_matrix;
-
-              }
-            else
+            if (! r.all_elements_are_ints ())
               error ("%s: all elements of range must be integers", fcn);
+
+            octave_idx_type n = r.numel ();
+
+            dims.resize (n);
+
+            octave_idx_type base = NINTbig (r.base ());
+            octave_idx_type incr = NINTbig (r.inc ());
+
+            for (octave_idx_type i = 0; i < n; i++)
+              {
+                // Negative dimensions treated as zero for Matlab compatibility
+                dims(i) = base >= 0 ? base : 0;
+                base += incr;
+              }
+
+            goto gen_matrix;
           }
         else if (tmp.is_matrix_type ())
           {
@@ -220,8 +200,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (octave_idx_type i = 0; i < len; i++)
               {
-                // Negative dimensions are treated as zero for Matlab
-                // compatibility
+                // Negative dimensions treated as zero for Matlab compatibility
                 octave_idx_type elt = iv(i);
                 dims(i) = elt >=0 ? elt : 0;
               }
@@ -282,7 +261,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
               {
                 octave_idx_type elt = args(idx+i).xint_value ("%s: dimension must be a scalar or array of integers", fcn);
 
-                // Negative is zero for Matlab compatibility
+                // Negative dimensions treated as zero for Matlab compatibility
                 dims(i) = elt >= 0 ? elt : 0;
               }
 
@@ -292,8 +271,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
       break;
     }
 
-done:
-
+  // No "goto gen_matrix" in code path.  Must be done.
   return retval;
 
 gen_matrix:
@@ -314,8 +292,10 @@ gen_matrix:
               octave_idx_type len = a.numel ();
               FloatNDArray m (dims);
               float *v = m.fortran_vec ();
+
               for (octave_idx_type i = 0; i < len; i++)
                 v[i] = octave_rand::float_scalar (a(i));
+
               return m;
             }
         }
@@ -336,8 +316,10 @@ gen_matrix:
               octave_idx_type len = a.numel ();
               NDArray m (dims);
               double *v = m.fortran_vec ();
+
               for (octave_idx_type i = 0; i < len; i++)
                 v[i] = octave_rand::scalar (a(i));
+
               return m;
             }
         }
@@ -435,13 +417,7 @@ classes.\n\
 @seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  retval = do_rand (args, nargin, "rand", "uniform");
-
-  return retval;
+  return do_rand (args, args.length (), "rand", "uniform");
 }
 
 // FIXME: The old generator (selected when "seed" is set) will not
@@ -564,13 +540,7 @@ J. Statistical Software, vol 5, 2000,\n\
 @seealso{rand, rande, randg, randp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  retval = do_rand (args, nargin, "randn", "normal");
-
-  return retval;
+  return do_rand (args, args.length (), "randn", "normal");
 }
 
 /*
@@ -636,13 +606,7 @@ J. Statistical Software, vol 5, 2000,\n\
 @seealso{rand, randn, randg, randp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  retval = do_rand (args, nargin, "rande", "exponential");
-
-  return retval;
+  return do_rand (args, args.length (), "rande", "exponential");
 }
 
 /*
@@ -778,16 +742,12 @@ classes.\n\
 @seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1)
     error ("randg: insufficient arguments");
-  else
-    retval = do_rand (args, nargin, "randg", "gamma", true);
 
-  return retval;
+  return do_rand (args, nargin, "randg", "gamma", true);
 }
 
 /*
@@ -1007,16 +967,12 @@ classes.\n\
 @seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1)
     error ("randp: insufficient arguments");
-  else
-    retval = do_rand (args, nargin, "randp", "poisson", true);
 
-  return retval;
+  return do_rand (args, nargin, "randp", "poisson", true);
 }
 
 /*
@@ -1121,8 +1077,6 @@ likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
 #ifdef USE_UNORDERED_MAP_WITH_TR1
 using std::tr1::unordered_map;
 #else
@@ -1199,7 +1153,6 @@ using std::unordered_map;
     }
   else
     {
-
       // Perform the Knuth shuffle of the first m entries
       for (octave_idx_type i = 0; i < m; i++)
         {

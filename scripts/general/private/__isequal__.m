@@ -64,7 +64,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
   if (t)
     ## Test that everything has the same number of dimensions.
-    t = all (ndims (x) == cellfun ("ndims", varargin));
+    t = all (builtin ("ndims", x) == cellfun ("ndims", varargin));
   endif
 
   if (t)
@@ -72,7 +72,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     nd = ndims (x);
     k = 1;
     do
-      t = all (size (x,k) == cellfun ("size", varargin, k));
+      t = all (builtin ("size", x, k) == cellfun ("size", varargin, k));
     until (!t || k++ == nd);
   endif
 

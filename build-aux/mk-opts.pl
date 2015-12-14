@@ -907,9 +907,9 @@ sub emit_options_function
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
 DEFUN ($OPT_FCN_NAME, args, ,
   "-*- texinfo -*-\\n\\
-\@deftypefn  {Built-in Function} {} $OPT_FCN_NAME ()\\n\\
-\@deftypefnx {Built-in Function} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
-\@deftypefnx {Built-in Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
+\@deftypefn  {} {} $OPT_FCN_NAME ()\\n\\
+\@deftypefnx {} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
+\@deftypefnx {} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
 $DOC_STRING\\n\\
 \\n\\
 Options include\\n\\

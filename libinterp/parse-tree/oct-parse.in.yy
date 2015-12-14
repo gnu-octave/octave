@@ -4313,9 +4313,9 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
 DEFUN (autoload, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{autoload_map} =} autoload ()\n\
-@deftypefnx {Built-in Function} {} autoload (@var{function}, @var{file})\n\
-@deftypefnx {Built-in Function} {} autoload (@dots{}, \"remove\")\n\
+@deftypefn  {} {@var{autoload_map} =} autoload ()\n\
+@deftypefnx {} {} autoload (@var{function}, @var{file})\n\
+@deftypefnx {} {} autoload (@dots{}, \"remove\")\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
 The second argument, @var{file}, should be an absolute filename or a file\n\
@@ -4536,9 +4536,9 @@ source_file (const std::string& file_name, const std::string& context,
 
 DEFUN (mfilename, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} mfilename ()\n\
-@deftypefnx {Built-in Function} {} mfilename (\"fullpath\")\n\
-@deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
+@deftypefn  {} {} mfilename ()\n\
+@deftypefnx {} {} mfilename (\"fullpath\")\n\
+@deftypefnx {} {} mfilename (\"fullpathext\")\n\
 Return the name of the currently executing file.\n\
 \n\
 When called from outside an m-file return the empty string.\n\
@@ -4597,7 +4597,7 @@ the filename and the extension.\n\
 
 DEFUN (source, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} source (@var{file})\n\
+@deftypefn {} {} source (@var{file})\n\
 Parse and execute the contents of @var{file}.\n\
 \n\
 This is equivalent to executing commands from a script file, but without\n\
@@ -4711,7 +4711,7 @@ feval (const octave_value_list& args, int nargout)
 
 DEFUN (feval, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} feval (@var{name}, @dots{})\n\
+@deftypefn {} {} feval (@var{name}, @dots{})\n\
 Evaluate the function named @var{name}.\n\
 \n\
 Any arguments after the first are passed as inputs to the named function.\n\
@@ -4757,7 +4757,7 @@ instead.\n\
 
 DEFUN (builtin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
+@deftypefn {} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
 Call the base function @var{f} even if @var{f} is overloaded to another\n\
 function for the given type signature.\n\
 \n\
@@ -4900,8 +4900,8 @@ cleanup_statement_list (tree_statement_list **lst)
 
 DEFUN (eval, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} eval (@var{try})\n\
-@deftypefnx {Built-in Function} {} eval (@var{try}, @var{catch})\n\
+@deftypefn  {} {} eval (@var{try})\n\
+@deftypefnx {} {} eval (@var{try}, @var{catch})\n\
 Parse the string @var{try} and evaluate it as if it were an Octave\n\
 program.\n\
 \n\
@@ -5035,7 +5035,7 @@ the security considerations that the evaluation of arbitrary code does.\n\
 
 DEFUN (assignin, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
+@deftypefn {} {} assignin (@var{context}, @var{varname}, @var{value})\n\
 Assign @var{value} to @var{varname} in context @var{context}, which\n\
 may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 @seealso{evalin}\n\
@@ -5071,8 +5071,8 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 
 DEFUN (evalin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} evalin (@var{context}, @var{try})\n\
-@deftypefnx {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
+@deftypefn  {} {} evalin (@var{context}, @var{try})\n\
+@deftypefnx {} {} evalin (@var{context}, @var{try}, @var{catch})\n\
 Like @code{eval}, except that the expressions are evaluated in the context\n\
 @var{context}, which may be either @qcode{\"caller\"} or @qcode{\"base\"}.\n\
 @seealso{eval, assignin}\n\
@@ -5151,8 +5151,8 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 
 DEFUN (__parser_debug_flag__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} __parser_debug_flag__ ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} __parser_debug_flag__ (@var{new_val})\n\
+@deftypefn  {} {@var{val} =} __parser_debug_flag__ ()\n\
+@deftypefnx {} {@var{old_val} =} __parser_debug_flag__ (@var{new_val})\n\
 Query or set the internal flag that determines whether Octave's parser prints\n\
 debug information as it processes an expression.\n\
 @seealso{__lexer_debug_flag__}\n\
@@ -5172,7 +5172,7 @@ debug information as it processes an expression.\n\
 
 DEFUN (__parse_file__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __parse_file__ (@var{file}, @var{verbose})\n\
+@deftypefn {} {} __parse_file__ (@var{file}, @var{verbose})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

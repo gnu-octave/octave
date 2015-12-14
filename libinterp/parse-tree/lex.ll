@@ -1902,8 +1902,8 @@ is_keyword (const std::string& s)
 
 DEFUN (iskeyword, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} iskeyword ()\n\
-@deftypefnx {Built-in Function} {} iskeyword (@var{name})\n\
+@deftypefn  {} {} iskeyword ()\n\
+@deftypefnx {} {} iskeyword (@var{name})\n\
 Return true if @var{name} is an Octave keyword.\n\
 \n\
 If @var{name} is omitted, return a list of keywords.\n\
@@ -1962,7 +1962,7 @@ If @var{name} is omitted, return a list of keywords.\n\
 
 DEFUN (__display_tokens__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __display_tokens__ ()\n\
+@deftypefn {} {} __display_tokens__ ()\n\
 Query or set the internal variable that determines whether Octave's\n\
 lexer displays tokens as they are read.\n\
 @seealso{__lexer_debug_flag__, __token_count__}\n\
@@ -1973,7 +1973,7 @@ lexer displays tokens as they are read.\n\
 
 DEFUN (__token_count__, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __token_count__ ()\n\
+@deftypefn {} {} __token_count__ ()\n\
 Return the number of language tokens processed since Octave startup.\n\
 @seealso{__lexer_debug_flag__, __display_tokens__}\n\
 @end deftypefn")
@@ -1983,8 +1983,8 @@ Return the number of language tokens processed since Octave startup.\n\
 
 DEFUN (__lexer_debug_flag__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} __lexer_debug_flag__ ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})\n\
+@deftypefn  {} {@var{val} =} __lexer_debug_flag__ ()\n\
+@deftypefnx {} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})\n\
 Query or set the internal flag that determines whether Octave's lexer prints\n\
 debug information as it processes an expression.\n\
 @seealso{__display_tokens__, __token_count__, __parse_debug_flag__}\n\

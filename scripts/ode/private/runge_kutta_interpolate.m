@@ -33,11 +33,10 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, a
         der = feval (func, z(1) , u(:,1), args);
       endif
       u_interp = quadratic_interpolation (z, u, der, t);
-
-    #{
     case 3
       u_interp = ...
       hermite_cubic_interpolation (z, u, k_vals, t);
+    #{
     case 4
       ## if ode45 is used without local extrapolation this function
       ## doesn't require a new function evaluation.
@@ -85,8 +84,8 @@ function x_out = quadratic_interpolation (t, x, der, t_out)
 
 endfunction
 
-## The function below can be used in an ODE solver to interpolate the solution
-## at the time t_out using 4th order hermite interpolation.
+## The function below can be used in an ODE solver to interpolate the
+## solution at the time t_out using 4th order hermite interpolation.
 function x_out = hermite_quartic_interpolation (t, x, der, t_out)
 
   persistent coefs_u_half = ...
@@ -118,3 +117,16 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
 
 endfunction
 
+## The function below can be used in an ODE solver to interpolate the
+## solution at the time t_out using 3rd order hermite interpolation.
+function x_out = hermite_cubic_interpolation (t, x, der, t_out)
+
+  s = (t_out - t(1)) / (t(2) - t(1));
+  x_out = zeros (size (x, 1), length (t_out));
+
+  for ii = 1:size (x, 1)
+    x_out(ii,:) = (1+2*s).*(1-s).^2*x(ii,1) + s.*(1-s).^2*(t(2)-t(1))*der(ii,1) ...
+                  + (3-2*s).*s.^2*x(ii,2) + (s-1).*s.^2*(t(2)-t(1))*der(ii,2);
+  endfor
+  
+endfunction

@@ -60,9 +60,22 @@
 ## @seealso{runge_kutta_45_dorpri}
 ## @end deftypefn
 
-function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt, options = [],
+function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
+                                                      options = [],
                                                       k_vals = [],
                                                       t_next = t + dt)
+
+  persistent a = [0           0          0;
+                  1/2         0          0;
+                  0           3/4        0];
+  persistent b = [0 1/2 3/4 1];
+  persistent c = [(2/9) (1/3) (4/9)];
+  persistent c_prime = [(7/24) (1/4) (1/3) (1/8)];
+
+  s = t + dt * b;
+  cc = dt * c;
+  aa = dt * a;
+  k = zeros (rows (x), 4);
 
   if (! isempty (options))  # extra arguments for function evaluator
     args = options.funarguments;
@@ -76,34 +89,19 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt, options = [],
     k(:,1) = feval (f, t, x, args{:});
   endif
 
-  k(:,2) = feval (f, t + (1/2)*dt, x + dt*(1/2)*k(:,1), args{:});
-  k(:,3) = feval (f, t + (3/4)*dt, x + dt*(3/4)*k(:,2), args{:});
-
+  k(:,2) = feval (f, s(2), x + k(:,1) * aa(2, 1).', args{:});
+  k(:,3) = feval (f, s(3), x + k(:,2) * aa(3, 2).', args{:});
+  
   ## compute new time and new values for the unkwnowns
   ## t_next = t + dt;
-  x_next = x + dt.*((2/9)*k(:,1) + (1/3)*k(:,2) + (4/9)*k(:,3)); # 3rd order approximation
+  x_next = x + k(:,1:3) * cc(:); # 3rd order approximation
 
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
     k(:,4) = feval (f, t_next, x_next, args{:});
-    x_est = x + dt.*((7/24)*k(:,1) + (1/4)*k(:,2) ...
-                     + (1/3)*k(:,3) + (1/8)*k(:,4));
+    cc_prime = dt * c_prime;
+    x_est = x + k * cc_prime(:);
   endif
 
 endfunction
-
-
-%! # We are using the "Van der Pol" implementation.
-%!function [ydot] = fpol (t, y) ## The Van der Pol
-%!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%!endfunction
-%!
-%!shared opts
-%!  opts = odeset;
-%!  opts.funarguments = {};
-%!
-%!test
-%!  [t, y] = runge_kutta_23 (@fpol, 0, [2;0], 0.05, opts);
-%!test
-%!  [t, y, x] = runge_kutta_23 (@fpol, 0, [2;0], 0.1, opts);

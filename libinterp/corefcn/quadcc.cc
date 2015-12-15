@@ -1555,8 +1555,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   /* Some constants that we will need. */
   static const int n[4] = { 4, 8, 16, 32 };
   static const int skip[4] = { 8, 4, 2, 1 };
@@ -2217,6 +2215,8 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 #endif
 
   /* Clean up and present the results. */
+  octave_value_list retval;
+
   if (nargout > 2)
     retval(2) = neval;
   if (nargout > 1)

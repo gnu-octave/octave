@@ -147,14 +147,14 @@ sparse matrices.\n\
 @seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   int nargin = args.length ();
-  bool LLt = false;
-  bool vecout = false;
 
   if (nargin < 1 || nargin > 3 || nargout > 3
       || (! args(0).is_sparse_type () && nargout > 2))
     print_usage ();
+
+  bool LLt = false;
+  bool vecout = false;
 
   int n = 1;
   while (n < nargin)
@@ -171,6 +171,7 @@ sparse matrices.\n\
         error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");
     }
 
+  octave_value_list retval;
   octave_value arg = args(0);
 
   octave_idx_type nr = arg.rows ();
@@ -179,7 +180,7 @@ sparse matrices.\n\
   int arg_is_empty = empty_arg ("chol", nr, nc);
 
   if (arg_is_empty < 0)
-    return retval;
+    return octave_value_list ();
   if (arg_is_empty > 0)
     return octave_value (Matrix ());
 
@@ -203,7 +204,7 @@ sparse matrices.\n\
                 retval(2) = fact.Q ();
             }
 
-          if (nargout > 1 || info == 0)
+          if (nargout >= 2 || info == 0)
             {
               retval(1) = info;
               if (LLt)
@@ -228,7 +229,7 @@ sparse matrices.\n\
                 retval(2) = fact.Q ();
             }
 
-          if (nargout > 1 || info == 0)
+          if (nargout >= 2 || info == 0)
             {
               retval(1) = info;
               if (LLt)
@@ -570,7 +571,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 {
   int nargin = args.length ();
 
-  if (nargin > 3 || nargin < 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
 
   octave_value argr = args(0);

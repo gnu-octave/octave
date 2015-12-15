@@ -96,13 +96,14 @@ factorization as determined by @var{typ}.\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+#ifdef HAVE_CHOLMOD
+
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3 || nargout > 5)
     print_usage ();
 
-#ifdef HAVE_CHOLMOD
+  octave_value_list retval;
 
   cholmod_common Common;
   cholmod_common *cm = &Common;

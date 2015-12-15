@@ -84,8 +84,6 @@ The author of the code itself is Timothy A. Davis\n\
 @seealso{symamd, colamd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #ifdef HAVE_AMD
   int nargin = args.length ();
 
@@ -164,35 +162,25 @@ The author of the code itself is Timothy A. Davis\n\
   octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
                                               Control, Info);
 
-  switch (result)
-    {
-    case AMD_OUT_OF_MEMORY:
-      error ("amd: out of memory");
-      break;
+  if (result == AMD_OUT_OF_MEMORY)
+    error ("amd: out of memory");
+  else if (result == AMD_INVALID)
+    error ("amd: matrix S is corrupted");
 
-    case AMD_INVALID:
-      error ("amd: matrix S is corrupted");
-      break;
+  Matrix Pout (1, n_col);
+  for (octave_idx_type i = 0; i < n_col; i++)
+    Pout.xelem (i) = P[i] + 1;
 
-    default:
-      {
-        if (nargout > 1)
-          retval(1) = xinfo;
+  if (nargout > 1)
+    return ovl (Pout, xinfo);
+  else
+    return ovl (Pout);
 
-        Matrix Pout (1, n_col);
-        for (octave_idx_type i = 0; i < n_col; i++)
-          Pout.xelem (i) = P[i] + 1;
-
-        retval(0) = Pout;
-      }
-    }
 #else
 
   error ("amd: not available in this version of Octave");
 
 #endif
-
-  return retval;
 }
 /*
 %!shared A, A2, opts

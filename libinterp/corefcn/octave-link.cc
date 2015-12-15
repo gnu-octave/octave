@@ -194,68 +194,65 @@ DEFUN (__octave_link_file_dialog__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  if (args.length () != 6)
+    return octave_value_list ();
 
-  if (args.length () == 6)
+  octave_value_list retval (3);
+
+  const Array<std::string> flist = args(0).cellstr_value ();
+  std::string title = args(1).string_value ();
+  std::string filename = args(2).string_value ();
+  Matrix pos = args(3).matrix_value ();
+  std::string multi_on = args(4).string_value (); // on, off, create
+  std::string pathname = args(5).string_value ();
+
+  octave_idx_type nel;
+  octave_link::filter_list filter_lst;
+
+  for (octave_idx_type i = 0; i < flist.rows (); i++)
+    filter_lst.push_back (std::make_pair (flist(i,0),
+                                          (flist.columns () > 1
+                                           ? flist(i,1) : "")));
+
+  flush_octave_stdout ();
+
+  std::list<std::string> items_lst
+    = octave_link::file_dialog (filter_lst, title, filename, pathname,
+                                multi_on);
+
+  nel = items_lst.size ();
+
+  // If 3, then retval is filename, directory, and selected index.
+  if (nel <= 3)
     {
-
-      const Array<std::string> flist = args(0).cellstr_value ();
-      std::string title = args(1).string_value ();
-      std::string filename = args(2).string_value ();
-      Matrix pos = args(3).matrix_value ();
-      std::string multi_on = args(4).string_value (); // on, off, create
-      std::string pathname = args(5).string_value ();
-
-      octave_idx_type nel;
-      octave_link::filter_list filter_lst;
-
-      for (octave_idx_type i = 0; i < flist.rows (); i++)
-        filter_lst.push_back (std::make_pair (flist(i,0),
-                                              (flist.columns () > 1
-                                               ? flist(i,1) : "")));
-
-      flush_octave_stdout ();
-
-      std::list<std::string> items_lst
-        = octave_link::file_dialog (filter_lst, title, filename, pathname,
-                                    multi_on);
-
-      nel = items_lst.size ();
-
-      retval.resize (3);
-
-      // If 3, then retval is filename, directory, and selected index.
-      if (nel <= 3)
+      int idx = 0;
+      for (std::list<std::string>::iterator it = items_lst.begin ();
+           it != items_lst.end (); it++)
         {
-          int idx = 0;
-          for (std::list<std::string>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
-            {
-              retval(idx++) = *it;
+          retval(idx++) = *it;
 
-              if (idx == 1 && retval(0).string_value ().length () == 0)
-                retval(0) = 0;
+          if (idx == 1 && retval(0).string_value ().length () == 0)
+            retval(0) = 0;
 
-              if (idx == 3)
-                retval(2) = atoi (retval(2).string_value ().c_str ());
-            }
+          if (idx == 3)
+            retval(2) = atoi (retval(2).string_value ().c_str ());
         }
-      else
+    }
+  else
+    {
+      // Multiple files.
+      nel = items_lst.size () - 2;
+      Cell items (dim_vector (1, nel));
+
+      std::list<std::string>::iterator it = items_lst.begin ();
+
+      for (int idx = 0; idx < nel; idx++)
         {
-          // Multiple files.
-          nel = items_lst.size () - 2;
-          Cell items (dim_vector (1, nel));
-
-          std::list<std::string>::iterator it = items_lst.begin ();
-
-          for (int idx = 0; idx < nel; idx++)
-            {
-              items.xelem (idx) = *it;
-              it++;
-            }
-
-          retval = ovl (items, *it++, atoi (it->c_str ()));
+          items.xelem (idx) = *it;
+          it++;
         }
+
+      retval = ovl (items, *it++, atoi (it->c_str ()));
     }
 
   return retval;
@@ -267,60 +264,56 @@ DEFUN (__octave_link_list_dialog__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  if (args.length () != 8)
+    return octave_value_list ();
 
-  if (args.length () == 8)
+  Cell list = args(0).cell_value ();
+  const Array<std::string> tlist = list.cellstr_value ();
+  octave_idx_type nel = tlist.numel ();
+  std::list<std::string> list_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    list_lst.push_back (tlist(i));
+
+  std::string mode = args(1).string_value ();
+
+  Matrix size_matrix = args(2).matrix_value ();
+  int width = size_matrix(0);
+  int height = size_matrix(1);
+
+  Matrix initial_matrix = args(3).matrix_value ();
+  nel = initial_matrix.numel ();
+  std::list<int> initial_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    initial_lst.push_back (initial_matrix(i));
+
+  std::string name = args(4).string_value ();
+  list = args(5).cell_value ();
+  const Array<std::string> plist = list.cellstr_value ();
+  nel = plist.numel ();
+  std::list<std::string> prompt_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    prompt_lst.push_back (plist(i));
+  std::string ok_string = args(6).string_value ();
+  std::string cancel_string = args(7).string_value ();
+
+  flush_octave_stdout ();
+
+  std::pair<std::list<int>, int> result
+    = octave_link::list_dialog (list_lst, mode, width, height,
+                                initial_lst, name, prompt_lst,
+                                ok_string, cancel_string);
+
+  std::list<int> items_lst = result.first;
+  nel = items_lst.size ();
+  Matrix items (dim_vector (1, nel));
+  octave_idx_type i = 0;
+  for (std::list<int>::iterator it = items_lst.begin ();
+       it != items_lst.end (); it++)
     {
-      Cell list = args(0).cell_value ();
-      const Array<std::string> tlist = list.cellstr_value ();
-      octave_idx_type nel = tlist.numel ();
-      std::list<std::string> list_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        list_lst.push_back (tlist(i));
-
-      std::string mode = args(1).string_value ();
-
-      Matrix size_matrix = args(2).matrix_value ();
-      int width = size_matrix(0);
-      int height = size_matrix(1);
-
-      Matrix initial_matrix = args(3).matrix_value ();
-      nel = initial_matrix.numel ();
-      std::list<int> initial_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        initial_lst.push_back (initial_matrix(i));
-
-      std::string name = args(4).string_value ();
-      list = args(5).cell_value ();
-      const Array<std::string> plist = list.cellstr_value ();
-      nel = plist.numel ();
-      std::list<std::string> prompt_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        prompt_lst.push_back (plist(i));
-      std::string ok_string = args(6).string_value ();
-      std::string cancel_string = args(7).string_value ();
-
-      flush_octave_stdout ();
-
-      std::pair<std::list<int>, int> result
-        = octave_link::list_dialog (list_lst, mode, width, height,
-                                    initial_lst, name, prompt_lst,
-                                    ok_string, cancel_string);
-
-      std::list<int> items_lst = result.first;
-      nel = items_lst.size ();
-      Matrix items (dim_vector (1, nel));
-      octave_idx_type i = 0;
-      for (std::list<int>::iterator it = items_lst.begin ();
-           it != items_lst.end (); it++)
-        {
-          items.xelem(i++) = *it;
-        }
-
-      retval = ovl (items, result.second);
+      items.xelem(i++) = *it;
     }
 
-  return retval;
+  return ovl (items, result.second);
 }
 
 DEFUN (__octave_link_input_dialog__, args, ,
@@ -329,55 +322,51 @@ DEFUN (__octave_link_input_dialog__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
+  if (args.length () != 4)
+    return octave_value_list ();
 
-  if (args.length () == 4)
+  Cell prompt = args(0).cell_value ();
+  Array<std::string> tmp = prompt.cellstr_value ();
+  octave_idx_type nel = tmp.numel ();
+  std::list<std::string> prompt_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    prompt_lst.push_back (tmp(i));
+
+  std::string title = args(1).string_value ();
+
+  Matrix rc = args(2).matrix_value ();
+  nel = rc.rows ();
+  std::list<float> nr;
+  std::list<float> nc;
+  for (octave_idx_type i = 0; i < nel; i++)
     {
-      Cell prompt = args(0).cell_value ();
-      Array<std::string> tmp = prompt.cellstr_value ();
-      octave_idx_type nel = tmp.numel ();
-      std::list<std::string> prompt_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        prompt_lst.push_back (tmp(i));
-
-      std::string title = args(1).string_value ();
-
-      Matrix rc = args(2).matrix_value ();
-      nel = rc.rows ();
-      std::list<float> nr;
-      std::list<float> nc;
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          nr.push_back (rc(i,0));
-          nc.push_back (rc(i,1));
-        }
-
-      Cell defaults = args(3).cell_value ();
-      tmp = defaults.cellstr_value ();
-      nel = tmp.numel ();
-      std::list<std::string> defaults_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        defaults_lst.push_back (tmp(i));
-
-      flush_octave_stdout ();
-
-      std::list<std::string> items_lst
-        = octave_link::input_dialog (prompt_lst, title, nr, nc,
-                                     defaults_lst);
-
-      nel = items_lst.size ();
-      Cell items (dim_vector (nel, 1));
-      octave_idx_type i = 0;
-      for (std::list<std::string>::iterator it = items_lst.begin ();
-           it != items_lst.end (); it++)
-        {
-          items.xelem(i++) = *it;
-        }
-
-      retval = items;
+      nr.push_back (rc(i,0));
+      nc.push_back (rc(i,1));
     }
 
-  return retval;
+  Cell defaults = args(3).cell_value ();
+  tmp = defaults.cellstr_value ();
+  nel = tmp.numel ();
+  std::list<std::string> defaults_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    defaults_lst.push_back (tmp(i));
+
+  flush_octave_stdout ();
+
+  std::list<std::string> items_lst
+    = octave_link::input_dialog (prompt_lst, title, nr, nc,
+                                 defaults_lst);
+
+  nel = items_lst.size ();
+  Cell items (dim_vector (nel, 1));
+  octave_idx_type i = 0;
+  for (std::list<std::string>::iterator it = items_lst.begin ();
+       it != items_lst.end (); it++)
+    {
+      items.xelem(i++) = *it;
+    }
+
+  return ovl (items);
 }
 
 DEFUN (__octave_link_show_preferences__, , ,
@@ -386,11 +375,7 @@ DEFUN (__octave_link_show_preferences__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  retval = octave_link::show_preferences ();
-
-  return retval;
+  return octave_value (octave_link::show_preferences ());
 }
 
 DEFUN (__octave_link_show_doc__, args, ,
@@ -399,16 +384,11 @@ DEFUN (__octave_link_show_doc__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
   std::string file;
 
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  retval = octave_link::show_doc (file);
-
-  return retval;
+  return octave_value (octave_link::show_doc (file));
 }
-
-
 

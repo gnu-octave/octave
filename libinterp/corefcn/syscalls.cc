@@ -685,11 +685,6 @@ error message.\n\
   if (octal_mode < 0)
     error ("mkfifo: MODE must be a positive integer value");
 
-  octave_value_list retval (2);
-
-  retval(1) = std::string ();
-  retval(0) = -1;
-
   int mode = convert (octal_mode, 8, 10);
 
   std::string msg;

@@ -636,7 +636,6 @@ factorization from scratch.\n\
   if (! check_lu_dims (argl, argu, argp))
     error ("luupdate: dimension mismatch");
 
-  octave_value_list retval;
   PermMatrix P = (pivoted
                   ? argp.perm_matrix_value ()
                   : PermMatrix::eye (argl.rows ()));
@@ -660,9 +659,9 @@ factorization from scratch.\n\
             fact.update (x, y);
 
           if (pivoted)
-            retval(2) = fact.P ();
-          retval(1) = get_lu_u (fact);
-          retval(0) = get_lu_l (fact);
+            return ovl (get_lu_l (fact), get_lu_u (fact), fact.P ());
+          else
+            return ovl (get_lu_l (fact), get_lu_u (fact));
         }
       else
         {
@@ -678,9 +677,9 @@ factorization from scratch.\n\
             fact.update (x, y);
 
           if (pivoted)
-            retval(2) = fact.P ();
-          retval(1) = get_lu_u (fact);
-          retval(0) = get_lu_l (fact);
+            return ovl (get_lu_l (fact), get_lu_u (fact), fact.P ());
+          else
+            return ovl (get_lu_l (fact), get_lu_u (fact));
         }
     }
   else
@@ -701,9 +700,9 @@ factorization from scratch.\n\
             fact.update (x, y);
 
           if (pivoted)
-            retval(2) = fact.P ();
-          retval(1) = get_lu_u (fact);
-          retval(0) = get_lu_l (fact);
+            return ovl (get_lu_l (fact), get_lu_u (fact), fact.P ());
+          else
+            return ovl (get_lu_l (fact), get_lu_u (fact));
         }
       else
         {
@@ -719,13 +718,11 @@ factorization from scratch.\n\
             fact.update (x, y);
 
           if (pivoted)
-            retval(2) = fact.P ();
-          retval(1) = get_lu_u (fact);
-          retval(0) = get_lu_l (fact);
+            return ovl (get_lu_l (fact), get_lu_u (fact), fact.P ());
+          else
+            return ovl (get_lu_l (fact), get_lu_u (fact));
         }
     }
-
-  return retval;
 }
 
 /*

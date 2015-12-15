@@ -61,8 +61,6 @@ sparse matrix if possible.\n\
   if (args.length () != 1)
     print_usage ();
 
-  octave_value_list retval;
-
   octave_value arg = args(0);
 
   octave_idx_type nr = arg.rows ();
@@ -71,14 +69,14 @@ sparse matrix if possible.\n\
   int arg_is_empty = empty_arg ("inverse", nr, nc);
 
   if (arg_is_empty < 0)
-    return retval;
+    return octave_value_list ();
   else if (arg_is_empty > 0)
     return octave_value (Matrix ());
 
   if (nr != nc)
     {
       gripe_square_matrix_required ("inverse");
-      return retval;
+      return octave_value_list ();
     }
 
   octave_value result;
@@ -191,10 +189,11 @@ sparse matrix if possible.\n\
         gripe_wrong_type_arg ("inv", arg);
     }
 
-  if (nargout > 1)
-    retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
+  octave_value_list retval (nargout > 1 ? 2 : 1);
 
   retval(0) = result;
+  if (nargout > 1)
+    retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
 
   bool rcond_plus_one_eq_one = false;
 

@@ -177,24 +177,20 @@ error message.\n\
 @seealso{ls, dir, glob, what}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
-  retval(2) = std::string ();
-  retval(1) = -1.0;
-  retval(0) = Cell ();
-
   std::string dirname = args(0).xstring_value ("readdir: DIR must be a string");
+
+  octave_value_list retval = ovl (Cell (), -1.0, "");
 
   dir_entry dir (dirname);
 
   if (dir)
     {
       string_vector dirlist = dir.read ();
-      retval(1) = 0.0;
       retval(0) = Cell (dirlist.sort ());
+      retval(1) = 0.0;
     }
   else
     retval(2) = dir.error ();
@@ -225,16 +221,10 @@ When creating a directory permissions will be set to\n\
 @seealso{rmdir, pwd, cd, umask}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-
-  retval(2) = std::string ();
-  retval(1) = std::string ();
-  retval(0) = false;
 
   std::string dirname;
 
@@ -248,35 +238,26 @@ When creating a directory permissions will be set to\n\
   else if (nargin == 1)
     dirname = args(0).xstring_value ("mkdir: DIR must be a string");
 
-  std::string msg;
-
   dirname = file_ops::tilde_expand (dirname);
 
   file_stat fs (dirname);
 
   if (fs && fs.is_dir ())
     {
-      // For compatibility with Matlab, we return true when the
-      // directory already exists.
-
-      retval(2) = "mkdir";
-      retval(1) = "directory exists";
-      retval(0) = true;
+      // For Matlab compatibility, return true when directory already exists.
+      return ovl (true, "directory exists", "mkdir");
     }
   else
     {
+      std::string msg;
+
       int status = octave_mkdir (dirname, 0777, msg);
 
       if (status < 0)
-        {
-          retval(2) = "mkdir";
-          retval(1) = msg;
-        }
+        return ovl (false, msg, "mkdir");
       else
-        retval(0) = true;
+        return ovl (true, "", "");
     }
-
-  return retval;
 }
 
 DEFUNX ("rmdir", Frmdir, args, ,
@@ -297,16 +278,10 @@ identifier.\n\
 @seealso{mkdir, confirm_recursive_rmdir, pwd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-
-  retval(2) = std::string ();
-  retval(1) = std::string ();
-  retval(0) = false;
 
   std::string dirname = args(0).xstring_value ("rmdir: DIR must be a string");
 
@@ -316,37 +291,28 @@ identifier.\n\
 
   if (nargin == 2)
     {
-      if (args(1).string_value () == "s")
-        {
-          bool doit = true;
-
-          if (interactive && ! forced_interactive
-              && Vconfirm_recursive_rmdir)
-            {
-              std::string prompt
-                = "remove entire contents of " + fulldir + "? ";
-
-              doit = octave_yes_or_no (prompt);
-            }
-
-          if (doit)
-            status = octave_recursive_rmdir (fulldir, msg);
-        }
-      else
+      if (args(1).string_value () != "s")
         error ("rmdir: second argument must be \"s\" for recursive removal");
+
+      bool doit = true;
+
+      if (interactive && ! forced_interactive && Vconfirm_recursive_rmdir)
+        {
+          std::string prompt = "remove entire contents of " + fulldir + "? ";
+
+          doit = octave_yes_or_no (prompt);
+        }
+
+      if (doit)
+        status = octave_recursive_rmdir (fulldir, msg);
     }
   else
     status = octave_rmdir (fulldir, msg);
 
   if (status < 0)
-    {
-      retval(2) = "rmdir";
-      retval(1) = msg;
-    }
+    return ovl (false, msg, "rmdir");
   else
-    retval(0) = true;
-
-  return retval;
+    return ovl (true, "", "");
 }
 
 DEFUNX ("link", Flink, args, ,
@@ -361,13 +327,8 @@ error message.\n\
 @seealso{symlink, unlink, readlink, lstat}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
 
   std::string from = args(0).xstring_value ("link: OLD must be a string");
   std::string to = args(1).xstring_value ("link: NEW must be a string");
@@ -377,11 +338,9 @@ error message.\n\
   int status = octave_link (from, to, msg);
 
   if (status < 0)
-    retval(1) = msg;
-
-  retval(0) = status;
-
-  return retval;
+    return ovl (-1.0, msg);
+  else
+    return ovl (status, "");
 }
 
 DEFUNX ("symlink", Fsymlink, args, ,
@@ -396,13 +355,8 @@ error message.\n\
 @seealso{link, unlink, readlink, lstat}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
 
   std::string from = args(0).xstring_value ("symlink: OLD must be a string");
   std::string to = args(1).xstring_value ("symlink: NEW must be a string");
@@ -412,11 +366,9 @@ error message.\n\
   int status = octave_symlink (from, to, msg);
 
   if (status < 0)
-    retval(1) = msg;
-
-  retval(0) = status;
-
-  return retval;
+    return ovl (-1.0, msg);
+  else
+    return ovl (status, "");
 }
 
 DEFUNX ("readlink", Freadlink, args, ,
@@ -432,29 +384,19 @@ error message.\n\
 @seealso{lstat, symlink, link, unlink, delete}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
-  retval(2) = std::string ();
-  retval(1) = -1.0;
-  retval(0) = std::string ();
-
   std::string symlink = args(0).xstring_value ("readlink: SYMLINK must be a string");
 
-  std::string result;
-  std::string msg;
+  std::string result, msg;
 
   int status = octave_readlink (symlink, result, msg);
 
   if (status < 0)
-    retval(2) = msg;
-
-  retval(1) = status;
-  retval(0) = result;
-
-  return retval;
+    return ovl ("", -1.0, msg);
+  else
+    return ovl (result, status, "");
 }
 
 DEFUNX ("rename", Frename, args, ,
@@ -469,13 +411,8 @@ error message.\n\
 @seealso{movefile, copyfile, ls, dir}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
 
   std::string from = args(0).xstring_value ("rename: OLD must be a string");
   std::string to = args(1).xstring_value ("rename: NEW must be a string");
@@ -485,11 +422,9 @@ error message.\n\
   int status = octave_rename (from, to, msg);
 
   if (status < 0)
-    retval(1) = msg;
-
-  retval(0) = status;
-
-  return retval;
+    return ovl (-1.0, msg);
+  else
+    return ovl (status, "");
 }
 
 DEFUN (glob, args, ,

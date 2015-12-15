@@ -143,17 +143,15 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{colamd, csymamd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #ifdef HAVE_CCOLAMD
 
   int nargin = args.length ();
-  int spumoni = 0;
 
   if (nargout > 2 || nargin < 1 || nargin > 3)
     usage ("ccolamd: incorrect number of input and/or output arguments");
 
-  retval.resize (nargout == 2 ? 2 : 1);
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+  int spumoni = 0;
 
   // Get knobs
   OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
@@ -329,13 +327,13 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       out_stats (CCOLAMD_INFO2) ++ ;
     }
 
+  return retval;
+
 #else
 
   error ("ccolamd: not available in this version of Octave");
 
 #endif
-
-  return retval;
 }
 
 DEFUN_DLD (csymamd, args, nargout,
@@ -403,17 +401,15 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{symamd, ccolamd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #if HAVE_CCOLAMD
 
   int nargin = args.length ();
-  int spumoni = 0;
 
   if (nargout > 2 || nargin < 1 || nargin > 3)
     usage ("ccolamd: incorrect number of input and/or output arguments");
 
-  retval.resize (nargout == 2 ? 2 : 1);
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+  int spumoni = 0;
 
   // Get knobs
   OCTAVE_LOCAL_BUFFER (double, knobs, CCOLAMD_KNOBS);
@@ -562,11 +558,11 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       out_stats (CCOLAMD_INFO2) ++ ;
     }
 
+  return retval;
+
 #else
 
   error ("csymamd: not available in this version of Octave");
 
 #endif
-
-  return retval;
 }

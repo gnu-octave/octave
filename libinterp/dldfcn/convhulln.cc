@@ -104,13 +104,14 @@ convex hull is calculated.\n\n\
 @seealso{convhull, delaunayn, voronoin}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #if defined (HAVE_QHULL)
 
   int nargin = args.length ();
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_value_list retval;
 
   Matrix points (args(0).matrix_value ());
   const octave_idx_type dim = points.columns ();
@@ -159,10 +160,10 @@ convex hull is calculated.\n\n\
 #endif
   FILE *errfile = stderr;
 
-  if (outfile)
-    frame.add_fcn (close_fcn, outfile);
-  else
+  if (! outfile)
     error ("convhulln: unable to create temporary file for output");
+
+  frame.add_fcn (close_fcn, outfile);
 
   // qh_new_qhull command and points arguments are not const...
 
@@ -174,108 +175,106 @@ convex hull is calculated.\n\n\
 
   int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
                                ismalloc, cmd_str, outfile, errfile);
-  if (! exitcode)
+  if (exitcode)
+    error ("convhulln: qhull failed");
+
+  bool nonsimp_seen = false;
+
+  octave_idx_type nf = qh num_facets;
+
+  Matrix idx (nf, dim + 1);
+
+  facetT *facet;
+
+  octave_idx_type i = 0;
+
+  FORALLfacets
     {
-      bool nonsimp_seen = false;
+      octave_idx_type j = 0;
 
-      octave_idx_type nf = qh num_facets;
-
-      Matrix idx (nf, dim + 1);
-
-      facetT *facet;
-
-      octave_idx_type i = 0;
-
-      FORALLfacets
+      if (! (nonsimp_seen || facet->simplicial || qh hull_dim == 2))
         {
-          octave_idx_type j = 0;
+          nonsimp_seen = true;
 
-          if (! (nonsimp_seen || facet->simplicial || qh hull_dim == 2))
+          if (cmd.find ("QJ") != std::string::npos)
+            // Should never happen with QJ.
+            error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
+        }
+
+      if (dim == 3)
+        {
+          setT *vertices = qh_facet3vertex (facet);
+
+          vertexT *vertex, **vertexp;
+
+          FOREACHvertex_ (vertices)
+            idx(i, j++) = 1 + qh_pointid(vertex->point);
+
+          qh_settempfree (&vertices);
+        }
+      else
+        {
+          if (facet->toporient ^ qh_ORIENTclock)
             {
-              nonsimp_seen = true;
-
-              if (cmd.find ("QJ") != std::string::npos)
-                // Should never happen with QJ.
-                error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
-            }
-
-          if (dim == 3)
-            {
-              setT *vertices = qh_facet3vertex (facet);
-
               vertexT *vertex, **vertexp;
 
-              FOREACHvertex_ (vertices)
+              FOREACHvertex_ (facet->vertices)
                 idx(i, j++) = 1 + qh_pointid(vertex->point);
-
-              qh_settempfree (&vertices);
             }
           else
             {
-              if (facet->toporient ^ qh_ORIENTclock)
-                {
-                  vertexT *vertex, **vertexp;
+              vertexT *vertex, **vertexp;
 
-                  FOREACHvertex_ (facet->vertices)
-                    idx(i, j++) = 1 + qh_pointid(vertex->point);
-                }
-              else
-                {
-                  vertexT *vertex, **vertexp;
-
-                  FOREACHvertexreverse12_ (facet->vertices)
-                    idx(i, j++) = 1 + qh_pointid(vertex->point);
-                }
+              FOREACHvertexreverse12_ (facet->vertices)
+                idx(i, j++) = 1 + qh_pointid(vertex->point);
             }
-          if (j < dim)
-            warning ("convhulln: facet %d only has %d vertices", i, j);
-
-          i++;
         }
+      if (j < dim)
+        warning ("convhulln: facet %d only has %d vertices", i, j);
 
-      // Remove extra dimension if all facets were simplicial.
-
-      if (! nonsimp_seen)
-        idx.resize (nf, dim, 0.0);
-
-      if (nargout == 2)
-        {
-          // Calculate volume of convex hull, taken from qhull src/geom2.c.
-
-          realT area;
-          realT dist;
-
-          FORALLfacets
-            {
-              if (! facet->normal)
-                continue;
-
-              if (facet->upperdelaunay && qh ATinfinity)
-                continue;
-
-              facet->f.area = area = qh_facetarea (facet);
-              facet->isarea = True;
-
-              if (qh DELAUNAY)
-                {
-                  if (facet->upperdelaunay == qh UPPERdelaunay)
-                    qh totarea += area;
-                }
-              else
-                {
-                  qh totarea += area;
-                  qh_distplane (qh interior_point, facet, &dist);
-                  qh totvol += -dist * area/ qh hull_dim;
-                }
-            }
-
-          retval(1) = octave_value (qh totvol);
-        }
-
-      retval(0) = idx;
+      i++;
     }
-  else
-    error ("convhulln: qhull failed");
+
+  // Remove extra dimension if all facets were simplicial.
+
+  if (! nonsimp_seen)
+    idx.resize (nf, dim, 0.0);
+
+  if (nargout == 2)
+    {
+      // Calculate volume of convex hull, taken from qhull src/geom2.c.
+
+      realT area;
+      realT dist;
+
+      FORALLfacets
+        {
+          if (! facet->normal)
+            continue;
+
+          if (facet->upperdelaunay && qh ATinfinity)
+            continue;
+
+          facet->f.area = area = qh_facetarea (facet);
+          facet->isarea = True;
+
+          if (qh DELAUNAY)
+            {
+              if (facet->upperdelaunay == qh UPPERdelaunay)
+                qh totarea += area;
+            }
+          else
+            {
+              qh totarea += area;
+              qh_distplane (qh interior_point, facet, &dist);
+              qh totvol += -dist * area/ qh hull_dim;
+            }
+        }
+
+      retval(1) = octave_value (qh totvol);
+    }
+
+  retval(0) = idx;
 
   // Free memory from Qhull
   qh_freeqhull (! qh_ALL);
@@ -287,11 +286,11 @@ convex hull is calculated.\n\n\
     warning ("convhulln: did not free %d bytes of long memory (%d pieces)",
              totlong, curlong);
 
+  return retval;
+
 #else
   error ("convhulln: not available in this version of Octave");
 #endif
-
-  return retval;
 }
 
 /*

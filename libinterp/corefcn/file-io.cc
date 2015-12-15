@@ -975,50 +975,43 @@ expanded even when the template string is defined with single quotes.\n\
 {
   static std::string who = "sprintf";
 
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
 
-  retval = ovl ("", "unknown error", -1.0);
-
   octave_ostrstream *ostr = new octave_ostrstream ();
 
   octave_stream os (ostr);
 
-  if (os.is_valid ())
-    {
-      octave_value fmt_arg = args(0);
-
-      if (fmt_arg.is_string ())
-        {
-          octave_value_list tmp_args;
-
-          if (nargin > 1)
-            {
-              tmp_args.resize (nargin-1, octave_value ());
-
-              for (int i = 1; i < nargin; i++)
-                tmp_args(i-1) = args(i);
-            }
-
-          retval(2) = os.printf (fmt_arg, tmp_args, who);
-          retval(1) = os.error ();
-
-          std::string result = ostr->str ();
-          char type = fmt_arg.is_sq_string () ? '\'' : '"';
-
-          retval(0) = (result.empty ()
-                       ? octave_value (charMatrix (1, 0), type)
-                       : octave_value (result, type));
-        }
-      else
-        error ("%s: format TEMPLATE must be a string", who.c_str ());
-    }
-  else
+  if (! os.is_valid ())
     error ("%s: unable to create output buffer", who.c_str ());
+
+  octave_value fmt_arg = args(0);
+
+  if (! fmt_arg.is_string ())
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
+
+  octave_value_list retval (3);
+
+  octave_value_list tmp_args;
+  if (nargin > 1)
+    {
+      tmp_args.resize (nargin-1, octave_value ());
+
+      for (int i = 1; i < nargin; i++)
+        tmp_args(i-1) = args(i);
+    }
+
+  // NOTE: Call to os.error must precede next call to ostr which might reset it.
+  retval(2) = os.printf (fmt_arg, tmp_args, who);
+  retval(1) = os.error ();
+
+  std::string result = ostr->str ();
+  char type = fmt_arg.is_sq_string () ? '\'' : '"';
+
+  retval(0) = (result.empty () ? octave_value (charMatrix (1, 0), type)
+                               : octave_value (result, type));
 
   return retval;
 }

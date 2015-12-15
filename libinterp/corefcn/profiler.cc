@@ -436,12 +436,9 @@ Undocumented internal function.\n\
   if (args.length () > 0)
     warning ("profiler_data: ignoring extra arguments");
 
-  octave_value_list retval;
-
   if (nargout > 1)
-    retval(1) = profiler.get_hierarchical ();
-  retval(0) = profiler.get_flat ();
-
-  return retval;
+    return ovl (profiler.get_flat (), profiler.get_hierarchical ());
+  else
+    return ovl (profiler.get_flat ());
 }
 

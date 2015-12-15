@@ -261,7 +261,10 @@ parameters for @code{lsode}.\n\
 @seealso{daspk, dassl, dasrt}\n\
 @end deftypefn")
 {
-  octave_value_list retval (3);
+  int nargin = args.length ();
+
+  if (nargin < 3 || nargin > 4 || nargout > 3)
+    print_usage ();
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
@@ -273,11 +276,6 @@ parameters for @code{lsode}.\n\
 
   if (call_depth > 1)
     error ("lsode: invalid recursive call");
-
-  int nargin = args.length ();
-
-  if (nargin < 3 || nargin > 4 || nargout > 3)
-    print_usage ();
 
   std::string fcn_name, fname, jac_name, jname;
   lsode_fcn = 0;
@@ -426,6 +424,8 @@ parameters for @code{lsode}.\n\
     clear_function (jac_name);
 
   std::string msg = ode.error_message ();
+
+  octave_value_list retval (3);
 
   if (ode.integration_ok ())
     retval(0) = output;

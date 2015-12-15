@@ -291,10 +291,10 @@ Note also that @var{U} and @var{T} are not unique.\n\
 @seealso{schur}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2 || nargout > 2)
     print_usage ();
+
+  octave_value_list retval;
 
   if (! args(0).is_numeric_type ())
     gripe_wrong_type_arg ("rsf2csf", args(0));
@@ -312,8 +312,7 @@ Note also that @var{U} and @var{T} are not unique.\n\
 
           FloatComplexSCHUR cs (FloatSCHUR (t, u));
 
-          retval(1) = cs.schur_matrix ();
-          retval(0) = cs.unitary_matrix ();
+          retval = ovl (cs.unitary_matrix (), cs.schur_matrix ());
         }
       else
         {
@@ -322,8 +321,7 @@ Note also that @var{U} and @var{T} are not unique.\n\
 
           ComplexSCHUR cs (SCHUR (t, u));
 
-          retval(1) = cs.schur_matrix ();
-          retval(0) = cs.unitary_matrix ();
+          retval = ovl (cs.unitary_matrix (), cs.schur_matrix ());
         }
     }
 

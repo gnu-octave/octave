@@ -199,12 +199,12 @@ x = @var{R} \\ @var{C}\n\
 @seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > (args(0).is_sparse_type () ? 3 : 2))
     print_usage ();
+
+  octave_value_list retval;
 
   octave_value arg = args(0);
 
@@ -307,12 +307,11 @@ x = @var{R} \\ @var{C}\n\
                 default:
                   {
                     FloatQRP fact (m, type);
+
                     if (type == QR::economy)
-                      retval(2) = fact.Pvec ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
-                      retval(2) = fact.P ();
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
                   }
                   break;
                 }
@@ -342,11 +341,9 @@ x = @var{R} \\ @var{C}\n\
                   {
                     FloatComplexQRP fact (m, type);
                     if (type == QR::economy)
-                      retval(2) = fact.Pvec ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
-                      retval(2) = fact.P ();
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
                   }
                   break;
                 }
@@ -379,11 +376,9 @@ x = @var{R} \\ @var{C}\n\
                   {
                     QRP fact (m, type);
                     if (type == QR::economy)
-                      retval(2) = fact.Pvec ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
-                      retval(2) = fact.P ();
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
                   }
                   break;
                 }
@@ -413,11 +408,9 @@ x = @var{R} \\ @var{C}\n\
                   {
                     ComplexQRP fact (m, type);
                     if (type == QR::economy)
-                      retval(2) = fact.Pvec ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
-                      retval(2) = fact.P ();
-                    retval(1) = get_qr_r (fact);
-                    retval(0) = fact.Q ();
+                      retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
                   }
                   break;
                 }

@@ -278,17 +278,14 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @seealso{colperm, symamd, ccolamd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #ifdef HAVE_COLAMD
-
   int nargin = args.length ();
-  int spumoni = 0;
 
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
 
-  retval.resize (nargout == 2 ? 2 : 1);
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+  int spumoni = 0;
 
   // Get knobs
   OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
@@ -441,13 +438,13 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
       out_stats (COLAMD_INFO2) ++ ;
     }
 
+  return retval;
+
 #else
 
   error ("colamd: not available in this version of Octave");
 
 #endif
-
-  return retval;
 }
 
 DEFUN_DLD (symamd, args, nargout,
@@ -515,17 +512,15 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @seealso{colperm, colamd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #ifdef HAVE_COLAMD
 
   int nargin = args.length ();
-  int spumoni = 0;
 
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
 
-  retval.resize (nargin == 2 ? 2 : 1);
+  octave_value_list retval (nargin == 2 ? 2 : 1);
+  int spumoni = 0;
 
   // Get knobs
   OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
@@ -633,13 +628,13 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
       out_stats (COLAMD_INFO2) ++ ;
     }
 
+  return retval;
+
 #else
 
   error ("symamd: not available in this version of Octave");
 
 #endif
-
-  return retval;
 }
 
 DEFUN_DLD (etree, args, nargout,
@@ -660,17 +655,17 @@ Called with a second argument, @code{etree} also returns the postorder\n\
 permutations on the tree.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
 
-  retval.resize (nargout == 2 ? 2 : 1);
+  octave_value_list retval (nargout == 2 ? 2 : 1);
 
-  octave_idx_type n_row = 0, n_col = 0;
-  octave_idx_type *ridx = 0, *cidx = 0;
+  octave_idx_type n_row = 0;
+  octave_idx_type n_col = 0;
+  octave_idx_type *ridx = 0;
+  octave_idx_type *cidx = 0;
 
   if (args(0).is_sparse_type ())
     {

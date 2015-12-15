@@ -434,6 +434,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
           retval = octave_value (fcn);
 
           class_constructors[name] = retval;
+          class_methods[name] = retval;
         }
     }
   else
@@ -456,6 +457,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
               retval = maybe_cdef_ctor;
 
               class_constructors[name] = retval;
+              class_methods[name] = retval;
 
               function_on_path = old_function_on_path;
             }

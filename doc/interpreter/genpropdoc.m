@@ -385,19 +385,18 @@ value in the figure title bar.";
         s.valid = valid_4elvec;
 
       case "paperorientation"
-        s.doc = "Defines the orientaton of the printed page.  The value for \
-the @code{papersize} property depends upon __prop__.\
-The @code{papersize} values reverse order when __prop__ is switched \
+        s.doc = "The value for the @code{papersize} property depends upon \
+__prop__.  The @code{papersize} values reverse order when __prop__ is switched \
 between @code{\"portrait\"} and either @code{\"landscape\"} or \
 @code{\"rotated\"}.  The value of @code{paperposition} is not dependent upon \
-the value of __prop__, and must be adjusted indepdently when needed."
+the value of __prop__."
 
       case "paperposition"
         s.doc = "Vector @code{[x0 y0 width height]} defining the position and \
 size of the figure (in @code{paperunits} units) on the printed page.  The \
 position @code{[x0 y0]} defines the lower left corner of the figure on the \
-page, and the size is defined by @code{[width height]}.  For output formats, \
-not implicity rendered on paper, the @code{width} and @code{height} define the \
+page, and the size is defined by @code{[width height]}.  For output formats \
+not implicity rendered on paper, @code{width} and @code{height} define the \
 size of the image and the position information is ignored.  __modemsg__.";
         s.valid = valid_4elvec;
 

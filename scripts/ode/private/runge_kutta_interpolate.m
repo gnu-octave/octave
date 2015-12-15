@@ -108,7 +108,6 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
   ## H3 =     -  5*s.^2 + 14*s.^3 -  8*s.^4;
   ## H4 =          s.^2 -  3*s.^3 +  2*s.^4;
 
-  x_out = zeros (rows (x), length (t_out));
   x_out = (1   - 11*s.^2 + 18*s.^3 -  8*s.^4) .* x(:,1) + ...
           (  s -  4*s.^2 +  5*s.^3 -  2*s.^4) .* (dt * der(:,1)) + ...
           (      16*s.^2 - 32*s.^3 + 16*s.^4) .* u_half + ...
@@ -121,12 +120,11 @@ endfunction
 ## solution at the time t_out using 3rd order hermite interpolation.
 function x_out = hermite_cubic_interpolation (t, x, der, t_out)
 
-  s = (t_out - t(1)) / (t(2) - t(1));
-  x_out = zeros (size (x, 1), length (t_out));
-
-  for ii = 1:size (x, 1)
-    x_out(ii,:) = (1+2*s).*(1-s).^2*x(ii,1) + s.*(1-s).^2*(t(2)-t(1))*der(ii,1) ...
-                  + (3-2*s).*s.^2*x(ii,2) + (s-1).*s.^2*(t(2)-t(1))*der(ii,2);
-  endfor
+  dt = (t(2) - t(1));
+  s = (t_out - t(1)) / dt;
+  x_out = ((1 + 2*s) .* (1-s).^2) .* x(:,1) + ...
+          (s .* (1-s).^2 * dt   ) .* der(:,1) + ...
+          ((3-2*s) .* s.^2      ) .* x(:,2) + ...
+          ((s-1) .* s.^2   * dt ) .* der(:,2);
   
 endfunction

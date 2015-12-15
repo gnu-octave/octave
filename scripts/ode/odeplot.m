@@ -42,7 +42,7 @@
 %# @end example
 %# @end deftypefn
 %#
-%# @seealso{odepkg}
+%# @seealso{odeset,odeget}
 
 function [varargout] = odeplot (t, y, flag, varargin)
 

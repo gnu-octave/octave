@@ -34,14 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-/* Extended debugging */
+// Extended debugging.
 #define DEBUG_QUADCC 0
 
-/* Define the minimum size of the interval heap. */
+// Define the minimum size of the interval heap.
 #define min_cquad_heapsize  200
 
-
-/* Data of a single interval */
+// Data of a single interval.
 typedef struct
 {
   double a, b;
@@ -51,7 +50,7 @@ typedef struct
   int depth, rdepth, ndiv;
 } cquad_ival;
 
-/* Some constants and matrices that we'll need.  */
+// Some constants and matrices that we'll need.
 
 static const double xi[33] =
 {
@@ -1395,20 +1394,18 @@ static const double Tright[33 * 33] =
   0., 0., .23283064365386962891e-9
 };
 
-/* Allocates a workspace for the given maximum number of intervals.
-    Note that if the workspace gets filled, the intervals with the
-    lowest error estimates are dropped. The maximum number of
-    intervals is therefore not the maximum number of intervals
-    that will be computed, but merely the size of the buffer.
-    */
+// Allocates a workspace for the given maximum number of intervals.
+// Note that if the workspace gets filled, the intervals with the lowest
+// error estimates are dropped. The maximum number of intervals is
+// therefore not the maximum number of intervals that will be computed,
+// but merely the size of the buffer.
 
-/* Compute the product of the fx with one of the inverse
-    Vandermonde-like matrices. */
+// Compute the product of the fx with one of the inverse
+// Vandermonde-like matrices.
 
 void
 Vinvfx (const double *fx, double *c, const int d)
 {
-
   int i, j;
 
   switch (d)
@@ -1446,17 +1443,14 @@ Vinvfx (const double *fx, double *c, const int d)
         }
       break;
     }
-
 }
 
-
-/* Downdate the interpolation given by the n coefficients c
-    by removing the nodes with indices in nans. */
+// Downdate the interpolation given by the N coefficients C by removing
+// the nodes with indices in nans.
 
 void
 downdate (double *c, int n, int d, int *nans, int nnans)
 {
-
   static const int bidx[4] = { 0, 6, 16, 34 };
   double b_new[34], alpha;
   int i, j;
@@ -1479,11 +1473,9 @@ downdate (double *c, int n, int d, int *nans, int nnans)
       c[n] = 0;
       n--;
     }
-
 }
 
-
-/* The actual integration routine.  */
+// The actual integration routine.
 
 DEFUN (quadcc, args, nargout,
        "-*- texinfo -*-\n\
@@ -1555,26 +1547,26 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {
-  /* Some constants that we will need. */
+  // Some constants that we will need.
   static const int n[4] = { 4, 8, 16, 32 };
   static const int skip[4] = { 8, 4, 2, 1 };
   static const int idx[4] = { 0, 5, 14, 31 };
   static const double w = M_SQRT2 / 2;
   static const int ndiv_max = 20;
 
-  /* Arguments left and right */
+  // Arguments left and right.
   int nargin = args.length ();
   octave_function *fcn;
   double a, b, tol, *sing;
 
-  /* Variables needed for transforming the integrand. */
+  // Variables needed for transforming the integrand.
   bool wrap = false;
   double xw;
 
-  /* Stuff we will need to call the integrand. */
+  // Stuff we will need to call the integrand.
   octave_value_list fargs, fvals;
 
-  /* Actual variables (as opposed to constants above). */
+  // Actual variables (as opposed to constants above).
   double m, h, ml, hl, mr, hr, temp;
   double igral, err, igral_final, err_final;
   int nivals, neval = 0;
@@ -1583,8 +1575,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   cquad_ival *iv, *ivl, *ivr;
   double nc, ncdiff;
 
-
-  /* Parse the input arguments. */
+  // Parse the input arguments.
   if (nargin < 3)
     print_usage ();
 
@@ -1618,19 +1609,15 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     tol = args(3).double_value ();
 
   if (nargin < 5)
-    {
-      nivals = 1;
-    }
+    nivals = 1;
   else if (!(args(4).is_real_scalar () || args(4).is_real_matrix ()))
     error ("quadcc: list of singularities (SING) must be a vector of real values");
   else
-    {
-      nivals = 1 + args(4).numel ();
-    }
+    nivals = 1 + args(4).numel ();
 
   int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1
                                                      : min_cquad_heapsize);
-  /* The interval heap. */
+  // The interval heap.
   OCTAVE_LOCAL_BUFFER (cquad_ival, ivals, cquad_heapsize);
   OCTAVE_LOCAL_BUFFER (double, iivals, cquad_heapsize);
   OCTAVE_LOCAL_BUFFER (int, heap, cquad_heapsize);
@@ -1642,7 +1629,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
   else
     {
-      // Intervals around singularities
+      // Intervals around singularities.
       sing = args(4).array_value ().fortran_vec ();
       iivals[0] = a;
       for (i = 0; i < nivals - 1; i++)
@@ -1650,7 +1637,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       iivals[nivals] = b;
     }
 
-  /* If a or b are +/-Inf, transform the integral. */
+  // If a or b are +/-Inf, transform the integral.
   if (xisinf (a) || xisinf (b))
     {
       wrap = true;
@@ -1661,18 +1648,16 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           iivals[i] = 2.0 * atan (iivals[i]) / M_PI;
     }
 
-
-  /* Initialize the heaps. */
+  // Initialize the heaps.
   for (i = 0; i < cquad_heapsize; i++)
     heap[i] = i;
 
-  /* Create the first interval(s). */
+  // Create the first interval(s).
   igral = 0.0;
   err = 0.0;
   for (j = 0; j < nivals; j++)
     {
-
-      /* Initialize the interval. */
+      // Initialize the interval.
       iv = &(ivals[heap[j]]);
       m = (iivals[j] + iivals[j + 1]) / 2;
       h = (iivals[j + 1] - iivals[j]) / 2;
@@ -1742,11 +1727,11 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       if (ncdiff / nc > 0.1 && iv->err < 2 * h * nc)
         iv->err = 2 * h * nc;
 
-      /* Tabulate this interval's data. */
+      // Tabulate this interval's data.
       igral += iv->igral;
       err += iv->err;
 
-      /* Sift it up the heap. */
+      // Sift it up the heap.
       i = j;
       while (i > 0 && ivals[heap[i / 2]].err < ivals[heap[i]].err)
         {
@@ -1755,25 +1740,21 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           heap[i / 2] = temp;
           i /= 2;
         }
-
     }
 
-
-  /* Initialize some global values. */
+  // Initialize some global values.
   igral_final = 0.0;
   err_final = 0.0;
 
-
-  /* Main loop. */
+  // Main loop.
   while (nivals > 0 && err > 0.0 && err > fabs (igral) * tol
          && !(err_final > fabs (igral) * tol
               && err - err_final < fabs (igral) * tol))
     {
-
-      /* Allow the user to interrupt. */
+      // Allow the user to interrupt.
       OCTAVE_QUIT;
 
-      /* Put our finger on the interval with the largest error. */
+      // Put our finger on the interval with the largest error.
       iv = &(ivals[heap[0]]);
       m = (iv->a + iv->b) / 2;
       h = (iv->b - iv->a) / 2;
@@ -1783,14 +1764,13 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
 
-      /* Should we try to increase the degree? */
+      // Should we try to increase the degree?
       if (iv->depth < 3)
         {
-
-          /* Keep tabs on some variables. */
+          // Keep tabs on some variables.
           d = ++iv->depth;
 
-          /* Get the new (missing) function values */
+          // Get the new (missing) function values.
           {
             ColumnVector ex (n[d] / 2);
             if (wrap)
@@ -1834,9 +1814,9 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 }
             }
 
-          /* Compute the new coefficients. */
+          // Compute the new coefficients.
           Vinvfx (iv->fx, &(iv->c[idx[d]]), d);
-          /* Downdate any NaNs. */
+          // Downdate any NaNs.
           if (nnans > 0)
             {
               downdate (&(iv->c[idx[d]]), n[d], d, nans, nnans);
@@ -1844,7 +1824,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 iv->fx[nans[i]] = octave_NaN;
             }
 
-          /* Compute the error estimate. */
+          // Compute the error estimate.
           nc = 0.0;
           for (i = n[d - 1] + 1; i <= n[d]; i++)
             {
@@ -1861,51 +1841,48 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           ncdiff = sqrt (ncdiff);
           nc = sqrt (nc);
           iv->err = ncdiff * 2 * h;
-          /* Compute the local integral. */
+          // Compute the local integral.
           iv->igral = 2 * h * w * iv->c[idx[d]];
-          /* Split the interval prematurely? */
+          // Split the interval prematurely?
           split = (nc > 0 && ncdiff / nc > 0.1);
         }
-
-      /* Maximum degree reached, just split. */
       else
         {
+          // Maximum degree reached, just split.
           split = 1;
         }
 
-
-      /* Should we drop this interval? */
+      // Should we drop this interval?
       if ((m + h * xi[0]) >= (m + h * xi[1])
           || (m + h * xi[31]) >= (m + h * xi[32])
           || iv->err < fabs (iv->igral)
                        * std::numeric_limits<double>::epsilon () * 10)
         {
-
 #if (DEBUG_QUADCC)
           printf ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
                   heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
 
-          /* Keep this interval's contribution */
+          // Keep this interval's contribution.
           err_final += iv->err;
           igral_final += iv->igral;
-          /* Swap with the last element on the heap */
+          // Swap with the last element on the heap.
           t = heap[nivals - 1];
           heap[nivals - 1] = heap[0];
           heap[0] = t;
           nivals--;
-          /* Fix up the heap */
+          // Fix up the heap.
           i = 0;
           while (2 * i + 1 < nivals)
             {
-              /* Get the kids */
+              // Get the kids.
               j = 2 * i + 1;
-              /* If the j+1st entry exists and is larger than the jth,
-                 use it instead. */
+              // If the j+1st entry exists and is larger than the jth,
+              // use it instead.
               if (j + 1 < nivals
                   && ivals[heap[j + 1]].err >= ivals[heap[j]].err)
                 j++;
-              /* Do we need to move the ith entry up? */
+              // Do we need to move the ith entry up?
               if (ivals[heap[j]].err <= ivals[heap[i]].err)
                 break;
               else
@@ -1916,16 +1893,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                   i = j;
                 }
             }
-
         }
-
-      /* Do we need to split this interval? */
       else if (split)
         {
-
-          /* Some values we will need often... */
+          // Some values we will need often...
           d = iv->depth;
-          /* Generate the interval on the left */
+          // Generate the interval on the left.
           ivl = &(ivals[heap[nivals++]]);
           ivl->a = iv->a;
           ivl->b = m;
@@ -2003,7 +1976,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             }
           ncdiff = sqrt (ncdiff);
           ivl->err = ncdiff * h;
-          /* Check for divergence. */
+          // Check for divergence.
           ivl->ndiv = iv->ndiv + (fabs (iv->c[0]) > 0
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
@@ -2013,11 +1986,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               break;
             }
 
-          /* Compute the local integral. */
+          // Compute the local integral.
           ivl->igral = h * w * ivl->c[0];
 
-
-          /* Generate the interval on the right */
+          // Generate the interval on the right.
           ivr = &(ivals[heap[nivals++]]);
           ivr->a = m;
           ivr->b = iv->b;
@@ -2095,7 +2067,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             }
           ncdiff = sqrt (ncdiff);
           ivr->err = ncdiff * h;
-          /* Check for divergence. */
+          // Check for divergence.
           ivr->ndiv = iv->ndiv + (fabs (iv->c[0]) > 0
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
@@ -2105,20 +2077,19 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               break;
             }
 
-          /* Compute the local integral. */
+          // Compute the local integral.
           ivr->igral = h * w * ivr->c[0];
 
+          // Fix-up the heap: we now have one interval on top that we
+          // don't need any more and two new, unsorted ones at the
+          // bottom.
 
-          /* Fix-up the heap: we now have one interval on top
-             that we don't need any more and two new, unsorted
-             ones at the bottom. */
-          /* Flip the last interval to the top of the heap and
-             sift down. */
+          // Flip the last interval to the top of the heap and sift down.
           t = heap[nivals - 1];
           heap[nivals - 1] = heap[0];
           heap[0] = t;
           nivals--;
-          /* Sift this interval back down the heap. */
+          // Sift this interval back down the heap.
           i = 0;
           while (2 * i + 1 < nivals - 1)
             {
@@ -2137,7 +2108,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 }
             }
 
-          /* Now grab the last interval and sift it up the heap. */
+          // Now grab the last interval and sift it up the heap.
           i = nivals - 1;
           while (i > 0)
             {
@@ -2152,13 +2123,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               else
                 break;
             }
-
-
         }
-
-      /* Otherwise, just fix-up the heap. */
       else
         {
+          // Otherwise, just fix-up the heap.
           i = 0;
           while (2 * i + 1 < nivals)
             {
@@ -2176,10 +2144,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                   i = j;
                 }
             }
-
         }
 
-      /* If the heap is about to overflow, remove the last two intervals. */
+      // If the heap is about to overflow, remove the last two
+      // intervals.
       while (nivals > cquad_heapsize - 2)
         {
           iv = &(ivals[heap[nivals - 1]]);
@@ -2192,7 +2160,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nivals--;
         }
 
-      /* Collect the value of the integral and error. */
+      // Collect the value of the integral and error.
       igral = igral_final;
       err = err_final;
       for (i = 0; i < nivals; i++)
@@ -2200,10 +2168,9 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           igral += ivals[heap[i]].igral;
           err += ivals[heap[i]].err;
         }
-
     }
 
-  /* Dump the contents of the heap. */
+  // Dump the contents of the heap.
 #if (DEBUG_QUADCC)
   for (i = 0; i < nivals; i++)
     {
@@ -2216,7 +2183,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
   return ovl (igral, err, neval);
 }
-
 
 /*
 %!assert (quadcc (@sin, -pi, pi), 0, 1e-6)

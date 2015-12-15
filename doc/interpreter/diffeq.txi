@@ -143,11 +143,18 @@ Currently implemented solvers are:
     method.  This is a fourth--order accurate integrator therefore the local
     error normally expected is @math{O(h^5)}.  This solver requires six
     function evaluations per integration step.
+    @item @code{ode23} Integrates a system of non--stiff ordinary differential equations
+    (non-stiff ODEs and DAEs) using second order @nospell{Bogacki-Shampine}
+    method. This is a second-order accurate integrator therefore the local
+    error normally expected is @math{O(h^3)}. This solver requires three
+    function evaluations per integration step.
   @end itemize
 @end itemize
 
 
 @DOCSTRING(ode45)
+
+@DOCSTRING(ode23)
 
 @DOCSTRING(odeset)
 

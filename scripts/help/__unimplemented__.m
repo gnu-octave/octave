@@ -82,7 +82,7 @@ function txt = __unimplemented__ (fcn)
       txt = ["matlabrc is not implemented.  ", ...
              'Octave uses the file ".octaverc" instead.'];
 
-    case {"ode113", "ode15i", "ode15s", "ode23", "ode23s", "ode23t", "ode23tb"}
+    case {"ode113", "ode15i", "ode15s", "ode23s", "ode23t", "ode23tb"}
       txt = ["Octave provides lsode and ode45 for solving differential equations. ", ...
              "For more information try @code{help lsode}, @code{help ode45}.  ", ...
              "Matlab-compatible ODE functions are provided by the odepkg ", ...
@@ -758,7 +758,6 @@ function list = missing_functions ()
   "ode113",
   "ode15i",
   "ode15s",
-  "ode23",
   "ode23s",
   "ode23t",
   "ode23tb",

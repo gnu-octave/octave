@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "nproc.h"
 
-DEFUN (nproc, args, nargout,
+DEFUN (nproc, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {} nproc ()\n\
 @deftypefnx {} {} nproc (@var{query})\n\

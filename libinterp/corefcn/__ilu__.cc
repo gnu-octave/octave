@@ -126,7 +126,7 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
     sm = sm.transpose ();
 }
 
-DEFUN (__ilu0__, args, nargout,
+DEFUN (__ilu0__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
 @deftypefnx {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
@@ -463,7 +463,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
   U = U.transpose ();
 }
 
-DEFUN (__iluc__, args, nargout,
+DEFUN (__iluc__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
 @deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})\n\

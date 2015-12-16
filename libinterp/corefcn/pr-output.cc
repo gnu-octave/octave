@@ -3403,7 +3403,7 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
   panic_impossible ();
 }
 
-DEFUN (rats, args, nargout,
+DEFUN (rats, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} rats (@var{x}, @var{len})\n\
 Convert @var{x} into a rational approximation represented as a string.\n\

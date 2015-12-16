@@ -268,7 +268,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   return filter (b, a, x, si, dim);
 }
 
-DEFUN (filter, args, nargout,
+DEFUN (filter, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})\n\
 @deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\

@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN (sylvester, args, nargout,
+DEFUN (sylvester, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {@var{X} =} syl (@var{A}, @var{B}, @var{C})\n\
 Solve the Sylvester equation\n\

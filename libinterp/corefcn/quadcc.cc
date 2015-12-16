@@ -1477,7 +1477,7 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 // The actual integration routine.
 
-DEFUN (quadcc, args, nargout,
+DEFUN (quadcc, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
 @deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\

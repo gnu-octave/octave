@@ -48,7 +48,7 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
     x /= h(Vc);
 }
 
-DEFUN (mgorth, args, nargout,
+DEFUN (mgorth, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
 Orthogonalize a given column vector @var{x} with respect to a set of\n\

@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "lo-specfun.h"
 
-DEFUN (ellipj, args, nargout,
+DEFUN (ellipj, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
 @deftypefnx {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\

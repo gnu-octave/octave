@@ -134,7 +134,7 @@ quad_float_user_function (float x)
   return retval;
 }
 
-DEFUN (quad, args, nargout,
+DEFUN (quad, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\

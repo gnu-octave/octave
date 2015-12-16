@@ -178,7 +178,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
     }
 }
 
-DEFUN (__ichol0__, args, nargout,
+DEFUN (__ichol0__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{L} =} __ichol0__ (@var{A})\n\
 @deftypefnx {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
@@ -424,7 +424,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
     }
 }
 
-DEFUN (__icholt__, args, nargout,
+DEFUN (__icholt__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{L} =} __icholt__ (@var{A})\n\
 @deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\

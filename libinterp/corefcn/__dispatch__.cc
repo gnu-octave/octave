@@ -42,8 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN (__dispatch__, args, nargout,
        "Undocumented internal function")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
@@ -58,6 +56,8 @@ DEFUN (__dispatch__, args, nargout,
 
   if (nargin > 2)
     t = args(2).xstring_value ("__dispatch__: third argument must be a type name");
+
+  octave_value retval;
 
   if (nargin == 1)
     {

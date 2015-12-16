@@ -188,8 +188,6 @@ fill empty fields.  The default is zero.\n\
 @seealso{csvread, textscan, textread, dlmwrite}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   double empty_value = 0.0;
@@ -460,11 +458,9 @@ fill empty fields.  The default is zero.\n\
     }
 
   if (iscmplx)
-    retval(0) = cdata;
+    return octave_value (cdata);
   else
-    retval(0) = rdata;
-
-  return retval;
+    return octave_value (rdata);
 }
 
 /*

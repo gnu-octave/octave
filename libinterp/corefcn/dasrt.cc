@@ -356,11 +356,16 @@ parameters for @code{dasrt}.\n\
 @seealso{dasrt_options, daspk, dasrt, lsode}\n\
 @end deftypefn")
 {
-  octave_value_list retval (5);
+  int nargin = args.length ();
+
+  if (nargin < 4 || nargin > 6)
+    print_usage ();
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
   warned_cf_imaginary = false;
+
+  octave_value_list retval (5);
 
   unwind_protect frame;
 
@@ -369,11 +374,6 @@ parameters for @code{dasrt}.\n\
 
   if (call_depth > 1)
     DASRT_ABORT1 ("invalid recursive call");
-
-  int nargin = args.length ();
-
-  if (nargin < 4 || nargin > 6)
-    print_usage ();
 
   int argp = 0;
   std::string fcn_name, fname, jac_name, jname;
@@ -419,7 +419,7 @@ parameters for @code{dasrt}.\n\
                   dasrt_j = extract_function (c(1), "dasrt", jac_name, jname,
                                               "; endfunction");
 
-                  if (!dasrt_j)
+                  if (! dasrt_j)
                     {
                       if (fcn_name.length ())
                         clear_function (fcn_name);
@@ -432,7 +432,7 @@ parameters for @code{dasrt}.\n\
         DASRT_ABORT1 ("incorrect number of elements in cell array");
     }
 
-  if (!dasrt_f && ! f_arg.is_cell ())
+  if (! dasrt_f && ! f_arg.is_cell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         dasrt_f = f_arg.function_value ();

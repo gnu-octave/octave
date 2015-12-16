@@ -911,123 +911,121 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
 
   const octave_scalar_map err = args(0).scalar_map_value ();
 
-  if (err.contains ("message") && err.contains ("identifier"))
+  if (! err.contains ("message") || ! err.contains ("identifier"))
+    error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
+
+  std::string msg = err.contents ("message").string_value ();
+  std::string id = err.contents ("identifier").string_value ();
+  int len = msg.length ();
+
+  std::string file;
+  std::string nm;
+  int l = -1;
+  int c = -1;
+
+  octave_map err_stack = initialize_last_error_stack ();
+
+  if (err.contains ("stack"))
     {
-      std::string msg = err.contents ("message").string_value ();
-      std::string id = err.contents ("identifier").string_value ();
-      int len = msg.length ();
+      err_stack = err.contents ("stack").map_value ();
 
-      std::string file;
-      std::string nm;
-      int l = -1;
-      int c = -1;
-
-      octave_map err_stack = initialize_last_error_stack ();
-
-      if (err.contains ("stack"))
+      if (err_stack.numel () > 0)
         {
-          err_stack = err.contents ("stack").map_value ();
+          if (err_stack.contains ("file"))
+            file = err_stack.contents ("file")(0).string_value ();
 
-          if (err_stack.numel () > 0)
-            {
-              if (err_stack.contains ("file"))
-                file = err_stack.contents ("file")(0).string_value ();
+          if (err_stack.contains ("name"))
+            nm = err_stack.contents ("name")(0).string_value ();
 
-              if (err_stack.contains ("name"))
-                nm = err_stack.contents ("name")(0).string_value ();
+          if (err_stack.contains ("line"))
+            l = err_stack.contents ("line")(0).nint_value ();
 
-              if (err_stack.contains ("line"))
-                l = err_stack.contents ("line")(0).nint_value ();
-
-              if (err_stack.contains ("column"))
-                c = err_stack.contents ("column")(0).nint_value ();
-            }
+          if (err_stack.contains ("column"))
+            c = err_stack.contents ("column")(0).nint_value ();
         }
+    }
 
-      // Ugh.
-      std::string tmp_msg (msg);
-      if (tmp_msg[len-1] == '\n')
+  // Ugh.
+  std::string tmp_msg (msg);
+  if (tmp_msg[len-1] == '\n')
+    {
+      if (len > 1)
         {
-          if (len > 1)
-            {
-              tmp_msg.erase (len - 1);
-              rethrow_error (id.c_str (), "%s\n", tmp_msg.c_str ());
-            }
+          tmp_msg.erase (len - 1);
+          rethrow_error (id.c_str (), "%s\n", tmp_msg.c_str ());
         }
-      else
-        rethrow_error (id.c_str (), "%s", tmp_msg.c_str ());
+    }
+  else
+    rethrow_error (id.c_str (), "%s", tmp_msg.c_str ());
 
-      // FIXME: is this the right thing to do for Vlast_error_stack?
-      //        Should it be saved and restored with unwind_protect?
+  // FIXME: is this the right thing to do for Vlast_error_stack?
+  //        Should it be saved and restored with unwind_protect?
 
-      Vlast_error_stack = err_stack;
+  Vlast_error_stack = err_stack;
 
-      if (err.contains ("stack"))
+  if (err.contains ("stack"))
+    {
+      if (file.empty ())
         {
-          if (file.empty ())
+          if (nm.empty ())
             {
-              if (nm.empty ())
+              if (l > 0)
                 {
-                  if (l > 0)
-                    {
-                      if (c > 0)
-                        pr_where_1 (std::cerr,
-                                    "error: near line %d, column %d",
-                                    l, c);
-                      else
-                        pr_where_1 (std::cerr, "error: near line %d", l);
-                    }
-                }
-              else
-                {
-                  if (l > 0)
-                    {
-                      if (c > 0)
-                        pr_where_1 (std::cerr,
-                                    "error: called from '%s' near line %d, column %d",
-                                    nm.c_str (), l, c);
-                      else
-                        pr_where_1 (std::cerr,
-                                    "error: called from '%d' near line %d",
-                                    nm.c_str (), l);
-                    }
+                  if (c > 0)
+                    pr_where_1 (std::cerr,
+                                "error: near line %d, column %d",
+                                l, c);
+                  else
+                    pr_where_1 (std::cerr, "error: near line %d", l);
                 }
             }
           else
             {
-              if (nm.empty ())
+              if (l > 0)
                 {
-                  if (l > 0)
-                    {
-                      if (c > 0)
-                        pr_where_1 (std::cerr,
-                                    "error: in file %s near line %d, column %d",
-                                    file.c_str (), l, c);
-                      else
-                        pr_where_1 (std::cerr,
-                                    "error: in file %s near line %d",
-                                    file.c_str (), l);
-                    }
+                  if (c > 0)
+                    pr_where_1 (std::cerr,
+                                "error: called from '%s' near line %d, column %d",
+                                nm.c_str (), l, c);
+                  else
+                    pr_where_1 (std::cerr,
+                                "error: called from '%d' near line %d",
+                                nm.c_str (), l);
                 }
-              else
+            }
+        }
+      else
+        {
+          if (nm.empty ())
+            {
+              if (l > 0)
                 {
-                  if (l > 0)
-                    {
-                      if (c > 0)
-                        pr_where_1 (std::cerr,
-                                    "error: called from '%s' in file %s near line %d, column %d",
-                                    nm.c_str (), file.c_str (), l, c);
-                      else
-                        pr_where_1 (std::cerr,
-                                    "error: called from '%d' in file %s near line %d",
-                                    nm.c_str (), file.c_str (), l);
-                    }
+                  if (c > 0)
+                    pr_where_1 (std::cerr,
+                                "error: in file %s near line %d, column %d",
+                                file.c_str (), l, c);
+                  else
+                    pr_where_1 (std::cerr,
+                                "error: in file %s near line %d",
+                                file.c_str (), l);
+                }
+            }
+          else
+            {
+              if (l > 0)
+                {
+                  if (c > 0)
+                    pr_where_1 (std::cerr,
+                                "error: called from '%s' in file %s near line %d, column %d",
+                                nm.c_str (), file.c_str (), l, c);
+                  else
+                    pr_where_1 (std::cerr,
+                                "error: called from '%d' in file %s near line %d",
+                                nm.c_str (), file.c_str (), l);
                 }
             }
         }
     }
-  else
-    error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
 
   return retval;
 }
@@ -1169,16 +1167,17 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 @seealso{warning, lasterror}\n\
 @end deftypefn")
 {
-  octave_value retval;
 
   int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  octave_value retval;
 
   octave_value_list nargs = args;
 
   std::string id;
-
-  if (nargin == 0)
-    print_usage ();
 
   bool have_fmt = false;
 

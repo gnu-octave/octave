@@ -278,10 +278,15 @@ parameters for @code{dassl}.\n\
 @seealso{daspk, dasrt, lsode}\n\
 @end deftypefn")
 {
-  octave_value_list retval (4);
+  int nargin = args.length ();
+
+  if (nargin < 4 || nargin > 5)
+    print_usage ();
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
+
+  octave_value_list retval (4);
 
   unwind_protect frame;
 
@@ -290,11 +295,6 @@ parameters for @code{dassl}.\n\
 
   if (call_depth > 1)
     DASSL_ABORT1 ("invalid recursive call");
-
-  int nargin = args.length ();
-
-  if (nargin < 4 || nargin > 5)
-    print_usage ();
 
   std::string fcn_name, fname, jac_name, jname;
   dassl_fcn = 0;
@@ -334,7 +334,7 @@ parameters for @code{dassl}.\n\
                   dassl_jac = extract_function (c(1), "dassl", jac_name,
                                                 jname, "; endfunction");
 
-                  if (!dassl_jac)
+                  if (! dassl_jac)
                     {
                       if (fcn_name.length ())
                         clear_function (fcn_name);
@@ -347,7 +347,7 @@ parameters for @code{dassl}.\n\
         DASSL_ABORT1 ("incorrect number of elements in cell array");
     }
 
-  if (!dassl_fcn && ! f_arg.is_cell ())
+  if (! dassl_fcn && ! f_arg.is_cell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         dassl_fcn = f_arg.function_value ();
@@ -389,7 +389,7 @@ parameters for @code{dassl}.\n\
                                                   jac_name, jname,
                                                   "; endfunction");
 
-                    if (!dassl_jac)
+                    if (! dassl_jac)
                       {
                         if (fcn_name.length ())
                           clear_function (fcn_name);

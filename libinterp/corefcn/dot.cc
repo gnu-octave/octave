@@ -122,116 +122,108 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 @seealso{cross, divergence}\n\
 @end deftypefn")
 {
-  octave_value retval;
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
+  octave_value retval;
   octave_value argx = args(0);
   octave_value argy = args(1);
 
-  if (argx.is_numeric_type () && argy.is_numeric_type ())
+  if (! argx.is_numeric_type () || ! argy.is_numeric_type ())
+    error ("dot: X and Y must be numeric");
+
+  dim_vector dimx = argx.dims ();
+  dim_vector dimy = argy.dims ();
+  bool match = dimx == dimy;
+  if (! match && nargin == 2 && dimx.is_vector () && dimy.is_vector ())
     {
-      dim_vector dimx = argx.dims ();
-      dim_vector dimy = argy.dims ();
-      bool match = dimx == dimy;
-      if (! match && nargin == 2
-          && dimx.is_vector () && dimy.is_vector ())
+      // Change to column vectors.
+      dimx = dimx.redim (1);
+      argx = argx.reshape (dimx);
+      dimy = dimy.redim (1);
+      argy = argy.reshape (dimy);
+      match = dimx == dimy;
+    }
+
+  if (! match)
+    error ("dot: sizes of X and Y must match");
+
+  int dim;
+  if (nargin == 2)
+    dim = dimx.first_non_singleton ();
+  else
+    dim = args(2).int_value (true) - 1;
+
+  if (dim < 0)
+    error ("dot: DIM must be a valid dimension");
+
+  octave_idx_type m, n, k;
+  dim_vector dimz;
+  if (argx.is_complex_type () || argy.is_complex_type ())
+    {
+      if (argx.is_single_type () || argy.is_single_type ())
         {
-          // Change to column vectors.
-          dimx = dimx.redim (1);
-          argx = argx.reshape (dimx);
-          dimy = dimy.redim (1);
-          argy = argy.reshape (dimy);
-          match = dimx == dimy;
-        }
+          FloatComplexNDArray x = argx.float_complex_array_value ();
+          FloatComplexNDArray y = argy.float_complex_array_value ();
+          get_red_dims (dimx, dimy, dim, dimz, m, n, k);
+          FloatComplexNDArray z (dimz);
 
-      if (match)
-        {
-          int dim;
-          if (nargin == 2)
-            dim = dimx.first_non_singleton ();
-          else
-            dim = args(2).int_value (true) - 1;
-
-          if (dim < 0)
-            error ("dot: DIM must be a valid dimension");
-          else
-            {
-              octave_idx_type m, n, k;
-              dim_vector dimz;
-              if (argx.is_complex_type () || argy.is_complex_type ())
-                {
-                  if (argx.is_single_type () || argy.is_single_type ())
-                    {
-                      FloatComplexNDArray x = argx.float_complex_array_value ();
-                      FloatComplexNDArray y = argy.float_complex_array_value ();
-                      get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      FloatComplexNDArray z (dimz);
-
-                      F77_XFCN (cdotc3, CDOTC3, (m, n, k,
-                                                 x.data (), y.data (),
-                                                 z.fortran_vec ()));
-                      retval = z;
-                    }
-                  else
-                    {
-                      ComplexNDArray x = argx.complex_array_value ();
-                      ComplexNDArray y = argy.complex_array_value ();
-                      get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      ComplexNDArray z (dimz);
-
-                      F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
-                                                 x.data (), y.data (),
-                                                 z.fortran_vec ()));
-                      retval = z;
-                    }
-                }
-              else if (argx.is_float_type () && argy.is_float_type ())
-                {
-                  if (argx.is_single_type () || argy.is_single_type ())
-                    {
-                      FloatNDArray x = argx.float_array_value ();
-                      FloatNDArray y = argy.float_array_value ();
-                      get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      FloatNDArray z (dimz);
-
-                      F77_XFCN (sdot3, SDOT3, (m, n, k, x.data (), y.data (),
-                                               z.fortran_vec ()));
-                      retval = z;
-                    }
-                  else
-                    {
-                      NDArray x = argx.array_value ();
-                      NDArray y = argy.array_value ();
-                      get_red_dims (dimx, dimy, dim, dimz, m, n, k);
-                      NDArray z (dimz);
-
-                      F77_XFCN (ddot3, DDOT3, (m, n, k, x.data (), y.data (),
-                                               z.fortran_vec ()));
-                      retval = z;
-                    }
-                }
-              else
-                {
-                  // Non-optimized evaluation.
-                  octave_value_list tmp;
-                  tmp(1) = dim + 1;
-                  tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
-
-                  tmp = feval ("sum", tmp, 1);
-                  if (! tmp.empty ())
-                    retval = tmp(0);
-                }
-            }
+          F77_XFCN (cdotc3, CDOTC3, (m, n, k,
+                                     x.data (), y.data (),
+                                     z.fortran_vec ()));
+          retval = z;
         }
       else
-        error ("dot: sizes of X and Y must match");
+        {
+          ComplexNDArray x = argx.complex_array_value ();
+          ComplexNDArray y = argy.complex_array_value ();
+          get_red_dims (dimx, dimy, dim, dimz, m, n, k);
+          ComplexNDArray z (dimz);
 
+          F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
+                                     x.data (), y.data (),
+                                     z.fortran_vec ()));
+          retval = z;
+        }
+    }
+  else if (argx.is_float_type () && argy.is_float_type ())
+    {
+      if (argx.is_single_type () || argy.is_single_type ())
+        {
+          FloatNDArray x = argx.float_array_value ();
+          FloatNDArray y = argy.float_array_value ();
+          get_red_dims (dimx, dimy, dim, dimz, m, n, k);
+          FloatNDArray z (dimz);
+
+          F77_XFCN (sdot3, SDOT3, (m, n, k, x.data (), y.data (),
+                                   z.fortran_vec ()));
+          retval = z;
+        }
+      else
+        {
+          NDArray x = argx.array_value ();
+          NDArray y = argy.array_value ();
+          get_red_dims (dimx, dimy, dim, dimz, m, n, k);
+          NDArray z (dimz);
+
+          F77_XFCN (ddot3, DDOT3, (m, n, k, x.data (), y.data (),
+                                   z.fortran_vec ()));
+          retval = z;
+        }
     }
   else
-    error ("dot: X and Y must be numeric");
+    {
+      // Non-optimized evaluation.
+      octave_value_list tmp;
+      tmp(1) = dim + 1;
+      tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
+
+      tmp = feval ("sum", tmp, 1);
+      if (! tmp.empty ())
+        retval = tmp(0);
+    }
 
   return retval;
 }
@@ -293,94 +285,89 @@ endfor\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
+
+  octave_value retval;
 
   octave_value argx = args(0);
   octave_value argy = args(1);
 
-  if (argx.is_numeric_type () && argy.is_numeric_type ())
+  if (! argx.is_numeric_type () || ! argy.is_numeric_type ())
+    error ("blkmm: A and B must be numeric");
+
+  const dim_vector dimx = argx.dims ();
+  const dim_vector dimy = argy.dims ();
+  int nd = dimx.length ();
+  octave_idx_type m = dimx(0);
+  octave_idx_type k = dimx(1);
+  octave_idx_type n = dimy(1);
+  octave_idx_type np = 1;
+  bool match = dimy(0) == k && nd == dimy.length ();
+  dim_vector dimz = dim_vector::alloc (nd);
+  dimz(0) = m;
+  dimz(1) = n;
+  for (int i = 2; match && i < nd; i++)
     {
-      const dim_vector dimx = argx.dims ();
-      const dim_vector dimy = argy.dims ();
-      int nd = dimx.length ();
-      octave_idx_type m = dimx(0);
-      octave_idx_type k = dimx(1);
-      octave_idx_type n = dimy(1);
-      octave_idx_type np = 1;
-      bool match = dimy(0) == k && nd == dimy.length ();
-      dim_vector dimz = dim_vector::alloc (nd);
-      dimz(0) = m;
-      dimz(1) = n;
-      for (int i = 2; match && i < nd; i++)
+      match = match && dimx(i) == dimy(i);
+      dimz(i) = dimx(i);
+      np *= dimz(i);
+    }
+
+  if (! match)
+    error ("blkmm: A and B dimensions don't match: (%s) and (%s)",
+           dimx.str ().c_str (), dimy.str ().c_str ());
+
+  if (argx.is_complex_type () || argy.is_complex_type ())
+    {
+      if (argx.is_single_type () || argy.is_single_type ())
         {
-          match = match && dimx(i) == dimy(i);
-          dimz(i) = dimx(i);
-          np *= dimz(i);
-        }
+          FloatComplexNDArray x = argx.float_complex_array_value ();
+          FloatComplexNDArray y = argy.float_complex_array_value ();
+          FloatComplexNDArray z (dimz);
 
-      if (match)
-        {
-          if (argx.is_complex_type () || argy.is_complex_type ())
-            {
-              if (argx.is_single_type () || argy.is_single_type ())
-                {
-                  FloatComplexNDArray x = argx.float_complex_array_value ();
-                  FloatComplexNDArray y = argy.float_complex_array_value ();
-                  FloatComplexNDArray z (dimz);
-
-                  F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
-                                             x.data (), y.data (),
-                                             z.fortran_vec ()));
-                  retval = z;
-                }
-              else
-                {
-                  ComplexNDArray x = argx.complex_array_value ();
-                  ComplexNDArray y = argy.complex_array_value ();
-                  ComplexNDArray z (dimz);
-
-                  F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
-                                             x.data (), y.data (),
-                                             z.fortran_vec ()));
-                  retval = z;
-                }
-            }
-          else
-            {
-              if (argx.is_single_type () || argy.is_single_type ())
-                {
-                  FloatNDArray x = argx.float_array_value ();
-                  FloatNDArray y = argy.float_array_value ();
-                  FloatNDArray z (dimz);
-
-                  F77_XFCN (smatm3, SMATM3, (m, n, k, np,
-                                             x.data (), y.data (),
-                                             z.fortran_vec ()));
-                  retval = z;
-                }
-              else
-                {
-                  NDArray x = argx.array_value ();
-                  NDArray y = argy.array_value ();
-                  NDArray z (dimz);
-
-                  F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
-                                             x.data (), y.data (),
-                                             z.fortran_vec ()));
-                  retval = z;
-                }
-            }
+          F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
+                                     x.data (), y.data (),
+                                     z.fortran_vec ()));
+          retval = z;
         }
       else
-        error ("blkmm: A and B dimensions don't match: (%s) and (%s)",
-               dimx.str ().c_str (), dimy.str ().c_str ());
+        {
+          ComplexNDArray x = argx.complex_array_value ();
+          ComplexNDArray y = argy.complex_array_value ();
+          ComplexNDArray z (dimz);
 
+          F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
+                                     x.data (), y.data (),
+                                     z.fortran_vec ()));
+          retval = z;
+        }
     }
   else
-    error ("blkmm: A and B must be numeric");
+    {
+      if (argx.is_single_type () || argy.is_single_type ())
+        {
+          FloatNDArray x = argx.float_array_value ();
+          FloatNDArray y = argy.float_array_value ();
+          FloatNDArray z (dimz);
+
+          F77_XFCN (smatm3, SMATM3, (m, n, k, np,
+                                     x.data (), y.data (),
+                                     z.fortran_vec ()));
+          retval = z;
+        }
+      else
+        {
+          NDArray x = argx.array_value ();
+          NDArray y = argy.array_value ();
+          NDArray z (dimz);
+
+          F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
+                                     x.data (), y.data (),
+                                     z.fortran_vec ()));
+          retval = z;
+        }
+    }
 
   return retval;
 }

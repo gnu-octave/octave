@@ -44,13 +44,12 @@ along with Octave; see the file COPYING.  If not, see
 static octave_value
 do_fft2 (const octave_value_list &args, const char *fcn, int type)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
+  octave_value retval;
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
   octave_idx_type n_rows = -1;
@@ -60,12 +59,10 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
       double dval = args(1).double_value ();
       if (xisnan (dval))
         error ("%s: number of rows (N) cannot be NaN", fcn);
-      else
-        {
-          n_rows = NINTbig (dval);
-          if (n_rows < 0)
-            error ("%s: number of rows (N) must be greater than zero", fcn);
-        }
+
+      n_rows = NINTbig (dval);
+      if (n_rows < 0)
+        error ("%s: number of rows (N) must be greater than zero", fcn);
     }
 
   octave_idx_type n_cols = -1;
@@ -74,12 +71,10 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
       double dval = args(2).double_value ();
       if (xisnan (dval))
         error ("%s: number of columns (M) cannot be NaN", fcn);
-      else
-        {
-          n_cols = NINTbig (dval);
-          if (n_cols < 0)
-            error ("%s: number of columns (M) must be greater than zero", fcn);
-        }
+
+      n_cols = NINTbig (dval);
+      if (n_cols < 0)
+        error ("%s: number of columns (M) must be greater than zero", fcn);
     }
 
   for (int i = 0; i < dims.length (); i++)

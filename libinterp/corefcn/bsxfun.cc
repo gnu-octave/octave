@@ -335,13 +335,10 @@ dimensionality as the other array.\n\
 @seealso{arrayfun, cellfun}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 3)
     print_usage ();
 
   octave_value func = args(0);
-
   if (func.is_string ())
     {
       std::string name = func.string_value ();
@@ -349,26 +346,25 @@ dimensionality as the other array.\n\
       if (func.is_undefined ())
         error ("bsxfun: invalid function name: %s", name.c_str ());
     }
-  else if (! (args(0).is_function_handle ()
-              || args(0).is_inline_function ()))
+  else if (! (args(0).is_function_handle () || args(0).is_inline_function ()))
     error ("bsxfun: F must be a string or function handle");
+
+  octave_value_list retval;
 
   const octave_value A = args(1);
   const octave_value B = args(2);
 
   if (func.is_builtin_function ()
-      || (func.is_function_handle ()
-          && ! A.is_object () && ! B.is_object ()))
+      || (func.is_function_handle () && ! A.is_object () && ! B.is_object ()))
     {
       // This may break if the default behavior is overridden.  But if you
-      // override arithmetic operators for builtin classes, you should
-      // expect mayhem anyway (constant folding etc).  Querying
-      // is_overloaded() may not be exactly what we need here.
+      // override arithmetic operators for builtin classes, you should expect
+      // mayhem anyway (constant folding etc).  Querying is_overloaded() may
+      // not be exactly what we need here.
       octave_function *fcn_val = func.function_value ();
       if (fcn_val)
         {
-          octave_value tmp = maybe_optimized_builtin (fcn_val->name (),
-                                                      A, B);
+          octave_value tmp = maybe_optimized_builtin (fcn_val->name (), A, B);
           if (tmp.is_defined ())
             retval(0) = tmp;
         }
@@ -392,10 +388,7 @@ dimensionality as the other array.\n\
 
       for (octave_idx_type i = 0; i < nd; i++)
         if (dva(i) != dvb(i) && dva(i) != 1 && dvb(i) != 1)
-          {
-            error ("bsxfun: dimensions of A and B must match");
-            break;
-          }
+          error ("bsxfun: dimensions of A and B must match");
 
       // Find the size of the output
       dim_vector dvc;
@@ -462,14 +455,13 @@ dimensionality as the other array.\n\
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                 inputs (1) = Bc;
 
-              octave_value_list tmp = func.do_multi_index_op (1,
-                                                              inputs);
+              octave_value_list tmp = func.do_multi_index_op (1, inputs);
 
 #define BSXINIT(T, CLS, EXTRACTOR) \
   (result_type == CLS) \
     { \
       have_ ## T = true; \
-      result_ ## T = tmp (0). EXTRACTOR ## _array_value (); \
+      result_ ## T = tmp(0). EXTRACTOR ## _array_value (); \
       result_ ## T .resize (dvc); \
     }
 
@@ -512,19 +504,19 @@ dimensionality as the other array.\n\
                             }
                         }
                       else if BSXINIT(boolNDArray, "logical", bool)
-                        else if BSXINIT(int8NDArray, "int8", int8)
-                          else if BSXINIT(int16NDArray, "int16", int16)
-                            else if BSXINIT(int32NDArray, "int32", int32)
-                              else if BSXINIT(int64NDArray, "int64", int64)
-                                else if BSXINIT(uint8NDArray, "uint8", uint8)
-                                  else if BSXINIT(uint16NDArray, "uint16", uint16)
-                                    else if BSXINIT(uint32NDArray, "uint32", uint32)
-                                      else if BSXINIT(uint64NDArray, "uint64", uint64)
-                                        else
-                                          {
-                                            C = tmp (0);
-                                            C = C.resize (dvc);
-                                          }
+                      else if BSXINIT(int8NDArray, "int8", int8)
+                      else if BSXINIT(int16NDArray, "int16", int16)
+                      else if BSXINIT(int32NDArray, "int32", int32)
+                      else if BSXINIT(int64NDArray, "int64", int64)
+                      else if BSXINIT(uint8NDArray, "uint8", uint8)
+                      else if BSXINIT(uint16NDArray, "uint16", uint16)
+                      else if BSXINIT(uint32NDArray, "uint32", uint32)
+                      else if BSXINIT(uint64NDArray, "uint64", uint64)
+                      else
+                        {
+                          C = tmp(0);
+                          C = C.resize (dvc);
+                        }
                     }
                 }
               else
@@ -609,11 +601,11 @@ dimensionality as the other array.\n\
 #define BSXLOOP(T, CLS, EXTRACTOR) \
   (have_ ## T) \
     { \
-      if (tmp (0).class_name () != CLS) \
+      if (tmp(0).class_name () != CLS) \
         { \
           have_ ## T = false; \
           C = result_ ## T; \
-          C = do_cat_op (C, tmp (0), ra_idx); \
+          C = do_cat_op (C, tmp(0), ra_idx); \
         } \
       else \
         result_ ## T .insert (tmp(0). EXTRACTOR ## _array_value (), ra_idx); \

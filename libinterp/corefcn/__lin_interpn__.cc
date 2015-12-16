@@ -265,12 +265,12 @@ DEFUN (__lin_interpn__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin % 2 == 0)
     print_usage ();
+
+  octave_value retval;
 
   // dimension of the problem
   int n = (nargin-1)/2;

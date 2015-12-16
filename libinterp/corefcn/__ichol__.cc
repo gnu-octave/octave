@@ -184,16 +184,10 @@ DEFUN (__ichol0__, args, ,
 @deftypefnx {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
 Undocumented internal function.\n\
 @end deftypefn")
-
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
+
   std::string michol = "off";
-
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-
   if (nargin == 2)
     michol = args(1).string_value ();
 
@@ -201,7 +195,7 @@ Undocumented internal function.\n\
   // so it's structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
   octave_value_list param_list;
-  if (!args(0).is_complex_type ())
+  if (! args(0).is_complex_type ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       param_list.append (sm);
@@ -209,7 +203,7 @@ Undocumented internal function.\n\
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
 
-      retval(0) = sm;
+      return ovl (sm);
     }
   else
     {
@@ -219,17 +213,14 @@ Undocumented internal function.\n\
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
 
-      retval(0) = sm;
+      return ovl (sm);
     }
-
-  return retval;
 }
 
 template <typename octave_matrix_t, typename T,  T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
 void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
               const T droptol, const std::string michol = "off")
-
 {
 
   const octave_idx_type n = sm.cols ();
@@ -432,17 +423,12 @@ DEFUN (__icholt__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   int nargin = args.length ();
   // Default values of parameters
   std::string michol = "off";
   double droptol = 0;
 
-  if (nargin < 1 || nargin > 3)
-    print_usage ();
-
   // Don't repeat input validation of arguments done in ichol.m
-
   if (nargin >= 2)
     droptol = args(1).double_value ();
 
@@ -466,7 +452,7 @@ Undocumented internal function.\n\
                double, ichol_mult_real, ichol_checkpivot_real>
                (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
 
-      retval(0) = L;
+      return ovl (L);
     }
   else
     {
@@ -485,10 +471,8 @@ Undocumented internal function.\n\
                (sm_l, L, cols_norm.fortran_vec (),
                 Complex (droptol), michol);
 
-      retval(0) = L;
+      return ovl (L);
     }
-
-  return retval;
 }
 
 /*

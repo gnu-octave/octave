@@ -401,21 +401,22 @@ v = cellfun (@@det, a); # faster\n\
 @seealso{arrayfun, structfun, spfun}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   int nargin = args.length ();
-  int nargout1 = (nargout < 1 ? 1 : nargout);
 
   if (nargin < 2)
     print_usage ();
 
-  octave_value func = args(0);
-
   if (! args(1).is_cell ())
     error ("cellfun: C must be a cell array");
 
+  octave_value_list retval;
+  int nargout1 = (nargout < 1 ? 1 : nargout);
+
+  octave_value func = args(0);
+
   if (func.is_string ())
     {
-      retval = try_cellfun_internal_ops<boolNDArray,NDArray>(args, nargin);
+      retval = try_cellfun_internal_ops<boolNDArray,NDArray> (args, nargin);
 
       if (! retval.empty ())
         return retval;
@@ -443,9 +444,6 @@ v = cellfun (@@det, a); # faster\n\
           if (func.is_undefined ())
             error ("cellfun: invalid function NAME: %s", name.c_str ());
         }
-
-      if (! retval.empty ())
-        return retval;
     }
 
   if (func.is_function_handle () || func.is_inline_function ()
@@ -457,18 +455,17 @@ v = cellfun (@@det, a); # faster\n\
 
       get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
-      // The following is an optimisation because the symbol table can
-      // give a more specific function class, so this can result in
-      // fewer polymorphic function calls as the function gets called
-      // for each value of the array.
+      // The following is an optimization because the symbol table can give a
+      // more specific function class, so this can result in fewer polymorphic
+      // function calls as the function gets called for each value of the array.
       {
         if (func.is_function_handle ())
           {
             octave_fcn_handle* f = func.fcn_handle_value ();
 
             // Overloaded function handles need to check the type of the
-            // arguments for each element of the array, so they cannot
-            // be optimised this way.
+            // arguments for each element of the array, so they cannot be
+            // optimized this way.
             if (f -> is_overloaded ())
               goto nevermind;
           }
@@ -478,10 +475,10 @@ v = cellfun (@@det, a); # faster\n\
 
         if (f.is_defined ())
           {
-            //Except for these two which are special cases...
+            // Except for these two which are special cases...
             if (name != "size" && name != "class")
               {
-                //Try first the optimised code path for built-in functions
+                // Try first the optimized code path for built-in functions
                 octave_value_list tmp_args = args;
                 tmp_args(0) = name;
 
@@ -497,9 +494,8 @@ v = cellfun (@@det, a); # faster\n\
                   return retval;
               }
 
-            //Okay, we tried, doesn't work, let's do the best we can
-            //instead and avoid polymorphic calls for each element of
-            //the array.
+            // Okay, we tried, doesn't work, let's do the best we can instead
+            // and avoid polymorphic calls for each element of the array.
             func = f;
           }
       }
@@ -520,8 +516,7 @@ v = cellfun (@@det, a); # faster\n\
 
       dim_vector fdims (1, 1);
 
-      // Collect arguments.  Pre-fill scalar elements of inputlist
-      // array.
+      // Collect arguments.  Pre-fill scalar elements of inputlist array.
 
       for (int j = 0; j < nargin; j++)
         {
@@ -597,10 +592,10 @@ v = cellfun (@@det, a); # faster\n\
                             {
                               octave_value val = tmp(j);
 
-                              if (val.numel () == 1)
-                                retv[j] = val.resize (fdims);
-                              else
+                              if (val.numel () != 1)
                                 error ("cellfun: all values must be scalars when UniformOutput = true");
+
+                              retv[j] = val.resize (fdims);
                             }
                         }
                     }
@@ -614,14 +609,12 @@ v = cellfun (@@det, a); # faster\n\
 
                               if (! retv[j].fast_elem_insert (count, val))
                                 {
-                                  if (val.numel () == 1)
-                                    {
-                                      idx_list.front ()(0) = count + 1.0;
-                                      retv[j].assign (octave_value::op_asn_eq,
-                                                      idx_type, idx_list, val);
-                                    }
-                                  else
+                                  if (val.numel () != 1)
                                     error ("cellfun: all values must be scalars when UniformOutput = true");
+
+                                  idx_list.front ()(0) = count + 1.0;
+                                  retv[j].assign (octave_value::op_asn_eq,
+                                                  idx_type, idx_list, val);
                                 }
                             }
                         }
@@ -1126,20 +1119,19 @@ arrayfun (@@str2num, [1234],\n\
 @seealso{spfun, cellfun, structfun}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   int nargin = args.length ();
-  int nargout1 = (nargout < 1 ? 1 : nargout);
 
   if (nargin < 2)
     print_usage ();
 
-  octave_value func = args(0);
+  octave_value_list retval;
+  int nargout1 = (nargout < 1 ? 1 : nargout);
   bool symbol_table_lookup = false;
+  octave_value func = args(0);
 
   if (func.is_string ())
     {
       // See if we can convert the string into a function.
-
       std::string name = args(0).string_value ();
 
       if (! valid_identifier (name))
@@ -1170,10 +1162,9 @@ arrayfun (@@str2num, [1234],\n\
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
-      // The following is an optimisation because the symbol table can
-      // give a more specific function class, so this can result in
-      // fewer polymorphic function calls as the function gets called
-      // for each value of the array.
+      // The following is an optimization because the symbol table can give a
+      // more specific function class, so this can result in fewer polymorphic
+      // function calls as the function gets called for each value of the array.
 
       if (! symbol_table_lookup)
         {
@@ -1181,10 +1172,9 @@ arrayfun (@@str2num, [1234],\n\
             {
               octave_fcn_handle* f = func.fcn_handle_value ();
 
-              // Overloaded function handles need to check the type of
-              // the arguments for each element of the array, so they
-              // cannot be optimised this way.
-
+              // Overloaded function handles need to check the type of the
+              // arguments for each element of the array, so they cannot be
+              // optimized this way.
               if (f -> is_overloaded ())
                 goto nevermind;
             }
@@ -1211,8 +1201,7 @@ arrayfun (@@str2num, [1234],\n\
 
       dim_vector fdims (1, 1);
 
-      // Collect arguments.  Pre-fill scalar elements of inputlist
-      // array.
+      // Collect arguments.  Pre-fill scalar elements of inputlist array.
 
       for (int j = 0; j < nargin; j++)
         {
@@ -1233,16 +1222,12 @@ arrayfun (@@str2num, [1234],\n\
               for (int i = j+1; i < nargin; i++)
                 {
                   if (mask[i] && inputs[i].dims () != fdims)
-                    {
-                      error_with_id ("Octave:invalid-input-arg",
-                                     "arrayfun: dimensions mismatch");
-                      return retval;
-                    }
+                    error_with_id ("Octave:invalid-input-arg",
+                                   "arrayfun: dimensions mismatch");
                 }
               break;
             }
         }
-
 
       unwind_protect frame;
       frame.protect_var (buffer_error_messages);
@@ -1275,11 +1260,8 @@ arrayfun (@@str2num, [1234],\n\
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
-                {
-                  error_with_id ("Octave:invalid-fun-call",
-                                 "arrayfun: function returned fewer than nargout values");
-                  return retval;
-                }
+                error_with_id ("Octave:invalid-fun-call",
+                               "arrayfun: function returned fewer than nargout values");
 
               if  (nargout > 0
                    || (nargout == 0
@@ -1301,11 +1283,8 @@ arrayfun (@@str2num, [1234],\n\
                               if (val.numel () == 1)
                                 retv[j] = val.resize (fdims);
                               else
-                                {
-                                  error_with_id ("Octave:invalid-fun-call",
-                                                 "arrayfun: all values must be scalars when UniformOutput = true");
-                                  break;
-                                }
+                                error_with_id ("Octave:invalid-fun-call",
+                                               "arrayfun: all values must be scalars when UniformOutput = true");
                             }
                         }
                     }
@@ -1326,11 +1305,8 @@ arrayfun (@@str2num, [1234],\n\
                                                       idx_type, idx_list, val);
                                     }
                                   else
-                                    {
-                                      error_with_id ("Octave:invalid-fun-call",
-                                                     "arrayfun: all values must be scalars when UniformOutput = true");
-                                      break;
-                                    }
+                                    error_with_id ("Octave:invalid-fun-call",
+                                                   "arrayfun: all values must be scalars when UniformOutput = true");
                                 }
                             }
                         }
@@ -1376,11 +1352,8 @@ arrayfun (@@str2num, [1234],\n\
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
-                {
-                  error_with_id ("Octave:invalid-fun-call",
-                                 "arrayfun: function returned fewer than nargout values");
-                  return retval;
-                }
+                error_with_id ("Octave:invalid-fun-call",
+                               "arrayfun: function returned fewer than nargout values");
 
               if  (nargout > 0
                    || (nargout == 0
@@ -1807,17 +1780,16 @@ num2cell ([1,2;3,4],1)\n\
 @seealso{mat2cell}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
+  octave_value retval;
+
   octave_value array = args(0);
 
   Array<int> dimv;
-
   if (nargin > 1)
     dimv = args(1).int_vector_value (true);
 
@@ -2138,12 +2110,12 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
 @seealso{num2cell, cell2mat}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ();
+
+  octave_value retval;
 
   // Prepare indices.
   OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, d, nargin-1);
@@ -2412,7 +2384,8 @@ endfor\n\
     print_usage ();
 
   const Cell x = args(0).xcell_value ("cellindexmat: X must be a cell");
-  NoAlias<Cell> y(x.dims ());
+
+  NoAlias<Cell> y (x.dims ());
   octave_idx_type nel = x.numel ();
   octave_value_list idx = args.slice (1, args.length () - 1);
 

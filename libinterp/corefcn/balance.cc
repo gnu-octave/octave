@@ -91,12 +91,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 (SIAM Journal on Scientific and Statistical Computing, 1981).\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3 || nargout < 0)
     print_usage ();
+
+  octave_value_list retval;
 
   // determine if it's AEP or GEP
   bool AEPcase = nargin == 1 || args(1).is_string ();

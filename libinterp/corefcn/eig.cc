@@ -50,12 +50,12 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 @seealso{eigs, svd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin > 2 || nargin == 0)
     print_usage ();
+
+  octave_value_list retval;
 
   octave_value arg_a, arg_b;
 
@@ -72,7 +72,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
   else if (arg_is_empty > 0)
     return octave_value_list (2, Matrix ());
 
-  if (!(arg_a.is_single_type () || arg_a.is_double_type ()))
+  if (! arg_a.is_double_type () && ! arg_a.is_single_type ())
     {
       gripe_wrong_type_arg ("eig", arg_a);
       return retval;
@@ -88,7 +88,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
       if (arg_is_empty < 0)
         return retval;
       else if (arg_is_empty > 0)
-        return octave_value_list (2, Matrix ());
+        return ovl (2, Matrix ());
 
       if (!(arg_b.is_single_type () || arg_b.is_double_type ()))
         {
@@ -158,7 +158,6 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
       else
         {
           // Blame it on Matlab.
-
           FloatComplexDiagMatrix d (result.eigenvalues ());
 
           retval = ovl (result.eigenvectors (), d);
@@ -208,7 +207,6 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
       else
         {
           // Blame it on Matlab.
-
           ComplexDiagMatrix d (result.eigenvalues ());
 
           retval = ovl (result.eigenvectors (), d);

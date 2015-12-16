@@ -154,10 +154,10 @@ bitop_arg_is_float (const octave_value& arg)
 octave_value
 bitop (const std::string& fname, const octave_value_list& args)
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
+
+  octave_value retval;
 
   if (args(0).class_name () == octave_scalar::static_class_name ()
       || args(0).class_name () == octave_float_scalar::static_class_name ()
@@ -570,21 +570,19 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, intmax, flintmax}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  int nbits = 64;
-
   NDArray n = args(1).xarray_value ("bitshift: K must be a scalar or array of integers");
+
+  int nbits = 64;
 
   if (nargin == 3)
     {
-      // FIXME: for compatibility, we should accept an array
-      // or a scalar as the third argument.
+      // FIXME: for compatibility, we should accept an array or a scalar
+      //        as the third argument.
       if (args(2).numel () > 1)
         error ("bitshift: N must be a scalar integer");
       else
@@ -596,26 +594,12 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         }
     }
 
+  octave_value retval;
+
   octave_value m_arg = args(0);
   std::string cname = m_arg.class_name ();
 
-  if (cname == "uint8")
-    DO_UBITSHIFT (uint8, nbits < 8 ? nbits : 8);
-  else if (cname == "uint16")
-    DO_UBITSHIFT (uint16, nbits < 16 ? nbits : 16);
-  else if (cname == "uint32")
-    DO_UBITSHIFT (uint32, nbits < 32 ? nbits : 32);
-  else if (cname == "uint64")
-    DO_UBITSHIFT (uint64, nbits < 64 ? nbits : 64);
-  else if (cname == "int8")
-    DO_SBITSHIFT (int8, nbits < 8 ? nbits : 8);
-  else if (cname == "int16")
-    DO_SBITSHIFT (int16, nbits < 16 ? nbits : 16);
-  else if (cname == "int32")
-    DO_SBITSHIFT (int32, nbits < 32 ? nbits : 32);
-  else if (cname == "int64")
-    DO_SBITSHIFT (int64, nbits < 64 ? nbits : 64);
-  else if (cname == "double")
+  if (cname == "double")
     {
       static const int bits_in_mantissa
         = std::numeric_limits<double>::digits;
@@ -631,6 +615,22 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
       NDArray m = m_arg.array_value ();
       DO_BITSHIFT ();
     }
+  else if (cname == "uint8")
+    DO_UBITSHIFT (uint8, nbits < 8 ? nbits : 8);
+  else if (cname == "uint16")
+    DO_UBITSHIFT (uint16, nbits < 16 ? nbits : 16);
+  else if (cname == "uint32")
+    DO_UBITSHIFT (uint32, nbits < 32 ? nbits : 32);
+  else if (cname == "uint64")
+    DO_UBITSHIFT (uint64, nbits < 64 ? nbits : 64);
+  else if (cname == "int8")
+    DO_SBITSHIFT (int8, nbits < 8 ? nbits : 8);
+  else if (cname == "int16")
+    DO_SBITSHIFT (int16, nbits < 16 ? nbits : 16);
+  else if (cname == "int32")
+    DO_SBITSHIFT (int32, nbits < 32 ? nbits : 32);
+  else if (cname == "int64")
+    DO_SBITSHIFT (int64, nbits < 64 ? nbits : 64);
   else if (cname == "single")
     {
       static const int bits_in_mantissa
@@ -679,26 +679,21 @@ for @qcode{\"double\"} and @w{@math{2^{24}}} for @qcode{\"single\"}.\n\
 @seealso{intmax, realmax, realmin}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  std::string cname = "double";
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
 
+  std::string cname = "double";
   if (nargin == 1)
     cname = args(0).xstring_value ("flintmax: argument must be a string");
 
   if (cname == "double")
-    retval = (static_cast<double> (max_mantissa_value<double> () + 1));
+    return ovl (static_cast<double> (max_mantissa_value<double> () + 1));
   else if (cname == "single")
-    retval = (static_cast<float> (max_mantissa_value<float> () + 1));
+    return ovl (static_cast<float> (max_mantissa_value<float> () + 1));
   else
     error ("flintmax: not defined for class '%s'", cname.c_str ());
-
-  return retval;
 }
 
 /*
@@ -749,17 +744,16 @@ The default for @var{type} is @code{int32}.\n\
 @seealso{intmin, flintmax}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  std::string cname = "int32";
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
 
+  std::string cname = "int32";
   if (nargin == 1)
     cname = args(0).xstring_value ("intmax: argument must be a string");
+
+  octave_value retval;
 
   if (cname == "uint8")
     retval = octave_uint8 (std::numeric_limits<uint8_t>::max ());
@@ -837,17 +831,16 @@ The default for @var{type} is @code{int32}.\n\
 @seealso{intmax, flintmax}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  std::string cname = "int32";
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
 
+  std::string cname = "int32";
   if (nargin == 1)
     cname = args(0).xstring_value ("intmin: argument must be a string");
+
+  octave_value retval;
 
   if (cname == "uint8")
     retval = octave_uint8 (std::numeric_limits<uint8_t>::min ());

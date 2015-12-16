@@ -277,10 +277,15 @@ parameters for @code{daspk}.\n\
 @seealso{dassl}\n\
 @end deftypefn")
 {
-  octave_value_list retval (4);
+  int nargin = args.length ();
+
+  if (nargin < 4 || nargin > 5)
+    print_usage ();
 
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
+
+  octave_value_list retval (4);
 
   unwind_protect frame;
 
@@ -289,11 +294,6 @@ parameters for @code{daspk}.\n\
 
   if (call_depth > 1)
     DASPK_ABORT1 ("invalid recursive call");
-
-  int nargin = args.length ();
-
-  if (nargin < 4 || nargin > 5)
-    print_usage ();
 
   std::string fcn_name, fname, jac_name, jname;
   daspk_fcn = 0;
@@ -333,7 +333,7 @@ parameters for @code{daspk}.\n\
                   daspk_jac = extract_function (c(1), "daspk", jac_name,
                                                 jname, "; endfunction");
 
-                  if (!daspk_jac)
+                  if (! daspk_jac)
                     {
                       if (fcn_name.length ())
                         clear_function (fcn_name);
@@ -346,7 +346,7 @@ parameters for @code{daspk}.\n\
         DASPK_ABORT1 ("incorrect number of elements in cell array");
     }
 
-  if (!daspk_fcn && ! f_arg.is_cell ())
+  if (! daspk_fcn && ! f_arg.is_cell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         daspk_fcn = f_arg.function_value ();
@@ -388,7 +388,7 @@ parameters for @code{daspk}.\n\
                                                   jac_name, jname,
                                                   "; endfunction");
 
-                    if (!daspk_jac)
+                    if (! daspk_jac)
                       {
                         if (fcn_name.length ())
                           clear_function (fcn_name);

@@ -76,10 +76,10 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
 
 #define OCTAVE_TYPE_CONV_BODY3(NAME, MATRIX_RESULT_T, SCALAR_RESULT_T) \
  \
-  octave_value retval; \
- \
   if (args.length () != 1) \
     print_usage (); \
+ \
+  octave_value retval; \
  \
   const octave_value arg = args(0); \
  \
@@ -97,7 +97,7 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
       gripe_invalid_conversion (arg_tname, result_tname); \
     } \
  \
-  return retval
+  return retval;
 
 #define OCTAVE_TYPE_CONV_BODY(NAME) \
   OCTAVE_TYPE_CONV_BODY3 (NAME, octave_ ## NAME ## _matrix, \

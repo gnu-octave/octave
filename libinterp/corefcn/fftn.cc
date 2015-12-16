@@ -43,13 +43,12 @@ along with Octave; see the file COPYING.  If not, see
 static octave_value
 do_fftn (const octave_value_list &args, const char *fcn, int type)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
+  octave_value retval;
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
 
@@ -66,20 +65,15 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 
       if (val.columns () != dims.length () || val.rows () != 1)
         error ("%s: SIZE must be a vector of length dim", fcn);
-      else
+
+      for (int i = 0; i < dims.length (); i++)
         {
-          for (int i = 0; i < dims.length (); i++)
-            {
-              if (xisnan (val(i,0)))
-                error ("%s: SIZE has invalid NaN entries", fcn);
-              else if (NINTbig (val(i,0)) < 0)
-                error ("%s: all dimensions in SIZE must be greater than zero",
-                       fcn);
-              else
-                {
-                  dims(i) = NINTbig(val(i,0));
-                }
-            }
+          if (xisnan (val(i,0)))
+            error ("%s: SIZE has invalid NaN entries", fcn);
+          else if (NINTbig (val(i,0)) < 0)
+            error ("%s: all dimensions in SIZE must be greater than zero", fcn);
+          else
+            dims(i) = NINTbig(val(i,0));
         }
     }
 

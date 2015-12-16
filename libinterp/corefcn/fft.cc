@@ -42,13 +42,12 @@ along with Octave; see the file COPYING.  If not, see
 static octave_value
 do_fft (const octave_value_list &args, const char *fcn, int type)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
+  octave_value retval;
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
   octave_idx_type n_points = -1;
@@ -61,13 +60,10 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
           double dval = args(1).double_value ();
           if (xisnan (dval))
             error ("%s: number of points (N) cannot be NaN", fcn);
-          else
-            {
-              n_points = NINTbig (dval);
-              if (n_points < 0)
-                error ("%s: number of points (N) must be greater than zero",
-                       fcn);
-            }
+
+          n_points = NINTbig (dval);
+          if (n_points < 0)
+            error ("%s: number of points (N) must be greater than zero", fcn);
         }
     }
 

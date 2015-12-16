@@ -1115,6 +1115,11 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)\n\
 static octave_value_list
 do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 {
+  int nargin = args.length ();
+
+  if (nargin > 2)
+    print_usage ();
+
   octave_value_list retval;
 
   unwind_protect frame;
@@ -1122,13 +1127,6 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
   octave_idx_type curr_frame = -1;
 
   size_t nskip = 0;
-
-  int nargin = args.length ();
-
-  // dbstack accepts up to 2 arguments.
-
-  if (nargin > 2)
-    print_usage ();
 
   if (nargin == 1 || nargin == 2)
     {
@@ -1360,52 +1358,50 @@ function returns.\n\
 @seealso{dbcont, dbquit}\n\
 @end deftypefn")
 {
-  if (Vdebugging)
+  if (! Vdebugging)
+    error ("dbstep: can only be called in debug mode");
+
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  if (nargin == 1)
     {
-      int nargin = args.length ();
+      std::string arg = args(0).xstring_value ("dbstep: input argument must be a string");
 
-      if (nargin > 1)
-        print_usage ();
-
-      if (nargin == 1)
-        {
-          std::string arg = args(0).xstring_value ("dbstep: input argument must be a string");
-
-          if (arg == "in")
-            {
-              Vdebugging = false;
-
-              tree_evaluator::dbstep_flag = -1;
-            }
-          else if (arg == "out")
-            {
-              Vdebugging = false;
-
-              tree_evaluator::dbstep_flag = -2;
-            }
-          else
-            {
-              int n = atoi (arg.c_str ());
-
-              if (n > 0)
-                {
-                  Vdebugging = false;
-
-                  tree_evaluator::dbstep_flag = n;
-                }
-              else
-                error ("dbstep: invalid argument");
-            }
-        }
-      else
+      if (arg == "in")
         {
           Vdebugging = false;
 
-          tree_evaluator::dbstep_flag = 1;
+          tree_evaluator::dbstep_flag = -1;
+        }
+      else if (arg == "out")
+        {
+          Vdebugging = false;
+
+          tree_evaluator::dbstep_flag = -2;
+        }
+      else
+        {
+          int n = atoi (arg.c_str ());
+
+          if (n > 0)
+            {
+              Vdebugging = false;
+
+              tree_evaluator::dbstep_flag = n;
+            }
+          else
+            error ("dbstep: invalid argument");
         }
     }
   else
-    error ("dbstep: can only be called in debug mode");
+    {
+      Vdebugging = false;
+
+      tree_evaluator::dbstep_flag = 1;
+    }
 
   return octave_value_list ();
 }
@@ -1419,17 +1415,15 @@ Leave command-line debugging mode and continue code execution normally.\n\
 @seealso{dbstep, dbquit}\n\
 @end deftypefn")
 {
-  if (Vdebugging)
-    {
-      if (args.length () != 0)
-        print_usage ();
-
-      Vdebugging = false;
-
-      tree_evaluator::reset_debug_state ();
-    }
-  else
+  if (! Vdebugging)
     error ("dbcont: can only be called in debug mode");
+
+  if (args.length () != 0)
+    print_usage ();
+
+  Vdebugging = false;
+
+  tree_evaluator::reset_debug_state ();
 
   return octave_value_list ();
 }
@@ -1442,19 +1436,17 @@ the Octave prompt.\n\
 @seealso{dbcont, dbstep}\n\
 @end deftypefn")
 {
-  if (Vdebugging)
-    {
-      if (args.length () != 0)
-        print_usage ();
-
-      Vdebugging = false;
-
-      tree_evaluator::reset_debug_state ();
-
-      octave_throw_interrupt_exception ();
-    }
-  else
+  if (! Vdebugging)
     error ("dbquit: can only be called in debug mode");
+
+  if (args.length () != 0)
+    print_usage ();
+
+  Vdebugging = false;
+
+  tree_evaluator::reset_debug_state ();
+
+  octave_throw_interrupt_exception ();
 
   return octave_value_list ();
 }
@@ -1481,8 +1473,6 @@ Disable line info printing at the next breakpoint.\n\
 With a logical argument @var{flag}, set the state on or off.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -1495,5 +1485,6 @@ With a logical argument @var{flag}, set the state on or off.\n\
 
   tree_evaluator::quiet_breakpoint_flag = state;
 
-  return retval;
+  return octave_value_list ();
 }
+

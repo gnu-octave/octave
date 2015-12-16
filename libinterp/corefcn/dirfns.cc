@@ -563,21 +563,22 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 @seealso{pathsep}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
+
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 0)
     retval = file_ops::dir_sep_str ();
   else
     {
       std::string s = args(0).xstring_value ("filesep: argument must be a string");
-      if (s == "all")
-        retval = file_ops::dir_sep_chars ();
-      else
+      if (s != "all")
         error ("filesep: argument must be \"all\"");
+
+      retval = file_ops::dir_sep_chars ();
     }
 
   return retval;
@@ -591,12 +592,12 @@ Query or set the character used to separate directories in a path.\n\
 @seealso{filesep}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargout > 0 || nargin == 0)
     retval = dir_path::path_sep_str ();

@@ -65,10 +65,10 @@ compatible dimensions.\n\
 @seealso{betaincinv, beta, betaln}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 3)
     print_usage ();
+
+  octave_value retval;
 
   octave_value x_arg = args(0);
   octave_value a_arg = args(1);
@@ -298,10 +298,10 @@ The inverse is the value @var{x} such that\n\
 @seealso{betainc, beta, betaln}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 3)
     print_usage ();
+
+  octave_value retval;
 
   octave_value x_arg = args(0);
   octave_value a_arg = args(1);
@@ -395,7 +395,6 @@ The inverse is the value @var{x} such that\n\
     {
       retval = Array<float> (retval.array_value ());
     }
-
 
   return retval;
 }

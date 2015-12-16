@@ -64,15 +64,14 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 @seealso{conv, convn}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  octave_value tmp;
   int nargin = args.length ();
-  std::string shape = "full";   // default
-  bool separable = false;
-  convn_type ct = convn_full;
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
+
+  std::string shape = "full";   // default
+  bool separable = false;
+  convn_type ct = convn_full;
 
   if (nargin == 3)
     {
@@ -99,10 +98,11 @@ When the third argument is a matrix, return the convolution of the matrix\n\
   else
     error ("conv2: SHAPE type not valid");
 
+  octave_value retval;
+
   if (separable)
     {
       // If user requests separable, check first two params are vectors
-
       if (! (1 == args(0).rows () || 1 == args(0).columns ())
           || ! (1 == args(1).rows () || 1 == args(1).columns ()))
         error ("conv2: arguments must be vectors for separable option");
@@ -305,14 +305,13 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 @seealso{conv2, conv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  octave_value tmp;
   int nargin = args.length ();
-  std::string shape = "full";   // default
-  convn_type ct = convn_full;
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
+
+  std::string shape = "full";   // default
+  convn_type ct = convn_full;
 
   if (nargin == 3)
     shape = args(2).xstring_value ("convn: SHAPE must be a string");
@@ -325,6 +324,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
     ct = convn_valid;
   else
     error ("convn: SHAPE type not valid");
+
+  octave_value retval;
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {

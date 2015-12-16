@@ -43,8 +43,6 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
 @cite{Solution of Differential Equation Models by Polynomial Approximation}.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
@@ -54,7 +52,6 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
     error ("colloc: N must be a scalar");
 
   double tmp = args(0).double_value ();
-
   if (xisnan (tmp))
     error ("colloc: N cannot be NaN");
 
@@ -70,16 +67,11 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
     {
       std::string s = args(i).xstring_value ("colloc: optional arguments must be strings");
 
-      if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
-          || s == "right")
-        {
-          right = 1;
-        }
+      if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r')) || s == "right")
+        right = 1;
       else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
                || s == "left")
-        {
-          left = 1;
-        }
+        left = 1;
       else
         error ("colloc: string argument must be \"left\" or \"right\"");
     }
@@ -95,7 +87,6 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
   Matrix B = wts.second ();
   ColumnVector q = wts.quad_weights ();
 
-  retval = ovl (r, A, B, q);
-
-  return retval;
+  return ovl (r, A, B, q);
 }
+

@@ -229,7 +229,7 @@ do_minmax_body (const octave_value_list& args,
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
-  
+
   octave_value_list retval (nargout > 1 ? 2 : 1);
 
   const char *func = ismin ? "min" : "max";

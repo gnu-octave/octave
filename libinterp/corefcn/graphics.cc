@@ -2998,7 +2998,7 @@ base_properties::get_property_dynamic (const caseless_str& pname)
 
   if (it == all_props.end ())
     error ("get_property: unknown property \"%s\"", pname.c_str ());
-    
+
   return it->second;
 }
 

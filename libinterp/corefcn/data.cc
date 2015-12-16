@@ -3448,7 +3448,7 @@ complex ([1, 2], [3, 4])\n\
 
                   if (re_val.dims () != im_val.dims ())
                     error ("complex: dimension mismatch");
-                  
+
                   FloatComplexNDArray result (re_val.dims (),
                                               FloatComplex ());
 
@@ -6409,7 +6409,7 @@ ordered lists.\n\
 
   sortmode smode = ASCENDING;
   bool return_idx = (nargout > 1);
-  bool have_sortmode = (nargin > 1 && args(1).is_string ()); 
+  bool have_sortmode = (nargin > 1 && args(1).is_string ());
   octave_value arg = args(0);
 
   int dim = 0;

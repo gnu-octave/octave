@@ -1036,7 +1036,7 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 {
   if (k != xround (k) || k <= 0)
     error ("isargout: K must be a positive integer");
-  
+
   return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
 }
 

@@ -214,7 +214,7 @@ information.\n\
                 retval(0) = fact.Y ();
               else
                 {
-                  retval.resize (nargout == 3 ? 3 : 2); 
+                  retval.resize (nargout == 3 ? 3 : 2);
                   retval(1)
                     = octave_value (
                         fact.U () * fact.Pc_mat ().transpose (),
@@ -279,7 +279,7 @@ information.\n\
                 retval(0) = fact.Y ();
               else
                 {
-                  retval.resize (nargout == 3 ? 3 : 2); 
+                  retval.resize (nargout == 3 ? 3 : 2);
                   retval(1)
                     = octave_value (
                         fact.U () * fact.Pc_mat ().transpose (),

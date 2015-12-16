@@ -147,8 +147,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   int nargin = args.length ();
 
-  if (nargout > 2 || nargin < 1 || nargin > 3)
-    usage ("ccolamd: incorrect number of input and/or output arguments");
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
 
   octave_value_list retval (nargout == 2 ? 2 : 1);
   int spumoni = 0;
@@ -405,8 +405,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   int nargin = args.length ();
 
-  if (nargout > 2 || nargin < 1 || nargin > 3)
-    usage ("ccolamd: incorrect number of input and/or output arguments");
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
 
   octave_value_list retval (nargout == 2 ? 2 : 1);
   int spumoni = 0;

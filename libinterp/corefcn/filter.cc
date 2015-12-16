@@ -400,7 +400,7 @@ H(z) = ---------------------\n\
         dim = 0;
     }
 
-  octave_value_list retval (nargout > 1 ? 2 : 1);
+  octave_value_list retval;
 
   bool isfloat = (args(0).is_single_type ()
                   || args(1).is_single_type ()
@@ -444,9 +444,7 @@ H(z) = ---------------------\n\
 
           FloatComplexNDArray y (filter (b, a, x, si, dim));
 
-          retval(0) = y;
-          if (nargout == 2)
-            retval(1) = si;
+          retval = ovl (y, si);
         }
       else
         {
@@ -481,9 +479,7 @@ H(z) = ---------------------\n\
 
           ComplexNDArray y (filter (b, a, x, si, dim));
 
-          retval(0) = y;
-          if (nargout == 2)
-            retval(1) = si;
+          retval = ovl (y, si);
         }
     }
   else
@@ -521,9 +517,7 @@ H(z) = ---------------------\n\
 
           FloatNDArray y (filter (b, a, x, si, dim));
 
-          retval(0) = y;
-          if (nargout == 2)
-            retval(1) = si;
+          retval = ovl (y, si);
         }
       else
         {
@@ -558,9 +552,7 @@ H(z) = ---------------------\n\
 
           NDArray y (filter (b, a, x, si, dim));
 
-          retval(0) = y;
-          if (nargout == 2)
-            retval(1) = si;
+          retval = ovl (y, si);
         }
     }
 

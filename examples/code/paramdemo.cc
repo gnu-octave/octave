@@ -5,9 +5,6 @@ DEFUN_DLD (paramdemo, args, nargout, "Parameter Check Demo")
   if (args.length () != 1)
     print_usage ();
 
-  if (nargout != 0)
-    error ("paramdemo: OUTPUT argument required");
-
   NDArray m = args(0).array_value ();
 
   double min_val = -10.0;

@@ -388,15 +388,10 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       if (nargout > 0)
         {
           if (curl.good ())
-            {
-              retval = ovl (octave_env::make_absolute (filename),
-                            true,
-                            std::string ());
-            }
+            retval = ovl (octave_env::make_absolute (filename),
+                          true, std::string ());
           else
-            {
-              retval = ovl (std::string (), false, curl.lasterror ());
-            }
+            retval = ovl (std::string (), false, curl.lasterror ());
         }
 
       if (nargout < 2 && ! curl.good ())

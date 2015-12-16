@@ -281,7 +281,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 #ifdef HAVE_COLAMD
   int nargin = args.length ();
 
-  if (nargout > 2 || nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   octave_value_list retval (nargout == 2 ? 2 : 1);
@@ -516,7 +516,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 
   int nargin = args.length ();
 
-  if (nargout > 2 || nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   octave_value_list retval (nargin == 2 ? 2 : 1);
@@ -657,7 +657,7 @@ permutations on the tree.\n\
 {
   int nargin = args.length ();
 
-  if (nargout > 2 || nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   octave_value_list retval (nargout == 2 ? 2 : 1);

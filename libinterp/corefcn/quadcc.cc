@@ -2214,16 +2214,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 #endif
 
-  /* Clean up and present the results. */
-  octave_value_list retval;
-
-  if (nargout > 2)
-    retval(2) = neval;
-  if (nargout > 1)
-    retval(1) = err;
-  retval(0) = igral;
-  /* All is well that ends well. */
-  return retval;
+  return ovl (igral, err, neval);
 }
 
 

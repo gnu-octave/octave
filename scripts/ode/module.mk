@@ -8,7 +8,7 @@ scripts_ode_PRIVATE_FCN_FILES = \
   scripts/ode/private/integrate_const.m \
   scripts/ode/private/integrate_n_steps.m \
   scripts/ode/private/kahan.m \
-  scripts/ode/private/known_option_names \
+  scripts/ode/private/known_option_names.m \
   scripts/ode/private/ode_event_handler.m \
   scripts/ode/private/ode_struct_value_check.m \
   scripts/ode/private/runge_kutta_23.m \

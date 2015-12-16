@@ -263,7 +263,7 @@ parameters for @code{lsode}.\n\
 {
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 4 || nargout > 3)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
 
   warned_fcn_imaginary = false;

@@ -196,7 +196,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 5 || nargout > 4)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
 
   if (args(0).is_function_handle () || args(0).is_inline_function ())

@@ -145,8 +145,7 @@ information.\n\
   int nargin = args.length ();
   bool issparse = (nargin > 0 && args(0).is_sparse_type ());
 
-  if (nargin < 1 || (issparse && (nargin > 3 || nargout > 5))
-      || (! issparse && (nargin > 2 || nargout > 3)))
+  if (nargin < 1 || (issparse && nargin > 3) || (! issparse && nargin > 2))
     print_usage ();
 
   bool vecout = false;

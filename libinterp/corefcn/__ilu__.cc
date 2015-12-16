@@ -136,7 +136,7 @@ Undocumented internal function.\n\
 {
   int nargin = args.length ();
 
-  if (nargout > 2 || nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   octave_value_list retval (2);
@@ -473,7 +473,7 @@ Undocumented internal function.\n\
 {
   int nargin = args.length ();
 
-  if (nargout != 2 || nargin < 1 || nargin > 3)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
 
   std::string milu = "off";
@@ -940,7 +940,7 @@ Undocumented internal function.\n\
 {
   int nargin = args.length ();
 
-  if (nargout < 2 || nargout > 3 || nargin < 1 || nargin > 5)
+  if (nargin < 1 || nargin > 5)
     print_usage ();
 
   octave_value_list retval;

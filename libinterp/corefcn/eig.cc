@@ -54,7 +54,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
   int nargin = args.length ();
 
-  if (nargin > 2 || nargin == 0 || nargout > 2)
+  if (nargin > 2 || nargin == 0)
     print_usage ();
 
   octave_value arg_a, arg_b;

@@ -66,7 +66,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
 {
   octave_value_list retval;
 
-  if (args.length () != 1 || nargout > 2)
+  if (args.length () != 1)
     print_usage ();
 
   octave_value arg = args(0);
@@ -98,10 +98,8 @@ IEEE Transactions on Automatic Control, 1979).\n\
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
           else
-            {
-              retval = ovl (result.unitary_hess_matrix (),
-                            result.hess_matrix ());
-            }
+            retval = ovl (result.unitary_hess_matrix (),
+                          result.hess_matrix ());
         }
       else if (arg.is_complex_type ())
         {
@@ -112,10 +110,8 @@ IEEE Transactions on Automatic Control, 1979).\n\
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
           else
-            {
-              retval = ovl (result.unitary_hess_matrix (),
-                            result.hess_matrix ());
-            }
+            retval = ovl (result.unitary_hess_matrix (),
+                          result.hess_matrix ());
         }
     }
   else
@@ -129,10 +125,8 @@ IEEE Transactions on Automatic Control, 1979).\n\
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
           else
-            {
-              retval = ovl (result.unitary_hess_matrix (),
-                            result.hess_matrix ());
-            }
+            retval = ovl (result.unitary_hess_matrix (),
+                          result.hess_matrix ());
         }
       else if (arg.is_complex_type ())
         {
@@ -143,10 +137,8 @@ IEEE Transactions on Automatic Control, 1979).\n\
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
           else
-            {
-              retval = ovl (result.unitary_hess_matrix (),
-                            result.hess_matrix ());
-            }
+            retval = ovl (result.unitary_hess_matrix (),
+                          result.hess_matrix ());
         }
       else
         {

@@ -76,7 +76,7 @@ givens (1, 1)\n\
 {
   octave_value_list retval;
 
-  if (args.length () != 2 || nargout > 2)
+  if (args.length () != 2)
     print_usage ();
 
   if (args(0).is_single_type () || args(1).is_single_type ())

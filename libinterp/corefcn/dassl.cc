@@ -293,7 +293,7 @@ parameters for @code{dassl}.\n\
 
   int nargin = args.length ();
 
-  if (nargin < 4 || nargin > 5 || nargout > 4)
+  if (nargin < 4 || nargin > 5)
     print_usage ();
 
   std::string fcn_name, fname, jac_name, jname;

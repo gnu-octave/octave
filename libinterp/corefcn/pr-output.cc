@@ -3429,7 +3429,7 @@ If the length of the smallest possible rational approximation exceeds\n\
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2 || nargout > 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   unwind_protect frame;
@@ -3508,7 +3508,7 @@ formatted output in a string.\n\
 {
   octave_value_list retval;
 
-  if (args.length () != 1 || nargout > 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_value arg = args(0);

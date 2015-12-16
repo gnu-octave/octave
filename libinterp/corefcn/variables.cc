@@ -1820,9 +1820,6 @@ matching the given patterns.\n\
 @seealso{whos, isglobal, isvarname, exist, regexp}\n\
 @end deftypefn")
 {
-  if (nargout > 1)
-    print_usage ();
-
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("who");
@@ -1894,9 +1891,6 @@ complex, nesting, persistent.\n\
 @seealso{who, whos_line_format}\n\
 @end deftypefn")
 {
-  if (nargout > 1)
-    print_usage ();
-
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("whos");

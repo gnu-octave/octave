@@ -237,9 +237,7 @@ x = @var{R} \\ @var{C}\n\
             is_cmplx = true;
         }
 
-      if (have_b && nargout < 2)
-        error ("qr: incorrect number of output arguments");
-      else if (is_cmplx)
+      if (is_cmplx)
         {
           SparseComplexQR q (arg.sparse_complex_matrix_value ());
 
@@ -251,9 +249,7 @@ x = @var{R} \\ @var{C}\n\
                 warning ("qr: non minimum norm solution for under-determined problem");
             }
           else if (nargout > 1)
-            {
-              retval = ovl (q.Q (), q.R (economy));
-            }
+            retval = ovl (q.Q (), q.R (economy));
           else
             retval = ovl (q.R (economy));
         }
@@ -268,9 +264,7 @@ x = @var{R} \\ @var{C}\n\
                 warning ("qr: non minimum norm solution for under-determined problem");
             }
           else if (nargout > 1)
-            {
-              retval = ovl (q.Q (), q.R (economy));
-            }
+            retval = ovl (q.Q (), q.R (economy));
           else
             retval = ovl (q.R (economy));
         }
@@ -703,7 +697,6 @@ x = @var{R} \\ @var{C}\n\
 %! [c,r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10)
 
-%!error qr (sprandn (10,10,0.2), ones (10,1))
 */
 
 static

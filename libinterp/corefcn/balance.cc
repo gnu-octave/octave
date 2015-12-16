@@ -95,7 +95,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 3 || nargout < 0 || nargout > 4)
+  if (nargin < 1 || nargin > 3 || nargout < 0)
     print_usage ();
 
   // determine if it's AEP or GEP
@@ -160,17 +160,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
-                {
-                  retval = ovl (result.balancing_matrix (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.balancing_matrix (),
+                              result.balanced_matrix ());
               else
-                {
-                  retval = ovl (result.scaling_vector (),
-                                result.permuting_vector (),
-                                result.balanced_matrix ());
-                }
-
+                retval = ovl (result.scaling_vector (),
+                              result.permuting_vector (),
+                              result.balanced_matrix ());
             }
           else
             {
@@ -179,16 +174,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
-                {
-                  retval = ovl (result.balancing_matrix (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.balancing_matrix (),
+                              result.balanced_matrix ());
               else
-                {
-                  retval = ovl (result.scaling_vector (),
-                                result.permuting_vector (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.scaling_vector (),
+                              result.permuting_vector (),
+                              result.balanced_matrix ());
             }
         }
       else
@@ -200,16 +191,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
-                {
-                  retval = ovl (result.balancing_matrix (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.balancing_matrix (),
+                              result.balanced_matrix ());
               else
-                {
-                  retval = ovl (result.scaling_vector (),
-                                result.permuting_vector (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.scaling_vector (),
+                              result.permuting_vector (),
+                              result.balanced_matrix ());
             }
           else
             {
@@ -218,16 +205,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
               else if (nargout == 2)
-                {
-                  retval = ovl (result.balancing_matrix (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.balancing_matrix (),
+                              result.balanced_matrix ());
               else
-                {
-                  retval = ovl (result.scaling_vector (),
-                                result.permuting_vector (),
-                                result.balanced_matrix ());
-                }
+                retval = ovl (result.scaling_vector (),
+                              result.permuting_vector (),
+                              result.balanced_matrix ());
             }
         }
     }

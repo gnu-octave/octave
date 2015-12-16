@@ -167,6 +167,7 @@ COREFCN_SRC = \
   libinterp/corefcn/gl2ps-renderer.cc \
   libinterp/corefcn/graphics.cc \
   libinterp/corefcn/gripes.cc \
+  libinterp/corefcn/hash.cc \
   libinterp/corefcn/help.cc \
   libinterp/corefcn/hess.cc \
   libinterp/corefcn/hex2num.cc \

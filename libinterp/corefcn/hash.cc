@@ -42,7 +42,7 @@ for now.
 #include <iomanip>
 #include <sstream>
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "md2.h"
 #include "md4.h"
 #include "md5.h"
@@ -50,8 +50,8 @@ for now.
 #include "sha256.h"
 #include "sha512.h"
 
-DEFUN_DLD (hash, args, ,
-           "-*- texinfo -*-\n\
+DEFUN (hash, args, ,
+       "-*- texinfo -*-\n\
 @deftypefn {} {} hash (@var{hfun},@var{str})\n\
 Calculate the hash value of the string @var{str} using the hash function\n\
 @var{hfun}.\n\

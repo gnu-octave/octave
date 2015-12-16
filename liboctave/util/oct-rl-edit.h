@@ -154,7 +154,7 @@ extern char octave_rl_prompt_start_ignore (void);
 
 extern char octave_rl_prompt_end_ignore (void);
 
-extern void octave_rl_add_defun (const char *, rl_fcn_ptr, char);
+extern void octave_rl_add_defun (const char *, rl_fcn_ptr, int);
 
 extern void octave_rl_set_terminal_name (const char *);
 
@@ -164,9 +164,9 @@ extern int octave_rl_history_search_forward (int, int);
 
 extern int octave_rl_history_search_backward (int, int);
 
-extern char octave_rl_ctrl (char);
+extern int octave_rl_ctrl (char);
 
-extern char octave_rl_meta (char);
+extern int octave_rl_meta (char);
 
 #ifdef __cplusplus
 }

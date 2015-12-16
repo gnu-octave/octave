@@ -407,7 +407,7 @@ octave_rl_prompt_end_ignore (void)
 }
 
 void
-octave_rl_add_defun (const char *name, rl_fcn_ptr f, char key)
+octave_rl_add_defun (const char *name, rl_fcn_ptr f, int key)
 {
   rl_add_defun (name, f, key);
 }
@@ -442,13 +442,13 @@ octave_rl_history_search_backward (int count, int ignore)
   return rl_history_search_backward (count, ignore);
 }
 
-char
+int
 octave_rl_ctrl (char c)
 {
   return CTRL (c);
 }
 
-char
+int
 octave_rl_meta (char c)
 {
   return META (c);

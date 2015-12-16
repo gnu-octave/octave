@@ -191,7 +191,6 @@ COREFCN_SRC = \
   libinterp/corefcn/mappers.cc \
   libinterp/corefcn/matrix_type.cc \
   libinterp/corefcn/max.cc \
-  libinterp/corefcn/md5sum.cc \
   libinterp/corefcn/mex.cc \
   libinterp/corefcn/mgorth.cc \
   libinterp/corefcn/nproc.cc \

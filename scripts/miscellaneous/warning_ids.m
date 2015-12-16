@@ -174,9 +174,6 @@
 ## @item Octave:logical-conversion
 ## By default, the @code{Octave:logical-conversion} warning is enabled.
 ##
-## @item Octave:md5sum-file-in-path
-## By default, the @code{Octave:md5sum-file-in-path} warning is enabled.
-##
 ## @item Octave:missing-glyph
 ## By default, the @code{Octave:missing-glyph} warning is enabled.
 ##

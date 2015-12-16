@@ -541,30 +541,20 @@ referred to as a @var{grp_struct}.
 @node Hashing Functions
 @section Hashing Functions
 
-It is often necessary to find if two strings or files are
-identical.  This might be done by comparing them character by character
-and looking for differences.  However, this can be slow, and so comparing
-a hash of the string or file can be a rapid way of finding if the files
-differ.
+It is often necessary to find if two strings or files are identical.
+This might be done by comparing them character by character and looking
+for differences.  However, this can be slow, and so comparing a hash of
+the string or file can be a rapid way of finding if the files differ.
 
 Another use of the hashing function is to check for file integrity.  The
 user can check the hash of the file against a known value and find if
 the file they have is the same as the one that the original hash was
 produced with.
 
-Octave supplies the @code{md5sum} function to perform MD5 hashes on
-strings and files.  An example of the use of @code{md5sum} function might
-be
+Octave supplies the @code{hash} function to calculate hash values of
+strings and files, the latter in combination with the @code{fileread}
+function.  The @code{hash} function supports the most common used
+cryptographic hash functions, namely MD5 and SHA-1.
 
-@example
-@group
-if exist (file, "file")
-  hash = md5sum (file);
-else
-  # Treat the variable "file" as a string
-  hash = md5sum (file, true);
-endif
-@end group
-@end example
+@DOCSTRING(hash)
 
-@DOCSTRING(md5sum)

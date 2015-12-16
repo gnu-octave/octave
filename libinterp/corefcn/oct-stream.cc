@@ -2609,6 +2609,8 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
 
         default:
           error ("%s: invalid format specifier", who.c_str ());
+          return -1;
+          break;
         }
     }
 

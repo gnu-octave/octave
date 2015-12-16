@@ -1837,7 +1837,7 @@ cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
   return true;
 }
 
-void
+inline void 
 cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 {
   ctor_list.erase (cls);

@@ -251,6 +251,22 @@ function ode_struct = ode_struct_value_check (caller, ode_struct, solver = "")
           endif
         endif
 
+      case "TimeStepSize"
+        if (! isempty (val))
+         if (! isscalar (val))
+              error ("Octave:invalid-input-arg",
+                     [caller ": invalid value assigned to field '%s'"], opt);
+         endif
+        endif
+        
+      case "TimeStepNumber"
+        if (! isempty (val))
+          if (! isscalar (val))
+            error ("Octave:invalid-input-arg",
+                   [caller ": invalid value assigned to field '%s'"], opt);
+          endif
+        endif
+
       otherwise
         warning ("Octave:invalid-input-arg",
                  [caller ": unknown field '%s' in ODE options\n"], opt);

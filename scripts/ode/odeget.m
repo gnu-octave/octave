@@ -76,12 +76,7 @@ function val = odeget (ode_opt, field, default = [], opt = "")
   ode_struct_value_check ("odeget", ode_opt);
 
   ## Define all the possible ODEOPT fields
-  persistent options = {"AbsTol"; "BDF"; "Events"; "InitialSlope";
-                        "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
-                        "Mass"; "MassConstant"; "MassSingular"; "MaxOrder";
-                        "MaxStep"; "MStateDependence"; "MvPattern";
-                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
-                        "Refine"; "RelTol"; "Stats"; "Vectorized"};
+  persistent options = known_option_names ();
 
   exactmatch = true;
   match = find (strcmpi (field, options));

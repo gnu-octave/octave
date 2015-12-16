@@ -48,12 +48,7 @@
 function odestruct = odeset (varargin)
 
   ## Column vector of all possible ODE options
-  persistent options = {"AbsTol"; "BDF"; "Events"; "InitialSlope";
-                        "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
-                        "Mass"; "MassConstant"; "MassSingular"; "MaxOrder";
-                        "MaxStep"; "MStateDependence"; "MvPattern";
-                        "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
-                        "Refine"; "RelTol"; "Stats"; "Vectorized"};
+  persistent options = known_option_names ();
 
   if (nargin == 0)
     ## Special calling syntax to display defaults

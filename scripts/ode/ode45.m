@@ -178,9 +178,6 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   if (isempty (odeopts.RelTol) && ! odeopts.stepsizefixed)
     odeopts.RelTol = 1e-3;
-    warning ("Octave:invalid-input-arg",
-             "ode45: option 'RelTol' not set, new value %f will be used\n",
-             odeopts.RelTol);
   elseif (! isempty (odeopts.RelTol) && odeopts.stepsizefixed)
     warning ("Octave:invalid-input-arg",
              ["ode45: option 'RelTol' is ignored", ...
@@ -189,9 +186,6 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   if (isempty (odeopts.AbsTol) && ! odeopts.stepsizefixed)
     odeopts.AbsTol = 1e-6;
-    warning ("Octave:invalid-input-arg",
-             "ode45: option 'AbsTol' not set, new value %f will be used\n",
-             odeopts.AbsTol);
   elseif (! isempty (odeopts.AbsTol) && odeopts.stepsizefixed)
     warning ("Octave:invalid-input-arg",
              ["ode45: option 'AbsTol' is ignored", ...
@@ -237,19 +231,12 @@ function varargout = ode45 (fun, trange, init, varargin)
                                                   odeopts.AbsTol,
                                                   odeopts.RelTol,
                                                   odeopts.normcontrol);
-    warning ("Octave:invalid-input-arg",
-             ["ode45: option 'InitialStep' not set,", ...
-              " estimated value %f will be used\n"],
-             odeopts.InitialStep);
   elseif (isempty (odeopts.InitialStep))
     odeopts.InitialStep = TimeStepSize;
   endif
 
   if (isempty (odeopts.MaxStep) && ! odeopts.stepsizefixed)
     odeopts.MaxStep = abs (trange(end) - trange(1)) / 10;
-    warning ("Octave:invalid-input-arg",
-             "ode45: option 'MaxStep' not set, new value %f will be used\n",
-             odeopts.MaxStep);
   endif
 
   odeopts.haveeventfunction = ! isempty (odeopts.Events);
@@ -569,18 +556,6 @@ endfunction
 %! [t, y, vxe, ye, vie] = ode45 (@fpol, [0 10], [2 0], opt);
 %! assert ([vie, vxe, ye],
 %!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
-%!test  # Jacobian option
-%! opt = odeset ("Jacobian", @fjac);
-%! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test  # Jacobian option and sparse return value
-%! opt = odeset ("Jacobian", @fjcc);
-%! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-
-## test for JPattern option is missing
-## test for Vectorized option is missing
-
 %!test  # Mass option as function
 %! opt = odeset ("Mass", @fmas);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
@@ -601,16 +576,3 @@ endfunction
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "strong");
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test  # Set BDF option to something other than default
-%! opt = odeset ("BDF", "on");
-%! [t, y] = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([t(end), y(end,:)], [2, fref], 1e-3);
-
-## test for MvPattern option is missing
-## test for InitialSlope option is missing
-## test for MaxOrder option is missing
-
-%!test
-%!
-%! #warning ("on", "Octave:invalid-input-arg");
-

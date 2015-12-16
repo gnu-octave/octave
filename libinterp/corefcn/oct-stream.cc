@@ -2399,8 +2399,6 @@ do_printf_string (std::ostream& os, const printf_format_elt *elt,
                   int nsa, int sa_1, int sa_2, const std::string& arg,
                   const std::string& who)
 {
-  size_t retval = 0;
-
   if (nsa > 2)
     ::error ("%s: internal error handling format", who.c_str ());
 

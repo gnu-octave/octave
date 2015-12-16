@@ -317,10 +317,6 @@ octave_struct::subsasgn (const std::string& type,
                   {
                     map.contents (pkey).make_unique ();
                     tmpc = map.contents (pkey).index (idx.front (), true);
-                    // See bug #35841, assigning to struct with trailing
-                    // singleton dimensions.
-                    if (tmpc.is_empty ())
-                      tmpc = Cell (1,1);
                   }
 
                 // FIXME: better code reuse?
@@ -455,8 +451,7 @@ octave_struct::subsasgn (const std::string& type,
                   const_cast<const octave_map &> (map);
                 // cast to const reference, avoid forced key insertion.
                 if (idxf.all_scalars ()
-                    || cmap.contents (key).index (idxf, true).numel ()
-                    <= 1)
+                    || cmap.contents (key).index (idxf, true).numel () == 1)
                   {
                     map.assign (idxf,
                                 key, Cell (t_rhs.storable_value ()));

@@ -1115,7 +1115,8 @@ Array<T>::index (const Array<idx_vector>& ia,
       int ial = ia.numel ();
       dim_vector dv = dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
-      for (int i = 0; i < ial; i++) dvx(i) = ia(i).extent (dv(i));
+      for (int i = 0; i < ial; i++)
+        dvx(i) = ia(i).extent (dv(i));
       if (! (dvx == dv))
         {
           bool all_scalars = true;
@@ -1125,10 +1126,10 @@ Array<T>::index (const Array<idx_vector>& ia,
             return Array<T> (dim_vector (1, 1), rfv);
           else
             tmp.resize (dvx, rfv);
-        }
 
-      if (tmp.dimensions != dvx)
-        return Array<T> ();
+          if (tmp.dimensions != dvx)
+            return Array<T> ();
+        }
     }
 
   return tmp.index (ia);

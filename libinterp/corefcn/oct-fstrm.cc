@@ -56,6 +56,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 #endif
 
   if (! fs)
+    // Note: error() is inherited from octave_base_stream, not ::error().
     error (gnulib::strerror (errno));
 }
 
@@ -64,6 +65,8 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 int
 octave_fstream::seek (off_t, int)
 {
+  // Note: error() is inherited from octave_base_stream, not ::error().
+  // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid_operation");
   return -1;
 }
@@ -73,6 +76,8 @@ octave_fstream::seek (off_t, int)
 off_t
 octave_fstream::tell (void)
 {
+  // Note: error() is inherited from octave_base_stream, not ::error().
+  // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid_operation");
   return -1;
 }

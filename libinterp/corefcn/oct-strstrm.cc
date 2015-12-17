@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 int
 octave_base_strstream::seek (off_t, int)
 {
+  // Note: error() is inherited from octave_base_stream, not ::error().
+  // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid operation");
   return -1;
 }
@@ -40,6 +42,8 @@ octave_base_strstream::seek (off_t, int)
 off_t
 octave_base_strstream::tell (void)
 {
+  // Note: error() is inherited from octave_base_stream, not ::error().
+  // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid operation");
   return -1;
 }

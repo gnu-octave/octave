@@ -108,7 +108,7 @@ function varargout = ode23 (fun, trange, init, varargin)
 
   order = 3;
   solver = "ode23";
-  
+
   if (nargin >= 4)
     if (! isstruct (varargin{1}))
       ## varargin{1:len} are parameters for fun
@@ -222,7 +222,7 @@ function varargout = ode23 (fun, trange, init, varargin)
                ["ode23: option \"NonNegative\" is ignored", ...
                 " when mass matrix is set\n"]);
     endif
-  else 
+  else
     odeopts.havenonnegative = false;
   endif
 
@@ -237,7 +237,7 @@ function varargout = ode23 (fun, trange, init, varargin)
 
   if (odeopts.Refine > 0)
     odeopts.haverefine = true;
-  else 
+  else
     odeopts.haverefine = false;
   endif
 
@@ -313,7 +313,7 @@ function varargout = ode23 (fun, trange, init, varargin)
   endif
 
   ## Starting the initialisation of the core solver ode23
-  
+
   if (havemasshandle)   # Handle only the dynamic mass matrix,
     if (massdependence) # constant mass matrices have already
       mass = @(t,x) odeopts.Mass (t, x, odeopts.funarguments{:});

@@ -97,7 +97,7 @@ function [status, msg, msgid] = fileattrib (file = ".")
         r(i).system = NaN;
         r(i).hidden = NaN;
       else
-        [~, attrib] = dos (sprintf ('attrib "%s"', r(i).Name));        
+        [~, attrib] = dos (sprintf ('attrib "%s"', r(i).Name));
         ## dos() never returns error status so have to check it indirectly
         if (length (attrib) < 12
             || ! strcmp (deblank (attrib(12:end)), r(i).Name))
@@ -151,7 +151,7 @@ endfunction
 
 
 %!test
-%! [status, attr] = fileattrib (P_tmpdir ()); 
+%! [status, attr] = fileattrib (P_tmpdir ());
 %! assert (status);
 %! assert (isstruct (attr));
 %! assert (numel (fieldnames (attr)), 14);

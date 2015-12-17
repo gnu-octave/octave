@@ -36,7 +36,7 @@
 %# For example, solve an anonymous implementation of the "Van der Pol" equation and display the results while solving
 %# @example
 %# fvdb = @@(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%# 
+%#
 %# opt = odeset ("OutputFcn", @@odeplot, "RelTol", 1e-6);
 %# sol = ode45 (fvdb, [0 20], [2 0], opt);
 %# @end example
@@ -47,10 +47,10 @@
 function [varargout] = odeplot (t, y, flag, varargin)
 
   ## No input argument check is done for a higher processing speed
-  persistent fig; persistent told; 
+  persistent fig; persistent told;
   persistent yold; persistent counter;
 
-  if (strcmp (flag, "init")) 
+  if (strcmp (flag, "init"))
     ## Nothing to return, t is either the time slot [tstart tstop]
     ## or [t0, t1, ..., tn], y is the inital value vector "init"
     fig = figure; told = t(1,1); yold = y(:,1);
@@ -65,7 +65,7 @@ function [varargout] = odeplot (t, y, flag, varargin)
     plot (told, yold, "-o", "markersize", 1); drawnow;
     varargout{1} = false;
 
-  elseif (strcmp (flag, "done")) 
+  elseif (strcmp (flag, "done"))
     ## Cleanup has to be done, clear the persistent variables because
     ## we don't need them anymore
     clear ("figure", "told", "yold", "counter");

@@ -126,5 +126,5 @@ function x_out = hermite_cubic_interpolation (t, x, der, t_out)
           (s .* (1-s).^2 * dt   ) .* der(:,1) + ...
           ((3-2*s) .* s.^2      ) .* x(:,2) + ...
           ((s-1) .* s.^2   * dt ) .* der(:,2);
-  
+
 endfunction

@@ -258,7 +258,7 @@ function ode_struct = ode_struct_value_check (caller, ode_struct, solver = "")
                      [caller ": invalid value assigned to field '%s'"], opt);
          endif
         endif
-        
+
       case "TimeStepNumber"
         if (! isempty (val))
           if (! isscalar (val))

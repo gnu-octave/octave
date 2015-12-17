@@ -82,7 +82,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
   else
     args = {};
   endif
-  
+
   if (! isempty (k_vals))    # k values from previous step are passed
     k(:,1) = k_vals(:,end);  # FSAL property
   else
@@ -91,7 +91,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
 
   k(:,2) = feval (f, s(2), x + k(:,1) * aa(2, 1).', args{:});
   k(:,3) = feval (f, s(3), x + k(:,2) * aa(3, 2).', args{:});
-  
+
   ## compute new time and new values for the unkwnowns
   ## t_next = t + dt;
   x_next = x + k(:,1:3) * cc(:); # 3rd order approximation

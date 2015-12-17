@@ -1558,9 +1558,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
       horzvert = "horizontal";
     endif
     if (strcmpi (hlgnd.textposition, "right"))
-      reverse = "reverse";
+      reverse = "reverse Left";
     else
-      reverse = "noreverse";
+      reverse = "noreverse Right";
     endif
     inout = "inside";
     keypos = hlgnd.location;

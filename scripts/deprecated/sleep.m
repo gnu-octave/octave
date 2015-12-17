@@ -27,7 +27,7 @@
 ## @seealso{pause}
 ## @end deftypefn
 
-function [] = sleep (seconds)
+function sleep (seconds)
 
   persistent warned = false;
   if (! warned)

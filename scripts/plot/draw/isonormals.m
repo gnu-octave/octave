@@ -50,7 +50,7 @@
 ## @c Set example in small font to prevent overfull line
 ##
 ## @smallexample
-## function [] = isofinish (p)
+## function isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##             "PlotBoxAspectRatio", [1 1 1]);
 ##   set (p, "VertexNormals", -get (p,"VertexNormals")); # Revert normals

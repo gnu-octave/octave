@@ -51,7 +51,7 @@
 ## For example:
 ##
 ## @example
-## function [] = isofinish (p)
+## function isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##             "PlotBoxAspectRatio", [1 1 1]);
 ##   set (p, "FaceColor", "interp");

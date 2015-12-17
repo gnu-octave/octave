@@ -129,10 +129,6 @@ useful.
 
 @DOCSTRING(pause)
 
-@DOCSTRING(sleep)
-
-@DOCSTRING(usleep)
-
 @DOCSTRING(datenum)
 
 @DOCSTRING(datestr)

@@ -110,7 +110,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         while (isempty (str))
           str = fread (istream, "*char")';
           if (isempty (str))
-            sleep (0.05);
+            pause (0.05);
           else
             str = regexp (str, 'OCTAVE:\s+[-+.\d]+\s+[-+.\d]+\s+\d*', 'match');
           endif

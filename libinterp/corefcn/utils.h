@@ -32,8 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "lo-utils.h"
 
-#include "cutils.h"
-
 class octave_value;
 class octave_value_list;
 class string_vector;

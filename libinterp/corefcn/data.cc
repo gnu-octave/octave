@@ -6172,7 +6172,7 @@ of type @code{uint64} that may be later passed to @code{toc}.\n\
 \n\
 @example\n\
 @group\n\
-id = tic; sleep (5); toc (id)\n\
+id = tic; pause (5); toc (id)\n\
       @result{} 5.0010\n\
 @end group\n\
 @end example\n\

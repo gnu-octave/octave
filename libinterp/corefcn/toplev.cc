@@ -800,7 +800,7 @@ clean_up_and_exit (int status, bool safe_to_return)
           // exiting for us.  Assume that job won't take more than a
           // day...
 
-          gnulib::sleep (86400);
+          octave_sleep (86400); // FIXME: really needed?
         }
     }
   else

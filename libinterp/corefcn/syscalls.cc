@@ -218,7 +218,7 @@ do\n\
   if (ischar (s))\n\
     fputs (stdout, s);\n\
   elseif (errno () == EAGAIN)\n\
-    sleep (0.1);\n\
+    pause (0.1);\n\
     fclear (out);\n\
   else\n\
     done = true;\n\
@@ -317,7 +317,7 @@ exit status, it will linger until Octave exits.\n\
 %!       str{idx} = s;
 %!     elseif (errno () == EAGAIN)
 %!       fclear (out);
-%!       sleep (0.1);
+%!       pause (0.1);
 %!       if (++errs == 100)
 %!         done = true;
 %!       endif
@@ -348,7 +348,7 @@ exit status, it will linger until Octave exits.\n\
 %!       str{idx} = s;
 %!     elseif (errno () == EAGAIN)
 %!       fclear (out);
-%!       sleep (0.1);
+%!       pause (0.1);
 %!       if (++errs == 100)
 %!         done = true;
 %!       endif

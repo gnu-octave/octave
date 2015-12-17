@@ -80,6 +80,8 @@ Summary of important user-visible changes for version 4.2:
       bitmax               | flintmax
       mahalanobis          | mahal in Octave-Forge statistics pkg
       md5sum               | hash
+      sleep                | pause
+      usleep               | pause
       wavread              | audioread
       wavwrite             | audiowrite
 

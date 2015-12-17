@@ -1355,25 +1355,22 @@ octave_asprintf (const char *fmt, ...)
 void
 octave_sleep (double seconds)
 {
-  if (seconds > 0)
-    {
-      double t;
+  if (seconds <= 0)
+    return;
 
-      unsigned int usec
-        = static_cast<unsigned int> (modf (seconds, &t) * 1000000);
+  double fraction = std::modf (seconds, &seconds);
+  fraction = std::floor (fraction * 1000000000); // nanoseconds
 
-      unsigned int sec
-        = ((t > std::numeric_limits<unsigned int>::max ())
-           ? std::numeric_limits<unsigned int>::max ()
-           : static_cast<unsigned int> (t));
+  time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
+                ? std::numeric_limits<time_t>::max ()
+                : static_cast<time_t> (seconds));
 
-      // Versions of these functions that accept unsigned int args are
-      // defined in cutils.c.
-      octave_sleep (sec);
-      octave_usleep (usec);
+  // call GNULIB POSIX function
+  struct timespec delay = { sec, static_cast<long> (fraction) };
+  struct timespec remaining;
+  gnulib::nanosleep (&delay, &remaining);
 
-      octave_quit ();
-    }
+  octave_quit ();
 }
 
 DEFUN (isindex, args, ,

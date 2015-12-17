@@ -57,13 +57,13 @@ endfunction
 %!demo
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1);
-%! sleep (2);
+%! pause (2);
 %! player1 = audioplayer (recorder);
 %! player2 = getplayer (recorder);
 %! play (player1);
-%! sleep (2);
+%! pause (2);
 %! play (player2);
-%! sleep (2);
+%! pause (2);
 %! stop (player1);
 %! stop (player2);
 
@@ -119,7 +119,7 @@ endfunction
 #%! recorder = audiorecorder (@callback_record, 44100);
 #%! unlink ("record.txt")
 #%! record (recorder);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (recorder);
 #%! s = stat ("record.txt");
 #%! assert (s.size > 0);
@@ -128,7 +128,7 @@ endfunction
 #%! recorder = audiorecorder (@callback_record, 44100);
 #%! unlink ("record.txt")
 #%! record (recorder);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (recorder);
 #%! s = stat ("record.txt");
 #%! assert (s.size > 0);

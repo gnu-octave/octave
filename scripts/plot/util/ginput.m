@@ -85,7 +85,7 @@ function varargout = ginput (n = -1)
       endif
 
       ## Release CPU.
-      sleep (0.01);
+      pause (0.01);
 
       [x, y, n0, button] = ginput_accumulator (-1, 0, 0, 0);
     until ((n > -1 && n0 >= n) || n0 < 0)

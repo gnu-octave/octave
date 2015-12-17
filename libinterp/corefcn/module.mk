@@ -28,7 +28,6 @@ COREFCN_INC = \
   libinterp/corefcn/c-file-ptr-stream.h \
   libinterp/corefcn/cdisplay.h \
   libinterp/corefcn/comment-list.h \
-  libinterp/corefcn/cutils.h \
   libinterp/corefcn/data.h \
   libinterp/corefcn/debug.h \
   libinterp/corefcn/defun-dld.h \
@@ -110,8 +109,6 @@ TEX_PARSER_SRC = \
   libinterp/corefcn/oct-tex-parser.yy
 
 C_COREFCN_SRC = \
-  libinterp/corefcn/cutils.c \
-  libinterp/corefcn/matherr.c \
   libinterp/corefcn/siglist.c
 
 COREFCN_SRC = \

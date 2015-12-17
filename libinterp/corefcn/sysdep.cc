@@ -742,22 +742,31 @@ DEFUN (pause, args, ,
 @deftypefnx {} {} pause (@var{n})\n\
 Suspend the execution of the program for @var{n} seconds.\n\
 \n\
-@var{n} is a positive real value and may be a fraction of a second.\n\
-\n\
 If invoked without an input arguments then the program is suspended until a\n\
 character is typed.\n\
+\n\
+@var{n} is a positive real value and may be a fraction of a second,\n\
+for example:\n\
+\n\
+@example\n\
+@group\n\
+tic; pause (0.05); toc\n\
+     @print{} Elapsed time is 0.05039 seconds.\n\
+@end group\n\
+@end example\n\
 \n\
 The following example prints a message and then waits 5 seconds before\n\
 clearing the screen.\n\
 \n\
 @example\n\
 @group\n\
-fprintf (stderr, \"wait please...\\n\");\n\
+disp (\"wait please...\");\n\
 pause (5);\n\
 clc;\n\
 @end group\n\
 @end example\n\
-@seealso{kbhit, sleep}\n\
+\n\
+@seealso{kbhit}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -801,81 +810,6 @@ clc;\n\
 %! pause (1);
 
 %!error (pause (1, 2))
-*/
-
-DEFUN (sleep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sleep (@var{seconds})\n\
-Suspend the execution of the program for the given number of seconds.\n\
-@seealso{usleep, pause}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (args.length () != 1)
-    print_usage ();
-
-  double dval = args(0).double_value ();
-
-  if (xisnan (dval))
-    warning ("sleep: NaN is an invalid delay");
-  else
-    {
-      Fdrawnow ();
-      octave_sleep (dval);
-    }
-
-  return retval;
-}
-
-/*
-%!test
-%! sleep (1);
-
-%!error (sleep ())
-%!error (sleep (1, 2))
-*/
-
-DEFUN (usleep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} usleep (@var{microseconds})\n\
-Suspend the execution of the program for the given number of\n\
-microseconds.\n\
-\n\
-On systems where it is not possible to sleep for periods of time less than\n\
-one second, @code{usleep} will pause the execution for @code{round\n\
-(@var{microseconds} / 1e6)} seconds.\n\
-@seealso{sleep, pause}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (args.length () != 1)
-    print_usage ();
-
-  double dval = args(0).double_value ();
-
-  if (xisnan (dval))
-    warning ("usleep: NaN is an invalid delay");
-  else
-    {
-      Fdrawnow ();
-
-      int delay = NINT (dval);
-
-      if (delay > 0)
-        octave_usleep (delay);
-    }
-
-  return retval;
-}
-
-/*
-%!test
-%! usleep (1000);
-
-%!error (usleep ())
-%!error (usleep (1, 2))
 */
 
 // FIXME: maybe this should only return 1 if IEEE floating

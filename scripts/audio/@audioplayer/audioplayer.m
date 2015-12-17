@@ -114,11 +114,11 @@ endfunction
 %! audio = randn (2, 2*fs) - 0.5;
 %! player = audioplayer (audio, fs);
 %! play (player);
-%! sleep (1);
+%! pause (1);
 %! pause (player);
-%! sleep (1);
+%! pause (1);
 %! resume (player);
-%! sleep (1);
+%! pause (1);
 %! stop (player);
 
 ## Tests of audioplayer must not actually play anything.
@@ -176,13 +176,13 @@ endfunction
 #%!testif HAVE_PORTAUDIO
 #%! player = audioplayer (@callback, 44100);
 #%! play (player);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (player);
 #%! assert (1);
 
 #%!testif HAVE_PORTAUDIO
 #%! player = audioplayer ("callback", 44100, 16);
 #%! play (player);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (player);
 #%! assert (1);

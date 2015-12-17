@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 
 #include "builtins.h"
-#include "cutils.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
@@ -58,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "txt-eng-ft.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "octave-default-image.h"
 
 // forward declarations
@@ -10983,7 +10983,7 @@ undocumented.\n\
               go.get_toolkit ().print_figure (go, term, file, mono,
                                               debug_file);
 
-              Fsleep (octave_value (0.05));
+              octave_sleep (0.05); // FIXME: really needed?
 
               gh_manager::lock ();
             }
@@ -11612,7 +11612,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
             break;
         }
 
-      octave_usleep (100000);
+      octave_sleep (0.1); // FIXME: really needed?
 
       OCTAVE_QUIT;
 

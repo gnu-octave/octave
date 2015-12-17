@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lex.h"
 #include "load-path.h"
 #include "octave-link.h"
+#include "octave-preserve-stream-state.h"
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"

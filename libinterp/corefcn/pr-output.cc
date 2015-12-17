@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-stream.h"
+#include "octave-preserve-stream-state.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "sysdep.h"

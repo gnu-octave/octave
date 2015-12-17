@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "boolSparse.h"
 #include "ov-base-sparse.h"
+#include "octave-preserve-stream-state.h"
 #include "pager.h"
 #include "utils.h"
 

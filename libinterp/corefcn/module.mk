@@ -74,6 +74,7 @@ COREFCN_INC = \
   libinterp/corefcn/oct.h \
   libinterp/corefcn/octave-default-image.h \
   libinterp/corefcn/octave-link.h \
+  libinterp/corefcn/octave-preserve-stream-state.h \
   libinterp/corefcn/pager.h \
   libinterp/corefcn/pr-output.h \
   libinterp/corefcn/procstream.h \

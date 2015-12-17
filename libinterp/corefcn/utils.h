@@ -130,25 +130,4 @@ octave_value
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                    const char *fun_name, const octave_value_list& args);
 
-class
-octave_preserve_stream_state
-{
-public:
-
-  octave_preserve_stream_state (std::ios& s)
-    : stream (s), oflags (s.flags ()), oprecision (s.precision ()),
-      owidth (s.width ()), ofill (s.fill ())
-  { }
-
-  ~octave_preserve_stream_state (void);
-
-private:
-
-  std::ios& stream;
-  std::ios::fmtflags oflags;
-  std::streamsize oprecision;
-  int owidth;
-  char ofill;
-};
-
 #endif

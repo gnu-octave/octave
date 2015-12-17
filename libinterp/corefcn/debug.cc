@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "symtab.h"
 #include "gripes.h"
+#include "octave-preserve-stream-state.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn.h"

@@ -1282,20 +1282,17 @@ DEFUN (__which__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  string_vector argv = args.make_argv ("which");
+  string_vector argv = args.make_argv ("");
 
-  int argc = argv.numel ();
+  int nargin = argv.numel ();
 
-  if (argc < 2)
-    print_usage ();
+  octave_map m (dim_vector (1, nargin));
 
-  octave_map m (dim_vector (1, argc-1));
+  Cell names (1, nargin);
+  Cell files (1, nargin);
+  Cell types (1, nargin);
 
-  Cell names (1, argc-1);
-  Cell files (1, argc-1);
-  Cell types (1, argc-1);
-
-  for (int i = 1; i < argc; i++)
+  for (int i = 0; i < nargin; i++)
     {
       std::string name = argv[i];
 
@@ -1303,16 +1300,16 @@ Undocumented internal function.\n\
 
       std::string file = do_which (name, type);
 
-      names(i-1) = name;
-      files(i-1) = file;
-      types(i-1) = type;
+      names(i) = name;
+      files(i) = file;
+      types(i) = type;
     }
 
   m.assign ("name", names);
   m.assign ("file", files);
   m.assign ("type", types);
 
-  return octave_value (m);
+  return ovl (m);
 }
 
 // FIXME: Are we sure this function always does the right thing?

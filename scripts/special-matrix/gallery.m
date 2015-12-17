@@ -2902,8 +2902,8 @@ endfunction
 
 ## BIST testing for just a few functions to verify that the main gallery
 ## dispatch function works.
-%assert (gallery ("clement", 3), [0 1 0; 2 0 2; 0 1 0])
-%assert (gallery ("invhess", 2), [1 -1; 1 2])
+%!assert (gallery ("clement", 3), [0 1 0; 2 0 2; 0 1 0])
+%!assert (gallery ("invhess", 2), [1 -1; 1 2])
 
 ## Test input validation of main dispatch function only
 %!error gallery ()

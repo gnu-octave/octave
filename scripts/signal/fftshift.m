@@ -147,7 +147,7 @@ endfunction
 %! assert (y, reshape ([y1 + 2, y1 + 3, y1, y1 + 1], [4 4 4]));
 %! assert (fftshift (y), x);
 
-%% Test input validation
+## Test input validation
 %!error fftshift ()
 %!error fftshift (1, 2, 3)
 %!error fftshift (0:3, -1)

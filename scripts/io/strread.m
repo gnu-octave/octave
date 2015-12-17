@@ -934,14 +934,14 @@ endfunction
 
 %!test
 %! ## Default format (= %f)
-%1 [a, b, c] = strread ("0.12 0.234 0.3567");
-%1 assert (a, 0.12);
-%1 assert (b, 0.234);
-%1 assert (c, 0.3567);
+%! [a, b, c] = strread ("0.12 0.234 0.3567");
+%! assert (a, 0.12);
+%! assert (b, 0.234);
+%! assert (c, 0.3567);
 
 %!test
 %! [a, b] = strread ("0.41 8.24 3.57 6.24 9.27", "%f%f", 2, "delimiter", " ");
-%1 assert (a, [0.41; 3.57]);
+%! assert (a, [0.41; 3.57]);
 
 %!test
 %! ## TreatAsEmpty

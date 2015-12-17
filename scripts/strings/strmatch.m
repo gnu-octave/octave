@@ -111,7 +111,7 @@ endfunction
 %!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
 %!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4])
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to strmatch> strmatch ()
 %!error <Invalid call to strmatch> strmatch ("a")
 %!error <Invalid call to strmatch> strmatch ("a", "aaa", "exact", 1)

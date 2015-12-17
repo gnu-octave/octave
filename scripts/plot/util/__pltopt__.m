@@ -235,7 +235,7 @@ endfunction
 
 
 ## Only cursory testing.  Real testing done by appearance of plots.
-%test
+%!test
 %! opts = __pltopt__ ("abc", "");
 %! assert (opts.color, []);
 %! assert (opts.linestyle, []);

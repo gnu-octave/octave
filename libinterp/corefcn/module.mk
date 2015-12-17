@@ -26,7 +26,6 @@ TEX_PARSER_INC = \
 COREFCN_INC = \
   libinterp/corefcn/Cell.h \
   libinterp/corefcn/c-file-ptr-stream.h \
-  libinterp/corefcn/cdisplay.h \
   libinterp/corefcn/comment-list.h \
   libinterp/corefcn/data.h \
   libinterp/corefcn/debug.h \
@@ -127,7 +126,6 @@ COREFCN_SRC = \
   libinterp/corefcn/bitfcns.cc \
   libinterp/corefcn/bsxfun.cc \
   libinterp/corefcn/c-file-ptr-stream.cc \
-  libinterp/corefcn/cdisplay.c \
   libinterp/corefcn/cellfun.cc \
   libinterp/corefcn/colloc.cc \
   libinterp/corefcn/comment-list.cc \

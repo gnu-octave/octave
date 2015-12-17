@@ -20,33 +20,140 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "singleton-cleanup.h"
-
-#include "cdisplay.h"
 #include "display.h"
-#include "error.h"
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#include <windows.h>
+#elif defined (HAVE_FRAMEWORK_CARBON)
+#include <Carbon/Carbon.h>
+#elif defined (HAVE_X_WINDOWS)
+#include <X11/Xlib.h>
+#endif
 
 display_info *display_info::instance = 0;
 
 void
 display_info::init (bool query)
 {
-  if (query)
+  if (!query)
+    return;
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+  HDC hdc = GetDC (0);
+
+  if (hdc)
     {
-      int avail = 0;
+      dp = GetDeviceCaps (hdc, BITSPIXEL);
 
-      const char *msg = octave_get_display_info (&ht, &wd, &dp, &rx, &ry,
-                                                 &avail);
+      ht = GetDeviceCaps (hdc, VERTRES);
+      wd = GetDeviceCaps (hdc, HORZRES);
 
-      dpy_avail = avail;
+      double ht_mm = GetDeviceCaps (hdc, VERTSIZE);
+      double wd_mm = GetDeviceCaps (hdc, HORZSIZE);
 
-      if (msg)
-        err_msg = msg;
+      rx = wd * 25.4 / wd_mm;
+      ry = ht * 25.4 / ht_mm;
+
+      dpy_avail = true;
     }
+  else
+    err_msg = "no graphical display found";
+
+#elif defined (HAVE_FRAMEWORK_CARBON)
+
+  CGDirectDisplayID display = CGMainDisplayID ();
+
+  if (display)
+    {
+#if defined (HAVE_CARBON_CGDISPLAYBITSPERPIXEL)
+
+      dp = CGDisplayBitsPerPixel (display);
+
+#else
+
+     /* FIXME: This will only work for MacOS > 10.5. For earlier versions
+        this code is not needed (use CGDisplayBitsPerPixel instead).  */
+
+      CGDisplayModeRef mode = CGDisplayCopyDisplayMode (display);
+      CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding (mode);
+
+      if (CFStringCompare (pixelEncoding, CFSTR (IO32BitDirectPixels), 0) == 0)
+        dp = 32;
+      else if (CFStringCompare (pixelEncoding,
+                                CFSTR (IO16BitDirectPixels), 0) == 0)
+        dp = 16;
+      else
+        dp = 8;
+
+#endif
+
+      ht = CGDisplayPixelsHigh (display);
+      wd = CGDisplayPixelsWide (display);
+
+      CGSize sz_mm = CGDisplayScreenSize (display);
+
+      /* For MacOS >= 10.6, CGSize is a struct keeping 2 CGFloat
+         values, but the CGFloat typedef is not present on older
+         systems, so use double instead.  */
+
+      double ht_mm = sz_mm.height;
+      double wd_mm = sz_mm.width;
+
+      rx = wd * 25.4 / wd_mm;
+      ry = ht * 25.4 / ht_mm;
+
+      dpy_avail = true;
+    }
+  else
+    err_msg = "no graphical display found";
+
+#elif defined (HAVE_X_WINDOWS)
+
+  const char *display_name = std::getenv ("DISPLAY");
+
+  if (display_name && *display_name)
+    {
+      Display *display = XOpenDisplay (display_name);
+
+      if (display)
+        {
+          Screen *screen = DefaultScreenOfDisplay (display);
+
+          if (screen)
+            {
+              dp = DefaultDepthOfScreen (screen);
+
+              ht = HeightOfScreen (screen);
+              wd = WidthOfScreen (screen);
+
+              int screen_number = XScreenNumberOfScreen (screen);
+
+              double ht_mm = DisplayHeightMM (display, screen_number);
+              double wd_mm = DisplayWidthMM (display, screen_number);
+
+              rx = wd * 25.4 / wd_mm;
+              ry = ht * 25.4 / ht_mm;
+            }
+          else
+            err_msg = "X11 display has no default screen";
+
+          XCloseDisplay (display);
+
+          dpy_avail = true;
+        }
+      else
+        err_msg = "unable to open X11 DISPLAY";
+    }
+  else
+    err_msg = "X11 DISPLAY environment variable not set";
+
+#else
+
+  err_msg = "no graphical display found";
+
+#endif
+
 }
 
 bool

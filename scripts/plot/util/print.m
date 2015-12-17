@@ -317,27 +317,51 @@ function print (varargin)
 
     drawnow ();
 
+    ## print() requires children of axes to have units = "normalized", or "data"
+    hobj = findall (opts.figure, "-not", "type", "figure", ...
+      "-not", "type", "axes", "-property", "units", ...
+      "-not", "units", "normalized", "-not", "units", "data");
+    for n = 1:numel(hobj)
+      props(n).h = hobj(n);
+      props(n).name = "units";
+      props(n).value = {get(hobj(n), "units")};
+      set (hobj(n), "units", "data")
+    endfor
+
+    ## print() requires axes units = "normalized"
+    hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
+      "-not", "units", "normalized");
+    m = numel (props);
+    for n = 1:numel(hax)
+      props(m+n).h = hax(n);
+      props(m+n).name = "units";
+      props(m+n).value = {get(hax(n), "units")};
+      set (hax(n), "units", "normalized")
+    endfor
+
     ## print() requires figure units to be "pixels"
-    props(1).h = opts.figure;
-    props(1).name = "units";
-    props(1).value = {get(opts.figure, "units")};
+    m = numel (props);
+    props(m+1).h = opts.figure;
+    props(m+1).name = "units";
+    props(m+1).value = {get(opts.figure, "units")};
     set (opts.figure, "units", "pixels");
 
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
-    props(2).h = opts.figure;
-    props(2).name = "position";
-    props(2).value = {fpos};
+    props(m+2).h = opts.figure;
+    props(m+2).name = "position";
+    props(m+2).value = {fpos};
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos);
 
     ## Set figure background to none.
     ## This is done both for consistency with Matlab and to eliminate
     ## the visible box along the figure's perimeter.
-    props(3).h = opts.figure;
-    props(3).name = "color";
-    props(3).value{1} = get (props(3).h, props(3).name);
-    set (props(3).h, "color", "none");
+    props(m+3).h = opts.figure;
+    props(m+3).name = "color";
+    props(m+3).value{1} = get (props(m+3).h, props(m+3).name);
+    set (props(m+3).h, "color", "none");
+    nfig = m + 3;
 
     if (opts.force_solid != 0)
       h = findall (opts.figure, "-property", "linestyle");
@@ -435,12 +459,12 @@ function print (varargin)
     ## restore modified properties
     if (isstruct (props))
       ## Restore figure position and units first
-      for n = 2:-1:1
+      for n = nfig:-1:1
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor
-      for n = numel (props):-1:3
+      for n = numel (props):-1:(nfig + 1)
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif

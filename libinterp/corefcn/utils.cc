@@ -1359,13 +1359,12 @@ octave_sleep (double seconds)
     return;
 
   double fraction = std::modf (seconds, &seconds);
-  fraction = std::floor (fraction * 1000000000); // nanoseconds
+  fraction = gnulib::floor (fraction * 1000000000); // nanoseconds
 
   time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
                 ? std::numeric_limits<time_t>::max ()
                 : static_cast<time_t> (seconds));
 
-  // call GNULIB POSIX function
   struct timespec delay = { sec, static_cast<long> (fraction) };
   struct timespec remaining;
   gnulib::nanosleep (&delay, &remaining);

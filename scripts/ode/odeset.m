@@ -269,7 +269,7 @@ endfunction
 %!xtest
 %! odeoptA = odeset ();
 %! assert (isstruct (odeoptA));
-%! assert (numel (fieldnames (odeoptA)), 23);
+%! assert (numfields (odeoptA), 23);
 %! assert (all (structfun ("isempty", odeoptA)));
 
 %!shared odeoptB, odeoptC

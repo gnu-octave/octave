@@ -285,8 +285,8 @@ classdef inputParser < handle
     function addRequired (this, name, val = inputParser.def_val)
       if (nargin < 2 || nargin > 3)
         print_usage ();
-      elseif (numel (this.Optional) || numel (fieldnames (this.ParamValue))
-              || numel (fieldnames (this.Switch)))
+      elseif (numel (this.Optional) || numfields (this.ParamValue)
+              || numfields (this.Switch))
         error (["inputParser.addRequired: can't have a Required argument " ...
                 "after Optional, ParamValue, or Switch"]);
       endif
@@ -297,8 +297,7 @@ classdef inputParser < handle
     function addOptional (this, name, def, val = inputParser.def_val)
       if (nargin < 3 || nargin > 4)
         print_usage ();
-      elseif (numel (fieldnames (this.ParamValue))
-              || numel (fieldnames (this.Switch)))
+      elseif (numfields (this.ParamValue) || numfields (this.Switch))
         error (["inputParser.Optional: can't have Optional arguments " ...
                 "after ParamValue or Switch"]);
       endif

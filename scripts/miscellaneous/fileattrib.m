@@ -154,7 +154,7 @@ endfunction
 %! [status, attr] = fileattrib (P_tmpdir ());
 %! assert (status);
 %! assert (isstruct (attr));
-%! assert (numel (fieldnames (attr)), 14);
+%! assert (numfields (attr), 14);
 %! assert (attr.Name, P_tmpdir ());
 %! assert (attr.directory);
 %! if (ispc ())

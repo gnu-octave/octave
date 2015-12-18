@@ -342,9 +342,9 @@ factorization as determined by @var{typ}.\n\
     tmp(i) = ColCount[i];
   retval(0) = tmp;
 
+  return retval;
+
 #else
   error ("symbfact: not available in this version of Octave");
 #endif
-
-  return retval;
 }

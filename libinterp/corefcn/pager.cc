@@ -574,7 +574,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
         }
     }
 
-  return octave_value ();
+  return octave_value_list ();
 }
 
 DEFUN (__diaryfile__, , ,

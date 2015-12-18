@@ -406,7 +406,7 @@ Undocumented internal function.\n\
   if (nargin > 0)
     profiler.set_active (args(0).bool_value ());
 
-  return octave_value (profiler.is_active ());
+  return ovl (profiler.is_active ());
 }
 
 // Clear all collected profiling data.
@@ -416,14 +416,12 @@ DEFUN (__profiler_reset__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () > 0)
     warning ("profiler_reset: ignoring extra arguments");
 
   profiler.reset ();
 
-  return retval;
+  return octave_value_list ();
 }
 
 // Query the timings collected by the profiler.

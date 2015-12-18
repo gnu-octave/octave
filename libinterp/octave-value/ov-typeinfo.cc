@@ -621,19 +621,15 @@ currently installed data types.\n\
 @seealso{class, isa}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
 
   if (nargin == 0)
-    retval = Cell (octave_value_typeinfo::installed_type_names ());
+    return ovl (Cell (octave_value_typeinfo::installed_type_names ()));
   else
-    retval = args(0).type_name ();
-
-  return retval;
+    return ovl (args(0).type_name ());
 }
 
 /*

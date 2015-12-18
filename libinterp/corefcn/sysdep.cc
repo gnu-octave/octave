@@ -616,7 +616,7 @@ returns a string containing the value of your path.\n\
 
   std::string name = args(0).string_value ();
 
-  return octave_value (octave_env::getenv (name));
+  return ovl (octave_env::getenv (name));
 }
 
 /*
@@ -678,7 +678,7 @@ occurred.\n\
 
   std::string tmp = args(0).string_value ();
 
-  return octave_value (gnulib::unsetenv (tmp.c_str ()));
+  return ovl (gnulib::unsetenv (tmp.c_str ()));
 }
 
 /*
@@ -733,7 +733,7 @@ returning the empty string if no key is available.\n\
       retval = s;
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (pause, args, ,
@@ -769,8 +769,6 @@ clc;\n\
 @seealso{kbhit}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -780,7 +778,9 @@ clc;\n\
     {
       double dval = args(0).double_value ();
 
-      if (! xisnan (dval))
+      if (xisnan (dval))
+        warning ("pause: NaN is an invalid delay");
+      else
         {
           Fdrawnow ();
 
@@ -792,8 +792,6 @@ clc;\n\
           else
             octave_sleep (dval);
         }
-      else
-        warning ("pause: NaN is an invalid delay");
     }
   else
     {
@@ -802,7 +800,7 @@ clc;\n\
       octave_kbhit ();
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 /*
@@ -826,8 +824,8 @@ No actual tests are performed.\n\
 {
   oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
 
-  return octave_value (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
-                       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+  return ovl (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
+              || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 }
 
 /*
@@ -842,7 +840,7 @@ Return the native floating point format as a string.\n\
 {
   oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
 
-  return octave_value (oct_mach_info::float_format_as_string (flt_fmt));
+  return ovl (oct_mach_info::float_format_as_string (flt_fmt));
 }
 
 /*
@@ -877,8 +875,6 @@ tilde_expand (\"~/bin\")\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -889,11 +885,9 @@ tilde_expand (\"~/bin\")\n\
   sv = file_ops::tilde_expand (sv);
 
   if (arg.is_cellstr ())
-    retval = Cell (arg.dims (), sv);
+    return ovl (Cell (arg.dims (), sv));
   else
-    retval = sv;
-
-  return retval;
+    return ovl (sv);
 }
 
 /*
@@ -916,7 +910,7 @@ equivalent to\n\
 @seealso{getenv}\n\
 @end deftypefn")
 {
-  return octave_value (octave_env::get_home_directory ());
+  return ovl (octave_env::get_home_directory ());
 }
 
 /*
@@ -938,5 +932,5 @@ and false otherwise.\n\
 @seealso{isguirunning}\n\
 @end deftypefn")
 {
-  return octave_value (display_info::display_available ());
+  return ovl (display_info::display_available ());
 }

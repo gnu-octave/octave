@@ -65,8 +65,6 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 @seealso{num2hex, hex2dec, dec2hex}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -74,109 +72,103 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 
   if (nargin == 2 && ! args(1).is_string ())
     error ("hex2num: CLASS must be a string");
+
+  const charMatrix cmat = args(0).char_matrix_value ();
+  std::string prec = (nargin == 2) ? args(1).string_value () : "double";
+  bool is_single = (prec == "single");
+  octave_idx_type nchars = (is_single) ? 8 : 16;
+
+  if (cmat.columns () > nchars)
+    error ("hex2num: S must be no more than %d characters", nchars);
+  else if (prec != "double" && prec != "single")
+    error ("hex2num: CLASS must be either \"double\" or \"single\"");
+
+  octave_value retval;
+  octave_idx_type nr = cmat.rows ();
+  octave_idx_type nc = cmat.columns ();
+
+  if (is_single)
+    {
+      FloatColumnVector m (nr);
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          union
+          {
+            uint32_t ival;
+            float dval;
+          } num;
+
+          num.ival = 0;
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              unsigned char ch = cmat.elem (i, j);
+
+              if (isxdigit (ch))
+                {
+                  num.ival <<= 4;
+                  if (ch >= 'a')
+                    num.ival += static_cast<uint32_t> (ch - 'a' + 10);
+                  else if (ch >= 'A')
+                    num.ival += static_cast<uint32_t> (ch - 'A' + 10);
+                  else
+                    num.ival += static_cast<uint32_t> (ch - '0');
+                }
+              else
+                {
+                  error ("hex2num: illegal character found in string S");
+                  break;
+                }
+            }
+
+          if (nc < nchars)
+            num.ival <<= (nchars - nc) * 4;
+
+          m(i) = num.dval;
+        }
+
+      retval =  m;
+    }
   else
     {
-      const charMatrix cmat = args(0).char_matrix_value ();
-      std::string prec = (nargin == 2) ? args(1).string_value () : "double";
-      bool is_single = (prec == "single");
-      octave_idx_type nchars = (is_single) ? 8 : 16;
+      ColumnVector m (nr);
 
-      if (cmat.columns () > nchars)
-        error ("hex2num: S must be no more than %d characters", nchars);
-      else if (prec != "double" && prec != "single")
-        error ("hex2num: CLASS must be either \"double\" or \"single\"");
-      else
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          octave_idx_type nr = cmat.rows ();
-          octave_idx_type nc = cmat.columns ();
+          union
+          {
+            uint64_t ival;
+            double dval;
+          } num;
 
-          if (is_single)
+          num.ival = 0;
+
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              FloatColumnVector m (nr);
+              unsigned char ch = cmat.elem (i, j);
 
-              for (octave_idx_type i = 0; i < nr; i++)
+              if (isxdigit (ch))
                 {
-                  union
-                  {
-                    uint32_t ival;
-                    float dval;
-                  } num;
-
-                  num.ival = 0;
-
-                  for (octave_idx_type j = 0; j < nc; j++)
-                    {
-                      unsigned char ch = cmat.elem (i, j);
-
-                      if (isxdigit (ch))
-                        {
-                          num.ival <<= 4;
-                          if (ch >= 'a')
-                            num.ival += static_cast<uint32_t> (ch - 'a' + 10);
-                          else if (ch >= 'A')
-                            num.ival += static_cast<uint32_t> (ch - 'A' + 10);
-                          else
-                            num.ival += static_cast<uint32_t> (ch - '0');
-                        }
-                      else
-                        {
-                          error ("hex2num: illegal character found in string S");
-                          break;
-                        }
-                    }
-
-                  if (nc < nchars)
-                    num.ival <<= (nchars - nc) * 4;
-
-                  m(i) = num.dval;
+                  num.ival <<= 4;
+                  if (ch >= 'a')
+                    num.ival += static_cast<uint64_t> (ch - 'a' + 10);
+                  else if (ch >= 'A')
+                    num.ival += static_cast<uint64_t> (ch - 'A' + 10);
+                  else
+                    num.ival += static_cast<uint64_t> (ch - '0');
                 }
-
-              retval =  m;
+              else
+                error ("hex2num: illegal character found in string S");
             }
-          else
-            {
-              ColumnVector m (nr);
 
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  union
-                  {
-                    uint64_t ival;
-                    double dval;
-                  } num;
+          if (nc < nchars)
+            num.ival <<= (nchars - nc) * 4;
 
-                  num.ival = 0;
-
-                  for (octave_idx_type j = 0; j < nc; j++)
-                    {
-                      unsigned char ch = cmat.elem (i, j);
-
-                      if (isxdigit (ch))
-                        {
-                          num.ival <<= 4;
-                          if (ch >= 'a')
-                            num.ival += static_cast<uint64_t> (ch - 'a' + 10);
-                          else if (ch >= 'A')
-                            num.ival += static_cast<uint64_t> (ch - 'A' + 10);
-                          else
-                            num.ival += static_cast<uint64_t> (ch - '0');
-                        }
-                      else
-                        {
-                          error ("hex2num: illegal character found in string S");
-                          break;
-                        }
-                    }
-
-                  if (nc < nchars)
-                    num.ival <<= (nchars - nc) * 4;
-
-                  m(i) = num.dval;
-                }
-
-              retval =  m;
-            }
+          m(i) = num.dval;
         }
+
+      retval =  m;
     }
 
   return retval;
@@ -220,10 +212,10 @@ num2hex (single ([-1, 1, e, Inf]))\n\
 @seealso{hex2num, hex2dec, dec2hex}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   if (args(0).is_single_type ())
     {

@@ -180,9 +180,10 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 @seealso{quad_options, quadv, quadl, quadgk, quadcc, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  int nargin = args.length ();
 
-  std::string fcn_name;
+  if (nargin < 3 || nargin > 5)
+    print_usage ();
 
   warned_imaginary = false;
 
@@ -194,10 +195,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
   if (call_depth > 1)
     error ("quad: invalid recursive call");
 
-  int nargin = args.length ();
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
+  std::string fcn_name;
 
   if (args(0).is_function_handle () || args(0).is_inline_function ())
     quad_fcn = args(0).function_value ();
@@ -214,6 +212,8 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
   if (! quad_fcn)
     error ("quad: FCN argument is not a valid function name or handle");
+
+  octave_value_list retval;
 
   if (args(1).is_single_type () || args(2).is_single_type ())
     {

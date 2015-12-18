@@ -2241,12 +2241,12 @@ If additional string parameters are given, the resulting path will exclude\n\
 directories with those names.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
@@ -2406,18 +2406,18 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   // Originally written by Bill Denney and Etienne Grossman.  Heavily
   // modified and translated to C++ by jwe.
-
-  if (nargout > 0)
-    retval = load_path::path ();
 
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
+
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = load_path::path ();
 
   bool append = false;
 
@@ -2502,15 +2502,15 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
   // Originally written by Etienne Grossmann.  Heavily modified and translated
   // to C++ by jwe.
 
-  octave_value retval;
-
-  if (nargout > 0)
-    retval = load_path::path ();
-
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
+
+  octave_value retval;
+
+  if (nargout > 0)
+    retval = load_path::path ();
 
   bool need_to_update = false;
 

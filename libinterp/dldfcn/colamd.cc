@@ -668,29 +668,26 @@ permutations on the tree.\n\
   octave_idx_type *cidx = 0;
 
   if (args(0).is_sparse_type ())
+    error ("etree: S must be a sparse matrix");
+
+  if (args(0).is_complex_type ())
     {
-      if (args(0).is_complex_type ())
-        {
-          SparseComplexMatrix scm = args(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix scm = args(0).sparse_complex_matrix_value ();
 
-          n_row = scm.rows ();
-          n_col = scm.cols ();
-          ridx = scm.xridx ();
-          cidx = scm.xcidx ();
-        }
-      else
-        {
-          SparseMatrix sm = args(0).sparse_matrix_value ();
-
-          n_row = sm.rows ();
-          n_col = sm.cols ();
-          ridx = sm.xridx ();
-          cidx = sm.xcidx ();
-        }
-
+      n_row = scm.rows ();
+      n_col = scm.cols ();
+      ridx = scm.xridx ();
+      cidx = scm.xcidx ();
     }
   else
-    error ("etree: S must be a sparse matrix");
+    {
+      SparseMatrix sm = args(0).sparse_matrix_value ();
+
+      n_row = sm.rows ();
+      n_col = sm.cols ();
+      ridx = sm.xridx ();
+      cidx = sm.xcidx ();
+    }
 
   bool is_sym = true;
 

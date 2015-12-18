@@ -67,8 +67,6 @@ On exit, @var{y} is a unit vector such that:\n\
 \n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -77,16 +75,13 @@ On exit, @var{y} is a unit vector such that:\n\
 
   if (arg_v.ndims () != 2 || arg_x.ndims () != 2 || arg_x.columns () != 1
       || arg_v.rows () != arg_x.rows ())
-    {
-      error ("mgorth: V should be a matrix, and X a column vector with"
-             " the same number of rows as V.");
-      return retval;
-    }
+    error ("mgorth: V should be a matrix, and X a column vector with"
+           " the same number of rows as V.");
 
   if (! arg_x.is_numeric_type () && ! arg_v.is_numeric_type ())
-    {
-      error ("mgorth: X and V must be numeric");
-    }
+    error ("mgorth: X and V must be numeric");
+
+  octave_value_list retval;
 
   bool iscomplex = (arg_x.is_complex_type () || arg_v.is_complex_type ());
   if (arg_x.is_single_type () || arg_v.is_single_type ())

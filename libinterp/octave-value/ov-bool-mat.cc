@@ -570,10 +570,10 @@ Compatibility Note: Octave accepts complex values as input, whereas\n\
 @seealso{double, single, char}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   octave_value arg = args(0);
 

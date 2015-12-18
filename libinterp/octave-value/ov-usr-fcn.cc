@@ -818,12 +818,12 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
 @seealso{nargout, narginchk, varargin, inputname}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
@@ -838,27 +838,25 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
         }
 
       octave_function *fcn_val = func.function_value ();
-      if (fcn_val)
+      if (! fcn_val)
+        error ("nargin: FCN must be a string or function handle");
+
+      octave_user_function *fcn = fcn_val->user_function_value (true);
+
+      if (fcn)
         {
-          octave_user_function *fcn = fcn_val->user_function_value (true);
+          tree_parameter_list *param_list = fcn->parameter_list ();
 
-          if (fcn)
-            {
-              tree_parameter_list *param_list = fcn->parameter_list ();
-
-              retval = param_list ? param_list->length () : 0;
-              if (fcn->takes_varargs ())
-                retval = -1 - retval;
-            }
-          else
-            {
-              // Matlab gives up for histc,
-              // so maybe it's ok that that we give up somtimes too?
-              error ("nargin: nargin information not available for built-in functions");
-            }
+          retval = param_list ? param_list->length () : 0;
+          if (fcn->takes_varargs ())
+            retval = -1 - retval;
         }
       else
-        error ("nargin: FCN must be a string or function handle");
+        {
+          // Matlab gives up for histc,
+          // so maybe it's ok that that we give up somtimes too?
+          error ("nargin: nargin information not available for built-in functions");
+        }
     }
   else
     {
@@ -926,12 +924,12 @@ returns -1 for all anonymous functions.\n\
 @seealso{nargin, varargout, isargout, nthargout}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
@@ -946,10 +944,7 @@ returns -1 for all anonymous functions.\n\
         }
 
       if (func.is_inline_function ())
-        {
-          retval = 1;
-          return retval;
-        }
+        return ovl (1);
 
       if (func.is_function_handle ())
         {
@@ -957,37 +952,32 @@ returns -1 for all anonymous functions.\n\
           std::string fh_nm = fh->fcn_name ();
 
           if (fh_nm == octave_fcn_handle::anonymous)
-            {
-              retval = -1;
-              return retval;
-            }
+            return ovl (-1);
         }
 
       octave_function *fcn_val = func.function_value ();
-      if (fcn_val)
+      if (! fcn_val)
+        error ("nargout: FCN must be a string or function handle");
+
+      octave_user_function *fcn = fcn_val->user_function_value (true);
+
+      if (fcn)
         {
-          octave_user_function *fcn = fcn_val->user_function_value (true);
+          tree_parameter_list *ret_list = fcn->return_list ();
 
-          if (fcn)
-            {
-              tree_parameter_list *ret_list = fcn->return_list ();
+          retval = ret_list ? ret_list->length () : 0;
 
-              retval = ret_list ? ret_list->length () : 0;
-
-              if (fcn->takes_var_return ())
-                retval = -1 - retval;
-            }
-          else
-            {
-              // JWE said this information is not available (2011-03-10)
-              // without making intrusive changes to Octave.
-              // Matlab gives up for histc,
-              // so maybe it's ok that we give up somtimes too?
-              error ("nargout: nargout information not available for built-in functions.");
-            }
+          if (fcn->takes_var_return ())
+            retval = -1 - retval;
         }
       else
-        error ("nargout: FCN must be a string or function handle");
+        {
+          // JWE said this information is not available (2011-03-10)
+          // without making intrusive changes to Octave.
+          // Matlab gives up for histc,
+          // so maybe it's ok that we give up somtimes too?
+          error ("nargout: nargout information not available for built-in functions.");
+        }
     }
   else
     {
@@ -1058,43 +1048,39 @@ element-by-element and a logical array is returned.  At the top level,\n\
 @seealso{nargout, varargout, nthargout}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
-  if (! symbol_table::at_top_level ())
-    {
-      int nargout1 = symbol_table::varval (".nargout.").int_value ();
-
-      Matrix ignored;
-      octave_value tmp = symbol_table::varval (".ignored.");
-      if (tmp.is_defined ())
-        ignored = tmp.matrix_value ();
-
-      if (args(0).is_scalar_type ())
-        {
-          double k = args(0).double_value ();
-
-          retval = isargout1 (nargout1, ignored, k);
-        }
-      else if (args(0).is_numeric_type ())
-        {
-          const NDArray ka = args(0).array_value ();
-
-          boolNDArray r (ka.dims ());
-          for (octave_idx_type i = 0; i < ka.numel (); i++)
-            r(i) = isargout1 (nargout1, ignored, ka(i));
-
-          retval = r;
-        }
-      else
-        gripe_wrong_type_arg ("isargout", args(0));
-    }
-  else
+  if (symbol_table::at_top_level ())
     error ("isargout: invalid call at top level");
 
-  return retval;
+  int nargout1 = symbol_table::varval (".nargout.").int_value ();
+
+  Matrix ignored;
+  octave_value tmp = symbol_table::varval (".ignored.");
+  if (tmp.is_defined ())
+    ignored = tmp.matrix_value ();
+
+  if (args(0).is_scalar_type ())
+    {
+      double k = args(0).double_value ();
+
+      return ovl (isargout1 (nargout1, ignored, k));
+    }
+  else if (args(0).is_numeric_type ())
+    {
+      const NDArray ka = args(0).array_value ();
+
+      boolNDArray r (ka.dims ());
+      for (octave_idx_type i = 0; i < ka.numel (); i++)
+        r(i) = isargout1 (nargout1, ignored, ka(i));
+
+      return ovl (r);
+    }
+  else
+    gripe_wrong_type_arg ("isargout", args(0));
+
+  return octave_value_list ();
 }
 
 /*

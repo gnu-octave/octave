@@ -1030,7 +1030,7 @@ Convert @var{x} to double precision type.\n\
       OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
     }
 
-  return octave_value ();
+  return octave_value_list ();
 }
 
 /*

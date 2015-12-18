@@ -1201,7 +1201,7 @@ Return true if @var{x} is a cell array object.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_cell ());
+  return ovl (args(0).is_cell ());
 }
 
 DEFUN (cell, args, ,
@@ -1266,7 +1266,7 @@ string.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_cellstr ());
+  return ovl (args(0).is_cellstr ());
 }
 
 // Note that since Fcellstr calls Fiscellstr, we need to have
@@ -1287,25 +1287,22 @@ To convert back from a cellstr to a character array use @code{char}.\n\
 @seealso{cell, char}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   octave_value_list tmp = Fiscellstr (args, 1);
 
   if (tmp(0).is_true ())
-    retval = args(0);
+    return ovl (args(0));
   else
     {
       string_vector s = args(0).xall_strings ("cellstr: argument STRING must be a 2-D character array");
 
-      retval = (s.is_empty ()
-                ? Cell (octave_value (std::string ()))
-                : Cell (s, true));
+      return ovl (s.is_empty () ? Cell (octave_value (std::string ()))
+                                : Cell (s, true));
     }
-
-  return retval;
 }
 
 DEFUN (struct2cell, args, ,
@@ -1371,13 +1368,13 @@ c(2,1,:)(:)\n\
 
   octave_idx_type n_elts = m.numel ();
 
-  // Fill c in one sweep. Note that thanks to octave_map structure,
+  // Fill c in one sweep.  Note that thanks to octave_map structure,
   // we don't need a key lookup at all.
   for (octave_idx_type j = 0; j < n_elts; j++)
     for (octave_idx_type i = 0; i < num_fields; i++)
       c(i,j) = m.contents(i)(j);
 
-  return octave_value (c);
+  return ovl (c);
 }
 
 /*

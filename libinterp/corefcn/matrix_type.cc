@@ -119,7 +119,6 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 @code{matrix_type} will return the correct classification of the matrix.\n\
 @end deftypefn")
 {
-  octave_value retval;
   int nargin = args.length ();
 
   if (nargin == 0 || nargin > 4)
@@ -132,6 +131,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
       nargin = 1;
       autocomp = false;
     }
+
+  octave_value retval;
 
   if (args(0).is_scalar_type ())
     {
@@ -211,7 +212,6 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
       else
         {
           // Ok, we're changing the matrix type
-
           std::string str_typ = args(1).xstring_value ("matrix_type: TYPE must be a string");
 
           // FIXME: why do I have to explicitly call the constructor?
@@ -237,19 +237,17 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
             {
               if (nargin != 4)
                 error ("matrix_type: banded matrix type requires 4 arguments");
+
+              nl = args(2).xnint_value ("matrix_type: band size NL, NU must be integers");
+              nu = args(3).xnint_value ("matrix_type: band size NL, NU must be integers");
+
+              if (nl == 1 && nu == 1)
+                mattyp.mark_as_tridiagonal ();
               else
-                {
-                  nl = args(2).xnint_value ("matrix_type: band size NL, NU must be integers");
-                  nu = args(3).xnint_value ("matrix_type: band size NL, NU must be integers");
+                mattyp.mark_as_banded (nu, nl);
 
-                  if (nl == 1 && nu == 1)
-                    mattyp.mark_as_tridiagonal ();
-                  else
-                    mattyp.mark_as_banded (nu, nl);
-
-                  if (str_typ == "banded positive definite")
-                    mattyp.mark_as_symmetric ();
-                }
+              if (str_typ == "banded positive definite")
+                mattyp.mark_as_symmetric ();
             }
           else if (str_typ == "positive definite")
             {
@@ -275,15 +273,13 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 
               if (len != dv(0))
                 error ("matrix_type: Invalid permutation vector PERM");
-              else
-                {
-                  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                  for (octave_idx_type i = 0; i < len; i++)
-                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+              OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                  mattyp.mark_as_permuted (len, p);
-                }
+              for (octave_idx_type i = 0; i < len; i++)
+                p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+
+              mattyp.mark_as_permuted (len, p);
             }
           else if (nargin != 2
                    && str_typ != "banded positive definite"
@@ -378,7 +374,6 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
       else
         {
           // Ok, we're changing the matrix type
-
           std::string str_typ = args(1).xstring_value ("matrix_type: TYPE must be a string");
 
           // FIXME: why do I have to explicitly call the constructor?
@@ -415,15 +410,13 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 
               if (len != dv(0))
                 error ("matrix_type: Invalid permutation vector PERM");
-              else
-                {
-                  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                  for (octave_idx_type i = 0; i < len; i++)
-                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+              OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
-                  mattyp.mark_as_permuted (len, p);
-                }
+              for (octave_idx_type i = 0; i < len; i++)
+                p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+
+              mattyp.mark_as_permuted (len, p);
             }
           else if (nargin != 2)
             error ("matrix_type: Invalid number of arguments");

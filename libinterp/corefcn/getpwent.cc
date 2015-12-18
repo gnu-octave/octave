@@ -75,8 +75,6 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
 @seealso{setpwent, endpwent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -85,9 +83,7 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
   // octave_passwd::getpwent may set msg.
   octave_value val = mk_pw_map (octave_passwd::getpwent (msg));
 
-  retval = ovl (val, msg);
-
-  return retval;
+  return ovl (val, msg);
 }
 
 DEFUN (getpwuid, args, ,
@@ -100,28 +96,22 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
 @seealso{getpwnam}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
   double dval = args(0).double_value ();
 
-  if (D_NINT (dval) == dval)
-    {
-      uid_t uid = static_cast<uid_t> (dval);
-
-      std::string msg;
-
-      // octave_passwd::getpwuid may set msg.
-      octave_value val = mk_pw_map (octave_passwd::getpwuid (uid, msg));
-
-      retval = ovl (val, msg);
-    }
-  else
+  if (D_NINT (dval) != dval)
     error ("getpwuid: UID must be an integer");
 
-  return retval;
+  uid_t uid = static_cast<uid_t> (dval);
+
+  std::string msg;
+
+  // octave_passwd::getpwuid may set msg.
+  octave_value val = mk_pw_map (octave_passwd::getpwuid (uid, msg));
+
+  return ovl (val, msg);
 }
 
 DEFUN (getpwnam, args, ,
@@ -134,8 +124,6 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
 @seealso{getpwuid}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -146,9 +134,7 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
   // octave_passwd::getpwnam may set msg.
   octave_value val = mk_pw_map (octave_passwd::getpwnam (s, msg));
 
-  retval = ovl (val, msg);
-
-  return retval;
+  return ovl (val, msg);
 }
 
 DEFUN (setpwent, args, ,
@@ -158,8 +144,6 @@ Return the internal pointer to the beginning of the password database.\n\
 @seealso{getpwent, endpwent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -168,9 +152,7 @@ Return the internal pointer to the beginning of the password database.\n\
   // octave_passwd::setpwent may set msg.
   int status = octave_passwd::setpwent (msg);
 
-  retval = ovl (static_cast<double> (status), msg);
-
-  return retval;
+  return ovl (static_cast<double> (status), msg);
 }
 
 DEFUN (endpwent, args, ,
@@ -180,8 +162,6 @@ Close the password database.\n\
 @seealso{getpwent, setpwent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -190,7 +170,5 @@ Close the password database.\n\
   // octave_passwd::endpwent may set msg.
   int status = octave_passwd::endpwent (msg);
 
-  retval = ovl (static_cast<double> (status), msg);
-
-  return retval;
+  return ovl (static_cast<double> (status), msg);
 }

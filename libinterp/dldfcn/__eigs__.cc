@@ -146,9 +146,14 @@ DEFUN_DLD (__eigs__, args, nargout,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
 #ifdef HAVE_ARPACK
   int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  octave_value_list retval;
+
   std::string fcn_name;
   octave_idx_type n = 0;
   octave_idx_type k = 6;
@@ -194,9 +199,6 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  if (nargin == 0)
-    print_usage ();
-
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
@@ -218,12 +220,10 @@ Undocumented internal function.\n\
 
       if (nargin < 2)
         error ("eigs: incorrect number of arguments");
-      else
-        {
-          n = args(1).nint_value ();
-          arg_offset = 1;
-          have_a_fun = true;
-        }
+
+      n = args(1).nint_value ();
+      arg_offset = 1;
+      have_a_fun = true;
     }
   else
     {
@@ -252,10 +252,9 @@ Undocumented internal function.\n\
               amm = (args(0).matrix_value ());
             }
         }
-
     }
 
-  // Note hold off reading B till later to avoid issues of double
+  // Note hold off reading B until later to avoid issues of double
   // copies of the matrix if B is full/real while A is complex.
   if (nargin > 1 + arg_offset
       && ! (args(1 + arg_offset).is_real_scalar ()))
@@ -302,60 +301,58 @@ Undocumented internal function.\n\
 
   if (nargin > (3+arg_offset))
     {
-      if (args(3+arg_offset).is_map ())
-        {
-          octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
-
-          octave_value tmp;
-
-          // issym is ignored for complex matrix inputs
-          tmp = map.getfield ("issym");
-          if (tmp.is_defined () && !sym_tested)
-            {
-              symmetric = tmp.double_value () != 0.;
-              sym_tested = true;
-            }
-
-          // isreal is ignored if A is not a function
-          tmp = map.getfield ("isreal");
-          if (tmp.is_defined () && have_a_fun)
-            a_is_complex = ! (tmp.double_value () != 0.);
-
-          tmp = map.getfield ("tol");
-          if (tmp.is_defined ())
-            tol = tmp.double_value ();
-
-          tmp = map.getfield ("maxit");
-          if (tmp.is_defined ())
-            maxit = tmp.nint_value ();
-
-          tmp = map.getfield ("p");
-          if (tmp.is_defined ())
-            p = tmp.nint_value ();
-
-          tmp = map.getfield ("v0");
-          if (tmp.is_defined ())
-            {
-              if (a_is_complex || b_is_complex)
-                cresid = ComplexColumnVector (tmp.complex_vector_value ());
-              else
-                resid = ColumnVector (tmp.vector_value ());
-            }
-
-          tmp = map.getfield ("disp");
-          if (tmp.is_defined ())
-            disp = tmp.nint_value ();
-
-          tmp = map.getfield ("cholB");
-          if (tmp.is_defined ())
-            cholB = tmp.double_value () != 0.;
-
-          tmp = map.getfield ("permB");
-          if (tmp.is_defined ())
-            permB = ColumnVector (tmp.vector_value ()) - 1.0;
-        }
-      else
+      if (! args(3+arg_offset).is_map ())
         error ("eigs: OPTS argument must be a structure");
+
+      octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
+
+      octave_value tmp;
+
+      // issym is ignored for complex matrix inputs
+      tmp = map.getfield ("issym");
+      if (tmp.is_defined () && !sym_tested)
+        {
+          symmetric = tmp.double_value () != 0.;
+          sym_tested = true;
+        }
+
+      // isreal is ignored if A is not a function
+      tmp = map.getfield ("isreal");
+      if (tmp.is_defined () && have_a_fun)
+        a_is_complex = ! (tmp.double_value () != 0.);
+
+      tmp = map.getfield ("tol");
+      if (tmp.is_defined ())
+        tol = tmp.double_value ();
+
+      tmp = map.getfield ("maxit");
+      if (tmp.is_defined ())
+        maxit = tmp.nint_value ();
+
+      tmp = map.getfield ("p");
+      if (tmp.is_defined ())
+        p = tmp.nint_value ();
+
+      tmp = map.getfield ("v0");
+      if (tmp.is_defined ())
+        {
+          if (a_is_complex || b_is_complex)
+            cresid = ComplexColumnVector (tmp.complex_vector_value ());
+          else
+            resid = ColumnVector (tmp.vector_value ());
+        }
+
+      tmp = map.getfield ("disp");
+      if (tmp.is_defined ())
+        disp = tmp.nint_value ();
+
+      tmp = map.getfield ("cholB");
+      if (tmp.is_defined ())
+        cholB = tmp.double_value () != 0.;
+
+      tmp = map.getfield ("permB");
+      if (tmp.is_defined ())
+        permB = ColumnVector (tmp.vector_value ()) - 1.0;
     }
 
   if (nargin > (4+arg_offset))
@@ -564,9 +561,9 @@ Undocumented internal function.\n\
   if (! fcn_name.empty ())
     clear_function (fcn_name);
 
+  return retval;
+
 #else
   error ("eigs: not available in this version of Octave");
 #endif
-
-  return retval;
 }

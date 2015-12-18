@@ -292,7 +292,7 @@ Return true if @var{x} is a character array.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_string ());
+  return ovl (args(0).is_string ());
 }
 
 /*
@@ -555,8 +555,8 @@ This is just the opposite of the corresponding C library function.\n\
   if (args.length () != 2)
     print_usage ();
 
-  return octave_value (do_strcmp_fun (args(0), args(1), 0, "strcmp",
-                                      strcmp_array_op, strcmp_str_op));
+  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmp",
+                             strcmp_array_op, strcmp_str_op));
 }
 
 /*
@@ -662,20 +662,16 @@ This is just the opposite of the corresponding C library function.\n\
 @seealso{strncmpi, strcmp, strcmpi}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 3)
     print_usage ();
 
   octave_idx_type n = args(2).idx_type_value ();
 
   if (n > 0)
-    retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
-                            strncmp_array_op, strncmp_str_op);
+    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
+                               strncmp_array_op, strncmp_str_op));
   else
     error ("strncmp: N must be greater than 0");
-
-  return retval;
 }
 
 /*
@@ -739,13 +735,11 @@ This is just the opposite of the corresponding C library function.\n\
 @seealso{strcmp, strncmp, strncmpi}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
-  return octave_value (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
-                                      strcmpi_array_op, strcmpi_str_op));
+  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
+                             strcmpi_array_op, strcmpi_str_op));
 }
 
 /*
@@ -796,20 +790,16 @@ This is just the opposite of the corresponding C library function.\n\
 @seealso{strncmp, strcmp, strcmpi}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 3)
     print_usage ();
 
   octave_idx_type n = args(2).idx_type_value ();
 
   if (n > 0)
-    retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                            strncmpi_array_op, strncmpi_str_op);
+    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
+                               strncmpi_array_op, strncmpi_str_op));
   else
     error ("strncmpi: N must be greater than 0");
-
-  return retval;
 }
 
 /*
@@ -852,8 +842,6 @@ whos ans\n\
 @seealso{terminal_size}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
@@ -875,9 +863,7 @@ whos ans\n\
 
   s.list_in_columns (buf, width, prefix);
 
-  retval = buf.str ();
-
-  return retval;
+  return ovl (buf.str ());
 }
 
 /*

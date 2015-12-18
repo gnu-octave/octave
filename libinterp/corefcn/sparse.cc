@@ -51,7 +51,7 @@ Return true if @var{x} is a sparse matrix.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_sparse_type ());
+  return ovl (args(0).is_sparse_type ());
 }
 
 DEFUN (sparse, args, ,
@@ -122,11 +122,12 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 @seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn, sprandsym, spconvert, spfun}\n\
 @end deftypefn")
 {
-  octave_value retval;
   int nargin = args.length ();
 
   if (nargin == 0 || nargin > 6)
     print_usage ();
+
+  octave_value retval;
 
   // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
   unwind_protect frame;
@@ -257,8 +258,6 @@ the function @code{nzmax}.\n\
 @seealso{nzmax, sparse}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
@@ -266,15 +265,13 @@ the function @code{nzmax}.\n\
 
   octave_idx_type m = args(0).idx_type_value ();
   octave_idx_type n = args(1).idx_type_value ();
-  octave_idx_type nz = 0;
 
+  octave_idx_type nz = 0;
   if (nargin == 3)
     nz = args(2).idx_type_value ();
 
   if (m >= 0 && n >= 0 && nz >= 0)
-    retval = SparseMatrix (dim_vector (m, n), nz);
+    return ovl (SparseMatrix (dim_vector (m, n), nz));
   else
     error ("spalloc: M,N,NZ must be non-negative");
-
-  return retval;
 }

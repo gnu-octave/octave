@@ -675,8 +675,6 @@ functions from strings is through the use of anonymous functions\n\
 @seealso{argnames, formula, vectorize, str2func}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin == 0)
@@ -735,8 +733,7 @@ functions from strings is through the use of anonymous functions\n\
               if (c == 'e' || c == 'E')
                 {
                   // possible number in exponent form, not arg
-                  if (isdigit (fun[i])
-                      || fun[i] == '-' || fun[i] == '+')
+                  if (isdigit (fun[i]) || fun[i] == '-' || fun[i] == '+')
                     continue;
                 }
               is_arg = true;
@@ -809,7 +806,7 @@ functions from strings is through the use of anonymous functions\n\
         }
     }
 
-  return octave_value (new octave_fcn_inline (fun, fargs));
+  return ovl (new octave_fcn_inline (fun, fargs));
 }
 
 /*
@@ -839,19 +836,15 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 @seealso{char, argnames, inline, vectorize}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
   octave_fcn_inline* fn = args(0).fcn_inline_value (true);
 
-  if (fn)
-    retval = octave_value (fn->fcn_text ());
-  else
+  if (! fn)
     error ("formula: FUN must be an inline function");
 
-  return retval;
+  return ovl (fn->fcn_text ());
 }
 
 /*
@@ -872,28 +865,22 @@ arguments of the inline function @var{fun}.\n\
 @seealso{inline, formula, vectorize}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
   octave_fcn_inline *fn = args(0).fcn_inline_value (true);
 
-  if (fn)
-    {
-      string_vector t1 = fn->fcn_arg_names ();
-
-      Cell t2 (dim_vector (t1.numel (), 1));
-
-      for (int i = 0; i < t1.numel (); i++)
-        t2(i) = t1(i);
-
-      retval = t2;
-    }
-  else
+  if (! fn)
     error ("argnames: FUN must be an inline function");
 
-  return retval;
+  string_vector t1 = fn->fcn_arg_names ();
+
+  Cell t2 (dim_vector (t1.numel (), 1));
+
+  for (int i = 0; i < t1.numel (); i++)
+    t2(i) = t1(i);
+
+  return ovl (t2);
 }
 
 /*
@@ -927,8 +914,6 @@ quadv (fcn, 0, 3)\n\
 @seealso{inline, formula, argnames}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -974,12 +959,9 @@ quadv (fcn, 0, 3)\n\
     }
 
   if (func_is_string)
-    retval = octave_value (new_func);
+    return ovl (new_func);
   else
-    retval = octave_value (new octave_fcn_inline
-                           (new_func, old->fcn_arg_names ()));
-
-  return retval;
+    return ovl (new octave_fcn_inline (new_func, old->fcn_arg_names ()));
 }
 
 /*

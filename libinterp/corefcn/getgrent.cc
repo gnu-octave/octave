@@ -71,8 +71,6 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
 @seealso{setgrent, endgrent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -81,9 +79,7 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
   // octave_group::getgrent may set msg.
   octave_value val = mk_gr_map (octave_group::getgrent (msg));
 
-  retval = ovl (val, msg);
-
-  return retval;
+  return ovl (val, msg);
 }
 
 DEFUN (getgrgid, args, ,
@@ -96,29 +92,22 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
 @seealso{getgrnam}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
   double dval = args(0).double_value ();
 
-  if (D_NINT (dval) == dval)
-    {
-      gid_t gid = static_cast<gid_t> (dval);
-
-      std::string msg;
-
-      // octave_group::getgrgid may set msg.
-      octave_value val = mk_gr_map (octave_group::getgrgid (gid, msg));
-
-      retval = ovl (val, msg);
-    }
-
-  else
+  if (D_NINT (dval) != dval)
     error ("getgrgid: GID must be an integer");
 
-  return retval;
+  gid_t gid = static_cast<gid_t> (dval);
+
+  std::string msg;
+
+  // octave_group::getgrgid may set msg.
+  octave_value val = mk_gr_map (octave_group::getgrgid (gid, msg));
+
+  return ovl (val, msg);
 }
 
 DEFUN (getgrnam, args, ,
@@ -131,8 +120,6 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
 @seealso{getgrgid}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -143,9 +130,7 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
   // octave_group::getgrnam may set msg.
   octave_value val = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
 
-  retval = ovl (val, msg);
-
-  return retval;
+  return ovl (val, msg);
 }
 
 DEFUN (setgrent, args, ,
@@ -155,8 +140,6 @@ Return the internal pointer to the beginning of the group database.\n\
 @seealso{getgrent, endgrent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -165,9 +148,7 @@ Return the internal pointer to the beginning of the group database.\n\
   // octave_group::setgrent may set msg.
   int status = octave_group::setgrent (msg);
 
-  retval = ovl (static_cast<double> (status), msg);
-
-  return retval;
+  return ovl (static_cast<double> (status), msg);
 }
 
 DEFUN (endgrent, args, ,
@@ -177,8 +158,6 @@ Close the group database.\n\
 @seealso{getgrent, setgrent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
@@ -187,7 +166,5 @@ Close the group database.\n\
   // octave_group::endgrent may set msg.
   int status = octave_group::endgrent (msg);
 
-  retval = ovl (static_cast<double> (status), msg);
-
-  return retval;
+  return ovl (static_cast<double> (status), msg);
 }

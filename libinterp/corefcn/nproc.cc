@@ -49,8 +49,6 @@ environment variable.\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -73,9 +71,7 @@ environment variable.\n\
         error ("nproc: invalid value for QUERY");
     }
 
-  retval = num_processors (query);
-
-  return retval;
+  return ovl (num_processors (query));
 }
 
 /*

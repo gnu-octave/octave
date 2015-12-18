@@ -1089,21 +1089,16 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 @seealso{get_help_text_from_file}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
   const std::string name = args(0).xstring_value ("get_help_text: NAME must be a string");
 
-  std::string text;
-  std::string format;
+  std::string text, format;
 
   do_get_help_text (name, text, format);
 
-  retval = ovl (text, format);
-
-  return retval;
+  return ovl (text, format);
 }
 
 static void
@@ -1151,21 +1146,16 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 @seealso{get_help_text}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
   const std::string fname = args(0).xstring_value ("get_help_text_from_file: NAME must be a string");
 
-  std::string text;
-  std::string format;
+  std::string text, format;
 
   do_get_help_text_from_file (fname, text, format);
 
-  retval = ovl (text, format);
-
-  return retval;
+  return ovl (text, format);
 }
 
 // Return a cell array of strings containing the names of all

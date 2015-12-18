@@ -142,12 +142,13 @@ typecast (@var{x}, \"uint8\")\n\
 @seealso{cast, bitpack, bitunpack, swapbytes}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
+  octave_value retval;
+
   unwind_protect frame;
+
   const void *data = 0;
   octave_idx_type byte_size = 0;
   dim_vector old_dims;
@@ -331,13 +332,13 @@ column vector.\n\
 @seealso{bitunpack, typecast}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
   if (! args(0).is_bool_type ())
     error ("bitpack: X must be a logical array");
+
+  octave_value retval;
 
   boolNDArray bitp = args(0).bool_array_value ();
 
@@ -440,13 +441,13 @@ column vector.\n\
 @seealso{bitpack, typecast}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
   if (! (args(0).is_numeric_type () || args(0).is_string ()))
     error ("bitunpack: argument must be a number or a string");
+
+  octave_value retval;
 
   octave_value array = args(0);
 

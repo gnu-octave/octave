@@ -753,18 +753,15 @@ Use @code{imread} instead.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-  octave_value_list output;
-
-#ifndef HAVE_MAGICK
-  gripe_disabled_feature ("imread", "Image IO");
-#else
-
-  maybe_initialize_magick ();
-
+#ifdef HAVE_MAGICK
   if (args.length () != 2 || ! args(0).is_string ())
     print_usage ();
 
+  maybe_initialize_magick ();
+
   const octave_scalar_map options = args(1).xscalar_map_value ("__magick_read__: OPTIONS must be a struct");
+
+  octave_value_list output;
 
   std::vector<Magick::Image> imvec;
   read_file (args(0).string_value (), imvec);
@@ -849,8 +846,11 @@ Use @code{imread} instead.\n\
                depth);
     }
 
-#endif
   return output;
+
+#else
+  gripe_disabled_feature ("imread", "Image IO");
+#endif
 }
 
 /*
@@ -1390,16 +1390,11 @@ Use @code{imwrite} instead.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-#ifndef HAVE_MAGICK
-  gripe_disabled_feature ("imwrite", "Image IO");
-#else
-
-  maybe_initialize_magick ();
-
+#ifdef HAVE_MAGICK
   if (args.length () != 5 || ! args(0).is_string () || ! args(1).is_string ())
     print_usage ();
+
+  maybe_initialize_magick ();
 
   const std::string filename = args(0).string_value ();
   const std::string ext = args(1).string_value ();
@@ -1542,8 +1537,11 @@ Use @code{imwrite} instead.\n\
 
   write_file (filename, ext, imvec);
 
+  return octave_value_list ();
+
+#else
+  gripe_disabled_feature ("imwrite", "Image IO");
 #endif
-  return retval;
 }
 
 /*
@@ -1565,17 +1563,14 @@ This is a private internal function not intended for direct use.\n\
 @seealso{imfinfo}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-#ifndef HAVE_MAGICK
-  gripe_disabled_feature ("imfinfo", "Image IO");
-#else
-  maybe_initialize_magick ();
-
+#ifdef HAVE_MAGICK
   if (args.length () < 1 || ! args(0).is_string ())
     print_usage ();
 
+  maybe_initialize_magick ();
+
   const std::string filename = args(0).string_value ();
+
   int idx;
   if (args.length () > 1)
     idx = args(1).int_value () -1;
@@ -1603,9 +1598,12 @@ This is a private internal function not intended for direct use.\n\
   ping.setfield ("rows",    octave_value (img.rows ()));
   ping.setfield ("columns", octave_value (img.columns ()));
   ping.setfield ("format",  octave_value (img.magick ()));
-  retval = octave_value (ping);
+
+  return ovl (ping);
+
+#else
+  gripe_disabled_feature ("imfinfo", "Image IO");
 #endif
-  return retval;
 }
 
 #ifdef HAVE_MAGICK
@@ -1785,15 +1783,11 @@ Use @code{imfinfo} instead.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-#ifndef HAVE_MAGICK
-  gripe_disabled_feature ("imfinfo", "Image IO");
-#else
-  maybe_initialize_magick ();
-
+#ifdef HAVE_MAGICK
   if (args.length () < 1 || ! args(0).is_string ())
     print_usage ();
+
+  maybe_initialize_magick ();
 
   const std::string filename = args(0).string_value ();
 
@@ -1885,17 +1879,15 @@ Use @code{imfinfo} instead.\n\
   template_info.setfield ("FormatVersion", octave_value (""));
 
   const file_stat fs (filename);
-  if (fs)
-    {
-      const octave_localtime mtime (fs.mtime ());
-      const std::string filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
-      template_info.setfield ("Filename",    octave_value (filename));
-      template_info.setfield ("FileModDate", octave_value (filetime));
-      template_info.setfield ("FileSize",    octave_value (fs.size ()));
-    }
-  else
+  if (! fs)
     error ("imfinfo: error reading '%s': %s", filename.c_str (),
            fs.error ().c_str ());
+
+  const octave_localtime mtime (fs.mtime ());
+  const std::string filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
+  template_info.setfield ("Filename",    octave_value (filename));
+  template_info.setfield ("FileModDate", octave_value (filetime));
+  template_info.setfield ("FileSize",    octave_value (fs.size ()));
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
@@ -2214,9 +2206,11 @@ Use @code{imfinfo} instead.\n\
     info.setfield ("DisposalMethod",
                    Cell (dim_vector (nFrames, 1), octave_value ("")));
 
-  retval = octave_value (info);
+  return ovl (info);
+
+#else
+  gripe_disabled_feature ("imfinfo", "Image IO");
 #endif
-  return retval;
 }
 
 /*
@@ -2232,17 +2226,14 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-  octave_value retval;
+#ifdef HAVE_MAGICK
+  maybe_initialize_magick ();
 
-#ifndef HAVE_MAGICK
-  gripe_disabled_feature ("imformats", "Image IO");
-#else
   if (args.length () != 1 || ! args(0).is_map ())
     print_usage ();
 
   octave_map formats = args(0).map_value ();
 
-  maybe_initialize_magick ();
   for (octave_idx_type idx = 0; idx < formats.numel (); idx++)
     {
       try
@@ -2268,9 +2259,12 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
           idx--;
         }
     }
-  retval = formats;
+
+  return ovl (formats);
+
+#else
+  gripe_disabled_feature ("imformats", "Image IO");
 #endif
-  return retval;
 }
 
 /*

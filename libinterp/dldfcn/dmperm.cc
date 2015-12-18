@@ -149,18 +149,16 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
 @seealso{colamd, ccolamd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+#if HAVE_CXSPARSE
 
   if (args.length () != 1)
     print_usage ();
 
-#if HAVE_CXSPARSE
-  retval = dmperm_internal (false, args(0), nargout);
+  return ovl (dmperm_internal (false, args(0), nargout));
+
 #else
   error ("dmperm: not available in this version of Octave");
 #endif
-
-  return retval;
 }
 
 /*
@@ -194,18 +192,16 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
 @seealso{dmperm}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+#if HAVE_CXSPARSE
 
   if (args.length () != 1)
     print_usage ();
 
-#if HAVE_CXSPARSE
-  retval = dmperm_internal (true, args(0), nargout);
+  return ovl (dmperm_internal (true, args(0), nargout));
+
 #else
   error ("sprank: not available in this version of Octave");
 #endif
-
-  return retval;
 }
 
 /*

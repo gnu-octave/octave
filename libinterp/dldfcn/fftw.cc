@@ -132,19 +132,20 @@ used per default.\n\
 @seealso{fft, ifft, fft2, ifft2, fftn, ifftn}\n\
 @end deftypefn")
 {
-  octave_value retval;
+#if defined (HAVE_FFTW)
 
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-#if defined (HAVE_FFTW)
+  octave_value retval;
+
   std::string arg0 = args(0).xstring_value ("fftw: first argument must be a string");
 
   if (arg0 == "planner")
     {
-      if (nargin == 2)  //planner setter
+      if (nargin == 2)  // planner setter
         {
           // Use STL function to convert to lower case
           std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
@@ -235,8 +236,7 @@ used per default.\n\
 
           retval = octave_value (std::string (str));
 
-          // FIXME: need to free string even if there is an
-          // exception.
+          // FIXME: need to free string even if there is an exception.
           free (str);
         }
       else //dwisdom getter
@@ -244,8 +244,7 @@ used per default.\n\
           char *str = fftw_export_wisdom_to_string ();
           retval = octave_value (std::string (str));
 
-          // FIXME: need to free string even if there is an
-          // exception.
+          // FIXME: need to free string even if there is an exception.
           free (str);
         }
     }
@@ -269,8 +268,7 @@ used per default.\n\
 
           retval = octave_value (std::string (str));
 
-          // FIXME: need to free string even if there is an
-          // exception.
+          // FIXME: need to free string even if there is an exception.
           free (str);
         }
       else //swisdom getter
@@ -278,8 +276,7 @@ used per default.\n\
           char *str = fftwf_export_wisdom_to_string ();
           retval = octave_value (std::string (str));
 
-          // FIXME: need to free string even if there is an
-          // exception.
+          // FIXME: need to free string even if there is an exception.
           free (str);
         }
     }
@@ -287,27 +284,23 @@ used per default.\n\
     {
       if (nargin == 2)  //threads setter
         {
-          if (args(1).is_real_scalar ())
-            {
-              int nthreads = args(1).int_value();
-              if (nthreads >= 1)
-                {
+          if (! args(1).is_real_scalar ())
+            error ("fftw: setting threads needs one integer argument");
+
+          int nthreads = args(1).int_value();
+          if (nthreads < 1)
+            error ("fftw: number of threads must be >=1");
+
 #if defined (HAVE_FFTW3_THREADS)
-                  octave_fftw_planner::threads (nthreads);
+          octave_fftw_planner::threads (nthreads);
 #else
-                  gripe_disabled_feature ("fftw", "multithreaded FFTW");
+          gripe_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
 #if defined (HAVE_FFTW3F_THREADS)
-                  octave_float_fftw_planner::threads (nthreads);
+          octave_float_fftw_planner::threads (nthreads);
 #else
-                  gripe_disabled_feature ("fftw", "multithreaded FFTW");
+          gripe_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
-                }
-              else
-                error ("fftw: number of threads must be >=1");
-            }
-          else
-            error ("fftw: setting threads needs one integer argument");
         }
       else //threads getter
 #if defined (HAVE_FFTW3_THREADS)
@@ -318,13 +311,14 @@ used per default.\n\
     }
   else
     error ("fftw: unrecognized argument");
+
+  return retval;
+
 #else
 
   gripe_disabled_feature ("fftw", "the FFTW3 planner");
 
 #endif
-
-  return retval;
 }
 
 /*

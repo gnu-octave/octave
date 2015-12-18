@@ -504,7 +504,7 @@ Return the process id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_syscalls::getpid ());
+  return ovl (octave_syscalls::getpid ());
 }
 
 DEFUNX ("getppid", Fgetppid, args, ,
@@ -517,7 +517,7 @@ Return the process id of the parent process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_syscalls::getppid ());
+  return ovl (octave_syscalls::getppid ());
 }
 
 DEFUNX ("getegid", Fgetegid, args, ,
@@ -530,7 +530,7 @@ Return the effective group id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_syscalls::getegid ());
+  return ovl (octave_syscalls::getegid ());
 }
 
 DEFUNX ("getgid", Fgetgid, args, ,
@@ -543,7 +543,7 @@ Return the real group id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_syscalls::getgid ());
+  return ovl (octave_syscalls::getgid ());
 }
 
 DEFUNX ("geteuid", Fgeteuid, args, ,
@@ -556,7 +556,7 @@ Return the effective user id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_syscalls::geteuid ());
+  return ovl (octave_syscalls::geteuid ());
 }
 
 DEFUNX ("getuid", Fgetuid, args, ,
@@ -569,7 +569,7 @@ Return the real user id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_syscalls::getuid ());
+  return ovl (octave_syscalls::getuid ());
 }
 
 DEFUNX ("kill", Fkill, args, ,
@@ -882,7 +882,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISREG: invalid MODE value");
 
-  return octave_value (file_stat::is_reg (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_reg (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
@@ -899,7 +899,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISDIR: invalid MODE value");
 
-  return octave_value (file_stat::is_dir (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_dir (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
@@ -916,7 +916,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISCHR: invalid MODE value");
 
-  return octave_value (file_stat::is_chr (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_chr (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
@@ -933,7 +933,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISBLK: invalid MODE value");
 
-  return octave_value (file_stat::is_blk (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_blk (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
@@ -950,7 +950,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISFIFO: invalid MODE value");
 
-  return octave_value (file_stat::is_fifo (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_fifo (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
@@ -967,7 +967,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISLNK: invalid MODE value");
 
-  return octave_value (file_stat::is_lnk (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_lnk (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
@@ -984,7 +984,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
   double mode = args(0).xdouble_value ("S_ISSOCK: invalid MODE value");
 
-  return octave_value (file_stat::is_sock (static_cast<mode_t> (mode)));
+  return ovl (file_stat::is_sock (static_cast<mode_t> (mode)));
 }
 
 DEFUN (gethostname, args, ,
@@ -996,7 +996,7 @@ Return the hostname of the system where Octave is running.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_env::get_host_name ());
+  return ovl (octave_env::get_host_name ());
 }
 
 DEFUN (uname, args, ,
@@ -1143,7 +1143,7 @@ true if the child terminated normally.\n\
 
   int status = args(0).xint_value ("WIFEXITED: STATUS must be an integer");
 
-  return octave_value (octave_wait::ifexited (status));
+  return ovl (octave_wait::ifexited (status));
 }
 
 DEFUNX ("WEXITSTATUS", FWEXITSTATUS, args, ,
@@ -1161,7 +1161,7 @@ This function should only be employed if @code{WIFEXITED} returned true.\n\
 
   int status = args(0).xint_value ("WEXITSTATUS: STATUS must be an integer");
 
-  return octave_value (octave_wait::exitstatus (status));
+  return ovl (octave_wait::exitstatus (status));
 }
 
 DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
@@ -1177,7 +1177,7 @@ true if the child process was terminated by a signal.\n\
 
   int status = args(0).xint_value ("WIFSIGNALED: STATUS must be an integer");
 
-  return octave_value (octave_wait::ifsignaled (status));
+  return ovl (octave_wait::ifsignaled (status));
 }
 
 DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
@@ -1195,7 +1195,7 @@ This function should only be employed if @code{WIFSIGNALED} returned true.\n\
 
   int status = args(0).xint_value ("WTERMSIG: STATUS must be an integer");
 
-  return octave_value (octave_wait::termsig (status));
+  return ovl (octave_wait::termsig (status));
 }
 
 DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
@@ -1215,7 +1215,7 @@ and is not available on some Unix implementations (e.g., AIX, SunOS).\n\
 
   int status = args(0).xint_value ("WCOREDUMP: STATUS must be an integer");
 
-  return octave_value (octave_wait::coredump (status));
+  return ovl (octave_wait::coredump (status));
 }
 
 DEFUNX ("WIFSTOPPED", FWIFSTOPPED, args, ,
@@ -1234,7 +1234,7 @@ the child is being traced (see ptrace(2)).\n\
 
   int status = args(0).xint_value ("WIFSTOPPED: STATUS must be an integer");
 
-  return octave_value (octave_wait::ifstopped (status));
+  return ovl (octave_wait::ifstopped (status));
 }
 
 DEFUNX ("WSTOPSIG", FWSTOPSIG, args, ,
@@ -1252,7 +1252,7 @@ This function should only be employed if @code{WIFSTOPPED} returned true.\n\
 
   int status = args(0).xint_value ("WSTOPSIG: STATUS must be an integer");
 
-  return octave_value (octave_wait::stopsig (status));
+  return ovl (octave_wait::stopsig (status));
 }
 
 DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
@@ -1268,7 +1268,7 @@ true if the child process was resumed by delivery of @code{SIGCONT}.\n\
 
   int status = args(0).xint_value ("WIFCONTINUED: STATUS must be an integer");
 
-  return octave_value (octave_wait::ifcontinued (status));
+  return ovl (octave_wait::ifcontinued (status));
 }
 
 DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,

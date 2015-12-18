@@ -337,11 +337,10 @@ the Cholesky@tie{}factorization.\n\
 @seealso{chol, chol2inv, inv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
+  octave_value retval;
   octave_value arg = args(0);
 
   octave_idx_type nr = arg.rows ();
@@ -466,10 +465,10 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
 @seealso{chol, cholinv, inv}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   octave_value arg = args(0);
 
@@ -612,7 +611,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           else
             fact.update (u);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
       else
         {
@@ -629,7 +628,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           else
             fact.update (u);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
     }
   else
@@ -648,7 +647,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           else
             fact.update (u);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
       else
         {
@@ -664,7 +663,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           else
             fact.update (u);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
     }
 
@@ -775,8 +774,6 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
       || ! argj.is_real_scalar ())
     print_usage ();
 
-  octave_value_list retval (nargout == 2 ? 2 : 1);
-
   octave_idx_type n = argr.rows ();
   octave_idx_type j = argj.scalar_value ();
 
@@ -785,6 +782,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 
   if (j < 1 || j > n+1)
     error ("cholinsert: index J out of range");
+
+  octave_value_list retval (nargout == 2 ? 2 : 1);
 
   int err = 0;
   if (argr.is_single_type () || argu.is_single_type ())
@@ -799,7 +798,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
       else
         {
@@ -812,7 +811,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
     }
   else
@@ -827,7 +826,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
       else
         {
@@ -840,7 +839,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
-          retval(0) = get_chol_r (fact);
+          retval = ovl (get_chol_r (fact));
         }
     }
 
@@ -1003,8 +1002,6 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 @seealso{chol, cholupdate, cholinsert, cholshift}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -1017,66 +1014,64 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
   octave_idx_type n = argr.rows ();
   octave_idx_type j = argj.scalar_value ();
 
-  if (argr.columns () == n)
+  if (argr.columns () != n)
+    error ("choldelete: matrix R must be square");
+
+  if (j < 0 && j > n)
+    error ("choldelete: index J out of range");
+
+  octave_value_list retval;
+
+  if (argr.is_single_type ())
     {
-      if (j > 0 && j <= n)
+      if (argr.is_real_type ())
         {
-          if (argr.is_single_type ())
-            {
-              if (argr.is_real_type ())
-                {
-                  // real case
-                  FloatMatrix R = argr.float_matrix_value ();
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
 
-                  FloatCHOL fact;
-                  fact.set (R);
-                  fact.delete_sym (j-1);
+          FloatCHOL fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
 
-                  retval(0) = get_chol_r (fact);
-                }
-              else
-                {
-                  // complex case
-                  FloatComplexMatrix R = argr.float_complex_matrix_value ();
-
-                  FloatComplexCHOL fact;
-                  fact.set (R);
-                  fact.delete_sym (j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-            }
-          else
-            {
-              if (argr.is_real_type ())
-                {
-                  // real case
-                  Matrix R = argr.matrix_value ();
-
-                  CHOL fact;
-                  fact.set (R);
-                  fact.delete_sym (j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-              else
-                {
-                  // complex case
-                  ComplexMatrix R = argr.complex_matrix_value ();
-
-                  ComplexCHOL fact;
-                  fact.set (R);
-                  fact.delete_sym (j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-            }
+          retval = ovl (get_chol_r (fact));
         }
       else
-        error ("choldelete: index J out of range");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+
+          FloatComplexCHOL fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
     }
   else
-    error ("choldelete: matrix R must be square");
+    {
+      if (argr.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+
+          CHOL fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+
+          ComplexCHOL fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+    }
 
   return retval;
 }
@@ -1133,8 +1128,6 @@ triangular, return the Cholesky@tie{}factorization of\n\
 @seealso{chol, cholupdate, cholinsert, choldelete}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 3)
     print_usage ();
 
@@ -1150,68 +1143,65 @@ triangular, return the Cholesky@tie{}factorization of\n\
   octave_idx_type i = argi.scalar_value ();
   octave_idx_type j = argj.scalar_value ();
 
-  if (argr.columns () == n)
+  if (argr.columns () != n)
+    error ("cholshift: R must be a square matrix");
+
+  if (j < 0 || j > n+1 || i < 0 || i > n+1)
+    error ("cholshift: index I or J is out of range");
+
+  octave_value_list retval;
+
+  if (argr.is_single_type () && argi.is_single_type ()
+      && argj.is_single_type ())
     {
-      if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
+      if (argr.is_real_type ())
         {
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
 
-          if (argr.is_single_type () && argi.is_single_type ()
-              && argj.is_single_type ())
-            {
-              if (argr.is_real_type ())
-                {
-                  // real case
-                  FloatMatrix R = argr.float_matrix_value ();
+          FloatCHOL fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
 
-                  FloatCHOL fact;
-                  fact.set (R);
-                  fact.shift_sym (i-1, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-              else
-                {
-                  // complex case
-                  FloatComplexMatrix R = argr.float_complex_matrix_value ();
-
-                  FloatComplexCHOL fact;
-                  fact.set (R);
-                  fact.shift_sym (i-1, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-            }
-          else
-            {
-              if (argr.is_real_type ())
-                {
-                  // real case
-                  Matrix R = argr.matrix_value ();
-
-                  CHOL fact;
-                  fact.set (R);
-                  fact.shift_sym (i-1, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-              else
-                {
-                  // complex case
-                  ComplexMatrix R = argr.complex_matrix_value ();
-
-                  ComplexCHOL fact;
-                  fact.set (R);
-                  fact.shift_sym (i-1, j-1);
-
-                  retval(0) = get_chol_r (fact);
-                }
-            }
+          retval = ovl (get_chol_r (fact));
         }
       else
-        error ("cholshift: index I or J is out of range");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+
+          FloatComplexCHOL fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
     }
   else
-    error ("cholshift: R must be a square matrix");
+    {
+      if (argr.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+
+          CHOL fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+
+          ComplexCHOL fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+    }
 
   return retval;
 }

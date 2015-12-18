@@ -1057,7 +1057,7 @@ Return a structure containing Unix signal names and their defined values.\n\
 
   static octave_scalar_map m = make_sig_struct ();
 
-  return octave_value (m);
+  return ovl (m);
 }
 
 /*

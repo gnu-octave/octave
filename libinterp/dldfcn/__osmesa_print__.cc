@@ -87,12 +87,9 @@ instead.\n\
 \n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #if ! defined (HAVE_OSMESA)
   gripe_disabled_feature ("__osmesa_print__", "offscreen rendering");
 #else
-
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 3)
@@ -107,6 +104,8 @@ instead.\n\
       error ("__osmesa_print__: Octave has been compiled without gl2ps");
 #endif
     }
+
+  octave_value_list retval;
 
   int h = args(0).double_value ();
   graphics_object fobj = gh_manager::get_object (h);
@@ -184,20 +183,18 @@ instead.\n\
           // write gl2ps output directly to file
           FILE *filep = gnulib::fopen (file.substr (pos_c).c_str (), "w");
 
-          if (filep)
-            {
-              unwind_protect frame;
-
-              frame.add_fcn (close_fcn, filep);
-
-              glps_renderer rend (filep, term);
-              rend.draw (fobj, "");
-
-              // Make sure buffered commands are finished!!!
-              glFinish ();
-            }
-          else
+          if (! filep)
             error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
+
+          unwind_protect frame;
+
+          frame.add_fcn (close_fcn, filep);
+
+          glps_renderer rend (filep, term);
+          rend.draw (fobj, "");
+
+          // Make sure buffered commands are finished!!!
+          glFinish ();
         }
 #endif
     }
@@ -237,8 +234,8 @@ instead.\n\
 
   OSMesaDestroyContext (ctx);
 
-#endif
   return retval;
+#endif
 }
 
 /*

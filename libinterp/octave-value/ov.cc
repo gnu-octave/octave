@@ -2930,7 +2930,7 @@ Return the size of @var{val} in bytes.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).byte_size ());
+  return ovl (args(0).byte_size ());
 }
 
 /*
@@ -3049,9 +3049,9 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
   octave_value arg0 = args(0);
 
   if (type.empty ())
-    retval = arg0;
+    return ovl (arg0);
   else
-    retval = arg0.subsref (type, idx, nargout);
+    return arg0.subsref (type, idx, nargout);
 
   return retval;
 }
@@ -3089,8 +3089,6 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 @seealso{subsref, substruct}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 3)
     print_usage ();
 
@@ -3102,8 +3100,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
   if (type.empty ())
     {
       // Regularize a null matrix if stored into a variable.
-
-      retval = args(2).storable_value ();
+      return ovl (args(2).storable_value ());
     }
   else
     {
@@ -3111,10 +3108,8 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 
       arg0.make_unique ();
 
-      retval= arg0.subsasgn (type, idx, args(2));
+      return ovl (arg0.subsasgn (type, idx, args(2)));
     }
-
-  return retval;
 }
 
 /*
@@ -3194,7 +3189,7 @@ Return true if @var{x} is a single-quoted character string.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_sq_string ());
+  return ovl (args(0).is_sq_string ());
 }
 
 /*
@@ -3217,7 +3212,7 @@ Return true if @var{x} is a double-quoted character string.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_dq_string ());
+  return ovl (args(0).is_dq_string ());
 }
 
 /*

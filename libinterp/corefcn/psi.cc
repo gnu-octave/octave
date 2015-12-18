@@ -65,9 +65,8 @@ can have any value real or complex value.  However, for polygamma functions\n\
 @seealso{gamma, gammainc, gammaln}\n\
 @end deftypefn")
 {
-  octave_value retval;
+  int nargin = args.length ();
 
-  const octave_idx_type nargin = args.length ();
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
@@ -75,7 +74,10 @@ can have any value real or complex value.  However, for polygamma functions\n\
   const octave_idx_type k = (nargin == 1) ? 0 : args(0).idx_type_value ("psi: K must be an integer");
   if (k < 0)
     error ("psi: K must be non-negative");
-  else if (k == 0)
+
+  octave_value retval;
+
+  if (k == 0)
     {
 #define FLOAT_BRANCH(T, A, M, E) \
       if (oct_z.is_ ## T ##_type ()) \

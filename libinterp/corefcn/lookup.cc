@@ -238,17 +238,17 @@ at most n-1).\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 3 || (nargin == 3 && ! args(2).is_string ()))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
 
   octave_value table = args(0);
   octave_value y = args(1);
   if (table.ndims () > 2 || (table.columns () > 1 && table.rows () > 1))
     warning ("lookup: table is not a vector");
+
+  octave_value retval;
 
   bool num_case = ((table.is_numeric_type () && y.is_numeric_type ())
                    || (table.is_char_matrix () && y.is_char_matrix ()));
@@ -260,17 +260,14 @@ at most n-1).\n\
 
   if (nargin == 3)
     {
-      std::string opt = args(2).string_value ();
+      std::string opt = args(2).xstring_value ("lookup: OPT must be a string");
       left_inf = contains_char (opt, 'l');
       right_inf = contains_char (opt, 'r');
       match_idx = contains_char (opt, 'm');
       match_bool = contains_char (opt, 'b');
       if (opt.find_first_not_of ("lrmb") != std::string::npos)
-        {
-          error ("lookup: unrecognized option: %c",
-                 opt[opt.find_first_not_of ("lrmb")]);
-          return retval;
-        }
+        error ("lookup: unrecognized option: %c",
+               opt[opt.find_first_not_of ("lrmb")]);
     }
 
   if ((match_idx || match_bool) && (left_inf || right_inf))
@@ -284,7 +281,6 @@ at most n-1).\n\
     {
       // In the case of a complex array, absolute values will be used for
       // compatibility (though it's not too meaningful).
-
       if (table.is_complex_type ())
         table = table.abs ();
 
@@ -365,7 +361,6 @@ at most n-1).\n\
     print_usage ();
 
   return retval;
-
 }
 
 /*

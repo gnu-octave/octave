@@ -3806,8 +3806,6 @@ cdef_manager::do_find_package_symbol (const std::string& pack_name)
 
 DEFUN (__meta_get_package__, args, , "")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -3831,8 +3829,6 @@ DEFUN (__meta_class_query__, args, /* nargout */,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
 #if DEBUG_TRACE
   std::cerr << "__meta_class_query__ ("
             << args(0).string_value () << ")"
@@ -3853,8 +3849,6 @@ DEFUN (metaclass, args, /* nargout */,
 Returns the meta.class object corresponding to the class of @var{obj}.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 

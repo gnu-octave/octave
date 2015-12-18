@@ -70,8 +70,6 @@ If it is @qcode{\"native\"}, then the type of data depends on how the data\n\
 is stored in the audio file.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #ifdef HAVE_SNDFILE
 
   int nargin = args.length ();
@@ -79,7 +77,7 @@ is stored in the audio file.\n\
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  std::string filename = args(0).string_value ();
+  std::string filename = args(0).xstring_value ("audioread: FILENAME must be a string");
 
   SF_INFO info;
   info.format = 0;
@@ -171,15 +169,11 @@ is stored in the audio file.\n\
   else
     ret_audio = audio;
 
-  retval = ovl (ret_audio, info.samplerate);
+  return ovl (ret_audio, info.samplerate);
 
 #else
-
   error ("sndfile not found on your system and thus audioread is not functional");
-
 #endif
-
-  return retval;
 }
 
 #ifdef HAVE_SNDFILE
@@ -262,11 +256,6 @@ Comment.\n\
 @end table\n\
 @end deftypefn")
 {
-  // FIXME: shouldn't we return something to indicate whether the file
-  // was written successfully?
-
-  octave_value retval;
-
 #ifdef HAVE_SNDFILE
 
   int nargin = args.length ();
@@ -274,9 +263,7 @@ Comment.\n\
   if (nargin < 3)
     print_usage ();
 
-  std::string filename = args(0).string_value ();
-
-  Matrix audio = args(1).matrix_value ();
+  std::string filename = args(0).xstring_value ("audiowrite: FILENAME must be a string");
 
   double bias = 0.0;
   double scale = 1.0;
@@ -290,8 +277,10 @@ Comment.\n\
   else if (args(1).is_integer_type ())
     {
       gripe_wrong_type_arg ("audiowrite", args(1));
-      return retval;
+      return octave_value_list ();
     }
+
+  Matrix audio = args(1).matrix_value ();
 
   int samplerate = args(2).int_value ();
 
@@ -425,13 +414,15 @@ Comment.\n\
       offset += chunk_size;
     }
 
+  // FIXME: shouldn't we return something to indicate whether the file
+  // was written successfully?
+  return octave_value_list ();
+
 #else
 
   error ("sndfile not found on your system and thus audiowrite is not functional");
 
 #endif
-
-  return retval;
 }
 
 DEFUN_DLD (audioinfo, args, ,
@@ -440,14 +431,11 @@ DEFUN_DLD (audioinfo, args, ,
 Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
 #ifdef HAVE_SNDFILE
-
   if (args.length () != 1)
     print_usage ();
 
-  std::string filename = args(0).string_value ();
+  std::string filename = args(0).xstring_value ("audioinfo: FILENAME must be a string");
 
   SF_INFO info;
   info.format = 0;
@@ -501,13 +489,11 @@ Return information about an audio file specified by @var{filename}.\n\
   result.assign ("Artist", sf_get_string (file, SF_STR_ARTIST));
   result.assign ("Comment", sf_get_string (file, SF_STR_COMMENT));
 
-  retval = result;
+  return ovl (result);
 
 #else
 
   error ("sndfile not found on your system and thus audioinfo is not functional");
 
 #endif
-
-  return retval;
 }

@@ -105,11 +105,12 @@ If also given a device ID, return true if the device supports playback or\n\
 recording using those parameters.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
 #ifdef HAVE_PORTAUDIO
 
   int nargin = args.length ();
+
+  if (nargin > 5)
+    print_usage ();
 
   octave_scalar_map devinfo;
   octave_value_list input;
@@ -196,6 +197,8 @@ recording using those parameters.\n\
   outputdev.setfield ("ID", output_id);
   devinfo.setfield ("input", inputdev);
   devinfo.setfield ("output", outputdev);
+
+  octave_value retval;
 
   // Return information about input and output audio devices and
   // their properties.
@@ -403,15 +406,13 @@ recording using those parameters.\n\
 
       retval = 0;
     }
-  else
-    print_usage ();
+
+  return retval;
 
 #else
   NO_PORTAUDIO_MSG
   (void) args;  //silence compiler warning "unused parameter"
 #endif
-
-  return retval;
 }
 
 /*

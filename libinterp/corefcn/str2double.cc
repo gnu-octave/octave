@@ -341,21 +341,17 @@ risk of using @code{eval} on unknown data.\n\
 @seealso{str2num}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   if (args(0).is_string ())
     {
       if (args(0).rows () == 0 || args(0).columns () == 0)
-        {
-          retval = Matrix (1, 1, octave_NaN);
-        }
+        retval = Matrix (1, 1, octave_NaN);
       else if (args(0).rows () == 1 && args(0).ndims () == 2)
-        {
-          retval = str2double1 (args(0).string_value ());
-        }
+        retval = str2double1 (args(0).string_value ());
       else
         {
           const string_vector sv = args(0).all_strings ();
@@ -368,6 +364,7 @@ risk of using @code{eval} on unknown data.\n\
       const Cell cell = args(0).cell_value ();
 
       ComplexNDArray output (cell.dims (), octave_NaN);
+
       for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
           if (cell(i).is_string ())

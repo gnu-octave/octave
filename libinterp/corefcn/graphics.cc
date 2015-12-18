@@ -9588,7 +9588,7 @@ false where they are not.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (is_handle (args(0)));
+  return ovl (is_handle (args(0)));
 }
 
 static bool
@@ -9634,7 +9634,7 @@ Undocumented internal function.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (is_handle_visible (args(0)));
+  return ovl (is_handle_visible (args(0)));
 }
 
 DEFUN (reset, args, ,
@@ -9857,12 +9857,12 @@ being @qcode{\"portrait\"}.\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
+
+  octave_value retval;
 
   // get vector of graphics handles
   ColumnVector hcv = args(0).xvector_value ("set: H must be a graphics handle");
@@ -9874,83 +9874,62 @@ being @qcode{\"portrait\"}.\n\
     {
       graphics_object go = gh_manager::get_object (hcv(n));
 
-      if (go)
+      if (! go)
+        error ("set: invalid handle (= %g)", hcv(n));
+
+      if (nargin == 3 && args(1).is_cellstr () && args(2).is_cell ())
         {
-          if (nargin == 3
-              && args(1).is_cellstr () && args(2).is_cell ())
-            {
-              if (args(2).cell_value ().rows () == 1)
-                {
-                  go.set (args(1).cellstr_value (),
-                          args(2).cell_value (), 0);
-                }
-              else if (hcv.numel () == args(2).cell_value ().rows ())
-                {
-                  go.set (args(1).cellstr_value (),
-                          args(2).cell_value (), n);
-                }
-              else
-                {
-                  error ("set: number of graphics handles must match number of value rows (%d != %d)",
-                         hcv.numel (), args(2).cell_value ().rows ());
-                  break;
+          if (args(2).cell_value ().rows () == 1)
+            go.set (args(1).cellstr_value (), args(2).cell_value (), 0);
+          else if (hcv.numel () == args(2).cell_value ().rows ())
+            go.set (args(1).cellstr_value (), args(2).cell_value (), n);
+          else
+            error ("set: number of graphics handles must match number of value rows (%d != %d)",
+                   hcv.numel (), args(2).cell_value ().rows ());
+        }
+      else if (nargin == 2 && args(1).is_map ())
+        go.set (args(1).map_value ());
+      else if (nargin == 2 && args(1).is_string ())
+        {
+          std::string property = args(1).string_value ();
 
-                }
-            }
-          else if (nargin == 2 && args(1).is_map ())
-            {
-              go.set (args(1).map_value ());
-            }
-          else if (nargin == 2 && args(1).is_string ())
-            {
-              std::string property = args(1).string_value ();
+          octave_map pmap = go.values_as_struct ();
 
-              octave_map pmap = go.values_as_struct ();
-
-              if (go.has_readonly_property (property))
-                if (nargout != 0)
-                  retval = Matrix ();
-                else
-                  octave_stdout << "set: " << property
-                                <<" is read-only" << std::endl;
-              else if (pmap.isfield (property))
-                {
-                  if (nargout != 0)
-                    retval = pmap.getfield (property)(0);
-                  else
-                    {
-                      std::string s = go.value_as_string (property);
-
-                      octave_stdout << s;
-                    }
-                }
-              else
-                {
-                  error ("set: unknown property");
-                  break;
-                }
-            }
-          else if (nargin == 1)
+          if (go.has_readonly_property (property))
+            if (nargout != 0)
+              retval = Matrix ();
+            else
+              octave_stdout << "set: " << property
+                            <<" is read-only" << std::endl;
+          else if (pmap.isfield (property))
             {
               if (nargout != 0)
-                retval = go.values_as_struct ();
+                retval = pmap.getfield (property)(0);
               else
                 {
-                  std::string s = go.values_as_string ();
+                  std::string s = go.value_as_string (property);
 
                   octave_stdout << s;
                 }
             }
           else
+            error ("set: unknown property");
+        }
+      else if (nargin == 1)
+        {
+          if (nargout != 0)
+            retval = go.values_as_struct ();
+          else
             {
-              go.set (args.splice (0, 1));
-              request_drawnow = true;
+              std::string s = go.values_as_string ();
+
+              octave_stdout << s;
             }
         }
       else
         {
-          error ("set: invalid handle (= %g)", hcv(n));
-          break;
+          go.set (args.splice (0, 1));
+          request_drawnow = true;
         }
 
       request_drawnow = true;
@@ -9993,22 +9972,13 @@ lists respectively.\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
-
-  Cell vals;
-
   int nargin = args.length ();
-
-  bool use_cell_format = false;
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
   if (args(0).is_empty ())
-    {
-      retval = Matrix ();
-      return retval;
-    }
+    return ovl (Matrix ());
 
   ColumnVector hcv = args(0).xvector_value ("get: H must be a graphics handle");
 
@@ -10023,12 +9993,13 @@ lists respectively.\n\
           std::string typ = get_graphics_object_type (hcv(n));
 
           if (typ != typ0)
-            {
-              error ("get: vector of handles must all have the same type");
-              break;
-            }
+            error ("get: vector of handles must all have the same type");
         }
     }
+
+  octave_value retval;
+  Cell vals;
+  bool use_cell_format = false;
 
   if (nargin > 1 && args(1).is_cellstr ())
     {
@@ -10044,19 +10015,14 @@ lists respectively.\n\
         {
           graphics_object go = gh_manager::get_object (hcv(n));
 
-          if (go)
-            {
-              for (octave_idx_type m = 0; m < plen; m++)
-                {
-                  caseless_str property = plist(m);
+          if (! go)
+            error ("get: invalid handle (= %g)", hcv(n));
 
-                  vals(n, m) = go.get (property);
-                }
-            }
-          else
+          for (octave_idx_type m = 0; m < plen; m++)
             {
-              error ("get: invalid handle (= %g)", hcv(n));
-              break;
+              caseless_str property = plist(m);
+
+              vals(n, m) = go.get (property);
             }
         }
     }
@@ -10073,18 +10039,13 @@ lists respectively.\n\
         {
           graphics_object go = gh_manager::get_object (hcv(n));
 
-          if (go)
-            {
-              if (nargin == 1)
-                vals(n) = go.get ();
-              else
-                vals(n) = go.get (property);
-            }
+          if (! go)
+            error ("get: invalid handle (= %g)", hcv(n));
+
+          if (nargin == 1)
+            vals(n) = go.get ();
           else
-            {
-              error ("get: invalid handle (= %g)", hcv(n));
-              break;
-            }
+            vals(n) = go.get (property);
         }
     }
 
@@ -10130,10 +10091,6 @@ Undocumented internal function.\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
-
-  Cell vals;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -10141,7 +10098,9 @@ Undocumented internal function.\n\
 
   octave_idx_type hcv_len = hcv.numel ();
 
-  vals.resize (dim_vector (hcv_len, 1));
+  Cell vals (dim_vector (hcv_len, 1));
+
+//  vals.resize (dim_vector (hcv_len, 1));
 
   for (octave_idx_type n = 0; n < hcv_len; n++)
     {
@@ -10150,20 +10109,17 @@ Undocumented internal function.\n\
       if (go)
         vals(n) = go.get (true);
       else
-        {
-          error ("get: invalid handle (= %g)", hcv(n));
-          break;
-        }
+        error ("get: invalid handle (= %g)", hcv(n));
     }
 
   octave_idx_type vals_len = vals.numel ();
 
   if (vals_len > 1)
-    retval = vals;
+    return octave_value (vals);
   else if (vals_len == 1)
-    retval = vals(0);
-
-  return retval;
+    return octave_value (vals(0));
+  else
+    return octave_value_list ();
 }
 
 static octave_value
@@ -10241,12 +10197,12 @@ Undocumented internal function.\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
-
   if (args.length () == 0)
     print_usage ();
 
   double val = args(0).xdouble_value ("__go_figure__: figure number must be a double value");
+
+  octave_value retval;
 
   if (is_figure (val))
     {
@@ -10295,7 +10251,6 @@ Undocumented internal function.\n\
               // We need to initialize the integerhandle property
               // without calling the set_integerhandle method,
               // because doing that will generate a new handle value...
-
               graphics_object go = gh_manager::get_object (h);
               go.get_properties ().init_integerhandle ("off");
             }
@@ -10303,20 +10258,18 @@ Undocumented internal function.\n\
       else if (val > 0 && D_NINT (val) == val)
         h = gh_manager::make_figure_handle (val, false);
 
-      if (h.ok ())
-        {
-          adopt (0, h);
-
-          gh_manager::push_figure (h);
-
-          xset (h, xargs);
-          xcreatefcn (h);
-          xinitialize (h);
-
-          retval = h.value ();
-        }
-      else
+      if (! h.ok ())
         error ("__go_figure__: failed to create figure handle");
+
+      adopt (0, h);
+
+      gh_manager::push_figure (h);
+
+      xset (h, xargs);
+      xcreatefcn (h);
+      xinitialize (h);
+
+      retval = h.value ();
     }
 
   return retval;
@@ -10516,8 +10469,6 @@ Undocumented internal function.\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -10525,22 +10476,19 @@ Undocumented internal function.\n\
 
   const NDArray vals = args(0).xarray_value ("delete: invalid graphics object");
 
-  // Check all the handles to delete are valid first, as callbacks
-  // might delete one of the handles we later want to delete
+  // Check all the handles to delete are valid first,
+  // as callbacks might delete one of the handles we later want to delete.
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     {
       h = gh_manager::lookup (vals(i));
 
       if (! h.ok ())
-        {
-          error ("delete: invalid graphics object (= %g)", vals(i));
-          break;
-        }
+        error ("delete: invalid graphics object (= %g)", vals(i));
     }
 
   delete_graphics_objects (vals);
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (__go_axes_init__, args, ,
@@ -10551,17 +10499,14 @@ Undocumented internal function.\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
-
   int nargin = args.length ();
-
-  std::string mode = "";
-
-  if (nargin == 2)
-    mode = args(1).string_value ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  std::string mode;
+  if (nargin == 2)
+    mode = args(1).string_value ();
 
   graphics_handle h = octave_NaN;
 
@@ -10569,21 +10514,18 @@ Undocumented internal function.\n\
 
   h = gh_manager::lookup (val);
 
-  if (h.ok ())
-    {
-      graphics_object go = gh_manager::get_object (h);
-
-      go.set_defaults (mode);
-
-      h = gh_manager::lookup (val);
-      if (! h.ok ())
-        error ("__go_axes_init__: axis deleted during initialization (= %g)",
-               val);
-    }
-  else
+  if (! h.ok ())
     error ("__go_axes_init__: invalid graphics object (= %g)", val);
 
-  return retval;
+  graphics_object go = gh_manager::get_object (h);
+
+  go.set_defaults (mode);
+
+  h = gh_manager::lookup (val);
+  if (! h.ok ())
+    error ("__go_axes_init__: axis deleted during initialization (= %g)", val);
+
+  return octave_value_list ();
 }
 
 DEFUN (__go_handles__, args, ,
@@ -10625,8 +10567,6 @@ DEFUN (__go_execute_callback__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
@@ -10636,19 +10576,17 @@ Undocumented internal function.\n\
 
   graphics_handle h = gh_manager::lookup (val);
 
-  if (h.ok ())
-    {
-      std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
-
-      if (nargin == 2)
-        gh_manager::execute_callback (h, name);
-      else
-        gh_manager::execute_callback (h, name, args(2));
-    }
-  else
+  if (! h.ok ())
     error ("__go_execute_callback__: invalid graphics object (= %g)", val);
 
-  return retval;
+  std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
+
+  if (nargin == 2)
+    gh_manager::execute_callback (h, name);
+  else
+    gh_manager::execute_callback (h, name, args(2));
+
+  return octave_value_list ();
 }
 
 DEFUN (__image_pixel_size__, args, ,
@@ -10657,28 +10595,22 @@ DEFUN (__image_pixel_size__, args, ,
 Internal function: returns the pixel size of the image in normalized units.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
   double h = args(0).xdouble_value ("__image_pixel_size__: argument is not a handle");
 
   graphics_object go = gh_manager::get_object (h);
-  if (go && go.isa ("image"))
-    {
-      image::properties& ip =
-        dynamic_cast<image::properties&> (go.get_properties ());
-
-      Matrix dp = Matrix (1, 2);
-      dp(0) = ip.pixel_xsize ();
-      dp(1) = ip.pixel_ysize ();
-      retval = dp;
-    }
-  else
+  if (! go || ! go.isa ("image"))
     error ("__image_pixel_size__: object is not an image");
 
-  return retval;
+  image::properties& ip =
+    dynamic_cast<image::properties&> (go.get_properties ());
+
+  Matrix dp = Matrix (1, 2);
+  dp(0) = ip.pixel_xsize ();
+  dp(1) = ip.pixel_ysize ();
+  return ovl (dp);
 }
 
 gtk_manager *gtk_manager::instance = 0;
@@ -10790,8 +10722,6 @@ List @var{toolkit} as an available graphics toolkit.\n\
 @seealso{available_graphics_toolkits}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   gh_manager::auto_lock guard;
 
   if (args.length () != 1)
@@ -10801,7 +10731,7 @@ List @var{toolkit} as an available graphics toolkit.\n\
 
   gtk_manager::register_toolkit (name);
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (loaded_graphics_toolkits, , ,
@@ -10834,8 +10764,6 @@ undocumented.\n\
 @end deftypefn")
 {
   static int drawnow_executing = 0;
-
-  octave_value retval;
 
   if (args.length () > 4)
     print_usage ();
@@ -10893,7 +10821,7 @@ undocumented.\n\
 
                   gh_manager::unlock ();
 
-                  return retval;
+                  return octave_value_list ();
                 }
             }
 
@@ -10925,7 +10853,7 @@ undocumented.\n\
 
               gh_manager::unlock ();
 
-              return retval;
+              return octave_value_list ();
             }
           else if (pos_c == std::string::npos)
             {
@@ -10933,7 +10861,7 @@ undocumented.\n\
 
               gh_manager::unlock ();
 
-              return retval;
+              return octave_value_list ();
             }
           else if (pos_p != std::string::npos && pos_p < pos_c)
             {
@@ -10957,7 +10885,7 @@ undocumented.\n\
 
                       gh_manager::unlock ();
 
-                      return retval;
+                      return octave_value_list ();
                     }
                 }
             }
@@ -10994,7 +10922,7 @@ undocumented.\n\
 
   gh_manager::unlock ();
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (addlistener, args, ,
@@ -11034,9 +10962,9 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
+  int nargin = args.length ();
 
-  if (args.length () < 3 || args.length () > 4)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
 
   double h = args(0).xdouble_value ("addlistener: invalid handle H");
@@ -11045,23 +10973,21 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
   graphics_handle gh = gh_manager::lookup (h);
 
-  if (gh.ok ())
-    {
-      graphics_object go = gh_manager::get_object (gh);
-
-      go.add_property_listener (pname, args(2), POSTSET);
-
-      if (args.length () == 4)
-        {
-          caseless_str persistent = args(3).string_value ();
-          if (persistent.compare ("persistent"))
-            go.add_property_listener (pname, args(2), PERSISTENT);
-        }
-    }
-  else
+  if (! gh.ok ())
     error ("addlistener: invalid graphics object (= %g)", h);
 
-  return retval;
+  graphics_object go = gh_manager::get_object (gh);
+
+  go.add_property_listener (pname, args(2), POSTSET);
+
+  if (args.length () == 4)
+    {
+      caseless_str persistent = args(3).string_value ();
+      if (persistent.compare ("persistent"))
+        go.add_property_listener (pname, args(2), PERSISTENT);
+    }
+
+  return octave_value_list ();
 }
 
 DEFUN (dellistener, args, ,
@@ -11094,8 +11020,6 @@ dellistener (gcf, \"position\", c);\n\
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
-
   if (args.length () < 2 || args.length () > 3)
     print_usage ();
 
@@ -11105,30 +11029,28 @@ dellistener (gcf, \"position\", c);\n\
 
   graphics_handle gh = gh_manager::lookup (h);
 
-  if (gh.ok ())
-    {
-      graphics_object go = gh_manager::get_object (gh);
-
-      if (args.length () == 2)
-        go.delete_property_listener (pname, octave_value (), POSTSET);
-      else
-        {
-          if (args(2).is_string ()
-              && args(2).string_value () == "persistent")
-            {
-              go.delete_property_listener (pname, octave_value (),
-                                           PERSISTENT);
-              go.delete_property_listener (pname, octave_value (),
-                                           POSTSET);
-            }
-          else
-            go.delete_property_listener (pname, args(2), POSTSET);
-        }
-    }
-  else
+  if (! gh.ok ())
     error ("dellistener: invalid graphics object (= %g)", h);
 
-  return retval;
+  graphics_object go = gh_manager::get_object (gh);
+
+  if (args.length () == 2)
+    go.delete_property_listener (pname, octave_value (), POSTSET);
+  else
+    {
+      if (args(2).is_string ()
+          && args(2).string_value () == "persistent")
+        {
+          go.delete_property_listener (pname, octave_value (),
+                                       PERSISTENT);
+          go.delete_property_listener (pname, octave_value (),
+                                       POSTSET);
+        }
+      else
+        go.delete_property_listener (pname, args(2), POSTSET);
+    }
+
+  return octave_value_list ();
 }
 
 DEFUN (addproperty, args, ,
@@ -11216,27 +11138,22 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 
   graphics_handle gh = gh_manager::lookup (h);
 
-  if (gh.ok ())
-    {
-      graphics_object go = gh_manager::get_object (gh);
-
-      std::string type = args(2).xstring_value ("addproperty: TYPE must be a string");
-
-      if (! go.get_properties ().has_property (name))
-        {
-          property p = property::create (name, gh, type,
-                                         args.splice (0, 3));
-
-          go.get_properties ().insert_property (name, p);
-        }
-      else
-        error ("addproperty: a '%s' property already exists in the graphics object",
-               name.c_str ());
-    }
-  else
+  if (! gh.ok ())
     error ("addproperty: invalid graphics object (= %g)", h);
 
-  return retval;
+  graphics_object go = gh_manager::get_object (gh);
+
+  std::string type = args(2).xstring_value ("addproperty: TYPE must be a string");
+
+  if (go.get_properties ().has_property (name))
+    error ("addproperty: a '%s' property already exists in the graphics object",
+           name.c_str ());
+
+  property p = property::create (name, gh, type, args.splice (0, 3));
+
+  go.get_properties ().insert_property (name, p);
+
+  return octave_value_list ();
 }
 
 octave_value
@@ -11245,15 +11162,12 @@ get_property_from_handle (double handle, const std::string& property,
 {
   gh_manager::auto_lock guard;
 
-  octave_value retval;
   graphics_object go = gh_manager::get_object (handle);
 
-  if (go)
-    retval = go.get (caseless_str (property));
-  else
+  if (! go)
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
-  return retval;
+  return ovl (go.get (caseless_str (property)));
 }
 
 bool
@@ -11450,7 +11364,10 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
     {
       pname = args(1).xstring_value ("waitfor: PROP must be a string");
 
-      if (! pname.empty () && ! pname.compare ("timeout"))
+      if (pname.empty ())
+        error ("waitfor: PROP must be a non-empty string");
+
+      if (pname != "timeout")
         {
           if (pname.compare ("\\timeout"))
             pname = "timeout";
@@ -11503,21 +11420,16 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
               graphics_object go = gh_manager::get_object (gh);
 
               if (max_arg_index >= 2
-                  && compare_property_values (go.get (pname),
-                                              args(2)))
+                  && compare_property_values (go.get (pname), args(2)))
                 waitfor_results[id] = true;
               else
                 {
 
-                  frame.add_fcn (cleanup_waitfor_postset_listener,
-                                 ov_listener);
-                  go.add_property_listener (pname, ov_listener,
-                                            POSTSET);
-                  go.add_property_listener (pname, ov_listener,
-                                            PERSISTENT);
+                  frame.add_fcn (cleanup_waitfor_postset_listener, ov_listener);
+                  go.add_property_listener (pname, ov_listener, POSTSET);
+                  go.add_property_listener (pname, ov_listener, PERSISTENT);
 
-                  if (go.get_properties ()
-                      .has_dynamic_property (pname))
+                  if (go.get_properties ().has_dynamic_property (pname))
                     {
                       static octave_value wf_del_listener;
 
@@ -11544,8 +11456,6 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                 }
             }
         }
-      else if (pname.empty ())
-        error ("waitfor: PROP must be a non-empty string");
     }
 
   if (timeout_index < 0 && args.length () > (max_arg_index + 1))
@@ -11625,7 +11535,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
         }
     }
 
-  return octave_value ();
+  return octave_value_list ();
 }
 
 DEFUN (__zoom__, args, ,
@@ -11636,8 +11546,6 @@ DEFUN (__zoom__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin != 2 && nargin != 3)
@@ -11681,6 +11589,6 @@ Undocumented internal function.\n\
       Vdrawnow_requested = true;
     }
 
-  return retval;
+  return octave_value_list ();
 }
 

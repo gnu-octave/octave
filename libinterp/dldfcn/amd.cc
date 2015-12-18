@@ -182,6 +182,7 @@ The author of the code itself is Timothy A. Davis\n\
 
 #endif
 }
+
 /*
 %!shared A, A2, opts
 %! A = ones (20, 30);

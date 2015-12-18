@@ -205,8 +205,6 @@ DEFUN (__version_info__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   static octave_map vinfo;
 
   int nargin = args.length ();
@@ -214,14 +212,18 @@ Undocumented internal function.\n\
   if (nargin != 0 && nargin != 4)
     print_usage ();
 
-  if (nargin == 4)
+  octave_value retval;
+
+  if (nargin == 0)
+    retval = vinfo;
+  else if (nargin == 4)
     {
       if (vinfo.nfields () == 0)
         {
-          vinfo.assign ("Name", args (0));
-          vinfo.assign ("Version", args (1));
-          vinfo.assign ("Release", args (2));
-          vinfo.assign ("Date", args (3));
+          vinfo.assign ("Name", args(0));
+          vinfo.assign ("Version", args(1));
+          vinfo.assign ("Release", args(2));
+          vinfo.assign ("Date", args(3));
         }
       else
         {
@@ -231,14 +233,12 @@ Undocumented internal function.\n\
 
           octave_value idx (n);
 
-          vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
-          vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
-          vinfo.assign (idx, "Release", Cell (octave_value (args (2))));
-          vinfo.assign (idx, "Date", Cell (octave_value (args (3))));
+          vinfo.assign (idx, "Name", Cell (octave_value (args(0))));
+          vinfo.assign (idx, "Version", Cell (octave_value (args(1))));
+          vinfo.assign (idx, "Release", Cell (octave_value (args(2))));
+          vinfo.assign (idx, "Date", Cell (octave_value (args(3))));
         }
     }
-  else if (nargin == 0)
-    retval = vinfo;
 
   return retval;
 }
@@ -1015,14 +1015,10 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 @seealso{have_window_system}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 0)
     print_usage ();
 
-  retval = start_gui;
-
-  return retval;
+  return ovl (start_gui);
 }
 
 /*
@@ -1050,14 +1046,10 @@ of arguments passed to the script.  @xref{Executable Octave Programs}, for\n\
 an example of how to create an executable Octave script.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 0)
     print_usage ();
 
-  retval = Cell (octave_argv);
-
-  return retval;
+  return ovl (Cell (octave_argv));
 }
 
 /*
@@ -1077,14 +1069,10 @@ how to create an executable Octave script.\n\
 @seealso{program_name}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 0)
     print_usage ();
 
-  retval = octave_program_invocation_name;
-
-  return retval;
+  return ovl (octave_program_invocation_name);
 }
 
 /*
@@ -1100,14 +1088,10 @@ Return the last component of the value returned by\n\
 @seealso{program_invocation_name}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 0)
     print_usage ();
 
-  retval = octave_program_name;
-
-  return retval;
+  return ovl (octave_program_name);
 }
 
 /*

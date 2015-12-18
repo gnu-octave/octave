@@ -189,7 +189,7 @@ For similar functionality @xref{The unwind_protect Statement}.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (new octave_oncleanup (args(0)));
+  return ovl (new octave_oncleanup (args(0)));
 }
 
 /*

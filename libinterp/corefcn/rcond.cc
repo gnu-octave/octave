@@ -45,14 +45,15 @@ instead.\n\
 @seealso{cond, condest}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
+  octave_value retval;
+
   if (args(0).is_sparse_type ())
     error ("rcond: for sparse matrices use 'rcond (full (a))' or 'condest (a)' instead");
-  else if (args(0).is_single_type ())
+
+  if (args(0).is_single_type ())
     {
       if (args(0).is_complex_type ())
         {

@@ -60,10 +60,10 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 3)
     print_usage ();
+
+  octave_value retval;
 
   octave_value arg_a = args(0);
   octave_value arg_b = args(1);
@@ -88,9 +88,9 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 
   if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
     if (isfloat)
-      return octave_value (FloatMatrix ());
+      return ovl (FloatMatrix ());
     else
-      return octave_value (Matrix ());
+      return ovl (Matrix ());
   else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
     return retval;
 

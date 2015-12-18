@@ -1739,12 +1739,12 @@ is derived.\n\
 @seealso{typeinfo, isa}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     // Called for class of object
@@ -1752,44 +1752,37 @@ is derived.\n\
   else
     {
       // Called as class constructor
-      octave_function *fcn = octave_call_stack::caller ();
-
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      if (fcn)
-        {
-          if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
-            {
-              octave_map m = args(0).xmap_value ("class: S must be a valid structure");
+      octave_function *fcn = octave_call_stack::caller ();
 
-              if (nargin == 2)
-                retval
-                  = octave_value (new octave_class
-                                  (m, id, std::list<std::string> ()));
-              else
-                {
-                  octave_value_list parents = args.slice (2, nargin-2);
-
-                  retval
-                    = octave_value (new octave_class (m, id, parents));
-                }
-
-              octave_class::exemplar_const_iterator it
-                = octave_class::exemplar_map.find (id);
-
-              if (it == octave_class::exemplar_map.end ())
-                octave_class::exemplar_map[id]
-                  = octave_class::exemplar_info (retval);
-              else if (! it->second.compare (retval))
-                error ("class: object of class '%s' does not match previously constructed objects",
-                       id.c_str ());
-            }
-          else
-            error ("class: '%s' is invalid as a class name in this context",
-                   id.c_str ());
-        }
-      else
+      if (! fcn)
         error ("class: invalid call from outside class constructor or method");
+
+      if (! fcn->is_class_constructor (id) && ! fcn->is_class_method (id))
+        error ("class: '%s' is invalid as a class name in this context",
+               id.c_str ());
+
+      octave_map m = args(0).xmap_value ("class: S must be a valid structure");
+
+      if (nargin == 2)
+        retval
+          = octave_value (new octave_class (m, id, std::list<std::string> ()));
+      else
+        {
+          octave_value_list parents = args.slice (2, nargin-2);
+
+          retval = octave_value (new octave_class (m, id, parents));
+        }
+
+      octave_class::exemplar_const_iterator it
+        = octave_class::exemplar_map.find (id);
+
+      if (it == octave_class::exemplar_map.end ())
+        octave_class::exemplar_map[id] = octave_class::exemplar_info (retval);
+      else if (! it->second.compare (retval))
+        error ("class: object of class '%s' does not match previously constructed objects",
+               id.c_str ());
     }
 
   return retval;
@@ -1833,8 +1826,6 @@ belongs to.\n\
 @seealso{class, typeinfo}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -1843,6 +1834,7 @@ belongs to.\n\
   Array<std::string> clsnames = args(1).xcellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
 
   boolNDArray matches (clsnames.dims (), false);
+
   for (octave_idx_type idx = 0; idx < clsnames.numel (); idx++)
     {
       std::string cls = clsnames(idx);
@@ -1853,7 +1845,8 @@ belongs to.\n\
           || obj.is_instance_of (cls))
         matches(idx) = true;
     }
-  return octave_value (matches);
+
+  return ovl (matches);
 }
 
 /*
@@ -1922,17 +1915,15 @@ DEFUN (__parent_classes__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval = Cell ();
-
   if (args.length () != 1)
     print_usage ();
 
   octave_value arg = args(0);
 
   if (arg.is_object ())
-    retval = Cell (arg.parent_class_names ());
-
-  return retval;
+    return ovl (Cell (arg.parent_class_names ()));
+  else
+    return ovl (Cell ());
 }
 
 DEFUN (isobject, args, ,
@@ -1945,7 +1936,7 @@ Return true if @var{x} is a class object.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_object ());
+  return ovl (args(0).is_object ());
 }
 
 DEFUN (ismethod, args, ,
@@ -1957,8 +1948,6 @@ Return true if the string @var{method} is a valid method of the object\n\
 @seealso{isprop, isobject}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -1976,11 +1965,9 @@ Return true if the string @var{method} is a valid method of the object\n\
   std::string method = args(1).string_value ();
 
   if (load_path::find_method (class_name, method) != std::string ())
-    retval = true;
+    return ovl (true);
   else
-    retval = false;
-
-  return retval;
+    return ovl (false);
 }
 
 DEFUN (__methods__, args, ,
@@ -1993,8 +1980,6 @@ Implements @code{methods} for Octave class objects and classnames.\n\
 @seealso{methods}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   // Input validation has already been done in methods.m.
   octave_value arg = args(0);
 
@@ -2006,9 +1991,8 @@ Implements @code{methods} for Octave class objects and classnames.\n\
     class_name = arg.string_value ();
 
   string_vector sv = load_path::methods (class_name);
-  retval = Cell (sv);
 
-  return retval;
+  return ovl (Cell (sv));
 }
 
 static bool
@@ -2050,7 +2034,7 @@ This function may only be called from a class constructor.\n\
 @end deftypefn")
 {
   octave_function *fcn = octave_call_stack::caller ();
-  if ((! fcn) || (! fcn->is_class_constructor ()))
+  if (! fcn || ! fcn->is_class_constructor ())
     error ("superiorto: invalid call from outside class constructor");
 
   for (int i = 0; i < args.length (); i++)
@@ -2083,7 +2067,7 @@ This function may only be called from a class constructor.\n\
 @end deftypefn")
 {
   octave_function *fcn = octave_call_stack::caller ();
-  if ((! fcn) || (! fcn->is_class_constructor ()))
+  if (! fcn || ! fcn->is_class_constructor ())
     error ("inferiorto: invalid call from outside class constructor");
 
   for (int i = 0; i < args.length (); i++)

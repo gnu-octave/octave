@@ -70,12 +70,10 @@ convex hull, @var{idx} is NaN.\n\
 @seealso{delaunay, delaunayn}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  const double eps = 1.0e-12;
-
   if (args.length () != 5)
     print_usage ();
+
+  const double eps = 1.0e-12;
 
   const ColumnVector x (args(0).vector_value ());
   const ColumnVector y (args(1).vector_value ());
@@ -158,9 +156,7 @@ convex hull, @var{idx} is NaN.\n\
 
     } //endfor # kp
 
-  retval(0) = values;
-
-  return retval;
+  return ovl (values);
 }
 
 /*

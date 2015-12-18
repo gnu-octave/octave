@@ -88,15 +88,16 @@ Undocumented internal function.\n\
 @end deftypefn")
 
 {
-  octave_value_list retval;
-
 #if defined (HAVE_QHULL)
 
-  retval(0) = 0.0;
-
   int nargin = args.length ();
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_value_list retval;
+
+  retval(0) = 0.0;
 
   Matrix p (args(0).matrix_value ());
   const octave_idx_type dim = p.columns ();
@@ -151,56 +152,54 @@ Undocumented internal function.\n\
 #endif
       FILE *errfile = stderr;
 
-      if (outfile)
-        frame.add_fcn (close_fcn, outfile);
-      else
+      if (! outfile)
         error ("__delaunayn__: unable to create temporary file for output");
+
+      frame.add_fcn (close_fcn, outfile);
 
       int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);
+      if (exitcode)
+        error ("__delaunayn__: qhull failed");
+
+      // triangulate non-simplicial facets
+      qh_triangulate ();
+
+      facetT *facet;
+      vertexT *vertex, **vertexp;
+      octave_idx_type nf = 0;
+      octave_idx_type i = 0;
+
+      FORALLfacets
+        {
+          if (! facet->upperdelaunay)
+            nf++;
+
+          // Double check.  Non-simplicial facets will cause segfault below
+          if (! facet->simplicial)
+            error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
+        }
+
       if (! exitcode)
         {
-          // triangulate non-simplicial facets
-          qh_triangulate ();
-
-          facetT *facet;
-          vertexT *vertex, **vertexp;
-          octave_idx_type nf = 0;
-          octave_idx_type i = 0;
+          Matrix simpl (nf, dim+1);
 
           FORALLfacets
             {
               if (! facet->upperdelaunay)
-                nf++;
-
-              // Double check.  Non-simplicial facets will cause segfault below
-              if (! facet->simplicial)
-                error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
-            }
-
-          if (! exitcode)
-            {
-              Matrix simpl (nf, dim+1);
-
-              FORALLfacets
                 {
-                  if (! facet->upperdelaunay)
+                  octave_idx_type j = 0;
+
+                  FOREACHvertex_ (facet->vertices)
                     {
-                      octave_idx_type j = 0;
-
-                      FOREACHvertex_ (facet->vertices)
-                        {
-                          simpl(i, j++) = 1 + qh_pointid(vertex->point);
-                        }
-                      i++;
+                      simpl(i, j++) = 1 + qh_pointid(vertex->point);
                     }
+                  i++;
                 }
-
-              retval(0) = simpl;
             }
+
+          retval(0) = simpl;
         }
-      else
-        error ("__delaunayn__: qhull failed");
 
       // Free memory from Qhull
       qh_freeqhull (! qh_ALL);
@@ -223,13 +222,13 @@ Undocumented internal function.\n\
       retval(0) = vec;
     }
 
+  return retval;
+
 #else
 
   error ("__delaunayn__: not available in this version of Octave");
 
 #endif
-
-  return retval;
 }
 
 /*

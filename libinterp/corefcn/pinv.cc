@@ -54,8 +54,6 @@ tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\
 where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -66,9 +64,11 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
   int arg_is_empty = empty_arg ("pinv", arg.rows (), arg.columns ());
 
   if (arg_is_empty < 0)
-    return retval;
+    return octave_value_list ();
   else if (arg_is_empty > 0)
     return octave_value (Matrix ());
+
+  octave_value retval;
 
   bool isfloat = arg.is_single_type ();
 

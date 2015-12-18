@@ -472,12 +472,12 @@ gcd ([15, 9], [20, 18])\n\
 @seealso{lcm, factor, isprime}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ();
+
+  octave_value_list retval;
 
   if (nargout > 1)
     {
@@ -488,8 +488,7 @@ gcd ([15, 9], [20, 18])\n\
       for (int j = 2; j < nargin; j++)
         {
           octave_value x;
-          retval(0) = do_extended_gcd (retval(0), args(j),
-                                       x, retval(j+1));
+          retval(0) = do_extended_gcd (retval(0), args(j), x, retval(j+1));
           for (int i = 0; i < j; i++)
             retval(i+1).assign (octave_value::op_el_mul_eq, x);
         }

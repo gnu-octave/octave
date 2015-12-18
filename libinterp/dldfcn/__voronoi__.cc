@@ -82,24 +82,22 @@ DEFUN_DLD (__voronoi__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+#if defined (HAVE_QHULL)
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
 
   std::string caller = args(0).xstring_value ("__voronoi__: CALLER must be a string");
 
-#if defined (HAVE_QHULL)
-
-  retval(0) = 0.0;
-
-  int nargin = args.length ();
-  if (nargin < 2 || nargin > 3)
-    print_usage ();
+  octave_value_list retval;
 
   Matrix points = args(1).matrix_value ();
   const octave_idx_type dim = points.columns ();
   const octave_idx_type num_points = points.rows ();
 
   if (! octave_qhull_dims_ok (dim, num_points, "__voronoi__"))
-    return retval;
+    return ovl (0.0);
 
   points = points.transpose ();
 
@@ -144,10 +142,10 @@ Undocumented internal function.\n\
 #endif
   FILE *errfile = stderr;
 
-  if (outfile)
-    frame.add_fcn (close_fcn, outfile);
-  else
+  if (! outfile)
     error ("__voronoi__: unable to create temporary file for output");
+
+  frame.add_fcn (close_fcn, outfile);
 
   // qh_new_qhull command and points arguments are not const...
 
@@ -326,11 +324,11 @@ Undocumented internal function.\n\
     warning ("%s: qhull did not free %d bytes of long memory (%d pieces)",
              caller.c_str (), totlong, curlong);
 
+  return retval;
+
 #else
   error ("%s: not available in this version of Octave", caller.c_str ());
 #endif
-
-  return retval;
 }
 
 /*

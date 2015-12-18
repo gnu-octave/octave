@@ -124,8 +124,6 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2 || nargout == 2 || nargout > 3)
@@ -133,17 +131,19 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
   octave_value arg = args(0);
 
-  octave_idx_type nr = arg.rows ();
-  octave_idx_type nc = arg.columns ();
-
   if (arg.ndims () != 2)
     error ("svd: A must be a 2-D matrix");
+
+  octave_value_list retval;
 
   bool isfloat = arg.is_single_type ();
 
   SVD::type type = ((nargout == 0 || nargout == 1)
                     ? SVD::sigma_only
                     : (nargin == 2) ? SVD::economy : SVD::std);
+
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   SVD::driver driver = static_cast<SVD::driver> (Vsvd_driver);
 

@@ -107,8 +107,6 @@ is in the upper left corner, by doing:\n\
 @seealso{schur}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 3)
     print_usage ();
 
@@ -118,10 +116,13 @@ is in the upper left corner, by doing:\n\
 
   const dim_vector dimU = args(0).dims ();
   const dim_vector dimS = args(1).dims ();
+
   if (n != dimU(0))
     error ("ordschur: SELECT must have same length as the sides of U and S");
   else if (n != dimU(0) || n != dimS(0) || n != dimU(1) || n != dimS(1))
     error ("ordschur: U and S must be square and of equal sizes");
+
+  octave_value_list retval;
 
   const bool double_type  = args(0).is_double_type ()
                             || args(1).is_double_type ();
@@ -154,6 +155,7 @@ is in the upper left corner, by doing:\n\
                      sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
                      w.fortran_vec (), m, cond1, cond2, work.fortran_vec (), n,
                      info));
+
           PREPARE_OUTPUT()
         }
       else
@@ -167,6 +169,7 @@ is in the upper left corner, by doing:\n\
                      sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
                      w.fortran_vec (), wi.fortran_vec (), m, cond1, cond2,
                      work.fortran_vec (), n, iwork.fortran_vec (), n, info));
+
           PREPARE_OUTPUT ()
         }
     }
@@ -181,6 +184,7 @@ is in the upper left corner, by doing:\n\
                      sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
                      w.fortran_vec (), m, cond1, cond2, work.fortran_vec (), n,
                      info));
+
           PREPARE_OUTPUT ()
         }
       else
@@ -194,6 +198,7 @@ is in the upper left corner, by doing:\n\
                      sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
                      w.fortran_vec (), wi.fortran_vec (), m, cond1, cond2,
                      work.fortran_vec (), n, iwork.fortran_vec (), n, info));
+
           PREPARE_OUTPUT ()
         }
     }

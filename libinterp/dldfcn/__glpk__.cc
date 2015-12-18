@@ -335,16 +335,13 @@ DEFUN_DLD (__glpk__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
 #if defined (HAVE_GLPK)
 
   // FIXME: Should we even need checking for an internal function?
   if (args.length () != 9)
     print_usage ();
 
-  //-- 1nd Input. A column array containing the objective function
-  //--            coefficients.
+  // 1nd Input.  A column array containing the objective function coefficients.
   volatile int mrowsc = args(0).rows ();
 
   Matrix C = args(0).xmatrix_value ("__glpk__: invalid value of C");
@@ -356,7 +353,7 @@ Undocumented internal function.\n\
   volatile int mrowsA;
   volatile int nz = 0;
 
-  //-- 2nd Input. A matrix containing the constraints coefficients.
+  // 2nd Input.  A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
   if (args(1).is_sparse_type ())
     {
@@ -629,15 +626,13 @@ Undocumented internal function.\n\
   extra.assign ("time", time);
   extra.assign ("status", status);
 
-  retval = ovl (xmin, fmin, errnum, extra);
+  return ovl (xmin, fmin, errnum, extra);
 
 #else
 
   gripe_not_supported ("glpk");
 
 #endif
-
-  return retval;
 }
 
 /*

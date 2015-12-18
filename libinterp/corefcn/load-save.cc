@@ -1582,19 +1582,11 @@ the file @file{data} in Octave's binary format.\n\
 @seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  string_vector argv = args.make_argv ();
-
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
-
-  bool save_as_floats = false;
-
   load_save_format format = LS_TEXT;
-
+  bool save_as_floats = false;
   bool append = false;
-
   bool use_zlib = false;
 
   // get default options
@@ -1602,8 +1594,11 @@ the file @file{data} in Octave's binary format.\n\
                       use_zlib);
 
   // override from command line
+  string_vector argv = args.make_argv ();
+
   argv = parse_save_options (argv, format, append, save_as_floats,
                              use_zlib);
+
   int argc = argv.numel ();
   int i = 0;
 
@@ -1612,6 +1607,8 @@ the file @file{data} in Octave's binary format.\n\
 
   if (save_as_floats && format == LS_TEXT)
     error ("save: cannot specify both -text and -float-binary");
+
+  octave_value_list retval;
 
   if (argv[i] == "-")
     {

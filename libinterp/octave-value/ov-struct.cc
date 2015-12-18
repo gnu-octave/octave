@@ -1845,7 +1845,7 @@ Return true if @var{x} is a structure or a structure array.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_map ());
+  return ovl (args(0).is_map ());
 }
 
 DEFUN (__fieldnames__, args, ,
@@ -1887,12 +1887,10 @@ dimension is returned.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
-  retval = false;
+  octave_value retval = false;
 
   if (args(0).is_map ())
     {
@@ -1900,7 +1898,6 @@ dimension is returned.\n\
 
       // FIXME: should this work for all types that can do
       // structure reference operations?
-
       if (args(1).is_string ())
         {
           std::string key = args(1).string_value ();
@@ -1939,17 +1936,13 @@ Return the number of fields of the structure @var{s}.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
-  if (args(0).is_map ())
-    retval = static_cast<double> (args(0).nfields ());
-  else
+  if (! args(0).is_map ())
     error ("numfields: argument must be a struct");
 
-  return retval;
+  return ovl (static_cast<double> (args(0).nfields ()));
 }
 
 /*
@@ -1992,8 +1985,6 @@ A(1)\n\
 @seealso{struct2cell, cell2mat, struct}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
@@ -2004,11 +1995,6 @@ A(1)\n\
 
   if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
     error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
-
-  const Cell vals = args(0).cell_value ();
-  const Array<std::string> fields = args(1).cellstr_value ();
-
-  octave_idx_type ext = 0;
 
   int dim = 0;
 
@@ -2023,7 +2009,10 @@ A(1)\n\
   if (dim < 0)
     error ("cell2struct: DIM must be a valid dimension");
 
-  ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
+  const Cell vals = args(0).cell_value ();
+  const Array<std::string> fields = args(1).cellstr_value ();
+
+  octave_idx_type ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
 
   if (ext != fields.numel ())
     error ("cell2struct: number of FIELDS does not match dimension");
@@ -2055,9 +2044,7 @@ A(1)\n\
       map.setfield (fields(i), vals.index (ia).reshape (rdv));
     }
 
-  retval = map;
-
-  return retval;
+  return ovl (map);
 }
 
 /*
@@ -2093,8 +2080,6 @@ the named fields.\n\
 @seealso{orderfields, fieldnames, isfield}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -2114,9 +2099,7 @@ the named fields.\n\
         error ("rmfield: structure does not contain field %s", key.c_str ());
     }
 
-  retval = m;
-
-  return retval;
+  return ovl (m);
 }
 
 /*

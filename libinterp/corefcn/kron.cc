@@ -264,12 +264,12 @@ kron (kron (@var{A1}, @var{A2}), @dots{}, @var{An})\n\
 Since the Kronecker product is associative, this is well-defined.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ();
+
+  octave_value retval;
 
   octave_value a = args(0);
   octave_value b = args(1);

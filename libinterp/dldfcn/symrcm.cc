@@ -437,10 +437,10 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 @seealso{colperm, colamd, symamd}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   octave_value arg = args(0);
 
@@ -475,7 +475,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
     }
 
   if (nr == 0 && nc == 0)
-    return octave_value (NDArray (dim_vector (1, 0)));
+    return ovl (NDArray (dim_vector (1, 0)));
 
   // sizes of the heaps
   octave_idx_type s = 0;
@@ -504,7 +504,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
     {
       for (octave_idx_type i = 0; i < N; i++)
         P(i) = i;
-      return octave_value (P);
+
+      return ovl (P);
     }
 
   // a heap for the a node's neighbors. The number of neighbors is
@@ -693,5 +694,5 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
     std::swap (P.elem (i), P.elem (j));
 
   // increment all indices, since Octave is not C
-  return octave_value (P+1);
+  return ovl (P+1);
 }

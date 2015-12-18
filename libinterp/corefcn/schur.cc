@@ -172,7 +172,7 @@ in control (see @code{are} and @code{dare}).\n\
       return octave_value_list ();
     }
 
-  octave_value_list retval (nargout > 1 ? 2 : 1);
+  octave_value_list retval;
 
   if (! arg.is_numeric_type ())
     gripe_wrong_type_arg ("schur", arg);

@@ -78,14 +78,12 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 @seealso{gamma, gammaln}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  bool lower = true;
-
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
+  bool lower = true;
   if (nargin == 3)
     {
       std::string s = args(2).xstring_value ("gammainc: third argument must be \"lower\" or \"upper\"");
@@ -94,9 +92,13 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
       if (s == "upper")
         lower = false;
-      else if (s != "lower")
+      else if (s == "lower")
+        lower = true;
+      else
         error ("gammainc: third argument must be \"lower\" or \"upper\"");
     }
+
+  octave_value retval;
 
   octave_value x_arg = args(0);
   octave_value a_arg = args(1);

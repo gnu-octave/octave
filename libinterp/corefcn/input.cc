@@ -913,8 +913,6 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 @seealso{dbstop, dbcont, dbquit}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () > 1)
     print_usage ();
 
@@ -933,7 +931,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
   do_keyboard (args);
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (echo, args, ,
@@ -969,7 +967,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 {
   octave_value_list retval;
 
-  string_vector argv = args.make_argv ("echo");
+  string_vector argv = args.make_argv ("");
 
   switch (args.length ())
     {
@@ -985,7 +983,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 
     case 1:
       {
-        std::string arg = argv[1];
+        std::string arg = argv[0];
 
         if (arg == "on")
           Vecho_executing_commands = ECHO_SCRIPTS;
@@ -998,14 +996,14 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 
     case 2:
       {
-        std::string arg = argv[1];
+        std::string arg = argv[0];
 
-        if (arg == "on" && argv[2] == "all")
+        if (arg == "on" && argv[1] == "all")
           {
             int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
             Vecho_executing_commands = tmp;
           }
-        else if (arg == "off" && argv[2] == "all")
+        else if (arg == "off" && argv[1] == "all")
           Vecho_executing_commands = ECHO_OFF;
         else
           print_usage ();
@@ -1017,7 +1015,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
       break;
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 /*
@@ -1047,7 +1045,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 %!   echo_executing_commands (state);
 %! end_unwind_protect
 
-%!#test  # FIXME: Uncommend when ug #45209 is fixed
+%!#test  # FIXME: This passes, but produces a lot of onscreen output
 %! state = echo_executing_commands ();
 %! unwind_protect
 %!   echo ("on", "all");
@@ -1087,10 +1085,10 @@ command number is not incremented when this function is called.  This is\n\
 a feature, not a bug.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   std::string hint = args(0).string_value ();
 
@@ -1173,8 +1171,6 @@ for details.\n\
 @seealso{readline_re_read_init_file}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -1189,7 +1185,7 @@ for details.\n\
       command_editor::read_init_file (file);
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (readline_re_read_init_file, args, ,
@@ -1202,14 +1198,12 @@ for details.\n\
 @seealso{readline_read_init_file}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
   command_editor::re_read_init_file ();
 
-  return retval;
+  return octave_value_list ();
 }
 
 static int
@@ -1273,8 +1267,6 @@ for input.\n\
 @seealso{add_input_event_hook}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -1296,7 +1288,7 @@ for input.\n\
   if (input_event_hook_functions.empty ())
     command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (PS1, args, nargout,
@@ -1442,8 +1434,6 @@ DEFUN (__request_drawnow__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -1454,7 +1444,7 @@ Undocumented internal function.\n\
   else
     Vdrawnow_requested = args(0).bool_value ();
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (__gud_mode__, args, ,
@@ -1463,19 +1453,19 @@ DEFUN (__gud_mode__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
 
+  octave_value_list retval;
+
   if (nargin == 0)
-    retval = Vgud_mode;
+    retval = ovl (Vgud_mode);
   else
     Vgud_mode = args(0).bool_value ();
 
-  return retval;
+  return retval; 
 }
 
 DEFUN (filemarker, args, nargout,

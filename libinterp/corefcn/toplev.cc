@@ -1022,19 +1022,12 @@ command shell that is started to run the command.\n\
 @seealso{unix, dos}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  unwind_protect frame;
-
   int nargin = args.length ();
 
   if (nargin == 0 || nargin > 3)
     print_usage ();
 
-  bool return_output = (nargin == 1 && nargout > 1);
-
   system_exec_type type = et_sync;
-
   if (nargin == 3)
     {
       std::string type_str = args(2).xstring_value ("system: TYPE must be a string");
@@ -1046,6 +1039,13 @@ command shell that is started to run the command.\n\
       else
         error ("system: TYPE must be \"sync\" or \"async\"");
     }
+
+  octave_value_list retval;
+
+  // FIXME: Is this unwind_protect frame needed anymore (12/16/15)?
+  unwind_protect frame;
+
+  bool return_output = (nargin == 1 && nargout > 1);
 
   if (nargin > 1)
     {
@@ -1208,8 +1208,6 @@ from the list, so if a function was placed in the list multiple times with\n\
 @seealso{quit}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -1221,6 +1219,8 @@ from the list, so if a function was placed in the list multiple times with\n\
     ? args(1).xbool_value ("atexit: FLAG argument must be a logical value")
     : true;
 
+  octave_value_list retval;
+
   if (add_mode)
     octave_add_atexit_function (arg);
   else
@@ -1228,7 +1228,7 @@ from the list, so if a function was placed in the list multiple times with\n\
       bool found = octave_remove_atexit_function (arg);
 
       if (nargout > 0)
-        retval(0) = found;
+        retval = ovl (found);
     }
 
   return retval;
@@ -1247,8 +1247,6 @@ specified option.\n\
 @seealso{computer}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
 #if defined (ENABLE_DYNAMIC_LINKING)
   bool octave_supports_dynamic_linking = true;
 #else
@@ -1512,24 +1510,24 @@ specified option.\n\
   if (nargin > 1)
     print_usage ();
 
+  octave_value_list retval;
+
   if (nargin == 1)
     {
       std::string arg = args(0).string_value ();
 
-      if (m.isfield (arg))
-        {
-          Cell c = m.contents (arg);
-
-          if (c.is_empty ())
-            error ("octave_config_info: no info for '%s'", arg.c_str ());
-          else
-            retval = c(0);
-        }
-      else
+      if (! m.isfield (arg))
         error ("octave_config_info: invalid parameter '%s'", arg.c_str ());
+
+      Cell c = m.contents (arg);
+
+      if (c.is_empty ())
+        error ("octave_config_info: no info for '%s'", arg.c_str ());
+
+      retval = ovl (c(0));
     }
   else
-    retval = m;
+    retval = ovl (m);
 
   return retval;
 }

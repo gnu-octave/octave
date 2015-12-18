@@ -1664,12 +1664,12 @@ If set to @qcode{\"none\"}, Octave will always check time stamps on files to\n\
 determine whether functions defined in function files need to recompiled.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargout > 0 || nargin == 0)
     {
@@ -1744,12 +1744,12 @@ Undocumented internal function.\n\
 @seealso{__current_scope__}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 0)
     {
@@ -1809,8 +1809,6 @@ DEFUN (__get_cmdline_fcn_txt__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -1820,6 +1818,8 @@ Undocumented internal function.\n\
 
   octave_user_function *f = ov.user_function_value ();
 
+  octave_value_list retval;
+
   if (f)
     {
       std::ostringstream buf;
@@ -1828,7 +1828,7 @@ Undocumented internal function.\n\
 
       f->accept (tpc);
 
-      retval = buf.str ();
+      retval = ovl (buf.str ());
     }
 
   return retval;
@@ -1840,8 +1840,6 @@ Undocumented internal function.\n\
 
 DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -1849,15 +1847,15 @@ DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 
   symbol_table::assign (name, args(1));
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
 

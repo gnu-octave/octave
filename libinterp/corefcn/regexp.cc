@@ -1150,14 +1150,10 @@ for details on the syntax of the search pattern.\n\
   if (args.length () < 2)
     print_usage ();
 
-  octave_value_list retval;
-
   if (args(0).is_cell () || args(1).is_cell ())
-    retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
+    return octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
   else
-    retval = octregexp (args, nargout, "regexpi", true);
-
-  return retval;
+    return octregexp (args, nargout, "regexpi", true);
 }
 
 /*
@@ -1439,8 +1435,8 @@ function.\n\
           ret(i) = new_args(0);
         }
 
-      retval = args(0).is_cell () ? octave_value (ret)
-                                  : octave_value (ret(0));
+      retval = args(0).is_cell () ? ovl (ret)
+                                  : ovl (ret(0));
     }
   else
     retval = octregexprep (args, "regexprep");

@@ -64,8 +64,6 @@ IEEE Transactions on Automatic Control, 1979).\n\
 @seealso{eig, chol, lu, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -77,15 +75,17 @@ IEEE Transactions on Automatic Control, 1979).\n\
   int arg_is_empty = empty_arg ("hess", nr, nc);
 
   if (arg_is_empty < 0)
-    return retval;
+    return octave_value_list ();
   else if (arg_is_empty > 0)
     return octave_value_list (2, Matrix ());
 
   if (nr != nc)
     {
       gripe_square_matrix_required ("hess");
-      return retval;
+      return octave_value_list ();
     }
+
+  octave_value_list retval;
 
   if (arg.is_single_type ())
     {

@@ -74,10 +74,10 @@ givens (1, 1)\n\
 @seealso{planerot}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
+
+  octave_value_list retval;
 
   if (args(0).is_single_type () || args(1).is_single_type ())
     {

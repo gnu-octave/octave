@@ -117,7 +117,7 @@ returned by @code{time} was 856163706.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (octave_time ());
+  return ovl (octave_time ());
 }
 
 /*
@@ -161,7 +161,7 @@ gmtime (time ())\n\
 
   double tmp = args(0).double_value ();
 
-  return octave_value (mk_tm_map (octave_gmtime (tmp)));
+  return ovl (mk_tm_map (octave_gmtime (tmp)));
 }
 
 /*
@@ -216,7 +216,7 @@ localtime (time ())\n\
 
   double tmp = args(0).double_value ();
 
-  return octave_value (mk_tm_map (octave_localtime (tmp)));
+  return ovl (mk_tm_map (octave_localtime (tmp)));
 }
 
 /*
@@ -262,7 +262,7 @@ mktime (localtime (time ()))\n\
 
   octave_base_tm tm = extract_tm (map, "mktime");
 
-  return octave_value (octave_time (tm));
+  return ovl (octave_time (tm));
 }
 
 /*
@@ -451,7 +451,7 @@ Year (1970-).\n\
 
   octave_base_tm tm = extract_tm (map, "strftime");
 
-  return octave_value (tm.strftime (fmt));
+  return ovl (tm.strftime (fmt));
 }
 
 /*

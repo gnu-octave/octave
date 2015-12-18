@@ -383,11 +383,9 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 @seealso{nonzeros}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
-  if (nargin > 3 || nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
 
   // Setup the default options.
@@ -414,10 +412,11 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         direction = 1;
       else if (s_arg == "last")
         direction = -1;
-
-      if (direction == 0)
+      else
         error ("find: DIRECTION must be \"first\" or \"last\"");
     }
+
+  octave_value_list retval;
 
   octave_value arg = args(0);
 
@@ -435,9 +434,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
           // matrix. Try to reuse the possibly cached index vector.
 
           // No need to catch index_exception, since arg is bool.
-          // Out-of-range errors have already set pos, and will be
-          // caught later.
-
+          // Out-of-range errors have already set pos, and will be caught later.
           retval(0) = arg.index_vector ().unmask ();
         }
       else

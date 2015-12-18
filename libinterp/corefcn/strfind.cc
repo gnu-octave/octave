@@ -192,29 +192,26 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 @seealso{findstr, strmatch, regexp, regexpi, find}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin != 4 && nargin != 2)
     print_usage ();
 
   bool overlaps = true;
-
   if (nargin == 4)
     {
-      if (args(2).is_string () && args(3).is_scalar_type ())
-        {
-          std::string opt = args(2).string_value ();
-
-          if (opt == "overlaps")
-            overlaps = args(3).bool_value ();
-          else
-            error ("strfind: unknown option: %s", opt.c_str ());
-        }
-      else
+      if (! args(2).is_string () || ! args(3).is_scalar_type ())
         error ("strfind: invalid optional arguments");
+
+      std::string opt = args(2).string_value ();
+
+      if (opt == "overlaps")
+        overlaps = args(3).bool_value ();
+      else
+        error ("strfind: unknown option: %s", opt.c_str ());
     }
+
+  octave_value retval;
 
   octave_value argstr = args(0);
   octave_value argpat = args(1);
@@ -243,18 +240,16 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
           for (octave_idx_type i = 0; i < ns; i++)
             {
               octave_value argse = argsc(i);
-              if (argse.is_string ())
-                {
-                  if (argpat.is_empty ())
-                    retc(i) = Matrix ();
-                  else
-                    retc(i) = octave_value (qs_search (needle,
-                                                       argse.char_array_value (),
-                                                       table, overlaps),
-                                            true, true);
-                }
-              else
+              if (! argse.is_string ())
                 error ("strfind: each element of CELLSTR must be a string");
+
+              if (argpat.is_empty ())
+                retc(i) = Matrix ();
+              else
+                retc(i) = octave_value (qs_search (needle,
+                                                   argse.char_array_value (),
+                                                   table, overlaps),
+                                        true, true);
             }
 
           retval = retc;
@@ -383,28 +378,26 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
 @seealso{regexprep, strfind, findstr}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  bool overlaps = true;
-
   int nargin = args.length ();
 
   if (nargin != 3 && nargin != 5)
     print_usage ();
 
+  bool overlaps = true;
+
   if (nargin == 5)
     {
-      if (args(3).is_string () && args(4).is_scalar_type ())
-        {
-          std::string opt = args(3).string_value ();
-          if (opt == "overlaps")
-            overlaps = args(4).bool_value ();
-          else
-            error ("strrep: unknown option: %s", opt.c_str ());
-        }
-      else
+      if (! args(3).is_string () || ! args(4).is_scalar_type ())
         error ("strrep: invalid optional arguments");
+
+      std::string opt = args(3).string_value ();
+      if (opt == "overlaps")
+        overlaps = args(4).bool_value ();
+      else
+        error ("strrep: unknown option: %s", opt.c_str ());
     }
+
+  octave_value retval;
 
   octave_value argstr = args(0);
   octave_value argpat = args(1);

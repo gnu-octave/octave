@@ -93,28 +93,26 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
   dv = dv.redim (nargin - 1);
   for (int j = 0; j < nargin - 1; j++)
     {
-      if (args(j+1).is_numeric_type ())
-        {
-          try
-            {
-              idxa(j) = args(j+1).index_vector ();
-
-              if (j > 0 && args(j+1).dims () != args(1).dims ())
-                error ("sub2ind: all subscripts must be of the same size");
-            }
-          catch (index_exception& e)
-            {
-              e.set_pos_if_unset (nargin-1, j+1);
-              e.set_var ();
-              std::string msg = e.message ();
-              error_with_id (e.err_id (), msg.c_str ());
-            }
-        }
-      else
+      if (! args(j+1).is_numeric_type ())
         error ("sub2ind: subscripts must be numeric");
+
+      try
+        {
+          idxa(j) = args(j+1).index_vector ();
+
+          if (j > 0 && args(j+1).dims () != args(1).dims ())
+            error ("sub2ind: all subscripts must be of the same size");
+        }
+      catch (index_exception& e)
+        {
+          e.set_pos_if_unset (nargin-1, j+1);
+          e.set_var ();
+          std::string msg = e.message ();
+          error_with_id (e.err_id (), msg.c_str ());
+        }
     }
 
-  return octave_value (sub2ind (dv, idxa));
+  return ovl (sub2ind (dv, idxa));
 }
 
 /*
@@ -181,10 +179,10 @@ moving from one column to next, filling up all rows in each column.\n\
 @seealso{sub2ind}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
+
+  octave_value_list retval;
 
   dim_vector dv = get_dim_vector (args(0), "ind2sub");
 

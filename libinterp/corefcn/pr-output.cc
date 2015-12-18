@@ -3426,61 +3426,54 @@ If the length of the smallest possible rational approximation exceeds\n\
 @seealso{format, rat}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
+
+  octave_value arg = args(0);
+
+  if (! arg.is_numeric_type ())
+    error ("rats: X must be numeric");
 
   unwind_protect frame;
 
   frame.protect_var (rat_string_len);
 
   rat_string_len = 9;
-
   if (nargin == 2)
     rat_string_len = args(1).nint_value ();
 
-  octave_value arg = args(0);
+  frame.protect_var (rat_format);
 
-  if (arg.is_numeric_type ())
+  rat_format = true;
+
+  std::ostringstream buf;
+  arg.print (buf);
+  std::string s = buf.str ();
+
+  std::list<std::string> lst;
+
+  size_t n = 0;
+  size_t s_len = s.length ();
+
+  while (n < s_len)
     {
-      frame.protect_var (rat_format);
+      size_t m = s.find ('\n',  n);
 
-      rat_format = true;
-
-      std::ostringstream buf;
-      arg.print (buf);
-      std::string s = buf.str ();
-
-      std::list<std::string> lst;
-
-      size_t n = 0;
-      size_t s_len = s.length ();
-
-      while (n < s_len)
+      if (m == std::string::npos)
         {
-          size_t m = s.find ('\n',  n);
-
-          if (m == std::string::npos)
-            {
-              lst.push_back (s.substr (n));
-              break;
-            }
-          else
-            {
-              lst.push_back (s.substr (n, m - n));
-              n = m + 1;
-            }
+          lst.push_back (s.substr (n));
+          break;
         }
-
-      retval = string_vector (lst);
+      else
+        {
+          lst.push_back (s.substr (n, m - n));
+          n = m + 1;
+        }
     }
-  else
-    error ("rats: X must be numeric");
 
-  return retval;
+  return ovl (string_vector (lst));
 }
 
 DEFUN (disp, args, nargout,
@@ -3507,10 +3500,10 @@ formatted output in a string.\n\
 @seealso{fdisp}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value_list retval;
 
   octave_value arg = args(0);
 
@@ -3547,8 +3540,6 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 @seealso{disp}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -3565,7 +3556,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
   else
     error ("fdisp: stream FID not open for writing");
 
-  return retval;
+  return octave_value_list ();
 }
 
 /*

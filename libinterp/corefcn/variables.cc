@@ -324,8 +324,6 @@ looks_like_struct (const std::string& text)
 static octave_value
 do_isglobal (const octave_value_list& args)
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -578,8 +576,6 @@ not on the search path you should use some combination of the functions\n\
 @seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -594,12 +590,10 @@ not on the search path you should use some combination of the functions\n\
       if (type == "class")
         warning ("exist: \"class\" type argument is not implemented");
 
-      retval = symbol_exist (name, type);
+      return ovl (symbol_exist (name, type));
     }
   else
-    retval = symbol_exist (name);
-
-  return retval;
+    return ovl (symbol_exist (name));
 }
 
 /*
@@ -729,10 +723,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
           retval = true;
         }
       else
-        {
-          error_with_cfn ("second argument must be \"local\"");
-          nargin = 0;
-        }
+        error_with_cfn ("second argument must be \"local\"");
     }
 
   return retval;
@@ -769,14 +760,15 @@ set_internal_variable (bool& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       bool bval = args(0).xbool_value ("%s: argument must be a logical value", nm);
 
       var = bval;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -798,6 +790,9 @@ set_internal_variable (char& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       std::string sval = args(0).xstring_value ("%s: argument must be a single character", nm);
@@ -817,8 +812,6 @@ set_internal_variable (char& var, const octave_value_list& args,
           break;
         }
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -841,6 +834,9 @@ set_internal_variable (int& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       int ival = args(0).xint_value ("%s: argument must be an integer value", nm);
@@ -853,8 +849,6 @@ set_internal_variable (int& var, const octave_value_list& args,
       else
         var = ival;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -877,6 +871,9 @@ set_internal_variable (double& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       double dval = args(0).xscalar_value ("%s: argument must be a scalar value", nm);
@@ -888,8 +885,6 @@ set_internal_variable (double& var, const octave_value_list& args,
       else
         var = dval;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -911,6 +906,9 @@ set_internal_variable (std::string& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
@@ -920,8 +918,6 @@ set_internal_variable (std::string& var, const octave_value_list& args,
       else
         error ("%s: value must not be empty", nm);
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -948,6 +944,9 @@ set_internal_variable (int& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
       std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
@@ -964,8 +963,6 @@ set_internal_variable (int& var, const octave_value_list& args,
       if (i == nchoices)
         error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -1985,19 +1982,17 @@ Lock the current function into memory so that it can't be cleared.\n\
 @seealso{munlock, mislocked, persistent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 0)
     print_usage ();
 
   octave_function *fcn = octave_call_stack::caller ();
 
-  if (fcn)
-    fcn->lock ();
-  else
+  if (! fcn)
     error ("mlock: invalid use outside a function");
 
-  return retval;
+    fcn->lock ();
+
+  return octave_value_list ();
 }
 
 DEFUN (munlock, args, ,
@@ -2010,8 +2005,6 @@ If no function is named then unlock the current function.\n\
 @seealso{mlock, mislocked, persistent}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -2027,13 +2020,13 @@ If no function is named then unlock the current function.\n\
     {
       octave_function *fcn = octave_call_stack::caller ();
 
-      if (fcn)
-        fcn->unlock ();
-      else
+      if (! fcn)
         error ("munlock: invalid use outside a function");
+
+      fcn->unlock ();
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 
@@ -2047,12 +2040,12 @@ If no function is named then return true if the current function is locked.\n\
 @seealso{mlock, munlock, persistent}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
@@ -2064,10 +2057,10 @@ If no function is named then return true if the current function is locked.\n\
     {
       octave_function *fcn = octave_call_stack::caller ();
 
-      if (fcn)
-        retval = fcn->islocked ();
-      else
+      if (! fcn)
         error ("mislocked: invalid use outside a function");
+
+      retval = fcn->islocked ();
     }
 
   return retval;

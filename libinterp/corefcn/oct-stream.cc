@@ -53,16 +53,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "utils.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// Programming Note: There are two very different error() functions used
-// in the stream code.  When invoked with "error (...)" the member function
-// from octave_stream or octave_base_stream is called.  This function sets the
-// error state on the stream AND returns control to the caller.  The caller
-// must then return a value at the end of the function.  When invoked with
-// "::error (...)" the exception-based error function from error.h is used.
-// This function will throw an exception and not return control to the caller.
-// BE CAREFUL and invoke the correct error function!
-////////////////////////////////////////////////////////////////////////////////
+// Programming Note: There are two very different error functions used
+// in the stream code.  When invoked with "error (...)" the member
+// function from octave_stream or octave_base_stream is called.  This
+// function sets the error state on the stream AND returns control to
+// the caller.  The caller must then return a value at the end of the
+// function.  When invoked with "::error (...)" the exception-based
+// error function from error.h is used.  This function will throw an
+// exception and not return control to the caller.  BE CAREFUL and
+// invoke the correct error function!
 
 // Possible values for conv_err:
 //
@@ -2588,8 +2587,8 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
           break;
 
         default:
-          // Note: error() is member fcn from octave_base_stream, not ::error().
-          // This error() does not halt execution so "return ..." must exist.
+          // Note: error is member fcn from octave_base_stream, not ::error.
+          // This error does not halt execution so "return ..." must exist.
           error ("%s: invalid format specifier", who.c_str ());
           return -1;
           break;
@@ -2698,13 +2697,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                 }
             }
           else
-            {
-              // FIXME: should this be member fcn "error"?
-              //        Otherwise, retval and break are unnecessary.
-              ::error ("%s: internal error handling format", who.c_str ());
-              retval = -1;
-              break;
-            }
+            ::error ("%s: internal error handling format", who.c_str ());
 
           elt = fmt_list.next (nconv > 0 && ! val_cache.exhausted ());
 
@@ -2784,7 +2777,7 @@ octave_base_stream::error (bool clear_err, int& err_num)
 void
 octave_base_stream::invalid_operation (const std::string& who, const char *rw)
 {
-  // Note: This calls the member fcn error(), not ::error() from error.h.
+  // Note: This calls the member fcn error, not ::error from error.h.
   error (who, std::string ("stream not open for ") + rw);
 }
 
@@ -3056,12 +3049,11 @@ octave_stream::seek (const octave_value& tc_offset,
       retval = seek (xoffset, origin);
 
       if (retval != 0)
-        // FIXME: Should this be ::error()?
+        // Note: error is member fcn from octave_stream, not ::error.
         error ("fseek: failed to seek to requested position");
     }
   else
-    // FIXME: Should this be ::error()?
-    error ("fseek: invalid value for origin");
+    ::error ("fseek: invalid value for origin");
 
   return retval;
 }
@@ -3284,10 +3276,7 @@ octave_stream::finalize_read (std::list<void *>& input_buf_list,
       break;
 
     default:
-      retval = false;
-      // FIXME: Should this be ::error()?
-      error ("read: invalid type specification");
-      break;
+      ::error ("read: invalid type specification");
     }
 
   return retval;
@@ -3649,10 +3638,7 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
       break;
 
     default:
-      retval = false;
-      // FIXME: Should this be ::error()?
-      error ("write: invalid type specification");
-      break;
+      ::error ("write: invalid type specification");
     }
 
   return retval;
@@ -3851,7 +3837,7 @@ octave_stream::scanf (const octave_value& fmt, const Array<double>& size,
     }
   else
     {
-      // Note: error() is member fcn from octave_stream, not ::error().
+      // Note: error is member fcn from octave_stream, not ::error.
       error (who + ": format must be a string");
     }
 
@@ -3885,7 +3871,7 @@ octave_stream::oscanf (const octave_value& fmt, const std::string& who)
     }
   else
     {
-      // Note: error() is member fcn from octave_stream, not ::error().
+      // Note: error is member fcn from octave_stream, not ::error.
       error (who + ": format must be a string");
     }
 
@@ -3921,7 +3907,7 @@ octave_stream::printf (const octave_value& fmt, const octave_value_list& args,
     }
   else
     {
-      // Note: error() is member fcn from octave_stream, not ::error().
+      // Note: error is member fcn from octave_stream, not ::error.
       error (who + ": format must be a string");
     }
 
@@ -3953,7 +3939,7 @@ octave_stream::puts (const octave_value& tc_s, const std::string& who)
     }
   else
     {
-      // Note: error() is member fcn from octave_stream, not ::error().
+      // Note: error is member fcn from octave_stream, not ::error.
       error (who + ": argument must be a string");
     }
 
@@ -4168,11 +4154,7 @@ octave_stream_list::do_insert (octave_stream& os)
   if (list.size () < list.max_size ())
     list[stream_number] = os;
   else
-    {
-      stream_number = -1;
-      // FIXME: Should this be ::error()?
-      error ("could not create file id");
-    }
+    ::error ("could not create file id");
 
   return stream_number;
 

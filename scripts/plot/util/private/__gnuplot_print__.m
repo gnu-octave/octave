@@ -237,7 +237,7 @@ function f = font_spec (opts, varargin)
         f = sprintf ('fname "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
         fontsize = round (opts.fontsize * 0.75);
-        f = sprintf ("%s fsize %d", f, fontsize);
+        f = sprintf ("fsize %d", fontsize);
       endif
     case "pdf"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
@@ -245,11 +245,15 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("fsize %d", f, opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case {"pdfcairo", "pngcairo"}
-      if (! isempty (opts.font))
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case {"epslatex", "epslatexstandalone"}
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
@@ -257,7 +261,7 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("%d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case "pslatex"
       if (! isempty (opts.fontsize))
@@ -269,7 +273,7 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ('font "%d"', opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case "emf"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))

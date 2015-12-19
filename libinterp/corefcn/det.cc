@@ -77,14 +77,14 @@ For that, use any of the condition number functions: @code{cond},\n\
 
   int arg_is_empty = empty_arg ("det", nr, nc);
   if (arg_is_empty < 0)
-    return octave_value_list ();
+    return ovl ();
   if (arg_is_empty > 0)
     return octave_value (1.0);
 
   if (nr != nc)
     {
       gripe_square_matrix_required ("det");
-      return octave_value_list ();
+      return ovl ();
     }
 
   octave_value_list retval (2);

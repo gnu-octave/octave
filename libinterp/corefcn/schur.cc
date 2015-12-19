@@ -159,7 +159,7 @@ in control (see @code{are} and @code{dare}).\n\
         {
           warning ("schur: incorrect ordered schur argument '%s'",
                    ord.c_str ());
-          return octave_value_list ();
+          return ovl ();
         }
     }
 
@@ -169,7 +169,7 @@ in control (see @code{are} and @code{dare}).\n\
   if (nr != nc)
     {
       gripe_square_matrix_required ("schur");
-      return octave_value_list ();
+      return ovl ();
     }
 
   octave_value_list retval;

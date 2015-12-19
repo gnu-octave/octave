@@ -75,14 +75,14 @@ IEEE Transactions on Automatic Control, 1979).\n\
   int arg_is_empty = empty_arg ("hess", nr, nc);
 
   if (arg_is_empty < 0)
-    return octave_value_list ();
+    return ovl ();
   else if (arg_is_empty > 0)
     return octave_value_list (2, Matrix ());
 
   if (nr != nc)
     {
       gripe_square_matrix_required ("hess");
-      return octave_value_list ();
+      return ovl ();
     }
 
   octave_value_list retval;

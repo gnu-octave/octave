@@ -1537,7 +1537,7 @@ Use @code{imwrite} instead.\n\
 
   write_file (filename, ext, imvec);
 
-  return octave_value_list ();
+  return ovl ();
 
 #else
   gripe_disabled_feature ("imwrite", "Image IO");

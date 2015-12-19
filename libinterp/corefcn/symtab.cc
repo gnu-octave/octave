@@ -1847,7 +1847,7 @@ DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 
   symbol_table::assign (name, args(1));
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")

@@ -1992,7 +1992,7 @@ Lock the current function into memory so that it can't be cleared.\n\
 
     fcn->lock ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (munlock, args, ,
@@ -2026,7 +2026,7 @@ If no function is named then unlock the current function.\n\
       fcn->unlock ();
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 
@@ -2484,7 +2484,7 @@ without the dash as well.\n\
         }
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (whos_line_format, args, nargout,

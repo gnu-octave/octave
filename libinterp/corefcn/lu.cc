@@ -195,7 +195,7 @@ information.\n\
   if (issparse)
     {
       if (arg_is_empty < 0)
-        return octave_value_list ();
+        return ovl ();
       else if (arg_is_empty > 0)
         return octave_value_list (5, SparseMatrix ());
 
@@ -335,7 +335,7 @@ information.\n\
   else
     {
       if (arg_is_empty < 0)
-        return octave_value_list ();
+        return ovl ();
       else if (arg_is_empty > 0)
         return octave_value_list (3, Matrix ());
 

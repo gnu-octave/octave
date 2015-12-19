@@ -559,7 +559,7 @@ Undocumented internal function\n\
 
   curl.cwd (path);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_dir__, args, nargout,
@@ -650,7 +650,7 @@ Undocumented internal function\n\
 
   curl.ascii ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_binary__, args, ,
@@ -669,7 +669,7 @@ Undocumented internal function\n\
 
   curl.binary ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_close__, args, ,
@@ -688,7 +688,7 @@ Undocumented internal function\n\
 
   ch_manager::free (h);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_mode__, args, ,
@@ -728,7 +728,7 @@ Undocumented internal function\n\
 
   curl.del (file);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_rmdir__, args, ,
@@ -751,7 +751,7 @@ Undocumented internal function\n\
 
   curl.rmdir (dir);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_mkdir__, args, ,
@@ -772,7 +772,7 @@ Undocumented internal function\n\
 
   curl.mkdir (dir);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_rename__, args, ,
@@ -794,7 +794,7 @@ Undocumented internal function\n\
 
   curl.rename (oldname, newname);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__ftp_mput__, args, nargout,
@@ -856,7 +856,7 @@ Undocumented internal function\n\
   if (nargout > 0)
     return ovl (file_list);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 DEFUN (__ftp_mget__, args, ,
@@ -930,5 +930,5 @@ Undocumented internal function\n\
   if (n == 0)
     error ("__ftp_mget__: file not found");
 
-  return octave_value_list ();
+  return ovl ();
 }

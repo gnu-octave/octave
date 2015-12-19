@@ -931,7 +931,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
   do_keyboard (args);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (echo, args, ,
@@ -1015,7 +1015,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
       break;
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 /*
@@ -1185,7 +1185,7 @@ for details.\n\
       command_editor::read_init_file (file);
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (readline_re_read_init_file, args, ,
@@ -1203,7 +1203,7 @@ for details.\n\
 
   command_editor::re_read_init_file ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 static int
@@ -1288,7 +1288,7 @@ for input.\n\
   if (input_event_hook_functions.empty ())
     command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (PS1, args, nargout,
@@ -1444,7 +1444,7 @@ Undocumented internal function.\n\
   else
     Vdrawnow_requested = args(0).bool_value ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__gud_mode__, args, ,

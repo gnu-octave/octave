@@ -3556,7 +3556,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
   else
     error ("fdisp: stream FID not open for writing");
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 /*
@@ -4031,7 +4031,7 @@ to produce a more readable output with less data per page.  (default).\n\
 
   set_format_style (argc, argv);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__compactformat__, args, nargout,

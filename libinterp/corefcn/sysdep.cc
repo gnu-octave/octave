@@ -590,7 +590,7 @@ Clear the terminal screen and move the cursor to the upper left corner.\n\
 
   command_editor::clear_screen (skip_redisplay);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFALIAS (home, clc);
@@ -733,7 +733,7 @@ returning the empty string if no key is available.\n\
       retval = s;
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (pause, args, ,
@@ -800,7 +800,7 @@ clc;\n\
       octave_kbhit ();
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 /*

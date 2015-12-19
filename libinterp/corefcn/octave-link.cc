@@ -195,7 +195,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   if (args.length () != 6)
-    return octave_value_list ();
+    return ovl ();
 
   octave_value_list retval (3);
 
@@ -265,7 +265,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   if (args.length () != 8)
-    return octave_value_list ();
+    return ovl ();
 
   Cell list = args(0).cell_value ();
   const Array<std::string> tlist = list.cellstr_value ();
@@ -323,7 +323,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   if (args.length () != 4)
-    return octave_value_list ();
+    return ovl ();
 
   Cell prompt = args(0).cell_value ();
   Array<std::string> tmp = prompt.cellstr_value ();

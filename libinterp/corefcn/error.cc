@@ -1988,7 +1988,7 @@ With two arguments, also set the last message identifier.\n\
   if (nargin == 0 || nargout > 0)
     return ovl (prev_error_message, prev_error_id);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 DEFUN (lastwarn, args, nargout,
@@ -2031,7 +2031,7 @@ With two arguments, also set the last message identifier.\n\
   if (nargin == 0 || nargout > 0)
     return ovl (prev_warning_message, prev_warning_id);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 /* FIXME: Deprecated in 4.0 and scheduled for removal in 4.4 */

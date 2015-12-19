@@ -895,7 +895,7 @@ Convert @var{x} to single precision type.\n\
                               octave_float_scalar);
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 /*

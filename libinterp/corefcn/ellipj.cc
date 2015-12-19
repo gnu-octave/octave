@@ -284,7 +284,7 @@ and 16.15), Dover, 1965.\n\
         }
     }  // m matrix
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 /*

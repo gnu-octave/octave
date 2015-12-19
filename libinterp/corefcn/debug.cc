@@ -1404,7 +1404,7 @@ function returns.\n\
       tree_evaluator::dbstep_flag = 1;
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFALIAS (dbnext, dbstep);
@@ -1426,7 +1426,7 @@ Leave command-line debugging mode and continue code execution normally.\n\
 
   tree_evaluator::reset_debug_state ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (dbquit, args, ,
@@ -1449,7 +1449,7 @@ the Octave prompt.\n\
 
   octave_throw_interrupt_exception ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (isdebugmode, args, ,
@@ -1486,6 +1486,6 @@ With a logical argument @var{flag}, set the state on or off.\n\
 
   tree_evaluator::quiet_breakpoint_flag = state;
 
-  return octave_value_list ();
+  return ovl ();
 }
 

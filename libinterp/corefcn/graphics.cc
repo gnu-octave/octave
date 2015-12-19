@@ -10119,7 +10119,7 @@ Undocumented internal function.\n\
   else if (vals_len == 1)
     return octave_value (vals(0));
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 static octave_value
@@ -10488,7 +10488,7 @@ Undocumented internal function.\n\
 
   delete_graphics_objects (vals);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__go_axes_init__, args, ,
@@ -10525,7 +10525,7 @@ Undocumented internal function.\n\
   if (! h.ok ())
     error ("__go_axes_init__: axis deleted during initialization (= %g)", val);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__go_handles__, args, ,
@@ -10586,7 +10586,7 @@ Undocumented internal function.\n\
   else
     gh_manager::execute_callback (h, name, args(2));
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__image_pixel_size__, args, ,
@@ -10731,7 +10731,7 @@ List @var{toolkit} as an available graphics toolkit.\n\
 
   gtk_manager::register_toolkit (name);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (loaded_graphics_toolkits, , ,
@@ -10821,7 +10821,7 @@ undocumented.\n\
 
                   gh_manager::unlock ();
 
-                  return octave_value_list ();
+                  return ovl ();
                 }
             }
 
@@ -10853,7 +10853,7 @@ undocumented.\n\
 
               gh_manager::unlock ();
 
-              return octave_value_list ();
+              return ovl ();
             }
           else if (pos_c == std::string::npos)
             {
@@ -10861,7 +10861,7 @@ undocumented.\n\
 
               gh_manager::unlock ();
 
-              return octave_value_list ();
+              return ovl ();
             }
           else if (pos_p != std::string::npos && pos_p < pos_c)
             {
@@ -10885,7 +10885,7 @@ undocumented.\n\
 
                       gh_manager::unlock ();
 
-                      return octave_value_list ();
+                      return ovl ();
                     }
                 }
             }
@@ -10922,7 +10922,7 @@ undocumented.\n\
 
   gh_manager::unlock ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (addlistener, args, ,
@@ -10987,7 +10987,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
         go.add_property_listener (pname, args(2), PERSISTENT);
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (dellistener, args, ,
@@ -11050,7 +11050,7 @@ dellistener (gcf, \"position\", c);\n\
         go.delete_property_listener (pname, args(2), POSTSET);
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (addproperty, args, ,
@@ -11153,7 +11153,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 
   go.get_properties ().insert_property (name, p);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 octave_value
@@ -11285,7 +11285,7 @@ waitfor_listener (const octave_value_list& args, int)
         waitfor_results[id] = true;
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 static octave_value_list
@@ -11298,7 +11298,7 @@ waitfor_del_listener (const octave_value_list& args, int)
       waitfor_results[id] = true;
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (waitfor, args, ,
@@ -11535,7 +11535,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
         }
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__zoom__, args, ,
@@ -11589,6 +11589,6 @@ Undocumented internal function.\n\
       Vdrawnow_requested = true;
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 

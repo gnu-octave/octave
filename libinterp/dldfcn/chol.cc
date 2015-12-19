@@ -180,7 +180,7 @@ sparse matrices.\n\
   int arg_is_empty = empty_arg ("chol", nr, nc);
 
   if (arg_is_empty < 0)
-    return octave_value_list ();
+    return ovl ();
   if (arg_is_empty > 0)
     return octave_value (Matrix ());
 

@@ -574,7 +574,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
         }
     }
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (__diaryfile__, , ,
@@ -627,7 +627,7 @@ The current state can be determined via @code{page_screen_output}.\n\
   else
     Vpage_screen_output = ! Vpage_screen_output;
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (terminal_size, , ,

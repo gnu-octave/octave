@@ -277,7 +277,7 @@ Comment.\n\
   else if (args(1).is_integer_type ())
     {
       gripe_wrong_type_arg ("audiowrite", args(1));
-      return octave_value_list ();
+      return ovl ();
     }
 
   Matrix audio = args(1).matrix_value ();
@@ -416,7 +416,7 @@ Comment.\n\
 
   // FIXME: shouldn't we return something to indicate whether the file
   // was written successfully?
-  return octave_value_list ();
+  return ovl ();
 
 #else
 

@@ -421,7 +421,7 @@ Undocumented internal function.\n\
 
   profiler.reset ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 // Query the timings collected by the profiler.

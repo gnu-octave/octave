@@ -267,7 +267,7 @@ Clear the stream state for the file specified by the file descriptor\n\
 
   os.clearerr ();
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFUN (fflush, args, ,
@@ -424,7 +424,7 @@ Returns the number of lines skipped (end-of-line sequences encountered).\n\
   if (! err)
     return ovl (tmp);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 
@@ -711,7 +711,7 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
   if (nargout > 0)
     return ovl (result);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 DEFUN (fseek, args, ,
@@ -818,7 +818,7 @@ expanded even when the template string is defined with single quotes.\n\
   if (nargout > 0)
     return octave_value (result);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 DEFUN (printf, args, nargout,
@@ -866,7 +866,7 @@ expanded even when the template string is defined with single quotes.\n\
   if (nargout > 0)
     return ovl (result);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 DEFUN (fputs, args, ,
@@ -1926,7 +1926,7 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
   if (status >= 0)
     return ovl (status);
   else
-    return octave_value_list ();
+    return ovl ();
 }
 
 static octave_value

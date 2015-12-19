@@ -111,7 +111,7 @@ public:
            int, size_t&, const cdef_class&, bool)
   {
     gripe_invalid_object ("subsref");
-    return octave_value_list ();
+    return ovl ();
   }
 
   virtual octave_value

@@ -2545,5 +2545,5 @@ DEFUN (__dump_load_path__, , , "")
 {
   load_path::display (octave_stdout);
 
-  return octave_value_list ();
+  return ovl ();
 }

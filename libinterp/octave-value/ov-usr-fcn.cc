@@ -1080,7 +1080,7 @@ element-by-element and a logical array is returned.  At the top level,\n\
   else
     gripe_wrong_type_arg ("isargout", args(0));
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 /*

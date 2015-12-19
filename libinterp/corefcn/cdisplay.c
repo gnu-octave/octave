@@ -39,7 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 // Programming Note: This file exists so that we can hide system
 // header files that make heavy use of macros and C-style casts in a C
 // language file and avoid warnings about using old-style casts in C++.
-// Please do NOT eliminate this file and move code to display.cc.
+// Additionally, on OS X systems, including the Carbon.h header file
+// results in the declaration of a "panic" function that conflicts with
+// Octave's global panic function, so Carbon.h can't be included in any
+// file that also includes Octave's error.h header file.
+
+// Please do NOT eliminate this file and move code from here to
+// display.cc.
 
 const char *
 octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,

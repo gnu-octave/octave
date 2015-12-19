@@ -2167,7 +2167,8 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
   if (strcmp (scale, "log"))
     num_mtics = 10;
-    if (any (strcmp (gnuplot_term, {"tikz", "pstex", "pslatex", "epslatex"})))
+    if (any (strcmp (gnuplot_term, {"cairolatex", "epslatex", "latex", ...
+        "pslatex", "pstex", "pstricks", "texdraw", "tikz"})))
       fmt = "$10^{%T}$";
     else
       fmt = "10^{%T}";

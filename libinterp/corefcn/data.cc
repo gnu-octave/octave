@@ -88,21 +88,6 @@ index_error (const char *fmt, const std::string& idx, const std::string& msg)
   error (fmt, idx.c_str (), msg.c_str ());
 }
 
-#define ANY_ALL(FCN) \
- \
-  int nargin = args.length (); \
- \
-  if (nargin < 1 || nargin > 2) \
-    print_usage (); \
- \
-  int dim = (nargin == 1 ? -1 : args(1).int_value (#FCN ": DIM must be an integer") - 1); \
- \
-  if (dim >= -1) \
-    return octave_value (args(0).FCN (dim)); \
-  else \
-    error (#FCN ": invalid dimension argument = %d", dim + 1); \
- \
-
 DEFUN (all, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {} all (@var{x})\n\
@@ -126,7 +111,18 @@ If the optional argument @var{dim} is supplied, work along dimension\n\
 @seealso{any}\n\
 @end deftypefn")
 {
-  ANY_ALL (all);
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  int dim = (nargin == 1 ? -1
+                         : args(1).int_value ("all: DIM must be an integer")-1);
+
+  if (dim < -1)
+    error ("all: invalid dimension argument = %d", dim + 1);
+
+  return ovl (args(0).all (dim));
 }
 
 /*
@@ -180,7 +176,18 @@ any (eye (2, 4), 2)\n\
 @seealso{all}\n\
 @end deftypefn")
 {
-  ANY_ALL (any);
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  int dim = (nargin == 1 ? -1
+                         : args(1).int_value ("any: DIM must be an integer")-1);
+
+  if (dim < -1)
+    error ("any: invalid dimension argument = %d", dim + 1);
+
+  return ovl (args(0).any (dim));
 }
 
 /*

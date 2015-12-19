@@ -115,11 +115,11 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-P")
         arg_st.printer = arg;
       elseif (strncmp (arg, "-EPSTOOL:", 9))
-        arg_st.epstool_binary = arg{10:end};
+        arg_st.epstool_binary = arg(10:end);
       elseif (strncmp (arg, "-FIG2DEV:", 9))
-        arg_st.fig2dev_binary = arg{10:end};
+        arg_st.fig2dev_binary = arg(10:end);
       elseif (strncmp (arg, "-PSTOEDIT:", 9))
-        arg_st.pstoedit_binary = arg{10:end};
+        arg_st.pstoedit_binary = arg(10:end);
       elseif (strncmpi (arg, "-textalphabits=", 15))
         n = find (arg == "=");
         if (! isempty (n) && n == numel (arg) - 1 && any (arg(end) == "124"))

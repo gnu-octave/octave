@@ -23,16 +23,9 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_display_h)
 #define octave_display_h 1
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <string>
-#include <cstdlib>
 
-#include "singleton-cleanup.h"
-
-#include "error.h"
+class Matrix;
 
 class
 OCTINTERP_API

@@ -75,5 +75,4 @@ private:
   QStatusBar * _status_bar;
 };
 
-#endif // octave_find_files_dialog_h
-
+#endif

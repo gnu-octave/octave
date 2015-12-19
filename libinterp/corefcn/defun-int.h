@@ -159,7 +159,7 @@ typedef octave_function *
     XDEFALIAS_INTERNAL(alias, name) \
   END_INSTALL_BUILTIN
 
-#else /* ! MAKE_BUILTINS */
+#else
 
 // Generate the first line of the function definition.  This ensures
 // that the internal functions all have the same signature.
@@ -177,6 +177,6 @@ typedef octave_function *
 
 #define DEFALIAS_INTERNAL(alias, name)
 
-#endif /* ! MAKE_BUILTINS */
+#endif
 
 #endif

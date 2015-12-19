@@ -274,6 +274,6 @@ private:
 
 };
 
-#endif // HAVE_FREETYPE
+#endif
 
 #endif

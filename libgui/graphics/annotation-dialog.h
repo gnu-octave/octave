@@ -59,4 +59,4 @@ private:
   octave_value_list props;
 };
 
-#endif // ANNOTATIONDIALOG_H
+#endif

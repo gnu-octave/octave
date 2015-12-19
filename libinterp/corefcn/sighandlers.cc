@@ -406,7 +406,7 @@ sigchld_handler (int /* sig */)
 
   octave_signals_caught[SIGCHLD] = true;
 }
-#endif /* defined (SIGCHLD) */
+#endif
 
 #ifdef SIGFPE
 #if defined (__alpha__)
@@ -422,8 +422,8 @@ sigfpe_handler (int /* sig */)
       octave_interrupt_state++;
     }
 }
-#endif /* defined (__alpha__) */
-#endif /* defined (SIGFPE) */
+#endif
+#endif
 
 #if defined (SIGHUP) || defined (SIGTERM)
 static void
@@ -557,7 +557,7 @@ sigpipe_handler (int /* sig */)
   if (pipe_handler_error_count++ > 100 && octave_interrupt_state >= 0)
     octave_interrupt_state++;
 }
-#endif /* defined (SIGPIPE) */
+#endif
 
 octave_interrupt_handler
 octave_catch_interrupts (void)

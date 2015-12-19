@@ -132,4 +132,4 @@ private:
   QPushButton *cancel;
 };
 
-#endif // WELCOMEWIZARD_H
+#endif

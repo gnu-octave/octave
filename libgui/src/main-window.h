@@ -441,4 +441,4 @@ private:
   bool connect_to_web;
 };
 
-#endif // MAINWINDOW_H
+#endif

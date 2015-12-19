@@ -156,4 +156,4 @@ SM octinternal_do_mul_sm_pm (const SM& a, const PermMatrix& p)
   return octinternal_do_mul_sm_colpm (a, p.col_perm_vec ().data ());
 }
 
-#endif // octave_Sparse_perm_op_defs_h
+#endif

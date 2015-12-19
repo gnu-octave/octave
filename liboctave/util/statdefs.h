@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/stat.h>
 #endif
 
-#ifndef S_ISREG                 /* Doesn't have POSIX.1 stat stuff. */
+#ifndef S_ISREG
 #ifndef mode_t
 #define mode_t unsigned short
 #endif
@@ -55,11 +55,11 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (S_ISSOCK) && defined (S_IFSOCK)
 #define S_ISSOCK(m) (((m) & S_IFMT) == S_IFSOCK)
 #endif
-#if ! defined (S_ISMPB) && defined (S_IFMPB) /* V7 */
+#if ! defined (S_ISMPB) && defined (S_IFMPB)
 #define S_ISMPB(m) (((m) & S_IFMT) == S_IFMPB)
 #define S_ISMPC(m) (((m) & S_IFMT) == S_IFMPC)
 #endif
-#if ! defined (S_ISNWK) && defined (S_IFNWK) /* HP/UX */
+#if ! defined (S_ISNWK) && defined (S_IFNWK)
 #define S_ISNWK(m) (((m) & S_IFMT) == S_IFNWK)
 #endif
 

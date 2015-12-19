@@ -510,6 +510,6 @@ inline gzomanip2<int,int>
 setcompression (int l, int s = Z_DEFAULT_STRATEGY)
 { return gzomanip2<int,int>(&setcompression, l, s); }
 
-#endif // HAVE_ZLIB
+#endif
 
-#endif // ZFSTREAM_H
+#endif

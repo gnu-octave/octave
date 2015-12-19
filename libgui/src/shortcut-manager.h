@@ -192,4 +192,4 @@ private:
 };
 
 
-#endif // SHORTCUT_MANAGER_H
+#endif

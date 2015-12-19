@@ -233,4 +233,4 @@ RT do_sub_sm_dm (const SM& a, const DM& d)
                                    std::negate<typename DM::element_type> ());
 }
 
-#endif // octave_Sparse_diag_op_defs_h
+#endif

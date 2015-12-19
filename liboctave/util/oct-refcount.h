@@ -40,7 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) __sync_fetch_and_add(x,  1)
 #  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) __sync_fetch_and_add(x, -1)
 # endif
-#else // Generic non-locking versions
+#else
+// Generic non-locking versions
 # define OCTREFCOUNT_ATOMIC_INCREMENT(x) ++(*(x))
 # define OCTREFCOUNT_ATOMIC_DECREMENT(x) --(*(x))
 # define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) (*(x))++

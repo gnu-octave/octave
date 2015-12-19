@@ -410,4 +410,4 @@ private:
   QStringList _mru_files_encodings;
 };
 
-#endif // FILEEDITORMDISUBWINDOW_H
+#endif

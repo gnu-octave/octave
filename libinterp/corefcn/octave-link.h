@@ -476,4 +476,4 @@ protected:
   virtual void do_show_doc (const std::string &file) = 0;
 };
 
-#endif // OCTAVELINK_H
+#endif

@@ -75,4 +75,4 @@ private:
   std::map<GLuint, graphics_object> object_map;
 };
 
-#endif // __QtHandles_gl_selector__
+#endif

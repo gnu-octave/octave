@@ -60,5 +60,4 @@ private:
   int _sortorder;
 };
 
-#endif // octave_find_files_model_h
-
+#endif

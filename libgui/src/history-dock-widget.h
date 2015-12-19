@@ -92,4 +92,4 @@ private:
   enum { MaxFilterHistory = 10 };
 };
 
-#endif // HISTORYDOCKWIDGET_H
+#endif

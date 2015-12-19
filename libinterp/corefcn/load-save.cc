@@ -303,7 +303,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
   // check this before we open the file
   if (H5Fis_hdf5 (fname.c_str ()) > 0)
     return LS_HDF5;
-#endif /* HAVE_HDF5 */
+#endif
 
 #ifdef HAVE_ZLIB
   use_zlib = check_gzip_magic (fname);
@@ -386,7 +386,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
           name = read_hdf5_data (stream, orig_fname, global, tc, doc,
                                  argv, argv_idx, argc);
           break;
-#endif /* HAVE_HDF5 */
+#endif
 
         case LS_MAT5_BINARY:
         case LS_MAT7_BINARY:
@@ -696,9 +696,9 @@ Force Octave to assume the file is in Octave's text format.\n\
         {
 #ifdef HAVE_HDF5
           format = LS_HDF5;
-#else /* ! HAVE_HDF5 */
+#else
           error ("load: octave executable was not linked with HDF5 library");
-#endif /* ! HAVE_HDF5 */
+#endif
         }
       else if (argv[i] == "-import" || argv[i] == "-i")
         {
@@ -734,7 +734,7 @@ Force Octave to assume the file is in Octave's text format.\n\
       if (format == LS_HDF5)
         error ("load: cannot read HDF5 format from stdin");
       else
-#endif /* HAVE_HDF5 */
+#endif
       if (format != LS_UNKNOWN)
         {
           // FIXME: if we have already seen EOF on a previous call,
@@ -779,7 +779,7 @@ Force Octave to assume the file is in Octave's text format.\n\
             gripe_file_open ("load", orig_fname);
         }
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any statements here; the "else" above has to
         // go with the "if" below!!!!!
       if (format != LS_UNKNOWN)
@@ -941,7 +941,7 @@ do_save (std::ostream& os, const octave_value& tc,
     case LS_HDF5:
       save_hdf5_data (os, tc, name, help, global, save_as_floats);
       break;
-#endif /* HAVE_HDF5 */
+#endif
 
     case LS_MAT5_BINARY:
       save_mat5_binary_element (os, tc, name, global, false, save_as_floats);
@@ -1068,9 +1068,9 @@ parse_save_options (const string_vector &argv,
         {
 #ifdef HAVE_HDF5
           format = LS_HDF5;
-#else /* ! HAVE_HDF5 */
+#else
           error ("save: octave executable was not linked with HDF5 library");
-#endif /* ! HAVE_HDF5 */
+#endif
         }
       else if (argv[i] == "-mat-binary" || argv[i] == "-mat"
                || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6"
@@ -1100,9 +1100,9 @@ parse_save_options (const string_vector &argv,
 #ifdef HAVE_HDF5
           format = LS_HDF5;
           save_as_floats = true;
-#else /* ! HAVE_HDF5 */
+#else
           error ("save: octave executable was not linked with HDF5 library");
-#endif /* ! HAVE_HDF5 */
+#endif
         }
 #ifdef HAVE_ZLIB
       else if (argv[i] == "-zip" || argv[i] == "-z")
@@ -1216,7 +1216,7 @@ write_header (std::ostream& os, load_save_format format)
 
 #ifdef HAVE_HDF5
     case LS_HDF5:
-#endif /* HAVE_HDF5 */
+#endif
     case LS_TEXT:
       {
         octave_localtime now;
@@ -1232,7 +1232,7 @@ write_header (std::ostream& os, load_save_format format)
                 H5Gset_comment (hs.file_id, "/", comment_string.c_str ());
               }
             else
-#endif /* HAVE_HDF5 */
+#endif
               os << comment_string << "\n";
           }
       }
@@ -1413,7 +1413,7 @@ dump_octave_core (void)
                      fname);
         }
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any commands here!  The open brace below must
         // go with the else above!
         {
@@ -1618,7 +1618,7 @@ the file @file{data} in Octave's binary format.\n\
       if (format == LS_HDF5)
         error ("save: cannot write HDF5 format to stdout");
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any commands here!  the brace below must go
         // with the "else" above!
         {
@@ -1688,7 +1688,7 @@ the file @file{data} in Octave's binary format.\n\
             }
         }
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any statements here!  The brace below must go
         // with the "else" above!
         {

@@ -393,7 +393,7 @@ prepare_spawn (char **argv)
   return new_argv;
 }
 
-#endif // __WIN32__ && ! __CYGWIN__
+#endif
 
 static int
 octave_exec (const std::string& file, char **argv)

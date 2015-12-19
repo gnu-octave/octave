@@ -149,4 +149,4 @@ private:
   void do_combo_encoding (QComboBox *combo, QString current);
 };
 
-#endif // RESOURCEMANAGER_H
+#endif

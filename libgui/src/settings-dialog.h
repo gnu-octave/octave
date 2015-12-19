@@ -77,4 +77,4 @@ private:
   color_picker *_editor_current_line_color;
 };
 
-#endif // SETTINGSDIALOG_H
+#endif

@@ -60,7 +60,7 @@ SparseCholError (int status, const char *, int, const char *)
 {
 }
 
-#endif //HAVE_CHOLMOD
+#endif
 
 int
 SparseCholPrint (const char *fmt, ...)

@@ -85,4 +85,4 @@ public slots:
 
 };
 
-#endif // FILEEDITORINTERFACE_H
+#endif

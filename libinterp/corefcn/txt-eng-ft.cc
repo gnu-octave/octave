@@ -1133,4 +1133,4 @@ ft_render::ft_font::get_face (void) const
   return face;
 }
 
-#endif // HAVE_FREETYPE
+#endif

@@ -495,7 +495,7 @@ initialize_jvm (void)
         }
     }
 
-#else  // Not Win32 system
+#else
 
   // JAVA_LDPATH determined by configure and set in config.h
 #if defined (__APPLE__)
@@ -2063,7 +2063,7 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
   return retval;
 }
 
-#endif  // endif on HAVE_JAVA
+#endif
 
 // DEFUN blocks below must be outside of HAVE_JAVA block so that
 // documentation strings are always available, even when functions are not.

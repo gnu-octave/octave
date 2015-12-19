@@ -120,5 +120,4 @@ private:
   bool               _rep_active;
 };
 
-#endif // FIND_DIALOG_H
-
+#endif

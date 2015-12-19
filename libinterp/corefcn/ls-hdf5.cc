@@ -908,7 +908,7 @@ save_type_to_hdf5 (save_type st)
       return H5T_NATIVE_DOUBLE;
     }
 }
-#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
+#endif
 
 // Add the data from TC to the HDF5 location loc_id, which could
 // be either a file or a group within a file.  Return true if

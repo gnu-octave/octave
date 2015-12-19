@@ -117,7 +117,7 @@ private:
   std::string fontname;
 };
 
-#endif  // HAVE_GL2PS_H
+#endif
 
 extern OCTINTERP_API void
 gl2ps_print (const graphics_object& fig, const std::string& cmd,

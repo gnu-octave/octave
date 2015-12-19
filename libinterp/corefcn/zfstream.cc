@@ -41,8 +41,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_ZLIB
 
-#include <cstring>          // for strcpy, strcat, strlen (mode strings)
-#include <cstdio>           // for BUFSIZ
+// For strcpy, strcat, strlen (mode strings).
+#include <cstring>
+// For BUFSIZ.
+#include <cstdio>
 
 // Internal buffer sizes (default and "unbuffered" versions)
 #define STASHED_CHARACTERS 16
@@ -617,4 +619,4 @@ gzofstream::close ()
     this->setstate (std::ios_base::failbit);
 }
 
-#endif // HAVE_ZLIB
+#endif

@@ -54,4 +54,4 @@ private:
   QTerminal *terminal;
 };
 
-#endif // TERMINALDOCKWIDGET_H
+#endif

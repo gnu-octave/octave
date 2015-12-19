@@ -164,4 +164,4 @@ private:
   QSignalMapper *_sig_mapper;
 };
 
-#endif // FILESDOCKWIDGET_H
+#endif

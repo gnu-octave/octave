@@ -596,7 +596,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         error ("load: error probing size of compressed data element");
 
       return retval;
-#else // HAVE_ZLIB
+#else
       error ("load: zlib unavailable, cannot read compressed data element");
 #endif
     }

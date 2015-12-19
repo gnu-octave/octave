@@ -46,4 +46,4 @@ private:
   webinfo *_webinfo;
 };
 
-#endif // DOCUMENTATIONDOCKWIDGET_H
+#endif

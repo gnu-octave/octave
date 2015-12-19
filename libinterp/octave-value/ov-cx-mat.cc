@@ -615,7 +615,7 @@ octave_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
         save_type_hid
           = save_type_to_hdf5 (get_save_type (max_val, min_val));
     }
-#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
+#endif
 
   type_hid = hdf5_make_complex_type (save_type_hid);
   if (type_hid < 0)

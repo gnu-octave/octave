@@ -36,6 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cdisplay.h"
 
+// Programming Note: This file exists so that we can hide system
+// header files that make heavy use of macros and C-style casts in a C
+// language file and avoid warnings about using old-style casts in C++.
+// Please do NOT eliminate this file and move code to display.cc.
+
 const char *
 octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
                          int *dpy_avail)

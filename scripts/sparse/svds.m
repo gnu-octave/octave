@@ -259,9 +259,7 @@ endfunction
 %! s = s(idx);
 %! u = u(:, idx);
 %! v = v(:, idx);
-%! randn_state = randn ("state");
 %! rand_state = rand ("state");
-%! randn ("state", 42);      % Initialize to make normest function reproducible
 %! rand ("state", 42);
 %! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
@@ -301,7 +299,6 @@ endfunction
 %! assert (s, ones (6, 1), 8*eps);
 
 %!test
-%! ## Restore random number generator seeds at end of tests
+%! ## Restore random number generator seed at end of tests
 %! rand ("state", rand_state);
-%! randn ("state", randn_state);
 

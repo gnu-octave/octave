@@ -1266,7 +1266,7 @@ tree_print_code::print_comment_elt (const octave_comment_elt& elt)
   size_t i = 0;
 
   while (i < len && comment[i++] == '\n')
-    ; /* Skip leading new lines. */
+    ; // Skip leading new lines.
   i--;
 
   while (i < len)

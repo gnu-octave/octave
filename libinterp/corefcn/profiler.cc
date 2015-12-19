@@ -130,10 +130,10 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
 octave_value
 profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 {
-  /* Note that we don't generate the entry just for this node, but rather
-     a struct-array with entries for all children.  This way, the top-node
-     (for which we don't want a real entry) generates already the final
-     hierarchical profile data.  */
+  // Note that we don't generate the entry just for this node, but
+  // rather a struct-array with entries for all children.  This way, the
+  // top-node (for which we don't want a real entry) generates already
+  // the final hierarchical profile data.
 
   const octave_idx_type n = children.size ();
 

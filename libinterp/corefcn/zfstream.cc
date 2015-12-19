@@ -51,8 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #define BIGBUFSIZE (256 * 1024 + STASHED_CHARACTERS)
 #define SMALLBUFSIZE 1
 
-/*****************************************************************************/
-
 // Default constructor
 gzfilebuf::gzfilebuf ()
   : file(0), io_mode(std::ios_base::openmode(0)), own_fd(false),
@@ -517,8 +515,6 @@ gzfilebuf::seekpos (pos_type sp, std::ios_base::openmode)
   return ret;
 }
 
-/*****************************************************************************/
-
 // Default constructor initializes stream buffer
 gzifstream::gzifstream ()
   : std::istream (0), sb ()
@@ -567,8 +563,6 @@ gzifstream::close ()
   if (! sb.close ())
     this->setstate (std::ios_base::failbit);
 }
-
-/*****************************************************************************/
 
 // Default constructor initializes stream buffer
 gzofstream::gzofstream ()

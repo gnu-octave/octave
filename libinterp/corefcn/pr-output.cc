@@ -218,18 +218,21 @@ calc_scale_exp (const int& x)
     return x;
   else
     return x - 3*static_cast<int> (x/3);
-  /* The expression above is equivalent to x - (x % 3).
-   * According to the ISO specification for C++ the modulo operator is
-   * compiler dependent if any of the arguments are negative.  Since this
-   * function will need to work on negative arguments, and we want to avoid
-   * portability issues, we re-implement the modulo function to the desired
-   * behavior (truncation).  There may be a gnulib replacement.
-   *
-   * ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO, IEC. 2003 .
-   * "the binary % operator yields the remainder from the division of the first
-   * expression by the second. .... If both operands are nonnegative then the
-   * remainder is nonnegative; if not, the sign of the remainder is
-   * implementation-defined".  */
+
+  // The expression above is equivalent to x - (x % 3).
+
+  // According to the ISO specification for C++ the modulo operator is
+  // compiler dependent if any of the arguments are negative.  Since
+  // this function will need to work on negative arguments, and we want
+  // to avoid portability issues, we re-implement the modulo function to
+  // the desired behavior (truncation).  There may be a gnulib
+  // replacement.
+
+  // ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO,
+  // IEC. 2003 . "the binary % operator yields the remainder from the
+  // division of the first expression by the second. .... If both
+  // operands are nonnegative then the remainder is nonnegative; if not,
+  // the sign of the remainder is implementation-defined".
 }
 
 static int
@@ -240,8 +243,8 @@ engineering_exponent (const double& x)
     {
       double absval = (x < 0.0 ? -x : x);
       int logabsval = static_cast<int> (gnulib::floor (log10 (absval)));
-      /* Avoid using modulo function with negative arguments for portability.
-       * See extended comment at calc_scale_exp */
+      // Avoid using modulo function with negative arguments for
+      // portability.  See extended comment at calc_scale_exp
       if (logabsval < 0.0)
         ex = logabsval - 2 + ((-logabsval + 2) % 3);
       else

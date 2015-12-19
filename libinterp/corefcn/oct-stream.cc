@@ -211,7 +211,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
           *buf << " ";
 
           while (++i < n && isspace (s[i]))
-            /* skip whitespace */;
+            ; // skip whitespace
 
           add_elt_to_list (width, discard, type, modifier, num_elts);
 
@@ -1130,7 +1130,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
         int c1 = EOF;
 
         while (is && (c1 = is.get ()) != EOF && isspace (c1))
-          { /* skip whitespace */ }
+          ; // skip whitespace
 
         if (c1 != EOF)
           {
@@ -1223,7 +1223,7 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
         int c1 = EOF;
 
         while (is && (c1 = is.get ()) != EOF && isspace (c1))
-          { /* skip whitespace */ }
+          ; // skip whitespace
 
         if (c1 != EOF)
           {

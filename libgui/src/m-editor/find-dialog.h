@@ -1,4 +1,4 @@
-/****************************************************************************
+/*
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
@@ -56,7 +56,8 @@ along with Octave; see the file COPYING.  If not, see
 ** Nokia at qt-info@nokia.com.
 ** $QT_END_LICENSE$
 **
-****************************************************************************/
+
+*/
 
 #ifndef FIND_DIALOG_H
 #define FIND_DIALOG_H

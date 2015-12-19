@@ -1554,7 +1554,7 @@ __builtin_new (size_t sz)
 {
   void *p;
 
-  /* malloc (0) is unpredictable; avoid it.  */
+  // malloc (0) is unpredictable; avoid it.
   if (sz == 0)
     sz = 1;
   p = gnulib::malloc (sz);

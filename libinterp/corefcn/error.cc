@@ -2034,7 +2034,8 @@ With two arguments, also set the last message identifier.\n\
     return ovl ();
 }
 
-/* FIXME: Deprecated in 4.0 and scheduled for removal in 4.4 */
+// FIXME: Deprecated in 4.0 and scheduled for removal in 4.4.
+
 DEFUN (__usage__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} usage (@var{msg})\n\

@@ -149,7 +149,7 @@ tree_postorder (octave_idx_type n, octave_idx_type *parent,
 
   // Set up structure describing children
   for (octave_idx_type v = 0; v <= n; first_kid[v++] = -1)
-    /* do nothing */;
+    ; // do nothing
 
   for (octave_idx_type v = n-1; v >= 0; v--)
     {
@@ -173,7 +173,7 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
 
   // Compute firstcol[row] = first nonzero column in row
   for (octave_idx_type row = 0; row < nr; firstcol[row++] = nc)
-    /* do nothing */;
+    ; // do nothing
 
   for (octave_idx_type col = 0; col < nc; col++)
     for (octave_idx_type p = colbeg[col]; p < colend[col]; p++)

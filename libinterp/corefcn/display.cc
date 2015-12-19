@@ -72,8 +72,9 @@ display_info::init (bool query)
 
 #else
 
-     /* FIXME: This will only work for MacOS > 10.5. For earlier versions
-        this code is not needed (use CGDisplayBitsPerPixel instead).  */
+      // FIXME: This will only work for MacOS > 10.5. For earlier
+      // versions this code is not needed (use CGDisplayBitsPerPixel
+      // instead).
 
       CGDisplayModeRef mode = CGDisplayCopyDisplayMode (display);
       CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding (mode);
@@ -93,9 +94,9 @@ display_info::init (bool query)
 
       CGSize sz_mm = CGDisplayScreenSize (display);
 
-      /* For MacOS >= 10.6, CGSize is a struct keeping 2 CGFloat
-         values, but the CGFloat typedef is not present on older
-         systems, so use double instead.  */
+      // For MacOS >= 10.6, CGSize is a struct keeping 2 CGFloat
+      // values, but the CGFloat typedef is not present on older
+      // systems, so use double instead.
 
       double ht_mm = sz_mm.height;
       double wd_mm = sz_mm.width;

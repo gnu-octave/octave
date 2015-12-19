@@ -206,12 +206,13 @@ public:
     return instance_ok () ? instance->do_current_context () : 0;
   }
 
-  /*
+#if 0
   static stack_frame frame (size_t idx)
   {
     return instance_ok () ? instance->do_frame (idx) : stack_frame ();
   }
-  */
+#endif
+
   // Function at location N on the call stack (N == 0 is current), may
   // be built-in.
   static octave_function *element (size_t n)
@@ -385,13 +386,15 @@ private:
            ? cs[curr_frame].m_context : 0;
   }
 
-  /*  const stack_frame& do_frame (size_t idx)
+#if 0
+  const stack_frame& do_frame (size_t idx)
   {
     static stack_frame foobar;
 
     return idx < cs.size () ? cs[idx] : foobar;
   }
-  */
+#endif
+
   octave_function *do_element (size_t n)
   {
     octave_function *retval = 0;

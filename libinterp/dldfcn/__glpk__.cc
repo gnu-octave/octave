@@ -71,7 +71,7 @@ struct control_params
   double tolobj;
 };
 
-static jmp_buf mark;  //-- Address for long jump to jump to
+static jmp_buf mark;  // Address for long jump to jump to
 
 int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
@@ -88,7 +88,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   glp_prob *lp = glp_create_prob ();
 
-  //-- Set the sense of optimization
+  // Set the sense of optimization
   if (sense == 1)
     glp_set_obj_dir (lp, GLP_MIN);
   else
@@ -97,7 +97,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   glp_add_cols (lp, n);
   for (int i = 0; i < n; i++)
     {
-      //-- Define type of the structural variables
+      // Define type of the structural variables
       if (! freeLB[i] && ! freeUB[i])
         {
           if (lb[i] != ub[i])
@@ -130,13 +130,11 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   for (int i = 0; i < m; i++)
     {
-      /* If the i-th row has no lower bound (types F,U), the
-         corrispondent parameter will be ignored.
-         If the i-th row has no upper bound (types F,L), the corrispondent
-         parameter will be ignored.
-         If the i-th row is of S type, the i-th LB is used, but
-         the i-th UB is ignored.
-      */
+      // If the i-th row has no lower bound (types F,U), the
+      // corrispondent parameter will be ignored.  If the i-th row has
+      // no upper bound (types F,L), the corrispondent parameter will be
+      // ignored.  If the i-th row is of S type, the i-th LB is used,
+      // but the i-th UB is ignored.
 
       switch (ctype[i])
         {
@@ -177,16 +175,16 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         }
     }
 
-  //-- scale the problem data
+  // scale the problem data
   if (!par->presol || lpsolver != 1)
     glp_scale_prob (lp, scale);
 
-  //-- build advanced initial basis (if required)
+  // build advanced initial basis (if required)
   if (lpsolver == 1 && !par->presol)
     glp_adv_basis (lp, 0);
 
-  /* For MIP problems without a presolver, a first pass with glp_simplex
-     is required */
+  // For MIP problems without a presolver, a first pass with glp_simplex
+  // is required
   if ((!isMIP && lpsolver == 1)
       || (isMIP && !par->presol))
     {
@@ -261,7 +259,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         }
       else
         {
-          /* Primal values */
+          // Primal values
           for (int i = 0; i < n; i++)
             {
               if (lpsolver == 1)
@@ -270,7 +268,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                 xmin[i] = glp_ipt_col_prim (lp, i+1);
             }
 
-          /* Dual values */
+          // Dual values
           for (int i = 0; i < m; i++)
             {
               if (lpsolver == 1)
@@ -279,7 +277,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                 lambda[i] = glp_ipt_row_dual (lp, i+1);
             }
 
-          /* Reduced costs */
+          // Reduced costs
           for (int i = 0; i < glp_get_num_cols (lp); i++)
             {
               if (lpsolver == 1)
@@ -403,14 +401,14 @@ Undocumented internal function.\n\
 
     }
 
-  //-- 3rd Input. A column array containing the right-hand side value
+  // 3rd Input. A column array containing the right-hand side value
   //               for each constraint in the constraint matrix.
   Matrix B = args(2).xmatrix_value ("__glpk__: invalid value of B");
 
   double *b = B.fortran_vec ();
 
-  //-- 4th Input. An array of length mrowsc containing the lower
-  //--            bound on each of the variables.
+  // 4th Input. An array of length mrowsc containing the lower
+  //            bound on each of the variables.
   Matrix LB = args(3).xmatrix_value ("__glpk__: invalid value of LB");
 
   if (LB.numel () < mrowsc)
@@ -418,7 +416,7 @@ Undocumented internal function.\n\
 
   double *lb = LB.fortran_vec ();
 
-  //-- LB argument, default: Free
+  // LB argument, default: Free
   Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
@@ -431,8 +429,8 @@ Undocumented internal function.\n\
         freeLB(i) = 0;
     }
 
-  //-- 5th Input. An array of at least length numcols containing the upper
-  //--            bound on each of the variables.
+  // 5th Input. An array of at least length numcols containing the upper
+  //            bound on each of the variables.
   Matrix UB = args(4).xmatrix_value ("__glpk__: invalid value of UB");
 
   if (UB.numel () < mrowsc)
@@ -452,13 +450,13 @@ Undocumented internal function.\n\
         freeUB(i) = 0;
     }
 
-  //-- 6th Input. A column array containing the sense of each constraint
-  //--            in the constraint matrix.
+  // 6th Input. A column array containing the sense of each constraint
+  //            in the constraint matrix.
   charMatrix CTYPE = args(5).char_matrix_value ("__glpk__: invalid value of CTYPE");
 
   char *ctype = CTYPE.fortran_vec ();
 
-  //-- 7th Input. A column array containing the types of the variables.
+  // 7th Input. A column array containing the types of the variables.
   charMatrix VTYPE = args(6).char_matrix_value ("__glpk__: invalid value of VARTYPE");
 
   Array<int> vartype (dim_vector (mrowsc, 1));
@@ -474,7 +472,7 @@ Undocumented internal function.\n\
         vartype(i) = GLP_CV;
     }
 
-  //-- 8th Input. Sense of optimization.
+  // 8th Input. Sense of optimization.
   volatile int sense;
   double SENSE = args(7).scalar_value ("__glpk__: invalid value of SENSE");
 
@@ -483,72 +481,70 @@ Undocumented internal function.\n\
   else
     sense = -1;
 
-  //-- 9th Input. A structure containing the control parameters.
+  // 9th Input. A structure containing the control parameters.
   octave_scalar_map PARAM = args(8).xscalar_map_value ("__glpk__: invalid value of PARAM");
 
   control_params par;
 
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  //-- Integer parameters
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Integer parameters
 
-  //-- Level of messages output by the solver
+  // Level of messages output by the solver
   par.msglev = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("msglev", par.msglev);
   if (par.msglev < 0 || par.msglev > 3)
     error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
 
-  //-- scaling option
+  // scaling option
   volatile int scale = 16;
   OCTAVE_GLPK_GET_INT_PARAM ("scale", scale);
   if (scale < 0 || scale > 128)
     error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
 
-  //-- Dual simplex option
+  // Dual simplex option
   par.dual = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("dual", par.dual);
   if (par.dual < 1 || par.dual > 3)
     error ("__glpk__: PARAM.dual must be 1 (use two-phase primal simplex [default]) or 2 (use two-phase dual simplex) or 3 (use two-phase dual simplex, and if it fails, switch to the primal simplex)");
 
-  //-- Pricing option
+  // Pricing option
   par.price = 34;
   OCTAVE_GLPK_GET_INT_PARAM ("price", par.price);
   if (par.price != 17 && par.price != 34)
     error ("__glpk__: PARAM.price must be 17 (textbook pricing) or 34 (steepest edge pricing [default])");
 
-  //-- Simplex iterations limit
+  // Simplex iterations limit
   par.itlim = std::numeric_limits<int>::max ();
   OCTAVE_GLPK_GET_INT_PARAM ("itlim", par.itlim);
 
-  //-- Output frequency, in iterations
+  // Output frequency, in iterations
   par.outfrq = 200;
   OCTAVE_GLPK_GET_INT_PARAM ("outfrq", par.outfrq);
 
-  //-- Branching heuristic option
+  // Branching heuristic option
   par.branch = 4;
   OCTAVE_GLPK_GET_INT_PARAM ("branch", par.branch);
   if (par.branch < 1 || par.branch > 5)
     error ("__glpk__: PARAM.branch must be 1 (first fractional variable) or 2 (last fractional variable) or 3 (most fractional variable) or 4 (heuristic by Driebeck and Tomlin [default]) or 5 (hybrid pseudocost heuristic)");
 
-  //-- Backtracking heuristic option
+  // Backtracking heuristic option
   par.btrack = 4;
   OCTAVE_GLPK_GET_INT_PARAM ("btrack", par.btrack);
   if (par.btrack < 1 || par.btrack > 4)
     error ("__glpk__: PARAM.btrack must be 1 (depth first search) or 2 (breadth first search) or 3 (best local bound) or 4 (best projection heuristic [default]");
 
-  //-- Presolver option
+  // Presolver option
   par.presol = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("presol", par.presol);
   if (par.presol < 0 || par.presol > 1)
     error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
 
-  //-- LPsolver option
+  // LPsolver option
   volatile int lpsolver = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("lpsolver", lpsolver);
   if (lpsolver < 1 || lpsolver > 2)
     error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
 
-  //-- Ratio test option
+  // Ratio test option
   par.rtest = 34;
   OCTAVE_GLPK_GET_INT_PARAM ("rtest", par.rtest);
   if (par.rtest != 17 && par.rtest != 34)
@@ -560,27 +556,25 @@ Undocumented internal function.\n\
   par.outdly = 0;
   OCTAVE_GLPK_GET_INT_PARAM ("outdly", par.outdly);
 
-  //-- Save option
+  // Save option
   volatile int save_pb = 0;
   OCTAVE_GLPK_GET_INT_PARAM ("save", save_pb);
   save_pb = save_pb != 0;
 
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  //-- Real parameters
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Real parameters
 
-  //-- Relative tolerance used to check if the current basic solution
-  //-- is primal feasible
+  // Relative tolerance used to check if the current basic solution
+  // is primal feasible
   par.tolbnd = 1e-7;
   OCTAVE_GLPK_GET_REAL_PARAM ("tolbnd", par.tolbnd);
 
-  //-- Absolute tolerance used to check if the current basic solution
-  //-- is dual feasible
+  // Absolute tolerance used to check if the current basic solution
+  // is dual feasible
   par.toldj = 1e-7;
   OCTAVE_GLPK_GET_REAL_PARAM ("toldj", par.toldj);
 
-  //-- Relative tolerance used to choose eligible pivotal elements of
-  //--  the simplex table in the ratio test
+  // Relative tolerance used to choose eligible pivotal elements of
+  //  the simplex table in the ratio test
   par.tolpiv = 1e-10;
   OCTAVE_GLPK_GET_REAL_PARAM ("tolpiv", par.tolpiv);
 
@@ -596,7 +590,7 @@ Undocumented internal function.\n\
   par.tolobj = 1e-7;
   OCTAVE_GLPK_GET_REAL_PARAM ("tolobj", par.tolobj);
 
-  //-- Assign pointers to the output parameters
+  // Assign pointers to the output parameters
   ColumnVector xmin (mrowsc, octave_NA);
   double fmin = octave_NA;
   ColumnVector lambda (mrowsA, octave_NA);

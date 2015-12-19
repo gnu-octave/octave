@@ -39,7 +39,7 @@ public:
     : val (octave_NaN)
   {
     if (a.is_empty ())
-      /* do nothing */;
+      ; // do nothing
     else
       {
         try

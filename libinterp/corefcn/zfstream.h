@@ -39,8 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "zlib.h"
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file stream buffer class.
  *
@@ -270,8 +268,6 @@ private:
   bool own_buffer;
 };
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file input stream class.
  *
@@ -358,8 +354,6 @@ private:
   */
   gzfilebuf sb;
 };
-
-/*****************************************************************************/
 
 /**
  *  @brief  Gzipped file output stream class.
@@ -448,8 +442,6 @@ private:
   gzfilebuf sb;
 };
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file output stream manipulator class.
  *
@@ -479,8 +471,6 @@ private:
   T1 val1;
   T2 val2;
 };
-
-/*****************************************************************************/
 
 // Manipulator function thunks through to stream buffer
 inline gzofstream&

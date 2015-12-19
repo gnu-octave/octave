@@ -343,11 +343,9 @@ do_minmax_body (const octave_value_list& args,
       builtin_type_t rtyp;
       if (xtyp == btyp_char && ytyp == btyp_char)
         rtyp = btyp_char;
-      /*
-      FIXME: This is what should happen when boolNDArray has max()
-      else if (xtyp == btyp_bool && ytyp == btyp_bool)
-        rtyp = btyp_bool;
-      */
+      // FIXME: This is what should happen when boolNDArray has max()
+      // else if (xtyp == btyp_bool && ytyp == btyp_bool)
+      //   rtyp = btyp_bool;
       else
         rtyp = btyp_mixed_numeric (xtyp, ytyp);
 
@@ -404,12 +402,11 @@ do_minmax_body (const octave_value_list& args,
 
 #undef MAKE_INT_BRANCH
 
-        /*
-        FIXME: This is what should happen when boolNDArray has max()
-        case btyp_bool:
-          retval = do_minmax_bin_op<boolNDArray> (argx, argy, ismin);
-          break;
-        */
+        // FIXME: This is what should happen when boolNDArray has max()
+        // case btyp_bool:
+        //   retval = do_minmax_bin_op<boolNDArray> (argx, argy, ismin);
+        //   break;
+
         default:
           error ("%s: cannot compute %s (%s, %s)", func, func,
                  argx.type_name ().c_str (), argy.type_name ().c_str ());

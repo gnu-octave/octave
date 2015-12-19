@@ -5548,7 +5548,7 @@ axes::properties::update_axes_layout (void)
   ypTickN = (zSign ? yPlane : yPlaneN);
   zpTickN = (zSign ? zPlaneN : zPlane);
 
-  /* 2D mode */
+  // 2D mode
   x2Dtop = false;
   y2Dright = false;
   layer2Dtop = false;
@@ -8036,10 +8036,10 @@ text::properties::update_text_extent (void)
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                            halign, valign, get_rotation (),
                            get_interpreter ());
-  /* The bbox is relative to the text's position.
-     We'll leave it that way, because get_position () does not return
-     valid results when the text is first constructed.
-     Conversion to proper coordinates is performed in get_extent. */
+  // The bbox is relative to the text's position.  We'll leave it that
+  // way, because get_position does not return valid results when the
+  // text is first constructed.  Conversion to proper coordinates is
+  // performed in get_extent.
   set_extent (bbox);
 
 #endif

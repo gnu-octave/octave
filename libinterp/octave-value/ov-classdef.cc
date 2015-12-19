@@ -2011,13 +2011,13 @@ public:
   void visit_do_until_command (tree_do_until_command&) { }
 
 private:
-  /* The name of the constructor being analyzed */
+  // The name of the constructor being analyzed.
   std::string who;
 
-  /* The name of the first output argument of the constructor */
+  // The name of the first output argument of the constructor.
   std::string obj_name;
 
-  /* The list of superclass constructors that are explicitly called */
+  // The list of superclass constructors that are explicitly called.
   std::list<cdef_class> ctor_list;
 };
 
@@ -3505,13 +3505,13 @@ install_classdef (void)
 {
   octave_classdef::register_type ();
 
-  /* bootstrap */
+  // bootstrap
   cdef_class handle = make_class ("handle");
   cdef_class meta_class = cdef_class::_meta_class = make_meta_class ("meta.class", handle);
   handle.set_class (meta_class);
   meta_class.set_class (meta_class);
 
-  /* meta classes */
+  // meta classes
   cdef_class meta_property = cdef_class::_meta_property = make_meta_class ("meta.property", handle);
   cdef_class meta_method = cdef_class::_meta_method = make_meta_class ("meta.method", handle);
   cdef_class meta_package = cdef_class::_meta_package = make_meta_class ("meta.package", handle);
@@ -3519,7 +3519,7 @@ install_classdef (void)
   cdef_class meta_event = make_meta_class ("meta.event", handle);
   cdef_class meta_dynproperty = make_meta_class ("meta.dynamicproperty", handle);
 
-  /* meta.class properties */
+  // meta.class properties
   meta_class.install_property (make_attribute (meta_class, "Abstract"));
   meta_class.install_property (make_attribute (meta_class, "ConstructOnLoad"));
   meta_class.install_property (make_property  (meta_class, "ContainingPackage"));
@@ -3558,7 +3558,7 @@ install_classdef (void)
       (make_property (meta_class, "SuperClassList",
                       make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClassList"),
                       "public", Matrix (), "private"));
-  /* meta.class methods */
+  // meta.class methods
   meta_class.install_method (make_method (meta_class, "fromName", class_fromName,
                                           "public", true));
   meta_class.install_method (make_method (meta_class, "fevalStatic", class_fevalStatic,
@@ -3572,7 +3572,7 @@ install_classdef (void)
   meta_class.install_method (make_method (meta_class, "gt", class_gt));
   meta_class.install_method (make_method (meta_class, "ge", class_ge));
 
-  /* meta.method properties */
+  // meta.method properties
   meta_method.install_property (make_attribute (meta_method, "Abstract"));
   meta_method.install_property (make_attribute (meta_method, "Access"));
   meta_method.install_property (make_attribute (meta_method, "DefiningClass"));
@@ -3583,7 +3583,7 @@ install_classdef (void)
   meta_method.install_property (make_attribute (meta_method, "Sealed"));
   meta_method.install_property (make_attribute (meta_method, "Static"));
 
-  /* meta.property properties */
+  // meta.property properties
   meta_property.install_property (make_attribute (meta_property, "Name"));
   meta_property.install_property (make_attribute (meta_property, "Description"));
   meta_property.install_property (make_attribute (meta_property, "DetailedDescription"));
@@ -3604,13 +3604,13 @@ install_classdef (void)
                       make_fcn_handle (property_get_defaultvalue, "meta.property>get.DefaultValue"),
                       "public", Matrix (), "private"));
   meta_property.install_property (make_attribute (meta_property, "HasDefault"));
-  /* meta.property events */
+  // meta.property events
   // FIXME: add events
 
-  /* handle methods */
+  // handle methods
   handle.install_method (make_method (handle, "delete", handle_delete));
 
-  /* meta.package properties */
+  // meta.package properties
   meta_package.install_property (make_attribute (meta_package, "Name"));
   meta_package.install_property (make_property  (meta_package, "ContainingPackage"));
   meta_package.install_property
@@ -3642,7 +3642,7 @@ install_classdef (void)
   meta_package.install_method (make_method (meta_package, "getAllPackages", package_getAllPackages,
                                             "public", true));
 
-  /* create "meta" package */
+  // create "meta" package
   cdef_package package_meta = cdef_package::_meta = make_package ("meta");
   package_meta.install_class (meta_class,       "class");
   package_meta.install_class (meta_property,    "property");
@@ -3651,7 +3651,7 @@ install_classdef (void)
   package_meta.install_class (meta_event,       "event");
   package_meta.install_class (meta_dynproperty, "dynproperty");
 
-  /* install built-in classes into the symbol table */
+  // install built-in classes into the symbol table
   symbol_table::install_built_in_function
     ("meta.class", octave_value (meta_class.get_constructor_function ()));
   symbol_table::install_built_in_function
@@ -3814,7 +3814,7 @@ DEFUN (__meta_get_package__, args, , "")
   return to_ov (lookup_package (cname));
 }
 
-DEFUN (__superclass_reference__, args, /* nargout */,
+DEFUN (__superclass_reference__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} __superclass_reference__ ()\n\
 Undocumented internal function.\n\
@@ -3823,7 +3823,7 @@ Undocumented internal function.\n\
   return octave_value (new octave_classdef_superclass_ref (args));
 }
 
-DEFUN (__meta_class_query__, args, /* nargout */,
+DEFUN (__meta_class_query__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} __meta_class_query__ ()\n\
 Undocumented internal function.\n\
@@ -3843,7 +3843,7 @@ Undocumented internal function.\n\
   return to_ov (lookup_class (cls));
 }
 
-DEFUN (metaclass, args, /* nargout */,
+DEFUN (metaclass, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} metaclass (obj)\n\
 Returns the meta.class object corresponding to the class of @var{obj}.\n\

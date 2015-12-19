@@ -590,7 +590,7 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
   else if (go.isa ("uimenu") || go.isa ("uicontrol")
            || go.isa ("uicontextmenu") || go.isa ("uitoolbar")
            || go.isa ("uipushtool") || go.isa ("uitoggletool"))
-    /* SKIP */;
+    ; // SKIP
   else if (go.isa ("uipanel"))
     {
       if (toplevel)

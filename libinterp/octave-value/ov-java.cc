@@ -760,7 +760,7 @@ find_octave_class (JNIEnv *jni_env, const char *name)
             {
               jni_env->ExceptionClear ();
 
-              /* Try the netbeans way */
+              // Try the netbeans way
               std::replace (class_loader.begin (), class_loader.end (),
                             '/', '.');
               jclass_ref jcls2 (jni_env, jni_env->FindClass ("org/openide/util/Lookup"));

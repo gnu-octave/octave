@@ -168,16 +168,16 @@ public:
   virtual dim_vector dims (void) const { return dim_vector (); }
 
 protected:
-  /* reference count */
+  // Reference count
   octave_refcount<octave_idx_type> refcount;
 
 protected:
-  /* Restricted copying */
+  // Restricted copying
   cdef_object_rep (const cdef_object_rep&)
     : refcount (1) { }
 
 private:
-  /* No assignment */
+  // No assignment
   cdef_object_rep& operator = (const cdef_object_rep& );
 
   void gripe_invalid_object (const char *who) const
@@ -188,7 +188,7 @@ class
 cdef_object
 {
 public:
-  /* FIXME: use a null object */
+  // FIXME: use a null object
   cdef_object (void)
     : rep (new cdef_object_rep ()) { }
 
@@ -1124,13 +1124,13 @@ public:
     return *this;
   }
 
-  /* normal invokation */
+  // normal invocation
   octave_value_list execute (const octave_value_list& args, int nargout,
                              bool do_check_access = true,
                              const std::string& who = std::string ())
   { return get_rep ()->execute (args, nargout, do_check_access, who); }
 
-  /* dot-invokation: object is pushed as 1st argument */
+  // dot-invocation: object is pushed as 1st argument
   octave_value_list execute (const cdef_object& obj,
                              const octave_value_list& args, int nargout,
                              bool do_check_access = true,

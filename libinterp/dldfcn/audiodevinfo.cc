@@ -66,9 +66,9 @@ bits_to_format (int bits)
 
 #endif
 
-#define NO_PORTAUDIO_MSG\
-  error ("portaudio not found on your system and thus audio functionality is not present");\
-  (void) args;  /*silence compiler warning "unused parameter"*/
+#define NO_PORTAUDIO_MSG \
+  error ("portaudio not found on your system and thus audio functionality is not present"); \
+  (void) args;  /* silence compiler warning "unused parameter" */
 
 DEFUN_DLD (audiodevinfo, args, ,
            "-*- texinfo -*-\n\

@@ -152,8 +152,8 @@ along with Octave; see the file COPYING.  If not, see
   INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _scalar, TYPE ## _m_s) \
   INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix, TYPE ## _m_m)
 
+// scalar unary ops.
 #define OCTAVE_S_INT_UNOPS(TYPE) \
-  /* scalar unary ops. */  \
  \
   DEFUNOP_OP (s_not, TYPE ## _scalar, !) \
   DEFUNOP_OP (s_uplus, TYPE ## _scalar, /* no-op */) \
@@ -169,8 +169,8 @@ along with Octave; see the file COPYING.  If not, see
   DEFNCUNOP_METHOD (s_incr, TYPE ## _scalar, increment) \
   DEFNCUNOP_METHOD (s_decr, TYPE ## _scalar, decrement)
 
+// scalar by scalar ops.
 #define OCTAVE_SS_INT_ARITH_OPS(PFX, T1, T2, T3)        \
-  /* scalar by scalar ops. */ \
  \
   DEFINTBINOP_OP (PFX ## _add, T1 ## scalar, T2 ## scalar, +, T3) \
   DEFINTBINOP_OP (PFX ## _sub, T1 ## scalar, T2 ## scalar, -, T3) \
@@ -299,8 +299,8 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_SS_INT_BOOL_OPS (sfx, TYPE ## _, float_, octave_ ## TYPE (0), 0) \
   OCTAVE_SS_INT_BOOL_OPS (fxs, float_, TYPE ## _, 0, octave_ ## TYPE (0))
 
+// scalar by matrix ops.
 #define OCTAVE_SM_INT_ARITH_OPS(PFX, TS, TM, TI) \
-  /* scalar by matrix ops. */ \
  \
   DEFINTNDBINOP_OP (PFX ## _add, TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, +, TI) \
   DEFINTNDBINOP_OP (PFX ## _sub, TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, -, TI) \
@@ -456,8 +456,8 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_SM_CONV (TYPE ## _, complex_) \
   OCTAVE_SM_CONV (TYPE ## _, float_complex_)
 
+// matrix by scalar ops.
 #define OCTAVE_MS_INT_ARITH_OPS(PFX, TM, TS, TI) \
-  /* matrix by scalar ops. */ \
  \
   DEFINTNDBINOP_OP (PFX ## _add, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, +, TI) \
   DEFINTNDBINOP_OP (PFX ## _sub, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, -, TI) \
@@ -611,8 +611,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_MS_INT_ASSIGN_OPS (mx, TYPE ## _, , ) \
   OCTAVE_MS_INT_ASSIGN_OPS (mfx, TYPE ## _, float_, float_)
 
+// matrix unary ops.
 #define OCTAVE_M_INT_UNOPS(TYPE) \
-  /* matrix unary ops. */ \
  \
   DEFNDUNOP_OP (m_not, TYPE ## _matrix, TYPE ## _array, !) \
   DEFNDUNOP_OP (m_uplus, TYPE ## _matrix, TYPE ## _array, /* no-op */) \
@@ -637,8 +637,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   DEFNCUNOP_METHOD (m_decr, TYPE ## _matrix, decrement) \
   DEFNCUNOP_METHOD (m_changesign, TYPE ## _matrix, changesign)
 
+// matrix by matrix ops.
 #define OCTAVE_MM_INT_ARITH_OPS(PFX, T1, T2, T3)        \
-  /* matrix by matrix ops. */ \
  \
   DEFINTNDBINOP_OP (PFX ## _add, T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, +, T3) \
   DEFINTNDBINOP_OP (PFX ## _sub, T1 ## matrix, T2 ## matrix, T1 ## array, T2 ## array, -, T3) \

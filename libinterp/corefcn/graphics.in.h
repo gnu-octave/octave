@@ -1949,7 +1949,7 @@ public:
   property clone (void) const
   { return property (rep->clone ()); }
 
-  /*
+#if 0
   const string_property& as_string_property (void) const
     { return *(dynamic_cast<string_property*> (rep)); }
 
@@ -1967,7 +1967,7 @@ public:
 
   const handle_property& as_handle_property (void) const
     { return *(dynamic_cast<handle_property*> (rep)); }
-    */
+#endif
 
 private:
   base_property *rep;
@@ -2524,8 +2524,8 @@ public:
   virtual graphics_toolkit get_toolkit (void) const;
 
   virtual Matrix
-  get_boundingbox (bool /*internal*/ = false,
-                   const Matrix& /*parent_pix_size*/ = Matrix ()) const
+  get_boundingbox (bool /* finternal */ = false,
+                   const Matrix& /* parent_pix_size */ = Matrix ()) const
   { return Matrix (1, 4, 0.0); }
 
   virtual void update_boundingbox (void);

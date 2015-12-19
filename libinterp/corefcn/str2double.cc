@@ -410,4 +410,4 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)
 %!assert (str2double (char(zeros(3,0))), NaN)
- */
+*/

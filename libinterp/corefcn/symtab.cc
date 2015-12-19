@@ -1896,4 +1896,4 @@ updated to use some other function.
 %! assert (strcmp (which ("bar"), ""));
 %! clear bar;
 %! assert (! strcmp (which ("bar"), ""));
- */
+*/

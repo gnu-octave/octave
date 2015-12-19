@@ -274,7 +274,7 @@ factorization as determined by @var{typ}.\n\
       L.xcidx(n) = lnz;
 
 
-      /* create a copy of the column pointers */
+      // create a copy of the column pointers
       octave_idx_type *W = First;
       for (octave_idx_type j = 0 ; j < n ; j++)
         W[j] = L.xcidx (j);
@@ -330,7 +330,7 @@ factorization as determined by @var{typ}.\n\
 
   if (nargout > 1)
     {
-      /* compute the elimination tree height */
+      // compute the elimination tree height
       octave_idx_type height = 0 ;
       for (int i = 0 ; i < n ; i++)
         height = (height > Level[i] ? height : Level[i]);

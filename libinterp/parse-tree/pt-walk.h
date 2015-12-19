@@ -219,52 +219,52 @@ public:
   visit_classdef_attribute (tree_classdef_attribute&) { } /* = 0; */
 
   virtual void
-  visit_classdef_attribute_list (tree_classdef_attribute_list&) { } /* = 0; */
+  visit_classdef_attribute_list (tree_classdef_attribute_list&) { } // = 0;
 
   virtual void
-  visit_classdef_superclass (tree_classdef_superclass&) { } /* = 0; */
+  visit_classdef_superclass (tree_classdef_superclass&) { } // = 0;
 
   virtual void
-  visit_classdef_superclass_list (tree_classdef_superclass_list&) { } /* = 0; */
+  visit_classdef_superclass_list (tree_classdef_superclass_list&) { } // = 0;
 
   virtual void
-  visit_classdef_property (tree_classdef_property&) { } /* = 0; */
+  visit_classdef_property (tree_classdef_property&) { } // = 0;
 
   virtual void
-  visit_classdef_property_list (tree_classdef_property_list&) { } /* = 0; */
+  visit_classdef_property_list (tree_classdef_property_list&) { } // = 0;
 
   virtual void
-  visit_classdef_properties_block (tree_classdef_properties_block&) { } /* = 0; */
+  visit_classdef_properties_block (tree_classdef_properties_block&) { } // = 0;
 
   virtual void
-  visit_classdef_methods_list (tree_classdef_methods_list&) { } /* = 0; */
+  visit_classdef_methods_list (tree_classdef_methods_list&) { } // = 0;
 
   virtual void
-  visit_classdef_methods_block (tree_classdef_methods_block&) { } /* = 0; */
+  visit_classdef_methods_block (tree_classdef_methods_block&) { } // = 0;
 
   virtual void
-  visit_classdef_event (tree_classdef_event&) { } /* = 0; */
+  visit_classdef_event (tree_classdef_event&) { } // = 0;
 
   virtual void
-  visit_classdef_events_list (tree_classdef_events_list&) { } /* = 0; */
+  visit_classdef_events_list (tree_classdef_events_list&) { } // = 0;
 
   virtual void
-  visit_classdef_events_block (tree_classdef_events_block&) { } /* = 0; */
+  visit_classdef_events_block (tree_classdef_events_block&) { } // = 0;
 
   virtual void
-  visit_classdef_enum (tree_classdef_enum&) { } /* = 0; */
+  visit_classdef_enum (tree_classdef_enum&) { } // = 0;
 
   virtual void
-  visit_classdef_enum_list (tree_classdef_enum_list&) { } /* = 0; */
+  visit_classdef_enum_list (tree_classdef_enum_list&) { } // = 0;
 
   virtual void
-  visit_classdef_enum_block (tree_classdef_enum_block&) { } /* = 0; */
+  visit_classdef_enum_block (tree_classdef_enum_block&) { } // = 0;
 
   virtual void
-  visit_classdef_body (tree_classdef_body&) { } /* = 0; */
+  visit_classdef_body (tree_classdef_body&) { } // = 0;
 
   virtual void
-  visit_classdef (tree_classdef&) { } /* = 0; */
+  visit_classdef (tree_classdef&) { } // = 0;
 
 protected:
 

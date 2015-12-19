@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-stream.h"
 #include "octave-preserve-stream-state.h"
 #include "pager.h"

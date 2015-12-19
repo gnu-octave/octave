@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <defaults.h>
 #include "dynamic-ld.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-dld-fcn.h"
 #include "ov.h"
 

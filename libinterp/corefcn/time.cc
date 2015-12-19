@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-time.h"
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 // Date and time functions.
 

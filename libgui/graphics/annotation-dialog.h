@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLineEdit>
 #include <QAbstractButton>
 
-#include "oct-obj.h"
+#include "ovl.h"
 
 namespace Ui
 {

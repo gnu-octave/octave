@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gripes.h"
 #include "load-path.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-class.h"
 #include "ov-typeinfo.h"

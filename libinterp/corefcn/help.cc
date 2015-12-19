@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "input.h"
 #include "load-path.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"

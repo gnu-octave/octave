@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
 #include "symtab.h"

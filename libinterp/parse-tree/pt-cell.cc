@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Cell.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 #include "pt-cell.h"

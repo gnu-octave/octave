@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "pager.h"
 #include "octave-link.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 #include "parse.h"
 #include "symtab.h"

@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 
 #include "Cell.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"

@@ -64,7 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-mutex.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ops.h"
 #include "options-usage.h"
 #include "ov.h"

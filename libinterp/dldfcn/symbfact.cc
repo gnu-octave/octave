@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 DEFUN_DLD (symbfact, args, nargout,

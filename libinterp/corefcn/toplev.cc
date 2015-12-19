@@ -63,7 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-conf-features.h"
 #include "oct-hist.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "pager.h"
 #include "parse.h"

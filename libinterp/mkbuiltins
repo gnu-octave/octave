@@ -50,7 +50,7 @@ if $make_header; then
 #if ! defined (octave_builtin_defun_decls_h)
 #define octave_builtin_defun_decls_h 1
 
-#include "oct-obj.h"
+#include "ovl.h"
 
 #define DEFUN_DECL(name) \
   extern OCTINTERP_API octave_value_list \
@@ -79,7 +79,7 @@ else
 
 #include "defun.h"
 #include "help.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "variables.h"
 #include "builtins.h"
 

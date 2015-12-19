@@ -519,7 +519,7 @@ sub emit_opt_handler_fcns
 #include "defun.h"
 #include "pr-output.h"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 #include "pager.h"
 

@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 #include "octave-preserve-stream-state.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-class.h"
 #include "ov-usr-fcn.h"

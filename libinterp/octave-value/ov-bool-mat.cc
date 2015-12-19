@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "gripes.h"
 #include "mxarray.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-hdf5.h"
 #include "ops.h"
 #include "ov-base.h"

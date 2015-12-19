@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "oct-stream.h"

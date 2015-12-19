@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "pr-output.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-colon.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon,

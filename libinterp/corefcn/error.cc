@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "input.h"
 #include "pager.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "utils.h"
 #include "ov.h"

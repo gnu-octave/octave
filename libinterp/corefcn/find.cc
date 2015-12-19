@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 // Find at most N_TO_FIND nonzero elements in NDA.  Search forward if
 // DIRECTION is 1, backward if it is -1.  NARGOUT is the number of

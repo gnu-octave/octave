@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "symtab.h"
 
 typedef symbol_record* symbol_record_ptr;

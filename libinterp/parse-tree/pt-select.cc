@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"

@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "mexproto.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"

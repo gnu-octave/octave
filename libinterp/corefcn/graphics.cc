@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
 #include "pager.h"

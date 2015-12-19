@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-hist.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "sysdep.h"

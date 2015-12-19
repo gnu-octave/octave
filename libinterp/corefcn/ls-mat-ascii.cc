@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-save.h"
 #include "ls-ascii-helper.h"
 #include "ls-mat-ascii.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"

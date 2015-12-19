@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "input.h"
 #include "load-path.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "parse.h"
 #include "toplev.h"

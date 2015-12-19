@@ -44,7 +44,7 @@ qhull command
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)

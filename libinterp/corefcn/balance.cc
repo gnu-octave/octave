@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "f77-fcn.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 DEFUN (balance, args, nargout,

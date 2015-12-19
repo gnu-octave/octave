@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-hdf5.h"
 #include "ls-oct-text.h"
 #include "ls-utils.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ops.h"

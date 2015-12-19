@@ -197,7 +197,6 @@ COREFCN_SRC = \
   libinterp/corefcn/oct-iostrm.cc \
   libinterp/corefcn/oct-lvalue.cc \
   libinterp/corefcn/oct-map.cc \
-  libinterp/corefcn/oct-obj.cc \
   libinterp/corefcn/oct-prcstrm.cc \
   libinterp/corefcn/oct-procbuf.cc \
   libinterp/corefcn/oct-stream.cc \

@@ -74,7 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "display.h"
 #include "error.h"
 #include "input.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "pager.h"
 #include "parse.h"

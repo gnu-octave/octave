@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-fcn-handle.h"
 #include "pt-fcn-handle.h"
 #include "pager.h"

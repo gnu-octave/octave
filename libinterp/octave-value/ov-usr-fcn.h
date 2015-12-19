@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 
 #include "comment-list.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 #include "symtab.h"

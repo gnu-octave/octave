@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "sysdep.h"
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 #if ! defined (HZ)

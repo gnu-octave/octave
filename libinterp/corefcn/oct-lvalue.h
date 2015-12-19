@@ -28,7 +28,7 @@ class octave_value_list;
 
 #include <string>
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pt-idx.h"
 #include "symtab.h"
 

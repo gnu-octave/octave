@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-typeinfo.h"
 
 class tree_walker;

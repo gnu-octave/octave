@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "load-path.h"
 #include "octave-link.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 #include "procstream.h"
 #include "sysdep.h"

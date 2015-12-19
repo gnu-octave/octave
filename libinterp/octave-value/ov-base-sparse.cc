@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iomanip>
 #include <iostream>
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "quit.h"
 #include "pr-output.h"

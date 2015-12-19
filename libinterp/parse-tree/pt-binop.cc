@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "defun.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "profiler.h"
 #include "pt-binop.h"

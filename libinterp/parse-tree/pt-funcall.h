@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_tree_funcall_h 1
 
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "parse.h"
 #include "pt-exp.h"
 

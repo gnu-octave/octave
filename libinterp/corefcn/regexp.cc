@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 // Replace backslash escapes in a string with the real values.  We need

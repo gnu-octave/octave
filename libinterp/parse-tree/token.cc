@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "symtab.h"
 #include "token.h"
 #include "utils.h"

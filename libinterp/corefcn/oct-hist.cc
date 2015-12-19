@@ -59,7 +59,7 @@ Software Foundation, Inc.
 #include "gripes.h"
 #include "input.h"
 #include "oct-hist.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 #include "parse.h"
 #include "sighandlers.h"

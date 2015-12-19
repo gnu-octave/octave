@@ -61,7 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "oct-errno.h"
 #include "oct-hist.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-range.h"
 #include "pager.h"
 #include "parse.h"

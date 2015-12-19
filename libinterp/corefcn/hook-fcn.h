@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-fcn-handle.h"
 #include "parse.h"

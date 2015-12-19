@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "str-vec.h"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 #include "symtab.h"

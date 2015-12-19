@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "toplev.h"
 #include "utils.h"
 

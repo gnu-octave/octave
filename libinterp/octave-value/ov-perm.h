@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov-base.h"
 #include "ov-typeinfo.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 class
 OCTINTERP_API

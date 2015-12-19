@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 
 #include "Cell.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 class string_vector;
 

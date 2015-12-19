@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "error.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 Cell::Cell (const octave_value_list& ovl)
   : Array<octave_value> (ovl.cell_value ())

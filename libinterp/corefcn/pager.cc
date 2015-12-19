@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 #include "procstream.h"
 #include "sighandlers.h"

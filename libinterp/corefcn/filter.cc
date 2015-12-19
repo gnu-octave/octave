@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 #if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArray<double>

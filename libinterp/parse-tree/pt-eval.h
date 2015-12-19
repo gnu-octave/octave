@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "comment-list.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pt-walk.h"
 
 class tree_expression;

@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 DEFUN (givens, args, nargout,
        "-*- texinfo -*-\n\

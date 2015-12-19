@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "oct-stream.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 static const octave_idx_type idx_max =

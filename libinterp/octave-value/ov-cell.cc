@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "mxarray.h"
 #include "ov-cell.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-hdf5.h"
 #include "unwind-prot.h"
 #include "utils.h"

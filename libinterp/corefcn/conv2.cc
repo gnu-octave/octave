@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };

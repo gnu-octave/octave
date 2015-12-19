@@ -65,6 +65,7 @@ OCTAVE_VALUE_INC = \
   libinterp/octave-value/ov-typeinfo.h \
   libinterp/octave-value/ov-usr-fcn.h \
   libinterp/octave-value/ov.h \
+  libinterp/octave-value/ovl.h \
   $(OV_INTTYPE_INC) \
   $(OV_SPARSE_INC)
 
@@ -123,6 +124,7 @@ OCTAVE_VALUE_SRC = \
   libinterp/octave-value/ov-typeinfo.cc \
   libinterp/octave-value/ov-usr-fcn.cc \
   libinterp/octave-value/ov.cc \
+  libinterp/octave-value/ovl.cc \
   $(OV_INTTYPE_SRC) \
   $(OV_SPARSE_SRC)
 

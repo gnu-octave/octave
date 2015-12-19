@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-stream.h"
 #include "ov.h"
 #include "ov-base.h"

@@ -58,7 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hist.h"
 #include "toplev.h"
 #include "octave-link.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"

@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-fnda-fcnda.h"
 
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"

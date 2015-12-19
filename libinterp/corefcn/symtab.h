@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 class tree_argument_list;
 class octave_user_function;
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "workspace-element.h"
 #include "oct-refcount.h"
 #include "ov.h"

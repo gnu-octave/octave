@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-cs-m.h"
 
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ops.h"

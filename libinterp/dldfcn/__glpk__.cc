@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 
 #if defined (HAVE_GLPK)

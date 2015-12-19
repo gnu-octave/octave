@@ -67,7 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-prcstrm.h"
 #include "oct-stream.h"
 #include "oct-strstrm.h"

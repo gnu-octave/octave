@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dynamic-ld.h"
 #include "error.h"
 #include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-mex-fcn.h"
 #include "ov.h"
 #include "profiler.h"

@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "Cell.h"
 
 // We are likely to have a lot of octave_value_list objects to allocate,

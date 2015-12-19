@@ -79,7 +79,7 @@ class tree_switch_case;
 class tree_switch_case_list;
 class tree_switch_command;
 
-#include "oct-obj.h"
+#include "ovl.h"
 
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;

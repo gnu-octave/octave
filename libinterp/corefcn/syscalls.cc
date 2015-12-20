@@ -648,10 +648,7 @@ convert (int x, int ibase, int obase)
         {
           tmp = x % obase;
           if (tmp > ibase - 1)
-            {
-              error ("mkfifo: invalid digit");
-              break;
-            }
+            error ("mkfifo: invalid digit");
           retval += mult * tmp;
           mult *= ibase;
         }

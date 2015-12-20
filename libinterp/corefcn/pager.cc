@@ -380,11 +380,7 @@ octave_pager_stream::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create pager_stream object!");
-
-      retval = false;
-    }
+    error ("unable to create pager_stream object!");
 
   return retval;
 }
@@ -445,11 +441,7 @@ octave_diary_stream::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create diary_stream object!");
-
-      retval = false;
-    }
+    error ("unable to create diary_stream object!");
 
   return retval;
 }

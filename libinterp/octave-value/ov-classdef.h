@@ -1615,11 +1615,7 @@ private:
       create_instance ();
 
     if (! instance)
-      {
-        error ("unable to create cdef_manager!");
-
-        retval = false;
-      }
+      error ("unable to create cdef_manager!");
 
     return retval;
   }

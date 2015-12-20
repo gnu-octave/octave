@@ -763,10 +763,7 @@ octave_struct::load_ascii (std::istream& is)
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of elements in structure");
-      success = false;
-    }
+    error ("load: failed to extract number of elements in structure");
 
   return success;
 }
@@ -1405,10 +1402,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of elements in structure");
-      success = false;
-    }
+    error ("load: failed to extract number of elements in structure");
 
   return success;
 }

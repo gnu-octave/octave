@@ -89,11 +89,7 @@ public:
       }
 
     if (! instance)
-      {
-        error ("unable to create ft_manager!");
-
-        retval = false;
-      }
+      error ("unable to create ft_manager!");
 
     return retval;
   }

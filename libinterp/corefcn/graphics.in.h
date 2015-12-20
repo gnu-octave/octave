@@ -854,10 +854,7 @@ public:
     bool retval = true;
 
     if (! contains (val, match))
-      {
-        error ("invalid value = %s", val.c_str ());
-        retval = false;
-      }
+      error ("invalid value = %s", val.c_str ());
 
     return retval;
   }
@@ -2339,11 +2336,7 @@ private:
       create_instance ();
 
     if (! instance)
-      {
-        error ("unable to create gh_manager!");
-
-        retval = false;
-      }
+      error ("unable to create gh_manager!");
 
     return retval;
   }
@@ -2726,9 +2719,7 @@ public:
     if (valid_object ())
       return get_properties ().get (all);
     else
-      {
-        error ("base_graphics_object::get: invalid graphics object");
-      }
+      error ("base_graphics_object::get: invalid graphics object");
   }
 
   virtual octave_value get (const caseless_str& pname) const
@@ -2736,9 +2727,7 @@ public:
     if (valid_object ())
       return get_properties ().get (pname);
     else
-      {
-        error ("base_graphics_object::get: invalid graphics object");
-      }
+      error ("base_graphics_object::get: invalid graphics object");
   }
 
   virtual octave_value get_default (const caseless_str&) const;
@@ -2783,9 +2772,7 @@ public:
     if (valid_object ())
       return get_properties ().get_parent ();
     else
-      {
-        error ("base_graphics_object::get_parent: invalid graphics object");
-      }
+      error ("base_graphics_object::get_parent: invalid graphics object");
   }
 
   graphics_handle get_handle (void) const
@@ -2793,9 +2780,7 @@ public:
     if (valid_object ())
       return get_properties ().get___myhandle__ ();
     else
-      {
-        error ("base_graphics_object::get_handle: invalid graphics object");
-      }
+      error ("base_graphics_object::get_handle: invalid graphics object");
   }
 
   virtual void remove_child (const graphics_handle& h)
@@ -2870,9 +2855,7 @@ public:
     if (valid_object ())
       return get_properties ().get_toolkit ();
     else
-      {
-        error ("base_graphics_object::get_toolkit: invalid graphics object");
-      }
+      error ("base_graphics_object::get_toolkit: invalid graphics object");
   }
 
   virtual void add_property_listener (const std::string& nm,
@@ -5904,11 +5887,7 @@ public:
       create_instance ();
 
     if (! instance)
-      {
-        error ("unable to create gh_manager!");
-
-        retval = false;
-      }
+      error ("unable to create gh_manager!");
 
     return retval;
   }

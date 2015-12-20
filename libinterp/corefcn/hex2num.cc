@@ -116,10 +116,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
                     num.ival += static_cast<uint32_t> (ch - '0');
                 }
               else
-                {
-                  error ("hex2num: illegal character found in string S");
-                  break;
-                }
+                error ("hex2num: illegal character found in string S");
             }
 
           if (nc < nchars)

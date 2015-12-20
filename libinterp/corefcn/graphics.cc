@@ -99,10 +99,8 @@ validate_property_name (const std::string& who, const std::string& what,
   size_t num_matches = matches.size ();
 
   if (num_matches == 0)
-    {
-      error ("%s: unknown %s property %s",
-             who.c_str (), what.c_str (), pname.c_str ());
-    }
+    error ("%s: unknown %s property %s",
+           who.c_str (), what.c_str (), pname.c_str ());
   else if (num_matches > 1)
     {
       string_vector sv (matches);
@@ -2216,10 +2214,8 @@ graphics_object::set (const Array<std::string>& pnames,
                       const Cell& values, octave_idx_type row)
 {
   if (pnames.numel () != values.columns ())
-    {
-      error ("set: number of names must match number of value columns (%d != %d)",
-             pnames.numel (), values.columns ());
-    }
+    error ("set: number of names must match number of value columns (%d != %d)",
+           pnames.numel (), values.columns ());
 
   octave_idx_type k = pnames.columns ();
 
@@ -10816,13 +10812,11 @@ undocumented.\n\
               if (val.compare ("expose"))
                 do_events = false;
               else
-                {
-                  error ("drawnow: invalid argument, 'expose' is only valid option");
+              {
+                gh_manager::unlock ();
 
-                  gh_manager::unlock ();
-
-                  return ovl ();
-                }
+                error ("drawnow: invalid argument, 'expose' is only valid option");
+              }
             }
 
           if (do_events)
@@ -10878,15 +10872,14 @@ undocumented.\n\
 
                   file_stat fs (dirname);
 
-                  if (! (fs && fs.is_dir ()))
+                  if (! fs || ! fs.is_dir ())
                     {
-                      error ("drawnow: nonexistent directory '%s'",
-                             dirname.c_str ());
-
                       gh_manager::unlock ();
 
-                      return ovl ();
+                      error ("drawnow: nonexistent directory '%s'",
+                             dirname.c_str ());
                     }
+
                 }
             }
 

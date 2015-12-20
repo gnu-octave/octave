@@ -453,10 +453,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                     = read_text_data (is, std::string (), dummy, t2, i);
 
                   if (! is)
-                    {
-                      error ("load: failed to load anonymous function handle");
-                      break;
-                    }
+                    error ("load: failed to load anonymous function handle");
 
                   symbol_table::assign (name, t2, local_scope, 0);
                 }
@@ -638,10 +635,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
                                   dummy, t2, doc);
 
               if (! is)
-                {
-                  error ("load: failed to load anonymous function handle");
-                  break;
-                }
+                error ("load: failed to load anonymous function handle");
 
               symbol_table::assign (name, t2, local_scope);
             }

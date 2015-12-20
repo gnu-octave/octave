@@ -531,11 +531,9 @@ octave_user_function::do_multi_index_op (int nargout,
       if (ret_list)
         ret_list->define_from_arg_vector (ret_args);
       else
-        {
-          error ("%s: invalid classdef constructor, no output argument defined",
-                 dispatch_class ().c_str ());
-          return retval;
-        }
+        error ("%s: invalid classdef constructor, no output argument defined",
+               dispatch_class ().c_str ());
+
     }
 
   // Force parameter list to be undefined when this function exits.

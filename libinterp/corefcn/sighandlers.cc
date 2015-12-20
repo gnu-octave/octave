@@ -198,11 +198,7 @@ private:
       }
 
     if (! instance)
-      {
-        error ("unable to create w32_interrupt_manager");
-
-        retval = false;
-      }
+      error ("unable to create w32_interrupt_manager");
 
     return retval;
   }
@@ -928,11 +924,7 @@ octave_child_list::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create child list object!");
-
-      retval = false;
-    }
+    error ("unable to create child list object!");
 
   return retval;
 }

@@ -192,12 +192,7 @@ Undocumented internal function.\n\
   call_depth++;
 
   if (call_depth > 1)
-    {
-      error ("eigs: invalid recursive call");
-      if (fcn_name.length ())
-        clear_function (fcn_name);
-      return retval;
-    }
+    error ("eigs: invalid recursive call");
 
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())

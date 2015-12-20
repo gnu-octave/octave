@@ -394,19 +394,13 @@ octave_float_complex_matrix::load_ascii (std::istream& is)
                 panic_impossible ();
             }
           else
-            {
-              error ("load: failed to extract number of rows and columns");
-              success = false;
-            }
+            error ("load: failed to extract number of rows and columns");
         }
       else
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    error ("load: failed to extract number of rows and columns");
 
   return success;
 }

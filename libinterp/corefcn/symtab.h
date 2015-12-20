@@ -93,11 +93,7 @@ public:
         create_instance ();
 
       if (! instance)
-        {
-          error ("unable to create scope_id_cache object!");
-
-          retval = false;
-        }
+        error ("unable to create scope_id_cache object!");
 
       return retval;
     }

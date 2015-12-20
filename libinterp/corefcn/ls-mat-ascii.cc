@@ -317,13 +317,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
                             break;
                         }
                       else
-                        {
-                          error ("load: failed to read matrix from file '%s'",
-                                 filename.c_str ());
-
-                          return retval;
-                        }
-
+                        error ("load: failed to read matrix from file '%s'",
+                               filename.c_str ());
                     }
                 }
             }

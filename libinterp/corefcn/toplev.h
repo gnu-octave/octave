@@ -135,11 +135,7 @@ public:
       create_instance ();
 
     if (! instance)
-      {
-        error ("unable to create call stack object!");
-
-        retval = false;
-      }
+      error ("unable to create call stack object!");
 
     return retval;
   }

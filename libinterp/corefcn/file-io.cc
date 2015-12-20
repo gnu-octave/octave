@@ -1881,10 +1881,7 @@ convert (int x, int ibase, int obase)
         {
           tmp = x % obase;
           if (tmp > ibase - 1)
-            {
-              error ("umask: invalid digit");
-              break;
-            }
+            error ("umask: invalid digit");
           retval += mult * tmp;
           mult *= ibase;
         }

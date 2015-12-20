@@ -377,10 +377,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
                     }
                 }
               else
-                {
-                  error ("load: failed to read dimensions");
-                  success = false;
-                }
+                error ("load: failed to read dimensions");
             }
           else
             error ("load: failed to extract matrix size");
@@ -407,11 +404,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
                       char *ptmp = tmp.fortran_vec ();
 
                       if (len > 0 && ! is.read (ptmp, len))
-                        {
-                          error ("load: failed to load string constant");
-                          success = false;
-                          break;
-                        }
+                        error ("load: failed to load string constant");
                       else
                         {
                           if (len > max_len)
@@ -424,11 +417,8 @@ octave_char_matrix_str::load_ascii (std::istream& is)
                         }
                     }
                   else
-                    {
-                      error ("load: failed to extract string length for element %d",
-                             i+1);
-                      success = false;
-                    }
+                    error ("load: failed to extract string length for element %d",
+                           i+1);
                 }
 
               matrix = chm;
@@ -451,9 +441,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
               char *ptmp = tmp.fortran_vec ();
 
               if (len > 0 && ! is.read (ptmp, len))
-                {
-                  error ("load: failed to load string constant");
-                }
+                error ("load: failed to load string constant");
               else
                 {
                   if (is)
@@ -467,10 +455,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    error ("load: failed to extract number of rows and columns");
 
   return success;
 }

@@ -109,16 +109,10 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
         for (jj = uptr[k] + 1; jj < cidx[k+1]; jj++)
           data[jj] /=  data[uptr[k]];
       if (k != jrow)
-        {
-          error ("ilu: A has a zero on the diagonal");
-          break;
-        }
+        error ("ilu: A has a zero on the diagonal");
 
       if (data[j] == T(0))
-        {
-          error ("ilu: encountered a pivot equal to 0");
-          break;
-        }
+        error ("ilu: encountered a pivot equal to 0");
       for (i = j1; i <= j2; i++)
         iw[ridx[i]] = -1;
     }
@@ -351,10 +345,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 
       // Check if the pivot is zero
       if (data_u[total_len_u] == zero)
-        {
-          error ("ilu: encountered a pivot equal to 0");
-          break;
-        }
+        error ("ilu: encountered a pivot equal to 0");
 
       // Scale the elements in L by the pivot
       for (i = total_len_l ; i < (total_len_l + w_len_l); i++)
@@ -366,10 +357,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
       // Check if there are too many elements to be indexed with
       // octave_idx_type type due to fill-in during the process.
       if (total_len_l < 0 || total_len_u < 0)
-        {
-          error ("ilu: integer overflow.  Too many fill-in elements in L or U");
-          break;
-        }
+        error ("ilu: integer overflow.  Too many fill-in elements in L or U");
       cidx_u[k+1] = cidx_u[k] - cidx_u[0] + w_len_u;
       cidx_l[k+1] = cidx_l[k] - cidx_l[0] + w_len_l;
 
@@ -776,10 +764,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
               iw_u.insert (k);
             }
           else
-            {
-              error ("ilu: encountered a pivot equal to 0");
-              break;
-            }
+            error ("ilu: encountered a pivot equal to 0");
         }
 
       // Scale the elements on the L part for IKJ version (milu = [col|off])
@@ -839,10 +824,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
       // Check if there are too many elements to be indexed with
       // octave_idx_type type due to fill-in during the process.
       if (total_len_l < 0 || total_len_u < 0)
-        {
-          error ("ilu: Integer overflow.  Too many fill-in elements in L or U");
-          break;
-        }
+        error ("ilu: Integer overflow.  Too many fill-in elements in L or U");
       if (opt == ROW)
         uptr[k] = total_len_u - 1;
       cidx_u[k+1] = cidx_u[k] - cidx_u[0] + w_len_u;

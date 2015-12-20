@@ -53,10 +53,7 @@ get_dim_vector (const octave_value& val, const char *name)
           if (ii == dimsv(i) && ii >= 0)
             dv(i) = ii;
           else
-            {
-              error ("%s: dimension vector DIMS must contain integers", name);
-              break;
-            }
+            error ("%s: dimension vector DIMS must contain integers", name);
         }
     }
 

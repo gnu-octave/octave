@@ -63,11 +63,7 @@ display_info::instance_ok (bool query)
     }
 
   if (! instance)
-    {
-      error ("unable to create display_info object!");
-
-      retval = false;
-    }
+    error ("unable to create display_info object!");
 
   return retval;
 }

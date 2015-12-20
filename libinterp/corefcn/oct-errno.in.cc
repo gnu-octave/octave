@@ -302,11 +302,7 @@ octave_errno::instance_ok (void)
     }
 
   if (! instance)
-    {
-      error ("unable to create errno object!");
-
-      retval = false;
-    }
+    error ("unable to create errno object!");
 
   return retval;
 }

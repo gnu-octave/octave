@@ -863,10 +863,9 @@ Force Octave to assume the file is in Octave's text format.\n\
             }
         }
       else
-        {
-          error ("load: unable to determine file format of '%s'",
-                 orig_fname.c_str ());
-        }
+        error ("load: unable to determine file format of '%s'",
+               orig_fname.c_str ());
+
     }
 
   return retval;

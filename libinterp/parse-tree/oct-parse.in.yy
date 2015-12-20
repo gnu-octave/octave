@@ -4485,10 +4485,7 @@ source_file (const std::string& file_name, const std::string& context,
   source_call_depth[file_full_name]++;
 
   if (source_call_depth[file_full_name] >= Vmax_recursion_depth)
-    {
-      error ("max_recursion_depth exceeded");
-      return;
-    }
+    error ("max_recursion_depth exceeded");
 
   if (! context.empty ())
     {

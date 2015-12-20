@@ -157,25 +157,6 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-#define DASPK_ABORT() \
-  return retval
-
-#define DASPK_ABORT1(msg) \
-  do \
-    { \
-      error ("daspk: " msg); \
-      DASPK_ABORT (); \
-    } \
-  while (0)
-
-#define DASPK_ABORT2(fmt, arg) \
-  do \
-    { \
-      error ("daspk: " fmt, arg); \
-      DASPK_ABORT (); \
-    } \
-  while (0)
-
 DEFUN (daspk, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
@@ -293,7 +274,7 @@ parameters for @code{daspk}.\n\
   call_depth++;
 
   if (call_depth > 1)
-    DASPK_ABORT1 ("invalid recursive call");
+    error ("daspk: invalid recursive call");
 
   std::string fcn_name, fname, jac_name, jname;
   daspk_fcn = 0;
@@ -343,7 +324,7 @@ parameters for @code{daspk}.\n\
             }
         }
       else
-        DASPK_ABORT1 ("incorrect number of elements in cell array");
+        error ("daspk: incorrect number of elements in cell array");
     }
 
   if (! daspk_fcn && ! f_arg.is_cell ())
@@ -401,7 +382,7 @@ parameters for @code{daspk}.\n\
     }
 
   if (! daspk_fcn)
-    DASPK_ABORT ();
+    return retval;
 
   ColumnVector state = args(1).xvector_value ("daspk: initial state X_0 must be a vector");
 
@@ -419,7 +400,7 @@ parameters for @code{daspk}.\n\
     }
 
   if (state.numel () != deriv.numel ())
-    DASPK_ABORT1 ("X_0 and XDOT_0 must have the same size");
+    error ("daspk: X_0 and XDOT_0 must have the same size");
 
   double tzero = out_times (0);
 

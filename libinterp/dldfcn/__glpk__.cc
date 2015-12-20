@@ -170,6 +170,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       static char tmp[] = "outpb.lp";
       if (glp_write_lp (lp, NULL, tmp) != 0)
         {
+          // FIXME: This doesn't work anymore now that error does not return.
+          //        Should longjmp just be deleted?
           error ("__glpk__: unable to write problem");
           longjmp (mark, -1);
         }

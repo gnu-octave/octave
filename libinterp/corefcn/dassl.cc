@@ -157,25 +157,6 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-#define DASSL_ABORT() \
-  return retval
-
-#define DASSL_ABORT1(msg) \
-  do \
-    { \
-      error ("dassl: " msg); \
-      DASSL_ABORT (); \
-    } \
-  while (0)
-
-#define DASSL_ABORT2(fmt, arg) \
-  do \
-    { \
-      error ("dassl: " fmt, arg); \
-      DASSL_ABORT (); \
-    } \
-  while (0)
-
 DEFUN (dassl, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
@@ -294,7 +275,7 @@ parameters for @code{dassl}.\n\
   call_depth++;
 
   if (call_depth > 1)
-    DASSL_ABORT1 ("invalid recursive call");
+    error ("dassl: invalid recursive call");
 
   std::string fcn_name, fname, jac_name, jname;
   dassl_fcn = 0;
@@ -344,7 +325,7 @@ parameters for @code{dassl}.\n\
             }
         }
       else
-        DASSL_ABORT1 ("incorrect number of elements in cell array");
+        error ("dassl: incorrect number of elements in cell array");
     }
 
   if (! dassl_fcn && ! f_arg.is_cell ())
@@ -402,7 +383,7 @@ parameters for @code{dassl}.\n\
     }
 
   if (! dassl_fcn)
-    DASSL_ABORT ();
+    return retval;
 
   ColumnVector state = args(1).xvector_value ("dassl: initial state X_0 must be a vector");
 
@@ -420,7 +401,7 @@ parameters for @code{dassl}.\n\
     }
 
   if (state.numel () != deriv.numel ())
-    DASSL_ABORT1 ("X and XDOT_0 must have the same size");
+    error ("dassl: X and XDOT_0 must have the same size");
 
   double tzero = out_times (0);
 

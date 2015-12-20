@@ -1007,6 +1007,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     error ("unterminated character string constant");
 
+    // FIXME: This is no longer reachable now that error is exception based.
     return LEXICAL_ERROR;
   }
 
@@ -1059,6 +1060,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     error ("unterminated character string constant");
 
+    // FIXME: This is no longer reachable now that error is exception based.
     return LEXICAL_ERROR;
   }
 
@@ -2870,6 +2872,7 @@ octave_base_lexer::handle_superclass_identifier (void)
   if (kw_token)
     {
       error ("method, class, and package names may not be keywords");
+      // FIXME: This is no longer reachable now that error is exception based.
       return LEXICAL_ERROR;
     }
 
@@ -2889,6 +2892,7 @@ octave_base_lexer::handle_meta_identifier (void)
   if (fq_identifier_contains_keyword (cls))
     {
       error ("class and package names may not be keywords");
+      // FIXME: This is no longer reachable now that error is exception based.
       return LEXICAL_ERROR;
     }
 
@@ -2908,6 +2912,7 @@ octave_base_lexer::handle_fq_identifier (void)
   if (fq_identifier_contains_keyword (tok))
     {
       error ("function, method, class, and package names may not be keywords");
+      // FIXME: This is no longer reachable now that error is exception based.
       return LEXICAL_ERROR;
     }
 
@@ -2957,7 +2962,7 @@ octave_base_lexer::handle_identifier (void)
       if (kw_token)
         {
           error ("function handles may not refer to keywords");
-
+          // FIXME: This is no longer reachable now that error is exception based.
           return LEXICAL_ERROR;
         }
       else
@@ -3251,6 +3256,7 @@ octave_base_lexer::fatal_error (const char *msg)
 {
   error (msg);
 
+  // FIXME: This is no longer reachable now that error is exception based.
   OCTAVE_QUIT;
 
   yy_fatal_error (msg, scanner);

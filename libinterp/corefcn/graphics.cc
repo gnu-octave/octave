@@ -10843,19 +10843,15 @@ undocumented.\n\
           if (pos_p == std::string::npos &&
               pos_c == std::string::npos)
             {
-              error ("drawnow: empty output ''");
-
               gh_manager::unlock ();
 
-              return ovl ();
+              error ("drawnow: empty output ''");
             }
           else if (pos_c == std::string::npos)
             {
-              error ("drawnow: empty pipe '|'");
-
               gh_manager::unlock ();
 
-              return ovl ();
+              error ("drawnow: empty pipe '|'");
             }
           else if (pos_p != std::string::npos && pos_p < pos_c)
             {

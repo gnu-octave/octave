@@ -2349,11 +2349,12 @@ Undocumented internal function.  Calls Fl::check ()\n\
 
   if (Vdrawnow_requested)
     Fdrawnow ();
+
+  return ovl ();
+  
 #else
   error ("__fltk_check__: not available without OpenGL and FLTK libraries");
 #endif
-
-  return octave_value ();
 }
 
 // Initialize the fltk graphics toolkit.
@@ -2382,11 +2383,11 @@ Undocumented internal function.\n\
 
       fltk->set_input_event_hook_id (id);
     }
+
+  return ovl ();
 #else
   error ("__init_fltk__: not available without OpenGL and FLTK libraries");
 #endif
-
-  return octave_value ();
 }
 
 DEFUN_DLD (__have_fltk__, , ,

@@ -2103,11 +2103,12 @@ instance.\n\
 {
 #ifdef HAVE_JAVA
   terminate_jvm ();
+
+  return ovl ();
+
 #else
   error ("__java_init__: Octave was not compiled with Java interface");
 #endif
-
-  return octave_value ();
 }
 
 DEFUN (javaObject, args, ,

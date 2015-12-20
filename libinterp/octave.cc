@@ -709,7 +709,7 @@ octave_process_command_line (int argc, char **argv)
   // Check for various incompatible argument pairs
   if (force_gui_option && no_gui_option)
     {
-      error ("only one of --force-gui and --no-gui may be used");
+      warning ("only one of --force-gui and --no-gui may be used");
 
       octave_print_terse_usage_and_exit ();
     }
@@ -717,7 +717,7 @@ octave_process_command_line (int argc, char **argv)
   bool script_file = (argc - optind) > 0;
   if (! code_to_eval.empty () && script_file)
     {
-      error ("--eval \"CODE\" and script file are mutually exclusive options");
+      warning ("--eval \"CODE\" and script file are mutually exclusive options");
 
       octave_print_terse_usage_and_exit ();
     }

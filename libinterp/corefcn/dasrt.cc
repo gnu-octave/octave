@@ -196,25 +196,6 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-#define DASRT_ABORT \
-  return retval
-
-#define DASRT_ABORT1(msg) \
-  do \
-    { \
-      error ("dasrt: " msg); \
-      DASRT_ABORT; \
-    } \
-  while (0)
-
-#define DASRT_ABORT2(fmt, arg) \
-  do \
-    { \
-      error ("dasrt: " fmt, arg); \
-      DASRT_ABORT; \
-    } \
-  while (0)
-
 DEFUN (dasrt, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t})\n\
@@ -373,7 +354,7 @@ parameters for @code{dasrt}.\n\
   call_depth++;
 
   if (call_depth > 1)
-    DASRT_ABORT1 ("invalid recursive call");
+    error ("dasrt: invalid recursive call");
 
   int argp = 0;
   std::string fcn_name, fname, jac_name, jname;
@@ -429,7 +410,7 @@ parameters for @code{dasrt}.\n\
             }
         }
       else
-        DASRT_ABORT1 ("incorrect number of elements in cell array");
+        error ("dasrt: incorrect number of elements in cell array");
     }
 
   if (! dasrt_f && ! f_arg.is_cell ())
@@ -476,14 +457,13 @@ parameters for @code{dasrt}.\n\
               break;
 
             default:
-              DASRT_ABORT1
-                ("first arg should be a string or 2-element string array");
+              error ("dasrt: first arg should be a string or 2-element string array");
             }
         }
     }
 
   if (! dasrt_f)
-    DASRT_ABORT;
+    return retval;
 
   DAERTFunc func (dasrt_user_f);
 
@@ -494,7 +474,7 @@ parameters for @code{dasrt}.\n\
       dasrt_cf = args(1).function_value ();
 
       if (! dasrt_cf)
-        DASRT_ABORT1 ("invalid constraint function G");
+        error ("dasrt: invalid constraint function G");
 
       argp++;
 
@@ -504,7 +484,7 @@ parameters for @code{dasrt}.\n\
     {
       dasrt_cf = is_valid_function (args(1), "dasrt", true);
       if (! dasrt_cf)
-        DASRT_ABORT1 ("invalid constraint function G");
+        error ("dasrt: invalid constraint function G");
 
       argp++;
 

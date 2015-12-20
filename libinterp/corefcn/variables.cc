@@ -1990,7 +1990,7 @@ Lock the current function into memory so that it can't be cleared.\n\
   if (! fcn)
     error ("mlock: invalid use outside a function");
 
-    fcn->lock ();
+  fcn->lock ();
 
   return ovl ();
 }

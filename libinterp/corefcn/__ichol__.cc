@@ -185,10 +185,8 @@ DEFUN (__ichol0__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
-
   std::string michol = "off";
-  if (nargin == 2)
+  if (args.length ())
     michol = args(1).string_value ();
 
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved

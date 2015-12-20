@@ -528,10 +528,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
         }
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    error ("load: failed to extract number of rows and columns");
 
   return success;
 }

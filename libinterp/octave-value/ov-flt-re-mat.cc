@@ -391,22 +391,13 @@ octave_float_matrix::load_ascii (std::istream& is)
                   if (is)
                     matrix = tmp;
                   else
-                    {
-                      error ("load: failed to load matrix constant");
-                      success = false;
-                    }
+                    error ("load: failed to load matrix constant");
                 }
               else
-                {
-                  error ("load: failed to read dimensions");
-                  success = false;
-                }
+                error ("load: failed to read dimensions");
             }
           else
-            {
-              error ("load: failed to extract number of dimensions");
-              success = false;
-            }
+            error ("load: failed to extract number of dimensions");
         }
       else if (kw == "rows")
         {
@@ -422,10 +413,7 @@ octave_float_matrix::load_ascii (std::istream& is)
                   if (is)
                     matrix = tmp;
                   else
-                    {
-                      error ("load: failed to load matrix constant");
-                      success = false;
-                    }
+                    error ("load: failed to load matrix constant");
                 }
               else if (nr == 0 || nc == 0)
                 matrix = FloatMatrix (nr, nc);

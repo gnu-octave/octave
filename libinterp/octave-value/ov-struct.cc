@@ -755,10 +755,7 @@ octave_struct::load_ascii (std::istream& is)
           if (is)
             map = m;
           else
-            {
-              error ("load: failed to load structure");
-              success = false;
-            }
+            error ("load: failed to load structure");
         }
       else if (len == 0)
         map = octave_map (dv);
@@ -877,10 +874,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
       if (is)
         map = m;
       else
-        {
-          error ("load: failed to load structure");
-          success = false;
-        }
+        error ("load: failed to load structure");
     }
   else if (len == 0)
     map = octave_map (dv);
@@ -1403,10 +1397,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
           if (is)
             map = m;
           else
-            {
-              error ("load: failed to load structure");
-              success = false;
-            }
+            error ("load: failed to load structure");
         }
       else if (len == 0)
         map = octave_scalar_map ();
@@ -1487,10 +1478,7 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
       if (is)
         map = m;
       else
-        {
-          error ("load: failed to load structure");
-          success = false;
-        }
+        error ("load: failed to load structure");
     }
   else if (len == 0)
     map = octave_scalar_map ();

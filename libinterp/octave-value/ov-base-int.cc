@@ -230,10 +230,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
           this->matrix = tmp;
         }
       else
-        {
-          error ("load: failed to extract number of rows and columns");
-          success = false;
-        }
+        error ("load: failed to extract number of rows and columns");
     }
   else
     error ("load: failed to extract number of dimensions");

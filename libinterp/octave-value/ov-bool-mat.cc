@@ -258,23 +258,14 @@ octave_bool_matrix::load_ascii (std::istream& is)
                           matrix = btmp;
                         }
                       else
-                        {
-                          error ("load: failed to load matrix constant");
-                          success = false;
-                        }
+                        error ("load: failed to load matrix constant");
                     }
                 }
               else
-                {
-                  error ("load: failed to extract dimensions");
-                  success = false;
-                }
+                error ("load: failed to extract dimensions");
             }
           else
-            {
-              error ("load: failed to extract number of dimensions");
-              success = false;
-            }
+            error ("load: failed to extract number of dimensions");
         }
       else if (kw == "rows")
         {
@@ -297,10 +288,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
                       matrix = btmp;
                     }
                   else
-                    {
-                      error ("load: failed to load matrix constant");
-                      success = false;
-                    }
+                    error ("load: failed to load matrix constant");
                 }
               else if (nr == 0 || nc == 0)
                 matrix = boolMatrix (nr, nc);

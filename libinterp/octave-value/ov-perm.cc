@@ -308,10 +308,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
         }
     }
   else
-    {
-      error ("load: failed to extract size & orientation");
-      success = false;
-    }
+    error ("load: failed to extract size & orientation");
 
   return success;
 }

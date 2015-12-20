@@ -386,10 +386,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
                 }
             }
           else
-            {
-              error ("load: failed to extract matrix size");
-              success = false;
-            }
+            error ("load: failed to extract matrix size");
         }
       else if (kw == "elements")
         {
@@ -440,10 +437,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
               matrix = chm;
             }
           else
-            {
-              error ("load: failed to extract number of string elements");
-              success = false;
-            }
+            error ("load: failed to extract number of string elements");
         }
       else if (kw == "length")
         {

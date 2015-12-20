@@ -279,10 +279,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
               fcn = octave_value (new octave_fcn_handle (tmp, nm));
             }
           else
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+            error ("function handle points to non-existent function");
         }
       else
         {
@@ -309,10 +306,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
               fcn = octave_value (new octave_fcn_handle (tmp, nm));
             }
           else
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+            error ("function handle points to non-existent function");
         }
     }
   else
@@ -332,10 +326,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
               fcn = octave_value (new octave_fcn_handle (tmp, nm));
             }
           else
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+            error ("function handle points to non-existent function");
         }
       else
         {

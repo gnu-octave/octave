@@ -464,10 +464,7 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
       matrix = tmp;
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    error ("load: failed to extract number of rows and columns");
 
   return success;
 }

@@ -405,9 +405,9 @@ main (int argc, char **argv)
       return 1;
     }
 
-  if (argc == 2 && (!strcmp (argv[1], "-v")
-                    || !strcmp (argv[1], "-version")
-                    || !strcmp (argv[1], "--version")))
+  if (argc == 2 && (! strcmp (argv[1], "-v")
+                    || ! strcmp (argv[1], "-version")
+                    || ! strcmp (argv[1], "--version")))
     {
       std::cout << version_msg << std::endl;
       return 0;
@@ -561,18 +561,18 @@ main (int argc, char **argv)
           return 1;
         }
 
-      if (!file.empty () && octfile.empty ())
+      if (! file.empty () && octfile.empty ())
         octfile = file;
     }
 
   if (link_stand_alone)
     {
-      if (!outputfile.empty ())
+      if (! outputfile.empty ())
         output_option = "-o " + outputfile;
     }
   else
     {
-      if (!outputfile.empty ())
+      if (! outputfile.empty ())
         {
           octfile = outputfile;
           size_t len = octfile.length ();
@@ -602,7 +602,7 @@ main (int argc, char **argv)
           FILE *fd = popen (cmd.c_str (), "r");
           std::ofstream fo (dfile.c_str ());
           size_t pos;
-          while (!feof (fd))
+          while (! feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != std::string::npos)
@@ -636,7 +636,7 @@ main (int argc, char **argv)
           FILE *fd = popen (cmd.c_str (), "r");
           std::ofstream fo (dfile.c_str ());
           size_t pos;
-          while (!feof (fd))
+          while (! feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != std::string::npos)
@@ -659,13 +659,13 @@ main (int argc, char **argv)
       return 0;
     }
 
-  for (it = f77files.begin (); it != f77files.end () && !result; ++it)
+  for (it = f77files.begin (); it != f77files.end () && ! result; ++it)
     {
       std::string f = *it, b = basename (f, true);
-      if (!vars["F77"].empty ())
+      if (! vars["F77"].empty ())
         {
           std::string o;
-          if (!outputfile.empty ())
+          if (! outputfile.empty ())
             {
               if (link)
                 o = b + ".o";
@@ -690,13 +690,13 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = cfiles.begin (); it != cfiles.end () && !result; ++it)
+  for (it = cfiles.begin (); it != cfiles.end () && ! result; ++it)
     {
       std::string f = *it;
-      if (!vars["CC"].empty ())
+      if (! vars["CC"].empty ())
         {
           std::string b = basename (f, true), o;
-          if (!outputfile.empty ())
+          if (! outputfile.empty ())
             {
               if (link)
                 o = b + ".o";
@@ -722,13 +722,13 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = ccfiles.begin (); it != ccfiles.end () && !result; ++it)
+  for (it = ccfiles.begin (); it != ccfiles.end () && ! result; ++it)
     {
       std::string f = *it;
-      if (!vars["CXX"].empty ())
+      if (! vars["CXX"].empty ())
         {
           std::string b = basename (f, true), o;
-          if (!outputfile.empty ())
+          if (! outputfile.empty ())
             {
               if (link)
                 o = b + ".o";
@@ -755,11 +755,11 @@ main (int argc, char **argv)
         }
     }
 
-  if (link && !objfiles.empty () && !result)
+  if (link && ! objfiles.empty () && ! result)
     {
       if (link_stand_alone)
         {
-          if (!vars["LD_CXX"].empty ())
+          if (! vars["LD_CXX"].empty ())
             {
               std::string cmd = vars["LD_CXX"] + " "
                                 + vars["CPPFLAGS"] + " "

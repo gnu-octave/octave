@@ -609,7 +609,7 @@ protected:
         for (octave_idx_type i = 0; i < nel; i++)
           {
             strings[i] = chm.row_as_string (i);
-            if (!replace && strings[i] != str[i])
+            if (! replace && strings[i] != str[i])
               replace = true;
           }
 

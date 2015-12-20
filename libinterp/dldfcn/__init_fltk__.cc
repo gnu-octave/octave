@@ -293,7 +293,7 @@ public:
         if (m->submenu ())
           {
             // item has submenu
-            if (!menupath.empty ())
+            if (! menupath.empty ())
               menupath += "/";
             menupath += m->label ();
 
@@ -314,7 +314,7 @@ public:
               }
             // Menu item?
             std::string itempath = menupath;
-            if (!itempath.empty ())
+            if (! itempath.empty ())
               itempath += "/";
             itempath += m->label ();
 
@@ -383,7 +383,7 @@ public:
   void update_accelerator (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
@@ -402,13 +402,13 @@ public:
   void update_callback (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
         if (item)
           {
-            if (!uimenup.get_callback ().is_empty ())
+            if (! uimenup.get_callback ().is_empty ())
               item->callback (static_cast<Fl_Callback*> (script_cb),
                               static_cast<void*> (&uimenup));
             else
@@ -420,7 +420,7 @@ public:
   void update_enable (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
@@ -437,7 +437,7 @@ public:
   void update_foregroundcolor (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
@@ -460,7 +460,7 @@ public:
     // menu entry, while fltk places it after. So we need to find
     // the previous item in this menu/submenu. (Kai)
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         int itemflags = 0, idx;
         int curr_idx = find_index_by_name (fltk_label.c_str ());
@@ -490,7 +490,7 @@ public:
   void update_visible (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
           = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
@@ -514,7 +514,7 @@ public:
 
     std::string fltk_label = uimenup.get_fltk_label ();
 
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         bool item_added = false;
         do
@@ -554,7 +554,7 @@ public:
                 item_added = true;
               }
           }
-        while (!item_added);
+        while (! item_added);
         uimenup.set_fltk_label (fltk_label);
       }
   }
@@ -771,7 +771,7 @@ public:
 
     set_name ();
     uimenu->add_to_menu (fp);
-    if (fp.menubar_is ("none") || !uimenu->items_to_show ())
+    if (fp.menubar_is ("none") || ! uimenu->items_to_show ())
       hide_menubar ();
 
     update_boundingbox (internal);
@@ -1182,7 +1182,7 @@ private:
 
   void set_currentpoint (int px, int py)
   {
-    if (!fp.is_beingdeleted ())
+    if (! fp.is_beingdeleted ())
       {
         Matrix pos = fp.map_from_boundingbox (px, py);
         fp.set_currentpoint (pos);
@@ -1393,7 +1393,7 @@ private:
 
     graphics_handle gh;
 
-    if (!fp.is_beingdeleted ())
+    if (! fp.is_beingdeleted ())
       {
         //std::cout << "plot_window::handle event = " <<  fl_eventnames[event] << std::endl;
 

@@ -151,7 +151,7 @@ function m = bin_search_binoinv (x, n, p)
     cdf = binocdf (floor(mid(:)), n, p);
     r = (x <= cdf);
     upper(r)  = mid(r);
-    lower(!r) = mid(!r);
+    lower(! r) = mid(! r);
   endfor
   m = ceil (lower);
   m(x > binocdf (m(:), n, p)) += 1;  # fix off-by-one errors from binary search

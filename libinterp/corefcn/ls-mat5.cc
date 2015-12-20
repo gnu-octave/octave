@@ -1504,7 +1504,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
   if (! swap)                   // version number is inverse swapped!
     version = ((version >> 8) & 0xff) + ((version & 0xff) << 8);
 
-  if (version != 1 && !quiet)
+  if (version != 1 && ! quiet)
     warning ("load: found version %d binary MAT file, "
              "but only prepared for version 1", version);
 
@@ -1907,7 +1907,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
                 }
             }
 
-          if (!too_large_for_float)
+          if (! too_large_for_float)
             size = 4;
         }
 
@@ -2295,7 +2295,7 @@ save_mat5_binary_element (std::ostream& os,
     }
 
 #ifdef HAVE_ZLIB
-  if (mat7_format && !compressing)
+  if (mat7_format && ! compressing)
     {
       bool ret = false;
 

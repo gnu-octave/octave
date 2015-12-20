@@ -120,9 +120,9 @@ function [k, e] = ellipke (m, tol = [])
   ## Arithmetic-Geometric Mean (AGM) algorithm
   ## ( Abramowitz and Stegun, Section 17.6 )
   Nmax = 16;
-  idx = !idx_1 & !idx_neginf;
+  idx = ! idx_1 & ! idx_neginf;
   if (any (idx))
-    idx_neg = find (m < 0 & !idx_neginf);
+    idx_neg = find (m < 0 & ! idx_neginf);
     mult_k = 1./sqrt (1 - m(idx_neg));
     mult_e = sqrt (1 - m(idx_neg));
     m(idx_neg) = -m(idx_neg) ./ (1 - m(idx_neg));

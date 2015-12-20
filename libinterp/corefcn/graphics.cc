@@ -5540,7 +5540,7 @@ axes::properties::update_axes_layout (void)
 
   xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
   zSign = (zd*(zPlane-zPlaneN) <= 0);
-  xyzSym = zSign ? xySym : !xySym;
+  xyzSym = zSign ? xySym : ! xySym;
   xpTick = (zSign ? xPlaneN : xPlane);
   ypTick = (zSign ? yPlaneN : yPlane);
   zpTick = (zSign ? zPlane : zPlaneN);
@@ -5790,7 +5790,7 @@ axes::properties::update_ylabel_position (void)
       if (ylabel_props.horizontalalignmentmode_is ("auto"))
         {
           ylabel_props.set_horizontalalignment
-            (ystate > AXE_DEPTH_DIR ? "center" : (!xyzSym ? "left" : "right"));
+            (ystate > AXE_DEPTH_DIR ? "center" : (! xyzSym ? "left" : "right"));
 
           ylabel_props.set_horizontalalignmentmode ("auto");
         }
@@ -5798,7 +5798,7 @@ axes::properties::update_ylabel_position (void)
       if (ylabel_props.verticalalignmentmode_is ("auto"))
         {
           ylabel_props.set_verticalalignment
-            (ystate == AXE_VERT_DIR && !y2Dright ? "bottom" : "top");
+            (ystate == AXE_VERT_DIR && ! y2Dright ? "bottom" : "top");
 
           ylabel_props.set_verticalalignmentmode ("auto");
         }
@@ -5840,7 +5840,7 @@ axes::properties::update_ylabel_position (void)
       switch (ystate)
         {
         case AXE_ANY_DIR:
-          p(0) += (!xyzSym ? wmax : -wmax);
+          p(0) += (! xyzSym ? wmax : -wmax);
           p(1) += hmax;
           break;
 
@@ -5963,7 +5963,7 @@ axes::properties::update_zlabel_position (void)
 
           // FIXME: what's the correct offset?
           //
-          //   p[0] += (!xySym ? wmax : -wmax);
+          //   p[0] += (! xySym ? wmax : -wmax);
           //   p[1] += (zSign ? hmax : -hmax);
 
           break;

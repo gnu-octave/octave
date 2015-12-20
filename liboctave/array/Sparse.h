@@ -246,7 +246,7 @@ public:
   //! Amount of storage for nonzero elements.
   //! Synonymous with nzmax().
   GCC_ATTR_DEPRECATED octave_idx_type capacity (void) const { return nzmax (); }
-  //!Actual number of nonzero terms.
+  //! Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
   // Querying the number of elements (incl. zeros) may overflow the index type,

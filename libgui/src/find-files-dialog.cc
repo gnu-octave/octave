@@ -256,7 +256,7 @@ find_files_dialog::start_find ()
     flags |= QDirIterator::Subdirectories;
 
   QDir::Filters filters = QDir::Dirs|QDir::NoDotAndDotDot|QDir::Files;
-  if (!_name_case_check->isChecked ())
+  if (! _name_case_check->isChecked ())
     filters |=  QDir::CaseSensitive;
 
   QStringList nameFilters;
@@ -368,7 +368,7 @@ bool find_files_dialog::is_match (const QFileInfo &info)
   bool match = true;
   if (info.isDir ())
     {
-      if (!_include_dirs_check->isChecked ()) match = false;
+      if (! _include_dirs_check->isChecked ()) match = false;
       if (_contains_text_check->isChecked ()) match = false;
     }
   else
@@ -394,7 +394,7 @@ bool find_files_dialog::is_match (const QFileInfo &info)
                   line = stream.readLine ();
                   match = line.contains (match_str, cs);
                 }
-              while (!line.isNull () && match == false);
+              while (! line.isNull () && match == false);
             }
 
         }

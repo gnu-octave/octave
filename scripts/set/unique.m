@@ -146,9 +146,9 @@ function [y, i, j] = unique (x, varargin)
   if (isargout (3))
     j = i;
     if (dim == 1)
-      j(i) = cumsum ([1; !match]);
+      j(i) = cumsum ([1; ! match]);
     else
-      j(i) = cumsum ([1, !match]);
+      j(i) = cumsum ([1, ! match]);
     endif
   endif
 

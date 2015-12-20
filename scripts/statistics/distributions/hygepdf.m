@@ -65,7 +65,7 @@ function pdf = hygepdf (x, t, m, n)
 
   pdf(nel) = NaN;
 
-  k = !nel & !zel;
+  k = ! nel & ! zel;
   if (any (k(:)))
     if (isscalar (t) && isscalar (m) && isscalar (n))
       pdf(k) = (bincoeff (m, x(k)) .* bincoeff (t-m, n-x(k))

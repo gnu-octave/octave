@@ -89,7 +89,7 @@ file_editor::check_closing (void)
        p != editor_tab_map.end (); p++)
     {
       QString file_name = p->first;   // get file name of tab
-      if (!file_name.isEmpty ())      // do not append unnamed files
+      if (! file_name.isEmpty ())      // do not append unnamed files
         {
           fetFileNames.append (file_name);
           fet_encodings.append (editor_tab_map[file_name].encoding);
@@ -481,7 +481,7 @@ file_editor::request_open_file (const QString& openFileName,
                       QMessageBox *msgBox;
                       QSettings *settings = resource_manager::get_settings ();
 
-                      if (!settings->value ("editor/create_new_file", false).toBool ())
+                      if (! settings->value ("editor/create_new_file", false).toBool ())
                         {
                           msgBox = new QMessageBox (QMessageBox::Question,
                                                     tr ("Octave Editor"),
@@ -505,7 +505,7 @@ file_editor::request_open_file (const QString& openFileName,
                         {
                           // create the file and call the editor again
                           QFile file (openFileName);
-                          if (!file.open (QIODevice::WriteOnly))
+                          if (! file.open (QIODevice::WriteOnly))
                             {
                               // error opening the file
                               msgBox = new QMessageBox (QMessageBox::Critical,
@@ -596,7 +596,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
           break;
         }
     }
-  if (!saveFileWidget)
+  if (! saveFileWidget)
     {
       // Create a NonModal message about error.
       QMessageBox *msgBox
@@ -1125,7 +1125,7 @@ file_editor::toggle_preference (const QString& preference, bool def)
 {
   QSettings *settings = resource_manager::get_settings ();
   bool old = settings->value (preference,def).toBool ();
-  settings->setValue (preference,!old);
+  settings->setValue (preference,! old);
   notice_settings (settings);
 }
 

@@ -175,7 +175,7 @@ function out = compare_versions (v1, v2, operator)
 
   ## Reverse the output if not is given.
   if (not_op)
-    out = !out;
+    out = ! out;
   endif
 
 endfunction

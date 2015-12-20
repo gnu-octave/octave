@@ -968,7 +968,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 %! assert (t{1}{1}, 'short');
 %! assert (t{1}{2}, 'test');
 %! assert (size (nm), [1, 1]);
-%! assert (!isempty (fieldnames (nm)));
+%! assert (! isempty (fieldnames (nm)));
 %! assert (sort (fieldnames (nm)), {'word1';'word2'});
 %! assert (nm.word1, 'short');
 %! assert (nm.word2, 'test');
@@ -1245,7 +1245,7 @@ for details on the syntax of the search pattern.\n\
 %! assert (t{1}{1}, 'ShoRt');
 %! assert (t{1}{2}, 'Test');
 %! assert (size (nm), [1, 1]);
-%! assert (!isempty (fieldnames (nm)));
+%! assert (! isempty (fieldnames (nm)));
 %! assert (sort (fieldnames (nm)), {'word1';'word2'});
 %! assert (nm.word1, 'ShoRt');
 %! assert (nm.word2, 'Test');

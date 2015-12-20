@@ -271,7 +271,7 @@ function assert (cond, varargin)
 
           errvec = (  isnan (real (A)) != isnan (real (B))
                     | isnan (imag (A)) != isnan (imag (B)));
-          erridx = find (errvec & !errseen);
+          erridx = find (errvec & ! errseen);
           if (! isempty (erridx))
             err.index(end+1:end+length (erridx)) = ...
               ind2tuple (size (A), erridx);
@@ -288,7 +288,7 @@ function assert (cond, varargin)
                       & (real (A) != real (B)))             ...
                    | ((isinf (imag (A)) | isinf (imag (B))) ...
                       & (imag (A) != imag (B)));
-          erridx = find (errvec & !errseen);
+          erridx = find (errvec & ! errseen);
           if (! isempty (erridx))
             err.index(end+1:end+length (erridx)) = ...
               ind2tuple (size (A), erridx);

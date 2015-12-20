@@ -123,7 +123,7 @@ function m = bin_search_nbininv (x, n, p)
     cdf = nbincdf (floor (mid), n, p);
     r = (x <= cdf);
     upper(r)  = mid(r);
-    lower(!r) = mid(!r);
+    lower(! r) = mid(! r);
   endfor
   m = ceil (lower);
   m(x > nbincdf (m, n, p)) += 1;  # fix off-by-one errors from binary search

@@ -363,9 +363,9 @@ file_editor_tab::set_file_name (const QString& fileName)
 {
   // update tracked file if we really have a file on disk
   QStringList trackedFiles = _file_system_watcher.files ();
-  if (!trackedFiles.isEmpty ())
+  if (! trackedFiles.isEmpty ())
     _file_system_watcher.removePath (_file_name);
-  if (!fileName.isEmpty ())
+  if (! fileName.isEmpty ())
     _file_system_watcher.addPath (fileName);
   _file_name = fileName;
 
@@ -563,7 +563,7 @@ file_editor_tab::update_lexer ()
             _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
           }
 
-      if (update_apis_file || !_lexer_apis->loadPrepared (_prep_apis_file))
+      if (update_apis_file || ! _lexer_apis->loadPrepared (_prep_apis_file))
         {
           // no prepared info loaded, prepare and save if possible
 
@@ -1070,7 +1070,7 @@ file_editor_tab::find (const QWidget *ID)
   // better, but individual find dialogs has the nice feature of
   // retaining position per file editor tabs, which can be undocked.
 
-  if (!_find_dialog)
+  if (! _find_dialog)
     {
       _find_dialog = new find_dialog (_edit_area,
                                       qobject_cast<QWidget *> (sender ()));
@@ -1079,7 +1079,7 @@ file_editor_tab::find (const QWidget *ID)
       _find_dialog->setWindowModality (Qt::NonModal);
       _find_dialog_geometry = _find_dialog->geometry ();
     }
-  else if (!_find_dialog->isVisible ())
+  else if (! _find_dialog->isVisible ())
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
       QPoint p = _find_dialog->pos ();
@@ -1383,7 +1383,7 @@ file_editor_tab::load_file (const QString& fileName)
   else
     file_to_load = fileName;
   QFile file (file_to_load);
-  if (!file.open (QFile::ReadOnly))
+  if (! file.open (QFile::ReadOnly))
     return file.errorString ();
 
   // read the file
@@ -1524,7 +1524,7 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
     _file_system_watcher.removePath (file_to_save);
 
   // open the file for writing
-  if (!file.open (QIODevice::WriteOnly))
+  if (! file.open (QIODevice::WriteOnly))
     {
       // Unsuccessful, begin watching file again if it was being
       // watched previously.
@@ -1832,7 +1832,7 @@ file_editor_tab::file_has_changed (const QString&)
   // been changed multiple times by temporarily removing from the
   // file watcher.
   QStringList trackedFiles = _file_system_watcher.files ();
-  if (!trackedFiles.isEmpty ())
+  if (! trackedFiles.isEmpty ())
     _file_system_watcher.removePath (_file_name);
 
   if (QFile::exists (_file_name))
@@ -2062,7 +2062,7 @@ file_editor_tab::file_name_query (const QWidget *ID)
     return;
 
   // Unnamed files shouldn't be transmitted.
-  if (!_file_name.isEmpty ())
+  if (! _file_name.isEmpty ())
     emit add_filename_to_list (_file_name, _encoding, this);
 }
 

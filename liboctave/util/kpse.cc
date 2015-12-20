@@ -1009,7 +1009,7 @@ path_find_first_of (const std::string& path, const string_vector& names,
           const std::string dir = STR_LLIST (*dirs_elt);
 
           int len = names.numel ();
-          for (int i = 0; i < len && !done; i++)
+          for (int i = 0; i < len && ! done; i++)
             {
               std::string name = names[i];
 
@@ -1651,7 +1651,7 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
           continue;
         }
 
-      if (c == satisfy && !level && !quoted)
+      if (c == satisfy && ! level && ! quoted)
         {
           /* We ignore an open brace surrounded by whitespace, and also
              an open brace followed immediately by a close brace, that
@@ -1763,7 +1763,7 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
           else
             {
               /* Intermediate //, have to match rest of PATH_ELT.  */
-              for (; !matched && *filename; filename++)
+              for (; ! matched && *filename; filename++)
                 {
                   /* Try matching at each possible character.  */
                   if (IS_DIR_SEP (filename[-1]) && *filename == *path_elt)
@@ -1794,7 +1794,7 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
       if (IS_DIR_SEP (*filename))
         filename++;
 
-      while (*filename && !IS_DIR_SEP (*filename))
+      while (*filename && ! IS_DIR_SEP (*filename))
         filename++;
 
       matched = *filename == 0;
@@ -1903,7 +1903,7 @@ kpse_db_search (const std::string& name_arg,
 
   done = false;
   len = aliases.numel ();
-  for (int i = 0; i < len && !done; i++)
+  for (int i = 0; i < len && ! done; i++)
     {
       std::string atry = aliases[i];
 
@@ -1915,7 +1915,7 @@ kpse_db_search (const std::string& name_arg,
          and the path looks like .../cx, we don't want the ricoh file.  */
 
       int db_dirs_len = db_dirs.numel ();
-      for (int j = 0; j < db_dirs_len && !done; j++)
+      for (int j = 0; j < db_dirs_len && ! done; j++)
         {
           std::string db_file = db_dirs[j] + atry;
           bool matched = match (db_file, path_elt);
@@ -2618,7 +2618,7 @@ kpse_var_expand (const std::string& src)
               /* ${: scan ahead for matching delimiter, then expand.  */
               size_t var_end = ++i;
 
-              while (var_end < src_len && !IS_VAR_END_DELIMITER (src[var_end]))
+              while (var_end < src_len && ! IS_VAR_END_DELIMITER (src[var_end]))
                 var_end++;
 
               if (var_end == src_len)

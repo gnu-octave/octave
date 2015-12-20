@@ -292,7 +292,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
       bool colp = orient == 'c';
       ColumnVector tmp (n);
       is >> tmp;
-      if (!is)
+      if (! is)
         error ("load: failed to load permutation matrix constant");
       else
         {

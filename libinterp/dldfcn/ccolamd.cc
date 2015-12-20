@@ -513,7 +513,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
       if (cslen != n_col)
         error ("csymamd: CMEMBER must be of length equal to #cols of A");
-      else if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+      else if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
                                  &calloc, &free, cmember, -1))
         {
           CSYMAMD_NAME (_report) (stats) ;
@@ -523,7 +523,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
     }
   else
     {
-      if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+      if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
                             &calloc, &free, 0, -1))
         {
           CSYMAMD_NAME (_report) (stats) ;

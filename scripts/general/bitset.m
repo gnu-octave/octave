@@ -70,7 +70,7 @@ function C = bitset (A, n, val)
   mask = bitshift (cast (1, cl), uint8 (n) - uint8 (1));
 
   on = logical (val);
-  off = !on;
+  off = ! on;
 
   if (isscalar (mask))
     onmask = mask;

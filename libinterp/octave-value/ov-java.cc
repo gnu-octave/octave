@@ -508,11 +508,11 @@ initialize_jvm (void)
 
   jsize nVMs = 0;
 
-# if !defined (__APPLE__) && !defined (__MACH__)
+# if ! defined (__APPLE__) && ! defined (__MACH__)
 
   octave_shlib lib (jvm_lib_path);
 
-  if (!lib)
+  if (! lib)
     throw std::string ("unable to load Java Runtime Environment from ")
           + jvm_lib_path;
 
@@ -530,10 +530,10 @@ initialize_jvm (void)
   JNI_GetCreatedJavaVMs_t get_vm =
     reinterpret_cast<JNI_GetCreatedJavaVMs_t> (lib.search ("JNI_GetCreatedJavaVMs"));
 
-  if (!create_vm)
+  if (! create_vm)
     throw std::string ("unable to find JNI_CreateJavaVM in ") + jvm_lib_path;
 
-  if (!get_vm)
+  if (! get_vm)
     throw std::string ("unable to find JNI_GetCreatedJavaVMs in ")
           + jvm_lib_path;
 
@@ -590,7 +590,7 @@ initialize_jvm (void)
       vm_args.read_java_opts (initial_java_dir () + file_ops::dir_sep_str () +
                               "java.opts");
 
-# if !defined (__APPLE__) && !defined (__MACH__)
+# if ! defined (__APPLE__) && ! defined (__MACH__)
 
       if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
         throw std::string ("unable to start Java VM in ")+jvm_lib_path;
@@ -1356,7 +1356,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jcls = 0;
       //jcls = jni_env->FindClass ("java/lang/Object");
     }
-  else if (!Vjava_matrix_autoconversion
+  else if (! Vjava_matrix_autoconversion
            && ((val.is_real_matrix ()
                 && (val.rows () == 1 || val.columns () == 1))
                || val.is_range ()))

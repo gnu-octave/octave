@@ -67,7 +67,7 @@ function [d, s] = weekday (d, format = "short")
   ## Find the offset from a known Sunday (2008-Jan-6), mod 7.
   d = floor (reshape (mod (d - 733048, 7), endsize));
   ## Make Saturdays a 7 and not a 0.
-  d(!d) = 7;
+  d(! d) = 7;
 
   if (isargout (2))
     if (strcmpi (format, "long"))

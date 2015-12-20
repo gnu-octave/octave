@@ -344,7 +344,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
-  if (!retval)
+  if (! retval)
     {
       H5Gclose (group_hid);
       return false;

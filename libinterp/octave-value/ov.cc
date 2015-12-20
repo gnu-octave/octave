@@ -1602,7 +1602,7 @@ make_vector_dims (const dim_vector& dv, bool force_vector_conversion,
 
   if (retval.length () > 2 || (retval(0) != 1 && retval(1) != 1))
     {
-      if (!force_vector_conversion)
+      if (! force_vector_conversion)
         gripe_implicit_conversion ("Octave:array-to-vector",
                                    my_type.c_str (), wanted_type.c_str ());
       retval = dim_vector (nel, 1);

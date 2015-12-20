@@ -150,14 +150,14 @@ public:
   double alpha (void) const { return Alpha; }
   double beta (void) const { return Beta; }
 
-  ColumnVector roots (void) { if (!initialized) init (); return r; }
-  ColumnVector quad (void) { if (!initialized) init (); return q; }
+  ColumnVector roots (void) { if (! initialized) init (); return r; }
+  ColumnVector quad (void) { if (! initialized) init (); return q; }
 
   ColumnVector quad_weights (void) { return quad (); }
 
-  Matrix first (void) { if (!initialized) init (); return A; }
+  Matrix first (void) { if (! initialized) init (); return A; }
 
-  Matrix second (void) { if (!initialized) init (); return B; }
+  Matrix second (void) { if (! initialized) init (); return B; }
 
   friend std::ostream& operator << (std::ostream&, const CollocWt&);
 

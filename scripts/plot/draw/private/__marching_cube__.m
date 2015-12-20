@@ -224,7 +224,7 @@ function p = vertex_interp (isolevel,p1x, p1y, p1z,...
       p(id, 4) = col1(id);
     endif
   endif
-  nid = !id;
+  nid = ! id;
   if (any (nid))
     mu(nid) = (isolevel - valp1(nid)) ./ (valp2(nid) - valp1(nid));
     p(nid, 1:3) = [p1x(nid) + mu(nid) .* (p2x(nid) - p1x(nid)), ...

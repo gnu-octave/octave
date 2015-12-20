@@ -455,7 +455,7 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 
       is >> tmp;
 
-      if (!is)
+      if (! is)
         error ("load: failed to load matrix constant");
 
       matrix = tmp;

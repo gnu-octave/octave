@@ -215,7 +215,7 @@ Undocumented internal function.\n\
       else
         eigs_fcn = args(0).function_value ();
 
-      if (!eigs_fcn)
+      if (! eigs_fcn)
         error ("eigs: unknown function");
 
       if (nargin < 2)
@@ -310,7 +310,7 @@ Undocumented internal function.\n\
 
       // issym is ignored for complex matrix inputs
       tmp = map.getfield ("issym");
-      if (tmp.is_defined () && !sym_tested)
+      if (tmp.is_defined () && ! sym_tested)
         {
           symmetric = tmp.double_value () != 0.;
           sym_tested = true;
@@ -359,7 +359,7 @@ Undocumented internal function.\n\
     error ("eigs: incorrect number of arguments");
 
   // Test undeclared (no issym) matrix inputs for symmetry
-  if (!sym_tested && !have_a_fun)
+  if (! sym_tested && ! have_a_fun)
     {
       if (a_is_sparse)
         symmetric = asmm.is_symmetric ();

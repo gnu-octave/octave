@@ -744,7 +744,7 @@ octave_struct::load_ascii (std::istream& is)
               std::string nm
                 = read_text_data (is, std::string (), dummy, t2, j);
 
-              if (!is)
+              if (! is)
                 break;
 
               Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
@@ -863,7 +863,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           std::string nm = read_binary_data (is, swap, fmt, std::string (),
                                              dummy, t2, doc);
 
-          if (!is)
+          if (! is)
             break;
 
           Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
@@ -1388,7 +1388,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
               std::string nm
                 = read_text_data (is, std::string (), dummy, t2, j);
 
-              if (!is)
+              if (! is)
                 break;
 
               m.setfield (nm, t2);
@@ -1469,7 +1469,7 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
           std::string nm = read_binary_data (is, swap, fmt, std::string (),
                                              dummy, t2, doc);
 
-          if (!is)
+          if (! is)
             break;
 
           m.setfield (nm, t2);

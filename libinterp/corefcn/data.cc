@@ -1001,7 +1001,7 @@ negative numbers or when the values are periodic.\n\
             { \
               error (#FCN, ": invalid char type"); \
             } \
-          else if (!isdouble && arg.is_single_type ()) \
+          else if (! isdouble && arg.is_single_type ()) \
             { \
               if (arg.is_complex_type ()) \
                 { \
@@ -1041,7 +1041,7 @@ negative numbers or when the values are periodic.\n\
 \
           retval = tmp.FCN (dim); \
         } \
-      else if (!isdouble && arg.is_single_type ()) \
+      else if (! isdouble && arg.is_single_type ()) \
         { \
           if (arg.is_real_type ()) \
             { \
@@ -1957,11 +1957,11 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           if (all_cmplx_p && ! (args(i).is_complex_type ()
               || args(i).is_real_type ()))
             all_cmplx_p = false;
-          if (!any_sparse_p && args(i).is_sparse_type ())
+          if (! any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
-          if (!any_cell_p && args(i).is_cell ())
+          if (! any_cell_p && args(i).is_cell ())
             any_cell_p = true;
-          if (!any_class_p && args(i).is_object ())
+          if (! any_class_p && args(i).is_object ())
             any_class_p = true;
         }
 

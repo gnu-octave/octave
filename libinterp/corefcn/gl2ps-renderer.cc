@@ -45,7 +45,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
   static bool in_draw = false;
   static std::string old_print_cmd;
 
-  if (!in_draw)
+  if (! in_draw)
     {
       unwind_protect frame;
 

@@ -129,7 +129,7 @@ octave_bool::load_ascii (std::istream& is)
 {
   scalar = (octave_read_value<double> (is) != 0.);
 
-  if (!is)
+  if (! is)
     error ("load: failed to load scalar constant");
 
   return true;

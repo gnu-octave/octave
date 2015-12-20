@@ -134,11 +134,11 @@ endfunction
 %! disp ('- test questdlg with message and title only.');
 %! a = 'No';
 %! c = 0;
-%! while (strcmp (a, 'No') || !c)
+%! while (strcmp (a, 'No') || ! c)
 %!   a = questdlg ('Close this Question Dialog?', 'Reductio Ad Absurdum');
 %!   if (strcmp (a, 'Yes'))
 %!     q = 'Are you sure?';
-%!     while (strcmp (a, 'Yes') && !c)
+%!     while (strcmp (a, 'Yes') && ! c)
 %!       a = questdlg (q, 'Reductio Ad Absurdum');
 %!       word = ' really';
 %!       i = strfind (q, word);

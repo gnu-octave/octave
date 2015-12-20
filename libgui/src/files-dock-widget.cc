@@ -812,8 +812,8 @@ files_dock_widget::notice_settings (const QSettings *settings)
   // only if this is not done by default
   _sync_octave_dir
     = settings->value ("filesdockwidget/sync_octave_directory",false).toBool ();
-  _sync_octave_directory_action->setEnabled (!_sync_octave_dir);
-  _sync_browser_directory_action->setEnabled (!_sync_octave_dir);
+  _sync_octave_directory_action->setEnabled (! _sync_octave_dir);
+  _sync_browser_directory_action->setEnabled (! _sync_octave_dir);
 
   if (_sync_octave_dir)
     display_directory (_octave_dir);  // sync browser to octave dir

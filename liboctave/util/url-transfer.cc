@@ -58,7 +58,7 @@ base_url_transfer::mget_directory (const std::string& directory,
   std::string sep = file_ops::dir_sep_str ();
   file_stat fs (directory);
 
-  if (!fs || !fs.is_dir ())
+  if (! fs || ! fs.is_dir ())
     {
       std::string msg;
       int status = octave_mkdir (directory, 0777, msg);

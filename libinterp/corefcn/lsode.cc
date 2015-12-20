@@ -315,7 +315,7 @@ parameters for @code{lsode}.\n\
                   lsode_jac = extract_function (c(1), "lsode", jac_name,
                                                 jname, "; endfunction");
 
-                  if (!lsode_jac)
+                  if (! lsode_jac)
                     {
                       if (fcn_name.length ())
                         clear_function (fcn_name);
@@ -328,7 +328,7 @@ parameters for @code{lsode}.\n\
         error ("lsode: incorrect number of elements in cell array");
     }
 
-  if (!lsode_fcn && ! f_arg.is_cell ())
+  if (! lsode_fcn && ! f_arg.is_cell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         lsode_fcn = f_arg.function_value ();
@@ -370,7 +370,7 @@ parameters for @code{lsode}.\n\
                                                   jac_name, jname,
                                                   "; endfunction");
 
-                    if (!lsode_jac)
+                    if (! lsode_jac)
                       {
                         if (fcn_name.length ())
                           clear_function (fcn_name);

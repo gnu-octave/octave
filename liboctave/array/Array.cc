@@ -1436,7 +1436,7 @@ Array<T>::delete_elements (const idx_vector& i)
         {
           // Special case deleting a contiguous range.
           octave_idx_type m = n + l - u;
-          Array<T> tmp (dim_vector (col_vec ? m : 1, !col_vec ? m : 1));
+          Array<T> tmp (dim_vector (col_vec ? m : 1, ! col_vec ? m : 1));
           const T *src = data ();
           T *dest = tmp.fortran_vec ();
           std::copy (src, src + l, dest);

@@ -1127,7 +1127,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             }
         }
 
-      if (!mattype.is_hermitian ())
+      if (! mattype.is_hermitian ())
         {
           octave_idx_type n = rows ();
           ColumnVector Qinit(n);
@@ -1190,11 +1190,11 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
       UMFPACK_ZNAME (defaults) (control);
 
       double tmp = octave_sparse_params::get_key ("spumoni");
-      if (!xisnan (tmp))
+      if (! xisnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
       tmp = octave_sparse_params::get_key ("piv_tol");
-      if (!xisnan (tmp))
+      if (! xisnan (tmp))
         {
           Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
           Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
@@ -1202,7 +1202,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
 
       // Set whether we are allowed to modify Q or not
       tmp = octave_sparse_params::get_key ("autoamd");
-      if (!xisnan (tmp))
+      if (! xisnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
       // Turn-off UMFPACK scaling for LU
@@ -5464,10 +5464,10 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   UMFPACK_ZNAME (defaults) (control);
 
   double tmp = octave_sparse_params::get_key ("spumoni");
-  if (!xisnan (tmp))
+  if (! xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
   tmp = octave_sparse_params::get_key ("piv_tol");
-  if (!xisnan (tmp))
+  if (! xisnan (tmp))
     {
       Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
       Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
@@ -5475,7 +5475,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
 
   // Set whether we are allowed to modify Q or not
   tmp = octave_sparse_params::get_key ("autoamd");
-  if (!xisnan (tmp))
+  if (! xisnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
   UMFPACK_ZNAME (report_control) (control);

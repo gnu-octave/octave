@@ -509,7 +509,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
       MT tmp (l, 1);
       is >> tmp;
 
-      if (!is)
+      if (! is)
         error ("load: failed to load diagonal matrix constant");
       else
         {

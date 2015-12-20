@@ -60,7 +60,7 @@ public:
 
     // Use the last button in the list as the reject result, i.e., when no
     // button is pressed such as in the case of the upper right close tab.
-    if (!button.isEmpty ())
+    if (! button.isEmpty ())
       dialog_button = button.last ();
 
     QString xicon = icon;

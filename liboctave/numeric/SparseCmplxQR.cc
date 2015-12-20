@@ -76,7 +76,7 @@ SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep
 #endif
   N = CXSPARSE_ZNAME (_qr) (&A, S);
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-  if (!N)
+  if (! N)
     (*current_liboctave_error_handler)
       ("SparseComplexQR: sparse matrix QR factorization filled");
   count = 1;

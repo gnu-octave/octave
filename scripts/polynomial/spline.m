@@ -99,7 +99,7 @@ function ret = spline (x, y, xi)
 
   for k = (1:columns (a))(any (isnan (a)))
     ok = ! isnan (a(:,k));
-    a(!ok,k) = spline (x(ok), a(ok,k), x(!ok));
+    a(! ok,k) = spline (x(ok), a(ok,k), x(! ok));
   endfor
 
   complete = false;
@@ -267,7 +267,7 @@ endfunction
 %! assert (spline (x, y, x(ok)), y(ok), abserr);
 %!test
 %! ok = ! isnan (y);
-%! assert (! isnan (spline (x, y, x(!ok))));
+%! assert (! isnan (spline (x, y, x(! ok))));
 %!test
 %! x = [1,2];
 %! y = [1,4];

@@ -253,7 +253,7 @@ find_dialog::init_search_text ()
 void
 find_dialog::find_next ()
 {
-  find (!_backward_check_box->isChecked ());
+  find (! _backward_check_box->isChecked ());
 }
 
 void

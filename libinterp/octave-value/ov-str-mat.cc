@@ -370,7 +370,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
                       skip_preceeding_newline (is);
 
-                      if (! is.read (ftmp, dv.numel ()) || !is)
+                      if (! is.read (ftmp, dv.numel ()) || ! is)
                         error ("load: failed to load string constant");
                       else
                         matrix = tmp;

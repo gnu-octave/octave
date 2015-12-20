@@ -327,13 +327,13 @@ tm_row_const::tm_row_const_rep::do_init_element (const octave_value& val,
   if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
     all_cmplx = false;
 
-  if (!any_cell && val.is_cell ())
+  if (! any_cell && val.is_cell ())
     any_cell = true;
 
-  if (!any_sparse && val.is_sparse_type ())
+  if (! any_sparse && val.is_sparse_type ())
     any_sparse = true;
 
-  if (!any_class && val.is_object ())
+  if (! any_class && val.is_object ())
     any_class = true;
 
   // Special treatment of sparse matrices to avoid out-of-memory error
@@ -583,13 +583,13 @@ tm_const::init (const tree_matrix& tm)
           if (all_mt && ! tmp.all_empty_p ())
             all_mt = false;
 
-          if (!any_cell && tmp.any_cell_p ())
+          if (! any_cell && tmp.any_cell_p ())
             any_cell = true;
 
-          if (!any_sparse && tmp.any_sparse_p ())
+          if (! any_sparse && tmp.any_sparse_p ())
             any_sparse = true;
 
-          if (!any_class && tmp.any_class_p ())
+          if (! any_class && tmp.any_class_p ())
             any_class = true;
 
           all_1x1 = all_1x1 && tmp.all_1x1_p ();
@@ -643,7 +643,7 @@ tm_const::init (const tree_matrix& tm)
             dv(1) = this_elt_nc;
           dv(0) += this_elt_nr;
         }
-      else if ((!any_class) && (!dv.hvcat (this_elt_dv, 0)))
+      else if ((! any_class) && (! dv.hvcat (this_elt_dv, 0)))
         eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
     }
 

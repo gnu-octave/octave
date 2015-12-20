@@ -52,10 +52,10 @@ function cdf = unidcdf (x, n)
     cdf(knan) = NaN;
   endif
 
-  k = (x >= n) & !knan;
+  k = (x >= n) & ! knan;
   cdf(k) = 1;
 
-  k = (x >= 1) & (x < n) & !knan;
+  k = (x >= 1) & (x < n) & ! knan;
   if (isscalar (n))
     cdf(k) = floor (x(k)) / n;
   else

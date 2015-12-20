@@ -71,7 +71,7 @@ octave_fftw_planner::octave_fftw_planner (void)
 
 #if defined (HAVE_FFTW3_THREADS)
   int init_ret = fftw_init_threads ();
-  if (!init_ret)
+  if (! init_ret)
     (*current_liboctave_error_handler) ("Error initializing FFTW threads");
   //Use number of processors available to the current process
   //This can be later changed with fftw ("threads", nthreads)
@@ -148,7 +148,7 @@ octave_fftw_planner::do_create_plan (int dir, const int rank,
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
       || ioinplace != inplace[which]
-      || ((ioalign != simd_align[which]) ? !ioalign : false))
+      || ((ioalign != simd_align[which]) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -268,7 +268,7 @@ octave_fftw_planner::do_create_plan (const int rank, const dim_vector dims,
   // change the alignment.
 
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
-      || rh != howmany || ((ioalign != rsimd_align) ? !ioalign : false))
+      || rh != howmany || ((ioalign != rsimd_align) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -415,7 +415,7 @@ octave_float_fftw_planner::octave_float_fftw_planner (void)
 
 #if defined (HAVE_FFTW3F_THREADS)
   int init_ret = fftwf_init_threads ();
-  if (!init_ret)
+  if (! init_ret)
     (*current_liboctave_error_handler) ("Error initializing FFTW3F threads");
   //Use number of processors available to the current process
   //This can be later changed with fftw ("threads", nthreads)
@@ -490,7 +490,7 @@ octave_float_fftw_planner::do_create_plan (int dir, const int rank,
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
       || ioinplace != inplace[which]
-      || ((ioalign != simd_align[which]) ? !ioalign : false))
+      || ((ioalign != simd_align[which]) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -611,7 +611,7 @@ octave_float_fftw_planner::do_create_plan (const int rank,
   // change the alignment.
 
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
-      || rh != howmany || ((ioalign != rsimd_align) ? !ioalign : false))
+      || rh != howmany || ((ioalign != rsimd_align) ? ! ioalign : false))
     create_new_plan = true;
   else
     {

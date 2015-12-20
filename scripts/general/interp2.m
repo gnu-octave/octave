@@ -345,7 +345,7 @@ function o = bc (x)
   x = abs (x);
   o = zeros (size (x));
   idx1 = (x < 1);
-  idx2 = !idx1 & (x < 2);
+  idx2 = ! idx1 & (x < 2);
   o(idx1) = 1 - 2.*x(idx1).^2 + x(idx1).^3;
   o(idx2) = 4 - 8.*x(idx2) + 5.*x(idx2).^2 - x(idx2).^3;
 endfunction

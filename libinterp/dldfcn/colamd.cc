@@ -586,7 +586,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
-  if (!SYMAMD_NAME () (n_col, ridx, cidx, perm,
+  if (! SYMAMD_NAME () (n_col, ridx, cidx, perm,
                        knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report) (stats) ;

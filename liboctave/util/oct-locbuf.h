@@ -185,7 +185,7 @@ public:
      <= OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE; \
   T _bufaut_ ## buf [_lbufaut_ ## buf ? _bufsize_ ## buf : 0]; \
   octave_local_buffer<T> _bufheap_ ## buf \
-    (!_lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
+    (! _lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
   T *buf = _lbufaut_ ## buf \
     ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf)
 

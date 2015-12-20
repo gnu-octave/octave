@@ -73,7 +73,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     k = 1;
     do
       t = all (builtin ("size", x, k) == cellfun ("size", varargin, k));
-    until (!t || k++ == nd);
+    until (! t || k++ == nd);
   endif
 
   ## From here on, compare objects as if they were structures.
@@ -155,7 +155,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         f_y = find (y);
 
         t = (l_f_x == length (f_y)) && all (f_x == f_y);
-        if (!t)
+        if (! t)
           break;
         endif
 
@@ -163,11 +163,11 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         m = (x == y);
         t = all (m);
 
-        if (!t && nans_compare_equal)
-          t = isnan (x(!m)) && isnan (y(!m));
+        if (! t && nans_compare_equal)
+          t = isnan (x(! m)) && isnan (y(! m));
         endif
 
-        if (!t)
+        if (! t)
           break;
         endif
       endfor

@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "oct-refcount.h"
 
-//!Handles the reference counting for all the derived classes.
+//! Handles the reference counting for all the derived classes.
 template <class T>
 class
 Array

@@ -462,7 +462,7 @@ workspace_view::notice_settings (const QSettings *settings)
 
   QString tool_tip;
 
-  if (!settings->value ("workspaceview/hide_tool_tips",false).toBool ())
+  if (! settings->value ("workspaceview/hide_tool_tips",false).toBool ())
     {
       tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
       tool_tip += QString (tr ("Colors for variable attributes:"));

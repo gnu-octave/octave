@@ -141,7 +141,7 @@ function configure_make (desc, packdir, verbose)
       idx = cellfun ("is_architecture_dependent", filenames);
     endif
     archdependent = filenames(idx);
-    archindependent = filenames(!idx);
+    archindependent = filenames(! idx);
 
     ## Copy the files.
     if (! all (isspace ([filenames{:}])))

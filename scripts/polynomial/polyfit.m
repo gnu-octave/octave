@@ -146,7 +146,7 @@ function [p, s, mu] = polyfit (x, y, n)
 
     if (n != m)
       ## fill matrices if required
-      s.X(:, !polymask) = 0;
+      s.X(:, ! polymask) = 0;
       s.R = zeros (n+1, n+1); s.R(polymask, polymask) = r;
       s.C = zeros (n+1, n+1); s.C(polymask, polymask) = C;
     else

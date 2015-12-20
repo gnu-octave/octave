@@ -50,7 +50,7 @@ base_qr<qr_type>::get_type (void) const
 {
   qr_type_t retval;
 
-  if (!q.is_empty () && q.is_square ())
+  if (! q.is_empty () && q.is_square ())
     retval = qr_type_std;
   else if (q.rows () > q.columns () && r.is_square ())
     retval = qr_type_economy;

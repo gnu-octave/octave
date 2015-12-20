@@ -114,7 +114,7 @@ parser::open_file (QFileInfo & file_info)
       QBuffer *io = new QBuffer (this);
       io->setData (result);
 
-      if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
+      if (! io->open (QIODevice::ReadOnly | QIODevice::Text))
         return 0;
 
       iodevice = io;
@@ -122,7 +122,7 @@ parser::open_file (QFileInfo & file_info)
   else
     {
       QFile *io = new QFile (file_info.absoluteFilePath ());
-      if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
+      if (! io->open (QIODevice::ReadOnly | QIODevice::Text))
         return 0;
       iodevice = io;
     }
@@ -176,7 +176,7 @@ parser::search_node (const QString& node_arg)
       seek (io, realPos);
 
       QString text = get_next_node (io);
-      if (!text.isEmpty())
+      if (! text.isEmpty())
         {
           return text;
         }
@@ -191,7 +191,7 @@ parser::search_node (const QString& node_arg)
 QString
 parser::search_node (const QString& node, QIODevice *io)
 {
-  while (!io->atEnd ())
+  while (! io->atEnd ())
     {
       QString text = get_next_node (io);
       if (node == get_node_name (text))
@@ -211,7 +211,7 @@ parser::get_next_node (QIODevice *io)
   char c;
   int i;
 
-  while (!io->atEnd ())
+  while (! io->atEnd ())
     {
       io->getChar (&c);
       if (c)
@@ -555,7 +555,7 @@ void
 parser::seek (QIODevice *io, int pos)
 {
   char ch;
-  while (!io->atEnd () && pos > 0)
+  while (! io->atEnd () && pos > 0)
     {
       io->getChar (&ch);
       pos--;

@@ -2473,7 +2473,7 @@ private:
 
   void add_nest_child (symbol_table& st)
   {
-    assert (!st.nest_parent);
+    assert (! st.nest_parent);
     nest_children.push_back (&st);
     st.nest_parent = this;
   }

@@ -342,11 +342,11 @@ If no files are found, return an empty cell array.\n\
 %! assert (! isempty (f));
 
 %!test
-%! f = file_in_loadpath ("$$probably_!!_not_&&_a_!!_file$$");
+%! f = file_in_loadpath ("$$probably_!! _not_&&_a_!! _file$$");
 %! assert (f, "");
 
 %!test
-%! lst = file_in_loadpath ("$$probably_!!_not_&&_a_!!_file$$", "all");
+%! lst = file_in_loadpath ("$$probably_!! _not_&&_a_!! _file$$", "all");
 %! assert (lst, {});
 
 %!error file_in_loadpath ()
@@ -417,11 +417,11 @@ If no files are found, return an empty cell array.\n\
 %! assert (! isempty (f));
 
 %!test
-%! f = file_in_path (path (), "$$probably_!!_not_&&_a_!!_file$$");
+%! f = file_in_path (path (), "$$probably_!! _not_&&_a_!! _file$$");
 %! assert (f, "");
 
 %!test
-%! lst = file_in_path (path (), "$$probably_!!_not_&&_a_!!_file$$", "all");
+%! lst = file_in_path (path (), "$$probably_!! _not_&&_a_!! _file$$", "all");
 %! assert (lst, {});
 
 %!error file_in_path ()
@@ -1012,11 +1012,11 @@ all name matches rather than just the first.\n\
 %! assert (! isempty (f));
 
 %!test
-%! f = dir_in_loadpath ("$$probably_!!_not_&&_a_!!_dir$$");
+%! f = dir_in_loadpath ("$$probably_!! _not_&&_a_!! _dir$$");
 %! assert (f, "");
 
 %!test
-%! lst = dir_in_loadpath ("$$probably_!!_not_&&_a_!!_dir$$", "all");
+%! lst = dir_in_loadpath ("$$probably_!! _not_&&_a_!! _dir$$", "all");
 %! assert (lst, {});
 
 %!error dir_in_loadpath ()

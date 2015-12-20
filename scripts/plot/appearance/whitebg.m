@@ -75,7 +75,7 @@ function whitebg (varargin)
     if (isroot)
       fac = get (0, "factory");
       fields = fieldnames (fac);
-      fieldindex = intersect (find (! cellfun ("isempty", regexp (fields, 'color'))), union (find (! cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
+      fieldindex = intersect (find (! cellfun ("isempty", regexp (fields, 'color'))), union (find (! cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (! cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
 
       ## Check whether the factory value has been replaced
       for nf = 1 : numel (fieldindex);
@@ -105,7 +105,7 @@ function whitebg (varargin)
     for nh = 1 : numel (h)
       p = get (h (nh));
       fields = fieldnames (p);
-      fieldindex = find (!cellfun ("isempty", regexp (fields, 'color')));
+      fieldindex = find (! cellfun ("isempty", regexp (fields, 'color')));
       if (numel (fieldindex))
         for nf = 1 : numel (fieldindex);
           field = fields{fieldindex(nf)};

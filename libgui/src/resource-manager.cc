@@ -117,13 +117,13 @@ resource_manager::config_translators (QTranslator *qt_tr,
   // load the translator file for qt strings
   loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
 
-  if (!loaded) // try lower case
+  if (! loaded) // try lower case
     qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
 
   // load the translator file for qscintilla settings
   loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
 
-  if (!loaded) // try lower case
+  if (! loaded) // try lower case
     qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
 
   // load the translator file for gui strings
@@ -185,7 +185,7 @@ resource_manager::do_reload_settings (void)
       QDir ("/").mkpath (settings_directory);
       QFile qt_settings (default_qt_settings_file ());
 
-      if (!qt_settings.open (QFile::ReadOnly))
+      if (! qt_settings.open (QFile::ReadOnly))
         return;
 
       QTextStream in (&qt_settings);

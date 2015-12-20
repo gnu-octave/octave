@@ -56,7 +56,7 @@ SparseQR::SparseQR_rep::SparseQR_rep (const SparseMatrix& a, int order)
 
   N = CXSPARSE_DNAME (_qr) (&A, S);
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-  if (!N)
+  if (! N)
     (*current_liboctave_error_handler)
       ("SparseQR: sparse matrix QR factorization filled");
   count = 1;

@@ -1209,7 +1209,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
             mattype.mark_as_unsymmetric ();
         }
 
-      if (!mattype.is_hermitian ())
+      if (! mattype.is_hermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)

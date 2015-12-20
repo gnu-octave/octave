@@ -176,17 +176,17 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     }
 
   // scale the problem data
-  if (!par->presol || lpsolver != 1)
+  if (! par->presol || lpsolver != 1)
     glp_scale_prob (lp, scale);
 
   // build advanced initial basis (if required)
-  if (lpsolver == 1 && !par->presol)
+  if (lpsolver == 1 && ! par->presol)
     glp_adv_basis (lp, 0);
 
   // For MIP problems without a presolver, a first pass with glp_simplex
   // is required
-  if ((!isMIP && lpsolver == 1)
-      || (isMIP && !par->presol))
+  if ((! isMIP && lpsolver == 1)
+      || (isMIP && ! par->presol))
     {
       glp_smcp smcp;
       glp_init_smcp (&smcp);
@@ -223,7 +223,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       errnum = glp_intopt (lp, &iocp);
     }
 
-  if (!isMIP && lpsolver == 2)
+  if (! isMIP && lpsolver == 2)
     {
       glp_iptcp iptcp;
       glp_init_iptcp (&iptcp);

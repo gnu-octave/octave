@@ -450,7 +450,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                      &tmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -474,7 +474,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                      &tmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -499,7 +499,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                      &tmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -537,7 +537,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                      itmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -574,7 +574,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                      itmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);

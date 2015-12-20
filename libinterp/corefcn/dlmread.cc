@@ -118,7 +118,7 @@ parse_range_spec (const octave_value& range_spec,
                   if (ch == '.')
                     {
                       ch = is.get ();
-                      if (!is || ch != '.')
+                      if (! is || ch != '.')
                         stat = false;
                     }
 
@@ -129,16 +129,16 @@ parse_range_spec (const octave_value& range_spec,
                 {
                   rup = rlo;
                   cup = clo;
-                  if (!is || !is.eof ())
+                  if (! is || ! is.eof ())
                     stat = false;
                 }
             }
         }
 
-      if (stat && is && !is.eof ())
+      if (stat && is && ! is.eof ())
         stat = read_cell_spec (is, rup, cup);
 
-      if (!is || !is.eof ())
+      if (! is || ! is.eof ())
         stat = false;
     }
   else if (range_spec.is_real_matrix () && range_spec.numel () == 4)
@@ -251,7 +251,7 @@ fill empty fields.  The default is zero.\n\
     {
       if (nargin == 3)
         {
-          if (!parse_range_spec (args(2), r0, c0, r1, c1))
+          if (! parse_range_spec (args(2), r0, c0, r1, c1))
             error ("dlmread: error parsing RANGE");
         }
       else if (nargin == 4)
@@ -296,7 +296,7 @@ fill empty fields.  The default is zero.\n\
 
       // To be compatible with matlab, blank separator should
       // correspond to whitespace as delimter.
-      if (!sep.length ())
+      if (! sep.length ())
         {
           size_t n = line.find_first_of (",:; \t",
                                          line.find_first_of ("0123456789"));
@@ -412,7 +412,7 @@ fill empty fields.  The default is zero.\n\
                 {
                   double y = octave_read_double (tmp_stream);
 
-                  if (!iscmplx && y != 0.)
+                  if (! iscmplx && y != 0.)
                     {
                       iscmplx = true;
                       cdata = ComplexMatrix (rdata);

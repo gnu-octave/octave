@@ -54,7 +54,7 @@ function pdf = unidpdf (x, n)
   k = isnan (x) | ! (n > 0 & n == fix (n));
   pdf(k) = NaN;
 
-  k = !k & (x >= 1) & (x <= n) & (x == fix (x));
+  k = ! k & (x >= 1) & (x <= n) & (x == fix (x));
   if (isscalar (n))
     pdf(k) = 1 / n;
   else

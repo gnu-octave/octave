@@ -173,18 +173,18 @@ gzfilebuf::open_mode (std::ios_base::openmode mode, char* c_mode) const
   // Double the time for less than 1% size improvement seems
   // excessive though - keeping it at the default level
   // To change back, just append "9" to the next three mode strings
-  if (!testi && testo && !testt && !testa)
+  if (! testi && testo && ! testt && ! testa)
     strcpy (c_mode, "w");
-  if (!testi && testo && !testt && testa)
+  if (! testi && testo && ! testt && testa)
     strcpy (c_mode, "a");
-  if (!testi && testo && testt && !testa)
+  if (! testi && testo && testt && ! testa)
     strcpy (c_mode, "w");
-  if (testi && !testo && !testt && !testa)
+  if (testi && ! testo && ! testt && ! testa)
     strcpy (c_mode, "r");
   // No read/write mode yet
-  //  if (testi && testo && !testt && !testa)
+  //  if (testi && testo && ! testt && ! testa)
   //    strcpy(c_mode, "r+");
-  //  if (testi && testo && testt && !testa)
+  //  if (testi && testo && testt && ! testa)
   //    strcpy(c_mode, "w+");
 
   // Mode string should be empty for invalid combination of flags
@@ -358,7 +358,7 @@ gzfilebuf::setbuf (char_type* p, std::streamsize n)
   // least a buffer of size 1 (very inefficient though, therefore make it
   // bigger?).  This follows from [27.5.2.4.3]/12 (gptr needs to point at
   // something, it seems).
-  if (!p || !n)
+  if (! p || ! n)
     {
       // Replace existing buffer (if any) with small internal buffer
       this->disable_buffer ();
@@ -394,7 +394,7 @@ void
 gzfilebuf::enable_buffer ()
 {
   // If internal buffer required, allocate one
-  if (own_buffer && !buffer)
+  if (own_buffer && ! buffer)
     {
       // Check for buffered vs. "unbuffered"
       if (buffer_size > 0)

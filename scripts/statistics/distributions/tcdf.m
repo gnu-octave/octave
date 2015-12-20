@@ -65,7 +65,7 @@ function cdf = tcdf (x, n)
   endif
 
   ## deal with the case "abs(x) small"
-  kk = k & !x_big_abs;
+  kk = k & ! x_big_abs;
   if (isscalar (n))
     cdf(kk) = 0.5 * (1 - betainc (xx(kk) ./ (n + xx(kk)), 1/2, n/2));
   else

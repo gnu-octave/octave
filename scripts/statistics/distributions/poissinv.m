@@ -166,7 +166,7 @@ function inv = analytic_approx (x, lambda)
     inv(k) = floor (lam + (y+t)+lam.*rm);
   endif
 
-  k = !k & (s > -sqrt (2));
+  k = ! k & (s > -sqrt (2));
   if (any (k))
     ## Newton iteration
     r = 1 + s(k);

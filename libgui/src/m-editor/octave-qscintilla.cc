@@ -156,7 +156,7 @@ octave_qscintilla::get_actual_word ()
   _word_at_cursor = wordAtPoint (local_pos);
   QString lexer_name = lexer ()->lexer ();
   return ((lexer_name == "octave" || lexer_name == "matlab")
-          && !_word_at_cursor.isEmpty ());
+          && ! _word_at_cursor.isEmpty ());
 }
 
 // call documentation or help on the current word
@@ -208,7 +208,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
       QRect editor_rect = geometry ();      // editor rect mapped to global
       editor_rect.moveTopLeft
       (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
-      if (!editor_rect.contains (global_pos))  // is cursor outside editor?
+      if (! editor_rect.contains (global_pos))  // is cursor outside editor?
         global_pos = editor_rect.topLeft ();   // yes, take top left corner
     }
 
@@ -221,7 +221,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
   if (lexer_name == "octave" || lexer_name == "matlab")
     {
       _word_at_cursor = wordAtPoint (local_pos);
-      if (!_word_at_cursor.isEmpty ())
+      if (! _word_at_cursor.isEmpty ())
         {
           context_menu->addAction (tr ("Help on") + " " + _word_at_cursor,
                                    this, SLOT (contextmenu_help (bool)));

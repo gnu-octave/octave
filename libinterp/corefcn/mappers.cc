@@ -921,12 +921,12 @@ isfinite ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert (!isfinite (Inf))
-%!assert (!isfinite (NaN))
+%!assert (! isfinite (Inf))
+%!assert (! isfinite (NaN))
 %!assert (isfinite (rand (1,10)))
 
-%!assert (!isfinite (single (Inf)))
-%!assert (!isfinite (single (NaN)))
+%!assert (! isfinite (single (Inf)))
+%!assert (! isfinite (single (NaN)))
 %!assert (isfinite (single (rand (1,10))))
 
 %!error isfinite ()
@@ -1253,14 +1253,14 @@ isinf ([13, Inf, NA, NaN])\n\
 
 /*
 %!assert (isinf (Inf))
-%!assert (!isinf (NaN))
-%!assert (!isinf (NA))
+%!assert (! isinf (NaN))
+%!assert (! isinf (NA))
 %!assert (isinf (rand (1,10)), false (1,10))
 %!assert (isinf ([NaN -Inf -1 0 1 Inf NA]), [false, true, false, false, false, true, false])
 
 %!assert (isinf (single (Inf)))
-%!assert (!isinf (single (NaN)))
-%!assert (!isinf (single (NA)))
+%!assert (! isinf (single (NaN)))
+%!assert (! isinf (single (NA)))
 %!assert (isinf (single (rand (1,10))), false (1,10))
 %!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false])
 
@@ -1343,14 +1343,14 @@ isna ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert (!isna (Inf))
-%!assert (!isna (NaN))
+%!assert (! isna (Inf))
+%!assert (! isna (NaN))
 %!assert (isna (NA))
 %!assert (isna (rand (1,10)), false (1,10))
 %!assert (isna ([NaN -Inf -1 0 1 Inf NA]), [false, false, false, false, false, false, true])
 
-%!assert (!isna (single (Inf)))
-%!assert (!isna (single (NaN)))
+%!assert (! isna (single (Inf)))
+%!assert (! isna (single (NaN)))
 %!assert (isna (single (NA)))
 %!assert (isna (single (rand (1,10))), false (1,10))
 %!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true])
@@ -1383,13 +1383,13 @@ isnan ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert (!isnan (Inf))
+%!assert (! isnan (Inf))
 %!assert (isnan (NaN))
 %!assert (isnan (NA))
 %!assert (isnan (rand (1,10)), false (1,10))
 %!assert (isnan ([NaN -Inf -1 0 1 Inf NA]), [true, false, false, false, false, false, true])
 
-%!assert (!isnan (single (Inf)))
+%!assert (! isnan (single (Inf)))
 %!assert (isnan (single (NaN)))
 %!assert (isnan (single (NA)))
 %!assert (isnan (single (rand (1,10))), false (1,10))
@@ -2076,7 +2076,7 @@ DEFALIAS (lower, tolower);
 
 /*
 %!assert (tolower ("OCTAVE"), "octave")
-%!assert (tolower ("123OCTave!_&"), "123octave!_&")
+%!assert (tolower ("123OCTave! _&"), "123octave! _&")
 %!assert (tolower ({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}})
 %!assert (tolower (["ABC"; "DEF"]), ["abc"; "def"])
 %!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
@@ -2135,7 +2135,7 @@ DEFALIAS (upper, toupper);
 
 /*
 %!assert (toupper ("octave"), "OCTAVE")
-%!assert (toupper ("123OCTave!_&"), "123OCTAVE!_&")
+%!assert (toupper ("123OCTave! _&"), "123OCTAVE! _&")
 %!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}})
 %!assert (toupper (["abc"; "def"]), ["ABC"; "DEF"])
 %!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})

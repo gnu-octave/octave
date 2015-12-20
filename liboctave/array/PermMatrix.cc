@@ -48,7 +48,7 @@ PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
         }
     }
 
-  if (!colp)
+  if (! colp)
     *this = this->transpose ();
 }
 
@@ -78,7 +78,7 @@ PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
       Array<octave_idx_type>::operator = (idxa);
     }
 
-  if (!colp)
+  if (! colp)
     *this = this->transpose ();
 }
 

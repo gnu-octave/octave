@@ -452,7 +452,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   std::string name
                     = read_text_data (is, std::string (), dummy, t2, i);
 
-                  if (!is)
+                  if (! is)
                     {
                       error ("load: failed to load anonymous function handle");
                       break;
@@ -637,7 +637,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
                 read_binary_data (is, swap, fmt, std::string (),
                                   dummy, t2, doc);
 
-              if (!is)
+              if (! is)
                 {
                   error ("load: failed to load anonymous function handle");
                   break;

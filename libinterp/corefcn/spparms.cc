@@ -169,7 +169,7 @@ longer running time.\n\
 
       if (str == "umfpack")
         warning ("spparms: request to disable umfpack solvers ignored");
-      else if (!octave_sparse_params::set_key (str, val))
+      else if (! octave_sparse_params::set_key (str, val))
         error ("spparms: KEY not found");
     }
   else

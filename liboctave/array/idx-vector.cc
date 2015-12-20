@@ -235,7 +235,7 @@ convert_index (octave_idx_type i, bool& conv_error,
 {
   if (i <= 0)
     {
-      if (!conv_error)          // only gripe once, for things like A(-10000:0)
+      if (! conv_error)          // only gripe once, for things like A(-10000:0)
         gripe_invalid_index (i-1);
       conv_error = true;
     }
@@ -362,7 +362,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
           octave_idx_type k = inda.xelem (i);
           if (k < 0)
             {
-              if (!err)         // only report first error, in case 1000s.
+              if (! err)         // only report first error, in case 1000s.
                 gripe_invalid_index (k);
               err = true;
             }

@@ -1172,7 +1172,7 @@ octave_class::reconstruct_parents (void)
             {
               dbgstr = *pit;
               bool dbgbool = map.contains (*pit);
-              if (!dbgbool)
+              if (! dbgbool)
                 {
                   retval = false;
                   break;
@@ -1615,7 +1615,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       map = m;
 
-      if (!reconstruct_parents ())
+      if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
       if (load_path::find_method (c_name, "loadobj") != std::string ())

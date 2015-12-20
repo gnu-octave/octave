@@ -176,7 +176,7 @@ regexp::compile_internal (void)
 
               if (tmp_pos3 != std::string::npos && tmp_pos3 < tmp_pos1)
                 {
-                  if (!lookbehind_warned)
+                  if (! lookbehind_warned)
                     {
                       lookbehind_warned = true;
                       (*current_liboctave_warning_with_id_handler)

@@ -515,7 +515,7 @@ jit_convert::visit_identifier (tree_identifier& ti)
 {
   if (ti.has_magic_end ())
     {
-      if (!end_context.size ())
+      if (! end_context.size ())
         throw jit_fail_exception ("Illegal end");
       result = block->append (factory.create<jit_magic_end> (end_context));
     }

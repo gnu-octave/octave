@@ -1193,7 +1193,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       if (yticklabels.numel () > 0)
         {
           int halign = (ystate == AXE_HORZ_DIR
-                        ? 1 : (!xyzSym || y2Dright ? 0 : 2));
+                        ? 1 : (! xyzSym || y2Dright ? 0 : 2));
           int valign = (ystate == AXE_VERT_DIR ? 1 : 2);
 
           if (tick_along_z)

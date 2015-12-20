@@ -727,7 +727,7 @@ main_window::notice_settings (const QSettings *settings)
   int count = 0;
   int icon_set_found = 0; // default
 
-  while (!widget_icon_data[count].name.isEmpty ())
+  while (! widget_icon_data[count].name.isEmpty ())
     {
       // while not end of data
       if (widget_icon_data[count].name == icon_set)
@@ -1039,7 +1039,7 @@ main_window::read_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  if (!settings)
+  if (! settings)
     {
       qDebug ("Error: QSettings pointer from resource manager is NULL.");
       return;
@@ -1121,7 +1121,7 @@ void
 main_window::write_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
-  if (!settings)
+  if (! settings)
     {
       qDebug ("Error: QSettings pointer from resource manager is NULL.");
       return;
@@ -2176,7 +2176,7 @@ main_window::execute_debug_callback ()
 {
   bool repost = false;          // flag for reposting event for this callback
 
-  if (!_dbg_queue->isEmpty ())  // list can not be empty here, just to make sure
+  if (! _dbg_queue->isEmpty ())  // list can not be empty here, just to make sure
     {
       _dbg_queue_mutex.lock (); // critical path
       QString debug = _dbg_queue->takeFirst ();

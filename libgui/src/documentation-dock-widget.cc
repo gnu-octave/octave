@@ -61,7 +61,7 @@ void
 documentation_dock_widget::showDoc (const QString &name)
 {
   // show the doc pane without focus for carrying on typing in the console
-  if (!isVisible ())
+  if (! isVisible ())
     setVisible (true);
   raise ();
 

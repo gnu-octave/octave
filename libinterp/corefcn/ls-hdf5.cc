@@ -592,7 +592,7 @@ hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
       retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
     }
 
-  if (!ident_valid)
+  if (! ident_valid)
     {
       // should we attempt to handle invalid identifiers by converting
       // bad characters to '_', say?
@@ -803,7 +803,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
         empty = true;
     }
 
-  if (!empty)
+  if (! empty)
     return 0;
 
   space_hid = H5Screate_simple (1, &sz, 0);

@@ -329,7 +329,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
             }
         }
 
-      if (!singular)
+      if (! singular)
         {
           bandden = double (nnz) /
                     (double (ncols) * (double (lower_band) +
@@ -391,7 +391,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
                     }
                 }
 
-              if (!found)
+              if (! found)
                 break;
             }
 
@@ -647,7 +647,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
             }
         }
 
-      if (!singular)
+      if (! singular)
         {
           bandden = double (nnz) /
                     (double (ncols) * (double (lower_band) +
@@ -709,7 +709,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
                     }
                 }
 
-              if (!found)
+              if (! found)
                 break;
             }
 
@@ -965,7 +965,7 @@ MatrixType::type (bool quiet)
   if (typ != MatrixType::Unknown
       && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
-      if (!quiet && octave_sparse_params::get_key ("spumoni") != 0.)
+      if (! quiet && octave_sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;

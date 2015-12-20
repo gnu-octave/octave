@@ -253,7 +253,7 @@ read_binary_data (std::istream& is, bool swap,
       break;
     }
 
-  if (!tc.load_binary (is, swap, fmt))
+  if (! tc.load_binary (is, swap, fmt))
     {
     data_read_error:
       error ("load: trouble reading binary file '%s'", filename.c_str ());

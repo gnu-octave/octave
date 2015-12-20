@@ -247,7 +247,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
   M retval;
   const double* qv = Q.fortran_vec ();
 
-  if (!err)
+  if (! err)
     {
       retval.resize (n, b_nc);
       for (octave_idx_type j = 0; j < b_nc; j++)
@@ -942,7 +942,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
           return -1;
         }
 
-      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -975,7 +975,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
             }
-          else if (!vector_product (m, workd + iptr(0) - 1,
+          else if (! vector_product (m, workd + iptr(0) - 1,
                                     workd + iptr(1) - 1))
             break;
         }
@@ -1235,7 +1235,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
           return -1;
         }
 
-      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1536,7 +1536,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
           return -1;
         }
 
-      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1856,7 +1856,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {
@@ -1889,7 +1889,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
             }
-          else if (!vector_product (m, workd + iptr(0) - 1,
+          else if (! vector_product (m, workd + iptr(0) - 1,
                                     workd + iptr(1) - 1))
             break;
         }
@@ -1962,7 +1962,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               else
                 d[i-jj] = Complex (dr[i], di[i]);
             }
-          if (jj == 0 && !rvec)
+          if (jj == 0 && ! rvec)
             for (octave_idx_type i = 0; i < k; i++)
               d[i] = d[i+1];
 
@@ -2198,7 +2198,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           return -1;
         }
 
-      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -2348,7 +2348,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               else
                 d[i-jj] = Complex (dr[i], di[i]);
             }
-          if (jj == 0 && !rvec)
+          if (jj == 0 && ! rvec)
             for (octave_idx_type i = 0; i < k; i++)
               d[i] = d[i+1];
 
@@ -2554,7 +2554,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {
@@ -2660,7 +2660,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
               else
                 d[i-jj] = Complex (dr[i], di[i]);
             }
-          if (jj == 0 && !rvec)
+          if (jj == 0 && ! rvec)
             for (octave_idx_type i = 0; i < k; i++)
               d[i] = d[i+1];
 
@@ -2925,7 +2925,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           return -1;
         }
 
-      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -2957,7 +2957,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                 workd[i+iptr(1)-1] = mtmp(i,0);
 
             }
-          else if (!vector_product (m, workd + iptr(0) - 1,
+          else if (! vector_product (m, workd + iptr(0) - 1,
                                     workd + iptr(1) - 1))
             break;
         }
@@ -3219,7 +3219,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {
@@ -3528,7 +3528,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {

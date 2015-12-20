@@ -293,10 +293,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
       ColumnVector tmp (n);
       is >> tmp;
       if (!is)
-        {
-          error ("load: failed to load permutation matrix constant");
-          success = false;
-        }
+        error ("load: failed to load permutation matrix constant");
       else
         {
           Array<octave_idx_type> pvec (dim_vector (n, 1));

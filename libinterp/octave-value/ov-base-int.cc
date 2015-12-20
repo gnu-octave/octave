@@ -222,10 +222,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
           is >> tmp;
 
           if (!is)
-            {
-              error ("load: failed to load matrix constant");
-              success = false;
-            }
+            error ("load: failed to load matrix constant");
 
           this->matrix = tmp;
         }

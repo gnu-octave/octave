@@ -333,10 +333,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
           fcn = symbol_table::find_function (nm);
 
           if (! fcn.is_function ())
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+            error ("function handle points to non-existent function");
         }
     }
 
@@ -1145,10 +1142,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
           H5Gclose (data_hid);
 
           if (num_obj != static_cast<hsize_t>(len))
-            {
-              error ("load: failed to load anonymous function handle");
-              success = false;
-            }
+            error ("load: failed to load anonymous function handle");
 
           hdf5_callback_data dsub;
           int current_item = 0;

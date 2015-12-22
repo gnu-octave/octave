@@ -1068,14 +1068,12 @@ get_sscanf_data (const octave_value& val)
 {
   std::string retval;
 
-  if (val.is_string ())
-    {
-      octave_value tmp = val.reshape (dim_vector (1, val.numel ()));
-
-      retval = tmp.string_value ();
-    }
-  else
+  if (! val.is_string ())
     error ("sscanf: argument STRING must be a string");
+
+  octave_value tmp = val.reshape (dim_vector (1, val.numel ()));
+
+  retval = tmp.string_value ();
 
   return retval;
 }

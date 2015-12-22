@@ -403,58 +403,56 @@ do_load (std::istream& stream, const std::string& orig_fname,
         break;
       else
         {
-          if (tc.is_defined ())
+          if (! tc.is_defined ())
+            error ("load: unable to load variable '%s'", name.c_str ());
+
+          if (format == LS_MAT_ASCII && argv_idx < argc)
+            warning ("load: loaded ASCII file '%s' -- ignoring extra args",
+                     orig_fname.c_str ());
+
+          if (format == LS_MAT_ASCII
+              || argv_idx == argc
+              || matches_patterns (argv, argv_idx, argc, name))
             {
-              if (format == LS_MAT_ASCII && argv_idx < argc)
-                warning ("load: loaded ASCII file '%s' -- ignoring extra args",
-                         orig_fname.c_str ());
-
-              if (format == LS_MAT_ASCII
-                  || argv_idx == argc
-                  || matches_patterns (argv, argv_idx, argc, name))
+              count++;
+              if (list_only)
                 {
-                  count++;
-                  if (list_only)
+                  if (verbose)
                     {
-                      if (verbose)
-                        {
-                          if (count == 1)
-                            output_buf
-                              << "type               rows   cols   name\n"
-                              << "====               ====   ====   ====\n";
+                      if (count == 1)
+                        output_buf
+                          << "type               rows   cols   name\n"
+                          << "====               ====   ====   ====\n";
 
-                          output_buf
-                            << std::setiosflags (std::ios::left)
-                            << std::setw (16) << tc.type_name () . c_str ()
-                            << std::setiosflags (std::ios::right)
-                            << std::setw (7) << tc.rows ()
-                            << std::setw (7) << tc.columns ()
-                            << "   " << name << "\n";
-                        }
-                      else
-                        symbol_names.push_back (name);
+                      output_buf
+                        << std::setiosflags (std::ios::left)
+                        << std::setw (16) << tc.type_name () . c_str ()
+                        << std::setiosflags (std::ios::right)
+                        << std::setw (7) << tc.rows ()
+                        << std::setw (7) << tc.columns ()
+                        << "   " << name << "\n";
                     }
                   else
-                    {
-                      if (nargout == 1)
-                        {
-                          if (format == LS_MAT_ASCII)
-                            retval = tc;
-                          else
-                            retstruct.assign (name, tc);
-                        }
-                      else
-                        install_loaded_variable (name, tc, global, doc);
-                    }
+                    symbol_names.push_back (name);
                 }
-
-              // Only attempt to read one item from a headless text file.
-
-              if (format == LS_MAT_ASCII)
-                break;
+              else
+                {
+                  if (nargout == 1)
+                    {
+                      if (format == LS_MAT_ASCII)
+                        retval = tc;
+                      else
+                        retstruct.assign (name, tc);
+                    }
+                  else
+                    install_loaded_variable (name, tc, global, doc);
+                }
             }
-          else
-            error ("load: unable to load variable '%s'", name.c_str ());
+
+          // Only attempt to read one item from a headless text file.
+
+          if (format == LS_MAT_ASCII)
+            break;
         }
     }
 
@@ -830,36 +828,34 @@ Force Octave to assume the file is in Octave's text format.\n\
             {
               std::ifstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  if (format == LS_BINARY)
-                    {
-                      if (read_binary_file_header (file, swap, flt_fmt) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-                  else if (format == LS_MAT5_BINARY
-                           || format == LS_MAT7_BINARY)
-                    {
-                      if (read_mat5_binary_file_header (file, swap, false,
-                                                        orig_fname) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-
-                  retval = do_load (file, orig_fname, format,
-                                    flt_fmt, list_only, swap, verbose,
-                                    argv, i, argc, nargout);
-
-                  file.close ();
-                }
-              else
+              if (! file)
                 error ("load: unable to open input file '%s'",
                        orig_fname.c_str ());
+
+              if (format == LS_BINARY)
+                {
+                  if (read_binary_file_header (file, swap, flt_fmt) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+              else if (format == LS_MAT5_BINARY
+                       || format == LS_MAT7_BINARY)
+                {
+                  if (read_mat5_binary_file_header (file, swap, false,
+                                                    orig_fname) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+
+              retval = do_load (file, orig_fname, format,
+                                flt_fmt, list_only, swap, verbose,
+                                argv, i, argc, nargout);
+
+              file.close ();
             }
         }
       else

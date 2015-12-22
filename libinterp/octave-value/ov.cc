@@ -1420,16 +1420,14 @@ octave_value::assign (assign_op op, const std::string& type,
 
   if (op != op_asn_eq)
     {
-      if (is_defined ())
-        {
-          octave_value t = subsref (type, idx);
-
-          binary_op binop = op_eq_to_binary_op (op);
-
-          t_rhs = do_binary_op (binop, t, rhs);
-        }
-      else
+      if (! is_defined ())
         error ("in computed assignment A(index) OP= X, A must be defined first");
+
+      octave_value t = subsref (type, idx);
+
+      binary_op binop = op_eq_to_binary_op (op);
+
+      t_rhs = do_binary_op (binop, t, rhs);
     }
 
   *this = subsasgn (type, idx, t_rhs);
@@ -2441,27 +2439,25 @@ do_colon_op (const octave_value& base, const octave_value& increment,
 
       octave_value meth = symbol_table::find_method ("colon", dispatch_type);
 
-      if (meth.is_defined ())
+      if (! meth.is_defined ())
+        error ("colon method not defined for %s class", dispatch_type.c_str ());
+
+      octave_value_list args;
+
+      if (increment.is_defined ())
         {
-          octave_value_list args;
-
-          if (increment.is_defined ())
-            {
-              args(2) = limit;
-              args(1) = increment;
-            }
-          else
-            args(1) = limit;
-
-          args(0) = base;
-
-          octave_value_list tmp = feval (meth.function_value (), args, 1);
-
-          if (tmp.length () > 0)
-            retval = tmp(0);
+          args(2) = limit;
+          args(1) = increment;
         }
       else
-        error ("colon method not defined for %s class", dispatch_type.c_str ());
+        args(1) = limit;
+
+      args(0) = base;
+
+      octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+      if (tmp.length () > 0)
+        retval = tmp(0);
     }
   else
     {

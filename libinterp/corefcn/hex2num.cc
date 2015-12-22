@@ -105,18 +105,16 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
             {
               unsigned char ch = cmat.elem (i, j);
 
-              if (isxdigit (ch))
-                {
-                  num.ival <<= 4;
-                  if (ch >= 'a')
-                    num.ival += static_cast<uint32_t> (ch - 'a' + 10);
-                  else if (ch >= 'A')
-                    num.ival += static_cast<uint32_t> (ch - 'A' + 10);
-                  else
-                    num.ival += static_cast<uint32_t> (ch - '0');
-                }
-              else
+              if (! isxdigit (ch))
                 error ("hex2num: illegal character found in string S");
+
+              num.ival <<= 4;
+              if (ch >= 'a')
+                num.ival += static_cast<uint32_t> (ch - 'a' + 10);
+              else if (ch >= 'A')
+                num.ival += static_cast<uint32_t> (ch - 'A' + 10);
+              else
+                num.ival += static_cast<uint32_t> (ch - '0');
             }
 
           if (nc < nchars)
@@ -145,18 +143,16 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
             {
               unsigned char ch = cmat.elem (i, j);
 
-              if (isxdigit (ch))
-                {
-                  num.ival <<= 4;
-                  if (ch >= 'a')
-                    num.ival += static_cast<uint64_t> (ch - 'a' + 10);
-                  else if (ch >= 'A')
-                    num.ival += static_cast<uint64_t> (ch - 'A' + 10);
-                  else
-                    num.ival += static_cast<uint64_t> (ch - '0');
-                }
-              else
+              if (! isxdigit (ch))
                 error ("hex2num: illegal character found in string S");
+
+              num.ival <<= 4;
+              if (ch >= 'a')
+                num.ival += static_cast<uint64_t> (ch - 'a' + 10);
+              else if (ch >= 'A')
+                num.ival += static_cast<uint64_t> (ch - 'A' + 10);
+              else
+                num.ival += static_cast<uint64_t> (ch - '0');
             }
 
           if (nc < nchars)

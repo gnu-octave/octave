@@ -1811,28 +1811,26 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       fcn = symbol_table::find_method (dtype, dtype);
 
-      if (fcn.is_defined ())
-        {
-          octave_value_list result;
-
-          try
-            {
-              result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
-            }
-          catch (octave_execution_exception& e)
-            {
-              error (e, "%s constructor failed for %s argument", dtype.c_str (),
-                     cname.c_str ());
-            }
-
-          if (result.length () > 0)
-            retval = result(0);
-          else
-            error ("%s constructor failed for %s argument", dtype.c_str (),
-                   cname.c_str ());
-        }
-      else
+      if (! fcn.is_defined ())
         error ("no constructor for %s!", dtype.c_str ());
+
+      octave_value_list result;
+
+      try
+        {
+          result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+        }
+      catch (octave_execution_exception& e)
+        {
+          error (e, "%s constructor failed for %s argument", dtype.c_str (),
+                 cname.c_str ());
+        }
+
+      if (result.length () > 0)
+        retval = result(0);
+      else
+        error ("%s constructor failed for %s argument", dtype.c_str (),
+               cname.c_str ());
     }
 
   return retval;
@@ -6684,7 +6682,7 @@ Undocumented internal function.\n\
       else if (mode == "descend")
         smode = DESCENDING;
       else
-          error ("__sort_rows_idx__: MODE must be either \"ascend\" or \"descend\"");
+        error ("__sort_rows_idx__: MODE must be either \"ascend\" or \"descend\"");
     }
 
   octave_value arg = args(0);

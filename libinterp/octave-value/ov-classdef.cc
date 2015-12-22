@@ -545,17 +545,14 @@ class_fevalStatic (const octave_value_list& args, int nargout)
 
       cdef_method meth = cls.find_method (meth_name);
 
-      if (meth.ok ())
-        {
-          if (meth.is_static ())
-            retval = meth.execute (args.splice (0, 2), nargout,
-                                   true, "fevalStatic");
-          else
-            error ("fevalStatic: method `%s' is not static",
-                   meth_name.c_str ());
-        }
-      else
+      if (! meth.ok ())
         error ("fevalStatic: method not found: %s", meth_name.c_str ());
+
+      if (meth.is_static ())
+        retval = meth.execute (args.splice (0, 2), nargout,
+                               true, "fevalStatic");
+      else
+        error ("fevalStatic: method `%s' is not static", meth_name.c_str ());
     }
   else
     error ("fevalStatic: first argument must be a meta.class object");
@@ -577,16 +574,14 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
 
       cdef_property prop = cls.find_property (prop_name);
 
-      if (prop.ok ())
-        {
-          if (prop.is_constant ())
-            retval(0) = prop.get_value (true, "getConstant");
-          else
-            error ("getConstant: property `%s' is not constant",
-                   prop_name.c_str ());
-        }
-      else
+      if (! prop.ok ())
         error ("getConstant: property not found: %s",
+               prop_name.c_str ());
+
+      if (prop.is_constant ())
+        retval(0) = prop.get_value (true, "getConstant");
+      else
+        error ("getConstant: property `%s' is not constant",
                prop_name.c_str ());
     }
   else
@@ -1170,70 +1165,62 @@ public:
 
     ctx = get_class_context (meth_name, in_constructor);
 
-    if (ctx.ok ())
+    if (! ctx.ok ())
+      error ("superclass calls can only occur in methods or constructors");
+
+    std::string mname = args(0).string_value ();
+    std::string cname = args(1).string_value ();
+
+    cdef_class cls = lookup_class (cname);
+
+    if (in_constructor)
       {
-        std::string mname = args(0).string_value ();
-        std::string cname = args(1).string_value ();
+        if (! is_direct_superclass (cls, ctx))
+          error ("`%s' is not a direct superclass of `%s'",
+                 cname.c_str (), ctx.get_name ().c_str ());
 
-        cdef_class cls = lookup_class (cname);
+        if (! is_constructed_object (mname))
+          error ("cannot call superclass constructor with "
+                 "variable `%s'", mname.c_str ());
 
-        if (in_constructor)
-          {
-            if (is_direct_superclass (cls, ctx))
-              {
-                if (is_constructed_object (mname))
-                  {
-                    octave_value sym = symbol_table::varval (mname);
+        octave_value sym = symbol_table::varval (mname);
 
-                    cls.run_constructor (to_cdef_ref (sym), idx);
+        cls.run_constructor (to_cdef_ref (sym), idx);
 
-                    retval(0) = sym;
-                  }
-                else
-                  error ("cannot call superclass constructor with "
-                         "variable `%s'", mname.c_str ());
-              }
-            else
-              error ("`%s' is not a direct superclass of `%s'",
-                     cname.c_str (), ctx.get_name ().c_str ());
-          }
-        else
-          {
-            if (mname == meth_name)
-              {
-                if (is_strict_superclass (cls, ctx))
-                  {
-                    // I see 2 possible implementations here:
-                    // 1) use cdef_object::subsref with a different class
-                    //    context; this avoids duplicating code, but
-                    //    assumes the object is always the first argument
-                    // 2) lookup the method manually and call
-                    //    cdef_method::execute; this duplicates part of
-                    //    logic in cdef_object::subsref, but avoid the
-                    //    assumption of 1)
-                    // Not being sure about the assumption of 1), I
-                    // go with option 2) for the time being.
-
-                    cdef_method meth = cls.find_method (meth_name, false);
-
-                    if (meth.ok ())
-                      retval = meth.execute (idx, nargout, true,
-                                             meth_name);
-                    else
-                      error ("no method `%s' found in superclass `%s'",
-                             meth_name.c_str (), cname.c_str ());
-                  }
-                else
-                  error ("`%s' is not a superclass of `%s'",
-                         cname.c_str (), ctx.get_name ().c_str ());
-              }
-            else
-              error ("method name mismatch (`%s' != `%s')",
-                     mname.c_str (), meth_name.c_str ());
-          }
+        retval(0) = sym;
       }
     else
-      error ("superclass calls can only occur in methods or constructors");
+      {
+        if (mname == meth_name)
+          {
+            if (! is_strict_superclass (cls, ctx))
+              error ("`%s' is not a superclass of `%s'",
+                     cname.c_str (), ctx.get_name ().c_str ());
+
+            // I see 2 possible implementations here:
+            // 1) use cdef_object::subsref with a different class
+            //    context; this avoids duplicating code, but
+            //    assumes the object is always the first argument
+            // 2) lookup the method manually and call
+            //    cdef_method::execute; this duplicates part of
+            //    logic in cdef_object::subsref, but avoid the
+            //    assumption of 1)
+            // Not being sure about the assumption of 1), I
+            // go with option 2) for the time being.
+
+            cdef_method meth = cls.find_method (meth_name, false);
+
+            if (meth.ok ())
+              retval = meth.execute (idx, nargout, true,
+                                     meth_name);
+            else
+              error ("no method `%s' found in superclass `%s'",
+                     meth_name.c_str (), cname.c_str ());
+          }
+        else
+          error ("method name mismatch (`%s' != `%s')",
+                 mname.c_str (), meth_name.c_str ());
+      }
 
     return retval;
   }
@@ -1378,21 +1365,19 @@ cdef_object_scalar::subsref (const std::string& type,
           {
             cdef_property prop = cls.find_property (name);
 
-            if (prop.ok ())
-              {
-                if (prop.is_constant ())
-                  retval(0) = prop.get_value (true, "subsref");
-                else
-                  {
-                    refcount++;
-                    retval(0) = prop.get_value (cdef_object (this),
-                                                true, "subsref");
-                  }
-
-                skip = 1;
-              }
-            else
+            if (! prop.ok ())
               error ("subsref: unknown method or property: %s", name.c_str ());
+
+            if (prop.is_constant ())
+              retval(0) = prop.get_value (true, "subsref");
+            else
+              {
+                refcount++;
+                retval(0) = prop.get_value (cdef_object (this),
+                                            true, "subsref");
+              }
+
+            skip = 1;
           }
         break;
       }
@@ -1447,45 +1432,43 @@ cdef_object_scalar::subsasgn (const std::string& type,
 
         cdef_property prop = cls.find_property (name);
 
-        if (prop.ok ())
+        if (! prop.ok ())
+          error ("subsasgn: unknown property: %s", name.c_str ());
+
+        if (prop.is_constant ())
+          error ("subsasgn: cannot assign constant property: %s",
+                 name.c_str ());
+        else
           {
-            if (prop.is_constant ())
-              error ("subsasgn: cannot assign constant property: %s",
-                     name.c_str ());
+            refcount++;
+
+            cdef_object obj (this);
+
+            if (type.length () == 1)
+              {
+                prop.set_value (obj, rhs, true, "subsasgn");
+
+                retval = to_ov (obj);
+              }
             else
               {
-                refcount++;
+                octave_value val =
+                  prop.get_value (obj, true, "subsasgn");
 
-                cdef_object obj (this);
+                std::list<octave_value_list> args (idx);
 
-                if (type.length () == 1)
-                  {
-                    prop.set_value (obj, rhs, true, "subsasgn");
+                args.erase (args.begin ());
 
-                    retval = to_ov (obj);
-                  }
-                else
-                  {
-                    octave_value val =
-                      prop.get_value (obj, true, "subsasgn");
+                val = val.assign (octave_value::op_asn_eq,
+                                  type.substr (1), args, rhs);
 
-                    std::list<octave_value_list> args (idx);
+                if (val.class_name () != "object"
+                    || ! to_cdef (val).is_handle_object ())
+                  prop.set_value (obj, val, true, "subsasgn");
 
-                    args.erase (args.begin ());
-
-                    val = val.assign (octave_value::op_asn_eq,
-                                      type.substr (1), args, rhs);
-
-                    if (val.class_name () != "object"
-                        || ! to_cdef (val).is_handle_object ())
-                      prop.set_value (obj, val, true, "subsasgn");
-
-                    retval = to_ov (obj);
-                  }
+                retval = to_ov (obj);
               }
           }
-        else
-          error ("subsasgn: unknown property: %s", name.c_str ());
       }
       break;
 
@@ -2387,37 +2370,33 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 
           if (meth.ok ())
             {
-              if (meth.is_static ())
-                {
-                  octave_value_list args;
-
-                  if (type.length () > 1 && idx.size () > 1
-                      && type[1] == '(')
-                    {
-                      args = *(++(idx.begin ()));
-                      skip++;
-                    }
-
-                  retval = meth.execute (args, (type.length () > skip
-                                                ? 1 : nargout), true,
-                                         "meta.class");
-                }
-              else
+              if (! meth.is_static ())
                 error ("method `%s' is not static", nm.c_str ());
+
+              octave_value_list args;
+
+              if (type.length () > 1 && idx.size () > 1
+                  && type[1] == '(')
+                {
+                  args = *(++(idx.begin ()));
+                  skip++;
+                }
+
+              retval = meth.execute (args, (type.length () > skip
+                                            ? 1 : nargout), true,
+                                     "meta.class");
             }
           else
             {
               cdef_property prop = find_property (nm);
 
-              if (prop.ok ())
-                {
-                  if (prop.is_constant ())
-                    retval(0) = prop.get_value (true, "meta.class");
-                  else
-                    error ("property `%s' is not constant", nm.c_str ());
-                }
-              else
+              if (! prop.ok ())
                 error ("no such method or property `%s'", nm.c_str ());
+
+              if (prop.is_constant ())
+                retval(0) = prop.get_value (true, "meta.class");
+              else
+                error ("property `%s' is not constant", nm.c_str ());
             }
         }
       else
@@ -2501,11 +2480,8 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
       if (ctor_retval.length () == 1)
         obj = to_cdef (ctor_retval(0));
       else
-        {
-          error ("%s: invalid number of output arguments for classdef constructor",
-                 ctor_name.c_str ());
-          return;
-        }
+        error ("%s: invalid number of output arguments for classdef constructor",
+               ctor_name.c_str ());
     }
 
   obj.mark_as_constructed (wrap ());
@@ -2669,12 +2645,8 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           if (! sclass.get ("Sealed").bool_value ())
             slist.push_back (sclass);
           else
-            {
-              error ("`%s' cannot inherit from `%s', because it is sealed",
-                     full_class_name.c_str (), sclass_name.c_str ());
-              return retval;
-            }
-
+            error ("`%s' cannot inherit from `%s', because it is sealed",
+                   full_class_name.c_str (), sclass_name.c_str ());
         }
     }
 
@@ -3433,41 +3405,39 @@ cdef_package::cdef_package_rep::meta_subsref
 
           octave_value o = find (nm);
 
-          if (o.is_defined ())
-            {
-              if (o.is_function ())
-                {
-                  octave_function* fcn = o.function_value ();
-
-                  // NOTE: the case where the package query is the last
-                  // part of this subsref index is handled in the parse
-                  // tree, because there is some logic to handle magic
-                  // "end" that makes it impossible to execute the
-                  // function call at this stage.
-
-                  if (type.size () > 1
-                      && ! fcn->is_postfix_index_handled (type[1]))
-                    {
-                      octave_value_list tmp_args;
-
-                      retval = o.do_multi_index_op (nargout,
-                                                    tmp_args);
-                    }
-                  else
-                    retval(0) = o;
-
-                  if (type.size () > 1 && idx.size () > 1)
-                    retval = retval(0).next_subsref (nargout, type,
-                                                     idx, 1);
-                }
-              else if (type.size () > 1 && idx.size () > 1)
-                retval = o.next_subsref (nargout, type, idx, 1);
-              else
-                retval(0) = o;
-            }
-          else
+          if (! o.is_defined ())
             error ("member `%s' in package `%s' does not exist",
                    nm.c_str (), get_name ().c_str ());
+
+          if (o.is_function ())
+            {
+              octave_function* fcn = o.function_value ();
+
+              // NOTE: the case where the package query is the last
+              // part of this subsref index is handled in the parse
+              // tree, because there is some logic to handle magic
+              // "end" that makes it impossible to execute the
+              // function call at this stage.
+
+              if (type.size () > 1
+                  && ! fcn->is_postfix_index_handled (type[1]))
+                {
+                  octave_value_list tmp_args;
+
+                  retval = o.do_multi_index_op (nargout,
+                                                tmp_args);
+                }
+              else
+                retval(0) = o;
+
+              if (type.size () > 1 && idx.size () > 1)
+                retval = retval(0).next_subsref (nargout, type,
+                                                 idx, 1);
+            }
+          else if (type.size () > 1 && idx.size () > 1)
+            retval = o.next_subsref (nargout, type, idx, 1);
+          else
+            retval(0) = o;
         }
       else
         error ("invalid meta.package indexing");

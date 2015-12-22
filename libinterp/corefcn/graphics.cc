@@ -1767,47 +1767,43 @@ property::create (const std::string& name, const graphics_handle& h,
     {
       caseless_str go_name, go_rest;
 
-      if (lookup_object_name (type, go_name, go_rest))
-        {
-          graphics_object go;
-
-          std::map<caseless_str, graphics_object>::const_iterator it =
-            dprop_obj_map.find (go_name);
-
-          if (it == dprop_obj_map.end ())
-            {
-              base_graphics_object *bgo =
-                make_graphics_object_from_type (go_name);
-
-              if (bgo)
-                {
-                  go = graphics_object (bgo);
-
-                  dprop_obj_map[go_name] = go;
-                }
-            }
-          else
-            go = it->second;
-
-          if (go.valid_object ())
-            {
-              property prop = go.get_properties ().get_property (go_rest);
-
-              retval = prop.clone ();
-
-              retval.set_parent (h);
-              retval.set_name (name);
-
-              if (args.length () > 0)
-                retval.set (args(0));
-            }
-          else
-            error ("addproperty: invalid object type (= %s)",
-                   go_name.c_str ());
-        }
-      else
+      if (! lookup_object_name (type, go_name, go_rest))
         error ("addproperty: unsupported type for dynamic property (= %s)",
                type.c_str ());
+
+      graphics_object go;
+
+      std::map<caseless_str, graphics_object>::const_iterator it =
+        dprop_obj_map.find (go_name);
+
+      if (it == dprop_obj_map.end ())
+        {
+          base_graphics_object *bgo =
+            make_graphics_object_from_type (go_name);
+
+          if (bgo)
+            {
+              go = graphics_object (bgo);
+
+              dprop_obj_map[go_name] = go;
+            }
+        }
+      else
+        go = it->second;
+
+      if (! go.valid_object ())
+        error ("addproperty: invalid object type (= %s)",
+               go_name.c_str ());
+
+      property prop = go.get_properties ().get_property (go_rest);
+
+      retval = prop.clone ();
+
+      retval.set_parent (h);
+      retval.set_name (name);
+
+      if (args.length () > 0)
+        retval.set (args(0));
     }
 
   return retval;
@@ -2027,30 +2023,28 @@ property_list::set (const caseless_str& name, const octave_value& val)
           else if (pfx == "uipushtool")
             has_property = uipushtool::properties::has_core_property (pname);
 
-          if (has_property)
+          if (! has_property)
+            error ("invalid %s property '%s'", pfx.c_str (), pname.c_str ());
+
+          bool remove = false;
+          if (val.is_string ())
             {
-              bool remove = false;
-              if (val.is_string ())
-                {
-                  std::string sval = val.string_value ();
+              std::string sval = val.string_value ();
 
-                  remove = (sval.compare ("remove") == 0);
-                }
+              remove = (sval.compare ("remove") == 0);
+            }
 
-              pval_map_type& pval_map = plist_map[pfx];
+          pval_map_type& pval_map = plist_map[pfx];
 
-              if (remove)
-                {
-                  pval_map_iterator p = pval_map.find (pname);
+          if (remove)
+            {
+              pval_map_iterator p = pval_map.find (pname);
 
-                  if (p != pval_map.end ())
-                    pval_map.erase (p);
-                }
-              else
-                pval_map[pname] = val;
+              if (p != pval_map.end ())
+                pval_map.erase (p);
             }
           else
-            error ("invalid %s property '%s'", pfx.c_str (), pname.c_str ());
+            pval_map[pname] = val;
         }
     }
 
@@ -2595,24 +2589,22 @@ reparent (const octave_value& ov, const std::string& who,
 
   h = gh_manager::lookup (hv);
 
-  if (h.ok ())
-    {
-      graphics_object go = gh_manager::get_object (h);
-
-      graphics_handle parent_h = go.get_parent ();
-
-      graphics_object parent_go = gh_manager::get_object (parent_h);
-
-      parent_go.remove_child (h);
-
-      if (adopt)
-        go.set ("parent", new_parent.value ());
-      else
-        go.reparent (new_parent);
-    }
-  else
+  if (! h.ok ())
     error ("%s: invalid graphics handle (= %g) for %s",
            who.c_str (), hv, pname.c_str ());
+
+  graphics_object go = gh_manager::get_object (h);
+
+  graphics_handle parent_h = go.get_parent ();
+
+  graphics_object parent_go = gh_manager::get_object (parent_h);
+
+  parent_go.remove_child (h);
+
+  if (adopt)
+    go.set ("parent", new_parent.value ());
+  else
+    go.reparent (new_parent);
 
   return h;
 }
@@ -3011,32 +3003,30 @@ base_properties::set_parent (const octave_value& val)
     {
       new_parent = gh_manager::lookup (hp);
 
-      if (new_parent.ok ())
-        {
-          // Remove child from current parent
-          graphics_object old_parent_go;
-          old_parent_go = gh_manager::get_object (get_parent ());
-
-          if (old_parent_go.get_handle () != hp)
-            old_parent_go.remove_child (__myhandle__);
-          else
-            return;  // Do nothing more
-
-          // Check new parent's parent is not this child to avoid recursion
-          graphics_object new_parent_go;
-          new_parent_go = gh_manager::get_object (new_parent);
-          if (new_parent_go.get_parent () == __myhandle__)
-            {
-              // new parent's parent gets child's original parent
-              new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
-            }
-
-          // Set parent property to new_parent and do adoption
-          parent = new_parent.as_octave_value ();
-          ::adopt (parent.handle_value (), __myhandle__);
-        }
-      else
+      if (! new_parent.ok ())
         error ("set: invalid graphics handle (= %g) for parent", hp);
+
+      // Remove child from current parent
+      graphics_object old_parent_go;
+      old_parent_go = gh_manager::get_object (get_parent ());
+
+      if (old_parent_go.get_handle () != hp)
+        old_parent_go.remove_child (__myhandle__);
+      else
+        return;  // Do nothing more
+
+      // Check new parent's parent is not this child to avoid recursion
+      graphics_object new_parent_go;
+      new_parent_go = gh_manager::get_object (new_parent);
+      if (new_parent_go.get_parent () == __myhandle__)
+        {
+          // new parent's parent gets child's original parent
+          new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
+        }
+
+      // Set parent property to new_parent and do adoption
+      parent = new_parent.as_octave_value ();
+      ::adopt (parent.handle_value (), __myhandle__);
     }
 }
 
@@ -3174,15 +3164,13 @@ base_properties::delete_listener (const caseless_str& pname,
 void
 base_graphics_object::update_axis_limits (const std::string& axis_type)
 {
-  if (valid_object ())
-    {
-      graphics_object parent_go = gh_manager::get_object (get_parent ());
-
-      if (parent_go)
-        parent_go.update_axis_limits (axis_type);
-    }
-  else
+  if (! valid_object ())
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
+
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+  if (parent_go)
+    parent_go.update_axis_limits (axis_type);
 }
 
 void
@@ -9054,50 +9042,48 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 
   bgo = make_graphics_object_from_type (go_name, h, p);
 
-  if (bgo)
-    {
-      graphics_object go (bgo);
-
-      handle_map[h] = go;
-
-      // Overriding defaults will work now because the handle is valid
-      // and we can find parent objects (not just handles).
-      go.override_defaults ();
-
-      if (go_name == "axes")
-        {
-          // Handle defaults for labels since overriding defaults for
-          // them can't work before the axes object is fully
-          // constructed.
-
-          axes::properties& props =
-            dynamic_cast<axes::properties&> (go.get_properties ());
-
-          graphics_object tgo;
-
-          tgo = gh_manager::get_object (props.get_xlabel ());
-          tgo.override_defaults ();
-
-          tgo = gh_manager::get_object (props.get_ylabel ());
-          tgo.override_defaults ();
-
-          tgo = gh_manager::get_object (props.get_zlabel ());
-          tgo.override_defaults ();
-
-          tgo = gh_manager::get_object (props.get_title ());
-          tgo.override_defaults ();
-        }
-
-      if (do_createfcn)
-        bgo->get_properties ().execute_createfcn ();
-
-      // Notify graphics toolkit.
-      if (do_notify_toolkit)
-        go.initialize ();
-    }
-  else
+  if (! bgo)
     error ("gh_manager::do_make_graphics_handle: invalid object type '%s'",
            go_name.c_str ());
+
+  graphics_object go (bgo);
+
+  handle_map[h] = go;
+
+  // Overriding defaults will work now because the handle is valid
+  // and we can find parent objects (not just handles).
+  go.override_defaults ();
+
+  if (go_name == "axes")
+    {
+      // Handle defaults for labels since overriding defaults for
+      // them can't work before the axes object is fully
+      // constructed.
+
+      axes::properties& props =
+        dynamic_cast<axes::properties&> (go.get_properties ());
+
+      graphics_object tgo;
+
+      tgo = gh_manager::get_object (props.get_xlabel ());
+      tgo.override_defaults ();
+
+      tgo = gh_manager::get_object (props.get_ylabel ());
+      tgo.override_defaults ();
+
+      tgo = gh_manager::get_object (props.get_zlabel ());
+      tgo.override_defaults ();
+
+      tgo = gh_manager::get_object (props.get_title ());
+      tgo.override_defaults ();
+    }
+
+  if (do_createfcn)
+    bgo->get_properties ().execute_createfcn ();
+
+  // Notify graphics toolkit.
+  if (do_notify_toolkit)
+    go.initialize ();
 
   return h;
 }
@@ -10153,34 +10139,32 @@ make_graphics_object (const std::string& go_name,
 
   graphics_handle parent = gh_manager::lookup (val);
 
-  if (parent.ok ())
-    {
-      graphics_handle h;
-
-      try
-        {
-          h = gh_manager::make_graphics_handle (go_name, parent,
-                                                integer_figure_handle,
-                                                false, false);
-        }
-      catch (octave_execution_exception& e)
-        {
-          error (e, "__go%s__: unable to create graphics handle",
-                 go_name.c_str ());
-        }
-
-      adopt (parent, h);
-
-      xset (h, xargs);
-      xcreatefcn (h);
-      xinitialize (h);
-
-      retval = h.value ();
-
-      Vdrawnow_requested = true;
-    }
-  else
+  if (! parent.ok ())
     error ("__go_%s__: invalid parent", go_name.c_str ());
+
+  graphics_handle h;
+
+  try
+    {
+      h = gh_manager::make_graphics_handle (go_name, parent,
+                                            integer_figure_handle,
+                                            false, false);
+    }
+  catch (octave_execution_exception& e)
+    {
+      error (e, "__go%s__: unable to create graphics handle",
+             go_name.c_str ());
+    }
+
+  adopt (parent, h);
+
+  xset (h, xargs);
+  xcreatefcn (h);
+  xinitialize (h);
+
+  retval = h.value ();
+
+  Vdrawnow_requested = true;
 
   return retval;
 }
@@ -10885,27 +10869,25 @@ undocumented.\n\
 
           graphics_handle h = gcf ();
 
-          if (h.ok ())
-            {
-              graphics_object go = gh_manager::get_object (h);
-
-              // FIXME: when using qt toolkit the print_figure method
-              // returns immediately and Canvas::print doesn't have
-              // enough time to lock the mutex before we lock it here
-              // again.  We thus wait 50 ms (which may not be enough) to
-              // give it a chance: see http://octave.1599824.n4.nabble.com/Printing-issues-with-Qt-toolkit-tp4673270.html
-
-              gh_manager::unlock ();
-
-              go.get_toolkit ().print_figure (go, term, file, mono,
-                                              debug_file);
-
-              octave_sleep (0.05); // FIXME: really needed?
-
-              gh_manager::lock ();
-            }
-          else
+          if (! h.ok ())
             error ("drawnow: nothing to draw");
+
+          graphics_object go = gh_manager::get_object (h);
+
+          // FIXME: when using qt toolkit the print_figure method
+          // returns immediately and Canvas::print doesn't have
+          // enough time to lock the mutex before we lock it here
+          // again.  We thus wait 50 ms (which may not be enough) to
+          // give it a chance: see http://octave.1599824.n4.nabble.com/Printing-issues-with-Qt-toolkit-tp4673270.html
+
+          gh_manager::unlock ();
+
+          go.get_toolkit ().print_figure (go, term, file, mono,
+                                          debug_file);
+
+          octave_sleep (0.05); // FIXME: really needed?
+
+          gh_manager::lock ();
         }
     }
 
@@ -11168,14 +11150,12 @@ set_property_in_handle (double handle, const std::string& property,
   int ret = false;
   graphics_object go = gh_manager::get_object (handle);
 
-  if (go)
-    {
-      go.set (caseless_str (property), arg);
-
-      ret = true;
-    }
-  else
+  if (! go)
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
+
+  go.set (caseless_str (property), arg);
+
+  ret = true;
 
   return ret;
 }

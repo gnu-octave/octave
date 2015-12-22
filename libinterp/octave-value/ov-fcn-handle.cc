@@ -272,14 +272,12 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
           octave_function *xfcn
             = load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (xfcn)
-            {
-              octave_value tmp (xfcn);
-
-              fcn = octave_value (new octave_fcn_handle (tmp, nm));
-            }
-          else
+          if (! xfcn)
             error ("function handle points to non-existent function");
+
+          octave_value tmp (xfcn);
+
+          fcn = octave_value (new octave_fcn_handle (tmp, nm));
         }
       else
         {
@@ -299,14 +297,12 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           octave_function *xfcn = load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (xfcn)
-            {
-              octave_value tmp (xfcn);
-
-              fcn = octave_value (new octave_fcn_handle (tmp, nm));
-            }
-          else
+          if (! xfcn)
             error ("function handle points to non-existent function");
+
+          octave_value tmp (xfcn);
+
+          fcn = octave_value (new octave_fcn_handle (tmp, nm));
         }
     }
   else
@@ -319,14 +315,12 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", "", nm);
 
-          if (xfcn)
-            {
-              octave_value tmp (xfcn);
-
-              fcn = octave_value (new octave_fcn_handle (tmp, nm));
-            }
-          else
+          if (! xfcn)
             error ("function handle points to non-existent function");
+
+          octave_value tmp (xfcn);
+
+          fcn = octave_value (new octave_fcn_handle (tmp, nm));
         }
       else
         {
@@ -1575,34 +1569,32 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
           any_match = classes.size () > 0;
         }
 
-      if (any_match)
-        {
-          octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
-          retval = fh;
-
-          for (std::list<std::string>::iterator iter = classes.begin ();
-               iter != classes.end (); iter++)
-            {
-              std::string class_name = *iter;
-              octave_value fmeth = symbol_table::find_method (tnm, class_name);
-
-              bool is_builtin = false;
-              for (int i = 0; i < btyp_num_types; i++)
-                {
-                  // FIXME: Too slow? Maybe binary lookup?
-                  if (class_name == btyp_class_name[i])
-                    {
-                      is_builtin = true;
-                      fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
-                    }
-                }
-
-              if (! is_builtin)
-                fh->set_overload (class_name, fmeth);
-            }
-        }
-      else
+      if (! any_match)
         error ("@%s: no function and no method found", tnm.c_str ());
+
+      octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
+      retval = fh;
+
+      for (std::list<std::string>::iterator iter = classes.begin ();
+           iter != classes.end (); iter++)
+        {
+          std::string class_name = *iter;
+          octave_value fmeth = symbol_table::find_method (tnm, class_name);
+
+          bool is_builtin = false;
+          for (int i = 0; i < btyp_num_types; i++)
+            {
+              // FIXME: Too slow? Maybe binary lookup?
+              if (class_name == btyp_class_name[i])
+                {
+                  is_builtin = true;
+                  fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
+                }
+            }
+
+          if (! is_builtin)
+            fh->set_overload (class_name, fmeth);
+        }
     }
 
   return retval;

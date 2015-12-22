@@ -814,13 +814,11 @@ public:
 
   void renumber (double new_number)
   {
-    if (canvas)
-      {
-        if (canvas->renumber (new_number))
-          mark_modified ();
-      }
-    else
+    if (! canvas)
       error ("unable to renumber figure");
+
+    if (canvas->renumber (new_number))
+      mark_modified ();
   }
 
   void print (const std::string& cmd, const std::string& term)

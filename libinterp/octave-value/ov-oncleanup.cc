@@ -40,21 +40,19 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
   if (f.is_function_handle ())
     {
       octave_function *fptr = f.function_value (true);
-      if (fptr)
-        {
-          octave_user_function *uptr
-            = dynamic_cast<octave_user_function *> (fptr);
-
-          if (uptr != 0)
-            {
-              tree_parameter_list *pl = uptr->parameter_list ();
-
-              if (pl != 0 && pl->length () > 0)
-                warning ("onCleanup: cleanup action takes parameters");
-            }
-        }
-      else
+      if (! fptr)
         error ("onCleanup: no default dispatch for function handle");
+
+      octave_user_function *uptr
+        = dynamic_cast<octave_user_function *> (fptr);
+
+      if (uptr != 0)
+        {
+          tree_parameter_list *pl = uptr->parameter_list ();
+
+          if (pl != 0 && pl->length () > 0)
+            warning ("onCleanup: cleanup action takes parameters");
+        }
     }
   else
     {

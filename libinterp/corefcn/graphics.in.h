@@ -443,19 +443,17 @@ public:
 protected:
   bool do_set (const octave_value& val)
   {
-    if (val.is_string ())
-      {
-        std::string new_str = val.string_value ();
-
-        if (new_str != str)
-          {
-            str = new_str;
-            return true;
-          }
-      }
-    else
+    if (! val.is_string ())
       error ("set: invalid string property value for \"%s\"",
              get_name ().c_str ());
+
+    std::string new_str = val.string_value ();
+
+    if (new_str != str)
+      {
+        str = new_str;
+        return true;
+      }
     return false;
   }
 
@@ -498,18 +496,16 @@ public:
                          const desired_enum& typ = string_t)
     : base_property (s, h), desired_type (typ), separator (sep), str ()
   {
-    if (c.is_cellstr ())
-      {
-        string_vector strings (c.numel ());
-
-        for (octave_idx_type i = 0; i < c.numel (); i++)
-          strings[i] = c(i).string_value ();
-
-        str = strings;
-      }
-    else
+    if (! c.is_cellstr ())
       error ("set: invalid order property value for \"%s\"",
              get_name ().c_str ());
+
+    string_vector strings (c.numel ());
+
+    for (octave_idx_type i = 0; i < c.numel (); i++)
+      strings[i] = c(i).string_value ();
+
+    str = strings;
   }
 
   string_array_property (const string_array_property& p)
@@ -958,32 +954,28 @@ public:
 protected:
   bool do_set (const octave_value& newval)
   {
-    if (newval.is_string ())
-      {
-        std::string s = newval.string_value ();
-
-        std::string match;
-
-        if (vals.validate (s, match))
-          {
-            if (match != current_val)
-              {
-                if (s.length () != match.length ())
-                  warning_with_id ("Octave:abbreviated-property-match",
-                                   "%s: allowing %s to match %s value %s",
-                                   "set", s.c_str (), get_name ().c_str (),
-                                   match.c_str ());
-                current_val = match;
-                return true;
-              }
-          }
-        else
-          error ("set: invalid value for radio property \"%s\" (value = %s)",
-                 get_name ().c_str (), s.c_str ());
-      }
-    else
+    if (! newval.is_string ())
       error ("set: invalid value for radio property \"%s\"",
              get_name ().c_str ());
+
+    std::string s = newval.string_value ();
+
+    std::string match;
+
+    if (! vals.validate (s, match))
+      error ("set: invalid value for radio property \"%s\" (value = %s)",
+             get_name ().c_str (), s.c_str ());
+
+    if (match != current_val)
+      {
+        if (s.length () != match.length ())
+          warning_with_id ("Octave:abbreviated-property-match",
+                           "%s: allowing %s to match %s value %s",
+                           "set", s.c_str (), get_name ().c_str (),
+                           match.c_str ());
+        current_val = match;
+        return true;
+      }
     return false;
   }
 
@@ -1367,21 +1359,19 @@ protected:
   {
     octave_value tmp = v.is_sparse_type () ? v.full_value () : v;
 
-    if (validate (tmp))
-      {
-        // FIXME: should we check for actual data change?
-        if (! is_equal (tmp))
-          {
-            data = tmp;
-
-            get_data_limits ();
-
-            return true;
-          }
-      }
-    else
+    if (! validate (tmp))
       error ("invalid value for array property \"%s\"",
              get_name ().c_str ());
+
+    // FIXME: should we check for actual data change?
+    if (! is_equal (tmp))
+      {
+        data = tmp;
+
+        get_data_limits ();
+
+        return true;
+      }
 
     return false;
   }
@@ -1825,14 +1815,12 @@ public:
 protected:
   bool do_set (const octave_value& v)
   {
-    if (validate (v))
-      {
-        callback = v;
-        return true;
-      }
-    else
+    if (! validate (v))
       error ("invalid value for callback property \"%s\"",
              get_name ().c_str ());
+
+    callback = v;
+    return true;
     return false;
   }
 
@@ -2809,13 +2797,11 @@ public:
 
   virtual void defaults (void) const
   {
-    if (valid_object ())
-      {
-        std::string msg = (type () + "::defaults");
-        gripe_not_implemented (msg.c_str ());
-      }
-    else
+    if (! valid_object ())
       error ("base_graphics_object::default: invalid graphics object");
+
+    std::string msg = (type () + "::defaults");
+    gripe_not_implemented (msg.c_str ());
   }
 
   virtual base_properties& get_properties (void)
@@ -3343,21 +3329,19 @@ public:
 
     void set___graphics_toolkit__ (const octave_value& val)
     {
-      if (val.is_string ())
-        {
-          std::string nm = val.string_value ();
-          graphics_toolkit b = gtk_manager::find_toolkit (nm);
-
-          if (b.get_name () != nm)
-            error ("set___graphics_toolkit__: invalid graphics toolkit");
-          else if (nm != get___graphics_toolkit__ ())
-            {
-              set_toolkit (b);
-              mark_modified ();
-            }
-        }
-      else
+      if (! val.is_string ())
         error ("set___graphics_toolkit__ must be a string");
+
+      std::string nm = val.string_value ();
+      graphics_toolkit b = gtk_manager::find_toolkit (nm);
+
+      if (b.get_name () != nm)
+        error ("set___graphics_toolkit__: invalid graphics toolkit");
+      else if (nm != get___graphics_toolkit__ ())
+        {
+          set_toolkit (b);
+          mark_modified ();
+        }
     }
 
     void adopt (const graphics_handle& h);

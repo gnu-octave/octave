@@ -412,54 +412,52 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   if (rhs.is_undefined ())
     return;
 
-  if (rhs.is_map ())
-    {
-      // Cycle through structure elements.  First element of id_list
-      // is set to value and the second is set to the name of the
-      // structure element.
-
-      tree_argument_list *lhs = cmd.left_hand_side ();
-
-      tree_argument_list::iterator p = lhs->begin ();
-
-      tree_expression *elt = *p++;
-
-      octave_lvalue val_ref = elt->lvalue ();
-
-      elt = *p;
-
-      octave_lvalue key_ref = elt->lvalue ();
-
-      const octave_map tmp_val = rhs.map_value ();
-
-      tree_statement_list *loop_body = cmd.body ();
-
-      string_vector keys = tmp_val.keys ();
-
-      octave_idx_type nel = keys.numel ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          std::string key = keys[i];
-
-          const Cell val_lst = tmp_val.contents (key);
-
-          octave_idx_type n = val_lst.numel ();
-
-          octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
-
-          val_ref.assign (octave_value::op_asn_eq, val);
-          key_ref.assign (octave_value::op_asn_eq, key);
-
-          if (loop_body)
-            loop_body->accept (*this);
-
-          if (quit_loop_now ())
-            break;
-        }
-    }
-  else
+  if (! rhs.is_map ())
     error ("in statement 'for [X, Y] = VAL', VAL must be a structure");
+
+  // Cycle through structure elements.  First element of id_list
+  // is set to value and the second is set to the name of the
+  // structure element.
+
+  tree_argument_list *lhs = cmd.left_hand_side ();
+
+  tree_argument_list::iterator p = lhs->begin ();
+
+  tree_expression *elt = *p++;
+
+  octave_lvalue val_ref = elt->lvalue ();
+
+  elt = *p;
+
+  octave_lvalue key_ref = elt->lvalue ();
+
+  const octave_map tmp_val = rhs.map_value ();
+
+  tree_statement_list *loop_body = cmd.body ();
+
+  string_vector keys = tmp_val.keys ();
+
+  octave_idx_type nel = keys.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      std::string key = keys[i];
+
+      const Cell val_lst = tmp_val.contents (key);
+
+      octave_idx_type n = val_lst.numel ();
+
+      octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
+
+      val_ref.assign (octave_value::op_asn_eq, val);
+      key_ref.assign (octave_value::op_asn_eq, key);
+
+      if (loop_body)
+        loop_body->accept (*this);
+
+      if (quit_loop_now ())
+        break;
+    }
 }
 
 void
@@ -743,41 +741,39 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
         {
           tree_statement *elt = *p++;
 
-          if (elt)
-            {
-              octave_quit ();
-
-              elt->accept (*this);
-
-              if (tree_break_command::breaking
-                  || tree_continue_command::continuing)
-                break;
-
-              if (tree_return_command::returning)
-                break;
-
-              if (p == lst.end ())
-                break;
-              else
-                {
-                  // Clear previous values before next statement is
-                  // evaluated so that we aren't holding an extra
-                  // reference to a value that may be used next.  For
-                  // example, in code like this:
-                  //
-                  //   X = rand (N);  # refcount for X should be 1
-                  //                  # after this statement
-                  //
-                  //   X(idx) = val;  # no extra copy of X should be
-                  //                  # needed, but we will be faked
-                  //                  # out if retval is not cleared
-                  //                  # between statements here
-
-                  //              result_values = empty_list;
-                }
-            }
-          else
+          if (! elt)
             error ("invalid statement found in statement list!");
+
+          octave_quit ();
+
+          elt->accept (*this);
+
+          if (tree_break_command::breaking
+              || tree_continue_command::continuing)
+            break;
+
+          if (tree_return_command::returning)
+            break;
+
+          if (p == lst.end ())
+            break;
+          else
+            {
+              // Clear previous values before next statement is
+              // evaluated so that we aren't holding an extra
+              // reference to a value that may be used next.  For
+              // example, in code like this:
+              //
+              //   X = rand (N);  # refcount for X should be 1
+              //                  # after this statement
+              //
+              //   X(idx) = val;  # no extra copy of X should be
+              //                  # needed, but we will be faked
+              //                  # out if retval is not cleared
+              //                  # between statements here
+
+              //              result_values = empty_list;
+            }
         }
     }
 }
@@ -802,34 +798,32 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 
   tree_expression *expr = cmd.switch_value ();
 
-  if (expr)
+  if (! expr)
+    error ("missing value in switch command near line %d, column %d",
+           cmd.line (), cmd.column ());
+
+  octave_value val = expr->rvalue1 ();
+
+  tree_switch_case_list *lst = cmd.case_list ();
+
+  if (lst)
     {
-      octave_value val = expr->rvalue1 ();
-
-      tree_switch_case_list *lst = cmd.case_list ();
-
-      if (lst)
+      for (tree_switch_case_list::iterator p = lst->begin ();
+           p != lst->end (); p++)
         {
-          for (tree_switch_case_list::iterator p = lst->begin ();
-               p != lst->end (); p++)
+          tree_switch_case *t = *p;
+
+          if (t->is_default_case () || t->label_matches (val))
             {
-              tree_switch_case *t = *p;
+              tree_statement_list *stmt_lst = t->commands ();
 
-              if (t->is_default_case () || t->label_matches (val))
-                {
-                  tree_statement_list *stmt_lst = t->commands ();
+              if (stmt_lst)
+                stmt_lst->accept (*this);
 
-                  if (stmt_lst)
-                    stmt_lst->accept (*this);
-
-                  break;
-                }
+              break;
             }
         }
     }
-  else
-    error ("missing value in switch command near line %d, column %d",
-           cmd.line (), cmd.column ());
 }
 
 void

@@ -927,43 +927,41 @@ run_command_and_return_output (const std::string& cmd_str)
   frame.add_delete (cmd);
   frame.add_fcn (octave_child_list::remove, cmd->pid ());
 
-  if (*cmd)
+  if (! *cmd)
+    error ("system: unable to start subprocess for '%s'", cmd_str.c_str ());
+
+  int fid = cmd->file_number ();
+
+  std::ostringstream output_buf;
+
+  char ch;
+
+  for (;;)
     {
-      int fid = cmd->file_number ();
-
-      std::ostringstream output_buf;
-
-      char ch;
-
-      for (;;)
+      if (cmd->get (ch))
+        output_buf.put (ch);
+      else
         {
-          if (cmd->get (ch))
-            output_buf.put (ch);
-          else
+          if (! cmd->eof () && errno == EAGAIN)
             {
-              if (! cmd->eof () && errno == EAGAIN)
-                {
-                  cmd->clear ();
+              cmd->clear ();
 
-                  if (wait_for_input (fid) != 1)
-                    break;
-                }
-              else
+              if (wait_for_input (fid) != 1)
                 break;
             }
+          else
+            break;
         }
-
-      int cmd_status = cmd->close ();
-
-      if (octave_wait::ifexited (cmd_status))
-        cmd_status = octave_wait::exitstatus (cmd_status);
-      else
-        cmd_status = 127;
-
-      retval = ovl (cmd_status, output_buf.str ());
     }
+
+  int cmd_status = cmd->close ();
+
+  if (octave_wait::ifexited (cmd_status))
+    cmd_status = octave_wait::exitstatus (cmd_status);
   else
-    error ("system: unable to start subprocess for '%s'", cmd_str.c_str ());
+    cmd_status = 127;
+
+  retval = ovl (cmd_status, output_buf.str ());
 
   return retval;
 }

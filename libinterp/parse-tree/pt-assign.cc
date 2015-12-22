@@ -312,13 +312,11 @@ tree_multi_assignment::rvalue (int)
                   // RHS values.  We shouldn't complain that a value we
                   // don't need is missing from the list.
 
-                  if (ult.is_black_hole ())
-                    {
-                      k++;
-                      continue;
-                    }
-                  else
+                  if (! ult.is_black_hole ())
                     error ("element number %d undefined in return list", k+1);
+
+                  k++;
+                  continue;
                 }
             }
 

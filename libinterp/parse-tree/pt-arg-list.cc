@@ -150,52 +150,50 @@ Example:\n\
 {
   octave_value retval;
 
-  if (indexed_object)
-    {
-      if (indexed_object->is_object ())
-        {
-          octave_value_list args;
-
-          args(2) = num_indices;
-          args(1) = index_position + 1;
-          args(0) = *indexed_object;
-
-          std::string class_name = indexed_object->class_name ();
-
-          octave_value meth = symbol_table::find_method ("end", class_name);
-
-          if (meth.is_defined ())
-            return feval (meth.function_value (), args, 1);
-        }
-
-      dim_vector dv = indexed_object->dims ();
-      int ndims = dv.length ();
-
-      if (num_indices < ndims)
-        {
-          for (int i = num_indices; i < ndims; i++)
-            dv(num_indices-1) *= dv(i);
-
-          if (num_indices == 1)
-            {
-              ndims = 2;
-              dv.resize (ndims);
-              dv(1) = 1;
-            }
-          else
-            {
-              ndims = num_indices;
-              dv.resize (ndims);
-            }
-        }
-
-      if (index_position < ndims)
-        retval = dv(index_position);
-      else
-        retval = 1;
-    }
-  else
+  if (! indexed_object)
     error ("invalid use of end");
+
+  if (indexed_object->is_object ())
+    {
+      octave_value_list args;
+
+      args(2) = num_indices;
+      args(1) = index_position + 1;
+      args(0) = *indexed_object;
+
+      std::string class_name = indexed_object->class_name ();
+
+      octave_value meth = symbol_table::find_method ("end", class_name);
+
+      if (meth.is_defined ())
+        return feval (meth.function_value (), args, 1);
+    }
+
+  dim_vector dv = indexed_object->dims ();
+  int ndims = dv.length ();
+
+  if (num_indices < ndims)
+    {
+      for (int i = num_indices; i < ndims; i++)
+        dv(num_indices-1) *= dv(i);
+
+      if (num_indices == 1)
+        {
+          ndims = 2;
+          dv.resize (ndims);
+          dv(1) = 1;
+        }
+      else
+        {
+          ndims = num_indices;
+          dv.resize (ndims);
+        }
+    }
+
+  if (index_position < ndims)
+    retval = dv(index_position);
+  else
+    retval = 1;
 
   return retval;
 }

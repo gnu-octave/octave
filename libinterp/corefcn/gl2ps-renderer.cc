@@ -630,18 +630,16 @@ gl2ps_print (const graphics_object& fig, const std::string& cmd,
 
   FILE *fp = octave_popen (cmd.c_str (), "w");
 
-  if (fp)
-    {
-      unwind_protect frame;
-
-      frame.add_fcn (safe_pclose, fp);
-
-      glps_renderer rend (fp, term);
-
-      rend.draw (fig, cmd);
-    }
-  else
+  if (! fp)
     error ("print: failed to open pipe for gl2ps renderer");
+
+  unwind_protect frame;
+
+  frame.add_fcn (safe_pclose, fp);
+
+  glps_renderer rend (fp, term);
+
+  rend.draw (fig, cmd);
 
 #else
 

@@ -355,49 +355,47 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
   octave_idx_type nr = tc.rows ();
   octave_idx_type nc = tc.columns ();
 
-  if (tc.is_real_matrix ())
+  if (! tc.is_real_matrix ())
+    error ("for now, I can only save real matrices in 3-D format");
+
+  os << "# 3-D data...\n"
+     << "# type: matrix\n"
+     << "# total rows: " << nr << "\n"
+     << "# total columns: " << nc << "\n";
+
+  long old_precision = os.precision ();
+  os.precision (6);
+
+  if (parametric)
     {
-      os << "# 3-D data...\n"
-         << "# type: matrix\n"
-         << "# total rows: " << nr << "\n"
-         << "# total columns: " << nc << "\n";
+      octave_idx_type extras = nc % 3;
+      if (extras)
+        warning ("ignoring last %d columns", extras);
 
-      long old_precision = os.precision ();
-      os.precision (6);
+      Matrix tmp = tc.matrix_value ();
+      nr = tmp.rows ();
 
-      if (parametric)
+      for (octave_idx_type i = 0; i < nc-extras; i += 3)
         {
-          octave_idx_type extras = nc % 3;
-          if (extras)
-            warning ("ignoring last %d columns", extras);
-
-          Matrix tmp = tc.matrix_value ();
-          nr = tmp.rows ();
-
-          for (octave_idx_type i = 0; i < nc-extras; i += 3)
-            {
-              os << tmp.extract (0, i, nr-1, i+2);
-              if (i+3 < nc-extras)
-                os << "\n";
-            }
+          os << tmp.extract (0, i, nr-1, i+2);
+          if (i+3 < nc-extras)
+            os << "\n";
         }
-      else
-        {
-          Matrix tmp = tc.matrix_value ();
-          nr = tmp.rows ();
-
-          for (octave_idx_type i = 0; i < nc; i++)
-            {
-              os << tmp.extract (0, i, nr-1, i);
-              if (i+1 < nc)
-                os << "\n";
-            }
-        }
-
-      os.precision (old_precision);
     }
   else
-    error ("for now, I can only save real matrices in 3-D format");
+    {
+      Matrix tmp = tc.matrix_value ();
+      nr = tmp.rows ();
+
+      for (octave_idx_type i = 0; i < nc; i++)
+        {
+          os << tmp.extract (0, i, nr-1, i);
+          if (i+1 < nc)
+            os << "\n";
+        }
+    }
+
+  os.precision (old_precision);
 
   return (os && ! fail);
 }

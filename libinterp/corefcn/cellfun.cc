@@ -1721,25 +1721,23 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
   // method is not const.
   octave_value array = obj;
 
-  if (dimv.is_empty ())
-    {
-      dim_vector dv = get_object_dims (array);
-
-      retval.resize (dv);
-
-      octave_value_list idx (1);
-
-      for (octave_idx_type i = 0; i < dv.numel (); i++)
-        {
-          octave_quit ();
-
-          idx(0) = double (i+1);
-
-          retval.xelem (i) = array.single_subsref ("(", idx);
-        }
-    }
-  else
+  if (! dimv.is_empty ())
     error ("num2cell (A, dim) not implemented for class objects");
+
+  dim_vector dv = get_object_dims (array);
+
+  retval.resize (dv);
+
+  octave_value_list idx (1);
+
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
+    {
+      octave_quit ();
+
+      idx(0) = double (i+1);
+
+      retval.xelem (i) = array.single_subsref ("(", idx);
+    }
 
   return retval;
 }

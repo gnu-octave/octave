@@ -533,7 +533,6 @@ octave_user_function::do_multi_index_op (int nargout,
       else
         error ("%s: invalid classdef constructor, no output argument defined",
                dispatch_class ().c_str ());
-
     }
 
   // Force parameter list to be undefined when this function exits.

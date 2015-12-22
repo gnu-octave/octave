@@ -618,15 +618,13 @@ octave_cell::cellstr_value (void) const
 {
   Array<std::string> retval;
 
-  if (is_cellstr ())
-    {
-      if (cellstr_cache->is_empty ())
-        *cellstr_cache = matrix.cellstr_value ();
-
-      return *cellstr_cache;
-    }
-  else
+  if (! is_cellstr ())
     error ("invalid conversion from cell array to array of strings");
+
+  if (cellstr_cache->is_empty ())
+    *cellstr_cache = matrix.cellstr_value ();
+
+  return *cellstr_cache;
 
   return retval;
 }
@@ -776,98 +774,96 @@ octave_cell::load_ascii (std::istream& is)
   std::string kw;
   octave_idx_type val = 0;
 
-  if (extract_keyword (is, keywords, kw, val, true))
+  if (! extract_keyword (is, keywords, kw, val, true))
+    error ("load: failed to extract number of rows and columns");
+
+  if (kw == "ndims")
     {
-      if (kw == "ndims")
+      int mdims = static_cast<int> (val);
+
+      if (mdims >= 0)
         {
-          int mdims = static_cast<int> (val);
+          dim_vector dv;
+          dv.resize (mdims);
 
-          if (mdims >= 0)
+          for (int i = 0; i < mdims; i++)
+            is >> dv(i);
+
+          Cell tmp(dv);
+
+          for (octave_idx_type i = 0; i < dv.numel (); i++)
             {
-              dim_vector dv;
-              dv.resize (mdims);
+              octave_value t2;
+              bool dummy;
 
-              for (int i = 0; i < mdims; i++)
-                is >> dv(i);
+              // recurse to read cell elements
+              std::string nm = read_text_data (is, std::string (),
+                                                dummy, t2, i);
 
-              Cell tmp(dv);
-
-              for (octave_idx_type i = 0; i < dv.numel (); i++)
+              if (nm == CELL_ELT_TAG)
                 {
-                  octave_value t2;
-                  bool dummy;
+                  if (is)
+                    tmp.elem (i) = t2;
+                }
+              else
+                error ("load: cell array element had unexpected name");
+            }
 
-                  // recurse to read cell elements
-                  std::string nm = read_text_data (is, std::string (),
-                                                    dummy, t2, i);
+          if (is)
+            matrix = tmp;
+          else
+            error ("load: failed to load matrix constant");
+        }
+      else
+        error ("load: failed to extract number of rows and columns");
+    }
+  else if (kw == "rows")
+    {
+      octave_idx_type nr = val;
+      octave_idx_type nc = 0;
 
-                  if (nm == CELL_ELT_TAG)
+      if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
+        {
+          if (nr > 0 && nc > 0)
+            {
+              Cell tmp (nr, nc);
+
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
                     {
-                      if (is)
-                        tmp.elem (i) = t2;
+                      octave_value t2;
+                      bool dummy;
+
+                      // recurse to read cell elements
+                      std::string nm = read_text_data (is, std::string (),
+                                                        dummy, t2, i);
+
+                      if (nm == CELL_ELT_TAG)
+                        {
+                          if (is)
+                            tmp.elem (i, j) = t2;
+                        }
+                      else
+                        error ("load: cell array element had unexpected name");
                     }
-                  else
-                    error ("load: cell array element had unexpected name");
                 }
 
               if (is)
                 matrix = tmp;
               else
-                error ("load: failed to load matrix constant");
+                error ("load: failed to load cell element");
             }
+          else if (nr == 0 || nc == 0)
+            matrix = Cell (nr, nc);
           else
-            error ("load: failed to extract number of rows and columns");
-        }
-      else if (kw == "rows")
-        {
-          octave_idx_type nr = val;
-          octave_idx_type nc = 0;
-
-          if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-            {
-              if (nr > 0 && nc > 0)
-                {
-                  Cell tmp (nr, nc);
-
-                  for (octave_idx_type j = 0; j < nc; j++)
-                    {
-                      for (octave_idx_type i = 0; i < nr; i++)
-                        {
-                          octave_value t2;
-                          bool dummy;
-
-                          // recurse to read cell elements
-                          std::string nm = read_text_data (is, std::string (),
-                                                            dummy, t2, i);
-
-                          if (nm == CELL_ELT_TAG)
-                            {
-                              if (is)
-                                tmp.elem (i, j) = t2;
-                            }
-                          else
-                            error ("load: cell array element had unexpected name");
-                        }
-                    }
-
-                  if (is)
-                    matrix = tmp;
-                  else
-                    error ("load: failed to load cell element");
-                }
-              else if (nr == 0 || nc == 0)
-                matrix = Cell (nr, nc);
-              else
-                panic_impossible ();
-            }
-          else
-            error ("load: failed to extract number of rows and columns for cell array");
+            panic_impossible ();
         }
       else
-        panic_impossible ();
+        error ("load: failed to extract number of rows and columns for cell array");
     }
   else
-    error ("load: failed to extract number of rows and columns");
+    panic_impossible ();
 
   return true;
 }

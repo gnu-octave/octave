@@ -344,118 +344,114 @@ octave_char_matrix_str::load_ascii (std::istream& is)
   std::string kw;
   int val = 0;
 
-  if (extract_keyword (is, keywords, kw, val, true))
+  if (! extract_keyword (is, keywords, kw, val, true))
+    error ("load: failed to extract number of rows and columns");
+
+  if (kw == "ndims")
     {
-      if (kw == "ndims")
+      int mdims = val;
+
+      if (mdims >= 0)
         {
-          int mdims = val;
+          dim_vector dv;
+          dv.resize (mdims);
 
-          if (mdims >= 0)
-            {
-              dim_vector dv;
-              dv.resize (mdims);
+          for (int i = 0; i < mdims; i++)
+            is >> dv(i);
 
-              for (int i = 0; i < mdims; i++)
-                is >> dv(i);
+          if (! is)
+            error ("load: failed to read dimensions");
 
-              if (is)
-                {
-                  charNDArray tmp(dv);
+          charNDArray tmp(dv);
 
-                  if (tmp.is_empty ())
-                    matrix = tmp;
-                  else
-                    {
-                      char *ftmp = tmp.fortran_vec ();
-
-                      skip_preceeding_newline (is);
-
-                      if (! is.read (ftmp, dv.numel ()) || ! is)
-                        error ("load: failed to load string constant");
-                      else
-                        matrix = tmp;
-                    }
-                }
-              else
-                error ("load: failed to read dimensions");
-            }
+          if (tmp.is_empty ())
+            matrix = tmp;
           else
-            error ("load: failed to extract matrix size");
-        }
-      else if (kw == "elements")
-        {
-          int elements = val;
-
-          if (elements >= 0)
             {
-              // FIXME: need to be able to get max length before doing anything.
+              char *ftmp = tmp.fortran_vec ();
 
-              charMatrix chm (elements, 0);
-              int max_len = 0;
-              for (int i = 0; i < elements; i++)
-                {
-                  int len;
-                  if (extract_keyword (is, "length", len) && len >= 0)
-                    {
-                      // Use this instead of a C-style character
-                      // buffer so that we can properly handle
-                      // embedded NUL characters.
-                      charMatrix tmp (1, len);
-                      char *ptmp = tmp.fortran_vec ();
+              skip_preceeding_newline (is);
 
-                      if (len > 0 && ! is.read (ptmp, len))
-                        error ("load: failed to load string constant");
-                      else
-                        {
-                          if (len > max_len)
-                            {
-                              max_len = len;
-                              chm.resize (elements, max_len, 0);
-                            }
-
-                          chm.insert (tmp, i, 0);
-                        }
-                    }
-                  else
-                    error ("load: failed to extract string length for element %d",
-                           i+1);
-                }
-
-              matrix = chm;
-            }
-          else
-            error ("load: failed to extract number of string elements");
-        }
-      else if (kw == "length")
-        {
-          int len = val;
-
-          if (len >= 0)
-            {
-              // This is cruft for backward compatibility,
-              // but relatively harmless.
-
-              // Use this instead of a C-style character buffer so
-              // that we can properly handle embedded NUL characters.
-              charMatrix tmp (1, len);
-              char *ptmp = tmp.fortran_vec ();
-
-              if (len > 0 && ! is.read (ptmp, len))
+              if (! is.read (ftmp, dv.numel ()) || ! is)
                 error ("load: failed to load string constant");
               else
-                {
-                  if (is)
-                    matrix = tmp;
-                  else
-                    error ("load: failed to load string constant");
-                }
+                matrix = tmp;
             }
         }
       else
-        panic_impossible ();
+        error ("load: failed to extract matrix size");
+    }
+  else if (kw == "elements")
+    {
+      int elements = val;
+
+      if (elements >= 0)
+        {
+          // FIXME: need to be able to get max length before doing anything.
+
+          charMatrix chm (elements, 0);
+          int max_len = 0;
+          for (int i = 0; i < elements; i++)
+            {
+              int len;
+              if (extract_keyword (is, "length", len) && len >= 0)
+                {
+                  // Use this instead of a C-style character
+                  // buffer so that we can properly handle
+                  // embedded NUL characters.
+                  charMatrix tmp (1, len);
+                  char *ptmp = tmp.fortran_vec ();
+
+                  if (len > 0 && ! is.read (ptmp, len))
+                    error ("load: failed to load string constant");
+                  else
+                    {
+                      if (len > max_len)
+                        {
+                          max_len = len;
+                          chm.resize (elements, max_len, 0);
+                        }
+
+                      chm.insert (tmp, i, 0);
+                    }
+                }
+              else
+                error ("load: failed to extract string length for element %d",
+                       i+1);
+            }
+
+          matrix = chm;
+        }
+      else
+        error ("load: failed to extract number of string elements");
+    }
+  else if (kw == "length")
+    {
+      int len = val;
+
+      if (len >= 0)
+        {
+          // This is cruft for backward compatibility,
+          // but relatively harmless.
+
+          // Use this instead of a C-style character buffer so
+          // that we can properly handle embedded NUL characters.
+          charMatrix tmp (1, len);
+          char *ptmp = tmp.fortran_vec ();
+
+          if (len > 0 && ! is.read (ptmp, len))
+            error ("load: failed to load string constant");
+          else
+            {
+              if (is)
+                matrix = tmp;
+              else
+                error ("load: failed to load string constant");
+            }
+        }
     }
   else
-    error ("load: failed to extract number of rows and columns");
+    panic_impossible ();
 
   return success;
 }

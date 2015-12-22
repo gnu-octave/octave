@@ -481,15 +481,13 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                if (t_rhs.is_null_value ())
-                  {
-                    map.delete_elements (idx.front ());
-
-                    count++;
-                    retval = octave_value (this);
-                  }
-                else
+                if (! t_rhs.is_null_value ())
                   error ("invalid structure assignment");
+
+                map.delete_elements (idx.front ());
+
+                count++;
+                retval = octave_value (this);
               }
           }
       }

@@ -207,30 +207,28 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
   int mdims = 0;
   bool success = true;
 
-  if (extract_keyword (is, "ndims", mdims, true))
+  if (! extract_keyword (is, "ndims", mdims, true))
+    error ("load: failed to extract number of dimensions");
+
+  if (mdims >= 0)
     {
-      if (mdims >= 0)
-        {
-          dim_vector dv;
-          dv.resize (mdims);
+      dim_vector dv;
+      dv.resize (mdims);
 
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
 
-          T tmp(dv);
+      T tmp(dv);
 
-          is >> tmp;
+      is >> tmp;
 
-          if (! is)
-            error ("load: failed to load matrix constant");
+      if (! is)
+        error ("load: failed to load matrix constant");
 
-          this->matrix = tmp;
-        }
-      else
-        error ("load: failed to extract number of rows and columns");
+      this->matrix = tmp;
     }
   else
-    error ("load: failed to extract number of dimensions");
+    error ("load: failed to extract number of rows and columns");
 
   return success;
 }

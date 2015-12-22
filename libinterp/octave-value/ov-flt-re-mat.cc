@@ -368,66 +368,62 @@ octave_float_matrix::load_ascii (std::istream& is)
   std::string kw;
   octave_idx_type val = 0;
 
-  if (extract_keyword (is, keywords, kw, val, true))
+  if (! extract_keyword (is, keywords, kw, val, true))
+    error ("load: failed to extract number of rows and columns");
+
+  if (kw == "ndims")
     {
-      if (kw == "ndims")
+      int mdims = static_cast<int> (val);
+
+      if (mdims >= 0)
         {
-          int mdims = static_cast<int> (val);
+          dim_vector dv;
+          dv.resize (mdims);
 
-          if (mdims >= 0)
-            {
-              dim_vector dv;
-              dv.resize (mdims);
+          for (int i = 0; i < mdims; i++)
+            is >> dv(i);
 
-              for (int i = 0; i < mdims; i++)
-                is >> dv(i);
+          if (! is)
+            error ("load: failed to read dimensions");
 
-              if (is)
-                {
-                  FloatNDArray tmp(dv);
+          FloatNDArray tmp(dv);
 
-                  is >> tmp;
+          is >> tmp;
 
-                  if (is)
-                    matrix = tmp;
-                  else
-                    error ("load: failed to load matrix constant");
-                }
-              else
-                error ("load: failed to read dimensions");
-            }
+          if (is)
+            matrix = tmp;
           else
-            error ("load: failed to extract number of dimensions");
-        }
-      else if (kw == "rows")
-        {
-          octave_idx_type nr = val;
-          octave_idx_type nc = 0;
-
-          if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-            {
-              if (nr > 0 && nc > 0)
-                {
-                  FloatMatrix tmp (nr, nc);
-                  is >> tmp;
-                  if (is)
-                    matrix = tmp;
-                  else
-                    error ("load: failed to load matrix constant");
-                }
-              else if (nr == 0 || nc == 0)
-                matrix = FloatMatrix (nr, nc);
-              else
-                panic_impossible ();
-            }
-          else
-            error ("load: failed to extract number of rows and columns");
+            error ("load: failed to load matrix constant");
         }
       else
-        panic_impossible ();
+        error ("load: failed to extract number of dimensions");
+    }
+  else if (kw == "rows")
+    {
+      octave_idx_type nr = val;
+      octave_idx_type nc = 0;
+
+      if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
+        {
+          if (nr > 0 && nc > 0)
+            {
+              FloatMatrix tmp (nr, nc);
+              is >> tmp;
+              if (is)
+                matrix = tmp;
+              else
+                error ("load: failed to load matrix constant");
+            }
+          else if (nr == 0 || nc == 0)
+            matrix = FloatMatrix (nr, nc);
+          else
+            panic_impossible ();
+        }
+      else
+        error ("load: failed to extract number of rows and columns");
     }
   else
-    error ("load: failed to extract number of rows and columns");
+    panic_impossible ();
 
   return success;
 }

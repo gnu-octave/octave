@@ -266,32 +266,30 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
         octave_shlib_list::append (oct_file);
     }
 
-  if (oct_file)
-    {
-      void *function = oct_file.search (fcn_name, name_mangler);
-
-      if (! function)
-        {
-          // FIXME: can we determine this C mangling scheme
-          // automatically at run time or configure time?
-
-          function = oct_file.search (fcn_name, name_uscore_mangler);
-        }
-
-      if (function)
-        {
-          octave_dld_fcn_getter f
-            = FCN_PTR_CAST (octave_dld_fcn_getter, function);
-
-          retval = f (oct_file, relative);
-
-          if (! retval)
-            error ("failed to install .oct file function '%s'",
-                   fcn_name.c_str ());
-        }
-    }
-  else
+  if (! oct_file)
     error ("%s is not a valid shared library", file_name.c_str ());
+
+  void *function = oct_file.search (fcn_name, name_mangler);
+
+  if (! function)
+    {
+      // FIXME: can we determine this C mangling scheme
+      // automatically at run time or configure time?
+
+      function = oct_file.search (fcn_name, name_uscore_mangler);
+    }
+
+  if (function)
+    {
+      octave_dld_fcn_getter f
+        = FCN_PTR_CAST (octave_dld_fcn_getter, function);
+
+      retval = f (oct_file, relative);
+
+      if (! retval)
+        error ("failed to install .oct file function '%s'",
+               fcn_name.c_str ());
+    }
 
   return retval;
 }
@@ -322,39 +320,35 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
         octave_shlib_list::append (mex_file);
     }
 
-  if (mex_file)
+  if (! mex_file)
+    error ("%s is not a valid shared library", file_name.c_str ());
+
+  void *function = 0;
+
+  bool have_fmex = false;
+
+  function = mex_file.search (fcn_name, mex_mangler);
+
+  if (! function)
     {
-      void *function = 0;
+      // FIXME: can we determine this C mangling scheme
+      // automatically at run time or configure time?
 
-      bool have_fmex = false;
-
-      function = mex_file.search (fcn_name, mex_mangler);
+      function = mex_file.search (fcn_name, mex_uscore_mangler);
 
       if (! function)
         {
-          // FIXME: can we determine this C mangling scheme
-          // automatically at run time or configure time?
+          function = mex_file.search (fcn_name, mex_f77_mangler);
 
-          function = mex_file.search (fcn_name, mex_uscore_mangler);
-
-          if (! function)
-            {
-              function = mex_file.search (fcn_name, mex_f77_mangler);
-
-              if (function)
-                have_fmex = true;
-            }
+          if (function)
+            have_fmex = true;
         }
-
-      if (function)
-        retval = new octave_mex_function (function, have_fmex,
-                                          mex_file, fcn_name);
-      else
-        error ("failed to install .mex file function '%s'",
-               fcn_name.c_str ());
     }
+
+  if (function)
+    retval = new octave_mex_function (function, have_fmex, mex_file, fcn_name);
   else
-    error ("%s is not a valid shared library", file_name.c_str ());
+    error ("failed to install .mex file function '%s'", fcn_name.c_str ());
 
   return retval;
 }

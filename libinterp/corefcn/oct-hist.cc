@@ -239,8 +239,6 @@ do_history (const octave_value_list& args, int nargout)
                 error ("history: unrecognized option '%s'", option.c_str ());
               else
                 error ("history: bad non-numeric arg '%s'", option.c_str ());
-
-              return  hlist;
             }
         }
     }

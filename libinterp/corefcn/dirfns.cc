@@ -75,19 +75,17 @@ octave_change_to_directory (const std::string& newdir)
 
   int cd_ok = octave_env::chdir (xdir);
 
-  if (cd_ok)
-    {
-      Vlast_chdir_time.stamp ();
-
-      // FIXME: should these actions be handled as a list of functions
-      // to call so users can add their own chdir handlers?
-
-      load_path::update ();
-
-      octave_link::change_directory (octave_env::get_current_directory ());
-    }
-  else
+  if (! cd_ok)
     error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));
+
+  Vlast_chdir_time.stamp ();
+
+  // FIXME: should these actions be handled as a list of functions
+  // to call so users can add their own chdir handlers?
+
+  load_path::update ();
+
+  octave_link::change_directory (octave_env::get_current_directory ());
 
   return cd_ok;
 }

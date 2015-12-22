@@ -214,14 +214,12 @@ octave_scalar_map::orderfields (const octave_scalar_map& other,
   else
     {
       octave_scalar_map retval (other.xkeys);
-      if (other.xkeys.equal_up_to_order (xkeys, perm))
-        {
-          octave_idx_type nf = nfields ();
-          for (octave_idx_type i = 0; i < nf; i++)
-            retval.xvals[i] = xvals[perm.xelem (i)];
-        }
-      else
+      if (! other.xkeys.equal_up_to_order (xkeys, perm))
         error ("orderfields: structs must have same fields up to order");
+
+      octave_idx_type nf = nfields ();
+      for (octave_idx_type i = 0; i < nf; i++)
+        retval.xvals[i] = xvals[perm.xelem (i)];
 
       return retval;
     }
@@ -316,14 +314,12 @@ octave_map::orderfields (const octave_map& other,
   else
     {
       octave_map retval (other.xkeys);
-      if (other.xkeys.equal_up_to_order (xkeys, perm))
-        {
-          octave_idx_type nf = nfields ();
-          for (octave_idx_type i = 0; i < nf; i++)
-            retval.xvals[i] = xvals[perm.xelem (i)];
-        }
-      else
+      if (! other.xkeys.equal_up_to_order (xkeys, perm))
         error ("orderfields: structs must have same fields up to order");
+
+      octave_idx_type nf = nfields ();
+      for (octave_idx_type i = 0; i < nf; i++)
+        retval.xvals[i] = xvals[perm.xelem (i)];
 
       return retval;
     }

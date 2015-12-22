@@ -600,15 +600,13 @@ octave_class::subsasgn_common (const octave_value& obj,
   if (obvp != this)
     {
 
-      if (obvp)
-        {
-          obvp->subsasgn (type, idx, rhs);
-
-          count++;
-          retval = octave_value (this);
-        }
-      else
+      if (! obvp)
         error ("malformed class");
+
+      obvp->subsasgn (type, idx, rhs);
+
+      count++;
+      retval = octave_value (this);
 
       return retval;
     }
@@ -751,15 +749,13 @@ octave_class::subsasgn_common (const octave_value& obj,
               }
             else
               {
-                if (t_rhs.is_empty ())
-                  {
-                    map.delete_elements (idx.front ());
-
-                    count++;
-                    retval = octave_value (this);
-                  }
-                else
+                if (! t_rhs.is_empty ())
                   error ("invalid class assignment");
+
+                map.delete_elements (idx.front ());
+
+                count++;
+                retval = octave_value (this);
               }
           }
       }
@@ -816,26 +812,24 @@ octave_class::index_vector (bool require_integers) const
 
   octave_value meth = symbol_table::find_method ("subsindex", class_name ());
 
-  if (meth.is_defined ())
-    {
-      octave_value_list args;
-      args(0) = octave_value (new octave_class (map, c_name, parent_list));
-
-      octave_value_list tmp = feval (meth.function_value (), args, 1);
-
-      if (tmp(0).is_object ())
-        error ("subsindex function must return a valid index vector");
-      else
-        // Index vector returned by subsindex is zero based
-        // (why this inconsistency Mathworks?), and so we must
-        // add one to the value returned as the index_vector method
-        // expects it to be one based.
-        retval = do_binary_op (octave_value::op_add, tmp (0),
-                               octave_value (1.0)).index_vector (require_integers);
-    }
-  else
+  if (! meth.is_defined ())
     error ("no subsindex method defined for class %s",
            class_name ().c_str ());
+
+  octave_value_list args;
+  args(0) = octave_value (new octave_class (map, c_name, parent_list));
+
+  octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+  if (tmp(0).is_object ())
+    error ("subsindex function must return a valid index vector");
+  else
+    // Index vector returned by subsindex is zero based
+    // (why this inconsistency Mathworks?), and so we must
+    // add one to the value returned as the index_vector method
+    // expects it to be one based.
+    retval = do_binary_op (octave_value::op_add, tmp (0),
+                           octave_value (1.0)).index_vector (require_integers);
 
   return retval;
 }
@@ -972,23 +966,21 @@ octave_class::all_strings (bool pad) const
 
   octave_value meth = symbol_table::find_method ("char", class_name ());
 
-  if (meth.is_defined ())
-    {
-      octave_value_list args;
-      args(0) = octave_value (new octave_class (map, c_name, parent_list));
-
-      octave_value_list tmp = feval (meth.function_value (), args, 1);
-
-      if (tmp.length () >= 1)
-        {
-          if (tmp(0).is_string ())
-            retval = tmp(0).all_strings (pad);
-          else
-            error ("cname/char method did not return a string");
-        }
-    }
-  else
+  if (! meth.is_defined ())
     error ("no char method defined for class %s", class_name ().c_str ());
+
+  octave_value_list args;
+  args(0) = octave_value (new octave_class (map, c_name, parent_list));
+
+  octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+  if (tmp.length () >= 1)
+    {
+      if (tmp(0).is_string ())
+        retval = tmp(0).all_strings (pad);
+      else
+        error ("cname/char method did not return a string");
+    }
 
   return retval;
 }
@@ -1248,27 +1240,25 @@ octave_class::load_ascii (std::istream& is)
                   m.assign (nm, tcell);
                 }
 
-              if (is)
-                {
-                  c_name = classname;
-                  reconstruct_exemplar ();
-
-                  map = m;
-
-                  if (! reconstruct_parents ())
-                    warning ("load: unable to reconstruct object inheritance");
-
-                  if (load_path::find_method (classname, "loadobj")
-                      != std::string ())
-                    {
-                      octave_value in = new octave_class (*this);
-                      octave_value_list tmp = feval ("loadobj", in, 1);
-
-                      map = tmp(0).map_value ();
-                    }
-                }
-              else
+              if (! is)
                 error ("load: failed to load class");
+
+              c_name = classname;
+              reconstruct_exemplar ();
+
+              map = m;
+
+              if (! reconstruct_parents ())
+                warning ("load: unable to reconstruct object inheritance");
+
+              if (load_path::find_method (classname, "loadobj")
+                  != std::string ())
+                {
+                  octave_value in = new octave_class (*this);
+                  octave_value_list tmp = feval ("loadobj", in, 1);
+
+                  map = tmp(0).map_value ();
+                }
             }
           else if (len == 0)
             {
@@ -1666,15 +1656,13 @@ octave_class::in_class_method (void)
 octave_class::exemplar_info::exemplar_info (const octave_value& obj)
   : field_names (), parent_class_names ()
 {
-  if (obj.is_object ())
-    {
-      octave_map m = obj.map_value ();
-      field_names = m.keys ();
-
-      parent_class_names = obj.parent_class_name_list ();
-    }
-  else
+  if (! obj.is_object ())
     error ("invalid call to exemplar_info constructor");
+
+  octave_map m = obj.map_value ();
+  field_names = m.keys ();
+
+  parent_class_names = obj.parent_class_name_list ();
 }
 
 
@@ -1685,43 +1673,41 @@ bool
 octave_class::exemplar_info::compare (const octave_value& obj) const
 {
 
-  if (obj.is_object ())
+  if (! obj.is_object ())
+    error ("invalid comparison of class exemplar to non-class object");
+
+  if (nfields () == obj.nfields ())
     {
-      if (nfields () == obj.nfields ())
+      octave_map obj_map = obj.map_value ();
+      string_vector obj_fnames = obj_map.keys ();
+      string_vector fnames = fields ();
+
+      for (octave_idx_type i = 0; i < nfields (); i++)
         {
-          octave_map obj_map = obj.map_value ();
-          string_vector obj_fnames = obj_map.keys ();
-          string_vector fnames = fields ();
+          if (obj_fnames[i] != fnames[i])
+            error ("mismatch in field names");
+        }
 
-          for (octave_idx_type i = 0; i < nfields (); i++)
+      if (nparents () == obj.nparents ())
+        {
+          std::list<std::string> obj_parents
+            = obj.parent_class_name_list ();
+          std::list<std::string> pnames = parents ();
+
+          std::list<std::string>::const_iterator p = obj_parents.begin ();
+          std::list<std::string>::const_iterator q = pnames.begin ();
+
+          while (p != obj_parents.end ())
             {
-              if (obj_fnames[i] != fnames[i])
-                error ("mismatch in field names");
+              if (*p++ != *q++)
+                error ("mismatch in parent classes");
             }
-
-          if (nparents () == obj.nparents ())
-            {
-              std::list<std::string> obj_parents
-                = obj.parent_class_name_list ();
-              std::list<std::string> pnames = parents ();
-
-              std::list<std::string>::const_iterator p = obj_parents.begin ();
-              std::list<std::string>::const_iterator q = pnames.begin ();
-
-              while (p != obj_parents.end ())
-                {
-                  if (*p++ != *q++)
-                    error ("mismatch in parent classes");
-                }
-            }
-          else
-            error ("mismatch in number of parent classes");
         }
       else
-        error ("mismatch in number of fields");
+        error ("mismatch in number of parent classes");
     }
   else
-    error ("invalid comparison of class exemplar to non-class object");
+    error ("mismatch in number of fields");
 
   return true;
 }

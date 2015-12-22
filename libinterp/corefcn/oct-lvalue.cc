@@ -45,13 +45,11 @@ void
 octave_lvalue::set_index (const std::string& t,
                           const std::list<octave_value_list>& i)
 {
-  if (idx.empty ())
-    {
-      type = t;
-      idx = i;
-    }
-  else
+  if (! idx.empty ())
     error ("invalid index expression in assignment");
+
+  type = t;
+  idx = i;
 }
 
 bool

@@ -1290,12 +1290,6 @@ display_warning_options (std::ostream& os)
 static void
 set_warning_option (const std::string& state, const std::string& ident)
 {
-  if (ident == "all")
-    {
-      initialize_warning_options (state);
-      return;
-    }
-
   std::string all_state = default_warning_state ();
 
   if (state != "on" && state != "off" && state != "error")
@@ -1518,7 +1512,9 @@ disable escape sequence expansion use a second backslash before the sequence\n\
                   argc--;
                 }
 
-              if (arg2 == "all")
+              // If "all" is explicitly given.
+
+              if (argc >= 3 && arg2 == "all")
                 {
                   octave_map tmp;
 
@@ -1715,6 +1711,14 @@ disable escape sequence expansion use a second backslash before the sequence\n\
 
   return retval;
 }
+
+/*
+## Test for (bug #45753)
+
+%!test
+%! warning ("error");
+%! assert (! isempty (help ("warning")));
+*/
 
 octave_value_list
 set_warning_state (const std::string& id, const std::string& state)

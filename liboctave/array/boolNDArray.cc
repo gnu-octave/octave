@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "lo-ieee.h"
 #include "mx-op-defs.h"
-#include "MArray-defs.h"
 
 #include "bsxfun-defs.cc"
 

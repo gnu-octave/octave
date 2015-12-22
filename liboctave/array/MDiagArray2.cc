@@ -29,8 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "lo-error.h"
 
-#include "MArray-defs.h"
-
 template <class T>
 bool
 MDiagArray2<T>::is_multiple_of_identity (T val) const

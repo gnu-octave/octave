@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "functor.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "MArray-defs.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
 #include "mx-cnda-s.h"

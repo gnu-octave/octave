@@ -36,8 +36,6 @@ ARRAY_INC = \
   liboctave/array/int64NDArray.h \
   liboctave/array/int8NDArray.h \
   liboctave/array/intNDArray.h \
-  liboctave/array/MArray-decl.h \
-  liboctave/array/MArray-defs.h \
   liboctave/array/MArray.h \
   liboctave/array/Matrix.h \
   liboctave/array/MatrixType.h \

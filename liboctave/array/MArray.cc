@@ -29,9 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "lo-error.h"
 
-#include "MArray-defs.h"
-#include "mx-inlines.cc"
-
 template <class T>
 struct _idxadds_helper
 {

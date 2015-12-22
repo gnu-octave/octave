@@ -204,6 +204,13 @@ Undocumented internal function.\n\
 
   // ShellExecute returns a value greater than 32 if successful.
   retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+#elif defined (__APPLE__)
+  octave_value_list tmp
+    = Fsystem (ovl ("open " + file + " 2> /dev/null",
+                    false, "async"),
+               1);
+
+  retval = (tmp(0).double_value () == 0);
 #else
   octave_value_list tmp
     = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",

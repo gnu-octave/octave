@@ -112,7 +112,9 @@ function opts = __gnuplot_print__ (opts)
       endif
     case "svg"
       local_drawnow (["svg dynamic " gp_opts], opts.name, opts);
-    case {"aifm", "corel", "eepic", "emf", "fig"}
+    case {"eepic"}
+      local_drawnow ([opts.devopt " color rotate " gp_opts], opts.name, opts);
+    case {"aifm", "corel", "emf", "fig"}
       local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
     case {"cairolatex", "epscairo", "epscairolatex", ...
           "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
@@ -136,8 +138,14 @@ function opts = __gnuplot_print__ (opts)
                "print.m: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
-    case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
-      local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
+    case {"canvas", "dxf", "hpgl", "latex", "mf", "gif", "pstricks", "texdraw"}
+      if (__gnuplot_has_terminal__ (opts.devopt))
+        local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
+      else
+        error (sprintf ("print:no%soutput", opts.devopt),
+               "print.m: '%s' output is not available for gnuplot-%s",
+               upper (opts.devopt), __gnuplot_version__ ());
+      endif
     case opts.ghostscript.device
       gp_opts = font_spec (opts, "devopt", "eps");
       opts.ghostscript.output = opts.name;

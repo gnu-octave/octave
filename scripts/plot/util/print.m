@@ -139,13 +139,6 @@
 ## The @samp{standalone} variants behave as described for
 ## @samp{epslatexstandalone} above.
 ##
-##   @item tikz
-##   @itemx tikzstandalone
-##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
-## the result is PGF. The @samp{tikzstandalone} device produces a @LaTeX{}
-## document which includes the TikZ file (@samp{tikzstandalone} is only
-## available with the gnuplot graohpics toolkit).
-##
 ##   @item  ill
 ##   @itemx aifm
 ##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
@@ -165,8 +158,19 @@
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
 ## @option{-textspecial} or @option{-textnormal} can be used to control whether the special flag should be set for the text in the figure.  (default is @option{-textnormal})
 ##
+##   @item gif
+##     GIF image (only available for the Gnuplot graphics toolkit)
+##
 ##   @item hpgl
 ##     HP plotter language
+##
+##   @item  jpg
+##   @itemx jpeg
+##     JPEG image
+##
+##   @item latex
+##     @LaTeX picture environment (only available with the gnuplot graphics
+## toolkit).
 ##
 ##   @item mf
 ##     Metafont
@@ -174,22 +178,22 @@
 ##   @item png
 ##     Portable network graphics
 ##
-##   @item  jpg
-##   @itemx jpeg
-##     JPEG image
-##
-##   @item gif
-##     GIF image (only available for the Gnuplot graphics toolkit)
-##
 ##   @item pbm
 ##     PBMplus
-##
-##   @item svg
-##     Scalable vector graphics
 ##
 ##   @item pdf
 ##     Portable document format
 ##   @end table
+##
+##   @item svg
+##     Scalable vector graphics
+##
+##   @item tikz
+##   @itemx tikzstandalone
+##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
+## the result is PGF. The @samp{tikzstandalone} device produces a @LaTeX{}
+## document which includes the TikZ file (@samp{tikzstandalone} is only
+## available with the gnuplot graphics toolkit).
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as PostScript.

@@ -1145,17 +1145,14 @@ get_dimensions (const octave_value& a, const char *warn_for,
       octave_idx_type nr = a.rows ();
       octave_idx_type nc = a.columns ();
 
-      if (nr == 1 || nc == 1)
-        {
-          Array<double> v = a.vector_value ();
-
-          octave_idx_type n = v.numel ();
-          dim.resize (n);
-          for (octave_idx_type i = 0; i < n; i++)
-            dim(i) = static_cast<int> (fix (v(i)));
-        }
-      else
+      if (nr != 1 && nc != 1)
         error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+
+      Array<double> v = a.vector_value ();
+      octave_idx_type n = v.numel ();
+      dim.resize (n);
+      for (octave_idx_type i = 0; i < n; i++)
+        dim(i) = static_cast<int> (fix (v(i)));
     }
 
   check_dimensions (dim, warn_for);
@@ -1175,16 +1172,12 @@ get_dimensions (const octave_value& a, const char *warn_for,
       nr = a.rows ();
       nc = a.columns ();
 
-      if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
-        {
-          Array<double> v = a.vector_value ();
-
-
-          nr = static_cast<octave_idx_type> (fix (v (0)));
-          nc = static_cast<octave_idx_type> (fix (v (1)));
-        }
-      else
+      if ((nr != 1 || nc != 2) && (nr != 2 || nc != 1))
         error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+
+      Array<double> v = a.vector_value ();
+      nr = static_cast<octave_idx_type> (fix (v(0)));
+      nc = static_cast<octave_idx_type> (fix (v(1)));
     }
 
   check_dimensions (nr, nc, warn_for);

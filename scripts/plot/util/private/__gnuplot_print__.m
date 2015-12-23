@@ -87,18 +87,15 @@ function opts = __gnuplot_print__ (opts)
                "invalid suffix '%s' for device '%s'.",
                ext, lower (opts.devopt));
       endif
-
-      if (strfind (opts.devopt, "standalone"))
-        term = sprintf ("%s ",
-                        strrep (opts.devopt, "standalone", " standalone"));
-      else
-        term = sprintf ("%s ", opts.devopt);
-      endif
       if (__gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
         suffix = "tex";
       else
         ## Gnuplot 4.0 wants a ".eps" suffix.
         suffix = "eps";
+      endif
+      if (strfind (opts.devopt, "standalone"))
+        gp_opts = sprintf ("standalone %s", gp_opts);
+        term = strrep (opts.devopt, "standalone", "");
       endif
       local_drawnow ([term " " gp_opts],
                      [name "." suffix], opts);
@@ -114,9 +111,25 @@ function opts = __gnuplot_print__ (opts)
       local_drawnow (["svg dynamic " gp_opts], opts.name, opts);
     case {"aifm", "corel", "eepic", "emf", "fig"}
       local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
-    case {"pdfcairo", "pngcairo"}
-      if (__gnuplot_has_terminal__ (opts.devopt))
-        local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
+    case {"cairolatex", "epscairo", "epscairolatex", ...
+          "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
+          "pdfcairolatexstandalone", "pngcairo"}
+      term = opts.devopt;
+      if (strfind (term, "standalone"))
+        ## TODO: Specifying the size of the figure and page are not yet
+        ## supported. Specifying the font size also does not work.
+        gp_opts = sprintf ("standalone %s", gp_opts);
+        term = strrep (term, "standalone", "");
+      endif
+      if (strfind (term, "epscairolatex"))
+        gp_opts = sprintf ("eps %s", gp_opts);
+        term = strrep (term, "epscairolatex", "cairolatex");
+      elseif (strfind (term, "pdfcairolatex"))
+        gp_opts = sprintf ("pdf %s", gp_opts);
+        term = strrep (term, "pdfcairolatex", "cairolatex");
+      endif
+      if (__gnuplot_has_terminal__ (term))
+        local_drawnow ([term " " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
                "print.m: '%s' output is not available for gnuplot-%s",
@@ -199,6 +212,9 @@ function local_drawnow (term, file, opts)
   else
     drawnow (term, file, mono, opts.debug_file);
   endif
+  if (opts.debug)
+    fprintf ("Expanded gnuplot terminal = '%s'\n", term)
+  endif
 endfunction
 
 function f = font_spec (opts, varargin)
@@ -247,7 +263,9 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.fontsize))
         f = sprintf ('font ",%d"', opts.fontsize);
       endif
-    case {"pdfcairo", "pngcairo"}
+    case {"cairolatex", "epscairo", "epscairolatex", ...
+          "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
+          "pdfcairolatexstandalone", "pngcairo"}
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
         f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
       elseif (! isempty (opts.font))

@@ -651,6 +651,7 @@ protected:
     else
       error ("set: invalid string property value for \"%s\"",
              get_name ().c_str ());
+
     return false;
   }
 
@@ -1180,19 +1181,18 @@ public:
 protected:
   bool do_set (const octave_value& v)
   {
-    if (v.is_scalar_type () && v.is_real_type ())
-      {
-        double new_val = v.double_value ();
-
-        if (new_val != current_val)
-          {
-            current_val = new_val;
-            return true;
-          }
-      }
-    else
+    if (! v.is_scalar_type () || ! v.is_real_type ())
       error ("set: invalid value for double property \"%s\"",
              get_name ().c_str ());
+
+    double new_val = v.double_value ();
+
+    if (new_val != current_val)
+      {
+        current_val = new_val;
+        return true;
+      }
+
     return false;
   }
 
@@ -2664,18 +2664,17 @@ public:
 
   virtual void mark_modified (void)
   {
-    if (valid_object ())
-      get_properties ().mark_modified ();
-    else
+    if (! valid_object ())
       error ("base_graphics_object::mark_modified: invalid graphics object");
+
+    get_properties ().mark_modified ();
   }
 
   virtual void override_defaults (base_graphics_object& obj)
   {
-    if (valid_object ())
-      get_properties ().override_defaults (obj);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::override_defaults: invalid graphics object");
+    get_properties ().override_defaults (obj);
   }
 
   void build_user_defaults_map (property_list::pval_map_type &def,
@@ -2683,18 +2682,18 @@ public:
 
   virtual void set_from_list (property_list& plist)
   {
-    if (valid_object ())
-      get_properties ().set_from_list (*this, plist);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::set_from_list: invalid graphics object");
+
+    get_properties ().set_from_list (*this, plist);
   }
 
   virtual void set (const caseless_str& pname, const octave_value& pval)
   {
-    if (valid_object ())
-      get_properties ().set (pname, pval);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::set: invalid graphics object");
+
+    get_properties ().set (pname, pval);
   }
 
   virtual void set_defaults (const std::string&)
@@ -2704,18 +2703,18 @@ public:
 
   virtual octave_value get (bool all = false) const
   {
-    if (valid_object ())
-      return get_properties ().get (all);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::get: invalid graphics object");
+
+    return get_properties ().get (all);
   }
 
   virtual octave_value get (const caseless_str& pname) const
   {
-    if (valid_object ())
-      return get_properties ().get (pname);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::get: invalid graphics object");
+
+    return get_properties ().get (pname);
   }
 
   virtual octave_value get_default (const caseless_str&) const;
@@ -2757,42 +2756,42 @@ public:
 
   virtual graphics_handle get_parent (void) const
   {
-    if (valid_object ())
-      return get_properties ().get_parent ();
-    else
+    if (! valid_object ())
       error ("base_graphics_object::get_parent: invalid graphics object");
+
+    return get_properties ().get_parent ();
   }
 
   graphics_handle get_handle (void) const
   {
-    if (valid_object ())
-      return get_properties ().get___myhandle__ ();
-    else
+    if (! valid_object ())
       error ("base_graphics_object::get_handle: invalid graphics object");
+
+    return get_properties ().get___myhandle__ ();
   }
 
   virtual void remove_child (const graphics_handle& h)
   {
-    if (valid_object ())
-      get_properties ().remove_child (h);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::remove_child: invalid graphics object");
+
+    get_properties ().remove_child (h);
   }
 
   virtual void adopt (const graphics_handle& h)
   {
-    if (valid_object ())
-      get_properties ().adopt (h);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::adopt: invalid graphics object");
+
+    get_properties ().adopt (h);
   }
 
   virtual void reparent (const graphics_handle& np)
   {
-    if (valid_object ())
-      get_properties ().reparent (np);
-    else
+    if (! valid_object ())
       error ("base_graphics_object::reparent: invalid graphics object");
+
+    get_properties ().reparent (np);
   }
 
   virtual void defaults (void) const
@@ -2838,10 +2837,10 @@ public:
 
   virtual graphics_toolkit get_toolkit (void) const
   {
-    if (valid_object ())
-      return get_properties ().get_toolkit ();
-    else
+    if (! valid_object ())
       error ("base_graphics_object::get_toolkit: invalid graphics object");
+
+    return get_properties ().get_toolkit ();
   }
 
   virtual void add_property_listener (const std::string& nm,
@@ -3337,7 +3336,8 @@ public:
 
       if (b.get_name () != nm)
         error ("set___graphics_toolkit__: invalid graphics toolkit");
-      else if (nm != get___graphics_toolkit__ ())
+
+      if (nm != get___graphics_toolkit__ ())
         {
           set_toolkit (b);
           mark_modified ();

@@ -1271,66 +1271,62 @@ color_property::do_set (const octave_value& val)
     {
       std::string s = val.string_value ();
 
-      if (! s.empty ())
+      if (s.empty ())
+        error ("invalid value for color property \"%s\"",
+               get_name ().c_str ());
+
+      std::string match;
+
+      if (radio_val.contains (s, match))
         {
-          std::string match;
-
-          if (radio_val.contains (s, match))
+          if (current_type != radio_t || match != current_val)
             {
-              if (current_type != radio_t || match != current_val)
-                {
-                  if (s.length () != match.length ())
-                    warning_with_id ("Octave:abbreviated-property-match",
-                                     "%s: allowing %s to match %s value %s",
-                                     "set", s.c_str (), get_name ().c_str (),
-                                     match.c_str ());
-                  current_val = match;
-                  current_type = radio_t;
-                  return true;
-                }
-            }
-          else
-            {
-              try
-                {
-                  color_values col (s);
-
-                  if (current_type != color_t || col != color_val)
-                    {
-                      color_val = col;
-                      current_type = color_t;
-                      return true;
-                    }
-                }
-              catch (octave_execution_exception& e)
-                {
-                  error (e, "invalid value for color property \"%s\" (value = %s)",
-                         get_name ().c_str (), s.c_str ());
-                }
+              if (s.length () != match.length ())
+                warning_with_id ("Octave:abbreviated-property-match",
+                                 "%s: allowing %s to match %s value %s",
+                                 "set", s.c_str (), get_name ().c_str (),
+                                 match.c_str ());
+              current_val = match;
+              current_type = radio_t;
+              return true;
             }
         }
       else
-        error ("invalid value for color property \"%s\"",
-               get_name ().c_str ());
+        {
+          try
+            {
+              color_values col (s);
+
+              if (current_type != color_t || col != color_val)
+                {
+                  color_val = col;
+                  current_type = color_t;
+                  return true;
+                }
+            }
+          catch (octave_execution_exception& e)
+            {
+              error (e, "invalid value for color property \"%s\" (value = %s)",
+                     get_name ().c_str (), s.c_str ());
+            }
+        }
     }
   else if (val.is_numeric_type ())
     {
       Matrix m = val.matrix_value ();
 
-      if (m.numel () == 3)
-        {
-          color_values col (m(0), m(1), m(2));
-
-          if (current_type != color_t || col != color_val)
-            {
-              color_val = col;
-              current_type = color_t;
-              return true;
-            }
-        }
-      else
+      if (m.numel () != 3)
         error ("invalid value for color property \"%s\"",
                get_name ().c_str ());
+
+      color_values col (m(0), m(1), m(2));
+
+      if (current_type != color_t || col != color_val)
+        {
+          color_val = col;
+          current_type = color_t;
+          return true;
+        }
     }
   else
     error ("invalid value for color property \"%s\"",
@@ -1347,23 +1343,22 @@ double_radio_property::do_set (const octave_value& val)
       std::string s = val.string_value ();
       std::string match;
 
-      if (! s.empty () && radio_val.contains (s, match))
-        {
-          if (current_type != radio_t || match != current_val)
-            {
-              if (s.length () != match.length ())
-                warning_with_id ("Octave:abbreviated-property-match",
-                                 "%s: allowing %s to match %s value %s",
-                                 "set", s.c_str (), get_name ().c_str (),
-                                 match.c_str ());
-              current_val = match;
-              current_type = radio_t;
-              return true;
-            }
-        }
-      else
+      if (s.empty () || ! radio_val.contains (s, match))
         error ("invalid value for double_radio property \"%s\"",
                get_name ().c_str ());
+
+
+      if (current_type != radio_t || match != current_val)
+        {
+          if (s.length () != match.length ())
+            warning_with_id ("Octave:abbreviated-property-match",
+                             "%s: allowing %s to match %s value %s",
+                             "set", s.c_str (), get_name ().c_str (),
+                             match.c_str ());
+          current_val = match;
+          current_type = radio_t;
+          return true;
+        }
     }
   else if (val.is_scalar_type () && val.is_real_type ())
     {
@@ -1558,17 +1553,15 @@ handle_property::do_set (const octave_value& v)
 
   graphics_handle gh = gh_manager::lookup (dv);
 
-  if (xisnan (gh.value ()) || gh.ok ())
-    {
-      if (current_val != gh)
-        {
-          current_val = gh;
-          return true;
-        }
-    }
-  else
+  if (! (xisnan (gh.value ()) || gh.ok ()))
     error ("set: invalid graphics handle (= %g) for property \"%s\"",
            dv, get_name ().c_str ());
+
+  if (current_val != gh)
+    {
+      current_val = gh;
+      return true;
+    }
 
   return false;
 }
@@ -1706,15 +1699,13 @@ property::create (const std::string& name, const graphics_handle& h,
     {
       if (args.length () < 1)
         error ("addproperty: missing possible values for radio property");
-      else
-        {
-          std::string sv = args(0).xstring_value ("addproperty: argument for radio property must be a string");
 
-          retval = property (new radio_property (name, h, sv));
+      std::string sv = args(0).xstring_value ("addproperty: argument for radio property must be a string");
 
-          if (args.length () > 1)
-            retval.set (args(1));
-        }
+      retval = property (new radio_property (name, h, sv));
+
+      if (args.length () > 1)
+        retval.set (args(1));
     }
   else if (type.compare ("double"))
     {
@@ -2174,18 +2165,17 @@ graphics_object::set (const octave_value_list& args)
 
   if (nargin == 0)
     error ("graphics_object::set: Nothing to set");
-  else if (nargin % 2 != 0)
+
+  if (nargin % 2 != 0)
     error ("set: invalid number of arguments");
-  else
+
+  for (int i = 0; i < nargin; i += 2)
     {
-      for (int i = 0; i < nargin; i += 2)
-        {
-          caseless_str pname = args(i).xstring_value ("set: argument %d must be a property name", i);
+      caseless_str pname = args(i).xstring_value ("set: argument %d must be a property name", i);
 
-          octave_value val = args(i+1);
+      octave_value val = args(i+1);
 
-          set_value_or_default (pname, val);
-        }
+      set_value_or_default (pname, val);
     }
 }
 
@@ -2476,45 +2466,41 @@ gh_manager::do_free (const graphics_handle& h)
 {
   if (h.ok ())
     {
-      if (h.value () != 0)
-        {
-          iterator p = handle_map.find (h);
-
-          if (p != handle_map.end ())
-            {
-              base_properties& bp = p->second.get_properties ();
-
-              bp.set_beingdeleted (true);
-
-              bp.delete_children ();
-
-              octave_value val = bp.get_deletefcn ();
-
-              bp.execute_deletefcn ();
-
-              // Notify graphics toolkit.
-              p->second.finalize ();
-
-              // Note: this will be valid only for first explicitly deleted
-              // object.  All its children will then have an
-              // unknown graphics toolkit.
-
-              // Graphics handles for non-figure objects are negative
-              // integers plus some random fractional part.  To avoid
-              // running out of integers, we recycle the integer part
-              // but tack on a new random part each time.
-
-              handle_map.erase (p);
-
-              if (h.value () < 0)
-                handle_free_list.insert
-                  (std::ceil (h.value ()) - make_handle_fraction ());
-            }
-          else
-            error ("graphics_handle::free: invalid object %g", h.value ());
-        }
-      else
+      if (h.value () == 0)
         error ("graphics_handle::free: can't delete root figure");
+
+      iterator p = handle_map.find (h);
+
+      if (p == handle_map.end ())
+        error ("graphics_handle::free: invalid object %g", h.value ());
+
+      base_properties& bp = p->second.get_properties ();
+
+      bp.set_beingdeleted (true);
+
+      bp.delete_children ();
+
+      octave_value val = bp.get_deletefcn ();
+
+      bp.execute_deletefcn ();
+
+      // Notify graphics toolkit.
+      p->second.finalize ();
+
+      // Note: this will be valid only for first explicitly deleted
+      // object.  All its children will then have an
+      // unknown graphics toolkit.
+
+      // Graphics handles for non-figure objects are negative
+      // integers plus some random fractional part.  To avoid
+      // running out of integers, we recycle the integer part
+      // but tack on a new random part each time.
+
+      handle_map.erase (p);
+
+      if (h.value () < 0)
+        handle_free_list.insert
+          (std::ceil (h.value ()) - make_handle_fraction ());
     }
 }
 
@@ -2524,20 +2510,18 @@ gh_manager::do_renumber_figure (const graphics_handle& old_gh,
 {
   iterator p = handle_map.find (old_gh);
 
-  if (p != handle_map.end ())
-    {
-      graphics_object go = p->second;
-
-      handle_map.erase (p);
-
-      handle_map[new_gh] = go;
-
-      if (old_gh.value () < 0)
-        handle_free_list.insert (std::ceil (old_gh.value ())
-                                 - make_handle_fraction ());
-    }
-  else
+  if (p == handle_map.end ())
     error ("graphics_handle::free: invalid object %g", old_gh.value ());
+
+  graphics_object go = p->second;
+
+  handle_map.erase (p);
+
+  handle_map[new_gh] = go;
+
+  if (old_gh.value () < 0)
+    handle_free_list.insert (std::ceil (old_gh.value ())
+                             - make_handle_fraction ());
 
   for (figure_list_iterator q = figure_list.begin ();
        q != figure_list.end (); q++)
@@ -2923,12 +2907,10 @@ base_properties::get_dynamic (const caseless_str& pname) const
   std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
     all_props.find (pname);
 
-  if (it != all_props.end ())
-    retval = it->second.get ();
-  else
+  if (it == all_props.end ())
     error ("get: unknown property \"%s\"", pname.c_str ());
 
-  return retval;
+  return it->second.get ();
 }
 
 octave_value
@@ -2968,10 +2950,10 @@ base_properties::set_dynamic (const caseless_str& pname,
   std::map<caseless_str, property, cmp_caseless_str>::iterator it =
     all_props.find (pname);
 
-  if (it != all_props.end ())
-    it->second.set (val);
-  else
+  if (it == all_props.end ())
     error ("set: unknown property \"%s\"", pname.c_str ());
+
+  it->second.set (val);
 
   dynamic_properties.insert (pname);
 
@@ -2999,35 +2981,33 @@ base_properties::set_parent (const octave_value& val)
 
   if (hp == __myhandle__)
     error ("set: can not set object parent to be object itself");
+
+  new_parent = gh_manager::lookup (hp);
+
+  if (! new_parent.ok ())
+    error ("set: invalid graphics handle (= %g) for parent", hp);
+
+  // Remove child from current parent
+  graphics_object old_parent_go;
+  old_parent_go = gh_manager::get_object (get_parent ());
+
+  if (old_parent_go.get_handle () != hp)
+    old_parent_go.remove_child (__myhandle__);
   else
+    return;  // Do nothing more
+
+  // Check new parent's parent is not this child to avoid recursion
+  graphics_object new_parent_go;
+  new_parent_go = gh_manager::get_object (new_parent);
+  if (new_parent_go.get_parent () == __myhandle__)
     {
-      new_parent = gh_manager::lookup (hp);
-
-      if (! new_parent.ok ())
-        error ("set: invalid graphics handle (= %g) for parent", hp);
-
-      // Remove child from current parent
-      graphics_object old_parent_go;
-      old_parent_go = gh_manager::get_object (get_parent ());
-
-      if (old_parent_go.get_handle () != hp)
-        old_parent_go.remove_child (__myhandle__);
-      else
-        return;  // Do nothing more
-
-      // Check new parent's parent is not this child to avoid recursion
-      graphics_object new_parent_go;
-      new_parent_go = gh_manager::get_object (new_parent);
-      if (new_parent_go.get_parent () == __myhandle__)
-        {
-          // new parent's parent gets child's original parent
-          new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
-        }
-
-      // Set parent property to new_parent and do adoption
-      parent = new_parent.as_octave_value ();
-      ::adopt (parent.handle_value (), __myhandle__);
+      // new parent's parent gets child's original parent
+      new_parent_go.get_properties ().set_parent (get_parent ().as_octave_value ());
     }
+
+  // Set parent property to new_parent and do adoption
+  parent = new_parent.as_octave_value ();
+  ::adopt (parent.handle_value (), __myhandle__);
 }
 
 /*
@@ -3179,13 +3159,11 @@ base_graphics_object::update_axis_limits (const std::string& axis_type,
 {
   if (! valid_object ())
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
-  else
-    {
-      graphics_object parent_go = gh_manager::get_object (get_parent ());
 
-      if (parent_go)
-        parent_go.update_axis_limits (axis_type, h);
-    }
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+  if (parent_go)
+    parent_go.update_axis_limits (axis_type, h);
 }
 
 void
@@ -3268,29 +3246,27 @@ base_graphics_object::values_as_string (void)
 
   if (! valid_object ())
     error ("base_graphics_object::values_as_string: invalid graphics object");
-  else
+
+  octave_map m = get ().map_value ();
+  graphics_object go = gh_manager::get_object (get_handle ());
+
+  for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
     {
-      octave_map m = get ().map_value ();
-      graphics_object go = gh_manager::get_object (get_handle ());
-
-      for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+      if (pa->first != "children" && ! go.has_readonly_property (pa->first))
         {
-          if (pa->first != "children" && ! go.has_readonly_property (pa->first))
-            {
-              property p = get_properties ().get_property (pa->first);
+          property p = get_properties ().get_property (pa->first);
 
-              if (p.ok () && ! p.is_hidden ())
-                {
-                  retval += "\n\t" + std::string (pa->first) + ":  ";
-                  if (p.is_radio ())
-                    retval += p.values_as_string ();
-                }
+          if (p.ok () && ! p.is_hidden ())
+            {
+              retval += "\n\t" + std::string (pa->first) + ":  ";
+              if (p.is_radio ())
+                retval += p.values_as_string ();
             }
         }
-
-      if (! retval.empty ())
-        retval += "\n";
     }
+
+  if (! retval.empty ())
+    retval += "\n";
 
   return retval;
 }
@@ -3302,24 +3278,22 @@ base_graphics_object::value_as_string (const std::string& prop)
 
   if (! valid_object ())
     error ("base_graphics_object::value_as_string: invalid graphics object");
-  else
+
+  graphics_object go = gh_manager::get_object (get_handle ());
+
+  if (prop != "children" && ! go.has_readonly_property (prop))
     {
-      graphics_object go = gh_manager::get_object (get_handle ());
+      property p = get_properties ().get_property (prop);
 
-      if (prop != "children" && ! go.has_readonly_property (prop))
+      if (p.ok () && ! p.is_hidden ())
         {
-          property p = get_properties ().get_property (prop);
-
-          if (p.ok () && ! p.is_hidden ())
-            {
-              if (p.is_radio ())
-                retval += p.values_as_string ();
-            }
+          if (p.is_radio ())
+            retval += p.values_as_string ();
         }
-
-      if (! retval.empty ())
-        retval += "\n";
     }
+
+  if (! retval.empty ())
+    retval += "\n";
 
   return retval;
 }
@@ -3331,26 +3305,24 @@ base_graphics_object::values_as_struct (void)
 
   if (! valid_object ())
     error ("base_graphics_object::values_as_struct: invalid graphics object");
-  else
+
+  octave_scalar_map m = get ().scalar_map_value ();
+  graphics_object go = gh_manager::get_object (get_handle ());
+
+  for (octave_scalar_map::const_iterator pa = m.begin ();
+       pa != m.end (); pa++)
     {
-      octave_scalar_map m = get ().scalar_map_value ();
-      graphics_object go = gh_manager::get_object (get_handle ());
-
-      for (octave_scalar_map::const_iterator pa = m.begin ();
-           pa != m.end (); pa++)
+      if (pa->first != "children"
+          && ! go.has_readonly_property (pa->first))
         {
-          if (pa->first != "children"
-              && ! go.has_readonly_property (pa->first))
-            {
-              property p = get_properties ().get_property (pa->first);
+          property p = get_properties ().get_property (pa->first);
 
-              if (p.ok () && ! p.is_hidden ())
-                {
-                  if (p.is_radio ())
-                    retval.assign (p.get_name (), p.values_as_cell ());
-                  else
-                    retval.assign (p.get_name (), Cell ());
-                }
+          if (p.ok () && ! p.is_hidden ())
+            {
+              if (p.is_radio ())
+                retval.assign (p.get_name (), p.values_as_cell ());
+              else
+                retval.assign (p.get_name (), Cell ());
             }
         }
     }
@@ -3782,14 +3754,12 @@ figure::properties::set_paperunits (const octave_value& val)
 
   if (punits.compare ("normalized") && ptype.compare ("<custom>"))
     error ("set: can't set paperunits to normalized when papertype is custom");
-  else
+
+  caseless_str old_paperunits = get_paperunits ();
+  if (paperunits.set (val, true))
     {
-      caseless_str old_paperunits = get_paperunits ();
-      if (paperunits.set (val, true))
-        {
-          update_paperunits (old_paperunits);
-          mark_modified ();
-        }
+      update_paperunits (old_paperunits);
+      mark_modified ();
     }
 }
 
@@ -3801,13 +3771,11 @@ figure::properties::set_papertype (const octave_value& val)
 
   if (punits.compare ("normalized") && ptype.compare ("<custom>"))
     error ("set: can't set paperunits to normalized when papertype is custom");
-  else
+
+  if (papertype.set (val, true))
     {
-      if (papertype.set (val, true))
-        {
-          update_papertype ();
-          mark_modified ();
-        }
+      update_papertype ();
+      mark_modified ();
     }
 }
 
@@ -8759,10 +8727,9 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
-  if (get___object__ ().is_empty ())
-    style = st;
-  else
+  if (! get___object__ ().is_empty ())
     error ("set: cannot change the style of a uicontrol object after creation.");
+  style = st;
 }
 
 Matrix
@@ -9930,12 +9897,10 @@ get_graphics_object_type (double val)
 
   graphics_object go = gh_manager::get_object (val);
 
-  if (go)
-    retval = go.type ();
-  else
+  if (! go)
     error ("get: invalid handle (= %g)", val);
 
-  return retval;
+  return go.type ();
 }
 
 DEFUN (get, args, ,
@@ -10088,10 +10053,10 @@ Undocumented internal function.\n\
     {
       graphics_object go = gh_manager::get_object (hcv(n));
 
-      if (go)
-        vals(n) = go.get (true);
-      else
+      if (! go)
         error ("get: invalid handle (= %g)", hcv(n));
+
+      vals(n) = go.get (true);
     }
 
   octave_idx_type vals_len = vals.numel ();
@@ -10121,16 +10086,14 @@ make_graphics_object (const std::string& go_name,
     {
       if (xargs(i).is_string () && p.compare (xargs(i).string_value ()))
         {
-          if (i < (xargs.length () - 1))
-            {
-              val = xargs(i+1).double_value ();
-
-              xargs = xargs.splice (i, 2);
-              break;
-            }
-          else
+          if (i >= (xargs.length () - 1))
             error ("__go_%s__: missing value for parent property",
                    go_name.c_str ());
+
+          val = xargs(i+1).double_value ();
+
+          xargs = xargs.splice (i, 2);
+          break;
         }
     }
 
@@ -10609,36 +10572,32 @@ gtk_manager::do_get_toolkit (void) const
 {
   graphics_toolkit retval;
 
-  if (! dtk.empty ())
+  if (dtk.empty ())
+    error ("no graphics toolkits are available!");
+
+  const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
+
+  if (pl == loaded_toolkits.end ())
     {
-      const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
+      const_available_toolkits_iterator pa = available_toolkits.find (dtk);
+
+      if (pa == available_toolkits.end ())
+        error ("default graphics toolkit '%s' is not available!",
+               dtk.c_str ());
+
+      octave_value_list args;
+      args(0) = dtk;
+      feval ("graphics_toolkit", args);
+
+      pl = loaded_toolkits.find (dtk);
 
       if (pl == loaded_toolkits.end ())
-        {
-          const_available_toolkits_iterator pa = available_toolkits.find (dtk);
+        error ("failed to load %s graphics toolkit", dtk.c_str ());
 
-          if (pa != available_toolkits.end ())
-            {
-              octave_value_list args;
-              args(0) = dtk;
-              feval ("graphics_toolkit", args);
-
-              pl = loaded_toolkits.find (dtk);
-
-              if (pl == loaded_toolkits.end ())
-                error ("failed to load %s graphics toolkit", dtk.c_str ());
-              else
-                retval = pl->second;
-            }
-          else
-            error ("default graphics toolkit '%s' is not available!",
-                   dtk.c_str ());
-        }
-      else
-        retval = pl->second;
+      retval = pl->second;
     }
   else
-    error ("no graphics toolkits are available!");
+    retval = pl->second;
 
   return retval;
 }
@@ -10796,11 +10755,11 @@ undocumented.\n\
               if (val.compare ("expose"))
                 do_events = false;
               else
-              {
-                gh_manager::unlock ();
+                {
+                  gh_manager::unlock ();
 
-                error ("drawnow: invalid argument, 'expose' is only valid option");
-              }
+                  error ("drawnow: invalid argument, 'expose' is only valid option");
+                }
             }
 
           if (do_events)
@@ -11431,27 +11390,25 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
     {
       caseless_str s = args(max_arg_index + 1).xstring_value ("waitfor: invalid parameter, expected 'timeout'");
 
-      if (s.compare ("timeout"))
-        timeout_index = max_arg_index + 1;
-      else
+      if (! s.compare ("timeout"))
         error ("waitfor: invalid parameter '%s'", s.c_str ());
+
+      timeout_index = max_arg_index + 1;
     }
 
   if (timeout_index >= 0)
     {
-      if (args.length () > (timeout_index + 1))
-        {
-          timeout = static_cast<int>
-            (args(timeout_index + 1).xscalar_value ("waitfor: TIMEOUT must be a scalar >= 1"));
-
-          if (timeout < 1)
-            {
-              warning ("waitfor: TIMEOUT value must be >= 1, using 1 instead");
-              timeout = 1;
-            }
-        }
-      else
+      if (args.length () <= (timeout_index + 1))
         error ("waitfor: missing TIMEOUT value");
+
+      timeout = static_cast<int>
+        (args(timeout_index + 1).xscalar_value ("waitfor: TIMEOUT must be a scalar >= 1"));
+
+      if (timeout < 1)
+        {
+          warning ("waitfor: TIMEOUT value must be >= 1, using 1 instead");
+          timeout = 1;
+        }
     }
 
   // FIXME: There is still a "hole" in the following loop. The code

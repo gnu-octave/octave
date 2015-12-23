@@ -140,8 +140,11 @@
 ## @samp{epslatexstandalone} above.
 ##
 ##   @item tikz
+##   @itemx tikzstandalone
 ##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
-## the result is PGF.
+## the result is PGF. The @samp{tikzstandalone} device produces a @LaTeX{}
+## document which includes the TikZ file (@samp{tikzstandalone} is only
+## available with the gnuplot graohpics toolkit).
 ##
 ##   @item  ill
 ##   @itemx aifm

@@ -99,9 +99,12 @@ function opts = __gnuplot_print__ (opts)
       endif
       local_drawnow ([term " " gp_opts],
                      [name "." suffix], opts);
-    case "tikz"
+    case {"tikz", "tikzstandalone"}
+      if (strfind (opts.devopt, "standalone"))
+        gp_opts = sprintf ("standalone %s", gp_opts);
+      endif
       if (__gnuplot_has_terminal__ ("tikz"))
-        local_drawnow (["lua tikz " gp_opts], opts.name, opts);
+        local_drawnow (["tikz " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
                "print.m: '%s' output is not available for gnuplot-%s",

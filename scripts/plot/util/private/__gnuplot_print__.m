@@ -116,8 +116,6 @@ function opts = __gnuplot_print__ (opts)
           "pdfcairolatexstandalone", "pngcairo"}
       term = opts.devopt;
       if (strfind (term, "standalone"))
-        ## TODO: Specifying the size of the figure and page are not yet
-        ## supported. Specifying the font size also does not work.
         gp_opts = sprintf ("standalone %s", gp_opts);
         term = strrep (term, "standalone", "");
       endif

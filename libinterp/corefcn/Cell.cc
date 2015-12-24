@@ -290,20 +290,18 @@ Cell::column (octave_idx_type i) const
 {
   Cell retval;
 
-  if (ndims () < 3)
-    {
-      if (i < 0 || i >= cols ())
-        error ("invalid column selection");
-
-      octave_idx_type nr = rows ();
-
-      retval.resize (dim_vector (nr, 1));
-
-      for (octave_idx_type j = 0; j < nr; j++)
-        retval.xelem (j) = elem (j, i);
-    }
-  else
+  if (ndims () > 2)
     error ("Cell::column: requires 2-D cell array");
+
+  if (i < 0 || i >= cols ())
+    error ("invalid column selection");
+
+  octave_idx_type nr = rows ();
+
+  retval.resize (dim_vector (nr, 1));
+
+  for (octave_idx_type j = 0; j < nr; j++)
+    retval.xelem (j) = elem (j, i);
 
   return retval;
 }

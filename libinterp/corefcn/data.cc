@@ -230,11 +230,14 @@ and @var{x}.\n\
 
   if (! args(0).is_numeric_type ())
     gripe_wrong_type_arg ("atan2", args(0));
-  else if (! args(1).is_numeric_type ())
+
+  if (! args(1).is_numeric_type ())
     gripe_wrong_type_arg ("atan2", args(1));
-  else if (args(0).is_complex_type () || args(1).is_complex_type ())
+
+  if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("atan2: not defined for complex numbers");
-  else if (args(0).is_single_type () || args(1).is_single_type ())
+
+  if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         retval = atan2f (args(0).float_value (), args(1).float_value ());
@@ -613,11 +616,14 @@ periodic, @code{mod} is a better choice.\n\
 
   if (! args(0).is_numeric_type ())
     gripe_wrong_type_arg ("rem", args(0));
-  else if (! args(1).is_numeric_type ())
+
+  if (! args(1).is_numeric_type ())
     gripe_wrong_type_arg ("rem", args(1));
-  else if (args(0).is_complex_type () || args(1).is_complex_type ())
+
+  if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("rem: not defined for complex numbers");
-  else if (args(0).is_integer_type () || args(1).is_integer_type ())
+
+  if (args(0).is_integer_type () || args(1).is_integer_type ())
     {
       builtin_type_t btyp0 = args(0).builtin_type ();
       builtin_type_t btyp1 = args(1).builtin_type ();
@@ -626,10 +632,13 @@ periodic, @code{mod} is a better choice.\n\
       if (btyp1 == btyp_double || btyp1 == btyp_float)
         btyp1 = btyp0;
 
-      if (btyp0 == btyp1)
+      if (btyp0 != btyp1)
+        error ("rem: cannot combine %s and %d",
+               args(0).class_name ().c_str (),
+               args(1).class_name ().c_str ());
+
+      switch (btyp0)
         {
-          switch (btyp0)
-            {
 #define MAKE_INT_BRANCH(X) \
   case btyp_ ## X: \
     { \
@@ -637,27 +646,22 @@ periodic, @code{mod} is a better choice.\n\
       X##NDArray a1 = args(1).X##_array_value (); \
       retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, rem, "rem"); \
     } \
-    break;
+    break
 
-              MAKE_INT_BRANCH (int8);
-              MAKE_INT_BRANCH (int16);
-              MAKE_INT_BRANCH (int32);
-              MAKE_INT_BRANCH (int64);
-              MAKE_INT_BRANCH (uint8);
-              MAKE_INT_BRANCH (uint16);
-              MAKE_INT_BRANCH (uint32);
-              MAKE_INT_BRANCH (uint64);
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 
 #undef MAKE_INT_BRANCH
 
-            default:
-              panic_impossible ();
-            }
+        default:
+          panic_impossible ();
         }
-      else
-        error ("rem: cannot combine %s and %d",
-               args(0).class_name ().c_str (),
-               args(1).class_name ().c_str ());
     }
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
@@ -793,11 +797,14 @@ negative numbers or when the values are periodic.\n\
 
   if (! args(0).is_numeric_type ())
     gripe_wrong_type_arg ("mod", args(0));
-  else if (! args(1).is_numeric_type ())
+
+  if (! args(1).is_numeric_type ())
     gripe_wrong_type_arg ("mod", args(1));
-  else if (args(0).is_complex_type () || args(1).is_complex_type ())
+
+  if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("mod: not defined for complex numbers");
-  else if (args(0).is_integer_type () || args(1).is_integer_type ())
+
+  if (args(0).is_integer_type () || args(1).is_integer_type ())
     {
       builtin_type_t btyp0 = args(0).builtin_type ();
       builtin_type_t btyp1 = args(1).builtin_type ();
@@ -806,10 +813,13 @@ negative numbers or when the values are periodic.\n\
       if (btyp1 == btyp_double || btyp1 == btyp_float)
         btyp1 = btyp0;
 
-      if (btyp0 == btyp1)
+      if (btyp0 != btyp1)
+        error ("mod: cannot combine %s and %d",
+               args(0).class_name ().c_str (),
+               args(1).class_name ().c_str ());
+
+      switch (btyp0)
         {
-          switch (btyp0)
-            {
 #define MAKE_INT_BRANCH(X) \
   case btyp_ ## X: \
     { \
@@ -817,27 +827,22 @@ negative numbers or when the values are periodic.\n\
       X##NDArray a1 = args(1).X##_array_value (); \
       retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, mod, "mod"); \
     } \
-    break;
+    break
 
-              MAKE_INT_BRANCH (int8);
-              MAKE_INT_BRANCH (int16);
-              MAKE_INT_BRANCH (int32);
-              MAKE_INT_BRANCH (int64);
-              MAKE_INT_BRANCH (uint8);
-              MAKE_INT_BRANCH (uint16);
-              MAKE_INT_BRANCH (uint32);
-              MAKE_INT_BRANCH (uint64);
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 
 #undef MAKE_INT_BRANCH
 
-            default:
-              panic_impossible ();
-            }
+        default:
+          panic_impossible ();
         }
-      else
-        error ("mod: cannot combine %s and %d",
-               args(0).class_name ().c_str (),
-               args(1).class_name ().c_str ());
     }
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
@@ -1370,15 +1375,13 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
     {
       octave_value arg0 = args(0);
 
-      if (arg0.ndims () == 2 && (arg0.rows () == 1 || arg0.columns () == 1))
-        {
-          octave_idx_type m = args(1).xint_value ("diag: invalid dimensions");
-          octave_idx_type n = args(2).xint_value ("diag: invalid dimensions");
-
-          retval = arg0.diag (m, n);
-        }
-      else
+      if (arg0.ndims () != 2 || (arg0.rows () != 1 && arg0.columns () != 1))
         error ("diag: V must be a vector");
+
+      octave_idx_type m = args(1).xint_value ("diag: invalid dimensions");
+      octave_idx_type n = args(2).xint_value ("diag: invalid dimensions");
+
+      retval = arg0.diag (m, n);
     }
 
   return retval;
@@ -1798,11 +1801,11 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
                  cname.c_str ());
         }
 
-      if (result.length () > 0)
-        retval = result(0);
-      else
+      if (result.length () == 0)
         error ("conversion from %s to %s failed", dtype.c_str (),
                cname.c_str ());
+
+      retval = result(0);
     }
   else
     {
@@ -1826,11 +1829,11 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
                  cname.c_str ());
         }
 
-      if (result.length () > 0)
-        retval = result(0);
-      else
+      if (result.length () == 0)
         error ("%s constructor failed for %s argument", dtype.c_str (),
                cname.c_str ());
+
+      retval = result(0);
     }
 
   return retval;
@@ -1862,11 +1865,11 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
           error (e, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
 
-      if (tmp2.length () > 0)
-        retval = tmp2(0);
-      else
+      if (tmp2.length () == 0)
         error ("%s/%s method did not return a value", dtype.c_str (),
                cattype.c_str ());
+
+      retval = tmp2(0);
     }
   else
     {
@@ -5335,8 +5338,8 @@ the unspecified dimension.\n\
         {
           if (new_size(i) < 0)
             error ("reshape: SIZE must be non-negative");
-          else
-            new_dims(i) = new_size(i);
+
+          new_dims(i) = new_size(i);
         }
     }
   else
@@ -5350,11 +5353,9 @@ the unspecified dimension.\n\
             {
               if (empty_dim > 0)
                 error ("reshape: only a single dimension can be unknown");
-              else
-                {
-                  empty_dim = i;
-                  new_dims(i-1) = 1;
-                }
+
+              empty_dim = i;
+              new_dims(i-1) = 1;
             }
           else
             {
@@ -5379,8 +5380,8 @@ the unspecified dimension.\n\
               if (a_nel != size_empty_dim * nel)
                 error ("reshape: SIZE is not divisible by the product of known dimensions (= %d)",
                        nel);
-              else
-                new_dims(empty_dim-1) = size_empty_dim;
+
+              new_dims(empty_dim-1) = size_empty_dim;
             }
         }
     }
@@ -5605,19 +5606,18 @@ compute the norms of each column and return a row vector.\n\
   else if (p_arg.is_string ())
     {
       std::string str = p_arg.string_value ();
-      if ((strflag == sfcols || strflag == sfrows))
-        {
-          if (str == "cols" || str == "columns" || str == "rows")
-            error ("norm: invalid combination of options");
-          else if (str == "fro")
-            p_arg = octave_value (2);
-          else if (str == "inf")
-            p_arg = octave_Inf;
-          else
-            error ("norm: unrecognized option: %s", str.c_str ());
-        }
-      else
+      if (strflag != sfcols && strflag != sfrows)
         error ("norm: invalid combination of options");
+
+      if (str == "cols" || str == "columns" || str == "rows")
+        error ("norm: invalid combination of options");
+
+      if (str == "fro")
+        p_arg = octave_value (2);
+      else if (str == "inf")
+        p_arg = octave_Inf;
+      else
+        error ("norm: unrecognized option: %s", str.c_str ());
     }
   else if (! p_arg.is_scalar_type ())
     gripe_wrong_type_arg ("norm", p_arg, true);
@@ -6771,6 +6771,7 @@ This function does not support sparse matrices.\n\
     {
       if (arg.is_sparse_type ())
         error ("issorted: sparse matrices not yet supported");
+
       if (arg.ndims () != 2)
         error ("issorted: A must be a 2-dimensional object");
 
@@ -7584,8 +7585,8 @@ an empty matrix is returned.\n\
       dim = args(2).int_value (true, false);
       if (dim < 1 || dim > args(0).ndims ())
         error ("diff: DIM must be a valid dimension");
-      else
-        dim -= 1;
+
+      dim -= 1;
     }
 
   return do_diff (args(0), order, dim);
@@ -7732,7 +7733,8 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 
   if (! args(0).is_numeric_type ())
     error ("base64_encode: encoding is supported only for numeric arrays");
-  else if (args(0).is_complex_type () || args(0).is_sparse_type ())
+
+  if (args(0).is_complex_type () || args(0).is_sparse_type ())
     error ("base64_encode: encoding complex or sparse data is not supported");
 
   octave_value_list retval;

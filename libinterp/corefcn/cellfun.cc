@@ -181,42 +181,38 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     }
   else if (name == "size")
     {
-      if (nargin == 3)
-        {
-          int d = args(2).nint_value () - 1;
-
-          if (d < 0)
-            error ("cellfun: K must be a positive integer");
-
-          NDA result (f_args.dims ());
-
-          for (octave_idx_type count = 0; count < k; count++)
-            {
-              dim_vector dv = f_args.elem (count).dims ();
-              if (d < dv.length ())
-                result(count) = static_cast<double> (dv(d));
-              else
-                result(count) = 1.0;
-            }
-
-          retval(0) = result;
-        }
-      else
+      if (nargin != 3)
         error ("cellfun: not enough arguments for \"size\"");
+
+      int d = args(2).nint_value () - 1;
+
+      if (d < 0)
+        error ("cellfun: K must be a positive integer");
+
+      NDA result (f_args.dims ());
+
+      for (octave_idx_type count = 0; count < k; count++)
+        {
+          dim_vector dv = f_args.elem (count).dims ();
+          if (d < dv.length ())
+            result(count) = static_cast<double> (dv(d));
+          else
+            result(count) = 1.0;
+        }
+
+      retval(0) = result;
     }
   else if (name == "isclass")
     {
-      if (nargin == 3)
-        {
-          std::string class_name = args(2).string_value ();
-          BNDA result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k; count++)
-            result(count) = (f_args.elem (count).class_name () == class_name);
-
-          retval(0) = result;
-        }
-      else
+      if (nargin != 3)
         error ("cellfun: not enough arguments for \"isclass\"");
+
+      std::string class_name = args(2).string_value ();
+      BNDA result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k; count++)
+        result(count) = (f_args.elem (count).class_name () == class_name);
+
+      retval(0) = result;
     }
 
   return retval;
@@ -446,244 +442,241 @@ v = cellfun (@@det, a); # faster\n\
         }
     }
 
-  if (func.is_function_handle () || func.is_inline_function ()
-      || func.is_function ())
-    {
+  if (! func.is_function_handle () && ! func.is_inline_function ()
+      && ! func.is_function ())
+    error ("cellfun: argument NAME must be a string or function handle");
 
-      bool uniform_output = true;
-      octave_value error_handler;
+  bool uniform_output = true;
+  octave_value error_handler;
 
-      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+  get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
-      // The following is an optimization because the symbol table can give a
-      // more specific function class, so this can result in fewer polymorphic
-      // function calls as the function gets called for each value of the array.
+  // The following is an optimization because the symbol table can give a
+  // more specific function class, so this can result in fewer polymorphic
+  // function calls as the function gets called for each value of the array.
+  {
+    if (func.is_function_handle ())
       {
-        if (func.is_function_handle ())
-          {
-            octave_fcn_handle* f = func.fcn_handle_value ();
+        octave_fcn_handle* f = func.fcn_handle_value ();
 
-            // Overloaded function handles need to check the type of the
-            // arguments for each element of the array, so they cannot be
-            // optimized this way.
-            if (f -> is_overloaded ())
-              goto nevermind;
-          }
-
-        std::string name = func.function_value () -> name ();
-        octave_value f = symbol_table::find_function (name);
-
-        if (f.is_defined ())
-          {
-            // Except for these two which are special cases...
-            if (name != "size" && name != "class")
-              {
-                // Try first the optimized code path for built-in functions
-                octave_value_list tmp_args = args;
-                tmp_args(0) = name;
-
-                if (uniform_output)
-                  retval =
-                    try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args,
-                                                                    nargin);
-                else
-                  retval =
-                    try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
-
-                if (! retval.empty ())
-                  return retval;
-              }
-
-            // Okay, we tried, doesn't work, let's do the best we can instead
-            // and avoid polymorphic calls for each element of the array.
-            func = f;
-          }
+        // Overloaded function handles need to check the type of the
+        // arguments for each element of the array, so they cannot be
+        // optimized this way.
+        if (f -> is_overloaded ())
+          goto nevermind;
       }
 
-    nevermind:
+    std::string name = func.function_value () -> name ();
+    octave_value f = symbol_table::find_function (name);
 
-      // Extract cell arguments.
+    if (f.is_defined ())
+      {
+        // Except for these two which are special cases...
+        if (name != "size" && name != "class")
+          {
+            // Try first the optimized code path for built-in functions
+            octave_value_list tmp_args = args;
+            tmp_args(0) = name;
 
-      octave_value_list inputlist (nargin, octave_value ());
+            if (uniform_output)
+              retval =
+                try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args,
+                                                                nargin);
+            else
+              retval =
+                try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
 
-      OCTAVE_LOCAL_BUFFER (Cell, inputs, nargin);
-      OCTAVE_LOCAL_BUFFER (bool, mask, nargin);
+            if (! retval.empty ())
+              return retval;
+          }
 
-      // This is to prevent copy-on-write.
-      const Cell *cinputs = inputs;
+        // Okay, we tried, doesn't work, let's do the best we can instead
+        // and avoid polymorphic calls for each element of the array.
+        func = f;
+      }
+  }
 
-      octave_idx_type k = 1;
+ nevermind:
 
-      dim_vector fdims (1, 1);
+  // Extract cell arguments.
 
-      // Collect arguments.  Pre-fill scalar elements of inputlist array.
+  octave_value_list inputlist (nargin, octave_value ());
 
-      for (int j = 0; j < nargin; j++)
+  OCTAVE_LOCAL_BUFFER (Cell, inputs, nargin);
+  OCTAVE_LOCAL_BUFFER (bool, mask, nargin);
+
+  // This is to prevent copy-on-write.
+  const Cell *cinputs = inputs;
+
+  octave_idx_type k = 1;
+
+  dim_vector fdims (1, 1);
+
+  // Collect arguments.  Pre-fill scalar elements of inputlist array.
+
+  for (int j = 0; j < nargin; j++)
+    {
+      if (! args(j+1).is_cell ())
+        error ("cellfun: arguments must be cells");
+
+      inputs[j] = args(j+1).cell_value ();
+      mask[j] = inputs[j].numel () != 1;
+      if (! mask[j])
+        inputlist(j) = cinputs[j](0);
+    }
+
+  for (int j = 0; j < nargin; j++)
+    {
+      if (mask[j])
         {
-          if (! args(j+1).is_cell ())
-            error ("cellfun: arguments must be cells");
-
-          inputs[j] = args(j+1).cell_value ();
-          mask[j] = inputs[j].numel () != 1;
-          if (! mask[j])
-            inputlist(j) = cinputs[j](0);
-        }
-
-      for (int j = 0; j < nargin; j++)
-        {
-          if (mask[j])
+          fdims = inputs[j].dims ();
+          k = inputs[j].numel ();
+          for (int i = j+1; i < nargin; i++)
             {
-              fdims = inputs[j].dims ();
-              k = inputs[j].numel ();
-              for (int i = j+1; i < nargin; i++)
-                {
-                  if (mask[i] && inputs[i].dims () != fdims)
-                    error ("cellfun: dimensions mismatch");
-                }
-              break;
+              if (mask[i] && inputs[i].dims () != fdims)
+                error ("cellfun: dimensions mismatch");
             }
+          break;
         }
+    }
 
-      unwind_protect frame;
-      frame.protect_var (buffer_error_messages);
+  unwind_protect frame;
+  frame.protect_var (buffer_error_messages);
 
-      if (error_handler.is_defined ())
-        buffer_error_messages++;
+  if (error_handler.is_defined ())
+    buffer_error_messages++;
 
-      // Apply functions.
+  // Apply functions.
 
-      if (uniform_output)
+  if (uniform_output)
+    {
+      std::list<octave_value_list> idx_list (1);
+      idx_list.front ().resize (1);
+      std::string idx_type = "(";
+
+      OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
+
+      for (octave_idx_type count = 0; count < k; count++)
         {
-          std::list<octave_value_list> idx_list (1);
-          idx_list.front ().resize (1);
-          std::string idx_type = "(";
-
-          OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
-
-          for (octave_idx_type count = 0; count < k; count++)
+          for (int j = 0; j < nargin; j++)
             {
-              for (int j = 0; j < nargin; j++)
+              if (mask[j])
+                inputlist.xelem (j) = cinputs[j](count);
+            }
+
+          const octave_value_list tmp
+            = get_output_list (count, nargout, inputlist, func,
+                               error_handler);
+
+          if (nargout > 0 && tmp.length () < nargout)
+            error ("cellfun: function returned fewer than nargout values");
+
+          if  (nargout > 0
+               || (nargout == 0
+                   && tmp.length () > 0 && tmp(0).is_defined ()))
+            {
+              int num_to_copy = tmp.length ();
+
+              if (num_to_copy > nargout1)
+                num_to_copy = nargout1;
+
+              if (count == 0)
                 {
-                  if (mask[j])
-                    inputlist.xelem (j) = cinputs[j](count);
-                }
-
-              const octave_value_list tmp
-                = get_output_list (count, nargout, inputlist, func,
-                                   error_handler);
-
-              if (nargout > 0 && tmp.length () < nargout)
-                error ("cellfun: function returned fewer than nargout values");
-
-              if  (nargout > 0
-                   || (nargout == 0
-                       && tmp.length () > 0 && tmp(0).is_defined ()))
-                {
-                  int num_to_copy = tmp.length ();
-
-                  if (num_to_copy > nargout1)
-                    num_to_copy = nargout1;
-
-                  if (count == 0)
+                  for (int j = 0; j < num_to_copy; j++)
                     {
-                      for (int j = 0; j < num_to_copy; j++)
+                      if (tmp(j).is_defined ())
                         {
-                          if (tmp(j).is_defined ())
-                            {
-                              octave_value val = tmp(j);
+                          octave_value val = tmp(j);
 
+                          if (val.numel () != 1)
+                            error ("cellfun: all values must be scalars when UniformOutput = true");
+
+                          retv[j] = val.resize (fdims);
+                        }
+                    }
+                }
+              else
+                {
+                  for (int j = 0; j < num_to_copy; j++)
+                    {
+                      if (tmp(j).is_defined ())
+                        {
+                          octave_value val = tmp(j);
+
+                          if (! retv[j].fast_elem_insert (count, val))
+                            {
                               if (val.numel () != 1)
                                 error ("cellfun: all values must be scalars when UniformOutput = true");
 
-                              retv[j] = val.resize (fdims);
-                            }
-                        }
-                    }
-                  else
-                    {
-                      for (int j = 0; j < num_to_copy; j++)
-                        {
-                          if (tmp(j).is_defined ())
-                            {
-                              octave_value val = tmp(j);
-
-                              if (! retv[j].fast_elem_insert (count, val))
-                                {
-                                  if (val.numel () != 1)
-                                    error ("cellfun: all values must be scalars when UniformOutput = true");
-
-                                  idx_list.front ()(0) = count + 1.0;
-                                  retv[j].assign (octave_value::op_asn_eq,
-                                                  idx_type, idx_list, val);
-                                }
+                              idx_list.front ()(0) = count + 1.0;
+                              retv[j].assign (octave_value::op_asn_eq,
+                                              idx_type, idx_list, val);
                             }
                         }
                     }
                 }
-            }
-
-          retval.resize (nargout1);
-
-          for (int j = 0; j < nargout1; j++)
-            {
-              if (nargout > 0 && retv[j].is_undefined ())
-                retval(j) = NDArray (fdims);
-              else
-                retval(j) = retv[j];
             }
         }
-      else
+
+      retval.resize (nargout1);
+
+      for (int j = 0; j < nargout1; j++)
         {
-          OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
-
-          for (int j = 0; j < nargout1; j++)
-            results[j].resize (fdims, Matrix ());
-
-          bool have_some_output = false;
-
-          for (octave_idx_type count = 0; count < k; count++)
-            {
-              for (int j = 0; j < nargin; j++)
-                {
-                  if (mask[j])
-                    inputlist.xelem (j) = cinputs[j](count);
-                }
-
-              const octave_value_list tmp
-                = get_output_list (count, nargout, inputlist, func,
-                                   error_handler);
-
-              if (nargout > 0 && tmp.length () < nargout)
-                error ("cellfun: function returned fewer than nargout values");
-
-              if  (nargout > 0
-                   || (nargout == 0
-                       && tmp.length () > 0 && tmp(0).is_defined ()))
-                {
-                  int num_to_copy = tmp.length ();
-
-                  if (num_to_copy > nargout1)
-                    num_to_copy = nargout1;
-
-                  if (num_to_copy > 0)
-                    have_some_output = true;
-
-                  for (int j = 0; j < num_to_copy; j++)
-                    results[j](count) = tmp(j);
-                }
-            }
-
-          if (have_some_output || fdims.any_zero ())
-            {
-              retval.resize (nargout1);
-
-              for (int j = 0; j < nargout1; j++)
-                retval(j) = results[j];
-            }
+          if (nargout > 0 && retv[j].is_undefined ())
+            retval(j) = NDArray (fdims);
+          else
+            retval(j) = retv[j];
         }
     }
   else
-    error ("cellfun: argument NAME must be a string or function handle");
+    {
+      OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
+
+      for (int j = 0; j < nargout1; j++)
+        results[j].resize (fdims, Matrix ());
+
+      bool have_some_output = false;
+
+      for (octave_idx_type count = 0; count < k; count++)
+        {
+          for (int j = 0; j < nargin; j++)
+            {
+              if (mask[j])
+                inputlist.xelem (j) = cinputs[j](count);
+            }
+
+          const octave_value_list tmp
+            = get_output_list (count, nargout, inputlist, func,
+                               error_handler);
+
+          if (nargout > 0 && tmp.length () < nargout)
+            error ("cellfun: function returned fewer than nargout values");
+
+          if  (nargout > 0
+               || (nargout == 0
+                   && tmp.length () > 0 && tmp(0).is_defined ()))
+            {
+              int num_to_copy = tmp.length ();
+
+              if (num_to_copy > nargout1)
+                num_to_copy = nargout1;
+
+              if (num_to_copy > 0)
+                have_some_output = true;
+
+              for (int j = 0; j < num_to_copy; j++)
+                results[j](count) = tmp(j);
+            }
+        }
+
+      if (have_some_output || fdims.any_zero ())
+        {
+          retval.resize (nargout1);
+
+          for (int j = 0; j < nargout1; j++)
+            retval(j) = results[j];
+        }
+    }
 
   return retval;
 }

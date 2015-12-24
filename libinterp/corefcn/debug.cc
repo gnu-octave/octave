@@ -902,11 +902,11 @@ numbers.\n\
     case 0: // dbtype
       dbg_fcn = get_user_code ();
 
-      if (dbg_fcn)
-        do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                   0, std::numeric_limits<int>::max ());
-      else
+      if (! dbg_fcn)
         error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
+
+      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                 0, std::numeric_limits<int>::max ());
 
       break;
 
@@ -935,11 +935,11 @@ numbers.\n\
                 if (std::min (start, end) <= 0)
                   error ("dbtype: start and end lines must be >= 1\n");
 
-                if (start <= end)
-                  do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                             start, end);
-                else
+                if (start > end)
                   error ("dbtype: start line must be less than end line\n");
+
+                do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                           start, end);
               }
           }
         else  // (dbtype func) || (dbtype lineno)
@@ -950,11 +950,11 @@ numbers.\n\
               {
                 dbg_fcn = get_user_code (arg);
 
-                if (dbg_fcn)
-                  do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
-                             0, std::numeric_limits<int>::max ());
-                else
+                if (! dbg_fcn)
                   error ("dbtype: function <%s> not found\n", arg.c_str ());
+
+                do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                           0, std::numeric_limits<int>::max ());
               }
             else  // (dbtype lineno)
               {
@@ -1001,7 +1001,8 @@ numbers.\n\
 
         if (std::min (start, end) <= 0)
           error ("dbtype: start and end lines must be >= 1\n");
-        else if (start > end)
+
+        if (start > end)
           error ("dbtype: start line must be less than end line\n");
 
         do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (), start, end);

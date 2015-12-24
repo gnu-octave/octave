@@ -1852,15 +1852,13 @@ fields are set to their default values.\n\
     {
       if (args(0).is_string ())
         {
-          if (args(0).string_value () == "reset")
-            {
-              Vlast_error_message = std::string ();
-              Vlast_error_id = std::string ();
-
-              Vlast_error_stack = initialize_last_error_stack ();
-            }
-          else
+          if (args(0).string_value () != "reset")
             error ("lasterror: unrecognized string argument");
+
+          Vlast_error_message = std::string ();
+          Vlast_error_id = std::string ();
+
+          Vlast_error_stack = initialize_last_error_stack ();
         }
       else if (args(0).is_map ())
         {

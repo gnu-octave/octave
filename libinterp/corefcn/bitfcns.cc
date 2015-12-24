@@ -88,30 +88,25 @@ bitopxx (const OP& op, const std::string& fname,
 
   bool is_array_op = (dvx == dvy);
 
-  octave_value retval;
-  if (is_array_op || is_scalar_op)
-    {
-      Array<T> result;
-
-      if (nelx != 1)
-        result.resize (dvx);
-      else
-        result.resize (dvy);
-
-      for (int i = 0; i < nelx; i++)
-        if (is_scalar_op)
-          for (int k = 0; k < nely; k++)
-            result(i+k) = op (x(i), y(k));
-        else
-          result(i) = op (x(i), y(i));
-
-      retval = result;
-    }
-  else
+  if (! is_array_op && ! is_scalar_op)
     error ("%s: size of X and Y must match, or one operand must be a scalar",
            fname.c_str ());
 
-  return retval;
+  Array<T> result;
+
+  if (nelx != 1)
+    result.resize (dvx);
+  else
+    result.resize (dvy);
+
+  for (int i = 0; i < nelx; i++)
+    if (is_scalar_op)
+      for (int k = 0; k < nely; k++)
+        result(i+k) = op (x(i), y(k));
+    else
+      result(i) = op (x(i), y(i));
+
+  return result;
 }
 
 // Trampoline function, instantiates the proper template above, with
@@ -466,47 +461,43 @@ bitshift (float a, int n, int64_t mask)
 #define DO_BITSHIFT(T) \
   double d1, d2; \
  \
-  if (n.all_integers (d1, d2)) \
-    { \
-      int m_nel = m.numel (); \
-      int n_nel = n.numel (); \
- \
-      bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
- \
-      dim_vector m_dv = m.dims (); \
-      dim_vector n_dv = n.dims (); \
- \
-      bool is_array_op = (m_dv == n_dv); \
- \
-      if (is_array_op || is_scalar_op) \
-        { \
-          T ## NDArray result; \
- \
-          if (m_nel != 1) \
-            result.resize (m_dv); \
-          else \
-            result.resize (n_dv); \
- \
-          for (int i = 0; i < m_nel; i++) \
-            if (is_scalar_op) \
-              for (int k = 0; k < n_nel; k++) \
-                if (static_cast<int> (n(k)) >= bits_in_type) \
-                  result(i+k) = 0; \
-                else \
-                  result(i+k) = bitshift (m(i), static_cast<int> (n(k)), mask); \
-            else \
-              if (static_cast<int> (n(i)) >= bits_in_type) \
-                result(i) = 0; \
-              else \
-                result(i) = bitshift (m(i), static_cast<int> (n(i)), mask); \
- \
-          retval = result; \
-        } \
-      else \
-        error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
-    } \
-  else \
+  if (! n.all_integers (d1, d2)) \
     error ("bitshift: K must be a scalar or array of integers"); \
+ \
+  int m_nel = m.numel (); \
+  int n_nel = n.numel (); \
+ \
+  bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
+ \
+  dim_vector m_dv = m.dims (); \
+  dim_vector n_dv = n.dims (); \
+ \
+  bool is_array_op = (m_dv == n_dv); \
+ \
+  if (! is_array_op && ! is_scalar_op) \
+    error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
+ \
+  T ## NDArray result; \
+ \
+  if (m_nel != 1) \
+    result.resize (m_dv); \
+  else \
+    result.resize (n_dv); \
+ \
+  for (int i = 0; i < m_nel; i++) \
+    if (is_scalar_op) \
+      for (int k = 0; k < n_nel; k++) \
+        if (static_cast<int> (n(k)) >= bits_in_type) \
+          result(i+k) = 0; \
+        else \
+          result(i+k) = bitshift (m(i), static_cast<int> (n(k)), mask); \
+    else \
+      if (static_cast<int> (n(i)) >= bits_in_type) \
+        result(i) = 0; \
+      else \
+        result(i) = bitshift (m(i), static_cast<int> (n(i)), mask); \
+ \
+  retval = result;
 
 #define DO_UBITSHIFT(T, N) \
   do \
@@ -585,13 +576,11 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
       //        as the third argument.
       if (args(2).numel () > 1)
         error ("bitshift: N must be a scalar integer");
-      else
-        {
-          nbits = args(2).xint_value ("bitshift: N must be an integer");
 
-          if (nbits < 0)
-            error ("bitshift: N must be positive");
-        }
+      nbits = args(2).xint_value ("bitshift: N must be an integer");
+
+      if (nbits < 0)
+        error ("bitshift: N must be positive");
     }
 
   octave_value retval;

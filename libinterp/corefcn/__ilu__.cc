@@ -105,14 +105,17 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
       uptr[k] = j;
       if (opt != OFF)
         data[uptr[k]] -= r;
+
       if (opt != ROW)
         for (jj = uptr[k] + 1; jj < cidx[k+1]; jj++)
           data[jj] /=  data[uptr[k]];
+
       if (k != jrow)
         error ("ilu: A has a zero on the diagonal");
 
       if (data[j] == T(0))
         error ("ilu: encountered a pivot equal to 0");
+
       for (i = j1; i <= j2; i++)
         iw[ridx[i]] = -1;
     }
@@ -758,13 +761,11 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
       //       will not preserve the row sum for that column/row.
       if (w_data[k] == zero)
         {
-          if (udiag == 1)
-            {
-              w_data[k] = droptol;
-              iw_u.insert (k);
-            }
-          else
+          if (udiag != 1)
             error ("ilu: encountered a pivot equal to 0");
+
+          w_data[k] = droptol;
+          iw_u.insert (k);
         }
 
       // Scale the elements on the L part for IKJ version (milu = [col|off])
@@ -825,8 +826,10 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
       // octave_idx_type type due to fill-in during the process.
       if (total_len_l < 0 || total_len_u < 0)
         error ("ilu: Integer overflow.  Too many fill-in elements in L or U");
+
       if (opt == ROW)
         uptr[k] = total_len_u - 1;
+
       cidx_u[k+1] = cidx_u[k] - cidx_u[0] + w_len_u;
       cidx_l[k+1] = cidx_l[k] - cidx_l[0] + w_len_l;
 

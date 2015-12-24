@@ -88,6 +88,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
             retval = octave_value (matrix.index (i, j, resize_ok));
           }
           break;
+
         default:
           error ("sparse indexing needs 1 or 2 indices");
         }
@@ -142,31 +143,29 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
     {
     case '(':
       {
-        if (type.length () == 1)
-          retval = numeric_assign (type, idx, rhs);
-        else
+        if (type.length () != 1)
           {
             std::string nm = type_name ();
             error ("in indexed assignment of %s, last lhs index must be ()",
                    nm.c_str ());
           }
+
+        retval = numeric_assign (type, idx, rhs);
       }
       break;
 
     case '{':
     case '.':
       {
-        if (is_empty ())
-          {
-            octave_value tmp = octave_value::empty_conv (type, rhs);
-
-            retval = tmp.subsasgn (type, idx, rhs);
-          }
-        else
+        if (! is_empty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
           }
+
+        octave_value tmp = octave_value::empty_conv (type, rhs);
+
+        retval = tmp.subsasgn (type, idx, rhs);
       }
       break;
 
@@ -447,21 +446,19 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
   octave_idx_type nc = 0;
   bool success = true;
 
-  if (extract_keyword (is, "nnz", nz, true)
-      && extract_keyword (is, "rows", nr, true)
-      && extract_keyword (is, "columns", nc, true))
-    {
-      T tmp (nr, nc, nz);
-
-      is >> tmp;
-
-      if (! is)
-        error ("load: failed to load matrix constant");
-
-      matrix = tmp;
-    }
-  else
+  if (! extract_keyword (is, "nnz", nz, true)
+      || ! extract_keyword (is, "rows", nr, true)
+      || ! extract_keyword (is, "columns", nc, true))
     error ("load: failed to extract number of rows and columns");
+
+  T tmp (nr, nc, nz);
+
+  is >> tmp;
+
+  if (! is)
+    error ("load: failed to load matrix constant");
+
+  matrix = tmp;
 
   return success;
 }

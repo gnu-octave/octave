@@ -2942,58 +2942,56 @@ decode_subscripts (const char* name, const octave_value& arg,
 {
   const octave_map m = arg.xmap_value ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
 
-  if (m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
-    {
-      octave_idx_type nel = m.numel ();
-
-      type_string = std::string (nel, '\0');
-      idx = std::list<octave_value_list> ();
-
-      if (nel == 0)
-        return;
-
-      const Cell type = m.contents ("type");
-      const Cell subs = m.contents ("subs");
-
-      for (int k = 0; k < nel; k++)
-        {
-          std::string item = type(k).xstring_value ("%s: type(%d) must be a string", name, k+1);
-
-          if (item == "{}")
-            type_string[k] = '{';
-          else if (item == "()")
-            type_string[k] = '(';
-          else if (item == ".")
-            type_string[k] = '.';
-          else
-            error ("%s: invalid indexing type '%s'", name, item.c_str ());
-
-          octave_value_list idx_item;
-
-          if (subs(k).is_string ())
-            idx_item(0) = subs(k);
-          else if (subs(k).is_cell ())
-            {
-              Cell subs_cell = subs(k).cell_value ();
-
-              for (int n = 0; n < subs_cell.numel (); n++)
-                {
-                  if (subs_cell(n).is_string ()
-                      && subs_cell(n).string_value () == ":")
-                    idx_item(n) = octave_value(octave_value::magic_colon_t);
-                  else
-                    idx_item(n) = subs_cell(n);
-                }
-            }
-          else
-            error ("%s: subs(%d) must be a string or cell array", name, k+1);
-
-          idx.push_back (idx_item);
-        }
-    }
-  else
+  if (m.nfields () != 2 || ! m.contains ("type") || ! m.contains ("subs"))
     error ("%s: second argument must be a structure with fields 'type' and 'subs'",
            name);
+
+  octave_idx_type nel = m.numel ();
+
+  type_string = std::string (nel, '\0');
+  idx = std::list<octave_value_list> ();
+
+  if (nel == 0)
+    return;
+
+  const Cell type = m.contents ("type");
+  const Cell subs = m.contents ("subs");
+
+  for (int k = 0; k < nel; k++)
+    {
+      std::string item = type(k).xstring_value ("%s: type(%d) must be a string", name, k+1);
+
+      if (item == "{}")
+        type_string[k] = '{';
+      else if (item == "()")
+        type_string[k] = '(';
+      else if (item == ".")
+        type_string[k] = '.';
+      else
+        error ("%s: invalid indexing type '%s'", name, item.c_str ());
+
+      octave_value_list idx_item;
+
+      if (subs(k).is_string ())
+        idx_item(0) = subs(k);
+      else if (subs(k).is_cell ())
+        {
+          Cell subs_cell = subs(k).cell_value ();
+
+          for (int n = 0; n < subs_cell.numel (); n++)
+            {
+              if (subs_cell(n).is_string ()
+                  && subs_cell(n).string_value () == ":")
+                idx_item(n) = octave_value(octave_value::magic_colon_t);
+              else
+                idx_item(n) = subs_cell(n);
+            }
+        }
+      else
+        error ("%s: subs(%d) must be a string or cell array", name, k+1);
+
+      idx.push_back (idx_item);
+    }
 }
 
 DEFUN (subsref, args, nargout,

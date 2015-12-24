@@ -86,14 +86,12 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
             //
             //  x = []; x(i).f = rhs
 
-            if (type[1] == '.')
-              {
-                octave_value tmp = octave_value::empty_conv (type, rhs);
-
-                retval = tmp.subsasgn (type, idx, rhs);
-              }
-            else
+            if (type[1] != '.')
               error ("invalid assignment expression");
+
+            octave_value tmp = octave_value::empty_conv (type, rhs);
+
+            retval = tmp.subsasgn (type, idx, rhs);
           }
         else
           {
@@ -107,17 +105,15 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
     case '{':
     case '.':
       {
-        if (is_empty ())
-          {
-            octave_value tmp = octave_value::empty_conv (type, rhs);
-
-            retval = tmp.subsasgn (type, idx, rhs);
-          }
-        else
+        if (! is_empty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
           }
+
+        octave_value tmp = octave_value::empty_conv (type, rhs);
+
+        retval = tmp.subsasgn (type, idx, rhs);
       }
       break;
 

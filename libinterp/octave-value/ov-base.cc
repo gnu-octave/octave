@@ -227,50 +227,48 @@ octave_base_value::subsasgn (const std::string& type,
 
   if (is_defined ())
     {
-      if (is_numeric_type ())
-        {
-          switch (type[0])
-            {
-            case '(':
-              {
-                if (type.length () == 1)
-                  retval = numeric_assign (type, idx, rhs);
-                else if (is_empty ())
-                  {
-                    // Allow conversion of empty matrix to some other
-                    // type in cases like
-                    //
-                    //  x = []; x(i).f = rhs
-
-                    octave_value tmp = octave_value::empty_conv (type, rhs);
-
-                    retval = tmp.subsasgn (type, idx, rhs);
-                  }
-                else
-                  {
-                    std::string nm = type_name ();
-                    error ("in indexed assignment of %s, last rhs index must be ()",
-                           nm.c_str ());
-                  }
-              }
-              break;
-
-            case '{':
-            case '.':
-              {
-                std::string nm = type_name ();
-                error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-              }
-              break;
-
-            default:
-              panic_impossible ();
-            }
-        }
-      else
+      if (! is_numeric_type ())
         {
           std::string nm = type_name ();
           error ("can't perform indexed assignment for %s type", nm.c_str ());
+        }
+
+      switch (type[0])
+        {
+        case '(':
+          {
+            if (type.length () == 1)
+              retval = numeric_assign (type, idx, rhs);
+            else if (is_empty ())
+              {
+                // Allow conversion of empty matrix to some other
+                // type in cases like
+                //
+                //  x = []; x(i).f = rhs
+
+                octave_value tmp = octave_value::empty_conv (type, rhs);
+
+                retval = tmp.subsasgn (type, idx, rhs);
+              }
+            else
+              {
+                std::string nm = type_name ();
+                error ("in indexed assignment of %s, last rhs index must be ()",
+                       nm.c_str ());
+              }
+          }
+          break;
+
+        case '{':
+        case '.':
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
+          break;
+
+        default:
+          panic_impossible ();
         }
     }
   else
@@ -1568,70 +1566,62 @@ make_idx_args (const std::string& type,
                const std::list<octave_value_list>& idx,
                const std::string& who)
 {
-  octave_value retval;
-
   size_t len = type.length ();
 
-  if (len == idx.size ())
-    {
-      Cell type_field (1, len);
-      Cell subs_field (1, len);
-
-      std::list<octave_value_list>::const_iterator p = idx.begin ();
-
-      for (size_t i = 0; i < len; i++)
-        {
-          char t = type[i];
-
-          switch (t)
-            {
-            case '(':
-              type_field(i) = "()";
-              subs_field(i) = Cell (sanitize (*p++));
-              break;
-
-            case '{':
-              type_field(i) = "{}";
-              subs_field(i) = Cell (sanitize (*p++));
-              break;
-
-            case '.':
-              {
-                type_field(i) = ".";
-
-                octave_value_list vlist = *p++;
-
-                if (vlist.length () == 1)
-                  {
-                    octave_value val = vlist(0);
-
-                    if (val.is_string ())
-                      subs_field(i) = val;
-                    else
-                      error ("string argument required for '.' index");
-                  }
-                else
-                  error ("only single argument permitted for '.' index");
-              }
-              break;
-
-            default:
-              panic_impossible ();
-              break;
-            }
-        }
-
-      octave_map m;
-
-      m.assign ("type", type_field);
-      m.assign ("subs", subs_field);
-
-      retval = m;
-    }
-  else
+  if (len != idx.size ())
     error ("invalid index for %s", who.c_str ());
 
-  return retval;
+  Cell type_field (1, len);
+  Cell subs_field (1, len);
+
+  std::list<octave_value_list>::const_iterator p = idx.begin ();
+
+  for (size_t i = 0; i < len; i++)
+    {
+      char t = type[i];
+
+      switch (t)
+        {
+        case '(':
+          type_field(i) = "()";
+          subs_field(i) = Cell (sanitize (*p++));
+          break;
+
+        case '{':
+          type_field(i) = "{}";
+          subs_field(i) = Cell (sanitize (*p++));
+          break;
+
+        case '.':
+          {
+            type_field(i) = ".";
+
+            octave_value_list vlist = *p++;
+
+            if (vlist.length () != 1)
+              error ("only single argument permitted for '.' index");
+
+            octave_value val = vlist(0);
+
+            if (! val.is_string ())
+              error ("string argument required for '.' index");
+
+            subs_field(i) = val;
+          }
+          break;
+
+        default:
+          panic_impossible ();
+          break;
+        }
+    }
+
+  octave_map m;
+
+  m.assign ("type", type_field);
+  m.assign ("subs", subs_field);
+
+  return m;
 }
 
 bool

@@ -155,102 +155,98 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
     {
     case '(':
       {
-        if (type.length () == 1)
-          {
-            octave_value_list jdx = idx.front ();
-
-            // FIXME: Mostly repeated code for cases 1 and 2 could be
-            //        consolidated for DRY (Don't Repeat Yourself).
-            // Check for assignments to diagonal elements which should not
-            // destroy the diagonal property of the matrix.
-            // If D is a diagonal matrix then the assignment can be
-            // 1) linear, D(i) = x, where ind2sub results in case #2 below
-            // 2) subscript D(i,i) = x, where both indices are equal.
-            if (jdx.length () == 1 && jdx(0).is_scalar_type ())
-              {
-                typename DMT::element_type val;
-                int k = 0;
-                try
-                  {
-                    idx_vector ind = jdx(0).index_vector ();
-                    k = 1;
-                    dim_vector dv (matrix.rows (), matrix.cols ());
-                    Array<idx_vector> ivec = ind2sub (dv, ind);
-                    idx_vector i0 = ivec(0);
-                    idx_vector i1 = ivec(1);
-
-                    if (i0(0) == i1(0)
-                        && chk_valid_scalar (rhs, val))
-                      {
-                        matrix.dgelem (i0(0)) = val;
-                        retval = this;
-                        this->count++;
-                        // invalidate cache
-                        dense_cache = octave_value ();
-                      }
-                  }
-                catch (index_exception& e)
-                  {
-                    // Rethrow to allow more info to be reported later.
-                    e.set_pos_if_unset (2, k+1);
-                    throw;
-                  }
-              }
-            else if (jdx.length () == 2
-                     && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
-              {
-                typename DMT::element_type val;
-                int k = 0;
-                try
-                  {
-                    idx_vector i0 = jdx(0).index_vector ();
-                    k = 1;
-                    idx_vector i1 = jdx(1).index_vector ();
-                    if (i0(0) == i1(0)
-                        && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
-                        && chk_valid_scalar (rhs, val))
-                      {
-                        matrix.dgelem (i0(0)) = val;
-                        retval = this;
-                        this->count++;
-                        // invalidate cache
-                        dense_cache = octave_value ();
-                      }
-                  }
-                catch (index_exception& e)
-                  {
-                    // Rethrow to allow more info to be reported later.
-                    e.set_pos_if_unset (2, k+1);
-                    throw;
-                  }
-              }
-
-            if (! retval.is_defined ())
-              retval = numeric_assign (type, idx, rhs);
-          }
-        else
+        if (type.length () != 1)
           {
             std::string nm = type_name ();
             error ("in indexed assignment of %s, last lhs index must be ()",
                    nm.c_str ());
           }
+
+        octave_value_list jdx = idx.front ();
+
+        // FIXME: Mostly repeated code for cases 1 and 2 could be
+        //        consolidated for DRY (Don't Repeat Yourself).
+        // Check for assignments to diagonal elements which should not
+        // destroy the diagonal property of the matrix.
+        // If D is a diagonal matrix then the assignment can be
+        // 1) linear, D(i) = x, where ind2sub results in case #2 below
+        // 2) subscript D(i,i) = x, where both indices are equal.
+        if (jdx.length () == 1 && jdx(0).is_scalar_type ())
+          {
+            typename DMT::element_type val;
+            int k = 0;
+            try
+              {
+                idx_vector ind = jdx(0).index_vector ();
+                k = 1;
+                dim_vector dv (matrix.rows (), matrix.cols ());
+                Array<idx_vector> ivec = ind2sub (dv, ind);
+                idx_vector i0 = ivec(0);
+                idx_vector i1 = ivec(1);
+
+                if (i0(0) == i1(0)
+                    && chk_valid_scalar (rhs, val))
+                  {
+                    matrix.dgelem (i0(0)) = val;
+                    retval = this;
+                    this->count++;
+                    // invalidate cache
+                    dense_cache = octave_value ();
+                  }
+              }
+            catch (index_exception& e)
+              {
+                // Rethrow to allow more info to be reported later.
+                e.set_pos_if_unset (2, k+1);
+                throw;
+              }
+          }
+        else if (jdx.length () == 2
+                 && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
+          {
+            typename DMT::element_type val;
+            int k = 0;
+            try
+              {
+                idx_vector i0 = jdx(0).index_vector ();
+                k = 1;
+                idx_vector i1 = jdx(1).index_vector ();
+                if (i0(0) == i1(0)
+                    && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
+                    && chk_valid_scalar (rhs, val))
+                  {
+                    matrix.dgelem (i0(0)) = val;
+                    retval = this;
+                    this->count++;
+                    // invalidate cache
+                    dense_cache = octave_value ();
+                  }
+              }
+            catch (index_exception& e)
+              {
+                // Rethrow to allow more info to be reported later.
+                e.set_pos_if_unset (2, k+1);
+                throw;
+              }
+          }
+
+        if (! retval.is_defined ())
+          retval = numeric_assign (type, idx, rhs);
       }
       break;
 
     case '{':
     case '.':
       {
-        if (is_empty ())
-          {
-            octave_value tmp = octave_value::empty_conv (type, rhs);
-
-            retval = tmp.subsasgn (type, idx, rhs);
-          }
-        else
+        if (! is_empty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
           }
+
+        octave_value tmp = octave_value::empty_conv (type, rhs);
+
+        retval = tmp.subsasgn (type, idx, rhs);
       }
       break;
 
@@ -502,30 +498,26 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
   octave_idx_type c = 0;
   bool success = true;
 
-  if (extract_keyword (is, "rows", r, true)
-      && extract_keyword (is, "columns", c, true))
-    {
-      octave_idx_type l = r < c ? r : c;
-      MT tmp (l, 1);
-      is >> tmp;
-
-      if (! is)
-        error ("load: failed to load diagonal matrix constant");
-      else
-        {
-          // This is a little tricky, as we have the Matrix type, but
-          // not ColumnVector type. We need to help the compiler get
-          // through the inheritance tree.
-          typedef typename DMT::element_type el_type;
-          matrix = DMT (MDiagArray2<el_type> (MArray<el_type> (tmp)));
-          matrix.resize (r, c);
-
-          // Invalidate cache. Probably not necessary, but safe.
-          dense_cache = octave_value ();
-        }
-    }
-  else
+  if (! extract_keyword (is, "rows", r, true)
+      || ! extract_keyword (is, "columns", c, true))
     error ("load: failed to extract number of rows and columns");
+
+  octave_idx_type l = r < c ? r : c;
+  MT tmp (l, 1);
+  is >> tmp;
+
+  if (! is)
+    error ("load: failed to load diagonal matrix constant");
+
+  // This is a little tricky, as we have the Matrix type, but
+  // not ColumnVector type. We need to help the compiler get
+  // through the inheritance tree.
+  typedef typename DMT::element_type el_type;
+  matrix = DMT (MDiagArray2<el_type> (MArray<el_type> (tmp)));
+  matrix.resize (r, c);
+
+  // Invalidate cache. Probably not necessary, but safe.
+  dense_cache = octave_value ();
 
   return success;
 }

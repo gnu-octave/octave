@@ -73,14 +73,14 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
     {
     case '(':
       {
-        if (type.length () == 1)
-          retval = numeric_assign (type, idx, rhs);
-        else
+        if (type.length () != 1)
           {
             std::string nm = type_name ();
             error ("in indexed assignment of %s, last rhs index must be ()",
                    nm.c_str ());
           }
+
+        retval = numeric_assign (type, idx, rhs);
       }
       break;
 

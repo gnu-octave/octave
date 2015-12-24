@@ -218,19 +218,17 @@ octave_char_matrix_str::all_strings (bool) const
 {
   string_vector retval;
 
-  if (matrix.ndims () == 2)
-    {
-      charMatrix chm (matrix);
-
-      octave_idx_type n = chm.rows ();
-
-      retval.resize (n);
-
-      for (octave_idx_type i = 0; i < n; i++)
-        retval[i] = chm.row_as_string (i);
-    }
-  else
+  if (matrix.ndims () != 2)
     error ("invalid conversion of charNDArray to string_vector");
+
+  charMatrix chm (matrix);
+
+  octave_idx_type n = chm.rows ();
+
+  retval.resize (n);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    retval[i] = chm.row_as_string (i);
 
   return retval;
 }
@@ -238,18 +236,12 @@ octave_char_matrix_str::all_strings (bool) const
 std::string
 octave_char_matrix_str::string_value (bool) const
 {
-  std::string retval;
-
-  if (matrix.ndims () == 2)
-    {
-      charMatrix chm (matrix);
-
-      retval = chm.row_as_string (0);  // FIXME?
-    }
-  else
+  if (matrix.ndims () != 2)
     error ("invalid conversion of charNDArray to string");
 
-  return retval;
+  charMatrix chm (matrix);
+
+  return chm.row_as_string (0);  // FIXME?
 }
 
 Array<std::string>
@@ -257,16 +249,14 @@ octave_char_matrix_str::cellstr_value (void) const
 {
   Array<std::string> retval;
 
-  if (matrix.ndims () == 2)
-    {
-      const charMatrix chm (matrix);
-      octave_idx_type nr = chm.rows ();
-      retval.clear (nr, 1);
-      for (octave_idx_type i = 0; i < nr; i++)
-        retval.xelem (i) = chm.row_as_string (i);
-    }
-  else
+  if (matrix.ndims () != 2)
     error ("cellstr: cannot convert multidimensional arrays");
+
+  const charMatrix chm (matrix);
+  octave_idx_type nr = chm.rows ();
+  retval.clear (nr, 1);
+  for (octave_idx_type i = 0; i < nr; i++)
+    retval.xelem (i) = chm.row_as_string (i);
 
   return retval;
 }
@@ -351,79 +341,71 @@ octave_char_matrix_str::load_ascii (std::istream& is)
     {
       int mdims = val;
 
-      if (mdims >= 0)
-        {
-          dim_vector dv;
-          dv.resize (mdims);
-
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
-
-          if (! is)
-            error ("load: failed to read dimensions");
-
-          charNDArray tmp(dv);
-
-          if (tmp.is_empty ())
-            matrix = tmp;
-          else
-            {
-              char *ftmp = tmp.fortran_vec ();
-
-              skip_preceeding_newline (is);
-
-              if (! is.read (ftmp, dv.numel ()) || ! is)
-                error ("load: failed to load string constant");
-              else
-                matrix = tmp;
-            }
-        }
-      else
+      if (mdims < 0)
         error ("load: failed to extract matrix size");
+
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+
+      if (! is)
+        error ("load: failed to read dimensions");
+
+      charNDArray tmp(dv);
+
+      if (tmp.is_empty ())
+        matrix = tmp;
+      else
+        {
+          char *ftmp = tmp.fortran_vec ();
+
+          skip_preceeding_newline (is);
+
+          if (! is.read (ftmp, dv.numel ()) || ! is)
+            error ("load: failed to load string constant");
+
+          matrix = tmp;
+        }
     }
   else if (kw == "elements")
     {
       int elements = val;
 
-      if (elements >= 0)
+      if (elements < 0)
+        error ("load: failed to extract number of string elements");
+
+      // FIXME: need to be able to get max length before doing anything.
+
+      charMatrix chm (elements, 0);
+      int max_len = 0;
+      for (int i = 0; i < elements; i++)
         {
-          // FIXME: need to be able to get max length before doing anything.
+          int len;
+          if (! extract_keyword (is, "length", len) || len < 0)
+            error ("load: failed to extract string length for element %d",
+                   i+1);
 
-          charMatrix chm (elements, 0);
-          int max_len = 0;
-          for (int i = 0; i < elements; i++)
+          // Use this instead of a C-style character
+          // buffer so that we can properly handle
+          // embedded NUL characters.
+          charMatrix tmp (1, len);
+          char *ptmp = tmp.fortran_vec ();
+
+          if (len > 0 && ! is.read (ptmp, len))
+            error ("load: failed to load string constant");
+
+          if (len > max_len)
             {
-              int len;
-              if (extract_keyword (is, "length", len) && len >= 0)
-                {
-                  // Use this instead of a C-style character
-                  // buffer so that we can properly handle
-                  // embedded NUL characters.
-                  charMatrix tmp (1, len);
-                  char *ptmp = tmp.fortran_vec ();
-
-                  if (len > 0 && ! is.read (ptmp, len))
-                    error ("load: failed to load string constant");
-                  else
-                    {
-                      if (len > max_len)
-                        {
-                          max_len = len;
-                          chm.resize (elements, max_len, 0);
-                        }
-
-                      chm.insert (tmp, i, 0);
-                    }
-                }
-              else
-                error ("load: failed to extract string length for element %d",
-                       i+1);
+              max_len = len;
+              chm.resize (elements, max_len, 0);
             }
 
-          matrix = chm;
+          chm.insert (tmp, i, 0);
         }
-      else
-        error ("load: failed to extract number of string elements");
+
+      matrix = chm;
     }
   else if (kw == "length")
     {
@@ -441,13 +423,11 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
           if (len > 0 && ! is.read (ptmp, len))
             error ("load: failed to load string constant");
-          else
-            {
-              if (is)
-                matrix = tmp;
-              else
-                error ("load: failed to load string constant");
-            }
+
+          if (! is)
+            error ("load: failed to load string constant");
+
+          matrix = tmp;
         }
     }
   else

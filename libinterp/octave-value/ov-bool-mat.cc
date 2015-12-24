@@ -232,66 +232,62 @@ octave_bool_matrix::load_ascii (std::istream& is)
     {
       int mdims = static_cast<int> (val);
 
-      if (mdims >= 0)
-        {
-          dim_vector dv;
-          dv.resize (mdims);
+      if (mdims < 0)
+        error ("load: failed to extract number of dimensions");
 
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+
+      if (! is)
+        error ("load: failed to extract dimensions");
+
+      boolNDArray btmp (dv);
+
+      if (btmp.is_empty ())
+        matrix = btmp;
+      else
+        {
+          NDArray tmp(dv);
+          is >> tmp;
 
           if (! is)
-            error ("load: failed to extract dimensions");
+            error ("load: failed to load matrix constant");
 
-          boolNDArray btmp (dv);
+          for (octave_idx_type i = 0; i < btmp.numel (); i++)
+            btmp.elem (i) = (tmp.elem (i) != 0.);
 
-          if (btmp.is_empty ())
-            matrix = btmp;
-          else
-            {
-              NDArray tmp(dv);
-              is >> tmp;
-
-              if (! is)
-                error ("load: failed to load matrix constant");
-
-              for (octave_idx_type i = 0; i < btmp.numel (); i++)
-                btmp.elem (i) = (tmp.elem (i) != 0.);
-
-              matrix = btmp;
-            }
+          matrix = btmp;
         }
-      else
-        error ("load: failed to extract number of dimensions");
     }
   else if (kw == "rows")
     {
       octave_idx_type nr = val;
       octave_idx_type nc = 0;
 
-      if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-        {
-          if (nr > 0 && nc > 0)
-            {
-              Matrix tmp (nr, nc);
-              is >> tmp;
-              if (! is)
-                error ("load: failed to load matrix constant");
-
-              boolMatrix btmp (nr, nc);
-              for (octave_idx_type j = 0; j < nc; j++)
-                for (octave_idx_type i = 0; i < nr; i++)
-                  btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
-
-              matrix = btmp;
-            }
-          else if (nr == 0 || nc == 0)
-            matrix = boolMatrix (nr, nc);
-          else
-            panic_impossible ();
-        }
-      else
+      if (nr < 0 || ! extract_keyword (is, "columns", nc) || nc < 0)
         error ("load: failed to extract number of rows and columns");
+
+      if (nr > 0 && nc > 0)
+        {
+          Matrix tmp (nr, nc);
+          is >> tmp;
+          if (! is)
+            error ("load: failed to load matrix constant");
+
+          boolMatrix btmp (nr, nc);
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = 0; i < nr; i++)
+              btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
+
+          matrix = btmp;
+        }
+      else if (nr == 0 || nc == 0)
+        matrix = boolMatrix (nr, nc);
+      else
+        panic_impossible ();
     }
   else
     panic_impossible ();

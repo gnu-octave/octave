@@ -126,40 +126,36 @@ octave_user_script::do_multi_index_op (int nargout,
 
   unwind_protect frame;
 
-  if (args.length () == 0 && nargout == 0)
-    {
-      if (cmd_list)
-        {
-          frame.protect_var (call_depth);
-          call_depth++;
-
-          if (call_depth < Vmax_recursion_depth)
-            {
-              octave_call_stack::push (this);
-
-              frame.add_fcn (octave_call_stack::pop);
-
-              frame.protect_var (tree_evaluator::statement_context);
-              tree_evaluator::statement_context = tree_evaluator::script;
-
-              BEGIN_PROFILER_BLOCK (octave_user_script)
-
-                cmd_list->accept (*current_evaluator);
-
-              END_PROFILER_BLOCK
-
-                if (tree_return_command::returning)
-                  tree_return_command::returning = 0;
-
-              if (tree_break_command::breaking)
-                tree_break_command::breaking--;
-            }
-          else
-            error ("max_recursion_depth exceeded");
-        }
-    }
-  else
+  if (args.length () != 0 || nargout != 0)
     error ("invalid call to script %s", file_name.c_str ());
+
+  if (cmd_list)
+    {
+      frame.protect_var (call_depth);
+      call_depth++;
+
+      if (call_depth >= Vmax_recursion_depth)
+        error ("max_recursion_depth exceeded");
+
+      octave_call_stack::push (this);
+
+      frame.add_fcn (octave_call_stack::pop);
+
+      frame.protect_var (tree_evaluator::statement_context);
+      tree_evaluator::statement_context = tree_evaluator::script;
+
+      BEGIN_PROFILER_BLOCK (octave_user_script)
+
+        cmd_list->accept (*current_evaluator);
+
+      END_PROFILER_BLOCK
+
+      if (tree_return_command::returning)
+        tree_return_command::returning = 0;
+
+      if (tree_break_command::breaking)
+        tree_break_command::breaking--;
+    }
 
   return retval;
 }
@@ -528,11 +524,11 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (is_classdef_constructor ())
     {
-      if (ret_list)
-        ret_list->define_from_arg_vector (ret_args);
-      else
+      if (! ret_list)
         error ("%s: invalid classdef constructor, no output argument defined",
                dispatch_class ().c_str ());
+
+      ret_list->define_from_arg_vector (ret_args);
     }
 
   // Force parameter list to be undefined when this function exits.
@@ -840,20 +836,18 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
 
       octave_user_function *fcn = fcn_val->user_function_value (true);
 
-      if (fcn)
-        {
-          tree_parameter_list *param_list = fcn->parameter_list ();
-
-          retval = param_list ? param_list->length () : 0;
-          if (fcn->takes_varargs ())
-            retval = -1 - retval;
-        }
-      else
+      if (! fcn)
         {
           // Matlab gives up for histc,
           // so maybe it's ok that that we give up somtimes too?
           error ("nargin: nargin information not available for built-in functions");
         }
+
+      tree_parameter_list *param_list = fcn->parameter_list ();
+
+      retval = param_list ? param_list->length () : 0;
+      if (fcn->takes_varargs ())
+        retval = -1 - retval;
     }
   else
     {
@@ -958,16 +952,7 @@ returns -1 for all anonymous functions.\n\
 
       octave_user_function *fcn = fcn_val->user_function_value (true);
 
-      if (fcn)
-        {
-          tree_parameter_list *ret_list = fcn->return_list ();
-
-          retval = ret_list ? ret_list->length () : 0;
-
-          if (fcn->takes_var_return ())
-            retval = -1 - retval;
-        }
-      else
+      if (! fcn)
         {
           // JWE said this information is not available (2011-03-10)
           // without making intrusive changes to Octave.
@@ -975,18 +960,23 @@ returns -1 for all anonymous functions.\n\
           // so maybe it's ok that we give up somtimes too?
           error ("nargout: nargout information not available for built-in functions.");
         }
+
+      tree_parameter_list *ret_list = fcn->return_list ();
+
+      retval = ret_list ? ret_list->length () : 0;
+
+      if (fcn->takes_var_return ())
+        retval = -1 - retval;
     }
   else
     {
-      if (! symbol_table::at_top_level ())
-        {
-          retval = symbol_table::varval (".nargout.");
-
-          if (retval.is_undefined ())
-            retval = 0;
-        }
-      else
+      if (symbol_table::at_top_level ())
         error ("nargout: invalid call at top level");
+
+      retval = symbol_table::varval (".nargout.");
+
+      if (retval.is_undefined ())
+        retval = 0;
     }
 
   return retval;

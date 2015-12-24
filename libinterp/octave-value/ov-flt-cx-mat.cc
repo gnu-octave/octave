@@ -285,19 +285,13 @@ octave_float_complex_matrix::diag (octave_idx_type k) const
 octave_value
 octave_float_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
 {
-  octave_value retval;
-
-  if (matrix.ndims () == 2
-      && (matrix.rows () == 1 || matrix.columns () == 1))
-    {
-      FloatComplexMatrix mat (matrix);
-
-      retval = mat.diag (m, n);
-    }
-  else
+  if (matrix.ndims () != 2
+      || (matrix.rows () != 1 && matrix.columns () != 1))
     error ("diag: expecting vector argument");
 
-  return retval;
+  FloatComplexMatrix mat (matrix);
+
+  return mat.diag (m, n);
 }
 
 bool
@@ -348,52 +342,48 @@ octave_float_complex_matrix::load_ascii (std::istream& is)
     {
       int mdims = static_cast<int> (val);
 
-      if (mdims >= 0)
-        {
-          dim_vector dv;
-          dv.resize (mdims);
-
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
-
-          if (! is)
-            error ("load: failed to read dimensions");
-
-          FloatComplexNDArray tmp(dv);
-
-          is >> tmp;
-
-          if (is)
-            matrix = tmp;
-          else
-            error ("load: failed to load matrix constant");
-        }
-      else
+      if (mdims < 0)
         error ("load: failed to extract number of dimensions");
+
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+
+      if (! is)
+        error ("load: failed to read dimensions");
+
+      FloatComplexNDArray tmp(dv);
+
+      is >> tmp;
+
+      if (! is)
+        error ("load: failed to load matrix constant");
+
+      matrix = tmp;
     }
   else if (kw == "rows")
     {
       octave_idx_type nr = val;
       octave_idx_type nc = 0;
 
-      if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-        {
-          if (nr > 0 && nc > 0)
-            {
-              FloatComplexMatrix tmp (nr, nc);
-              is >> tmp;
-              if (is)
-                matrix = tmp;
-              else
-                error ("load: failed to load matrix constant");
-            }
-          else if (nr == 0 || nc == 0)
-            matrix = FloatComplexMatrix (nr, nc);
-          else
-            panic_impossible ();
-        }
-      else
+      if (nr < 0 || ! extract_keyword (is, "columns", nc) || nc < 0)
         error ("load: failed to extract number of rows and columns");
+
+      if (nr > 0 && nc > 0)
+        {
+          FloatComplexMatrix tmp (nr, nc);
+          is >> tmp;
+          if (! is)
+            error ("load: failed to load matrix constant");
+
+          matrix = tmp;
+        }
+      else if (nr == 0 || nc == 0)
+        matrix = FloatComplexMatrix (nr, nc);
+      else
+        panic_impossible ();
     }
   else
     panic_impossible ();

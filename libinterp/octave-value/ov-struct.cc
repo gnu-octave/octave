@@ -727,41 +727,39 @@ octave_struct::load_ascii (std::istream& is)
   else
     success = false;
 
-  if (success && len >= 0)
-    {
-      if (len > 0)
-        {
-          octave_map m (dv);
-
-          for (octave_idx_type j = 0; j < len; j++)
-            {
-              octave_value t2;
-              bool dummy;
-
-              // recurse to read cell elements
-              std::string nm
-                = read_text_data (is, std::string (), dummy, t2, j);
-
-              if (! is)
-                break;
-
-              Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
-
-              m.setfield (nm, tcell);
-            }
-
-          if (is)
-            map = m;
-          else
-            error ("load: failed to load structure");
-        }
-      else if (len == 0)
-        map = octave_map (dv);
-      else
-        panic_impossible ();
-    }
-  else
+  if (! success || len < 0)
     error ("load: failed to extract number of elements in structure");
+
+  if (len > 0)
+    {
+      octave_map m (dv);
+
+      for (octave_idx_type j = 0; j < len; j++)
+        {
+          octave_value t2;
+          bool dummy;
+
+          // recurse to read cell elements
+          std::string nm
+            = read_text_data (is, std::string (), dummy, t2, j);
+
+          if (! is)
+            break;
+
+          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+
+          m.setfield (nm, tcell);
+        }
+
+      if (! is)
+        error ("load: failed to load structure");
+
+      map = m;
+    }
+  else if (len == 0)
+    map = octave_map (dv);
+  else
+    panic_impossible ();
 
   return success;
 }
@@ -866,10 +864,10 @@ octave_struct::load_binary (std::istream& is, bool swap,
           m.setfield (nm, tcell);
         }
 
-      if (is)
-        map = m;
-      else
+      if (! is)
         error ("load: failed to load structure");
+
+      map = m;
     }
   else if (len == 0)
     map = octave_map (dv);
@@ -1368,39 +1366,37 @@ octave_scalar_struct::load_ascii (std::istream& is)
   bool success = true;
   octave_idx_type len = 0;
 
-  if (extract_keyword (is, "length", len) && len >= 0)
-    {
-      if (len > 0)
-        {
-          octave_scalar_map m;
-
-          for (octave_idx_type j = 0; j < len; j++)
-            {
-              octave_value t2;
-              bool dummy;
-
-              // recurse to read cell elements
-              std::string nm
-                = read_text_data (is, std::string (), dummy, t2, j);
-
-              if (! is)
-                break;
-
-              m.setfield (nm, t2);
-            }
-
-          if (is)
-            map = m;
-          else
-            error ("load: failed to load structure");
-        }
-      else if (len == 0)
-        map = octave_scalar_map ();
-      else
-        panic_impossible ();
-    }
-  else
+  if (! extract_keyword (is, "length", len) || len < 0)
     error ("load: failed to extract number of elements in structure");
+
+  if (len > 0)
+    {
+      octave_scalar_map m;
+
+      for (octave_idx_type j = 0; j < len; j++)
+        {
+          octave_value t2;
+          bool dummy;
+
+          // recurse to read cell elements
+          std::string nm
+            = read_text_data (is, std::string (), dummy, t2, j);
+
+          if (! is)
+            break;
+
+          m.setfield (nm, t2);
+        }
+
+      if (! is)
+        error ("load: failed to load structure");
+
+      map = m;
+    }
+  else if (len == 0)
+    map = octave_scalar_map ();
+  else
+    panic_impossible ();
 
   return success;
 }
@@ -1467,10 +1463,10 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
           m.setfield (nm, t2);
         }
 
-      if (is)
-        map = m;
-      else
+      if (! is)
         error ("load: failed to load structure");
+
+      map = m;
     }
   else if (len == 0)
     map = octave_scalar_map ();
@@ -2073,10 +2069,10 @@ the named fields.\n\
     {
       std::string key = fcell(i).string_value ();
 
-      if (m.isfield (key))
-        m.rmfield (key);
-      else
+      if (! m.isfield (key))
         error ("rmfield: structure does not contain field %s", key.c_str ());
+
+      m.rmfield (key);
     }
 
   return ovl (m);

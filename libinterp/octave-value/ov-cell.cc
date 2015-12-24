@@ -310,15 +310,13 @@ octave_cell::subsasgn (const std::string& type,
 
         case '.':
           {
-            if (is_empty ())
-              {
-                // Do nothing; the next branch will handle it.
-              }
-            else
+            if (! is_empty ())
               {
                 std::string nm = type_name ();
                 error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
               }
+
+            // Do nothing; the next branch will handle it.
           }
           break;
 
@@ -380,22 +378,20 @@ octave_cell::subsasgn (const std::string& type,
 
     case '.':
       {
-        if (is_empty ())
-          {
-            // Allow conversion of empty cell array to some other
-            // type in cases like
-            //
-            //  x = {}; x.f = rhs
-
-            octave_value tmp = octave_value::empty_conv (type, rhs);
-
-            return tmp.subsasgn (type, idx, rhs);
-          }
-        else
+        if (! is_empty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
           }
+
+        // Allow conversion of empty cell array to some other
+        // type in cases like
+        //
+        //  x = {}; x.f = rhs
+
+        octave_value tmp = octave_value::empty_conv (type, rhs);
+
+        return tmp.subsasgn (type, idx, rhs);
       }
       break;
 
@@ -781,86 +777,78 @@ octave_cell::load_ascii (std::istream& is)
     {
       int mdims = static_cast<int> (val);
 
-      if (mdims >= 0)
+      if (mdims < 0)
+        error ("load: failed to extract number of rows and columns");
+
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+
+      Cell tmp(dv);
+
+      for (octave_idx_type i = 0; i < dv.numel (); i++)
         {
-          dim_vector dv;
-          dv.resize (mdims);
+          octave_value t2;
+          bool dummy;
 
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
+          // recurse to read cell elements
+          std::string nm = read_text_data (is, std::string (),
+                                           dummy, t2, i);
 
-          Cell tmp(dv);
-
-          for (octave_idx_type i = 0; i < dv.numel (); i++)
-            {
-              octave_value t2;
-              bool dummy;
-
-              // recurse to read cell elements
-              std::string nm = read_text_data (is, std::string (),
-                                                dummy, t2, i);
-
-              if (nm == CELL_ELT_TAG)
-                {
-                  if (is)
-                    tmp.elem (i) = t2;
-                }
-              else
-                error ("load: cell array element had unexpected name");
-            }
+          if (nm != CELL_ELT_TAG)
+            error ("load: cell array element had unexpected name");
 
           if (is)
-            matrix = tmp;
-          else
-            error ("load: failed to load matrix constant");
+            tmp.elem (i) = t2;
         }
-      else
-        error ("load: failed to extract number of rows and columns");
+
+      if (! is)
+        error ("load: failed to load matrix constant");
+
+      matrix = tmp;
     }
   else if (kw == "rows")
     {
       octave_idx_type nr = val;
       octave_idx_type nc = 0;
 
-      if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-        {
-          if (nr > 0 && nc > 0)
-            {
-              Cell tmp (nr, nc);
-
-              for (octave_idx_type j = 0; j < nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    {
-                      octave_value t2;
-                      bool dummy;
-
-                      // recurse to read cell elements
-                      std::string nm = read_text_data (is, std::string (),
-                                                        dummy, t2, i);
-
-                      if (nm == CELL_ELT_TAG)
-                        {
-                          if (is)
-                            tmp.elem (i, j) = t2;
-                        }
-                      else
-                        error ("load: cell array element had unexpected name");
-                    }
-                }
-
-              if (is)
-                matrix = tmp;
-              else
-                error ("load: failed to load cell element");
-            }
-          else if (nr == 0 || nc == 0)
-            matrix = Cell (nr, nc);
-          else
-            panic_impossible ();
-        }
-      else
+      if (nr < 0 || ! extract_keyword (is, "columns", nc) || nc < 0)
         error ("load: failed to extract number of rows and columns for cell array");
+
+      if (nr > 0 && nc > 0)
+        {
+          Cell tmp (nr, nc);
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  octave_value t2;
+                  bool dummy;
+
+                  // recurse to read cell elements
+                  std::string nm = read_text_data (is, std::string (),
+                                                   dummy, t2, i);
+
+                  if (nm != CELL_ELT_TAG)
+                    error ("load: cell array element had unexpected name");
+
+                  if (is)
+                    tmp.elem (i, j) = t2;
+                }
+            }
+
+          if (! is)
+            error ("load: failed to load cell element");
+
+          matrix = tmp;
+        }
+      else if (nr == 0 || nc == 0)
+        matrix = Cell (nr, nc);
+      else
+        panic_impossible ();
     }
   else
     panic_impossible ();
@@ -954,19 +942,17 @@ octave_cell::load_binary (std::istream& is, bool swap,
       std::string nm = read_binary_data (is, swap, fmt, std::string (),
                                          dummy, t2, doc);
 
-      if (nm == CELL_ELT_TAG)
-        {
-          if (is)
-            tmp.elem (i) = t2;
-        }
-      else
+      if (nm != CELL_ELT_TAG)
         error ("load: cell array element had unexpected name");
+
+      if (is)
+        tmp.elem (i) = t2;
     }
 
-  if (is)
-    matrix = tmp;
-  else
+  if (! is)
     error ("load: failed to load matrix constant");
+
+  matrix = tmp;
 
   return true;
 }

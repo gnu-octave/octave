@@ -286,26 +286,22 @@ octave_perm_matrix::load_ascii (std::istream& is)
   bool success = true;
   char orient;
 
-  if (extract_keyword (is, "size", n, true)
-      && extract_keyword (is, "orient", orient, true))
-    {
-      bool colp = orient == 'c';
-      ColumnVector tmp (n);
-      is >> tmp;
-      if (! is)
-        error ("load: failed to load permutation matrix constant");
-      else
-        {
-          Array<octave_idx_type> pvec (dim_vector (n, 1));
-          for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
-          matrix = PermMatrix (pvec, colp);
-
-          // Invalidate cache. Probably not necessary, but safe.
-          dense_cache = octave_value ();
-        }
-    }
-  else
+  if (! extract_keyword (is, "size", n, true)
+      || ! extract_keyword (is, "orient", orient, true))
     error ("load: failed to extract size & orientation");
+
+  bool colp = orient == 'c';
+  ColumnVector tmp (n);
+  is >> tmp;
+  if (! is)
+    error ("load: failed to load permutation matrix constant");
+
+  Array<octave_idx_type> pvec (dim_vector (n, 1));
+  for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
+  matrix = PermMatrix (pvec, colp);
+
+  // Invalidate cache. Probably not necessary, but safe.
+  dense_cache = octave_value ();
 
   return success;
 }

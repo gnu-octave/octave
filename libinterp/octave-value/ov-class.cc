@@ -83,123 +83,118 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 
       if (! parent.is_object ())
         error ("parents must be objects");
-      else
+
+      std::string pcnm = parent.class_name ();
+
+      if (find_parent_class (pcnm))
+        error ("duplicate class in parent tree");
+
+      parent_list.push_back (pcnm);
+
+      octave_idx_type nel = map.numel ();
+      octave_idx_type p_nel = parent.numel ();
+
+      if (nel == 0)
         {
-          std::string pcnm = parent.class_name ();
-
-          if (find_parent_class (pcnm))
-            error ("duplicate class in parent tree");
-          else
+          if (p_nel == 0)
             {
-              parent_list.push_back (pcnm);
+              // No elements in MAP or the parent class object,
+              // so just add the field name.
 
-              octave_idx_type nel = map.numel ();
-              octave_idx_type p_nel = parent.numel ();
-
-              if (nel == 0)
+              map.assign (pcnm, Cell (map.dims ()));
+            }
+          else if (p_nel == 1)
+            {
+              if (map.nfields () == 0)
                 {
-                  if (p_nel == 0)
-                    {
-                      // No elements in MAP or the parent class object,
-                      // so just add the field name.
+                  // No elements or fields in MAP, but the
+                  // parent is class object with one element.
+                  // Resize to match size of parent class and
+                  // make the parent a field in MAP.
 
-                      map.assign (pcnm, Cell (map.dims ()));
-                    }
-                  else if (p_nel == 1)
-                    {
-                      if (map.nfields () == 0)
-                        {
-                          // No elements or fields in MAP, but the
-                          // parent is class object with one element.
-                          // Resize to match size of parent class and
-                          // make the parent a field in MAP.
-
-                          map.resize (parent.dims ());
-
-                          map.assign (pcnm, parent);
-                        }
-                      else
-                        {
-                          // No elements in MAP, but we have at least
-                          // one field.  So don't resize, just add the
-                          // field name.
-
-                          map.assign (pcnm, Cell (map.dims ()));
-                        }
-                    }
-                  else if (map.nfields () == 0)
-                    {
-                      // No elements or fields in MAP and more than one
-                      // element in the parent class object, so we can
-                      // resize MAP to match parent dimsenions, then
-                      // distribute the elements of the parent object to
-                      // the elements of MAP.
-
-                      dim_vector parent_dims = parent.dims ();
-
-                      map.resize (parent_dims);
-
-                      Cell c (parent_dims);
-
-                      octave_map pmap = parent.map_value ();
-
-                      std::list<std::string> plist
-                        = parent.parent_class_name_list ();
-
-                      for (octave_idx_type i = 0; i < p_nel; i++)
-                        c(i) = octave_value (pmap.index (i), pcnm, plist);
-
-                      map.assign (pcnm, c);
-                    }
-                  else
-                    error ("class: parent class dimension mismatch");
-                }
-              else if (nel == 1 && p_nel == 1)
-                {
-                  // Simple assignment.
+                  map.resize (parent.dims ());
 
                   map.assign (pcnm, parent);
                 }
               else
                 {
-                  if (p_nel == 1)
-                    {
-                      // Broadcast the scalar parent class object to
-                      // each element of MAP.
+                  // No elements in MAP, but we have at least
+                  // one field.  So don't resize, just add the
+                  // field name.
 
-                      Cell pcell (map.dims (), parent);
-
-                      map.assign (pcnm, pcell);
-                    }
-
-                  else if (nel == p_nel)
-                    {
-                      // FIXME: is there a better way to do this?
-
-                      // The parent class object has the same number of
-                      // elements as the map we are using to create the
-                      // new object, so distribute those elements to
-                      // each element of the new object by first
-                      // splitting the elements of the parent class
-                      // object into a cell array with one element per
-                      // cell.  Then do the assignment all at once.
-
-                      Cell c (parent.dims ());
-
-                      octave_map pmap = parent.map_value ();
-
-                      std::list<std::string> plist
-                        = parent.parent_class_name_list ();
-
-                      for (octave_idx_type i = 0; i < p_nel; i++)
-                        c(i) = octave_value (pmap.index (i), pcnm, plist);
-
-                      map.assign (pcnm, c);
-                    }
-                  else
-                    error ("class: parent class dimension mismatch");
+                  map.assign (pcnm, Cell (map.dims ()));
                 }
             }
+          else if (map.nfields () == 0)
+            {
+              // No elements or fields in MAP and more than one
+              // element in the parent class object, so we can
+              // resize MAP to match parent dimsenions, then
+              // distribute the elements of the parent object to
+              // the elements of MAP.
+
+              dim_vector parent_dims = parent.dims ();
+
+              map.resize (parent_dims);
+
+              Cell c (parent_dims);
+
+              octave_map pmap = parent.map_value ();
+
+              std::list<std::string> plist
+                = parent.parent_class_name_list ();
+
+              for (octave_idx_type i = 0; i < p_nel; i++)
+                c(i) = octave_value (pmap.index (i), pcnm, plist);
+
+              map.assign (pcnm, c);
+            }
+          else
+            error ("class: parent class dimension mismatch");
+        }
+      else if (nel == 1 && p_nel == 1)
+        {
+          // Simple assignment.
+
+          map.assign (pcnm, parent);
+        }
+      else
+        {
+          if (p_nel == 1)
+            {
+              // Broadcast the scalar parent class object to
+              // each element of MAP.
+
+              Cell pcell (map.dims (), parent);
+
+              map.assign (pcnm, pcell);
+            }
+          else if (nel == p_nel)
+            {
+              // FIXME: is there a better way to do this?
+
+              // The parent class object has the same number of
+              // elements as the map we are using to create the
+              // new object, so distribute those elements to
+              // each element of the new object by first
+              // splitting the elements of the parent class
+              // object into a cell array with one element per
+              // cell.  Then do the assignment all at once.
+
+              Cell c (parent.dims ());
+
+              octave_map pmap = parent.map_value ();
+
+              std::list<std::string> plist
+                = parent.parent_class_name_list ();
+
+              for (octave_idx_type i = 0; i < p_nel; i++)
+                c(i) = octave_value (pmap.index (i), pcnm, plist);
+
+              map.assign (pcnm, c);
+            }
+          else
+            error ("class: parent class dimension mismatch");
         }
     }
 
@@ -264,8 +259,6 @@ gripe_invalid_index_type (const std::string& nm, char t)
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {
-  Cell retval;
-
   assert (idx.length () == 1);
 
   std::string method_class = get_current_method_class ();
@@ -284,12 +277,10 @@ octave_class::dotref (const octave_value_list& idx)
 
   octave_map::const_iterator p = my_map.seek (nm);
 
-  if (p != my_map.end ())
-    retval = my_map.contents (p);
-  else
+  if (p == my_map.end ())
     error ("class has no member '%s'", nm.c_str ());
 
-  return retval;
+  return my_map.contents (p);
 }
 
 Matrix
@@ -307,11 +298,11 @@ octave_class::size (void)
       octave_value_list args (1, octave_value (this));
 
       octave_value_list lv = feval (meth.function_value (), args, 1);
-      if (lv.length () > 0
-          && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
-        retval = lv(0).matrix_value ();
-      else
+      if (lv.length () <= 0
+          || ! lv(0).is_matrix_type () || ! lv(0).dims ().is_vector ())
         error ("@%s/size: invalid return value", class_name ().c_str ());
+
+      retval = lv(0).matrix_value ();
     }
   else
     {
@@ -350,10 +341,10 @@ octave_class::numel (const octave_value_list& idx)
         args(i+1) = idx(i);
 
       octave_value_list lv = feval (meth.function_value (), args, 1);
-      if (lv.length () == 1 && lv(0).is_scalar_type ())
-        retval = lv(0).idx_type_value (true);
-      else
+      if (lv.length () != 1 || ! lv(0).is_scalar_type ())
         error ("@%s/numel: invalid return value", cn.c_str ());
+
+      retval = lv(0).idx_type_value (true);
     }
   else
     retval = octave_base_value::numel (idx);
@@ -808,8 +799,6 @@ octave_class::subsasgn_common (const octave_value& obj,
 idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  idx_vector retval;
-
   octave_value meth = symbol_table::find_method ("subsindex", class_name ());
 
   if (! meth.is_defined ())
@@ -823,15 +812,13 @@ octave_class::index_vector (bool require_integers) const
 
   if (tmp(0).is_object ())
     error ("subsindex function must return a valid index vector");
-  else
-    // Index vector returned by subsindex is zero based
-    // (why this inconsistency Mathworks?), and so we must
-    // add one to the value returned as the index_vector method
-    // expects it to be one based.
-    retval = do_binary_op (octave_value::op_add, tmp (0),
-                           octave_value (1.0)).index_vector (require_integers);
 
-  return retval;
+  // Index vector returned by subsindex is zero based
+  // (why this inconsistency Mathworks?), and so we must
+  // add one to the value returned as the index_vector method
+  // expects it to be one based.
+  return do_binary_op (octave_value::op_add, tmp (0),
+                       octave_value (1.0)).index_vector (require_integers);
 }
 
 size_t
@@ -976,10 +963,10 @@ octave_class::all_strings (bool pad) const
 
   if (tmp.length () >= 1)
     {
-      if (tmp(0).is_string ())
-        retval = tmp(0).all_strings (pad);
-      else
+      if (! tmp(0).is_string ())
         error ("cname/char method did not return a string");
+
+      retval = tmp(0).all_strings (pad);
     }
 
   return retval;
@@ -1215,64 +1202,60 @@ octave_class::load_ascii (std::istream& is)
   octave_idx_type len = 0;
   std::string classname;
 
-  if (extract_keyword (is, "classname", classname) && classname != "")
+  if (! extract_keyword (is, "classname", classname) || classname.empty ())
+    error ("load: failed to extract name of class");
+
+  if (! extract_keyword (is, "length", len) || len < 0)
+    error ("load: failed to extract number of elements in class");
+
+  if (len > 0)
     {
-      if (extract_keyword (is, "length", len) && len >= 0)
+      octave_map m (map);
+
+      for (octave_idx_type j = 0; j < len; j++)
         {
-          if (len > 0)
-            {
-              octave_map m (map);
+          octave_value t2;
+          bool dummy;
 
-              for (octave_idx_type j = 0; j < len; j++)
-                {
-                  octave_value t2;
-                  bool dummy;
+          // recurse to read cell elements
+          std::string nm
+            = read_text_data (is, std::string (), dummy, t2, j);
 
-                  // recurse to read cell elements
-                  std::string nm
-                    = read_text_data (is, std::string (), dummy, t2, j);
+          if (! is)
+            break;
 
-                  if (! is)
-                    break;
+          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
 
-                  Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
-
-                  m.assign (nm, tcell);
-                }
-
-              if (! is)
-                error ("load: failed to load class");
-
-              c_name = classname;
-              reconstruct_exemplar ();
-
-              map = m;
-
-              if (! reconstruct_parents ())
-                warning ("load: unable to reconstruct object inheritance");
-
-              if (load_path::find_method (classname, "loadobj")
-                  != std::string ())
-                {
-                  octave_value in = new octave_class (*this);
-                  octave_value_list tmp = feval ("loadobj", in, 1);
-
-                  map = tmp(0).map_value ();
-                }
-            }
-          else if (len == 0)
-            {
-              map = octave_map (dim_vector (1, 1));
-              c_name = classname;
-            }
-          else
-            panic_impossible ();
+          m.assign (nm, tcell);
         }
-      else
-        error ("load: failed to extract number of elements in class");
+
+      if (! is)
+        error ("load: failed to load class");
+
+      c_name = classname;
+      reconstruct_exemplar ();
+
+      map = m;
+
+      if (! reconstruct_parents ())
+        warning ("load: unable to reconstruct object inheritance");
+
+      if (load_path::find_method (classname, "loadobj")
+          != std::string ())
+        {
+          octave_value in = new octave_class (*this);
+          octave_value_list tmp = feval ("loadobj", in, 1);
+
+          map = tmp(0).map_value ();
+        }
+    }
+  else if (len == 0)
+    {
+      map = octave_map (dim_vector (1, 1));
+      c_name = classname;
     }
   else
-    error ("load: failed to extract name of class");
+    panic_impossible ();
 
   return true;
 }
@@ -1676,38 +1659,34 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   if (! obj.is_object ())
     error ("invalid comparison of class exemplar to non-class object");
 
-  if (nfields () == obj.nfields ())
-    {
-      octave_map obj_map = obj.map_value ();
-      string_vector obj_fnames = obj_map.keys ();
-      string_vector fnames = fields ();
-
-      for (octave_idx_type i = 0; i < nfields (); i++)
-        {
-          if (obj_fnames[i] != fnames[i])
-            error ("mismatch in field names");
-        }
-
-      if (nparents () == obj.nparents ())
-        {
-          std::list<std::string> obj_parents
-            = obj.parent_class_name_list ();
-          std::list<std::string> pnames = parents ();
-
-          std::list<std::string>::const_iterator p = obj_parents.begin ();
-          std::list<std::string>::const_iterator q = pnames.begin ();
-
-          while (p != obj_parents.end ())
-            {
-              if (*p++ != *q++)
-                error ("mismatch in parent classes");
-            }
-        }
-      else
-        error ("mismatch in number of parent classes");
-    }
-  else
+  if (nfields () != obj.nfields ())
     error ("mismatch in number of fields");
+
+  octave_map obj_map = obj.map_value ();
+  string_vector obj_fnames = obj_map.keys ();
+  string_vector fnames = fields ();
+
+  for (octave_idx_type i = 0; i < nfields (); i++)
+    {
+      if (obj_fnames[i] != fnames[i])
+        error ("mismatch in field names");
+    }
+
+  if (nparents () != obj.nparents ())
+    error ("mismatch in number of parent classes");
+
+  std::list<std::string> obj_parents
+    = obj.parent_class_name_list ();
+  std::list<std::string> pnames = parents ();
+
+  std::list<std::string>::const_iterator p = obj_parents.begin ();
+  std::list<std::string>::const_iterator q = pnames.begin ();
+
+  while (p != obj_parents.end ())
+    {
+      if (*p++ != *q++)
+        error ("mismatch in parent classes");
+    }
 
   return true;
 }

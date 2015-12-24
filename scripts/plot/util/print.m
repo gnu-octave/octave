@@ -169,7 +169,7 @@
 ##     JPEG image
 ##
 ##   @item latex
-##     @LaTeX picture environment (only available with the gnuplot graphics
+##     @LaTeX{} picture environment (only available for the Gnuplot graphics
 ## toolkit).
 ##
 ##   @item mf

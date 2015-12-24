@@ -501,6 +501,7 @@ tree_index_expression::lvalue (void)
             {
               final_index_error (e, expr);
             }
+
           tmpidx.clear ();
         }
 
@@ -515,13 +516,11 @@ tree_index_expression::lvalue (void)
 
             if (i < n - 1)
               {
-                if (type[i+1] == '.')
-                  {
-                    tmpidx.push_back (tidx);
-                    tmpi = i+1;
-                  }
-                else
+                if (type[i+1] != '.')
                   error ("() must be followed by . or close the index chain");
+
+                tmpidx.push_back (tidx);
+                tmpi = i+1;
               }
           }
           break;

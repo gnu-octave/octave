@@ -84,10 +84,10 @@ tree_simple_assignment::rvalue1 (int)
         {
           const octave_value_list lst = rhs_val.list_value ();
 
-          if (! lst.empty ())
-            rhs_val = lst(0);
-          else
+          if (lst.empty ())
             error ("invalid number of elements on RHS of assignment");
+
+          rhs_val = lst(0);
         }
 
       try
@@ -262,20 +262,18 @@ tree_multi_assignment::rvalue (int)
                   ult.set_index ("{", idx);
                 }
 
-              if (k + nel <= n)
-                {
-                  // This won't do a copy.
-                  octave_value_list ovl  = rhs_val.slice (k, nel);
-
-                  ult.assign (octave_value::op_asn_eq,
-                              octave_value (ovl, true));
-
-                  retval_list.push_back (ovl);
-
-                  k += nel;
-                }
-              else
+              if (k + nel > n)
                 error ("some elements undefined in return list");
+
+              // This won't do a copy.
+              octave_value_list ovl  = rhs_val.slice (k, nel);
+
+              ult.assign (octave_value::op_asn_eq,
+                          octave_value (ovl, true));
+
+              retval_list.push_back (ovl);
+
+              k += nel;
             }
           else
             {

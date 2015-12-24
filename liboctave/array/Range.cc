@@ -51,7 +51,7 @@ Range::all_elements_are_ints (void) const
 Matrix
 Range::matrix_value (void) const
 {
-  if (rng_numel > 0 && cache.numel () == 0)
+  if (rng_numel > 0 && cache.is_empty ())
     {
       cache.resize (1, rng_numel);
 

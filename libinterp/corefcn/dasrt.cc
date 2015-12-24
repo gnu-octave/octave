@@ -94,7 +94,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 
           retval = tmp(0).vector_value ();
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -137,7 +137,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
           retval = tmp(0).vector_value ();
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("dasrt");
         }
       else
@@ -186,7 +186,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
           retval = tmp(0).matrix_value ();
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("dasrt");
         }
       else

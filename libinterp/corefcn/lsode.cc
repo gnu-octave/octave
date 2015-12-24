@@ -91,7 +91,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
           retval = tmp(0).xvector_value ("lsode: expecting user supplied function to return numeric vector");
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("lsode");
         }
       else
@@ -133,7 +133,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
           retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("lsode");
         }
       else

@@ -98,7 +98,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
           if (tlen > 1)
             ires = tmp(1).int_value ();
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("dassl");
         }
       else
@@ -147,7 +147,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
           retval = tmp(0).matrix_value ();
 
-          if (retval.numel () == 0)
+          if (retval.is_empty ())
             gripe_user_supplied_eval ("dassl");
         }
       else

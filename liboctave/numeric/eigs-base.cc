@@ -829,7 +829,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.numel () != 0)
+  if (have_b && cholB && ! permB.is_empty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -880,7 +880,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.transpose ();
-          if (permB.numel () == 0)
+          if (permB.is_empty ())
             {
               permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -1153,7 +1153,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       return -1;
     }
 
-  if (have_b && cholB && permB.numel () != 0)
+  if (have_b && cholB && ! permB.is_empty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -1743,7 +1743,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.numel () != 0)
+  if (have_b && cholB && ! permB.is_empty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -1794,7 +1794,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.transpose ();
-          if (permB.numel () == 0)
+          if (permB.is_empty ())
             {
               permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -2116,7 +2116,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       return -1;
     }
 
-  if (have_b && cholB && permB.numel () != 0)
+  if (have_b && cholB && ! permB.is_empty ())
     {
       // Check that we really have a permutation vector
       if (permB.numel () != n)
@@ -2811,7 +2811,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.numel () != 0)
+  if (have_b && cholB && ! permB.is_empty ())
     {
       // Check the we really have a permutation vector
       if (permB.numel () != n)
@@ -2862,7 +2862,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           bt = b;
           b = b.hermitian ();
-          if (permB.numel () == 0)
+          if (permB.is_empty ())
             {
               permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -3136,7 +3136,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       return -1;
     }
 
-  if (have_b && cholB && permB.numel () != 0)
+  if (have_b && cholB && ! permB.is_empty ())
     {
       // Check that we really have a permutation vector
       if (permB.numel () != n)

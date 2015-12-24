@@ -2370,7 +2370,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
 
   Array<T> m (dv);
 
-  if (m.numel () == 0)
+  if (m.is_empty ())
     return m;
 
   sortmode mode = UNSORTED;

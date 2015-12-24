@@ -770,7 +770,7 @@ functions from strings is through the use of anonymous functions\n\
       // Sort the arguments into ascii order.
       fargs.sort ();
 
-      if (fargs.numel () == 0)
+      if (fargs.is_empty ())
         fargs.append (std::string ("x"));
 
     }

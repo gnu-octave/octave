@@ -1216,7 +1216,7 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
                       jdoubleArray_ref row (jni_env,
                                             reinterpret_cast<jdoubleArray> (jni_env->GetObjectArrayElement (jarr, r)));
 
-                      if (m.numel () == 0)
+                      if (m.is_empty ())
                         {
                           cols = jni_env->GetArrayLength (row);
                           m.resize (cols, rows);

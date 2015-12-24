@@ -861,7 +861,7 @@ void
 opengl_renderer::draw_axes_planes (const axes::properties& props)
 {
   Matrix axe_color = props.get_color_rgb ();
-  if (axe_color.numel () == 0 || ! props.is_visible ())
+  if (axe_color.is_empty () || ! props.is_visible ())
     return;
 
   double xPlane = props.get_xPlane ();
@@ -2159,20 +2159,19 @@ opengl_renderer::draw_surface (const surface::properties& props)
       Matrix mfcolor = props.get_markerfacecolor_rgb ();
       Matrix cc (1, 3, 0.0);
 
-      if (mecolor.numel () == 0 && props.markeredgecolor_is ("auto"))
+      if (mecolor.is_empty () && props.markeredgecolor_is ("auto"))
         {
           mecolor = props.get_edgecolor_rgb ();
           do_edge = ! props.edgecolor_is ("none");
         }
 
-      if (mfcolor.numel () == 0 && props.markerfacecolor_is ("auto"))
+      if (mfcolor.is_empty () && props.markerfacecolor_is ("auto"))
         {
           mfcolor = props.get_facecolor_rgb ();
           do_face = ! props.facecolor_is ("none");
         }
 
-      if ((mecolor.numel () == 0 || mfcolor.numel () == 0)
-          && c.numel () == 0)
+      if ((mecolor.is_empty () || mfcolor.is_empty ()) && c.is_empty ())
         c = props.get_color_data ().array_value ();
 
       init_marker (props.get_marker (), props.get_markersize (),
@@ -2191,8 +2190,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
               if (x_mat)
                 j1 = j;
 
-              if ((do_edge && mecolor.numel () == 0)
-                  || (do_face && mfcolor.numel () == 0))
+              if ((do_edge && mecolor.is_empty ())
+                  || (do_face && mfcolor.is_empty ()))
                 {
                   if (! xfinite (c(j,i)))
                     continue;  // Skip NaNs in color data
@@ -2201,9 +2200,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
                     cc(k) = c(j,i,k);
                 }
 
-              Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor)
+              Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
                                    : Matrix ());
-              Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor)
+              Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
                                    : Matrix ());
 
               draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
@@ -2591,26 +2590,23 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
       bool has_markerfacecolor = false;
 
-      if ((mecolor.numel () == 0 && ! props.markeredgecolor_is ("none"))
-          || (mfcolor.numel () == 0 && ! props.markerfacecolor_is ("none")))
+      if ((mecolor.is_empty () && ! props.markeredgecolor_is ("none"))
+          || (mfcolor.is_empty () && ! props.markerfacecolor_is ("none")))
         {
           Matrix mc = props.get_color_data ().matrix_value ();
 
           if (mc.rows () == 1)
             {
               // Single color specifications, we can simplify a little bit
-
-              if (mfcolor.numel () == 0
-                  && ! props.markerfacecolor_is ("none"))
+              if (mfcolor.is_empty () && ! props.markerfacecolor_is ("none"))
                 mfcolor = mc;
 
-              if (mecolor.numel () == 0
-                  && ! props.markeredgecolor_is ("none"))
+              if (mecolor.is_empty () && ! props.markeredgecolor_is ("none"))
                 mecolor = mc;
             }
           else
             {
-              if (c.numel () == 0)
+              if (c.is_empty ())
                 c = props.get_color_data ().matrix_value ();
               has_markerfacecolor = ((c.numel () > 0)
                                      && (c.rows () == f.rows ()));
@@ -2639,9 +2635,9 @@ opengl_renderer::draw_patch (const patch::properties &props)
                   cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
               }
 
-            Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor)
+            Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
                                  : Matrix ());
-            Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor)
+            Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
                                  : Matrix ());
 
             draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);

@@ -112,7 +112,7 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
   charNDArray tmp (rb.dims ());
   octave_idx_type nel = rb.numel ();
 
-  if (rb.numel () == 0)
+  if (rb.is_empty ())
     return *this;
 
   for (octave_idx_type i = 0; i < nel; i++)

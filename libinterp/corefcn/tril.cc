@@ -265,7 +265,7 @@ do_trilu (const std::string& name,
                  name.c_str (), arg.class_name ().c_str ());
 
         octave_value tmp = arg;
-        if (arg.numel () == 0)
+        if (arg.is_empty ())
           return arg;
 
         octave_idx_type nr = dims(0);

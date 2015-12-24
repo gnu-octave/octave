@@ -1031,11 +1031,8 @@ ft_render::text_to_pixels (const std::string& txt,
   pixels_ = render (elt, box, rot_mode);
   delete elt;
 
-  if (pixels_.numel () == 0)
-    {
-      // nothing to render
-      return;
-    }
+  if (pixels_.is_empty ())
+    return;  // nothing to render
 
   switch (halign)
     {

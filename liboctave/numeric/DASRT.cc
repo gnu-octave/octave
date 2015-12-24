@@ -87,7 +87,7 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 
   ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, ires);
 
-  if (tmp_fval.numel () == 0)
+  if (tmp_fval.is_empty ())
     ires = -2;
   else
     {

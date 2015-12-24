@@ -753,7 +753,7 @@ FloatNDArray::concat (const charNDArray& rb,
         }
     }
 
-  if (rb.numel () == 0)
+  if (rb.is_empty ())
     return retval;
 
   retval.insert (rb, ra_idx);

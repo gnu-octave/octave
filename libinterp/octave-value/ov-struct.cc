@@ -83,7 +83,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   if (p != map.end ())
     retval = map.contents (p);
   else if (auto_add)
-    retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
+    retval = (is_empty ()) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
     error_with_id ("Octave:invalid-indexing",
                    "structure has no member '%s'", nm.c_str ());
@@ -1847,7 +1847,7 @@ Implements @code{fieldnames()} for structures and Octave objects.\n\
 
   string_vector keys = m.fieldnames ();
 
-  if (keys.numel () == 0)
+  if (keys.is_empty ())
     retval = Cell (0, 1);
   else
     retval = Cell (keys);

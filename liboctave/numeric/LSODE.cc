@@ -74,7 +74,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
 
   tmp_deriv = (*user_fun) (*tmp_x, time);
 
-  if (tmp_deriv.numel () == 0)
+  if (tmp_deriv.is_empty ())
     ierr = -1;
   else
     {

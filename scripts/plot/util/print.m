@@ -143,6 +143,10 @@
 ##   @itemx aifm
 ##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
 ##
+##   @item canvas
+##     Javascript-based drawing on HTML5 canvas viewable in a web browser
+## (only available for the Gnuplot graphics toolkit).
+##
 ##   @item  cdr
 ##   @itemx @nospell{corel}
 ##     CorelDraw
@@ -193,7 +197,7 @@
 ##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
 ## the result is PGF. The @samp{tikzstandalone} device produces a @LaTeX{}
 ## document which includes the TikZ file (@samp{tikzstandalone} is only
-## available with the gnuplot graphics toolkit).
+## available for the Gnuplot graphics toolkit).
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as PostScript.

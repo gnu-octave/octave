@@ -239,8 +239,8 @@ done:
   return status;
 }
 
-// Return nonzero if either NR or NC is zero.  Return -1 if this
-// should be considered fatal; return 1 if this is ok.
+// Return nonzero if either NR or NC is zero.
+// Return -1 if this should be considered fatal; return 1 if this is ok.
 
 int
 empty_arg (const char * /* name */, octave_idx_type nr, octave_idx_type nc)
@@ -315,13 +315,11 @@ If no files are found, return an empty cell array.\n\
 
   string_vector names = args(0).xall_strings ("file_in_loadpath: FILE argument must be a string");
 
-  octave_value retval;
-
-  if (names.numel () == 0)
+  if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
 
   if (nargin == 1)
-    retval = octave_env::make_absolute (load_path::find_first_of (names));
+    return ovl (octave_env::make_absolute (load_path::find_first_of (names)));
   else
     {
       std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
@@ -329,10 +327,8 @@ If no files are found, return an empty cell array.\n\
       if (opt != "all")
         error ("file_in_loadpath: \"all\" is only valid second argument");
 
-      retval = Cell (make_absolute (load_path::find_all_first_of (names)));
+      return ovl (Cell (make_absolute (load_path::find_all_first_of (names))));
     }
-
-  return retval;
 }
 
 /*
@@ -390,13 +386,11 @@ If no files are found, return an empty cell array.\n\
 
   string_vector names = args(1).xall_strings ("file_in_path: FILE argument must be a string");
 
-  octave_value retval;
-
-  if (names.numel () == 0)
+  if (names.empty ())
     error ("file_in_path: FILE argument must not be empty");
 
   if (nargin == 2)
-    retval = search_path_for_file (path, names);
+    return ovl (search_path_for_file (path, names));
   else
     {
       std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
@@ -404,10 +398,8 @@ If no files are found, return an empty cell array.\n\
       if (opt != "all")
         error ("file_in_path: \"all\" is only valid third argument");
 
-      retval = Cell (make_absolute (search_path_for_all_files (path, names)));
+      return ovl (Cell (make_absolute (search_path_for_all_files (path, names))));
     }
-
-  return retval;
 }
 
 /*
@@ -456,7 +448,6 @@ find_data_file_in_load_path  (const std::string& fcn,
       // Load path will also search "." first, but we don't want to
       // issue a warning if the file is found in the current directory,
       // so do an explicit check for that.
-
       file_stat fs (fname);
 
       bool local_file_ok
@@ -465,7 +456,6 @@ find_data_file_in_load_path  (const std::string& fcn,
       if (! local_file_ok)
         {
           // Not directly found; search load path.
-
           std::string tmp
             = octave_env::make_absolute (load_path::find_file (fname));
 
@@ -481,8 +471,8 @@ find_data_file_in_load_path  (const std::string& fcn,
   return fname;
 }
 
-// See if there is an function file in the path.  If so, return the
-// full path to the file.
+// See if there is an function file in the path.
+// If so, return the full path to the file.
 
 std::string
 fcn_file_in_path (const std::string& name)
@@ -517,7 +507,7 @@ fcn_file_in_path (const std::string& name)
 }
 
 // See if there is a directory called "name" in the path and if it
-// contains a Contents.m file return the full path to this file.
+// contains a Contents.m file.  If so, return the full path to this file.
 
 std::string
 contents_file_in_path (const std::string& dir)
@@ -538,8 +528,8 @@ contents_file_in_path (const std::string& dir)
   return retval;
 }
 
-// See if there is a .oct file in the path.  If so, return the
-// full path to the file.
+// See if there is a .oct file in the path.
+// If so, return the full path to the file.
 
 std::string
 oct_file_in_path (const std::string& name)
@@ -557,8 +547,7 @@ oct_file_in_path (const std::string& name)
           if (fs.exists ())
             retval = name;
         }
-      else if (len > 4 && name[len - 4] == '.' && name[len - 3] == 'o'
-               && name[len - 2] == 'c' && name[len - 1] == 't')
+      else if (len > 4 && name.find (".oct", len-5))
         retval = load_path::find_oct_file (name.substr (0, len-4));
       else
         retval = load_path::find_oct_file (name);
@@ -567,8 +556,8 @@ oct_file_in_path (const std::string& name)
   return retval;
 }
 
-// See if there is a .mex file in the path.  If so, return the
-// full path to the file.
+// See if there is a .mex file in the path.
+// If so, return the full path to the file.
 
 std::string
 mex_file_in_path (const std::string& name)
@@ -586,8 +575,7 @@ mex_file_in_path (const std::string& name)
           if (fs.exists ())
             retval = name;
         }
-      else if (len > 4 && name[len - 4] == '.' && name[len - 3] == 'm'
-               && name[len - 2] == 'e' && name[len - 1] == 'x')
+      else if (len > 4 && name.find (".mex", len-5))
         retval = load_path::find_mex_file (name.substr (0, len-4));
       else
         retval = load_path::find_mex_file (name);
@@ -715,9 +703,7 @@ do_string_escapes (const std::string& s)
             }
         }
       else
-        {
-          retval[i] = s[j];
-        }
+        retval[i] = s[j];
 
       i++;
       j++;
@@ -824,9 +810,9 @@ undo_string_escape (char c)
 
     default:
       {
-        static char retval[2];
+        static char retval[2] = "\0";
+
         retval[0] = c;
-        retval[1] = '\0';
         return retval;
       }
     }
@@ -932,8 +918,6 @@ Return true if @var{file} is a rooted-relative filename.\n\
 @seealso{is_absolute_filename, make_absolute_filename, isdir}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -1416,7 +1400,8 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                    const char *fun_name, const octave_value_list& args,
                    int nargout)
 {
-  octave_value_list new_args = args, retval;
+  octave_value_list new_args = args;
+  octave_value_list retval;
   int nargin = args.length ();
   OCTAVE_LOCAL_BUFFER (bool, iscell, nargin);
   OCTAVE_LOCAL_BUFFER (Cell, cells, nargin);
@@ -1483,7 +1468,9 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                    const char *fun_name, const octave_value_list& args)
 {
   octave_value retval;
+
   const octave_value_list tmp = do_simple_cellfun (fun, fun_name, args, 1);
+
   if (tmp.length () > 0)
     retval = tmp(0);
 

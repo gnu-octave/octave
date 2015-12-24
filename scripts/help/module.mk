@@ -10,12 +10,15 @@ scripts_help_FCN_FILES = \
   scripts/help/__gripe_missing_component__.m \
   scripts/help/__makeinfo__.m \
   scripts/help/__unimplemented__.m \
+  scripts/help/ans.m \
+  scripts/help/comma.m \
   scripts/help/doc.m \
   scripts/help/doc_cache_create.m \
   scripts/help/get_first_help_sentence.m \
   scripts/help/help.m \
   scripts/help/lookfor.m \
   scripts/help/print_usage.m \
+  scripts/help/semicolon.m \
   scripts/help/type.m \
   scripts/help/which.m
 

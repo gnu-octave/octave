@@ -8,13 +8,11 @@ scripts_miscellaneous_PRIVATE_FCN_FILES = \
   scripts/miscellaneous/private/__xzip__.m
 
 scripts_miscellaneous_FCN_FILES = \
-  scripts/miscellaneous/ans.m \
   scripts/miscellaneous/bug_report.m \
   scripts/miscellaneous/bunzip2.m \
   scripts/miscellaneous/bzip2.m \
   scripts/miscellaneous/cast.m \
   scripts/miscellaneous/citation.m \
-  scripts/miscellaneous/comma.m \
   scripts/miscellaneous/compare_versions.m \
   scripts/miscellaneous/computer.m \
   scripts/miscellaneous/copyfile.m \
@@ -62,7 +60,6 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/recycle.m \
   scripts/miscellaneous/rmappdata.m \
   scripts/miscellaneous/run.m \
-  scripts/miscellaneous/semicolon.m \
   scripts/miscellaneous/setappdata.m \
   scripts/miscellaneous/setfield.m \
   scripts/miscellaneous/substruct.m \

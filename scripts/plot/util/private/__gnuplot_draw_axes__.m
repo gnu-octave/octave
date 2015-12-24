@@ -1731,7 +1731,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
             fputs (plot_stream, "\n\n");
           endif
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j).');
-          fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n",data{i}(:,j+1).');
+          fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n", data{i}(:,j+1).');
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+2).');
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+3).');
         endfor
@@ -1743,6 +1743,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                 have_cdata(i));
       endif
     endfor
+    fputs (plot_stream, "\n");
   else
     fputs (plot_stream, "plot \"-\";\nInf Inf\ne\n");
   endif
@@ -1787,7 +1788,7 @@ function spacing_spec = create_spacingspec (f, s, gp_term)
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)
-  if (strcmp (f, "*") || strcmp (gp_term, "tikz"))
+  if (isempty (f) || strcmp (f, "*") || strcmp (gp_term, "tikz"))
     fontspec = sprintf ("font \",%d\"", s);
   else
     fontspec = sprintf ("font \"%s,%d\"", f, s);
@@ -2025,14 +2026,9 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
   ## DATA is already transposed.
 
-  ## FIXME: this may need to be converted to C++ for speed.
-
   ## Convert NA elements to normal NaN values because fprintf writes
   ## "NA" and that confuses gnuplot.
-  idx = find (isna (data));
-  if (any (idx))
-    data(idx) = NaN;
-  endif
+  data(isna (data)) = NaN;
 
   if (nd == 2)
     fwrite (plot_stream, data, "float64");
@@ -2241,7 +2237,7 @@ endfunction
 
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)
   if (isempty (t.fontname) || strcmp (t.fontname, "*"))
-    fnt = "{}";
+    fnt = "";
   else
     fnt = t.fontname;
   endif

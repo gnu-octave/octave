@@ -129,6 +129,9 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
       cmd_list_mac.at (i)->setAlternateKey (key);
     }
 #endif
+
+  // init state of undo/redo action for this tab
+  emit status_update (isUndoAvailable (), isRedoAvailable ());
 }
 
 octave_qscintilla::~octave_qscintilla ()
@@ -280,6 +283,14 @@ void
 octave_qscintilla::text_changed ()
 {
   emit status_update (isUndoAvailable (), isRedoAvailable ());
+}
+
+// when edit area gets focus update information on undo/redo actions
+void octave_qscintilla::focusInEvent(QFocusEvent *focusEvent)
+{
+  emit status_update (isUndoAvailable (), isRedoAvailable ());
+
+  QsciScintilla::focusInEvent(focusEvent);
 }
 
 #endif

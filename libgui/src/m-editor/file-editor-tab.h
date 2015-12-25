@@ -140,7 +140,6 @@ signals:
   void editor_check_conflict_save (const QString& saveFileName,
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
-  void set_global_edit_shortcuts_signal (bool);
   void request_open_file (const QString&);
 
 protected:

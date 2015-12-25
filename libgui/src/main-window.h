@@ -212,7 +212,6 @@ public slots:
 
   // setting global shortcuts
   void set_global_shortcuts (bool enable);
-  void set_global_edit_shortcuts (bool enable);
 
   void set_screen_size (int ht, int wd);
 
@@ -223,6 +222,9 @@ public slots:
   // get the dockwidgets
   QList<octave_dock_widget *> get_dock_widget_list ()
     { return dock_widget_list (); }
+
+private slots:
+  void disable_menu_shortcuts (bool disable);
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
@@ -236,7 +238,6 @@ private:
   QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
                        const char *member, const QWidget *receiver = 0);
 
-  void enable_menu_shortcuts (bool enable);
   QMenu* m_add_menu (QMenuBar *p, QString text);
   void construct_menu_bar (void);
   void construct_file_menu (QMenuBar *p);

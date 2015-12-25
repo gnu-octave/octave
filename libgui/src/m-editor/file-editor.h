@@ -85,7 +85,8 @@ public:
   QMenu *get_mru_menu (void) { return _mru_file_menu; }
   QMenu *debug_menu (void);
   QToolBar *toolbar (void);
-  void insert_new_open_actions (QAction*,QAction*,QAction*);
+  void insert_global_actions (QAction*, QAction*, QAction*, QAction*,
+                              QAction*, QAction*, QAction*);
 
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
@@ -161,12 +162,8 @@ public slots:
   void request_mru_open_file (QAction *action);
   void request_print_file (bool);
 
-  void request_undo (bool);
   void request_redo (bool);
-  void request_copy (bool);
   void request_cut (bool);
-  void request_paste (bool);
-  void request_selectall (bool);
   void request_context_help (bool);
   void request_context_doc (bool);
   void request_context_edit (bool);
@@ -391,6 +388,7 @@ private:
   QAction *_previous_breakpoint_action;
   QAction *_remove_all_breakpoints_action;
 
+  QMenu *_edit_menu;
   QMenu *_edit_cmd_menu;
   QMenu *_edit_fmt_menu;
   QMenu *_edit_nav_menu;

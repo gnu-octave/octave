@@ -67,6 +67,8 @@ private slots:
 
 protected:
 
+  void focusInEvent(QFocusEvent *focusEvent);
+
 private:
 
   QString _word_at_cursor;

@@ -785,7 +785,7 @@ main_window::notice_settings (const QSettings *settings)
 
   configure_shortcuts ();
   set_global_shortcuts (_active_dock == command_window);
-  set_global_edit_shortcuts (_active_dock == editor_window);
+  disable_menu_shortcuts (_active_dock == editor_window);
 }
 
 void
@@ -1365,7 +1365,7 @@ main_window::construct (void)
                this, SLOT (notice_settings (const QSettings *)));
 
       connect (this, SIGNAL (editor_focus_changed (bool)),
-               this, SLOT (set_global_edit_shortcuts (bool)));
+               this, SLOT (disable_menu_shortcuts (bool)));
 
       connect (this, SIGNAL (editor_focus_changed (bool)),
                editor_window, SLOT (enable_menu_shortcuts (bool)));
@@ -1430,15 +1430,6 @@ main_window::construct (void)
       octave_link::post_event (this, &main_window::resize_command_window_callback);
 
       configure_shortcuts ();
-
-      // actions that should be available in floating dock widgets, too
-      QList<QAction *> action_list;
-      action_list.append (_copy_action);
-      action_list.append (_paste_action);
-      action_list.append (_select_all_action);
-      action_list.append (_undo_action);
-      emit add_actions_signal (action_list);  // signal for adding these actions
-
     }
 }
 
@@ -1613,6 +1604,16 @@ main_window::construct_menu_bar (void)
   construct_help_menu (menu_bar);
 
   construct_news_menu (menu_bar);
+
+#ifdef HAVE_QSCINTILLA
+  editor_window->insert_global_actions (_new_script_action,
+                                        _new_function_action,
+                                        _open_action,
+                                        _undo_action,
+                                        _copy_action,
+                                        _paste_action,
+                                        _select_all_action);
+#endif
 }
 
 QAction*
@@ -1632,13 +1633,13 @@ main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
 }
 
 void
-main_window::enable_menu_shortcuts (bool enable)
+main_window::disable_menu_shortcuts (bool disable)
 {
   QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
 
   while (i != _hash_menu_text.constEnd())
     {
-      i.key ()->setTitle (i.value ().at (! enable));
+      i.key ()->setTitle (i.value ().at (disable));
       ++i;
     }
 }
@@ -1676,10 +1677,6 @@ main_window::construct_file_menu (QMenuBar *p)
   _open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #ifdef HAVE_QSCINTILLA
-  editor_window->insert_new_open_actions (_new_script_action,
-                                          _new_function_action,
-                                          _open_action);
-
   file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 
@@ -1749,19 +1746,23 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   _undo_action
     = edit_menu->addAction (resource_manager::icon ("edit-undo"), tr ("Undo"));
+  _undo_action->setShortcutContext (Qt::ApplicationShortcut);
 
   edit_menu->addSeparator ();
 
   _copy_action
     = edit_menu->addAction (resource_manager::icon ("edit-copy"),
                             tr ("Copy"), this, SLOT (copyClipboard ()));
+  _copy_action->setShortcutContext (Qt::ApplicationShortcut);
 
   _paste_action
     = edit_menu->addAction (resource_manager::icon ("edit-paste"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
+  _paste_action->setShortcutContext (Qt::ApplicationShortcut);
 
   _select_all_action
     = edit_menu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
+  _select_all_action->setShortcutContext (Qt::ApplicationShortcut);
 
   _clear_clipboard_action
     = edit_menu->addAction (tr ("Clear Clipboard"), this,
@@ -2248,32 +2249,6 @@ void
 main_window::find_files_finished (int)
 {
 
-}
-
-void
-main_window::set_global_edit_shortcuts (bool editor_has_focus)
-{
-  // this slot is called when editor gets/loses focus
-  if (editor_has_focus)
-    {
-      // disable shortcuts that are also provided by the editor itself
-      QKeySequence no_key = QKeySequence ();
-      _copy_action->setShortcut (no_key);
-      _paste_action->setShortcut (no_key);
-      _undo_action->setShortcut (no_key);
-      _select_all_action->setShortcut (no_key);
-    }
-  else
-    {
-      // editor loses focus, set the global shortcuts
-      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
-      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
-      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
-      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
-    }
-
-  // dis-/enable global menu depending on editor's focus
-  enable_menu_shortcuts (! editor_has_focus);
 }
 
 void

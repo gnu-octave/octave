@@ -199,12 +199,8 @@ shortcut_manager::do_init_data ()
   init (tr ("Print"), "editor_file:print", QKeySequence::Print);
 
   // edit
-  init (tr ("Undo"), "editor_edit:undo", QKeySequence::Undo);
   init (tr ("Redo"), "editor_edit:redo", QKeySequence::Redo);
-  init (tr ("Copy"), "editor_edit:copy", QKeySequence::Copy);
   init (tr ("Cut"), "editor_edit:cut", QKeySequence::Cut);
-  init (tr ("Paste"), "editor_edit:paste", QKeySequence::Paste);
-  init (tr ("Select All"), "editor_edit:select_all", QKeySequence::SelectAll);
   init (tr ("Find and Replace"), "editor_edit:find_replace",
         QKeySequence::Find);
   init (tr ("Delete to Start of Word"), "editor_edit:delete_start_word",
@@ -343,11 +339,10 @@ shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
   shortcut_info.default_sc = def_sc;
   _sc << shortcut_info;
 
-  // insert shortcut prepended by widget in order check for duplicates later
-  QString widget = key.section ('_',0,0);  // get widget that uses the shortcut
+  // insert shortcut in order check for duplicates later
   if (! actual.isEmpty ())
-    _shortcut_hash[widget + ":" + actual.toString ()] = _sc.count ();  // offset of 1 to avoid 0
-  _action_hash[key] = _sc.count ();  // offset of 1 to avoid 0
+    _shortcut_hash[actual.toString ()] = _sc.count ();
+  _action_hash[key] = _sc.count ();
 }
 
 void
@@ -359,7 +354,7 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
 
   QTreeWidgetItem *main = new QTreeWidgetItem (tree_view);
-  main->setText (0, tr ("Main"));
+  main->setText (0, tr ("Global"));
   main->setExpanded (true);
   QTreeWidgetItem *main_file = new QTreeWidgetItem (main);
   main_file->setText (0, tr ("File"));
@@ -556,13 +551,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
     return;
 
   // check for duplicate
-
-  // get the widget for which this shortcut is defined
-  QString widget = _sc.at (_handled_index).settings_key.section ('_',0,0);
-  // and look for shortcut
-  QString sep = ":";
-
-  int double_index = _shortcut_hash[widget + sep + _edit_actual->text()] - 1;
+  int double_index = _shortcut_hash[_edit_actual->text()] - 1;
 
   if (double_index >= 0 && double_index != _handled_index)
     {
@@ -588,16 +577,14 @@ shortcut_manager::shortcut_dialog_finished (int result)
 
   shortcut_t shortcut = _sc.at (_handled_index);
   if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash.remove (widget + sep +
-                           shortcut.actual_sc.toString ());
+    _shortcut_hash.remove (shortcut.actual_sc.toString ());
   shortcut.actual_sc = _edit_actual->text();
   _sc.replace (_handled_index, shortcut);
 
   _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc);
 
   if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash[widget + sep + shortcut.actual_sc.toString ()] =
-      _handled_index + 1;
+    _shortcut_hash[shortcut.actual_sc.toString ()] = _handled_index + 1;
 }
 
 void

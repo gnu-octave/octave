@@ -54,6 +54,13 @@ file_editor::file_editor (QWidget *p)
   // files will change ced accordingly.
   ced = QDir::currentPath ();
 
+  // set action that are later added by the main window to null,
+  // preventing access to them when they are still undefined
+  _undo_action = 0;
+  _copy_action = 0;
+  _paste_action = 0;
+  _selectall_action = 0;
+
   construct ();
 
   setVisible (false);
@@ -662,10 +669,11 @@ file_editor::handle_edit_file_request (const QString& file)
 }
 
 void
-file_editor::request_undo (bool)
+file_editor::do_undo ()
 {
-  emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_UNDO);
+  if (editor_tab_has_focus ())
+    emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                  QsciScintillaBase::SCI_UNDO);
 }
 
 void
@@ -676,10 +684,11 @@ file_editor::request_redo (bool)
 }
 
 void
-file_editor::request_copy (bool)
+file_editor::copyClipboard ()
 {
-  emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_COPY);
+  if (editor_tab_has_focus ())
+    emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                  QsciScintillaBase::SCI_COPY);
 }
 
 void
@@ -690,17 +699,19 @@ file_editor::request_cut (bool)
 }
 
 void
-file_editor::request_paste (bool)
+file_editor::pasteClipboard ()
 {
-  emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_PASTE);
+  if (editor_tab_has_focus ())
+    emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                  QsciScintillaBase::SCI_PASTE);
 }
 
 void
-file_editor::request_selectall (bool)
+file_editor::selectAll ()
 {
-  emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_SELECTALL);
+  if (editor_tab_has_focus ())
+    emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                  QsciScintillaBase::SCI_SELECTALL);
 }
 
 void
@@ -1080,6 +1091,8 @@ file_editor::handle_tab_remove_request (void)
         }
     }
   check_actions ();
+
+  focus ();     // focus stays in editor when tab is closed
 }
 
 void
@@ -1176,7 +1189,8 @@ file_editor::zoom_normal (bool)
 void
 file_editor::edit_status_update (bool undo, bool redo)
 {
-  _undo_action->setEnabled (undo);
+  if (_undo_action)
+    _undo_action->setEnabled (undo);
   _redo_action->setEnabled (redo);
 }
 
@@ -1188,7 +1202,8 @@ file_editor::handle_editor_state_changed (bool copy_available,
   // all the file editor tabs, just process info from the current active tab.
   if (sender () == _tab_widget->currentWidget ())
     {
-      _copy_action->setEnabled (copy_available);
+      if (_copy_action)
+        _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
       _run_selection_action->setEnabled (copy_available);
       _run_action->setEnabled (is_octave_file);
@@ -1259,16 +1274,45 @@ file_editor::request_styles_preferences (bool)
   emit request_settings_dialog ("editor_styles");
 }
 
+// insert global actions, that should also be displayed in the editor window,
+// into the editor's menu and/or toolbar
 void
-file_editor::insert_new_open_actions (QAction *new_action,
-                                      QAction *new_fcn_action,
-                                      QAction *open_action)
+file_editor::insert_global_actions (QAction *new_action,
+                                    QAction *new_fcn_action,
+                                    QAction *open_action,
+                                    QAction *undo_action,
+                                    QAction *copy_action,
+                                    QAction *paste_action,
+                                    QAction *selectall_action)
 {
+  // actions/menus that have to be added to the toolbar or the menu
   _fileMenu->insertAction (_mru_file_menu->menuAction (), open_action);
   _fileMenu->insertAction (open_action, new_fcn_action);
   _fileMenu->insertAction (new_fcn_action, new_action);
   _tool_bar->insertAction (_popdown_mru_action, open_action);
   _tool_bar->insertAction (open_action, new_action);
+
+  // actions that are additionally enabled/disabled later by the editor
+  // undo
+  _undo_action = undo_action;
+  _tool_bar->insertAction (_redo_action,_undo_action);
+  _edit_menu->insertAction (_redo_action,_undo_action);
+  _undo_action->setEnabled (false);
+  // copy
+  _copy_action = copy_action;
+  _tool_bar->insertAction (_cut_action,_copy_action);
+  _edit_menu->insertAction (_cut_action,_copy_action);
+  _copy_action->setEnabled (false);
+  // select all
+  _selectall_action = selectall_action;
+  _edit_menu->insertAction (_find_action,_selectall_action);
+  _edit_menu->insertSeparator (_find_action);
+  // paste
+  _paste_action = paste_action;
+  _tool_bar->insertAction (_find_action,_paste_action);
+  _edit_menu->insertAction (_selectall_action,_paste_action);
+  _edit_menu->insertSeparator (_selectall_action);
+  _paste_action->setEnabled (false);
 }
 
 QAction*
@@ -1291,16 +1335,26 @@ file_editor::add_action (QMenu *menu, const QIcon &icon, const QString &text,
   return a;
 }
 
+// function enabling/disabling the menu accelerators depending on the
+// focus of the editor
 void
 file_editor::enable_menu_shortcuts (bool enable)
 {
   QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
 
- while (i != _hash_menu_text.constEnd())
-   {
-     i.key ()->setTitle (i.value ().at (! enable));
-     ++i;
-   }
+  while (i != _hash_menu_text.constEnd())
+    {
+      i.key ()->setTitle (i.value ().at (! enable));
+      ++i;
+    }
+
+  // when editor loses focus, enable the actions, which are always active
+  // in the main window due to missing info on selected text and undo actions
+  if (! enable && _copy_action && _undo_action)
+    {
+      _copy_action->setEnabled (true);
+      _undo_action->setEnabled (true);
+    }
 }
 
 QMenu*
@@ -1399,41 +1453,26 @@ file_editor::construct (void)
   _print_action = add_action (_fileMenu, resource_manager::icon ("document-print"),
           tr ("Print..."), SLOT (request_print_file (bool)));
 
-  // edit menu
+  // edit menu (undo, copy, paste and select all later via main window)
 
-  QMenu *editMenu = m_add_menu (_menu_bar, tr ("&Edit"));
+  _edit_menu = m_add_menu (_menu_bar, tr ("&Edit"));
 
-  _undo_action = add_action (editMenu, resource_manager::icon ("edit-undo"),
-          tr ("&Undo"), SLOT (request_undo (bool)));
-  _undo_action->setEnabled (false);
-  _redo_action = add_action (editMenu, resource_manager::icon ("edit-redo"),
+  _redo_action = add_action (_edit_menu, resource_manager::icon ("edit-redo"),
           tr ("&Redo"), SLOT (request_redo (bool)));
   _redo_action->setEnabled (false);
 
-  editMenu->addSeparator ();
+  _edit_menu->addSeparator ();
 
-  _copy_action = add_action (editMenu, resource_manager::icon ("edit-copy"),
-          tr ("&Copy"), SLOT (request_copy (bool)));
-  _copy_action->setEnabled (false);
-  _cut_action = add_action (editMenu, resource_manager::icon ("edit-cut"),
+  _cut_action = add_action (_edit_menu, resource_manager::icon ("edit-cut"),
           tr ("Cu&t"), SLOT (request_cut (bool)));
   _cut_action->setEnabled (false);
-  _paste_action = add_action (editMenu, resource_manager::icon ("edit-paste"),
-          tr ("Paste"), SLOT (request_paste (bool)));
 
-  editMenu->addSeparator ();
-
-  _selectall_action = add_action (editMenu, QIcon (), tr ("Select All"),
-          SLOT (request_selectall (bool)));
-
-  editMenu->addSeparator ();
-
-  _find_action = add_action (editMenu, resource_manager::icon ("edit-find-replace"),
+  _find_action = add_action (_edit_menu, resource_manager::icon ("edit-find-replace"),
           tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
-  editMenu->addSeparator ();
+  _edit_menu->addSeparator ();
 
-  _edit_cmd_menu = editMenu->addMenu (tr ("&Commands"));
+  _edit_cmd_menu = _edit_menu->addMenu (tr ("&Commands"));
 
   _delete_line_action = add_action (_edit_cmd_menu, QIcon (),
           tr ("Delete Line"), SLOT (request_delete_line (bool)));
@@ -1465,7 +1504,7 @@ file_editor::construct (void)
   _completion_action = add_action (_edit_cmd_menu, QIcon (),
           tr ("&Show Completion List"), SLOT (request_completion (bool)));
 
-  _edit_fmt_menu = editMenu->addMenu (tr ("&Format"));
+  _edit_fmt_menu = _edit_menu->addMenu (tr ("&Format"));
 
   _upper_case_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Uppercase Selection"), SLOT (request_upper_case (bool)));
@@ -1498,7 +1537,7 @@ file_editor::construct (void)
           tr ("Convert Line Endings to &Mac (CR)"),
           SLOT (request_conv_eol_mac (bool)));
 
-  _edit_nav_menu = editMenu->addMenu (tr ("Navi&gation"));
+  _edit_nav_menu = _edit_menu->addMenu (tr ("Navi&gation"));
 
   _goto_line_action = add_action (_edit_nav_menu, QIcon (),
           tr ("Go &to Line..."), SLOT (request_goto_line (bool)));
@@ -1521,11 +1560,11 @@ file_editor::construct (void)
   _remove_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("&Remove All Bookmarks"), SLOT (request_remove_bookmark (bool)));
 
-  editMenu->addSeparator ();
+  _edit_menu->addSeparator ();
 
-  _preferences_action = add_action (editMenu, resource_manager::icon ("preferences-system"),
+  _preferences_action = add_action (_edit_menu, resource_manager::icon ("preferences-system"),
           tr ("&Preferences..."), SLOT (request_preferences (bool)));
-  _styles_preferences_action = add_action (editMenu,  resource_manager::icon ("preferences-system"),
+  _styles_preferences_action = add_action (_edit_menu,  resource_manager::icon ("preferences-system"),
           tr ("&Styles Preferences..."), SLOT (request_styles_preferences (bool)));
 
   // view menu
@@ -1629,16 +1668,15 @@ file_editor::construct (void)
   _popdown_mru_action = _tool_bar->addWidget (popdown_button);
   _tool_bar->addAction (_save_action);
   _tool_bar->addAction (_save_as_action);
-  _tool_bar->addSeparator ();
   _tool_bar->addAction (_print_action);
   _tool_bar->addSeparator ();
-  _tool_bar->addAction (_undo_action);
+  // _undo_action: later via main window
   _tool_bar->addAction (_redo_action);
-  _tool_bar->addAction (_copy_action);
+  // _copy_action: later via the main window
   _tool_bar->addAction (_cut_action);
-  _tool_bar->addAction (_paste_action);
-  _tool_bar->addSeparator ();
+  // _paste_action: later via the main window
   _tool_bar->addAction (_find_action);
+  _tool_bar->addSeparator ();
   _tool_bar->addAction (_run_action);
   _tool_bar->addSeparator ();
   _tool_bar->addAction (_toggle_breakpoint_action);
@@ -1778,9 +1816,6 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (request_open_file (const QString&)),
            this, SLOT (request_open_file (const QString&)));
 
-  connect (f, SIGNAL (set_global_edit_shortcuts_signal (bool)),
-           main_win (), SLOT (set_global_edit_shortcuts (bool)));
-
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
            f, SLOT (notice_settings (const QSettings *)));
@@ -1912,34 +1947,11 @@ file_editor::editor_tab_has_focus ()
 }
 
 void
-file_editor::copyClipboard ()
-{
-  if (editor_tab_has_focus ())
-    request_copy (true);
-}
-void
-file_editor::pasteClipboard ()
-{
-  if (editor_tab_has_focus ())
-    request_paste (true);
-}
-void
-file_editor::selectAll ()
-{
-  if (editor_tab_has_focus ())
-    request_selectall (true);
-}
-
-void
-file_editor::do_undo ()
-{
-  if (editor_tab_has_focus ())
-    request_undo (true);
-}
-
-void
 file_editor::set_shortcuts ()
 {
+  // Shortcuts also available in the main window, as well as the realted
+  // ahotcuts, are defined in main_window and added to the editor
+
   // File menu
   shortcut_manager::set_shortcut (_edit_function_action, "editor_file:edit_function");
   shortcut_manager::set_shortcut (_save_action, "editor_file:save");
@@ -1950,12 +1962,8 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_print_action, "editor_file:print");
 
   // Edit menu
-  shortcut_manager::set_shortcut (_undo_action, "editor_edit:undo");
   shortcut_manager::set_shortcut (_redo_action, "editor_edit:redo");
-  shortcut_manager::set_shortcut (_copy_action, "editor_edit:copy");
   shortcut_manager::set_shortcut (_cut_action, "editor_edit:cut");
-  shortcut_manager::set_shortcut (_paste_action, "editor_edit:paste");
-  shortcut_manager::set_shortcut (_selectall_action, "editor_edit:select_all");
   shortcut_manager::set_shortcut (_find_action, "editor_edit:find_replace");
 
   shortcut_manager::set_shortcut (_delete_start_word_action, "editor_edit:delete_start_word");
@@ -2035,7 +2043,6 @@ file_editor::check_actions ()
   _indent_selection_action->setEnabled (have_tabs);
   _unindent_selection_action->setEnabled (have_tabs);
 
-  _paste_action->setEnabled (have_tabs);
   _context_help_action->setEnabled (have_tabs);
   _context_doc_action->setEnabled (have_tabs);
 
@@ -2054,8 +2061,6 @@ file_editor::check_actions ()
   _close_action->setEnabled (have_tabs);
   _close_all_action->setEnabled (have_tabs);
   _close_others_action->setEnabled (have_tabs && _tab_widget->count () > 1);
-
-  _selectall_action->setEnabled (have_tabs);
 }
 
 // empty_script determines whether we have to create an empty script

@@ -109,9 +109,6 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 
 #endif
 
-  // adding actions of the main window
-  connect (p, SIGNAL (add_actions_signal (QList<QAction *>)),
-           this, SLOT (add_actions (QList<QAction *>)));
   // copy & paste handling
   connect (p, SIGNAL (copyClipboard_signal ()),
            this, SLOT (copyClipboard ()));
@@ -484,14 +481,6 @@ octave_dock_widget::handle_active_dock_changed (octave_dock_widget *w_old,
       set_style (true);
       update ();
     }
-}
-
-// slot for adding actions from the main window
-void
-octave_dock_widget::add_actions (QList<QAction *> action_list)
-{
-  if (objectName () != "FileEditor")
-    addActions (action_list);
 }
 
 // close event

@@ -281,7 +281,7 @@ Creates an integer variable from VAL.")
       retval = octave_value (new octave_integer (NINT (d)));
     }
   else
-    usage ("make_int");
+    print_usage ();
 
   return retval;
 }

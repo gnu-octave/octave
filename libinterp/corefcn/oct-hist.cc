@@ -351,8 +351,6 @@ static std::string
 mk_tmp_hist_file (const octave_value_list& args,
                   bool insert_curr, const char *warn_for)
 {
-  std::string retval;
-
   string_vector hlist = command_history::list ();
 
   int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
@@ -379,42 +377,32 @@ mk_tmp_hist_file (const octave_value_list& args,
 
   int nargin = args.length ();
 
-  bool usage_error = false;
   if (nargin == 2)
     {
-      if (get_int_arg (args(0), hist_beg)
-          && get_int_arg (args(1), hist_end))
-        {
-          if (hist_beg < 0)
-            hist_beg += (hist_count + 1);
-          else
-            hist_beg--;
-          if (hist_end < 0)
-            hist_end += (hist_count + 1);
-          else
-            hist_end--;
-        }
+      if (! get_int_arg (args(0), hist_beg)
+          || ! get_int_arg (args(1), hist_end))
+        error ("%s: arguments must be integers", warn_for);
+
+      if (hist_beg < 0)
+        hist_beg += (hist_count + 1);
       else
-        usage_error = true;
+        hist_beg--;
+      if (hist_end < 0)
+        hist_end += (hist_count + 1);
+      else
+        hist_end--;
     }
   else if (nargin == 1)
     {
-      if (get_int_arg (args(0), hist_beg))
-        {
-          if (hist_beg < 0)
-            hist_beg += (hist_count + 1);
-          else
-            hist_beg--;
-          hist_end = hist_beg;
-        }
-      else
-        usage_error = true;
-    }
+      if (! get_int_arg (args(0), hist_beg))
+        error ("%s: argument must be an integer", warn_for);
 
-  if (usage_error)
-    {
-      usage ("%s [first] [last]", warn_for);
-      return retval;
+      if (hist_beg < 0)
+        hist_beg += (hist_count + 1);
+      else
+        hist_beg--;
+
+      hist_end = hist_beg;
     }
 
   if (hist_beg > hist_count || hist_end > hist_count)
@@ -603,11 +591,12 @@ buffer to be edited.\n\
 @seealso{run_history, history}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  if (args.length () > 2)
+    print_usage ();
 
   do_edit_history (args);
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (history, args, nargout,
@@ -652,14 +641,11 @@ argument as a cell string and will not be output to screen.\n\
 @seealso{edit_history, run_history}\n\
 @end deftypefn")
 {
-  octave_value retval;
+  // Call do_history even if nargout is zero to display history list.
 
   string_vector hlist = do_history (args, nargout);
 
-  if (nargout > 0)
-    retval = Cell (hlist);
-
-  return retval;
+  return nargout > 0 ? ovl (Cell (hlist)) : ovl ();
 }
 
 DEFUN (run_history, args, ,
@@ -714,11 +700,12 @@ run_history -1 -2\n\
 @seealso{edit_history, history}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  if (args.length () > 2)
+    print_usage ();
 
   do_run_history (args);
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (history_control, args, nargout,

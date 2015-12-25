@@ -528,72 +528,70 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_LOCAL_BUFFER (unsigned int, tmp, 2);
       if (uncompress (reinterpret_cast<Bytef *> (tmp), &destLen,
                       reinterpret_cast<Bytef *> (inbuf), element_length)
-          !=  Z_MEM_ERROR)
+          ==  Z_MEM_ERROR)
+        error ("load: error probing size of compressed data element");
+
+      // Why should I have to initialize outbuf as I'll just overwrite!!
+      if (swap)
+        swap_bytes<4> (tmp, 2);
+
+      destLen = tmp[1] + 8;
+      std::string outbuf (destLen, ' ');
+
+      // FIXME: find a way to avoid casting away const here!
+
+      int err = uncompress (reinterpret_cast<Bytef *>
+                            (const_cast<char *> (outbuf.c_str ())),
+                            &destLen, reinterpret_cast<Bytef *> (inbuf),
+                            element_length);
+
+      if (err != Z_OK)
         {
-          // Why should I have to initialize outbuf as I'll just overwrite!!
-          if (swap)
-            swap_bytes<4> (tmp, 2);
-
-          destLen = tmp[1] + 8;
-          std::string outbuf (destLen, ' ');
-
-          // FIXME: find a way to avoid casting away const here!
-
-          int err = uncompress (reinterpret_cast<Bytef *>
-                                 (const_cast<char *> (outbuf.c_str ())),
-                                &destLen, reinterpret_cast<Bytef *> (inbuf),
-                                element_length);
-
-          if (err != Z_OK)
+          std::string msg;
+          switch (err)
             {
-              std::string msg;
-              switch (err)
-                {
-                case Z_STREAM_END:
-                  msg = "stream end";
-                  break;
+            case Z_STREAM_END:
+              msg = "stream end";
+              break;
 
-                case Z_NEED_DICT:
-                  msg = "need dict";
-                  break;
+            case Z_NEED_DICT:
+              msg = "need dict";
+              break;
 
-                case Z_ERRNO:
-                  msg = "errno case";
-                  break;
+            case Z_ERRNO:
+              msg = "errno case";
+              break;
 
-                case Z_STREAM_ERROR:
-                  msg = "stream error";
-                  break;
+            case Z_STREAM_ERROR:
+              msg = "stream error";
+              break;
 
-                case Z_DATA_ERROR:
-                  msg = "data error";
-                  break;
+            case Z_DATA_ERROR:
+              msg = "data error";
+              break;
 
-                case Z_MEM_ERROR:
-                  msg = "mem error";
-                  break;
+            case Z_MEM_ERROR:
+              msg = "mem error";
+              break;
 
-                case Z_BUF_ERROR:
-                  msg = "buf error";
-                  break;
+            case Z_BUF_ERROR:
+              msg = "buf error";
+              break;
 
-                case Z_VERSION_ERROR:
-                  msg = "version error";
-                  break;
-                }
-
-              error ("load: error uncompressing data element (%s from zlib)",
-                     msg.c_str ());
+            case Z_VERSION_ERROR:
+              msg = "version error";
+              break;
             }
-          else
-            {
-              std::istringstream gz_is (outbuf);
-              retval = read_mat5_binary_element (gz_is, filename,
-                                                 swap, global, tc);
-            }
+
+          error ("load: error uncompressing data element (%s from zlib)",
+                 msg.c_str ());
         }
       else
-        error ("load: error probing size of compressed data element");
+        {
+          std::istringstream gz_is (outbuf);
+          retval = read_mat5_binary_element (gz_is, filename,
+                                             swap, global, tc);
+        }
 
       return retval;
 #else
@@ -1009,18 +1007,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             octave_value anon_fcn_handle =
               eval_string (fname.substr (4), true, parse_status);
 
-            if (parse_status == 0)
-              {
-                octave_fcn_handle *fh =
-                  anon_fcn_handle.fcn_handle_value ();
-
-                if (fh)
-                  tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
-                else
-                  error ("load: failed to load anonymous function handle");
-              }
-            else
+            if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
+
+            octave_fcn_handle *fh =
+              anon_fcn_handle.fcn_handle_value ();
+
+            if (! fh)
+              error ("load: failed to load anonymous function handle");
+
+            tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
 
             frame.run ();
           }
@@ -2318,15 +2314,13 @@ save_mat5_binary_element (std::ostream& os,
           if (compress (reinterpret_cast<Bytef *> (out_buf), &destLen,
                         reinterpret_cast<const Bytef *> (buf_str.c_str ()),
                                                          srcLen)
-              == Z_OK)
-            {
-              write_mat5_tag (os, miCOMPRESSED,
-                              static_cast<octave_idx_type> (destLen));
-
-              os.write (out_buf, destLen);
-            }
-          else
+              != Z_OK)
             error ("save: error compressing data element");
+
+          write_mat5_tag (os, miCOMPRESSED,
+                          static_cast<octave_idx_type> (destLen));
+
+          os.write (out_buf, destLen);
         }
 
       return ret;

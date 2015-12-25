@@ -727,38 +727,36 @@ get_user_input (const octave_value_list& args, int nargout)
 
   std::string input_buf = interactive_input (prompt.c_str (), eof);
 
-  if (! input_buf.empty ())
+  if (input_buf.empty ())
+    error ("input: reading user-input failed!");
+
+  size_t len = input_buf.length ();
+
+  octave_diary << input_buf;
+
+  if (input_buf[len - 1] != '\n')
+    octave_diary << "\n";
+
+  if (len < 1)
+    return read_as_string ? octave_value ("") : octave_value (Matrix ());
+
+  if (read_as_string)
     {
-      size_t len = input_buf.length ();
-
-      octave_diary << input_buf;
-
-      if (input_buf[len - 1] != '\n')
-        octave_diary << "\n";
-
-      if (len < 1)
-        return read_as_string ? octave_value ("") : octave_value (Matrix ());
-
-      if (read_as_string)
-        {
-          // FIXME: fix gnu_readline and octave_gets instead!
-          if (input_buf.length () == 1 && input_buf[0] == '\n')
-            retval(0) = "";
-          else
-            retval(0) = input_buf;
-        }
+      // FIXME: fix gnu_readline and octave_gets instead!
+      if (input_buf.length () == 1 && input_buf[0] == '\n')
+        retval(0) = "";
       else
-        {
-          int parse_status = 0;
-
-          retval = eval_string (input_buf, true, parse_status, nargout);
-
-          if (! Vdebugging && retval.length () == 0)
-            retval(0) = Matrix ();
-        }
+        retval(0) = input_buf;
     }
   else
-    error ("input: reading user-input failed!");
+    {
+      int parse_status = 0;
+
+      retval = eval_string (input_buf, true, parse_status, nargout);
+
+      if (! Vdebugging && retval.length () == 0)
+        retval(0) = Matrix ();
+    }
 
   return retval;
 }

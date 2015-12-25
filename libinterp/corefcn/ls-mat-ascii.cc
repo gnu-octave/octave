@@ -233,8 +233,6 @@ std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
                      octave_value& tc)
 {
-  std::string retval;
-
   std::string varname;
 
   size_t pos = filename.rfind ('/');
@@ -273,85 +271,76 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
   octave_quit ();
 
-  if (nr > 0 && nc > 0)
-    {
-      Matrix tmp (nr, nc);
-
-      if (nr < 1 || nc < 1)
-        is.clear (std::ios::badbit);
-      else
-        {
-          double d;
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              std::string buf = get_mat_data_input_line (is);
-
-              std::istringstream tmp_stream (buf);
-
-              for (octave_idx_type j = 0; j < nc; j++)
-                {
-                  octave_quit ();
-
-                  d = octave_read_value<double> (tmp_stream);
-
-                  if (tmp_stream || tmp_stream.eof ())
-                    {
-                      tmp.elem (i, j) = d;
-                      total_count++;
-
-                      // Skip whitespace and commas.
-                      char c;
-                      while (1)
-                        {
-                          tmp_stream >> c;
-
-                          if (! tmp_stream)
-                            break;
-
-                          if (! (c == ' ' || c == '\t' || c == ','))
-                            {
-                              tmp_stream.putback (c);
-                              break;
-                            }
-                        }
-
-                      if (tmp_stream.eof ())
-                        break;
-                    }
-                  else
-                    error ("load: failed to read matrix from file '%s'",
-                           filename.c_str ());
-                }
-            }
-        }
-
-      if (is || is.eof ())
-        {
-          // FIXME: not sure this is best, but it works.
-
-          if (is.eof ())
-            is.clear ();
-
-          octave_idx_type expected = nr * nc;
-
-          if (expected == total_count)
-            {
-              tc = tmp;
-              retval = varname;
-            }
-          else
-            error ("load: expected %d elements, found %d",
-                   expected, total_count);
-        }
-      else
-        error ("load: failed to read matrix from file '%s'",
-               filename.c_str ());
-    }
-  else
+  if (nr <= 0 || nc <= 0)
     error ("load: unable to extract matrix size from file '%s'",
            filename.c_str ());
 
-  return retval;
+  Matrix tmp (nr, nc);
+
+  if (nr < 1 || nc < 1)
+    is.clear (std::ios::badbit);
+  else
+    {
+      double d;
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          std::string buf = get_mat_data_input_line (is);
+
+          std::istringstream tmp_stream (buf);
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              octave_quit ();
+
+              d = octave_read_value<double> (tmp_stream);
+
+              if (! tmp_stream && ! tmp_stream.eof ())
+                error ("load: failed to read matrix from file '%s'",
+                       filename.c_str ());
+
+              tmp.elem (i, j) = d;
+              total_count++;
+
+              // Skip whitespace and commas.
+              char c;
+              while (1)
+                {
+                  tmp_stream >> c;
+
+                  if (! tmp_stream)
+                    break;
+
+                  if (! (c == ' ' || c == '\t' || c == ','))
+                    {
+                      tmp_stream.putback (c);
+                      break;
+                    }
+                }
+
+              if (tmp_stream.eof ())
+                break;
+            }
+        }
+    }
+
+  if (! is && ! is.eof ())
+    error ("load: failed to read matrix from file '%s'",
+           filename.c_str ());
+
+  // FIXME: not sure this is best, but it works.
+
+  if (is.eof ())
+    is.clear ();
+
+  octave_idx_type expected = nr * nc;
+
+  if (expected != total_count)
+    error ("load: expected %d elements, found %d",
+           expected, total_count);
+
+  tc = tmp;
+
+  return varname;
 }
 
 bool

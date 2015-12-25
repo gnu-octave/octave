@@ -258,31 +258,29 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
 
   std::string tag = extract_keyword (is, "type");
 
-  if (! tag.empty ())
+  if (tag.empty ())
+    error ("load: failed to extract keyword specifying value type");
+
+  std::string typ;
+  size_t pos = tag.rfind (' ');
+
+  if (pos != std::string::npos)
     {
-      std::string typ;
-      size_t pos = tag.rfind (' ');
+      global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
 
-      if (pos != std::string::npos)
-        {
-          global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
-
-          typ = global ? tag.substr (7) : tag;
-        }
-      else
-        typ = tag;
-
-      // Special case for backward compatibility.  A small bit of cruft
-      if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
-        tc = charMatrix ();
-      else
-        tc = octave_value_typeinfo::lookup_type (typ);
-
-      if (! tc.load_ascii (is))
-        error ("load: trouble reading ascii file '%s'", filename.c_str ());
+      typ = global ? tag.substr (7) : tag;
     }
   else
-    error ("load: failed to extract keyword specifying value type");
+    typ = tag;
+
+  // Special case for backward compatibility.  A small bit of cruft
+  if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
+    tc = charMatrix ();
+  else
+    tc = octave_value_typeinfo::lookup_type (typ);
+
+  if (! tc.load_ascii (is))
+    error ("load: trouble reading ascii file '%s'", filename.c_str ());
 
   return name;
 }

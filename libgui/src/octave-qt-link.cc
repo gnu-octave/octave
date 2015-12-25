@@ -396,14 +396,14 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
   QStringList btn;
   QStringList role;
   btn << cd_txt;
-  role << "AcceptRole";
+  role << "YesRole";
   if (addpath_option)
     {
       btn << addpath_txt;
       role << "AcceptRole";
     }
   btn << cancel_txt;
-  role << "AcceptRole";
+  role << "RejectRole";
 
   // Lock mutex before signaling.
   uiwidget_creator.mutex.lock ();

@@ -43,8 +43,8 @@ vmessage (const char *name, const char *fmt, va_list args);
 
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
-extern OCTINTERP_API void vusage (const char *fmt, va_list args) GCC_ATTR_NORETURN;
-extern OCTINTERP_API void usage (const char *fmt, ...) GCC_ATTR_NORETURN;
+extern OCTINTERP_API void vusage (const char *fmt, va_list args) GCC_ATTR_NORETURN GCC_ATTR_DEPRECATED;
+extern OCTINTERP_API void usage (const char *fmt, ...) GCC_ATTR_NORETURN GCC_ATTR_DEPRECATED;
 
 extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
 extern OCTINTERP_API void warning (const char *fmt, ...);

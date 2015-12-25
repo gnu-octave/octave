@@ -265,16 +265,14 @@ octave_map::setfield (const std::string& k, const Cell& val)
   if (nfields () == 0)
     dimensions = val.dims ();
 
-  if (val.dims () == dimensions)
-    {
-      octave_idx_type idx = xkeys.getfield (k);
-      if (idx < static_cast<octave_idx_type> (xvals.size ()))
-        xvals[idx] = val;
-      else
-        xvals.push_back (val);
-    }
-  else
+  if (val.dims () != dimensions)
     error ("octave_map::setfield: internal error");
+
+  octave_idx_type idx = xkeys.getfield (k);
+  if (idx < static_cast<octave_idx_type> (xvals.size ()))
+    xvals[idx] = val;
+  else
+    xvals.push_back (val);
 }
 
 void

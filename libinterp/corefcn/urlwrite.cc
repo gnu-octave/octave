@@ -185,10 +185,10 @@ private:
 
     url_transfer obj (host, user, passwd, os);
 
-    if (obj.is_valid ())
-      handle_map[h] = obj;
-    else
+    if (! obj.is_valid ())
       error ("support for URL transfers was disabled when Octave was built");
+
+    handle_map[h] = obj;
 
     return h;
   }
@@ -259,21 +259,19 @@ ch_manager::do_free (const curl_handle& h)
     {
       iterator p = handle_map.find (h);
 
-      if (p != handle_map.end ())
-        {
-          // Curl handles are negative integers plus some random
-          // fractional part.  To avoid running out of integers, we
-          // recycle the integer part but tack on a new random part
-          // each time.
-
-          handle_map.erase (p);
-
-          if (h.value () < 0)
-            handle_free_list.insert
-             (std::ceil (h.value ()) - make_handle_fraction ());
-        }
-      else
+      if (p == handle_map.end ())
         error ("ch_manager::free: invalid object %g", h.value ());
+
+      // Curl handles are negative integers plus some random
+      // fractional part.  To avoid running out of integers, we
+      // recycle the integer part but tack on a new random part
+      // each time.
+
+      handle_map.erase (p);
+
+      if (h.value () < 0)
+        handle_free_list.insert
+          (std::ceil (h.value ()) - make_handle_fraction ());
     }
 }
 

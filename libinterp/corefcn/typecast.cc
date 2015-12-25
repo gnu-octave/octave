@@ -72,18 +72,14 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
   typedef typename ArrayType::element_type T;
   octave_idx_type n = byte_size / sizeof (T);
 
-  if (n * static_cast<int> (sizeof (T)) == byte_size)
-    {
-      ArrayType retval (get_vec_dims (old_dims, n));
-      T *dest = retval.fortran_vec ();
-      std::memcpy (dest, data, n * sizeof (T));
-
-      return retval;
-    }
-  else
+  if (n * static_cast<int> (sizeof (T)) != byte_size)
     error ("typecast: incorrect number of input values to make output value");
 
-  return ArrayType ();
+  ArrayType retval (get_vec_dims (old_dims, n));
+  T *dest = retval.fortran_vec ();
+  std::memcpy (dest, data, n * sizeof (T));
+
+  return retval;
 }
 
 
@@ -268,32 +264,27 @@ do_bitpack (const boolNDArray& bitp)
   octave_idx_type n
     = bitp.numel () / (sizeof (T) * std::numeric_limits<unsigned char>::digits);
 
-  if (n * static_cast<int> (sizeof (T)) * std::numeric_limits<unsigned char>::digits == bitp.numel ())
-    {
-
-      ArrayType retval (get_vec_dims (bitp.dims (), n));
-
-      const bool *bits = bitp.fortran_vec ();
-      char *packed = reinterpret_cast<char *> (retval.fortran_vec ());
-
-      octave_idx_type m = n * sizeof (T);
-
-      for (octave_idx_type i = 0; i < m; i++)
-        {
-          char c = bits[0];
-          for (int j = 1; j < std::numeric_limits<unsigned char>::digits; j++)
-            c |= bits[j] << j;
-
-          packed[i] = c;
-          bits += std::numeric_limits<unsigned char>::digits;
-        }
-
-      return retval;
-    }
-  else
+  if (n * static_cast<int> (sizeof (T)) * std::numeric_limits<unsigned char>::digits != bitp.numel ())
     error ("bitpack: incorrect number of bits to make up output value");
 
-  return ArrayType ();
+  ArrayType retval (get_vec_dims (bitp.dims (), n));
+
+  const bool *bits = bitp.fortran_vec ();
+  char *packed = reinterpret_cast<char *> (retval.fortran_vec ());
+
+  octave_idx_type m = n * sizeof (T);
+
+  for (octave_idx_type i = 0; i < m; i++)
+    {
+      char c = bits[0];
+      for (int j = 1; j < std::numeric_limits<unsigned char>::digits; j++)
+        c |= bits[j] << j;
+
+      packed[i] = c;
+      bits += std::numeric_limits<unsigned char>::digits;
+    }
+
+  return retval;
 }
 
 DEFUN (bitpack, args, ,

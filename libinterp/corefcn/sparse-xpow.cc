@@ -65,64 +65,60 @@ xpow (const SparseMatrix& a, double b)
 
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+
+  if (static_cast<int> (b) != b)
+    error ("use full(a) ^ full(b)");
+
+  int btmp = static_cast<int> (b);
+  if (btmp == 0)
+    {
+      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          tmp.data (i) = 1.0;
+          tmp.ridx (i) = i;
+        }
+      for (octave_idx_type i = 0; i < nr + 1; i++)
+        tmp.cidx (i) = i;
+
+      retval = tmp;
+    }
   else
     {
-      if (static_cast<int> (b) == b)
+      SparseMatrix atmp;
+      if (btmp < 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  tmp.data (i) = 1.0;
-                  tmp.ridx (i) = i;
-                }
-              for (octave_idx_type i = 0; i < nr + 1; i++)
-                tmp.cidx (i) = i;
+          btmp = -btmp;
 
-              retval = tmp;
-            }
-          else
-            {
-              SparseMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
+          octave_idx_type info;
+          double rcond = 0.0;
+          MatrixType mattyp (a);
 
-                  octave_idx_type info;
-                  double rcond = 0.0;
-                  MatrixType mattyp (a);
+          atmp = a.inverse (mattyp, info, rcond, 1);
 
-                  atmp = a.inverse (mattyp, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
+          if (info == -1)
+            warning ("inverse: matrix singular to machine\
  precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              SparseMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
         }
       else
-        error ("use full(a) ^ full(b)");
+        atmp = a;
+
+      SparseMatrix result (atmp);
+
+      btmp--;
+
+      while (btmp > 0)
+        {
+          if (btmp & 1)
+            result = result * atmp;
+
+          btmp >>= 1;
+
+          if (btmp > 0)
+            atmp = atmp * atmp;
+        }
+
+      retval = result;
     }
 
   return retval;
@@ -138,64 +134,60 @@ xpow (const SparseComplexMatrix& a, double b)
 
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+
+  if (static_cast<int> (b) != b)
+    error ("use full(a) ^ full(b)");
+
+  int btmp = static_cast<int> (b);
+  if (btmp == 0)
+    {
+      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          tmp.data (i) = 1.0;
+          tmp.ridx (i) = i;
+        }
+      for (octave_idx_type i = 0; i < nr + 1; i++)
+        tmp.cidx (i) = i;
+
+      retval = tmp;
+    }
   else
     {
-      if (static_cast<int> (b) == b)
+      SparseComplexMatrix atmp;
+      if (btmp < 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  tmp.data (i) = 1.0;
-                  tmp.ridx (i) = i;
-                }
-              for (octave_idx_type i = 0; i < nr + 1; i++)
-                tmp.cidx (i) = i;
+          btmp = -btmp;
 
-              retval = tmp;
-            }
-          else
-            {
-              SparseComplexMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
+          octave_idx_type info;
+          double rcond = 0.0;
+          MatrixType mattyp (a);
 
-                  octave_idx_type info;
-                  double rcond = 0.0;
-                  MatrixType mattyp (a);
+          atmp = a.inverse (mattyp, info, rcond, 1);
 
-                  atmp = a.inverse (mattyp, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
+          if (info == -1)
+            warning ("inverse: matrix singular to machine\
  precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              SparseComplexMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
         }
       else
-        error ("use full(a) ^ full(b)");
+        atmp = a;
+
+      SparseComplexMatrix result (atmp);
+
+      btmp--;
+
+      while (btmp > 0)
+        {
+          if (btmp & 1)
+            result = result * atmp;
+
+          btmp >>= 1;
+
+          if (btmp > 0)
+            atmp = atmp * atmp;
+        }
+
+      retval = result;
     }
 
   return retval;

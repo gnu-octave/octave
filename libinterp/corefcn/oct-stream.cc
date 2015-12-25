@@ -119,11 +119,11 @@ get_size (double d, const std::string& who)
     retval = -1;
   else
     {
-      if (d >= 0.0)
-        retval = NINT (d);
-      else
+      if (d < 0.0)
         ::error ("%s: negative value invalid as size specification",
                  who.c_str ());
+
+      retval = NINT (d);
     }
 
   return retval;
@@ -155,10 +155,10 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
     {
       dnr = size(0);
 
-      if (! xisinf (dnr))
-        dnc = size(1);
-      else
+      if (xisinf (dnr))
         ::error ("%s: invalid size specification", who.c_str ());
+
+      dnc = size(1);
     }
   else
     ::error ("%s: invalid size specification", who.c_str ());
@@ -2623,81 +2623,79 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
         {
           octave_quit ();
 
-          if (elt)
+          if (! elt)
+            ::error ("%s: internal error handling format", who.c_str ());
+
+          // NSA is the number of 'star' args to convert.
+          int nsa = (elt->fw == -2) + (elt->prec == -2);
+
+          int sa_1 = 0;
+          int sa_2 = 0;
+
+          if (nsa > 0)
             {
-              // NSA is the number of 'star' args to convert.
-              int nsa = (elt->fw == -2) + (elt->prec == -2);
+              sa_1 = val_cache.int_value ();
 
-              int sa_1 = 0;
-              int sa_2 = 0;
-
-              if (nsa > 0)
-                {
-                  sa_1 = val_cache.int_value ();
-
-                  if (! val_cache)
-                    break;
-                  else
-                    {
-                      if (nsa > 1)
-                        {
-                          sa_2 = val_cache.int_value ();
-
-                          if (! val_cache)
-                            break;
-                        }
-                    }
-                }
-
-              if (elt->type == '%')
-                {
-                  os << "%";
-                  retval++;
-                }
-              else if (elt->args == 0 && elt->text)
-                {
-                  os << elt->text;
-                  retval += strlen (elt->text);
-                }
-              else if (elt->type == 's' || elt->type == 'c')
-                {
-                  octave_value val = val_cache.get_next_value (elt->type);
-
-                  if (val_cache)
-                    {
-                      if (val.is_string ())
-                        {
-                          std::string sval = val.string_value ();
-
-                          retval += do_printf_string (os, elt, nsa, sa_1,
-                                                      sa_2, sval, who);
-                        }
-                      else
-                        retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
-                                                          sa_2, val, who);
-                    }
-                  else
-                    break;
-                }
+              if (! val_cache)
+                break;
               else
                 {
-                  octave_value val = val_cache.get_next_value ();
+                  if (nsa > 1)
+                    {
+                      sa_2 = val_cache.int_value ();
 
-                  if (val_cache)
-                    retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
-                                                      sa_2, val, who);
-                  else
-                    break;
-                }
-
-              if (! os)
-                {
-                  error ("%s: write error", who.c_str ());
-                  break;
+                      if (! val_cache)
+                        break;
+                    }
                 }
             }
+
+          if (elt->type == '%')
+            {
+              os << "%";
+              retval++;
+            }
+          else if (elt->args == 0 && elt->text)
+            {
+              os << elt->text;
+              retval += strlen (elt->text);
+            }
+          else if (elt->type == 's' || elt->type == 'c')
+            {
+              octave_value val = val_cache.get_next_value (elt->type);
+
+              if (val_cache)
+                {
+                  if (val.is_string ())
+                    {
+                      std::string sval = val.string_value ();
+
+                      retval += do_printf_string (os, elt, nsa, sa_1,
+                                                  sa_2, sval, who);
+                    }
+                  else
+                    retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
+                                                      sa_2, val, who);
+                }
+              else
+                break;
+            }
           else
-            ::error ("%s: internal error handling format", who.c_str ());
+            {
+              octave_value val = val_cache.get_next_value ();
+
+              if (val_cache)
+                retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
+                                                  sa_2, val, who);
+              else
+                break;
+            }
+
+          if (! os)
+            {
+              error ("%s: write error", who.c_str ());
+              break;
+            }
 
           elt = fmt_list.next (nconv > 0 && ! val_cache.exhausted ());
 
@@ -3044,16 +3042,14 @@ octave_stream::seek (const octave_value& tc_offset,
         }
     }
 
-  if (! conv_err)
-    {
-      retval = seek (xoffset, origin);
-
-      if (retval != 0)
-        // Note: error is member fcn from octave_stream, not ::error.
-        error ("fseek: failed to seek to requested position");
-    }
-  else
+  if (conv_err)
     ::error ("fseek: invalid value for origin");
+
+  retval = seek (xoffset, origin);
+
+  if (retval != 0)
+    // Note: error is member fcn from octave_stream, not ::error.
+    error ("fseek: failed to seek to requested position");
 
   return retval;
 }
@@ -4151,14 +4147,16 @@ octave_stream_list::do_insert (octave_stream& os)
   // overwrite this entry, although the wrong entry might have done harm
   // before.
 
-  if (list.size () < list.max_size ())
-    list[stream_number] = os;
-  else
+  if (list.size () >= list.max_size ())
     ::error ("could not create file id");
 
-  return stream_number;
+  list[stream_number] = os;
 
+  return stream_number;
 }
+
+static void
+gripe_invalid_file_id (int fid, const std::string& who) GCC_ATTR_NORETURN;
 
 static void
 gripe_invalid_file_id (int fid, const std::string& who)
@@ -4174,25 +4172,21 @@ octave_stream_list::do_lookup (int fid, const std::string& who) const
 {
   octave_stream retval;
 
-  if (fid >= 0)
-    {
-      if (lookup_cache != list.end () && lookup_cache->first == fid)
-        retval = lookup_cache->second;
-      else
-        {
-          ostrl_map::const_iterator iter = list.find (fid);
-
-          if (iter != list.end ())
-            {
-              retval = iter->second;
-              lookup_cache = iter;
-            }
-          else
-            gripe_invalid_file_id (fid, who);
-        }
-    }
-  else
+  if (fid < 0)
     gripe_invalid_file_id (fid, who);
+
+  if (lookup_cache != list.end () && lookup_cache->first == fid)
+    retval = lookup_cache->second;
+  else
+    {
+      ostrl_map::const_iterator iter = list.find (fid);
+
+      if (iter == list.end ())
+        gripe_invalid_file_id (fid, who);
+
+      retval = iter->second;
+      lookup_cache = iter;
+    }
 
   return retval;
 }
@@ -4209,35 +4203,26 @@ octave_stream_list::do_lookup (const octave_value& fid,
 int
 octave_stream_list::do_remove (int fid, const std::string& who)
 {
-  int retval = -1;
-
   // Can't remove stdin (std::cin), stdout (std::cout), or stderr (std::cerr).
   if (fid < 3)
     gripe_invalid_file_id (fid, who);
-  else
-    {
-      ostrl_map::iterator iter = list.find (fid);
 
-      if (iter == list.end ())
-        gripe_invalid_file_id (fid, who);
-      else
-        {
-          octave_stream os = iter->second;
-          list.erase (iter);
-          lookup_cache = list.end ();
+  ostrl_map::iterator iter = list.find (fid);
 
-          // FIXME: is this check redundant?
-          if (os.is_valid ())
-            {
-              os.close ();
-              retval = 0;
-            }
-          else
-            gripe_invalid_file_id (fid, who);
-        }
-    }
+  if (iter == list.end ())
+    gripe_invalid_file_id (fid, who);
 
-  return retval;
+  octave_stream os = iter->second;
+  list.erase (iter);
+  lookup_cache = list.end ();
+
+  // FIXME: is this check redundant?
+  if (! os.is_valid ())
+    gripe_invalid_file_id (fid, who);
+
+  os.close ();
+
+  return 0;
 }
 
 int

@@ -142,13 +142,11 @@ public:
     {
       set_iterator p = in_use.find (scope);
 
-      if (p != in_use.end ())
-        {
-          in_use.erase (p);
-          free_list.insert (scope);
-        }
-      else
+      if (p == in_use.end ())
         error ("free_scope: scope %d not found!", scope);
+
+      in_use.erase (p);
+      free_list.insert (scope);
     }
 
     std::list<scope_id> do_scopes (void) const
@@ -395,15 +393,15 @@ public:
       {
         if (is_persistent ())
           error ("can't make persistent variable %s global", name.c_str ());
-        else
-          storage_class |= global;
+
+        storage_class |= global;
       }
       void mark_persistent (void)
       {
         if (is_global ())
           error ("can't make global variable %s persistent", name.c_str ());
-        else
-          storage_class |= persistent;
+
+        storage_class |= persistent;
       }
       void mark_added_static (void) { storage_class |= added_static; }
 
@@ -1168,7 +1166,8 @@ public:
   {
     if (scope == xglobal_scope)
       error ("can't set scope to global");
-    else if (scope != xcurrent_scope)
+
+    if (scope != xcurrent_scope)
       {
         all_instances_iterator p = all_instances.find (scope);
 
@@ -1191,26 +1190,22 @@ public:
   {
     if (scope == xglobal_scope)
       error ("can't set scope to global");
-    else
+
+    if (scope != xcurrent_scope)
       {
-        if (scope != xcurrent_scope)
-          {
-            all_instances_iterator p = all_instances.find (scope);
+        all_instances_iterator p = all_instances.find (scope);
 
-            if (p == all_instances.end ())
-              error ("scope not found!");
-            else
-              {
-                instance = p->second;
+        if (p == all_instances.end ())
+          error ("scope not found!");
 
-                xcurrent_scope = scope;
+        instance = p->second;
 
-                xcurrent_context = context;
-              }
-          }
-        else
-          xcurrent_context = context;
+        xcurrent_scope = scope;
+
+        xcurrent_context = context;
       }
+    else
+      xcurrent_context = context;
   }
 
   static void erase_scope (scope_id scope)
@@ -1909,26 +1904,22 @@ public:
   {
     if (xcurrent_scope == xglobal_scope || xcurrent_scope == xtop_scope)
       error ("invalid call to xymtab::push_context");
-    else
-      {
-        symbol_table *inst = get_instance (xcurrent_scope);
 
-        if (inst)
-          inst->do_push_context ();
-      }
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    if (inst)
+      inst->do_push_context ();
   }
 
   static void pop_context (void)
   {
     if (xcurrent_scope == xglobal_scope || xcurrent_scope == xtop_scope)
       error ("invalid call to xymtab::pop_context");
-    else
-      {
-        symbol_table *inst = get_instance (xcurrent_scope);
 
-        if (inst)
-          inst->do_pop_context ();
-      }
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    if (inst)
+      inst->do_pop_context ();
   }
 
   // For unwind_protect.
@@ -2245,8 +2236,8 @@ public:
   {
     if (scope == xglobal_scope || scope == xtop_scope)
       error ("can't free global or top-level scopes!");
-    else
-      symbol_table::scope_id_cache::free (scope);
+
+    symbol_table::scope_id_cache::free (scope);
   }
 
   static void stash_dir_name_for_subfunctions (scope_id scope,

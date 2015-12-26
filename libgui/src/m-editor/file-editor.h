@@ -85,8 +85,19 @@ public:
   QMenu *get_mru_menu (void) { return _mru_file_menu; }
   QMenu *debug_menu (void);
   QToolBar *toolbar (void);
-  void insert_global_actions (QAction*, QAction*, QAction*, QAction*,
-                              QAction*, QAction*, QAction*);
+
+  void insert_global_actions (QList<QAction*>);
+  enum shared_actions_idx
+    {
+      NEW_SCRIPT_ACTION = 0,
+      NEW_FUNCTION_ACTION,
+      OPEN_ACTION,
+      FIND_FILES_ACTION,
+      UNDO_ACTION,
+      COPY_ACTION,
+      PASTE_ACTION,
+      SELECTALL_ACTION
+    };
 
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
@@ -350,6 +361,7 @@ private:
   QAction *_transpose_line_action;
 
   QAction *_find_action;
+  QAction *_find_files_action;
   QAction *_goto_line_action;
   QAction *_completion_action;
 

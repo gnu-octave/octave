@@ -44,8 +44,7 @@ public:
   virtual QMenu *debug_menu () = 0;
   virtual QToolBar *toolbar () = 0;
 
-  virtual void insert_global_actions (QAction*,QAction*,QAction*,QAction*,
-                                        QAction*,QAction*,QAction*) = 0;
+  virtual void insert_global_actions (QList<QAction*>) = 0;
   virtual void handle_enter_debug_mode (void) = 0;
   virtual void handle_exit_debug_mode (void) = 0;
 

@@ -1606,15 +1606,21 @@ main_window::construct_menu_bar (void)
   construct_news_menu (menu_bar);
 
 #ifdef HAVE_QSCINTILLA
-  editor_window->insert_global_actions (_new_script_action,
-                                        _new_function_action,
-                                        _open_action,
-                                        _undo_action,
-                                        _copy_action,
-                                        _paste_action,
-                                        _select_all_action);
+  // call the editor to add actions which should also be available in the
+  // editor's menu and tool bar
+  QList<QAction*> shared_actions;
+  shared_actions << _new_script_action
+                 << _new_function_action
+                 << _open_action
+                 << _find_files_action
+                 << _undo_action
+                 << _copy_action
+                 << _paste_action
+                 <<_select_all_action;
+  editor_window->insert_global_actions (shared_actions);
 #endif
 }
+
 
 QAction*
 main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,

@@ -1277,15 +1277,12 @@ file_editor::request_styles_preferences (bool)
 // insert global actions, that should also be displayed in the editor window,
 // into the editor's menu and/or toolbar
 void
-file_editor::insert_global_actions (QAction *new_action,
-                                    QAction *new_fcn_action,
-                                    QAction *open_action,
-                                    QAction *undo_action,
-                                    QAction *copy_action,
-                                    QAction *paste_action,
-                                    QAction *selectall_action)
+file_editor::insert_global_actions (QList<QAction*> shared_actions)
 {
   // actions/menus that have to be added to the toolbar or the menu
+  QAction *open_action = shared_actions.at (OPEN_ACTION);
+  QAction *new_action = shared_actions.at (NEW_SCRIPT_ACTION);
+  QAction *new_fcn_action = shared_actions.at (NEW_FUNCTION_ACTION);
   _fileMenu->insertAction (_mru_file_menu->menuAction (), open_action);
   _fileMenu->insertAction (open_action, new_fcn_action);
   _fileMenu->insertAction (new_fcn_action, new_action);
@@ -1294,25 +1291,28 @@ file_editor::insert_global_actions (QAction *new_action,
 
   // actions that are additionally enabled/disabled later by the editor
   // undo
-  _undo_action = undo_action;
+  _undo_action = shared_actions.at (UNDO_ACTION);
   _tool_bar->insertAction (_redo_action,_undo_action);
   _edit_menu->insertAction (_redo_action,_undo_action);
   _undo_action->setEnabled (false);
   // copy
-  _copy_action = copy_action;
+  _copy_action = shared_actions.at (COPY_ACTION);
   _tool_bar->insertAction (_cut_action,_copy_action);
   _edit_menu->insertAction (_cut_action,_copy_action);
   _copy_action->setEnabled (false);
   // select all
-  _selectall_action = selectall_action;
+  _selectall_action = shared_actions.at (SELECTALL_ACTION);
   _edit_menu->insertAction (_find_action,_selectall_action);
   _edit_menu->insertSeparator (_find_action);
   // paste
-  _paste_action = paste_action;
+  _paste_action = shared_actions.at (PASTE_ACTION);
   _tool_bar->insertAction (_find_action,_paste_action);
   _edit_menu->insertAction (_selectall_action,_paste_action);
   _edit_menu->insertSeparator (_selectall_action);
   _paste_action->setEnabled (false);
+  // find files
+  _find_files_action = shared_actions.at (FIND_FILES_ACTION);
+  _edit_menu->insertAction (_find_action, _find_files_action);
 }
 
 QAction*

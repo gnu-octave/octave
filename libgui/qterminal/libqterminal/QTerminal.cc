@@ -76,10 +76,17 @@ void
 QTerminal::set_global_shortcuts (bool focus_out)
   {
     if (focus_out)
-      _interrupt_action->setShortcut (QKeySequence ());
+      {
+        _interrupt_action->setShortcut (QKeySequence ());
+        _nop_action->setShortcut (QKeySequence ());
+      }
     else
-     _interrupt_action->setShortcut (
+      {
+        _interrupt_action->setShortcut (
               QKeySequence (Qt::ControlModifier + Qt::Key_C));
+        _nop_action->setShortcut (
+              QKeySequence (Qt::ControlModifier + Qt::Key_D));
+      }
   }
 
 void
@@ -131,24 +138,20 @@ QTerminal::notice_settings (const QSettings *settings)
                       QVariant (colors.at (3))).value<QColor> ());
   setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
 
-  // check whether Copy shoretcut is Ctrl-C
-  int set = settings->value ("shortcuts/set",0).toInt ();
-  QKeySequence copy;
-  QString key = QString ("shortcuts/main_edit:copy");
-  if (set)
-    key.append ("_1");  // if second set is active
-  copy = QKeySequence (settings->value (key).toString ()); // the copy shortcut
+  // check whether Copy shortcut is Ctrl-C
+  QKeySequence sc;
+  sc = QKeySequence (settings->value ("shortcuts/main_edit:copy").toString ());
 
-  // if copy is empty, shortcuts are not yet in the settings (take the default)
-  if (copy.isEmpty ())         // QKeySequence::Copy as second argument in
-    copy = QKeySequence::Copy; // settings->value () does not work!
+  // if sc is empty, shortcuts are not yet in the settings (take the default)
+  if (sc.isEmpty ())         // QKeySequence::Copy as second argument in
+    sc = QKeySequence::Copy; // settings->value () does not work!
 
   //  dis- or enable extra interrupt action
-  QKeySequence ctrl;
-  ctrl = Qt::ControlModifier;
-
-  bool extra_ir_action = (copy != QKeySequence (ctrl + Qt::Key_C));
-
+  bool extra_ir_action = (sc != QKeySequence (Qt::ControlModifier + Qt::Key_C));
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
+
+  // check whether shortcut Ctrl-D is in use by the main-window
+  bool ctrld = settings->value ("shortcuts/main_ctrld",false).toBool ();
+  _nop_action->setEnabled (! ctrld);
 }

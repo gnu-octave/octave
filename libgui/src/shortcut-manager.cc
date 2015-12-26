@@ -105,6 +105,8 @@ shortcut_manager::do_init_data ()
 
   // actions of the main window
 
+  _settings->setValue ("shortcuts/main_ctrld",false); // reset use fo ctrl-d
+
   // file
   init (tr ("New File"), "main_file:new_file", QKeySequence::New);
   init (tr ("New Function"), "main_file:new_function",
@@ -343,6 +345,11 @@ shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
   if (! actual.isEmpty ())
     _shortcut_hash[actual.toString ()] = _sc.count ();
   _action_hash[key] = _sc.count ();
+
+  // check whether ctrl+d is used from main window, i.e. is a global shortcut
+  if (key.startsWith ("main_")
+      && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+    _settings->setValue ("shortcuts/main_ctrld",true);
 }
 
 void
@@ -433,11 +440,20 @@ void
 shortcut_manager::do_write_shortcuts (QSettings* settings,
                                       bool closing)
 {
+  bool sc_ctrld = false;
+
   for (int i = 0; i < _sc.count (); i++)  // loop over all shortcuts
     {
       settings->setValue("shortcuts/"+_sc.at (i).settings_key,
                              _sc.at (i).actual_sc.toString ());
+      // special: check main-window for Ctrl-D (Terminal)
+      if (_sc.at (i).settings_key.startsWith ("main_")
+          && _sc.at (i).actual_sc == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+        sc_ctrld = true;
     }
+
+    settings->setValue ("shortcuts/main_ctrld",sc_ctrld);
+
   if (closing)
     {
       delete _dialog;  // the dialog for key sequences can be removed now

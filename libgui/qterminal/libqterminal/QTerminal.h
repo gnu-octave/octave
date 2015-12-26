@@ -179,6 +179,13 @@ protected:
 
     connect (_interrupt_action, SIGNAL (triggered ()),
             this, SLOT (terminal_interrupt ()));
+
+    // dummy (nop) action catching Ctrl-D in terminal, no connection
+    _nop_action = new QAction (this);
+    addAction (_nop_action);
+
+    _nop_action->setShortcut (
+            QKeySequence (Qt::ControlModifier + Qt::Key_D));
   }
 
 private:
@@ -189,6 +196,7 @@ private:
   QAction * _selectall_action;
 
   QAction *_interrupt_action;
+  QAction *_nop_action;
 };
 
 #endif // QTERMINAL_H

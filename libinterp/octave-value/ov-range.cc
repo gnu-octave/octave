@@ -273,7 +273,7 @@ octave_range::is_true (void) const
 {
   bool retval = false;
 
-  if (! range.numel () != 0)
+  if (! range.is_empty ())
     {
       // FIXME: this is a potential waste of memory.
 

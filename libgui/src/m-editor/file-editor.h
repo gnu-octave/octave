@@ -271,6 +271,7 @@ private slots:
   void show_eol_chars (bool);
   void show_indent_guides (bool);
   void show_long_line (bool);
+  void show_toolbar (bool);
   void zoom_in (bool);
   void zoom_out (bool);
   void zoom_normal (bool);
@@ -346,6 +347,7 @@ private:
   QAction *_show_eol_action;
   QAction *_show_indguide_action;
   QAction *_show_longline_action;
+  QAction *_show_toolbar_action;
   QAction *_zoom_in_action;
   QAction *_zoom_out_action;
   QAction *_zoom_normal_action;

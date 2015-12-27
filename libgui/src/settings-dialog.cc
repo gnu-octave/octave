@@ -395,6 +395,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/long_line_column",80).toInt ());
   ui->cb_edit_status_bar->setChecked (
     settings->value ("editor/show_edit_status_bar",true).toBool ());
+  ui->cb_edit_tool_bar->setChecked (
+    settings->value ("editor/show_toolbar",true).toBool ());
   ui->cb_code_folding->setChecked (
     settings->value ("editor/code_folding",true).toBool ());
 
@@ -777,6 +779,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_code_folding->isChecked ());
   settings->setValue ("editor/show_edit_status_bar",
                       ui->cb_edit_status_bar->isChecked ());
+  settings->setValue ("editor/show_toolbar",
+                      ui->cb_edit_tool_bar->isChecked ());
   settings->setValue ("editor/codeCompletion",
                       ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold",

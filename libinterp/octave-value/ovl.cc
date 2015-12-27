@@ -215,49 +215,47 @@ octave_value_list::make_argv (const std::string& fcn_name) const
 {
   string_vector argv;
 
-  if (all_strings_p ())
+  if (! all_strings_p ())
+    error ("%s: all arguments must be strings", fcn_name.c_str ());
+
+  octave_idx_type len = length ();
+
+  octave_idx_type total_nr = 0;
+
+  for (octave_idx_type i = 0; i < len; i++)
     {
-      octave_idx_type len = length ();
+      // An empty std::string ("") has zero columns and zero rows
+      // (a change that was made for Matlab contemptibility.
 
-      octave_idx_type total_nr = 0;
+      octave_idx_type n = elem (i).rows ();
 
-      for (octave_idx_type i = 0; i < len; i++)
-        {
-          // An empty std::string ("") has zero columns and zero rows (a
-          // change that was made for Matlab contemptibility.
+      total_nr += n ? n : 1;
+    }
 
-          octave_idx_type n = elem(i).rows ();
-
-          total_nr += n ? n : 1;
-        }
-
-      octave_idx_type k = 0;
-      if (! fcn_name.empty ())
-        {
-          argv.resize (total_nr+1);
-          argv[0] = fcn_name;
-          k = 1;
-        }
-      else
-        argv.resize (total_nr);
-
-      for (octave_idx_type i = 0; i < len; i++)
-        {
-          octave_idx_type nr = elem(i).rows ();
-
-          if (nr < 2)
-            argv[k++] = elem(i).string_value ();
-          else
-            {
-              string_vector tmp = elem(i).string_vector_value ();
-
-              for (octave_idx_type j = 0; j < nr; j++)
-                argv[k++] = tmp[j];
-            }
-        }
+  octave_idx_type k = 0;
+  if (! fcn_name.empty ())
+    {
+      argv.resize (total_nr+1);
+      argv[0] = fcn_name;
+      k = 1;
     }
   else
-    error ("%s: all arguments must be strings", fcn_name.c_str ());
+    argv.resize (total_nr);
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      octave_idx_type nr = elem (i).rows ();
+
+      if (nr < 2)
+        argv[k++] = elem (i).string_value ();
+      else
+        {
+          string_vector tmp = elem (i).string_vector_value ();
+
+          for (octave_idx_type j = 0; j < nr; j++)
+            argv[k++] = tmp[j];
+        }
+    }
 
   return argv;
 }

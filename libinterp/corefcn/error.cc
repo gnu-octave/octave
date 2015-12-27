@@ -1475,17 +1475,17 @@ disable escape sequence expansion use a second backslash before the sequence\n\
     {
       string_vector argv = args.make_argv ("warning");
 
-      std::string arg1 = argv(1);
+      std::string arg1 = argv[1];
       std::string arg2 = "all";
 
       if (nargin >= 2)
-        arg2 = argv(2);
+        arg2 = argv[2];
 
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
           octave_map old_warning_options = warning_options;
 
-          if (nargin == 3 && argv(3) == "local"
+          if (nargin == 3 && argv[3] == "local"
               && ! symbol_table::at_top_level ())
             {
               symbol_table::scope_id scope
@@ -1974,13 +1974,13 @@ With two arguments, also set the last message identifier.\n\
 
   if (nargin == 2)
     {
-      Vlast_error_id = argv(2);
-      Vlast_error_message = argv(1);
+      Vlast_error_id = argv[2];
+      Vlast_error_message = argv[1];
     }
   else if (nargin == 1)
     {
       Vlast_error_id = "";
-      Vlast_error_message = argv(1);
+      Vlast_error_message = argv[1];
     }
 
   if (nargin == 0 || nargout > 0)
@@ -2017,13 +2017,13 @@ With two arguments, also set the last message identifier.\n\
 
   if (nargin == 2)
     {
-      Vlast_warning_id = argv(2);
-      Vlast_warning_message = argv(1);
+      Vlast_warning_id = argv[2];
+      Vlast_warning_message = argv[1];
     }
   else if (nargin == 1)
     {
       Vlast_warning_id = "";
-      Vlast_warning_message = argv(1);
+      Vlast_warning_message = argv[1];
     }
 
   if (nargin == 0 || nargout > 0)

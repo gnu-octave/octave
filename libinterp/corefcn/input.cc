@@ -965,7 +965,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 {
   octave_value_list retval;
 
-  string_vector argv = args.make_argv ("");
+  string_vector argv = args.make_argv ();
 
   switch (args.length ())
     {

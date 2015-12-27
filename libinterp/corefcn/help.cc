@@ -1272,7 +1272,7 @@ DEFUN (__which__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  string_vector argv = args.make_argv ("");
+  string_vector argv = args.make_argv ();
 
   int nargin = argv.numel ();
 

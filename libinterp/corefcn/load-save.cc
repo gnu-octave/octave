@@ -652,7 +652,6 @@ Force Octave to assume the file is in Octave's text format.\n\
   bool list_only = false;
   bool verbose = false;
 
-  //for (i; i < argc; i++)
   for (; i < argc; i++)
     {
       if (argv[i] == "-force" || argv[i] == "-f")
@@ -816,7 +815,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 
                   retval = do_load (file, orig_fname, format,
                                     flt_fmt, list_only, swap, verbose,
-                                argv, i, argc, nargout);
+                                    argv, i, argc, nargout);
 
                   file.close ();
                 }
@@ -1138,8 +1137,7 @@ parse_save_options (const string_vector &argv,
 
 static string_vector
 parse_save_options (const std::string &arg, load_save_format &format,
-                    bool &append, bool &save_as_floats,
-                    bool &use_zlib)
+                    bool &append, bool &save_as_floats, bool &use_zlib)
 {
   std::istringstream is (arg);
   std::string str;
@@ -1151,8 +1149,7 @@ parse_save_options (const std::string &arg, load_save_format &format,
       argv.append (str);
     }
 
-  return parse_save_options (argv, format, append, save_as_floats,
-                             use_zlib);
+  return parse_save_options (argv, format, append, save_as_floats, use_zlib);
 }
 
 void
@@ -1591,8 +1588,7 @@ the file @file{data} in Octave's binary format.\n\
   // override from command line
   string_vector argv = args.make_argv ();
 
-  argv = parse_save_options (argv, format, append, save_as_floats,
-                             use_zlib);
+  argv = parse_save_options (argv, format, append, save_as_floats, use_zlib);
 
   int argc = argv.numel ();
   int i = 0;

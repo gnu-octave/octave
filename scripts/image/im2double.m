@@ -86,6 +86,7 @@ function img = im2double (img, im_type)
   endif
 endfunction
 
+
 %!assert (im2double ([1 2 3]), [1 2 3])
 %!assert (im2double (single ([1 2 3])), [1 2 3])
 %!assert (im2double (uint8 ([0 127 128 255])), [0 127/255 128/255 1])

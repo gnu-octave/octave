@@ -84,6 +84,7 @@ function rgb = ntsc2rgb (yiq)
   rgb = colorspace_conversion_revert (rgb, sz, is_im, is_nd);
 endfunction
 
+
 %!shared trans
 %! trans = [ 1.0,      1.0,      1.0;
 %!          0.95617, -0.27269, -1.10374;

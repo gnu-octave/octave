@@ -45,6 +45,7 @@ function retval = iscolormap (cmap)
 
 endfunction
 
+
 %!assert (iscolormap (jet (64)))
 %!assert (iscolormap ({0 1 0}), false)
 %!assert (iscolormap ([0 1i 0]), false)

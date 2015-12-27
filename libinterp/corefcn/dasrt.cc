@@ -432,7 +432,7 @@ parameters for @code{dasrt}.\n\
 
             case 2:
               {
-                string_vector tmp = args(0).all_strings ();
+                string_vector tmp = args(0).string_vector_value ();
 
                 fcn_name = unique_symbol_name ("__dasrt_fcn__");
                 fname = "function y = ";

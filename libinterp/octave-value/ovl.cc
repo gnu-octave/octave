@@ -249,7 +249,7 @@ octave_value_list::make_argv (const std::string& fcn_name) const
             argv[k++] = elem(i).string_value ();
           else
             {
-              string_vector tmp = elem(i).all_strings ();
+              string_vector tmp = elem(i).string_vector_value ();
 
               for (octave_idx_type j = 0; j < nr; j++)
                 argv[k++] = tmp[j];

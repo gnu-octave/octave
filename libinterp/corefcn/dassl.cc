@@ -351,7 +351,7 @@ parameters for @code{dassl}.\n\
 
             case 2:
               {
-                string_vector tmp = f_arg.all_strings ();
+                string_vector tmp = f_arg.string_vector_value ();
 
                 fcn_name = unique_symbol_name ("__dassl_fcn__");
                 fname = "function y = ";

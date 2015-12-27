@@ -892,8 +892,11 @@ public:
   std::string string_value (bool force = false) const
   { return rep->string_value (force); }
 
-  string_vector all_strings (bool pad = false) const
-  { return rep->all_strings (pad); }
+  string_vector string_vector_value (bool pad = false) const
+  { return rep->string_vector_value (pad); }
+
+  string_vector all_strings (bool pad = false) const GCC_ATTR_DEPRECATED
+  { return string_vector_value (pad); }
 
   Cell cell_value (void) const;
 
@@ -1111,7 +1114,7 @@ public:
 
   std::string xstring_value (const char *fmt, ...) const;
 
-  string_vector xall_strings (const char *fmt, ...) const;
+  string_vector xstring_vector_value (const char *fmt, ...) const;
 
   Cell xcell_value (const char *fmt, ...) const;
 

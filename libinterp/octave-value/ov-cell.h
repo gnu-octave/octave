@@ -138,9 +138,9 @@ public:
   octave_value_list list_value (void) const;
 
   octave_value convert_to_str_internal (bool pad, bool, char type) const
-  { return octave_value (all_strings (pad), type); }
+  { return octave_value (string_vector_value (pad), type); }
 
-  string_vector all_strings (bool pad = false) const;
+  string_vector string_vector_value (bool pad = false) const;
 
   Array<std::string> cellstr_value (void) const;
 

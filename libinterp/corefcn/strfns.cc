@@ -95,7 +95,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
       for (int i = 0; i < nargin; i++)
         {
-          string_vector s = args(i).xall_strings ("char: unable to convert some args to strings");
+          string_vector s = args(i).xstring_vector_value ("char: unable to convert some args to strings");
 
           if (s.numel () > 0)
             n_elts += s.numel ();
@@ -210,7 +210,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
   for (int i = 0; i < nargin; i++)
     {
-      string_vector s = args(i).xall_strings ("strvcat: unable to convert some args to strings");
+      string_vector s = args(i).xstring_vector_value ("strvcat: unable to convert some args to strings");
 
       size_t n = s.numel ();
 
@@ -346,7 +346,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
         }
 
       const Cell cell = cell_val.cell_value ();
-      const string_vector str = str_val.all_strings ();
+      const string_vector str = str_val.string_vector_value ();
       octave_idx_type r = str.numel ();
 
       if (r == 0 || r == 1)
@@ -847,7 +847,7 @@ whos ans\n\
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  string_vector s = args(0).xall_strings ("list_in_columns: ARG must be a cellstr or char array");
+  string_vector s = args(0).xstring_vector_value ("list_in_columns: ARG must be a cellstr or char array");
 
   int width = -1;
 

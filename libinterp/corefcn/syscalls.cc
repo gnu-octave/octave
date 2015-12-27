@@ -162,7 +162,7 @@ error message.\n\
 
   if (nargin == 2)
     {
-      string_vector tmp = args(1).xall_strings ("exec: all arguments must be strings");
+      string_vector tmp = args(1).xstring_vector_value ("exec: all arguments must be strings");
 
       int len = tmp.numel ();
 
@@ -250,7 +250,7 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 2)
     {
-      string_vector tmp = args(1).xall_strings ("popen2: all arguments must be strings");
+      string_vector tmp = args(1).xstring_vector_value ("popen2: all arguments must be strings");
 
       int len = tmp.numel ();
 

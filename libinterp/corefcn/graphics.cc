@@ -5662,7 +5662,7 @@ axes::properties::update_xlabel_position (void)
 
       Matrix ext (1, 2, 0.0);
       ext = get_ticklabel_extents (get_xtick ().matrix_value (),
-                                   get_xticklabel ().all_strings (),
+                                   get_xticklabel ().string_vector_value (),
                                    get_xlim ().matrix_value ());
 
       double wmax = ext(0);
@@ -5772,7 +5772,7 @@ axes::properties::update_ylabel_position (void)
       // ALWAYS use an even number for padding or horizontal alignment
       // will be off.
       ext = get_ticklabel_extents (get_ytick ().matrix_value (),
-                                   get_yticklabel ().all_strings (),
+                                   get_yticklabel ().string_vector_value (),
                                    get_ylim ().matrix_value ());
 
       double wmax = ext(0)+4;
@@ -5875,7 +5875,7 @@ axes::properties::update_zlabel_position (void)
 
       Matrix ext (1, 2, 0.0);
       ext = get_ticklabel_extents (get_ztick ().matrix_value (),
-                                   get_zticklabel ().all_strings (),
+                                   get_zticklabel ().string_vector_value (),
                                    get_zlim ().matrix_value ());
 
       double wmax = ext(0);
@@ -5985,7 +5985,7 @@ axes::properties::update_title_position (void)
         {
           Matrix ext (1, 2, 0.0);
           ext = get_ticklabel_extents (get_xtick ().matrix_value (),
-                                       get_xticklabel ().all_strings (),
+                                       get_xticklabel ().string_vector_value (),
                                        get_xlim ().matrix_value ());
           p(1) -= ext(1);
         }
@@ -7983,7 +7983,7 @@ text::properties::update_text_extent (void)
 
   octave_value string_prop = get_string ();
 
-  string_vector sv = string_prop.all_strings ();
+  string_vector sv = string_prop.string_vector_value ();
 
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                            halign, valign, get_rotation (),

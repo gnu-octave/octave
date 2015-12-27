@@ -560,7 +560,7 @@ public:
 
   virtual uint64NDArray uint64_array_value (void) const;
 
-  virtual string_vector all_strings (bool pad = false) const;
+  virtual string_vector string_vector_value (bool pad = false) const;
 
   virtual std::string string_value (bool force = false) const;
 

@@ -757,7 +757,7 @@ protected:
   {
     if (val.is_string ())
       {
-        value = val.all_strings ();
+        value = val.string_vector_value ();
 
         stored_type = char_t;
       }

@@ -168,7 +168,7 @@ public:
 
   bool is_instance_of (const std::string&) const;
 
-  string_vector all_strings (bool pad) const;
+  string_vector string_vector_value (bool pad) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 

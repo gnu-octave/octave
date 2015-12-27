@@ -607,7 +607,7 @@ glps_renderer::draw_text (const text::properties& props)
 
   Matrix bbox;
   const Matrix pos = get_transform ().scale (props.get_data_position ());
-  std::string str = props.get_string ().all_strings ().join ("\n");
+  std::string str = props.get_string ().string_vector_value ().join ("\n");
 
   render_text (str, pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0,
                halign, valign, props.get_rotation ());

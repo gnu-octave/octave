@@ -479,7 +479,7 @@ glob (\"file[12]\")\n\
   if (args.length () != 1)
     print_usage ();
 
-  string_vector pat = args(0).xall_strings ("glob: PATTERN must be a string");
+  string_vector pat = args(0).xstring_vector_value ("glob: PATTERN must be a string");
 
   glob_match pattern (file_ops::tilde_expand (pat));
 
@@ -540,8 +540,8 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
   if (args.length () != 2)
     print_usage ();
 
-  string_vector pat = args(0).all_strings ();
-  string_vector str = args(1).all_strings ();
+  string_vector pat = args(0).string_vector_value ();
+  string_vector str = args(1).string_vector_value ();
 
   glob_match pattern (file_ops::tilde_expand (pat));
 

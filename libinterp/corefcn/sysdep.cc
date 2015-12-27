@@ -887,7 +887,7 @@ tilde_expand (\"~/bin\")\n\
 
   octave_value arg = args(0);
 
-  string_vector sv = arg.xall_strings ("tilde_expand: argument must be char or cellstr object");
+  string_vector sv = arg.xstring_vector_value ("tilde_expand: argument must be char or cellstr object");
 
   sv = file_ops::tilde_expand (sv);
 

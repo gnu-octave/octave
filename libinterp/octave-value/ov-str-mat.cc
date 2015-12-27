@@ -214,7 +214,7 @@ octave_char_matrix_str::complex_array_value (bool force_string_conv) const
 }
 
 string_vector
-octave_char_matrix_str::all_strings (bool) const
+octave_char_matrix_str::string_vector_value (bool) const
 {
   string_vector retval;
 

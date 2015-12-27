@@ -947,7 +947,7 @@ octave_class::is_instance_of (const std::string& cls_name) const
 }
 
 string_vector
-octave_class::all_strings (bool pad) const
+octave_class::string_vector_value (bool pad) const
 {
   string_vector retval;
 
@@ -966,7 +966,7 @@ octave_class::all_strings (bool pad) const
       if (! tmp(0).is_string ())
         error ("cname/char method did not return a string");
 
-      retval = tmp(0).all_strings (pad);
+      retval = tmp(0).string_vector_value (pad);
     }
 
   return retval;

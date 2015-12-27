@@ -548,7 +548,7 @@ octave_cell::list_value (void) const
 }
 
 string_vector
-octave_cell::all_strings (bool pad) const
+octave_cell::string_vector_value (bool pad) const
 {
   string_vector retval;
 
@@ -562,7 +562,7 @@ octave_cell::all_strings (bool pad) const
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      string_vector s = matrix(i).all_strings ();
+      string_vector s = matrix(i).string_vector_value ();
 
       octave_idx_type s_len = s.numel ();
 
@@ -1280,7 +1280,7 @@ To convert back from a cellstr to a character array use @code{char}.\n\
     return ovl (args(0));
   else
     {
-      string_vector s = args(0).xall_strings ("cellstr: argument STRING must be a 2-D character array");
+      string_vector s = args(0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
 
       return ovl (s.is_empty () ? Cell (octave_value (std::string ()))
                                 : Cell (s, true));

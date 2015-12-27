@@ -1052,7 +1052,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       bool do_xminortick = props.is_xminortick ();
       Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
       Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
-      string_vector xticklabels = props.get_xticklabel ().all_strings ();
+      string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fy);
@@ -1162,7 +1162,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       bool do_yminortick = props.is_yminortick ();
       Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
       Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
-      string_vector yticklabels = props.get_yticklabel ().all_strings ();
+      string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fx);
@@ -1263,7 +1263,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       bool do_zminortick = props.is_zminortick ();
       Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
       Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
-      string_vector zticklabels = props.get_zticklabel ().all_strings ();
+      string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
       bool mirror = props.is_box () && zstate != AXE_ANY_DIR;

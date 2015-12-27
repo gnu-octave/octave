@@ -880,13 +880,13 @@ octave_base_value::uint64_array_value (void) const
 }
 
 string_vector
-octave_base_value::all_strings (bool pad) const
+octave_base_value::string_vector_value (bool pad) const
 {
   string_vector retval;
 
   octave_value tmp = convert_to_str (pad, true);
 
-  retval = tmp.all_strings ();
+  retval = tmp.string_vector_value ();
 
   return retval;
 }

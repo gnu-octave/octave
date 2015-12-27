@@ -354,7 +354,7 @@ risk of using @code{eval} on unknown data.\n\
         retval = str2double1 (args(0).string_value ());
       else
         {
-          const string_vector sv = args(0).all_strings ();
+          const string_vector sv = args(0).string_vector_value ();
 
           retval = sv.map<Complex> (str2double1);
         }

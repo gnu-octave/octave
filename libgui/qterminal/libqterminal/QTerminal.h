@@ -109,8 +109,7 @@ public slots:
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (selectedText().length() > 0);
 
-    _contextMenu->move (mapToGlobal (at));
-    _contextMenu->show ();
+    _contextMenu->exec (mapToGlobal (at));
   }
 
   void notice_settings (const QSettings *settings);

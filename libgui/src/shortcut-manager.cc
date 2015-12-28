@@ -287,6 +287,8 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
   init (tr ("Show Statusbar"), "editor_view:show_statusbar",
         QKeySequence ());
+  init (tr ("Show Horizontal Scrollbar"), "editor_view:show_hscrollbar",
+        QKeySequence ());
   init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
   init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
 #if defined (Q_OS_MAC)

@@ -617,8 +617,24 @@ file_editor_tab::update_lexer ()
   lexer->readSettings (*settings);
 
   _edit_area->setLexer (lexer);
+
   _edit_area->setCaretForegroundColor (lexer->color (0));
   _edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
+
+  // set margin colors depending on selected background color of the lexer
+  QColor bg = lexer->paper (0), fg;
+  int h, s, v, factor=-1;
+  bg.getHsv (&h,&s,&v);
+
+  if (v < 96)
+    factor = 2;
+
+  bg.setHsv (h,s/2,v + factor*40);
+  fg.setHsv (h,s/2,v + (factor+1)*40);
+
+  _edit_area->setMarginsForegroundColor (lexer->color (0));
+  _edit_area->setMarginsBackgroundColor (bg);
+  _edit_area->setFoldMarginColors (bg,fg);
 
   // fix line number width with respect to the font size of the lexer
   if (settings->value ("editor/showLineNumbers", true).toBool ())

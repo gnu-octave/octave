@@ -242,16 +242,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   dim_vector x_dims = x.dims ();
 
   if (dim < 0)
-    {
-      // Find first non-singleton dimension
-      while (dim < x_dims.length () && x_dims(dim) <= 1)
-        dim++;
-
-      // All dimensions singleton, pick first dimension
-      if (dim == x_dims.length ())
-        dim = 0;
-    }
-  else if (dim < 0 || dim > x_dims.length ())
+    dim = x_dims.first_non_singleton ();
+  else if (dim > x_dims.length ())
     error ("filter: DIM must be a valid dimension");
 
   octave_idx_type a_len = a.numel ();
@@ -376,9 +368,6 @@ H(z) = ---------------------\n\
   if (nargin < 3 || nargin > 5)
     print_usage ();
 
-  const char *a_b_errmsg = "filter: A and B must be vectors";
-  const char *x_si_errmsg = "filter: X and SI must be arrays";
-
   int dim;
   dim_vector x_dims = args(2).dims ();
 
@@ -389,18 +378,12 @@ H(z) = ---------------------\n\
         error ("filter: DIM must be a valid dimension");
     }
   else
-    {
-      // Find first non-singleton dimension
-      dim = 0;
-      while (dim < x_dims.length () && x_dims(dim) <= 1)
-        dim++;
-
-      // All dimensions singleton, pick first dimension
-      if (dim == x_dims.length ())
-        dim = 0;
-    }
+    dim = x_dims.first_non_singleton ();
 
   octave_value_list retval;
+
+  const char *a_b_errmsg = "filter: A and B must be vectors";
+  const char *x_si_errmsg = "filter: X and SI must be arrays";
 
   bool isfloat = (args(0).is_single_type ()
                   || args(1).is_single_type ()

@@ -89,6 +89,53 @@ QTerminal::set_global_shortcuts (bool focus_out)
       }
   }
 
+// slot for the terminal's context menu
+void
+QTerminal::handleCustomContextMenuRequested (const QPoint& at)
+  {
+    QClipboard * cb = QApplication::clipboard ();
+    QString selected_text = selectedText();
+    bool has_selected_text = ! selected_text.isEmpty ();
+
+    _edit_action->setVisible (false);
+
+    if (has_selected_text)
+      {
+        QRegExp file ("(?:[ \\t]+)(\\S+) at line (\\d+) column (?:\\d+)");
+
+        int pos = file.indexIn (selected_text);
+
+        if (pos > -1)
+          {
+            QString file_name = file.cap (1);
+            QString line = file.cap (2);
+
+            _edit_action->setVisible (true);
+            _edit_action->setText (tr ("Edit %1 at line %2")
+                                   .arg (file_name).arg (line));
+
+            QStringList data;
+            data << file_name << line;
+            _edit_action->setData (data);
+          }
+      }
+
+    _paste_action->setEnabled (cb->text().length() > 0);
+    _copy_action->setEnabled (has_selected_text);
+
+    _contextMenu->exec (mapToGlobal (at));
+  }
+
+// slot for edit files in error messages
+void
+QTerminal::edit_file ()
+{
+  QString file = _edit_action->data ().toStringList ().at (0);
+  int line = _edit_action->data ().toStringList ().at (1).toInt ();
+
+  emit edit_mfile_request (file,line);
+}
+
 void
 QTerminal::notice_settings (const QSettings *settings)
 {

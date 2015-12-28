@@ -235,6 +235,8 @@ public slots:
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
                                                 const QString& file, int line);
+  void handle_edit_mfile_request (const QString& name, const QString& file,
+                                  const QString& curr_dir, int line);
 
   void handle_edit_file_request (const QString& file);
 

@@ -92,6 +92,7 @@ signals:
   void init_terminal_size_signal (void);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
+  void edit_mfile_request (const QString&, const QString&, const QString&, int);
 
   void show_doc_signal (const QString&);
 
@@ -123,6 +124,7 @@ public slots:
   void handle_undo_request (void);
   void new_file (const QString& commands = QString ());
   void open_file (const QString& file_name = QString ());
+  void edit_mfile (const QString&, int);
   void open_online_documentation_page (void);
   void display_release_notes (void);
   void load_and_display_community_news (int serial = -1);

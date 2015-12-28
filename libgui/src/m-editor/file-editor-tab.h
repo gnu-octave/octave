@@ -141,6 +141,8 @@ signals:
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
   void request_open_file (const QString&);
+  void  edit_mfile_request (const QString&, const QString&,
+                            const QString&, int);
 
 protected:
 

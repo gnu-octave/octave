@@ -284,79 +284,9 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
       return;
     }
 
-  // Is it a regular function within the search path? (Call __which__)
-  octave_value_list fct = F__which__ (ovl (word_at_cursor.toStdString ()),0);
-  octave_map map = fct(0).map_value ();
-
-  QString type = QString::fromStdString (
-                         map.contents ("type").data ()[0].string_value ());
-  QString name = QString::fromStdString (
-                         map.contents ("name").data ()[0].string_value ());
-
-  QString message = QString ();
-  QString filename = QString ();
-
-  if (type == QString("built-in function"))
-    { // built in function: can't edit
-      message = tr ("%1 is a built-in function");
-    }
-  else if (type.isEmpty ())
-    {
-      // function not known to octave -> try directory of edited file
-      // get directory
-      QDir dir;
-      if (_file_name.isEmpty ())
-        dir = _ced;
-      else
-        dir = QDir (QFileInfo (_file_name).canonicalPath ());
-
-      // function not known to octave -> try directory of edited file
-      QFileInfo file = QFileInfo (dir, word_at_cursor + ".m");
-
-      if (file.exists ())
-        {
-          filename = file.canonicalFilePath (); // local file exists
-        }
-      else
-        { // local file does not exist -> try private directory
-          file = QFileInfo (_file_name);
-          file = QFileInfo (QDir (file.canonicalPath () + "/private"),
-                            word_at_cursor + ".m");
-
-          if (file.exists ())
-            {
-              filename = file.canonicalFilePath ();  // private function exists
-            }
-          else
-            {
-              message = tr ("Can not find function %1");  // no file found
-            }
-        }
-    }
-
-  if (! message.isEmpty ())
-    {
-      QMessageBox *msgBox
-          = new QMessageBox (QMessageBox::Critical,
-                             tr ("Octave Editor"),
-                             message.arg (name),
-                             QMessageBox::Ok, this);
-
-      msgBox->setWindowModality (Qt::NonModal);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
-      return;
-    }
-
-  if ( filename.isEmpty ())
-    filename = QString::fromStdString (
-                           map.contents ("file").data ()[0].string_value ());
-
-  if (! filename.endsWith (".m"))
-    filename.append (".m");
-
-  emit request_open_file (filename);
+  emit edit_mfile_request (word_at_cursor, _file_name, _ced, -1);
 }
+
 
 void
 file_editor_tab::set_file_name (const QString& fileName)
@@ -1124,13 +1054,12 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
                                    tr ("Line number"), line+1, 1,
                                    _edit_area->lines (), 1, &ok);
       if (ok)
-        {
-          _edit_area->setCursorPosition (line-1, 0);
-          center_current_line ();
-        }
+        _edit_area->setCursorPosition (line-1, 0);
     }
   else  // go to given line without dialog
     _edit_area->setCursorPosition (line-1, 0);
+
+  center_current_line ();
 }
 
 void

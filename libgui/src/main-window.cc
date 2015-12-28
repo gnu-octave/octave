@@ -240,6 +240,12 @@ main_window::open_file (const QString& file_name)
 {
   emit open_file_signal (file_name);
 }
+void
+
+main_window::edit_mfile (const QString& name, int line)
+{
+  emit edit_mfile_request (name, QString (), QString (), line);
+}
 
 void
 main_window::report_status_message (const QString& statusMessage)

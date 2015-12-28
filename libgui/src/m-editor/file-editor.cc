@@ -1257,6 +1257,11 @@ file_editor::show_toolbar (bool)
 {
   toggle_preference ("editor/show_toolbar",true);
 }
+void
+file_editor::show_statusbar (bool)
+{
+  toggle_preference ("editor/show_edit_status_bar",true);
+}
 
 void
 file_editor::zoom_in (bool)
@@ -1349,6 +1354,8 @@ file_editor::notice_settings (const QSettings *settings)
   show_it = settings->value ("editor/show_toolbar",true).toBool ();
   _show_toolbar_action->setChecked (show_it);
   _tool_bar->setVisible (show_it);
+  show_it = settings->value ("editor/show_edit_status_bar",true).toBool ();
+  _show_statusbar_action->setChecked (show_it);
 
   set_shortcuts ();
 
@@ -1687,9 +1694,15 @@ file_editor::construct (void)
           tr ("Show Long Line &Marker"), SLOT (show_long_line (bool)));
   _show_longline_action->setCheckable (true);
 
+  _view_editor_menu->addSeparator ();
+
   _show_toolbar_action = add_action (_view_editor_menu, QIcon (),
           tr ("Show &Toolbar"), SLOT (show_toolbar (bool)));
   _show_toolbar_action->setCheckable (true);
+
+  _show_statusbar_action = add_action (_view_editor_menu, QIcon (),
+          tr ("Show &Statusbar"), SLOT (show_statusbar (bool)));
+  _show_statusbar_action->setCheckable (true);
 
   view_menu->addSeparator ();
 
@@ -2112,6 +2125,7 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_show_indguide_action, "editor_view:show_ind_guides");
   shortcut_manager::set_shortcut (_show_longline_action, "editor_view:show_long_line");
   shortcut_manager::set_shortcut (_show_toolbar_action, "editor_view:show_toolbar");
+  shortcut_manager::set_shortcut (_show_statusbar_action, "editor_view:show_statusbar");
   shortcut_manager::set_shortcut (_zoom_in_action, "editor_view:zoom_in");
   shortcut_manager::set_shortcut (_zoom_out_action, "editor_view:zoom_out");
   shortcut_manager::set_shortcut (_zoom_normal_action, "editor_view:zoom_normal");

@@ -283,6 +283,10 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
   init (tr ("Show Long Line Marker"), "editor_view:show_long_line",
         QKeySequence ());
+  init (tr ("Show Toolbar"), "editor_view:show_toolbar",
+        QKeySequence ());
+  init (tr ("Show Statusbar"), "editor_view:show_statusbar",
+        QKeySequence ());
   init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
   init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
 #if defined (Q_OS_MAC)

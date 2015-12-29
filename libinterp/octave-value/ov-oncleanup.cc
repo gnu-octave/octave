@@ -90,7 +90,7 @@ octave_oncleanup::~octave_oncleanup (void)
   catch (octave_interrupt_exception)
     {
       // Swallow the interrupt.
-      warning ("onCleanup: interrupt occured in cleanup action");
+      warning ("onCleanup: interrupt occurred in cleanup action");
     }
   catch (...) // Yes, the black hole. We're in a d-tor.
     {

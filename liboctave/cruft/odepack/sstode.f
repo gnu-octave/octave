@@ -451,7 +451,7 @@ C-----------------------------------------------------------------------
       IRET = 2
       GO TO 150
 C-----------------------------------------------------------------------
-C Control reaches this section if 3 or more failures have occured.
+C Control reaches this section if 3 or more failures have occurred.
 C If 10 failures have occurred, exit with KFLAG = -1.
 C It is assumed that the derivatives that have accumulated in the
 C YH array have errors of the wrong order.  Hence the first

@@ -563,7 +563,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
       if (nargout > 0)
         {
-          // Return empty string if no error occured.
+          // Return empty string if no error occurred.
           retval(2) = curl.good () ? "" : curl.lasterror ();
           retval(1) = curl.good ();
           retval(0) = buf.str ();

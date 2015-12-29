@@ -86,7 +86,7 @@ static std::string Vlast_warning_id;
 // The last error message id.
 static std::string Vlast_error_id;
 
-// The last file in which an error occured
+// The last file in which an error occurred
 static octave_map Vlast_error_stack;
 
 // Current error state.

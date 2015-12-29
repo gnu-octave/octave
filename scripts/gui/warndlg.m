@@ -49,7 +49,7 @@ endfunction
 
 %!demo
 %! disp ('- test warndlg with prompt only.');
-%! warndlg ('Oh, a warning occured');
+%! warndlg ('Oh, a warning occurred');
 
 %!demo
 %! disp ('- test warndlg with prompt and caption.');

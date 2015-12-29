@@ -5568,7 +5568,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 	* optimization/fsolve.m: Avoid redundant reevaluation when using
 	FD jacobians. Document how it can be done with user jacobians.  Make
 	first iteration special and call outputfcn after it. Skip updates
-	unless two successful iterations have occured.
+	unless two successful iterations have occurred.
 	* optimization/__dogleg__.m: Add missing alpha in the zero-gradient
 	case.
 	* optimization/fsolve.m: Remove autodg (not used), simplify.

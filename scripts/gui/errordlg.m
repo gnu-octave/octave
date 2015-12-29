@@ -49,7 +49,7 @@ endfunction
 
 %!demo
 %! disp ('- test errordlg with prompt only.');
-%! errordlg ('Oops, an expected error occured');
+%! errordlg ('Oops, an expected error occurred');
 
 %!demo
 %! disp ('- test errordlg with prompt and caption.');

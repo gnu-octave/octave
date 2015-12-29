@@ -39,7 +39,7 @@ DEFUNOP (transpose, struct)
   CAST_UNOP_ARG (const octave_struct&);
 
   if (v.ndims () > 2)
-    error ("transpose not defined for N-d objects");
+    error ("transpose not defined for N-D objects");
 
   return octave_value (v.map_value ().transpose ());
 }

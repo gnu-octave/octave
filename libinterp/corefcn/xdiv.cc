@@ -279,9 +279,9 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 //
 //          op2 \ op1:   s   cs
 //               +--   +---+----+
-//   N-d array         | 1 |  3 |
+//   N-D array         | 1 |  3 |
 //                     +---+----+
-//   complex N-d array | 2 |  4 |
+//   complex N-D array | 2 |  4 |
 //                     +---+----+
 
 NDArray
@@ -580,9 +580,9 @@ x_el_div (const FloatComplex a, const FloatComplexMatrix& b)
 //
 //          op2 \ op1:   s   cs
 //               +--   +---+----+
-//   N-d array         | 1 |  3 |
+//   N-D array         | 1 |  3 |
 //                     +---+----+
-//   complex N-d array | 2 |  4 |
+//   complex N-D array | 2 |  4 |
 //                     +---+----+
 
 FloatNDArray

@@ -211,7 +211,7 @@ along with Octave; see the file COPYING.  If not, see
   MM_BOOL_OP (mx_el_and, mx_inline_and, M1, M2) \
   MM_BOOL_OP (mx_el_or,  mx_inline_or,  M1, M2)
 
-// N-d matrix by scalar operations.
+// N-D matrix by scalar operations.
 
 #define NDS_BIN_OP(R, OP, ND, S, F) \
   R \
@@ -258,7 +258,7 @@ along with Octave; see the file COPYING.  If not, see
   NDS_BOOL_OP (mx_el_and_not, mx_inline_and_not, ND, S) \
   NDS_BOOL_OP (mx_el_or_not,  mx_inline_or_not,  ND, S)
 
-// scalar by N-d matrix operations.
+// scalar by N-D matrix operations.
 
 #define SND_BIN_OP(R, OP, S, ND, F) \
   R \
@@ -305,7 +305,7 @@ along with Octave; see the file COPYING.  If not, see
   SND_BOOL_OP (mx_el_and_not, mx_inline_and_not, S, ND) \
   SND_BOOL_OP (mx_el_or_not,  mx_inline_or_not,  S, ND)
 
-// N-d matrix by N-d matrix operations.
+// N-D matrix by N-D matrix operations.
 
 #define NDND_BIN_OP(R, OP, ND1, ND2, F) \
   R \
@@ -564,7 +564,7 @@ operator * (const DM& dm, const M& m) \
   DMDM_BIN_OP (R, operator -, DM1, DM2, mx_inline_sub) \
   DMDM_BIN_OP (R, product,    DM1, DM2, mx_inline_mul)
 
-// scalar by N-d array min/max ops
+// scalar by N-D array min/max ops
 
 #define SND_MINMAX_FCN(FCN, OP, T, S) \
 T \

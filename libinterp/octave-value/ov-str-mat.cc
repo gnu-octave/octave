@@ -203,13 +203,13 @@ octave_char_matrix_str::complex_matrix_value (bool force_string_conv) const
 NDArray
 octave_char_matrix_str::array_value (bool force_string_conv) const
 {
-  CHAR_MATRIX_CONV (NDArray, , "real N-d array", array_value);
+  CHAR_MATRIX_CONV (NDArray, , "real N-D array", array_value);
 }
 
 ComplexNDArray
 octave_char_matrix_str::complex_array_value (bool force_string_conv) const
 {
-  CHAR_MATRIX_CONV (ComplexNDArray, , "complex N-d array",
+  CHAR_MATRIX_CONV (ComplexNDArray, , "complex N-D array",
                     complex_array_value);
 }
 

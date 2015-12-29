@@ -1105,7 +1105,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
-// Safer pow functions that work elementwise for N-d arrays.
+// Safer pow functions that work elementwise for N-D arrays.
 //
 //       op2 \ op1:   s   nd  cs   cnd
 //            +--   +---+---+----+----+
@@ -2471,7 +2471,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   return result;
 }
 
-// Safer pow functions that work elementwise for N-d arrays.
+// Safer pow functions that work elementwise for N-D arrays.
 //
 //       op2 \ op1:   s   nd  cs   cnd
 //            +--   +---+---+----+----+

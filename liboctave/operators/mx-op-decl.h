@@ -151,7 +151,7 @@ class boolNDArray;
   MM_CMP_OP_DECLS (M1, M2, API) \
   MM_BOOL_OP_DECLS (M1, M2, API)
 
-// N-d matrix by scalar operations.
+// N-D matrix by scalar operations.
 
 #define NDS_BIN_OP_DECLS(R, ND, S, API) \
   BIN_OP_DECL (R, operator +, ND, S, API); \
@@ -178,7 +178,7 @@ class boolNDArray;
   NDS_CMP_OP_DECLS (ND, S, API) \
   NDS_BOOL_OP_DECLS (ND, S, API)
 
-// scalar by N-d matrix operations.
+// scalar by N-D matrix operations.
 
 #define SND_BIN_OP_DECLS(R, S, ND, API) \
   BIN_OP_DECL (R, operator +, S, ND, API); \
@@ -205,7 +205,7 @@ class boolNDArray;
   SND_CMP_OP_DECLS (S, ND, API) \
   SND_BOOL_OP_DECLS (S, ND, API)
 
-// N-d matrix by N-d matrix operations.
+// N-D matrix by N-D matrix operations.
 
 #define NDND_BIN_OP_DECLS(R, ND1, ND2, API) \
   BIN_OP_DECL (R, operator +, ND1, ND2, API); \
@@ -281,7 +281,7 @@ class boolNDArray;
 #define DMDM_OP_DECLS(R, DM1, DM2, API) \
   DMDM_BIN_OP_DECLS (R, DM1, DM2, API)
 
-// scalar by N-d array min/max ops
+// scalar by N-D array min/max ops
 
 #define MINMAX_DECLS(T, S, API) \
   extern API T min (S d, const T& m); \

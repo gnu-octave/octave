@@ -6691,7 +6691,7 @@ Undocumented internal function.\n\
     error ("__sort_rows_idx__: sparse matrices not yet supported");
 
   if (arg.ndims () != 2)
-    error ("__sort_rows_idx__: needs a 2-dimensional object");
+    error ("__sort_rows_idx__: needs a 2-D object");
 
   Array<octave_idx_type> idx = arg.sort_rows_idx (smode);
 
@@ -6773,7 +6773,7 @@ This function does not support sparse matrices.\n\
         error ("issorted: sparse matrices not yet supported");
 
       if (arg.ndims () != 2)
-        error ("issorted: A must be a 2-dimensional object");
+        error ("issorted: A must be a 2-D object");
 
       retval = arg.is_sorted_rows (smode) != UNSORTED;
     }
@@ -6830,7 +6830,7 @@ This function does not support sparse matrices.\n\
 %!error <second argument must be a string> issorted (1, 2)
 %!error <second argument must be a string> issorted (1, {"rows"})
 %!error <sparse matrices not yet supported> issorted (sparse ([1 2 3]), "rows")
-%!error <A must be a 2-dimensional object> issorted (rand (2,2,2), "rows")
+%!error <A must be a 2-D object> issorted (rand (2,2,2), "rows")
 %!error <needs a vector> issorted (ones (2,2))
 */
 

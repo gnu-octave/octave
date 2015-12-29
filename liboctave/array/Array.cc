@@ -389,7 +389,7 @@ public:
 
 private:
 
-  // Recursive N-d generalized transpose
+  // Recursive N-D generalized transpose
   template <class T>
   T *do_permute (const T *src, T *dest, int lev) const
   {
@@ -564,7 +564,7 @@ public:
 
 private:
 
-  // Recursive N-d indexing
+  // Recursive N-D indexing
   template <class T>
   T *do_index (const T *src, T *dest, int lev) const
   {
@@ -581,7 +581,7 @@ private:
     return dest;
   }
 
-  // Recursive N-d indexed assignment
+  // Recursive N-D indexed assignment
   template <class T>
   const T *do_assign (const T *src, T *dest, int lev) const
   {
@@ -598,7 +598,7 @@ private:
     return src;
   }
 
-  // Recursive N-d indexed assignment
+  // Recursive N-D indexed assignment
   template <class T>
   void do_fill (const T& val, T *dest, int lev) const
   {

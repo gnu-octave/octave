@@ -66,7 +66,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "CSparse.h"
 
-// N-d Array classes.
+// N-D Array classes.
 
 #include "boolNDArray.h"
 #include "chNDArray.h"

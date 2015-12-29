@@ -46,7 +46,7 @@ DEFUNOP (transpose, float_matrix)
   CAST_UNOP_ARG (const octave_float_matrix&);
 
   if (v.ndims () > 2)
-    error ("transpose not defined for N-d objects");
+    error ("transpose not defined for N-D objects");
 
   return octave_value (v.float_matrix_value ().transpose ());
 }

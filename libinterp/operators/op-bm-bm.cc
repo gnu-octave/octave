@@ -61,7 +61,7 @@ DEFUNOP (transpose, bool_matrix)
   CAST_UNOP_ARG (const octave_bool_matrix&);
 
   if (v.ndims () > 2)
-    error ("transpose not defined for N-d objects");
+    error ("transpose not defined for N-D objects");
 
   return octave_value (v.bool_matrix_value ().transpose ());
 }

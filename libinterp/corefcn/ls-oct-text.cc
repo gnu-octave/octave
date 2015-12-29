@@ -342,8 +342,8 @@ save_text_data_for_plotting (std::ostream& os, const octave_value& t,
 // Maybe this should be a static function in tree-plot.cc?
 
 // If TC is matrix, save it on stream OS in a format useful for
-// making a 3-dimensional plot with gnuplot.  If PARAMETRIC is
-// TRUE, assume a parametric 3-dimensional plot will be generated.
+// making a 3-D plot with gnuplot.  If PARAMETRIC is TRUE,
+// assume a parametric 3-D plot will be generated.
 
 bool
 save_three_d (std::ostream& os, const octave_value& tc, bool parametric)

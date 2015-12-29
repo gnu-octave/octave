@@ -39,7 +39,7 @@ DEFUNOP (transpose, char_matrix_str)
   CAST_UNOP_ARG (const octave_char_matrix_str&);
 
   if (v.ndims () > 2)
-    error ("transpose not defined for N-d objects");
+    error ("transpose not defined for N-D objects");
 
   return octave_value (v.char_matrix_value ().transpose (),
                        a.is_sq_string () ? '\'' : '"');

@@ -117,8 +117,8 @@ function retval = num2str (x, arg)
     endif
     fmt = do_string_escapes (fmt);  # required now that '\n' is interpreted.
     nd = ndims (x);
-    nc = columns (x);
-    x  = permute (x, [2, 1, 3:nd]);
+    nc = columns (x) * (nd - 1);    # ND-arrays are expanded in columns
+    x  = permute (x, [2, 3:nd, 1]);
     if (! (sum (fmt == "%") > 1 || any (strcmp (fmt, {"%s", "%c"}))))
       fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
     endif
@@ -127,7 +127,7 @@ function retval = num2str (x, arg)
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
-        fmt = [arg "%-+" arg(2:end) "i"];
+        fmt = [deblank(arg) "%-+" arg(2:end) "i"];
       elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
         fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
       else
@@ -158,17 +158,17 @@ function retval = num2str (x, arg)
 
     ## Manipulate the complex value to have real values in the odd
     ## columns and imaginary values in the even columns.
-    nc = columns (x);
     nd = ndims (x);
+    nc = columns (x);
     idx = repmat ({':'}, nd, 1);
     perm(1:2:2*nc) = 1:nc;
     perm(2:2:2*nc) = nc + (1:nc);
     idx{2} = perm;
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
-
-    fmt = [deblank(repmat(fmt, 1, nc)), "\n"];
-    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
+    
+    fmt = [deblank(repmat(fmt, 1, nc * (nd - 1))), "\n"];
+    tmp = sprintf (fmt, permute (x, [2, 3:nd, 1]));
 
     ## Put the "i"'s where they are supposed to be.
     tmp = regexprep (tmp, " +i\n", "i\n");
@@ -203,6 +203,31 @@ endfunction
 %!assert (num2str (NA), "NA")
 %!assert (num2str (complex (NA, 1)), "NA+1i")
 %!assert (num2str (complex (1, NA)), "1+NAi")
+
+## ND-arrays are concatenated in columns
+%!shared m, x
+%! m = magic (3);
+%! x = cat (3, m, -m);
+
+## real case
+%!test
+%! y = num2str (x);
+%! assert (rows (y) == 3);
+%! assert (y, ["8   1   6  -8  -1  -6"
+%!             "3   5   7  -3  -5  -7"
+%!             "4   9   2  -4  -9  -2"]);
+
+## complex case
+%!test
+%! x(1,1,2) = -8+2i;
+%! y = num2str (x);
+%! assert (rows (y) == 3);
+%! assert (y, ["8+0i   1+0i   6+0i  -8+2i  -1+0i  -6+0i"
+%!             "3+0i   5+0i   7+0i  -3+0i  -5+0i  -7+0i"
+%!             "4+0i   9+0i   2+0i  -4+0i  -9+0i  -2+0i"]);
+
+## Clear shared variables
+%!shared
 
 ## FIXME: Integers greater than flintmax() - 1 should be masked to show just
 ##        16 digits of precision.

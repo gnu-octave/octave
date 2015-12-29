@@ -243,12 +243,12 @@ public:
   octave_value (const charMatrix& chm,  char type = '\'');
   octave_value (const charNDArray& chnda, char type = '\'');
   octave_value (const Array<char>& chnda, char type = '\'');
-  octave_value (const charMatrix& chm, bool is_string,
-                char type = '\'') GCC_ATTR_DEPRECATED;
-  octave_value (const charNDArray& chnda, bool is_string,
-                char type = '\'') GCC_ATTR_DEPRECATED;
-  octave_value (const Array<char>& chnda, bool is_string,
-                char type = '\'') GCC_ATTR_DEPRECATED;
+  GCC_ATTR_DEPRECATED octave_value (const charMatrix& chm, bool is_string,
+                                    char type = '\'');
+  GCC_ATTR_DEPRECATED octave_value (const charNDArray& chnda, bool is_string,
+                                    char type = '\'');
+  GCC_ATTR_DEPRECATED octave_value (const Array<char>& chnda, bool is_string,
+                                    char type = '\'');
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m,
@@ -297,7 +297,7 @@ public:
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep, bool borrow = false);
-  octave_value (octave_base_value *new_rep, int xcount) GCC_ATTR_DEPRECATED;
+  GCC_ATTR_DEPRECATED octave_value (octave_base_value *new_rep, int xcount);
 
   // Copy constructor.
 
@@ -895,7 +895,7 @@ public:
   string_vector string_vector_value (bool pad = false) const
   { return rep->string_vector_value (pad); }
 
-  string_vector all_strings (bool pad = false) const GCC_ATTR_DEPRECATED
+  GCC_ATTR_DEPRECATED string_vector all_strings (bool pad = false) const
   { return string_vector_value (pad); }
 
   Cell cell_value (void) const;

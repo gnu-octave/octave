@@ -37,13 +37,13 @@ public:
 
   PermMatrix (octave_idx_type n);
 
-  PermMatrix (const Array<octave_idx_type>& p) GCC_ATTR_DEPRECATED;
+  GCC_ATTR_DEPRECATED PermMatrix (const Array<octave_idx_type>& p);
 
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
   PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
 
-  PermMatrix (const idx_vector& idx) GCC_ATTR_DEPRECATED;
+  GCC_ATTR_DEPRECATED PermMatrix (const idx_vector& idx);
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 

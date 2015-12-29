@@ -1340,10 +1340,10 @@ public:
   }
 
   // Use assign (name, value, scope, context, force_add) instead.
-  static octave_value&
+  GCC_ATTR_DEPRECATED static octave_value&
   varref (const std::string& name, scope_id scope = xcurrent_scope,
           context_id context = xdefault_context, bool force_add = false)
-          GCC_ATTR_DEPRECATED
+          
   {
     static octave_value foobar;
 
@@ -1364,9 +1364,9 @@ public:
   }
 
   // Use force_assign (name, value, scope, context) instead.
-  static octave_value&
+  GCC_ATTR_DEPRECATED static octave_value&
   force_varref (const std::string& name, scope_id scope = xcurrent_scope,
-                context_id context = xdefault_context) GCC_ATTR_DEPRECATED
+                context_id context = xdefault_context)
   {
     static octave_value foobar;
 
@@ -1398,8 +1398,8 @@ public:
   }
 
   // Use global_assign (name, value) instead.
-  static octave_value&
-  global_varref (const std::string& name) GCC_ATTR_DEPRECATED
+  GCC_ATTR_DEPRECATED static octave_value&
+  global_varref (const std::string& name)
 
   {
     global_table_iterator p = global_table.find (name);
@@ -1423,8 +1423,8 @@ public:
   }
 
   // Use top_level_assign (name, value) instead.
-  static octave_value&
-  top_level_varref (const std::string& name) GCC_ATTR_DEPRECATED
+  GCC_ATTR_DEPRECATED static octave_value&
+  top_level_varref (const std::string& name)
   {
     static octave_value foobar;
 
@@ -1450,8 +1450,8 @@ public:
   }
 
   // Use persistent_assign (name, value) instead.
-  static octave_value& persistent_varref (const std::string& name)
-  GCC_ATTR_DEPRECATED
+  GCC_ATTR_DEPRECATED static octave_value&
+  persistent_varref (const std::string& name)
   {
     static octave_value foobar;
 

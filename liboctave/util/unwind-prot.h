@@ -50,14 +50,14 @@ public:
     lifo.push (new_elem);
   }
 
-  void add (void (*fcn) (void *), void *ptr = 0) GCC_ATTR_DEPRECATED
+  GCC_ATTR_DEPRECATED void add (void (*fcn) (void *), void *ptr = 0)
   {
     add (new fcn_arg_elem<void *> (fcn, ptr));
   }
 
   operator bool (void) const { return ! empty (); }
 
-  void run_top (void) GCC_ATTR_DEPRECATED { run_first (); }
+  GCC_ATTR_DEPRECATED void run_top (void) { run_first (); }
 
   void run_first (void)
   {
@@ -70,9 +70,9 @@ public:
       }
   }
 
-  void run_top (int num) GCC_ATTR_DEPRECATED { run (num); }
+  GCC_ATTR_DEPRECATED void run_top (int num) { run (num); }
 
-  void discard_top (void) GCC_ATTR_DEPRECATED { discard_first (); }
+  GCC_ATTR_DEPRECATED void discard_top (void) { discard_first (); }
 
   void discard_first (void)
   {
@@ -84,7 +84,7 @@ public:
       }
   }
 
-  void discard_top (int num) GCC_ATTR_DEPRECATED { discard (num); }
+  GCC_ATTR_DEPRECATED void discard_top (int num) { discard (num); }
 
   size_t size (void) const { return lifo.size (); }
 

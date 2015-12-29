@@ -33,9 +33,20 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QComboBox>
 
+// FIXME -- we should not be including config.h in header files.
+// Only needed for octave_value_list type.
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#include "ov.h"
+#endif
+
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
 #include "builtin-defun-decls.h"
+
+#include "marker.h" /* Only needed for typedef of "QIntList", which may be
+                       typedefed elsewhere.  Could use common location. */
+
 
 class file_editor;
 
@@ -130,6 +141,11 @@ public slots:
 
   void handle_context_menu_edit (const QString&);
 
+  void handle_request_add_breakpoint (int line);
+  void handle_request_remove_breakpoint (int line);
+
+  void handle_octave_result (QObject *requester, QString& command, octave_value_list &result);
+
 signals:
 
   void file_name_changed (const QString& fileName, const QString& toolTip);
@@ -143,6 +159,19 @@ signals:
   void request_open_file (const QString&);
   void  edit_mfile_request (const QString&, const QString&,
                             const QString&, int);
+
+  void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
+  void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
+  void remove_all_breakpoints (void);
+  void find_translated_line_number (int original_linenr, int& translated_linenr);
+  void find_linenr_just_before (int linenr, int& original_linenr, int& editor_linenr);
+  void report_editor_linenr (QIntList& int_list);
+  void remove_position_via_debugger_linenr (int debugger_linenr);
+  void remove_all_positions (void);
+  // TODO: The following is similar to "process_octave_code" signal.  However,
+  // currently that signal is connected to something that simply focuses a
+  // window and not actually communicate with Octave.
+  // void evaluate_octave_command (const QString& command);
 
 protected:
 
@@ -182,13 +211,6 @@ private slots:
 
 private:
 
-  enum editor_markers
-  {
-    bookmark,
-    breakpoint,
-    debugger_position
-  };
-
   struct bp_info
   {
     bp_info (const QString& fname, int l = 0);
@@ -205,9 +227,9 @@ private:
   bool check_valid_identifier (QString file_name);
   bool check_valid_codec (QTextCodec *codec);
 
+  void message_cannot_breakpoint_changed_file (void);
+
   void update_lexer ();
-  void request_add_breakpoint (int line);
-  void request_remove_breakpoint (int line);
 
   void show_dialog (QDialog *dlg, bool modal);
   int check_file_modified ();
@@ -249,6 +271,8 @@ private:
   bool _is_octave_file;
   bool _always_reload_changed_files;
   bool _smart_indent;
+
+  QString _breakpoint_filesave_behavior;
 
   QFileSystemWatcher _file_system_watcher;
 

@@ -68,7 +68,8 @@ OCTAVE_GUI_SRC_M_EDITOR_MOC = \
   libgui/src/m-editor/moc-file-editor.cc \
   libgui/src/m-editor/moc-find-dialog.cc \
   libgui/src/m-editor/moc-octave-qscintilla.cc \
-  libgui/src/m-editor/moc-octave-txt-lexer.cc
+  libgui/src/m-editor/moc-octave-txt-lexer.cc \
+  libgui/src/m-editor/moc-marker.cc
 
 $(OCTAVE_GUI_SRC_M_EDITOR_MOC): | libgui/src/m-editor/$(octave_dirstamp)
 
@@ -134,6 +135,7 @@ noinst_HEADERS += \
   libgui/src/m-editor/find-dialog.h \
   libgui/src/m-editor/octave-qscintilla.h \
   libgui/src/m-editor/octave-txt-lexer.h \
+  libgui/src/m-editor/marker.h \
   libgui/src/main-window.h \
   libgui/src/octave-gui.h \
   libgui/src/octave-cmd.h \
@@ -163,6 +165,7 @@ libgui_src_libgui_src_la_SOURCES = \
   libgui/src/m-editor/find-dialog.cc \
   libgui/src/m-editor/octave-qscintilla.cc \
   libgui/src/m-editor/octave-txt-lexer.cc \
+  libgui/src/m-editor/marker.cc \
   libgui/src/main-window.cc \
   libgui/src/octave-cmd.cc \
   libgui/src/octave-dock-widget.cc \

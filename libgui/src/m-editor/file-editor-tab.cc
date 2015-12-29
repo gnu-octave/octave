@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexerdiff.h>
 #include <Qsci/qsciprinter.h>
-#include "resource-manager.h"
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -50,10 +49,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPrintDialog>
 #include <QDateTime>
 #include <QTextCodec>
+#include <QStyle>
+#include <QTextBlock>
+#include <QLabel>
+#include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
+#include "resource-manager.h"
 #include "file-editor-tab.h"
 #include "file-editor.h"
 #include "octave-txt-lexer.h"
+#include "marker.h"
 
 #include "file-ops.h"
 
@@ -129,12 +136,15 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   // symbols
   _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
   _edit_area->setMarginSensitivity (1, true);
-  _edit_area->markerDefine (QsciScintilla::RightTriangle, bookmark);
-  _edit_area->setMarkerBackgroundColor (QColor (0,0,232), bookmark);
-  _edit_area->markerDefine (QsciScintilla::Circle, breakpoint);
-  _edit_area->setMarkerBackgroundColor (QColor (192,0,0), breakpoint);
-  _edit_area->markerDefine (QsciScintilla::RightTriangle, debugger_position);
-  _edit_area->setMarkerBackgroundColor (QColor (255,255,0), debugger_position);
+  _edit_area->markerDefine (QsciScintilla::RightTriangle, marker::bookmark);
+  _edit_area->setMarkerBackgroundColor (QColor (0,0,232), marker::bookmark);
+  _edit_area->markerDefine (QsciScintilla::Circle, marker::breakpoint);
+  _edit_area->setMarkerBackgroundColor (QColor (192,0,0), marker::breakpoint);
+  _edit_area->markerDefine (QsciScintilla::RightTriangle, marker::debugger_position);
+  _edit_area->setMarkerBackgroundColor (QColor (255,255,0), marker::debugger_position);
+  _edit_area->markerDefine (QsciScintilla::RightTriangle,
+                            marker::unsure_debugger_position);
+  _edit_area->setMarkerBackgroundColor (QColor (192,192,192), marker::unsure_debugger_position);
 
   connect (_edit_area, SIGNAL (marginClicked (int, int,
                                               Qt::KeyboardModifiers)),
@@ -194,6 +204,10 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
 file_editor_tab::~file_editor_tab (void)
 {
+  // Tell all connected markers to self-destruct.
+  emit remove_all_breakpoints ();
+  emit remove_all_positions ();
+
   // Destroy items attached to _edit_area.
   QsciLexer *lexer = _edit_area->lexer ();
   if (lexer)
@@ -326,26 +340,47 @@ file_editor_tab::valid_file_name (const QString& file)
 }
 
 void
-file_editor_tab::handle_margin_clicked (int margin, int line,
+file_editor_tab::message_cannot_breakpoint_changed_file (void)
+{
+  // Cannot create a breakpoint when the file is modified
+  // because the line number the editor is providing might
+  // not match what Octave core is interpretting in the
+  // file on disk.
+  QMessageBox* msgBox = new QMessageBox (QMessageBox::Critical,
+                                         tr ("Octave Editor"),
+                                         tr ("Cannot add breakpoint to modified file."),
+                                         QMessageBox::Ok, 0);
+  msgBox->setWindowModality (Qt::ApplicationModal);
+  msgBox->exec ();
+  delete msgBox;
+}
+
+void
+file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
                                         Qt::KeyboardModifiers state)
 {
   if (margin == 1)
     {
-      unsigned int markers_mask = _edit_area->markersAtLine (line);
+      unsigned int markers_mask = _edit_area->markersAtLine (editor_linenr);
 
       if (state & Qt::ControlModifier)
         {
-          if (markers_mask && (1 << bookmark))
-            _edit_area->markerDelete (line, bookmark);
+          if (markers_mask && (1 << marker::bookmark))
+            _edit_area->markerDelete (editor_linenr, marker::bookmark);
           else
-            _edit_area->markerAdd (line, bookmark);
+            _edit_area->markerAdd (editor_linenr, marker::bookmark);
         }
       else
         {
-          if (markers_mask && (1 << breakpoint))
-            request_remove_breakpoint (line);
+          if (markers_mask && (1 << marker::breakpoint))
+            handle_request_remove_breakpoint (editor_linenr);
           else
-            request_add_breakpoint (line);
+            {
+              if (_edit_area->isModified ())
+                message_cannot_breakpoint_changed_file ();
+              else
+                handle_request_add_breakpoint (editor_linenr + 1);
+            }
         }
     }
 }
@@ -722,10 +757,10 @@ file_editor_tab::toggle_bookmark (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << bookmark))
-    _edit_area->markerDelete (line, bookmark);
+  if (_edit_area->markersAtLine (line) && (1 << marker::bookmark))
+    _edit_area->markerDelete (line, marker::bookmark);
   else
-    _edit_area->markerAdd (line, bookmark);
+    _edit_area->markerAdd (line, marker::bookmark);
 }
 
 void
@@ -737,10 +772,10 @@ file_editor_tab::next_bookmark (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << bookmark))
+  if (_edit_area->markersAtLine (line) && (1 << marker::bookmark))
     line++; // we have a breakpoint here, so start search from next line
 
-  int nextline = _edit_area->markerFindNext (line, (1 << bookmark));
+  int nextline = _edit_area->markerFindNext (line, (1 << marker::bookmark));
 
   _edit_area->setCursorPosition (nextline, 0);
 }
@@ -754,10 +789,10 @@ file_editor_tab::previous_bookmark (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << bookmark))
+  if (_edit_area->markersAtLine (line) && (1 << marker::bookmark))
     line--; // we have a breakpoint here, so start search from prev line
 
-  int prevline = _edit_area->markerFindPrevious (line, (1 << bookmark));
+  int prevline = _edit_area->markerFindPrevious (line, (1 << marker::bookmark));
 
   _edit_area->setCursorPosition (prevline, 0);
 }
@@ -768,7 +803,7 @@ file_editor_tab::remove_bookmark (const QWidget *ID)
   if (ID != this)
     return;
 
-  _edit_area->markerDeleteAll (bookmark);
+  _edit_area->markerDeleteAll (marker::bookmark);
 }
 
 void
@@ -829,18 +864,18 @@ file_editor_tab::bp_info::bp_info (const QString& fname, int l)
 }
 
 void
-file_editor_tab::request_add_breakpoint (int line)
+file_editor_tab::handle_request_add_breakpoint (int line)
 {
-  bp_info info (_file_name, line+1);
+  bp_info info (_file_name, line);
 
   octave_link::post_event
     (this, &file_editor_tab::add_breakpoint_callback, info);
 }
 
 void
-file_editor_tab::request_remove_breakpoint (int line)
+file_editor_tab::handle_request_remove_breakpoint (int line)
 {
-  bp_info info (_file_name, line+1);
+  bp_info info (_file_name, line);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_breakpoint_callback, info);
@@ -852,13 +887,18 @@ file_editor_tab::toggle_breakpoint (const QWidget *ID)
   if (ID != this)
     return;
 
-  int line, cur;
-  _edit_area->getCursorPosition (&line, &cur);
+  int editor_linenr, cur;
+  _edit_area->getCursorPosition (&editor_linenr, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << breakpoint))
-    request_remove_breakpoint (line);
+  if (_edit_area->markersAtLine (editor_linenr) && (1 << marker::breakpoint))
+    request_remove_breakpoint_via_editor_linenr (editor_linenr);
   else
-    request_add_breakpoint (line);
+    {
+      if (_edit_area->isModified ())
+        message_cannot_breakpoint_changed_file ();
+      else
+        handle_request_add_breakpoint (editor_linenr + 1);
+    }
 }
 
 void
@@ -870,10 +910,10 @@ file_editor_tab::next_breakpoint (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << breakpoint))
+  if (_edit_area->markersAtLine (line) && (1 << marker::breakpoint))
     line++; // we have a breakpoint here, so start search from next line
 
-  int nextline = _edit_area->markerFindNext (line, (1 << breakpoint));
+  int nextline = _edit_area->markerFindNext (line, (1 << marker::breakpoint));
 
   _edit_area->setCursorPosition (nextline, 0);
 }
@@ -887,10 +927,10 @@ file_editor_tab::previous_breakpoint (const QWidget *ID)
   int line, cur, prevline;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << breakpoint))
+  if (_edit_area->markersAtLine (line) && (1 << marker::breakpoint))
     line--; // we have a breakpoint here, so start search from prev line
 
-  prevline = _edit_area->markerFindPrevious (line, (1 << breakpoint));
+  prevline = _edit_area->markerFindPrevious (line, (1 << marker::breakpoint));
 
   _edit_area->setCursorPosition (prevline, 0);
 }
@@ -1349,6 +1389,24 @@ file_editor_tab::load_file (const QString& fileName)
 
   update_eol_indicator ();
 
+  // TODO: (BREAKPOINTS) At this point it would be nice to put any set
+  // breakpoints on the margin.  In order to do this, somehow the
+  // "dbstatus" command needs to be accessed.  All it would require is a
+  // routine that does "res = feval("dbstatus") and signals that result
+  // to some slot.
+  //
+  // See patch #8016 for a general way to get Octave results from
+  // commands processed in the background.
+
+/*
+  connect (octave_link, SIGNAL (fileSelected (QObject *, const QString&, const octave_value_list&)),
+           this, SLOT (handle_feval_result (QObject *, const QString&, const octave_value_list&)));
+  connect (this, SIGNAL (evaluate_octave_command (const QString&)),
+           octave_link, SLOT (queue_octave_command (const QString&)));
+
+  emit evaluate_octave_command ("dbstatus");
+*/
+
   return QString ();
 }
 
@@ -1416,6 +1474,33 @@ file_editor_tab::update_eol_indicator ()
     }
 }
 
+// TODO: See patch #8016 for a general way to get Octave results from
+// commands processed in the background, e.g., dbstatus.
+void
+file_editor_tab::handle_octave_result (QObject *requester, QString& command,
+                                       octave_value_list&)
+{
+  // Check if this object initiated the command.
+  if (requester == this)
+    {
+      if (command == "dbstatus")
+        {
+          // Should be installing breakpoints in this file
+/*
+octave:1> result = dbstatus
+result =
+
+  0x1 struct array containing the fields:
+
+    name
+    file
+    line
+*/
+          // Check for results that match "file".
+        }
+    }
+}
+
 void
 file_editor_tab::new_file (const QString &commands)
 {
@@ -1462,6 +1547,15 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   else
     file_to_save = saveFileName;
   QFile file (file_to_save);
+
+  // Get a list of all the breakpoint line numbers.
+  QIntList list;
+  emit report_editor_linenr (list);
+  if (! list.isEmpty ())
+    {
+      // At least one breakpoint is present.  Get rid of breakpoints.
+      remove_all_breakpoints (this);
+    }
 
   // stop watching file
   QStringList trackedFiles = _file_system_watcher.files ();
@@ -1530,6 +1624,87 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
     {
       emit tab_remove_request ();
       return;  // Don't touch member variables after removal
+    }
+
+  // Attempt to restore the breakpoints if that is desired.
+  if (! list.isEmpty ())
+    {
+      bool restore_breakpoints;
+      if (_breakpoint_filesave_behavior == "RESTORE")
+        restore_breakpoints = true;
+      else if (_breakpoint_filesave_behavior == "DISCARD")
+        restore_breakpoints = false;
+      else
+        {
+          QDialog* dlgBox = new QDialog ();
+
+          QStyle *mbstyle = dlgBox->style ();
+          QIcon tmpIcon = mbstyle->standardIcon (QStyle::SP_MessageBoxQuestion,
+                                                 0, dlgBox);
+          int iconSize = mbstyle->pixelMetric(QStyle::PM_MessageBoxIconSize,
+                                              0, dlgBox);
+          QLabel *questImage = new QLabel ();
+          questImage->setPixmap (tmpIcon.pixmap (iconSize, iconSize));
+          QLabel *questText = new QLabel ("Would you like to restore adjusted breakpoints?");
+          QHBoxLayout *horizontalLayout = new QHBoxLayout;
+          horizontalLayout->addWidget (questImage);
+          horizontalLayout->addWidget (questText);
+
+          QCheckBox *checkBox = new QCheckBox ("Don't ask again.");
+          checkBox->setCheckState (Qt::Unchecked);
+
+          QDialogButtonBox *buttonBox = new QDialogButtonBox ();
+          QPushButton *noButton = buttonBox->addButton (QDialogButtonBox::No);
+          noButton->setAutoDefault (false);
+          buttonBox->addButton (QDialogButtonBox::Yes);
+          QHBoxLayout *buttonsLayout = new QHBoxLayout;
+          buttonsLayout->addStretch (1);
+          buttonsLayout->addWidget (buttonBox);
+
+          QVBoxLayout *mainLayout = new QVBoxLayout;
+          mainLayout->addLayout (horizontalLayout);
+          mainLayout->addSpacing(12);
+          mainLayout->addWidget (checkBox);
+          mainLayout->addSpacing(12);
+          mainLayout->addLayout (buttonsLayout);
+
+          dlgBox->setLayout (mainLayout);
+
+          connect(buttonBox, SIGNAL(accepted()), dlgBox, SLOT(accept()));
+          connect(buttonBox, SIGNAL(rejected()), dlgBox, SLOT(reject()));
+          dlgBox->setWindowModality (Qt::NonModal);
+          dlgBox->exec ();
+
+          restore_breakpoints = (dlgBox->result () == QDialog::Accepted);
+
+          if (checkBox->checkState () == Qt::Checked)
+            {
+              // User no longer wants to be asked so save the setting for
+              // this object...
+              if (restore_breakpoints)
+                _breakpoint_filesave_behavior = "RESTORE";
+              else
+                _breakpoint_filesave_behavior = "DISCARD";
+
+              // ...and on disc (and Preferences...)
+              QSettings *settings = resource_manager::get_settings ();
+              if (settings)
+                {
+                  settings->setValue ("debugger/breakpoint_filesave_behavior",
+                                      _breakpoint_filesave_behavior);
+                  settings->sync ();
+                }
+            }
+
+          delete dlgBox;
+
+        }
+
+      if (restore_breakpoints)
+        {
+          for (int i = 0; i < list.length (); i++)
+            handle_request_add_breakpoint (list.value (i) + 1);
+        }
     }
 }
 
@@ -1941,6 +2116,9 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
 
+  _breakpoint_filesave_behavior = settings->value ("debugger/breakpoint_filesave_behavior", "ASK").
+                                                    toString ();
+
   _edit_area->setEdgeColumn (
               settings->value ("editor/long_line_column",80).toInt ());
   if (settings->value ("editor/long_line_marker",true).toBool ())
@@ -2052,9 +2230,58 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
   if (ID != this || ID == 0)
     return;
 
+  emit remove_all_positions ();  // remove all positions
+
   if (line > 0)
     {
-      _edit_area->markerAdd (line-1, debugger_position);
+      marker *dp;
+
+      if (_edit_area->isModified ())
+        {
+          // The best that can be done if the editor contents has been
+          // modified is to see if there is a match with the original
+          // line number of any existing breakpoints.  We can put a normal
+          // debugger pointer at that breakpoint position.  Otherwise, it
+          // isn't certain whether the original line number and current line
+          // number match.
+          int editor_linenr = -1;
+          emit find_translated_line_number (line, editor_linenr);
+          if (editor_linenr != -1)
+            {
+              // Match with an existing breakpoint.
+              dp = new marker (_edit_area, line,
+                               marker::debugger_position, editor_linenr);
+            }
+          else
+            {
+              int original_linenr = -1;
+              editor_linenr = -1;
+              emit find_linenr_just_before (line, original_linenr, editor_linenr);
+              if (original_linenr >= 0)
+                {
+                  // Make a guess by using an offset from the breakpoint.
+                  int linenr_guess = editor_linenr + line - original_linenr;
+                  dp = new marker (_edit_area, line,
+                                   marker::unsure_debugger_position,
+                                   linenr_guess);
+                }
+              else
+                {
+                  // Can't make a very good guess, so just use the debugger
+                  // line number.
+                  dp = new marker (_edit_area, line,
+                                   marker::unsure_debugger_position);
+                }
+            }
+        }
+      else
+        dp = new marker (_edit_area, line, marker::debugger_position);
+
+      connect (this, SIGNAL (remove_position_via_debugger_linenr (int)),
+               dp,   SLOT (handle_remove_via_original_linenr (int)));
+      connect (this, SIGNAL (remove_all_positions (void)),
+               dp,   SLOT (handle_remove (void)));
+
       center_current_line ();
     }
 }
@@ -2066,7 +2293,7 @@ file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
     return;
 
   if (line > 0)
-    _edit_area->markerDelete (line-1, debugger_position);
+    _edit_area->markerDelete (line-1, marker::debugger_position);
 }
 
 void
@@ -2078,9 +2305,35 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line)
   if (line > 0)
     {
       if (insert)
-        _edit_area->markerAdd (line-1, breakpoint);
+        {
+          int editor_linenr = -1;
+
+          // If comes back indicating a modified editor line number
+          // then there is already a breakpoint marker associated
+          // with this debugger line.
+          emit find_translated_line_number (line, editor_linenr);
+
+          if (editor_linenr == -1)
+            {
+              marker *bp = new marker (_edit_area, line, marker::breakpoint);
+              connect (this, SIGNAL (remove_breakpoint_via_debugger_linenr (int)),
+                       bp,   SLOT (handle_remove_via_original_linenr (int)));
+              connect (this, SIGNAL (request_remove_breakpoint_via_editor_linenr (int)),
+                       bp,   SLOT (handle_request_remove_via_editor_linenr (int)));
+              connect (this, SIGNAL (remove_all_breakpoints (void)),
+                       bp,   SLOT (handle_remove (void)));
+              connect (this, SIGNAL (find_translated_line_number (int, int&)),
+                       bp,   SLOT (handle_find_translation (int, int&)));
+              connect (this, SIGNAL (find_linenr_just_before (int, int&, int&)),
+                       bp,   SLOT (handle_find_just_before (int, int&, int&)));
+              connect (this, SIGNAL (report_editor_linenr (QIntList&)),
+                       bp,   SLOT (handle_report_editor_linenr (QIntList&)));
+              connect (bp,   SIGNAL (request_remove (int)),
+                       this, SLOT (handle_request_remove_breakpoint (int)));
+            }
+        }
       else
-        _edit_area->markerDelete (line-1, breakpoint);
+        emit remove_breakpoint_via_debugger_linenr (line);
     }
 }
 

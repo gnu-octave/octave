@@ -308,6 +308,14 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->general_icon_graphic-> setChecked (widget_icon_set == "GRAPHIC");
   ui->general_icon_letter-> setChecked (widget_icon_set == "LETTER");
 
+  // how breakpoints should behave when file is saved
+  QString breakpoint_filesave_behavior =
+      settings->value ("debugger/breakpoint_filesave_behavior", "ASK").toString ();
+  ui->debugger_filesave_ask->setChecked (true);  // the default (if invalid set)
+  ui->debugger_filesave_ask->setChecked (breakpoint_filesave_behavior == "ASK");
+  ui->debugger_filesave_restore->setChecked (breakpoint_filesave_behavior == "RESTORE");
+  ui->debugger_filesave_discard->setChecked (breakpoint_filesave_behavior == "DISCARD");
+
   // custom title bar of dock widget
   QVariant default_var = QColor (255,255,255);
   QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
@@ -713,6 +721,14 @@ settings_dialog::write_changed_settings (bool closing)
 {
   QSettings *settings = resource_manager::get_settings ();
   // FIXME: what should happen if settings is 0?
+
+  // how breakpoints should be treated when file is saved
+  QString breakpoint_filesave_behavior = "ASK";
+  if (ui->debugger_filesave_restore->isChecked ())
+    breakpoint_filesave_behavior = "RESTORE";
+  else if (ui->debugger_filesave_discard->isChecked ())
+    breakpoint_filesave_behavior = "DISCARD";
+  settings->setValue ("debugger/breakpoint_filesave_behavior", breakpoint_filesave_behavior);
 
   // the icon set
   QString widget_icon_set = "NONE";

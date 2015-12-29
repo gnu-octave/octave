@@ -1463,7 +1463,7 @@ Undocumented internal function.\n\
   else
     Vgud_mode = args(0).bool_value ();
 
-  return retval; 
+  return retval;
 }
 
 DEFUN (filemarker, args, nargout,

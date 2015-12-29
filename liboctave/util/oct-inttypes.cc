@@ -201,7 +201,7 @@ octave_int_cmp_op::emulate_mop (uint64_t x, double y)
     return xop::op (xx, y);
   else
     {
-      // If equality occured we compare as integers.
+      // If equality occurred we compare as integers.
       if (xx == xxup)
         return xop::gtval;
       else
@@ -222,7 +222,7 @@ octave_int_cmp_op::emulate_mop (int64_t x, double y)
     return xop::op (xx, y);
   else
     {
-      // If equality occured we compare as integers.
+      // If equality occurred we compare as integers.
       if (xx == xxup)
         return xop::gtval;
       else if (xx == xxlo)

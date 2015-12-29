@@ -85,7 +85,7 @@ octave_oncleanup::~octave_oncleanup (void)
     {
       recover_from_exception ();
 
-      warning ("onCleanup: interrupt occured in cleanup action");
+      warning ("onCleanup: interrupt occurred in cleanup action");
     }
   catch (const octave_execution_exception&)
     {

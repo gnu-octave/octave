@@ -917,7 +917,7 @@ isfinite ([13, Inf, NA, NaN])\n\
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).finite ());
+  return ovl (args(0).isfinite ());
 }
 
 /*

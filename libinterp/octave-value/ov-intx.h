@@ -354,7 +354,7 @@ public:
       case umap_isna:
       case umap_isinf:
         return boolNDArray (matrix.dims (), false);
-      case umap_finite:
+      case umap_isfinite:
         return boolNDArray (matrix.dims (), true);
 
       // Special cases for Matlab compatibility.
@@ -660,7 +660,7 @@ public:
       case umap_isna:
       case umap_isinf:
         return false;
-      case umap_finite:
+      case umap_isfinite:
         return true;
 
       // Special cases for Matlab compatibility.

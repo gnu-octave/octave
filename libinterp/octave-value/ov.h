@@ -182,11 +182,10 @@ public:
   octave_value (long int i);
   octave_value (unsigned long int i);
 
-  // FIXME: these are kluges.  They turn into doubles
-  // internally, which will break for very large values.  We just use
-  // them to store things like 64-bit ino_t, etc, and hope that those
-  // values are never actually larger than can be represented exactly
-  // in a double.
+  // FIXME: These are kluges.  They turn into doubles internally, which will
+  // break for very large values.  We just use them to store things like
+  // 64-bit ino_t, etc, and hope that those values are never actually larger
+  // than can be represented exactly in a double.
 
 #if defined (HAVE_LONG_LONG_INT)
   octave_value (long long int i);
@@ -314,8 +313,7 @@ public:
   octave_base_value *empty_clone (void) const
   { return rep->empty_clone (); }
 
-  // Delete the representation of this constant if the count drops to
-  // zero.
+  // Delete the representation of this constant if the count drops to zero.
 
   ~octave_value (void)
   {
@@ -337,7 +335,7 @@ public:
   }
 
   // This uniquifies the value if it is referenced by more than a certain
-  // number of shallow copies. This is useful for optimizations where we
+  // number of shallow copies.  This is useful for optimizations where we
   // know a certain copy, typically within a cell array, to be obsolete.
   void make_unique (int obsolete_copies)
   {
@@ -513,9 +511,8 @@ public:
   MatrixType matrix_type (const MatrixType& typ) const
   { return rep->matrix_type (typ); }
 
-  // Does this constant have a type?  Both of these are provided since
-  // it is sometimes more natural to write is_undefined() instead of
-  // ! is_defined().
+  // Does this constant have a type?  Both of these are provided since it is
+  // sometimes more natural to write is_undefined() instead of ! is_defined().
 
   bool is_defined (void) const
   { return rep->is_defined (); }
@@ -997,14 +994,13 @@ public:
   float_complex_vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
 
-  // Extract values of specific types without any implicit type
-  // conversions.  Throw an error if an object is the wrong type for
-  // the requested value extraction.
+  // Extract values of specific types without any implicit type conversions.
+  // Throw an error if an object is the wrong type for the requested value
+  // extraction.
   //
-  // These functions are intended to provide a simple way to extract
-  // values of specific types and display error messages that are more
-  // meaningful than the generic "error: wrong type argument 'cell'"
-  // message.
+  // These functions are intended to provide a simple way to extract values of
+  // specific types and display error messages that are more meaningful than
+  // the generic "error: wrong type argument 'cell'" message.
 
   short int xshort_value (const char *fmt, ...) const;
 
@@ -1183,9 +1179,9 @@ public:
 
   void make_storable_value (void);
 
-  // Conversions.  These should probably be private.  If a user of this
-  // class wants a certain kind of constant, he should simply ask for
-  // it, and we should convert it if possible.
+  // FIXME: These should probably be private.  
+  // Conversions.  If a user of this class wants a certain kind of constant,
+  // he should simply ask for it, and we should convert it if possible.
 
   octave_value convert_to_str (bool pad = false, bool force = false,
                                char type = '\'') const
@@ -1351,7 +1347,7 @@ public:
   MAPPER_FORWARD (dawson)
   MAPPER_FORWARD (exp)
   MAPPER_FORWARD (expm1)
-  MAPPER_FORWARD (finite)
+  MAPPER_FORWARD (isfinite)
   MAPPER_FORWARD (fix)
   MAPPER_FORWARD (floor)
   MAPPER_FORWARD (gamma)
@@ -1374,8 +1370,7 @@ public:
   MAPPER_FORWARD (tan)
   MAPPER_FORWARD (tanh)
 
-  // These functions are prefixed with X to avoid potential macro
-  // conflicts.
+  // These functions are prefixed with X to avoid potential macro conflicts.
 
   MAPPER_FORWARD (xisalnum)
   MAPPER_FORWARD (xisalpha)
@@ -1399,14 +1394,16 @@ public:
   octave_value map (octave_base_value::unary_mapper_t umap) const
   { return rep->map (umap); }
 
-  // Extract the n-th element, aka val(n). Result is undefined if val is not an
-  // array type or n is out of range. Never error.
+  // Extract the n-th element, aka val(n).
+  // Result is undefined if val is not an array type or n is out of range.
+  // Never error.
   octave_value
   fast_elem_extract (octave_idx_type n) const
   { return rep->fast_elem_extract (n); }
 
-  // Assign the n-th element, aka val(n) = x. Returns false if val is not an
-  // array type, x is not a matching scalar type, or n is out of range.
+  // Assign the n-th element, aka val(n) = x.
+  // Return false if val is not an array type, x is not a matching scalar type,
+  // or n is out of range.
   // Never error.
   virtual bool
   fast_elem_insert (octave_idx_type n, const octave_value& x)

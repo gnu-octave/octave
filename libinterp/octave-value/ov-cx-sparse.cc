@@ -951,7 +951,7 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (isnan, bool, xisnan);
       ARRAY_MAPPER (isna, bool, octave_is_NA);
       ARRAY_MAPPER (isinf, bool, xisinf);
-      ARRAY_MAPPER (finite, bool, xfinite);
+      ARRAY_MAPPER (isfinite, bool, xfinite);
 
     default: // Attempt to go via dense matrix.
       return octave_base_sparse<SparseComplexMatrix>::map (umap);

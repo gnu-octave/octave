@@ -712,7 +712,7 @@ public:
     umap_dawson,
     umap_exp,
     umap_expm1,
-    umap_finite,
+    umap_isfinite,
     umap_fix,
     umap_floor,
     umap_gamma,

@@ -712,7 +712,7 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
       ARRAY_METHOD_MAPPER (abs, abs);
       ARRAY_METHOD_MAPPER (isnan, isnan);
       ARRAY_METHOD_MAPPER (isinf, isinf);
-      ARRAY_METHOD_MAPPER (finite, isfinite);
+      ARRAY_METHOD_MAPPER (isfinite, isfinite);
 
 #define ARRAY_MAPPER(UMAP, TYPE, FCN) \
     case umap_ ## UMAP: \

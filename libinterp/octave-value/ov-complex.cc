@@ -511,7 +511,7 @@ octave_complex::map (unary_mapper_t umap) const
       SCALAR_MAPPER (sqrt, std::sqrt);
       SCALAR_MAPPER (tan, std::tan);
       SCALAR_MAPPER (tanh, std::tanh);
-      SCALAR_MAPPER (finite, xfinite);
+      SCALAR_MAPPER (isfinite, xfinite);
       SCALAR_MAPPER (isinf, xisinf);
       SCALAR_MAPPER (isna, octave_is_NA);
       SCALAR_MAPPER (isnan, xisnan);

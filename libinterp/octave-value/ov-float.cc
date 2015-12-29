@@ -329,7 +329,7 @@ octave_float_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (sqrt, rc_sqrt);
       SCALAR_MAPPER (tan, ::tanf);
       SCALAR_MAPPER (tanh, ::tanhf);
-      SCALAR_MAPPER (finite, xfinite);
+      SCALAR_MAPPER (isfinite, xfinite);
       SCALAR_MAPPER (isinf, xisinf);
       SCALAR_MAPPER (isna, octave_is_NA);
       SCALAR_MAPPER (isnan, xisnan);

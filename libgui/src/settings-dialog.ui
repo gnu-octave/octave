@@ -1503,7 +1503,7 @@
       <attribute name="title">
        <string>Debugger</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_30">
+      <layout class="QVBoxLayout" name="vlayout_dbg_00">
        <item>
         <widget class="QScrollArea" name="scrollArea_8">
          <property name="maximumSize">
@@ -1524,13 +1524,13 @@
             <height>571</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_28">
+          <layout class="QVBoxLayout" name="vlayout_dbg_01">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_13">
+            <layout class="QVBoxLayout" name="vlayout_dbg_02">
              <item>
-              <layout class="QGridLayout" name="gridLayout_15">
+              <layout class="QGridLayout" name="glayout_dbg_01">
                <item row="4" column="0">
-                <widget class="QGroupBox" name="groupBox_6">
+                <widget class="QGroupBox" name="groupbox_dbg_01">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
@@ -1586,7 +1586,7 @@
             </layout>
            </item>
            <item>
-            <spacer name="verticalSpacer_7">
+            <spacer name="vspacer_dbg_01">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>

@@ -586,17 +586,23 @@ file_editor_tab::update_lexer ()
   _edit_area->setCaretForegroundColor (lexer->color (0));
   _edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
 
-  // set margin colors depending on selected background color of the lexer
-  QColor bg = lexer->paper (0), fg;
-  int h, s, v, factor=-1;
-  bg.getHsv (&h,&s,&v);
+  // set some colors depending on selected background color of the lexer
+  QColor bg = lexer->paper (0);
+  QColor fg = lexer->color (0);
 
-  if (v < 96)
-    factor = 2;
+  int bh, bs, bv, fh, fs, fv, h, s, v;
+  bg.getHsv (&bh,&bs,&bv);
+  fg.getHsv (&fh,&fs,&fv);
 
-  bg.setHsv (h,s/2,v + factor*40);
-  fg.setHsv (h,s/2,v + (factor+1)*40);
+  // margin colors
+  h = bh;
+  s = bs/2;
+  v = bv + (fv - bv)/8;
+  bg.setHsv (h,s,v);
+  v = bv + (fv - bv)/4;
+  fg.setHsv (h,s,v);
 
+  _edit_area->setMarkerForegroundColor (lexer->color (0));
   _edit_area->setMarginsForegroundColor (lexer->color (0));
   _edit_area->setMarginsBackgroundColor (bg);
   _edit_area->setFoldMarginColors (bg,fg);

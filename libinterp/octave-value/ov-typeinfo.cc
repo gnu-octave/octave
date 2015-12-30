@@ -195,7 +195,7 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
     {
       len *= 2;
 
-      types.resize (dim_vector (len, 1), std::string ());
+      types.resize (dim_vector (len, 1), "");
 
       vals.resize (dim_vector (len, 1), octave_value ());
 

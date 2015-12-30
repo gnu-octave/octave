@@ -46,7 +46,7 @@ public:
     : octave_fcn_handle (), iftext (), ifargs () { }
 
   octave_fcn_inline (const std::string& f, const string_vector& a,
-                     const std::string& n = std::string ());
+                     const std::string& n = "");
 
   octave_fcn_inline (const octave_fcn_inline& fi)
     : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }

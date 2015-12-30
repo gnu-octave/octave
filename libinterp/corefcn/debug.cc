@@ -167,7 +167,7 @@ get_file_line (const std::string& fname, size_t line)
 // current call stack.
 
 static octave_user_code *
-get_user_code (const std::string& fname = std::string ())
+get_user_code (const std::string& fname = "")
 {
   octave_user_code *dbg_fcn = 0;
 
@@ -197,7 +197,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
 {
   int idx = 0;
   int list_idx = 0;
-  symbol_name = std::string ();
+  symbol_name = "";
   lines = bp_table::intmap ();
 
   if (args.length () == 0)

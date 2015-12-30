@@ -148,7 +148,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  out_of_date_check (fcn, std::string (), false);
+  out_of_date_check (fcn, "", false);
 
   if (has_overloads)
     {
@@ -369,7 +369,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
   else
     {
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : std::string ();
+      std::string fnm = f ? f->fcn_file_name () : "";
 
       os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
       if (! fnm.empty ())
@@ -444,7 +444,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   bool dummy;
 
                   std::string name
-                    = read_text_data (is, std::string (), dummy, t2, i);
+                    = read_text_data (is, "", dummy, t2, i);
 
                   if (! is)
                     error ("load: failed to load anonymous function handle");
@@ -544,7 +544,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       std::ostringstream nmbuf;
 
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : std::string ();
+      std::string fnm = f ? f->fcn_file_name () : "";
 
       nmbuf << nm << "\n" << OCTAVE_EXEC_PREFIX << "\n" << fnm;
 
@@ -625,7 +625,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               std::string doc;
 
               std::string name =
-                read_binary_data (is, swap, fmt, std::string (),
+                read_binary_data (is, swap, fmt, "",
                                   dummy, t2, doc);
 
               if (! is)
@@ -834,7 +834,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       std::string octaveroot = OCTAVE_EXEC_PREFIX;
 
       octave_function *f = function_value ();
-      std::string fpath = f ? f->fcn_file_name () : std::string ();
+      std::string fpath = f ? f->fcn_file_name () : "";
 
       H5Sclose (space_hid);
       hdims[0] = 1;

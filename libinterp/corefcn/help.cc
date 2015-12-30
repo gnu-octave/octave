@@ -1201,7 +1201,7 @@ do_which (const std::string& name, std::string& type)
 {
   std::string file;
 
-  type = std::string ();
+  type = "";
 
   octave_value val = symbol_table::find_function (name);
 

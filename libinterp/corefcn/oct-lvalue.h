@@ -88,7 +88,7 @@ public:
 
   void set_index (const std::string& t, const std::list<octave_value_list>& i);
 
-  void clear_index (void) { type = std::string (); idx.clear (); }
+  void clear_index (void) { type = ""; idx.clear (); }
 
   std::string index_type (void) const { return type; }
 

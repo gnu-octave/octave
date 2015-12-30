@@ -77,5 +77,5 @@ tree_expression::lvalue (void)
 std::string
 tree_expression::original_text (void) const
 {
-  return std::string ();
+  return "";
 }

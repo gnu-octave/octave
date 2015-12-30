@@ -402,7 +402,7 @@ octave_mkdir (const std::string& nm, mode_t md)
 int
 octave_mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -424,7 +424,7 @@ octave_mkfifo (const std::string& nm, mode_t md)
 int
 octave_mkfifo (const std::string& name, mode_t mode, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -451,7 +451,7 @@ int
 octave_link (const std::string& old_name,
              const std::string& new_name, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -474,7 +474,7 @@ int
 octave_symlink (const std::string& old_name,
                 const std::string& new_name, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -499,7 +499,7 @@ octave_readlink (const std::string& path, std::string& result,
 {
   int status = -1;
 
-  msg = std::string ();
+  msg = "";
 
   char buf[MAXPATHLEN+1];
 
@@ -530,7 +530,7 @@ octave_rename (const std::string& from, const std::string& to,
 {
   int status = -1;
 
-  msg = std::string ();
+  msg = "";
 
   status = gnulib::rename (from.c_str (), to.c_str ());
 
@@ -550,7 +550,7 @@ octave_rmdir (const std::string& name)
 int
 octave_rmdir (const std::string& name, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -574,7 +574,7 @@ octave_recursive_rmdir (const std::string& name)
 int
 octave_recursive_rmdir (const std::string& name, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = 0;
 
@@ -659,7 +659,7 @@ octave_unlink (const std::string& name)
 int
 octave_unlink (const std::string& name, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -682,7 +682,7 @@ std::string
 octave_tempnam (const std::string& dir, const std::string& pfx,
                 std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   std::string retval;
 
@@ -730,7 +730,7 @@ octave_canonicalize_file_name (const std::string& name)
 std::string
 octave_canonicalize_file_name (const std::string& name, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   std::string retval;
 

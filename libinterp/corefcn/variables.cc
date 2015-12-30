@@ -1102,7 +1102,7 @@ private:
   struct symbol_info
   {
     symbol_info (const symbol_table::symbol_record& sr,
-                 const std::string& expr_str = std::string (),
+                 const std::string& expr_str = "",
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
         varval (expr_val.is_undefined () ? sr.varval () : expr_val),
@@ -1589,7 +1589,7 @@ private:
 
 static octave_value
 do_who (int argc, const string_vector& argv, bool return_list,
-        bool verbose = false, std::string msg = std::string ())
+        bool verbose = false, std::string msg = "")
 {
   octave_value retval;
 

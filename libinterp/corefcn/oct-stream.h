@@ -55,7 +55,7 @@ public:
 
   scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
                     char typ = '\0', char mod = '\0',
-                    const std::string& ch_class = std::string ())
+                    const std::string& ch_class = "")
     : text (strsave (txt)), width (w), discard (d), type (typ),
       modifier (mod), char_class (ch_class) { }
 
@@ -106,7 +106,7 @@ scanf_format_list
 {
 public:
 
-  scanf_format_list (const std::string& fmt = std::string ());
+  scanf_format_list (const std::string& fmt = "");
 
   ~scanf_format_list (void);
 
@@ -174,7 +174,7 @@ private:
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
                         octave_idx_type& num_elts,
-                        const std::string& char_class = std::string ());
+                        const std::string& char_class = "");
 
   void process_conversion (const std::string& s, size_t& i, size_t n,
                            int& width, bool& discard, char& type,
@@ -196,7 +196,7 @@ printf_format_elt
 public:
 
   printf_format_elt (const char *txt = 0, int n = 0, int w = -1,
-                     int p = -1, const std::string& f = std::string (),
+                     int p = -1, const std::string& f = "",
                      char typ = '\0', char mod = '\0')
     : text (strsave (txt)), args (n), fw (w), prec (p), flags (f),
       type (typ), modifier (mod) { }
@@ -252,7 +252,7 @@ printf_format_list
 {
 public:
 
-  printf_format_list (const std::string& fmt = std::string ());
+  printf_format_list (const std::string& fmt = "");
 
   ~printf_format_list (void);
 
@@ -692,14 +692,14 @@ public:
   static int insert (octave_stream& os);
 
   static octave_stream
-  lookup (int fid, const std::string& who = std::string ());
+  lookup (int fid, const std::string& who = "");
 
   static octave_stream
-  lookup (const octave_value& fid, const std::string& who = std::string ());
+  lookup (const octave_value& fid, const std::string& who = "");
 
-  static int remove (int fid, const std::string& who = std::string ());
+  static int remove (int fid, const std::string& who = "");
   static int remove (const octave_value& fid,
-                     const std::string& who = std::string ());
+                     const std::string& who = "");
 
   static void clear (bool flush = true);
 
@@ -727,13 +727,13 @@ private:
   int do_insert (octave_stream& os);
 
   octave_stream do_lookup (int fid,
-                           const std::string& who = std::string ()) const;
+                           const std::string& who = "") const;
   octave_stream do_lookup (const octave_value& fid,
-                           const std::string& who = std::string ()) const;
+                           const std::string& who = "") const;
 
-  int do_remove (int fid, const std::string& who = std::string ());
+  int do_remove (int fid, const std::string& who = "");
   int do_remove (const octave_value& fid,
-                 const std::string& who = std::string ());
+                 const std::string& who = "");
 
   void do_clear (bool flush = true);
 

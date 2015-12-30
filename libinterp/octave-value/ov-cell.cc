@@ -603,7 +603,7 @@ octave_cell::string_vector_value (bool pad) const
       else if (pad)
         retval[k++] = std::string (max_len, ' ');
       else
-        retval[k++] = std::string ();
+        retval[k++] = "";
     }
 
   return retval;
@@ -794,7 +794,7 @@ octave_cell::load_ascii (std::istream& is)
           bool dummy;
 
           // recurse to read cell elements
-          std::string nm = read_text_data (is, std::string (),
+          std::string nm = read_text_data (is, "",
                                            dummy, t2, i);
 
           if (nm != CELL_ELT_TAG)
@@ -829,7 +829,7 @@ octave_cell::load_ascii (std::istream& is)
                   bool dummy;
 
                   // recurse to read cell elements
-                  std::string nm = read_text_data (is, std::string (),
+                  std::string nm = read_text_data (is, "",
                                                    dummy, t2, i);
 
                   if (nm != CELL_ELT_TAG)
@@ -939,7 +939,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
       std::string doc;
 
       // recurse to read cell elements
-      std::string nm = read_binary_data (is, swap, fmt, std::string (),
+      std::string nm = read_binary_data (is, swap, fmt, "",
                                          dummy, t2, doc);
 
       if (nm != CELL_ELT_TAG)
@@ -1282,7 +1282,7 @@ To convert back from a cellstr to a character array use @code{char}.\n\
     {
       string_vector s = args(0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
 
-      return ovl (s.is_empty () ? Cell (octave_value (std::string ()))
+      return ovl (s.is_empty () ? Cell (octave_value (""))
                                 : Cell (s, true));
     }
 }

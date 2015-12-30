@@ -110,7 +110,7 @@ get_mat_data_input_line (std::istream& is)
 static void
 get_lines_and_columns (std::istream& is,
                        octave_idx_type& nr, octave_idx_type& nc,
-                       const std::string& filename = std::string (),
+                       const std::string& filename = "",
                        bool quiet = false, bool check_numeric = false)
 {
   std::streampos pos = is.tellg ();

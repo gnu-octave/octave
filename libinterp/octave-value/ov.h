@@ -1256,7 +1256,7 @@ public:
   bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
 
   void print_info (std::ostream& os,
-                   const std::string& prefix = std::string ()) const;
+                   const std::string& prefix = "") const;
 
   bool save_ascii (std::ostream& os) { return rep->save_ascii (os); }
 

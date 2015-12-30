@@ -104,7 +104,7 @@ std::string
 octave_env::polite_directory_format (const std::string& name)
 {
   return (instance_ok ())
-         ? instance->do_polite_directory_format (name) : std::string ();
+         ? instance->do_polite_directory_format (name) : "";
 }
 
 bool
@@ -125,49 +125,49 @@ std::string
 octave_env::base_pathname (const std::string& s)
 {
   return (instance_ok ())
-         ? instance->do_base_pathname (s) : std::string ();
+         ? instance->do_base_pathname (s) : "";
 }
 
 std::string
 octave_env::make_absolute (const std::string& s, const std::string& dot_path)
 {
   return (instance_ok ())
-         ? instance->do_make_absolute (s, dot_path) : std::string ();
+         ? instance->do_make_absolute (s, dot_path) : "";
 }
 
 std::string
 octave_env::get_current_directory ()
 {
   return (instance_ok ())
-         ? instance->do_getcwd () : std::string ();
+         ? instance->do_getcwd () : "";
 }
 
 std::string
 octave_env::get_home_directory ()
 {
   return (instance_ok ())
-         ? instance->do_get_home_directory () : std::string ();
+         ? instance->do_get_home_directory () : "";
 }
 
 std::string
 octave_env::get_temp_directory ()
 {
   return (instance_ok ())
-         ? instance->do_get_temp_directory () : std::string ();
+         ? instance->do_get_temp_directory () : "";
 }
 
 std::string
 octave_env::get_program_name (void)
 {
   return (instance_ok ())
-         ? instance->prog_name : std::string ();
+         ? instance->prog_name : "";
 }
 
 std::string
 octave_env::get_program_invocation_name (void)
 {
   return (instance_ok ())
-         ? instance->prog_invocation_name : std::string ();
+         ? instance->prog_invocation_name : "";
 }
 
 void
@@ -181,14 +181,14 @@ std::string
 octave_env::get_user_name (void)
 {
   return (instance_ok ())
-         ? instance->do_get_user_name () : std::string ();
+         ? instance->do_get_user_name () : "";
 }
 
 std::string
 octave_env::get_host_name (void)
 {
   return (instance_ok ())
-         ? instance->do_get_host_name () : std::string ();
+         ? instance->do_get_host_name () : "";
 }
 
 std::string
@@ -238,7 +238,7 @@ std::string
 octave_env::getenv (const std::string& name)
 {
   return (instance_ok ())
-         ? instance->do_getenv (name) : std::string ();
+         ? instance->do_getenv (name) : "";
 }
 
 void

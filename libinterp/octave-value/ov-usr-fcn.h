@@ -66,7 +66,7 @@ public:
 protected:
 
   octave_user_code (const std::string& nm,
-                    const std::string& ds = std::string ())
+                    const std::string& ds = "")
     : octave_function (nm, ds) { }
 
 private:
@@ -89,10 +89,10 @@ public:
 
   octave_user_script (const std::string& fnm, const std::string& nm,
                       tree_statement_list *cmds,
-                      const std::string& ds = std::string ());
+                      const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      const std::string& ds = std::string ());
+                      const std::string& ds = "");
 
   ~octave_user_script (void);
 
@@ -266,7 +266,7 @@ public:
 
   bool takes_var_return (void) const;
 
-  void mark_as_private_function (const std::string& cname = std::string ())
+  void mark_as_private_function (const std::string& cname = "")
   {
     symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
 
@@ -305,7 +305,7 @@ public:
   bool is_anonymous_function (void) const { return anonymous_function; }
 
   bool is_anonymous_function_of_class
-  (const std::string& cname = std::string ()) const
+  (const std::string& cname = "") const
   {
     return anonymous_function
            ? (cname.empty ()
@@ -330,13 +330,13 @@ public:
 
   void mark_as_classdef_constructor (void) { class_constructor = classdef; }
 
-  bool is_class_constructor (const std::string& cname = std::string ()) const
+  bool is_class_constructor (const std::string& cname = "") const
   {
     return class_constructor == legacy
       ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
 
-  bool is_classdef_constructor (const std::string& cname = std::string ()) const
+  bool is_classdef_constructor (const std::string& cname = "") const
   {
     return class_constructor == classdef
       ? (cname.empty () ? true : cname == dispatch_class ()) : false;
@@ -344,7 +344,7 @@ public:
 
   void mark_as_class_method (void) { class_method = true; }
 
-  bool is_class_method (const std::string& cname = std::string ()) const
+  bool is_class_method (const std::string& cname = "") const
   {
     return class_method
            ? (cname.empty () ? true : cname == dispatch_class ()) : false;

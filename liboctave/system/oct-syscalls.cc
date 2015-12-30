@@ -57,7 +57,7 @@ octave_syscalls::dup2 (int old_fd, int new_fd)
 int
 octave_syscalls::dup2 (int old_fd, int new_fd, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -84,7 +84,7 @@ int
 octave_syscalls::execvp (const std::string& file, const string_vector& args,
                          std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -229,7 +229,7 @@ octave_syscalls::pipe (int *fildes)
 int
 octave_syscalls::pipe (int *fildes, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -257,7 +257,7 @@ octave_syscalls::waitpid (pid_t pid, int *status, int options,
                           std::string& msg)
 {
   pid_t retval = -1;
-  msg = std::string ();
+  msg = "";
 
 #if defined (HAVE_WAITPID)
   retval = ::octave_waitpid (pid, status, options);
@@ -281,7 +281,7 @@ octave_syscalls::kill (pid_t pid, int sig)
 int
 octave_syscalls::kill (pid_t pid, int sig, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 
@@ -405,7 +405,7 @@ octave_fcntl (int fd, int cmd, long arg)
 int
 octave_fcntl (int fd, int cmd, long arg, std::string& msg)
 {
-  msg = std::string ();
+  msg = "";
 
   int status = -1;
 

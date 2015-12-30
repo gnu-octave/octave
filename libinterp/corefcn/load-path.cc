@@ -1099,11 +1099,11 @@ load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
           retval = find_method (class_name, meth, dir_name);
         }
       else
-        retval = std::string ();
+        retval = "";
     }
   else
     {
-      dir_name = std::string ();
+      dir_name = "";
 
       const_fcn_map_iterator p = fcn_map.find (fcn);
 
@@ -1126,7 +1126,7 @@ load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
                   break;
                 }
               else
-                retval = std::string ();
+                retval = "";
             }
         }
     }
@@ -1173,7 +1173,7 @@ load_path::loader::find_method (const std::string& class_name,
 
   //  update ();
 
-  dir_name = std::string ();
+  dir_name = "";
 
   const_method_map_iterator q = method_map.find (class_name);
 
@@ -1204,7 +1204,7 @@ load_path::loader::find_method (const std::string& class_name,
                   break;
                 }
               else
-                retval = std::string ();
+                retval = "";
             }
         }
     }

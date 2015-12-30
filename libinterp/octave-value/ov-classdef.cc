@@ -310,8 +310,8 @@ in_class_method (const cdef_class& cls)
 
 static bool
 check_access (const cdef_class& cls, const octave_value& acc,
-              const std::string& meth_name = std::string (),
-              const std::string& prop_name = std::string (),
+              const std::string& meth_name = "",
+              const std::string& prop_name = "",
               bool is_prop_set = false)
 {
   if (acc.is_string ())
@@ -655,8 +655,8 @@ make_class (const std::string& name,
   cls.put ("Abstract", false);
   cls.put ("ConstructOnLoad", false);
   cls.put ("ContainingPackage", Matrix ());
-  cls.put ("Description", std::string ());
-  cls.put ("DetailedDescription", std::string ());
+  cls.put ("Description", "");
+  cls.put ("DetailedDescription", "");
   cls.put ("Events", Cell ());
   cls.put ("Hidden", false);
   cls.put ("InferiorClasses", Cell ());
@@ -728,8 +728,8 @@ make_property (const cdef_class& cls, const std::string& name,
   cdef_property prop (name);
 
   prop.set_class (cdef_class::meta_property ());
-  prop.put ("Description", std::string ());
-  prop.put ("DetailedDescription", std::string ());
+  prop.put ("Description", "");
+  prop.put ("DetailedDescription", "");
   prop.put ("Abstract", false);
   prop.put ("Constant", false);
   prop.put ("GetAccess", get_access);
@@ -772,8 +772,8 @@ make_method (const cdef_class& cls, const std::string& name,
   meth.put ("Abstract", false);
   meth.put ("Access", m_access);
   meth.put ("DefiningClass", to_ov (cls));
-  meth.put ("Description", std::string ());
-  meth.put ("DetailedDescription", std::string ());
+  meth.put ("Description", "");
+  meth.put ("DetailedDescription", "");
   meth.put ("Hidden", false);
   meth.put ("Sealed", true);
   meth.put ("Static", is_static);
@@ -801,7 +801,7 @@ make_method (const cdef_class& cls, const std::string& name,
 
 static cdef_package
 make_package (const std::string& nm,
-              const std::string& parent = std::string ())
+              const std::string& parent = "")
 {
   cdef_package pack (nm);
 
@@ -1072,7 +1072,7 @@ public:
   { return object.meta_is_postfix_index_handled (type); }
 
   bool
-  is_classdef_constructor (const std::string& cname = std::string ()) const
+  is_classdef_constructor (const std::string& cname = "") const
   {
     bool retval = false;
 
@@ -3016,7 +3016,7 @@ cdef_property::cdef_property_rep::check_get_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  return ::check_access (cls, get ("GetAccess"), std::string (),
+  return ::check_access (cls, get ("GetAccess"), "",
                          get_name (), false);
 
   return false;
@@ -3027,7 +3027,7 @@ cdef_property::cdef_property_rep::check_set_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  return ::check_access (cls, get ("SetAccess"), std::string (),
+  return ::check_access (cls, get ("SetAccess"), "",
                          get_name (), true);
 
   return false;
@@ -3692,7 +3692,7 @@ cdef_manager::do_find_package (const std::string& name,
           size_t pos = name.find ('.');
 
           if (pos == std::string::npos)
-            retval = make_package (name, std::string ());
+            retval = make_package (name, "");
           else
             {
               std::string parent_name = name.substr (0, pos);

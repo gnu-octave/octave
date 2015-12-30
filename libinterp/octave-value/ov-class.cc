@@ -1168,7 +1168,7 @@ octave_class::save_ascii (std::ostream& os)
 {
   os << "# classname: " << class_name () << "\n";
   octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != std::string ())
+  if (load_path::find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
@@ -1219,7 +1219,7 @@ octave_class::load_ascii (std::istream& is)
 
           // recurse to read cell elements
           std::string nm
-            = read_text_data (is, std::string (), dummy, t2, j);
+            = read_text_data (is, "", dummy, t2, j);
 
           if (! is)
             break;
@@ -1241,7 +1241,7 @@ octave_class::load_ascii (std::istream& is)
         warning ("load: unable to reconstruct object inheritance");
 
       if (load_path::find_method (classname, "loadobj")
-          != std::string ())
+          != "")
         {
           octave_value in = new octave_class (*this);
           octave_value_list tmp = feval ("loadobj", in, 1);
@@ -1269,7 +1269,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   os << class_name ();
 
   octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != std::string ())
+  if (load_path::find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
@@ -1338,7 +1338,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           std::string doc;
 
           // recurse to read cell elements
-          std::string nm = read_binary_data (is, swap, fmt, std::string (),
+          std::string nm = read_binary_data (is, swap, fmt, "",
                                              dummy, t2, doc);
 
           if (! is)
@@ -1356,7 +1356,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
 
-          if (load_path::find_method (c_name, "loadobj") != std::string ())
+          if (load_path::find_method (c_name, "loadobj") != "")
             {
               octave_value in = new octave_class (*this);
               octave_value_list tmp = feval ("loadobj", in, 1);
@@ -1429,7 +1429,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_f
   if (data_hid < 0)
     goto error_cleanup;
 
-  if (load_path::find_method (class_name (), "saveobj") != std::string ())
+  if (load_path::find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
@@ -1591,7 +1591,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      if (load_path::find_method (c_name, "loadobj") != std::string ())
+      if (load_path::find_method (c_name, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
           octave_value_list tmp = feval ("loadobj", in, 1);
@@ -1929,7 +1929,7 @@ Return true if the string @var{method} is a valid method of the object\n\
 
   std::string method = args(1).string_value ();
 
-  if (load_path::find_method (class_name, method) != std::string ())
+  if (load_path::find_method (class_name, method) != "")
     return ovl (true);
   else
     return ovl (false);

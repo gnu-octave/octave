@@ -62,12 +62,12 @@ public:
 
   static std::string dir_sep_str (void)
   {
-    return instance_ok () ? instance->xdir_sep_str : std::string ();
+    return instance_ok () ? instance->xdir_sep_str : "";
   }
 
   static std::string dir_sep_chars (void)
   {
-    return instance_ok () ? instance->xdir_sep_chars : std::string ();
+    return instance_ok () ? instance->xdir_sep_chars : "";
   }
 
   static bool is_dir_sep (char c)

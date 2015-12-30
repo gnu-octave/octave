@@ -44,7 +44,7 @@ public:
 
   virtual ~base_hook_function (void) { }
 
-  virtual std::string id (void) { return std::string (); }
+  virtual std::string id (void) { return ""; }
 
   virtual bool is_valid (void) { return false; }
 

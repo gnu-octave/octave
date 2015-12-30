@@ -510,7 +510,7 @@ Undocumented internal function\n\
 
   std::string passwd = (nargin > 2)
     ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
-    : std::string ();
+    : "";
 
   curl_handle ch
     = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);

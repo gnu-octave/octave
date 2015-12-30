@@ -616,7 +616,7 @@ kpse_readable_file (const std::string& name)
       if (! READABLE (ret, st))
         {
           /* Failed.  */
-          ret = std::string ();
+          ret = "";
         }
 #endif /* ENAMETOOLONG */
 
@@ -630,7 +630,7 @@ kpse_readable_file (const std::string& name)
           perror (name.c_str ());
         }
 
-      ret = std::string ();
+      ret = "";
     }
 
   return ret;
@@ -937,7 +937,7 @@ kpse_path_search (const std::string& path, const std::string& name,
 {
   string_vector ret_list = search (path, name, must_exist, false);
 
-  return ret_list.empty () ? std::string () : ret_list[0];
+  return ret_list.empty () ? "" : ret_list[0];
 }
 
 /* Search all elements of PATH for files named NAME.  Not sure if it's
@@ -1157,7 +1157,7 @@ kpse_path_find_first_of (const std::string& path, const string_vector& names,
 {
   string_vector ret_list = find_first_of (path, names, must_exist, false);
 
-  return ret_list.empty () ? std::string () : ret_list[0];
+  return ret_list.empty () ? "" : ret_list[0];
 }
 
 /* Search each element of PATH for each element of NAMES and return a

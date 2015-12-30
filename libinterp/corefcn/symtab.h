@@ -483,7 +483,7 @@ public:
   public:
 
     symbol_record (scope_id s = xcurrent_scope,
-                   const std::string& nm = std::string (),
+                   const std::string& nm = "",
                    const octave_value& v = octave_value (),
                    unsigned int sc = local)
       : rep (new symbol_record_rep (s, nm, v, sc)) { }
@@ -640,7 +640,7 @@ public:
     void set_curr_fcn (octave_user_function *fcn) { rep->set_curr_fcn (fcn); }
 
     void
-    dump (std::ostream& os, const std::string& prefix = std::string ()) const
+    dump (std::ostream& os, const std::string& prefix = "") const
     {
       rep->dump (os, prefix);
     }
@@ -982,7 +982,7 @@ public:
 
   public:
 
-    fcn_info (const std::string& nm = std::string ())
+    fcn_info (const std::string& nm = "")
       : rep (new fcn_info_rep (nm)) { }
 
     fcn_info (const fcn_info& fi) : rep (fi.rep)
@@ -1143,7 +1143,7 @@ public:
     }
 
     void
-    dump (std::ostream& os, const std::string& prefix = std::string ()) const
+    dump (std::ostream& os, const std::string& prefix = "") const
     {
       rep->dump (os, prefix);
     }
@@ -2912,7 +2912,7 @@ private:
 };
 
 extern bool out_of_date_check (octave_value& function,
-                               const std::string& dispatch_type = std::string (),
+                               const std::string& dispatch_type = "",
                                bool check_relative = true);
 
 extern OCTINTERP_API std::string

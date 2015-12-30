@@ -4108,7 +4108,7 @@ octave_stream_list::get_info (const octave_value& fid)
 std::string
 octave_stream_list::list_open_files (void)
 {
-  return (instance_ok ()) ? instance->do_list_open_files () : std::string ();
+  return (instance_ok ()) ? instance->do_list_open_files () : "";
 }
 
 octave_value

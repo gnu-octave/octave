@@ -103,17 +103,17 @@ reverse_lookup_autoload (const std::string& nm);
 
 extern OCTINTERP_API octave_function *
 load_fcn_from_file (const std::string& file_name,
-                    const std::string& dir_name = std::string (),
-                    const std::string& dispatch_type = std::string (),
-                    const std::string& package_name = std::string (),
-                    const std::string& fcn_name = std::string (),
+                    const std::string& dir_name = "",
+                    const std::string& dispatch_type = "",
+                    const std::string& package_name = "",
+                    const std::string& fcn_name = "",
                     bool autoload = false);
 
 extern OCTINTERP_API void
 source_file (const std::string& file_name,
-             const std::string& context = std::string (),
+             const std::string& context = "",
              bool verbose = false, bool require_file = true,
-             const std::string& warn_for = std::string ());
+             const std::string& warn_for = "");
 
 extern OCTINTERP_API octave_value_list
 feval (const std::string& name,

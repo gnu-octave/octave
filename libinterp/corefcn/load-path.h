@@ -96,24 +96,24 @@ public:
   static std::string find_method (const std::string& class_name,
                                   const std::string& meth,
                                   std::string& dir_name,
-                                  const std::string& pack_name = std::string ())
+                                  const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader (pack_name).find_method (class_name, meth,
                                                       dir_name)
-      : std::string ();
+      : "";
   }
 
   static std::string find_method (const std::string& class_name,
                                   const std::string& meth,
-                                  const std::string& pack_name = std::string ())
+                                  const std::string& pack_name = "")
   {
     std::string dir_name;
     return find_method (class_name, meth, dir_name, pack_name);
   }
 
   static std::list<std::string> methods (const std::string& class_name,
-                                         const std::string& pack_name = std::string ())
+                                         const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader(pack_name).methods (class_name)
@@ -141,15 +141,15 @@ public:
   }
 
   static std::string find_fcn (const std::string& fcn, std::string& dir_name,
-                               const std::string& pack_name = std::string ())
+                               const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name)
-      : std::string ();
+      : "";
   }
 
   static std::string find_fcn (const std::string& fcn,
-                               const std::string& pack_name = std::string ())
+                               const std::string& pack_name = "")
   {
     std::string dir_name;
     return find_fcn (fcn, dir_name, pack_name);
@@ -157,53 +157,53 @@ public:
 
   static std::string find_private_fcn (const std::string& dir,
                                        const std::string& fcn,
-                                       const std::string& pack_name = std::string ())
+                                       const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader (pack_name).find_private_fcn (dir, fcn)
-      : std::string ();
+      : "";
   }
 
   static std::string find_fcn_file (const std::string& fcn,
-                                    const std::string& pack_name = std::string ())
+                                    const std::string& pack_name = "")
   {
     std::string dir_name;
 
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : std::string ();
+      : "";
   }
 
   static std::string find_oct_file (const std::string& fcn,
-                                    const std::string& pack_name = std::string ())
+                                    const std::string& pack_name = "")
   {
     std::string dir_name;
 
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : std::string ();
+      : "";
   }
 
   static std::string find_mex_file (const std::string& fcn,
-                                    const std::string& pack_name = std::string ())
+                                    const std::string& pack_name = "")
   {
     std::string dir_name;
 
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : std::string ();
+      : "";
   }
 
   static std::string find_file (const std::string& file)
   {
     return instance_ok ()
-           ? instance->do_find_file (file) : std::string ();
+           ? instance->do_find_file (file) : "";
   }
 
   static std::string find_dir (const std::string& dir)
   {
     return instance_ok ()
-           ? instance->do_find_dir (dir) : std::string ();
+           ? instance->do_find_dir (dir) : "";
   }
 
   static string_vector find_matching_dirs (const std::string& dir)
@@ -215,7 +215,7 @@ public:
   static std::string find_first_of (const string_vector& files)
   {
     return instance_ok () ?
-           instance->do_find_first_of (files) : std::string ();
+           instance->do_find_first_of (files) : "";
   }
 
   static string_vector find_all_first_of (const string_vector& files)
@@ -248,7 +248,7 @@ public:
 
   static std::string path (void)
   {
-    return instance_ok () ? instance->do_path () : std::string ();
+    return instance_ok () ? instance->do_path () : "";
   }
 
   static void display (std::ostream& os)
@@ -272,12 +272,12 @@ public:
   static std::string get_command_line_path (void)
   {
     return instance_ok () ? instance->do_get_command_line_path ()
-                          : std::string ();
+                          : "";
   }
 
   static std::string system_path (void)
   {
-    return instance_ok () ? instance->do_system_path () : std::string ();
+    return instance_ok () ? instance->do_system_path () : "";
   }
 
 private:
@@ -490,7 +490,7 @@ private:
   class loader
   {
   public:
-    loader (const std::string& pfx = std::string ())
+    loader (const std::string& pfx = "")
       : prefix (pfx), dir_list (), fcn_map (), private_fcn_map (),
         method_map () { }
 
@@ -635,10 +635,10 @@ private:
   void do_move (dir_info_list_iterator i, bool at_end);
 
   void move (const dir_info& di, bool at_end,
-             const std::string& pname = std::string ());
+             const std::string& pname = "");
 
   void remove (const dir_info& di,
-               const std::string& pname = std::string ());
+               const std::string& pname = "");
 
   void do_initialize (bool set_initial_path);
 
@@ -722,7 +722,7 @@ private:
   { return command_line_path; }
 
   void add (const dir_info& di, bool at_end,
-            const std::string& pname = std::string (),
+            const std::string& pname = "",
             bool updating = false) const;
 
   friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);

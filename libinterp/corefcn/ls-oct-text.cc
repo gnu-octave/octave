@@ -246,7 +246,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
         error ("load: empty name keyword or no data found in file '%s'",
                filename.c_str ());
 
-      return std::string ();
+      return "";
     }
 
   if (! (name == ".nargin." || name == ".nargout."

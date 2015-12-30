@@ -127,7 +127,7 @@ public:
                              time_t& /* filetime */,
                              bool& /* fileisdir */) { }
 
-  virtual std::string pwd (void) { return std::string (); }
+  virtual std::string pwd (void) { return ""; }
 
   virtual void http_get (const Array<std::string>& /* param */) { }
 

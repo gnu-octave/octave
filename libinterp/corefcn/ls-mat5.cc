@@ -1206,7 +1206,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     tc = cls;
                     if (load_path::find_method (classname, "loadobj")
-                        != std::string ())
+                        != "")
                       {
                         try
                           {
@@ -2601,7 +2601,7 @@ save_mat5_binary_element (std::ostream& os,
 
       if (tc.is_object ()
           && load_path::find_method (tc.class_name (),
-                                     "saveobj") != std::string ())
+                                     "saveobj") != "")
         {
           try
             {

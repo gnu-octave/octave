@@ -185,8 +185,8 @@ split_name_with_package (const std::string& name, std::string& fname,
 static inline bool
 load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
                       octave_value& function,
-                      const std::string& dispatch_type = std::string (),
-                      const std::string& package_name = std::string ())
+                      const std::string& dispatch_type = "",
+                      const std::string& package_name = "")
 {
   bool retval = false;
 
@@ -1165,7 +1165,7 @@ fcn_file_name (const octave_value& fcn)
 {
   const octave_function *f = fcn.function_value ();
 
-  return f ? f->fcn_file_name () : std::string ();
+  return f ? f->fcn_file_name () : "";
 }
 
 void

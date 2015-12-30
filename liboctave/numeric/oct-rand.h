@@ -66,14 +66,14 @@ public:
   }
 
   // Return the current state.
-  static ColumnVector state (const std::string& d = std::string ())
+  static ColumnVector state (const std::string& d = "")
   {
     return instance_ok () ? instance->do_state (d) : ColumnVector ();
   }
 
   // Set the current state/
   static void state (const ColumnVector &s,
-                     const std::string& d = std::string ())
+                     const std::string& d = "")
   {
     if (instance_ok ())
       instance->do_state (s, d);
@@ -89,7 +89,7 @@ public:
   // Return the current distribution.
   static std::string distribution (void)
   {
-    return instance_ok () ? instance->do_distribution () : std::string ();
+    return instance_ok () ? instance->do_distribution () : "";
   }
 
   // Set the current distribution.  May be either "uniform" (the

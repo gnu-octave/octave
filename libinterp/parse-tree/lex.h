@@ -771,7 +771,7 @@ octave_push_lexer : public octave_base_lexer
 {
 public:
 
-  octave_push_lexer (const std::string& input = std::string (),
+  octave_push_lexer (const std::string& input = "",
                      bool eof = false)
     : octave_base_lexer (), pflag (1)
   {

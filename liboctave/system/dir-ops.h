@@ -33,7 +33,7 @@ dir_entry
 {
 public:
 
-  dir_entry (const std::string& n = std::string ())
+  dir_entry (const std::string& n = "")
     : name (n), dir (0), fail (false), errmsg ()
   {
     if (! name.empty ())
@@ -58,7 +58,7 @@ public:
 
   ~dir_entry (void) { close (); }
 
-  bool open (const std::string& = std::string ());
+  bool open (const std::string& = "");
 
   string_vector read (void);
 
@@ -68,7 +68,7 @@ public:
 
   operator bool () const { return ok (); }
 
-  std::string error (void) const { return ok () ? std::string () : errmsg; }
+  std::string error (void) const { return ok () ? "" : errmsg; }
 
 private:
 

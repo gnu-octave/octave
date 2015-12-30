@@ -143,12 +143,12 @@ in control (see @code{are} and @code{dare}).\n\
 
   if (ord == "real")
     {
-      ord = std::string ();
+      ord = "";
     }
   else if (ord == "complex")
     {
       force_complex = true;
-      ord = std::string ();
+      ord = "";
     }
   else
     {

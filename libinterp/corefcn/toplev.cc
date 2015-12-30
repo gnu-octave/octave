@@ -107,7 +107,7 @@ octave_call_stack *octave_call_stack::instance = 0;
 std::string
 octave_call_stack::stack_frame::fcn_file_name (void) const
 {
-  return m_fcn ? m_fcn->fcn_file_name () : std::string ();
+  return m_fcn ? m_fcn->fcn_file_name () : "";
 }
 
 std::string

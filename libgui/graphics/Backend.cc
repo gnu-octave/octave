@@ -65,7 +65,7 @@ toolkitObjectProperty (const graphics_object& go)
     qCritical ("QtHandles::Backend: no __object__ property known for object "
                "of type %s", go.type ().c_str ());
 
-  return std::string ();
+  return "";
 }
 
 Backend::Backend (void)

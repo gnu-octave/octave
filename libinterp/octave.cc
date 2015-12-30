@@ -272,9 +272,9 @@ gripe_safe_source_exception (const std::string& file, const std::string& msg)
 
 static void
 safe_source_file (const std::string& file_name,
-                  const std::string& context = std::string (),
+                  const std::string& context = "",
                   bool verbose = false, bool require_file = true,
-                  const std::string& warn_for = std::string ())
+                  const std::string& warn_for = "")
 {
   try
     {

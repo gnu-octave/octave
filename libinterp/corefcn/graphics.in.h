@@ -734,7 +734,7 @@ public:
 
   std::string string_value (void) const
   {
-    return value.empty () ? std::string () : value[0];
+    return value.empty () ? "" : value[0];
   }
 
   string_vector string_vector_value (void) const { return value; }
@@ -828,7 +828,7 @@ private:
 class radio_values
 {
 public:
-  OCTINTERP_API radio_values (const std::string& opt_string = std::string ());
+  OCTINTERP_API radio_values (const std::string& opt_string = "");
 
   radio_values (const radio_values& a)
     : default_val (a.default_val), possible_vals (a.possible_vals) { }
@@ -2305,7 +2305,7 @@ public:
 
   static std::string default_toolkit (void)
   {
-    return instance_ok () ? instance->do_default_toolkit () : std::string ();
+    return instance_ok () ? instance->do_default_toolkit () : "";
   }
 
 private:

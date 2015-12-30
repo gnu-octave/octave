@@ -88,7 +88,7 @@ public:
     return longest;
   }
 
-  void resize (octave_idx_type n, const std::string& rfv = std::string ())
+  void resize (octave_idx_type n, const std::string& rfv = "")
   {
     Array<std::string>::resize (dim_vector (n, 1), rfv);
   }
@@ -107,7 +107,7 @@ public:
 
   string_vector& append (const string_vector& sv);
 
-  std::string join (const std::string& sep = std::string ()) const;
+  std::string join (const std::string& sep = "") const;
 
   char **c_str_vec (void) const;
 
@@ -115,7 +115,7 @@ public:
 
   std::ostream&
   list_in_columns (std::ostream&, int width = 0,
-                   const std::string& prefix = std::string ()) const;
+                   const std::string& prefix = "") const;
 };
 
 #endif

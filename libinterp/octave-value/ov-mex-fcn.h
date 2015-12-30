@@ -48,7 +48,7 @@ public:
       t_checked (), system_fcn_file () { }
 
   octave_mex_function (void *fptr, bool fmex, const octave_shlib& shl,
-                       const std::string& nm = std::string ());
+                       const std::string& nm = "");
 
   ~octave_mex_function (void);
 

@@ -133,7 +133,7 @@ public:
 
   bool exists (void) const { return ok (); }
 
-  std::string error (void) const { return ok () ? std::string () : errmsg; }
+  std::string error (void) const { return ok () ? "" : errmsg; }
 
   // Has the file referenced by this object been modified since TIME?
   bool is_newer (const octave_time& time) const { return fs_mtime > time; }
@@ -201,7 +201,7 @@ file_stat : public base_file_stat
 {
 public:
 
-  file_stat (const std::string& n = std::string (), bool fl = true)
+  file_stat (const std::string& n = "", bool fl = true)
     : base_file_stat (), file_name (n), follow_links (fl)
   {
     if (! file_name.empty ())

@@ -592,7 +592,7 @@ public:
                  tree_classdef_superclass_list *sc,
                  tree_classdef_body *b, octave_comment_list *lc,
                  octave_comment_list *tc,
-                 const std::string& pn = std::string (), int l = -1,
+                 const std::string& pn = "", int l = -1,
                  int c = -1)
     : tree_command (l, c), attr_list (a), id (i),
       supclass_list (sc), element_list (b), lead_comm (lc), trail_comm (tc),

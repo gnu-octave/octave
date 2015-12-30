@@ -48,7 +48,7 @@ public:
 
   // The name of the file.
 
-  std::string name (void) const { return std::string (); }
+  std::string name (void) const { return ""; }
 
   virtual std::streambuf *rdbuf (void) = 0;
 

@@ -938,15 +938,15 @@ private:
     bool is_constant (void) const { return get("Constant").bool_value (); }
 
     octave_value get_value (bool do_check_access = true,
-                            const std::string& who = std::string ());
+                            const std::string& who = "");
 
     octave_value get_value (const cdef_object& obj,
                             bool do_check_access = true,
-                            const std::string& who = std::string ());
+                            const std::string& who = "");
 
     void set_value (cdef_object& obj, const octave_value& val,
                     bool do_check_access = true,
-                    const std::string& who = std::string ());
+                    const std::string& who = "");
 
     bool check_get_access (void) const;
 
@@ -992,16 +992,16 @@ public:
   }
 
   octave_value get_value (const cdef_object& obj, bool do_check_access = true,
-                          const std::string& who = std::string ())
+                          const std::string& who = "")
   { return get_rep ()->get_value (obj, do_check_access, who); }
 
   octave_value get_value (bool do_check_access = true,
-                          const std::string& who = std::string ())
+                          const std::string& who = "")
   { return get_rep ()->get_value (do_check_access, who); }
 
   void set_value (cdef_object& obj, const octave_value& val,
                   bool do_check_access = true,
-                  const std::string& who = std::string ())
+                  const std::string& who = "")
   { get_rep ()->set_value (obj, val, do_check_access, who); }
 
   bool check_get_access (void) const
@@ -1060,12 +1060,12 @@ private:
 
     octave_value_list execute (const octave_value_list& args, int nargout,
                                bool do_check_access = true,
-                               const std::string& who = std::string ());
+                               const std::string& who = "");
 
     octave_value_list execute (const cdef_object& obj,
                                const octave_value_list& args, int nargout,
                                bool do_check_access = true,
-                               const std::string& who = std::string ());
+                               const std::string& who = "");
 
     bool is_constructor (void) const;
 
@@ -1127,14 +1127,14 @@ public:
   // normal invocation
   octave_value_list execute (const octave_value_list& args, int nargout,
                              bool do_check_access = true,
-                             const std::string& who = std::string ())
+                             const std::string& who = "")
   { return get_rep ()->execute (args, nargout, do_check_access, who); }
 
   // dot-invocation: object is pushed as 1st argument
   octave_value_list execute (const cdef_object& obj,
                              const octave_value_list& args, int nargout,
                              bool do_check_access = true,
-                             const std::string& who = std::string ())
+                             const std::string& who = "")
   { return get_rep ()->execute (obj, args, nargout, do_check_access, who); }
 
   bool check_access (void) const { return get_rep ()->check_access (); }

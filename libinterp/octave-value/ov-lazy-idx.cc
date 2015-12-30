@@ -168,7 +168,7 @@ bool octave_lazy_index::load_ascii (std::istream& is)
 {
   bool dummy;
 
-  std::string nm = read_text_data (is, std::string (), dummy, value, 0);
+  std::string nm = read_text_data (is, "", dummy, value, 0);
 
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
@@ -182,7 +182,7 @@ bool octave_lazy_index::load_ascii (std::istream& is)
 bool octave_lazy_index::save_binary (std::ostream& os, bool& save_as_floats)
 {
   return save_binary_data (os, make_value (), value_save_tag,
-                           std::string (), false, save_as_floats);
+                           "", false, save_as_floats);
 }
 
 bool octave_lazy_index::load_binary (std::istream& is, bool swap,
@@ -191,7 +191,7 @@ bool octave_lazy_index::load_binary (std::istream& is, bool swap,
   bool dummy;
   std::string doc;
 
-  std::string nm = read_binary_data (is, swap, fmt, std::string (),
+  std::string nm = read_binary_data (is, swap, fmt, "",
                                      dummy, value, doc);
 
   if (nm != value_save_tag)

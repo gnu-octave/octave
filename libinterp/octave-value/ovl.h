@@ -132,7 +132,7 @@ public:
 
   bool has_magic_colon (void) const;
 
-  string_vector make_argv (const std::string& = std::string ()) const;
+  string_vector make_argv (const std::string& = "") const;
 
   void stash_name_tags (const string_vector& nm) { names = nm; }
 

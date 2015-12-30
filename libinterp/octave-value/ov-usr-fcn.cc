@@ -179,7 +179,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 octave_user_function::octave_user_function
   (symbol_table::scope_id sid, tree_parameter_list *pl,
    tree_parameter_list *rl, tree_statement_list *cl)
-  : octave_user_code (std::string (), std::string ()),
+  : octave_user_code ("", ""),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
     location_line (0), location_column (0),

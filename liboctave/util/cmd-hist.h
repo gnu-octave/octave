@@ -99,11 +99,11 @@ public:
   static void read_range (const std::string&, int = -1, int = -1,
                           bool = true);
 
-  static void write (const std::string& = std::string ());
+  static void write (const std::string& = "");
 
-  static void append (const std::string& = std::string ());
+  static void append (const std::string& = "");
 
-  static void truncate_file (const std::string& = std::string (), int = -1);
+  static void truncate_file (const std::string& = "", int = -1);
 
   static string_vector list (int = -1, bool = false);
 
@@ -111,7 +111,7 @@ public:
 
   static void replace_entry (int, const std::string&);
 
-  static void clean_up_and_save (const std::string& = std::string (), int = -1);
+  static void clean_up_and_save (const std::string& = "", int = -1);
 
 private:
 
@@ -142,7 +142,7 @@ protected:
 
   virtual void do_process_histcontrol (const std::string&);
 
-  virtual std::string do_histcontrol (void) const { return std::string (); }
+  virtual std::string do_histcontrol (void) const { return ""; }
 
   virtual void do_initialize (bool, const std::string&, int,
                               const std::string&);

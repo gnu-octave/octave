@@ -59,14 +59,14 @@ public:
 
   virtual bool is_system_fcn_file (void) const { return false; }
 
-  virtual std::string fcn_file_name (void) const { return std::string (); }
+  virtual std::string fcn_file_name (void) const { return ""; }
 
-  virtual std::string src_file_name (void) const { return std::string (); }
+  virtual std::string src_file_name (void) const { return ""; }
 
   // The name to show in the profiler (also used as map-key).
   virtual std::string profiler_name (void) const { return name (); }
 
-  virtual std::string parent_fcn_name (void) const { return std::string (); }
+  virtual std::string parent_fcn_name (void) const { return ""; }
 
   virtual symbol_table::scope_id parent_fcn_scope (void) const { return -1; }
 
@@ -82,14 +82,14 @@ public:
 
   virtual bool is_subfunction (void) const { return false; }
 
-  virtual bool is_class_constructor (const std::string& = std::string ()) const
+  virtual bool is_class_constructor (const std::string& = "") const
   { return false; }
 
   virtual bool
-  is_classdef_constructor (const std::string& = std::string ()) const
+  is_classdef_constructor (const std::string& = "") const
   { return false; }
 
-  virtual bool is_class_method (const std::string& = std::string ()) const
+  virtual bool is_class_method (const std::string& = "") const
   { return false; }
 
   virtual bool takes_varargs (void) const { return false; }
@@ -105,7 +105,7 @@ public:
   std::string package_name (void) const { return xpackage_name; }
 
   virtual void
-  mark_as_private_function (const std::string& cname = std::string ())
+  mark_as_private_function (const std::string& cname = "")
   {
     private_function = true;
     xdispatch_class = cname;
@@ -117,7 +117,7 @@ public:
   { return private_function && xdispatch_class == nm; }
 
   virtual bool
-  is_anonymous_function_of_class (const std::string& = std::string ()) const
+  is_anonymous_function_of_class (const std::string& = "") const
   { return false; }
 
   std::string dir_name (void) const { return my_dir_name; }
@@ -182,7 +182,7 @@ public:
 protected:
 
   octave_function (const std::string& nm,
-                   const std::string& ds = std::string ())
+                   const std::string& ds = "")
     : relative (false), locked (false), private_function (false),
       xdispatch_class (), my_name (nm), my_dir_name (), doc (ds) { }
 

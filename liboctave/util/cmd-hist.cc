@@ -564,7 +564,7 @@ std::string
 command_history::file (void)
 {
   return (instance_ok ())
-         ? instance->do_file () : std::string ();
+         ? instance->do_file () : "";
 }
 
 void
@@ -578,7 +578,7 @@ std::string
 command_history::histcontrol (void)
 {
   return (instance_ok ())
-         ? instance->do_histcontrol () : std::string ();
+         ? instance->do_histcontrol () : "";
 }
 
 void
@@ -760,7 +760,7 @@ std::string
 command_history::get_entry (int n)
 {
   return (instance_ok ())
-         ? instance->do_get_entry (n) : std::string ();
+         ? instance->do_get_entry (n) : "";
 }
 
 void
@@ -992,7 +992,7 @@ command_history::do_list (int, bool) const
 std::string
 command_history::do_get_entry (int) const
 {
-  return std::string ();
+  return "";
 }
 
 void

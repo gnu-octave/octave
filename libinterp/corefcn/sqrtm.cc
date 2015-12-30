@@ -177,7 +177,7 @@ do_sqrtm (const octave_value& arg)
 
             do
               {
-                ComplexSCHUR schur (x, std::string (), true);
+                ComplexSCHUR schur (x, "", true);
                 x = schur.schur_matrix ();
                 u = schur.unitary_matrix ();
               }

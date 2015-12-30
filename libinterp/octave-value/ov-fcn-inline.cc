@@ -724,7 +724,7 @@ functions from strings is through the use of anonymous functions\n\
                   terminate_arg = true;
                 else
                   {
-                    tmp_arg = std::string ();
+                    tmp_arg = "";
                     is_arg = false;
                   }
               }
@@ -762,7 +762,7 @@ functions from strings is through the use of anonymous functions\n\
                   && tmp_arg != "e" && tmp_arg != "eps")
                 fargs.append (tmp_arg);
 
-              tmp_arg = std::string ();
+              tmp_arg = "";
               is_arg = false;
             }
         }

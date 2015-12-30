@@ -119,7 +119,7 @@ dir_path::all_directories (void)
 std::string
 dir_path::find_first (const std::string& nm)
 {
-  return initialized ? kpse_path_search (p, nm, true) : std::string ();
+  return initialized ? kpse_path_search (p, nm, true) : "";
 }
 
 string_vector
@@ -132,7 +132,7 @@ std::string
 dir_path::find_first_of (const string_vector& names)
 {
   return initialized
-         ? kpse_path_find_first_of (p, names, true) : std::string ();
+         ? kpse_path_find_first_of (p, names, true) : "";
 }
 
 string_vector

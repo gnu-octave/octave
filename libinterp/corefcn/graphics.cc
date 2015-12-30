@@ -6926,7 +6926,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
             exponent = gnulib::floor (std::log10 (values(i)));
           significand = values(i) * std::pow (10., -exponent);
 
-          os.str (std::string ());
+          os.str ("");
           if ((std::abs (significand) - 1) >
               std::numeric_limits<double>::epsilon())
             os << significand << ".";
@@ -6950,7 +6950,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
     {
       for (int i = 0; i < values.numel (); i++)
         {
-          os.str (std::string ());
+          os.str ("");
           os << values(i);
           c(i) = os.str ();
         }
@@ -8094,7 +8094,7 @@ patch::properties::update_fvc (void)
   Matrix zd = get_zdata ().matrix_value ();
   NDArray cd = get_cdata ().array_value ();
 
-  bad_data_msg = std::string ();
+  bad_data_msg = "";
   if (xd.dims () != yd.dims ()
       || (xd.dims () != zd.dims () && ! zd.is_empty ()))
     {
@@ -8181,7 +8181,7 @@ patch::properties::update_data (void)
   octave_idx_type nvert = vert.rows ();
 
   // Check all vertices in faces are defined
-  bad_data_msg = std::string ();
+  bad_data_msg = "";
   if (static_cast<double> (nvert) < idx.row_max ().max ())
     {
       bad_data_msg = "some vertices in \"faces\" property are undefined";

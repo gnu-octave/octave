@@ -40,7 +40,7 @@ tree_print_code : public tree_walker
 public:
 
   tree_print_code (std::ostream& os_arg,
-                   const std::string& pfx = std::string (),
+                   const std::string& pfx = "",
                    bool pr_orig_txt = true)
     : os (os_arg), prefix (pfx), nesting (),
       print_original_text (pr_orig_txt),

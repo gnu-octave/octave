@@ -918,7 +918,7 @@ std::string
 default_command_editor::do_get_current_line (void) const
 {
   // FIXME
-  return std::string ();
+  return "";
 }
 
 void
@@ -1161,7 +1161,7 @@ std::string
 command_editor::decode_prompt_string (const std::string& s)
 {
   return (instance_ok ())
-         ? instance->do_decode_prompt_string (s) : std::string ();
+         ? instance->do_decode_prompt_string (s) : "";
 }
 
 int

@@ -49,8 +49,8 @@ public:
   { }
 
   octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
-                       const std::string& nm = std::string (),
-                       const std::string& ds = std::string ());
+                       const std::string& nm = "",
+                       const std::string& ds = "");
 
   ~octave_dld_function (void);
 
@@ -70,8 +70,8 @@ public:
 
   static octave_dld_function* create (octave_builtin::fcn ff,
                                       const octave_shlib& shl,
-                                      const std::string& nm = std::string (),
-                                      const std::string& ds = std::string ());
+                                      const std::string& nm = "",
+                                      const std::string& ds = "");
 
   octave_shlib get_shlib (void) const
   { return sh_lib; }

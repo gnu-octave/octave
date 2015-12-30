@@ -653,7 +653,7 @@ string.\n\
 
   std::string val = (nargin == 2
                      ? args(1).xstring_value ("setenv: VALUE must be a string")
-                     : std::string ());
+                     : "");
 
   octave_env::putenv (var, val);
 

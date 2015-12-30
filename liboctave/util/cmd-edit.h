@@ -159,7 +159,7 @@ public:
 
   static void run_event_hooks (void);
 
-  static void read_init_file (const std::string& file = std::string ());
+  static void read_init_file (const std::string& file = "");
 
   static void re_read_init_file (void);
 

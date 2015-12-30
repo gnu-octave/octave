@@ -48,7 +48,7 @@ public:
     copyright
   };
 
-  octave_comment_elt (const std::string& s = std::string (),
+  octave_comment_elt (const std::string& s = "",
                       comment_type t = unknown)
     : txt (s), typ (t) { }
 

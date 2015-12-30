@@ -33,8 +33,8 @@ dir_path
 {
 public:
 
-  dir_path (const std::string& s = std::string (),
-            const std::string& d = std::string ())
+  dir_path (const std::string& s = "",
+            const std::string& d = "")
     : p_orig (s), p_default (d), initialized (false), p (), pv ()
   {
     if (! p_orig.empty ())
@@ -146,7 +146,7 @@ private:
 
     static std::string path_sep_str (void)
     {
-      return instance_ok () ? instance->xpath_sep_str : std::string ();
+      return instance_ok () ? instance->xpath_sep_str : "";
     }
 
   private:

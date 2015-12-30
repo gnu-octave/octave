@@ -355,7 +355,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
           boolNDArray output (cell_val.dims (), false);
 
-          std::string s = r == 0 ? std::string () : str[0];
+          std::string s = r == 0 ? "" : str[0];
 
           if (cell_val.is_cellstr ())
             {

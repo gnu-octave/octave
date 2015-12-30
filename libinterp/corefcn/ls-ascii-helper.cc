@@ -129,7 +129,7 @@ std::string
 read_until_newline (std::istream& is, bool keep_newline)
 {
   if (! is)
-    return std::string ();
+    return "";
 
   std::ostringstream buf;
 

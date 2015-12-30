@@ -192,7 +192,7 @@ public:
 protected:
 
   octave_value_typeinfo (void)
-    : num_types (0), types (dim_vector (init_tab_sz, 1), std::string ()),
+    : num_types (0), types (dim_vector (init_tab_sz, 1), ""),
       vals (dim_vector (init_tab_sz, 1)),
       unary_class_ops (dim_vector (octave_value::num_unary_ops, 1), 0),
       unary_ops (dim_vector (octave_value::num_unary_ops, init_tab_sz), 0),

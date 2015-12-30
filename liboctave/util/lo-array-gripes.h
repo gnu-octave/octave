@@ -73,7 +73,7 @@ public:
   }
 
   // Name of variable being indexed.  eye(2)(1,1) gives "<unknown>".
-  void set_var (const std::string& var_arg = std::string ())
+  void set_var (const std::string& var_arg = "")
   {
     var = var_arg;
   }

@@ -395,7 +395,7 @@ octregexp (const octave_value_list &args, int nargout,
       regexp::match_data::const_iterator p = rx_lst.begin ();
 
       retval(4) = sz ? p->tokens () : Cell ();
-      retval(3) = sz ? p->match_string () : std::string ();
+      retval(3) = sz ? p->match_string () : "";
       retval(2) = sz ? p->token_extents () : Matrix ();
 
       if (sz)

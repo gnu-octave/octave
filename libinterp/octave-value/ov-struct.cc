@@ -741,7 +741,7 @@ octave_struct::load_ascii (std::istream& is)
 
           // recurse to read cell elements
           std::string nm
-            = read_text_data (is, std::string (), dummy, t2, j);
+            = read_text_data (is, "", dummy, t2, j);
 
           if (! is)
             break;
@@ -853,7 +853,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           std::string doc;
 
           // recurse to read cell elements
-          std::string nm = read_binary_data (is, swap, fmt, std::string (),
+          std::string nm = read_binary_data (is, swap, fmt, "",
                                              dummy, t2, doc);
 
           if (! is)
@@ -1380,7 +1380,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
 
           // recurse to read cell elements
           std::string nm
-            = read_text_data (is, std::string (), dummy, t2, j);
+            = read_text_data (is, "", dummy, t2, j);
 
           if (! is)
             break;
@@ -1454,7 +1454,7 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
           std::string doc;
 
           // recurse to read cell elements
-          std::string nm = read_binary_data (is, swap, fmt, std::string (),
+          std::string nm = read_binary_data (is, swap, fmt, "",
                                              dummy, t2, doc);
 
           if (! is)

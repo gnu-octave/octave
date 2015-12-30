@@ -58,11 +58,11 @@ extern OCTINTERP_API std::string octave_name_version_and_copyright (void);
 
 extern OCTINTERP_API std::string
 octave_name_version_copyright_copying_and_warranty
-  (bool html = false, const std::string& extra_info = std::string ());
+  (bool html = false, const std::string& extra_info = "");
 
 extern OCTINTERP_API std::string
 octave_name_version_copyright_copying_warranty_and_bugs
-  (bool html = false, const std::string& extra_info = std::string ());
+  (bool html = false, const std::string& extra_info = "");
 
 extern OCTINTERP_API std::string octave_startup_message (bool html = false);
 

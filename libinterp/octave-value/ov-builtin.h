@@ -44,8 +44,8 @@ public:
 
   typedef octave_value_list (*fcn) (const octave_value_list&, int);
 
-  octave_builtin (fcn ff, const std::string& nm = std::string (),
-                  const std::string& ds = std::string ())
+  octave_builtin (fcn ff, const std::string& nm = "",
+                  const std::string& ds = "")
     : octave_function (nm, ds), f (ff), file (), jtype (0) { }
 
   octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,

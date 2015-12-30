@@ -373,7 +373,7 @@ file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
       else
         {
           if (markers_mask && (1 << marker::breakpoint))
-            handle_request_remove_breakpoint (editor_linenr);
+            handle_request_remove_breakpoint (editor_linenr + 1);
           else
             {
               if (_edit_area->isModified ())

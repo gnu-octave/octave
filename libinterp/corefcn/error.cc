@@ -430,7 +430,7 @@ usage (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  vusage (fmt, args);
+  usage_1 ("", fmt, args);
   va_end (args);
 }
 

@@ -966,7 +966,7 @@ command_editor::instance_ok (void)
 
   if (! instance)
     {
-      current_liboctave_error_handler
+      (*current_liboctave_error_handler)
         ("unable to create command history object!");
 
       retval = false;
@@ -1840,11 +1840,11 @@ command_editor::read_octal (const std::string& s)
 void
 command_editor::error (int err_num)
 {
-  current_liboctave_error_handler ("%s", gnulib::strerror (err_num));
+  (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
 }
 
 void
 command_editor::error (const std::string& s)
 {
-  current_liboctave_error_handler ("%s", s.c_str ());
+  (*current_liboctave_error_handler) ("%s", s.c_str ());
 }

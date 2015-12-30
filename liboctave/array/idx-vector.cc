@@ -1074,7 +1074,7 @@ idx_vector::copy_data (octave_idx_type *data) const
   switch (rep->idx_class ())
     {
     case class_colon:
-      current_liboctave_error_handler ("colon not allowed");
+      (*current_liboctave_error_handler) ("colon not allowed");
       break;
 
     case class_range:

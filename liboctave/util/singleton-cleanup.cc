@@ -50,7 +50,7 @@ singleton_cleanup_list::instance_ok (void)
 
   if (! instance)
     {
-      current_liboctave_error_handler
+      (*current_liboctave_error_handler)
         ("unable to create singleton_cleanup_list object!");
 
       retval = false;

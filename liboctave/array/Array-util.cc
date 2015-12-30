@@ -555,7 +555,8 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
               if (clen < 0)
                 clen = idx.length (n);
               else if (clen != idx.length (n))
-                current_liboctave_error_handler ("sub2ind: lengths of indices must match");
+                (*current_liboctave_error_handler)
+                  ("sub2ind: lengths of indices must match");
 
               if (idx.extent (n) > n)
                   gripe_index_out_of_range (len, i+1, idx.extent (n), n);
@@ -613,7 +614,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
         }
     }
   else
-    current_liboctave_error_handler ("sub2ind: needs at least 2 indices");
+    (*current_liboctave_error_handler) ("sub2ind: needs at least 2 indices");
 
   return retval;
 }
@@ -627,7 +628,7 @@ ind2sub (const dim_vector& dv, const idx_vector& idx)
   octave_idx_type numel = dv.numel ();
 
   if (idx.extent (numel) > numel)
-    current_liboctave_error_handler ("ind2sub: index out of range");
+    (*current_liboctave_error_handler) ("ind2sub: index out of range");
   else
     {
       if (idx.is_scalar ())

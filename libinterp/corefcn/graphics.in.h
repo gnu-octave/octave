@@ -1970,7 +1970,7 @@ public:
     const_iterator it;
 
     for (it = (*this).begin (); it != (*this).end (); it++)
-      if (pname.compare ((*it).first) == 0)
+      if (pname == (*it).first)
         return it;
 
     return (*this).end ();
@@ -1981,7 +1981,7 @@ public:
     iterator it;
 
     for (it = (*this).begin (); it != (*this).end (); it++)
-      if (pname.compare ((*it).first) == 0)
+      if (pname == (*it).first)
         return it;
 
     return (*this).end ();

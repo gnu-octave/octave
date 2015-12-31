@@ -1416,7 +1416,7 @@ load_path::do_find_dir (const std::string& dir) const
 
           if (dname_len > dir_len
               && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+              && dir == dname.substr (dname_len - dir_len))
             {
               file_stat fs (p->dir_name);
 
@@ -1463,7 +1463,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
 
           if (dname_len > dir_len
               && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+              && dir == dname.substr (dname_len - dir_len))
             {
               file_stat fs (p->dir_name);
 

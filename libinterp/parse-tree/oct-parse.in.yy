@@ -4419,7 +4419,7 @@ not loaded anymore during the current Octave session.\n\
         autoload_map[argv[1]] = nm;
       else if (nargin == 3)
         {
-          if (argv[3].compare ("remove") != 0)
+          if (argv[3] != "remove")
             error_with_id ("Octave:invalid-input-arg",
                            "autoload: third argument can only be 'remove'");
 

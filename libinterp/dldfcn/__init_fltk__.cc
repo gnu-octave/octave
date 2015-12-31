@@ -297,7 +297,7 @@ public:
               menupath += "/";
             menupath += m->label ();
 
-            if (menupath.compare (findname) == 0)
+            if (menupath == findname)
               return (t);
           }
         else
@@ -318,7 +318,7 @@ public:
               itempath += "/";
             itempath += m->label ();
 
-            if (itempath.compare (findname) == 0)
+            if (itempath == findname)
               return (t);
           }
       }
@@ -672,9 +672,9 @@ public:
           }
       }
 
-    if (type.compare ("uimenu") == 0)
+    if (type == "uimenu")
       delete_entry (dynamic_cast<uimenu::properties&> (prop));
-    else if (type.compare ("figure") == 0)
+    else if (type == "figure")
       menubar->clear ();
   }
 
@@ -1591,7 +1591,7 @@ private:
                         (ax_obj.get_properties ());
 
                       // Don't pan or rotate legend
-                      if (ap.get_tag ().compare ("legend") < 0)
+                      if (ap.get_tag () == "legend")
                         {
                           if (rotate_enabled ())
                             view2status (ax_obj);

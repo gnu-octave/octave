@@ -102,7 +102,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
             buf << c;
 
           std::string tmp = buf.str ();
-          bool match = (tmp.compare (0, strlen (keyword), keyword) == 0);
+          bool match = (tmp.substr (0, strlen (keyword)) == keyword);
 
           if (match)
             {

@@ -160,7 +160,7 @@ tilde_find_prefix (const std::string& s, size_t& len)
             {
               size_t pfx_len = prefixes[j].length ();
 
-              if (prefixes[j].compare (s.substr (i, pfx_len)) == 0)
+              if (prefixes[j] == s.substr (i, pfx_len))
                 {
                   len = pfx_len - 1;
                   return i + len;
@@ -195,7 +195,7 @@ tilde_find_suffix (const std::string& s)
             {
               size_t sfx_len = suffixes[j].length ();
 
-              if (suffixes[j].compare (s.substr (i, sfx_len)) == 0)
+              if (suffixes[j] == s.substr (i, sfx_len))
                 return i;
             }
         }

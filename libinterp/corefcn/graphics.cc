@@ -2022,7 +2022,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
             {
               std::string sval = val.string_value ();
 
-              remove = (sval.compare ("remove") == 0);
+              remove = (sval == "remove");
             }
 
           pval_map_type& pval_map = plist_map[pfx];
@@ -2367,13 +2367,13 @@ graphics_object::set_value_or_default (const caseless_str& pname,
 
       octave_value default_val;
 
-      if (sval.compare ("default") == 0)
+      if (sval == "default")
         {
           default_val = get_default (pname);
 
           rep->set (pname, default_val);
         }
-      else if (sval.compare ("factory") == 0)
+      else if (sval == "factory")
         {
           default_val = get_factory_default (pname);
 
@@ -2382,9 +2382,9 @@ graphics_object::set_value_or_default (const caseless_str& pname,
       else
         {
           // Matlab specifically uses "\default" to escape string setting
-          if (sval.compare ("\\default") == 0)
+          if (sval == "\\default")
             rep->set (pname, "default");
-          else if (sval.compare ("\\factory") == 0)
+          else if (sval == "\\factory")
             rep->set (pname, "factory");
           else
             rep->set (pname, val);
@@ -3459,33 +3459,33 @@ figure::properties::set_integerhandle (const octave_value& val)
 void
 root_figure::properties::update_units (void)
 {
-  caseless_str xunits = get_units ();
+  std::string xunits = get_units ();
 
   Matrix scrn_sz = default_screensize ();
 
   double dpi = get_screenpixelsperinch ();
 
-  if (xunits.compare ("inches"))
+  if (xunits == "inches")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
       scrn_sz(2) /= dpi;
       scrn_sz(3) /= dpi;
     }
-  else if (xunits.compare ("centimeters"))
+  else if (xunits == "centimeters")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
       scrn_sz(2) *= 2.54 / dpi;
       scrn_sz(3) *= 2.54 / dpi;
     }
-  else if (xunits.compare ("normalized"))
+  else if (xunits == "normalized")
     {
       scrn_sz = Matrix (1, 4, 1.0);
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
     }
-  else if (xunits.compare ("points"))
+  else if (xunits == "points")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
@@ -4109,8 +4109,8 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
 void
 figure::properties::update_papertype (void)
 {
-  caseless_str typ = get_papertype ();
-  if (! typ.compare ("<custom>"))
+  std::string typ = get_papertype ();
+  if (typ != "<custom>")
     {
       Matrix sz = papersize_from_type (get_paperunits (), typ);
       if (get_paperorientation () == "landscape")
@@ -5593,9 +5593,9 @@ convert_label_position (const ColumnVector& p,
 {
   ColumnVector retval;
 
-  caseless_str to_units = props.get_units ();
+  std::string to_units = props.get_units ();
 
-  if (! to_units.compare ("data"))
+  if (to_units != "data")
     {
       ColumnVector v = xform.transform (p(0), p(1), p(2));
 
@@ -9372,9 +9372,9 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
                                                                   data));
           else
             {
-              caseless_str busy_action (go.get_properties ().get_busyaction ());
+              std::string busy_action (go.get_properties ().get_busyaction ());
 
-              if (busy_action.compare ("queue"))
+              if (busy_action == "queue")
                 do_post_event (graphics_event::create_callback_event (h, name,
                                                                       data));
               else

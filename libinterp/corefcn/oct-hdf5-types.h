@@ -23,9 +23,29 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_hdf5_types_h)
 #define octave_oct_hdf5_types_h 1
 
+#ifdef __cplusplus
+// This function only needs to be defined for C++.
+extern bool check_hdf5_types (bool warn = true);
+#endif
+
+// Available for C and C++.
+
 typedef int octave_hdf5_id;
 typedef int octave_hdf5_err;
 
-extern bool check_hdf5_types (bool warn = true);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// These are defined in a C file, so they should have C-linkage in
+// both C and C++ source files.
+
+extern const octave_hdf5_id octave_H5E_DEFAULT;
+extern const octave_hdf5_id octave_H5P_DEFAULT;
+extern const octave_hdf5_id octave_H5S_ALL;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

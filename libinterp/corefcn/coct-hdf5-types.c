@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 John W. Eaton
+Copyright (C) 2015 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,20 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_oct_hdf5_h)
-#define octave_hdf5_h 1
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#if defined (HAVE_HDF5_H)
-
-#include <hdf5.h>
-
+#include "oct-hdf5.h"
 #include "oct-hdf5-types.h"
 
-#ifdef USE_64_BIT_IDX_T
-#define H5T_NATIVE_IDX H5T_NATIVE_INT64
-#else
-#define H5T_NATIVE_IDX H5T_NATIVE_INT
-#endif
-#endif
+// Programming Note: This file exists so that we can hide the use
+// of macros and C-style casts in a C warnings about using old-style
+// casts in C++.
 
-#endif
+// Please do NOT eliminate this file and move code from here to
+// oct-hdf5-types.cc
+
+const octave_hdf5_id octave_H5E_DEFAULT = H5E_DEFAULT;
+const octave_hdf5_id octave_H5P_DEFAULT = H5P_DEFAULT;
+const octave_hdf5_id octave_H5S_ALL = H5S_ALL;

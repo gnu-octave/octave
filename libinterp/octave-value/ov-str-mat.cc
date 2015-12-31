@@ -561,10 +561,10 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     return false;
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -577,8 +577,8 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   for (int i = 0; i < dv.numel (); ++i)
     s[i] = m(i);
 
-  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, s) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, s) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -605,7 +605,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     return (empty > 0);
 
 #if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -645,8 +645,8 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       charNDArray m (dv);
       char *str = m.fortran_vec ();
-      if (H5Dread (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL,
-                   H5P_DEFAULT, str) >= 0)
+      if (H5Dread (data_hid, H5T_NATIVE_CHAR, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, str) >= 0)
         {
           retval = true;
           matrix = m;
@@ -679,8 +679,8 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
               // to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
               H5Tset_size (st_id, slen+1);
-              if (H5Dread (data_hid, st_id, H5S_ALL,
-                           H5S_ALL, H5P_DEFAULT, s) < 0)
+              if (H5Dread (data_hid, st_id, octave_H5S_ALL,
+                           octave_H5S_ALL, octave_H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
                   H5Tclose (type_hid);
@@ -724,8 +724,8 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
               hid_t st_id = H5Tcopy (H5T_C_S1);
               H5Tset_size (st_id, slen+1);
 
-              if (H5Dread (data_hid, st_id, H5S_ALL,
-                           H5S_ALL, H5P_DEFAULT, s) < 0)
+              if (H5Dread (data_hid, st_id, octave_H5S_ALL,
+                           octave_H5S_ALL, octave_H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
                   H5Tclose (type_hid);

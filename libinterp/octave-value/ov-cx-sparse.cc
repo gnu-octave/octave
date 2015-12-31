@@ -382,8 +382,8 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
   matrix.maybe_compress ();
 
 #if HAVE_HDF5_18
-  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT,
-                               H5P_DEFAULT);
+  hid_t group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                               octave_H5P_DEFAULT);
 #else
   hid_t group_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -405,10 +405,10 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
 
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -418,8 +418,8 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   tmp = m.rows ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
   if (! retval)
     {
@@ -430,10 +430,10 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
 
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -443,8 +443,8 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   tmp = m.cols ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
   if (! retval)
     {
@@ -455,10 +455,10 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
 
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -468,8 +468,8 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   tmp = m.nnz ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
   if (! retval)
     {
@@ -493,10 +493,10 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
 
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -506,8 +506,8 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   octave_idx_type * itmp = m.xcidx ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, itmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, itmp) >= 0;
   H5Dclose (data_hid);
   if (! retval)
     {
@@ -531,10 +531,10 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
 
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -544,7 +544,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   itmp = m.xridx ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
                      itmp) >= 0;
   H5Dclose (data_hid);
   if (! retval)
@@ -587,9 +587,9 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "data", type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "data", type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "data", type_hid, space_hid, octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -605,8 +605,8 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name
     {
       Complex * ctmp = m.xdata ();
 
-      retval = H5Dwrite (data_hid, complex_type_hid, H5S_ALL, H5S_ALL,
-                         H5P_DEFAULT, ctmp) >= 0;
+      retval = H5Dwrite (data_hid, complex_type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                         octave_H5P_DEFAULT, ctmp) >= 0;
     }
 
   H5Dclose (data_hid);
@@ -640,14 +640,14 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
     return (empty > 0);
 
 #if HAVE_HDF5_18
-  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
+  group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
   if (group_hid < 0) return false;
 
 #if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nr", H5P_DEFAULT);
+  data_hid = H5Dopen (group_hid, "nr", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nr");
 #endif
@@ -661,8 +661,8 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
-               H5S_ALL, H5P_DEFAULT, &nr) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL,
+               octave_H5S_ALL, octave_H5P_DEFAULT, &nr) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -672,7 +672,7 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
   H5Dclose (data_hid);
 
 #if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nc", H5P_DEFAULT);
+  data_hid = H5Dopen (group_hid, "nc", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nc");
 #endif
@@ -686,8 +686,8 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
-               H5S_ALL, H5P_DEFAULT, &nc) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL,
+               octave_H5S_ALL, octave_H5P_DEFAULT, &nc) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -697,7 +697,7 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
   H5Dclose (data_hid);
 
 #if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nz", H5P_DEFAULT);
+  data_hid = H5Dopen (group_hid, "nz", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nz");
 #endif
@@ -711,8 +711,8 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
-               H5S_ALL, H5P_DEFAULT, &nz) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL,
+               octave_H5S_ALL, octave_H5P_DEFAULT, &nz) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -726,7 +726,7 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
                          static_cast<octave_idx_type> (nz));
 
 #if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "cidx", H5P_DEFAULT);
+  data_hid = H5Dopen (group_hid, "cidx", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "cidx");
 #endif
@@ -756,8 +756,8 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   octave_idx_type *itmp = m.xcidx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
-               H5S_ALL, H5P_DEFAULT, itmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL,
+               octave_H5S_ALL, octave_H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -769,7 +769,7 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
   H5Dclose (data_hid);
 
 #if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "ridx", H5P_DEFAULT);
+  data_hid = H5Dopen (group_hid, "ridx", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "ridx");
 #endif
@@ -796,8 +796,8 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
     }
 
   itmp = m.xridx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
-               H5S_ALL, H5P_DEFAULT, itmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL,
+               octave_H5S_ALL, octave_H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -809,7 +809,7 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
   H5Dclose (data_hid);
 
 #if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "data", H5P_DEFAULT);
+  data_hid = H5Dopen (group_hid, "data", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "data");
 #endif
@@ -849,8 +849,8 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name
 
   Complex *ctmp = m.xdata ();
 
-  if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, ctmp) >= 0
+  if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, ctmp) >= 0
       && m.indices_ok ())
     {
       retval = true;

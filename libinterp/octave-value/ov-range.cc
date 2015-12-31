@@ -575,9 +575,9 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -592,7 +592,7 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   range_vals[1] = r.inc () != 0 ? r.limit () : r.numel ();
   range_vals[2] = r.inc ();
 
-  if (H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+  if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
                 range_vals) >= 0)
     {
       octave_idx_type nel = r.numel ();
@@ -621,7 +621,7 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 #if defined (HAVE_HDF5)
 
 #if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -648,7 +648,7 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   double rangevals[3];
-  if (H5Dread (data_hid, range_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+  if (H5Dread (data_hid, range_type, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
                rangevals) >= 0)
     {
       retval = true;

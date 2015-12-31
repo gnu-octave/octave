@@ -198,10 +198,10 @@ octave_float_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (space_hid < 0) return false;
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_FLOAT, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_FLOAT, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -210,8 +210,8 @@ octave_float_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   float tmp = float_value ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -229,7 +229,7 @@ octave_float_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 #if defined (HAVE_HDF5)
 
 #if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -244,8 +244,8 @@ octave_float_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   float dtmp;
-  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, &dtmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &dtmp) < 0)
     {
       H5Dclose (data_hid);
       return false;

@@ -979,7 +979,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   space_hid = data_hid = size_hid = -1;
 
 #if HAVE_HDF5_18
-  data_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -1006,10 +1006,10 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
 
 #if HAVE_HDF5_18
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (size_hid < 0)
     {
@@ -1018,8 +1018,8 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
       return false;
     }
 
-  if (H5Dwrite (size_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                H5P_DEFAULT, hdims) < 0)
+  if (H5Dwrite (size_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                octave_H5P_DEFAULT, hdims) < 0)
     {
       H5Dclose (size_hid);
       H5Sclose (space_hid);
@@ -1079,7 +1079,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     return (empty > 0);
 
 #if HAVE_HDF5_18
-  hid_t group_id = H5Gopen (loc_id, name, H5P_DEFAULT);
+  hid_t group_id = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t group_id = H5Gopen (loc_id, name);
 #endif
@@ -1088,7 +1088,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     return false;
 
 #if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (group_id, "dims", H5P_DEFAULT);
+  hid_t data_hid = H5Dopen (group_id, "dims", octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (group_id, "dims");
 #endif
@@ -1112,8 +1112,8 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, hdims[0]);
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, tmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, tmp) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_id);
@@ -1136,7 +1136,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   hsize_t num_obj = 0;
 #if HAVE_HDF5_18
-  group_id = H5Gopen (loc_id, name, H5P_DEFAULT);
+  group_id = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_id = H5Gopen (loc_id, name);
 #endif

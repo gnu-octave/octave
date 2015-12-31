@@ -90,6 +90,10 @@ define rcc-command
   ( echo "#ifdef HAVE_CONFIG_H"; \
     echo "#include <config.h>"; \
     echo "#endif"; \
+    echo "// Ignore unused variable warnings in generated code."; \
+    echo "#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)"; \
+    echo "#pragma GCC diagnostic ignored \"-Wunused-variable\""; \
+    echo "#endif"; \
     $(RCC) -name $(@D) $< ) > $@-t && \
   mv $@-t $@
 endef

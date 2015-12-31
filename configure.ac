@@ -2555,6 +2555,27 @@ AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
 AC_SUBST(WARN_LDFLAGS)
 
+## Also check for the GCC-specific pragmas for controlling warnings.
+
+AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
+  [octave_cv_gcc_has_pragma_GCC_diagnostic],
+  [AC_LANG_PUSH(C++)
+   AC_TRY_COMPILE([], [
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignore "-Wold-style-cast"
+  int three = (int) 3.1415926;
+#pragma GCC diagnostic pop
+    ],
+    [octave_cv_gcc_has_pragma_GCC_diagnostic=yes],
+    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])
+   AC_LANG_POP(C++)],
+  ])
+
+if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
+  AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,
+   [define if GCC supports @%:@pragma GCC diagnostic ...])
+fi
+
 ### Check for Java.
 
 build_java=yes

@@ -20,9 +20,6 @@ JIT_INC = \
   libinterp/corefcn/jit-ir.h \
   libinterp/corefcn/pt-jit.h
 
-TEX_PARSER_INC = \
-  libinterp/corefcn/oct-tex-parser.h
-
 COREFCN_INC = \
   libinterp/corefcn/Cell.h \
   libinterp/corefcn/c-file-ptr-stream.h \
@@ -72,6 +69,7 @@ COREFCN_INC = \
   libinterp/corefcn/oct-stdstrm.h \
   libinterp/corefcn/oct-stream.h \
   libinterp/corefcn/oct-strstrm.h \
+  libinterp/corefcn/oct-tex-parser.h \
   libinterp/corefcn/oct.h \
   libinterp/corefcn/octave-default-image.h \
   libinterp/corefcn/octave-link.h \
@@ -96,18 +94,13 @@ COREFCN_INC = \
   libinterp/corefcn/xnorm.h \
   libinterp/corefcn/xpow.h \
   libinterp/corefcn/zfstream.h \
-  $(JIT_INC) \
-  $(TEX_PARSER_INC)
+  $(JIT_INC)
 
 JIT_SRC = \
   libinterp/corefcn/jit-util.cc \
   libinterp/corefcn/jit-typeinfo.cc \
   libinterp/corefcn/jit-ir.cc \
   libinterp/corefcn/pt-jit.cc
-
-TEX_PARSER_SRC = \
-  libinterp/corefcn/oct-tex-lexer.ll \
-  libinterp/corefcn/oct-tex-parser.yy
 
 C_COREFCN_SRC = \
   libinterp/corefcn/siglist.c
@@ -203,6 +196,8 @@ COREFCN_SRC = \
   libinterp/corefcn/oct-procbuf.cc \
   libinterp/corefcn/oct-stream.cc \
   libinterp/corefcn/oct-strstrm.cc \
+  libinterp/corefcn/oct-tex-lexer.ll \
+  libinterp/corefcn/oct-tex-parser.yy \
   libinterp/corefcn/octave-link.cc \
   libinterp/corefcn/ordschur.cc \
   libinterp/corefcn/pager.cc \
@@ -328,8 +323,7 @@ libinterp/corefcn/oct-tex-parser.yy: libinterp/corefcn/oct-tex-parser.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
 
 noinst_LTLIBRARIES += \
-  libinterp/corefcn/libcorefcn.la \
-  libinterp/corefcn/libtex_parser.la
+  libinterp/corefcn/libcorefcn.la
 
 libinterp_corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
 
@@ -345,13 +339,6 @@ libinterp_corefcn_libcorefcn_la_CPPFLAGS = \
 libinterp_corefcn_libcorefcn_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
 libinterp_corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
-
-libinterp_corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)
-
-libinterp_corefcn_libtex_parser_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS)
-
-libinterp_corefcn_libtex_parser_la_CXXFLAGS = \
-  $(filter-out -Wold-style-cast, $(libinterp_corefcn_libcorefcn_la_CXXFLAGS))
 
 libinterp_EXTRA_DIST += \
   libinterp/corefcn/defaults.in.h \

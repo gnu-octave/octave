@@ -1,12 +1,6 @@
-PARSER_INC = \
-  libinterp/parse-tree/lex.h \
-  libinterp/parse-tree/parse.h
-
-PARSER_SRC = \
-  libinterp/parse-tree/lex.ll \
-  libinterp/parse-tree/oct-parse.yy
-
 PARSE_TREE_INC = \
+  libinterp/parse-tree/lex.h \
+  libinterp/parse-tree/parse.h \
   libinterp/parse-tree/pt-all.h \
   libinterp/parse-tree/pt-arg-list.h \
   libinterp/parse-tree/pt-array-list.h \
@@ -41,6 +35,8 @@ PARSE_TREE_INC = \
   libinterp/parse-tree/token.h
 
 PARSE_TREE_SRC = \
+  libinterp/parse-tree/lex.ll \
+  libinterp/parse-tree/oct-parse.yy \
   libinterp/parse-tree/pt-arg-list.cc \
   libinterp/parse-tree/pt-array-list.cc \
   libinterp/parse-tree/pt-assign.cc \
@@ -91,24 +87,15 @@ libinterp/parse-tree/oct-parse.yy: libinterp/parse-tree/oct-parse.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
 
 noinst_LTLIBRARIES += \
-  libinterp/parse-tree/libparse-tree.la \
-  libinterp/parse-tree/libparser.la
+  libinterp/parse-tree/libparse-tree.la
 
 libinterp_parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
 
 libinterp_parse_tree_libparse_tree_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS)
 
-libinterp_parse_tree_libparse_tree_la_CFLAGS = $(AM_CFLAGS)	\
-$(WARN_CFLAGS)
+libinterp_parse_tree_libparse_tree_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
 libinterp_parse_tree_libparse_tree_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
-libinterp_parse_tree_libparser_la_SOURCES = $(PARSER_SRC)
-
-libinterp_parse_tree_libparser_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS)
-
-libinterp_parse_tree_libparser_la_CXXFLAGS = \
-  $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 
 libinterp_EXTRA_DIST += \
   libinterp/parse-tree/oct-parse.in.yy \

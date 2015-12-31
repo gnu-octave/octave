@@ -127,9 +127,7 @@ DIST_SRC += \
   libinterp/version.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
-  $(PARSER_SRC) \
-  $(COREFCN_SRC) \
-  $(TEX_PARSER_SRC)
+  $(COREFCN_SRC)
 
 include libinterp/parse-tree/module.mk
 include libinterp/octave-value/module.mk
@@ -170,9 +168,7 @@ nodist_libinterp_liboctinterp_la_SOURCES = \
 libinterp_liboctinterp_la_LIBADD = \
   libinterp/octave-value/liboctave-value.la \
   libinterp/parse-tree/libparse-tree.la \
-  libinterp/parse-tree/libparser.la \
   libinterp/corefcn/libcorefcn.la \
-  libinterp/corefcn/libtex_parser.la \
   $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 

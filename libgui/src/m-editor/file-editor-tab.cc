@@ -1642,46 +1642,27 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
         restore_breakpoints = false;
       else
         {
-          QDialog* dlgBox = new QDialog ();
+          // ask user
+          QMessageBox *dlgBox = new QMessageBox (QMessageBox::Question,
+                                  tr ("Octave Editor"),
+                                  tr ("Would you like to restore adjusted breakpoints?"),
+                                  QMessageBox::Yes | QMessageBox::No, this);
 
-          QStyle *mbstyle = dlgBox->style ();
-          QIcon tmpIcon = mbstyle->standardIcon (QStyle::SP_MessageBoxQuestion,
-                                                 0, dlgBox);
-          int iconSize = mbstyle->pixelMetric(QStyle::PM_MessageBoxIconSize,
-                                              0, dlgBox);
-          QLabel *questImage = new QLabel ();
-          questImage->setPixmap (tmpIcon.pixmap (iconSize, iconSize));
-          QLabel *questText = new QLabel ("Would you like to restore adjusted breakpoints?");
-          QHBoxLayout *horizontalLayout = new QHBoxLayout;
-          horizontalLayout->addWidget (questImage);
-          horizontalLayout->addWidget (questText);
-
+          // add checkbox whether to store the result in the settings
           QCheckBox *checkBox = new QCheckBox ("Don't ask again.");
           checkBox->setCheckState (Qt::Unchecked);
+          QVBoxLayout *extra = new QVBoxLayout (dlgBox);
+          extra->addWidget (checkBox);
+          QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (dlgBox->layout ());
+          dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
+                                    1,dialog_layout->columnCount ());
 
-          QDialogButtonBox *buttonBox = new QDialogButtonBox ();
-          QPushButton *noButton = buttonBox->addButton (QDialogButtonBox::No);
-          noButton->setAutoDefault (false);
-          buttonBox->addButton (QDialogButtonBox::Yes);
-          QHBoxLayout *buttonsLayout = new QHBoxLayout;
-          buttonsLayout->addStretch (1);
-          buttonsLayout->addWidget (buttonBox);
-
-          QVBoxLayout *mainLayout = new QVBoxLayout;
-          mainLayout->addLayout (horizontalLayout);
-          mainLayout->addSpacing(12);
-          mainLayout->addWidget (checkBox);
-          mainLayout->addSpacing(12);
-          mainLayout->addLayout (buttonsLayout);
-
-          dlgBox->setLayout (mainLayout);
-
-          connect(buttonBox, SIGNAL(accepted()), dlgBox, SLOT(accept()));
-          connect(buttonBox, SIGNAL(rejected()), dlgBox, SLOT(reject()));
-          dlgBox->setWindowModality (Qt::NonModal);
+          // shoe the dialog
           dlgBox->exec ();
 
-          restore_breakpoints = (dlgBox->result () == QDialog::Accepted);
+          // evaluate result
+          QMessageBox::StandardButton clicked = dlgBox->standardButton (dlgBox->clickedButton ());
+          restore_breakpoints = (clicked == QMessageBox::Yes);
 
           if (checkBox->checkState () == Qt::Checked)
             {

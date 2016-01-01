@@ -290,10 +290,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
       float d = matrix (i);
 
       if (xisnan (d))
-        {
-          gripe_nan_to_character_conversion ();
-          return retval;
-        }
+        gripe_nan_to_character_conversion ();
       else
         {
           int ival = NINT (d);

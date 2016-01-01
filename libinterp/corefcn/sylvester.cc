@@ -97,20 +97,11 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   // Arguments are not empty, so check for correct dimensions.
 
   if (a_nr != a_nc)
-    {
-      gripe_square_matrix_required ("sylvester: input A");
-      return retval;
-    }
+    gripe_square_matrix_required ("sylvester: input A");
   else if (b_nr != b_nc)
-    {
-      gripe_square_matrix_required ("sylvester: input B");
-      return retval;
-    }
+    gripe_square_matrix_required ("sylvester: input B");
   else if (a_nr != c_nr || b_nr != c_nc)
-    {
-      gripe_nonconformant ();
-      return retval;
-    }
+    gripe_nonconformant ();
 
   if (isfloat)
     {

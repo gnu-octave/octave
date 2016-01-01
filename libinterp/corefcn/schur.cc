@@ -167,10 +167,7 @@ in control (see @code{are} and @code{dare}).\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr != nc)
-    {
-      gripe_square_matrix_required ("schur");
-      return ovl ();
-    }
+    gripe_square_matrix_required ("schur");
 
   octave_value_list retval;
 

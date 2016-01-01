@@ -98,16 +98,10 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
     }
 
   if (nr_a != nc_a)
-    {
-      gripe_square_matrix_required ("eig");
-      return retval;
-    }
+    gripe_square_matrix_required ("eig");
 
   if (nargin == 2 && nr_b != nc_b)
-    {
-      gripe_square_matrix_required ("eig");
-      return retval;
-    }
+    gripe_square_matrix_required ("eig");
 
   Matrix tmp_a, tmp_b;
   ComplexMatrix ctmp_a, ctmp_b;

@@ -76,7 +76,6 @@ mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
       octave_idx_type b_nc = b.cols ();
 
       gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
-      return false;
     }
 
   return true;
@@ -103,7 +102,6 @@ mx_div_conform (const T1& a, const T2& b)
       octave_idx_type b_nr = b.rows ();
 
       gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
-      return false;
     }
 
   return true;

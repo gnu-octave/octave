@@ -74,10 +74,7 @@ sparse matrix if possible.\n\
     return octave_value (Matrix ());
 
   if (nr != nc)
-    {
-      gripe_square_matrix_required ("inverse");
-      return ovl ();
-    }
+    gripe_square_matrix_required ("inverse");
 
   octave_value result;
   octave_idx_type info;

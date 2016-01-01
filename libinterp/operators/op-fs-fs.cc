@@ -46,6 +46,7 @@ DEFUNOP (not, float_scalar)
   float x = v.float_value ();
   if (xisnan (x))
     gripe_nan_to_logical_conversion ();
+
   return octave_value (x == 0.0f);
 }
 

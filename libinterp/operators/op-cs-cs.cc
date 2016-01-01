@@ -46,6 +46,7 @@ DEFUNOP (not, complex)
   Complex x = v.complex_value ();
   if (xisnan (x))
     gripe_nan_to_logical_conversion ();
+
   return octave_value (x == 0.0);
 }
 

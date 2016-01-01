@@ -439,7 +439,7 @@ octave_jit_print_matrix (jit_matrix *m)
   std::cout << *m << std::endl;
 }
 
-static void
+static void GCC_ATTR_NORETURN
 gripe_bad_result (void)
 {
   error ("incorrect type information given to the JIT compiler");
@@ -460,10 +460,7 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
   if (result_type)
     {
       if (ovl.length () < 1)
-        {
-          gripe_bad_result ();
-          return 0;
-        }
+        gripe_bad_result ();
 
       octave_value result = ovl.xelem(0);
       octave_base_value *ret = result.internal_rep ();

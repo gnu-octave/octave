@@ -80,10 +80,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
     return octave_value_list (2, Matrix ());
 
   if (nr != nc)
-    {
-      gripe_square_matrix_required ("hess");
-      return ovl ();
-    }
+    gripe_square_matrix_required ("hess");
 
   octave_value_list retval;
 

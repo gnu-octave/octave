@@ -469,10 +469,7 @@ compatibility with @sc{matlab}.\n\
       return octave_value_list (2, Matrix ());
     }
   else if (args(0).columns () != nn)
-    {
-      gripe_square_matrix_required ("qz");
-      return retval;
-    }
+    gripe_square_matrix_required ("qz");
 
   // Argument 1: dimensions look good; get the value.
   Matrix aa;
@@ -489,10 +486,7 @@ compatibility with @sc{matlab}.\n\
 
   // Extract argument 2 (bb, or cbb if complex).
   if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
-    {
-      gripe_nonconformant ();
-      return retval;
-    }
+    gripe_nonconformant ();
 
   Matrix bb;
   ComplexMatrix cbb;

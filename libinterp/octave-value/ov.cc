@@ -2123,10 +2123,7 @@ do_binary_op (octave_value::binary_op op,
                   t1 = tv1.type_id ();
                 }
               else
-                {
-                  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
-                  return retval;
-                }
+                gripe_binary_op_conv (octave_value::binary_op_as_string (op));
             }
           else
             tv1 = v1;
@@ -2141,10 +2138,7 @@ do_binary_op (octave_value::binary_op op,
                   t2 = tv2.type_id ();
                 }
               else
-                {
-                  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
-                  return retval;
-                }
+                gripe_binary_op_conv (octave_value::binary_op_as_string (op));
             }
           else
             tv2 = v2;
@@ -2181,11 +2175,8 @@ do_binary_op (octave_value::binary_op op,
                       t1 = tv1.type_id ();
                     }
                   else
-                    {
-                      gripe_binary_op_conv
-                        (octave_value::binary_op_as_string (op));
-                      return retval;
-                    }
+                    gripe_binary_op_conv
+                      (octave_value::binary_op_as_string (op));
                 }
 
               if (cf2)
@@ -2198,11 +2189,8 @@ do_binary_op (octave_value::binary_op op,
                       t2 = tv2.type_id ();
                     }
                   else
-                    {
-                      gripe_binary_op_conv
-                        (octave_value::binary_op_as_string (op));
-                      return retval;
-                    }
+                    gripe_binary_op_conv
+                      (octave_value::binary_op_as_string (op));
                 }
 
               if (cf1 || cf2)
@@ -2327,14 +2315,14 @@ do_binary_op (octave_value::compound_binary_op op,
   return retval;
 }
 
-static void
+static void GCC_ATTR_NORETURN
 gripe_cat_op (const std::string& tn1, const std::string& tn2)
 {
   error ("concatenation operator not implemented for '%s' by '%s' operations",
          tn1.c_str (), tn2.c_str ());
 }
 
-static void
+static void GCC_ATTR_NORETURN
 gripe_cat_op_conv (void)
 {
   error ("type conversion failed for concatenation operator");
@@ -2383,10 +2371,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
               t1 = tv1.type_id ();
             }
           else
-            {
-              gripe_cat_op_conv ();
-              return retval;
-            }
+            gripe_cat_op_conv ();
         }
       else
         tv1 = v1;
@@ -2401,10 +2386,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
               t2 = tv2.type_id ();
             }
           else
-            {
-              gripe_cat_op_conv ();
-              return retval;
-            }
+            gripe_cat_op_conv ();
         }
       else
         tv2 = v2;

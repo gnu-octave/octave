@@ -215,7 +215,6 @@ octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = "<" + type_name () + ">";
   gripe_invalid_index (nm.c_str ());
-  return idx_vector ();
 }
 
 octave_value
@@ -386,8 +385,7 @@ void
 octave_base_value::convert_to_row_or_column_vector (void)
 {
   gripe_wrong_type_arg
-    ("octave_base_value::convert_to_row_or_column_vector ()",
-     type_name ());
+    ("octave_base_value::convert_to_row_or_column_vector ()", type_name ());
 }
 
 void
@@ -1299,22 +1297,21 @@ octave_base_value::dump (std::ostream& os) const
      << " dims: " << dv.str ();
 }
 
-static void
+static void GCC_ATTR_NORETURN
 gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {
   error ("assignment of '%s' to indexed '%s' not implemented",
          tn2.c_str (), tn1.c_str ());
 }
 
-static void
-gripe_assign_conversion_failed (const std::string& tn1,
-                                const std::string& tn2)
+static void GCC_ATTR_NORETURN
+gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
 {
   error ("type conversion for assignment of '%s' to indexed '%s' failed",
          tn2.c_str (), tn1.c_str ());
 }
 
-static void
+static void GCC_ATTR_NORETURN
 gripe_no_conversion (const std::string& on, const std::string& tn1,
                      const std::string& tn2)
 {
@@ -1415,11 +1412,8 @@ octave_base_value::numeric_assign (const std::string& type,
               if (tmp)
                 tmp_rhs = octave_value (tmp);
               else
-                {
-                  gripe_assign_conversion_failed (type_name (),
-                                                  rhs.type_name ());
-                  return octave_value ();
-                }
+                gripe_assign_conversion_failed (type_name (),
+                                                rhs.type_name ());
             }
           else
             tmp_rhs = rhs;
@@ -1434,11 +1428,8 @@ octave_base_value::numeric_assign (const std::string& type,
               if (tmp)
                 tmp_lhs = octave_value (tmp);
               else
-                {
-                  gripe_assign_conversion_failed (type_name (),
-                                                  rhs.type_name ());
-                  return octave_value ();
-                }
+                gripe_assign_conversion_failed (type_name (),
+                                                rhs.type_name ());
             }
 
           if (cf_this || cf_rhs)
@@ -1499,7 +1490,7 @@ octave_base_value::newline (std::ostream& os) const
   beginning_of_line = true;
 }
 
-// For ressetting print state.
+// For resetting print state.
 
 void
 octave_base_value::reset (void) const

@@ -63,7 +63,6 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
     {
       std::string nm = "<" + type_name () + ">";
       gripe_invalid_index (nm.c_str ());
-      return idx_vector ();
     }
 }
 
@@ -225,10 +224,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
             double d = matrix.data (i);
 
             if (xisnan (d))
-              {
-                gripe_nan_to_character_conversion ();
-                return retval;
-              }
+              gripe_nan_to_character_conversion ();
             else
               {
                 int ival = NINT (d);

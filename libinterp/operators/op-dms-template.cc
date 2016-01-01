@@ -54,6 +54,7 @@ gripe_if_zero (T x)
 {
   if (x == T ())
     gripe_divide_by_zero ();
+
   return x;
 }
 

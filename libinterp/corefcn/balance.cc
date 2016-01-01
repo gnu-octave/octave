@@ -105,10 +105,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   octave_idx_type nn = args(0).rows ();
 
   if (nn != args(0).columns ())
-    {
-      gripe_square_matrix_required ("balance");
-      return retval;
-    }
+    gripe_square_matrix_required ("balance");
 
   bool isfloat = args(0).is_single_type ()
                  || (! AEPcase && args(1).is_single_type ());
@@ -227,10 +224,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         bal_job = args(2).xstring_value ("balance: OPT argument must be a string");
 
       if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
-        {
-          gripe_nonconformant ();
-          return retval;
-        }
+        gripe_nonconformant ();
 
       Matrix bb;
       ComplexMatrix cbb;

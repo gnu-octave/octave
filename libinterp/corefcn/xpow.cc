@@ -813,10 +813,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -896,10 +893,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   ComplexMatrix result (nr, nc);
 
@@ -1037,10 +1031,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   ComplexMatrix result (nr, nc);
 
@@ -1088,10 +1079,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   ComplexMatrix result (nr, nc);
 
@@ -1273,10 +1261,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
             return octave_value (bsxfun_pow (xa, xb));
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   int len = a.numel ();
@@ -1355,10 +1340,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
           return bsxfun_pow (a, b);
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   ComplexNDArray result (a_dims);
@@ -1454,10 +1436,7 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
           return bsxfun_pow (a, b);
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   ComplexNDArray result (a_dims);
@@ -1504,10 +1483,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
           return bsxfun_pow (a, b);
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   ComplexNDArray result (a_dims);
@@ -2219,10 +2195,7 @@ elem_xpow (const FloatMatrix& a, const FloatMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -2302,10 +2275,7 @@ elem_xpow (const FloatMatrix& a, const FloatComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   FloatComplexMatrix result (nr, nc);
 
@@ -2403,10 +2373,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   FloatComplexMatrix result (nr, nc);
 
@@ -2454,10 +2421,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   FloatComplexMatrix result (nr, nc);
 
@@ -2639,10 +2603,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
             return octave_value (bsxfun_pow (xa, xb));
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   int len = a.numel ();
@@ -2721,10 +2682,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
           return bsxfun_pow (a, b);
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2820,10 +2778,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
           return bsxfun_pow (a, b);
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2870,10 +2825,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
           return bsxfun_pow (a, b);
         }
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        gripe_nonconformant ("operator .^", a_dims, b_dims);
     }
 
   FloatComplexNDArray result (a_dims);

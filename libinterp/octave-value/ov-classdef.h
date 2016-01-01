@@ -62,25 +62,21 @@ public:
   virtual cdef_object_rep* clone (void) const
   {
     gripe_invalid_object ("clone");
-    return new cdef_object_rep ();
   }
 
   virtual cdef_object_rep* empty_clone (void) const
   {
     gripe_invalid_object ("empty_clone");
-    return new cdef_object_rep ();
   }
 
   virtual cdef_object_rep* copy (void) const
   {
     gripe_invalid_object ("copy");
-    return new cdef_object_rep ();
   }
 
   virtual cdef_object_rep* make_array (void) const
   {
     gripe_invalid_object ("make_array");
-    return new cdef_object_rep ();
   }
 
   virtual bool is_array (void) const { return false; }
@@ -94,7 +90,6 @@ public:
   virtual Array<cdef_object> array_value (void) const
   {
     gripe_invalid_object ("array_value");
-    return Array<cdef_object> ();
   }
 
   virtual void put (const std::string&, const octave_value&)
@@ -103,7 +98,6 @@ public:
   virtual octave_value get (const std::string&) const
   {
     gripe_invalid_object ("get");
-    return octave_value ();
   }
 
   virtual octave_value_list
@@ -111,7 +105,6 @@ public:
            int, size_t&, const cdef_class&, bool)
   {
     gripe_invalid_object ("subsref");
-    return ovl ();
   }
 
   virtual octave_value
@@ -119,7 +112,6 @@ public:
             const octave_value&)
   {
     gripe_invalid_object ("subsasgn");
-    return octave_value ();
   }
 
   virtual string_vector map_keys (void) const;
@@ -129,30 +121,33 @@ public:
   std::string class_name (void) const;
 
   virtual void mark_for_construction (const cdef_class&)
-  { gripe_invalid_object ("mark_for_construction"); }
+  {
+    gripe_invalid_object ("mark_for_construction");
+  }
 
   virtual bool is_constructed_for (const cdef_class&) const
   {
     gripe_invalid_object ("is_constructed_for");
-    return false;
   }
 
   virtual bool is_partially_constructed_for (const cdef_class&) const
   {
     gripe_invalid_object ("is_partially_constructed_for");
-    return false;
   }
 
   virtual void mark_as_constructed (void)
-  { gripe_invalid_object ("mark_as_constructed"); }
+  {
+    gripe_invalid_object ("mark_as_constructed");
+  }
 
   virtual void mark_as_constructed (const cdef_class&)
-  { gripe_invalid_object ("mark_as_constructed"); }
+  {
+    gripe_invalid_object ("mark_as_constructed");
+  }
 
   virtual bool is_constructed (void) const
   {
     gripe_invalid_object ("is_constructed");
-    return false;
   }
 
   virtual octave_idx_type static_count (void) const { return 0; }
@@ -180,7 +175,7 @@ private:
   // No assignment
   cdef_object_rep& operator = (const cdef_object_rep& );
 
-  void gripe_invalid_object (const char *who) const
+  void GCC_ATTR_NORETURN gripe_invalid_object (const char *who) const
   { error ("%s: invalid object", who); }
 };
 
@@ -1169,7 +1164,6 @@ inline cdef_class
 cdef_object_rep::get_class (void) const
 {
   gripe_invalid_object ("get_class");
-  return cdef_class ();
 }
 
 inline std::string

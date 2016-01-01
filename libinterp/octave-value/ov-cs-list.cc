@@ -48,7 +48,6 @@ octave_cs_list::subsref (const std::string&,
                          const std::list<octave_value_list>&)
 {
   gripe_indexed_cs_list ();
-  return octave_value ();
 }
 
 octave_value_list
@@ -56,6 +55,5 @@ octave_cs_list::subsref (const std::string&,
                          const std::list<octave_value_list>&, int)
 {
   gripe_indexed_cs_list ();
-  return ovl ();
 }
 

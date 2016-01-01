@@ -82,10 +82,7 @@ For that, use any of the condition number functions: @code{cond},\n\
     return octave_value (1.0);
 
   if (nr != nc)
-    {
-      gripe_square_matrix_required ("det");
-      return ovl ();
-    }
+    gripe_square_matrix_required ("det");
 
   octave_value_list retval (2);
 

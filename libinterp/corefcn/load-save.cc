@@ -126,7 +126,7 @@ default_save_header_format (void)
 // no newline characters.
 static std::string Vsave_header_format_string = default_save_header_format ();
 
-static void
+static void GCC_ATTR_NORETURN
 gripe_file_open (const std::string& fcn, const std::string& file)
 {
   if (fcn == "load")
@@ -1673,10 +1673,7 @@ the file @file{data} in Octave's binary format.\n\
               hdf5_file.close ();
             }
           else
-            {
-              gripe_file_open ("save", fname);
-              return retval;
-            }
+            gripe_file_open ("save", fname);
         }
       else
 #endif
@@ -1698,10 +1695,7 @@ the file @file{data} in Octave's binary format.\n\
                   file.close ();
                 }
               else
-                {
-                  gripe_file_open ("save", fname);
-                  return retval;
-                }
+                gripe_file_open ("save", fname);
             }
           else
 #endif
@@ -1718,10 +1712,7 @@ the file @file{data} in Octave's binary format.\n\
                   file.close ();
                 }
               else
-                {
-                  gripe_file_open ("save", fname);
-                  return retval;
-                }
+                gripe_file_open ("save", fname);
             }
         }
     }

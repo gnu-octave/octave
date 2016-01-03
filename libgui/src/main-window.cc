@@ -92,9 +92,6 @@ main_window::main_window (QWidget *p, bool start_gui)
     _cmd_queue (QList<octave_cmd *> ()),  // no command pending
     _cmd_processing (1),
     _cmd_queue_mutex (),
-    _dbg_queue (new QStringList ()),  // no debug pending
-    _dbg_processing (1),
-    _dbg_queue_mutex (),
     _prevent_readline_conflicts (true),
     _suppress_dbg_location (true),
     _start_gui (start_gui)
@@ -958,31 +955,36 @@ main_window::handle_exit_debugger (void)
 void
 main_window::debug_continue (void)
 {
-  queue_debug ("cont");
+  octave_cmd_debug *cmd = new octave_cmd_debug ("cont", _suppress_dbg_location);
+  queue_command (cmd);
 }
 
 void
 main_window::debug_step_into (void)
 {
-  queue_debug ("in");
+  octave_cmd_debug *cmd = new octave_cmd_debug ("in", _suppress_dbg_location);
+  queue_command (cmd);
 }
 
 void
 main_window::debug_step_over (void)
 {
-  queue_debug ("step");
+  octave_cmd_debug *cmd = new octave_cmd_debug ("step", _suppress_dbg_location);
+  queue_command (cmd);
 }
 
 void
 main_window::debug_step_out (void)
 {
-  queue_debug ("out");
+  octave_cmd_debug *cmd = new octave_cmd_debug ("out", _suppress_dbg_location);
+  queue_command (cmd);
 }
 
 void
 main_window::debug_quit (void)
 {
-  queue_debug ("quit");
+  octave_cmd_debug *cmd = new octave_cmd_debug ("quit", _suppress_dbg_location);
+  queue_command (cmd);
 }
 
 void
@@ -2164,65 +2166,6 @@ main_window::change_directory_callback (const std::string& directory)
 {
   Fcd (ovl (directory));
   _octave_qt_link->update_directory ();
-}
-
-// The next callbacks are invoked by GUI buttons.  Those buttons
-// should only be active when we are doing debugging, which means that
-// Octave is waiting for input in get_debug_input.  Calling
-// command_editor::interrupt will force readline to return even if it
-// has not read any input, and then get_debug_input will return,
-// allowing the evaluator to continue and execute the next statement.
-
-void
-main_window::queue_debug (QString debug_cmd)
-{
-  _dbg_queue_mutex.lock ();
-  _dbg_queue->append (debug_cmd);   // queue command
-  _dbg_queue_mutex.unlock ();
-
-  if (_dbg_processing.tryAcquire ())  // if callback not processing, post event
-    octave_link::post_event (this, &main_window::execute_debug_callback);
-}
-
-void
-main_window::execute_debug_callback ()
-{
-  bool repost = false;          // flag for reposting event for this callback
-
-  if (! _dbg_queue->isEmpty ())  // list can not be empty here, just to make sure
-    {
-      _dbg_queue_mutex.lock (); // critical path
-      QString debug = _dbg_queue->takeFirst ();
-      if (_dbg_queue->isEmpty ())
-        _dbg_processing.release ();  // cmd queue empty, processing will stop
-      else
-        repost = true;          // not empty, repost at end
-      _dbg_queue_mutex.unlock ();
-
-      if (debug == "step")
-        {
-          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
-          Fdbstep ();
-        }
-      else if (debug == "cont")
-        {
-          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
-          Fdbcont ();
-        }
-      else if (debug == "quit")
-        Fdbquit ();
-      else
-        {
-          F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
-          Fdbstep (ovl (debug.toStdString ()));
-        }
-
-      command_editor::interrupt (true);
-    }
-
-  if (repost)  // queue not empty, so repost event for further processing
-    octave_link::post_event (this, &main_window::execute_debug_callback);
-
 }
 
 void

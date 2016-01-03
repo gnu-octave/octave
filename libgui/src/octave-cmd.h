@@ -49,7 +49,7 @@ public:
   octave_cmd_exec (const QString& cmd) : octave_cmd () { _cmd = cmd; };
   void execute ();
 
-private:
+protected:
 
   QString _cmd;
 };
@@ -65,8 +65,29 @@ public:
   octave_cmd_eval (const QFileInfo& info) : octave_cmd () { _info = info; };
   void execute ();
 
-private:
+protected:
 
   QFileInfo _info;
+};
+
+
+// ---------------------------------------------------------------------
+//  class octave_cmd_debug
+
+class octave_cmd_debug : public octave_cmd_exec
+{
+public:
+
+  octave_cmd_debug (const QString& cmd, bool suppress_location)
+    : octave_cmd_exec (cmd)
+  {
+    _suppress_dbg_location = suppress_location;
+  };
+
+  void execute ();
+
+protected:
+
+  bool _suppress_dbg_location;
 };
 #endif

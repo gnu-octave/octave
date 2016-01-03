@@ -288,10 +288,6 @@ private:
 
   void queue_command (octave_cmd *cmd);
 
-  void queue_debug (QString command);
-
-  void execute_debug_callback ();
-
   void configure_shortcuts ();
 
   workspace_model *_workspace_model;
@@ -403,11 +399,6 @@ private:
   // semaphores used for handling the queue
   QSemaphore   _cmd_processing;
   QMutex       _cmd_queue_mutex;
-
-  // semaphore to synchronize debug signals and related callbacks
-  QStringList *_dbg_queue;
-  QSemaphore   _dbg_processing;
-  QMutex       _dbg_queue_mutex;
 
   bool _prevent_readline_conflicts;
   bool _suppress_dbg_location;

@@ -80,3 +80,31 @@ octave_cmd_eval::execute ()
 
   command_editor::accept_line ();
 }
+
+
+// ---------------------------------------------------------------------
+//  class octave_cmd_debug: executing a debugger command
+
+void
+octave_cmd_debug::execute ()
+{
+  if (_cmd == "step")
+    {
+      F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+      Fdbstep ();
+    }
+  else if (_cmd == "cont")
+    {
+      F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+      Fdbcont ();
+    }
+  else if (_cmd == "quit")
+    Fdbquit ();
+  else
+    {
+      F__db_next_breakpoint_quiet__ (ovl (_suppress_dbg_location));
+      Fdbstep (ovl (_cmd.toStdString ()));
+    }
+
+  command_editor::interrupt (true);
+}

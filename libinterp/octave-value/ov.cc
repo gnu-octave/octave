@@ -2315,14 +2315,16 @@ do_binary_op (octave_value::compound_binary_op op,
   return retval;
 }
 
-static void GCC_ATTR_NORETURN
+GCC_ATTR_NORETURN static
+void
 gripe_cat_op (const std::string& tn1, const std::string& tn2)
 {
   error ("concatenation operator not implemented for '%s' by '%s' operations",
          tn1.c_str (), tn2.c_str ());
 }
 
-static void GCC_ATTR_NORETURN
+GCC_ATTR_NORETURN static
+void
 gripe_cat_op_conv (void)
 {
   error ("type conversion failed for concatenation operator");

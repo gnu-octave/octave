@@ -27,17 +27,18 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-extern void liboctave_fatal (const char *fmt, ...) GCC_ATTR_NORETURN;
+GCC_ATTR_NORETURN extern void liboctave_fatal (const char *fmt, ...);
 
-extern void liboctave_fatal_with_id (const char *id, const char *fmt, ...) GCC_ATTR_NORETURN;
+GCC_ATTR_NORETURN extern
+void liboctave_fatal_with_id (const char *id, const char *fmt, ...);
 
 extern void liboctave_warning (const char *fmt, ...);
 
 extern void liboctave_warning_with_id (const char *id, const char *fmt, ...);
 
-typedef void (*liboctave_error_handler) (const char *, ...) GCC_ATTR_NORETURN;
+typedef GCC_ATTR_NORETURN void (*liboctave_error_handler) (const char *, ...);
 
-typedef void (*liboctave_error_with_id_handler) (const char *, const char *, ...) GCC_ATTR_NORETURN;
+typedef GCC_ATTR_NORETURN void (*liboctave_error_with_id_handler) (const char *, const char *, ...);
 
 typedef void (*liboctave_warning_handler) (const char *, ...);
 

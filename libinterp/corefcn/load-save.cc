@@ -126,7 +126,8 @@ default_save_header_format (void)
 // no newline characters.
 static std::string Vsave_header_format_string = default_save_header_format ();
 
-static void GCC_ATTR_NORETURN
+GCC_ATTR_NORETURN static
+void
 gripe_file_open (const std::string& fcn, const std::string& file)
 {
   if (fcn == "load")

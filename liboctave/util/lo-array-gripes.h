@@ -109,59 +109,57 @@ extern OCTAVE_API const char *warning_id_nearly_singular_matrix;
 
 extern OCTAVE_API const char *warning_id_singular_matrix;
 
-extern void OCTAVE_API
-gripe_nan_to_logical_conversion (void) GCC_ATTR_NORETURN;
+GCC_ATTR_NORETURN OCTAVE_API extern void 
+gripe_nan_to_logical_conversion (void);
 
-extern void OCTAVE_API
-gripe_nan_to_character_conversion (void) GCC_ATTR_NORETURN;
+GCC_ATTR_NORETURN OCTAVE_API extern void 
+gripe_nan_to_character_conversion (void);
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_nonconformant (const char *op,
                      octave_idx_type op1_len,
-                     octave_idx_type op2_len) GCC_ATTR_NORETURN;
+                     octave_idx_type op2_len);
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_nonconformant (const char *op,
                      octave_idx_type op1_nr, octave_idx_type op1_nc,
-                     octave_idx_type op2_nr, octave_idx_type op2_nc)
-                    GCC_ATTR_NORETURN;
+                     octave_idx_type op2_nr, octave_idx_type op2_nc);
 
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_nonconformant (const char *op, const dim_vector& op1_dims,
-                     const dim_vector& op2_dims) GCC_ATTR_NORETURN;
+                     const dim_vector& op2_dims);
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_index_out_of_range (int nd, int dim,
                           octave_idx_type iext, octave_idx_type ext,
-                          const dim_vector& d) GCC_ATTR_NORETURN;
+                          const dim_vector& d);
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_index_out_of_range (int nd, int dim,
-                          octave_idx_type iext, octave_idx_type ext)
-                         GCC_ATTR_NORETURN;
+                          octave_idx_type iext, octave_idx_type ext);
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_del_index_out_of_range (bool is1d, octave_idx_type iext,
-                              octave_idx_type ext) GCC_ATTR_NORETURN;
+                              octave_idx_type ext);
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_invalid_index (double, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
-                     const std::string& var = "") GCC_ATTR_NORETURN;
+                     const std::string& var = "");
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_invalid_index (octave_idx_type n, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
-                     const std::string& var = "") GCC_ATTR_NORETURN;
+                     const std::string& var = "");
 
-extern void OCTAVE_API
+GCC_ATTR_NORETURN OCTAVE_API extern void 
 gripe_invalid_index (const std::string& idx, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
-                     const std::string& var = "") GCC_ATTR_NORETURN;
+                     const std::string& var = "");
 
-extern void OCTAVE_API
-gripe_invalid_resize (void) GCC_ATTR_NORETURN;
+GCC_ATTR_NORETURN OCTAVE_API extern void
+gripe_invalid_resize (void);
 
 extern void OCTAVE_API
 gripe_singular_matrix (double rcond = 0.0);

@@ -283,9 +283,10 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
  cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0'
 
 
-extern CRUFT_API F77_RET_T
+GCC_ATTR_NORETURN CRUFT_API extern
+F77_RET_T 
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
-                           F77_CHAR_ARG_LEN_DECL) GCC_ATTR_NORETURN;
+                           F77_CHAR_ARG_LEN_DECL);
 
 #ifdef __cplusplus
 }

@@ -175,7 +175,7 @@ private:
   // No assignment
   cdef_object_rep& operator = (const cdef_object_rep& );
 
-  void GCC_ATTR_NORETURN gripe_invalid_object (const char *who) const
+  GCC_ATTR_NORETURN void gripe_invalid_object (const char *who) const
   { error ("%s: invalid object", who); }
 };
 

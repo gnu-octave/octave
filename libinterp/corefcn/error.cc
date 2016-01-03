@@ -393,11 +393,8 @@ message_with_id (const char *name, const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-static void
-usage_1 (octave_execution_exception& e, const char *id,
-         const char *fmt, va_list args) GCC_ATTR_NORETURN;
-
-static void
+GCC_ATTR_NORETURN static
+void
 usage_1 (octave_execution_exception& e, const char *id,
          const char *fmt, va_list args)
 {
@@ -408,10 +405,8 @@ usage_1 (octave_execution_exception& e, const char *id,
   throw e;
 }
 
-static void
-usage_1 (const char *id, const char *fmt, va_list args) GCC_ATTR_NORETURN;
-
-static void
+GCC_ATTR_NORETURN static
+void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
   octave_execution_exception e = make_execution_exception ("usage");
@@ -449,15 +444,11 @@ usage_with_id (const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-static void
+GCC_ATTR_NORETURN static
+void
 error_1 (octave_execution_exception& e, std::ostream& os,
          const char *name, const char *id, const char *fmt,
-         va_list args, bool with_cfn = false) GCC_ATTR_NORETURN;
-
-static void
-error_1 (octave_execution_exception& e, std::ostream& os,
-         const char *name, const char *id, const char *fmt,
-         va_list args, bool with_cfn)
+         va_list args, bool with_cfn = false)
 {
   bool show_stack_trace = false;
 
@@ -501,14 +492,10 @@ error_1 (octave_execution_exception& e, std::ostream& os,
   throw e;
 }
 
-static void
+GCC_ATTR_NORETURN static
+void
 error_1 (std::ostream& os, const char *name, const char *id,
-         const char *fmt, va_list args,
-         bool with_cfn = false) GCC_ATTR_NORETURN;
-
-static void
-error_1 (std::ostream& os, const char *name, const char *id,
-         const char *fmt, va_list args, bool with_cfn)
+         const char *fmt, va_list args, bool with_cfn = false)
 {
   octave_execution_exception e = make_execution_exception ("error");
 

@@ -47,11 +47,9 @@ along with Octave; see the file COPYING.  If not, see
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
-static void
-gripe_method_access (const std::string& from,
-                     const cdef_method& meth) GCC_ATTR_NORETURN;
 
-static void
+GCC_ATTR_NORETURN static
+void
 gripe_method_access (const std::string& from, const cdef_method& meth)
 {
   octave_value acc = meth.get ("Access");
@@ -66,11 +64,8 @@ gripe_method_access (const std::string& from, const cdef_method& meth)
          from.c_str (), meth.get_name ().c_str (), acc_s.c_str ());
 }
 
-static void
-gripe_property_access (const std::string& from, const cdef_property& prop,
-                       bool is_set) GCC_ATTR_NORETURN;
-
-static void
+GCC_ATTR_NORETURN static
+void
 gripe_property_access (const std::string& from, const cdef_property& prop,
                        bool is_set = false)
 {

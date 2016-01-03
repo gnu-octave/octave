@@ -484,12 +484,10 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   ## If there is no input output the version and syntax
   if (nargin < 3 || nargin > 9)
     print_usage ();
-    return;
   endif
 
   if (all (size (c) > 1) || iscomplex (c) || ischar (c))
-    error ("glpk:C must be a real vector");
-    return;
+    error ("glpk: C must be a real vector");
   endif
   nx = length (c);
   ## Force column vector.
@@ -499,23 +497,19 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
 
   if (isempty (A))
     error ("glpk: A cannot be an empty matrix");
-    return;
   endif
   [nc, nxa] = size (A);
   if (! isreal (A) || nxa != nx)
     error ("glpk: A must be a real valued %d by %d matrix", nc, nx);
-    return;
   endif
 
   ## 3) RHS
 
   if (isempty (b))
     error ("glpk: B cannot be an empty vector");
-    return;
   endif
   if (! isreal (b) || length (b) != nc)
     error ("glpk: B must be a real valued %d by 1 vector", nc);
-    return;
   endif
 
   ## 4) Vector with the lower bound of each variable
@@ -525,7 +519,6 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
       lb = zeros (nx, 1);
     elseif (! isreal (lb) || all (size (lb) > 1) || length (lb) != nx)
       error ("glpk: LB must be a real valued %d by 1 column vector", nx);
-      return;
     endif
   else
     lb = zeros (nx, 1);
@@ -538,7 +531,6 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
       ub = Inf (nx, 1);
     elseif (! isreal (ub) || all (size (ub) > 1) || length (ub) != nx)
       error ("glpk: UB must be a real valued %d by 1 column vector", nx);
-      return;
     endif
   else
     ub = Inf (nx, 1);
@@ -551,11 +543,9 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
       ctype = repmat ("S", nc, 1);
     elseif (! ischar (ctype) || all (size (ctype) > 1) || length (ctype) != nc)
       error ("glpk: CTYPE must be a char valued vector of length %d", nc);
-      return;
     elseif (! all (ctype == "F" | ctype == "U" | ctype == "S"
                    | ctype == "L" | ctype == "D"))
       error ("glpk: CTYPE must contain only F, U, S, L, or D");
-      return;
     endif
   else
     ctype = repmat ("S", nc, 1);
@@ -569,10 +559,8 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     elseif (! ischar (vartype) || all (size (vartype) > 1)
             || length (vartype) != nx)
       error ("glpk: VARTYPE must be a char valued vector of length %d", nx);
-      return;
     elseif (! all (vartype == "C" | vartype == "I"))
       error ("glpk: VARTYPE must contain only C or I");
-      return;
     endif
   else
     ## As default we consider continuous vars
@@ -600,7 +588,6 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (nargin > 8)
     if (! isstruct (param))
       error ("glpk: PARAM must be a structure");
-      return;
     endif
   else
     param = struct ();
@@ -611,3 +598,54 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
 
 endfunction
 
+
+%!test
+%! sense = -1;
+%! c = [10, 6, 4]';
+%! A = [1, 1, 1; 10, 4, 5; 2, 2, 6];
+%! b = [100, 600, 300]';
+%! ctype = ['U', 'U', 'U']';
+%! lb = [0, 0, 0]';
+%! ub = [];
+%! vartype = ['C', 'C', 'C']';
+%! param.msglev = 0;
+%! param.lpsolver = 1;
+%! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
+%!   sense, param);
+%! assert (fmin, c' * xmin)
+%! for i = 1:3
+%!   assert (A(i,:) * xmin <= b(i))
+%! endfor
+
+%!test
+%! sense = 1;
+%! c = [-1, -1]';
+%! A = [-2, 5; 2, -2];
+%! b = [5, 1]';
+%! ctype = ['U', 'U']';
+%! lb = [0, 0]';
+%! ub = [];
+%! vartype = ['I', 'I']';
+%! param.msglev = 0;
+%! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
+%!   sense, param);
+%! assert (fmin, c' * xmin)
+%! for i = 1:2
+%!   assert (A(i,:) * xmin <= b(i))
+%! endfor
+
+
+%!test
+%! sense = 1;
+%! c = [0, 0, 0, -1, -1]';
+%! A = [-2, 0, 0, 1, 0; 0, 1, 0, 0, 2; 0, 0, 1, 3, 2];
+%! b = [4, 12, 18]';
+%! ctype = ['S', 'S', 'S']';
+%! lb = [0, 0, 0, 0, 0]';
+%! ub = [];
+%! vartype = ['C', 'C', 'C', 'C', 'C']';
+%! param.msglev = 0;
+%! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
+%!   sense, param);
+%! assert (fmin, c' * xmin)
+%! assert (A * xmin, b)

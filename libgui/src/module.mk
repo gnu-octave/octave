@@ -87,6 +87,7 @@ OCTAVE_GUI_SRC_MOC = \
   libgui/src/moc-files-dock-widget.cc \
   libgui/src/moc-history-dock-widget.cc \
   libgui/src/moc-main-window.cc \
+  libgui/src/moc-octave-cmd.cc \
   libgui/src/moc-octave-interpreter.cc \
   libgui/src/moc-octave-qt-link.cc \
   libgui/src/moc-settings-dialog.cc \

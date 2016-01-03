@@ -89,9 +89,6 @@ main_window::main_window (QWidget *p, bool start_gui)
     community_news_window (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
-    _cmd_queue (QList<octave_cmd *> ()),  // no command pending
-    _cmd_processing (1),
-    _cmd_queue_mutex (),
     _prevent_readline_conflicts (true),
     _suppress_dbg_location (true),
     _start_gui (start_gui)
@@ -325,7 +322,7 @@ void
 main_window::execute_command_in_terminal (const QString& command)
 {
   octave_cmd_exec *cmd = new octave_cmd_exec (command);
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
   if (focus_console_after_command ())
     focus_command_window ();
 }
@@ -342,18 +339,7 @@ void
 main_window::run_file_callback (const QFileInfo& info)
 {
   octave_cmd_eval *cmd = new octave_cmd_eval (info);
-  queue_command (cmd);
-}
-
-void
-main_window::queue_command (octave_cmd* cmd)
-{
-  _cmd_queue_mutex.lock ();
-  _cmd_queue.append (cmd);     // queue command and type
-  _cmd_queue_mutex.unlock ();
-
-  if (_cmd_processing.tryAcquire ())  // if callback not processing, post event
-    octave_link::post_event (this, &main_window::execute_command_callback);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
@@ -956,35 +942,35 @@ void
 main_window::debug_continue (void)
 {
   octave_cmd_debug *cmd = new octave_cmd_debug ("cont", _suppress_dbg_location);
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
 main_window::debug_step_into (void)
 {
   octave_cmd_debug *cmd = new octave_cmd_debug ("in", _suppress_dbg_location);
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
 main_window::debug_step_over (void)
 {
   octave_cmd_debug *cmd = new octave_cmd_debug ("step", _suppress_dbg_location);
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
 main_window::debug_step_out (void)
 {
   octave_cmd_debug *cmd = new octave_cmd_debug ("out", _suppress_dbg_location);
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
 main_window::debug_quit (void)
 {
   octave_cmd_debug *cmd = new octave_cmd_debug ("quit", _suppress_dbg_location);
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
@@ -1039,7 +1025,7 @@ main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
   octave_cmd_exec *cmd = new octave_cmd_exec ("exit");
-  queue_command (cmd);
+  _cmd_queue.add_cmd (cmd);
 }
 
 void
@@ -2125,33 +2111,6 @@ void
 main_window::clear_history_callback (void)
 {
   Fhistory (ovl ("-c"));
-}
-
-void
-main_window::execute_command_callback ()
-{
-  bool repost = false;          // flag for reposting event for this callback
-
-  if (! _cmd_queue.isEmpty ())  // list can not be empty here, just to make sure
-    {
-      _cmd_queue_mutex.lock (); // critical path
-
-      octave_cmd *cmd = _cmd_queue.takeFirst ();
-
-      if (_cmd_queue.isEmpty ())
-        _cmd_processing.release ();  // cmd queue empty, processing will stop
-      else
-        repost = true;          // not empty, repost at end
-      _cmd_queue_mutex.unlock ();
-
-      cmd->execute ();
-
-      delete cmd;
-    }
-
-  if (repost)  // queue not empty, so repost event for further processing
-    octave_link::post_event (this, &main_window::execute_command_callback);
-
 }
 
 void

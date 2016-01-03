@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCloseEvent>
 #include <QToolButton>
 #include <QComboBox>
-#include <QSemaphore>
 #include <QPointer>
 
 // Editor includes
@@ -395,11 +394,9 @@ private:
   // and related callback
 
   // the queue for the command structures
-  QList<octave_cmd *> _cmd_queue;
-  // semaphores used for handling the queue
-  QSemaphore   _cmd_processing;
-  QMutex       _cmd_queue_mutex;
+  octave_command_queue _cmd_queue;
 
+  // some class global flags
   bool _prevent_readline_conflicts;
   bool _suppress_dbg_location;
   bool _start_gui;

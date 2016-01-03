@@ -25,8 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_cmd_h)
 #define octave_cmd_h 1
 
+#include <QSemaphore>
+#include <QMutex>
 #include <QString>
 #include <QFileInfo>
+
+#include "octave-qt-link.h"
 
 class octave_cmd
 {
@@ -90,4 +94,43 @@ protected:
 
   bool _suppress_dbg_location;
 };
+
+
+/**
+ * @class octave_command_queue
+ *
+ * Queuing commands from the GUI for the worker thread
+ */
+// ---------------------------------------------------------------------
+//  class octave_command_queue: queue of octave commands
+
+class octave_command_queue : QObject
+{
+  Q_OBJECT;
+
+public:
+
+  octave_command_queue (void) : QObject (),
+      _queue (QList<octave_cmd *> ()),
+      _processing (1),
+      _queue_mutex () { };
+  ~octave_command_queue (void) { };
+
+  /**
+   * Adds a new octave command to the command queue.
+   * @param cmd The octave command to be queued
+   */
+  void add_cmd (octave_cmd *cmd);
+  /**
+   * Callback routine for executing the command by the worker thread
+   */
+  void execute_command_callback (void);
+
+private:
+
+  QList<octave_cmd *>  _queue;
+  QSemaphore   _processing;
+  QMutex       _queue_mutex;
+};
+
 #endif

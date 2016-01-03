@@ -108,3 +108,49 @@ octave_cmd_debug::execute ()
 
   command_editor::interrupt (true);
 }
+
+
+// ---------------------------------------------------------------------
+//  class octave_command_queue: queue of octave commands
+
+// add_cmd: add a command to the queue
+void
+octave_command_queue::add_cmd (octave_cmd* cmd)
+{
+  _queue_mutex.lock ();
+  _queue.append (cmd);
+  _queue_mutex.unlock ();
+
+  if (_processing.tryAcquire ())  // if callback not processing, post event
+    octave_link::post_event (this,
+                             &octave_command_queue::execute_command_callback);
+}
+
+// callback for executing the command by the worker thread
+void
+octave_command_queue::execute_command_callback ()
+{
+  bool repost = false;          // flag for reposting event for this callback
+
+  if (! _queue.isEmpty ())  // list can not be empty here, just to make sure
+    {
+      _queue_mutex.lock ();     // critical path
+
+      octave_cmd *cmd = _queue.takeFirst ();
+
+      if (_queue.isEmpty ())
+        _processing.release (); // cmd queue empty, processing will stop
+      else
+        repost = true;          // not empty, repost at end
+      _queue_mutex.unlock ();
+
+      cmd->execute ();
+
+      delete cmd;
+    }
+
+  if (repost)  // queue not empty, so repost event for further processing
+    octave_link::post_event (this,
+                             &octave_command_queue::execute_command_callback);
+
+}

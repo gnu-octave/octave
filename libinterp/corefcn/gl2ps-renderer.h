@@ -37,7 +37,7 @@ glps_renderer : public opengl_renderer
 public:
   glps_renderer (FILE *_fp, const std::string& _term)
     : opengl_renderer () , fp (_fp), term (_term), fontsize (),
-    fontname () { }
+    fontname (), buffer_overflow (false) { }
 
   ~glps_renderer (void) { }
 
@@ -66,7 +66,11 @@ protected:
     // Finalize viewport
     GLint state = gl2psEndViewport ();
     if (state == GL2PS_NO_FEEDBACK)
-      warning ("gl2ps-renderer::draw: empty feedback buffer and/or nothing else to print");
+      warning ("glps_renderer::draw_axes: empty feedback buffer and/or nothing else to print");
+    else if (state == GL2PS_ERROR)
+      error ("glps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
+    
+    buffer_overflow |= (state == GL2PS_OVERFLOW);
   }
 
   void draw_text (const text::properties& props);
@@ -115,6 +119,7 @@ private:
   caseless_str term;
   double fontsize;
   std::string fontname;
+  bool buffer_overflow;
 };
 
 #endif

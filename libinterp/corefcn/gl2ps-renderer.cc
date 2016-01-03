@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gl2ps.h"
 #include "sysdep.h"
+#include "unistd.h"
 
 void
 glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
@@ -80,11 +81,22 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       if (term.find ("is2D") != std::string::npos)
         gl2ps_sort = GL2PS_SIMPLE_SORT;
 
-      GLint state = GL2PS_OVERFLOW;
-      GLint buffsize = 0;
+      // Use a temporary file in case an overflow happens
+      FILE* tmpf = gnulib::tmpfile ();
 
-      while (state == GL2PS_OVERFLOW)
+      if (! tmpf)
+        error ("glps_renderer::draw: couldn't open temporary file for printing");
+
+      GLint buffsize = 2*1024*1024;
+      buffer_overflow = true;
+
+      while (buffer_overflow)
         {
+          buffer_overflow = false;
+          buffsize *= 2;
+          gnulib::fseek (tmpf, 0, SEEK_SET);
+          gnulib::ftruncate (fileno (tmpf), 0);
+
           // For LaTeX output the fltk print process uses 2 drawnow() commands.
           // The first one is for the pdf/ps/eps graph to be included.  The
           // print_cmd is saved as old_print_cmd.  Then the second drawnow()
@@ -111,8 +123,6 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
           else
             include_graph = "foobar-inc";
 
-          buffsize += 1024*1024;
-
           // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
           GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", 0,
                                       gl2ps_term, gl2ps_sort,
@@ -123,31 +133,33 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
                                        | GL2PS_NO_PS3_SHADING
                                        | GL2PS_USE_CURRENT_VIEWPORT),
                                       GL_RGBA, 0, 0, 0, 0, 0,
-                                      buffsize, fp, include_graph.c_str ());
+                                      buffsize, tmpf, include_graph.c_str ());
           if (ret == GL2PS_ERROR)
             {
               old_print_cmd.clear ();
               error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
             }
 
-          old_print_cmd = print_cmd;
-
           opengl_renderer::draw (go);
 
-          // Without glFinish () there may be primitives missing in the
-          // gl2ps output.
-          glFinish ();
+          if (! buffer_overflow)
+            old_print_cmd = print_cmd;
 
-          state = gl2psEndPage ();
+          // Don't check return value of gl2psEndPage, it is not meaningful.
+          // Errors and warnings are checked after gl2psEndViewport in 
+          // glps_renderer::draw_axes instead.
+          gl2psEndPage ();
+        }
 
-          if (state == GL2PS_ERROR)
-            {
-              old_print_cmd.clear ();
-              error ("gl2ps-renderer::draw: gl2psEndPage returned GL2PS_ERROR");
-            }
-
-          // Don't check state for GL2PS_UNINITIALIZED (should never happen)
-          // GL2PS_OVERFLOW (see while loop) or GL2PS_SUCCESS
+      // Copy temporary file to pipe
+      gnulib::fseek (tmpf, 0, SEEK_SET);
+      char str[256];
+      int nread = 1;
+      while (! feof (tmpf) && nread)
+        {
+          nread = gnulib::fread (str, 1, 256, tmpf);
+          if (nread)
+            gnulib::fwrite (str, 1, nread, fp);
         }
     }
   else

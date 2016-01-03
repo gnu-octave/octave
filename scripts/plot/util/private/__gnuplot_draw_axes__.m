@@ -1397,8 +1397,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
         endif
 
       otherwise
-        error ("__gnuplot_draw_axes__: unknown object class, %s",
-               obj.type);
+        error ("__gnuplot_draw_axes__: unknown object class, %s", obj.type);
     endswitch
 
   endwhile

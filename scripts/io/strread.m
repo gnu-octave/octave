@@ -390,7 +390,7 @@ function varargout = strread (str, format = "%f", varargin)
     if (cstop + c2len == len)
       ## Ignore last char of to-the-end-of-line comments
       c2len += 1;
-    end
+    endif
     str = cellslices (str, [1, cstop + c2len], [cstart - 1, len]);
     str = [str{:}];
   endif

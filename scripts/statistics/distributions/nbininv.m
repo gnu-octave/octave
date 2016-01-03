@@ -115,7 +115,7 @@ function m = bin_search_nbininv (x, n, p)
     k = (x > cdf);
     lower(k) = limit;
     limit += limit;
-  end
+  endwhile
   upper = max (2*lower, 1);
   k = find (lower != limit/2);    # elements for which above loop finished
   for i = 1:ceil (log2 (max (lower)))

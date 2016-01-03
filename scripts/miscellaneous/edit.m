@@ -162,7 +162,6 @@ function ret = edit (varargin)
       case "EDITOR"
         error ("Octave:deprecated-function",
                "The EDITOR option of edit has been removed.  Use EDITOR() directly.")
-        return;
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")
           stateval = [ get_home_directory, stateval(2:end) ];

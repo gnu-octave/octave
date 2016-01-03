@@ -87,7 +87,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   [m, kb] = size (V);
   if (m != na)
     error ("krylov: A(%d x %d), V(%d x %d): argument dimensions do not match",
-          na, na, m, kb);
+           na, na, m, kb);
   endif
 
   if (! isscalar (k))

@@ -76,7 +76,7 @@ function x = repmat (A, m, varargin)
         n = [];
       else
         error ("repmat: all input arguments must be scalar");
-      end
+      endif
     elseif (isempty (m))
       m = n = 1;
     elseif (isscalar (m))

@@ -223,7 +223,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       res1 = norm (r) / bnorm;
       if (nargout > 4)
         resvec(iter + 1, 1) = norm (r);
-      end
+      endif
 
       if (res1 < tol)
         ## Convergence achieved.

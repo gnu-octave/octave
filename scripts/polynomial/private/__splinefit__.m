@@ -1,7 +1,6 @@
 ## This function is private because it is maintained by Jonas Lundgren
-## separtely from Octave.  Please do not reformat to match Octave coding
-## conventions as that would make it harder to integrate upstream
-## changes.
+## separately from Octave.  Please do not reformat to match Octave coding
+## conventions as that would make it harder to integrate upstream changes.
 
 % Copyright (c) 2010, Jonas Lundgren
 % All rights reserved.

@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "oct-hdf5.h"
-#include "oct-hdf5-types.h"
 
 // Programming Note: This file exists so that we can hide the use
 // of macros and C-style casts in a C warnings about using old-style
@@ -34,6 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 // Please do NOT eliminate this file and move code from here to
 // oct-hdf5-types.cc
 
+#if defined (HAVE_HDF5)
+
 const octave_hdf5_id octave_H5E_DEFAULT = H5E_DEFAULT;
 const octave_hdf5_id octave_H5P_DEFAULT = H5P_DEFAULT;
 const octave_hdf5_id octave_H5S_ALL = H5S_ALL;
+
+#endif

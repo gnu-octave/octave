@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "oct-hdf5.h"
-#include "oct-hdf5-types.h"
 
 bool
 check_hdf5_types (bool warn)

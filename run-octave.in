@@ -57,7 +57,7 @@ INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
 ## Checking for string equality below with prepended x's in order to
 ## handle problems with empty strings.
-if [ $# -gt 0 ]; then
+while [ $# -gt 0 ]; do
   if [ "x$1" = "x-g" ]; then
     driver="gdb --args"
     shift
@@ -82,8 +82,10 @@ if [ $# -gt 0 ]; then
   elif [ "x$1" = "x-cli" ]; then
     octave_executable="$builddir/src/octave-cli"
     shift
+  else
+    break
   fi
-fi
+done
 
 ## We set OCTAVE_ARCHLIBDIR so that the wrapper program can find the
 ## octave-gui program in the build tree.  That will fail if we ever

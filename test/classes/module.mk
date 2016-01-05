@@ -107,6 +107,11 @@ class_CPrecedenceTester3_TEST_FILES = \
   test/classes/@CPrecedenceTester3/CPrecedenceTester3.m \
   test/classes/@CPrecedenceTester3/tattack.m
 
+class_SizeTester_TEST_FILES = \
+  test/classes/@SizeTester/SizeTester.m \
+  test/classes/@SizeTester/numel.m \
+  test/classes/@SizeTester/size.m
+
 classes_TEST_FILES = \
   $(class_Blork_TEST_FILES) \
   $(class_Cork_TEST_FILES) \
@@ -119,6 +124,7 @@ classes_TEST_FILES = \
   $(class_CPrecedenceTester1_TEST_FILES) \
   $(class_CPrecedenceTester2_TEST_FILES) \
   $(class_CPrecedenceTester3_TEST_FILES) \
+  $(class_SizeTester_TEST_FILES) \
   test/classes/classes.tst
 
 TEST_FILES += $(classes_TEST_FILES)

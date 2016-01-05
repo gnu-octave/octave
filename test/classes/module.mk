@@ -107,6 +107,11 @@ class_CPrecedenceTester3_FCN_FILES = \
   classes/@CPrecedenceTester3/CPrecedenceTester3.m \
   classes/@CPrecedenceTester3/tattack.m
 
+class_SizeTester_FCN_FILES = \
+  classes/@SizeTester/SizeTester.m \
+  classes/@SizeTester/numel.m \
+  classes/@SizeTester/size.m
+
 classes_FCN_FILES = \
   $(class_Blork_FCN_FILES) \
   $(class_Cork_FCN_FILES) \
@@ -119,6 +124,7 @@ classes_FCN_FILES = \
   $(class_CPrecedenceTester1_FCN_FILES) \
   $(class_CPrecedenceTester2_FCN_FILES) \
   $(class_CPrecedenceTester3_FCN_FILES) \
+  $(class_SizeTester_FCN_FILES) \
   classes/classes.tst
 
 FCN_FILES += $(classes_FCN_FILES)

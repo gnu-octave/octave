@@ -456,7 +456,7 @@ execute_command_line_file (const std::string& fname)
   safe_source_file (fname, context, verbose, require_file, "octave");
 }
 
-static void
+GCC_ATTR_NORETURN static void
 lo_error_handler (const char *fmt, ...)
 {
   va_list args;
@@ -467,7 +467,7 @@ lo_error_handler (const char *fmt, ...)
   octave_throw_execution_exception ();
 }
 
-static void
+GCC_ATTR_NORETURN static void
 lo_error_with_id_handler (const char *id, const char *fmt, ...)
 {
   va_list args;

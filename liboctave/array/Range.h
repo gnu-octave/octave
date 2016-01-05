@@ -98,7 +98,7 @@ public:
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
-  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
+  OCTAVE_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
   octave_idx_type numel (void) const { return rng_numel; }
   bool is_empty (void) const { return numel () == 0; }
 

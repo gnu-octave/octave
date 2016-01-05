@@ -310,7 +310,7 @@ public:
 
   virtual octave_idx_type numel (void) const { return dims ().numel (); }
 
-  GCC_ATTR_DEPRECATED virtual octave_idx_type capacity (void) const
+  OCTAVE_DEPRECATED virtual octave_idx_type capacity (void) const
   { return numel (); }
 
   virtual size_t byte_size (void) const { return 0; }

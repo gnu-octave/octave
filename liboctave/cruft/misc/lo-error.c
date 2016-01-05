@@ -34,11 +34,11 @@ along with Octave; see the file COPYING.  If not, see
    symbol errors when creating shared versions of libcruft. */
 
 /* Pointer to the current error handling function. */
-GCC_ATTR_NORETURN liboctave_error_handler current_liboctave_error_handler
+OCTAVE_NORETURN liboctave_error_handler current_liboctave_error_handler
   = liboctave_fatal;
 
 /* Pointer to the current error_with_id handling function. */
-GCC_ATTR_NORETURN liboctave_error_with_id_handler current_liboctave_error_with_id_handler
+OCTAVE_NORETURN liboctave_error_with_id_handler current_liboctave_error_with_id_handler
   = liboctave_fatal_with_id;
 
 /* Pointer to the current warning handler. */
@@ -61,7 +61,7 @@ verror (const char *name, const char *fmt, va_list args)
 }
 
 void
-set_liboctave_error_handler (GCC_ATTR_NORETURN liboctave_error_handler f)
+set_liboctave_error_handler (OCTAVE_NORETURN liboctave_error_handler f)
 {
   if (f)
     current_liboctave_error_handler = f;
@@ -70,7 +70,7 @@ set_liboctave_error_handler (GCC_ATTR_NORETURN liboctave_error_handler f)
 }
 
 void
-set_liboctave_error_with_id_handler (GCC_ATTR_NORETURN liboctave_error_with_id_handler f)
+set_liboctave_error_with_id_handler (OCTAVE_NORETURN liboctave_error_with_id_handler f)
 {
   if (f)
     current_liboctave_error_with_id_handler = f;

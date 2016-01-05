@@ -439,7 +439,7 @@ octave_jit_print_matrix (jit_matrix *m)
   std::cout << *m << std::endl;
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_bad_result (void)
 {

@@ -2511,7 +2511,7 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 #if defined (HAVE_LLVM)
 #define UNUSED_WITHOUT_LLVM(x) x
 #else
-#define UNUSED_WITHOUT_LLVM(x) x GCC_ATTR_UNUSED
+#define UNUSED_WITHOUT_LLVM(x) x OCTAVE_UNUSED
 #endif
 
 DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),

@@ -4155,7 +4155,7 @@ octave_stream_list::do_insert (octave_stream& os)
   return stream_number;
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_invalid_file_id (int fid, const std::string& who)
 {

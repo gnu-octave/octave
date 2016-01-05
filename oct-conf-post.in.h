@@ -24,19 +24,29 @@ along with Octave; see the file COPYING.  If not, see
 #define GNULIB_NAMESPACE gnulib
 #endif
 
+// The C++ standard is evolving to allow attribute hints in a
+// compiler-independent manner.  In C++ 2011 support for noreturn was added.
+// In C++ 2014 support for deprecated was added.  The Octave code base has
+// been future-proofed by using macros of the form OCTAVE_ATTRIBUTE_NAME in
+// place of vendor specific attribute mechanisms.  As compilers evolve, the
+// underlying implementation can be changed with the macro definitions below.
+// FIXME: Update macros to use C++ standard attribute syntax when Octave moves
+//        to C++ 2011 standard.
+
 #if defined (__GNUC__)
-#define GCC_ATTR_DEPRECATED __attribute__ ((__deprecated__))
-#define HAVE_ATTR_DEPRECATED
+  // The following attributes are used with gcc and clang compilers.
+  #define OCTAVE_DEPRECATED __attribute__ ((__deprecated__))
+  #define HAVE_ATTR_DEPRECATED
 
-#define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))
-#define HAVE_ATTR_NORETURN
+  #define OCTAVE_NORETURN __attribute__ ((__noreturn__))
+  #define HAVE_ATTR_NORETURN
 
-#define GCC_ATTR_UNUSED __attribute__ ((__unused__))
-#define HAVE_ATTR_UNUSED
+  #define OCTAVE_UNUSED __attribute__ ((__unused__))
+  #define HAVE_ATTR_UNUSED
 #else
-#define GCC_ATTR_DEPRECATED
-#define GCC_ATTR_NORETURN
-#define GCC_ATTR_UNUSED
+  #define OCTAVE_DEPRECATED
+  #define OCTAVE_NORETURN
+  #define OCTAVE_UNUSED
 #endif
 
 #define X_CAST(T, E) (T) (E)
@@ -118,6 +128,9 @@ typedef unsigned long ino_t;
 
 /* oct-dlldefs.h */
 
+// FIXME: GCC supports visibility attributes as well, even using the
+// same __declspec declaration if desired.  The build system should be
+// extended to support GCC and visibility attributes.
 #if defined (_MSC_VER)
 #define OCTAVE_EXPORT __declspec(dllexport)
 #define OCTAVE_IMPORT __declspec(dllimport)

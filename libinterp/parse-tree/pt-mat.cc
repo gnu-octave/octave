@@ -273,7 +273,7 @@ get_concat_class (const std::string& c1, const std::string& c2)
   return retval;
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 {

@@ -1297,7 +1297,7 @@ octave_base_value::dump (std::ostream& os) const
      << " dims: " << dv.str ();
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {
@@ -1305,7 +1305,7 @@ gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
          tn2.c_str (), tn1.c_str ());
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
 {
@@ -1313,7 +1313,7 @@ gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
          tn2.c_str (), tn1.c_str ());
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_no_conversion (const std::string& on, const std::string& tn1,
                      const std::string& tn2)

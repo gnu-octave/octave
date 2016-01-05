@@ -393,7 +393,7 @@ message_with_id (const char *name, const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 usage_1 (octave_execution_exception& e, const char *id,
          const char *fmt, va_list args)
@@ -405,7 +405,7 @@ usage_1 (octave_execution_exception& e, const char *id,
   throw e;
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
@@ -444,7 +444,7 @@ usage_with_id (const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 error_1 (octave_execution_exception& e, std::ostream& os,
          const char *name, const char *id, const char *fmt,
@@ -492,7 +492,7 @@ error_1 (octave_execution_exception& e, std::ostream& os,
   throw e;
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 error_1 (std::ostream& os, const char *name, const char *id,
          const char *fmt, va_list args, bool with_cfn = false)

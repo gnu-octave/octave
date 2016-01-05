@@ -238,21 +238,21 @@ octave_class::get_current_method_class (void)
   return retval;
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_invalid_index1 (void)
 {
   error ("invalid index for class");
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_invalid_index_for_assignment (void)
 {
   error ("invalid index for class assignment");
 }
 
-GCC_ATTR_NORETURN static
+OCTAVE_NORETURN static
 void
 gripe_invalid_index_type (const std::string& nm, char t)
 {

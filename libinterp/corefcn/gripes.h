@@ -34,16 +34,16 @@ class octave_execution_exception;
 // Alphabetized list of gripes.
 ////////////////////////////////////////////////////////////////////////////////
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_2_or_3_dim_plot (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_data_conversion (const char *from, const char *to);
 
 extern OCTINTERP_API void
 gripe_data_file_in_path (const std::string& fcn, const std::string& file);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_disabled_feature (const std::string& func,
                              const std::string& feature,
                              const std::string& pkg="Octave");
@@ -61,13 +61,13 @@ extern OCTINTERP_API void
 gripe_implicit_conversion (const std::string& id, const std::string& from,
                            const std::string& to);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_indexed_cs_list (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_invalid_conversion (const std::string& from, const std::string& to);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_invalid_inquiry_subscript (void);
 
 extern OCTINTERP_API void
@@ -76,44 +76,44 @@ gripe_invalid_value_specified (const char *name);
 extern OCTINTERP_API void
 gripe_logical_conversion (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_nonbraced_cs_list_assignment (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_nonconformant (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_nonconformant (octave_idx_type r1, octave_idx_type c1,
                           octave_idx_type r2, octave_idx_type c2);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_not_implemented (const char *);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_not_supported (const char *);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_range_invalid (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_square_matrix_required (const char *name);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_string_invalid (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_unrecognized_data_fmt (const char *warn_for);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_unrecognized_float_fmt (void);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_user_returned_invalid (const char *name);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_user_supplied_eval (const char *name);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_user_supplied_eval (octave_execution_exception& e, const char *name);
 
 extern OCTINTERP_API void
@@ -182,10 +182,10 @@ gripe_wrong_type_arg (octave_execution_exception& e,
                       const octave_value& tc,
                       bool is_error = true);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_wrong_type_arg_for_binary_op (const octave_value& op);
 
-GCC_ATTR_NORETURN OCTINTERP_API extern
+OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_wrong_type_arg_for_unary_op (const octave_value& op);
 
 #endif

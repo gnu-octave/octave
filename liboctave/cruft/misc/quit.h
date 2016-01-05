@@ -66,7 +66,7 @@ CRUFT_API extern void octave_save_current_context (void *);
 
 CRUFT_API extern void octave_restore_current_context (void *);
 
-GCC_ATTR_NORETURN CRUFT_API extern void octave_jump_to_enclosing_context (void);
+OCTAVE_NORETURN CRUFT_API extern void octave_jump_to_enclosing_context (void);
 
 CRUFT_API extern void octave_save_signal_mask (void);
 
@@ -141,11 +141,11 @@ CRUFT_API extern volatile sig_atomic_t octave_signal_caught;
 
 CRUFT_API extern void octave_handle_signal (void);
 
-GCC_ATTR_NORETURN CRUFT_API extern void octave_throw_interrupt_exception (void);
+OCTAVE_NORETURN CRUFT_API extern void octave_throw_interrupt_exception (void);
 
-GCC_ATTR_NORETURN CRUFT_API extern void octave_throw_execution_exception (void);
+OCTAVE_NORETURN CRUFT_API extern void octave_throw_execution_exception (void);
 
-GCC_ATTR_NORETURN CRUFT_API extern void octave_throw_bad_alloc (void);
+OCTAVE_NORETURN CRUFT_API extern void octave_throw_bad_alloc (void);
 
 CRUFT_API extern void octave_rethrow_exception (void);
 

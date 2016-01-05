@@ -245,7 +245,7 @@ public:
   octave_idx_type nzmax (void) const { return rep->length (); }
   //! Amount of storage for nonzero elements.
   //! Synonymous with nzmax().
-  GCC_ATTR_DEPRECATED octave_idx_type capacity (void) const { return nzmax (); }
+  OCTAVE_DEPRECATED octave_idx_type capacity (void) const { return nzmax (); }
   //! Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
@@ -256,8 +256,8 @@ public:
     return dimensions.safe_numel ();
   }
 
-  GCC_ATTR_DEPRECATED octave_idx_type nelem (void) const { return nzmax (); }
-  GCC_ATTR_DEPRECATED octave_idx_type length (void) const { return numel (); }
+  OCTAVE_DEPRECATED octave_idx_type nelem (void) const { return nzmax (); }
+  OCTAVE_DEPRECATED octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
   octave_idx_type dim2 (void) const { return dimensions(1); }

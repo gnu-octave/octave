@@ -214,10 +214,12 @@ DEFNDCATOP_FN (fcm_cm, float_complex_matrix, complex_matrix,
 
 DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex_matrix,
                   float_complex_array, assign)
-DEFNDASSIGNOP_FN (dbl_clx_assign, float_complex_matrix, complex_matrix,
+DEFNDASSIGNOP_FN (sgl_clx_assign, float_complex_matrix, complex_matrix,
                   float_complex_array, assign)
-DEFNDASSIGNOP_FN (dbl_assign, float_complex_matrix, matrix,
+DEFNDASSIGNOP_FN (sgl_assign, float_complex_matrix, matrix,
                   float_complex_array, assign)
+DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex_matrix,
+                  complex_array, assign)
 
 DEFNULLASSIGNOP_FN (null_assign, float_complex_matrix, delete_elements)
 
@@ -311,9 +313,11 @@ install_fcm_fcm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix,
                     octave_float_complex_matrix, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix,
-                    octave_complex_matrix, dbl_clx_assign);
+                    octave_complex_matrix, sgl_clx_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix,
-                    octave_matrix, dbl_assign);
+                    octave_matrix, sgl_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix,
+                    octave_float_complex_matrix, dbl_assign);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix,
                     octave_null_matrix, null_assign);

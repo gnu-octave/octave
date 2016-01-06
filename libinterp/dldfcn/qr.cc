@@ -1348,8 +1348,8 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
   if (! check_qr_dims (argq, argr, true))
     error ("qrshift: dimensions mismatch");
 
-  octave_idx_type i = argi.int_value ();
-  octave_idx_type j = argj.int_value ();
+  octave_idx_type i = argi.idx_type_value ();
+  octave_idx_type j = argj.idx_type_value ();
 
   if (! check_index (argi) || ! check_index (argj))
     error ("qrshift: invalid index I or J");

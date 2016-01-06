@@ -1121,7 +1121,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
   if (a.is_scalar_type ())
     {
       dim.resize (2);
-      dim(0) = a.int_value ();
+      dim(0) = a.idx_type_value ();
       dim(1) = dim(0);
     }
   else
@@ -1149,7 +1149,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 {
   if (a.is_scalar_type ())
     {
-      nr = nc = a.int_value ();
+      nr = nc = a.idx_type_value ();
     }
   else
     {
@@ -1172,9 +1172,9 @@ get_dimensions (const octave_value& a, const octave_value& b,
                 const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
   nr = a.is_empty ()
-       ? 0 : a.int_value ("%s: row dimension must be a scalar", warn_for);
+       ? 0 : a.idx_type_value ("%s: row dimension must be a scalar", warn_for);
   nc = b.is_empty ()
-       ? 0 : b.int_value ("%s: column dimension must be a scalar", warn_for);
+       ? 0 : b.idx_type_value ("%s: column dimension must be a scalar", warn_for);
 
   check_dimensions (nr, nc, warn_for);
 }

@@ -259,7 +259,10 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                octave_idx_type elt = args(idx+i).xint_value ("%s: dimension must be a scalar or array of integers", fcn);
+                octave_idx_type elt =
+                  args(idx+i).xidx_type_value (
+                    "%s: dimension must be a scalar or array of integers",
+                    fcn);
 
                 // Negative dimensions treated as zero for Matlab compatibility
                 dims(i) = elt >= 0 ? elt : 0;

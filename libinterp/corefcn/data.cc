@@ -1367,7 +1367,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
     retval = args(0).diag ();
   else if (nargin == 2)
     {
-      octave_idx_type k = args(1).xint_value ("diag: invalid argument K");
+      octave_idx_type k = args(1).xidx_type_value ("diag: invalid argument K");
 
       retval = args(0).diag (k);
     }
@@ -1378,8 +1378,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       if (arg0.ndims () != 2 || (arg0.rows () != 1 && arg0.columns () != 1))
         error ("diag: V must be a vector");
 
-      octave_idx_type m = args(1).xint_value ("diag: invalid dimensions");
-      octave_idx_type n = args(2).xint_value ("diag: invalid dimensions");
+      octave_idx_type m = args(1).xidx_type_value ("diag: invalid dimensions");
+      octave_idx_type n = args(2).xidx_type_value ("diag: invalid dimensions");
 
       retval = arg0.diag (m, n);
     }
@@ -2783,7 +2783,7 @@ returns the number of columns in the given matrix.\n\
     }
   else if (nargin == 2 && nargout < 2)
     {
-      octave_idx_type nd = args(1).xint_value ("size: DIM must be an integer");
+      octave_idx_type nd = args(1).xidx_type_value ("size: DIM must be an integer");
 
       const dim_vector dv = args(0).dims ();
 

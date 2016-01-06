@@ -96,7 +96,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
           retval = tmp(0).vector_value ();
 
           if (tlen > 1)
-            ires = tmp(1).int_value ();
+            ires = tmp(1).idx_type_value ();
 
           if (retval.is_empty ())
             gripe_user_supplied_eval ("daspk");

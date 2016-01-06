@@ -200,7 +200,7 @@ do_trilu (const std::string& name,
 
   octave_idx_type k = 0;
   if (nargin == 2)
-    k = args(1).int_value (true);
+    k = args(1).idx_type_value (true);
 
   octave_value arg = args(0);
 

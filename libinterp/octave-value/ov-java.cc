@@ -60,6 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv,
                                             void *args);
+
 typedef jint (JNICALL *JNI_GetCreatedJavaVMs_t) (JavaVM **pvm, jsize bufLen,
                                                  jsize *nVMs);
 
@@ -68,6 +69,7 @@ extern "C"
   JNIEXPORT jboolean JNICALL
   Java_org_octave_Octave_call (JNIEnv *, jclass, jstring, jobjectArray,
                                jobjectArray);
+
   JNIEXPORT void JNICALL
   Java_org_octave_OctaveReference_doFinalize (JNIEnv *, jclass, jint);
 
@@ -113,7 +115,7 @@ public:
     clean ();
   }
 
-  JavaVMInitArgs* to_args ()
+  JavaVMInitArgs *to_args ()
   {
     update ();
     return &vm_args;
@@ -135,6 +137,7 @@ public:
         while (! js.eof () && ! js.fail ())
           {
             std::getline (js, line);
+
             if (line.find ("-") == 0)
               java_opts.push_back (line);
             else if (line.length () > 0 && Vdebug_java)
@@ -151,6 +154,7 @@ private:
       {
         for (int i = 0; i < vm_args.nOptions; i++)
           delete [] vm_args.options[i].optionString;
+
         delete [] vm_args.options;
 
         vm_args.options = 0;
@@ -168,6 +172,7 @@ private:
 
         vm_args.nOptions = java_opts.size ();
         vm_args.options = new JavaVMOption [vm_args.nOptions];
+
         for (std::list<std::string>::const_iterator it = java_opts.begin ();
              it != java_opts.end (); ++it)
           {
@@ -175,6 +180,7 @@ private:
               std::cout << *it << std::endl;
             vm_args.options[index++].optionString = strsave ((*it).c_str ());
           }
+
         java_opts.clear ();
       }
   }
@@ -187,6 +193,7 @@ private:
 };
 
 #ifdef __WIN32__
+
 static std::string
 read_registry_string (const std::string& key, const std::string& value)
 {
@@ -221,7 +228,7 @@ get_module_filename (HMODULE hMod)
 
   while (n < 65536)
     {
-      int status = GetModuleFileName(hMod, &retval[0], n);
+      int status = GetModuleFileName (hMod, &retval[0], n);
 
       if (status < n)
         {
@@ -235,6 +242,7 @@ get_module_filename (HMODULE hMod)
           retval.resize (n);
         }
     }
+
   return (found ? retval : "");
 }
 
@@ -257,6 +265,7 @@ set_dll_directory (const std::string& dir = "")
   if (dllfcn)
     dllfcn (dir.empty () ? 0 : dir.c_str ());
 }
+
 #endif
 
 static std::string
@@ -423,6 +432,7 @@ static void
 restore_fpu_state (void)
 {
   fpucw_t cw = GET_FPUCW ();
+
   if (cw != _FPU_DEFAULT)
     SET_FPUCW (_FPU_DEFAULT);
 }
@@ -633,7 +643,7 @@ terminate_jvm (void)
 }
 
 std::string
-jstring_to_string (JNIEnv* jni_env, jstring s)
+jstring_to_string (JNIEnv *jni_env, jstring s)
 {
   std::string retval;
 
@@ -648,7 +658,7 @@ jstring_to_string (JNIEnv* jni_env, jstring s)
 }
 
 std::string
-jstring_to_string (JNIEnv* jni_env, jobject obj)
+jstring_to_string (JNIEnv *jni_env, jobject obj)
 {
   std::string retval;
 
@@ -692,7 +702,7 @@ octave_java::is_instance_of (const std::string& cls_name) const
     {
       jclass_ref cls (current_env, current_env->FindClass (cls_cpp.c_str ()));
       if (current_env->ExceptionCheck ())
-        current_env->ExceptionClear();
+        current_env->ExceptionClear ();
       else
         return current_env->IsInstanceOf (java_object, cls);
     }
@@ -700,7 +710,7 @@ octave_java::is_instance_of (const std::string& cls_name) const
 }
 
 static octave_value
-check_exception (JNIEnv* jni_env)
+check_exception (JNIEnv *jni_env)
 {
   octave_value retval;
 
@@ -791,7 +801,7 @@ find_octave_class (JNIEnv *jni_env, const char *name)
 }
 
 static dim_vector
-compute_array_dimensions (JNIEnv* jni_env, jobject obj)
+compute_array_dimensions (JNIEnv *jni_env, jobject obj)
 {
   jobjectArray_ref jobj (jni_env, reinterpret_cast<jobjectArray> (obj));
   jclass_ref jcls (jni_env, jni_env->GetObjectClass (obj));
@@ -820,7 +830,7 @@ compute_array_dimensions (JNIEnv* jni_env, jobject obj)
 }
 
 static jobject
-make_java_index (JNIEnv* jni_env, const octave_value_list& idx)
+make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 {
   jclass_ref ocls (jni_env, jni_env->FindClass ("[I"));
   jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, 0);
@@ -852,7 +862,7 @@ make_java_index (JNIEnv* jni_env, const octave_value_list& idx)
 }
 
 static octave_value
-get_array_elements (JNIEnv* jni_env, jobject jobj,
+get_array_elements (JNIEnv *jni_env, jobject jobj,
                     const octave_value_list& idx)
 {
   octave_value retval;
@@ -874,7 +884,7 @@ get_array_elements (JNIEnv* jni_env, jobject jobj,
 }
 
 static octave_value
-set_array_elements (JNIEnv* jni_env, jobject jobj,
+set_array_elements (JNIEnv *jni_env, jobject jobj,
                     const octave_value_list& idx, const octave_value& rhs)
 {
   octave_value retval;
@@ -904,7 +914,7 @@ set_array_elements (JNIEnv* jni_env, jobject jobj,
 }
 
 static string_vector
-get_invoke_list (JNIEnv* jni_env, jobject jobj)
+get_invoke_list (JNIEnv *jni_env, jobject jobj)
 {
   std::list<std::string> name_list;
 
@@ -1002,7 +1012,7 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
 #define TO_JAVA(obj) dynamic_cast<octave_java*> ((obj).internal_rep ())
 
 octave_value
-box (JNIEnv* jni_env, jobject jobj, jclass jcls)
+box (JNIEnv *jni_env, jobject jobj, jclass jcls)
 {
   octave_value retval;
   jclass_ref cls (jni_env);
@@ -1053,7 +1063,7 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
           const JAVA_TYPE ## Array jarr = reinterpret_cast<JAVA_TYPE ## Array> (jobj); \
           const jsize len = jni_env->GetArrayLength (jarr); \
           OCTAVE_ID ## NDArray d (dim_vector (len, 1)); \
-          JAVA_TYPE * buffer = reinterpret_cast<JAVA_TYPE *> (d.fortran_vec ()); \
+          JAVA_TYPE *buffer = reinterpret_cast<JAVA_TYPE *> (d.fortran_vec ()); \
           jni_env->Get ## JAVA_TYPE_CAP ## ArrayRegion (jarr, 0, len, buffer); \
           retval = d; \
           break; \
@@ -1167,7 +1177,7 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
 }
 
 octave_value
-box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
+box_more (JNIEnv *jni_env, jobject jobj, jclass jcls)
 {
   octave_value retval = box (jni_env, jobj, jcls);
 
@@ -1261,7 +1271,7 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
 }
 
 bool
-unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
+unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls)
 {
   bool found = true;
@@ -1284,72 +1294,106 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
     {
       const Array<std::string> str_arr = val.cellstr_value ();
       const octave_idx_type n = str_arr.numel ();
+
       jclass_ref scls (jni_env, jni_env->FindClass ("java/lang/String"));
       jobjectArray array = jni_env->NewObjectArray (n, scls, NULL);
+
       for (octave_idx_type i = 0; i < n; i++)
         {
           jstring_ref jstr (jni_env, jni_env->NewStringUTF (str_arr(i).c_str ()));
           jni_env->SetObjectArrayElement (array, i, jstr);
         }
+
       jobj = array;
       jcls = jni_env->GetObjectClass (jobj);
     }
   else if (val.numel () > 1 && val.dims ().is_vector ())
     {
-#define IF_UNBOX_PRIMITIVE_ARRAY(CHECK_TYPE, METHOD_TYPE, OCTAVE_TYPE, JAVA_TYPE, JAVA_TYPE_CAP) \
-      if (val.is_ ## CHECK_TYPE ## _type ()) \
-        { \
-          const OCTAVE_TYPE ## NDArray v = val.METHOD_TYPE ## array_value (); \
-          JAVA_TYPE ## Array jarr = jni_env->New ## JAVA_TYPE_CAP ## Array (v.numel ()); \
-          const JAVA_TYPE* jv = reinterpret_cast<const JAVA_TYPE*> (v.data ()); \
-          jni_env->Set ## JAVA_TYPE_CAP ## ArrayRegion (jarr, 0, v.numel (), jv); \
-          jobj = reinterpret_cast<jobject> (jarr); \
-          jcls = jni_env->GetObjectClass (jobj); \
-        }
+      // FIXME: Is there any way to avoid code duplication here without
+      // using a macro?
+
+#define UNBOX_PRIMITIVE_ARRAY(METHOD_T, OCTAVE_T, JAVA_T, JAVA_T_CAP) \
+  do \
+    { \
+      const OCTAVE_T ## NDArray v = val.METHOD_T ## array_value (); \
+      JAVA_T ## Array jarr = jni_env->New ## JAVA_T_CAP ## Array (v.numel ()); \
+      const JAVA_T *jv = reinterpret_cast<const JAVA_T*> (v.data ()); \
+      jni_env->Set ## JAVA_T_CAP ## ArrayRegion (jarr, 0, v.numel (), jv); \
+      jobj = reinterpret_cast<jobject> (jarr); \
+      jcls = jni_env->GetObjectClass (jobj); \
+    } \
+  while (0)
 
       // Note that we do NOT handle char here because they are unboxed
       // into a String[], not into a char array
-           IF_UNBOX_PRIMITIVE_ARRAY(double,      ,       ,   jdouble,  Double)
-      else IF_UNBOX_PRIMITIVE_ARRAY(bool,   bool_,   bool,   jboolean, Boolean)
-      else IF_UNBOX_PRIMITIVE_ARRAY(float,  float_,  Float,  jfloat,   Float)
-      else IF_UNBOX_PRIMITIVE_ARRAY(int8,   int8_,   int8,   jbyte,    Byte)
-      else IF_UNBOX_PRIMITIVE_ARRAY(uint8,  uint8_,  uint8,  jbyte,    Byte)
-      else IF_UNBOX_PRIMITIVE_ARRAY(int16,  int16_,  int16,  jshort,   Short)
-      else IF_UNBOX_PRIMITIVE_ARRAY(uint16, uint16_, uint16, jshort,   Short)
-      else IF_UNBOX_PRIMITIVE_ARRAY(int32,  int32_,  int32,  jint,     Int)
-      else IF_UNBOX_PRIMITIVE_ARRAY(uint32, uint32_, uint32, jint,     Int)
-      else IF_UNBOX_PRIMITIVE_ARRAY(int64,  int64_,  int64,  jlong,    Long)
-      else IF_UNBOX_PRIMITIVE_ARRAY(uint64, uint64_, uint64, jlong,    Long)
 
-#undef IF_UNBOX_PRIMITIVE_ARRAY
+      if (val.is_double_type ())
+        UNBOX_PRIMITIVE_ARRAY ( , , jdouble,  Double);
+      else if (val.is_bool_type ())
+        UNBOX_PRIMITIVE_ARRAY (bool_, bool, jboolean, Boolean);
+      else if (val.is_float_type ())
+        UNBOX_PRIMITIVE_ARRAY (float_, Float, jfloat, Float);
+      else if (val.is_int8_type ())
+        UNBOX_PRIMITIVE_ARRAY (int8_, int8, jbyte, Byte);
+      else if (val.is_uint8_type ())
+        UNBOX_PRIMITIVE_ARRAY (uint8_, uint8, jbyte, Byte);
+      else if (val.is_int16_type ())
+        UNBOX_PRIMITIVE_ARRAY (int16_, int16, jshort, Short);
+      else if (val.is_uint16_type ())
+        UNBOX_PRIMITIVE_ARRAY (uint16_, uint16, jshort, Short);
+      else if (val.is_int32_type ())
+        UNBOX_PRIMITIVE_ARRAY (int32_, int32, jint, Int);
+      else if (val.is_uint32_type ())
+        UNBOX_PRIMITIVE_ARRAY (uint32_, uint32, jint, Int);
+      else if (val.is_int64_type ())
+        UNBOX_PRIMITIVE_ARRAY (int64_, int64, jlong, Long);
+      else if (val.is_uint64_type ())
+        UNBOX_PRIMITIVE_ARRAY (uint64_, uint64, jlong, Long);
+
+#undef UNBOX_PRIMITIVE_ARRAY
     }
   else if (val.is_real_scalar () || val.is_bool_scalar ())
     {
-#define IF_UNBOX_PRIMITIVE_SCALAR(CHECK_TYPE, OCTAVE_TYPE, METHOD_TYPE, JAVA_TYPE, JAVA_CON) \
-      if (val.is_ ## CHECK_TYPE ## _type ()) \
-        { \
-          const OCTAVE_TYPE ov = val.METHOD_TYPE ## _value (); \
-          jclass_ref dcls (jni_env, jni_env->FindClass (JAVA_TYPE)); \
-          const jfieldID fid = jni_env->GetStaticFieldID (dcls, "TYPE", "Ljava/lang/Class;"); \
-          const jmethodID mid = jni_env->GetMethodID (dcls, "<init>", JAVA_CON); \
-          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid)); \
-          jobj = jni_env->NewObject (dcls, mid, ov); \
-         }
+      // FIXME: Is there any way to avoid code duplication here without
+      // using a macro?
 
-           IF_UNBOX_PRIMITIVE_SCALAR(double, double,   double,        "java/lang/Double",  "(D)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(bool,   bool,     bool,          "java/lang/Boolean", "(Z)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(float,  float,    float,         "java/lang/Float",   "(F)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(int8,   int8_t,   int8_scalar,   "java/lang/Byte",    "(B)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(uint8,  uint8_t,  uint8_scalar,  "java/lang/Byte",    "(B)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(int16,  int16_t,  int16_scalar,  "java/lang/Short",   "(S)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(uint16, uint16_t, uint16_scalar, "java/lang/Short",   "(S)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(int32,  int32_t,  int32_scalar,  "java/lang/Int",     "(I)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(uint32, uint32_t, uint32_scalar, "java/lang/Int",     "(I)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(int64,  int64_t,  int64_scalar,  "java/lang/Long",    "(L)V")
-      else IF_UNBOX_PRIMITIVE_SCALAR(uint64, uint64_t, uint64_scalar, "java/lang/Long",    "(L)V")
+#define UNBOX_PRIMITIVE_SCALAR(OCTAVE_T, METHOD_T, JAVA_T, JAVA_CON)    \
+  do \
+    { \
+      const OCTAVE_T ov = val.METHOD_T ## _value (); \
+      jclass_ref dcls (jni_env, jni_env->FindClass (JAVA_T)); \
+      const jfieldID fid = jni_env->GetStaticFieldID (dcls, "TYPE", "Ljava/lang/Class;"); \
+      const jmethodID mid = jni_env->GetMethodID (dcls, "<init>", JAVA_CON); \
+      jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid)); \
+      jobj = jni_env->NewObject (dcls, mid, ov); \
+     } \
+   while (0)
 
-#undef IF_UNBOX_PRIMITIVE_SCALAR
-    }
+      if (val.is_double_type ())
+        UNBOX_PRIMITIVE_SCALAR (double, double, "java/lang/Double", "(D)V");
+      else if (val.is_bool_type ())
+        UNBOX_PRIMITIVE_SCALAR (bool, bool, "java/lang/Boolean", "(Z)V");
+      else if (val.is_float_type ())
+        UNBOX_PRIMITIVE_SCALAR (float, float, "java/lang/Float", "(F)V");
+      else if (val.is_int8_type ())
+        UNBOX_PRIMITIVE_SCALAR (int8_t, int8_scalar, "java/lang/Byte", "(B)V");
+      else if (val.is_uint8_type ())
+        UNBOX_PRIMITIVE_SCALAR (uint8_t, uint8_scalar, "java/lang/Byte", "(B)V");
+      else if (val.is_int16_type ())
+        UNBOX_PRIMITIVE_SCALAR (int16_t, int16_scalar, "java/lang/Short", "(S)V");
+      else if (val.is_uint16_type ())
+        UNBOX_PRIMITIVE_SCALAR (uint16_t, uint16_scalar, "java/lang/Short", "(S)V");
+      else if (val.is_int32_type ())
+        UNBOX_PRIMITIVE_SCALAR (int32_t, int32_scalar, "java/lang/Int", "(I)V");
+      else if (val.is_uint32_type ())
+        UNBOX_PRIMITIVE_SCALAR (uint32_t, uint32_scalar, "java/lang/Int", "(I)V");
+      else if (val.is_int64_type ())
+        UNBOX_PRIMITIVE_SCALAR (int64_t, int64_scalar, "java/lang/Long", "(L)V");
+      else if (val.is_uint64_type ())
+        UNBOX_PRIMITIVE_SCALAR (uint64_t, uint64_scalar, "java/lang/Long", "(L)V");
+
+#undef UNBOX_PRIMITIVE_SCALAR
+      }
   else if (val.is_empty ())
     {
       jobj = 0;
@@ -1442,7 +1486,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
 }
 
 bool
-unbox (JNIEnv* jni_env, const octave_value_list& args,
+unbox (JNIEnv *jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss)
 {
   bool found = true;
@@ -1866,7 +1910,7 @@ octave_java::load_hdf5 (octave_hdf5_id /* loc_id */, const char * /* name */)
 }
 
 octave_value
-octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
+octave_java::do_javaMethod (JNIEnv *jni_env, const std::string& name,
                             const octave_value_list& args)
 {
   octave_value retval;
@@ -1895,7 +1939,7 @@ octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
 }
 
 octave_value
-octave_java:: do_javaMethod (JNIEnv* jni_env,
+octave_java:: do_javaMethod (JNIEnv *jni_env,
                              const std::string& class_name,
                              const std::string& name,
                              const octave_value_list& args)
@@ -1927,7 +1971,7 @@ octave_java:: do_javaMethod (JNIEnv* jni_env,
 }
 
 octave_value
-octave_java::do_javaObject (JNIEnv* jni_env, const std::string& name,
+octave_java::do_javaObject (JNIEnv *jni_env, const std::string& name,
                             const octave_value_list& args)
 {
   octave_value retval;
@@ -1958,7 +2002,7 @@ octave_java::do_javaObject (JNIEnv* jni_env, const std::string& name,
 }
 
 octave_value
-octave_java::do_java_get (JNIEnv* jni_env, const std::string& name)
+octave_java::do_java_get (JNIEnv *jni_env, const std::string& name)
 {
   octave_value retval;
 
@@ -1983,7 +2027,7 @@ octave_java::do_java_get (JNIEnv* jni_env, const std::string& name)
 }
 
 octave_value
-octave_java::do_java_get (JNIEnv* jni_env, const std::string& class_name,
+octave_java::do_java_get (JNIEnv *jni_env, const std::string& class_name,
                           const std::string& name)
 {
   octave_value retval;
@@ -2009,7 +2053,7 @@ octave_java::do_java_get (JNIEnv* jni_env, const std::string& class_name,
 }
 
 octave_value
-octave_java::do_java_set (JNIEnv* jni_env, const std::string& name,
+octave_java::do_java_set (JNIEnv *jni_env, const std::string& name,
                           const octave_value& val)
 {
   octave_value retval;
@@ -2036,7 +2080,7 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& name,
 }
 
 octave_value
-octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
+octave_java::do_java_set (JNIEnv *jni_env, const std::string& class_name,
                           const std::string& name, const octave_value& val)
 {
   octave_value retval;
@@ -2063,6 +2107,52 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
   return retval;
 }
 
+void
+octave_java::init (jobject jobj, jclass jcls)
+{
+  JNIEnv *current_env = thread_jni_env ();
+
+  if (current_env)
+    {
+      if (jobj)
+        java_object = current_env->NewGlobalRef (jobj);
+
+      if (jcls)
+        java_class = reinterpret_cast<jclass> (current_env->NewGlobalRef (jcls));
+      else if (java_object)
+        {
+          jclass_ref ocls (current_env, current_env->GetObjectClass (java_object));
+          java_class = reinterpret_cast<jclass> (current_env->NewGlobalRef (jclass (ocls)));
+        }
+
+      if (java_class)
+        {
+          jclass_ref clsCls (current_env, current_env->GetObjectClass (java_class));
+          jmethodID mID = current_env->GetMethodID (clsCls, "getCanonicalName", "()Ljava/lang/String;");
+          jobject_ref resObj (current_env, current_env->CallObjectMethod (java_class, mID));
+          java_classname = jstring_to_string (current_env, resObj);
+        }
+    }
+}
+
+void
+octave_java::release (void)
+{
+  JNIEnv *current_env = thread_jni_env ();
+
+  if (current_env)
+    {
+      if (java_object)
+        current_env->DeleteGlobalRef (java_object);
+
+      if (java_class)
+        current_env->DeleteGlobalRef (java_class);
+
+      java_object = 0;
+      java_class = 0;
+    }
+}
+
 #endif
 
 // DEFUN blocks below must be outside of HAVE_JAVA block so that
@@ -2073,7 +2163,7 @@ DEFUN (__java_init__, , ,
 @deftypefn {} {} __java_init__ ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
 \n\
-Function will directly call initialize_java() to create an instance of a JVM.\n\
+Function will directly call initialize_java to create an instance of a JVM.\n\
 @end deftypefn")
 {
 
@@ -2097,7 +2187,7 @@ DEFUN (__java_exit__, , ,
 @deftypefn {} {} __java_exit__ ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
 \n\
-Function will directly call terminate_jvm() to destroy the current JVM\n\
+Function will directly call terminate_jvm to destroy the current JVM\n\
 instance.\n\
 @end deftypefn")
 {
@@ -2156,9 +2246,10 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 }
 
 /*
-## The tests below merely check if javaObject() works at all.  Whether it works
-## properly, i.e., creates the right values, is a matter of Java itself.
-## Create a Short and check if it really is a short, i.e., whether it overflows.
+## The tests below merely check if javaObject works at all.  Whether
+## it works properly, i.e., creates the right values, is a matter of
+## Java itself.  Create a Short and check if it really is a short, i.e.,
+## whether it overflows.
 %!testif HAVE_JAVA
 %! assert (javaObject ("java.lang.Short", 40000).doubleValue < 0);
 */

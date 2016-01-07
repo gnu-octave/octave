@@ -41,11 +41,13 @@ public:
 
   ~java_local_ref (void) { release (); }
 
-  T& operator= (T obj)
+  T& operator = (T obj)
   {
     release ();
+
     jobj = obj;
     detached = false;
+
     return jobj;
   }
 
@@ -69,6 +71,7 @@ private:
   { }
 
 protected:
+
   T jobj;
   bool detached;
   JNIEnv *env;
@@ -198,7 +201,7 @@ public:
   octave_value
   do_javaMethod (const std::string& name, const octave_value_list& args)
   {
-    return do_javaMethod(thread_jni_env (), name, args);
+    return do_javaMethod (thread_jni_env (), name, args);
   }
 
   static octave_value
@@ -209,7 +212,7 @@ public:
   do_javaMethod (const std::string& class_name, const std::string& name,
                  const octave_value_list& args)
   {
-    return do_javaMethod(thread_jni_env (), class_name, name, args);
+    return do_javaMethod (thread_jni_env (), class_name, name, args);
   }
 
   static octave_value
@@ -260,49 +263,9 @@ public:
 
 private:
 
-  void init (jobject jobj, jclass jcls)
-  {
-    JNIEnv *current_env = thread_jni_env ();
+  void init (jobject jobj, jclass jcls);
 
-    if (current_env)
-      {
-        if (jobj)
-          java_object = current_env->NewGlobalRef (jobj);
-
-        if (jcls)
-          java_class = reinterpret_cast<jclass> (current_env->NewGlobalRef (jcls));
-        else if (java_object)
-          {
-            jclass_ref ocls (current_env, current_env->GetObjectClass (java_object));
-            java_class = reinterpret_cast<jclass> (current_env->NewGlobalRef (jclass (ocls)));
-          }
-
-        if (java_class)
-          {
-            jclass_ref clsCls (current_env, current_env->GetObjectClass (java_class));
-            jmethodID mID = current_env->GetMethodID (clsCls, "getCanonicalName", "()Ljava/lang/String;");
-            jobject_ref resObj (current_env, current_env->CallObjectMethod (java_class, mID));
-            java_classname = jstring_to_string (current_env, resObj);
-          }
-      }
-  }
-
-  void release (void)
-  {
-    JNIEnv *current_env = thread_jni_env ();
-
-    if (current_env)
-      {
-        if (java_object)
-          current_env->DeleteGlobalRef (java_object);
-
-        if (java_class)
-          current_env->DeleteGlobalRef (java_class);
-
-        java_object = 0;
-        java_class = 0;
-      }
-  }
+  void release (void);
 
 private:
 
@@ -312,8 +275,8 @@ private:
 
   std::string java_classname;
 
-
 public:
+
   int type_id (void) const { return t_id; }
   std::string type_name (void) const { return t_name; }
   std::string class_name (void) const { return java_classname; }
@@ -324,6 +287,7 @@ public:
   static void register_type (void);
 
 private:
+
   static int t_id;
   static const std::string t_name;
 };

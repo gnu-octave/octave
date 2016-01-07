@@ -240,7 +240,7 @@ private:
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);
-  void center_current_line ();
+  void center_current_line (bool always=true);
 
   void add_octave_apis (octave_value_list key_ovl);
   QString get_function_name ();

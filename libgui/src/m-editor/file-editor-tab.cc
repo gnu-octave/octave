@@ -1105,7 +1105,7 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
   else  // go to given line without dialog
     _edit_area->setCursorPosition (line-1, 0);
 
-  center_current_line ();
+  center_current_line (false);  // only center line if at top or bottom
 }
 
 void
@@ -2326,7 +2326,7 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line)
 
 
 void
-file_editor_tab::center_current_line ()
+file_editor_tab::center_current_line (bool always)
 {
   long int visible_lines
     = _edit_area->SendScintilla (QsciScintillaBase::SCI_LINESONSCREEN);
@@ -2337,9 +2337,12 @@ file_editor_tab::center_current_line ()
       _edit_area->getCursorPosition (&line, &index);
 
       int first_line = _edit_area->firstVisibleLine ();
-      first_line = first_line + (line - first_line - (visible_lines-1)/2);
 
-      _edit_area->SendScintilla (2613,first_line); // SCI_SETFIRSTVISIBLELINE
+      if (always || line == first_line || line > first_line + visible_lines - 2)
+        {
+          first_line = first_line + (line - first_line - (visible_lines-1)/2);
+          _edit_area->SendScintilla (2613,first_line); // SCI_SETFIRSTVISIBLELINE
+        }
     }
 }
 

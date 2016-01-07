@@ -1633,66 +1633,8 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
     }
 
   // Attempt to restore the breakpoints if that is desired.
-  if (! list.isEmpty ())
-    {
-      bool restore_breakpoints;
-      if (_breakpoint_filesave_behavior == "RESTORE")
-        restore_breakpoints = true;
-      else if (_breakpoint_filesave_behavior == "DISCARD")
-        restore_breakpoints = false;
-      else
-        {
-          // ask user
-          QMessageBox *dlgBox = new QMessageBox (QMessageBox::Question,
-                                  tr ("Octave Editor"),
-                                  tr ("Would you like to restore adjusted breakpoints?"),
-                                  QMessageBox::Yes | QMessageBox::No, this);
-
-          // add checkbox whether to store the result in the settings
-          QCheckBox *checkBox = new QCheckBox ("Don't ask again.");
-          checkBox->setCheckState (Qt::Unchecked);
-          QVBoxLayout *extra = new QVBoxLayout (dlgBox);
-          extra->addWidget (checkBox);
-          QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (dlgBox->layout ());
-          dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                                    1,dialog_layout->columnCount ());
-
-          // shoe the dialog
-          dlgBox->exec ();
-
-          // evaluate result
-          QMessageBox::StandardButton clicked = dlgBox->standardButton (dlgBox->clickedButton ());
-          restore_breakpoints = (clicked == QMessageBox::Yes);
-
-          if (checkBox->checkState () == Qt::Checked)
-            {
-              // User no longer wants to be asked so save the setting for
-              // this object...
-              if (restore_breakpoints)
-                _breakpoint_filesave_behavior = "RESTORE";
-              else
-                _breakpoint_filesave_behavior = "DISCARD";
-
-              // ...and on disc (and Preferences...)
-              QSettings *settings = resource_manager::get_settings ();
-              if (settings)
-                {
-                  settings->setValue ("debugger/breakpoint_filesave_behavior",
-                                      _breakpoint_filesave_behavior);
-                  settings->sync ();
-                }
-            }
-
-          delete dlgBox;
-
-        }
-
-      if (restore_breakpoints)
-        {
-          for (int i = 0; i < list.length (); i++)
-            handle_request_add_breakpoint (list.value (i) + 1);
-        }
-    }
+  for (int i = 0; i < list.length (); i++)
+    handle_request_add_breakpoint (list.value (i) + 1);
 }
 
 void
@@ -2102,9 +2044,6 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
 
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
-
-  _breakpoint_filesave_behavior = settings->value ("debugger/breakpoint_filesave_behavior", "ASK").
-                                                    toString ();
 
   _edit_area->setEdgeColumn (
               settings->value ("editor/long_line_column",80).toInt ());

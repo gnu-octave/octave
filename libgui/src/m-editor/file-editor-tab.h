@@ -272,8 +272,6 @@ private:
   bool _always_reload_changed_files;
   bool _smart_indent;
 
-  QString _breakpoint_filesave_behavior;
-
   QFileSystemWatcher _file_system_watcher;
 
   find_dialog *_find_dialog;

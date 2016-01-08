@@ -9422,30 +9422,30 @@ gh_manager::do_process_events (bool force)
     {
       e = graphics_event ();
 
-      gh_manager::lock ();
+      {
+        gh_manager::auto_lock guard;
 
-      if (! event_queue.empty ())
-        {
-          if (callback_objects.empty () || force)
-            {
-              e = event_queue.front ();
+        if (! event_queue.empty ())
+          {
+            if (callback_objects.empty () || force)
+              {
+                e = event_queue.front ();
 
-              event_queue.pop_front ();
-            }
-          else
-            {
-              const graphics_object& go = callback_objects.front ();
+                event_queue.pop_front ();
+              }
+            else
+              {
+                const graphics_object& go = callback_objects.front ();
 
-              if (go.get_properties ().is_interruptible ())
-                {
-                  e = event_queue.front ();
+                if (go.get_properties ().is_interruptible ())
+                  {
+                    e = event_queue.front ();
 
-                  event_queue.pop_front ();
-                }
-            }
-        }
-
-      gh_manager::unlock ();
+                    event_queue.pop_front ();
+                  }
+              }
+          }
+      }
 
       if (e.ok ())
         {
@@ -9455,12 +9455,12 @@ gh_manager::do_process_events (bool force)
     }
   while (e.ok ());
 
-  gh_manager::lock ();
+  {
+    gh_manager::auto_lock guard;
 
-  if (event_queue.empty () && event_processing == 0)
-    command_editor::remove_event_hook (gh_manager::process_events);
-
-  gh_manager::unlock ();
+    if (event_queue.empty () && event_processing == 0)
+      command_editor::remove_event_hook (gh_manager::process_events);
+  }
 
   if (events_executed)
     flush_octave_stdout ();
@@ -10707,8 +10707,6 @@ undocumented.\n\
   if (args.length () > 4)
     print_usage ();
 
-  gh_manager::lock ();
-
   unwind_protect frame;
 
   frame.protect_var (Vdrawnow_requested, false);
@@ -10716,6 +10714,8 @@ undocumented.\n\
 
   if (++drawnow_executing <= 1)
     {
+      gh_manager::auto_lock guard;
+
       if (args.length () == 0 || args.length () == 1)
         {
           Matrix hlist = gh_manager::figure_handle_list (true);
@@ -10755,11 +10755,7 @@ undocumented.\n\
               if (val.compare ("expose"))
                 do_events = false;
               else
-                {
-                  gh_manager::unlock ();
-
-                  error ("drawnow: invalid argument, 'expose' is only valid option");
-                }
+                error ("drawnow: invalid argument, 'expose' is only valid option");
             }
 
           if (do_events)
@@ -10785,17 +10781,9 @@ undocumented.\n\
 
           if (pos_p == std::string::npos &&
               pos_c == std::string::npos)
-            {
-              gh_manager::unlock ();
-
-              error ("drawnow: empty output ''");
-            }
+            error ("drawnow: empty output ''");
           else if (pos_c == std::string::npos)
-            {
-              gh_manager::unlock ();
-
-              error ("drawnow: empty pipe '|'");
-            }
+            error ("drawnow: empty pipe '|'");
           else if (pos_p != std::string::npos && pos_p < pos_c)
             {
               // Strip leading pipe character
@@ -10812,12 +10800,8 @@ undocumented.\n\
                   file_stat fs (dirname);
 
                   if (! fs || ! fs.is_dir ())
-                    {
-                      gh_manager::unlock ();
-
-                      error ("drawnow: nonexistent directory '%s'",
-                             dirname.c_str ());
-                    }
+                    error ("drawnow: nonexistent directory '%s'",
+                           dirname.c_str ());
 
                 }
             }
@@ -10849,8 +10833,6 @@ undocumented.\n\
           gh_manager::lock ();
         }
     }
-
-  gh_manager::unlock ();
 
   return ovl ();
 }

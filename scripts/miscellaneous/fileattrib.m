@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fileattrib ()
-## @deftypefnx {} {} fileattrib (@var{file})
-## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@var{file})
+## @deftypefn  {} {} fileattrib (@var{file})
+## @deftypefnx {} {} fileattrib ()
+## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@dots{})
 ## Return information about @var{file}.
 ##
-## If successful, @var{status} is 1, with @var{result} containing a structure
-## with the following fields:
+## If successful, @var{status} is 1 and @var{msg} is a structure with the
+## following fields:
 ##
 ## @table @code
 ## @item Name
@@ -59,6 +59,9 @@
 ##
 ## If an attribute does not apply (i.e., archive on a Unix system) then the
 ## field is set to NaN.
+##
+## If @code{attrib} fails, @var{msg} is a non-empty string containing an
+## error message and @var{msg_id} is the non-empty string @qcode{"fileattrib"}.
 ##
 ## With no input arguments, return information about the current directory.
 ##
@@ -98,14 +101,13 @@ function [status, msg, msgid] = fileattrib (file = ".")
         r(i).hidden = NaN;
       else
         [~, attrib] = dos (sprintf ('attrib "%s"', r(i).Name));
-        ## dos() never returns error status so have to check it indirectly
-        if (length (attrib) < 12
-            || ! strcmp (deblank (attrib(12:end)), r(i).Name))
+        ## dos never returns error status so have to check it indirectly
+        if (! isempty (strfind (attrib, " - ")))
           status = false;
           msgid = "fileattrib";
           break;
         endif
-        attrib = attrib(1:11);
+        attrib = regexprep (attrib, '\S+:.*', ""); 
         r(i).archive = any (attrib == "A");
         r(i).system = any (attrib == "S");
         r(i).hidden = any (attrib == "H");

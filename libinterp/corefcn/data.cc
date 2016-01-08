@@ -1157,6 +1157,17 @@ DEFUN (cumprod, args, ,
 Cumulative product of elements along dimension @var{dim}.\n\
 \n\
 If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+For example:\n\
+\n\
+@example\n\
+@group\n\
+cumsum ([1, 2; 3, 4; 5, 6])\n\
+   @result{}  1   2\n\
+       3   8\n\
+      15  48\n\
+@end group\n\
+@end example\n\
+@end example\n\
 @seealso{prod, cumsum}\n\
 @end deftypefn")
 {
@@ -1193,6 +1204,17 @@ DEFUN (cumsum, args, ,
 Cumulative sum of elements along dimension @var{dim}.\n\
 \n\
 If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+For example:\n\
+\n\
+@example\n\
+@group\n\
+cumsum ([1, 2; 3, 4; 5, 6])\n\
+   @result{}  1   2\n\
+       4   6\n\
+       9  12\n\
+@end group\n\
+@end example\n\
+@end example\n\
 \n\
 See @code{sum} for an explanation of the optional parameters\n\
 @qcode{\"native\"}, @qcode{\"double\"}, and @qcode{\"extra\"}.\n\

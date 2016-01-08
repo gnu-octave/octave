@@ -123,6 +123,7 @@ COREFCN_SRC = \
   libinterp/corefcn/c-file-ptr-stream.cc \
   libinterp/corefcn/cdisplay.c \
   libinterp/corefcn/cellfun.cc \
+  libinterp/corefcn/colloc.cc \
   libinterp/corefcn/coct-hdf5-types.c \
   libinterp/corefcn/comment-list.cc \
   libinterp/corefcn/conv2.cc \
